@@ -1,0 +1,2 @@
+name, driver_version, memory.total [MiB], memory.free [MiB], utilization.gpu [%]
+NVIDIA GeForce RTX 3060, 572.42, 12288 MiB, 11701 MiB, 0 %

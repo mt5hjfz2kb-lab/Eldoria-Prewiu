@@ -1,88 +1,105 @@
 # Eldoria — motor local de IA v1
 
-## Estado verificable a 8 de octubre de 2026
+## Resultado: INSTALADO / PRUEBA REAL PASS / MISIÓN CERRADA
 
-**OLLAMA INSTALADO / MODELO DESCARGADO Y RESPUESTA LOCAL VERIFICADA / PRUEBA NATIVA FINAL PENDIENTE. La misión no está cerrada.**
+Verificado el 8 de octubre de 2026 en el ordenador Windows `DESKTOP-R10PE55`, con Intel i7-10700F, 16 GB de RAM y NVIDIA RTX 3060 de 12 GB.
 
-La conexión GitHub funciona. El [preflight 37792004269](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37792004269) terminó correctamente en `DESKTOP-R10PE55`: 16 procesadores lógicos, 8,75 GB RAM libre, RTX 3060 de 12288 MiB, 11701 MiB VRAM libre, GPU al 0 %, 488,8 GB libres en el disco consultado. El inventario encontró el comando Python; el segundo intento ha confirmado que es un alias de Microsoft Store sin intérprete disponible. Ollama no se encontró en PATH y no tenía proceso activo. Esto acredita acceso mediante Actions en aquel momento, no instalación ni disponibilidad futura.
+- Ollama **0.40.1** instalado mediante la distribución standalone oficial Windows x64.
+- **qwen2.5-coder:3b**, 3.1B, cuantización Q4_K_M, descargado y ejecutado localmente.
+- Prueba real de programación en Windows: **9/9 casos PASS** sobre una función generada por el modelo.
+- Endpoint limitado a **127.0.0.1:11434**, nube desactivada y cero llamadas a APIs externas de pago en la prueba.
+- Lanzador local persistido. No se instaló un servicio ni arranque automático. El motor funciona bajo demanda; el servidor de prueba quedó cerrado y el modelo descargado de memoria.
 
-Bloqueo de plataforma: el conector conectado tiene lectura de runs/jobs y escritura de archivos, pero no una operación de `workflow_dispatch`. No se ha usado un trigger push para saltarse la regla de AGENTS.md que exige activación manual de instalaciones y diagnósticos. No se ha iniciado otro login ni se ha solicitado un token. El preflight automático existente pertenece a otra sesión y queda intacto.
+**Evidencia final:** [run 37802085508 — SUCCESS](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37802085508), fuente `db15e0e815b22a19857efc3f6bc7d9c37792298f`, [artifact 11560822295](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37802085508/artifacts/11560822295). ZIP SHA-256: `6218fdf5ea2273ded71241cbf33bae4a3c66bf889b32fea341a622d3a46a76a5`.
 
-## Activación concreta
+El archivo de evidencias se descargó, se comprobó su hash y se abrieron directamente `proof.json`, `installation.json`, `final-check.json`, la respuesta original y los logs. Copias durables de los nueve archivos quedan en `docs/evidence/local-ai-v1/final/`; el artifact original de Actions caduca el 22 de octubre.
 
-En [Actions: Eldoria local AI install and isolated proof](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/workflows/eldoria-local-ai-install-v1.yml), seleccionar **Run workflow → main → Run workflow**. Puede hacerse desde el navegador móvil con una sesión GitHub autorizada. El ordenador debe estar encendido, el runner conectado y Unity/Blender cerrados. El workflow no cierra aplicaciones del usuario: si están abiertas, se bloquea.
+## Configuración y ubicación
 
-Al terminar, inspeccionar el run y el artifact `eldoria-local-ai-proof-<run_id>`. Un run verde debe contener `proof.json` y `final-check.json` con PASS, respuesta original, código generado, versión, digest del modelo, log local-only y snapshots GPU. Fallo o ausencia de evidencia significa NO COMPLETADO. Registrar aquí el run/artifact reales después de inspeccionarlos; no inferir PASS por haber publicado estos archivos.
+Directorio del usuario del runner: `%LOCALAPPDATA%\EldoriaLocalAI`.
 
-## Instalación y límites
+| Elemento | Ubicación o valor |
+| --- | --- |
+| Binarios | `%LOCALAPPDATA%\EldoriaLocalAI\ollama-v0.40.1` |
+| Modelos | `%LOCALAPPDATA%\EldoriaLocalAI\models` |
+| Lanzador | `%LOCALAPPDATA%\EldoriaLocalAI\tools\local-ai-install-v1.ps1` |
+| Prueba | `%LOCALAPPDATA%\EldoriaLocalAI\tools\local-ai-proof-v1.ps1` |
+| Host | `127.0.0.1:11434` |
+| Cloud | `OLLAMA_NO_CLOUD=1` |
+| Peticiones paralelas / modelos cargados | 1 / 1 |
+| Contexto | 2048 tokens |
+| Keep alive | 0 por defecto; 30 segundos durante la prueba para medir GPU, luego descarga explícita |
 
-Se utiliza la distribución standalone oficial Windows x64 **Ollama v0.40.1**, sin instalador de servicios, sin administrador y sin cambios globales de PATH, firewall, drivers o variables de usuario. ZIP oficial: https://github.com/ollama/ollama/releases/download/v0.40.1/ollama-windows-amd64.zip . SHA-256 de release oficial: `b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab`. La descarga se verifica antes de extraer. Referencia: https://docs.ollama.com/windows .
+Distribución oficial: https://github.com/ollama/ollama/releases/download/v0.40.1/ollama-windows-amd64.zip . SHA-256 verificado antes de extraer: `b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab`. No se ejecutó un instalador elevado, no se cambiaron PATH, variables globales, firewall, drivers, Unity ni Blender. No se requiere Python o Git en PATH del runner para este workflow.
 
-Directorio persistente del usuario del runner: `%LOCALAPPDATA%\EldoriaLocalAI`, con binarios en `ollama-v0.40.1` y modelos en `models`. No se comparte la Library de Unity ni se modifica el proyecto Unity/Blender. Actions descarga únicamente los dos scripts fijados al SHA del run y verifica sus SHA-256 antes de ejecutarlos; no usa Git ni descarga el repositorio completo. El registry se consulta desde main en el momento de ejecutar.
+Digest del modelo local: `f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225`. La prueba cargó el modelo enteramente en GPU, `size_vram=2081779875` bytes. Generó 65 tokens en 510640000 ns, aproximadamente 127 tokens/s en esta tarea pequeña; no es una evaluación de mantenimiento autónomo de Eldoria.
 
-Solo modelo `qwen2.5-coder:3b`, descargado del registro de Ollama. Servidor en `127.0.0.1:11434`, `OLLAMA_NO_CLOUD=1`, una petición paralela, un modelo cargado, contexto 2048, cuatro hilos en la prueba y descarga inmediata del modelo tras el uso. No hay cuentas cloud ni API de pago; sí descarga por Internet de binarios/modelo y uso de electricidad/recursos locales. Referencias: https://docs.ollama.com/faq y https://docs.ollama.com/api/generate .
+Fuentes oficiales: https://docs.ollama.com/windows ; https://docs.ollama.com/faq ; https://docs.ollama.com/api/generate . Las descargas necesitan Internet y la ejecución consume recursos/electricidad locales; no tiene tarifa de API por token en este modo local.
 
-La instalación exige Windows 10 22H2 o posterior, 6 GB de RAM libre, 6000 MiB de VRAM libre y 12 GB libres de disco. No sustituye un servidor previo: aborta si hay Ollama activo o puerto 11434 ocupado. Todo proceso que inicia la prueba se termina al acabar; no queda daemon permanente ni consumo recurrente de GPU.
+## Cómo utilizarlo
 
-## Prueba real aislada
-
-La prueba vigente solicita al modelo una función PowerShell `Clamp` con parámetros `value, low, high`. Se conserva la respuesta original y se comprueban nueve casos incluyendo límites, negativos y rango de anchura cero. Un intérprete de gramática cerrada admite exclusivamente dos comparaciones condicionales y tres retornos de parámetros. El texto generado nunca se ejecuta como script; no se usa Invoke-Expression ni se permiten llamadas, comandos, asignaciones, red, archivos o credenciales. La prueba usa PowerShell/.NET ya existentes y no requiere Python. Esto demuestra una tarea pequeña de programación; no acredita todavía agentes autónomos capaces de mantener Eldoria.
-
-La comprobación de no interferencia es acotada: instalación separada, aplicaciones ausentes antes/durante/después, puerto local verificado, modelo descargado de memoria y cierre de procesos propios. No certifica rendimiento simultáneo con Unity; por defecto no se autoriza esa concurrencia.
-
-## Uso tras un PASS real
-
-Desde PowerShell, después del PASS (el workflow persiste el lanzador seguro):
+Con Unity y Blender cerrados, abrir PowerShell y ejecutar:
 
 ```powershell
 & "$env:LOCALAPPDATA\EldoriaLocalAI\tools\local-ai-install-v1.ps1" -Mode Serve
 ```
 
-Mantener esa consola abierta. En otra PowerShell:
+Mantener esa consola abierta. El lanzador configura las variables solo para ese proceso, exige RAM/VRAM disponibles y aborta si Unity/Blender están abiertos, hay otro Ollama activo o el puerto está ocupado. No cierra aplicaciones existentes.
+
+En otra consola PowerShell:
 
 ```powershell
 $env:OLLAMA_HOST='127.0.0.1:11434'
 & "$env:LOCALAPPDATA\EldoriaLocalAI\ollama-v0.40.1\ollama.exe" run qwen2.5-coder:3b
 ```
 
-Para una llamada desde el futuro ejecutor, usar POST `http://127.0.0.1:11434/api/generate` con modelo exacto, `stream:false`, `keep_alive:0`, contexto 2048 y un límite `num_predict`. Terminar la sesión CLI y el servidor con Ctrl+C antes de abrir Unity/Blender o despachar producción. No crear un servicio, tarea programada, túnel ni puerto LAN sin un alcance posterior autorizado. Para repetir el test, usar el workflow manual; no es necesario reinstalar si los binarios ya existen.
+Para salir, finalizar la sesión CLI y pulsar Ctrl+C en la consola del servidor. Cerrarlo antes de abrir Unity/Blender o ejecutar trabajos de producción. No crear un servicio permanente, tarea programada, túnel o exposición LAN sin un alcance posterior autorizado.
 
-## Propuesta: conexión al Coordinador Central
+Ejemplo para llamar al motor desde un ejecutor local autorizado, con el servidor abierto:
 
-La propuesta NO está activada. El coordinador v1 sigue siendo lector y gate de evidencias, no ejecutor de departamentos.
+```powershell
+$request=@{
+  model='qwen2.5-coder:3b'
+  prompt='Explica en tres frases qué hace una función clamp.'
+  stream=$false
+  keep_alive=0
+  options=@{num_ctx=2048;num_predict=256;num_thread=4;temperature=0}
+} | ConvertTo-Json -Depth 5
+Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body $request
+```
 
-1. Tras PASS verificable, un adaptador local toma una orden canónica aprobada y acotada con ID, commit fuente, scope, criterios y límites. Mantiene cola idempotente y un único worker para esta máquina.
-2. El worker consulta el endpoint loopback; presupuesto de API 0 EUR, máximo tres intentos, 120 s por generación, contexto 2048 y 512 tokens iniciales. Solo admite el modelo local exacto, sin fallback cloud.
-3. El primer piloto genera propuestas en un workspace temporal sin credenciales de escritura. La respuesta es datos no confiables: validación de esquema, revisión y pruebas independientes antes de ejecutar cualquier acción.
-4. El coordinador consume únicamente el reporte y evidencias del worker. No considera la autoafirmación del modelo una prueba. Las restricciones M07/M11/QA siguen gobernadas por el repositorio y sus gates actuales.
-5. Escritura en repositorio, PRs, herramientas Unity/Blender y autonomía persistente necesitan un bloque posterior con permisos mínimos, scope claim, auditoría y rollback. El modelo 3B es un piloto de capacidad limitada; aumentar autonomía depende de resultados, no de su mera instalación.
+Las respuestas del modelo son datos no confiables. No ejecutar sus comandos con Invoke-Expression ni darle credenciales o acceso de escritura por el mero hecho de estar instalado.
 
-## Continuación y cierre
+## Prueba y no interferencia
 
-Workstream `eldoria-local-ai-install-v1`. Recuperar main y el registry antes de continuar. Lanzar el workflow manual cuando la capacidad esté disponible, revisar logs/evidencia, reparar fallos dentro de este mismo scope, registrar run/artifact/digest y cerrar únicamente tras PASS real. No iniciar M11 ni QA. No se ha modificado el código del videojuego.
+El modelo generó una función PowerShell `Clamp` con dos comparaciones y retornos de parámetros. Un intérprete de gramática cerrada, dentro del runner Windows, comprobó nueve entradas: valores por debajo/dentro/por encima del rango, ambos límites, rangos negativos y un rango de anchura cero. Admite ambas cabeceras válidas (`function Clamp(...)` y `function Clamp { param(...) }`), pero no llamadas, imports, asignaciones, comandos, acceso a archivos/red o código extra. El texto generado nunca se ejecutó arbitrariamente como script.
 
-## Primer intento real y reparación — 2026-10-08
+`proof.json`: PASS, 9 casos, modelo/digest, respuesta local, programa interpretado, métricas, cero llamadas externas de API. `installation.json`: PROOF_PASS, versión, configuración local, sin servicios o cambios globales. `final-check.json`: PASS, listener cerrado, modelo descargado de memoria, Unity/Blender ausentes antes/después. El código del juego no se modificó y M11/QA no se iniciaron.
 
-El propietario activó el [run 37794785669](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37794785669). Llegó a DESKTOP-R10PE55, pero falló antes de ejecutar el instalador: Git no está en PATH del runner; actions/checkout recurrió a un archivo completo y Expand-Archive falló al extraerlo. Ollama y el modelo NO se instalaron y no se ejecutó la prueba. No existe artifact de prueba de ese intento.
+VRAM libre antes y después: **11701 MiB**, igual a la base observada. La lectura GPU inmediatamente posterior muestra 32 % de utilización, una muestra puntual tras inferencia; no se presenta como medición de reposo sostenido. La descarga del modelo y el cierre del listener se verificaron por separado. No se certifica rendimiento simultáneo con Unity/Blender; la política actual evita esa concurrencia.
 
-Reparación: eliminado actions/checkout; se obtienen solamente los dos scripts desde raw.githubusercontent.com con el SHA inmutable del run y sus hashes SHA-256 esperados. El instalador standalone también utiliza extracción .NET en vez de Expand-Archive. No se cambia Git, PATH ni las herramientas existentes. YAML parseado y hashes comprobados localmente; ejecución Windows de la reparación aún pendiente.
+## Repetir la comprobación
 
-**Siguiente paso necesario:** Run workflow → main → Run workflow nuevamente sobre la definición corregida. No usar Re-run jobs del intento antiguo: reutilizaría la definición del commit fallido. El conector continúa sin operación workflow_dispatch. Recuperar el nuevo run, inspeccionar prueba real y artefactos; no declarar cierre hasta PASS verificable.
+El workflow [Eldoria local AI install and isolated proof](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/workflows/eldoria-local-ai-install-v1.yml) es manual y requiere un claim del workstream activo o bloqueado en el registry. La misión cerrada ya no mantiene ese claim: reabrir este mismo bloque y reclamar sus recursos antes de repetirlo; no dejar una autorización permanente de instalación activa.
 
-## Segundo intento real y eliminación de dependencia Python
+El workflow descarga únicamente los scripts del SHA del run y comprueba sus hashes. Consulta el registry vivo para evitar conflicto de recursos. Los binarios/modelo se reutilizan. El conector actual no ofrece workflow_dispatch, por lo que se activó manualmente con Run workflow → main. No se eludieron controles usando triggers automáticos.
 
-[Run 37797719180](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37797719180), job 113381437420: descarga de scripts y verificación de hashes funcionan, pero `python --version` falla porque el comando es un alias Microsoft Store. Se detuvo ANTES del instalador; no se descargó Ollama ni el modelo, sin prueba real ni artifact.
+## Propuesta para el Coordinador Central — NO ACTIVADA
 
-Se sustituye la prueba Python por `tools/local-ai-proof-v1.ps1`, intérprete cerrado de una función PowerShell generada, con los mismos nueve casos y preservación de respuesta/digest/métricas. No se instala Python ni se modifican aliases/PATH o Blender. El harness anterior Python se conserva como historia, no lo utiliza el workflow vigente. La gramática se comprobó contra un ejemplo puro y cuatro intentos de inyección; esto es validación estática, no ejecución nativa Windows ni prueba real del modelo.
+El motor local es una capacidad de inferencia. El Coordinador v1 sigue siendo lector y gate de evidencias; instalar Ollama no activa agentes ni departamentos.
 
-El nuevo workflow todavía debe activarse con **Run workflow → main → Run workflow**. No usar Re-run del run anterior. La ausencia de dispatch en el conector sigue siendo el bloqueo para ejecutar la definición nueva.
+1. Un adaptador local consume una orden canónica aprobada y acotada: ID, commit fuente, scope, criterios y límites. Cola idempotente y un solo worker para esta máquina.
+2. El worker usa únicamente el endpoint loopback y el modelo local exacto, sin fallback cloud. Presupuesto de API 0 EUR; máximo tres intentos, 120 s por generación, contexto 2048 y 512 tokens iniciales.
+3. Primer piloto sin credenciales de escritura: generar propuestas en workspace temporal, validar esquema, aplicar pruebas independientes y preservar reporte/evidencias. No ejecutar comandos del modelo directamente.
+4. El Coordinador consume el reporte del worker y comprueba evidencias; no acepta autoafirmaciones del modelo como PASS. Mantiene gates de M07/M11/QA y los claims actuales.
+5. PRs, escritura en repositorio, herramientas Unity/Blender o autonomía persistente requieren un bloque posterior con permisos mínimos, auditoría, recuperación y scope autorizado. El modelo 3B tiene capacidad limitada: elevar autonomía depende de resultados del piloto.
 
-## Tercer intento — instalación y respuesta local reales, defecto del verificador
+## Historial y cierre
 
-[Run 37798837659](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37798837659), artifact **11559797875**, ZIP SHA-256 `14629db8819ad8ac72dc7e5c1a28415892a05166ba029db77d57c2b6e7f5a689`. Artifact descargado, hash comprobado y contenido abierto directamente.
+- Preflight 37792004269: hardware y ausencia inicial de Ollama; Python detectado era solo un alias.
+- 37794785669: fallo de checkout por Git ausente en PATH y extracción del repositorio completo; no instaló.
+- 37797719180: descarga de scripts PASS, alias Python inválido; no instaló.
+- 37798837659: instaló Ollama/modelo e hizo inferencia real, pero el harness rechazó una cabecera válida; evidencia preservada y revalidación independiente 9/9.
+- **37802085508: SUCCESS**, prueba nativa corregida 9/9, configuración local, lanzador persistido y cierre limpio verificados. **Workstream eldoria-local-ai-install-v1 COMPLETED; recursos liberados.**
 
-**Verificado:** Ollama **0.40.1** instalado y sirviendo en 127.0.0.1:11434; log `Ollama cloud disabled: true`; NVIDIA RTX 3060, CUDA, 37/37 capas descargadas a GPU. Modelo qwen2.5-coder:3b descargado con comprobación SHA-256 por Ollama; blob GGUF `4a188102020e9c9530b687fd6400f775c45e90a0d7baafe65bd0a36963fbb7ba`. Respuesta local completa de 65 tokens, 515051000 ns de generación, 3132765100 ns total. Antes y después: 11701 MiB VRAM libre, 0 % GPU; el servidor de prueba se terminó mediante el bloque finally.
-
-El run figura **FAIL** porque el verificador admitía únicamente `function Clamp { param(...) ... }`, mientras que el modelo generó la variante válida `function Clamp(...) { ... }`. No es un fallo de instalación ni de inferencia. La fuente real se revalidó independientemente en un intérprete de gramática cerrada: **9/9 casos PASS**, cuatro intentos de inyección rechazados. Fuente/respuesta original y reporte quedan en `docs/evidence/local-ai-v1/attempt3-*`; esa revalidación es local a la sesión y no se presenta como ejecución nativa Windows posterior al arreglo.
-
-Corregido el verificador para admitir ambas cabeceras con los mismos parámetros y el mismo cuerpo restringido, sin permitir comandos nuevos. No se relajan permisos ni se ejecuta código generado. Hace falta una nueva activación **Run workflow → main** para ejecutar el harness corregido en Windows, persistir el lanzador local y comprobar `proof.json`, `installation.json` y `final-check.json`. Reutilizará binarios y modelo existentes. No se necesita repetir las descargas pesadas. Hasta entonces NO CERRADO.
+Los fallos previos permanecen como historia verificable; no se sustituyeron por supuestos éxitos.

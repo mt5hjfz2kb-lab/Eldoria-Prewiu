@@ -1,0 +1,16 @@
+{
+    "ollama_version":  "0.40.1",
+    "archive_sha256":  "b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab",
+    "services_installed":  0,
+    "bind":  "127.0.0.1:11434",
+    "installation_path":  "C:\\Users\\crist\\AppData\\Local\\EldoriaLocalAI\\ollama-v0.40.1",
+    "unity_blender_processes_before":  [
+
+                                       ],
+    "global_env_changes":  0,
+    "cloud_disabled":  true,
+    "run_id":  "37802085508",
+    "status":  "PROOF_PASS",
+    "paid_api_calls":  0,
+    "source_sha":  "db15e0e815b22a19857efc3f6bc7d9c37792298f"
+}

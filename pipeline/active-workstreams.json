@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:59:00Z",
+  "updated_at": "2026-10-08T15:40:10.008Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -48,7 +48,9 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-local-ai-install-v1",
       "title": "Official isolated Ollama Windows install and local coder proof",
@@ -64,21 +66,21 @@
       "resources": [],
       "claimed_at": "2026-10-08T14:35:02.943Z",
       "base_main_sha": "677be4a5e15399884f36220dafbf6b0dcc04a14a",
-      "status": "blocked",
+      "status": "completed",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Local developer inference infrastructure only; no player-visible assets/game changes.",
       "paid_credits": 0,
       "dependency": "Consume completed read-only preflight run 37792004269; do not mutate its owner's workflows or request. No Unity/Blender changes, M11, QA or external API.",
-      "phase": "OLLAMA INSTALLED / MODEL DOWNLOADED / LOCAL RESPONSE VERIFIED / HARNESS HEADER FIX / FINAL NATIVE RERUN REQUIRED",
-      "next": "Manually dispatch corrected workflow on main (not rerun old SHA). Reuses installed binaries/model; inspect final native proof and persisted launcher, final-check, artifact, then document closure.",
+      "phase": "OLLAMA INSTALLED / LOCAL MODEL NATIVE PROOF PASS / CLOSED",
+      "next": "Installation mission closed. Local coordinator adapter is proposed only; persistent agents and repository-write execution require separately authorized scoped pilot.",
       "runner_released": true,
-      "blocker": "Run 37798837659 installed Ollama and downloaded/responded using qwen2.5-coder:3b on CUDA with cloud disabled. Valid function-header variant was rejected by overstrict harness. Actual source independently passes 9/9 cases; corrected Windows harness still needs manual dispatch unavailable in connected tools.",
+      "blocker": null,
       "result": {
         "preparation_commit": "a3cfc5657e6a4b4326558fd33869048352dceaa7",
         "preflight_run_id": 37792004269,
         "installed_verified": true,
         "model_downloaded_verified": true,
-        "real_proof_verified": false,
+        "real_proof_verified": true,
         "local_harness_validation": "YAML parsed; pure grammar sample accepted, four injection samples rejected in independent grammar check; native execution pending",
         "doc": "docs/ELDORIA_LOCAL_AI_V1.md",
         "workflow": ".github/workflows/eldoria-local-ai-install-v1.yml",
@@ -98,12 +100,29 @@
         "local_only_log_verified": true,
         "gpu_backend": "CUDA; 37/37 layers offloaded; RTX 3060",
         "independent_generated_code_cases_passed": 9,
-        "final_native_proof_verified": false,
-        "gpu_free_before_after_mib": 11701
-      }
-    }
-  ],
-  "history": [
+        "final_native_proof_verified": true,
+        "gpu_free_before_after_mib": 11701,
+        "verdict": "INSTALLATION PASS / MODEL DOWNLOAD PASS / REAL LOCAL PROGRAMMING PROOF PASS / LOOPBACK AND CLOUD-DISABLED PASS / FINAL CLEANUP PASS",
+        "final_run_id": 37802085508,
+        "final_run_conclusion": "success",
+        "final_artifact_id": 11560822295,
+        "final_artifact_digest": "sha256:6218fdf5ea2273ded71241cbf33bae4a3c66bf889b32fea341a622d3a46a76a5",
+        "final_source_sha": "db15e0e815b22a19857efc3f6bc7d9c37792298f",
+        "test_cases_passed": 9,
+        "model_digest": "f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225",
+        "local_launcher_persisted": true,
+        "listener_closed": true,
+        "model_unloaded": true,
+        "no_unity_blender_processes_before_after": true,
+        "paid_api_calls": 0,
+        "external_api_calls": 0,
+        "autonomous_agents_enabled": false,
+        "coordinator_adapter_enabled": false,
+        "evidence": "docs/evidence/local-ai-v1/final/",
+        "installation_mode": "Official standalone, no service/global configuration, on-demand server."
+      },
+      "completed_at": "2026-10-08T15:40:10.007Z"
+    },
     {
       "id": "eldoria-coordinator-v1",
       "title": "Eldoria read-only central coordinator v1",
