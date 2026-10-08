@@ -40,3 +40,28 @@ export function transition(registry,id,to,{at,actor,proof,certificate}={}){
 }
 export function forM16(registry,ownership={active:[]}){return registry.incidents.map(i=>({incident_id:i.id,department:i.department,priority:i.priority,status:i.status,blocked:i.status==='BLOCKED',ready_for_assignment:['NEW','OPEN','REOPENED'].includes(i.status),owner_conflict:(ownership.active||[]).some(x=>x.id===i.owner_workstream)}));}
 export function executiveReport(registry){const a=registry.incidents;return {schema_version:1,total:a.length,new:a.filter(x=>x.status==='NEW').length,critical:a.filter(x=>['P0','P1'].includes(x.priority)&&x.status!=='RESOLVED').length,repeated:a.filter(x=>x.observations.length>1).length,blocked:a.filter(x=>x.status==='BLOCKED').length,verifying:a.filter(x=>x.status==='VERIFYING').length,resolved:a.filter(x=>x.status==='RESOLVED').length,by_department:Object.fromEntries([...new Set(a.map(x=>x.department))].map(d=>[d,a.filter(x=>x.department===d).length]))};}
+
+/**
+ * Read-only M04 bridge for a GitHub Actions failure intake.
+ * The caller MUST obtain the run/jobs from authenticated GitHub APIs.
+ * Neither this adapter nor M04 dispatches repair or asserts provenance.
+ */
+export function findingFromWorkflowFailure(run,job,{observed_at,artifact_id='not-reported'}={}){
+ if(!run||!job||run.conclusion!=='failure'||job.conclusion!=='failure'||!sha(run.head_sha)||!nonempty(String(run.id||''))||!nonempty(job.name)||!nonempty(run.html_url)||!nonempty(observed_at)||!Number.isFinite(Date.parse(observed_at)))throw Error('INVALID_WORKFLOW_FAILURE');
+ const jobId=String(job.id||job.name);
+ const f={schema_version:1,id:'github-run-'+run.id+'-job-'+jobId,subsystem:'github-actions',scenario:job.name,error_code:'WORKFLOW_JOB_FAILURE',failure_signature:job.name,kind:'INFRA',origin:'unknown',impact:'blocking',source_sha:run.head_sha,run_id:String(run.id),artifact_id:String(artifact_id),evidence_ref:run.html_url,observed_at};
+ validateFinding(f);
+ return f;
+}
+/**
+ * Deterministic retry advice; it NEVER initiates GitHub Actions.
+ * A deterministic source failure requires a repaired source SHA.
+ */
+export function retryDecision({attempts=0,max_attempts=2,transient=false,source_changed=false,authorized=false,owner_conflict=false}={}){
+ if(!Number.isInteger(attempts)||attempts<0||!Number.isInteger(max_attempts)||max_attempts<0||max_attempts>2)throw Error('INVALID_RETRY_BUDGET');
+ if(!authorized)return {allowed:false,reason:'NOT_AUTHORIZED'};
+ if(owner_conflict)return {allowed:false,reason:'OWNER_CONFLICT'};
+ if(attempts>=max_attempts)return {allowed:false,reason:'RETRY_EXHAUSTED'};
+ if(!transient&&!source_changed)return {allowed:false,reason:'SAME_SOURCE_DETERMINISTIC_FAILURE'};
+ return {allowed:true,reason:source_changed?'FIXED_SOURCE_CANDIDATE':'TRANSIENT_RETRY',attempt_number:attempts+1};
+}
