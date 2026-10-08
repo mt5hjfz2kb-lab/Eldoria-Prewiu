@@ -181,7 +181,7 @@ jobs:
             // touch before deciding whether it armed confirmation or already completed a
             // previously armed reset, then require explicit execution evidence.
             const start=logs.length;
-            await tapLoggedUi(page,logs,'reset',start);
+            await tapLoggedUi(page,logs,'reset');
             const canonical=s=>s.revision===0&&s.sawmill===0&&s.bastion===1&&s.objective==='b1.build-sawmill';
             const firstDeadline=Date.now()+2500;
             let armed=false;
@@ -197,7 +197,7 @@ jobs:
             }
             if(!armed)throw new Error('Reset first touch neither armed confirmation nor executed reset');
             const executeStart=logs.length;
-            await tapLoggedUi(page,logs,'reset',start);
+            await tapLoggedUi(page,logs,'reset');
             await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_RESET execute=True'),10000,'reset execution',executeStart);
             const state=await waitState(logs,canonical,30000,'canonical reset',executeStart);
             await sleep(1200);
