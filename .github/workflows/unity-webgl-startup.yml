@@ -229,6 +229,7 @@ jobs:
               const quiet=Date.now();
               while(Date.now()-quiet<90000){
                 const current=lastState(logs,flowStart),button=detailedUi(logs,'primary',before);
+                if(current&&current.objective==='b2.complete'&&current.scene!=='Frontier'&&current.march==='idle')break;
                 if(current&&button&&button.enabled&&current.march==='idle')break;
                 await sleep(250);
               }
@@ -409,13 +410,21 @@ jobs:
               report.checks.portraitVisual=portraitStats;
               if(portraitStats.stdev<24||portraitStats.whiteRatio>.32)throw new Error('Portrait lacks sufficient Valoria visual content');
 
-              certifyMacroloop(report);
+              try { certifyMacroloop(report); }
+              catch(error) {
+                // Gather downstream diagnostic evidence, while retaining unconditional failure.
+                if(!fatalRuntimeLogs(logs).length)throw error;
+                report.macroloopFailure=String(error);
+                report.diagnosticOnly=true;
+                report.coverage.executed=[];
+              }
               await fullPublishedFlow(page,logs,'landscape');
               await fullPublishedFlow(page,logs,'portrait');
               report.coverage.fullBastionIToIIPass=report.fullFlows.every(f=>f.pass&&f.persistencePass&&f.resetPass);
               report.coverage.executed.push('uninterrupted fresh-save I-II in both orientations','presented sawmill touch selection','recruitment and configured march','scout and Engendro combat/rewards','exact full final-state reload','deliberate reset and reset reload');
               report.coverage.notExecuted=['physical-device performance','human usability and enjoyment','live SHARP rendering in WebGL'];
               if(fatalRuntimeLogs(logs).length)throw new Error('Engine errors after full progression prevent certification');
+              if(report.macroloopFailure)throw new Error(report.macroloopFailure);
             }catch(e){
               report.failure=String(e);
               await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
