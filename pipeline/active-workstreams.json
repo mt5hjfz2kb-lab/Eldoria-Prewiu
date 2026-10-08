@@ -145,7 +145,8 @@
         "docs/evidence/eldoria-r2-b/**",
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs"
+        "Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       ],
       "resources": [],
       "status": "active",
@@ -155,7 +156,7 @@
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "D07/D06 executor must claim exclusive GameState/LocalGateway and tests scope, verify balance/source facts and implement persisted choice without touching M07; run independent QA on real Unity build.",
+      "next": "Integrate both choices in actual World forest panel, revalidate Unity/EditMode/PlayMode and published probe before closing. Zero paid and no M07 editor modification.",
       "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md"
     },
     {
