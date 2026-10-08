@@ -1,3 +1,18 @@
+## 2026-10-08 — Bastion I–II presentation parity correction DEFINITIVELY CLOSED / PUBLISHED PASS
+
+Workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is now **CLOSED / PASS** after the final bounded UI cleanup and a fresh production→publication→published-probe chain.
+
+Final presentation cleanup: `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f` plus objective-dock restoration `4d70b9bdc5532ffb3108867a7d5450a72ea460bc`.
+Certified gates: UI **37772733872** SUCCESS; Unity source/editor **37772733932** SUCCESS; production **37772733956** SUCCESS, artifact **11549887766**; publish **37776564090** SUCCESS; published full-flow probe **37779269570** SUCCESS, evidence artifact **11551901858**.
+
+The accepted published probe completes the real fresh-save Bastion I→II loop in landscape and portrait, including camera pan/recenter, World gather/return, visible Aserradero/Bastión/Cuartel touch selection, construction, resources, ascent, recruitment, configured march, Engendro combat/reward, exact reload persistence and deliberate reset surviving reload. Final probe report: `failure=null`, `runtimeErrors=[]`, both orientation flows PASS.
+
+Direct final screenshot inspection confirms the contextual building panel is mobile-visible, the reviewed quest/context overlap is removed, duplicate primary/context CTA clutter is removed while the contextual action is open, the objective dock returns after the action, and bottom navigation/reset/recenter remain reachable.
+
+Scope boundary: this is a presentation-parity / interaction / progression / persistence / reset closure, **not** a declaration of final commercial artistic quality or independent physical-human playability. Bastion III remains closed. Broader life/animation/art uplift is separate. Paid credits: 0. Owner URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ .
+
+Detailed evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
+
 ## 2026-10-08 — Presentation parity repair REOPENED / NOT YET CERTIFIED
 
 The previous CLOSED/PASS declarations below are historical and are revoked as current publication acceptance. Published probe **37741999794** found fatal Unity scene errors (`level0`, position out of bounds) despite the older macroloop passing. The active canonical workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is owned by `chat-work-parity-repair-20261008` following the owner's explicit takeover authorization. Do not report current published PASS until the repaired build passes fatal-error acceptance and full fresh-save Bastion I–II interaction/persistence checks in landscape and portrait.
