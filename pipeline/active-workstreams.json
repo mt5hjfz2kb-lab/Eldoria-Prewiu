@@ -48,6 +48,27 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
+    },
+    {
+      "id": "eldoria-local-ai-install-v1",
+      "title": "Official isolated Ollama Windows install and local coder proof",
+      "owner": "chat-local-ai-install-20261008",
+      "scope": [
+        ".github/workflows/eldoria-local-ai-install-v1.yml",
+        "tools/local-ai-install-v1.ps1",
+        "tools/local-ai-proof-v1.py",
+        "docs/ELDORIA_LOCAL_AI_V1.md"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T14:35:02.943Z",
+      "base_main_sha": "677be4a5e15399884f36220dafbf6b0dcc04a14a",
+      "status": "active",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Local developer inference infrastructure only; no player-visible assets/game changes.",
+      "paid_credits": 0,
+      "dependency": "Consume completed read-only preflight run 37792004269; do not mutate its owner's workflows or request. No Unity/Blender changes, M11, QA or external API.",
+      "phase": "PREPARE MANUAL SAFE INSTALLATION / DISPATCH CAPABILITY MISSING",
+      "next": "Create official checksum-pinned standalone install and isolated proof workflow; dispatch manually, inspect evidence."
     }
   ],
   "history": [
