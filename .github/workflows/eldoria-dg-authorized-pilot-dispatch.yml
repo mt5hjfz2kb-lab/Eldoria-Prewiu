@@ -28,5 +28,5 @@ jobs:
         run: |
           set -euo pipefail
           test "$ACTOR" = "mt5hjfz2kb-lab"
-          gh workflow run 'm16-pilot-two-jobs.yml' --repo "$GH_REPO" --ref main
+          # One acceptance authorization means one dispatch, even if the comment is repeated.\n          first=$(gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[] | select(.body=="ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_20261008") | .id' | head -n 1)\n          test "$first" = "${{ github.event.comment.id }}" || { echo 'DUPLICATE_AUTHORIZATION_SUPPRESSED'; exit 0; }\n          gh workflow run 'm16-pilot-two-jobs.yml' --repo "$GH_REPO" --ref main
           echo 'ALLOWED_M16_DISPATCH_SUBMITTED'
