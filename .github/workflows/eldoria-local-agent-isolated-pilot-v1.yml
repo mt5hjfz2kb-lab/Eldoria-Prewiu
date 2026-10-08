@@ -165,8 +165,9 @@ jobs:
             if(!$ready){throw 'Local model server not ready'}
             $listeners=@(Get-NetTCPConnection -State Listen -LocalPort 11434)
             if(!$listeners.Count -or @($listeners|Where-Object{$_.LocalAddress -ne '127.0.0.1' -or $_.OwningProcess -ne $server.Id}).Count){throw 'Untrusted Ollama listener'}
-            $prompt='Respond ONLY with a JSON object with key cases: exactly six records, each {"input":string,"valid":boolean}. These are regression cases for a JSON OBJECT reader that strips ONE leading U+FEFF BOM. Include exactly valid {} without BOM, a valid {"a":1} with BOM as first character, at least two other valid JSON object strings and at least two malformed JSON strings. Use JSON escaped \uFEFF for the BOM in input. Do not include markdown, code, commands, explanations or fields beyond input and valid.'
-            $body=@{model='qwen2.5-coder:3b';stream=$false;keep_alive='10s';format='json';options=@{temperature=0;num_predict=650;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 7
+            $prompt='Create six short, distinct JSON object parsing regression examples in a JSON object with one key cases. The six cases must be: (1) plain {} valid true; (2) leading BOM before {"a":1} valid true; (3) valid {"x":2} true; (4) valid {"b":false} true; (5) malformed { false; (6) malformed {"broken":} false. Represent the BOM as escaped \\uFEFF in the JSON output string. Stop after exactly six. No markdown or source code.'
+            $schema=@{type='object';additionalProperties=$false;required=@('cases');properties=@{cases=@{type='array';minItems=6;maxItems=6;items=@{type='object';additionalProperties=$false;required=@('input','valid');properties=@{input=@{type='string'};valid=@{type='boolean'}}}}}}
+            $body=@{model='qwen2.5-coder:3b';stream=$false;keep_alive='10s';format=$schema;options=@{temperature=0;num_predict=350;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 12
             $res=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
             if(!$res.done -or $res.model -ne 'qwen2.5-coder:3b'){throw 'Wrong model or incomplete output'}
             $data=$res.response|ConvertFrom-Json
