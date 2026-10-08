@@ -146,17 +146,18 @@
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "pipeline/r2b-candidate-build.json"
       ],
       "resources": [],
       "status": "active",
-      "phase": "UNITY_TECH_AND_M03_PASS / VISUAL_AND_ISOLATED_WEBGL_PENDING",
+      "phase": "UNITY TECH PASS / R2B ISOLATED WEBGL CANDIDATE REQUEST AUTHORISED / EXTERNAL BUILD PENDING",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Candidate independent WebGL build and real touch check both R2-B forest options with state/reload, then visual QA; stable Pages unity-owner may not be replaced. Existing pages.yml publishes to stable path, separate candidate channel not verified. Keep owner and claim until valid release.",
+      "next": "Use original pages.yml candidate-only Unity job to build source 6e0e1239 using certified 11576784810 and 11576579158, no stable deploy; verify exact candidate artifact and independent WebGL experience on an isolated URL, without opening M07 claimed request.",
       "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md",
       "result": {
         "unity_production_run": 37838898425,
