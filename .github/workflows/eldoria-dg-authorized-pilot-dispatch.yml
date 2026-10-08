@@ -36,7 +36,7 @@ jobs:
         if: needs.proof.result == 'success'
         with:
           name: m16-pilot-handoff
-          path: evidence
+          path: pilot-handoff
       - name: Emit verified result to canonical Issue 23
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,8 +51,8 @@ jobs:
           if gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then echo 'ALREADY_RECORDED'; exit 0; fi
           verdict=BLOCKED
           details='Reusable A/B pipeline failed; no independent acceptance.'
-          if [[ "$PROOF_RESULT" == success ]] && [[ -f evidence/source-sha.txt && -f evidence/run-id.txt && -f evidence/source-sha.sha256 ]]; then
-            if (cd evidence && sha256sum -c source-sha.sha256) && [[ "$(cat evidence/source-sha.txt)" == "$SOURCE_SHA" ]] && [[ "$(cat evidence/run-id.txt)" == "$RUN_ID" ]]; then
+          if [[ "$PROOF_RESULT" == success ]] && [[ -f pilot-handoff/source-sha.txt && -f pilot-handoff/run-id.txt && -f pilot-handoff/source-sha.sha256 ]]; then
+            if sha256sum -c pilot-handoff/source-sha.sha256 && [[ "$(cat pilot-handoff/source-sha.txt)" == "$SOURCE_SHA" ]] && [[ "$(cat pilot-handoff/run-id.txt)" == "$RUN_ID" ]]; then
               verdict=E2E_COORDINATOR_CHAIN_PASS
               details='Owner authorized through Issue #23; M16-A tests and handoff, downstream independent M03 QA, run/SHA/hash verified in the SAME reusable workflow chain. Zero paid API, no human intermediate click.'
             fi
