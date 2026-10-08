@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T21:30:00Z",
+  "updated_at": "2026-10-08T06:10:00Z",
   "active": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
@@ -34,10 +34,10 @@
       "base_main_sha": "74990f0558b5f08d49528c5d6b7db962bb815783",
       "status": "active",
       "phase": "OWNER DEVICE FAIL / CORRECTION REOPENED",
-      "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions are in-scope: explicit owner-build reset to canonical initial Bastion I for repeatable testing, and small art-integrated real building-level indicators beside relevant buildings.",
+      "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions remain in scope: canonical fresh-start reset and art-integrated real building-level indicators. Owner/manual review is NOT a closure dependency; close autonomously when current-head production, published WebGL, device-equivalent visual/interaction evidence, persistence and required parity gates pass. Later concrete owner feedback may revoke/reopen the PASS.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Correct owner-reported reset, true web-prototype UI parity and HOME framing; validate published device-equivalent screenshots before closure.",
+      "next": "Continue without intermediate handoff from current main HEAD through production, capture/evidence inspection, any required correction/retry, WebGL publication, published device-equivalent probe and autonomous closeout. Do not wait for owner inspection or a 'continúa' message.",
       "completed_at": null,
       "runner_released": false,
       "blocker": null,
