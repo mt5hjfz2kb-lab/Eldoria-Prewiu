@@ -264,7 +264,7 @@ jobs:
               core.info('This is not an R2-B candidate production run: '+e.message);
               core.setOutput('authorized','false');return;
             }
-            const valid=request.enabled===true&&request.mode==='r2b-isolated-candidate'&&
+            const valid=(run.display_title||'').startsWith('ops(r2-b):')&&request.enabled===true&&request.mode==='r2b-isolated-candidate'&&
               request.source_sha==='6e0e12396a98b04333b595fff704afa3e849c30a'&&
               request.stable_publish===false&&request.paid_credits===0&&
               request.production_artifact_id===11576784810&&request.parcel_source_artifact_id===11576579158;
@@ -355,12 +355,20 @@ jobs:
               '**No final closure:** physical mobile/visual experience EXP-CAM-01 and EXP-BLD-02 remain unresolved; hosting candidate independently requires safe publication verification.'];
             if(!pass){
               const m04=await import(process.env.GITHUB_WORKSPACE+'/tools/m04/incidents.mjs');
-              const failures=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:context.runId,per_page:100});
-              const problem=failures.find(x=>x.name==='r2b-candidate-functional-qa')||{id:context.runId,name:'candidate-build',conclusion:'failure'};
+              const finding={schema_version:1,
+                id:'r2b-candidate-'+run.id+'-qa-'+context.runId,
+                subsystem:'github-actions-r2b-webgl',
+                scenario:'R2B_CANDIDATE_WEBGL_QA',
+                error_code:run.conclusion==='failure'?'BUILD_FAILURE':'PROBE_OR_GAMEPLAY_VERIFICATION_FAILURE',
+                failure_signature:'run '+run.id+' pages='+run.conclusion+' candidate_qa='+status,
+                kind:run.conclusion==='failure'?'INFRA':'PROBE',
+                origin:run.conclusion==='failure'?'unknown':'probe',
+                impact:'blocking',source_sha:run.head_sha,run_id:String(run.id),
+                artifact_id:String(build?.id||'not-reported'),evidence_ref:run.html_url,
+                observed_at:new Date().toISOString()};
               let incident={schema_version:1,incidents:[]};
-              const finding=m04.findingFromWorkflowFailure(run,problem,{observed_at:new Date().toISOString()});
               incident=m04.ingest(incident,finding);
               const report=m04.executiveReport(incident);
-              lines.push('**M04:** '+report.total+' classified incident(s), owner unchanged, no automatic replay of failed SHA.');
+              lines.push('**M04:** '+report.total+' classified incident(s), owner unchanged, failure source '+run.html_url+', no deterministic replay without repaired SHA.');
             }
             await github.rest.issues.createComment({owner,repo,issue_number:23,body:lines.join('\n')});
