@@ -6,7 +6,7 @@
   "asset_or_sector": "Valoria Bastion I-II published Unity presentation parity against canonical v0220 web vertical slice",
   "profile": "environment_composition",
   "visual_gate_state": "correction",
-  "diagnosis": "Technical migration passed, but direct owner review found presentation parity gaps: detached CTA, weak construction timing feedback, HOME too distant, and static-photo feel. Canonical web also demonstrates contextual building emphasis, particle/atmosphere motion and stronger feedback hierarchy.",
+  "diagnosis": "Published probe 37741999794 exposes repeated level0 serialized-scene errors on Valoria entry/reentry/reload. WebGL frame crop and camera projection differ; screen raycasts and labels do not use the presented frame transform. HUD uses 7-10 px text and a 166 px building panel with approximately 196 px requested contents. Owner authorized this Work session takeover.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -20,7 +20,7 @@
   },
   "validation": {
     "source_gate": "Confront v0220/index.html presentation behavior and current published Unity. Preserve PlayerState/LocalGateway, persistence, economy, SHARP, World Region 1 and Bastion I-II gameplay.",
-    "final_gate": "Published Unity must show building-associated contextual CTA, visible live construction countdown, tighter ~80%-feeling HOME with bounded pan, safe ambient motion, Bastion I/II readability, intact gameplay/save-reload, no Bastion III.",
+    "final_gate": "No engine errors; presented-frame building selection, labels and context panel share one transform; legible mobile HUD; full uninterrupted fresh-save sawmill/world/scout/Bastion II/barracks/recruit/march/Engendro/reload/reset loop on published WebGL with both orientation evidence. Physical/human/SHARP live-render quality remains a distinct claim.",
     "presentation_playmode_gate": "ReferenceUiArtPassTests required"
   },
   "escalation": {
@@ -28,9 +28,9 @@
   },
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
-  "phase": "OWNER DEVICE FAIL / CORRECTION",
-  "retry": 9,
-  "retry_reason": "Owner physical-device rejection supersedes automated PASS. Correct actual WebGL reset scene, HUD scale/composition and postcard letterbox/HOME framing; require published screenshot review.",
+  "phase": "ENGINE AND PRESENTED-COORDINATE CORRECTION",
+  "retry": 10,
+  "retry_reason": "Repair verified runtime load failure and frame/input alignment, preserve canonical game state/native SHARP/World. Validate full published fresh-save I-II, orientation interactions and deliberate reset.",
   "completed_at": null,
   "owner_rejection": {
     "at": "2026-10-07T21:29:00Z",

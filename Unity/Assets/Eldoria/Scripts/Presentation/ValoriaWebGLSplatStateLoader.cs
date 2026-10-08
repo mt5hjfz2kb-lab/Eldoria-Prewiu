@@ -34,6 +34,52 @@ namespace Eldoria.Presentation
         const float CertifiedHalfPanPixels = 22.8f;
         const float CertifiedWebOverscan = 1.025f;
 
+
+        // Both directions use the camera that produced the currently displayed texture.
+        // EnvelopeParent cropping and the residual image transform participate in selection.
+        public bool TryProjectPresentedPoint(Vector3 world,out Vector3 screen)
+        {
+            screen=Vector3.zero;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(webBackgroundRect==null||webBackgroundTexture==null||Presentation==null)return false;
+            var view=PresentedViewMatrix();
+            var local=view.MultiplyPoint(world);
+            if(local.z>=0)return false;
+            var camera=Presentation.ProductionCamera;
+            var projection=Matrix4x4.Perspective(Presentation.HomeFov*LoadedZoom(),CertifiedAspect,camera.nearClipPlane,camera.farClipPlane);
+            var clip=projection*new Vector4(local.x,local.y,local.z,1);
+            var uv=new Vector2(clip.x/clip.w*.5f+.5f,clip.y/clip.w*.5f+.5f);
+            var rect=webBackgroundRect.rect;
+            var pixel=RectTransformUtility.WorldToScreenPoint(null,webBackgroundRect.TransformPoint(new Vector3(rect.xMin+uv.x*rect.width,rect.yMin+uv.y*rect.height,0)));
+            screen=new Vector3(pixel.x,pixel.y,-local.z);
+            return true;
+#else
+            return false;
+#endif
+        }
+        public bool TryPresentedRay(Vector2 screen,out Ray ray)
+        {
+            ray=default;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(webBackgroundRect==null||webBackgroundTexture==null||Presentation==null)return false;
+            if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(webBackgroundRect,screen,null,out var local))return false;
+            var rect=webBackgroundRect.rect;
+            var uv=new Vector2((local.x-rect.xMin)/rect.width,(local.y-rect.yMin)/rect.height);
+            if(uv.x<0||uv.x>1||uv.y<0||uv.y>1)return false;
+            float tangent=Mathf.Tan(Presentation.HomeFov*LoadedZoom()*.5f*Mathf.Deg2Rad);
+            var direction=new Vector3((uv.x*2-1)*tangent*CertifiedAspect,(uv.y*2-1)*tangent,1).normalized;
+            ray=new Ray(new Vector3(LoadedPan(),0,0),direction);
+            return true;
+#else
+            return false;
+#endif
+        }
+#if UNITY_WEBGL && !UNITY_EDITOR
+        float LoadedPan()=>loadedVisualKey.Contains("pan-0.5")?-.5f:(loadedVisualKey.Contains("pan0.5")?.5f:0f);
+        float LoadedZoom()=>loadedVisualKey.Contains("zoom0.9")?.9f:(loadedVisualKey.Contains("zoom1.1")?1.1f:1f);
+        Matrix4x4 PresentedViewMatrix()=>Matrix4x4.Scale(new Vector3(1,1,-1))*Matrix4x4.TRS(new Vector3(LoadedPan(),0,0),Quaternion.identity,Vector3.one).inverse;
+#endif
+
         void Start()
         {
             if (Presentation == null) Presentation = GetComponent<ValoriaParcelPresentation>();
@@ -164,18 +210,19 @@ namespace Eldoria.Presentation
             var camera = Presentation.ProductionCamera;
             RequestWebVisualForCurrentCamera();
 
-            float panX = Mathf.Clamp(camera.transform.position.x, -CertifiedHalfPanWorld, CertifiedHalfPanWorld);
+            float panLimit=Screen.width<Screen.height?ValoriaParcelPresentation.HorizontalPanHalfExtent:CertifiedHalfPanWorld;
+            float panX = Mathf.Clamp(camera.transform.position.x,-panLimit,panLimit);
             float panY = Mathf.Clamp(camera.transform.position.y,
                 -ValoriaParcelPresentation.VerticalPanHalfExtent,
                 ValoriaParcelPresentation.VerticalPanHalfExtent);
-            float panAnchor = VisualPanAnchor(panX, loadedVariant);
+            float panAnchor = LoadedPan();
             float residualPan = panX - panAnchor;
             float renderedWidth = Mathf.Max(1f, webBackgroundRect.rect.width);
             float renderedHeight = Mathf.Max(1f, webBackgroundRect.rect.height);
             float shift = -(residualPan / CertifiedHalfPanWorld) * renderedWidth * (CertifiedHalfPanPixels / 1230f);
 
             float zoomRatio = Mathf.Clamp(camera.fieldOfView / Mathf.Max(.01f, Presentation.HomeFov), .9f, 1.1f);
-            float zoomAnchor = VisualZoomAnchor(zoomRatio, loadedVariant);
+            float zoomAnchor = LoadedZoom();
             float residualScale = Mathf.Clamp(zoomAnchor / zoomRatio, .97f, 1.03f);
             float visualScale = residualScale * CertifiedWebOverscan;
             // The small overscan is only a safety margin for the deliberately smaller Y pan.
@@ -289,3 +336,4 @@ namespace Eldoria.Presentation
         }
     }
 }
+

@@ -212,7 +212,7 @@ jobs:
           Move-Item $resources $stash -Force
           New-Item -ItemType Directory -Path $resources -Force | Out-Null
 
-          $keepDirs = @("WorldPlayerCity","WorldInventory")
+          $keepDirs = @("WorldPlayerCity","WorldInventory","UI")
           foreach ($name in $keepDirs) {
             $src = Join-Path $stash $name
             $dst = Join-Path $resources $name
@@ -392,3 +392,4 @@ jobs:
         run: |
           UNITY_URL='${{ steps.deployment.outputs.page_url }}unity-owner/?cb=${{ github.run_id }}'
           curl -fsSL -H "Cache-Control: no-cache" "$UNITY_URL" | grep -qi "<canvas\\|unity"
+

@@ -88,7 +88,22 @@ namespace Eldoria.EditorTools
 
             var externalLibrary = Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
             var externalBackup = PruneExternalLibraryForWebGL(externalLibrary);
-            var webglRendererFeature = EnsureGsplatUrpFeatureForWebGL(out var webglRendererFeatureAdded);
+            // This browser path presents certified frames, not live compute splats.
+            // Do not serialize an unused package renderer into level0 or activate its GPU feature.
+            var removedRenderers=0;
+            foreach(var splat in UnityEngine.Object.FindObjectsByType<GsplatRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None))
+            { UnityEngine.Object.DestroyImmediate(splat); removedRenderers++; }
+            visual.SceneSplats=null;
+            loader.Renderer=null;
+            EditorSceneManager.SaveScene(scene,TempScene,true);
+            AssetDatabase.SaveAssets();
+            var disabledFeatures=new Dictionary<ScriptableRendererFeature,bool>();
+            var forward=AssetDatabase.LoadAssetAtPath<UniversalRendererData>(RendererDataPath);
+            if(forward!=null)foreach(var feature in forward.rendererFeatures)
+                if(feature!=null&&feature.GetType().FullName=="Gsplat.GsplatURPFeature")
+                { disabledFeatures[feature]=feature.isActive;feature.SetActive(false);EditorUtility.SetDirty(feature); }
+            AssetDatabase.SaveAssets();
+            Debug.Log("VALORIA_WEBGL_FRAME_SCENE_PASS stripped_renderers="+removedRenderers);
 
             try
             {
@@ -97,7 +112,7 @@ namespace Eldoria.EditorTools
                     scenes = new[] { TempScene, FrontierScene },
                     locationPathName = Output,
                     target = BuildTarget.WebGL,
-                    options = BuildOptions.None
+                    options = BuildOptions.CleanBuildCache | BuildOptions.StrictMode
                 });
 
                 if (report.summary.result != BuildResult.Succeeded)
@@ -110,7 +125,9 @@ namespace Eldoria.EditorTools
             }
             finally
             {
-                RestoreGsplatUrpFeatureAfterWebGL(webglRendererFeature, webglRendererFeatureAdded);
+                foreach(var pair in disabledFeatures)
+                { pair.Key.SetActive(pair.Value);EditorUtility.SetDirty(pair.Key); }
+                AssetDatabase.SaveAssets();
                 RestoreExternalLibraryAfterWebGL(externalLibrary, externalBackup);
                 AssetDatabase.DeleteAsset(TempFolder);
                 AssetDatabase.Refresh();
@@ -332,3 +349,4 @@ namespace Eldoria.EditorTools
         }
     }
 }
+

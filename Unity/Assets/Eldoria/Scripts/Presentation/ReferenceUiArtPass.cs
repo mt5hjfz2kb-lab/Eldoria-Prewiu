@@ -227,7 +227,7 @@ namespace Eldoria.Presentation
                 var frame=top.Find("ReferenceArtFrame");if(frame!=null)frame.gameObject.SetActive(true);
                 var crest=top.Find("Realm crest chip");if(crest!=null)crest.gameObject.SetActive(true);
                 var heading=top.Find("Heading");if(heading!=null)heading.gameObject.SetActive(true);
-                SetFont(top,"Power chip",10);SetFont(top,"Wood resource chip",10);SetFont(top,"Stone resource chip",10);
+                SetFont(top,"Power chip",12);SetFont(top,"Wood resource chip",12);SetFont(top,"Stone resource chip",12);
             }
 
             var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
@@ -240,9 +240,9 @@ namespace Eldoria.Presentation
                 var layout=quest.GetComponent<VerticalLayoutGroup>();
                 if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(10,10,7,7);layout.spacing=2;}
                 var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
-                if(kicker!=null){kicker.text="OBJETIVO ACTUAL";kicker.fontSize=8;}
+                if(kicker!=null){kicker.text="OBJETIVO ACTUAL";kicker.fontSize=10;}
                 var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
-                if(obj!=null){obj.fontSize=10;obj.alignment=TextAnchor.UpperLeft;}
+                if(obj!=null){obj.fontSize=12;obj.alignment=TextAnchor.UpperLeft;}
             }
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
@@ -257,14 +257,14 @@ namespace Eldoria.Presentation
                 var image=dock.GetComponent<Image>();if(image!=null)image.color=new Color(.025f,.035f,.045f,.90f);
                 var story=dock.Find("Story and world");if(story!=null)story.gameObject.SetActive(false);
                 var feedback=dock.Find("Feedback")?.GetComponent<Text>();
-                if(feedback!=null){feedback.gameObject.SetActive(true);feedback.fontSize=7;}
+                if(feedback!=null){feedback.gameObject.SetActive(true);feedback.fontSize=10;}
                 var row=dock.Find("Primary objective action") as RectTransform;
                 if(row!=null){row.gameObject.SetActive(true);row.GetComponent<LayoutElement>().preferredHeight=42;}
                 var primary=GameObject.Find("CONTINUAR");
                 if(primary!=null)
                 {
                     primary.SetActive(true);
-                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=9;}
+                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=12;}
                     var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
                 }
             }
@@ -275,7 +275,7 @@ namespace Eldoria.Presentation
             if(building!=null)
             {
                 building.anchorMin=building.anchorMax=new Vector2(.5f,.5f);building.pivot=new Vector2(.5f,.5f);
-                building.sizeDelta=new Vector2(Mathf.Min(276f,w-20f),166f);
+                building.sizeDelta=new Vector2(Mathf.Min(276f,w-20f),180f);
                 // SlicePresenter owns the contextual position under the selected building.
             }
 
@@ -303,7 +303,7 @@ namespace Eldoria.Presentation
                 if(crest!=null){crest.gameObject.SetActive(true);crest.GetComponent<LayoutElement>().preferredWidth=36;}
                 var heading=top.Find("Heading") as RectTransform;
                 if(heading!=null){heading.gameObject.SetActive(true);heading.GetComponent<LayoutElement>().preferredWidth=64;}
-                SetFont(top,"Power chip",8);SetFont(top,"Wood resource chip",8);SetFont(top,"Stone resource chip",8);
+                SetFont(top,"Power chip",11);SetFont(top,"Wood resource chip",11);SetFont(top,"Stone resource chip",11);
             }
 
             var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
@@ -315,9 +315,9 @@ namespace Eldoria.Presentation
                 var layout=quest.GetComponent<VerticalLayoutGroup>();
                 if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(10,10,7,7);layout.spacing=2;}
                 var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
-                if(kicker!=null){kicker.text="OBJETIVO ACTUAL";kicker.fontSize=8;}
+                if(kicker!=null){kicker.text="OBJETIVO ACTUAL";kicker.fontSize=10;}
                 var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
-                if(obj!=null){obj.fontSize=10;obj.alignment=TextAnchor.UpperLeft;}
+                if(obj!=null){obj.fontSize=12;obj.alignment=TextAnchor.UpperLeft;}
             }
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
@@ -331,13 +331,13 @@ namespace Eldoria.Presentation
                 if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(8,8,6,6);layout.spacing=2;}
                 var story=dock.Find("Story and world");if(story!=null)story.gameObject.SetActive(false);
                 var feedback=dock.Find("Feedback")?.GetComponent<Text>();
-                if(feedback!=null){feedback.gameObject.SetActive(true);feedback.fontSize=7;}
+                if(feedback!=null){feedback.gameObject.SetActive(true);feedback.fontSize=10;}
                 var row=dock.Find("Primary objective action") as RectTransform;
                 if(row!=null){row.gameObject.SetActive(true);row.GetComponent<LayoutElement>().preferredHeight=44;}
                 var primary=GameObject.Find("CONTINUAR");
                 if(primary!=null)
                 {
-                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=9;}
+                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=12;}
                     var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
                 }
             }
@@ -348,7 +348,7 @@ namespace Eldoria.Presentation
             if(building!=null)
             {
                 building.anchorMin=building.anchorMax=new Vector2(.5f,.5f);building.pivot=new Vector2(.5f,.5f);
-                building.sizeDelta=new Vector2(Mathf.Min(276f,w-16f),166f);
+                building.sizeDelta=new Vector2(Mathf.Min(276f,w-16f),180f);
                 // SlicePresenter owns the contextual position under the selected building.
             }
 
@@ -374,6 +374,8 @@ namespace Eldoria.Presentation
             }
             var image=nav.GetComponent<Image>();if(image!=null)image.color=new Color(.02f,.03f,.04f,.94f);
             SetNavVisible(nav,"CIUDAD",true);
+            foreach(var button in nav.GetComponentsInChildren<Button>(true))
+                {var copy=button.GetComponentInChildren<Text>();if(copy!=null)copy.fontSize=14;}
             SetNavVisible(nav,"MUNDO",true);
             SetNavVisible(nav,"HÉROES",false);
             SetNavVisible(nav,"ARCÓN",false);
@@ -678,7 +680,7 @@ namespace Eldoria.Presentation
         {
             if(text==null||text.transform.parent==null)return;
             bool primary=text.transform.parent.name=="CONTINUAR"||text.transform.parent.name=="Building action";
-            if(primary){text.color=Ink;text.fontStyle=FontStyle.Bold;}
+            if(primary){text.color=Ink;text.fontStyle=FontStyle.Bold;text.fontSize=13;}
             else if(text.name=="Quest kicker"||text.name=="Building title"){text.color=GoldSoft;text.fontStyle=FontStyle.Bold;}
         }
 
@@ -702,3 +704,4 @@ namespace Eldoria.Presentation
         }
     }
 }
+

@@ -104,7 +104,13 @@ namespace Eldoria.Presentation
                 }
                 else RefreshClock();
             }
-            if(lastWidth!=Screen.width||lastHeight!=Screen.height) UpdateSafeArea();
+            if(lastWidth!=Screen.width||lastHeight!=Screen.height)
+            {
+                UpdateSafeArea();
+#if UNITY_WEBGL && !UNITY_EDITOR
+                StartCoroutine(LogPlayableUiGeometryNextFrame());
+#endif
+            }
             HandlePointerInput();
             AnimateCityAmbientation();
             UpdateBuildingLevelBadgePositions();
@@ -361,6 +367,13 @@ namespace Eldoria.Presentation
             var camera=OfficialCamera;
             if(camera==null)return null;
             var ray=camera.ScreenPointToRay(point);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(city&&productionParcels!=null)
+            {
+                var frameLoader=productionParcels.GetComponent<ValoriaWebGLSplatStateLoader>();
+                if(frameLoader!=null&&!frameLoader.TryPresentedRay(point,out ray))return null;
+            }
+#endif
             var hits=Physics.RaycastAll(ray,100f);
             System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
 
@@ -537,6 +550,17 @@ namespace Eldoria.Presentation
 #endif
         }
 
+        Vector3 PresentedScreenPoint(Camera camera,Vector3 world)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(city&&productionParcels!=null)
+            {
+                var frameLoader=productionParcels.GetComponent<ValoriaWebGLSplatStateLoader>();
+                if(frameLoader!=null)return frameLoader.TryProjectPresentedPoint(world,out var point)?point:Vector3.zero;
+            }
+#endif
+            return camera.WorldToScreenPoint(world);
+        }
         void PositionBuildingPanel(string id)
         {
             if(!city||buildingPanel==null||safe==null||string.IsNullOrEmpty(id))return;
@@ -546,14 +570,17 @@ namespace Eldoria.Presentation
             if(target==null||camera==null)return;
             var collider=target.GetComponent<Collider>();
             var world=collider!=null?collider.bounds.center:target.transform.position;
-            var screen=camera.WorldToScreenPoint(world);
+            var screen=PresentedScreenPoint(camera,world);
             if(screen.z<=0)return;
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe,screen,null,out var local))return;
             var rt=buildingPanel.GetComponent<RectTransform>();
             float halfW=Mathf.Max(1f,safe.rect.width*.5f), halfH=Mathf.Max(1f,safe.rect.height*.5f);
             local.x=Mathf.Clamp(local.x,-halfW+rt.rect.width*.5f+8f,halfW-rt.rect.width*.5f-8f);
             // Place the CTA below the selected building while keeping it above the nav/dock.
-            local.y=Mathf.Clamp(local.y-118f,-halfH+250f,halfH-rt.rect.height*.5f-90f);
+            float bottomReserve=Screen.width>Screen.height?136f:160f;
+            float minY=-halfH+bottomReserve+rt.rect.height*.5f;
+            float maxY=halfH-64f-rt.rect.height*.5f;
+            local.y=Mathf.Clamp(local.y-80f,Mathf.Min(minY,maxY),Mathf.Max(minY,maxY));
             rt.anchoredPosition=local;
         }
 
@@ -625,7 +652,13 @@ namespace Eldoria.Presentation
                 " gatheredStone="+(state.ChapterProgress?.GatheredStone??0)+
                 " march="+state.March.Phase+
                 " sawmill="+state.SawmillLevel+
-                " bastion="+state.BastionLevel);
+                " bastion="+state.BastionLevel+
+                " barracks="+state.BarracksLevel+
+                " archers="+(state.Available?.ArcherT1??0)+
+                " configured="+state.MarchConfigured+
+                " scout="+state.ScoutDefeated+
+                " engendro="+state.EngendroDefeated+
+                " objective="+SliceRules.CurrentObjectiveKey(state));
 #endif
         }
         void Refresh()
@@ -651,6 +684,9 @@ namespace Eldoria.Presentation
             var cp=s.ChapterProgress??new ChapterProgressState();
             objective.text=ObjectiveText(s,cp);
             ConfigurePrimaryAction(s);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(LogPlayableButtonCenterNextFrame("primary",primaryAction));
+#endif
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
                 "Aldric + "+s.March.Troops.Total+" arqueros · "+s.March.Phase;
             var expedition=SliceRules.Expedition(s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric");
@@ -851,6 +887,8 @@ namespace Eldoria.Presentation
             LogPlayableButtonCenter("cityNav",cityNavButton);
             LogPlayableButtonCenter("worldNav",worldNavButton);
             LogPlayableButtonCenter("primary",primaryAction);
+            LogPlayableButtonCenter("reset",resetButton);
+            if(city){StartCoroutine(LogWorldHotspotNextFrame("Aserradero · target","sawmill"));StartCoroutine(LogWorldHotspotNextFrame("Bastion · target","bastion"));}
         }
 
         System.Collections.IEnumerator LogPlayableButtonCenterNextFrame(string id,Button button)
@@ -866,7 +904,9 @@ namespace Eldoria.Presentation
             var rect=button.GetComponent<RectTransform>();
             if(rect==null)return;
             var point=RectTransformUtility.WorldToScreenPoint(null,rect.TransformPoint(rect.rect.center));
-            Debug.Log("ELDORIA_PLAYABLE_UI id="+id+" x="+point.x.ToString("F1")+" y="+point.y.ToString("F1"));
+            Debug.Log("ELDORIA_PLAYABLE_UI id="+id+" x="+point.x.ToString("F1")+" y="+point.y.ToString("F1")+
+                " enabled="+button.interactable+" visible="+button.gameObject.activeInHierarchy+
+                " label="+button.GetComponentInChildren<Text>()?.text);
         }
 #endif
 
@@ -1034,12 +1074,12 @@ namespace Eldoria.Presentation
             buildingPanel=new GameObject("Building interaction panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var rt=buildingPanel.GetComponent<RectTransform>();rt.SetParent(parent,false);
             rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);rt.pivot=new Vector2(.5f,.5f);
-            rt.sizeDelta=new Vector2(276,166);rt.anchoredPosition=new Vector2(0,-70);
+            rt.sizeDelta=new Vector2(276,180);rt.anchoredPosition=new Vector2(0,-70);
             buildingPanel.GetComponent<Image>().color=new Color(.045f,.065f,.085f,.94f);
-            var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(13,13,12,12);
-            layout.spacing=6;layout.childControlHeight=true;layout.childForceExpandHeight=false;
-            buildingTitle=Label("Building title",buildingPanel.transform,14,new Color(.96f,.88f,.69f),24);
-            buildingBody=Label("Building body",buildingPanel.transform,10,new Color(.86f,.89f,.90f),52);
+            var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(12,12,8,8);
+            layout.spacing=4;layout.childControlHeight=true;layout.childForceExpandHeight=false;
+            buildingTitle=Label("Building title",buildingPanel.transform,15,new Color(.96f,.88f,.69f),24);
+            buildingBody=Label("Building body",buildingPanel.transform,12,new Color(.86f,.89f,.90f),38);
             var actionGo=new GameObject("Building action",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             actionGo.transform.SetParent(buildingPanel.transform,false);
             actionGo.GetComponent<Image>().color=new Color(.73f,.61f,.36f,.98f);
@@ -1132,7 +1172,7 @@ namespace Eldoria.Presentation
             if(target==null||camera==null)return;
             var collider=target.GetComponent<Collider>();
             var world=collider!=null?collider.bounds.center:target.transform.position;
-            var screen=camera.WorldToScreenPoint(world);
+            var screen=PresentedScreenPoint(camera,world);
             if(screen.z<=0)return;
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe,screen,null,out var local))return;
             badge.transform.parent.GetComponent<RectTransform>().anchoredPosition=local+offset;
@@ -1184,7 +1224,7 @@ namespace Eldoria.Presentation
             if(camera==null||target==null)yield break;
             var collider=target.GetComponent<Collider>();
             var world=collider!=null?collider.bounds.center:target.transform.position;
-            var point=camera.WorldToScreenPoint(world);
+            var point=PresentedScreenPoint(camera,world);
             if(point.z<=0)yield break;
             Debug.Log("ELDORIA_PLAYABLE_HOTSPOT id="+id+" x="+point.x.ToString("F1")+
                 " y="+(Screen.height-point.y).ToString("F1"));
@@ -1311,6 +1351,14 @@ namespace Eldoria.Presentation
 
         void InvokeOwnerReset()
         {
+            if(!ownerResetArmed)
+            {
+                ownerResetArmed=true;
+                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR REINICIO";
+                feedback="Pulsa de nuevo para empezar desde Bastión I.";
+                if(message!=null)message.text=feedback;
+                return;
+            }
             ownerResetArmed=false;
             if(resetButton!=null)resetButton.interactable=false;
             if(resetButtonText!=null)resetButtonText.text="REINICIANDO…";
@@ -1335,4 +1383,5 @@ namespace Eldoria.Presentation
         }
     }
 }
+
 

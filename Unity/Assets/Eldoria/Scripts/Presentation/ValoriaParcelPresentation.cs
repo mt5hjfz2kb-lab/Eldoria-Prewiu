@@ -48,6 +48,10 @@ namespace Eldoria.Presentation
                 if(phase==ParcelBuildingState.BUILT)ActiveVariant|=parcel.VariantBit;
                 ApplyParcel(phase,parcel.Built,parcel.Ground,parcel.Construction,parcel.Available,parcel.Target);
             }
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            var frameLoader=GetComponent<ValoriaWebGLSplatStateLoader>();
+            if(frameLoader!=null)frameLoader.RequestVariant(ActiveVariant);
+#else
             if(SceneSplats!=null)
             {
                 if(StateAssets!=null && ActiveVariant<StateAssets.Length && StateAssets[ActiveVariant]!=null)
@@ -61,6 +65,7 @@ namespace Eldoria.Presentation
                     webLoader.RequestVariant(ActiveVariant);
                 }
             }
+#endif
         }
         static void ApplyParcel(ParcelBuildingState state,GameObject built,GameObject ground,
             GameObject construction,GameObject available,Collider target)
@@ -78,7 +83,11 @@ namespace Eldoria.Presentation
         public void Pan(Vector2 delta)
         {
             var p=ProductionCamera.transform.position;
-            p.x=Mathf.Clamp(p.x-delta.x*.012f,-HorizontalPanHalfExtent,HorizontalPanHalfExtent);
+            float horizontalLimit=HorizontalPanHalfExtent;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            horizontalLimit=Screen.width<Screen.height?HorizontalPanHalfExtent:.80f;
+#endif
+            p.x=Mathf.Clamp(p.x-delta.x*.012f,-horizontalLimit,horizontalLimit);
             // Owner camera rule: Valoria is primarily a wide left/right space, but must
             // retain a smaller genuine vertical browse range on touch.
             p.y=Mathf.Clamp(p.y-delta.y*.006f,-VerticalPanHalfExtent,VerticalPanHalfExtent);
@@ -97,4 +106,5 @@ namespace Eldoria.Presentation
         }
     }
 }
+
 
