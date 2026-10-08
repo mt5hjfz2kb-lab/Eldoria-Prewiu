@@ -41,7 +41,9 @@ namespace Eldoria.Presentation
         public const float MinOrthographicZoom=9f;
         public const float MaxOrthographicZoom=19f;
         const float PinchZoomSensitivity=1f;
-        Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
+        Camera OfficialCamera => productionParcels!=null&&productionParcels.ProductionCamera!=null
+            ? productionParcels.ProductionCamera
+            : GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
         static string CitySceneName
         {
             get
@@ -383,7 +385,8 @@ namespace Eldoria.Presentation
                 if(frameLoader!=null&&!frameLoader.TryPresentedRay(point,out ray))return null;
             }
 #endif
-            var hits=Physics.RaycastAll(ray,100f);
+            float reach=city&&productionParcels!=null?Mathf.Max(100f,camera.farClipPlane):100f;
+            var hits=Physics.RaycastAll(ray,reach);
             System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
 
             if(city)
@@ -396,7 +399,11 @@ namespace Eldoria.Presentation
                 foreach(var hit in hits)
                 {
                     var spot=hit.collider.GetComponent<WorldHotspot>();
-                    if(spot==null||!spot.gameObject.name.EndsWith("· target",System.StringComparison.Ordinal))continue;
+                    if(spot==null)continue;
+                    bool buildingTarget=productionParcels!=null
+                        ? spot.gameObject.name==InteractiveTargetName(spot.Id)
+                        : spot.gameObject.name.EndsWith("· target",System.StringComparison.Ordinal);
+                    if(!buildingTarget)continue;
                     var centre=hit.collider.bounds.center;
                     float along=Mathf.Max(0f,Vector3.Dot(centre-ray.origin,ray.direction));
                     var closest=ray.origin+ray.direction*along;

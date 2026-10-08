@@ -97,6 +97,35 @@ namespace Eldoria.Tests
             yield return null;
         }
 
+        [UnityTest] public IEnumerator ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget()
+        {
+            previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
+            testScene=SceneManager.CreateScene("Certified production depth picking");
+            testRoot=new GameObject("Production picking test");SceneManager.MoveGameObjectToScene(testRoot,testScene);
+            var visual=testRoot.AddComponent<ValoriaParcelPresentation>();
+            var cameraGo=new GameObject("Owned production camera");cameraGo.transform.SetParent(testRoot.transform);
+            var camera=cameraGo.AddComponent<Camera>();camera.fieldOfView=visual.HomeFov;camera.farClipPlane=1000;
+            visual.ProductionCamera=camera;
+            WorldHotspot Target(string name,string id,float depth)
+            {
+                var go=new GameObject(name,typeof(BoxCollider),typeof(WorldHotspot));go.transform.SetParent(testRoot.transform);
+                go.transform.position=new Vector3(0,0,depth);go.transform.localScale=new Vector3(11,8,.2f);
+                var spot=go.GetComponent<WorldHotspot>();spot.Id=id;return spot;
+            }
+            var building=Target("InteractiveProxy_LeftCabinParcel","sawmill",240);
+            visual.LeftTarget=building.GetComponent<Collider>();
+            Target("InteractiveProxy_MainRoad","bastion",220);
+            var uiGo=new GameObject("Picking presenter");uiGo.transform.SetParent(testRoot.transform);
+            testPresenter=uiGo.AddComponent<SlicePresenter>();
+            var flags=BindingFlags.Instance|BindingFlags.NonPublic;
+            typeof(SlicePresenter).GetField("productionParcels",flags).SetValue(testPresenter,visual);
+            typeof(SlicePresenter).GetField("city",flags).SetValue(testPresenter,true);
+            Physics.SyncTransforms();yield return null;
+            var pixel=camera.WorldToScreenPoint(visual.LeftTarget.bounds.center);
+            var selected=typeof(SlicePresenter).GetMethod("ResolveHotspot",flags).Invoke(testPresenter,new object[]{new Vector2(pixel.x,pixel.y)}) as WorldHotspot;
+            Assert.That(selected,Is.SameAs(building),"A visible building at the actual production depth must win over a nearer broad road proxy");
+        }
+
 #if UNITY_EDITOR
         [UnityTest] public IEnumerator WorldHotspotBindingsSurviveStablePrefabSerialization()
         {
