@@ -686,11 +686,11 @@ namespace Eldoria.Presentation
             { feedback="";SceneManager.LoadScene(SceneManager.GetActiveScene().name);return; }
             var parts=SliceRules.TotalPower(s);
             heading.text=city?"VALORIA\nBastión "+s.BastionLevel:"MUNDO\nRegión I";
-            resources.text="♣  MADERA\n"+s.Resources.Wood;
-            if(stoneResource!=null)stoneResource.text="◆  PIEDRA\n"+s.Resources.Stone;
+            resources.text="MADERA\n"+s.Resources.Wood;
+            if(stoneResource!=null)stoneResource.text="PIEDRA\n"+s.Resources.Stone;
             var marchPreview=s.March.Phase!="idle"?s.March.Troops:
                 (s.MarchConfigured?s.PreparedTroops:s.Available);
-            power.text="⚔  PODER\n"+parts.Total;
+            power.text="PODER\n"+parts.Total;
             var marchPower=SliceRules.Expedition(
                 marchPreview,s.March.Phase!="idle"?s.March.HeroId:(s.MarchConfigured?s.PreparedHeroId:"aldric")).Power;
             var cp=s.ChapterProgress??new ChapterProgressState();
@@ -1046,23 +1046,23 @@ namespace Eldoria.Presentation
             {
                 if(key=="b1.build-sawmill"&&s.Resources.Wood>=SliceRules.SawmillWoodCost)
                 {
-                    FocusCityHotspot("Aserradero · target");
+                    FocusCityHotspot(productionParcels!=null?InteractiveTargetName("sawmill"):"Aserradero · target");
                     OpenBuildingPanel("sawmill");
                 }
                 else if(key=="b1.ascend")
                 {
-                    FocusCityHotspot("Bastion · target");
+                    FocusCityHotspot(productionParcels!=null?InteractiveTargetName("bastion"):"Bastion · target");
                     OpenBuildingPanel("bastion");
                 }
                 else if(key=="b2.build-barracks"||
                         (key=="b2.train-archers"&&s.Resources.Wood>=SliceRules.RecruitWoodCost&&s.Resources.Stone>=SliceRules.RecruitStoneCost))
                 {
-                    FocusCityHotspot("Cuartel · target");
+                    FocusCityHotspot(productionParcels!=null?InteractiveTargetName("barracks"):"Cuartel · target");
                     OpenBuildingPanel("barracks");
                 }
                 else if(key=="b2.prepare-march"||key=="b2.raise-expedition-power")
                 {
-                    FocusCityHotspot("Cuartel · target");
+                    FocusCityHotspot(productionParcels!=null?InteractiveTargetName("barracks"):"Cuartel · target");
                     OpenMarchPanel();
                 }
                 else SceneManager.LoadScene("Frontier");
@@ -1239,7 +1239,7 @@ namespace Eldoria.Presentation
         {
             yield return null;
             var camera=OfficialCamera;
-            var target=GameObject.Find(objectName);
+            var target=GameObject.Find(city&&productionParcels!=null?InteractiveTargetName(id):objectName);
             if(camera==null||target==null)yield break;
             var collider=target.GetComponent<Collider>();
             var world=collider!=null?collider.bounds.center:target.transform.position;
@@ -1316,7 +1316,7 @@ namespace Eldoria.Presentation
         {
             var text=ChipLabel(name,parent,8,new Color(.95f,.94f,.90f),
                 background??new Color(.025f,.04f,.055f,.92f),width);
-            text.text=icon+"  "+label;
+            text.text=label;
             text.alignment=TextAnchor.MiddleCenter;
             text.lineSpacing=.84f;
             return text;
