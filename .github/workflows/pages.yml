@@ -2,6 +2,14 @@ name: Publish Eldoria Preview
 # Runner-throughput maintenance trigger: workflow-only changes stay off the Windows Unity lane.
 
 on:
+  workflow_call:
+    inputs:
+      candidate_run_id:
+        required: true
+        type: number
+      candidate_head_sha:
+        required: true
+        type: string
   workflow_dispatch:
   push:
     branches: [main]
@@ -35,6 +43,7 @@ concurrency:
 
 jobs:
   source-preflight:
+    if: github.event_name != 'workflow_call'
     runs-on: ubuntu-latest
     outputs:
       heavy_required: ${{ steps.impact.outputs.heavy_required }}
@@ -101,7 +110,7 @@ jobs:
 
   unity-webgl:
     needs: source-preflight
-    if: needs.source-preflight.outputs.heavy_required == 'true'
+    if: github.event_name != 'workflow_call' && needs.source-preflight.outputs.heavy_required == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 45
     steps:
@@ -322,7 +331,7 @@ jobs:
 
   deploy:
     needs: [source-preflight, unity-webgl]
-    if: needs.source-preflight.outputs.candidate_only != 'true'
+    if: github.event_name != 'workflow_call' && needs.source-preflight.outputs.candidate_only != 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -478,4 +487,100 @@ jobs:
               '**Stable unity-owner/:** NOT DEPLOYED/MODIFIED by this candidate run',
               '**Gameplay acceptance:** still PENDING — must serve isolated build and validate both forest choices, persistence, navigation and visual/touch experience.',
               '**EXP-CAM-01 / EXP-BLD-02:** remain open.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  r2b-candidate-pages-preview:
+    if: github.event_name == 'workflow_call'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Confirm pinned owner-approved candidate and original stable site provenance
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if('${{ inputs.candidate_head_sha }}'.length!==40)throw Error('Candidate SHA invalid');
+            const {owner,repo}=context.repo;
+            const stable=await github.rest.actions.getArtifact({owner,repo,artifact_id:11551042802});
+            const old=stable.data;
+            if(old.expired||old.name!=='github-pages'||old.digest!=='sha256:cf9b3bee7d1b69e8d9627c68c101147faac17639e4db6bb6d8da57ed13d250a5')
+              throw Error('Pinned original stable Pages site unavailable or digest changed');
+            const candidate=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:${{ inputs.candidate_run_id }},per_page:100});
+            if(!candidate.data.artifacts.some(a=>a.name==='eldoria-unity-webgl-${{ inputs.candidate_head_sha }}'&&!a.expired))
+              throw Error('Candidate WebGL artifact not available from verified production run');
+      - uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          run-id: 37776564090
+          github-token: ${{ github.token }}
+          path: pinned-stable-pages
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ inputs.candidate_head_sha }}
+          run-id: ${{ inputs.candidate_run_id }}
+          github-token: ${{ github.token }}
+          path: isolated-candidate-webgl
+      - name: Reconstruct EXACT stable deployed payload and ADD candidate subdirectory
+        id: stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          oldtar="$(find pinned-stable-pages -type f -name '*.tar' -print -quit)"
+          test -n "$oldtar"
+          mkdir -p site
+          tar -xf "$oldtar" -C site
+          test -s site/unity-owner/index.html
+          test -s isolated-candidate-webgl/index.html
+          test -s isolated-candidate-webgl/splat-state-0.ply
+          find site/unity-owner -type f -print0 | sort -z | xargs -0 sha256sum > stable-before.sha256
+          curl -fLsS --retry 4 --max-time 30 'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html' -o stable-current-index.html
+          cmp stable-current-index.html site/unity-owner/index.html || { echo 'PUBLIC_STABLE_IS_NOT_PINNED_STABLE_ABORT';exit 1; }
+          target="site/r2-candidates/r2-b-6e0e1239"
+          test ! -e "$target" || { echo 'Existing candidate must not be overwritten';exit 1; }
+          mkdir -p "$target"
+          cp -a isolated-candidate-webgl/. "$target/"
+          find site/unity-owner -type f -print0 | sort -z | xargs -0 sha256sum > stable-after.sha256
+          cmp stable-before.sha256 stable-after.sha256
+          test -s "$target/index.html"
+          find "$target/Build" -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.gz|wasm\.br)$'
+          echo 'STABLE_BYTES_IDENTICAL_CANDIDATE_ADDITIVE_PASS'
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Verify live stable index remains identical and candidate is truly accessible
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          for n in $(seq 1 10); do
+            curl -fLsS --max-time 30 "${base}r2-candidates/r2-b-6e0e1239/index.html" -o candidate-current-index.html && break || sleep 10
+          done
+          test -s candidate-current-index.html
+          cmp stable-current-index.html <(curl -fLsS --max-time 30 "${base}unity-owner/index.html")
+          printf 'R2B_PREVIEW_HOSTED_STABLE_BYTES_UNCHANGED %s\n' "${base}r2-candidates/r2-b-6e0e1239/"
+      - name: Record independent playable candidate without claiming experiential signoff
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/';
+            const body=['### R2-B WebGL de supervisión — despliegue ADITIVO validado',
+              '**Candidato jugable:** '+url,
+              '**SHA gameplay autorizado:** 6e0e12396a98b04333b595fff704afa3e849c30a',
+              '**Build SHA:** ${{ inputs.candidate_head_sha }}',
+              '**Ejecución de publicación candidata:** '+context.runId,
+              '**Estable unity-owner/:** comprobado byte a byte intacto desde último deploy oficial antes de publicación y HTML público antes/después.',
+              '**Alcance:** build de supervisión, no PASS visual ni EXPERIENCIA. EXP-CAM-01 / EXP-BLD-02 permanecen abiertos.',
+              '**Probar:** ambas elecciones de bosque sobre saves separados; cámara vertical Valoria y selección de edificios.'].join('\n');
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
