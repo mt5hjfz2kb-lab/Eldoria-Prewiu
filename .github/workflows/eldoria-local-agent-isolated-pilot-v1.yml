@@ -1,6 +1,12 @@
 name: Eldoria local agent isolated pilot v1
 on:
   workflow_dispatch:
+    inputs:
+      maintenance_only:
+        description: 'Run the existing BOM maintenance worker only (PR branch validation)'
+        required: false
+        type: boolean
+        default: false
   issue_comment:
     types: [created]
 permissions:
@@ -11,7 +17,7 @@ concurrency:
 jobs:
   prepare:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && inputs.maintenance_only != true) ||
       (github.event_name == 'issue_comment' && github.event.issue.number == 25 && github.event.comment.body == 'ELDORIA_LOCAL_AGENT_PILOT_RUN_V1_AUTHORIZED_20261008')
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -113,7 +119,9 @@ jobs:
 
 
   maintenance-prepare:
-    if: github.event_name == 'issue_comment' && github.event.issue.number == 25 && github.event.comment.body == 'ELDORIA_LOCAL_MAINTENANCE_V1_AUTHORIZED_20261008'
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.maintenance_only == true) ||
+      (github.event_name == 'issue_comment' && github.event.issue.number == 25 && github.event.comment.body == 'ELDORIA_LOCAL_MAINTENANCE_V1_AUTHORIZED_20261008')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -182,11 +190,13 @@ jobs:
               $seen[$v.input]=$true;$raw=$v.input
               if($raw.StartsWith([char]0xFEFF)){$raw=$raw.Substring(1);$boms++}
               $ok=$false
-              try{$x=$raw|ConvertFrom-Json -ErrorAction Stop;$ok=$null -ne $x -and $raw.TrimStart().StartsWith('{')}catch{}
+              try{$x=ConvertFrom-Json -InputObject $raw -ErrorAction Stop;$ok=$null -ne $x -and $x -is [pscustomobject] -and $raw.TrimStart().StartsWith('{')}catch{ Write-Output ('CASE_PARSE_ERROR_INDEX='+[array]::IndexOf($cases,$v)+' MESSAGE='+$_.Exception.Message) }
+              Write-Output ('CASE_CHECK_INDEX='+[array]::IndexOf($cases,$v)+' INPUT='+($v.input|ConvertTo-Json -Compress)+' CLAIM='+$v.valid+' PARSED='+$ok)
               if($ok -ne $v.valid){$v.valid=$ok;$corrections++}
               if($ok){$good++}else{$bad++}
             }
             Write-Output ('MODEL_EXPECTATION_CORRECTIONS='+$corrections)
+            if($corrections -gt 2){throw 'Too many inconsistent model labels'}
             if($good -lt 3 -or $bad -lt 2 -or $boms -lt 1 -or !(@($cases|Where-Object{$_.input -eq '{}' -and $_.valid}).Count)){throw 'Required coverage missing'}
             $fixture=@{schema_version=1;purpose='coordinator-evidence-json-bom-regression';cases=$cases}|ConvertTo-Json -Depth 8
             [IO.File]::WriteAllText((Join-Path $dir 'fixture.json'),$fixture,[Text.UTF8Encoding]::new($false))
