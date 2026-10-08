@@ -1,3 +1,25 @@
+## 2026-10-08 — Bastion I–II presentation parity correction DEFINITIVELY CLOSED / PASS
+
+Workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is **CLOSED** and resources are released. The prior “REOPENED / NOT YET CERTIFIED” entry below is historical and superseded by this closure.
+
+Final current-candidate chain:
+- final UI cleanup `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f`;
+- objective-dock restoration `4d70b9bdc5532ffb3108867a7d5450a72ea460bc`;
+- UI certification **37772733872 — SUCCESS**;
+- Unity source/editor gate **37772733932 — SUCCESS**;
+- production **37772733956 — SUCCESS**, artifact **11549887766**;
+- exact owner WebGL publication **37776564090 — SUCCESS**;
+- published full-flow probe **37779269570 — SUCCESS**, artifact **11551901858**, digest `sha256:8b59598b4eff06a6825d6a99ef953681bc49906a714e920da599f78312601da6`.
+
+Published acceptance covers landscape + portrait, bounded camera pan/recenter, real touch selection of Aserradero/Bastión/Cuartel, construction, resources, Bastion I→II, Cuartel, +20 archer recruitment, configured march, scout/Engendro combat/reward, exact save/reload persistence, deliberate canonical reset and reset surviving reload. Probe ended with no runtime errors.
+
+Direct final screenshot review also confirmed the bounded presentation cleanup: contextual building CTA remains inside the mobile frame, duplicate CTA clutter is removed while contextual action is open, quest/context overlap is removed in reviewed selected-building states, and the objective dock returns after contextual actions.
+
+This is **not** a declaration of final commercial artistic quality or equivalent physical-device human playability. It closes the declared parity/input/camera/UI/progression/persistence/reset scope only. Bastion III remains closed; World Region 1/gameplay/economy/persistence/SHARP authority were not redesigned. Paid credits: 0.
+
+Evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
+Published owner build: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
+
 ## 2026-10-08 — Bastion I–II presentation parity correction DEFINITIVELY CLOSED / PUBLISHED PASS
 
 Workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is now **CLOSED / PASS** after the final bounded UI cleanup and a fresh production→publication→published-probe chain.
