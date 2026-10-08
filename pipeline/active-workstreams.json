@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T17:58:00Z",
+  "updated_at": "2026-10-08T18:20:03.942Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -48,6 +48,23 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
+    },
+    {
+      "id": "eldoria-dg-original-route-recovery-v1",
+      "title": "DG V2 canonical inventory and authentic existing-chain acceptance",
+      "owner": "chat-dg-original-route-recovery-20261008",
+      "scope": [
+        "docs/evidence/dg-original-route-recovery-v1/**"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T18:20:03.937Z",
+      "base_main_sha": "ab8dc2b74a2fa95dce08c12641017394a1414526",
+      "status": "active",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read existing infrastructure evidence and consolidate Directorate inventory; no player-visible changes.",
+      "paid_credits": 0,
+      "phase": "VERIFY_EXISTING_DISPATCH_AND_NOTIFICATION",
+      "next": "Verify already-running authorized M16 chain, preserve completed local maintenance, record inventory and test existing owner notification; no new dispatcher or round."
     }
   ],
   "history": [
