@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T15:59:00Z",
+  "updated_at": "2026-10-08T16:53:12.801Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -48,7 +48,9 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-local-agent-isolated-pilot-v1",
       "title": "Bounded local Ollama coordinator pilot",
@@ -62,23 +64,46 @@
         "tools/eldoria-coordinator-v1.cjs",
         ".github/workflows/eldoria-dg-pilot-intake.yml"
       ],
-      "resources": [
-        "windows-self-hosted-unity-6000-3-23f1"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-08T15:43:00Z",
       "base_main_sha": "f35d23865569b39f9bfa71af86dcf588e187b231",
-      "status": "active",
-      "phase": "REAL WORKER 9/9 PASS / INDEPENDENT COORDINATOR VERIFICATION INTEGRATION",
+      "status": "completed",
+      "phase": "COORDINATOR ISSUED TASK / LOCAL MODEL CODING 9-OF-9 PASS / INDEPENDENT COORDINATOR VERIFICATION PASS / RUNNER RELEASED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Infrastructure-only local inference; no player-visible artifacts or Unity writes",
       "paid_credits": 0,
       "dependency": "Issue #25; do not touch M07, M11 or gameplay; respect current preflight owner",
-      "next": "Integrate existing coordinator read-only independent local pilot evidence verification and rerun the same existing pilot end-to-end, release resources only after verified evidence.",
+      "next": "Pilot closed; no subsequent agents, departments, QA or rounds authorized without new DG scope and budget approval.",
       "blocker": null,
-      "runner_released": false
-    }
-  ],
-  "history": [
+      "runner_released": true,
+      "completed_at": "2026-10-08T16:53:12.801Z",
+      "result": {
+        "verdict": "PASS_SINGLE_LOCAL_AGENT_ISOLATED_CODING_PILOT",
+        "task_delivery_run_id": 37811949263,
+        "worker_run_id": 37811949263,
+        "source_sha": "983fa367dff52a639585e6a36b1e8b13856b3089",
+        "preparer_job_id": 113430774318,
+        "worker_job_id": 113430851594,
+        "task_artifact_id": 11565755804,
+        "worker_artifact_id": 11564938780,
+        "worker_artifact_digest": "sha256:2cd85c035a7ba83b1dd992b15f92cf7d2a1bc3135df09afcd9d38b03d803a109",
+        "coordinator_intake_run_id": 37812029139,
+        "coordinator_artifact_id": 11565461896,
+        "coordinator_artifact_digest": "sha256:f251e0f6633945ce211893d49f09446dfda7871d387ed588066c91da9cbd98bd",
+        "coordinator_verdict": "LOCAL_PILOT_EVIDENCE_VERIFIED",
+        "model": "qwen2.5-coder:3b",
+        "model_digest": "f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225",
+        "generated_code_sha256": "3ff393a1747f815029f468f9758e813811fd627857850bf1bbf76a55a6cb0f33",
+        "independent_test_cases_passed": 9,
+        "external_api_calls": 0,
+        "paid_api_calls": 0,
+        "arbitrary_generated_code_executed": false,
+        "final_cleanup": "PASS",
+        "runner_released": true,
+        "game_modified": false,
+        "notes": "One pre-authorized fixed bounded local coding task. No generalized 16-department autonomous dispatch, no game mutation, no outside-network forensic audit."
+      }
+    },
     {
       "id": "eldoria-local-ai-install-v1",
       "title": "Official isolated Ollama Windows install and local coder proof",
