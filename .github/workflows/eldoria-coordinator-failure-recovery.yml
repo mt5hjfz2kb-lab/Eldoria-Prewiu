@@ -182,6 +182,32 @@ jobs:
           persist-credentials: false
       - name: QA independent M03 existing certification tests
         run: node --test tests/m03/certify.test.mjs
+      - name: Download canonical actual Unity capture evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-first-playable-city-slice-v1
+          run-id: ${{ github.event.workflow_run.id || 37838898425 }}
+          github-token: ${{ github.token }}
+          path: actual-unity-evidence
+      - name: Inspect real Unity state, screenshot manifest and test results
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, pathlib, xml.etree.ElementTree as ET
+          p=pathlib.Path('actual-unity-evidence/ValoriaFirstPlayableCitySliceV1Captures')
+          prod=json.loads((p/'production-slice-evidence.json').read_text())
+          state=json.loads((p/'runtime-state-evidence.json').read_text())
+          assert prod.get('tech_gate_pass') is True, 'Unity production technical gate not proven'
+          assert state.get('tech_pass') is True and state.get('save_reload_pass') is True and state.get('idempotency_pass') is True, 'Unity runtime proof failed'
+          for n in ['bastion-editmode.xml','parcel-playmode.xml','presentation-parity-playmode.xml']:
+            root=ET.parse(p/n).getroot()
+            assert root.attrib.get('result')=='Passed' and int(root.attrib.get('failed','1'))==0, n+' has failing tests'
+          for n in ['runtime-home-initial.png','runtime-left-under-construction.png','runtime-left-built.png','runtime-both-built.png']:
+            assert (p/n).stat().st_size>10000, n+' screenshot absent'
+          print('ACTUAL_UNITY_TECH_EVIDENCE_PASS')
+          print('INTEGRATED_VISUAL_PASS=',prod.get('gate_pass'), 'RUNTIME_FINAL_PASS=',state.get('final_pass'))
+          print('NOTE: official production screenshots do not by themselves prove R2-B World touch choices or a playable WebGL build')
+          PY
       - name: Correlate exact Unity source, artifact and QA then report Directorate
         uses: actions/github-script@v7
         with:
