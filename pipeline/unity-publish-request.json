@@ -1,14 +1,14 @@
 {
   "enabled": false,
   "mode": "closed",
-  "reason": "Bastion I-II presentation parity definitively closed after production 37772733956, publish 37776564090 and published full-flow probe 37779269570 all passed; resources released.",
+  "reason": "Bastion I-II presentation parity definitively closed. Disabled requests are preflight-skipped and must not build or deploy another WebGL candidate.",
   "production_run_id": 37772733956,
   "production_artifact_id": 11549887766,
   "production_head_sha": "4d70b9bdc5532ffb3108867a7d5450a72ea460bc",
   "final_unity_gate_run_id": 37772733932,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "valoria-bastion-i-ii-presentation-parity-correction-v1",
-  "updated_at": "2026-10-08T12:59:00Z",
+  "updated_at": "2026-10-08T13:06:00Z",
   "retry": 43,
   "retry_reason": "Bounded presentation cleanup after visually inspecting prior successful published probe evidence; exact candidate 4d70b9bd passed UI progression and production.",
   "parcel_source_artifact_id": 11547989564,
@@ -18,5 +18,6 @@
   "ui_certification_run_id": 37772733872,
   "completed_publish_run_id": 37776564090,
   "completed_probe_run_id": 37779269570,
-  "completed_probe_artifact_id": 11551901858
+  "completed_probe_artifact_id": 11551901858,
+  "closure_guard": "disabled-request-must-not-acquire-unity-runner"
 }
