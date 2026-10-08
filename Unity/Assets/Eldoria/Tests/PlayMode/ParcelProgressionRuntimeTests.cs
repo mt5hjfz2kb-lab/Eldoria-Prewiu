@@ -97,6 +97,32 @@ namespace Eldoria.Tests
             yield return null;
         }
 
+#if UNITY_EDITOR
+        [UnityTest] public IEnumerator WorldHotspotBindingSurvivesStablePrefabSerialization()
+        {
+            const string path="Assets/__EldoriaHotspotSerializationTest.prefab";
+            previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
+            testScene=SceneManager.CreateScene("Hotspot serialization isolation");
+            testRoot=new GameObject("Canonical hotspot binding");SceneManager.MoveGameObjectToScene(testRoot,testScene);
+            var hotspot=testRoot.AddComponent<WorldHotspot>();hotspot.Id="bastion";
+            var script=UnityEditor.MonoScript.FromMonoBehaviour(hotspot);
+            Assert.That(UnityEditor.AssetDatabase.GetAssetPath(script),Is.EqualTo("Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs"),
+                "A scene-local secondary MonoScript can omit Id in player serialization");
+            try
+            {
+                UnityEditor.PrefabUtility.SaveAsPrefabAsset(testRoot,path);
+                UnityEditor.AssetDatabase.SaveAssets();UnityEditor.AssetDatabase.ImportAsset(path,UnityEditor.ImportAssetOptions.ForceUpdate);
+                var prefab=UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                Assert.That(prefab.GetComponent<WorldHotspot>().Id,Is.EqualTo("bastion"));
+                var copy=UnityEngine.Object.Instantiate(prefab);copy.transform.SetParent(testRoot.transform);
+                Assert.That(copy.GetComponent<WorldHotspot>().Id,Is.EqualTo("bastion"));
+                Assert.That(System.IO.File.ReadAllText(path),Does.Contain("guid: "+UnityEditor.AssetDatabase.AssetPathToGUID(UnityEditor.AssetDatabase.GetAssetPath(script))));
+                yield return null;
+            }
+            finally { UnityEditor.AssetDatabase.DeleteAsset(path); }
+        }
+#endif
+
         [UnityTest] public IEnumerator PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom()
         {
             previousProfile=SliceContentProfiles.ActiveRuntimeProfile;

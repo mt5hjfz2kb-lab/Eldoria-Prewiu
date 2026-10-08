@@ -6,6 +6,8 @@ on:
       - "pipeline/valoria-first-playable-city-slice-v1.json"
       - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs"
       - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs.meta"
       - "tools/valoria-parcel-splat-states.py"
       - "pipeline/valoria-parcel-regions-v1.json"
       - "pipeline/art-production-requests/valoria-bastion-i-ii-progression-v1.json"
