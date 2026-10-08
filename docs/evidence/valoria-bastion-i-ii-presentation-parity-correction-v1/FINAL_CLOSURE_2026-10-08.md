@@ -103,3 +103,14 @@ The city still uses a visually static SHARP-based beauty foundation and this clo
 All declared current-head production, publication, published interaction, progression, persistence, reset and bounded mobile visual checks required by this workstream are now satisfied. The workstream may be released autonomously.
 
 Concrete later owner/device feedback remains authoritative evidence and may reopen this exact block if it demonstrates a regression.
+
+
+## Resource release guard
+
+Closing the publish request originally triggered one unnecessary Pages workflow because the old source-preflight treated any change to `pipeline/unity-publish-request.json` as a heavy Unity request even when `enabled=false`.
+
+The closure therefore also installed a bounded release hygiene fix:
+- `8f0b42dbae939243e5c11975d8bb5d3753e71b6b` — disabled publish requests no longer acquire the Windows Unity runner;
+- `8fbe4e392379e756e4ca8e213d1504cb3fd39119` — final disabled closure-guard state.
+
+The superseded post-close run **37781441338** was cancelled by workflow concurrency before deployment. Replacement run **37782259376** completed SUCCESS with `unity-webgl=skipped` and `deploy=skipped`. This confirms the closure state no longer consumes the Unity runner or republishes a stale/default WebGL candidate.
