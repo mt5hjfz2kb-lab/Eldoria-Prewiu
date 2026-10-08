@@ -2,6 +2,33 @@
 // Eldoria coordinator v1 — read-only, fail-closed triage. Never dispatches agents, QA or releases.
 const fs = require('node:fs');
 const path = require('node:path');
+
+// Optional independent local pilot evidence gate; default M07 behavior unchanged.
+if (process.argv[2] === '--verify-local-pilot') {
+  const dir = process.argv[3];
+  const run = String(process.argv[4] || '');
+  const sha = String(process.argv[5] || '');
+  const load = (name) => { try { return JSON.parse(fs.readFileSync(path.join(dir,name),'utf8')); } catch { return null; } };
+  const proof=load('proof.json'), cleanup=load('final-check.json'), worker=load('pilot-report.json');
+  const checks=[];
+  const check=(key,condition)=>checks.push({key,passed:Boolean(condition)});
+  check('RUN', /^\d+$/.test(run) && String(worker?.run_id)===run);
+  check('SHA', /^[a-f0-9]{40}$/.test(sha) && worker?.source_sha===sha);
+  check('MISSION', worker?.order_id==='eldoria-local-agent-isolated-pilot-v1');
+  check('MODEL', proof?.model==='qwen2.5-coder:3b' && worker?.model===proof?.model);
+  check('MODEL_DIGEST', /^[a-f0-9]{64}$/.test(String(proof?.digest||'')) && worker?.model_digest===proof?.digest);
+  check('GENERATED_SOURCE_SHA', /^[a-f0-9]{64}$/.test(String(proof?.source_sha256||'')) && worker?.generated_source_sha256===proof?.source_sha256);
+  check('NINE_TESTS', proof?.status==='PASS' && proof?.test_cases_passed===9 && worker?.independent_test_cases_passed===9);
+  check('ZERO_APIS', proof?.external_api_calls===0 && worker?.external_api_calls===0);
+  check('NO_ARBITRARY_CODE', proof?.arbitrary_generated_code_executed===false && worker?.arbitrary_generated_code_executed===false);
+  check('CLEANUP', cleanup?.status==='PASS' && worker?.cleanup==='PASS');
+  check('HANDOFF', worker?.coordinator==='eldoria-coordinator-v1' && worker?.verdict==='LOCAL_WORKER_PASS_AWAITING_INDEPENDENT_COORDINATOR_REVIEW');
+  const verdict=checks.every(x=>x.passed)?'LOCAL_PILOT_EVIDENCE_VERIFIED':'BLOCKED_LOCAL_PILOT_EVIDENCE';
+  const report={schema_version:1,workstream:'eldoria-local-agent-isolated-pilot-v1',run_id:run,source_sha:sha,verdict,checks,notes:['Read-only independent coordinator artifact review; no generated code executed.','Local-only / zero API assertions are based on worker proof, not a forensic network audit.']};
+  fs.writeFileSync(path.join(dir,'coordinator-verification.json'),JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify(report));
+  process.exit(verdict==='LOCAL_PILOT_EVIDENCE_VERIFIED'?0:1);
+}
 const registry = JSON.parse(fs.readFileSync('pipeline/active-workstreams.json', 'utf8'));
 const m07id = 'm07-r1-sawmill-construction-visual-correction';
 const active = registry.active || [];
