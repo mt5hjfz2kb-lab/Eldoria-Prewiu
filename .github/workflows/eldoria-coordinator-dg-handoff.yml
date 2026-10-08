@@ -13,7 +13,9 @@ jobs:
     if: >-
       github.event.issue.number == 25 &&
       github.event.comment.user.login == 'github-actions[bot]' &&
-      (contains(github.event.comment.body, 'LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR') ||\n      contains(github.event.comment.body, 'LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR') ||\n      contains(github.event.comment.body, 'ELDORIA_MAINTENANCE_INTAKE_RUN_'))
+      (contains(github.event.comment.body, 'LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR') ||
+      contains(github.event.comment.body, 'LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR') ||
+      contains(github.event.comment.body, 'ELDORIA_MAINTENANCE_INTAKE_RUN_'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
