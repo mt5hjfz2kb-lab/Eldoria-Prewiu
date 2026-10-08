@@ -1,6 +1,10 @@
 name: Eldoria local agent isolated pilot v1
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-local-agent-isolated-pilot-v1.yml'
 permissions:
   contents: read
 concurrency:
@@ -8,6 +12,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   isolated-pilot:
+    # A single authorized push starts this pilot. Later workflow edits cannot re-dispatch it.
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'ops: auto-dispatch single authorized local agent pilot #25'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 20
     steps:
