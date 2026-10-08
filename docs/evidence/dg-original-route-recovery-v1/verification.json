@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "workstream": "eldoria-dg-original-route-recovery-v1",
+  "inspected_at": "2026-10-08T18:27:27.996Z",
+  "maintenance": {
+    "run": 37820089071,
+    "sha": "9e443e20c8e2818d83c93c8580b233ffd0d12485",
+    "artifact": 11568258540,
+    "downloaded_sha256": "316c1c24424d4552ddf11aa51000d0494d8a818cdf192a2f429f8e6737a5209e",
+    "cases": 6,
+    "cleanup": true,
+    "independent_review_job": 113460050407,
+    "coordinator_run": 37820538652,
+    "issue23_comment": 6065916435,
+    "closed": true,
+    "merged": false
+  },
+  "m16": {
+    "dispatcher_run": 37823281137,
+    "worker_run": 37823294134,
+    "source_sha": "ab8dc2b74a2fa95dce08c12641017394a1414526",
+    "artifact": 11569314853,
+    "downloaded_sha256": "b22d15dd39a83d04f04b2a667cc9300655241813da5a5f6ddc55ea5328df52f2",
+    "a_job": 113469569992,
+    "a_tests": 10,
+    "b_job": 113469957260,
+    "b_tests": 14
+  },
+  "relay_failure": {
+    "run": 37823716966,
+    "job": 113472706048,
+    "issue_comment": 6066396711,
+    "error": "sha256sum: pilot-handoff/source-sha.txt: No such file or directory",
+    "domain": "INFRA_HANDOFF_VERIFIER_PATH",
+    "not_game_bug": true
+  },
+  "correction": {
+    "checksum_path_commit": "fe432b52837b1fc3e78f69e46431af1ea0c18e00",
+    "pending_cancellation_commit": "ec6707a9b8a6a884fcea69c6f9fb88cba300ae9e",
+    "real_zip_checksum_pass": true,
+    "tampered_bytes_rejected": true,
+    "sha_and_run_checks_preserved": true,
+    "retry_run": 37824280532,
+    "retry_status": "PENDING_FINAL_VERIFICATION"
+  },
+  "newly_executed_isolated_tests": {
+    "runtime": "local Node, exact main files through GitHub connector; not full checkout CI",
+    "m03c": {
+      "total": 7,
+      "passed": 7,
+      "source_blob_sha": "547007c8b7939fb7bbf6247c6ad232ffa7c61d97",
+      "test_blob_sha": "fe7037bd6c3559015b0650945128911081a27e68"
+    },
+    "m04": {
+      "total": 15,
+      "passed": 11,
+      "failed": 4,
+      "failing_tests": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "cause": "ILLEGAL_TRANSITION",
+      "source_blob_sha": "92c790334161763bcc9838287c3e19eb4ec29afe",
+      "test_blob_sha": "e4bce287b1b338ddd73c3d6af1039f0ed5740f97"
+    }
+  },
+  "notification": {
+    "existing_task_id": "6ac7d26b2cd08191871b1183dc2cfc47",
+    "configured": true,
+    "run_requested": false,
+    "delivery_verified": false,
+    "notes": "GitHub record and automation last_run are not delivered-notification receipts."
+  },
+  "autonomy_general": "NOT_CERTIFIED",
+  "m07_modified": false,
+  "round_opened": false,
+  "paid_api_calls": 0
+}
