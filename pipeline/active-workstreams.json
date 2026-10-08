@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T12:59:00Z",
+  "updated_at": "2026-10-08T13:12:12Z",
   "active": [],
   "history": [
     {
@@ -104,7 +104,14 @@
         "artistic_quality_final_certified": false,
         "artistic_quality_note": "Closure is limited to the declared Bastion I-II presentation-parity correction. Direct screenshots confirm the bounded UI cleanup and mobile framing, but overall commercial art quality and independent physical human playability are not claimed.",
         "paid_credits": 0,
-        "evidence": "docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md"
+        "evidence": "docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md",
+        "release_preflight_fix_commit": "8f0b42dbae939243e5c11975d8bb5d3753e71b6b",
+        "closure_guard_commit": "8fbe4e392379e756e4ca8e213d1504cb3fd39119",
+        "superseded_post_close_publish_run_id": 37781441338,
+        "superseded_post_close_publish_conclusion": "cancelled before deploy",
+        "release_guard_run_id": 37782259376,
+        "release_guard_result": "SUCCESS / unity-webgl skipped / deploy skipped",
+        "resources_released_verified": true
       }
     },
     {
