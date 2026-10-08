@@ -9,8 +9,8 @@ const path = require('node:path');
 if (process.argv[2] === '--verify-first-maintenance') {
   const crypto=require('node:crypto'), assert=require('node:assert/strict');
   const folder=process.argv[3], run=String(process.argv[4]||''), sha=String(process.argv[5]||'');
-  if(!folder || !/^\\d+$/.test(run) || !/^[a-f0-9]{40}$/.test(sha)) throw new Error('Invalid coordinator verification arguments');
-  const read=n=>JSON.parse(fs.readFileSync(path.join(folder,n),'utf8').replace(/^\\uFEFF/,''));
+  if(!folder || !/^\d+$/.test(run) || !/^[a-f0-9]{40}$/.test(sha)) throw new Error('Invalid coordinator verification arguments');
+  const read=n=>JSON.parse(fs.readFileSync(path.join(folder,n),'utf8').replace(/^\uFEFF/,''));
   const fixture=read('fixture.json'),proof=read('proof.json'),clean=read('final-check.json'),task=read('task.json');
   assert.equal(task.task_id,'eldoria-local-agent-first-maintenance-v1');
   assert.equal(task.issuer,'eldoria-coordinator-v1');assert.equal(task.model,'qwen2.5-coder:3b');
