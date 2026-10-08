@@ -150,14 +150,29 @@
       ],
       "resources": [],
       "status": "active",
-      "phase": "IMPLEMENT R2-B SOURCE IN ISOLATED GAMEPLAY DOMAIN",
+      "phase": "UNITY_TECH_AND_M03_PASS / VISUAL_AND_ISOLATED_WEBGL_PENDING",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Integrate both choices in actual World forest panel, revalidate Unity/EditMode/PlayMode and published probe before closing. Zero paid and no M07 editor modification.",
-      "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md"
+      "next": "Candidate independent WebGL build and real touch check both R2-B forest options with state/reload, then visual QA; stable Pages unity-owner may not be replaced. Existing pages.yml publishes to stable path, separate candidate channel not verified. Keep owner and claim until valid release.",
+      "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md",
+      "result": {
+        "unity_production_run": 37838898425,
+        "unity_source_sha": "6e0e12396a98b04333b595fff704afa3e849c30a",
+        "unity_artifact_id": 11576784810,
+        "unity_ui_certification_run": 37838898438,
+        "m16_m03_independent_review_run": 37853728233,
+        "dg_auto_report_comment": 6070341811,
+        "unity_tech_pass": true,
+        "visual_pass": false,
+        "webgl_candidate_pass": false,
+        "game_experience_player_defects_open": [
+          "EXP-CAM-01",
+          "EXP-BLD-02"
+        ]
+      }
     },
     {
       "id": "r2-c-mobile-ux",
