@@ -165,12 +165,14 @@ jobs:
             if(!$ready){throw 'Local model server not ready'}
             $listeners=@(Get-NetTCPConnection -State Listen -LocalPort 11434)
             if(!$listeners.Count -or @($listeners|Where-Object{$_.LocalAddress -ne '127.0.0.1' -or $_.OwningProcess -ne $server.Id}).Count){throw 'Untrusted Ollama listener'}
-            $prompt='Create six short, distinct JSON object parsing regression examples in a JSON object with one key cases. The six cases must be: (1) plain {} valid true; (2) leading BOM before {"a":1} valid true; (3) valid {"x":2} true; (4) valid {"b":false} true; (5) malformed { false; (6) malformed {"broken":} false. Represent the BOM as escaped \\uFEFF in the JSON output string. Stop after exactly six. No markdown or source code.'
+            $prompt='Create exactly six distinct JSON-object parser regression cases in {"cases":[{"input":"...","valid":true}]}. The input field is a STRING containing JSON text, not a JSON object. Required cases: (1) input {} valid true; (2) input with one actual leading Unicode BOM (U+FEFF) followed by {"a":1}, valid true after BOM stripping; (3) input {"x":2} valid true; (4) input {"b":false} valid true; (5) input { valid false; (6) input {"broken":} valid false. Escape quotation marks for the OUTER response JSON, but do not place literal backslashes before quote characters INSIDE decoded input strings. For the BOM case outer JSON must encode leading BOM as a JSON Unicode escape (one backslash followed by uFEFF), decoding to character U+FEFF. Every valid label must match actual JSON.parse of decoded input after stripping at most one leading BOM. No markdown; exactly six cases.'
             $schema=@{type='object';additionalProperties=$false;required=@('cases');properties=@{cases=@{type='array';minItems=6;maxItems=6;items=@{type='object';additionalProperties=$false;required=@('input','valid');properties=@{input=@{type='string'};valid=@{type='boolean'}}}}}}
             $body=@{model='qwen2.5-coder:3b';stream=$false;keep_alive='10s';format=$schema;options=@{temperature=0;num_predict=350;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 12
             $res=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
             if(!$res.done -or $res.model -ne 'qwen2.5-coder:3b'){throw 'Wrong model or incomplete output'}
             $data=$res.response|ConvertFrom-Json
+            # Keep raw model output in the failure artifact; independent checks still apply.
+            [IO.File]::WriteAllText((Join-Path $dir 'model-response.json'),[string]$res.response,[Text.UTF8Encoding]::new($false))
             $cases=@($data.cases)
             Write-Output ('MODEL_JSON_CANDIDATE='+($res.response -replace '[\r\n]+',' '))
             if($cases.Count -ne 6){throw 'Expected six cases'}
