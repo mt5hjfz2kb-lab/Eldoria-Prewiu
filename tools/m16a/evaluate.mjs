@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
+import {verify as verifyM03} from '../m03/certify.mjs';
 const unique=a=>new Set(a).size===a.length;
 const states=new Set(['APPROVED','ACTIVE','ACCEPTED','FAILED','CANCELLED','BLOCKED']);
 const resourceConflict=(a,b)=>a.some(x=>b.some(y=>x===y));
@@ -24,7 +25,7 @@ export function evaluate(catalog, ownership={active:[]}, certifications={certifi
   const reasons=[];const current=['ACTIVE','ACCEPTED','FAILED','CANCELLED'].includes(j.status);
   if(!current)for(const d of j.depends_on){
    const c=certs.get(d.certificate_id||byId.get(d.job_id)?.certificate_id);
-   if(!c||c.status!=='ACCEPTED'||!c.gates||c.gates[d.required_gate]!=='PASS'||c.issued_by===j.id)reasons.push('DEPENDENCY_UNCERTIFIED:'+d.job_id);
+   if(!c||c.status!=='ACCEPTED'||!c.gates||c.gates[d.required_gate]!=='PASS'||c.issued_by===j.id||(certifications.schema_version===1&&(!verifyM03(c)||c.issuer===j.id||c.candidate?.id!==(d.job_id||c.candidate?.id))))reasons.push('DEPENDENCY_UNCERTIFIED:'+d.job_id);
   }
   if(!current)for(const w of ownership.active||[]){
    if(resourceConflict(j.resources,w.resources||[])||scopeConflict(j.scopes,w.scope||[]))reasons.push('OWNER_CONFLICT:'+w.id);
