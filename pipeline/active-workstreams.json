@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:25:00Z",
+  "updated_at": "2026-10-08T13:35:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -20,14 +20,14 @@
       "claimed_at": "2026-10-08T13:15:00Z",
       "base_main_sha": "869c163b395a49136fba36a760f3bbf31308b31c",
       "status": "blocked",
-      "phase": "PLATFORM BLOCKER — NATIVE/WEBGL EVIDENCE UNAVAILABLE TO THIS CONNECTOR",
+      "phase": "SECOND ART CORRECTION COMMITTED / AWAITING REAL UNITY CAPTURE",
       "dependency": "M05-R1 verified; preserve finished SHARP sawmill, all gameplay, global camera and HUD; zero credits; no M11",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Resume same M07-R1 after obtaining new production run/artifact from commit f9d1f5b3f44f5a084c7ac09140ad6d1c12ff6d73; visually inspect runtime-home-initial / runtime-left-under-construction / runtime-left-built, then WebGL publish full regression only after visual acceptance.",
+      "next": "Identify production Actions run for 52c69dcdba04e5a81679de460b494ffba2649647; inspect native runtime-home-initial, runtime-left-under-construction, runtime-left-built, and reloaded-under-construction; correct further if needed. Then only after native VISUAL PASS publish/verify WebGL and close.",
       "completed_at": null,
       "runner_released": true,
-      "blocker": "No available GitHub connector action to list/dispatch current push-triggered GitHub Actions runs; cannot retrieve new Unity native/WebGL screenshots, visually validate or publish certified build from this session. Source change committed but NOT certified."
+      "blocker": "Second iteration commit 52c69dcdba04e5a81679de460b494ffba2649647 fixes flattened screen-space scaffold orientation identified from actual artifact 11552904856. GitHub connector still lacks push-run listing/dispatch; awaiting verified new production run/artifact and direct frame review before any visual PASS or WebGL publication."
     }
   ],
   "history": [
