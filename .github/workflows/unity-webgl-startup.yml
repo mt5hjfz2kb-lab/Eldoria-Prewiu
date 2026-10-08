@@ -168,22 +168,29 @@ jobs:
             return Object.fromEntries(['revision','wood','stone','gatheredWood','gatheredStone','march','sawmill','bastion','barracks','archers','trained','configured','scout','engendro','objective'].map(k=>[k,s[k]]));
           }
           async function resetPublishedGame(page,logs){
-            // Start observing before the first tap. If the control was already armed
-            // (for example after a scene/reload edge), the first tap can legitimately
-            // commit the reset; starting the state window afterwards would miss it.
+            // A deliberate two-step reset is part of the real owner UX. Observe the first
+            // touch before deciding whether it armed confirmation or already completed a
+            // previously armed reset, then require explicit execution evidence.
             const start=logs.length;
-            await tapLoggedUi(page,logs,'reset');
+            await tapLoggedUi(page,logs,'reset',start);
             const canonical=s=>s.revision===0&&s.sawmill===0&&s.bastion===1&&s.objective==='b1.build-sawmill';
-            const firstDeadline=Date.now()+1200;
+            const firstDeadline=Date.now()+2500;
+            let armed=false;
             while(Date.now()<firstDeadline){
               for(let i=logs.length-1;i>=start;i--){
-                const state=parseState(logs[i].text||'');
+                const text=logs[i].text||'';
+                const state=parseState(text);
                 if(state&&canonical(state)){report.states.push(state);await sleep(1200);return state;}
+                if(text.includes('ELDORIA_PLAYABLE_RESET armed=True'))armed=true;
               }
+              if(armed)break;
               await sleep(100);
             }
-            await tapLoggedUi(page,logs,'reset');
-            const state=await waitState(logs,canonical,30000,'canonical reset',start);
+            if(!armed)throw new Error('Reset first touch neither armed confirmation nor executed reset');
+            const executeStart=logs.length;
+            await tapLoggedUi(page,logs,'reset',start);
+            await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_RESET execute=True'),10000,'reset execution',executeStart);
+            const state=await waitState(logs,canonical,30000,'canonical reset',executeStart);
             await sleep(1200);
             return state;
           }
