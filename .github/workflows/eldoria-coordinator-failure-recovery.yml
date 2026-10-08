@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/eldoria-coordinator-failure-recovery.yml'
       - 'pipeline/active-workstreams.json'
+      # Recheck only the existing R2-B probe after an authorized bounded QA-source repair.
+      - 'qa/r2b-webgl-choice-probe.cjs'
   workflow_run:
     workflows: ["Eldoria local agent isolated pilot v1", "[PRODUCTION] Valoria First Playable City Slice v1", "Publish Eldoria Preview"]
     types: [completed]
@@ -243,7 +245,9 @@ jobs:
       (github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event_name == 'workflow_run') ||
       (github.event_name == 'push' &&
-      github.event.head_commit.message == 'ops(r2-b): resume already built candidate WebGL QA without Unity')
+      (github.event.head_commit.message == 'ops(r2-b): resume already built candidate WebGL QA without Unity' ||
+       (startsWith(github.event.head_commit.message, 'fix(r2-e): ') &&
+        contains(github.event.head_commit.modified, 'qa/r2b-webgl-choice-probe.cjs'))))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
