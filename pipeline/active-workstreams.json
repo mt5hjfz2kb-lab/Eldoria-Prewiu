@@ -80,6 +80,27 @@
         "owner_notification_delivered": "NOT_VERIFIED",
         "zero_paid_apis": true
       }
+    },
+    {
+      "id": "eldoria-m04-limited-recovery-v1",
+      "title": "M04 isolated tests and bounded incident-recovery integration",
+      "owner": "chat-dg-v3-20261008",
+      "scope": [
+        "tools/m04/incidents.mjs",
+        "tests/m04/incidents.test.mjs",
+        "docs/evidence/eldoria-m04-limited-recovery-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T20:38:00+02:00",
+      "base_main_sha": "fcf544acb6584101181eeb3b2c4b0ff148f355ee",
+      "status": "active",
+      "phase": "M04 strict transition regression and isolated QA; PR27 excluded",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Pure Node incident management; no Unity, art or production workflows",
+      "paid_credits": 0,
+      "dependency": "Preserve PR #27, PR #26, M07 and existing local agent preflight; no shared runner, no merge; independent QA required",
+      "next": "Repair the four misleading M04 tests without weakening state transitions, run isolated regression, inspect integration surface without duplicating PR27"
     }
   ],
   "history": [
