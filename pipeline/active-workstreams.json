@@ -47,7 +47,8 @@
       "paid_credits": 0,
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
+      "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner.",
+      "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged."
     },
     {
       "id": "eldoria-dg-original-route-recovery-v1",
