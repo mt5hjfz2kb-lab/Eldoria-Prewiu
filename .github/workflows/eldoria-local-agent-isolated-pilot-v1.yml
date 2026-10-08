@@ -9,6 +9,9 @@ on:
         default: false
   issue_comment:
     types: [created]
+  push:
+    branches: [fix/local-maintenance-json-labels-20261008]
+    paths: ['.github/workflows/eldoria-local-agent-isolated-pilot-v1.yml']
 permissions:
   contents: read
 concurrency:
@@ -120,6 +123,7 @@ jobs:
 
   maintenance-prepare:
     if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/fix/local-maintenance-json-labels-20261008' && github.event.head_commit.message == 'test: dispatch bounded first maintenance validation') ||
       (github.event_name == 'workflow_dispatch' && inputs.maintenance_only == true) ||
       (github.event_name == 'issue_comment' && github.event.issue.number == 25 && github.event.comment.body == 'ELDORIA_LOCAL_MAINTENANCE_V1_AUTHORIZED_20261008')
     runs-on: ubuntu-latest
