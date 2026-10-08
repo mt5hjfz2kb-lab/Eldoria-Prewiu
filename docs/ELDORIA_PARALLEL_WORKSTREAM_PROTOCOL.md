@@ -13,7 +13,15 @@ The repository remains the source of truth. This protocol adds a small coordinat
 
 Once an agent successfully claims a workstream, it must continue autonomously through diagnosis, correction, rerun, validation and closeout. **Progress updates are informational only and MUST NOT suspend execution.** The agent must not wait for the owner to say `continúa`, `sigue`, `reanuda` or equivalent when the next action is already determined by the repository, existing evidence, canonical planner/routing, tests or zero-cost tooling.
 
-A failed gate is the beginning of the next bounded diagnostic/correction cycle; it is **not** a valid reason to end the work session. Completing a sub-step, producing an artifact, dispatching a run, reaching a new phase, needing to inspect captures, or needing to reroute through the canonical planner are also not valid stopping points.
+A failed gate is the beginning of the next bounded diagnostic/correction cycle; it is **not** a valid reason to end the work session.
+### Autonomous closure without owner-review dependency
+
+Owner/manual review is not a terminal gate by default. When the workstream's requested scope can be certified through canonical repository evidence, automated or device-equivalent probes, matched captures/screenshots, gameplay/state/persistence tests, release gates and verification of the actually published build, the owning agent must close autonomously once those gates pass.
+
+Do not leave a workstream active with reasons such as “awaiting owner review”, “awaiting owner physical-device confirmation”, “ready for owner validation”, or equivalent. Absence of owner testing is not a blocker. If the owner later reports a concrete defect, that evidence can revoke/reopen the PASS and the same canonical workstream must resume from the real repository state.
+
+A specific owner decision remains a genuine human blocker only when the unresolved criterion is inherently subjective and materially changes product direction, or when explicit spend/irreversible authorization, credentials, or owner-only input is truly required.
+ Completing a sub-step, producing an artifact, dispatching a run, reaching a new phase, needing to inspect captures, or needing to reroute through the canonical planner are also not valid stopping points.
 
 An owned workstream may stop only when one of these terminal conditions is true:
 
