@@ -117,27 +117,6 @@
       },
       "runner_released": true,
       "blocker": "M07 owner still BLOCKED 2/6 gates; cannot execute R1 QA on unaccepted visual work. Existing workflow needs gate installed at fed8478394, but no READY event / successful new QA job is available for certification. M04 bounded repair-to-retest across departments remains out of scope of this QA technical gate."
-    },
-    {
-      "id": "eldoria-m16-parallel-readiness-qa-v1",
-      "title": "M16 original portfolio parallel readiness regression",
-      "owner": "chat-dg-v3-parallel-20261008",
-      "scope": [
-        "tests/m16a/evaluate.test.mjs",
-        ".github/workflows/m16-pilot-two-jobs.yml",
-        "docs/evidence/eldoria-m16-parallel-readiness-qa-v1/**",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [],
-      "status": "active",
-      "claimed_at": "2026-10-08T21:51:00+02:00",
-      "base_main_sha": "d03b21bbbfdbc05b5b74cad26e1efe1ffa92b7c6",
-      "phase": "Verify existing scheduler parallel-ready and exclusion gates without fabricating product tasks",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Node regression checks only; no player-visible art change",
-      "paid_credits": 0,
-      "dependency": "R1 M07 blocked and QA mobile closed; no second independent authorized production job exists to schedule; no cross-owner work",
-      "next": "Add focused tests of two compatible READY jobs vs one blocked conflict; run existing CI; close proof"
     }
   ],
   "history": [
@@ -4585,6 +4564,39 @@
         "real_published_mobile": true,
         "physical_iphone_not_tested": true,
         "m07_visual_not_accepted": true,
+        "paid_credits": 0
+      }
+    },
+    {
+      "id": "eldoria-m16-parallel-readiness-qa-v1",
+      "title": "M16 original portfolio parallel readiness regression",
+      "owner": "chat-dg-v3-parallel-20261008",
+      "scope": [
+        "tests/m16a/evaluate.test.mjs",
+        ".github/workflows/m16-pilot-two-jobs.yml",
+        "docs/evidence/eldoria-m16-parallel-readiness-qa-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "status": "completed",
+      "claimed_at": "2026-10-08T21:51:00+02:00",
+      "base_main_sha": "d03b21bbbfdbc05b5b74cad26e1efe1ffa92b7c6",
+      "phase": "CLOSED: M16 compatibility and exclusion proven, real portfolio concurrency unavailable",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Node regression checks only; no player-visible art change",
+      "paid_credits": 0,
+      "dependency": "R1 M07 blocked and QA mobile closed; no second independent authorized production job exists to schedule; no cross-owner work",
+      "completed_at": "2026-10-08T21:51:00+02:00",
+      "runner_released": true,
+      "result": {
+        "status": "TECHNICAL_PARALLEL_READINESS_PASS",
+        "run": 37835190270,
+        "source_sha": "6e6ed1b4bdbc983f613ae8002575ba71122e2877",
+        "m16_job": 113510314443,
+        "m03_qa_job": 113510733279,
+        "artifact_id": 11574718311,
+        "actual_two_productive_jobs": "NOT_DEMONSTRATED_NO_TWO_ELIGIBLE_R1_JOBS",
+        "evidence": "docs/evidence/eldoria-m16-parallel-readiness-qa-v1/RESULT.md",
         "paid_credits": 0
       }
     }
