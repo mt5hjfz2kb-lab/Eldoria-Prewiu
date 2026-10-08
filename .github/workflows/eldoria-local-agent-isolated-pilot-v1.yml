@@ -163,7 +163,7 @@ jobs:
           const fs=require('node:fs');
           const s=fs.readFileSync(process.argv[2],'utf8');
           try { const v=JSON.parse(s); process.exit(v!==null && typeof v==='object' && !Array.isArray(v)?0:1); }
-          catch(e) { if(e instanceof SyntaxError) process.exit(1); console.error(e); process.exit(2); }
+          catch(e) { if(e instanceof SyntaxError) { console.error('JSON_VALIDATOR_REJECTED chars='+s.length+' hex='+Buffer.from(s,'utf8').toString('hex')+' reason='+e.message); process.exit(1); } console.error(e); process.exit(2); }
           '@
           [IO.File]::WriteAllText($validator,$nodeCode,[Text.UTF8Encoding]::new($false))
           $task=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-maintenance-order/task.json') -Raw|ConvertFrom-Json
