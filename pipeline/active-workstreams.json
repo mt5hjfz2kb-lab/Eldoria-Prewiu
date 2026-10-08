@@ -214,11 +214,12 @@
       "title": "D13/D14/D02 performance QA acceptance planning",
       "owner": "eldoria-dg-r2-approved-20261008",
       "scope": [
-        "docs/evidence/eldoria-r2-e/**"
+        "docs/evidence/eldoria-r2-e/**",
+        "qa/r2b-webgl-choice-probe.cjs"
       ],
       "resources": [],
       "status": "active",
-      "phase": "AUTHORIZED_PREPRODUCTION_READ_ONLY / NOT ACCEPTED / NO GAME ART CLAIM",
+      "phase": "AUTHORIZED R2-B CANDIDATE WEBGL REAL FUNCTIONAL QA / PROTECT STABLE",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
