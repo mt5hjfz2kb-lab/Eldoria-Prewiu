@@ -75,6 +75,8 @@ namespace Eldoria.Domain
         public bool MarchConfigured;
         public string PreparedHeroId = "aldric";
         public ArmyRoster PreparedTroops = new ArmyRoster();
+        // R2-B: one-time Region 1 forest decision, stored in the canonical player save.
+        public string RegionOneForestChoice = ""; // survey or harvest; empty on legacy saves
         public int ForestRemaining = 1250;
         public int QuarryRemaining = 5200;
         public long BuildingCompletesUtcTicks;
