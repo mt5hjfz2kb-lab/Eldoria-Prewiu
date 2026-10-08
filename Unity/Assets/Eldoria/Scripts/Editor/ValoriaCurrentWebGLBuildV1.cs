@@ -64,6 +64,7 @@ namespace Eldoria.EditorTools
                          FindObjectsInactive.Include, FindObjectsSortMode.None))
                 renderer.GsplatAsset = null;
 
+            var hotspotIds = NormalizeHotspotScriptIdentity(scene);
             var stripped = StripSerializedGsplatReferences(scene);
             var remappedMaterials = RemapMaterialsOutOfStateAssets(scene);
 
@@ -97,6 +98,8 @@ namespace Eldoria.EditorTools
             loader.Renderer=null;
             EditorSceneManager.SaveScene(scene,TempScene,true);
             AssetDatabase.SaveAssets();
+            scene=EditorSceneManager.OpenScene(TempScene,OpenSceneMode.Single);
+            AssertHotspotRoundtrip(scene,hotspotIds);
             var disabledFeatures=new Dictionary<ScriptableRendererFeature,bool>();
             var forward=AssetDatabase.LoadAssetAtPath<UniversalRendererData>(RendererDataPath);
             if(forward!=null)foreach(var feature in forward.rendererFeatures)
@@ -132,6 +135,44 @@ namespace Eldoria.EditorTools
                 AssetDatabase.DeleteAsset(TempFolder);
                 AssetDatabase.Refresh();
             }
+        }
+
+        const string HotspotSource = "Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs";
+        static Dictionary<string,string> NormalizeHotspotScriptIdentity(Scene scene)
+        {
+            var ids=new Dictionary<string,string>();
+            foreach(var root in scene.GetRootGameObjects())
+            foreach(var old in root.GetComponentsInChildren<WorldHotspot>(true))
+            {
+                string key=HotspotPath(old.transform),id=old.Id;
+                if(string.IsNullOrEmpty(id))throw new Exception("Production hotspot has no Id: "+key);
+                ids.Add(key,id);
+                // Older production scenes carry a scene-local MonoScript for this type.
+                // Recreate the same binding with its stable source asset; colliders stay intact.
+                var go=old.gameObject;bool active=old.enabled;
+                UnityEngine.Object.DestroyImmediate(old);
+                var hotspot=go.AddComponent<WorldHotspot>();hotspot.Id=id;hotspot.enabled=active;
+                EditorUtility.SetDirty(hotspot);
+                if(AssetDatabase.GetAssetPath(MonoScript.FromMonoBehaviour(hotspot))!=HotspotSource)
+                    throw new Exception("Hotspot did not bind its stable source: "+key);
+            }
+            return ids;
+        }
+        static string HotspotPath(Transform t)=>t.parent==null?t.name:HotspotPath(t.parent)+"/"+t.name;
+        static void AssertHotspotRoundtrip(Scene scene,Dictionary<string,string> expected)
+        {
+            int count=0;
+            foreach(var root in scene.GetRootGameObjects())
+            foreach(var hotspot in root.GetComponentsInChildren<WorldHotspot>(true))
+            {
+                var key=HotspotPath(hotspot.transform);
+                if(!expected.TryGetValue(key,out var id)||hotspot.Id!=id||
+                    AssetDatabase.GetAssetPath(MonoScript.FromMonoBehaviour(hotspot))!=HotspotSource)
+                    throw new Exception("Hotspot serialization roundtrip failed: "+key);
+                count++;
+            }
+            if(count!=expected.Count)throw new Exception("Hotspot binding count changed during scene save/reload.");
+            Debug.Log("VALORIA_WEBGL_HOTSPOT_ROUNDTRIP_PASS count="+count);
         }
 
         static ScriptableRendererFeature EnsureGsplatUrpFeatureForWebGL(out bool added)

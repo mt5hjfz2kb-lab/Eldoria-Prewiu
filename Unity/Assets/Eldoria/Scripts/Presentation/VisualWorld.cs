@@ -1073,7 +1073,6 @@ namespace Eldoria.Presentation
         {var go=Shape(n,PrimitiveType.Cylinder,p,s,c);go.transform.rotation=q;return go;}
         static GameObject Sphere(string n,Vector3 p,Vector3 s,Color c)=>Shape(n,PrimitiveType.Sphere,p,s,c);
     }
-    public sealed class WorldHotspot:MonoBehaviour { public string Id; }
     public sealed class BreachPulse:MonoBehaviour
     {
         public float Speed=1;
