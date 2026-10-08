@@ -89,7 +89,8 @@
         "tools/m04/incidents.mjs",
         "tests/m04/incidents.test.mjs",
         "docs/evidence/eldoria-m04-limited-recovery-v1/**",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        ".github/workflows/eldoria-m04-tests.yml"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T20:38:00+02:00",
@@ -100,7 +101,7 @@
       "art_production_routing_reason": "Pure Node incident management; no Unity, art or production workflows",
       "paid_credits": 0,
       "dependency": "Preserve PR #27, PR #26, M07 and existing local agent preflight; no shared runner, no merge; independent QA required",
-      "next": "Repair the four misleading M04 tests without weakening state transitions, run isolated regression, inspect integration surface without duplicating PR27"
+      "next": "PR #29 isolated lifecycle-test repair; run an independent GitHub-hosted Node gate, then review M04 integration against PR #27"
     }
   ],
   "history": [
