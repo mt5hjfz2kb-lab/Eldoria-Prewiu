@@ -188,13 +188,15 @@ jobs:
             $cases=@($data.cases)
             Write-Output ('MODEL_JSON_CANDIDATE='+($res.response -replace '[\r\n]+',' '))
             if($cases.Count -ne 6){throw 'Expected six cases'}
+            Add-Type -AssemblyName System.Web.Extensions
+            $jsonParser=New-Object System.Web.Script.Serialization.JavaScriptSerializer
             $seen=@{};$good=0;$bad=0;$boms=0;$corrections=0
             foreach($v in $cases){
               if($v.input -isnot [string] -or $v.input.Length -gt 120 -or $v.valid -isnot [bool] -or $seen.ContainsKey($v.input)){throw 'Invalid case schema'}
               $seen[$v.input]=$true;$raw=$v.input
               if($raw.StartsWith([char]0xFEFF)){$raw=$raw.Substring(1);$boms++}
               $ok=$false
-              try{$x=ConvertFrom-Json -InputObject $raw -ErrorAction Stop;$ok=$null -ne $x -and $x -is [pscustomobject] -and $raw.TrimStart().StartsWith('{')}catch{ Write-Output ('CASE_PARSE_ERROR_INDEX='+[array]::IndexOf($cases,$v)+' MESSAGE='+$_.Exception.Message) }
+              try{$x=$jsonParser.DeserializeObject($raw);$ok=$null -ne $x -and $x -is [System.Collections.IDictionary] -and $raw.TrimStart().StartsWith('{')}catch{ Write-Output ('CASE_PARSE_ERROR_INDEX='+[array]::IndexOf($cases,$v)+' MESSAGE='+$_.Exception.Message) }
               Write-Output ('CASE_CHECK_INDEX='+[array]::IndexOf($cases,$v)+' INPUT='+($v.input|ConvertTo-Json -Compress)+' CLAIM='+$v.valid+' PARSED='+$ok)
               if($ok -ne $v.valid){$v.valid=$ok;$corrections++}
               if($ok){$good++}else{$bad++}
