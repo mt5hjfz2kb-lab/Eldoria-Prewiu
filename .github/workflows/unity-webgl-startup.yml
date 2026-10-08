@@ -47,7 +47,7 @@ jobs:
           function parseUi(logs,id){
             for(let i=logs.length-1;i>=0;i--){
               const t=logs[i].text||'';
-              const m=t.match(new RegExp('ELDORIA_PLAYABLE_UI id='+id+' x=([0-9.]+) y=([0-9.]+)'));
+              const m=t.match(new RegExp('ELDORIA_PLAYABLE_UI id='+id+' x=([-0-9.]+) y=([-0-9.]+)'));
               if(m)return {x:+m[1],unityY:+m[2]};
             }
             return null;
@@ -176,7 +176,7 @@ jobs:
             return state;
           }
           async function fullPublishedFlow(page,logs,orientation){
-            const result={orientation,steps:[],pass:false,persistencePass:false,resetPass:false};
+            const result={orientation,steps:[],selectedBuildings:[],pass:false,persistencePass:false,resetPass:false};
             report.fullFlows=report.fullFlows||[];report.fullFlows.push(result);
             await page.setViewportSize(orientation==='portrait'?{width:390,height:844}:{width:844,height:390});
             await sleep(1000);
@@ -207,19 +207,22 @@ jobs:
               const action=detailedUi(logs,'buildingAction',before);
               let buildingTap=null;
               if(action&&action.visible){
-                if(state.objective==='b1.build-sawmill'){
-                  // Focus through the guided action, then independently select the visible parcel by touch.
-                  await tapLoggedUi(page,logs,'buildingClose',before);await sleep(300);
-                  const hotspot=parseHotspot(logs,'sawmill');
+                const buildingId=({'b1.build-sawmill':'sawmill','b1.ascend':'bastion','b2.build-barracks':'barracks','b2.train-archers':'barracks'})[state.objective];
+                if(buildingId&&!result.selectedBuildings.includes(buildingId)){
+                  // Independently select each real building at its visible presented-frame position.
+                  await tapLoggedUi(page,logs,'buildingClose',before);await sleep(500);
+                  const hotspot=parseHotspot(logs,buildingId);
                   const canvas=page.locator('canvas'),hotspotBox=await canvas.boundingBox();
                   const dim=await canvas.evaluate(c=>({width:c.width,height:c.height}));
-                  if(!hotspot)throw new Error('Presented sawmill geometry missing');
+                  if(!hotspot)throw new Error('Presented '+buildingId+' geometry missing');
                   const point=hotspotPoint(hotspot,hotspotBox,dim);
-                  if(point.x<hotspotBox.x||point.x>hotspotBox.x+hotspotBox.width||point.y<hotspotBox.y||point.y>hotspotBox.y+hotspotBox.height)throw new Error('Guided focus left the sawmill outside viewport');
+                  if(point.x<hotspotBox.x||point.x>hotspotBox.x+hotspotBox.width||point.y<hotspotBox.y||point.y>hotspotBox.y+hotspotBox.height)throw new Error('Guided focus left '+buildingId+' outside viewport');
                   const selectStart=logs.length;
                   await page.touchscreen.tap(point.x,point.y);
-                  await waitLog(logs,t=>/ELDORIA_PLAYABLE_UI id=buildingAction .*label=RECONSTRUIR/.test(t),10000,'visible sawmill selection',selectStart);
-                  result.presentedBuildingSelectionPass=true;
+                  await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction ')&&/visible=True/.test(t),10000,'visible '+buildingId+' selection',selectStart);
+                  result.selectedBuildings.push(buildingId);
+                  result.presentedBuildingSelectionPass=result.selectedBuildings.length===3;
+                  await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-selected-'+buildingId+'.png'});
                 }
                 buildingTap=await tapLoggedUi(page,logs,'buildingAction',before);await sleep(500);
               }
