@@ -13,7 +13,7 @@ permissions:
   contents: read
   issues: write
 concurrency:
-  group: eldoria-recovery-${{ github.event.workflow_run.id }}
+  group: eldoria-recovery-${{ github.event.workflow_run.id || github.run_id }}
   cancel-in-progress: false
 jobs:
   classify-and-escalate:
