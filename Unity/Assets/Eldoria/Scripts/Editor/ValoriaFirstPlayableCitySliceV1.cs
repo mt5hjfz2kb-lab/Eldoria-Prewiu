@@ -425,6 +425,51 @@ namespace Eldoria.EditorTools
                         new Vector3(sx*.34f,.10f,.17f),timber);
                     Beam("stacked timber 2",new Vector3(-sx*.20f,-sy*.28f,sz*.13f),
                         new Vector3(sx*.34f,.10f,.17f),timber);
+                    // A recognisable half-built sawmill must read at HOME from a single
+                    // source-intrinsic viewpoint: give it *wall volume* and a partial
+                    // roof, not just a flat fence of scaffolding rails.
+                    // All parts stay inside LeftCabinParcel Construction, never Built.
+                    Material masonry=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    masonry.SetColor("_BaseColor",new Color(.43f,.41f,.36f,1f));
+                    AssetDatabase.AddObjectToAsset(masonry,assetFolder+"/state-0.asset");
+                    Material roofing=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    roofing.SetColor("_BaseColor",new Color(.27f,.30f,.30f,1f));
+                    AssetDatabase.AddObjectToAsset(roofing,assetFolder+"/state-0.asset");
+                    // Two partial thick stone corner walls anchor the frame to the
+                    // cleaned parcel ground while keeping the doorway open.
+                    Beam("left unfinished stone wall",new Vector3(-sx*.37f,-sy*.25f,sz*.08f),
+                        new Vector3(sx*.22f,sy*.40f,sz*.31f),masonry);
+                    Beam("right unfinished stone wall",new Vector3(sx*.37f,-sy*.25f,sz*.08f),
+                        new Vector3(sx*.22f,sy*.40f,sz*.31f),masonry);
+                    // A timber post-and-lintel shell provides a visible architectural
+                    // volume. The rear frame sits behind the forward facade in depth.
+                    foreach(float z in new[]{-sz*.30f,sz*.30f})
+                    {
+                        foreach(float x in new[]{-sx*.43f,sx*.43f})
+                            Beam("upright wall timber",new Vector3(x,sy*.02f,z),
+                                new Vector3(.13f,sy*.85f,.14f),timber);
+                        Beam("eaves lintel",new Vector3(0f,sy*.40f,z),
+                            new Vector3(sx*.95f,.13f,.15f),timber);
+                        Beam("roof ridge post",new Vector3(0f,sy*.57f,z),
+                            new Vector3(.13f,sy*.36f,.14f),timber);
+                    }
+                    Beam("long roof ridge",new Vector3(0f,sy*.75f,0f),
+                        new Vector3(.14f,.14f,sz*.86f),timber);
+                    // First installed roof half: several narrow individual roofing
+                    // courses on the left slope; opposite slope remains an open frame.
+                    for(int row=0;row<4;row++)
+                    {
+                        float t=(row+.5f)/4f;
+                        Beam("installed roof course "+row,
+                            new Vector3(-sx*(.06f+.32f*t),sy*(.73f-.28f*t),sz*.08f),
+                            new Vector3(sx*.23f,.075f,sz*.76f),roofing,-24f);
+                    }
+                    // Crosswise timber braces and construction supplies give readable
+                    // unfinished detail without hiding the certified SHARP city.
+                    Beam("front cross brace left",new Vector3(-sx*.27f,sy*.12f,-sz*.32f),
+                        new Vector3(sx*.44f,.10f,.13f),timber,49f);
+                    Beam("loose timber on ground",new Vector3(sx*.10f,-sy*.41f,sz*.40f),
+                        new Vector3(sx*.45f,.12f,.14f),timber);
                 }
                 return go;
             }
