@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {classify,ingest,transition,executiveReport,forM16} from '../../tools/m04/incidents.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {classify,ingest,transition,executiveReport,forM16,findingFromWorkflowFailure,retryDecision} from '../../tools/m04/incidents.mjs';
 const f=()=>({schema_version:1,id:'one',subsystem:'webgl',scenario:'reload',error_code:'FATAL',failure_signature:'stable signature',kind:'PUBLISHED',origin:'product',impact:'fatal',source_sha:'a'.repeat(40),run_id:'12',artifact_id:'22',evidence_ref:'https://example.test/a',observed_at:'2026-10-08T10:00:00Z'});
 const empty=()=>({schema_version:1,incidents:[]});
 const create=()=>ingest(empty(),f());
@@ -28,4 +28,30 @@ test('17 strict verification cannot be skipped',()=>{
  z=transition(z,id,'ASSIGNED',{at:'2026-10-08T10:45:00Z',actor:'coordinator'});
  z=transition(z,id,'FIX_CANDIDATE',{at:'2026-10-08T11:00:00Z',actor:'owner'});
  assert.throws(()=>transition(z,id,'RESOLVED',{at:'2026-10-08T12:00:00Z',actor:'qa'}),/ILLEGAL_TRANSITION/);
+});
+
+test('18 authenticated-run-shaped failure maps to stable infrastructure observation',()=>{
+ const run={id:42,head_sha:'a'.repeat(40),html_url:'https://github.com/example/actions/runs/42',conclusion:'failure'};
+ const job={id:123,name:'maintenance-worker',conclusion:'failure'};
+ const f=findingFromWorkflowFailure(run,job,{observed_at:'2026-10-08T12:00:00Z'});
+ assert.equal(classify(f).department,'platform');
+ assert.equal(ingest(empty(),f).incidents[0].status,'NEW');
+ assert.deepEqual(findingFromWorkflowFailure(run,job,{observed_at:'2026-10-08T12:00:00Z'}),f);
+});
+test('19 skipped or successful jobs cannot generate incident',()=>{
+ const run={id:42,head_sha:'a'.repeat(40),html_url:'https://github.com/example/actions/runs/42',conclusion:'failure'};
+ assert.throws(()=>findingFromWorkflowFailure(run,{name:'review',conclusion:'skipped'},{observed_at:'2026-10-08T12:00:00Z'}),/INVALID_WORKFLOW_FAILURE/);
+});
+test('20 retries require explicit authorization and available owner',()=>{
+ assert.equal(retryDecision({transient:true}).allowed,false);
+ assert.equal(retryDecision({transient:true,authorized:true,owner_conflict:true}).reason,'OWNER_CONFLICT');
+});
+test('21 deterministic failures must not retry unchanged SHA',()=>{
+ assert.equal(retryDecision({authorized:true}).reason,'SAME_SOURCE_DETERMINISTIC_FAILURE');
+ assert.equal(retryDecision({authorized:true,source_changed:true}).allowed,true);
+});
+test('22 max two bounded retries with immutable budget',()=>{
+ assert.equal(retryDecision({authorized:true,transient:true,attempts:1}).allowed,true);
+ assert.equal(retryDecision({authorized:true,transient:true,attempts:2}).reason,'RETRY_EXHAUSTED');
+ assert.throws(()=>retryDecision({max_attempts:100}),/INVALID_RETRY_BUDGET/);
 });
