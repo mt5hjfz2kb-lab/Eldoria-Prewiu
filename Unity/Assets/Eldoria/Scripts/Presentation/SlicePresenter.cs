@@ -457,11 +457,23 @@ namespace Eldoria.Presentation
             else if(id=="sawmill"||id=="barracks"||id=="bastion")OpenBuildingPanel(id);
         }
 
+        void SetBuildingPanelOpen(bool open)
+        {
+            if(buildingPanel!=null)buildingPanel.SetActive(open);
+            var dock=GameObject.Find("World objective dock");
+            if(dock!=null)dock.SetActive(!open);
+        }
+
+        void CloseBuildingPanel()
+        {
+            SetBuildingPanelOpen(false);
+        }
+
         void OpenWorldPanel(string id)
         {
             if(buildingPanel==null)return;
             var s=gateway.Snapshot();
-            buildingPanel.SetActive(true);
+            SetBuildingPanelOpen(true);
             buildingAction.onClick.RemoveAllListeners();
 #if UNITY_WEBGL && !UNITY_EDITOR
             Canvas.ForceUpdateCanvases();
@@ -475,7 +487,7 @@ namespace Eldoria.Presentation
                 buildingBody.text="Nodo de madera · "+s.ForestRemaining+" disponibles.\nEnvía una Marcha desde Valoria y la recompensa se acredita al regresar.";
                 buildingAction.GetComponentInChildren<Text>().text="ENVIAR MARCHA";
                 buildingAction.interactable=s.ForestRemaining>0&&s.March.Phase=="idle";
-                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Gather",id);});
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Gather",id);});
             }
             else if(id=="quarry-valoria")
             {
@@ -483,7 +495,7 @@ namespace Eldoria.Presentation
                 buildingBody.text="Nodo de piedra · "+s.QuarryRemaining+" disponibles.\nLa cantera demuestra la segunda familia económica del mapa 4X.";
                 buildingAction.GetComponentInChildren<Text>().text="ENVIAR MARCHA";
                 buildingAction.interactable=s.QuarryRemaining>0&&s.March.Phase=="idle";
-                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Gather",id);});
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Gather",id);});
             }
             else if(id=="old-watch-ruin")
             {
@@ -501,7 +513,7 @@ namespace Eldoria.Presentation
                     :"Primera amenaza PvE de la Región I. La victoria despeja la ruta y la recompensa vuelve con la Marcha.";
                 buildingAction.GetComponentInChildren<Text>().text="ATACAR";
                 buildingAction.interactable=s.March.Phase=="idle"&&!(engendro?s.EngendroDefeated:s.ScoutDefeated);
-                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Fight",id);});
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Fight",id);});
             }
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonRectNextFrame(buildingAction,"WORLD_ACTION"));
@@ -512,7 +524,7 @@ namespace Eldoria.Presentation
             if(buildingPanel==null)return;
             var s=gateway.Snapshot();
             currentBuildingId=id;
-            buildingPanel.SetActive(true);
+            SetBuildingPanelOpen(true);
             PositionBuildingPanel(id);
             buildingAction.onClick.RemoveAllListeners();
             if(id=="sawmill")
@@ -525,7 +537,7 @@ namespace Eldoria.Presentation
                 buildingAction.interactable=ParcelBuildingStates.For(s,"sawmill")==ParcelBuildingState.AVAILABLE&&s.BuildingCompletesUtcTicks==0;
                 if(ParcelBuildingStates.For(s,"sawmill")==ParcelBuildingState.UNDER_CONSTRUCTION)
                 { buildingBody.text="Reconstrucción en curso · el aserradero aparecerá al terminar la obra.";buildingAction.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN"; }
-                if(s.SawmillLevel==0)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","sawmill");});
+                if(s.SawmillLevel==0)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Build","sawmill");});
             }
             else if(id=="barracks")
             {
@@ -538,7 +550,7 @@ namespace Eldoria.Presentation
                     if(ParcelBuildingStates.For(s,"barracks")==ParcelBuildingState.UNDER_CONSTRUCTION)
                     { buildingBody.text="Construcción del cuartel en curso · la parcela militar se activará al terminar.";buildingAction.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN"; }
                     else if(s.BastionLevel<2)buildingBody.text="Parcela militar reservada · disponible al alcanzar Bastión II.";
-                    buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
+                    buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Build","barracks");});
                 }
                 else if((s.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
                 {
@@ -548,7 +560,7 @@ namespace Eldoria.Presentation
                     buildingAction.GetComponentInChildren<Text>().text="RECLUTAR +"+SliceRules.RecruitArchers;
                     buildingAction.interactable=s.RecruitmentCompletesUtcTicks==0;
                     if(buildingAction.interactable)
-                        buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Recruit","archer:t1");});
+                        buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Recruit","archer:t1");});
                 }
                 else
                 {
@@ -582,7 +594,7 @@ namespace Eldoria.Presentation
                         "\nDesbloquea: Cuartel · Capítulo II · preparación de Marcha.";
                     buildingAction.GetComponentInChildren<Text>().text="ASCENDER A BASTIÓN II";
                     buildingAction.interactable=BastionProgressionCatalog.RequirementsMet(s,next);
-                    if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
+                    if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("AdvanceBastion","bastion");});
                 }
             }
             RefreshBuildingPanelClock(s);
@@ -625,6 +637,24 @@ namespace Eldoria.Presentation
             float maxY=halfH-64f-rt.rect.height*.5f;
             local.y=Mathf.Clamp(local.y-80f,Mathf.Min(minY,maxY),Mathf.Max(minY,maxY));
             rt.anchoredPosition=local;
+
+            // Keep the spatial CTA associated with the building without allowing it to
+            // collide with the persistent quest card. This is especially important in
+            // landscape, where the canonical sawmill target sits beneath the upper-left HUD.
+            var quest=safe.Find("Quest panel") as RectTransform;
+            if(quest!=null&&quest.gameObject.activeInHierarchy)
+            {
+                Canvas.ForceUpdateCanvases();
+                var panelCorners=new Vector3[4];var questCorners=new Vector3[4];
+                rt.GetWorldCorners(panelCorners);quest.GetWorldCorners(questCorners);
+                var panelRect=new Rect(panelCorners[0].x,panelCorners[0].y,panelCorners[2].x-panelCorners[0].x,panelCorners[2].y-panelCorners[0].y);
+                var questRect=new Rect(questCorners[0].x,questCorners[0].y,questCorners[2].x-questCorners[0].x,questCorners[2].y-questCorners[0].y);
+                if(panelRect.Overlaps(questRect))
+                {
+                    float overlap=panelRect.yMax-questRect.yMin;
+                    rt.anchoredPosition+=new Vector2(0,-overlap-10f);
+                }
+            }
         }
 
         void RefreshBuildingPanelClock(PlayerState s)
@@ -646,7 +676,7 @@ namespace Eldoria.Presentation
             var s=gateway.Snapshot();
             var prepared=SliceRules.Expedition(s.Available,"aldric");
             currentBuildingId="barracks";
-            buildingPanel.SetActive(true);
+            SetBuildingPanelOpen(true);
             PositionBuildingPanel("barracks");
             buildingAction.onClick.RemoveAllListeners();
             buildingTitle.text="PREPARAR MARCHA";
@@ -657,7 +687,7 @@ namespace Eldoria.Presentation
             buildingAction.GetComponentInChildren<Text>().text="CONFIRMAR MARCHA";
             buildingAction.interactable=s.March.Phase=="idle"&&s.Available.Total>0;
             if(buildingAction.interactable)
-                buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("ConfigureMarch","march-main");});
+                buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("ConfigureMarch","march-main");});
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
 #endif
@@ -1136,10 +1166,10 @@ namespace Eldoria.Presentation
             closeGo.transform.SetParent(buildingPanel.transform,false);
             closeGo.GetComponent<Image>().color=new Color(.15f,.16f,.16f,.98f);
             closeGo.GetComponent<LayoutElement>().preferredHeight=32;
-            closeGo.GetComponent<Button>().onClick.AddListener(()=>buildingPanel.SetActive(false));
+            closeGo.GetComponent<Button>().onClick.AddListener(CloseBuildingPanel);
             var closeText=Label("Text",closeGo.transform,9,new Color(.78f,.82f,.84f),32);closeText.text="CERRAR";closeText.alignment=TextAnchor.MiddleCenter;
             var cr=closeText.rectTransform;cr.anchorMin=Vector2.zero;cr.anchorMax=Vector2.one;cr.offsetMin=cr.offsetMax=Vector2.zero;
-            buildingPanel.SetActive(false);
+            CloseBuildingPanel();
         }
 
         void CreateCityAmbientation(Transform parent)
