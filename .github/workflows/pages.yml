@@ -17,6 +17,7 @@ on:
       - 'playtest/**'
       - 'tester-v0265/**'
       - 'pipeline/unity-publish-request.json'
+      - 'pipeline/r2b-candidate-build.json'
 
 permissions:
   contents: read
@@ -36,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       heavy_required: ${{ steps.impact.outputs.heavy_required }}
+      candidate_only: ${{ steps.impact.outputs.candidate_only }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,6 +47,7 @@ jobs:
         shell: bash
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "candidate_only=false" >> "$GITHUB_OUTPUT"
             echo "heavy_required=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -55,6 +58,13 @@ jobs:
           fi
           files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
           echo "$files"
+          if grep -qx 'pipeline/r2b-candidate-build.json' <<< "$files"; then
+            jq -e '.enabled == true and .mode == "r2b-isolated-candidate" and .paid_credits == 0 and .stable_publish == false' pipeline/r2b-candidate-build.json
+            echo "candidate_only=true" >> "$GITHUB_OUTPUT"
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "candidate_only=false" >> "$GITHUB_OUTPUT"
           heavy=false
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
@@ -142,6 +152,19 @@ jobs:
           if ($code -ne 0) { throw "Unity CLI WebGL module install failed with exit code $code." }
           if (-not (Test-Path $webgl)) { throw 'Unity CLI completed but WebGL Build Support path is still missing.' }
           Write-Host 'WebGL Build Support installed successfully.'
+      - name: Stage isolated R2-B candidate request in temporary runner only
+        if: needs.source-preflight.outputs.candidate_only == 'true'
+        shell: powershell
+        run: |
+          $req = Get-Content 'pipeline/r2b-candidate-build.json' -Raw | ConvertFrom-Json
+          if ($req.enabled -ne $true -or $req.stable_publish -ne $false -or $req.mode -ne 'r2b-isolated-candidate' -or $req.paid_credits -ne 0) { throw 'Candidate authorization invalid' }
+          if ($req.source_sha -ne '6e0e12396a98b04333b595fff704afa3e849c30a') { throw 'Candidate source SHA unauthorized' }
+          if ($req.production_artifact_id -ne 11576784810 -or $req.parcel_source_artifact_id -ne 11576579158) { throw 'Candidate Unity evidence IDs mismatch' }
+          git diff --exit-code $req.source_sha HEAD -- Unity/Assets/Eldoria/Scripts/Domain/GameState.cs Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs
+          if ($LASTEXITCODE -ne 0) { throw 'Gameplay source differs from approved SHA' }
+          $cfg = @{mode='current-valoria-production';production_artifact_id=$req.production_artifact_id;parcel_source_artifact_id=$req.parcel_source_artifact_id} | ConvertTo-Json
+          Set-Content -Path 'pipeline/unity-publish-request.json' -Value $cfg -Encoding UTF8
+          Write-Host 'Candidate mode active in ephemeral Windows workspace only; main request and public stable untouched.'
       - name: Stage current certified Valoria production scene when requested
         shell: powershell
         env:
@@ -293,7 +316,8 @@ jobs:
           retention-days: 7
 
   deploy:
-    needs: unity-webgl
+    needs: [source-preflight, unity-webgl]
+    if: needs.source-preflight.outputs.candidate_only != 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -402,3 +426,51 @@ jobs:
           UNITY_URL='${{ steps.deployment.outputs.page_url }}unity-owner/?cb=${{ github.run_id }}'
           curl -fsSL -H "Cache-Control: no-cache" "$UNITY_URL" | grep -qi "<canvas\\|unity"
 
+
+  r2b-candidate-artifact-qa:
+    needs: [source-preflight, unity-webgl]
+    if: needs.source-preflight.outputs.candidate_only == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.sha }}
+          path: r2b-webgl-candidate
+      - name: Independently verify runnable WebGL package (NOT gameplay pass)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s r2b-webgl-candidate/index.html
+          test -d r2b-webgl-candidate/Build
+          find r2b-webgl-candidate/Build -type f | grep -Eq '\.(wasm|wasm\.br|wasm\.gz)$'
+          test -s r2b-webgl-candidate/splat-state-0.ply
+          printf 'WEBGL_CANDIDATE_PACKAGE_PASS; no stable Pages deployment; runtime choice QA and mobile screenshots NOT YET PROVEN\n'
+      - name: Report verifiable candidate artifact to Directorate
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          QA: ${{ job.status }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const marker='<!-- eldoria-r2b-isolated-webgl-'+context.runId+' -->';
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:context.runId,per_page:100});
+            const candidate=artifacts.find(x=>x.name==='eldoria-unity-webgl-'+context.sha);
+            const body=[marker,'### R2-B — candidate WebGL package / existing Pages builder',
+              '**Status:** '+process.env.QA,
+              '**Run:** https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,
+              '**Build SHA:** '+context.sha,
+              '**Gameplay source authority:** 6e0e12396a98b04333b595fff704afa3e849c30a',
+              '**Artifact ID:** '+(candidate?.id||'missing'),
+              '**Stable unity-owner/:** NOT DEPLOYED/MODIFIED by this candidate run',
+              '**Gameplay acceptance:** still PENDING — must serve isolated build and validate both forest choices, persistence, navigation and visual/touch experience.',
+              '**EXP-CAM-01 / EXP-BLD-02:** remain open.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
