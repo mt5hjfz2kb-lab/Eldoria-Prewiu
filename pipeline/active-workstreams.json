@@ -58,7 +58,9 @@
         "pipeline/active-workstreams.json",
         "tools/tests/eldoria-coordinator-bom-cases.json",
         "tools/tests/eldoria-coordinator-bom-regression.test.cjs",
-        "docs/evidence/local-agent-first-maintenance-v1/**"
+        "docs/evidence/local-agent-first-maintenance-v1/**",
+        "tools/eldoria-coordinator-v1.cjs",
+        ".github/workflows/eldoria-dg-pilot-intake.yml"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1"
@@ -66,7 +68,7 @@
       "claimed_at": "2026-10-08T16:57:37.596Z",
       "base_main_sha": "43127345bed56e91f84a153fda2b1fc37ebb2bc7",
       "status": "active",
-      "phase": "AUTHORIZED FIRST USEFUL LOCAL GENERATION / PR ONLY",
+      "phase": "SAFE LOCAL MODEL GENERATED BOM REGRESSION CASES / PR ONLY",
       "paid_credits": 0,
       "dependency": "Do not modify Unity, M07, M11 or other active workstreams; maintain prior pilot completed.",
       "next": "Generate bounded BOM/JSON regression cases by local Ollama, independently test against existing coordinator evidence parser, create reviewable PR only, release runner."
