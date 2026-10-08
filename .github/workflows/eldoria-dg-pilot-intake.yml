@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
+      - uses: actions/checkout@v4
       - name: Evaluate worker evidence and notify existing Directorate issue
         env:
           GH_TOKEN: ${{ github.token }}
@@ -33,8 +34,12 @@ jobs:
             if gh run download "$WORKER_RUN" -n "eldoria-local-agent-pilot-$WORKER_RUN" -D evidence; then
               if [[ -f evidence/proof.json && -f evidence/final-check.json && -f evidence/pilot-report.json ]]; then
                 if jq -e '.status=="PASS" and .test_cases_passed==9 and .external_api_calls==0 and .arbitrary_generated_code_executed==false' evidence/proof.json >/dev/null &&                    jq -e '.status=="PASS"' evidence/final-check.json >/dev/null &&                    jq -e --argjson run "$WORKER_RUN" --arg sha "$WORKER_SHA" '.order_id=="eldoria-local-agent-isolated-pilot-v1" and (.run_id|tostring)==($run|tostring) and .source_sha==$sha and .independent_test_cases_passed==9 and .external_api_calls==0 and .cleanup=="PASS" and .verdict=="LOCAL_WORKER_PASS_AWAITING_INDEPENDENT_COORDINATOR_REVIEW"' evidence/pilot-report.json >/dev/null; then
-                  outcome="EVIDENCE RECEIVED / AWAITING INDEPENDENT DIRECTORATE REVIEW"
-                  details="Local worker reported 9/9 independent cases, zero external APIs and cleanup PASS. These checks validate the artifact contract; the Directorate must independently audit logs and proof before certifying closure."
+                  if node tools/eldoria-coordinator-v1.cjs --verify-local-pilot evidence "$WORKER_RUN" "$WORKER_SHA"; then
+                    outcome="LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR"
+                    details="Existing read-only Coordinator independently verified SHA/run, task ID, local model/digest, generated code hash, all nine tests, zero external APIs, no arbitrary execution and cleanup. This does not authorize gameplay, QA or additional work."
+                  else
+                    details="Worker artifact fields passed intake precheck but failed independent Coordinator verification."
+                  fi
                 else
                   details="Worker reported success, but one or more evidence contract checks failed."
                 fi
@@ -48,10 +53,18 @@ jobs:
           {
             printf '%s\n' '### Dirección General — recepción automática del piloto local #25'
             printf '\n**Estado:** %s\n' "$outcome"
-            printf '\n**Worker:** https://github.com/$GH_REPO/actions/runs/$WORKER_RUN\n'
+            printf '\n**Worker:** https://github.com/%s/actions/runs/%s\n' "$GH_REPO" "$WORKER_RUN"
             printf '**Commit:** %s\n' "$WORKER_SHA"
             printf '**Conclusión GitHub:** %s\n\n' "$WORKER_CONCLUSION"
             printf '%s\n' "$details"
             printf '\n**Control:** no se autoriza QA, Unity, otra ronda, gasto ni nueva misión. El resultado queda pendiente de decisión de Dirección General y validación independiente.\n'
           } > message.txt
           gh issue comment 25 --body-file message.txt
+      - name: Preserve independent coordinator verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-local-agent-coordinator-${{ github.event.workflow_run.id }}
+          path: evidence/coordinator-verification.json
+          if-no-files-found: warn
+          retention-days: 14
