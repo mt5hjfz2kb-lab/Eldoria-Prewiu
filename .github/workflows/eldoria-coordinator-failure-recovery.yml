@@ -6,7 +6,7 @@ on:
       - '.github/workflows/eldoria-coordinator-failure-recovery.yml'
       - 'pipeline/active-workstreams.json'
   workflow_run:
-    workflows: ["Eldoria local agent isolated pilot v1"]
+    workflows: ["Eldoria local agent isolated pilot v1", "[PRODUCTION] Valoria First Playable City Slice v1"]
     types: [completed]
 permissions:
   actions: read
@@ -162,3 +162,50 @@ jobs:
             const marker='<!-- eldoria-r1-qa-tech-'+context.runId+' -->';
             const body=[marker,'### QA técnico independiente Ronda 1','**Estado:** M03/M16 contract gate PASS; M07 evidence rechecked.','**Run:** '+context.runId,'**SHA:** '+context.sha,'**Alcance:** técnico de certificación; NO equivale a QA visual, gameplay o WebGL publicado. No se libera M07 ni se cierra Ronda 1.'].join('\n');
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  r2b-production-independent-review:
+    if: >-
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.name == '[PRODUCTION] Valoria First Playable City Slice v1' &&
+      github.event.workflow_run.head_repository.full_name == github.repository) ||
+      (github.event_name == 'push' &&
+      github.event.head_commit.message == 'ops(m16): verify real Unity R2-B intake via existing recovery receiver')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: QA independent M03 existing certification tests
+        run: node --test tests/m03/certify.test.mjs
+      - name: Correlate exact Unity source, artifact and QA then report Directorate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const run=context.payload.workflow_run || (await github.rest.actions.getWorkflowRun({owner,repo,run_id:37838898425})).data;
+            const candidate='6e0e12396a98b04333b595fff704afa3e849c30a';
+            if(run.head_sha!==candidate)return;
+            const marker='<!-- eldoria-r2b-unity-evidence-'+run.id+' -->';
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(comments.some(c=>(c.body||'').includes(marker)))return;
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:run.id,per_page:100});
+            const artifact=artifacts.find(a=>a.name==='valoria-first-playable-city-slice-v1'&&!a.expired);
+            const listing=await github.paginate(github.rest.actions.listWorkflowRunsForRepo,{owner,repo,per_page:100});
+            const test=listing.find(x=>x.head_sha===run.head_sha&&x.name==='UI Progression Certification (fast)'&&x.conclusion==='success');
+            const verified=run.conclusion==='success'&&!!artifact&&!!test;
+            const verdict=verified?'PASS_UNITY_CANDIDATE_EVIDENCE_NOT_WEBGL':'BLOCKED_UNITY_EVIDENCE_OR_QA';
+            const body=[marker,'### M16→Unity producción→M03 QA→DG: R2-B evidencia real',
+              '**Veredicto:** '+verdict,'**Run real:** '+run.html_url,'**SHA:** '+run.head_sha,
+              '**Artefacto Unity:** '+(artifact?artifact.id:'ausente'),
+              '**QA UI mismo SHA:** '+(test?test.html_url:'ausente'),
+              '**Suite M03 independiente:** ejecutada en este workflow',
+              '**No se cierra R2-B:** faltan candidato WebGL independiente, ambas alternativas táctiles, recompensas, recarga y revisión visual.',
+              '**Defectos de jugador:** EXP-CAM-01 y EXP-BLD-02 siguen abiertos.',
+              '**M04:** ante fallo, mantener owner y clasificar; no repetir un SHA determinísticamente fallido.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            if(!verified)core.setFailed(verdict);
