@@ -53,9 +53,12 @@ async function one(browser,which,viewport){
   await pause(200);
   await page.screenshot({path:out+'/'+which+'-'+viewport.width+'-forest-before.png'});
   const action=screenUi(btn,box,cv);
-  // Existing Unity panel VerticalLayoutGroup: action height 44, next forest choice 36, 2px spacing.
+  // WebGL real-frame QA #37862082996 proved the portrait 80px offset lands on
+  // CERRAR (panel disappears without a ChooseRegionOneForest command). The actual
+  // HARVEST row center in the 390x844 screenshot is ~68px below ACCIÓN.
+  // Keep checking the real Unity command/reward/reload; never infer success from a tap.
   const scale=box.height/cv.height;
-  const dy=which==='survey'?42:80;
+  const dy=which==='survey'?42:68;
   const click={x:action.x,y:action.y+dy*scale};
   if(click.x<box.x||click.x>box.x+box.width||click.y<box.y||click.y>box.y+box.height)
    throw Error('choice button not within Unity canvas');
