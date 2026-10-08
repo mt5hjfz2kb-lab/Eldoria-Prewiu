@@ -853,3 +853,14 @@ Authoritative production run: `37470805228`; artifact: `11417486230`; evidence: 
 Locked stack remains unchanged: clean SHARP 589,824 beauty authority, Unity 6 URP, bounded camera, real editable support geometry and standard Unity semantic colliders. Seven production families are present as real support geometry (Bridge, Lower Gate, Road, Stair, Walls, Bastion, Rock/Terrain) and seven semantic anchors pass **21/21** raycasts across HOME / pan-left / pan-right. Final beauty differs from SHARP-only by only **22 / 13 / 18** pixels respectively. No real-geometry beauty override is promoted yet; earlier localized appearance artifacts were explicitly rejected. Paid credits: **0**.
 
 Next prepared block, not started: `docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1.md` / `pipeline/valoria-left-right-parcels-next-block-v1.json` for **LEFT CABIN PARCEL + RIGHT CAMP PARCEL**.
+
+
+## 2026-10-08 — Bastion I–II presentation parity correction closed
+
+`valoria-bastion-i-ii-presentation-parity-correction-v1` is **PASS / CLOSED** for its declared presentation-parity scope.
+
+Final certified chain: production **37767338367** SUCCESS (artifact **11546715716**), UI progression **37767338225** SUCCESS, Unity source/editor **37767338361** SUCCESS, publish **37768050958** SUCCESS, and published WebGL probe **37770987758** SUCCESS (evidence artifact **11548212275**).
+
+The published probe completes the real fresh-save Bastion I→II loop in landscape and portrait with real visible Sawmill/Bastion/Barracks touch-selection, construction, resources, recruitment, configured march, Engendro combat/reward, exact final-state reload persistence, deliberate two-step reset, and reset surviving reload. Camera pan/recenter and mobile presentation evidence are included.
+
+Quality boundary: this closes the **declared parity/interactivity block**, not Eldoria's overall final artistic-quality target. The probe does not claim independent human-playability or final-art-quality certification. Later concrete physical-device feedback can reopen the block. Bastion III remains closed and World Region 1/gameplay/economy/persistence/SHARP authority were not redesigned.
