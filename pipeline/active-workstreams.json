@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:12:12Z",
+  "updated_at": "2026-10-08T13:19:45Z",
   "active": [],
   "history": [
     {
@@ -111,7 +111,9 @@
         "superseded_post_close_publish_conclusion": "cancelled before deploy",
         "release_guard_run_id": 37782259376,
         "release_guard_result": "SUCCESS / unity-webgl skipped / deploy skipped",
-        "resources_released_verified": true
+        "resources_released_verified": true,
+        "post_release_probe_run_id": 37782513247,
+        "post_release_probe_result": "SUCCESS on unchanged certified published build after release guard"
       }
     },
     {
