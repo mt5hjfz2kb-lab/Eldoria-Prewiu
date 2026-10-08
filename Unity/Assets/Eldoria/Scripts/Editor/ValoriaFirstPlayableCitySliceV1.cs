@@ -361,12 +361,66 @@ namespace Eldoria.EditorTools
                 foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
                 {
                     if(before.Contains(r))continue;
+                    // The generic kit's large solid platform was perceived as an artificial
+                    // brown sheet over the cleaned SHARP ground. Only the sawmill needs an
+                    // open, ground-contact timber construction silhouette.
+                    bool sawmill=name.StartsWith("LeftCabinParcel",StringComparison.Ordinal);
+                    if(sawmill&&r.name.Contains("platform",StringComparison.OrdinalIgnoreCase))
+                    {
+                        UnityEngine.Object.DestroyImmediate(r.gameObject);
+                        continue;
+                    }
                     r.transform.SetParent(go.transform,true);
-                    var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.SetColor("_BaseColor",new Color(.30f,.18f,.09f));r.sharedMaterial=m;
+                    var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    m.SetColor("_BaseColor",sawmill
+                        ? new Color(.36f,.245f,.145f,1f)
+                        : new Color(.30f,.18f,.09f,1f));
+                    r.sharedMaterial=m;
                     foreach(var c in r.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(c);
                     AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
                 }
-                go.transform.rotation=sourceRotation;go.transform.position=position;return go;
+                go.transform.rotation=sourceRotation;go.transform.position=position;
+                if(name.StartsWith("LeftCabinParcel",StringComparison.Ordinal))
+                {
+                    // Deliberately small, incomplete roof frame: the open centre still reads
+                    // as construction rather than an already finished sawmill. No renderer,
+                    // mesh or SHARP state belonging to the completed building is altered.
+                    Material timber=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    timber.SetColor("_BaseColor",new Color(.48f,.32f,.18f,1f));
+                    AssetDatabase.AddObjectToAsset(timber,assetFolder+"/state-0.asset");
+                    Material stone=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    stone.SetColor("_BaseColor",new Color(.34f,.32f,.29f,1f));
+                    AssetDatabase.AddObjectToAsset(stone,assetFolder+"/state-0.asset");
+                    void Beam(string part,Vector3 local,Vector3 dimensions,Material material,float zDegrees=0f)
+                    {
+                        var piece=GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        piece.name=name+" · "+part;piece.transform.SetParent(go.transform,false);
+                        piece.transform.localPosition=local;
+                        piece.transform.localRotation=Quaternion.Euler(0f,0f,zDegrees);
+                        piece.transform.localScale=dimensions;
+                        piece.GetComponent<Renderer>().sharedMaterial=material;
+                        foreach(var collider in piece.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(collider);
+                    }
+                    float sx=size.x,sy=size.y,sz=size.z;
+                    // Shallow individual stone footings; no solid floor polygon.
+                    foreach(float x in new[]{-sx*.43f,sx*.43f})
+                        foreach(float z in new[]{-sz*.43f,sz*.43f})
+                            Beam("foundation stone",new Vector3(x,-sy*.47f,z),
+                                new Vector3(.36f,.14f,.36f),stone);
+                    // Incomplete pitched timber frame, with daylight through the rafters.
+                    foreach(float z in new[]{-sz*.36f,sz*.36f})
+                    {
+                        Beam("left rafter",new Vector3(-sx*.22f,sy*.39f,z),
+                            new Vector3(sx*.52f,.10f,.12f),timber,25f);
+                        Beam("right rafter",new Vector3(sx*.22f,sy*.39f,z),
+                            new Vector3(sx*.52f,.10f,.12f),timber,-25f);
+                    }
+                    Beam("stacked timber 1",new Vector3(-sx*.20f,-sy*.39f,sz*.13f),
+                        new Vector3(sx*.34f,.10f,.17f),timber);
+                    Beam("stacked timber 2",new Vector3(-sx*.20f,-sy*.28f,sz*.13f),
+                        new Vector3(sx*.34f,.10f,.17f),timber);
+                }
+                return go;
             }
             GameObject Marker(string name,Vector3 position)
             {
