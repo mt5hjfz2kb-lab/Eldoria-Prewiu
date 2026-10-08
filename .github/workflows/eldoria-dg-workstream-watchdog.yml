@@ -1,0 +1,45 @@
+name: Eldoria DG workstream watchdog
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/eldoria-workstream-watchdog.mjs'
+      - '.github/workflows/eldoria-dg-workstream-watchdog.yml'
+  schedule:
+    - cron: '7 * * * *'
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: eldoria-dg-workstream-watchdog
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Detect abandoned or blocked workstreams
+        run: node tools/eldoria-workstream-watchdog.mjs > watchdog-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-dg-workstream-watchdog
+          path: watchdog-report.json
+      - name: Report new findings to existing Directorate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          jq -e '.schema_version==1 and .kind=="READ_ONLY_DG_TRIAGE" and (.findings|type=="array")' watchdog-report.json >/dev/null
+          jq -c '.findings[]' watchdog-report.json | while IFS= read -r finding; do
+            id=$(jq -r '.id' <<<"$finding")
+            status=$(jq -r '.status' <<<"$finding")
+            marker="ELDORIA_DG_WATCHDOG_${id}_${status}"
+            if gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then continue; fi
+            body=$(printf '### DG — vigilancia automática de workstream\n\n%s\n\nEstado: **%s**\nWorkstream: `%s`\n\nEste aviso es solo detección, NO es prueba de cierre ni permiso para crear una misión, reintentar indefinidamente o gastar créditos. Dirección General debe reconciliar el estado real y actuar bajo la autorización existente.' "$marker" "$status" "$id")
+            gh api "repos/$GH_REPO/issues/23/comments" -f body="$body" >/dev/null
+          done
