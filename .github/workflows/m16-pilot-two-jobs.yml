@@ -1,5 +1,6 @@
 name: M16 Pilot A to B (GitHub hosted)
 on:
+  workflow_call:
   push:
     branches: [main]
     paths:
