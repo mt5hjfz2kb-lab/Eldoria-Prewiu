@@ -144,13 +144,14 @@
       ],
       "resources": [],
       "status": "planned",
-      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "phase": "PRODUCT DESIGN SPEC PRODUCED / GAMEPLAY NOT IMPLEMENTED",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Specification and state tests planning; Unity implementation only after scope exclusion"
+      "next": "D07/D06 executor must claim exclusive GameState/LocalGateway and tests scope, verify balance/source facts and implement persisted choice without touching M07; run independent QA on real Unity build.",
+      "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md"
     },
     {
       "id": "r2-c-mobile-ux",
