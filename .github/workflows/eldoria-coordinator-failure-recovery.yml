@@ -195,8 +195,8 @@ jobs:
             if(comments.some(c=>(c.body||'').includes(marker)))return;
             const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:run.id,per_page:100});
             const artifact=artifacts.find(a=>a.name==='valoria-first-playable-city-slice-v1'&&!a.expired);
-            const listing=await github.paginate(github.rest.actions.listWorkflowRunsForRepo,{owner,repo,per_page:100});
-            const test=listing.find(x=>x.head_sha===run.head_sha&&x.name==='UI Progression Certification (fast)'&&x.conclusion==='success');
+            const listing=await github.rest.actions.listWorkflowRunsForRepo({owner,repo,head_sha:run.head_sha,per_page:100});
+            const test=listing.data.workflow_runs.find(x=>x.name==='UI Progression Certification (fast)'&&x.conclusion==='success');
             const verified=run.conclusion==='success'&&!!artifact&&!!test;
             const verdict=verified?'PASS_UNITY_CANDIDATE_EVIDENCE_NOT_WEBGL':'BLOCKED_UNITY_EVIDENCE_OR_QA';
             const body=[marker,'### M16→Unity producción→M03 QA→DG: R2-B evidencia real',
