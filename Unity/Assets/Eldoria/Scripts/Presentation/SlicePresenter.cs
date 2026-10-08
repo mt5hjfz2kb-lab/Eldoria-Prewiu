@@ -26,6 +26,7 @@ namespace Eldoria.Presentation
         float refreshAt;
         float resetQaArmedUntil;
         bool ownerResetArmed;
+        int ownerResetExecutionSerial;
         int lastWidth,lastHeight;
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
@@ -162,7 +163,11 @@ namespace Eldoria.Presentation
             {
                 bool shouldSelect=!pointerStartedOverUi&&!pointerDragged;
 #if UNITY_WEBGL && !UNITY_EDITOR
-                if(usingTouch&&!pointerDragged) TryScheduleWebBottomNavFallback(point);
+                if(usingTouch&&!pointerDragged)
+                {
+                    TryScheduleWebResetFallback(point);
+                    TryScheduleWebBottomNavFallback(point);
+                }
 #endif
                 pointerActive=false;
                 if(shouldSelect)
@@ -174,6 +179,26 @@ namespace Eldoria.Presentation
         }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
+        void TryScheduleWebResetFallback(Vector2 point)
+        {
+            if(resetButton==null||!resetButton.gameObject.activeInHierarchy)return;
+            var rect=resetButton.GetComponent<RectTransform>();
+            if(rect==null||!RectTransformUtility.RectangleContainsScreenPoint(rect,point,null))return;
+            StartCoroutine(WebResetFallbackAfterUi(ownerResetArmed,ownerResetExecutionSerial));
+        }
+
+        IEnumerator WebResetFallbackAfterUi(bool armedAtRelease,int executionSerialAtRelease)
+        {
+            // Unity UI remains the primary input path. This fallback only recovers the
+            // occasional WebGL/touch release that is visible over the reset Button but
+            // never reaches Button.onClick.
+            yield return null;
+            if(ownerResetExecutionSerial!=executionSerialAtRelease)yield break;
+            if(ownerResetArmed!=armedAtRelease)yield break;
+            Debug.Log("ELDORIA_PLAYABLE_RESET fallback=True armed="+ownerResetArmed);
+            InvokeOwnerReset();
+        }
+
         void TryScheduleWebBottomNavFallback(Vector2 point)
         {
             var area=Screen.safeArea;
@@ -1380,12 +1405,19 @@ namespace Eldoria.Presentation
             if(!ownerResetArmed)
             {
                 ownerResetArmed=true;
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Debug.Log("ELDORIA_PLAYABLE_RESET armed=True");
+#endif
                 if(resetButtonText!=null)resetButtonText.text="CONFIRMAR";
                 feedback="Pulsa de nuevo para empezar desde Bastión I.";
                 if(message!=null)message.text=feedback;
                 return;
             }
             ownerResetArmed=false;
+            ownerResetExecutionSerial++;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("ELDORIA_PLAYABLE_RESET execute=True serial="+ownerResetExecutionSerial);
+#endif
             if(resetButton!=null)resetButton.interactable=false;
             if(resetButtonText!=null)resetButtonText.text="REINICIANDO…";
             feedback="Reiniciando desde Bastión I…";
