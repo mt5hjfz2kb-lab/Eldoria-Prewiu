@@ -86,9 +86,15 @@
     "configured": true,
     "run_requested": true,
     "delivery_verified": false,
-    "notes": "GitHub record and automation last_run are not delivered-notification receipts.",
+    "notes": "Immediate request accepted; later task last_run metadata advanced. Exposed API does not provide execution result, output or notification delivery receipt; no delivery PASS.",
     "requested_at": "2026-10-08T18:31:12.399Z",
-    "result": "ASYNC_RUN_REQUEST_ACCEPTED_NO_DELIVERY_RECEIPT"
+    "result": "ASYNC_RUN_REQUEST_ACCEPTED_NO_DELIVERY_RECEIPT",
+    "observed_task_metadata": {
+      "id": "6ac7d26b2cd08191871b1183dc2cfc47",
+      "enabled": true,
+      "last_run_time": "2026-10-08T18:31:16.792102+00:00",
+      "updated_at": "2026-10-08T18:31:39.488049+00:00"
+    }
   },
   "autonomy_general": "NOT_CERTIFIED",
   "m07_modified": false,
