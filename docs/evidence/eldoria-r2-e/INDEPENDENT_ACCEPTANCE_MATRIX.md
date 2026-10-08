@@ -18,3 +18,11 @@ R2-A usa planificador canónico con cero créditos y exige capturas oficiales Wo
 
 ## Restricciones
 La emulación móvil no sustituye iPhone físico; sin mediciones reales no informar FPS, memoria o consumo. M07 conserva su propiedad visual y M11 depende de su aceptación. Informe de QA no se autocertifica por haber creado este fichero. Si un run termina durante una conversación cerrada, su resultado permanece en Actions/artifacts; no afirmar que un agente reanudará automáticamente cambios de código sin workflow explícito de consumo/QA.
+
+## PLAYER-REPORTED P1 EXPERIENCE GATES — DO NOT CLOSE BY AUTOMATED MACROLOOP ALONE
+
+- EXP-CAM-01: Valoria long vertical touch drags in both directions visibly traverse required areas, with measured before/after frame positions and bounded limits, portrait and landscape. Technical camera values alone do NOT pass.
+- EXP-BLD-02: Aserradero, Bastión and Cuartel hotspot selection, target-size checks, action CTA visibility, construction/action outcome, close/reopen, save/reload, orientation-specific screenshots, including overlap or missed touches. A PASS on game state alone does NOT pass.
+- Compare against `docs/VALORIA_BASTION_I_II_VERTICAL_SLICE_MIGRATION_V1.md` and approved UX. If mobile player observation conflicts with simulated PASS, keep P1 bug open and escalate independent visual review.
+- Weekly Monday real published Chromium probe runs via existing `unity-webgl-startup.yml`, with automated DG issue intake; the weekly probe is a regression screen, not a physical user-experience sign-off.
+- No promotion of R2-B WebGL candidate or replacement of stable Unity owner link until these two issues have been specifically retested or explicitly documented as unresolved and excluded from acceptance by a separate owner decision.
