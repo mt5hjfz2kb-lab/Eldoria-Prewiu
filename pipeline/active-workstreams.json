@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:50:00Z",
+  "updated_at": "2026-10-08T13:55:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -28,6 +28,27 @@
       "completed_at": null,
       "runner_released": true,
       "blocker": "Third source correction 52101a1f5449544608537c83bee96f9210cafca7 committed after independently reviewing run 37785467062 artifact 11553239582 VISUAL FAIL. Tool environment cannot list push-triggered Actions runs, so no new run ID/artifact yet to inspect. Cannot certify visual result or close."
+    },
+    {
+      "id": "eldoria-coordinator-v1",
+      "title": "Eldoria read-only central coordinator v1",
+      "owner": "chat-coordinator-design-20261008",
+      "scope": [
+        "tools/eldoria-coordinator-v1.cjs",
+        ".github/workflows/eldoria-coordinator-v1.yml",
+        "docs/ELDORIA_COORDINATOR_V1.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T13:55:00Z",
+      "base_main_sha": "7cc8f871297516c64b5c35d16adb970333f11c5c",
+      "status": "active",
+      "phase": "implementation",
+      "paid_credits": 0,
+      "art_production_routing": "not_applicable",
+      "dependency": "M07 current blocked state; read-only assessment only; no QA/M11 dispatch",
+      "next": "Install and validate coordinator, close scoped infrastructure workstream",
+      "completed_at": null
     }
   ],
   "history": [
