@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "mode": "r2b-isolated-candidate",
+  "source_sha": "6e0e12396a98b04333b595fff704afa3e849c30a",
+  "production_run_id": 37838898425,
+  "production_artifact_id": 11576784810,
+  "parcel_source_artifact_id": 11576579158,
+  "ui_certification_run_id": 37838898438,
+  "independent_m03_run_id": 37853728233,
+  "requested_by": "r2-b-strategic-choice",
+  "stable_publish": false,
+  "paid_credits": 0,
+  "authorization": "Ronda 2 A-E DG Issue #23 owner approval 6068111056",
+  "purpose": "Build standalone WebGL candidate artifact from existing Pages Unity builder; do not deploy on stable unity-owner/",
+  "acceptance": "Independent candidate runtime Playwright forest survey and harvest on fresh saves, reload and no duplication, landscape/portrait, R1 city+world macroloop, EXP-CAM-01 EXP-BLD-02 still open until visual/experience acceptance"
+}
