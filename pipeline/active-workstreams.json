@@ -117,6 +117,91 @@
       },
       "runner_released": true,
       "blocker": "M07 owner still BLOCKED 2/6 gates; cannot execute R1 QA on unaccepted visual work. Existing workflow needs gate installed at fed8478394, but no READY event / successful new QA job is available for certification. M04 bounded repair-to-retest across departments remains out of scope of this QA technical gate."
+    },
+    {
+      "id": "r2-a-world-readability",
+      "title": "D08/D05/D11 Region 1 visual readability audit",
+      "owner": "eldoria-dg-r2-approved-20261008",
+      "scope": [
+        "docs/evidence/eldoria-r2-a/**"
+      ],
+      "resources": [],
+      "status": "planned",
+      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "claimed_at": "2026-10-08T21:51:00+02:00",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
+      "paid_credits": 0,
+      "dependency": "R1 resource/scopes protected for integration",
+      "next": "Read-only World POI audit and screenshot comparison; visual changes wait for R1 M07 release"
+    },
+    {
+      "id": "r2-b-strategic-choice",
+      "title": "D07/D06 bounded strategic choice specification",
+      "owner": "eldoria-dg-r2-approved-20261008",
+      "scope": [
+        "docs/evidence/eldoria-r2-b/**"
+      ],
+      "resources": [],
+      "status": "planned",
+      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "claimed_at": "2026-10-08T21:51:00+02:00",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
+      "paid_credits": 0,
+      "dependency": "R1 resource/scopes protected for integration",
+      "next": "Specification and state tests planning; Unity implementation only after scope exclusion"
+    },
+    {
+      "id": "r2-c-mobile-ux",
+      "title": "D10/D09 mobile UX usability audit",
+      "owner": "eldoria-dg-r2-approved-20261008",
+      "scope": [
+        "docs/evidence/eldoria-r2-c/**"
+      ],
+      "resources": [],
+      "status": "planned",
+      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "claimed_at": "2026-10-08T21:51:00+02:00",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
+      "paid_credits": 0,
+      "dependency": "R1 resource/scopes protected for integration",
+      "next": "Read-only screenshots and touch hierarchy audit; UI code changes held until resource exclusion"
+    },
+    {
+      "id": "r2-d-ambient-life-audio",
+      "title": "D12/D15 ambient activity and contextual audio",
+      "owner": "eldoria-dg-r2-approved-20261008",
+      "scope": [
+        "docs/evidence/eldoria-r2-d/**"
+      ],
+      "resources": [],
+      "status": "blocked",
+      "phase": "WAITING FOR M11-R1",
+      "claimed_at": "2026-10-08T21:51:00+02:00",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
+      "paid_credits": 0,
+      "dependency": "M11-R1 closure",
+      "next": "M11 R1 completion is mandatory"
+    },
+    {
+      "id": "r2-e-performance-qa",
+      "title": "D13/D14/D02 performance QA acceptance planning",
+      "owner": "eldoria-dg-r2-approved-20261008",
+      "scope": [
+        "docs/evidence/eldoria-r2-e/**"
+      ],
+      "resources": [],
+      "status": "planned",
+      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "claimed_at": "2026-10-08T21:51:00+02:00",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
+      "paid_credits": 0,
+      "dependency": "R1 resource/scopes protected for integration",
+      "next": "Read-only QA baseline, no final R2 certification prior to integration"
     }
   ],
   "history": [
