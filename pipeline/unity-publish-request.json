@@ -1,19 +1,22 @@
 {
-  "enabled": true,
-  "mode": "current-valoria-production",
-  "reason": "Publish exact recertified 4d70b9bd UI cleanup: duplicate CTA clutter removed, contextual panel/quest overlap corrected, objective dock restored after contextual actions. Require full published Bastion I-II, touch selection, camera, reset and persistence probe plus visual evidence inspection.",
+  "enabled": false,
+  "mode": "closed",
+  "reason": "Bastion I-II presentation parity definitively closed after production 37772733956, publish 37776564090 and published full-flow probe 37779269570 all passed; resources released.",
   "production_run_id": 37772733956,
   "production_artifact_id": 11549887766,
   "production_head_sha": "4d70b9bdc5532ffb3108867a7d5450a72ea460bc",
   "final_unity_gate_run_id": 37772733932,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "valoria-bastion-i-ii-presentation-parity-correction-v1",
-  "updated_at": "2026-10-08T12:23:00Z",
+  "updated_at": "2026-10-08T12:59:00Z",
   "retry": 43,
   "retry_reason": "Bounded presentation cleanup after visually inspecting prior successful published probe evidence; exact candidate 4d70b9bd passed UI progression and production.",
   "parcel_source_artifact_id": 11547989564,
   "retry_after_commit": "4d70b9bdc5532ffb3108867a7d5450a72ea460bc",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
-  "ui_certification_run_id": 37772733872
+  "ui_certification_run_id": 37772733872,
+  "completed_publish_run_id": 37776564090,
+  "completed_probe_run_id": 37779269570,
+  "completed_probe_artifact_id": 11551901858
 }
