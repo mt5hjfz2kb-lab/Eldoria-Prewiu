@@ -16,7 +16,11 @@ function screenUi(m,box,cv){return{x:box.x+(+m[1]/cv.width)*box.width,y:box.y+((
 function spotUi(m,box,cv){return{x:box.x+(+m[1]/cv.width)*box.width,y:box.y+(+m[2]/cv.height)*box.height};}
 async function one(browser,which,viewport){
  const item={choice:which,viewport,pass:false};
- const ctx=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1});
+ // Unity's default WebGL page chooses its responsive mobile canvas by navigator.userAgent.
+ // Playwright isMobile/hasTouch alone do not identify Chromium as Android; the unmodified
+ // desktop branch fixes the canvas at 960x600 and produces unreachable touches on 844x390.
+ const ctx=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1,
+  userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36'});
  const page=await ctx.newPage(),logs=[];
  page.on('console',m=>logs.push(m.text()));
  page.on('pageerror',e=>logs.push('PAGEERROR '+String(e)));
@@ -24,7 +28,10 @@ async function one(browser,which,viewport){
  try{
   await page.goto(url+'?r2b-check='+which+'-'+viewport.width,{waitUntil:'domcontentloaded',timeout:60000});
   let initial=await waitState(logs,s=>s.scene==='Valoria'||s.scene==='ValoriaWebGL','Valoria initial',0,180000);
-  await pause(1300);
+  // A Unity state log can precede removal of the WebGL loading overlay. Real touch begins
+  // only once createUnityInstance has completed and the player can see the game.
+  await page.waitForFunction(()=>{const el=document.querySelector('#unity-loading-bar');return el&&getComputedStyle(el).display==='none';},null,{timeout:180000});
+  await pause(300);
   const canvas=page.locator('canvas').first(),box=await canvas.boundingBox();
   if(!box)throw Error('no real Unity canvas');
   const cv=await canvas.evaluate(el=>({width:el.width,height:el.height}));
