@@ -1,0 +1,28 @@
+name: M16 Pilot negative dependency gate
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/m16-pilot-negative-gate.yml'
+permissions:
+  contents: read
+jobs:
+  job_a:
+    name: A - intentional failure (negative test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Inject expected failure
+        run: |
+          echo "M16 NEGATIVE TEST: intentional failure, expected for dependency gate"
+          exit 1
+  job_b:
+    name: B - must be skipped
+    needs: job_a
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: This must never execute
+        run: |
+          echo "ERROR: downstream executed after failure"
+          exit 1
