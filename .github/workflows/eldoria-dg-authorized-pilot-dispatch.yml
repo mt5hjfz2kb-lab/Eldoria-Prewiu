@@ -8,23 +8,50 @@ concurrency:
   group: eldoria-dg-authorized-pilot-dispatch
   cancel-in-progress: false
 jobs:
-  proof:
+  authorize:
     if: >-
       github.event.issue.number == 23 &&
       github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
       github.event.comment.author_association == 'OWNER' &&
-      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_20261008'
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_V2_20261008'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      accepted: ${{ steps.check.outputs.accepted }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          TOKEN: ${{ github.event.comment.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=$(gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate | jq -r --arg token "$TOKEN" '.[] | select(.body==$token) | .id' | head -n 1)
+          if [[ "$first" == "$COMMENT_ID" ]]; then echo accepted=true >> "$GITHUB_OUTPUT"; else echo accepted=false >> "$GITHUB_OUTPUT"; fi
+  proof:
+    needs: authorize
+    if: >-
+      needs.authorize.outputs.accepted == 'true' &&
+      github.event.issue.number == 23 &&
+      github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_V2_20261008'
     uses: ./.github/workflows/m16-pilot-two-jobs.yml
     permissions:
       contents: read
   report:
-    needs: proof
+    needs: [authorize, proof]
     if: >-
-      always() &&
+      always() && needs.authorize.outputs.accepted == 'true' &&
       github.event.issue.number == 23 &&
       github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
       github.event.comment.author_association == 'OWNER' &&
-      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_20261008'
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_V2_20261008'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
