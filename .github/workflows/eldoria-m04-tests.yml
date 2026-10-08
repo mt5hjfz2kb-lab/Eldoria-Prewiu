@@ -16,5 +16,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          sparse-checkout: |
+            tools/m04
+            tests/m04
       - name: Run M04 deterministic suite
         run: node --test tests/m04/incidents.test.mjs
