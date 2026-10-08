@@ -1,0 +1,43 @@
+name: Eldoria local AI install and isolated proof
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-local-ai-install
+  cancel-in-progress: false
+jobs:
+  install:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          path: local-ai-isolated
+          sparse-checkout: |
+            tools/local-ai-install-v1.ps1
+            tools/local-ai-proof-v1.py
+            pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+      - name: Verify authorized ownership and runner availability
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $registry=Get-Content local-ai-isolated/pipeline/active-workstreams.json -Raw | ConvertFrom-Json
+          $claim=@($registry.active | Where-Object {$_.id -eq 'eldoria-local-ai-install-v1' -and $_.owner -eq 'chat-local-ai-install-20261008' -and $_.status -in @('active','blocked')})
+          if ($claim.Count -ne 1) { throw 'Installation ownership absent.' }
+          $conflicts=@($registry.active | Where-Object {$_.id -ne 'eldoria-local-ai-install-v1' -and $_.status -eq 'active' -and ($_.resources -match 'windows|runner-heavy')})
+          if ($conflicts.Count) { throw 'BLOCKED: another owner holds Windows heavy resources.' }
+      - name: Official portable install and real local programming test
+        shell: powershell
+        run: |
+          & ./local-ai-isolated/tools/local-ai-install-v1.ps1 -EvidenceDir "$env:RUNNER_TEMP/eldoria-local-ai-$env:GITHUB_RUN_ID"
+      - name: Preserve proof and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-local-ai-proof-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-local-ai-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
