@@ -17,7 +17,7 @@ namespace Eldoria.Presentation
         ValoriaParcelPresentation productionParcels;
         RectTransform safe;
         Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText, sawmillLevelBadge, barracksLevelBadge, bastionLevelBadge, resetButtonText;
-        GameObject buildingPanel, cityAmbientLayer, constructionActivityFx;
+        GameObject buildingPanel, objectiveDock, cityAmbientLayer, constructionActivityFx;
         string currentBuildingId="";
         RectTransform[] ambientMotes=Array.Empty<RectTransform>();
         Vector2[] ambientMoteOrigins=Array.Empty<Vector2>();
@@ -460,8 +460,7 @@ namespace Eldoria.Presentation
         void SetBuildingPanelOpen(bool open)
         {
             if(buildingPanel!=null)buildingPanel.SetActive(open);
-            var dock=GameObject.Find("World objective dock");
-            if(dock!=null)dock.SetActive(!open);
+            if(objectiveDock!=null)objectiveDock.SetActive(!open);
         }
 
         void CloseBuildingPanel()
@@ -929,6 +928,7 @@ namespace Eldoria.Presentation
             StyleNavButton(cityNavButton,city);StyleNavButton(worldNavButton,!city);
 
             var dock=new GameObject("World objective dock",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
+            objectiveDock=dock;
             var drt=dock.GetComponent<RectTransform>();drt.SetParent(safe,false);
             drt.anchorMin=drt.anchorMax=new Vector2(.5f,0);drt.pivot=new Vector2(.5f,0);
             drt.sizeDelta=new Vector2(360,94);drt.anchoredPosition=new Vector2(0,78);
