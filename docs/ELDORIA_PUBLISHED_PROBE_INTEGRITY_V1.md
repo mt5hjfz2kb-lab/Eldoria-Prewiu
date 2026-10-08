@@ -26,3 +26,14 @@ The correction may legitimately turn the current published probe red. That means
 Full remaining acceptance: fresh start → sawmill build → forest/quarry → scout → Bastion II → barracks → recruitment → configured march → Engendro victory/reward → Valoria return → exact reload → deliberate reset/reload. Compare web/Unity HUD at matched viewport and state. Distinguish native SHARP rendering from WebGL certified-frame presentation. Do not rename macroloop success into full gameplay or visual-quality PASS.
 
 No gameplay, economy, art authority, visual assets, camera, saves, publication payload or paid credits are changed by this correction.
+
+## Executed validation and closeout — 2026-10-08
+
+Implementation commits: 78ea9b228b0cb3a6d17f92bf2924eca3502336e2 and 57369a0c4a5be91be3e261e722ad69ddab50e6f4.
+
+- Contract tests: 5/5 PASS locally and in GitHub Actions.
+- YAML parsing, embedded JavaScript syntax and diff whitespace checks: PASS locally.
+- Final implementation architecture, workflow governance and quarantine checks: SUCCESS (runs 37741999838, 37741999918, 37741999718).
+- Published probe: run 37741999794, job 113194609825, **FAIL**. It rejects three observed Unity `level0` corruption / position-out-of-bounds errors at certification. Earlier corrected run 37741874742 also rejected these errors.
+
+QA acceptance-integrity implementation is complete. Published-game acceptance remains FAILED; full Bastion I-II, visual quality and independent human playthrough remain unverified. No underlying engine or presentation repair is claimed. The active presentation owner and its exclusive build/publication resources remain untouched.
