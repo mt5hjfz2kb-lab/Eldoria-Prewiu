@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T15:43:00Z",
+  "updated_at": "2026-10-08T15:59:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -59,18 +59,20 @@
         "docs/evidence/local-agent-isolated-pilot-v1/**",
         "pipeline/active-workstreams.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1"
+      ],
       "claimed_at": "2026-10-08T15:43:00Z",
       "base_main_sha": "f35d23865569b39f9bfa71af86dcf588e187b231",
-      "status": "blocked",
-      "phase": "MANUAL PILOT WORKFLOW COMMITTED / NOT EXECUTED",
+      "status": "active",
+      "phase": "AUTHORIZED / MANUAL DISPATCH READY / RUN NOT YET OBSERVED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Infrastructure-only local inference; no player-visible artifacts or Unity writes",
       "paid_credits": 0,
       "dependency": "Issue #25; do not touch M07, M11 or gameplay; respect current preflight owner",
-      "next": "Trigger .github/workflows/eldoria-local-agent-isolated-pilot-v1.yml manually on main only after verifying idle Windows runner, then inspect new report artifact and independently review; no game QA/M11.",
-      "blocker": "Connector has no workflow_dispatch; independent runner proof and coordinator review not yet executed. No PASS claimed.",
-      "runner_released": true
+      "next": "Owner triggers existing workflow_dispatch once on main; worker must validate this active claim and no competing claim; inspect new run, real local generation, independent nine cases, zero external APIs and final cleanup; independent coordinator review before closing.",
+      "blocker": null,
+      "runner_released": false
     }
   ],
   "history": [
