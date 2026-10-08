@@ -1,0 +1,30 @@
+name: Eldoria Windows hardware inventory (read-only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-hardware-inventory.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Report hardware without machine identifiers
+        shell: powershell
+        run: |
+          $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1 -ExpandProperty Name
+          $mem = [math]::Round(((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB), 1)
+          $gpus = @(Get-CimInstance Win32_VideoController | ForEach-Object { $_.Name })
+          $gpuText = ($gpus -join ', ')
+          Write-Output "ELDORIA_HW_CPU=$cpu"
+          Write-Output "ELDORIA_HW_RAM_GB=$mem"
+          Write-Output "ELDORIA_HW_GPUS=$gpuText"
+          $nvidia = Get-Command nvidia-smi -ErrorAction SilentlyContinue
+          if ($nvidia) {
+            & nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+          } else {
+            Write-Output 'ELDORIA_HW_NVIDIA_SMI=unavailable'
+          }
