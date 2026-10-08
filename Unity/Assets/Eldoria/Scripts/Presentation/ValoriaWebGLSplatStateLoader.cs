@@ -294,6 +294,7 @@ namespace Eldoria.Presentation
                 if (previousTexture != null) Destroy(previousTexture);
                 Debug.Log("VALORIA_WEBGL_CERTIFIED_BACKGROUND_READY variant=" + loadedVariant +
                     " key=" + key + " bytes=" + imageRequest.downloadedBytes);
+                UnityEngine.Object.FindFirstObjectByType<SlicePresenter>()?.PublishPresentedCityGeometry();
             }
             visualLoading = null;
         }

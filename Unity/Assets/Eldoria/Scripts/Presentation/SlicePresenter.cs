@@ -556,6 +556,8 @@ namespace Eldoria.Presentation
             RefreshBuildingPanelClock(s);
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
+            StartCoroutine(LogPlayableButtonCenterNextFrame("buildingClose",buildingPanel.transform.Find("Cerrar")?.GetComponent<Button>()));
+            PublishPresentedCityGeometry();
 #endif
         }
 
@@ -821,9 +823,9 @@ namespace Eldoria.Presentation
             stoneResource=ResourceChip("Stone resource",top,"◆","PIEDRA",62);
             power=ResourceChip("Power",top,"⚔","PODER",72,new Color(.085f,.075f,.045f,.96f));
             {
-                homeButton=Button(top,"⌂",RecenterCamera);
+                homeButton=Button(top,"CENTRAR",RecenterCamera);
                 var homeLayout=homeButton.GetComponent<LayoutElement>();
-                homeLayout.minWidth=32;homeLayout.preferredWidth=32;homeLayout.minHeight=34;
+                homeLayout.minWidth=50;homeLayout.preferredWidth=50;homeLayout.minHeight=34;
                 homeButton.gameObject.name=city?"City home / recenter":"World home / recenter";
             }
 
@@ -831,10 +833,10 @@ namespace Eldoria.Presentation
             resetButton.gameObject.name="Owner reset";
             var resetRt=resetButton.GetComponent<RectTransform>();
             resetRt.anchorMin=resetRt.anchorMax=new Vector2(1,1);resetRt.pivot=new Vector2(1,1);
-            resetRt.sizeDelta=new Vector2(78,30);resetRt.anchoredPosition=new Vector2(-10,-78);
+            resetRt.sizeDelta=new Vector2(78,34);resetRt.anchoredPosition=new Vector2(-10,-78);
             resetButton.GetComponent<LayoutElement>().ignoreLayout=true;
             resetButtonText=resetButton.GetComponentInChildren<Text>();
-            if(resetButtonText!=null)resetButtonText.fontSize=9;
+            if(resetButtonText!=null)resetButtonText.fontSize=11;
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
@@ -1226,6 +1228,13 @@ namespace Eldoria.Presentation
                 " w="+Mathf.Abs(b.x-a.x).ToString("F1")+" h="+Mathf.Abs(b.y-a.y).ToString("F1"));
         }
 
+        public void PublishPresentedCityGeometry()
+        {
+            if(!city)return;
+            StartCoroutine(LogWorldHotspotNextFrame("Aserradero · target","sawmill"));
+            StartCoroutine(LogWorldHotspotNextFrame("Cuartel · target","barracks"));
+            StartCoroutine(LogWorldHotspotNextFrame("Bastion · target","bastion"));
+        }
         IEnumerator LogWorldHotspotNextFrame(string objectName,string id)
         {
             yield return null;
@@ -1364,7 +1373,7 @@ namespace Eldoria.Presentation
             if(!ownerResetArmed)
             {
                 ownerResetArmed=true;
-                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR REINICIO";
+                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR";
                 feedback="Pulsa de nuevo para empezar desde Bastión I.";
                 if(message!=null)message.text=feedback;
                 return;

@@ -206,7 +206,23 @@ jobs:
               await sleep(750);
               const action=detailedUi(logs,'buildingAction',before);
               let buildingTap=null;
-              if(action&&action.visible){buildingTap=await tapLoggedUi(page,logs,'buildingAction',before);await sleep(500);}
+              if(action&&action.visible){
+                if(state.objective==='b1.build-sawmill'){
+                  // Focus through the guided action, then independently select the visible parcel by touch.
+                  await tapLoggedUi(page,logs,'buildingClose',before);await sleep(300);
+                  const hotspot=parseHotspot(logs,'sawmill');
+                  const canvas=page.locator('canvas'),hotspotBox=await canvas.boundingBox();
+                  const dim=await canvas.evaluate(c=>({width:c.width,height:c.height}));
+                  if(!hotspot)throw new Error('Presented sawmill geometry missing');
+                  const point=hotspotPoint(hotspot,hotspotBox,dim);
+                  if(point.x<hotspotBox.x||point.x>hotspotBox.x+hotspotBox.width||point.y<hotspotBox.y||point.y>hotspotBox.y+hotspotBox.height)throw new Error('Guided focus left the sawmill outside viewport');
+                  const selectStart=logs.length;
+                  await page.touchscreen.tap(point.x,point.y);
+                  await waitLog(logs,t=>/ELDORIA_PLAYABLE_UI id=buildingAction .*label=RECONSTRUIR/.test(t),10000,'visible sawmill selection',selectStart);
+                  result.presentedBuildingSelectionPass=true;
+                }
+                buildingTap=await tapLoggedUi(page,logs,'buildingAction',before);await sleep(500);
+              }
               const changed=await waitState(logs,s=>s.revision!==state.revision||s.scene!==state.scene||s.objective!==state.objective,30000,'guided step effect '+state.objective,before);
               result.steps.push({step,objective:state.objective,scene:state.scene,primary:tapped,buildingAction:buildingTap,after:changed});
               await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-step-'+String(step).padStart(2,'0')+'-'+state.objective+'.png'});
@@ -218,6 +234,7 @@ jobs:
               }
             }
             if(!final)throw new Error('Full '+orientation+' flow never reached city chapter-II completion');
+            if(!result.presentedBuildingSelectionPass)throw new Error('Presented city selection unverified');
             if(final.bastion!==2||final.sawmill!==1||final.barracks!==1||final.trained!==20||!final.configured||!final.scout||!final.engendro||final.gatheredWood<600||final.gatheredStone<500)throw new Error('Full final state incomplete: '+JSON.stringify(final));
             result.final=fullSnapshot(final);
             await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-bastion-ii-complete.png'});
@@ -396,6 +413,8 @@ jobs:
               await fullPublishedFlow(page,logs,'landscape');
               await fullPublishedFlow(page,logs,'portrait');
               report.coverage.fullBastionIToIIPass=report.fullFlows.every(f=>f.pass&&f.persistencePass&&f.resetPass);
+              report.coverage.executed.push('uninterrupted fresh-save I-II in both orientations','presented sawmill touch selection','recruitment and configured march','scout and Engendro combat/rewards','exact full final-state reload','deliberate reset and reset reload');
+              report.coverage.notExecuted=['physical-device performance','human usability and enjoyment','live SHARP rendering in WebGL'];
               if(fatalRuntimeLogs(logs).length)throw new Error('Engine errors after full progression prevent certification');
             }catch(e){
               report.failure=String(e);
