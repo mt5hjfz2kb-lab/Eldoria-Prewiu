@@ -13,6 +13,6 @@
   "authorization": "Ronda 2 A-E DG Issue #23 owner approval 6068111056",
   "purpose": "Build standalone WebGL candidate artifact from existing Pages Unity builder; do not deploy on stable unity-owner/",
   "acceptance": "Independent candidate runtime Playwright forest survey and harvest on fresh saves, reload and no duplication, landscape/portrait, R1 city+world macroloop, EXP-CAM-01 EXP-BLD-02 still open until visual/experience acceptance",
-  "retry": 1,
-  "retry_reason": "Windows Actions checkout shallow clone omitted pinned source SHA; explicitly fetch history and verify exact authorized gameplay contents before WebGL compilation"
+  "retry": 2,
+  "retry_reason": "Previous candidate correctly recovered source SHA and staged Unity, but existing Pages global cancel-in-progress unexpectedly canceled the build when independent QA source changed; stable/candidate concurrency groups now isolated. Final bounded automatic attempt."
 }
