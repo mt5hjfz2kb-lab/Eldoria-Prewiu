@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:35:00Z",
+  "updated_at": "2026-10-08T13:50:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -20,14 +20,14 @@
       "claimed_at": "2026-10-08T13:15:00Z",
       "base_main_sha": "869c163b395a49136fba36a760f3bbf31308b31c",
       "status": "blocked",
-      "phase": "SECOND ART CORRECTION COMMITTED / AWAITING REAL UNITY CAPTURE",
+      "phase": "THIRD VISUAL ITERATION COMMITTED / POST-CAPTURE NOT AVAILABLE",
       "dependency": "M05-R1 verified; preserve finished SHARP sawmill, all gameplay, global camera and HUD; zero credits; no M11",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Identify production Actions run for 52c69dcdba04e5a81679de460b494ffba2649647; inspect native runtime-home-initial, runtime-left-under-construction, runtime-left-built, and reloaded-under-construction; correct further if needed. Then only after native VISUAL PASS publish/verify WebGL and close.",
+      "next": "Retrieve run/artifact for exact third correction SHA 52101a1f5449544608537c83bee96f9210cafca7, inspect actual Unity initial/under-construction/reloaded-under-construction/built captures at native approved camera. If fails, repair local construction again; if passes, then independent WebGL published verification before closing. No M11/QA.",
       "completed_at": null,
       "runner_released": true,
-      "blocker": "Second iteration commit 52c69dcdba04e5a81679de460b494ffba2649647 fixes flattened screen-space scaffold orientation identified from actual artifact 11552904856. GitHub connector still lacks push-run listing/dispatch; awaiting verified new production run/artifact and direct frame review before any visual PASS or WebGL publication."
+      "blocker": "Third source correction 52101a1f5449544608537c83bee96f9210cafca7 committed after independently reviewing run 37785467062 artifact 11553239582 VISUAL FAIL. Tool environment cannot list push-triggered Actions runs, so no new run ID/artifact yet to inspect. Cannot certify visual result or close."
     }
   ],
   "history": [
