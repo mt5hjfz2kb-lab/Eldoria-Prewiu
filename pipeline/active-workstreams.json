@@ -57,7 +57,8 @@
         ".github/workflows/eldoria-local-agent-isolated-pilot-v1.yml",
         "tools/local-agent-isolated-pilot-v1.ps1",
         "docs/evidence/local-agent-isolated-pilot-v1/**",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "pipeline/local-agent-pilot-dispatch.json"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1"
@@ -65,12 +66,12 @@
       "claimed_at": "2026-10-08T15:43:00Z",
       "base_main_sha": "f35d23865569b39f9bfa71af86dcf588e187b231",
       "status": "active",
-      "phase": "AUTHORIZED / MANUAL DISPATCH READY / RUN NOT YET OBSERVED",
+      "phase": "REPAIR SELF-TRIGGER GOVERNANCE VIOLATION / SAFE REQUEST DISPATCH",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Infrastructure-only local inference; no player-visible artifacts or Unity writes",
       "paid_credits": 0,
       "dependency": "Issue #25; do not touch M07, M11 or gameplay; respect current preflight owner",
-      "next": "Owner triggers existing workflow_dispatch once on main; worker must validate this active claim and no competing claim; inspect new run, real local generation, independent nine cases, zero external APIs and final cleanup; independent coordinator review before closing.",
+      "next": "Replace forbidden heavy Windows self-trigger with authorized dedicated request file, dispatch once, collect independent evidence and release runner.",
       "blocker": null,
       "runner_released": false
     }
