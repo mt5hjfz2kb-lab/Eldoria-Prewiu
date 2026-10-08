@@ -11,3 +11,22 @@ test('7 occupied resources blocked',()=>{let c=base();c.jobs[0].resources=['unit
 test('8 human handoff',()=>{let c=base();c.jobs[0].executor='human_chat';assert.equal(evaluate(c).results[0].readiness,'HANDOFF')});
 test('9 no self-certification',()=>{let c=base();c.jobs[0].certificate_id='self';c.jobs.push({...job('M16-B'),depends_on:[{job_id:'M16-A',required_gate:'TECH'}]});assert.equal(evaluate(c,{}, {certificates:[{id:'self',status:'ACCEPTED',gates:{TECH:'PASS'},issued_by:'M16-B'}]}).results[1].readiness,'BLOCKED')});
 test('10 DG report reflects statuses',()=>{let c=base();c.jobs.push({...job('M16-B'),executor:'human_chat'});let r=evaluate(c);assert.equal(r.summary.READY,1);assert.equal(r.summary.HANDOFF,1);assert.match(render(r),/DIRECCION GENERAL/)});
+
+test('11 two independent authorized departments are READY simultaneously',()=>{
+ const c=base();c.departments.push({id:'audio',capabilities:['github_workflow']});
+ c.jobs.push({...job('M16-B'),department:'audio',scopes:['audio/**'],resources:['audio-cpu']});
+ c.jobs[0].resources=['qa-cpu'];
+ const result=evaluate(c,{active:[]});
+ assert.equal(result.summary.READY,2);
+ assert.deepEqual(result.results.map(x=>x.readiness),['READY','READY']);
+});
+test('12 incompatible resources block only affected job, never unrelated department',()=>{
+ const c=base();c.departments.push({id:'audio',capabilities:['github_workflow']});
+ c.jobs.push({...job('M16-B'),department:'audio',scopes:['audio/**'],resources:['audio-cpu']});
+ c.jobs.push({...job('M16-C'),department:'qa',scopes:['unity/**'],resources:['windows-runner']});
+ c.jobs[0].resources=['qa-cpu'];
+ const result=evaluate(c,{active:[{id:'external-owner',scope:['unity/**'],resources:['windows-runner']}]});
+ assert.equal(result.summary.READY,2);assert.equal(result.summary.BLOCKED,1);
+ assert.deepEqual(result.results.map(x=>x.readiness),['READY','READY','BLOCKED']);
+ assert.match(result.results[2].reasons.join(' '),/OWNER_CONFLICT:external-owner/);
+});
