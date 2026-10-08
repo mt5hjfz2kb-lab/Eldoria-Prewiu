@@ -1,4 +1,5 @@
 name: M16 Pilot A to B (GitHub hosted)
+# DG 2026-10-08: existing QA contracts additionally cover independent parallel-ready workstreams
 on:
   workflow_call:
   push:
