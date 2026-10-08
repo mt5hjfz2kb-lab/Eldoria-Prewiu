@@ -85,7 +85,7 @@
     {
       "id": "eldoria-m04-limited-recovery-v1",
       "title": "M04 isolated tests and bounded incident-recovery integration",
-      "owner": "chat-dg-v3-20261008",
+      "owner": "chat-dg-v4-20261009",
       "scope": [
         "tools/m04/incidents.mjs",
         "tests/m04/incidents.test.mjs",
@@ -98,12 +98,12 @@
       "claimed_at": "2026-10-08T20:38:00+02:00",
       "base_main_sha": "fcf544acb6584101181eeb3b2c4b0ff148f355ee",
       "status": "blocked",
-      "phase": "GITHUB NATIVE R1 QA HANDOFF INSTALLED / REAL M07 READY STILL BLOCKED",
+      "phase": "DG V4 AUTHORIZED OWNER TRANSFER / BOUNDED M04 R2B REPAIR-RETEST / R1 M07 DEPENDENCY PRESERVED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pure Node incident management; no Unity, art or production workflows",
       "paid_credits": 0,
       "dependency": "Preserve PR #27, PR #26, M07 and existing local agent preflight; no shared runner, no merge; independent QA required",
-      "next": "When M07 owner records all six independently verified canonical gates and releases its resources, push on registry activates same coordinator; its READY output then dispatches existing GitHub-hosted technical QA needs job without Work. Verify genuine run and follow with gameplay/visual/published QA separately; no premature M11 or owner override.",
+      "next": "Exercise existing GitHub workflow push-gated R2-B candidate artifact #11584812559 with new independent QA at corrected main SHA; preserve M07 gates, no Windows Unity rebuild or stable publication without all guarded checks.",
       "result": {
         "trigger": "main push canonical registry/workflow",
         "source_sha": "621187cd6fa48af7ba61f36fbc5d4cb479b147c1",
@@ -117,7 +117,14 @@
         "zero_paid_apis": true
       },
       "runner_released": true,
-      "blocker": "M07 owner still BLOCKED 2/6 gates; cannot execute R1 QA on unaccepted visual work. Existing workflow needs gate installed at fed8478394, but no READY event / successful new QA job is available for certification. M04 bounded repair-to-retest across departments remains out of scope of this QA technical gate."
+      "blocker": "M07 owner still BLOCKED 2/6 gates; cannot execute R1 QA on unaccepted visual work. Existing workflow needs gate installed at fed8478394, but no READY event / successful new QA job is available for certification. M04 bounded repair-to-retest across departments remains out of scope of this QA technical gate.",
+      "owner_transfer": {
+        "from": "chat-dg-v3-20261008",
+        "to": "chat-dg-v4-20261009",
+        "authorized_by": "owner explicit chat authorization 2026-10-09",
+        "transfer_scope": "existing M04 workstream only",
+        "preserve_existing_results": true
+      }
     },
     {
       "id": "r2-a-world-readability",
