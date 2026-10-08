@@ -14,6 +14,26 @@ namespace Eldoria.Tests
 {
     public sealed class ParcelProgressionRuntimeTests
     {
+        [Test] public void CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges()
+        {
+            foreach(var size in new[]{new Vector2(844f,390f),new Vector2(390f,844f)})
+            {
+                float frameHeight=Mathf.Max(size.y,size.x*845f/1230f);
+                float halfCovered=frameHeight*1.025f*.5f;
+                float travel=ValoriaWebGLSplatStateLoader.CoveredVerticalTravel(frameHeight,size.y,1.025f);
+                foreach(float direction in new[]{-1f,1f})
+                {
+                    float center=size.y*.5f+direction*travel;
+                    Assert.LessOrEqual(center-halfCovered,0f,"top edge must cover viewport");
+                    Assert.GreaterOrEqual(center+halfCovered,size.y,"bottom edge must cover viewport");
+                }
+                if(size.x>size.y)
+                    Assert.Greater(-8.6f+travel,54f,"recorded Bastion target must be revealable below header");
+                else
+                    Assert.That(travel,Is.InRange(0f,12f),"portrait must retain bounded covered movement");
+            }
+        }
+
         sealed class Clock:IClock {public long UtcTicks{get;set;}=DateTime.UtcNow.Ticks;public void Step(int seconds){UtcTicks+=TimeSpan.FromSeconds(seconds).Ticks;}}
         sealed class Store:IStateStore {PlayerState s;public PlayerState Load()=>s;public void Save(PlayerState state){s=state;}}
         static void Invoke(SlicePresenter presenter,string method,params object[] args)

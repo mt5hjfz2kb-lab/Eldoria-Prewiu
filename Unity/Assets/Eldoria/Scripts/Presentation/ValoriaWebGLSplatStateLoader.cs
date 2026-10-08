@@ -83,16 +83,28 @@ namespace Eldoria.Presentation
         public void FocusPresentedPoint(Vector3 world)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
+            SyncCertifiedWebView();
             if(!TryProjectPresentedPoint(world,out var point)||webBackgroundRect==null)return;
             var canvas=webBackgroundRect.GetComponentInParent<Canvas>();
             float pixelsPerPan=webBackgroundRect.rect.width*(CertifiedHalfPanPixels/1230f)/CertifiedHalfPanWorld*(canvas!=null?canvas.scaleFactor:1f);
             var camera=Presentation.ProductionCamera;
             var position=camera.transform.position;
             position.x=Mathf.Clamp(position.x+(point.x-Screen.width*.5f)/Mathf.Max(1f,pixelsPerPan),-WebHorizontalPanLimit,WebHorizontalPanLimit);
+            var viewport=webBackgroundRect.parent as RectTransform;
+            float viewportHeight=viewport!=null?Mathf.Max(1f,viewport.rect.height):Screen.height;
+            float verticalTravel=CoveredVerticalTravel(webBackgroundRect.rect.height,viewportHeight,webBackgroundRect.localScale.y);
+            float pixelsPerVerticalPan=verticalTravel*(canvas!=null?canvas.scaleFactor:1f)/ValoriaParcelPresentation.VerticalPanHalfExtent;
+            position.y=verticalTravel>0f
+                ?Mathf.Clamp(position.y+(point.y-Screen.height*.5f)/Mathf.Max(1f,pixelsPerVerticalPan),
+                    -ValoriaParcelPresentation.VerticalPanHalfExtent,ValoriaParcelPresentation.VerticalPanHalfExtent)
+                :0f;
             camera.transform.position=position;
             SyncCertifiedWebView();
 #endif
         }
+
+        public static float CoveredVerticalTravel(float frameHeight,float viewportHeight,float visualScale)
+            => Mathf.Max(0f,(frameHeight*visualScale-viewportHeight)*.5f)*.90f;
 
         void Start()
         {
@@ -239,11 +251,12 @@ namespace Eldoria.Presentation
             float zoomAnchor = LoadedZoom();
             float residualScale = Mathf.Clamp(zoomAnchor / zoomRatio, .97f, 1.03f);
             float visualScale = residualScale * CertifiedWebOverscan;
-            // The small overscan is only a safety margin for the deliberately smaller Y pan.
-            // Vertical travel never exceeds the covered margin, so no un-authored edge can appear.
-            float verticalMargin = renderedHeight * (visualScale - residualScale) * .5f;
-            float verticalShift = -(panY / ValoriaParcelPresentation.VerticalPanHalfExtent) *
-                Mathf.Max(0f, verticalMargin * .90f);
+            // Envelope cropping supplies safe vertical travel in landscape; portrait retains
+            // only its covered overscan. Keep ten percent of that margin at either edge.
+            var viewport=webBackgroundRect.parent as RectTransform;
+            float viewportHeight=viewport!=null?Mathf.Max(1f,viewport.rect.height):Screen.height;
+            float verticalTravel=CoveredVerticalTravel(renderedHeight,viewportHeight,visualScale);
+            float verticalShift = -(panY / ValoriaParcelPresentation.VerticalPanHalfExtent) * verticalTravel;
             webBackgroundRect.anchoredPosition = new Vector2(shift, verticalShift);
             webBackgroundRect.localScale = new Vector3(visualScale, visualScale, 1f);
 
