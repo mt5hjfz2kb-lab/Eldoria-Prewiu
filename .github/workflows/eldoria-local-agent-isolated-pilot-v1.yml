@@ -110,3 +110,121 @@ jobs:
           path: ${{ runner.temp }}/eldoria-pilot-${{ github.run_id }}
           if-no-files-found: warn
           retention-days: 14
+
+
+  maintenance-prepare:
+    if: github.event_name == 'issue_comment' && github.event.issue.number == 25 && github.event.comment.body == 'ELDORIA_LOCAL_MAINTENANCE_V1_AUTHORIZED_20261008'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-coordinator-v1.cjs
+            pipeline/active-workstreams.json
+      - run: node tools/eldoria-coordinator-v1.cjs --prepare-first-maintenance task.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-maintenance-task-${{ github.run_id }}
+          path: task.json
+          if-no-files-found: error
+  maintenance-worker:
+    needs: maintenance-prepare
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-maintenance-task-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-maintenance-order
+      - name: Local Qwen generates bounded JSON regression fixture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $task=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-maintenance-order/task.json') -Raw|ConvertFrom-Json
+          if($task.issuer -ne 'eldoria-coordinator-v1' -or $task.task_id -ne 'eldoria-local-agent-first-maintenance-v1' -or $task.model -ne 'qwen2.5-coder:3b' -or $task.external_api_budget -ne 0 -or $task.code_execution_allowed -ne $false){throw 'Coordinator task invalid'}
+          $reg=Invoke-RestMethod "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/main/pipeline/active-workstreams.json"
+          $claim=@($reg.active|Where-Object{$_.id -eq $task.task_id -and $_.owner -eq 'chat-direction-local-agent-maintenance-20261008' -and $_.status -eq 'active'})
+          if($claim.Count -ne 1 -or !(@($claim[0].resources) -contains 'windows-self-hosted-unity-6000-3-23f1')){throw 'Runner claim invalid'}
+          if(@($reg.active|Where-Object{$_.id -ne $task.task_id -and $_.status -eq 'active' -and @($_.resources) -contains 'windows-self-hosted-unity-6000-3-23f1'}).Count){throw 'Runner conflict'}
+          if(Get-Process -Name Unity,Blender,ollama -ErrorAction SilentlyContinue){throw 'Concurrent program or Ollama exists'}
+          if(Get-NetTCPConnection -LocalPort 11434 -State Listen -ErrorAction SilentlyContinue){throw 'Listener busy'}
+          $exe=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI/ollama-v0.40.1/ollama.exe'
+          if(!(Test-Path $exe)){throw 'Previously installed Ollama missing'}
+          $env:OLLAMA_HOST='127.0.0.1:11434';$env:OLLAMA_NO_CLOUD='1'
+          $env:OLLAMA_MODELS=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI/models'
+          $env:OLLAMA_NUM_PARALLEL='1';$env:OLLAMA_MAX_LOADED_MODELS='1';$env:OLLAMA_CONTEXT_LENGTH='2048';$env:OLLAMA_KEEP_ALIVE='0'
+          $dir=Join-Path $env:RUNNER_TEMP "eldoria-maintenance-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force -Path $dir|Out-Null
+          Copy-Item (Join-Path $env:RUNNER_TEMP 'eldoria-maintenance-order/task.json') (Join-Path $dir 'task.json')
+          $server=$null
+          try{
+            $server=Start-Process -FilePath $exe -ArgumentList serve -PassThru -RedirectStandardOutput (Join-Path $dir 'server-out.log') -RedirectStandardError (Join-Path $dir 'server-err.log')
+            $ready=$false
+            for($i=0;$i -lt 30;$i++){if($server.HasExited){throw 'Ollama exited'};try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+            if(!$ready){throw 'Local model server not ready'}
+            $listeners=@(Get-NetTCPConnection -State Listen -LocalPort 11434)
+            if(!$listeners.Count -or @($listeners|Where-Object{$_.LocalAddress -ne '127.0.0.1' -or $_.OwningProcess -ne $server.Id}).Count){throw 'Untrusted Ollama listener'}
+            $prompt='Respond ONLY with a JSON object with key cases: exactly six records, each {"input":string,"valid":boolean}. These are regression cases for a JSON OBJECT reader that strips ONE leading U+FEFF BOM. Include exactly valid {} without BOM, a valid {"a":1} with BOM as first character, at least two other valid JSON object strings and at least two malformed JSON strings. Use JSON escaped \uFEFF for the BOM in input. Do not include markdown, code, commands, explanations or fields beyond input and valid.'
+            $body=@{model='qwen2.5-coder:3b';stream=$false;keep_alive='10s';format='json';options=@{temperature=0;num_predict=650;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 7
+            $res=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
+            if(!$res.done -or $res.model -ne 'qwen2.5-coder:3b'){throw 'Wrong model or incomplete output'}
+            $data=$res.response|ConvertFrom-Json
+            $cases=@($data.cases)
+            if($cases.Count -ne 6){throw 'Expected six cases'}
+            $seen=@{};$good=0;$bad=0;$boms=0
+            foreach($v in $cases){
+              if($v.input -isnot [string] -or $v.input.Length -gt 120 -or $v.valid -isnot [bool] -or $seen.ContainsKey($v.input)){throw 'Invalid case schema'}
+              $seen[$v.input]=$true;$raw=$v.input
+              if($raw.StartsWith([char]0xFEFF)){$raw=$raw.Substring(1);$boms++}
+              $ok=$false
+              try{$x=$raw|ConvertFrom-Json -ErrorAction Stop;$ok=$null -ne $x -and $raw.TrimStart().StartsWith('{')}catch{}
+              if($ok -ne $v.valid){throw 'Case expectation mismatch'}
+              if($ok){$good++}else{$bad++}
+            }
+            if($good -lt 3 -or $bad -lt 2 -or $boms -lt 1 -or !(@($cases|Where-Object{$_.input -eq '{}' -and $_.valid}).Count)){throw 'Required coverage missing'}
+            $fixture=@{schema_version=1;purpose='coordinator-evidence-json-bom-regression';cases=$cases}|ConvertTo-Json -Depth 8
+            [IO.File]::WriteAllText((Join-Path $dir 'fixture.json'),$fixture,[Text.UTF8Encoding]::new($false))
+            $hash=(Get-FileHash (Join-Path $dir 'fixture.json') -Algorithm SHA256).Hash.ToLowerInvariant()
+            @{status='PASS';task_id=$task.task_id;run_id=$env:GITHUB_RUN_ID;sha=$env:GITHUB_SHA;model=$res.model;source_sha256=$hash;cases_passed=6;external_api_calls=0;paid_api_calls=0;arbitrary_generated_code_executed=$false}|ConvertTo-Json|Set-Content (Join-Path $dir 'proof.json')
+            Write-Output "GENERATED_FIXTURE_JSON=$fixture"
+          }finally{
+            if($server -and !$server.HasExited){& taskkill /PID $server.Id /T /F|Out-Null}
+            Start-Sleep -Seconds 2
+            if(Get-NetTCPConnection -LocalPort 11434 -State Listen -ErrorAction SilentlyContinue){throw 'Listener still open'}
+            @{status='PASS';listener_closed=$true}|ConvertTo-Json|Set-Content (Join-Path $dir 'final-check.json')
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-maintenance-worker-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-maintenance-${{ github.run_id }}
+          if-no-files-found: warn
+  maintenance-review:
+    needs: maintenance-worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-maintenance-worker-${{ github.run_id }}
+          path: evidence
+      - name: Independently validate generated fixture without executing generated code
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'), assert=require('assert'), crypto=require('crypto');
+          const read=n=>JSON.parse(fs.readFileSync('evidence/'+n,'utf8').replace(/^\uFEFF/,''));
+          const f=read('fixture.json'),p=read('proof.json'),c=read('final-check.json'),t=read('task.json');
+          assert.equal(f.cases.length,6);assert.equal(p.cases_passed,6);assert.equal(p.external_api_calls,0);assert.equal(p.paid_api_calls,0);assert.equal(p.arbitrary_generated_code_executed,false);
+          assert.equal(p.task_id,t.task_id);assert.equal(t.issuer,'eldoria-coordinator-v1');assert.equal(c.listener_closed,true);
+          assert.equal(crypto.createHash('sha256').update(fs.readFileSync('evidence/fixture.json')).digest('hex'),p.source_sha256);
+          let yes=0,no=0,bom=0;
+          for(const x of f.cases){
+            assert.equal(typeof x.input,'string');assert.equal(typeof x.valid,'boolean');
+            let s=x.input;if(s.charCodeAt(0)===0xfeff){s=s.slice(1);bom++}
+            let ok=false;try{const o=JSON.parse(s);ok=o!==null&&typeof o==='object'&&!Array.isArray(o)}catch{}
+            assert.equal(ok,x.valid);if(ok)yes++;else no++;
+          }
+          assert(yes>=3&&no>=2&&bom>=1);assert(f.cases.some(x=>x.input==='{}'&&x.valid));
+          console.log('INDEPENDENT_MAINTENANCE_PASS 6/6 SHA='+p.source_sha256);
+          NODE
