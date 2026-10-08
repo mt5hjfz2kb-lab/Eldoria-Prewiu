@@ -20,7 +20,8 @@
   },
   "validation": {
     "source_gate": "Confirm current World 1 POIs from canonical gameplay and qualified existing assets; scope nonoverlap with R1 M07 and original SHARP authority",
-    "final_gate": "Paired native Unity and published World Region1 captures portrait/landscape + real touch select resources/threats + persistence and no downgrade of Bastion I-II macroloop; independent visual pass required"
+    "final_gate": "Paired native Unity and published World Region1 captures portrait/landscape + real touch select resources/threats + persistence and no downgrade of Bastion I-II macroloop; independent visual pass required",
+    "planner_gate": "Complete existing art-production-plan.yml and governance check before any D05/D11 changes; route must be Unity existing-asset composition, Tripo disallowed."
   },
   "notes": "R2 owner-approved zero-credit artwork planning. Pipeline may route no-cost composition and reuse; must not start Unity/Blender or spend Tripo credits before correct owner/resource claim; preserve R1 M07.",
   "status": "PLANNED"
