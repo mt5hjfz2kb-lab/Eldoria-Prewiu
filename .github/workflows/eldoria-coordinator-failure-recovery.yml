@@ -372,3 +372,20 @@ jobs:
               lines.push('**M04:** '+report.total+' classified incident(s), owner unchanged, failure source '+run.html_url+', no deterministic replay without repaired SHA.');
             }
             await github.rest.issues.createComment({owner,repo,issue_number:23,body:lines.join('\n')});
+
+  r2b-candidate-hosted-preview:
+    needs: [r2b-candidate-gate, r2b-candidate-functional-qa]
+    if: >-
+      needs.r2b-candidate-gate.outputs.authorized == 'true' &&
+      needs.r2b-candidate-functional-qa.result == 'success' &&
+      github.event.workflow_run.conclusion == 'success'
+    uses: ./.github/workflows/pages.yml
+    with:
+      candidate_run_id: ${{ github.event.workflow_run.id }}
+      candidate_head_sha: ${{ github.event.workflow_run.head_sha }}
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+      issues: write
