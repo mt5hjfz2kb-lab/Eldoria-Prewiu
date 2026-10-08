@@ -28,7 +28,7 @@ namespace Eldoria.Presentation
         public GameObject[] BastionLevelTwoVisuals = Array.Empty<GameObject>();
         public int PresentedBastionLevel { get; private set; } = 1;
         public float HomeFov = 44.42281f;
-        public const float PresentationHomeScale=.80f;
+        public const float PresentationHomeScale=1.00f;
         public float PresentationHomeFov => HomeFov*PresentationHomeScale;
         public ParcelBuildingState LeftState { get; private set; }
         public ParcelBuildingState RightState { get; private set; }
@@ -73,15 +73,15 @@ namespace Eldoria.Presentation
             // Locked parcels remain visible empty space, with no premature building panel.
             if(target!=null)target.enabled=state!=ParcelBuildingState.NOT_BUILT;
         }
-        public const float HorizontalPanHalfExtent=.80f;
-        public const float VerticalPanHalfExtent=.32f;
+        public const float HorizontalPanHalfExtent=2.80f;
+        public const float VerticalPanHalfExtent=1.10f;
         public void Pan(Vector2 delta)
         {
             var p=ProductionCamera.transform.position;
-            p.x=Mathf.Clamp(p.x-delta.x*.005f,-HorizontalPanHalfExtent,HorizontalPanHalfExtent);
+            p.x=Mathf.Clamp(p.x-delta.x*.012f,-HorizontalPanHalfExtent,HorizontalPanHalfExtent);
             // Owner camera rule: Valoria is primarily a wide left/right space, but must
             // retain a smaller genuine vertical browse range on touch.
-            p.y=Mathf.Clamp(p.y-delta.y*.002f,-VerticalPanHalfExtent,VerticalPanHalfExtent);
+            p.y=Mathf.Clamp(p.y-delta.y*.006f,-VerticalPanHalfExtent,VerticalPanHalfExtent);
             p.z=0;
             ProductionCamera.transform.position=p;
         }
