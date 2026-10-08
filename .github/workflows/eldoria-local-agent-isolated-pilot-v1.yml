@@ -207,7 +207,7 @@ jobs:
             foreach($v in $cases){
               if($v.input -isnot [string] -or $v.input.Length -gt 120 -or $v.valid -isnot [bool] -or $seen.ContainsKey($v.input)){throw 'Invalid case schema'}
               $seen[$v.input]=$true;$raw=$v.input
-              if($raw.StartsWith([char]0xFEFF)){$raw=$raw.Substring(1);$boms++}
+              if($raw.Length -gt 0 -and [int][char]$raw[0] -eq 0xFEFF){$raw=$raw.Substring(1);$boms++}
               $ok=$false
               $sample=Join-Path $dir 'validation-input.json'
               [IO.File]::WriteAllText($sample,$raw,[Text.UTF8Encoding]::new($false))
