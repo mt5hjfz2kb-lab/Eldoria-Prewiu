@@ -57,7 +57,8 @@
         ".github/workflows/eldoria-local-ai-install-v1.yml",
         "tools/local-ai-install-v1.ps1",
         "tools/local-ai-proof-v1.py",
-        "docs/ELDORIA_LOCAL_AI_V1.md"
+        "docs/ELDORIA_LOCAL_AI_V1.md",
+        "tools/local-ai-proof-v1.ps1"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T14:35:02.943Z",
@@ -67,23 +68,26 @@
       "art_production_routing_reason": "Local developer inference infrastructure only; no player-visible assets/game changes.",
       "paid_credits": 0,
       "dependency": "Consume completed read-only preflight run 37792004269; do not mutate its owner's workflows or request. No Unity/Blender changes, M11, QA or external API.",
-      "phase": "FIRST MANUAL RUN FAILED BEFORE INSTALL / CHECKOUT REPAIRED / NEW DISPATCH REQUIRED",
-      "next": "Run the corrected workflow manually on main (not Re-run old jobs), inspect real proof and final-check artifacts, repair and close only with verified installation.",
+      "phase": "SECOND RUN FAILED AT PYTHON ALIAS / NATIVE POWERSHELL PROOF PREPARED / DISPATCH REQUIRED",
+      "next": "Run updated workflow manually on main, inspect real local model response/proof/final-check, repair and close only with evidence.",
       "runner_released": true,
-      "blocker": "Run 37794785669 failed during checkout: Git absent from runner PATH, full archive Expand-Archive failure. Repair removes checkout; connected tools cannot workflow_dispatch the corrected definition.",
+      "blocker": "Run 37797719180 verified script fetch but failed before installation: Python is Microsoft Store alias. Proof now uses existing PowerShell/.NET; new definition requires manual workflow_dispatch absent in connected tools.",
       "result": {
         "preparation_commit": "a3cfc5657e6a4b4326558fd33869048352dceaa7",
         "preflight_run_id": 37792004269,
         "installed_verified": false,
         "model_downloaded_verified": false,
         "real_proof_verified": false,
-        "local_harness_validation": "nine cases and three rejection tests PASS; YAML parsed",
+        "local_harness_validation": "YAML parsed; pure grammar sample accepted, four injection samples rejected in independent grammar check; native execution pending",
         "doc": "docs/ELDORIA_LOCAL_AI_V1.md",
         "workflow": ".github/workflows/eldoria-local-ai-install-v1.yml",
         "paid_credits": 0,
         "first_install_run_id": 37794785669,
         "first_install_run_conclusion": "failure before installer; no model test",
-        "repair": "Direct immutable-SHA two-file download with SHA256 verification; .NET standalone ZIP extraction"
+        "repair": "Direct immutable-SHA two-file download with SHA256 verification; .NET standalone ZIP extraction",
+        "second_install_run_id": 37797719180,
+        "second_install_run_conclusion": "failed at Python alias before installer",
+        "proof_harness": "native PowerShell closed-grammar interpreter; no Python required"
       }
     }
   ],

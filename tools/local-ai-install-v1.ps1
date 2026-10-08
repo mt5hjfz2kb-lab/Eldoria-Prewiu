@@ -1,5 +1,6 @@
 param([ValidateSet('InstallAndTest','Serve')][string]$Mode='InstallAndTest', [string]$EvidenceDir)
 $ErrorActionPreference='Stop'
+$ProgressPreference='SilentlyContinue'
 $root=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI'
 $bin=Join-Path $root 'ollama-v0.40.1'
 $exe=Join-Path $bin 'ollama.exe'
@@ -36,7 +37,7 @@ $before=@(Get-Process -Name Unity,Blender -ErrorAction SilentlyContinue | Select
 if (!(Test-Path $exe)) {
   $zip=Join-Path $root 'ollama-v0.40.1.zip'
   [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/ollama/ollama/releases/download/v0.40.1/ollama-windows-amd64.zip' -OutFile $zip
+  Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/ollama/ollama/releases/download/v0.40.1/ollama-windows-amd64.zip' -OutFile $zip -TimeoutSec 1200
   $hash=(Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant()
   if ($hash -ne 'b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab') { throw 'STOP: official archive checksum mismatch.' }
   Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -59,10 +60,13 @@ try {
   & $exe pull qwen2.5-coder:3b
   if ($LASTEXITCODE -ne 0) { throw 'Model download failed.' }
   AssertIdle
-  & python (Join-Path $PSScriptRoot 'local-ai-proof-v1.py') $EvidenceDir
-  if ($LASTEXITCODE -ne 0) { throw 'Isolated programming proof failed.' }
+  & (Join-Path $PSScriptRoot 'local-ai-proof-v1.ps1') -EvidenceDir $EvidenceDir
   $proof=Get-Content (Join-Path $EvidenceDir 'proof.json') -Raw | ConvertFrom-Json
   if ($proof.status -ne 'PASS') { throw 'Proof did not pass.' }
+  $persistTools=Join-Path $root 'tools'
+  New-Item -ItemType Directory -Force -Path $persistTools | Out-Null
+  Copy-Item -LiteralPath $PSCommandPath -Destination (Join-Path $persistTools 'local-ai-install-v1.ps1') -Force
+  Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'local-ai-proof-v1.ps1') -Destination (Join-Path $persistTools 'local-ai-proof-v1.ps1') -Force
   @{status='PROOF_PASS';ollama_version=$version.version;archive_sha256='b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab';bind='127.0.0.1:11434';cloud_disabled=$true;services_installed=0;global_env_changes=0;source_sha=$env:GITHUB_SHA;run_id=$env:GITHUB_RUN_ID;unity_blender_processes_before=$before;paid_api_calls=0;installation_path=$bin} | ConvertTo-Json -Depth 8 | Set-Content (Join-Path $EvidenceDir 'installation.json')
 } finally {
   if ($server -and !$server.HasExited) { & taskkill /PID $server.Id /T /F | Out-Null }

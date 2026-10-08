@@ -15,13 +15,14 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
+          $ProgressPreference='SilentlyContinue'
           [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
           $base="https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/$env:GITHUB_SHA"
           $target=Join-Path $env:RUNNER_TEMP "eldoria-local-ai-source-$env:GITHUB_RUN_ID"
           New-Item -ItemType Directory -Force -Path $target | Out-Null
           $files=@{
-            'local-ai-install-v1.ps1'='0de552b341e0a15ed64ca393a1721c7c25c39abcf8bd63c43c7c894d4df9207c'
-            'local-ai-proof-v1.py'='de5e86edffbedf8ee764e12b51b2297e1f3a1039a9972e719d1149c54840ae8a'
+            'local-ai-install-v1.ps1'='e2223764b5d4fb17c4f5f6a1f7ad77bd2dd1a668d613dab3843704d25fd1f9dd'
+            'local-ai-proof-v1.ps1'='c9eb99403ab6a039deb0758bb5aa1c1d7013830045ea70fcdd32fc8a181f673c'
           }
           foreach($name in $files.Keys) {
             $dest=Join-Path $target $name
@@ -29,8 +30,6 @@ jobs:
             if ((Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant() -ne $files[$name]) { throw "Script checksum mismatch: $name" }
           }
           "ELDORIA_LOCAL_AI_SOURCE=$target" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          & python --version
-          if ($LASTEXITCODE -ne 0) { throw 'Working Python runtime required before installation.' }
       - name: Verify authorized ownership and runner availability
         shell: powershell
         run: |

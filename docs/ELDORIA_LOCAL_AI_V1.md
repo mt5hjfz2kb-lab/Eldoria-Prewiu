@@ -4,7 +4,7 @@
 
 **PREPARADO / INSTALACIÓN Y PRUEBA REAL PENDIENTES. No es un cierre satisfactorio.**
 
-La conexión GitHub funciona. El [preflight 37792004269](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37792004269) terminó correctamente en `DESKTOP-R10PE55`: 16 procesadores lógicos, 8,75 GB RAM libre, RTX 3060 de 12288 MiB, 11701 MiB VRAM libre, GPU al 0 %, 488,8 GB libres en el disco consultado. Python está disponible. Ollama no se encontró en PATH y no tenía proceso activo. Esto acredita acceso mediante Actions en aquel momento, no instalación ni disponibilidad futura.
+La conexión GitHub funciona. El [preflight 37792004269](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37792004269) terminó correctamente en `DESKTOP-R10PE55`: 16 procesadores lógicos, 8,75 GB RAM libre, RTX 3060 de 12288 MiB, 11701 MiB VRAM libre, GPU al 0 %, 488,8 GB libres en el disco consultado. El inventario encontró el comando Python; el segundo intento ha confirmado que es un alias de Microsoft Store sin intérprete disponible. Ollama no se encontró en PATH y no tenía proceso activo. Esto acredita acceso mediante Actions en aquel momento, no instalación ni disponibilidad futura.
 
 Bloqueo de plataforma: el conector conectado tiene lectura de runs/jobs y escritura de archivos, pero no una operación de `workflow_dispatch`. No se ha usado un trigger push para saltarse la regla de AGENTS.md que exige activación manual de instalaciones y diagnósticos. No se ha iniciado otro login ni se ha solicitado un token. El preflight automático existente pertenece a otra sesión y queda intacto.
 
@@ -26,16 +26,16 @@ La instalación exige Windows 10 22H2 o posterior, 6 GB de RAM libre, 6000 MiB d
 
 ## Prueba real aislada
 
-El modelo debe generar una función Python `clamp(value, low, high)` a partir del prompt. Se conserva la respuesta original y se comprueban nueve casos incluyendo límites, negativos y rango de anchura cero. Un intérprete AST cerrado ejecuta solo comparaciones y retornos; nunca se usa `exec`, nunca se ejecutan comandos o imports sugeridos por el modelo y no hay acceso generado a archivos, red o credenciales. Esto demuestra una tarea pequeña de programación; no acredita todavía agentes autónomos capaces de mantener Eldoria.
+La prueba vigente solicita al modelo una función PowerShell `Clamp` con parámetros `value, low, high`. Se conserva la respuesta original y se comprueban nueve casos incluyendo límites, negativos y rango de anchura cero. Un intérprete de gramática cerrada admite exclusivamente dos comparaciones condicionales y tres retornos de parámetros. El texto generado nunca se ejecuta como script; no se usa Invoke-Expression ni se permiten llamadas, comandos, asignaciones, red, archivos o credenciales. La prueba usa PowerShell/.NET ya existentes y no requiere Python. Esto demuestra una tarea pequeña de programación; no acredita todavía agentes autónomos capaces de mantener Eldoria.
 
 La comprobación de no interferencia es acotada: instalación separada, aplicaciones ausentes antes/durante/después, puerto local verificado, modelo descargado de memoria y cierre de procesos propios. No certifica rendimiento simultáneo con Unity; por defecto no se autoriza esa concurrencia.
 
 ## Uso tras un PASS real
 
-En una copia local de main, PowerShell:
+Desde PowerShell, después del PASS (el workflow persiste el lanzador seguro):
 
 ```powershell
-./tools/local-ai-install-v1.ps1 -Mode Serve
+& "$env:LOCALAPPDATA\EldoriaLocalAI\tools\local-ai-install-v1.ps1" -Mode Serve
 ```
 
 Mantener esa consola abierta. En otra PowerShell:
@@ -68,3 +68,11 @@ El propietario activó el [run 37794785669](https://github.com/mt5hjfz2kb-lab/El
 Reparación: eliminado actions/checkout; se obtienen solamente los dos scripts desde raw.githubusercontent.com con el SHA inmutable del run y sus hashes SHA-256 esperados. El instalador standalone también utiliza extracción .NET en vez de Expand-Archive. No se cambia Git, PATH ni las herramientas existentes. YAML parseado y hashes comprobados localmente; ejecución Windows de la reparación aún pendiente.
 
 **Siguiente paso necesario:** Run workflow → main → Run workflow nuevamente sobre la definición corregida. No usar Re-run jobs del intento antiguo: reutilizaría la definición del commit fallido. El conector continúa sin operación workflow_dispatch. Recuperar el nuevo run, inspeccionar prueba real y artefactos; no declarar cierre hasta PASS verificable.
+
+## Segundo intento real y eliminación de dependencia Python
+
+[Run 37797719180](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37797719180), job 113381437420: descarga de scripts y verificación de hashes funcionan, pero `python --version` falla porque el comando es un alias Microsoft Store. Se detuvo ANTES del instalador; no se descargó Ollama ni el modelo, sin prueba real ni artifact.
+
+Se sustituye la prueba Python por `tools/local-ai-proof-v1.ps1`, intérprete cerrado de una función PowerShell generada, con los mismos nueve casos y preservación de respuesta/digest/métricas. No se instala Python ni se modifican aliases/PATH o Blender. El harness anterior Python se conserva como historia, no lo utiliza el workflow vigente. La gramática se comprobó contra un ejemplo puro y cuatro intentos de inyección; esto es validación estática, no ejecución nativa Windows ni prueba real del modelo.
+
+El nuevo workflow todavía debe activarse con **Run workflow → main → Run workflow**. No usar Re-run del run anterior. La ausencia de dispatch en el conector sigue siendo el bloqueo para ejecutar la definición nueva.
