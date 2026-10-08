@@ -5,7 +5,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: eldoria-dg-authorized-pilot-dispatch
+  group: eldoria-dg-authorized-pilot-dispatch-${{ github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_20261008' && 'authorized' || github.event.comment.id }}
   cancel-in-progress: false
 jobs:
   authorize:
