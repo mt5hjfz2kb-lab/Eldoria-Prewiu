@@ -1,4 +1,5 @@
 name: Eldoria local agent isolated pilot v1
+# Bounded validation of PR #26 updated parser; no main merge or paid API.
 on:
   workflow_dispatch:
     inputs:
