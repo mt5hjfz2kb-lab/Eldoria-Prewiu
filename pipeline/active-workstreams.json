@@ -96,15 +96,13 @@
       "resources": [],
       "claimed_at": "2026-10-08T20:38:00+02:00",
       "base_main_sha": "fcf544acb6584101181eeb3b2c4b0ff148f355ee",
-      "status": "blocked",
-      "phase": "LIVE WORKFLOW DISPATCH UNAVAILABLE IN CURRENT CONNECTOR / E2E NOT CERTIFIED",
+      "status": "active",
+      "phase": "CONNECT EXISTING EVENT WORKFLOW TO REAL R1 DEPENDENCY GATE",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pure Node incident management; no Unity, art or production workflows",
       "paid_credits": 0,
       "dependency": "Preserve PR #27, PR #26, M07 and existing local agent preflight; no shared runner, no merge; independent QA required",
-      "next": "Use existing supported Work/Actions dispatch interface with authorized Round 1 work after M07 owner finishes/releases dependency, connect M04 authorized retry/M03 QA and verify new actual run/artifacts/comment; do not create another listener or reinstate old pilot.",
-      "blocker": "Receiver in main handles only failed isolated pilot workflow_run; no authenticated new production job dispatch to current Round 1 executable is accessible from this session. GitHub connector lacks workflow_dispatch/repository_dispatch event creation; M07 art owner remains blocked and protected. Cannot demonstrate real productive department→independent QA→retry→DG chain without supported executor dispatch and dependency release.",
-      "runner_released": true
+      "next": "Add existing-receiver push-based R1 order readiness evaluation; no M07 release or executor launch without certified evidence; inspect live jobs"
     }
   ],
   "history": [
