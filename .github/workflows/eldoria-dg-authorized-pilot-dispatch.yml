@@ -1,0 +1,32 @@
+name: Eldoria DG authorized pilot dispatcher
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+  actions: write
+  issues: read
+concurrency:
+  group: eldoria-dg-authorized-pilot-dispatch
+  cancel-in-progress: false
+jobs:
+  dispatch:
+    if: >-
+      github.event.issue.number == 23 &&
+      github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_20261008'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger only allowlisted zero-credit M16 chain
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ACTOR: ${{ github.event.comment.user.login }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTOR" = "mt5hjfz2kb-lab"
+          gh workflow run 'm16-pilot-two-jobs.yml' --repo "$GH_REPO" --ref main
+          echo 'ALLOWED_M16_DISPATCH_SUBMITTED'
