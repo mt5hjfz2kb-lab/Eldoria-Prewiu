@@ -18,6 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Checkout canonical coordinator module
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/m04
       - name: Read exact jobs and publish an idempotent coordinator handoff
         uses: actions/github-script@v7
         env:
@@ -25,6 +31,7 @@ jobs:
         with:
           script: |
             const run = context.payload.workflow_run;
+            const {findingFromWorkflowFailure,ingest,executiveReport,retryDecision} = await import(process.env.GITHUB_WORKSPACE+'/tools/m04/incidents.mjs');
             const { owner, repo } = context.repo;
             const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
               owner, repo, run_id: run.id, per_page: 100
@@ -39,7 +46,18 @@ jobs:
             });
             if (existing.some(c => (c.body || '').includes(marker))) return;
             const details = failed.map(j => '- ' + j.name + ': ' + j.conclusion).join('\n');
+            let incidents = {schema_version:1,incidents:[]};
+            for (const job of failed) {
+              const finding = findingFromWorkflowFailure(run,job,{
+                observed_at:run.updated_at || run.created_at || new Date().toISOString()
+              });
+              incidents = ingest(incidents,finding);
+            }
+            const report = executiveReport(incidents);
+            // Not an execution authorization. Never rerun a deterministic failed SHA.
+            const retry = retryDecision({authorized:false,attempts:0,transient:false});
             const body = [
+              '**M04:** ' + report.total + ' classified incident(s); ' + report.critical + ' critical; action ' + retry.reason,
               marker,
               '### Coordinador — fallo recibido; recuperación pendiente',
               '**Workstream:** ' + (maintenance ? 'eldoria-local-agent-first-maintenance-v1' : 'piloto local'),
