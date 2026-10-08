@@ -86,6 +86,11 @@ namespace Eldoria.Tests
             resumed=new LocalGateway(clock,store);Assert.That(ParcelBuildingStates.For(resumed.Snapshot(),"barracks"),Is.EqualTo(ParcelBuildingState.UNDER_CONSTRUCTION));
             clock.Step(SliceRules.BarracksBuildSeconds+1);gateway.Advance();Invoke(presenter,"Refresh");
             Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.BUILT));Assert.That(visual.RightGround.activeSelf,Is.False);Assert.That(visual.ActiveVariant,Is.EqualTo(3));
+            visual.Home();
+            visual.Pan(new Vector2(-150f,0f));
+            Assert.That(camera.transform.position.x,Is.GreaterThan(1f),"A normal mobile drag must visibly move the city camera");
+            visual.Home();
+            Assert.That(visual.PresentationHomeScale,Is.GreaterThanOrEqualTo(.95f),"HOME must not restart at the over-zoomed 80% FOV crop");
             visual.Pan(new Vector2(-10000,10000));Assert.That(camera.transform.position.x,Is.EqualTo(ValoriaParcelPresentation.HorizontalPanHalfExtent));
             Assert.That(camera.transform.position.y,Is.EqualTo(-ValoriaParcelPresentation.VerticalPanHalfExtent));
             visual.Zoom(-1000);Assert.That(camera.fieldOfView,Is.EqualTo(visual.PresentationHomeFov*.92f).Within(.001));visual.Home();Assert.That(camera.transform.position,Is.EqualTo(Vector3.zero));Assert.That(camera.fieldOfView,Is.EqualTo(visual.PresentationHomeFov).Within(.001));
