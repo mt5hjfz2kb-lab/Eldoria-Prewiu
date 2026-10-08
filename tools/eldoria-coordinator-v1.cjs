@@ -8,7 +8,7 @@ if (process.argv[2] === '--verify-local-pilot') {
   const dir = process.argv[3];
   const run = String(process.argv[4] || '');
   const sha = String(process.argv[5] || '');
-  const load = (name) => { try { return JSON.parse(fs.readFileSync(path.join(dir,name),'utf8')); } catch { return null; } };
+  const load = (name) => { try { return JSON.parse(fs.readFileSync(path.join(dir,name),'utf8').replace(/^\uFEFF/,'')); } catch { return null; } };
   const proof=load('proof.json'), cleanup=load('final-check.json'), worker=load('pilot-report.json');
   const checks=[];
   const check=(key,condition)=>checks.push({key,passed:Boolean(condition)});
