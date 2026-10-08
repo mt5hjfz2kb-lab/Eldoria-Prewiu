@@ -42,6 +42,28 @@
       "runner_released": false,
       "blocker": null,
       "reopened_at": "2026-10-07T21:30:00Z"
+    },
+    {
+      "id": "eldoria-published-probe-integrity-v1",
+      "title": "Published probe integrity and explicit certification coverage",
+      "owner": "chat-independent-audit-20261008",
+      "scope": [
+        ".github/workflows/unity-webgl-startup.yml",
+        "tools/published-probe-contract.cjs",
+        "tests/published-probe-contract.test.cjs",
+        "docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md"
+      ],
+      "resources": [
+        "published-probe-contract"
+      ],
+      "claimed_at": "2026-10-08T07:08:00Z",
+      "base_main_sha": "294ce05284d99e152983f4d761bc845e6b0478ab",
+      "status": "active",
+      "phase": "IMPLEMENTATION",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "QA integrity only: classify engine errors, assert exact state persistence and named navigation controls, explicitly limit coverage. No visual/art assets, camera, scene, Unity presentation, economy or publication mutations.",
+      "dependency": "Consumes current published build read-only. Existing parity owner retains Unity, Windows runner, Pages and project state; this stream cannot repair or certify their presentation. Owner authorized corrections following independent audit.",
+      "next": "Implement contract, test it against historical PASS-with-error artifact and navigation/persistence counterexamples, integrate current workflow, verify CI and close QA-only scope."
     }
   ],
   "history": [
