@@ -168,10 +168,22 @@ jobs:
             return Object.fromEntries(['revision','wood','stone','gatheredWood','gatheredStone','march','sawmill','bastion','barracks','archers','trained','configured','scout','engendro','objective'].map(k=>[k,s[k]]));
           }
           async function resetPublishedGame(page,logs){
-            await tapLoggedUi(page,logs,'reset');await sleep(350);
+            // Start observing before the first tap. If the control was already armed
+            // (for example after a scene/reload edge), the first tap can legitimately
+            // commit the reset; starting the state window afterwards would miss it.
             const start=logs.length;
             await tapLoggedUi(page,logs,'reset');
-            const state=await waitState(logs,s=>s.revision===0&&s.sawmill===0&&s.bastion===1&&s.objective==='b1.build-sawmill',30000,'canonical reset',start);
+            const canonical=s=>s.revision===0&&s.sawmill===0&&s.bastion===1&&s.objective==='b1.build-sawmill';
+            const firstDeadline=Date.now()+1200;
+            while(Date.now()<firstDeadline){
+              for(let i=logs.length-1;i>=start;i--){
+                const state=parseState(logs[i].text||'');
+                if(state&&canonical(state)){report.states.push(state);await sleep(1200);return state;}
+              }
+              await sleep(100);
+            }
+            await tapLoggedUi(page,logs,'reset');
+            const state=await waitState(logs,canonical,30000,'canonical reset',start);
             await sleep(1200);
             return state;
           }
