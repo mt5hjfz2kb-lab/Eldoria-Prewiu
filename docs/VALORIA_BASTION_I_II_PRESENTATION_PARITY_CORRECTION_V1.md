@@ -1,6 +1,6 @@
 # VALORIA BASTION I-II — PRESENTATION PARITY CORRECTION v1
 
-Status: **REOPENED — latest HOME/drag correction on current main requires full autonomous recertification and republish before close**
+Status: **PASS / CLOSED — current published WebGL passed the declared presentation-parity, interaction, progression, persistence and reset gates**
 Workstream: `valoria-bastion-i-ii-presentation-parity-correction-v1`
 
 ## Authority and scope
@@ -73,3 +73,26 @@ Published owner build: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-ow
 Owner/manual physical-device confirmation is no longer a mandatory closure condition for this workstream. The owning execution must continue automatically from current `main` through current-head production, matched visual evidence, gameplay/UI/persistence gates, WebGL publication and published device-equivalent probe. If those declared gates pass, close and release the workstream autonomously; do not leave it active merely awaiting owner review. Concrete later owner feedback remains authoritative evidence and may revoke/reopen the PASS.
 
 Intermediate commits, queued/in-progress runs, capture availability, publication, probe completion, or chat/context boundaries are not stopping points. Continue diagnosis → correction → rerun → validation → publish → probe → close until completion or a genuine human/platform blocker.
+
+
+## 2026-10-08 final autonomous recertification
+
+The reopened correction is now **CLOSED**.
+
+Final certified chain:
+- runtime reset/touch repair: `6add911217465d2f4ab264815af8a8eb2d0cf454`;
+- published release request: `fc33c67521a9376b66fc38f83d1b8b7fdab8f215`;
+- probe control-geometry correction: `0e32b3504302349907a7ad93eadfddb6ca5d91fe`;
+- production run **37767338367** — SUCCESS, artifact **11546715716**;
+- UI progression certification **37767338225** — SUCCESS;
+- Unity source/editor gate **37767338361** — SUCCESS;
+- publish run **37768050958** — SUCCESS;
+- published WebGL probe **37770987758** — SUCCESS, evidence artifact **11548212275**.
+
+The published probe completed the full fresh-save Bastion I→II loop in both landscape and portrait, including real visible touch-selection of Sawmill/Bastion/Barracks, construction, gathering, recruitment, configured march, Engendro combat/reward, exact final-state reload persistence, deliberate reset and reset-survives-reload. No runtime errors remained in the accepted probe.
+
+Matched screenshots were inspected for fresh Bastion I, building selections and Bastion II completion. The controls/context panel remain visible inside the mobile frame and the corrected camera/pan/recenter behavior is evidenced.
+
+**Important quality boundary:** this is a PASS for the declared presentation-parity correction scope. It is **not** a claim that overall Eldoria artistic quality is final or that independent human playability/artistic feel has been fully certified. Later concrete owner/device feedback remains authoritative and can reopen the block.
+
+Detailed closure evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
