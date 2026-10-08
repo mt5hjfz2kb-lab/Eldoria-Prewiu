@@ -1,9 +1,5 @@
 name: Eldoria Windows hardware inventory (read-only)
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/eldoria-hardware-inventory.yml'
   workflow_dispatch:
 permissions:
   contents: read
