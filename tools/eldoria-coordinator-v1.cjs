@@ -4,6 +4,19 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 
+
+// First useful maintenance order: one fixed JSON-only fixture, no code execution or game changes.
+if (process.argv[2] === '--prepare-first-maintenance') {
+  const registry = JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
+  const id='eldoria-local-agent-first-maintenance-v1';
+  const claim=(registry.active||[]).find(x=>x.id===id);
+  if (!claim || claim.owner!=='chat-direction-local-agent-maintenance-20261008' || claim.status!=='active' || !claim.resources?.includes('windows-self-hosted-unity-6000-3-23f1') || claim.paid_credits!==0) throw new Error('Maintenance workstream or runner not authorized');
+  if ((registry.active||[]).some(x=>x.id!==id && x.status==='active' && x.resources?.includes('windows-self-hosted-unity-6000-3-23f1'))) throw new Error('Runner conflict');
+  const task={schema_version:1,task_id:id,issuer:'eldoria-coordinator-v1',model:'qwen2.5-coder:3b',type:'json_bom_regression_cases',target:'tools/tests/eldoria-coordinator-bom-cases.json',instruction:'Generate exactly six JSON regression cases for a strict UTF-8 BOM tolerant JSON evidence reader; each case has input string and valid boolean. Include at least two valid JSON objects (with and without leading BOM) and two invalid JSON inputs.',external_api_budget:0,code_execution_allowed:false,game_changes_allowed:false,status:'AUTHORIZED_FOR_LOCAL_WORKER'};
+  fs.writeFileSync(process.argv[3],JSON.stringify(task,null,2)+'\n');
+  console.log(JSON.stringify(task));
+  process.exit(0);
+}
 // Prepare exactly one pre-authorized local coding task without touching runtime or game.
 if (process.argv[2] === '--prepare-local-pilot') {
   const registry = JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
