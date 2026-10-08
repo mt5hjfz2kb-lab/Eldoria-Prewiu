@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-coordinator-v1.cjs
       - name: Independently verify maintenance result, issue evidence and report to coordinator
         env:
           GH_TOKEN: ${{ github.token }}
@@ -60,12 +64,23 @@ jobs:
           console.log('DG_MAINTENANCE_INTAKE_INDEPENDENT_PASS');
           NODE
                 then
-                  verdict='LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR'
-                  detail='Six distinct JSON cases, BOM, label truth, run SHA and artifact hash, zero paid/external APIs and cleanup independently verified. Review job was required to succeed. This report is an intake; merge/claim release require canonical policy.'
+                  if node tools/eldoria-coordinator-v1.cjs --verify-first-maintenance evidence "$RUN" "$SHA"; then
+                    verdict='LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR'
+                    detail='Existing Coordinator independently verified 6/6 JSON objects and BOM, task/run SHA, fixture hash, zero external/paid API calls, no generated code execution and cleanup. Merge and claim release remain separately governed.'
+                  else
+                    detail='Intake contract passed, but independent Coordinator verification failed.'
+                  fi
                 fi
               fi
             fi
           fi
           body=$(printf '### Coordinador → Dirección General — mantenimiento v1\n\n%s\n\n**Estado:** %s\n**Run:** https://github.com/%s/actions/runs/%s\n**SHA:** %s\n**GitHub:** %s\n\n%s\n\nNo se autoriza merge, gasto, Unity, QA ni trabajos adicionales.\n' "$marker" "$verdict" "$GH_REPO" "$RUN" "$SHA" "$RESULT" "$detail")
           gh api "repos/$GH_REPO/issues/25/comments" -f body="$body" >/dev/null
+          # GitHub Actions GITHUB_TOKEN comments do not trigger another issue_comment workflow.
+          # Deliver directly to Directorate instead of relying on a non-firing event chain.
+          dg_marker="ELDORIA_DIRECTORATE_HANDOFF_RUN_$RUN"
+          if ! gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$dg_marker"; then
+            dg_body=$(printf '### Dirección General — entrega automática del Coordinador\\n\\n%s\\n\\n**Resultado:** %s\\n**Run:** https://github.com/%s/actions/runs/%s\\n**SHA:** %s\\n\\n%s\\n\\nLa verificación es evidencia técnica, no autorización de otras misiones, gastos ni merge.\\n' "$dg_marker" "$verdict" "$GH_REPO" "$RUN" "$SHA" "$detail")
+            gh api "repos/$GH_REPO/issues/23/comments" -f body="$dg_body" >/dev/null
+          fi
           echo "$verdict"
