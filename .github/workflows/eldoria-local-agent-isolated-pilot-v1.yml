@@ -146,10 +146,6 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            tools/tests/eldoria-json-object-validator.cjs
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -161,6 +157,15 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
+          # A trusted fixed parser written in the job; NO generated code is ever executed.
+          $validator=Join-Path $env:RUNNER_TEMP 'eldoria-fixed-json-object-validator.cjs'
+          $nodeCode=@'
+          const fs=require('node:fs');
+          const s=fs.readFileSync(process.argv[2],'utf8');
+          try { const v=JSON.parse(s); process.exit(v!==null && typeof v==='object' && !Array.isArray(v)?0:1); }
+          catch(e) { if(e instanceof SyntaxError) process.exit(1); console.error(e); process.exit(2); }
+          '@
+          [IO.File]::WriteAllText($validator,$nodeCode,[Text.UTF8Encoding]::new($false))
           $task=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-maintenance-order/task.json') -Raw|ConvertFrom-Json
           if($task.issuer -ne 'eldoria-coordinator-v1' -or $task.task_id -ne 'eldoria-local-agent-first-maintenance-v1' -or $task.model -ne 'qwen2.5-coder:3b' -or $task.external_api_budget -ne 0 -or $task.code_execution_allowed -ne $false){throw 'Coordinator task invalid'}
           $reg=Invoke-RestMethod "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/main/pipeline/active-workstreams.json"
@@ -206,7 +211,7 @@ jobs:
               $ok=$false
               $sample=Join-Path $dir 'validation-input.json'
               [IO.File]::WriteAllText($sample,$raw,[Text.UTF8Encoding]::new($false))
-              & node tools/tests/eldoria-json-object-validator.cjs $sample
+              & node $validator $sample
               $parserExit=$LASTEXITCODE
               if($parserExit -ne 0 -and $parserExit -ne 1){throw 'Trusted JSON validator infrastructure failed'}
               $ok=$parserExit -eq 0
