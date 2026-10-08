@@ -11,20 +11,31 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          path: local-ai-isolated
-          sparse-checkout: |
-            tools/local-ai-install-v1.ps1
-            tools/local-ai-proof-v1.py
-            pipeline/active-workstreams.json
-          sparse-checkout-cone-mode: false
+      - name: Obtain only the authorized scripts without Git or repository checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
+          $base="https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/$env:GITHUB_SHA"
+          $target=Join-Path $env:RUNNER_TEMP "eldoria-local-ai-source-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          $files=@{
+            'local-ai-install-v1.ps1'='0de552b341e0a15ed64ca393a1721c7c25c39abcf8bd63c43c7c894d4df9207c'
+            'local-ai-proof-v1.py'='de5e86edffbedf8ee764e12b51b2297e1f3a1039a9972e719d1149c54840ae8a'
+          }
+          foreach($name in $files.Keys) {
+            $dest=Join-Path $target $name
+            Invoke-WebRequest -UseBasicParsing -Uri "$base/tools/$name" -OutFile $dest -TimeoutSec 120
+            if ((Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant() -ne $files[$name]) { throw "Script checksum mismatch: $name" }
+          }
+          "ELDORIA_LOCAL_AI_SOURCE=$target" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          & python --version
+          if ($LASTEXITCODE -ne 0) { throw 'Working Python runtime required before installation.' }
       - name: Verify authorized ownership and runner availability
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $registry=Get-Content local-ai-isolated/pipeline/active-workstreams.json -Raw | ConvertFrom-Json
+          $registry=Invoke-RestMethod -Uri "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/main/pipeline/active-workstreams.json" -TimeoutSec 60
           $claim=@($registry.active | Where-Object {$_.id -eq 'eldoria-local-ai-install-v1' -and $_.owner -eq 'chat-local-ai-install-20261008' -and $_.status -in @('active','blocked')})
           if ($claim.Count -ne 1) { throw 'Installation ownership absent.' }
           $conflicts=@($registry.active | Where-Object {$_.id -ne 'eldoria-local-ai-install-v1' -and $_.status -eq 'active' -and ($_.resources -match 'windows|runner-heavy')})
@@ -32,7 +43,7 @@ jobs:
       - name: Official portable install and real local programming test
         shell: powershell
         run: |
-          & ./local-ai-isolated/tools/local-ai-install-v1.ps1 -EvidenceDir "$env:RUNNER_TEMP/eldoria-local-ai-$env:GITHUB_RUN_ID"
+          & "$env:ELDORIA_LOCAL_AI_SOURCE/local-ai-install-v1.ps1" -EvidenceDir "$env:RUNNER_TEMP/eldoria-local-ai-$env:GITHUB_RUN_ID"
       - name: Preserve proof and diagnostics
         if: always()
         uses: actions/upload-artifact@v4

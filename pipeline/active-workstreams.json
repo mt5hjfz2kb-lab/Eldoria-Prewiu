@@ -67,10 +67,10 @@
       "art_production_routing_reason": "Local developer inference infrastructure only; no player-visible assets/game changes.",
       "paid_credits": 0,
       "dependency": "Consume completed read-only preflight run 37792004269; do not mutate its owner's workflows or request. No Unity/Blender changes, M11, QA or external API.",
-      "phase": "OFFICIAL INSTALL AND ISOLATED PROOF PREPARED / MANUAL DISPATCH REQUIRED",
-      "next": "Run Eldoria local AI install and isolated proof manually on main; inspect actual run/artifact, repair within same scope, document PASS only from evidence.",
+      "phase": "FIRST MANUAL RUN FAILED BEFORE INSTALL / CHECKOUT REPAIRED / NEW DISPATCH REQUIRED",
+      "next": "Run the corrected workflow manually on main (not Re-run old jobs), inspect real proof and final-check artifacts, repair and close only with verified installation.",
       "runner_released": true,
-      "blocker": "Connected GitHub toolset has no workflow_dispatch operation. No browser/CLI fallback authorized; AGENTS requires diagnostic/installation workflow manual-only. Ollama install and real model test have not executed.",
+      "blocker": "Run 37794785669 failed during checkout: Git absent from runner PATH, full archive Expand-Archive failure. Repair removes checkout; connected tools cannot workflow_dispatch the corrected definition.",
       "result": {
         "preparation_commit": "a3cfc5657e6a4b4326558fd33869048352dceaa7",
         "preflight_run_id": 37792004269,
@@ -80,7 +80,10 @@
         "local_harness_validation": "nine cases and three rejection tests PASS; YAML parsed",
         "doc": "docs/ELDORIA_LOCAL_AI_V1.md",
         "workflow": ".github/workflows/eldoria-local-ai-install-v1.yml",
-        "paid_credits": 0
+        "paid_credits": 0,
+        "first_install_run_id": 37794785669,
+        "first_install_run_conclusion": "failure before installer; no model test",
+        "repair": "Direct immutable-SHA two-file download with SHA256 verification; .NET standalone ZIP extraction"
       }
     }
   ],

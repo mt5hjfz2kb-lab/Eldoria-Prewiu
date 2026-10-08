@@ -18,7 +18,7 @@ Al terminar, inspeccionar el run y el artifact `eldoria-local-ai-proof-<run_id>`
 
 Se utiliza la distribución standalone oficial Windows x64 **Ollama v0.40.1**, sin instalador de servicios, sin administrador y sin cambios globales de PATH, firewall, drivers o variables de usuario. ZIP oficial: https://github.com/ollama/ollama/releases/download/v0.40.1/ollama-windows-amd64.zip . SHA-256 de release oficial: `b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab`. La descarga se verifica antes de extraer. Referencia: https://docs.ollama.com/windows .
 
-Directorio persistente del usuario del runner: `%LOCALAPPDATA%\EldoriaLocalAI`, con binarios en `ollama-v0.40.1` y modelos en `models`. No se comparte la Library de Unity ni se modifica el proyecto Unity/Blender. El checkout de Actions es aislado y parcial exclusivamente para ejecutar estas herramientas; nunca se usa para reconstruir o escribir main.
+Directorio persistente del usuario del runner: `%LOCALAPPDATA%\EldoriaLocalAI`, con binarios en `ollama-v0.40.1` y modelos en `models`. No se comparte la Library de Unity ni se modifica el proyecto Unity/Blender. Actions descarga únicamente los dos scripts fijados al SHA del run y verifica sus SHA-256 antes de ejecutarlos; no usa Git ni descarga el repositorio completo. El registry se consulta desde main en el momento de ejecutar.
 
 Solo modelo `qwen2.5-coder:3b`, descargado del registro de Ollama. Servidor en `127.0.0.1:11434`, `OLLAMA_NO_CLOUD=1`, una petición paralela, un modelo cargado, contexto 2048, cuatro hilos en la prueba y descarga inmediata del modelo tras el uso. No hay cuentas cloud ni API de pago; sí descarga por Internet de binarios/modelo y uso de electricidad/recursos locales. Referencias: https://docs.ollama.com/faq y https://docs.ollama.com/api/generate .
 
@@ -60,3 +60,11 @@ La propuesta NO está activada. El coordinador v1 sigue siendo lector y gate de 
 ## Continuación y cierre
 
 Workstream `eldoria-local-ai-install-v1`. Recuperar main y el registry antes de continuar. Lanzar el workflow manual cuando la capacidad esté disponible, revisar logs/evidencia, reparar fallos dentro de este mismo scope, registrar run/artifact/digest y cerrar únicamente tras PASS real. No iniciar M11 ni QA. No se ha modificado el código del videojuego.
+
+## Primer intento real y reparación — 2026-10-08
+
+El propietario activó el [run 37794785669](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37794785669). Llegó a DESKTOP-R10PE55, pero falló antes de ejecutar el instalador: Git no está en PATH del runner; actions/checkout recurrió a un archivo completo y Expand-Archive falló al extraerlo. Ollama y el modelo NO se instalaron y no se ejecutó la prueba. No existe artifact de prueba de ese intento.
+
+Reparación: eliminado actions/checkout; se obtienen solamente los dos scripts desde raw.githubusercontent.com con el SHA inmutable del run y sus hashes SHA-256 esperados. El instalador standalone también utiliza extracción .NET en vez de Expand-Archive. No se cambia Git, PATH ni las herramientas existentes. YAML parseado y hashes comprobados localmente; ejecución Windows de la reparación aún pendiente.
+
+**Siguiente paso necesario:** Run workflow → main → Run workflow nuevamente sobre la definición corregida. No usar Re-run jobs del intento antiguo: reutilizaría la definición del commit fallido. El conector continúa sin operación workflow_dispatch. Recuperar el nuevo run, inspeccionar prueba real y artefactos; no declarar cierre hasta PASS verificable.

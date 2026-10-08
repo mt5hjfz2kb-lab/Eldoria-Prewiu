@@ -39,7 +39,9 @@ if (!(Test-Path $exe)) {
   Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/ollama/ollama/releases/download/v0.40.1/ollama-windows-amd64.zip' -OutFile $zip
   $hash=(Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant()
   if ($hash -ne 'b394d14436d38032f23190e3f14eb2c6dad5ebbe4e192414f74c8fdca01703ab') { throw 'STOP: official archive checksum mismatch.' }
-  Expand-Archive -LiteralPath $zip -DestinationPath $bin -Force
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  if (Test-Path $bin) { throw 'Incomplete previous installation directory; inspect before replacing.' }
+  [System.IO.Compression.ZipFile]::ExtractToDirectory($zip,$bin)
   Remove-Item -LiteralPath $zip
 }
 AssertIdle
