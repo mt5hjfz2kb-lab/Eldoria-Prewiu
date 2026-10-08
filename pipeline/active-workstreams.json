@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T18:31:44.877Z",
+  "updated_at": "2026-10-08T19:50:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -117,35 +117,6 @@
       },
       "runner_released": true,
       "blocker": "M07 owner still BLOCKED 2/6 gates; cannot execute R1 QA on unaccepted visual work. Existing workflow needs gate installed at fed8478394, but no READY event / successful new QA job is available for certification. M04 bounded repair-to-retest across departments remains out of scope of this QA technical gate."
-    },
-    {
-      "id": "eldoria-r1-mobile-independent-qa",
-      "title": "Round 1 independent published mobile WebGL gameplay QA",
-      "owner": "chat-dg-r1-mobile-qa-20261008",
-      "scope": [
-        ".github/workflows/eldoria-coordinator-v1.yml",
-        ".github/workflows/unity-webgl-startup.yml",
-        "docs/evidence/eldoria-r1-mobile-independent-qa/**",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [],
-      "claimed_at": "2026-10-08T21:45:00+02:00",
-      "base_main_sha": "a3393ac804a23152d312eb31c49c1827977b198e",
-      "status": "active",
-      "phase": "AUTHORIZED ROUND1 QA D INDEPENDENT OF M07",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Published WebGL interaction/regression QA only; no Unity/player-visible code or art mutation",
-      "paid_credits": 0,
-      "dependency": "Ronda1 Issue #23 comment 6060629819 line D authorizes parallel QA mobile; do not publish, modify M07/M11, or use Windows/Unity runner",
-      "acceptance": [
-        "Real published unity-owner mobile touch/pan/navigation test",
-        "World Region1 gather and return",
-        "Bastion I-II progression with reload persistence and reset",
-        "Both portrait and landscape",
-        "No fatal runtime errors",
-        "New authentic run and artifact linked to current published site; independent validation and DG report"
-      ],
-      "next": "Existing coordinator triggers reusable published WebGL Playwright probe, independent QA verdict, DG report; no Work, no new QA implementation"
     }
   ],
   "history": [
@@ -4547,6 +4518,53 @@
         "unity_eldoria_files": 447,
         "required_sentinels_missing": 0,
         "note": "GitHub-hosted architecture workflow was queued at close; direct repository-tree validation passed all configured invariants."
+      }
+    },
+    {
+      "id": "eldoria-r1-mobile-independent-qa",
+      "title": "Round 1 independent published mobile WebGL gameplay QA",
+      "owner": "chat-dg-r1-mobile-qa-20261008",
+      "scope": [
+        ".github/workflows/eldoria-coordinator-v1.yml",
+        ".github/workflows/unity-webgl-startup.yml",
+        "docs/evidence/eldoria-r1-mobile-independent-qa/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T21:45:00+02:00",
+      "base_main_sha": "a3393ac804a23152d312eb31c49c1827977b198e",
+      "status": "completed",
+      "phase": "CLOSED — REAL PUBLISHED MOBILE QA SUCCESS / INDEPENDENT DG REPORT",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Published WebGL interaction/regression QA only; no Unity/player-visible code or art mutation",
+      "paid_credits": 0,
+      "dependency": "Ronda1 Issue #23 comment 6060629819 line D authorizes parallel QA mobile; do not publish, modify M07/M11, or use Windows/Unity runner",
+      "acceptance": [
+        "Real published unity-owner mobile touch/pan/navigation test",
+        "World Region1 gather and return",
+        "Bastion I-II progression with reload persistence and reset",
+        "Both portrait and landscape",
+        "No fatal runtime errors",
+        "New authentic run and artifact linked to current published site; independent validation and DG report"
+      ],
+      "completed_at": "2026-10-08T19:50:00Z",
+      "runner_released": true,
+      "result": {
+        "verdict": "PASS_MOBILE_PUBLISHED_TECH",
+        "run": 37833205383,
+        "source_sha": "0134e2f917cc3b3b9ee8e740b7529abbe96df688",
+        "coordinator_job": 113503634372,
+        "authorization_job": 113504030329,
+        "executor_job": 113504072425,
+        "independent_review_job": 113507288193,
+        "artifact_id": 11574682143,
+        "artifact_sha256": "1e1ca661ae0d5c249df068ce0306959d33ef426a33aac3ecac5375deb692eb11",
+        "directorate_comment": 6067746424,
+        "evidence": "docs/evidence/eldoria-r1-mobile-independent-qa/FINAL_CLOSURE.md",
+        "real_published_mobile": true,
+        "physical_iphone_not_tested": true,
+        "m07_visual_not_accepted": true,
+        "paid_credits": 0
       }
     }
   ]
