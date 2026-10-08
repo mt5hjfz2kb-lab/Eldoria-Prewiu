@@ -89,6 +89,8 @@ jobs:
     permissions:
       contents: read
       issues: write
+    outputs:
+      verdict: ${{ steps.coordinator.outputs.verdict }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,11 +99,13 @@ jobs:
             tools/eldoria-coordinator-v1.cjs
             pipeline/active-workstreams.json
       - name: Evaluate actual authorized R1 M07→QA dependency without usurping owner
+        id: coordinator
         shell: bash
         run: |
           set -euo pipefail
           node tools/eldoria-coordinator-v1.cjs > round1-dependency-report.json
           jq -e '.schema_version == 1 and (.verdict == "BLOCKED_NO_HANDOFF" or .verdict == "READY_FOR_QA_HANDOFF_REVIEW")' round1-dependency-report.json
+          echo "verdict=$(jq -r .verdict round1-dependency-report.json)" >> "$GITHUB_OUTPUT"
       - name: Emit deduplicated canonical handoff assessment to DG
         uses: actions/github-script@v7
         with:
@@ -125,4 +129,36 @@ jobs:
                 'Sin distribución a M11/QA; el propietario M07 y su dependencia permanecen protegidos.'),
               'No se ha ejecutado Unity, no se han consumido créditos y no se ha abierto otra ronda.'
             ].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  round1-independent-qa:
+    needs: round1-dependency-review
+    if: >-
+      github.event_name == 'push' &&
+      needs.round1-dependency-review.outputs.verdict == 'READY_FOR_QA_HANDOFF_REVIEW'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Independently recheck real M07 acceptance evidence before QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-coordinator-v1.cjs > qa-dependency-proof.json
+          jq -e '.verdict == "READY_FOR_QA_HANDOFF_REVIEW" and ([.checks[].passed] | all)' qa-dependency-proof.json
+      - name: Execute existing independent certification and coordinator suites
+        run: |
+          node --test tests/m03/certify.test.mjs tests/m16a/evaluate.test.mjs
+      - name: Record technical gate only; never claim visual or published QA
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const marker='<!-- eldoria-r1-qa-tech-'+context.runId+' -->';
+            const body=[marker,'### QA técnico independiente Ronda 1','**Estado:** M03/M16 contract gate PASS; M07 evidence rechecked.','**Run:** '+context.runId,'**SHA:** '+context.sha,'**Alcance:** técnico de certificación; NO equivale a QA visual, gameplay o WebGL publicado. No se libera M07 ni se cierra Ronda 1.'].join('\n');
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
