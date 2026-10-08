@@ -32,11 +32,11 @@ jobs:
           const { PNG } = require(process.cwd() + '/node_modules/pngjs');
           const pixelmatch = require(process.cwd() + '/node_modules/pixelmatch');
           const fs = require('fs');
-          const { controlPoint, persistenceSnapshot, certifyMacroloop } = require(process.cwd() + '/tools/published-probe-contract.cjs');
+          const { controlPoint, persistenceSnapshot, certifyMacroloop, fatalRuntimeLogs } = require(process.cwd() + '/tools/published-probe-contract.cjs');
 
           const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-          const report={failure:null,logs:[],requests:[],checks:{},states:[],scope:'Published mobile PLAYABLE probe: real touch pan/home, limited gather loop, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority. This probe does not certify Bastion I-II, artistic quality or human playability.'};
+          const report={failure:null,logs:[],requests:[],checks:{navigationGatherPersistencePass:false},states:[],coverage:{fullBastionIToIIPass:false,visualQualityPass:false,independentHumanPlaythroughPass:false},scope:'Published limited macroloop probe: real touch pan/home, limited gather loop, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority. This probe does not certify Bastion I-II, artistic quality or human playability.'};
 
           function parseState(text){
             const m=text.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+) gatheredWood=(\d+) gatheredStone=(\d+) march=([^ ]+) sawmill=(\d+) bastion=(\d+)/);
@@ -296,6 +296,7 @@ jobs:
               report.failure=String(e);
               await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
             }
+            report.runtimeErrors=fatalRuntimeLogs(logs);
             fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify(report,null,2));
             await browser.close();
             if(report.failure)throw new Error(report.failure);
