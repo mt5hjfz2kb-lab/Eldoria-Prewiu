@@ -4,33 +4,59 @@ on:
     types: [created]
 permissions:
   contents: read
-  actions: write
-  issues: read
 concurrency:
   group: eldoria-dg-authorized-pilot-dispatch
   cancel-in-progress: false
 jobs:
-  dispatch:
+  proof:
     if: >-
       github.event.issue.number == 23 &&
       github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
       github.event.comment.author_association == 'OWNER' &&
-      (github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_20261008' || github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_RETRY_20261008')
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_20261008'
+    uses: ./.github/workflows/m16-pilot-two-jobs.yml
+    permissions:
+      contents: read
+  report:
+    needs: proof
+    if: >-
+      always() &&
+      github.event.issue.number == 23 &&
+      github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_20261008'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
     steps:
-      - name: Trigger only allowlisted zero-credit M16 chain
+      - name: Independently verify exact source handoff and report to Directorate
+        uses: actions/download-artifact@v4
+        if: needs.proof.result == 'success'
+        with:
+          name: m16-pilot-handoff
+          path: evidence
+      - name: Emit verified result to canonical Issue 23
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          ACTOR: ${{ github.event.comment.user.login }}
-          APPROVED_TOKEN: ${{ github.event.comment.body }}
+          PROOF_RESULT: ${{ needs.proof.result }}
+          RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
         shell: bash
         run: |
           set -euo pipefail
-          test "$ACTOR" = "mt5hjfz2kb-lab"
-          # One acceptance authorization means one dispatch, even if the comment is repeated.
-          first=$(gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate | jq -r --arg token "$APPROVED_TOKEN" '.[] | select(.body==$token) | .id' | head -n 1)
-          test "$first" = "${{ github.event.comment.id }}" || { echo 'DUPLICATE_AUTHORIZATION_SUPPRESSED'; exit 0; }
-          gh workflow run 'm16-pilot-two-jobs.yml' --repo "$GH_REPO" --ref main
-          echo 'ALLOWED_M16_DISPATCH_SUBMITTED'
+          marker="ELDORIA_DG_E2E_ACCEPTANCE_RUN_$RUN_ID"
+          if gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then echo 'ALREADY_RECORDED'; exit 0; fi
+          verdict=BLOCKED
+          details='Reusable A/B pipeline failed; no independent acceptance.'
+          if [[ "$PROOF_RESULT" == success ]] && [[ -f evidence/source-sha.txt && -f evidence/run-id.txt && -f evidence/source-sha.sha256 ]]; then
+            if (cd evidence && sha256sum -c source-sha.sha256) && [[ "$(cat evidence/source-sha.txt)" == "$SOURCE_SHA" ]] && [[ "$(cat evidence/run-id.txt)" == "$RUN_ID" ]]; then
+              verdict=E2E_COORDINATOR_CHAIN_PASS
+              details='Owner authorized through Issue #23; M16-A tests and handoff, downstream independent M03 QA, run/SHA/hash verified in the SAME reusable workflow chain. Zero paid API, no human intermediate click.'
+            fi
+          fi
+          body=$(printf '### DG — resultado automático autorizado\n\n%s\n\n**Veredicto:** %s\n**Run:** https://github.com/%s/actions/runs/%s\n**SHA:** %s\n\n%s\n\nEste resultado no demuestra 15 agentes locales ni notificación instantánea a ChatGPT.' "$marker" "$verdict" "$GH_REPO" "$RUN_ID" "$SOURCE_SHA" "$details")
+          gh api "repos/$GH_REPO/issues/23/comments" -f body="$body" >/dev/null
+          test "$verdict" = E2E_COORDINATOR_CHAIN_PASS
