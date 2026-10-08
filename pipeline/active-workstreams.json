@@ -123,11 +123,12 @@
       "title": "D08/D05/D11 Region 1 visual readability audit",
       "owner": "eldoria-dg-r2-approved-20261008",
       "scope": [
-        "docs/evidence/eldoria-r2-a/**"
+        "docs/evidence/eldoria-r2-a/**",
+        "pipeline/art-production-requests/r2-a-world-readability.json"
       ],
       "resources": [],
       "status": "planned",
-      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "phase": "ART BRAIN ROUTING AUTHORIZED / NEEDS VISUAL EXECUTOR",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
@@ -140,11 +141,14 @@
       "title": "D07/D06 bounded strategic choice specification",
       "owner": "eldoria-dg-r2-approved-20261008",
       "scope": [
-        "docs/evidence/eldoria-r2-b/**"
+        "docs/evidence/eldoria-r2-b/**",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs"
       ],
       "resources": [],
-      "status": "planned",
-      "phase": "PRODUCT DESIGN SPEC PRODUCED / GAMEPLAY NOT IMPLEMENTED",
+      "status": "active",
+      "phase": "IMPLEMENT R2-B SOURCE IN ISOLATED GAMEPLAY DOMAIN",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
