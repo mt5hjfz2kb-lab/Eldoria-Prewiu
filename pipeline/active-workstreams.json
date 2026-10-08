@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T18:22:53.880Z",
+  "updated_at": "2026-10-08T18:31:44.877Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -54,19 +54,32 @@
       "title": "DG V2 canonical inventory and authentic existing-chain acceptance",
       "owner": "chat-dg-original-route-recovery-20261008",
       "scope": [
-        "docs/evidence/dg-original-route-recovery-v1/**",
-        ".github/workflows/eldoria-dg-authorized-pilot-dispatch.yml",
-        ".github/workflows/eldoria-dg-m16-acceptance-intake.yml"
+        "docs/evidence/dg-original-route-recovery-v1/**"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T18:20:03.937Z",
       "base_main_sha": "ab8dc2b74a2fa95dce08c12641017394a1414526",
-      "status": "active",
+      "status": "blocked",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read existing infrastructure evidence and consolidate Directorate inventory; no player-visible changes.",
       "paid_credits": 0,
-      "phase": "BOUNDED_REAL_ARTIFACT_PATH_REPAIR",
-      "next": "Verify already-running authorized M16 chain, preserve completed local maintenance, record inventory and test existing owner notification; no new dispatcher or round."
+      "phase": "GITHUB_CHAIN_PASS / OWNER_NOTIFICATION_DELIVERY_UNVERIFIABLE",
+      "next": "Consume existing DG notification outcome if genuine platform delivery evidence becomes available. Do not redispatch completed pilot/maintenance or modify M07. Existing dispatcher source scope released; further authorized bounded department integration may consume the certified chain without creating a replacement.",
+      "runner_released": true,
+      "blocked_at": "2026-10-08T18:31:44.877Z",
+      "blocker": "Actual GitHub authorized chain and DG bot report PASS; existing owner-notification run requested. Exposed automation tools provide no delivery receipt/content, so proactive receipt cannot be independently certified. No new paid/external messaging integration or duplicated watch is justified.",
+      "result": {
+        "run": 37824280532,
+        "source_sha": "ec6707a9b8a6a884fcea69c6f9fb88cba300ae9e",
+        "artifact": 11570822134,
+        "dg_bot_comment": 6066453208,
+        "inventory_report": 6066485617,
+        "github_chain": "PASS",
+        "autonomy_general": "NOT_CERTIFIED",
+        "owner_notification_requested": true,
+        "owner_notification_delivered": "NOT_VERIFIED",
+        "zero_paid_apis": true
+      }
     }
   ],
   "history": [
