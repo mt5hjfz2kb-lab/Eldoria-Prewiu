@@ -28,6 +28,26 @@
       "completed_at": null,
       "runner_released": true,
       "blocker": "Third source correction 52101a1f5449544608537c83bee96f9210cafca7 committed after independently reviewing run 37785467062 artifact 11553239582 VISUAL FAIL. Tool environment cannot list push-triggered Actions runs, so no new run ID/artifact yet to inspect. Cannot certify visual result or close."
+    },
+    {
+      "id": "eldoria-local-agent-preflight-v1",
+      "title": "Eldoria local zero-cost agent feasibility and runner governance repair",
+      "owner": "chat-local-agent-pilot-20261008",
+      "scope": [
+        ".github/workflows/eldoria-hardware-inventory.yml",
+        ".github/workflows/eldoria-local-agent-preflight-v1.yml",
+        "pipeline/agent-local-preflight-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T14:18:00Z",
+      "base_main_sha": "34e78de97547a624c685ae0cec7d6ad8cce29db4",
+      "status": "active",
+      "art_production_routing": "not_applicable",
+      "paid_credits": 0,
+      "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
+      "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
+      "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
     }
   ],
   "history": [
