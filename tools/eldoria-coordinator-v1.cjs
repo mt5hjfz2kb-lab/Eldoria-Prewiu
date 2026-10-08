@@ -3,6 +3,19 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+
+// Prepare exactly one pre-authorized local coding task without touching runtime or game.
+if (process.argv[2] === '--prepare-local-pilot') {
+  const registry = JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
+  const request = JSON.parse(fs.readFileSync('pipeline/local-agent-pilot-dispatch.json','utf8'));
+  const claim = (registry.active||[]).find(x=>x.id==='eldoria-local-agent-isolated-pilot-v1');
+  if (!claim || claim.status!=='active' || claim.owner!==request.owner || !claim.resources?.includes('windows-self-hosted-unity-6000-3-23f1')) throw new Error('Pilot claim or runner ownership not authorized');
+  if (request.workstream_id!==claim.id || request.model!=='qwen2.5-coder:3b' || request.external_api_budget!==0 || request.independent_test_cases!==9 || request.generated_code_execution_allowed!==false || request.changes_to_game_allowed!==false || request.coordinator!=='eldoria-coordinator-v1') throw new Error('Canonical request rejected');
+  const task = {schema_version:1,task_id:claim.id,task_type:'pure_clamp_function',instruction:'Implement a pure function clamp(value, low, high) returning low when value is smaller, high when larger, and the original value otherwise.',model:request.model,required_independent_tests:9,external_api_budget:0,arbitrary_generated_code_executed:false,game_changes_allowed:false,issued_by:'eldoria-coordinator-v1',status:'AUTHORIZED_FOR_LOCAL_WORKER'};
+  fs.writeFileSync(process.argv[3],JSON.stringify(task,null,2)+'\n');
+  console.log(JSON.stringify(task));
+  process.exit(0);
+}
 // Optional independent local pilot evidence gate; default M07 behavior unchanged.
 if (process.argv[2] === '--verify-local-pilot') {
   const dir = process.argv[3];
