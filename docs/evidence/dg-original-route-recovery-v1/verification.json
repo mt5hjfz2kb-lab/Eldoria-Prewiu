@@ -41,7 +41,22 @@
     "tampered_bytes_rejected": true,
     "sha_and_run_checks_preserved": true,
     "retry_run": 37824280532,
-    "retry_status": "PENDING_FINAL_VERIFICATION"
+    "retry_status": "GITHUB_CHAIN_PASS",
+    "corrected_artifact": {
+      "id": 11570822134,
+      "sha256": "9078d143f5c45f6eeee761042373c60e016e3749538dd98dae90191bde508a57",
+      "source_sha": "ec6707a9b8a6a884fcea69c6f9fb88cba300ae9e",
+      "downloaded_and_verified": true
+    },
+    "corrected_jobs": {
+      "authorize": 113472950412,
+      "a": 113472991089,
+      "b": 113473474614,
+      "report": 113474226903,
+      "all": "completed/success"
+    },
+    "dg_bot_comment": 6066453208,
+    "note": "Existing concurrent owner added V2 one-use authorization; consumed without creating a dispatcher. Current V2 run verifies both transport fixes."
   },
   "newly_executed_isolated_tests": {
     "runtime": "local Node, exact main files through GitHub connector; not full checkout CI",
@@ -69,12 +84,15 @@
   "notification": {
     "existing_task_id": "6ac7d26b2cd08191871b1183dc2cfc47",
     "configured": true,
-    "run_requested": false,
+    "run_requested": true,
     "delivery_verified": false,
-    "notes": "GitHub record and automation last_run are not delivered-notification receipts."
+    "notes": "GitHub record and automation last_run are not delivered-notification receipts.",
+    "requested_at": "2026-10-08T18:31:12.399Z",
+    "result": "ASYNC_RUN_REQUEST_ACCEPTED_NO_DELIVERY_RECEIPT"
   },
   "autonomy_general": "NOT_CERTIFIED",
   "m07_modified": false,
   "round_opened": false,
-  "paid_api_calls": 0
+  "paid_api_calls": 0,
+  "status": "PARTIAL_GITHUB_OPERATIVE_CLOSURE_OWNER_DELIVERY_UNVERIFIABLE"
 }
