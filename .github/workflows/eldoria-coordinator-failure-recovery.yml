@@ -1,5 +1,10 @@
 name: Eldoria coordinator recovery supervisor
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-coordinator-failure-recovery.yml'
+      - 'pipeline/active-workstreams.json'
   workflow_run:
     workflows: ["Eldoria local agent isolated pilot v1"]
     types: [completed]
@@ -76,3 +81,48 @@ jobs:
               'Un comentario de GitHub no equivale a una notificación al propietario fuera de GitHub.'
             ].join('\n');
             await github.rest.issues.createComment({owner, repo, issue_number: target, body});
+
+  round1-dependency-review:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/eldoria-coordinator-v1.cjs
+            pipeline/active-workstreams.json
+      - name: Evaluate actual authorized R1 M07→QA dependency without usurping owner
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-coordinator-v1.cjs > round1-dependency-report.json
+          jq -e '.schema_version == 1 and (.verdict == "BLOCKED_NO_HANDOFF" or .verdict == "READY_FOR_QA_HANDOFF_REVIEW")' round1-dependency-report.json
+      - name: Emit deduplicated canonical handoff assessment to DG
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const report=JSON.parse(fs.readFileSync('round1-dependency-report.json','utf8'));
+            const {owner,repo}=context.repo;
+            const passed=(report.checks||[]).filter(x=>x.passed).length;
+            const marker='<!-- eldoria-r1-dependency-'+report.verdict+'-'+passed+' -->';
+            const all=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(all.some(x=>(x.body||'').includes(marker)))return;
+            const body=[
+              marker,
+              '### Coordinador — dependencia real de la Ronda 1',
+              '**Estado:** '+report.verdict,
+              '**Comprobaciones:** '+passed+'/'+(report.checks||[]).length,
+              '**Fuente:** '+context.sha,
+              '**Trabajo:** m07-r1-sawmill-construction-visual-correction',
+              '**Consecuencia:** '+(report.verdict==='READY_FOR_QA_HANDOFF_REVIEW'?
+                'Solo elegible para revisión de traspaso por el propietario y QA existente. NO se ejecuta QA sin los permisos y la entrega correspondientes.':
+                'Sin distribución a M11/QA; el propietario M07 y su dependencia permanecen protegidos.'),
+              'No se ha ejecutado Unity, no se han consumido créditos y no se ha abierto otra ronda.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
