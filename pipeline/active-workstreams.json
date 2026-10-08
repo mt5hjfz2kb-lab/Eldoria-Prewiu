@@ -128,8 +128,8 @@
         "pipeline/art-production-requests/r2-a-world-readability.json"
       ],
       "resources": [],
-      "status": "planned",
-      "phase": "ART BRAIN ROUTING AUTHORIZED / NEEDS VISUAL EXECUTOR",
+      "status": "active",
+      "phase": "AUTHORIZED_PREPRODUCTION_READ_ONLY / NOT ACCEPTED / NO GAME ART CLAIM",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
@@ -167,8 +167,8 @@
         "docs/evidence/eldoria-r2-c/**"
       ],
       "resources": [],
-      "status": "planned",
-      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "status": "active",
+      "phase": "AUTHORIZED_PREPRODUCTION_READ_ONLY / NOT ACCEPTED / NO GAME ART CLAIM",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
@@ -201,8 +201,8 @@
         "docs/evidence/eldoria-r2-e/**"
       ],
       "resources": [],
-      "status": "planned",
-      "phase": "R2 APPROVED / PREPRODUCTION ONLY",
+      "status": "active",
+      "phase": "AUTHORIZED_PREPRODUCTION_READ_ONLY / NOT ACCEPTED / NO GAME ART CLAIM",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
