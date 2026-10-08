@@ -98,29 +98,43 @@ namespace Eldoria.Tests
         }
 
 #if UNITY_EDITOR
-        [UnityTest] public IEnumerator WorldHotspotBindingSurvivesStablePrefabSerialization()
+        [UnityTest] public IEnumerator WorldHotspotBindingsSurviveStablePrefabSerialization()
         {
             const string path="Assets/__EldoriaHotspotSerializationTest.prefab";
+            const string source="Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs";
             previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
             testScene=SceneManager.CreateScene("Hotspot serialization isolation");
-            testRoot=new GameObject("Canonical hotspot binding");SceneManager.MoveGameObjectToScene(testRoot,testScene);
-            var hotspot=testRoot.AddComponent<WorldHotspot>();hotspot.Id="bastion";
-            var script=UnityEditor.MonoScript.FromMonoBehaviour(hotspot);
-            Assert.That(UnityEditor.AssetDatabase.GetAssetPath(script),Is.EqualTo("Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs"),
-                "A scene-local secondary MonoScript can omit Id in player serialization");
+            testRoot=new GameObject("Canonical hotspot bindings");SceneManager.MoveGameObjectToScene(testRoot,testScene);
+            // The published defect omitted Id on only three of nine instances of one type.
+            var names=new[]{"UpperWalls","MainRoad","CentralStair","TerrainCliffSupport","Bridge","Bastion","LeftCabin","LowerGate","RightCamp"};
+            var ids=new[]{"bastion","bastion","bastion","bastion","bastion","bastion","sawmill","gate","barracks"};
+            for(int i=0;i<names.Length;i++)
+            {
+                var go=new GameObject(names[i]);go.transform.SetParent(testRoot.transform);
+                var hotspot=go.AddComponent<WorldHotspot>();hotspot.Id=ids[i];
+                Assert.That(UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.MonoScript.FromMonoBehaviour(hotspot)),Is.EqualTo(source),
+                    "Every instance must use a source asset, not a scene-local secondary MonoScript");
+            }
             try
             {
                 UnityEditor.PrefabUtility.SaveAsPrefabAsset(testRoot,path);
                 UnityEditor.AssetDatabase.SaveAssets();UnityEditor.AssetDatabase.ImportAsset(path,UnityEditor.ImportAssetOptions.ForceUpdate);
                 var prefab=UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                Assert.That(prefab.GetComponent<WorldHotspot>().Id,Is.EqualTo("bastion"));
+                Assert.That(prefab.GetComponentsInChildren<WorldHotspot>(true).Length,Is.EqualTo(names.Length));
                 var copy=UnityEngine.Object.Instantiate(prefab);copy.transform.SetParent(testRoot.transform);
-                Assert.That(copy.GetComponent<WorldHotspot>().Id,Is.EqualTo("bastion"));
-                Assert.That(System.IO.File.ReadAllText(path),Does.Contain("guid: "+UnityEditor.AssetDatabase.AssetPathToGUID(UnityEditor.AssetDatabase.GetAssetPath(script))));
+                for(int i=0;i<names.Length;i++)
+                {
+                    Assert.That(prefab.transform.Find(names[i]).GetComponent<WorldHotspot>().Id,Is.EqualTo(ids[i]));
+                    Assert.That(copy.transform.Find(names[i]).GetComponent<WorldHotspot>().Id,Is.EqualTo(ids[i]));
+                }
+                string yaml=System.IO.File.ReadAllText(path),guid=UnityEditor.AssetDatabase.AssetPathToGUID(source);
+                Assert.That(System.Text.RegularExpressions.Regex.Matches(yaml,"guid: "+guid).Count,Is.EqualTo(names.Length));
+                Assert.That(System.Text.RegularExpressions.Regex.Matches(yaml,"  Id: ").Count,Is.EqualTo(names.Length));
                 yield return null;
             }
             finally { UnityEditor.AssetDatabase.DeleteAsset(path); }
         }
+
 #endif
 
         [UnityTest] public IEnumerator PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom()
