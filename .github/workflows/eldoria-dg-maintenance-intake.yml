@@ -36,8 +36,9 @@ jobs:
         run: |
           set -euo pipefail
           marker="ELDORIA_MAINTENANCE_INTAKE_RUN_$RUN"
+          already_issued=false
           if gh api "repos/$GH_REPO/issues/25/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then
-            echo 'INTAKE_ALREADY_RECORDED'; exit 0
+            already_issued=true
           fi
           verdict='BLOCKED / NO MAINTENANCE PASS'
           detail='The maintenance Windows worker, independent review or required evidence failed.'
@@ -75,7 +76,9 @@ jobs:
             fi
           fi
           body=$(printf '### Coordinador → Dirección General — mantenimiento v1\n\n%s\n\n**Estado:** %s\n**Run:** https://github.com/%s/actions/runs/%s\n**SHA:** %s\n**GitHub:** %s\n\n%s\n\nNo se autoriza merge, gasto, Unity, QA ni trabajos adicionales.\n' "$marker" "$verdict" "$GH_REPO" "$RUN" "$SHA" "$RESULT" "$detail")
-          gh api "repos/$GH_REPO/issues/25/comments" -f body="$body" >/dev/null
+          if [[ "$already_issued" != true ]]; then
+            gh api "repos/$GH_REPO/issues/25/comments" -f body="$body" >/dev/null
+          fi
           # GitHub Actions GITHUB_TOKEN comments do not trigger another issue_comment workflow.
           # Deliver directly to Directorate instead of relying on a non-firing event chain.
           dg_marker="ELDORIA_DIRECTORATE_HANDOFF_RUN_$RUN"
