@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/unity-webgl-startup.yml'
+      - 'tools/published-probe-contract.cjs'
+      - 'tests/published-probe-contract.test.cjs'
   workflow_run:
     workflows: ['Publish Eldoria Preview']
     types: [completed]
@@ -20,6 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 pixelmatch@5.3.0 && npx playwright install --with-deps chromium
+      - name: Verify published probe acceptance contract
+        run: node --test tests/published-probe-contract.test.cjs
       - name: Probe actual published Unity startup
         run: |
           mkdir -p webgl-startup-evidence
@@ -28,10 +32,11 @@ jobs:
           const { PNG } = require(process.cwd() + '/node_modules/pngjs');
           const pixelmatch = require(process.cwd() + '/node_modules/pixelmatch');
           const fs = require('fs');
+          const { controlPoint, persistenceSnapshot, certifyMacroloop } = require(process.cwd() + '/tools/published-probe-contract.cjs');
 
           const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-          const report={failure:null,logs:[],requests:[],checks:{},states:[],scope:'Published mobile PLAYABLE probe: real touch pan/home, real UI progression, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority.'};
+          const report={failure:null,logs:[],requests:[],checks:{},states:[],scope:'Published mobile PLAYABLE probe: real touch pan/home, limited gather loop, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority. This probe does not certify Bastion I-II, artistic quality or human playability.'};
 
           function parseState(text){
             const m=text.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+) gatheredWood=(\d+) gatheredStone=(\d+) march=([^ ]+) sawmill=(\d+) bastion=(\d+)/);
@@ -100,28 +105,14 @@ jobs:
             }
             await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
           }
-          async function tapVisibleBottomControl(page,box,logs,predicate,label,startIndex){
-            // Chromium mobile emulation and Unity ScreenSpaceOverlay do not expose the same
-            // coordinate space for RectTransform centres in landscape. Probe the actual
-            // visible bottom navigation band with real touch taps instead of warping the game
-            // or trusting a synthetic coordinate transform. Stop immediately on the expected
-            // runtime navigation event.
-            const fractions=[.05,.15,.25,.35,.45,.55,.65,.75,.85,.95];
-            const y=box.y+box.height*.91;
-            const attempts=[];
-            for(const fx of fractions){
-              const x=box.x+box.width*fx;
-              attempts.push({fx,x,y});
-              await page.touchscreen.tap(x,y);
-              const started=Date.now();
-              while(Date.now()-started<2500){
-                for(let i=logs.length-1;i>=startIndex;i--){
-                  if(predicate(logs[i].text||''))return {x,y,fx,attempts};
-                }
-                await sleep(100);
-              }
-            }
-            throw new Error('Timed out waiting for '+label+' after visible bottom-control touch sweep');
+          async function tapNamedNavigationControl(page,box,canvasInfo,logs,controlId,predicate,label,startIndex){
+            const ui=parseUi(logs,controlId);
+            const point=controlPoint(ui,box,canvasInfo);
+            // One named control, one touch. Searching the entire navigation band can
+            // hide displaced/offscreen buttons and must not be accepted as usability proof.
+            await page.touchscreen.tap(point.x,point.y);
+            await waitLog(logs,predicate,10000,label,startIndex);
+            return {controlId,...point,attempts:1};
           }
           function imageStats(path){
             const png=PNG.sync.read(fs.readFileSync(path));
@@ -251,7 +242,7 @@ jobs:
               await sleep(500);
 
               const worldStart=logs.length;
-              const worldTap=await tapVisibleBottomControl(page,box,logs,
+              const worldTap=await tapNamedNavigationControl(page,box,canvasInfo,logs,'worldNav',
                 t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),
                 'MUNDO button activation',worldStart);
               report.checks.worldTapCss=worldTap;
@@ -277,22 +268,21 @@ jobs:
               await page.screenshot({path:'webgl-startup-evidence/world-after-reward.png'});
 
               const cityReturnStart=logs.length;
-              const cityTap=await tapVisibleBottomControl(page,box,logs,
+              const cityTap=await tapNamedNavigationControl(page,box,canvasInfo,logs,'cityNav',
                 t=>t.includes('ELDORIA_PLAYABLE_NAV target=Valoria city=False'),
                 'REINO/CIUDAD button activation',cityReturnStart);
               report.checks.cityTapCss=cityTap;
               const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return',cityReturnStart);
               await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
 
-              const persisted={revision:returned.revision,wood:returned.wood,stone:returned.stone,gatheredWood:returned.gatheredWood,gatheredStone:returned.gatheredStone,sawmill:returned.sawmill};
+              const persisted=persistenceSnapshot(returned);
               report.checks.beforeReload=persisted;
               const preReloadCount=logs.length;
               await page.reload({waitUntil:'domcontentloaded',timeout:60000});
               await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
               const reloaded=await waitState(logs,s=>s.scene==='Valoria'||s.scene==='ValoriaWebGL',90000,'Valoria after reload',preReloadCount);
               report.checks.afterReload=reloaded;
-              if(reloaded.gatheredWood<persisted.gatheredWood||reloaded.sawmill<persisted.sawmill||reloaded.wood!==persisted.wood)
-                throw new Error('Persistence mismatch after reload');
+              // Exact comparison happens in certifyMacroloop, including stone, Bastion and revision.
 
               await page.setViewportSize({width:390,height:844});
               await sleep(2500);
@@ -301,8 +291,7 @@ jobs:
               report.checks.portraitVisual=portraitStats;
               if(portraitStats.stdev<24||portraitStats.whiteRatio>.32)throw new Error('Portrait lacks sufficient Valoria visual content');
 
-              if(logs.some(x=>x.type==='pageerror'||x.type==='dialog'))throw new Error('Runtime raised JavaScript error or dialog');
-              report.checks.playablePass=true;
+              certifyMacroloop(report);
             }catch(e){
               report.failure=String(e);
               await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
