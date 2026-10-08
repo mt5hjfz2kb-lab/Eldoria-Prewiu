@@ -110,8 +110,10 @@ jobs:
 
   r2b-production-intake:
     if: >-
-      github.event_name == 'workflow_run' &&
-      github.event.workflow_run.head_repository.full_name == github.repository
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.head_repository.full_name == github.repository) ||
+      (github.event_name == 'push' &&
+      github.event.head_commit.message == 'ops(m16): verify real R2-B production evidence intake')
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:
@@ -129,7 +131,7 @@ jobs:
         with:
           script: |
             const {owner,repo}=context.repo;
-            const run=context.payload.workflow_run;
+            const run=context.payload.workflow_run || (await github.rest.actions.getWorkflowRun({owner,repo,run_id:37838898425})).data;
             const marker='<!-- eldoria-r2b-unity-intake-'+run.id+' -->';
             const existing=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
             if(existing.some(x=>(x.body||'').includes(marker)))return;
