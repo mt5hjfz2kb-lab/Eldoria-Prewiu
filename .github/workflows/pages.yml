@@ -549,6 +549,10 @@ jobs:
           find site/unity-owner -type f -print0 | sort -z | xargs -0 sha256sum > stable-before.sha256
           curl -fLsS --retry 4 --max-time 30 'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html' -o stable-current-index.html
           cmp stable-current-index.html site/unity-owner/index.html || { echo 'PUBLIC_STABLE_IS_NOT_PINNED_STABLE_ABORT';exit 1; }
+          for rel in Build/WebGL.loader.js Build/WebGL.framework.js.unityweb; do
+            curl -fLsS --retry 3 --max-time 30 "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/$rel" -o stable-public-runtime-part
+            cmp stable-public-runtime-part "site/unity-owner/$rel" || { echo "CURRENT_STABLE_RUNTIME_DIFFERS_FROM_PINNED:$rel";exit 1; }
+          done
           target="site/r2-candidates/r2-b-6e0e1239"
           test ! -e "$target" || { echo 'Existing candidate must not be overwritten';exit 1; }
           mkdir -p "$target"
