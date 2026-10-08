@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T07:18:00Z",
+  "updated_at": "2026-10-08T07:32:00Z",
   "active": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
       "title": "Valoria Bastion I-II presentation parity correction v1",
-      "owner": "chat-valoria-presentation-parity-correction-20261007b",
+      "owner": "chat-work-parity-repair-20261008",
       "scope": [
         "pipeline/active-workstreams.json",
         "pipeline/art-production-requests/valoria-bastion-i-ii-presentation-parity-correction-v1.json",
@@ -24,24 +24,32 @@
         "PROJECT_STATE.md",
         "Unity/Assets/Eldoria/Scripts/Infrastructure/LocalServices.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
+        ".github/workflows/unity-webgl-startup.yml",
+        "tools/published-probe-contract.cjs",
+        "tests/published-probe-contract.test.cjs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
         "github-pages-unity-owner"
       ],
       "claimed_at": "2026-10-07T19:18:00Z",
-      "base_main_sha": "74990f0558b5f08d49528c5d6b7db962bb815783",
+      "base_main_sha": "724ca7ad097b05bc06d618f9d559357a45ee60ec",
       "status": "active",
-      "phase": "OWNER DEVICE FAIL / CORRECTION REOPENED",
+      "phase": "OWNER-AUTHORIZED TRANSFER / ENGINE AND PRESENTATION DIAGNOSIS",
       "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions remain in scope: canonical fresh-start reset and art-integrated real building-level indicators. Owner/manual review is NOT a closure dependency; close autonomously when current-head production, published WebGL, device-equivalent visual/interaction evidence, persistence and required parity gates pass. Later concrete owner feedback may revoke/reopen the PASS.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Continue without intermediate handoff from current main HEAD through production, capture/evidence inspection, any required correction/retry, WebGL publication, published device-equivalent probe and autonomous closeout. Do not wait for owner inspection or a 'continúa' message.",
+      "next": "Repair published scene errors and coherent WebGL view/input alignment; certify full fresh-save Bastion I-II and reset/persistence; publish and inspect matched mobile evidence; close only on declared gates.",
       "completed_at": null,
       "runner_released": false,
       "blocker": null,
-      "reopened_at": "2026-10-07T21:30:00Z"
+      "reopened_at": "2026-10-07T21:30:00Z",
+      "previous_owner": "chat-valoria-presentation-parity-correction-20261007b",
+      "transferred_at": "2026-10-08T07:32:00Z",
+      "transfer_authority": "Owner explicitly authorized transfer to this Work thread on 2026-10-08 after ownership collision was explained."
     }
   ],
   "history": [
