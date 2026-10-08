@@ -33,6 +33,9 @@ async function one(browser,which,viewport){
   await page.screenshot({path:out+'/'+which+'-'+viewport.width+'-home.png'});
   const nav=await wait(logs,/ELDORIA_PLAYABLE_UI id=worldNav x=([-0-9.]+) y=([-0-9.]+)/,'World navigation');
   let at=screenUi(nav,box,cv),start=logs.length;
+  item.worldNavGeometry={tap:at,canvas:box,canvasPixels:cv,viewport};
+  if(at.x<0||at.x>=viewport.width||at.y<0||at.y>=viewport.height||at.x<box.x||at.x>box.x+box.width||at.y<box.y||at.y>box.y+box.height)
+   throw Error('WORLD_NAV_TAP_OUTSIDE_VISIBLE_VIEWPORT '+JSON.stringify(item.worldNavGeometry));
   await page.touchscreen.tap(at.x,at.y);
   await waitState(logs,s=>s.scene==='Frontier','World region 1',start,45000);
   const hot=await wait(logs,/ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=([0-9.]+) y=([0-9.]+)/,'forest hotspot',start,45000);
