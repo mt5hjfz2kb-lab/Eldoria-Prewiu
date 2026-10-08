@@ -160,6 +160,10 @@ jobs:
           if ($req.enabled -ne $true -or $req.stable_publish -ne $false -or $req.mode -ne 'r2b-isolated-candidate' -or $req.paid_credits -ne 0) { throw 'Candidate authorization invalid' }
           if ($req.source_sha -ne '6e0e12396a98b04333b595fff704afa3e849c30a') { throw 'Candidate source SHA unauthorized' }
           if ($req.production_artifact_id -ne 11576784810 -or $req.parcel_source_artifact_id -ne 11576579158) { throw 'Candidate Unity evidence IDs mismatch' }
+          git fetch --no-tags --deepen=50 origin main
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot recover pinned source commit for content verification' }
+          git cat-file -e "$($req.source_sha)^{commit}"
+          if ($LASTEXITCODE -ne 0) { throw 'Authorized source SHA unavailable after fetch' }
           git diff --exit-code $req.source_sha HEAD -- Unity/Assets/Eldoria/Scripts/Domain/GameState.cs Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs
           if ($LASTEXITCODE -ne 0) { throw 'Gameplay source differs from approved SHA' }
           $cfg = @{mode='current-valoria-production';production_artifact_id=$req.production_artifact_id;parcel_source_artifact_id=$req.parcel_source_artifact_id} | ConvertTo-Json
