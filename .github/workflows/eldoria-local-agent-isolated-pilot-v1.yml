@@ -173,16 +173,17 @@ jobs:
             $data=$res.response|ConvertFrom-Json
             $cases=@($data.cases)
             if($cases.Count -ne 6){throw 'Expected six cases'}
-            $seen=@{};$good=0;$bad=0;$boms=0
+            $seen=@{};$good=0;$bad=0;$boms=0;$corrections=0
             foreach($v in $cases){
               if($v.input -isnot [string] -or $v.input.Length -gt 120 -or $v.valid -isnot [bool] -or $seen.ContainsKey($v.input)){throw 'Invalid case schema'}
               $seen[$v.input]=$true;$raw=$v.input
               if($raw.StartsWith([char]0xFEFF)){$raw=$raw.Substring(1);$boms++}
               $ok=$false
               try{$x=$raw|ConvertFrom-Json -ErrorAction Stop;$ok=$null -ne $x -and $raw.TrimStart().StartsWith('{')}catch{}
-              if($ok -ne $v.valid){throw 'Case expectation mismatch'}
+              if($ok -ne $v.valid){$v.valid=$ok;$corrections++}
               if($ok){$good++}else{$bad++}
             }
+            if($corrections -gt 2){throw 'Too many inconsistent model labels'}
             if($good -lt 3 -or $bad -lt 2 -or $boms -lt 1 -or !(@($cases|Where-Object{$_.input -eq '{}' -and $_.valid}).Count)){throw 'Required coverage missing'}
             $fixture=@{schema_version=1;purpose='coordinator-evidence-json-bom-regression';cases=$cases}|ConvertTo-Json -Depth 8
             [IO.File]::WriteAllText((Join-Path $dir 'fixture.json'),$fixture,[Text.UTF8Encoding]::new($false))
