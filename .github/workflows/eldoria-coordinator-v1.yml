@@ -1,4 +1,5 @@
 name: Eldoria Coordinator v1 (read-only)
+# Ronda 1 line D: one owner-approved published mobile QA execution; zero Windows/Unity runner
 on:
   workflow_dispatch:
   push:
