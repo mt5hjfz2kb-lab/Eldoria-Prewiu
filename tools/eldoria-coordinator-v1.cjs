@@ -22,12 +22,13 @@ if (process.argv[2] === '--verify-local-pilot') {
   const run = String(process.argv[4] || '');
   const sha = String(process.argv[5] || '');
   const load = (name) => { try { return JSON.parse(fs.readFileSync(path.join(dir,name),'utf8').replace(/^\uFEFF/,'')); } catch { return null; } };
-  const proof=load('proof.json'), cleanup=load('final-check.json'), worker=load('pilot-report.json');
+  const proof=load('proof.json'), cleanup=load('final-check.json'), worker=load('pilot-report.json'), task=load('task.json');
   const checks=[];
   const check=(key,condition)=>checks.push({key,passed:Boolean(condition)});
   check('RUN', /^\d+$/.test(run) && String(worker?.run_id)===run);
   check('SHA', /^[a-f0-9]{40}$/.test(sha) && worker?.source_sha===sha);
   check('MISSION', worker?.order_id==='eldoria-local-agent-isolated-pilot-v1');
+  check('COORDINATOR_TASK_DELIVERED', task?.status==='AUTHORIZED_FOR_LOCAL_WORKER' && task?.issued_by==='eldoria-coordinator-v1' && task?.task_id===worker?.task_id && worker?.task_type===task?.task_type && worker?.issued_by===task?.issued_by && task?.task_type==='pure_clamp_function' && task?.external_api_budget===0 && task?.required_independent_tests===9);
   check('MODEL', proof?.model==='qwen2.5-coder:3b' && worker?.model===proof?.model);
   check('MODEL_DIGEST', /^[a-f0-9]{64}$/.test(String(proof?.digest||'')) && worker?.model_digest===proof?.digest);
   check('GENERATED_SOURCE_SHA', /^[a-f0-9]{64}$/.test(String(proof?.source_sha256||'')) && worker?.generated_source_sha256===proof?.source_sha256);
