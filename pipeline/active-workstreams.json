@@ -29,7 +29,10 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
         ".github/workflows/unity-webgl-startup.yml",
         "tools/published-probe-contract.cjs",
-        "tests/published-probe-contract.test.cjs"
+        "tests/published-probe-contract.test.cjs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs.meta"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",

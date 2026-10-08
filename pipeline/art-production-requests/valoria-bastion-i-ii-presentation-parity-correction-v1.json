@@ -6,7 +6,7 @@
   "asset_or_sector": "Valoria Bastion I-II published Unity presentation parity against canonical v0220 web vertical slice",
   "profile": "environment_composition",
   "visual_gate_state": "correction",
-  "diagnosis": "Published probe 37741999794 exposes repeated level0 serialized-scene errors on Valoria entry/reentry/reload. WebGL frame crop and camera projection differ; screen raycasts and labels do not use the presented frame transform. HUD uses 7-10 px text and a 166 px building panel with approximately 196 px requested contents. Owner authorized this Work session takeover.",
+  "diagnosis": "Published probe 37751199736 still rejects level0 corruption after clean build and splat removal. Binary inspection of its WebGL artifact 11538121420 proves exactly three WorldHotspot records are 32-byte MonoBehaviour headers without the required Id string (UpperWalls, MainRoad, CentralStair), while the other six records contain Id. WorldHotspot is currently declared as a secondary MonoBehaviour inside VisualWorld.cs and serialized through a scene-local MonoScript. Move this exact type to its own stable source/meta and require stable script identity plus Id roundtrip in the existing WebGL builder. No gameplay/art redesign.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -28,9 +28,9 @@
   },
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
-  "phase": "ENGINE AND PRESENTED-COORDINATE CORRECTION",
-  "retry": 10,
-  "retry_reason": "Repair verified runtime load failure and frame/input alignment, preserve canonical game state/native SHARP/World. Validate full published fresh-save I-II, orientation interactions and deliberate reset.",
+  "phase": "WORLDHOTSPOT SERIALIZATION REPAIR",
+  "retry": 11,
+  "retry_reason": "Repair demonstrated malformed serialized hotspot records; retain fatal-error rejection and all existing progression gates.",
   "completed_at": null,
   "owner_rejection": {
     "at": "2026-10-07T21:29:00Z",
