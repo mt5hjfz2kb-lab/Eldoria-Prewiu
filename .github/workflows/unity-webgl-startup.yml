@@ -1,6 +1,7 @@
 name: Unity WebGL published startup probe
 
 on:
+  workflow_call:
   workflow_dispatch:
   push:
     branches: [main]
