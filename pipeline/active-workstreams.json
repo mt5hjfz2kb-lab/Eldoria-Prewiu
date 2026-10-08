@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T15:40:10.008Z",
+  "updated_at": "2026-10-08T15:43:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -48,6 +48,29 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
+    },
+    {
+      "id": "eldoria-local-agent-isolated-pilot-v1",
+      "title": "Bounded local Ollama coordinator pilot",
+      "owner": "chat-direction-local-agent-20261008",
+      "scope": [
+        ".github/workflows/eldoria-local-agent-isolated-pilot-v1.yml",
+        "tools/local-agent-isolated-pilot-v1.ps1",
+        "docs/evidence/local-agent-isolated-pilot-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1"
+      ],
+      "claimed_at": "2026-10-08T15:43:00Z",
+      "base_main_sha": "f35d23865569b39f9bfa71af86dcf588e187b231",
+      "status": "active",
+      "phase": "ISOLATED PILOT IMPLEMENTATION",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Infrastructure-only local inference; no player-visible artifacts or Unity writes",
+      "paid_credits": 0,
+      "dependency": "Issue #25; do not touch M07, M11 or gameplay; respect current preflight owner",
+      "next": "Install only bounded manual-dispatch pilot workflow; gather independent runner evidence before claiming PASS"
     }
   ],
   "history": [
