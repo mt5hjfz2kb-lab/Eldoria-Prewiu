@@ -1,0 +1,20 @@
+name: M04 isolated incident lifecycle tests
+on:
+  pull_request:
+    paths:
+      - 'tools/m04/**'
+      - 'tests/m04/**'
+      - '.github/workflows/eldoria-m04-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  m04-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run M04 deterministic suite
+        run: node --test tests/m04/incidents.test.mjs
