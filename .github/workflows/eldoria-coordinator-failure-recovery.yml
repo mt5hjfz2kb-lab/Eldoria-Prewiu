@@ -303,6 +303,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Independent QA must reject missing browser shell, SHARP scene source or engine binary.
           test -s r2b-webgl-candidate/index.html
           test -s r2b-webgl-candidate/splat-state-0.ply
           find r2b-webgl-candidate/Build -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.br|wasm\.gz)$'
