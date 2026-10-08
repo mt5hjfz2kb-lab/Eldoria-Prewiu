@@ -1,0 +1,40 @@
+name: Eldoria local agent feasibility (read-only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/agent-local-preflight-request.json'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-local-agent-preflight
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 4
+    steps:
+      - name: Inspect local free-agent requirements without installing
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Continue'
+          Write-Output 'ELDORIA_PREFLIGHT_START'
+          $mem=Get-CimInstance Win32_OperatingSystem
+          Write-Output ("RAM_FREE_GB=" + [math]::Round($mem.FreePhysicalMemory / 1MB,2))
+          $cpu=Get-CimInstance Win32_Processor | Select-Object -First 1
+          Write-Output ("CPU_LOGICAL_CORES=" + $cpu.NumberOfLogicalProcessors)
+          $nvidia=Get-Command nvidia-smi -ErrorAction SilentlyContinue
+          if ($nvidia) {
+            & nvidia-smi --query-gpu=name,memory.total,memory.free,utilization.gpu --format=csv,noheader
+          } else { Write-Output 'NVIDIA_SMI=NOT_AVAILABLE' }
+          foreach($exe in @('ollama','docker','python','git')) {
+            $cmd=Get-Command $exe -ErrorAction SilentlyContinue
+            if ($cmd) { Write-Output ("TOOL_" + $exe.ToUpper() + "=FOUND") }
+            else { Write-Output ("TOOL_" + $exe.ToUpper() + "=MISSING") }
+          }
+          $ollama=Get-Process ollama -ErrorAction SilentlyContinue
+          Write-Output ("OLLAMA_RUNNING=" + [bool]$ollama)
+          $disk=Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object -First 1
+          if ($disk) { Write-Output ("LOCAL_DISK_FREE_GB=" + [math]::Round($disk.FreeSpace / 1GB,1)) }
+          Write-Output 'ELDORIA_PREFLIGHT_FINISHED_NO_INSTALL_NO_GAME_CHANGES'
