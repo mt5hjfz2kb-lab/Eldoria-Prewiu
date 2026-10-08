@@ -379,8 +379,14 @@ namespace Eldoria.EditorTools
                     foreach(var c in r.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(c);
                     AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
                 }
-                go.transform.rotation=sourceRotation;go.transform.position=position;
-                if(name.StartsWith("LeftCabinParcel",StringComparison.Ordinal))
+                // The parcel SHARP source has a converted source-space rotation. Applying
+                // that to screen-facing construction beams lays the scaffold down in
+                // projection; the previous capture showed only two flattened trestles.
+                // Preserve the legacy rotation for every other parcel.
+                bool sawmillConstruction=name.StartsWith("LeftCabinParcel",StringComparison.Ordinal);
+                go.transform.rotation=sawmillConstruction ? cam.transform.rotation : sourceRotation;
+                go.transform.position=position;
+                if(sawmillConstruction)
                 {
                     // Deliberately small, incomplete roof frame: the open centre still reads
                     // as construction rather than an already finished sawmill. No renderer,
