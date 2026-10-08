@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T16:54:27.833Z",
+  "updated_at": "2026-10-08T16:54:47.634Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -48,7 +48,9 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-local-agent-isolated-pilot-v1",
       "title": "Bounded local Ollama coordinator pilot",
@@ -65,16 +67,16 @@
       "resources": [],
       "claimed_at": "2026-10-08T15:43:00Z",
       "base_main_sha": "f35d23865569b39f9bfa71af86dcf588e187b231",
-      "status": "active",
-      "phase": "POST-CLOSE SAFETY: SKIPPED-PUSH EVENTS MUST NOT GENERATE FALSE PILOT ALERTS",
+      "status": "completed",
+      "phase": "PASS VERIFIED / FALSE-SKIPPED-EVENT NOTIFICATIONS FILTERED / RESOURCES RELEASED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Infrastructure-only local inference; no player-visible artifacts or Unity writes",
       "paid_credits": 0,
       "dependency": "Issue #25; do not touch M07, M11 or gameplay; respect current preflight owner",
-      "next": "Filter intake to actual issue_comment worker runs, then return pilot to completed history without rerunning model.",
+      "next": "Closed. No further pilot dispatch required; new department orchestration awaits Directorate authorization.",
       "blocker": null,
       "runner_released": true,
-      "completed_at": "2026-10-08T16:53:12.801Z",
+      "completed_at": "2026-10-08T16:54:47.634Z",
       "result": {
         "verdict": "PASS_SINGLE_LOCAL_AGENT_ISOLATED_CODING_PILOT",
         "task_delivery_run_id": 37811949263,
@@ -99,11 +101,10 @@
         "final_cleanup": "PASS",
         "runner_released": true,
         "game_modified": false,
-        "notes": "One pre-authorized fixed bounded local coding task. No generalized 16-department autonomous dispatch, no game mutation, no outside-network forensic audit."
+        "notes": "One pre-authorized fixed bounded local coding task. No generalized 16-department autonomous dispatch, no game mutation, no outside-network forensic audit.",
+        "post_close_notification_guard_commit": "7b0308d2c595f8a7ad5f798f7a2f6e02fd836e5c"
       }
-    }
-  ],
-  "history": [
+    },
     {
       "id": "eldoria-local-ai-install-v1",
       "title": "Official isolated Ollama Windows install and local coder proof",
