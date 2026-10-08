@@ -1,3 +1,22 @@
+## 2026-10-08 — BASTION I–II PRESENTATION PARITY CORRECTION v1 DEFINITIVELY CLOSED
+
+The active presentation repair has finished and released its resources. Final bounded cleanup corrected duplicate primary/context CTA clutter and the quest/context panel overlap, then restored the objective dock after contextual actions.
+
+Final chain:
+- UI cleanup `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f`;
+- objective dock fix `4d70b9bdc5532ffb3108867a7d5450a72ea460bc`;
+- UI certification **37772733872** SUCCESS;
+- Unity source/editor **37772733932** SUCCESS;
+- production **37772733956** SUCCESS / artifact **11549887766**;
+- publish **37776564090** SUCCESS;
+- published WebGL probe **37779269570** SUCCESS / evidence **11551901858**.
+
+The final published probe passed the complete fresh Bastion I→II loop in both landscape and portrait with real building touch selection, resources, construction, Bastion ascent, Cuartel, recruitment, configured march, Engendro combat/reward, exact final-state reload and canonical reset surviving reload. Final report has no probe failure and no rejected runtime errors. Final screenshots were directly inspected for mobile framing and the corrected contextual UI.
+
+This closes only the declared Bastion I–II presentation parity scope. It does not claim final artistic quality or substitute for later concrete physical-device feedback. Bastion III stays closed; broader life/animation/art uplift requires separate authorization. Paid credits: 0.
+
+Evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
+
 ## 2026-10-08 — Presentation parity repair REOPENED / NOT YET CERTIFIED
 
 The previous CLOSED/PASS declarations below are historical and are revoked as current publication acceptance. Published probe **37741999794** found fatal Unity scene errors (`level0`, position out of bounds) despite the older macroloop passing. The active canonical workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is owned by `chat-work-parity-repair-20261008` following the owner's explicit takeover authorization. Do not report current published PASS until the repaired build passes fatal-error acceptance and full fresh-save Bastion I–II interaction/persistence checks in landscape and portrait.
