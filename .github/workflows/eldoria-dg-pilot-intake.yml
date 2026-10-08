@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   intake:
-    if: github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.event == 'issue_comment'
+    if: github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.event == 'issue_comment' && github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -60,6 +60,21 @@ jobs:
             printf '\n**Control:** no se autoriza QA, Unity, otra ronda, gasto ni nueva misión. El resultado queda pendiente de decisión de Dirección General y validación independiente.\n'
           } > message.txt
           gh issue comment 25 --body-file message.txt
+          # A bot comment made with GITHUB_TOKEN does not trigger a downstream issue_comment workflow.
+          # Handoff directly to canonical Directorate Issue #23, with idempotent run identifier.
+          marker="ELDORIA_PILOT_DIRECTORATE_HANDOFF_RUN_$WORKER_RUN"
+          if ! gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then
+            {
+              printf '%s\n' '### Dirección General — entrega automática del piloto local'
+              printf '\n%s\n' "$marker"
+              printf '\n**Resultado:** %s\n' "$outcome"
+              printf '**Origen:** https://github.com/%s/actions/runs/%s\n' "$GH_REPO" "$WORKER_RUN"
+              printf '**SHA:** %s\n\n' "$WORKER_SHA"
+              printf '%s\n' "$details"
+              printf '\nEl resultado requiere aceptación según AGENTS.md; no autoriza gasto, auto-merge ni nuevas misiones.\n'
+            } > directorate-message.txt
+            gh issue comment 23 --body-file directorate-message.txt
+          fi
       - name: Preserve independent coordinator verification
         if: always()
         uses: actions/upload-artifact@v4
