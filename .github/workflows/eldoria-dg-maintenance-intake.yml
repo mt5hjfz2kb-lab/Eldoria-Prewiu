@@ -1,0 +1,70 @@
+name: Eldoria DG - maintenance evidence intake
+on:
+  workflow_run:
+    workflows: ["Eldoria local agent isolated pilot v1"]
+    types: [completed]
+permissions:
+  actions: read
+  issues: write
+  contents: read
+concurrency:
+  group: eldoria-maintenance-intake-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+jobs:
+  intake:
+    if: >-
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'fix/local-maintenance-json-labels-20261008' &&
+      github.event.workflow_run.conclusion != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Independently verify maintenance result, issue evidence and report to coordinator
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN: ${{ github.event.workflow_run.id }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          RESULT: ${{ github.event.workflow_run.conclusion }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="ELDORIA_MAINTENANCE_INTAKE_RUN_$RUN"
+          if gh api "repos/$GH_REPO/issues/25/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then
+            echo 'INTAKE_ALREADY_RECORDED'; exit 0
+          fi
+          verdict='BLOCKED / NO MAINTENANCE PASS'
+          detail='The maintenance Windows worker, independent review or required evidence failed.'
+          mkdir -p evidence
+          if [[ "$RESULT" == success ]]; then
+            if gh run download "$RUN" -n "eldoria-maintenance-worker-$RUN" -D evidence; then
+              if [[ -f evidence/fixture.json && -f evidence/proof.json && -f evidence/final-check.json && -f evidence/task.json ]]; then
+                if node - "$RUN" "$SHA" <<'NODE'
+          const fs=require('node:fs'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+          const read=n=>JSON.parse(fs.readFileSync('evidence/'+n,'utf8').replace(/^\uFEFF/,''));
+          const [run,sha]=process.argv.slice(2);const f=read('fixture.json'),p=read('proof.json'),c=read('final-check.json'),t=read('task.json');
+          assert.equal(f.cases.length,6);assert.equal(p.status,'PASS');assert.equal(String(p.run_id),run);
+          assert.equal(p.sha,sha);assert.equal(p.cases_passed,6);
+          assert.equal(p.external_api_calls,0);assert.equal(p.paid_api_calls,0);assert.equal(p.arbitrary_generated_code_executed,false);
+          assert.equal(p.task_id,t.task_id);assert.equal(t.issuer,'eldoria-coordinator-v1');assert.equal(c.listener_closed,true);
+          assert.equal(crypto.createHash('sha256').update(fs.readFileSync('evidence/fixture.json')).digest('hex'),p.source_sha256);
+          let yes=0,no=0,bom=0;
+          for(const x of f.cases){assert.equal(typeof x.input,'string');assert.equal(typeof x.valid,'boolean');
+            let s=x.input;if(s.charCodeAt(0)===0xfeff){s=s.slice(1);bom++}
+            let ok=false;try{let v=JSON.parse(s);ok=v!==null&&typeof v==='object'&&!Array.isArray(v)}catch{}
+            assert.equal(ok,x.valid);if(ok)yes++;else no++;
+          }
+          assert(yes>=3&&no>=2&&bom>=1);assert(f.cases.some(x=>x.input==='{}'&&x.valid));
+          console.log('DG_MAINTENANCE_INTAKE_INDEPENDENT_PASS');
+          NODE
+                then
+                  verdict='LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR'
+                  detail='Six distinct JSON cases, BOM, label truth, run SHA and artifact hash, zero paid/external APIs and cleanup independently verified. Review job was required to succeed. This report is an intake; merge/claim release require canonical policy.'
+                fi
+              fi
+            fi
+          fi
+          body=$(printf '### Coordinador → Dirección General — mantenimiento v1\n\n%s\n\n**Estado:** %s\n**Run:** https://github.com/%s/actions/runs/%s\n**SHA:** %s\n**GitHub:** %s\n\n%s\n\nNo se autoriza merge, gasto, Unity, QA ni trabajos adicionales.\n' "$marker" "$verdict" "$GH_REPO" "$RUN" "$SHA" "$RESULT" "$detail")
+          gh api "repos/$GH_REPO/issues/25/comments" -f body="$body" >/dev/null
+          echo "$verdict"
