@@ -13,7 +13,7 @@ jobs:
     if: >-
       github.event.issue.number == 25 &&
       github.event.comment.user.login == 'github-actions[bot]' &&
-      contains(github.event.comment.body, 'LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR')
+      (contains(github.event.comment.body, 'LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR') ||\n      contains(github.event.comment.body, 'LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR') ||\n      contains(github.event.comment.body, 'ELDORIA_MAINTENANCE_INTAKE_RUN_'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -28,7 +28,7 @@ jobs:
           set -euo pipefail
           # Only verified coordinator outcomes may flow forward. Reject any failure,
           # skipped run, unrecognized status, or user-authored statement.
-          if [[ "$SOURCE_BODY" != *"LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR"* ]]; then exit 0; fi
+          if [[ "$SOURCE_BODY" != *"LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR"* && "$SOURCE_BODY" != *"ELDORIA_MAINTENANCE_INTAKE_RUN_"* ]]; then exit 0; fi
           if [[ "$SOURCE_BODY" == *"BLOCKED / NO AUTONOMOUS PILOT PASS"* ]]; then exit 0; fi
           marker="ELDORIA_COORDINATOR_HANDOFF_SOURCE_COMMENT_$SOURCE_COMMENT"
           # Idempotent on retries. Never dispatch work or close a workstream.
@@ -36,6 +36,6 @@ jobs:
             echo 'DIRECTORATE_HANDOFF_ALREADY_RECORDED'
             exit 0
           fi
-          body=$(printf '### Dirección General — entrega verificable del Coordinador\n\n%s\n\nEl Coordinador ha publicado en el Issue #25 una verificación positiva de evidencia del piloto local. La Dirección General debe revisar el alcance y decidir el cierre; este workflow no autoriza nuevas tareas, no modifica el juego, no fusiona PR ni notifica directamente al propietario.\n\nOrigen: https://github.com/%s/issues/25#issuecomment-%s\n\n%s\n' "$marker" "$GH_REPO" "$SOURCE_COMMENT" 'Control: decisiones y gasto reservados a Dirección General y propietario.')
+          body=$(printf '### Dirección General — entrega verificable del Coordinador\n\n%s\n\nEl Coordinador ha publicado en el Issue #25 un resultado verificado o bloqueo real del mantenimiento/piloto local. La Dirección General debe revisar el resultado y decidir aceptación, corrección o cierre; este workflow no autoriza nuevas tareas, no modifica el juego, no fusiona PR ni notifica directamente al propietario.\n\nOrigen: https://github.com/%s/issues/25#issuecomment-%s\n\n%s\n' "$marker" "$GH_REPO" "$SOURCE_COMMENT" 'Control: decisiones y gasto reservados a Dirección General y propietario.')
           gh api "repos/$GH_REPO/issues/23/comments" -f body="$body" >/dev/null
           echo 'DIRECTORATE_HANDOFF_RECORDED'
