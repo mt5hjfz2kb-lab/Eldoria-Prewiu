@@ -5,6 +5,37 @@ const path = require('node:path');
 
 
 
+// Independent coordinator verification of a bounded zero-cost local maintenance result.
+if (process.argv[2] === '--verify-first-maintenance') {
+  const crypto=require('node:crypto'), assert=require('node:assert/strict');
+  const folder=process.argv[3], run=String(process.argv[4]||''), sha=String(process.argv[5]||'');
+  if(!folder || !/^\\d+$/.test(run) || !/^[a-f0-9]{40}$/.test(sha)) throw new Error('Invalid coordinator verification arguments');
+  const read=n=>JSON.parse(fs.readFileSync(path.join(folder,n),'utf8').replace(/^\\uFEFF/,''));
+  const fixture=read('fixture.json'),proof=read('proof.json'),clean=read('final-check.json'),task=read('task.json');
+  assert.equal(task.task_id,'eldoria-local-agent-first-maintenance-v1');
+  assert.equal(task.issuer,'eldoria-coordinator-v1');assert.equal(task.model,'qwen2.5-coder:3b');
+  assert.equal(task.external_api_budget,0);assert.equal(task.code_execution_allowed,false);
+  assert.equal(proof.status,'PASS');assert.equal(proof.task_id,task.task_id);
+  assert.equal(String(proof.run_id),run);assert.equal(proof.sha,sha);
+  assert.equal(proof.cases_passed,6);assert.equal(proof.external_api_calls,0);
+  assert.equal(proof.paid_api_calls,0);assert.equal(proof.arbitrary_generated_code_executed,false);
+  assert.equal(clean.listener_closed,true);
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(folder,'fixture.json'))).digest('hex'),proof.source_sha256);
+  assert.equal(fixture.cases.length,6);
+  let good=0,bad=0,bom=0;const seen=new Set();
+  for(const item of fixture.cases){
+    assert.equal(typeof item.input,'string');assert.equal(typeof item.valid,'boolean');assert(item.input.length<=120);
+    assert(!seen.has(item.input));seen.add(item.input);
+    let text=item.input;if(text.charCodeAt(0)===0xfeff){text=text.slice(1);bom++}
+    let ok=false;try{const value=JSON.parse(text);ok=value!==null&&typeof value==='object'&&!Array.isArray(value)}catch{}
+    assert.equal(item.valid,ok);if(ok)good++;else bad++;
+  }
+  assert(good>=3&&bad>=2&&bom>=1);assert(fixture.cases.some(x=>x.input==='{}'&&x.valid));
+  const output={status:'PASS',verdict:'LOCAL_MAINTENANCE_EVIDENCE_VERIFIED_BY_COORDINATOR',run_id:run,sha,task_id:task.task_id,cases_passed:6,external_api_calls:0,paid_api_calls:0,cleanup:'PASS',fixture_sha256:proof.source_sha256};
+  fs.writeFileSync(path.join(folder,'coordinator-verification.json'),JSON.stringify(output,null,2)+'\\n');
+  console.log(JSON.stringify(output));process.exit(0);
+}
+
 // First useful maintenance order: one fixed JSON-only fixture, no code execution or game changes.
 if (process.argv[2] === '--prepare-first-maintenance') {
   const registry = JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
