@@ -1,0 +1,71 @@
+name: Eldoria local agent isolated pilot v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-local-agent-isolated-pilot-v1
+  cancel-in-progress: false
+jobs:
+  isolated-pilot:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Verify canonical pilot authorization and no competing runner claim
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $registry=Invoke-RestMethod -Uri "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/main/pipeline/active-workstreams.json" -TimeoutSec 60
+          $id='eldoria-local-agent-isolated-pilot-v1'
+          $claim=@($registry.active | Where-Object { $_.id -eq $id -and $_.owner -eq 'chat-direction-local-agent-20261008' -and $_.status -eq 'active' })
+          if ($claim.Count -ne 1) { throw 'BLOCKED: pilot ownership absent' }
+          $conflicts=@($registry.active | Where-Object { $_.id -ne $id -and $_.status -eq 'active' -and @($_.resources) -contains 'windows-self-hosted-unity-6000-3-23f1' })
+          if ($conflicts.Count) { throw 'BLOCKED: Windows runner claimed by another workstream' }
+      - name: Fetch exact approved native proof scripts
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ProgressPreference='SilentlyContinue'
+          $base="https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/db15e0e815b22a19857efc3f6bc7d9c37792298f/tools"
+          $dir=Join-Path $env:RUNNER_TEMP 'eldoria-pilot-scripts'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $files=@{
+            'local-ai-install-v1.ps1'='e2223764b5d4fb17c4f5f6a1f7ad77bd2dd1a668d613dab3843704d25fd1f9dd'
+            'local-ai-proof-v1.ps1'='3a5e67a423c35f4e76bbf29a6af58aae0f32e38a454b6bf1bce12355f10601b0'
+          }
+          foreach ($name in $files.Keys) {
+            $dest=Join-Path $dir $name
+            Invoke-WebRequest -UseBasicParsing -Uri "$base/$name" -OutFile $dest -TimeoutSec 120
+            if ((Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant() -ne $files[$name]) { throw "STOP: script hash mismatch $name" }
+          }
+          "ELDORIA_PILOT_SOURCE=$dir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Run a NEW real local coding generation with independent nine-case test
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $dir=Join-Path $env:RUNNER_TEMP "eldoria-pilot-$env:GITHUB_RUN_ID"
+          "ELDORIA_PILOT_REPORT=$dir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          & "$env:ELDORIA_PILOT_SOURCE/local-ai-install-v1.ps1" -EvidenceDir $dir
+          $proof=Get-Content (Join-Path $dir 'proof.json') -Raw | ConvertFrom-Json
+          $clean=Get-Content (Join-Path $dir 'final-check.json') -Raw | ConvertFrom-Json
+          if ($proof.status -ne 'PASS' -or $proof.test_cases_passed -ne 9 -or $proof.external_api_calls -ne 0 -or $proof.arbitrary_generated_code_executed -ne $false -or $clean.status -ne 'PASS') { throw 'Independent evidence did not meet pilot gates' }
+          $report=@{
+            schema_version=1;order_id='eldoria-local-agent-isolated-pilot-v1';direction_issue=25
+            source_sha=$env:GITHUB_SHA;run_id=$env:GITHUB_RUN_ID
+            coordinator='eldoria-coordinator-v1';coordinator_mode='read-only'
+            model=$proof.model;model_digest=$proof.digest
+            generated_source_sha256=$proof.source_sha256
+            independent_test_cases_passed=$proof.test_cases_passed
+            external_api_calls=$proof.external_api_calls
+            arbitrary_generated_code_executed=$proof.arbitrary_generated_code_executed
+            cleanup=$clean.status;verdict='LOCAL_WORKER_PASS_AWAITING_INDEPENDENT_COORDINATOR_REVIEW'
+          }
+          $report | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $dir 'pilot-report.json') -Encoding UTF8
+      - name: Preserve bounded proof for independent coordinator review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-local-agent-pilot-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-pilot-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
