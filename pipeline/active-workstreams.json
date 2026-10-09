@@ -49,9 +49,9 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "READ_ONLY_WINDOWS_PREFLIGHT_SUCCESS / LOCAL_MODEL_AVAILABILITY_BLOCKED",
+      "phase": "SECOND_DIAGNOSTIC_COMPLETED / OLLAMA_NOT_AVAILABLE_TO_RUNNER",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Owner chat-local-agent-integration-20261009 should diagnose runner Ollama PATH/install before attempting actual isolated agent. Continue separate Unity work; R2-B Windows priority restored.",
+      "next": "Existing local-agent owner: diagnose account-specific Ollama install/runner service user and PATH; obtain authorization before any repair, installation or model start. R2-B original Windows priority preserved.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -68,15 +68,19 @@
       "runner_loan": {
         "from": "r2-b-strategic-choice",
         "resource": "windows-runner-heavy",
-        "kind": "single bounded read-only preflight",
-        "window_timeout_minutes": 4,
+        "kind": "second diagnostic read-only",
+        "state": "COMPLETED",
+        "run_id": 37930206878,
+        "job_id": 113818782909,
         "returns_to": "r2-b-strategic-choice",
         "no_claim_transfer": true,
-        "state": "COMPLETED",
-        "run_id": 37929565276,
-        "job_id": 113816664841,
-        "return_verified": "R2-B held original windows-runner-heavy registry claim throughout",
-        "finding": "Ollama executable missing in runner PATH and process not running; Python present; Git missing in runner PATH",
+        "findings": [
+          "Ollama not in PATH",
+          "Ollama process not running",
+          "Ollama service NOT_FOUND",
+          "local API 127.0.0.1:11434 UNREACHABLE",
+          "no standard installation discovered under probed runner-account paths"
+        ],
         "game_changes": false
       }
     },
@@ -288,19 +292,16 @@
       "temporary_runner_loan": {
         "borrower": "eldoria-local-agent-preflight-v1",
         "executor": "chat-local-agent-integration-20261009",
-        "authorized_by": "owner explicit 2026-10-09",
+        "authorized_by": "owner issue23 comment6080837818 and explicit chat instruction 2026-10-09",
         "reservation_retained_by": "r2-b-strategic-choice",
-        "scope": "one existing read-only GitHub Actions preflight job only",
+        "scope": "second one-shot read-only Ollama discovery",
         "timeout_minutes": 4,
-        "automatic_return": "GitHub Actions job termination releases Windows runner; R2-B resource claim never transferred",
-        "conditions": "zero running productive runs at checkout; no cancellation; Unity must not be interrupted",
+        "automatic_return": "GitHub Actions job terminated; original runner reservation unchanged",
         "state": "COMPLETED_RETURNED_TO_R2B",
-        "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2",
-        "run_id": 37929565276,
-        "job_id": 113816664841,
+        "run_id": 37930206878,
+        "job_id": 113818782909,
         "job_conclusion": "success",
-        "runner_released_by": "GitHub Actions job completed",
-        "verified_at": "2026-10-09T12:22:15Z"
+        "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2"
       }
     },
     {
