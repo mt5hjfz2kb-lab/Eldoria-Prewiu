@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "local-recovery-v1",
-  "enabled": true,
+  "enabled": false,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
   "order_id": "executive-local-recovery-20261009-v2",
@@ -37,5 +37,8 @@
   "previous_rejected_order": "executive-local-recovery-20261009-v1",
   "corrected_cause": "Qwen 3B failed seven-case joint semantic reasoning despite feedback. Specialize existing worker to seven isolated model decisions on exact authorized case inputs; labels still come only from real inference. Seven calls per attempt, two attempts max; no change to independent oracle or accepted first task.",
   "repair_revision": 3,
-  "max_local_inferences_per_attempt": 7
+  "max_local_inferences_per_attempt": 7,
+  "completed_at": "2026-10-09T13:10:47.045Z",
+  "outcome": "Two real operational deliveries independently accepted; finite queue complete, no further inference authorized.",
+  "evidence": "docs/evidence/eldoria-local-agent-preflight-v1/REAL_RECOVERY_RESULT_20261009.md"
 }

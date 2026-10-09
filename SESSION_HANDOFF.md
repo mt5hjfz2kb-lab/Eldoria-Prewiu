@@ -1195,3 +1195,10 @@ Next prepared block, not started: `docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1
 - Full fresh-save Bastion I→II completed in landscape and portrait, including visible building touch-selection, construction/resources/recruitment/combat, exact reload persistence, deliberate reset, and reset-survives-reload.
 - This is a presentation-parity closure only; do not reinterpret it as final artistic-quality certification. Later concrete owner/iPhone evidence may reopen.
 - Bastion III remains closed.
+
+
+## 2026-10-09 — recuperación real del ejecutor local, soporte aceptado
+
+El mismo workstream `eldoria-local-agent-preflight-v1` fue transferido con autorización explícita a `chat-work-local-recovery-20261009` antes de modificarlo. Se recuperó Ollama privado sin instalación ni gasto y se conectó al M16/preflight existentes con worker Windows aislado, QA Linux independiente, devolución/retest de defectos y despacho automático de la siguiente orden finita. Entregas reales aceptadas: política de alias 37933225117 (commit 6cf6b919ccfa276b1bd13d983c45439f3b61bdf7) y datos de exclusión 37934434816 (commit b27f1c2f65adda2d0b3ba8b894dfd3c408c39be0). Qwen 3B falló el lote de siete casos; QA rechazó sus reintentos. Work especializó el adaptador en siete inferencias pequeñas, manteniendo las mismas pruebas. No presentar esto como reparación inteligente general de Unity.
+
+Continuación auténtica sin chat: 37933335164 y 37934576368 fueron workflow_dispatch de github-actions[bot]. El último verificó seis tests, cero omitidos, usando los datos del modelo, y detuvo la cola completa sin ocupar Windows. Se cierra únicamente soporte verificado, request deshabilitado, cesión devuelta, recursos vacíos; R2-B conserva su reserva y sus propietarios. M07/Región 1 y los defectos jugables no cambian. No hay publicación estable ni nuevo juego aceptado. La autonomía integral de quince departamentos sigue NO CERTIFICADA. Evidencias y límites: `docs/evidence/eldoria-local-agent-preflight-v1/REAL_RECOVERY_RESULT_20261009.md`.

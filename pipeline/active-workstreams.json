@@ -54,12 +54,12 @@
       "resources": [],
       "claimed_at": "2026-10-08T14:18:00Z",
       "base_main_sha": "34e78de97547a624c685ae0cec7d6ad8cce29db4",
-      "status": "active",
+      "status": "completed",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "NEW REAL LOCAL MODEL SUPPORT TASKS / BOUNDED CORRECTION AND INDEPENDENT QA",
-      "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Recover inference with two finite authorized support tasks using existing preflight workflow, independent hosted QA and bounded model feedback; no Unity/main generated writes.",
+      "phase": "PASS_SUPPORT_ONLY / REAL LOCAL D03 DELIVERIES AND INDEPENDENT QA / GENERAL UNITY AUTONOMY NOT CERTIFIED",
+      "dependency": "Finite support order complete. Productive R2-B, Region 1 and M07 owners/scopes/QA unchanged; no general Unity executor certification.",
+      "next": "Closed verified support scope. Existing DG/M16 may reuse bounded worker with a new authorized finite request and active claim. Broader department integration requires independent capability evidence and coordinated productive ownership; do not replay accepted tasks.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -76,7 +76,10 @@
         "from": "r2-b-strategic-choice",
         "authorized_by": "Owner current task: explicit temporary runner coordination",
         "policy": "R2-B reservation retained; no active productive job or Unity/Blender process; single runner queue and owned process lock; timeout bounded; return immediately at job end",
-        "expires_at": "2026-10-09T15:30:00Z"
+        "expires_at": "2026-10-09T15:30:00Z",
+        "status": "returned",
+        "returned_at": "2026-10-09T13:10:47.042Z",
+        "verified_by_run": 37934576368
       },
       "historical_runtime_proof": {
         "run_id": 37820089071,
@@ -92,6 +95,36 @@
         "reason": "Append verified support recovery and handback to shared canonical handoff; no product-state changes",
         "authorized_by": "Owner executive local recovery 2026-10-09",
         "append_only_shared_handoff": true
+      },
+      "completed_at": "2026-10-09T13:10:47.042Z",
+      "runner_released": true,
+      "result": {
+        "verdict": "PASS_SUPPORT_ONLY",
+        "inference_runs": [
+          37933225117,
+          37934434816
+        ],
+        "autonomous_next_run": 37933335164,
+        "real_defect_feedback_and_retest_run": 37933859220,
+        "real_model_batch_limit_run": 37934100027,
+        "continuity_complete_run": 37934576368,
+        "accepted_commits": [
+          "6cf6b919ccfa276b1bd13d983c45439f3b61bdf7",
+          "b27f1c2f65adda2d0b3ba8b894dfd3c408c39be0"
+        ],
+        "model": "qwen2.5-coder:3b",
+        "independent_semantic_checks": 12,
+        "persistent_regression_tests": 6,
+        "automatic_defect_correction_attempted": true,
+        "automatic_model_correction_accepted": false,
+        "adapter_specialization_by": "ChatGPT Work",
+        "windows_returned": true,
+        "game_changed": false,
+        "stable_published": false,
+        "paid_cost": 0,
+        "departments_generally_certified": 0,
+        "department_scoped_executor": "D03",
+        "evidence": "docs/evidence/eldoria-local-agent-preflight-v1/REAL_RECOVERY_RESULT_20261009.md"
       }
     },
     {
