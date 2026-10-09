@@ -20,6 +20,8 @@ The executing agent reviews evidence and authors repairs; Actions job chaining d
 
 The existing `unity-webgl-startup.yml` consumes the triggering build artifact when Pages deployment was skipped, serves it locally and applies the same gameplay probes. Its report records candidate/published target, exact build run and source SHA. Build-only candidate QA never certifies the stable URL. After authorized promotion, run the published probe on the delivered build before closure.
 
+Exact-artifact release uses the existing `pages.yml` and publish request: `reuse_webgl_build_run_id`, `reuse_webgl_source_sha` and `candidate_qa_run_id`. Preflight requires a successful main build with matching SHA, an unexpired artifact, unchanged Unity/reference source, and an actual matching candidate report with clean runtime, full I-II and persistence/reset in both orientations. Publish that artifact without a second Windows compilation; then verify the public delivery. On new Unity/reference changes, clear reuse fields and compile a fresh candidate. On closure, disable publication and release resources. A paused run with no delivery skips the probe without claiming PASS.
+
 Historical reconstruction: the last main commit before 2026-10-08 14:00 Europe/Madrid is `bdeef4038d03a62dcc207c93005bbad868fd7909` (13:52:07), which reopened parity for visual cleanup. Earlier production `37767338367`, publication `37768050958` and probe `37770987758` are historical evidence, not current acceptance. Preserve the direct execution method without resurrecting revoked PASSes or rolling back the entire repository.
 
 ## Current measured baseline
