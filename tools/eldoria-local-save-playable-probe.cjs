@@ -86,6 +86,16 @@ async function scenario(browser,label,viewport){
   start=logs.length;await page.touchscreen.tap(ack.x,ack.y);await wait(logs,/ELDORIA_SAVE_RECOVERY_NOTICE acknowledged=true/,'real notice acknowledgement',start);await sleep(500);
   await page.screenshot({path:out+'/'+label+'-acknowledged.png'});
   const after=await storage(page,false);assert.deepEqual(after.found,before.found,'Acknowledgement changed the original save');
+  // Acknowledgement must restore actual gameplay; volatile commits must preserve the failed original.
+  const resumed=await wait(logs,/ELDORIA_PLAYABLE_UI id=worldNav x=([-0-9.]+) y=([-0-9.]+)/,'resumed world control');
+  const rm=resumed.match(/worldNav x=([-0-9.]+) y=([-0-9.]+)/);
+  const resumedBox=await canvas.boundingBox(),resumedCanvas=await canvas.evaluate(e=>({width:e.width,height:e.height}));
+  const resumePoint={x:resumedBox.x+Number(rm[1])*resumedBox.width/resumedCanvas.width,y:resumedBox.y+(resumedCanvas.height-Number(rm[2]))*resumedBox.height/resumedCanvas.height};
+  start=logs.length;await page.touchscreen.tap(resumePoint.x,resumePoint.y);
+  await wait(logs,/ELDORIA_PLAYABLE_STATE.*scene=Frontier/,'real gameplay after notice acknowledgement',start);
+  await sleep(800);
+  const played=await storage(page,false);assert.deepEqual(played.found,before.found,'Volatile gameplay overwrote the original incompatible save');
+  item.real_gameplay_resumed=true;item.volatile_gameplay_preserved_original=true;
   start=logs.length;await page.reload({waitUntil:'domcontentloaded'});await wait(logs,/ELDORIA_SAVE_RECOVERY_NOTICE shown=true/,'reload keeps failure explanation',start);
   item.pass=true;item.original_save_preserved=true;item.real_touch_acknowledged=true;item.reload_repeats_notice=true;item.healthy_no_false_warning=true;item.layout=layout;
  }catch(e){item.error=String(e);await page.screenshot({path:out+'/'+label+'-FAIL.png'}).catch(()=>{});}
