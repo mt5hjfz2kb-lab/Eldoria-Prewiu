@@ -31,7 +31,14 @@ async function run(browser,label,viewport,axis){
   await dispatch('touchEnd',finish.x,finish.y);
   await page.waitForTimeout(700);
   await page.screenshot({path:output+'/'+label+'-after.png'});
-  const events=logs.filter(x=>x.includes('ELDORIA_PLAYABLE_TOUCH_PAN'));
+  const touchLogEnd=logs.length;
+  // Independent diagnostic input channel: mouse events use a different WebGL path.
+  // Its success must NEVER be counted as mobile touch success.
+  await page.mouse.move(start.x,start.y);await page.mouse.down();await page.waitForTimeout(250);
+  for(let i=1;i<=12;i++){const f=i/12;await page.mouse.move(start.x+(finish.x-start.x)*f,start.y+(finish.y-start.y)*f);await page.waitForTimeout(55);}
+  await page.mouse.up();await page.waitForTimeout(400);
+  item.mouse_pan_event_count=logs.slice(touchLogEnd).filter(x=>x.includes('ELDORIA_PLAYABLE_TOUCH_PAN')).length;
+  const events=logs.slice(0,touchLogEnd).filter(x=>x.includes('ELDORIA_PLAYABLE_TOUCH_PAN'));
   const positions=events.map(x=>{const m=x.match(/x=([-0-9.]+) y=([-0-9.]+)/);return m?{x:+m[1],y:+m[2]}:null}).filter(Boolean);
   const delta=positions.length>1?Math.abs(positions.at(-1)[axis==='horizontal'?'x':'y']-positions[0][axis==='horizontal'?'x':'y']):0;
   item.pan_event_count=events.length;item.observed_axis_delta=delta;item.pass=events.length>0&&delta>=.015;
