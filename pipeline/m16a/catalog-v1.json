@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "departments": [
+    {
+      "id": "cto",
+      "capabilities": [
+        "github_workflow"
+      ]
+    },
+    {
+      "id": "visual",
+      "capabilities": []
+    }
+  ],
+  "jobs": [
+    {
+      "id": "M16-A-SCHEMA",
+      "department": "cto",
+      "status": "ACCEPTED",
+      "executor": "github_workflow",
+      "acceptance_policy": "m16-a-tests-v1",
+      "depends_on": [],
+      "scopes": [
+        "tools/m16a/**"
+      ],
+      "resources": []
+    },
+    {
+      "id": "M16-M03-INTEGRATION",
+      "department": "cto",
+      "status": "APPROVED",
+      "executor": "github_workflow",
+      "acceptance_policy": "m03-certification-v1",
+      "depends_on": [
+        {
+          "job_id": "M16-A-SCHEMA",
+          "required_gate": "TECH"
+        }
+      ],
+      "scopes": [
+        "pipeline/certification/**"
+      ],
+      "resources": []
+    },
+    {
+      "id": "M16-VISUAL-HANDOFF",
+      "department": "visual",
+      "status": "APPROVED",
+      "executor": "human_chat",
+      "acceptance_policy": "visual-independent-v1",
+      "depends_on": [],
+      "scopes": [
+        "docs/evidence/visual-review/**"
+      ],
+      "resources": []
+    }
+  ]
+}

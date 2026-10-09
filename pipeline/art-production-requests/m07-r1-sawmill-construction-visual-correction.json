@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "m07-r1-sawmill-construction-visual-correction",
+  "request_id": "m07-r1-sawmill-construction-visual-correction",
+  "asset_or_sector": "Valoria LeftCabinParcel sawmill UNDER_CONSTRUCTION visualization only; preserve SHARP finished and empty",
+  "profile": "environment_surface",
+  "visual_gate_state": "correction",
+  "diagnosis": "M05-R1 confirmed artificial brown platform and sparse scaffold in native runtime-left-under-construction.png versus approved finished sawmill; limit fix to construction overlay in ValoriaFirstPlayableCitySliceV1.Scaffold, remove slab, introduce small timber framing and material breakup; never alter SHARP states, economy, progression or camera",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": true,
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": false
+  },
+  "validation": {
+    "source_gate": "Exact SHA visual authority 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689 and SHARP StateAssets 0/1/2/3 unchanged",
+    "final_gate": "Visually review native initial/construction/finished same crop and WebGL published visual frames; no brown slab; finished SHARP pixel identity; preserve interactions and Bastion I-II fresh/reload/reset"
+  },
+  "escalation": {
+    "on_next_visual_fail": "Diagnose local presentation from native captures, route known fallback, zero credits and no visual method R&D"
+  },
+  "notes": "Round 1 M07-R1 local visual correction only. No M11. Zero credit.",
+  "status": "ACTIVE"
+}

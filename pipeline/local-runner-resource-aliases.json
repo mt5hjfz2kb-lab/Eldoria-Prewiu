@@ -1,0 +1,6 @@
+{
+  "aliases": {
+    "windows-self-hosted-unity-6000-3-23f1": "windows-runner-heavy",
+    "windows-runner-heavy": "windows-runner-heavy"
+  }
+}

@@ -1,0 +1,138 @@
+name: Eldoria DG authorized pilot dispatcher
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-dg-authorized-pilot-dispatch-${{ github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_20261008' && 'authorized' || github.event.comment.id }}
+  cancel-in-progress: false
+jobs:
+  authorize:
+    if: >-
+      github.event.issue.number == 23 &&
+      github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_V2_20261008'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      accepted: ${{ steps.check.outputs.accepted }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          TOKEN: ${{ github.event.comment.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=$(gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate | jq -r --arg token "$TOKEN" '.[] | select(.body==$token) | .id' | head -n 1)
+          if [[ "$first" == "$COMMENT_ID" ]]; then echo accepted=true >> "$GITHUB_OUTPUT"; else echo accepted=false >> "$GITHUB_OUTPUT"; fi
+  proof:
+    needs: authorize
+    if: >-
+      needs.authorize.outputs.accepted == 'true' &&
+      github.event.issue.number == 23 &&
+      github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_V2_20261008'
+    uses: ./.github/workflows/m16-pilot-two-jobs.yml
+    permissions:
+      contents: read
+  report:
+    needs: [authorize, proof]
+    if: >-
+      always() && needs.authorize.outputs.accepted == 'true' &&
+      github.event.issue.number == 23 &&
+      github.event.comment.user.login == 'mt5hjfz2kb-lab' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == 'ELDORIA_DG_DISPATCH_M16_ACCEPTANCE_E2E_V2_20261008'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Independently verify exact source handoff and report to Directorate
+        uses: actions/download-artifact@v4
+        if: needs.proof.result == 'success'
+        with:
+          name: m16-pilot-handoff
+          path: pilot-handoff
+      - name: Emit verified result to canonical Issue 23
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PROOF_RESULT: ${{ needs.proof.result }}
+          RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="ELDORIA_DG_E2E_ACCEPTANCE_RUN_$RUN_ID"
+          if gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then echo 'ALREADY_RECORDED'; exit 0; fi
+          verdict=BLOCKED
+          details='Reusable A/B pipeline failed; no independent acceptance.'
+          if [[ "$PROOF_RESULT" == success ]] && [[ -f pilot-handoff/source-sha.txt && -f pilot-handoff/run-id.txt && -f pilot-handoff/source-sha.sha256 ]]; then
+            if sha256sum -c pilot-handoff/source-sha.sha256 && [[ "$(cat pilot-handoff/source-sha.txt)" == "$SOURCE_SHA" ]] && [[ "$(cat pilot-handoff/run-id.txt)" == "$RUN_ID" ]]; then
+              verdict=E2E_COORDINATOR_CHAIN_PASS
+              details='Owner authorized through Issue #23; M16-A tests and handoff, downstream independent M03 QA, run/SHA/hash verified in the SAME reusable workflow chain. Zero paid API, no human intermediate click.'
+            fi
+          fi
+          body=$(printf '### DG — resultado automático autorizado\n\n%s\n\n**Veredicto:** %s\n**Run:** https://github.com/%s/actions/runs/%s\n**SHA:** %s\n\n%s\n\nEste resultado no demuestra 15 agentes locales ni notificación instantánea a ChatGPT.' "$marker" "$verdict" "$GH_REPO" "$RUN_ID" "$SOURCE_SHA" "$details")
+          gh api "repos/$GH_REPO/issues/23/comments" -f body="$body" >/dev/null
+          test "$verdict" = E2E_COORDINATOR_CHAIN_PASS
+
+  gameplay-owner-baseline:
+    if: >-
+      github.event.issue.number == 23 && github.event.comment.user.login == 'mt5hjfz2kb-lab' && github.event.comment.author_association == 'OWNER' && github.event.comment.body == 'ELDORIA_DG_GAMEPLAY_BASELINE_AUDIT_V1_20261009'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install isolated browser runner for EXISTING R2B actual WebGL playtest
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Run real touch/play/reward/reload against published R2B candidate
+        id: gameprobe
+        continue-on-error: true
+        env:
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/
+          ELDORIA_EVIDENCE_DIR: r2b-webgl-qa-evidence
+        run: node qa/r2b-webgl-choice-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-dg-actual-gameplay-reproduction
+          path: r2b-webgl-qa-evidence/
+          if-no-files-found: warn
+      - name: Report actual executed QA and do not self-certify UX
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const fs=require('fs');
+            const marker='<!-- eldoria-gameplay-r2b-real-qa-'+context.runId+' -->';
+            const existing=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(existing.some(c=>(c.body||'').includes(marker)))return;
+            let passed=false,summary='NO REPORT: real QA did not finish';
+            try {
+              const report=JSON.parse(fs.readFileSync('r2b-webgl-qa-evidence/report.json','utf8'));
+              passed=report.pass===true&&report.cases?.length===2&&report.cases.every(x=>x.pass===true);
+              summary=report.cases.map(x=>x.choice+': '+(x.pass?'PASS':'FAIL '+x.error)).join('; ');
+            }catch(e){ summary+=': '+String(e); }
+            const body=[marker,'### DG→D13: prueba jugable R2-B publicada','Run https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,'Candidate R2-B fixed URL, real Chromium mobile touch play, reward and reload.','Technical functional verdict: '+(passed?'PASS_R2B_BOUNDED':'BLOCKED_QA_FAILED'),'Result: '+summary,'No full gameplay quality, visual/experience quality, vertical-slice parity, intelligent departmental execution or code repair claimed. Existing workstream owner remains responsible for defects.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            if(!passed)core.setFailed('Real candidate probe failed or incomplete; owner correction required');

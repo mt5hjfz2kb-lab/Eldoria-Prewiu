@@ -1,0 +1,692 @@
+name: Eldoria local agent feasibility (read-only)
+on:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+  workflow_run:
+    workflows: ['Publish Eldoria Preview', 'UI Progression Certification (fast)', '\[PRODUCTION\] Valoria First Playable City Slice v1']
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/agent-local-preflight-request.json'
+  schedule:
+    - cron: '*/15 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-local-agent-preflight
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: >-
+      github.event_name != 'issue_comment' ||
+      (github.event.issue.number == 23 &&
+      github.event.comment.body == 'ELDORIA_LOCAL_UNITY_SAVE_NOTICE_EXECUTE_V2' &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+    outputs:
+      execute: ${{ steps.order.outputs.execute }}
+      unity: ${{ steps.order.outputs.unity }}
+      build: ${{ steps.order.outputs.build }}
+      diagnostic: ${{ steps.order.outputs.diagnostic }}
+      index: ${{ steps.order.outputs.index }}
+      source: ${{ steps.order.outputs.source }}
+      reuse: ${{ steps.order.outputs.reuse }}
+      reuse_source: ${{ steps.order.outputs.reuse_source }}
+      reuse_failed: ${{ steps.order.outputs.reuse_failed }}
+      ui_repair: ${{ steps.order.outputs.ui_repair }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/eldoria-coordinator-v1.cjs
+            tools/eldoria-local-recovery-v1.cjs
+            tools/eldoria-local-unity-qa.cjs
+            Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs
+            Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs
+            tools/eldoria-local-recovery-worker-v1.ps1
+            pipeline/agent-local-preflight-request.json
+            pipeline/active-workstreams.json
+            pipeline/local-runner-resource-aliases.json
+            tests/eldoria-local-recovery-v1.test.cjs
+            tests/fixtures/local-runner-conflicts-v1.json
+      - name: Verify executor guards and accepted regression data
+        run: node --test tests/eldoria-local-recovery-v1.test.cjs
+      - name: M16 verifies live ownership, finite order and productive Windows jobs
+        id: order
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process');
+            const {owner,repo}=context.repo;
+            const get=async path=>{
+              const {data}=await github.rest.repos.getContent({owner,repo,path,ref:'main'});
+              const text=Buffer.from(data.content,'base64').toString('utf8');
+              fs.mkdirSync(require('path').dirname(path),{recursive:true});fs.writeFileSync(path,text);
+              return JSON.parse(text);
+            };
+            const request=await get('pipeline/agent-local-preflight-request.json');
+            if(['issue_comment','workflow_run'].includes(context.eventName)&&request.mode!=='unity-local-save-notice-v1'){return;}
+            if(request.mode==='unity-local-save-notice-v1'){
+              if(request.enabled!==true){core.notice('UNITY_ORDER_DISABLED');return;}
+              const registry=await get('pipeline/active-workstreams.json');
+              const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+              if(head!==context.sha){core.notice('DEFERRED_STALE_SOURCE');return;}
+              const task=require(process.env.GITHUB_WORKSPACE+'/tools/eldoria-local-unity-qa.cjs').authorize(registry,request,head);
+              if(request.phase==='ui_repair'){
+                require('assert').equal(request.approved_ui_repair_sha256,'0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5');
+                core.setOutput('unity','true');core.setOutput('ui_repair','true');return;
+              }
+              if(!(request.phase==='build'&&request.authorized_reuse_run_id)){
+              const runs=await github.paginate(github.rest.actions.listWorkflowRunsForRepo,{owner,repo,status:'in_progress',per_page:100});
+              for(const run of runs){
+                if(run.id===context.runId)continue;
+                const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:run.id,per_page:100});
+                if(jobs.some(j=>j.status==='in_progress'&&(j.labels||[]).some(l=>/self-hosted|unity-6000-3-23f1/i.test(l)))){core.notice('DEFERRED_PRODUCTIVE_WINDOWS_'+run.id);return;}
+              }
+              }
+              core.setOutput('unity','true');core.setOutput('source',head);
+              if(request.phase==='build'){
+                const code=(await github.rest.repos.getContent({owner,repo,path:task.target,ref:'main'})).data;
+                const bytes=Buffer.from(code.content,'base64');
+                require('assert').strictEqual(require('crypto').createHash('sha256').update(bytes).digest('hex'),request.accepted_code_sha256);
+                core.setOutput('build','true');
+                if(request.authorized_reuse_run_id){
+                  const assert=require('assert').strict;
+                  const reused=(await github.rest.actions.getWorkflowRun({owner,repo,run_id:request.authorized_reuse_run_id})).data;
+                  assert(['Publish Eldoria Preview','Eldoria local agent feasibility (read-only)'].includes(reused.name),'Unapproved Unity builder');assert.equal(reused.head_branch,'main');
+                  const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:reused.id,per_page:100});
+                  const built=jobs.find(j=>['unity-webgl','unity-candidate / unity-webgl'].includes(j.name));
+                  if(reused.status!=='completed'){core.setOutput('build','false');core.notice('WAIT_EXISTING_AUTHORIZED_UNITY_BUILD_'+reused.id);return;}
+                  core.setOutput('reuse_source',reused.head_sha);
+                  const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:reused.id,per_page:100});
+                  const artifact=artifacts.find(a=>a.name==='eldoria-unity-webgl-'+reused.head_sha&&!a.expired);
+                  if(!built||built.conclusion!=='success'||!artifact){core.setOutput('reuse_failed','true');core.notice('EXISTING_UNITY_BUILD_REJECTED_NO_DUPLICATE_COMPILE');return;}
+                  const unityTree=async ref=>{const tree=(await github.rest.git.getCommit({owner,repo,commit_sha:ref})).data.tree.sha;return (await github.rest.git.getTree({owner,repo,tree_sha:tree})).data.tree.find(e=>e.path==='Unity').sha;};
+                  assert.equal(await unityTree(head),await unityTree(reused.head_sha),'Existing build does not match current complete Unity source tree');
+                  const compiled=(await github.rest.repos.getContent({owner,repo,path:task.target,ref:reused.head_sha})).data;
+                  assert.equal(require('crypto').createHash('sha256').update(Buffer.from(compiled.content,'base64')).digest('hex'),request.accepted_code_sha256);
+                  core.setOutput('reuse',String(reused.id));core.notice('REUSE_ACTUAL_UNITY_PACKAGE_EXACT_SOURCE_'+reused.head_sha);
+                }
+                return;
+              }
+              if(request.phase!=='code'){core.notice('UNITY_FINITE_ORDER_STOPPED_'+request.phase);return;}
+              const prior=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
+              if(prior.some(c=>c.user.login==='github-actions[bot]'&&(c.body||'').includes('<!-- eldoria-local-unity-rejected-'+request.order_id+' -->'))){core.notice('UNITY_RETRY_LIMIT_DURABLE');return;}
+              fs.mkdirSync('local-task',{recursive:true});
+              fs.copyFileSync('tools/eldoria-local-recovery-worker-v1.ps1','local-task/worker.ps1');
+              cp.execFileSync('node',['tools/eldoria-coordinator-v1.cjs','--prepare-local-recovery','local-task/task.json',head],{stdio:'inherit'});
+              core.setOutput('execute','true');core.setOutput('index','0');return;
+            }
+            if(request.mode==='local-recovery-v1'&&request.enabled!==true){core.notice('ORDER_DISABLED');return;}
+            if(request.mode!=='local-recovery-v1'){
+              core.setOutput('diagnostic',context.eventName==='schedule'?'false':'true');return;
+            }
+            const registry=await get('pipeline/active-workstreams.json');
+            const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(head!==context.sha){core.notice('DEFERRED_STALE_SOURCE; next authorized schedule reevaluates');return;}
+            const {authorize}=require(process.env.GITHUB_WORKSPACE+'/tools/eldoria-local-recovery-v1.cjs');
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
+            let index=-1;
+            for(let i=0;i<2;i++){
+              const marker='<!-- eldoria-local-accepted-'+request.order_id+'-'+i+' -->';
+              if(!comments.some(c=>c.user.login==='github-actions[bot]'&&(c.body||'').includes(marker))){index=i;break;}
+            }
+            if(index<0){core.notice('FINITE_AUTHORIZED_QUEUE_COMPLETE; no further model inference');return;}
+            const rejected='<!-- eldoria-local-rejected-'+request.order_id+'-'+index+'-revision-'+(request.repair_revision||0)+' -->';
+            if(comments.some(c=>c.user.login==='github-actions[bot]'&&(c.body||'').includes(rejected))){core.notice('BLOCKED_RETRY_LIMIT; no repetition of rejected task');return;}
+            const task=authorize(registry,request,head,index);
+            if(index===1){
+              const policy=await get('pipeline/local-runner-resource-aliases.json');
+              require('assert').deepStrictEqual(policy.aliases,task.aliases);
+            }
+            const runs=await github.paginate(github.rest.actions.listWorkflowRunsForRepo,{owner,repo,status:'in_progress',per_page:100});
+            for(const run of runs){
+              if(run.id===context.runId)continue;
+              const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:run.id,per_page:100});
+              if(jobs.some(j=>j.status==='in_progress'&&(j.labels||[]).some(l=>/self-hosted|unity-6000-3-23f1/i.test(l)))){
+                core.notice('DEFERRED_PRODUCTIVE_WINDOWS_RUN_'+run.id);return;
+              }
+            }
+            fs.mkdirSync('local-task',{recursive:true});
+            fs.writeFileSync('local-task/task.json',JSON.stringify(task,null,2));
+            fs.copyFileSync('tools/eldoria-local-recovery-worker-v1.ps1','local-task/worker.ps1');
+            cp.execFileSync('node',['tools/eldoria-coordinator-v1.cjs','--prepare-local-recovery','local-task/task.json',head,String(index)],{stdio:'inherit'});
+            core.setOutput('execute','true');core.setOutput('index',String(index));core.setOutput('source',head);
+      - uses: actions/upload-artifact@v4
+        if: steps.order.outputs.execute == 'true'
+        with:
+          name: local-order-${{ github.run_id }}
+          path: local-task
+          if-no-files-found: error
+  preflight:
+    needs: prepare
+    if: needs.prepare.outputs.diagnostic == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 4
+    steps:
+      - name: Inspect local free-agent requirements without installing
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Continue'
+          Write-Output 'ELDORIA_PREFLIGHT_START'
+          $mem=Get-CimInstance Win32_OperatingSystem
+          Write-Output ("RAM_FREE_GB=" + [math]::Round($mem.FreePhysicalMemory / 1MB,2))
+          $cpu=Get-CimInstance Win32_Processor | Select-Object -First 1
+          Write-Output ("CPU_LOGICAL_CORES=" + $cpu.NumberOfLogicalProcessors)
+          $nvidia=Get-Command nvidia-smi -ErrorAction SilentlyContinue
+          if ($nvidia) {
+            & nvidia-smi --query-gpu=name,memory.total,memory.free,utilization.gpu --format=csv,noheader
+          } else { Write-Output 'NVIDIA_SMI=NOT_AVAILABLE' }
+          foreach($exe in @('ollama','docker','python','git')) {
+            $cmd=Get-Command $exe -ErrorAction SilentlyContinue
+            if ($cmd) { Write-Output ("TOOL_" + $exe.ToUpper() + "=FOUND") }
+            else { Write-Output ("TOOL_" + $exe.ToUpper() + "=MISSING") }
+          }
+          $ollama=Get-Process ollama -ErrorAction SilentlyContinue
+          Write-Output ("OLLAMA_RUNNING=" + [bool]$ollama)
+          # Runner-safe Ollama discovery: no installation, service start, or model invocation.
+          Write-Output 'ELDORIA_OLLAMA_DISCOVERY_START'
+          $candidatePaths=@(
+            (Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'),
+            (Join-Path $env:ProgramFiles 'Ollama\ollama.exe'),
+            (Join-Path $env:ProgramFiles 'Ollama\app.exe')
+          )
+          foreach($p in $candidatePaths) {
+            if(Test-Path -LiteralPath $p -PathType Leaf) { Write-Output 'OLLAMA_STANDARD_INSTALL=FOUND' }
+          }
+          # Existing proven Eldoria-local installation used by maintenance run 37820089071.
+          $eldoriaExe=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI/ollama-v0.40.1/ollama.exe'
+          $eldoriaModels=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI/models'
+          Write-Output ('OLLAMA_ELDORIA_LOCAL_EXE=' + $(if(Test-Path -LiteralPath $eldoriaExe -PathType Leaf){'FOUND'}else{'MISSING'}))
+          Write-Output ('OLLAMA_ELDORIA_LOCAL_MODELS=' + $(if(Test-Path -LiteralPath $eldoriaModels -PathType Container){'FOUND'}else{'MISSING'}))
+          $ollamaService=Get-Service -Name '*ollama*' -ErrorAction SilentlyContinue
+          if($ollamaService) { Write-Output ('OLLAMA_SERVICE_STATUS=' + (($ollamaService | Select-Object -First 1).Status)) }
+          else { Write-Output 'OLLAMA_SERVICE_STATUS=NOT_FOUND' }
+          try {
+            $res=Invoke-WebRequest -Uri 'http://127.0.0.1:11434/api/version' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+            Write-Output ('OLLAMA_LOCAL_API_HTTP=' + [int]$res.StatusCode)
+          } catch { Write-Output 'OLLAMA_LOCAL_API_HTTP=UNREACHABLE' }
+          Write-Output 'ELDORIA_OLLAMA_DISCOVERY_END'
+          $disk=Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object -First 1
+          if ($disk) { Write-Output ("LOCAL_DISK_FREE_GB=" + [math]::Round($disk.FreeSpace / 1GB,1)) }
+          Write-Output 'ELDORIA_PREFLIGHT_FINISHED_NO_INSTALL_NO_GAME_CHANGES'
+
+
+  local-worker:
+    needs: prepare
+    if: needs.prepare.outputs.execute == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 6
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-order-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-1
+      - name: Execute only existing private Ollama in isolated workspace
+        shell: powershell
+        run: |
+          & (Join-Path $env:RUNNER_TEMP "eldoria-recovery-$env:GITHUB_RUN_ID-1/worker.ps1") -EvidenceDir (Join-Path $env:RUNNER_TEMP "eldoria-recovery-$env:GITHUB_RUN_ID-1") -Attempt 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-1
+          if-no-files-found: error
+  independent-qa:
+    needs: [prepare, local-worker]
+    if: always() && needs.prepare.outputs.execute == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      pass: ${{ steps.review.outputs.pass }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/eldoria-local-recovery-v1.cjs
+            tools/eldoria-local-unity-qa.cjs
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: evidence
+      - name: Independent Linux QA of authentic model candidate and cleanup
+        id: review
+        env:
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        run: |
+          if [ "${{ needs.prepare.outputs.unity }}" = "true" ]; then
+            node tools/eldoria-local-unity-qa.cjs review evidence "$SOURCE" "$GITHUB_RUN_ID" 1 qa-report.json
+          else
+            node tools/eldoria-local-recovery-v1.cjs verify evidence "$SOURCE" "$GITHUB_RUN_ID" 1 qa-report.json
+          fi
+          echo "pass=$(node -p "JSON.parse(require('fs').readFileSync('qa-report.json')).pass")" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: qa-report.json
+          if-no-files-found: error
+  bounded-repair:
+    needs: [prepare, local-worker, independent-qa]
+    if: >-
+      always() && needs.prepare.outputs.execute == 'true' &&
+      needs.local-worker.result == 'success' && needs.independent-qa.outputs.pass == 'false'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 6
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-order-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-2
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-2/feedback
+      - name: Existing local worker receives independent defect feedback, one correction only
+        shell: powershell
+        run: |
+          $dir=Join-Path $env:RUNNER_TEMP "eldoria-recovery-$env:GITHUB_RUN_ID-2"
+          & (Join-Path $dir 'worker.ps1') -EvidenceDir $dir -Attempt 2 -FeedbackFile (Join-Path $dir 'feedback/qa-report.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-2
+          if-no-files-found: error
+  independent-retest:
+    needs: [prepare, bounded-repair]
+    if: always() && needs.bounded-repair.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      pass: ${{ steps.review.outputs.pass }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/eldoria-local-recovery-v1.cjs
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: evidence
+      - name: Fresh independent retest of corrected candidate
+        id: review
+        env:
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        run: |
+          if [ "${{ needs.prepare.outputs.unity }}" = "true" ]; then
+            node tools/eldoria-local-unity-qa.cjs review evidence "$SOURCE" "$GITHUB_RUN_ID" 2 qa-report.json
+          else
+            node tools/eldoria-local-recovery-v1.cjs verify evidence "$SOURCE" "$GITHUB_RUN_ID" 2 qa-report.json
+          fi
+          echo "pass=$(node -p "JSON.parse(require('fs').readFileSync('qa-report.json')).pass")" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-qa-${{ github.run_id }}-2
+          path: qa-report.json
+          if-no-files-found: error
+  directorate-and-next:
+    needs: [prepare, local-worker, independent-qa, bounded-repair, independent-retest]
+    if: always() && needs.prepare.outputs.execute == 'true' && needs.prepare.outputs.unity != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: write
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.independent-qa.outputs.pass == 'true'
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: evidence
+      - uses: actions/download-artifact@v4
+        if: needs.independent-retest.outputs.pass == 'true'
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: evidence
+      - uses: actions/download-artifact@v4
+        if: needs.independent-qa.outputs.pass == 'true'
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: qa
+      - uses: actions/download-artifact@v4
+        if: needs.independent-retest.outputs.pass == 'true'
+        with:
+          name: local-qa-${{ github.run_id }}-2
+          path: qa
+      - name: M16 returns verified result to DG and dispatches only the next finite authorized task
+        uses: actions/github-script@v7
+        env:
+          QA_FIRST: ${{ needs.independent-qa.outputs.pass }}
+          QA_RETEST: ${{ needs.independent-retest.outputs.pass }}
+          TASK_INDEX: ${{ needs.prepare.outputs.index }}
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),assert=require('assert');
+            const {owner,repo}=context.repo;
+            const fetchJson=async path=>{
+              const {data}=await github.rest.repos.getContent({owner,repo,path,ref:'main'});
+              return {data,value:JSON.parse(Buffer.from(data.content,'base64').toString('utf8'))};
+            };
+            const request=(await fetchJson('pipeline/agent-local-preflight-request.json')).value;
+            const reg=(await fetchJson('pipeline/active-workstreams.json')).value;
+            const claim=reg.active.find(w=>w.id==='eldoria-local-agent-preflight-v1'&&w.owner==='chat-work-local-recovery-20261009'&&w.status==='active');
+            assert(claim,'Ownership changed before acceptance');
+            const index=Number(process.env.TASK_INDEX);
+            const pass=process.env.QA_FIRST==='true'||process.env.QA_RETEST==='true';
+            let proof='Worker/QA or cleanup failed; no acceptance, no next task.';
+            if(pass){
+              const report=JSON.parse(fs.readFileSync('qa/qa-report.json','utf8'));
+              const task=JSON.parse(fs.readFileSync('evidence/task.json','utf8').replace(/^\uFEFF/,''));
+              const candidate=fs.readFileSync('evidence/candidate.json');
+              assert(report.pass&&report.source_sha===process.env.SOURCE&&report.run_id===String(context.runId));
+              assert.equal(crypto.createHash('sha256').update(candidate).digest('hex'),report.candidate_sha256);
+              assert.equal(task.task_id,request.order_id+'-'+index);
+              const target=['pipeline/local-runner-resource-aliases.json','tests/fixtures/local-runner-conflicts-v1.json'][index];
+              assert.equal(task.target,target);assert(claim.scope.includes(target));
+              let old;try{old=(await github.rest.repos.getContent({owner,repo,path:target,ref:'main'})).data;}catch(e){if(e.status!==404)throw e;}
+              await github.rest.repos.createOrUpdateFileContents({owner,repo,path:target,branch:'main',sha:old?.sha,content:candidate.toString('base64'),message:'ops(local-agent): accept independently verified '+task.kind+' from run '+context.runId});
+              proof='Independent Linux QA PASS; candidate '+report.candidate_sha256+'; checks '+report.independent_checks+'; attempt '+report.attempt+'. Owned Ollama stopped, localhost listener closed, lock released. No Unity/stable changes.';
+            }
+            const marker='<!-- eldoria-local-'+(pass?'accepted':'rejected')+'-'+request.order_id+'-'+index+(pass?'':'-revision-'+(request.repair_revision||0))+' -->';
+            const body=[marker,'### D03 local executor → independent QA → DG',pass?'PASS_SUPPORT_ONLY':'BLOCKED_NO_ACCEPTANCE','Run https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,'Source '+process.env.SOURCE,'Task '+request.order_id+'-'+index,proof,'R2-B reservation preserved; Windows job ended and shared runner returned. No general 15-department or Unity acceptance claimed.'].join('\n');
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
+            if(!comments.some(c=>c.user.login==='github-actions[bot]'&&(c.body||'').includes(marker))){
+              await github.rest.issues.createComment({owner,repo,issue_number:25,body});
+              await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            }
+            if(!pass){core.setFailed('Independent QA or real worker failed; bounded attempts exhausted/unavailable');return;}
+            if(index===0||index===1){
+              await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id:'eldoria-local-agent-preflight-v1.yml',ref:'main'});
+              core.notice('NEXT_AUTHORIZED_REAL_LOCAL_TASK_DISPATCHED_WITHOUT_CHAT');
+            }
+
+  unity-integrate:
+    needs: [prepare, local-worker, independent-qa, bounded-repair, independent-retest]
+    if: always() && needs.prepare.outputs.unity == 'true' && (needs.prepare.outputs.execute == 'true' || needs.prepare.outputs.ui_repair == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      issues: write
+      actions: write
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.independent-qa.outputs.pass == 'true'
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: evidence
+      - uses: actions/download-artifact@v4
+        if: needs.independent-retest.outputs.pass == 'true'
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: evidence
+      - uses: actions/download-artifact@v4
+        if: needs.independent-qa.outputs.pass == 'true'
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: qa
+      - uses: actions/download-artifact@v4
+        if: needs.independent-retest.outputs.pass == 'true'
+        with:
+          name: local-qa-${{ github.run_id }}-2
+          path: qa
+      - name: Existing M16 applies independently reviewed bounded UI glue repair; model code retained
+        if: needs.prepare.outputs.ui_repair == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const assert=require('assert'),crypto=require('crypto');const {owner,repo}=context.repo;
+            const approvedBoot="using Eldoria.Application;\nusing Eldoria.Infrastructure;\nusing UnityEngine;\nusing UnityEngine.SceneManagement;\n\nnamespace Eldoria.Presentation\n{\n    public static class SliceBoot\n    {\n        private static bool recoveryNoticeVisible;\n        private const string WebGlSaveKey = \"eldoria-unity-slice-owner-i-ii-v1\";\n        public static string SavePath => System.IO.Path.Combine(UnityEngine.Application.persistentDataPath,\n            Eldoria.Domain.SliceContentProfiles.ActiveRuntimeProfile==Eldoria.Domain.SliceContentProfiles.QaFastId\n                ? \"eldoria-unity-slice-v1.json\"\n                : \"eldoria-unity-slice-owner-i-ii-v1.json\");\n\n        public static void ResetLocalSaveAndRestart()\n        {\n            if (recoveryNoticeVisible) return;\n            DeleteLocalSave();\n            var ui = Object.FindFirstObjectByType<SlicePresenter>();\n            if (ui != null) ui.Initialize(new LocalGateway(new SystemClock(), CreateStore()));\n            SceneManager.LoadScene(CitySceneName);\n        }\n\n        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]\n        private static void Initialize()\n        {\n#if UNITY_WEBGL && !UNITY_EDITOR\n            Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(Eldoria.Domain.SliceContentProfiles.OwnerIiiId);\n#endif\n            if (Object.FindFirstObjectByType<SlicePresenter>() != null) return;\n            var obj = new GameObject(\"Eldoria composition root\");\n            Object.DontDestroyOnLoad(obj);\n            var ui = obj.AddComponent<SlicePresenter>();\n            var save = CreateStore();\n            try { ui.Initialize(new LocalGateway(new SystemClock(), save)); }\n            catch (System.Exception error)\n            {\n                Debug.LogError(\"Eldoria save load failed; existing save untouched: \" + error);\n                ui.Initialize(new LocalGateway(new SystemClock(), new VolatileStore()));\n                ShowSaveRecoveryNotice();\n            }\n            SceneManager.sceneLoaded += ui.OnSceneLoaded;\n            if (SceneManager.GetActiveScene().name == \"Bootstrap\") SceneManager.LoadScene(\"Valoria\");\n            else ui.OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);\n        }\n\n        private static string CitySceneName\n        {\n            get\n            {\n#if UNITY_WEBGL && !UNITY_EDITOR\n                return \"ValoriaWebGL\";\n#else\n                return \"Valoria\";\n#endif\n            }\n        }\n\n        private static IStateStore CreateStore()\n        {\n#if UNITY_WEBGL && !UNITY_EDITOR\n            return new WebGlPlayerPrefsStore(WebGlSaveKey);\n#else\n            return new FileStateStore(SavePath);\n#endif\n        }\n\n        private static void DeleteLocalSave()\n        {\n#if UNITY_WEBGL && !UNITY_EDITOR\n            PlayerPrefs.DeleteKey(WebGlSaveKey);\n            PlayerPrefs.Save();\n#else\n            new FileStateStore(SavePath).DeleteLocalState();\n#endif\n        }\n\n#if UNITY_WEBGL && !UNITY_EDITOR\n        private sealed class WebGlPlayerPrefsStore : IStateStore\n        {\n            private readonly string key;\n            public WebGlPlayerPrefsStore(string key) { this.key = key; }\n\n            public Eldoria.Domain.PlayerState Load()\n            {\n                if (!PlayerPrefs.HasKey(key)) return null;\n                var json = PlayerPrefs.GetString(key, \"\");\n                if (string.IsNullOrEmpty(json)) return null;\n                var state = JsonUtility.FromJson<Eldoria.Domain.PlayerState>(json);\n                if (state == null || state.SchemaVersion != 1)\n                    throw new System.IO.InvalidDataException(\"Unknown WebGL save version\");\n                return state;\n            }\n\n            public void Save(Eldoria.Domain.PlayerState state)\n            {\n                PlayerPrefs.SetString(key, JsonUtility.ToJson(state, true));\n                // WebGL FileStateStore writes live in the virtual filesystem and can be lost\n                // on an immediate browser reload before IDBFS sync. PlayerPrefs.Save drives\n                // Unity's browser-backed persistence explicitly at each authoritative commit.\n                PlayerPrefs.Save();\n            }\n        }\n#endif\n\n\n        private static void ShowSaveRecoveryNotice()\n        {\n            recoveryNoticeVisible = true;\n            var presenter = Object.FindFirstObjectByType<SlicePresenter>();\n            var priorEnabled = presenter != null && presenter.enabled;\n            if (presenter != null) presenter.enabled = false;\n            var message = SaveLoadNoticePolicy.Message(true);\n            var root = new GameObject(\"Eldoria save recovery notice\", typeof(RectTransform),\n                typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler), typeof(UnityEngine.UI.GraphicRaycaster));\n            Object.DontDestroyOnLoad(root);\n            var canvas = root.GetComponent<Canvas>();\n            canvas.renderMode = RenderMode.ScreenSpaceOverlay;\n            canvas.sortingOrder = 32000;\n            var scaler = root.GetComponent<UnityEngine.UI.CanvasScaler>();\n            scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;\n            scaler.referenceResolution = new Vector2(390, 390);\n            scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;\n            canvas.scaleFactor = Mathf.Min(Screen.width, Screen.height) / 390f;\n            var backdrop = NoticeElement(\"Backdrop\", root.transform, Vector2.zero, Vector2.zero);\n            var backdropRect = backdrop.GetComponent<RectTransform>();\n            backdropRect.anchorMin = Vector2.zero;\n            backdropRect.anchorMax = Vector2.one;\n            backdropRect.sizeDelta = Vector2.zero;\n            backdrop.AddComponent<UnityEngine.UI.Image>().color = new Color(0, 0, 0, 0.65f);\n            var card = NoticeElement(\"Save notice\", root.transform, new Vector2(-32, 240), Vector2.zero, true);\n            card.AddComponent<UnityEngine.UI.Image>().color = new Color(0.08f, 0.12f, 0.18f, 1f);\n            NoticeText(card.transform, \"Problema con el guardado\", new Vector2(-36, 42), new Vector2(0, 83), 20);\n            NoticeText(card.transform, message, new Vector2(-36, 116), new Vector2(0, 10), 18);\n            var buttonObject = NoticeElement(\"Continue without saving\", card.transform, new Vector2(-36, 44), new Vector2(0, -86), true);\n            buttonObject.AddComponent<UnityEngine.UI.Image>().color = new Color(0.18f, 0.35f, 0.50f, 1);\n            var button = buttonObject.AddComponent<UnityEngine.UI.Button>();\n            button.onClick.AddListener(() => {\n                recoveryNoticeVisible = false;\n                if (presenter != null) presenter.enabled = priorEnabled;\n                Debug.Log(\"ELDORIA_SAVE_RECOVERY_NOTICE acknowledged=true\");\n                Object.Destroy(root);\n            });\n            NoticeText(buttonObject.transform, \"Continuar sin guardar\", new Vector2(-12, 40), Vector2.zero, 18);\n            Canvas.ForceUpdateCanvases();\n            Debug.Log(\"ELDORIA_SAVE_RECOVERY_NOTICE shown=true message=\" + message);\n            Debug.Log(\"ELDORIA_SAVE_RECOVERY_LAYOUT width=\" + card.GetComponent<RectTransform>().rect.width * canvas.scaleFactor\n                + \" height=\" + 240 * canvas.scaleFactor + \" font=\" + 18 * canvas.scaleFactor\n                + \" scale=\" + canvas.scaleFactor + \" screen=\" + Screen.width + \"x\" + Screen.height);\n        }\n\n        private static GameObject NoticeElement(string name, Transform parent, Vector2 size, Vector2 position, bool stretchWidth = false)\n        {\n            var element = new GameObject(name, typeof(RectTransform));\n            var rect = element.GetComponent<RectTransform>();\n            rect.SetParent(parent, false);\n            rect.anchorMin = stretchWidth ? new Vector2(0, 0.5f) : new Vector2(0.5f, 0.5f);\n            rect.anchorMax = stretchWidth ? new Vector2(1, 0.5f) : new Vector2(0.5f, 0.5f);\n            rect.pivot = new Vector2(0.5f, 0.5f);\n            rect.sizeDelta = size;\n            rect.anchoredPosition = position;\n            return element;\n        }\n\n        private static void NoticeText(Transform parent, string value, Vector2 size, Vector2 position, int fontSize)\n        {\n            var obj = NoticeElement(\"Notice text\", parent, size, position, true);\n            var text = obj.AddComponent<UnityEngine.UI.Text>();\n            text.font = Resources.GetBuiltinResource<Font>(\"LegacyRuntime.ttf\");\n            text.text = value;\n            text.fontSize = fontSize;\n            text.color = Color.white;\n            text.alignment = TextAnchor.MiddleCenter;\n            text.horizontalOverflow = HorizontalWrapMode.Wrap;\n            text.verticalOverflow = VerticalWrapMode.Truncate;\n            text.raycastTarget = false;\n        }\n\n        private sealed class VolatileStore : IStateStore\n        {\n            private Eldoria.Domain.PlayerState state;\n            public Eldoria.Domain.PlayerState Load() => state;\n            public void Save(Eldoria.Domain.PlayerState s) { state = s; }\n        }\n    }\n}\n";
+            const reviewedHash='0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5';
+            assert.equal(crypto.createHash('sha256').update(approvedBoot).digest('hex'),reviewedHash);
+            let commit;
+            for(let attempt=0;attempt<3;attempt++){
+              const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+              const get=async path=>{const data=(await github.rest.repos.getContent({owner,repo,path,ref:head})).data;return {data,json:JSON.parse(Buffer.from(data.content,'base64').toString())};};
+              const request=(await get('pipeline/agent-local-preflight-request.json')).json;
+              const reg=(await get('pipeline/active-workstreams.json')).json;
+              assert.equal(request.phase,'ui_repair');assert.equal(request.enabled,true);assert.equal(request.stable_publish,false);assert.equal(request.budget_eur,0);
+              assert.equal(request.approved_ui_repair_sha256,reviewedHash);assert.equal(request.source_qa.pass,true);
+              const claim=reg.active.find(x=>x.id===request.workstream_id&&x.owner===request.owner&&x.owner==='chat-work-local-recovery-20261009'&&x.status==='active');assert(claim);
+              const boot=(await github.rest.repos.getContent({owner,repo,path:'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs',ref:head})).data;
+              assert.equal(boot.sha,'a1e498706180365f1badea479f4b3079662bfa40','Concurrent owner changed UI source; do not overwrite');
+              const model=(await github.rest.repos.getContent({owner,repo,path:'Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs',ref:head})).data;
+              assert.equal(crypto.createHash('sha256').update(Buffer.from(model.content,'base64')).digest('hex'),request.accepted_code_sha256,'Real model code changed');
+              request.phase='build';request.ui_repair_applied_sha256=reviewedHash;request.previous_real_unity_build_run_id=request.authorized_reuse_run_id;
+              delete request.authorized_reuse_run_id;delete request.reuse_reason;
+              claim.phase='INDEPENDENT D13 UI REPAIR APPLIED / LOCAL MODEL CODE RETAINED / FRESH ACTUAL UNITY BUILD REQUIRED';
+              claim.next='Existing isolated Unity candidate build, independent genuine gameplay/save/barrier/rotation/DPI QA, independent visual review; never stable publish.';
+              claim.blocker=null;claim.resources=[];claim.runner_loan.status='authorized_temporary';
+              const files=[{path:'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs',content:approvedBoot},{path:'pipeline/agent-local-preflight-request.json',content:JSON.stringify(request,null,2)+'\n'},{path:'pipeline/active-workstreams.json',content:JSON.stringify(reg,null,2)+'\n'}];
+              const tree=(await github.rest.git.getCommit({owner,repo,commit_sha:head})).data.tree.sha,entries=[];
+              for(const f of files){assert(claim.scope.includes(f.path));const blob=(await github.rest.git.createBlob({owner,repo,content:f.content,encoding:'utf-8'})).data.sha;entries.push({path:f.path,mode:'100644',type:'blob',sha:blob});}
+              const next=(await github.rest.git.createTree({owner,repo,base_tree:tree,tree:entries})).data.sha;
+              commit=(await github.rest.git.createCommit({owner,repo,tree:next,parents:[head],message:'fix(local-agent): protect failed original save and adapt recovery notice to rotation and DPI'})).data.sha;
+              try{await github.rest.git.updateRef({owner,repo,ref:'heads/main',sha:commit,force:false});break;}catch(e){if(e.status!==422||attempt===2)throw e;}
+            }
+            for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:'### D06 bounded integration correction — SOURCE_REPAIRED_NOT_GAME_ACCEPTED\nIndependent D13/D10 source review '+reviewedHash+'\nBot source '+commit+'\nReal Qwen policy remains unchanged. Modal input/reset protection and responsive/DPI glue repaired. Fresh Unity/player/visual QA required; stable untouched.'});
+            await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id:'eldoria-local-agent-preflight-v1.yml',ref:'main'});
+            core.notice('M16_REPAIRED_UI_TO_EXISTING_UNITY_BUILDER_WITHOUT_CHAT');
+
+      - name: Existing M16 integrates only independently reviewed local C# and dispatches candidate builder
+        if: needs.prepare.outputs.ui_repair != 'true'
+        uses: actions/github-script@v7
+        env:
+          FIRST: ${{ needs.independent-qa.outputs.pass }}
+          RETEST: ${{ needs.independent-retest.outputs.pass }}
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        with:
+          script: |
+            const fs=require('fs'),assert=require('assert'),crypto=require('crypto');
+            const {owner,repo}=context.repo;
+            const get=async path=>{const {data}=await github.rest.repos.getContent({owner,repo,path,ref:'main'});return {data,json:JSON.parse(Buffer.from(data.content,'base64').toString())};};
+            const order=await get('pipeline/agent-local-preflight-request.json'),request=order.json;
+            const registry=await get('pipeline/active-workstreams.json'),reg=registry.json;
+            const claim=reg.active.find(w=>w.id==='eldoria-local-agent-preflight-v1'&&w.owner==='chat-work-local-recovery-20261009'&&w.status==='active');assert(claim);
+            assert.equal(request.mode,'unity-local-save-notice-v1');assert.equal(request.phase,'code');assert.equal(request.enabled,true);
+            const pass=process.env.FIRST==='true'||process.env.RETEST==='true';
+            if(!pass){
+              const marker='<!-- eldoria-local-unity-rejected-'+request.order_id+' -->';
+              const prior=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
+              if(!prior.some(c=>c.user.login==='github-actions[bot]'&&(c.body||'').includes(marker))){
+                for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:marker+'\nReal local code and bounded correction rejected by independent QA. Run '+context.runId+'. No Unity integration allowed; durable retry cap applies even if main ref changes concurrently.'});
+              }
+            }
+            let source=null;const files=[];
+            if(pass){
+              const task=JSON.parse(fs.readFileSync('evidence/task.json','utf8').replace(/^\uFEFF/,''));
+              const qa=JSON.parse(fs.readFileSync('qa/qa-report.json','utf8'));
+              const raw=fs.readFileSync('evidence/candidate.json'),candidate=JSON.parse(raw.toString());
+              assert(qa.pass&&qa.run_id===String(context.runId)&&qa.source_sha===process.env.SOURCE);
+              assert.equal(task.task_id,request.order_id);assert.equal(task.target,'Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs');
+              assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),qa.candidate_sha256);
+              assert.equal(crypto.createHash('sha256').update(candidate.source).digest('hex'),qa.code_sha256);
+              const boot=(await github.rest.repos.getContent({owner,repo,path:'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs',ref:'main'})).data;
+              assert.equal(boot.sha,'057030b4ce07bc666eadd88cf9c9b16f1a3298c7','Concurrent owner changed SliceBoot; do not overwrite');
+              const approvedBoot="using Eldoria.Application;\nusing Eldoria.Infrastructure;\nusing UnityEngine;\nusing UnityEngine.SceneManagement;\n\nnamespace Eldoria.Presentation\n{\n    public static class SliceBoot\n    {\n        private const string WebGlSaveKey = \"eldoria-unity-slice-owner-i-ii-v1\";\n        public static string SavePath => System.IO.Path.Combine(UnityEngine.Application.persistentDataPath,\n            Eldoria.Domain.SliceContentProfiles.ActiveRuntimeProfile==Eldoria.Domain.SliceContentProfiles.QaFastId\n                ? \"eldoria-unity-slice-v1.json\"\n                : \"eldoria-unity-slice-owner-i-ii-v1.json\");\n\n        public static void ResetLocalSaveAndRestart()\n        {\n            DeleteLocalSave();\n            var ui = Object.FindFirstObjectByType<SlicePresenter>();\n            if (ui != null) ui.Initialize(new LocalGateway(new SystemClock(), CreateStore()));\n            SceneManager.LoadScene(CitySceneName);\n        }\n\n        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]\n        private static void Initialize()\n        {\n#if UNITY_WEBGL && !UNITY_EDITOR\n            Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(Eldoria.Domain.SliceContentProfiles.OwnerIiiId);\n#endif\n            if (Object.FindFirstObjectByType<SlicePresenter>() != null) return;\n            var obj = new GameObject(\"Eldoria composition root\");\n            Object.DontDestroyOnLoad(obj);\n            var ui = obj.AddComponent<SlicePresenter>();\n            var save = CreateStore();\n            try { ui.Initialize(new LocalGateway(new SystemClock(), save)); }\n            catch (System.Exception error)\n            {\n                Debug.LogError(\"Eldoria save load failed; existing save untouched: \" + error);\n                ui.Initialize(new LocalGateway(new SystemClock(), new VolatileStore()));\n                ShowSaveRecoveryNotice();\n            }\n            SceneManager.sceneLoaded += ui.OnSceneLoaded;\n            if (SceneManager.GetActiveScene().name == \"Bootstrap\") SceneManager.LoadScene(\"Valoria\");\n            else ui.OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);\n        }\n\n        private static string CitySceneName\n        {\n            get\n            {\n#if UNITY_WEBGL && !UNITY_EDITOR\n                return \"ValoriaWebGL\";\n#else\n                return \"Valoria\";\n#endif\n            }\n        }\n\n        private static IStateStore CreateStore()\n        {\n#if UNITY_WEBGL && !UNITY_EDITOR\n            return new WebGlPlayerPrefsStore(WebGlSaveKey);\n#else\n            return new FileStateStore(SavePath);\n#endif\n        }\n\n        private static void DeleteLocalSave()\n        {\n#if UNITY_WEBGL && !UNITY_EDITOR\n            PlayerPrefs.DeleteKey(WebGlSaveKey);\n            PlayerPrefs.Save();\n#else\n            new FileStateStore(SavePath).DeleteLocalState();\n#endif\n        }\n\n#if UNITY_WEBGL && !UNITY_EDITOR\n        private sealed class WebGlPlayerPrefsStore : IStateStore\n        {\n            private readonly string key;\n            public WebGlPlayerPrefsStore(string key) { this.key = key; }\n\n            public Eldoria.Domain.PlayerState Load()\n            {\n                if (!PlayerPrefs.HasKey(key)) return null;\n                var json = PlayerPrefs.GetString(key, \"\");\n                if (string.IsNullOrEmpty(json)) return null;\n                var state = JsonUtility.FromJson<Eldoria.Domain.PlayerState>(json);\n                if (state == null || state.SchemaVersion != 1)\n                    throw new System.IO.InvalidDataException(\"Unknown WebGL save version\");\n                return state;\n            }\n\n            public void Save(Eldoria.Domain.PlayerState state)\n            {\n                PlayerPrefs.SetString(key, JsonUtility.ToJson(state, true));\n                // WebGL FileStateStore writes live in the virtual filesystem and can be lost\n                // on an immediate browser reload before IDBFS sync. PlayerPrefs.Save drives\n                // Unity's browser-backed persistence explicitly at each authoritative commit.\n                PlayerPrefs.Save();\n            }\n        }\n#endif\n\n\n        private static void ShowSaveRecoveryNotice()\n        {\n            var message = SaveLoadNoticePolicy.Message(true);\n            var root = new GameObject(\"Eldoria save recovery notice\", typeof(RectTransform),\n                typeof(Canvas), typeof(UnityEngine.UI.GraphicRaycaster));\n            Object.DontDestroyOnLoad(root);\n            var canvas = root.GetComponent<Canvas>();\n            canvas.renderMode = RenderMode.ScreenSpaceOverlay;\n            canvas.sortingOrder = 32000;\n            var backdrop = NoticeElement(\"Backdrop\", root.transform, new Vector2(Screen.width, Screen.height), Vector2.zero);\n            var shade = backdrop.AddComponent<UnityEngine.UI.Image>();\n            shade.color = new Color(0, 0, 0, 0.65f);\n            var width = Mathf.Min(Screen.width - 32f, 560f);\n            var card = NoticeElement(\"Save notice\", root.transform, new Vector2(width, 240), Vector2.zero);\n            card.AddComponent<UnityEngine.UI.Image>().color = new Color(0.08f, 0.12f, 0.18f, 1f);\n            NoticeText(card.transform, \"Problema con el guardado\", new Vector2(width - 36, 42), new Vector2(0, 83), 20);\n            NoticeText(card.transform, message, new Vector2(width - 36, 116), new Vector2(0, 10), 18);\n            var buttonObject = NoticeElement(\"Continue without saving\", card.transform, new Vector2(width - 36, 44), new Vector2(0, -86));\n            buttonObject.AddComponent<UnityEngine.UI.Image>().color = new Color(0.18f, 0.35f, 0.50f, 1);\n            var button = buttonObject.AddComponent<UnityEngine.UI.Button>();\n            button.onClick.AddListener(() => {\n                Debug.Log(\"ELDORIA_SAVE_RECOVERY_NOTICE acknowledged=true\");\n                Object.Destroy(root);\n            });\n            NoticeText(buttonObject.transform, \"Continuar sin guardar\", new Vector2(width - 48, 40), Vector2.zero, 18);\n            Debug.Log(\"ELDORIA_SAVE_RECOVERY_NOTICE shown=true message=\" + message);\n            Debug.Log(\"ELDORIA_SAVE_RECOVERY_LAYOUT width=\" + width + \" height=240 font=18 screen=\" + Screen.width + \"x\" + Screen.height);\n        }\n\n        private static GameObject NoticeElement(string name, Transform parent, Vector2 size, Vector2 position)\n        {\n            var element = new GameObject(name, typeof(RectTransform));\n            var rect = element.GetComponent<RectTransform>();\n            rect.SetParent(parent, false);\n            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);\n            rect.sizeDelta = size;\n            rect.anchoredPosition = position;\n            return element;\n        }\n\n        private static void NoticeText(Transform parent, string value, Vector2 size, Vector2 position, int fontSize)\n        {\n            var obj = NoticeElement(\"Notice text\", parent, size, position);\n            var text = obj.AddComponent<UnityEngine.UI.Text>();\n            text.font = Resources.GetBuiltinResource<Font>(\"LegacyRuntime.ttf\");\n            text.text = value;\n            text.fontSize = fontSize;\n            text.color = Color.white;\n            text.alignment = TextAnchor.MiddleCenter;\n            text.horizontalOverflow = HorizontalWrapMode.Wrap;\n            text.verticalOverflow = VerticalWrapMode.Truncate;\n            text.raycastTarget = false;\n        }\n\n        private sealed class VolatileStore : IStateStore\n        {\n            private Eldoria.Domain.PlayerState state;\n            public Eldoria.Domain.PlayerState Load() => state;\n            public void Save(Eldoria.Domain.PlayerState s) { state = s; }\n        }\n    }\n}\n";
+              files.push({path:task.target,content:candidate.source},{path:task.target+'.meta',content:'fileFormatVersion: 2\nguid: c8aa66f65f344ca793d96be61d91260c\n'});
+              files.push({path:'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs',content:approvedBoot});
+              request.phase='build';request.accepted_code_sha256=qa.code_sha256;request.code_generation_run_id=context.runId;request.source_qa=qa;
+              claim.phase='LOCAL CSHARP INDEPENDENT QA PASS / INTEGRATED UNITY SOURCE / CANDIDATE BUILD NEXT';
+              claim.next='Persistent M16 invokes existing Pages builder candidate-only in separate workspace; no final acceptance yet.';
+              source=qa.code_sha256;
+            }else{
+              request.enabled=false;request.phase='blocked_model';
+              claim.status='blocked';claim.phase='REAL LOCAL CSHARP REJECTED / BOUNDED ATTEMPTS EXHAUSTED';claim.runner_released=true;claim.runner_loan.status='returned';
+              claim.blocker='Real local model code did not pass independent compile/semantic QA. No integration, build, stable write or artificial approval.';
+            }
+            files.push({path:'pipeline/agent-local-preflight-request.json',content:JSON.stringify(request,null,2)+'\n'},{path:'pipeline/active-workstreams.json',content:JSON.stringify(reg,null,2)+'\n'});
+            let commit;
+            for(let attempt=0;attempt<3;attempt++){
+              const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+              const latestRequest=(await get('pipeline/agent-local-preflight-request.json')).json;
+              assert.equal(latestRequest.order_id,request.order_id,'New order superseded this result');
+              const latestReg=(await get('pipeline/active-workstreams.json')).json;
+              const current=latestReg.active.find(w=>w.id===claim.id&&w.owner===claim.owner);assert(current,'Current owner changed');
+              if(pass)assert.equal(current.status,'active');
+              Object.assign(current,{phase:claim.phase,status:claim.status,next:claim.next,blocker:claim.blocker,runner_released:claim.runner_released});
+              current.runner_loan.status=claim.runner_loan.status;
+              for(const file of files){
+                if(file.path==='pipeline/active-workstreams.json')file.content=JSON.stringify(latestReg,null,2)+'\n';
+                if(file.path==='pipeline/agent-local-preflight-request.json')file.content=JSON.stringify({...latestRequest,...request},null,2)+'\n';
+              }
+              const tree=(await github.rest.git.getCommit({owner,repo,commit_sha:head})).data.tree.sha;
+              const entries=[];
+              for(const file of files){assert(current.scope.includes(file.path));const blob=(await github.rest.git.createBlob({owner,repo,content:file.content,encoding:'utf-8'})).data;entries.push({path:file.path,mode:'100644',type:'blob',sha:blob.sha});}
+              const nextTree=(await github.rest.git.createTree({owner,repo,base_tree:tree,tree:entries})).data.sha;
+              commit=(await github.rest.git.createCommit({owner,repo,message:pass?'feat(local-agent): integrate independently compiled save notice policy':'ops(local-agent): reject real local code without game integration',tree:nextTree,parents:[head]})).data.sha;
+              try{await github.rest.git.updateRef({owner,repo,ref:'heads/main',sha:commit,force:false});break;}catch(e){if(e.status!==422||attempt===2)throw e;core.notice('CONCURRENT_MAIN_REBASE_WITH_LIVE_OWNERS_'+attempt);}
+            }
+            for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:'### D06 local Unity programming — '+(pass?'SOURCE_INTEGRATED_NOT_GAME_ACCEPTED':'REJECTED_NO_INTEGRATION')+'\nReal inference/independent C# QA run '+context.runId+'\nSource '+commit+'\nModel code SHA256 '+source+'\nOriginal saves unchanged; candidate compilation and playable/visual review still required; stable publication disabled.'});
+            if(!pass){core.setFailed('Bounded real local code rejected');return;}
+            await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id:'eldoria-local-agent-preflight-v1.yml',ref:'main'});
+            core.notice('M16_UNITY_CANDIDATE_DISPATCHED_WITHOUT_CHAT');
+
+  unity-candidate:
+    needs: prepare
+    if: needs.prepare.outputs.unity == 'true' && needs.prepare.outputs.build == 'true' && needs.prepare.outputs.reuse == '' && needs.prepare.outputs.reuse_failed != 'true'
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml
+    with:
+      candidate_run_id: 0
+      candidate_head_sha: ''
+      local_unity_candidate: true
+    secrets: inherit
+
+  unity-playable-qa:
+    needs: [prepare, unity-candidate]
+    if: always() && needs.prepare.outputs.build == 'true' && (needs.unity-candidate.result == 'success' || needs.prepare.outputs.reuse != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ needs.prepare.outputs.reuse_source || github.sha }}
+          run-id: ${{ needs.prepare.outputs.reuse || github.run_id }}
+          github-token: ${{ github.token }}
+          path: isolated-webgl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Existing independent Chromium tools
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Serve actual candidate binary only; stable site untouched
+        run: |
+          python3 -m http.server 4173 --directory isolated-webgl > candidate-server.log 2>&1 &
+          echo $! > candidate-server.pid
+      - name: Existing adjacent real gameplay, reward and persistence regression
+        id: adjacent
+        continue-on-error: true
+        env:
+          ELDORIA_URL: http://127.0.0.1:4173/
+          ELDORIA_EVIDENCE_DIR: local-adjacent-gameplay
+        run: node qa/r2b-webgl-choice-probe.cjs
+      - name: Independent real save-failure notice, mobile interaction, original preservation and reload
+        id: notice
+        continue-on-error: true
+        env:
+          ELDORIA_URL: http://127.0.0.1:4173/
+          ELDORIA_SOURCE_SHA: ${{ needs.prepare.outputs.reuse_source || github.sha }}
+          ELDORIA_EVIDENCE_DIR: local-save-playable
+        run: node tools/eldoria-local-save-playable-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-unity-real-playability-${{ github.run_id }}
+          path: |
+            local-save-playable/
+            local-adjacent-gameplay/
+            candidate-server.log
+          if-no-files-found: error
+      - name: Fail closed on any actual gameplay or notice defect
+        env:
+          EXACT_UNITY_SOURCE: ${{ needs.prepare.outputs.reuse_source || github.sha }}
+        if: always()
+        run: |
+          node -e "const a=require('./local-adjacent-gameplay/report.json'),b=require('./local-save-playable/report.json');if(a.pass!==true||b.pass!==true||b.source_sha!==process.env.EXACT_UNITY_SOURCE)throw Error('REAL_UNITY_GAME_QA_FAILED');console.log('REAL_UNITY_FUNCTIONAL_AND_REGRESSION_PASS; visual signoff still separate')"
+      - name: Stop owned temporary HTTP server
+        if: always()
+        run: test ! -f candidate-server.pid || kill "$(cat candidate-server.pid)"
+
+  unity-result:
+    needs: [prepare, unity-candidate, unity-playable-qa]
+    if: always() && needs.prepare.outputs.build == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.unity-playable-qa.result != 'skipped'
+        continue-on-error: true
+        with:
+          name: eldoria-local-unity-real-playability-${{ github.run_id }}
+          path: playable-evidence
+      - name: M16 records actual candidate result without replacing visual acceptance
+        uses: actions/github-script@v7
+        env:
+          BUILD: ${{ needs.prepare.outputs.reuse_failed == 'true' && 'failure' || needs.prepare.outputs.reuse != '' && 'success' || needs.unity-candidate.result }}
+          ACTUAL_SOURCE: ${{ needs.prepare.outputs.reuse_source || github.sha }}
+          BUILD_RUN: ${{ needs.prepare.outputs.reuse || github.run_id }}
+          PLAYABLE: ${{ needs.unity-playable-qa.result }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const fs=require('fs');
+            const get=async path=>{const {data}=await github.rest.repos.getContent({owner,repo,path,ref:'main'});return {data,json:JSON.parse(Buffer.from(data.content,'base64').toString())};};
+            const order=await get('pipeline/agent-local-preflight-request.json'),request=order.json;
+            const registry=await get('pipeline/active-workstreams.json'),reg=registry.json;
+            const claim=reg.active.find(w=>w.id==='eldoria-local-agent-preflight-v1'&&w.owner==='chat-work-local-recovery-20261009');
+            if(!claim||request.phase!=='build')throw Error('Live production ownership changed');
+            const pass=process.env.BUILD==='success'&&process.env.PLAYABLE==='success';
+            request.enabled=false;request.phase=pass?'awaiting_independent_visual':'blocked_candidate';request.candidate_run_id=context.runId;request.candidate_source_sha=process.env.ACTUAL_SOURCE;request.actual_build_run_id=Number(process.env.BUILD_RUN);
+            claim.status='blocked';claim.runner_released=true;claim.runner_loan.status='returned';claim.resources=[];
+            claim.phase=pass?'ACTUAL UNITY BUILD AND PLAYABLE QA PASS / INDEPENDENT VISUAL REVIEW REQUIRED':'ACTUAL UNITY CANDIDATE BUILD/PLAYABILITY FAIL / NO ACCEPTANCE';
+            claim.result={code_generation_run:request.code_generation_run_id,candidate_run:context.runId,source_sha:process.env.ACTUAL_SOURCE,actual_build_run_id:Number(process.env.BUILD_RUN),build:process.env.BUILD,functional:process.env.PLAYABLE,visual:'NOT_VERIFIED',accepted:false,stable_published:false,paid_cost:0};
+            claim.blocker=pass?'Exact candidate captures require independent visual/readability review. No synthetic or technical PASS may close the player-facing delivery.':'Inspect actual failed build/playability evidence; preserve original owners and independent gates. No unchanged deterministic rerun.';
+            for(const [path,data,content] of [['pipeline/agent-local-preflight-request.json',order.data,request],['pipeline/active-workstreams.json',registry.data,reg]])await github.rest.repos.createOrUpdateFileContents({owner,repo,path,branch:'main',sha:data.sha,content:Buffer.from(JSON.stringify(content,null,2)+'\n').toString('base64'),message:'ops(local-agent): record actual Unity candidate evidence and return temporary runner'});
+            for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:'### D06 local programming → Unity → independent real playability\nRun https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId+'\nExact Unity source '+process.env.ACTUAL_SOURCE+'\nActual Unity build run '+process.env.BUILD_RUN+'\nBUILD '+process.env.BUILD+'\nFUNCTIONAL/REGRESSION '+process.env.PLAYABLE+'\nVISUAL NOT_VERIFIED\nFINAL NOT_ACCEPTED\nTemporary runner loan returned; R2-B reservation untouched; stable deployment disabled. Evidence artifact eldoria-local-unity-real-playability-'+context.runId});
+
+            const images=[];
+            for(const name of ['portrait-healthy-before.png','portrait-notice.png','portrait-acknowledged.png','landscape-healthy-before.png','landscape-notice.png','landscape-acknowledged.png','landscape-rotated-notice.png','portrait-FAIL.png','landscape-FAIL.png']){
+              const file='playable-evidence/local-save-playable/'+name;
+              if(!fs.existsSync(file))continue;
+              const bytes=fs.readFileSync(file);
+              if(bytes.length>1500000||bytes.subarray(1,4).toString()!=='PNG')throw Error('Invalid captured image');
+              const blob=(await github.rest.git.createBlob({owner,repo,encoding:'base64',content:bytes.toString('base64')})).data.sha;
+              images.push({path:'docs/evidence/eldoria-local-agent-preflight-v1/unity-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob});
+            }
+            if(images.length){
+              const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+              const tree=(await github.rest.git.getCommit({owner,repo,commit_sha:head})).data.tree.sha;
+              const next=(await github.rest.git.createTree({owner,repo,base_tree:tree,tree:images})).data.sha;
+              const commit=(await github.rest.git.createCommit({owner,repo,tree:next,parents:[head],message:'qa(local-agent): preserve real Unity candidate captures for independent visual review'})).data.sha;
+              await github.rest.git.updateRef({owner,repo,ref:'heads/main',sha:commit,force:false});
+            }
+            if(!pass)core.setFailed('Actual Unity candidate did not satisfy independent playable QA');

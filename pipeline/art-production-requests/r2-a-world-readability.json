@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "r2-a-world-readability",
+  "request_id": "r2-a-world-readability",
+  "asset_or_sector": "World Region 1 existing resource/POI/threat legibility and composition at mobile landscape+portrait, preserve SHARP Valoria, hotspots and World map bounds",
+  "profile": "environment_composition",
+  "visual_gate_state": "approved_planning_only",
+  "diagnosis": "D08 baseline Region 1 visually weak despite functional World->Region1 gather/reward->Valoria; first improve existing World resource/threat silhouettes, composition, material contrast and clear click targets with available assets. Geometry gap NOT proven. M07 is separate reserved owner; NO shared Unity changes until resource/scope clearance.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_modular_assembly": true,
+    "existing_qualified_donor_assets": true,
+    "blender_bake": false
+  },
+  "validation": {
+    "source_gate": "Confirm current World 1 POIs from canonical gameplay and qualified existing assets; scope nonoverlap with R1 M07 and original SHARP authority",
+    "final_gate": "Paired native Unity and published World Region1 captures portrait/landscape + real touch select resources/threats + persistence and no downgrade of Bastion I-II macroloop; independent visual pass required",
+    "planner_gate": "Complete existing art-production-plan.yml and governance check before any D05/D11 changes; route must be Unity existing-asset composition, Tripo disallowed."
+  },
+  "notes": "R2 owner-approved zero-credit artwork planning. Pipeline may route no-cost composition and reuse; must not start Unity/Blender or spend Tripo credits before correct owner/resource claim; preserve R1 M07.",
+  "status": "PLANNED"
+}

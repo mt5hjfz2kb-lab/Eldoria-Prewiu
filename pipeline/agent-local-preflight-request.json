@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "mode": "unity-local-save-notice-v1",
+  "enabled": false,
+  "workstream_id": "eldoria-local-agent-preflight-v1",
+  "owner": "chat-work-local-recovery-20261009",
+  "order_id": "unity-local-save-notice-20261009-v3",
+  "authorization": "Owner explicit continuation into real Unity programming 2026-10-09 15:19 Europe/Madrid; DG/M16 coordination comments 6081801910 / 6081802143",
+  "department": "D06",
+  "model": "qwen2.5-coder:3b",
+  "budget_eur": 0,
+  "max_attempts": 2,
+  "expires_at": "2026-10-09T17:30:00Z",
+  "requested_at": "2026-10-09T13:54:34.275Z",
+  "phase": "accepted",
+  "stable_publish": false,
+  "install": false,
+  "protected_base_sha": "78619787c5bd5073bfc12694d180288901537f60",
+  "dg_authorized_loan": {
+    "authorization": "owner-executive-recovery-20261009",
+    "source_reservation": "r2-b-strategic-choice",
+    "no_game_changes": true,
+    "no_game_changes_reason": "Inference worker writes only isolated output; game source integration is a separate independent-QA-gated coordinator step",
+    "no_install": true,
+    "windows_timeout_minutes": 6
+  },
+  "tasks": [
+    {
+      "kind": "unity-save-notice-policy"
+    }
+  ],
+  "previous_rejected_order": "unity-local-save-notice-20261009-v2",
+  "repaired_integration_context": "Adapter falsely rejected valid empty C# literal and decoded UTF-8 via Windows default charset; fix these causes without relaxing semantic QA. Reporter now durably records rejection before bounded compare-and-rebase commit.",
+  "accepted_code_sha256": "04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de",
+  "code_generation_run_id": 37940904129,
+  "source_qa": {
+    "schema_version": 1,
+    "task_id": "unity-local-save-notice-20261009-v3",
+    "kind": "unity-save-notice-policy",
+    "source_sha": "52e90a30cdbc4c2187f25af16ccbea50a548300c",
+    "run_id": "37940904129",
+    "attempt": 1,
+    "pass": true,
+    "independent_checks": 5,
+    "candidate_sha256": "636f5e4c06ca6e2dea2c43e5d6563fc39c10f6ee61d507342f29036825f0ba9c",
+    "model": "qwen2.5-coder:3b",
+    "digest": "f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225",
+    "target": "Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs",
+    "scope": "Unity save-load feedback policy; game acceptance still requires real candidate build and independent playable/visual QA",
+    "code_sha256": "04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de",
+    "generated_code_execution": "Restricted pure C# on independent Linux; no worker execution"
+  },
+  "protected_baseline_reason": "Preserve R2-B owner's actual mobile touch correction d9c12eec8461587181fe9234e65b3da5d0ac2510 authorized by 78619787c5bd5073bfc12694d180288901537f60. D06 owns no protected source; exact diff reviewed; build waits for actual production release.",
+  "candidate_run_id": 37953544631,
+  "candidate_source_sha": "2c41f3151cd7deaa9522c22d82f3bad896a34af1",
+  "actual_build_run_id": 37946776091,
+  "playable_attempt": 4,
+  "previous_playable_run_id": 37946776091,
+  "bounded_retest_reason": "Independent D13 identified navigation alone does not Commit. Require actual harvest success, revision+1, wood+40, full nonempty original bytes after Commit and reload warning. UI source unchanged. D13 rejected initial screenshots showing Unity splash; wait for rendered scene before healthy/notice captures and real pre-ack taps; independent image review still mandatory.",
+  "approved_ui_repair_sha256": "0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5",
+  "independent_source_review": {
+    "department": "D13/D10",
+    "reviewer": "independent Work reviewer d13_independent_review",
+    "source_sha256": "0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5",
+    "verdict": "APPROVED_FOR_ISOLATED_CANDIDATE_ONLY",
+    "accepted_game": false,
+    "fixes": [
+      "Suspend custom presenter input until acknowledgement; protect ResetLocalSaveAndRestart",
+      "Responsive stretch anchors + CanvasScaler Expand390x390 for rotation and DPI"
+    ],
+    "required_retest": [
+      "actual preserved binary PlayerPrefs fixture",
+      "pre-ack nav/reset barrier",
+      "post-ack actual gameplay and unchanged original",
+      "DPR2 landscape→portrait capture",
+      "independent visual acceptance"
+    ]
+  },
+  "ui_repair_applied_sha256": "0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5",
+  "previous_real_unity_build_run_id": 37941767116,
+  "reuse_reason": "Exact already-compiled repaired Unity tree; Linux-only independent post-ack real Commit/reward/preserved-byte retest. No Windows/model/build repetition.",
+  "visual_retest_only": true,
+  "visual_retest_reason": "Independent D13/D10 screenshot anti-splash gate requiring actual rendered game + distinct modal picture at both viewport orientations, reuse existing immutable Unity artifact; no Windows job",
+  "acceptance": {
+    "scope": "D06 save-load failure warning in Unity; objective mobile modal geometry and rendered-frame proof; no general game UX/art approval",
+    "code_generation_run": 37940904129,
+    "actual_unity_build_run": 37946776091,
+    "visual_and_gameplay_qa_run": 37953544631,
+    "visual_capture_guard_commit": "6a650eb185808ec2c1aee02f8326f12d949b8b95",
+    "production_acceptance_commit": "87a0af49b93f38c1f631e303e281b4cbe5c206ee",
+    "source_sha": "2c41f3151cd7deaa9522c22d82f3bad896a34af1",
+    "stable_published": false
+  }
+}

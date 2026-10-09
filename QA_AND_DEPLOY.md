@@ -1,4 +1,45 @@
+## Fast focused production restored from the pre-DG method (2026-10-09)
+Small bounded Unity fixes follow the October 8 pre-DG Unity record: direct owning implementer, focused Editor/PlayMode feedback (UI Progression run 37761442650), then exact candidate build and independent affected-feature QA with adjacent regression for final acceptance. Production capture (37761442771) and Pages release (37763784666) were distinct gates, used only when relevant. Reuse the current candidate rather than rebuilding for QA-only probes; keep stable isolated. M16/DG is not a blocking intermediate for each step. Preserve all global invariant safety/ownership protections. Reserve exhaustive QA and multi-department signoff for changes whose risk actually spans subsystems or a stable release. The f52aa3e9e7 web-slice note is older context, not primary evidence for the Unity workflow.
+
+## Canonical pipeline enforcement — owner reinstatement 2026-10-09
+
+The original Eldoria production pipeline is the **single route** for all player-facing changes, including work produced by local Ollama, ChatGPT Work, DG and M16. This operational requirement complements the independent playable-build acceptance gate below and does not create a second pipeline, workflow, department or claim.
+
+**Dispatch and ownership:** M16 consults `pipeline/active-workstreams.json` and allocates only a bounded already-authorized order within the owning department's scope. The source SHA, owner, runner reservation and authorized next transition are preserved. R2-B owns `windows-runner-heavy` except during explicitly coordinated, completed loans.
+
+**Production route:** specialist implementation → exact-source integration into real Unity project → source/editor verification → existing Unity candidate build (or authenticated exact-tree reuse) → independent D13/D14/D02 technical and functional QA → D09/D10 mobile/UX review and M05 visual review where applicable → genuine candidate playable-path and reload/regression checks → M03/M16 acceptance → approved delivery. QA scope exclusions must be justified, never silently skipped. No stable Pages publication or ownership release on partial PASS.
+
+**Failure route:** return the exact defect, failing job/artifact, source revision and permitted files to the existing department via M04/M16; bounded repair → new independent QA against the corrected revision. Prevent retries on unchanged failing SHA. If a runner is busy, defer/requeue the authorized order and resume via the existing durable trigger; never start a competing runner job. Keep workstream OPEN/BLOCKED with real evidence until acceptance or genuine owner/platform intervention.
+
+**Single source of truth:** each authorized workstream phase must distinguish produced / Unity-integrated / built / independently-playtested / accepted / delivered; reconcile stale registry phases against actual runs before dispatch. Historical QA SUCCESS on an earlier source must never be attached to a newer candidate. Support-only work may close independently but must not be represented as player-facing delivery.
+
+**Application to active work:** owners of R2-B and `eldoria-local-agent-preflight-v1` must continue their currently authorized claims through this same route and update their owned workflow code only as necessary. This policy does not itself grant access to occupied scopes or runners, trigger a build, create a new workstream or certify existing incomplete work.
+
 # Eldoria — QA, Test Mode and deployment
+
+## Independent playable-build acceptance gate
+
+**Applies to every significant player-facing change.** This is an acceptance gate within the existing departments, not a new team or authorization to launch jobs. Follow `AGENTS.md` and current workstream ownership before dispatch.
+
+| Existing owner/reviewer | Required independent assessment |
+| --- | --- |
+| Implementing department | Deliver exact candidate source SHA, runnable URL, affected flow, expected outcomes and changed-surface list; do not self-certify acceptance |
+| D13/D14/D02 (QA) | Build/runtime errors, real gameplay interactions, state/economy/progression, reload persistence, affected regressions and full fresh-save loop where risk warrants |
+| D10/D09 (UX) | Real mobile/touch navigation, camera/pan, accessibility of controls, discoverability, comprehension, feedback and clear next action; landscape/portrait as applicable |
+| M05 / existing visual reviewer | Direct inspection of genuine candidate captures/video at canonical cameras, before/after comparison, framing, visual consistency and regression; never infer visual PASS from a green CI |
+| M16/M03 (independent coordinator/verifier) | Confirm exact SHA/run/artifact linkage, actual non-skipped QA execution, separation of reviewer from implementer and all applicable gate verdicts; route defects to existing M04/owner |
+
+**Minimum playable scenario:** Launch the actual candidate/published build in a fresh isolated save; reach the affected feature by ordinary controls (not a test-only state injection as the sole proof); perform the player action; observe visible response and resource/state change; navigate away and back; reload to check persistence when applicable; inspect landscape and portrait mobile captures, and execute the complete progression loop for milestone/release or economy/progression changes. Include an unaffected adjacent flow to detect regressions. For art-only changes, direct before/after visual inspection is mandatory; for audio, inspect actual playback/trigger evidence where tooling supports it.
+
+**Evidence record (per delivery):**
+- Workstream, implementing owner, independent reviewer(s), source SHA, exact candidate URL/build and version.
+- Real run ID, job/step conclusions (including skipped vs executed), artifact IDs, screenshots/video, browser/viewport/touch configuration and tested steps.
+- `TECH`, `FUNCTIONAL`, `VISUAL`, `EXPERIENCE`, `REGRESSION`, `PUBLISHED` (when applicable): each `PASS`, `FAIL`, `BLOCKED/NOT_VERIFIED`, or `N/A` with justification.
+- Defect IDs and before/after retest evidence; objective UX findings, plus explicit limits (automated mobile emulation is not a physical-device/human enjoyment test).
+- Final coordinator verdict and links to canonical GitHub issue/workstream record.
+
+**Acceptance:** A green workflow, skipped job, successful Unity build, static screenshot or implementation-only assertion is not independent gameplay/experience acceptance. Missing applicable evidence is `NOT_VERIFIED`, never PASS. A failed visual or experience gate overrides functional PASS for final acceptance. Route failures through existing M03/M04 and the original owner for bounded correction; rerun an independent test against the corrected SHA and update the evidence. Only after all applicable gates PASS may the coordinator record `ACCEPTED`, close the workstream, release its resources and trigger an already-authorized compatible handoff. No mandatory owner playtest, new department, paid services, or automatic dispatch is implied.
+
 
 ## Development build
 Canonical gameplay source remains `v0220/index.html` + `v0220/js/`. `tools/build-preview.mjs` generates `playtest/` and, only for that development build, injects the isolated QA support files. Never edit `playtest/` directly.

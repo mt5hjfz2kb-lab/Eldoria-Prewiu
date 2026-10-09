@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "kinds": [
+    "GAME",
+    "RENDERER",
+    "ASSET",
+    "PUBLISHED",
+    "PROBE",
+    "INFRA",
+    "UNKNOWN"
+  ],
+  "statuses": [
+    "NEW",
+    "OPEN",
+    "ASSIGNED",
+    "BLOCKED",
+    "FIX_CANDIDATE",
+    "VERIFYING",
+    "RESOLVED",
+    "REOPENED"
+  ],
+  "severity": {
+    "fatal": "P0",
+    "blocking": "P1",
+    "degraded": "P2",
+    "minor": "P3"
+  },
+  "closure": {
+    "requires_candidate_sha": true,
+    "requires_independent_certificate": true,
+    "requires_gate_for_incident": true,
+    "requires_scenario_retest": true
+  },
+  "automatic_repair": false
+}

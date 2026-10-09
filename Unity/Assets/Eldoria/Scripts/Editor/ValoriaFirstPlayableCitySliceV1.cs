@@ -361,12 +361,138 @@ namespace Eldoria.EditorTools
                 foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
                 {
                     if(before.Contains(r))continue;
+                    // The generic kit's large solid platform was perceived as an artificial
+                    // brown sheet over the cleaned SHARP ground. Only the sawmill needs an
+                    // open, ground-contact timber construction silhouette.
+                    bool sawmill=name.StartsWith("LeftCabinParcel",StringComparison.Ordinal);
+                    if(sawmill&&r.name.Contains("platform",StringComparison.OrdinalIgnoreCase))
+                    {
+                        UnityEngine.Object.DestroyImmediate(r.gameObject);
+                        continue;
+                    }
                     r.transform.SetParent(go.transform,true);
-                    var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.SetColor("_BaseColor",new Color(.30f,.18f,.09f));r.sharedMaterial=m;
+                    var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    m.SetColor("_BaseColor",sawmill
+                        ? new Color(.36f,.245f,.145f,1f)
+                        : new Color(.30f,.18f,.09f,1f));
+                    r.sharedMaterial=m;
                     foreach(var c in r.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(c);
                     AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
                 }
-                go.transform.rotation=sourceRotation;go.transform.position=position;return go;
+                // The parcel SHARP source has a converted source-space rotation. Applying
+                // that to screen-facing construction beams lays the scaffold down in
+                // projection; the previous capture showed only two flattened trestles.
+                // Preserve the legacy rotation for every other parcel.
+                bool sawmillConstruction=name.StartsWith("LeftCabinParcel",StringComparison.Ordinal);
+                go.transform.rotation=sawmillConstruction ? cam.transform.rotation : sourceRotation;
+                go.transform.position=position;
+                if(sawmillConstruction)
+                {
+                    // Deliberately small, incomplete roof frame: the open centre still reads
+                    // as construction rather than an already finished sawmill. No renderer,
+                    // mesh or SHARP state belonging to the completed building is altered.
+                    Material timber=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    timber.SetColor("_BaseColor",new Color(.48f,.32f,.18f,1f));
+                    AssetDatabase.AddObjectToAsset(timber,assetFolder+"/state-0.asset");
+                    Material stone=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    stone.SetColor("_BaseColor",new Color(.34f,.32f,.29f,1f));
+                    AssetDatabase.AddObjectToAsset(stone,assetFolder+"/state-0.asset");
+                    void Beam(string part,Vector3 local,Vector3 dimensions,Material material,float zDegrees=0f)
+                    {
+                        var piece=GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        piece.name=name+" · "+part;piece.transform.SetParent(go.transform,false);
+                        piece.transform.localPosition=local;
+                        piece.transform.localRotation=Quaternion.Euler(0f,0f,zDegrees);
+                        piece.transform.localScale=dimensions;
+                        piece.GetComponent<Renderer>().sharedMaterial=material;
+                        foreach(var collider in piece.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(collider);
+                    }
+                    float sx=size.x,sy=size.y,sz=size.z;
+                    // Shallow individual stone footings; no solid floor polygon.
+                    foreach(float x in new[]{-sx*.43f,sx*.43f})
+                        foreach(float z in new[]{-sz*.43f,sz*.43f})
+                            Beam("foundation stone",new Vector3(x,-sy*.47f,z),
+                                new Vector3(.36f,.14f,.36f),stone);
+                    // Incomplete pitched timber frame, with daylight through the rafters.
+                    foreach(float z in new[]{-sz*.36f,sz*.36f})
+                    {
+                        Beam("left rafter",new Vector3(-sx*.22f,sy*.39f,z),
+                            new Vector3(sx*.52f,.10f,.12f),timber,25f);
+                        Beam("right rafter",new Vector3(sx*.22f,sy*.39f,z),
+                            new Vector3(sx*.52f,.10f,.12f),timber,-25f);
+                    }
+                    Beam("stacked timber 1",new Vector3(-sx*.20f,-sy*.39f,sz*.13f),
+                        new Vector3(sx*.34f,.10f,.17f),timber);
+                    Beam("stacked timber 2",new Vector3(-sx*.20f,-sy*.28f,sz*.13f),
+                        new Vector3(sx*.34f,.10f,.17f),timber);
+                    // A recognisable half-built sawmill must read at HOME from a single
+                    // source-intrinsic viewpoint: give it *wall volume* and a partial
+                    // roof, not just a flat fence of scaffolding rails.
+                    // All parts stay inside LeftCabinParcel Construction, never Built.
+                    Material masonry=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    masonry.SetColor("_BaseColor",new Color(.43f,.41f,.36f,1f));
+                    AssetDatabase.AddObjectToAsset(masonry,assetFolder+"/state-0.asset");
+                    Material roofing=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    roofing.SetColor("_BaseColor",new Color(.27f,.30f,.30f,1f));
+                    AssetDatabase.AddObjectToAsset(roofing,assetFolder+"/state-0.asset");
+                    // Two partial thick stone corner walls anchor the frame to the
+                    // cleaned parcel ground while keeping the doorway open.
+                    Beam("left unfinished stone wall",new Vector3(-sx*.37f,-sy*.25f,sz*.08f),
+                        new Vector3(sx*.22f,sy*.40f,sz*.31f),masonry);
+                    Beam("right unfinished stone wall",new Vector3(sx*.37f,-sy*.25f,sz*.08f),
+                        new Vector3(sx*.22f,sy*.40f,sz*.31f),masonry);
+                    // A timber post-and-lintel shell provides a visible architectural
+                    // volume. The rear frame sits behind the forward facade in depth.
+                    foreach(float z in new[]{-sz*.30f,sz*.30f})
+                    {
+                        foreach(float x in new[]{-sx*.43f,sx*.43f})
+                            Beam("upright wall timber",new Vector3(x,sy*.02f,z),
+                                new Vector3(.13f,sy*.85f,.14f),timber);
+                        Beam("eaves lintel",new Vector3(0f,sy*.40f,z),
+                            new Vector3(sx*.95f,.13f,.15f),timber);
+                        Beam("roof ridge post",new Vector3(0f,sy*.57f,z),
+                            new Vector3(.13f,sy*.36f,.14f),timber);
+                    }
+                    Beam("long roof ridge",new Vector3(0f,sy*.75f,0f),
+                        new Vector3(.14f,.14f,sz*.86f),timber);
+                    // First installed roof half: several narrow individual roofing
+                    // courses on the left slope; opposite slope remains an open frame.
+                    for(int row=0;row<4;row++)
+                    {
+                        float t=(row+.5f)/4f;
+                        Beam("installed roof course "+row,
+                            new Vector3(-sx*(.06f+.32f*t),sy*(.73f-.28f*t),sz*.08f),
+                            new Vector3(sx*.23f,.075f,sz*.76f),roofing,-24f);
+                    }
+                    // Owner-reported defect: the previous state reads as a lone fence.
+                    // Add an unmistakable incomplete workshop shell with open doorway,
+                    // short side infill, and visible saw-frame; these are construction-only
+                    // meshes and never alter the SHARP finished building or game state.
+                    foreach(float x in new[]{-sx*.35f,-sx*.25f,sx*.25f,sx*.35f})
+                        Beam("front half-height timber infill",new Vector3(x,-sy*.23f,-sz*.31f),
+                            new Vector3(sx*.075f,sy*.44f,.085f),timber);
+                    Beam("front doorway lintel",new Vector3(0f,sy*.20f,-sz*.34f),
+                        new Vector3(sx*.49f,.13f,.14f),timber);
+                    foreach(float z in new[]{-sz*.17f,sz*.03f,sz*.23f})
+                        Beam("unfinished side wall timber",new Vector3(sx*.40f,-sy*.16f,z),
+                            new Vector3(.10f,sy*.59f,sz*.13f),timber);
+                    Beam("saw bench base",new Vector3(0f,-sy*.34f,0f),
+                        new Vector3(sx*.37f,sy*.13f,sz*.22f),timber);
+                    foreach(float x in new[]{-sx*.16f,sx*.16f})
+                        Beam("saw bench support",new Vector3(x,-sy*.43f,0f),
+                            new Vector3(.10f,sy*.20f,.10f),timber);
+                    // Strong asymmetric diagonal is readable even at the HOME camera,
+                    // distinguishing a half-built roof from the completed silhouette.
+                    Beam("unfinished roof support",new Vector3(sx*.18f,sy*.51f,-sz*.31f),
+                        new Vector3(sx*.55f,.14f,.12f),timber,-30f);
+                    // Crosswise timber braces and construction supplies give readable
+                    // unfinished detail without hiding the certified SHARP city.
+                    Beam("front cross brace left",new Vector3(-sx*.27f,sy*.12f,-sz*.32f),
+                        new Vector3(sx*.44f,.10f,.13f),timber,49f);
+                    Beam("loose timber on ground",new Vector3(sx*.10f,-sy*.41f,sz*.40f),
+                        new Vector3(sx*.45f,.12f,.14f),timber);
+                }
+                return go;
             }
             GameObject Marker(string name,Vector3 position)
             {

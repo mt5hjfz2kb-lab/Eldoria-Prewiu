@@ -5,53 +5,88 @@ Workstream: `valoria-bastion-i-ii-presentation-parity-correction-v1`
 
 ## Final verdict
 
-**PASS / CLOSED — declared presentation-parity scope**
+**PASS / CLOSED — declared Bastion I–II presentation-parity scope**
 
-This closure does **not** claim that Eldoria has reached final artistic quality or that the city now feels like a finished commercial game. The published probe explicitly does not certify overall artistic quality or independent human playability. It certifies the declared correction scope: published WebGL interaction, mobile framing/pan, real building touch-selection, Bastion I→II progression, persistence and canonical reset.
+This closure is based on the final recertified UI candidate, its exact production artifact, the successful published WebGL build, the full published device-equivalent probe, and direct inspection of the resulting landscape/portrait screenshots.
 
-## Certified chain
+It does **not** claim that Eldoria has reached final commercial artistic quality or that a physical human-device playtest is equivalent to the automated probe. Those remain separate quality questions. It does certify the scope authorized for this block: touch interaction, camera/pan/recenter, building selection, mobile UI presentation, Bastion I→II progression, persistence and canonical reset on the published owner WebGL.
 
-- Runtime repair commit: `6add911217465d2f4ab264815af8a8eb2d0cf454`
-- Published release request: `fc33c67521a9376b66fc38f83d1b8b7fdab8f215`
-- Probe geometry reliability correction: `0e32b3504302349907a7ad93eadfddb6ca5d91fe`
-- Production run: **37767338367** — SUCCESS
-- Production artifact: **11546715716**
-- UI progression certification: **37767338225** — SUCCESS
-- Unity source/editor gate: **37767338361** — SUCCESS
-- Publish run: **37768050958** — SUCCESS
-- Published WebGL probe: **37770987758** — SUCCESS
-- Published evidence artifact: **11548212275**
+## Final certified chain
+
+- Final UI cleanup source: `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f`
+  - removes duplicate CTA clutter;
+  - prevents contextual building panel / quest-card overlap.
+- Objective-dock restoration fix: `4d70b9bdc5532ffb3108867a7d5450a72ea460bc`
+  - restores the persistent objective dock after contextual actions.
+- UI progression certification: **37772733872 — SUCCESS**
+- Unity source/editor gate: **37772733932 — SUCCESS**
+- Production run: **37772733956 — SUCCESS**
+- Production artifact: **11549887766**
+- Runtime parcel source artifact: **11547989564**
+- Exact publish request: `7063fd36c0d2840f22ad2d1290fbccfe074ffd49`
+- Publish run: **37776564090 — SUCCESS**
+- Published WebGL probe: **37779269570 — SUCCESS**
+- Published evidence artifact: **11551901858**
+- Evidence artifact digest: `sha256:8b59598b4eff06a6825d6a99ef953681bc49906a714e920da599f78312601da6`
 - Published owner URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
 
-## Published probe acceptance
+The publication was staged from the certified production artifact for `4d70b9bd...`; unrelated later main commits did not replace that certified Valoria production input.
 
-The current published build completed the uninterrupted fresh-save Bastion I→II flow in both landscape and portrait and reported:
+## Published gameplay / interaction acceptance
 
-- fresh canonical Bastion I state;
-- HOME framing plus horizontal and vertical touch pan and recenter;
-- MUNDO / Region 1 gather-return macroloop;
-- presented **Sawmill**, **Bastion** and **Barracks** touch selection;
-- Sawmill reconstruction;
+The final published probe completed the uninterrupted fresh-save Bastion I→II flow in **both landscape and portrait**.
+
+Verified:
+- canonical fresh Bastion I reset state;
+- HOME camera framing;
+- real horizontal touch pan in both directions;
+- moderate vertical pan;
+- recenter/HOME behavior;
+- MUNDO navigation;
+- Region 1 real gather/reward loop;
+- return to Valoria;
+- real visible selection of **Aserradero**, **Bastión** and **Cuartel**;
+- Aserradero reconstruction;
 - resource gathering and route progression;
 - Bastion I→II ascent;
-- Barracks construction;
+- Cuartel construction;
 - +20 archer recruitment;
 - configured march;
 - scout / Engendro combat and reward;
-- final state `b2.complete`;
-- exact final-state reload persistence;
+- final `b2.complete` state;
+- exact final-state save/reload persistence;
 - deliberate two-step reset;
-- canonical reset state surviving reload;
-- no runtime errors rejected by the probe.
+- canonical reset surviving reload.
 
-Final published state before reset:
-`revision=30, wood=400, stone=360, gatheredWood=1080, gatheredStone=700, sawmill=1, bastion=2, barracks=1, trained=20, configured=true, scout=true, engendro=true, objective=b2.complete`.
+Final state before reset in the accepted flow:
+
+`revision=30, wood=400, stone=360, gatheredWood=1080, gatheredStone=700, sawmill=1, bastion=2, barracks=1, archers=56, trained=20, configured=true, scout=true, engendro=true, objective=b2.complete`.
+
+The final probe report has `failure=null`, both full flows PASS, building-selection PASS, persistence PASS, reset PASS and `runtimeErrors=[]`.
 
 ## Visual evidence review
 
-The published artifact contains matched mobile screenshots for fresh Bastion I, all three building selections, each progression step and Bastion II completion in landscape and portrait. The inspected evidence confirms the corrected controls and contextual building panel remain visible and usable inside the mobile frame, the city can be panned/recentered, and the level/state presentation changes are visible through the loop.
+The final evidence artifact contains:
+- fresh Bastion I;
+- all three selected-building states;
+- every guided progression step;
+- Bastion II completion;
+- pan-left / pan-right / vertical-pan evidence;
+- World before/after action;
+- return-to-Valoria;
+- landscape and portrait variants.
 
-This is a **presentation-parity closure**, not a final-art-quality declaration. Any later concrete owner/device feedback may reopen the block under the repository governance rules.
+Direct screenshot inspection of the final artifact confirms:
+- the contextual building panel is associated with the selected building and remains inside the mobile viewport;
+- the quest/objective card does not collide with the contextual building panel in the reviewed selected-building states;
+- the previous duplicate primary/context CTA clutter is removed while the contextual action is open;
+- the objective dock returns after contextual actions;
+- bottom CIUDAD/MUNDO navigation remains visible;
+- reset and recenter controls remain reachable;
+- the camera remains city-first rather than becoming a full-city strategic overview;
+- level/state cues are visible during Bastion I→II progression.
+
+The city still uses a visually static SHARP-based beauty foundation and this closure does **not** promote the project to final-art or “finished commercial game” quality. Broader life/animation/art uplift remains outside this workstream.
 
 ## Scope integrity
 
@@ -59,5 +94,23 @@ This is a **presentation-parity closure**, not a final-art-quality declaration. 
 - World Region 1 gameplay/state not redesigned.
 - Economy/progression/persistence remain canonical.
 - SHARP visual authority preserved.
-- No parallel state system introduced.
+- No parallel gameplay/state system introduced.
+- No new visual R&D lane opened.
 - Paid credits: **0**.
+
+## Closure rule
+
+All declared current-head production, publication, published interaction, progression, persistence, reset and bounded mobile visual checks required by this workstream are now satisfied. The workstream may be released autonomously.
+
+Concrete later owner/device feedback remains authoritative evidence and may reopen this exact block if it demonstrates a regression.
+
+
+## Resource release guard
+
+Closing the publish request originally triggered one unnecessary Pages workflow because the old source-preflight treated any change to `pipeline/unity-publish-request.json` as a heavy Unity request even when `enabled=false`.
+
+The closure therefore also installed a bounded release hygiene fix:
+- `8f0b42dbae939243e5c11975d8bb5d3753e71b6b` — disabled publish requests no longer acquire the Windows Unity runner;
+- `8fbe4e392379e756e4ca8e213d1504cb3fd39119` — final disabled closure-guard state.
+
+The superseded post-close run **37781441338** was cancelled by workflow concurrency before deployment. Replacement run **37782259376** completed SUCCESS with `unity-webgl=skipped` and `deploy=skipped`. This confirms the closure state no longer consumes the Unity runner or republishes a stale/default WebGL candidate.

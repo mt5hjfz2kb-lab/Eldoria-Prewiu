@@ -1,0 +1,109 @@
+name: Eldoria Coordinator v1 (read-only)
+# Ronda 1 line D: one owner-approved published mobile QA execution; zero Windows/Unity runner
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - pipeline/active-workstreams.json
+      - tools/eldoria-coordinator-v1.cjs
+      - tests/eldoria-coordinator-v1.test.cjs
+      - .github/workflows/eldoria-coordinator-v1.yml
+  schedule:
+    - cron: '23 8 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-coordinator-readonly
+  cancel-in-progress: true
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run coordinator regression tests
+        run: node --test tests/eldoria-coordinator-v1.test.cjs
+      - name: Evaluate handoff gates without side effects
+        run: node tools/eldoria-coordinator-v1.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-coordinator-v1-report
+          path: pipeline/reports/coordinator-v1-latest.json
+          retention-days: 14
+
+  authorize-mobile-qa:
+    if: >-
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'ops(qa-mobile): dispatch authorized round1 published probe'
+    needs: triage
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      authorized: ${{ steps.gate.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            pipeline/active-workstreams.json
+      - name: Verify canonical R1 QA D claim and zero resource conflict
+        id: gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '
+            [.active[] | select(.id=="eldoria-r1-mobile-independent-qa" and .owner=="chat-dg-r1-mobile-qa-20261008" and .status=="active" and .paid_credits==0 and (.resources|length)==0)] | length == 1
+          ' pipeline/active-workstreams.json
+          echo 'authorized=true' >> "$GITHUB_OUTPUT"
+  mobile-published-qa:
+    needs: authorize-mobile-qa
+    if: needs.authorize-mobile-qa.outputs.authorized == 'true'
+    uses: ./.github/workflows/unity-webgl-startup.yml
+    permissions:
+      contents: read
+      # Existing reusable QA reports independently to DG; keep this permission local to the caller.
+      issues: write
+  mobile-qa-independent-report:
+    if: always() && needs.authorize-mobile-qa.outputs.authorized == 'true'
+    needs: [authorize-mobile-qa, mobile-published-qa]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.mobile-published-qa.result == 'success'
+        with:
+          name: eldoria-webgl-startup-evidence
+          path: qa-evidence
+      - name: Independently verify evidence and send DG result
+        uses: actions/github-script@v7
+        env:
+          QA_RESULT: ${{ needs.mobile-published-qa.result }}
+        with:
+          script: |
+            const fs=require('fs');
+            const {owner,repo}=context.repo;
+            const marker='<!-- eldoria-r1-mobile-qa-'+context.runId+' -->';
+            const runs=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(runs.some(x=>(x.body||'').includes(marker)))return;
+            let status='BLOCKED',summary='Independent published probe did not finish successfully; inspect job and artifact before correction.';
+            if(process.env.QA_RESULT==='success'){
+              const p=JSON.parse(fs.readFileSync('qa-evidence/report.json','utf8'));
+              const ok=p.failure===null && Array.isArray(p.runtimeErrors) && p.runtimeErrors.length===0 && p.coverage?.fullBastionIToIIPass===true && p.checks?.navigationGatherPersistencePass===true && Array.isArray(p.fullFlows) && p.fullFlows.length>=2 && p.fullFlows.every(x=>x.pass===true && x.persistencePass===true && x.resetPass===true);
+              if(ok){status='PASS_MOBILE_PUBLISHED_TECH';summary='Real published unity-owner URL passed independent landscape+portrait mobile-emulation progression, World gathering, interaction, persistent reload and reset, zero fatal runtime errors. Not physical iPhone or visual acceptance of M07.'}
+              else{summary='QA workflow green but independent evidence checks rejected published gameplay report.'}
+            }
+            const body=[marker,'### D13 — QA móvil independiente / Ronda 1','**Resultado:** '+status,'**Run:** https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,'**SHA de ejecución:** '+context.sha,'**Artefacto:** eldoria-webgl-startup-evidence','**Verificación:** '+summary,'**Propiedad:** M07 y M11 intactos. No se declara aceptación visual de M07 ni publicación nueva.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            if(status!=='PASS_MOBILE_PUBLISHED_TECH')core.setFailed(summary);
+

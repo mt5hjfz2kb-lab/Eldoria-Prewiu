@@ -115,7 +115,9 @@ namespace Eldoria.EditorTools
                     scenes = new[] { TempScene, FrontierScene },
                     locationPathName = Output,
                     target = BuildTarget.WebGL,
-                    options = BuildOptions.CleanBuildCache | BuildOptions.StrictMode
+                    options = Environment.GetEnvironmentVariable("ELDORIA_FOCUSED_UNITY_ITERATION") == "1"
+                        ? BuildOptions.StrictMode // Incremental cache for bounded candidate fixes; Unity still recompiles changes.
+                        : BuildOptions.CleanBuildCache | BuildOptions.StrictMode // Full clean build remains default for release.
                 });
 
                 if (report.summary.result != BuildResult.Succeeded)

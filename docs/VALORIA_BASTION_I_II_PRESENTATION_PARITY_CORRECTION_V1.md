@@ -96,3 +96,29 @@ Matched screenshots were inspected for fresh Bastion I, building selections and 
 **Important quality boundary:** this is a PASS for the declared presentation-parity correction scope. It is **not** a claim that overall Eldoria artistic quality is final or that independent human playability/artistic feel has been fully certified. Later concrete owner/device feedback remains authoritative and can reopen the block.
 
 Detailed closure evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
+
+
+## 2026-10-08 definitive post-cleanup recertification
+
+After the earlier autonomous closure, direct inspection of the published evidence exposed two bounded presentation defects inside this same scope: duplicate primary/context CTA clutter and landscape overlap between the quest card and contextual building panel. The same workstream was reopened, corrected and fully recertified rather than deferred.
+
+Final cleanup source:
+- `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f` — remove duplicate CTA clutter and prevent contextual HUD overlap.
+- `4d70b9bdc5532ffb3108867a7d5450a72ea460bc` — restore the objective dock after contextual actions.
+
+Final certified chain:
+- UI progression certification **37772733872** — SUCCESS.
+- Unity source/editor gate **37772733932** — SUCCESS.
+- Production **37772733956** — SUCCESS, artifact **11549887766**.
+- Publish request `7063fd36c0d2840f22ad2d1290fbccfe074ffd49`.
+- Published WebGL run **37776564090** — SUCCESS.
+- Published full-flow probe **37779269570** — SUCCESS.
+- Published evidence artifact **11551901858**, digest `sha256:8b59598b4eff06a6825d6a99ef953681bc49906a714e920da599f78312601da6`.
+
+The final published probe completes Bastion I→II in both orientations with real building touch-selection, resources, construction, Bastion ascent, Cuartel, recruitment, configured march, Engendro combat/reward, exact reload persistence and deliberate reset surviving reload. The accepted final state before reset is revision 30 / sawmill 1 / Bastion 2 / barracks 1 / trained 20 / configured true / scout true / Engendro true / `b2.complete`.
+
+Direct inspection of the final landscape/portrait screenshots confirms the contextual panel remains inside the viewport, selected-building actions are spatially associated with their building, the quest card no longer collides with the contextual panel in the reviewed selected states, the duplicate CTA is not shown while the contextual panel is open, and city/world/reset/recenter controls remain reachable.
+
+**Final verdict: PASS / CLOSED for the declared Bastion I–II presentation-parity scope.** This remains explicitly different from a final-art-quality or independent human-playability certification. Bastion III remains closed and broader life/animation/art uplift is not authorized by this closure.
+
+Detailed evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.

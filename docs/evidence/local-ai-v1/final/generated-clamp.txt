@@ -1,0 +1,9 @@
+function Clamp($value, $low, $high) {
+  if ($value -lt $low) {
+    return $low
+  }
+  if ($value -gt $high) {
+    return $high
+  }
+  return $value
+}

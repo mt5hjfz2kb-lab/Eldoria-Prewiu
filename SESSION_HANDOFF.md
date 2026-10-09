@@ -1,3 +1,44 @@
+## 2026-10-08 — Bastion I–II presentation parity correction DEFINITIVELY CLOSED / PASS
+
+Workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is **CLOSED** and resources are released. The prior “REOPENED / NOT YET CERTIFIED” entry below is historical and superseded by this closure.
+
+Final current-candidate chain:
+- final UI cleanup `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f`;
+- objective-dock restoration `4d70b9bdc5532ffb3108867a7d5450a72ea460bc`;
+- UI certification **37772733872 — SUCCESS**;
+- Unity source/editor gate **37772733932 — SUCCESS**;
+- production **37772733956 — SUCCESS**, artifact **11549887766**;
+- exact owner WebGL publication **37776564090 — SUCCESS**;
+- published full-flow probe **37779269570 — SUCCESS**, artifact **11551901858**, digest `sha256:8b59598b4eff06a6825d6a99ef953681bc49906a714e920da599f78312601da6`.
+
+Published acceptance covers landscape + portrait, bounded camera pan/recenter, real touch selection of Aserradero/Bastión/Cuartel, construction, resources, Bastion I→II, Cuartel, +20 archer recruitment, configured march, scout/Engendro combat/reward, exact save/reload persistence, deliberate canonical reset and reset surviving reload. Probe ended with no runtime errors.
+
+Direct final screenshot review also confirmed the bounded presentation cleanup: contextual building CTA remains inside the mobile frame, duplicate CTA clutter is removed while contextual action is open, quest/context overlap is removed in reviewed selected-building states, and the objective dock returns after contextual actions.
+
+This is **not** a declaration of final commercial artistic quality or equivalent physical-device human playability. It closes the declared parity/input/camera/UI/progression/persistence/reset scope only. Bastion III remains closed; World Region 1/gameplay/economy/persistence/SHARP authority were not redesigned. Paid credits: 0.
+
+Evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
+Published owner build: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
+
+## 2026-10-08 — BASTION I–II PRESENTATION PARITY CORRECTION v1 DEFINITIVELY CLOSED
+
+The active presentation repair has finished and released its resources. Final bounded cleanup corrected duplicate primary/context CTA clutter and the quest/context panel overlap, then restored the objective dock after contextual actions.
+
+Final chain:
+- UI cleanup `1a18ddc59e65f3a4dffcd432a8fd3945c60f9e7f`;
+- objective dock fix `4d70b9bdc5532ffb3108867a7d5450a72ea460bc`;
+- UI certification **37772733872** SUCCESS;
+- Unity source/editor **37772733932** SUCCESS;
+- production **37772733956** SUCCESS / artifact **11549887766**;
+- publish **37776564090** SUCCESS;
+- published WebGL probe **37779269570** SUCCESS / evidence **11551901858**.
+
+The final published probe passed the complete fresh Bastion I→II loop in both landscape and portrait with real building touch selection, resources, construction, Bastion ascent, Cuartel, recruitment, configured march, Engendro combat/reward, exact final-state reload and canonical reset surviving reload. Final report has no probe failure and no rejected runtime errors. Final screenshots were directly inspected for mobile framing and the corrected contextual UI.
+
+This closes only the declared Bastion I–II presentation parity scope. It does not claim final artistic quality or substitute for later concrete physical-device feedback. Bastion III stays closed; broader life/animation/art uplift requires separate authorization. Paid credits: 0.
+
+Evidence: `docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md`.
+
 ## 2026-10-08 — Presentation parity repair REOPENED / NOT YET CERTIFIED
 
 The previous CLOSED/PASS declarations below are historical and are revoked as current publication acceptance. Published probe **37741999794** found fatal Unity scene errors (`level0`, position out of bounds) despite the older macroloop passing. The active canonical workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is owned by `chat-work-parity-repair-20261008` following the owner's explicit takeover authorization. Do not report current published PASS until the repaired build passes fatal-error acceptance and full fresh-save Bastion I–II interaction/persistence checks in landscape and portrait.
@@ -1154,3 +1195,10 @@ Next prepared block, not started: `docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1
 - Full fresh-save Bastion I→II completed in landscape and portrait, including visible building touch-selection, construction/resources/recruitment/combat, exact reload persistence, deliberate reset, and reset-survives-reload.
 - This is a presentation-parity closure only; do not reinterpret it as final artistic-quality certification. Later concrete owner/iPhone evidence may reopen.
 - Bastion III remains closed.
+
+
+## 2026-10-09 — recuperación real del ejecutor local, soporte aceptado
+
+El mismo workstream `eldoria-local-agent-preflight-v1` fue transferido con autorización explícita a `chat-work-local-recovery-20261009` antes de modificarlo. Se recuperó Ollama privado sin instalación ni gasto y se conectó al M16/preflight existentes con worker Windows aislado, QA Linux independiente, devolución/retest de defectos y despacho automático de la siguiente orden finita. Entregas reales aceptadas: política de alias 37933225117 (commit 6cf6b919ccfa276b1bd13d983c45439f3b61bdf7) y datos de exclusión 37934434816 (commit b27f1c2f65adda2d0b3ba8b894dfd3c408c39be0). Qwen 3B falló el lote de siete casos; QA rechazó sus reintentos. Work especializó el adaptador en siete inferencias pequeñas, manteniendo las mismas pruebas. No presentar esto como reparación inteligente general de Unity.
+
+Continuación auténtica sin chat: 37933335164 y 37934576368 fueron workflow_dispatch de github-actions[bot]. El último verificó seis tests, cero omitidos, usando los datos del modelo, y detuvo la cola completa sin ocupar Windows. Se cierra únicamente soporte verificado, request deshabilitado, cesión devuelta, recursos vacíos; R2-B conserva su reserva y sus propietarios. M07/Región 1 y los defectos jugables no cambian. No hay publicación estable ni nuevo juego aceptado. La autonomía integral de quince departamentos sigue NO CERTIFICADA. Evidencias y límites: `docs/evidence/eldoria-local-agent-preflight-v1/REAL_RECOVERY_RESULT_20261009.md`.

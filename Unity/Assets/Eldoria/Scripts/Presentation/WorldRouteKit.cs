@@ -33,7 +33,7 @@ namespace Eldoria.Presentation
                 {
                     float z=Mathf.Lerp(-length*.40f,length*.40f,i/4f);
                     float x=(i%2==0?-.12f:.11f);
-                    var world=root.transform.TransformPoint(new Vector3(x,.025f,z));
+                    var world=WorldRegion1SurfaceV2.Grounded(root.transform.TransformPoint(new Vector3(x,.025f,z)),.016f);
                     var wear=ValoriaKit.BenchmarkPieceModulated(name+" · mud wear "+(i+1),
                         art.SlavicMudFlat,world,width*.72f,.09f,
                         root.transform.rotation*Quaternion.Euler(0,(i%2==0?-6f:7f),0),
@@ -47,7 +47,7 @@ namespace Eldoria.Presentation
             {
                 float z=Mathf.Lerp(-length*.38f,length*.38f,i/4f);
                 float side=i%2==0?-1f:1f;
-                var world=root.transform.TransformPoint(new Vector3(side*width*.68f,.02f,z));
+                var world=WorldRegion1SurfaceV2.Grounded(root.transform.TransformPoint(new Vector3(side*width*.68f,.02f,z)),.014f);
                 var cluster=WorldResourceKit.RoadsideRockCluster(name+" · verge cluster "+(i+1),
                     world,.55f+(i%2)*.08f,yawDegrees+(i%2==0?-12f:17f));
                 StripColliders(cluster); Parent(root,cluster);
@@ -60,7 +60,7 @@ namespace Eldoria.Presentation
                     new Vector4(-width*.78f,-length*.31f,-18f,.82f),
                     new Vector4(width*.80f,length*.29f,14f,.76f)})
                 {
-                    var world=root.transform.TransformPoint(new Vector3(spec.x,.04f,spec.y));
+                    var world=WorldRegion1SurfaceV2.Grounded(root.transform.TransformPoint(new Vector3(spec.x,.04f,spec.y)),.016f);
                     var marker=ValoriaKit.BenchmarkPieceTinted(name+" · route marker",
                         art.SlavicStoneFence,world,width*spec.w,.42f,
                         root.transform.rotation*Quaternion.Euler(0,spec.z,0),FenceStone);

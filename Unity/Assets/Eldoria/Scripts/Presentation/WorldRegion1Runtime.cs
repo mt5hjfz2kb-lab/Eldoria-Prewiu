@@ -373,50 +373,8 @@ namespace Eldoria.Presentation
 
         static void BuildTerrainBase()
         {
-            const int xSteps=24;
-            const int zSteps=22;
-            const float width=108f;
-            const float depth=94f;
-            var vertices=new Vector3[(xSteps+1)*(zSteps+1)];
-            var uv=new Vector2[vertices.Length];
-            var triangles=new int[xSteps*zSteps*6];
-
-            int v=0;
-            for(int z=0;z<=zSteps;z++)
-            for(int x=0;x<=xSteps;x++)
-            {
-                float nx=x/(float)xSteps;
-                float nz=z/(float)zSteps;
-                float px=(nx-.5f)*width;
-                float pz=(nz-.5f)*depth+4f;
-                float broad=Mathf.Sin(px*.085f)*.18f+Mathf.Cos(pz*.071f)*.15f+
-                    Mathf.Sin((px+pz)*.043f)*.10f;
-                float centreFade=Mathf.Clamp01((Mathf.Abs(px)+Mathf.Abs(pz-3f))/34f);
-                float y=-.42f+broad*(.45f+.55f*centreFade);
-                vertices[v]=new Vector3(px,y,pz);
-                uv[v]=new Vector2(nx*10f,nz*9f);
-                v++;
-            }
-
-            int t=0;
-            for(int z=0;z<zSteps;z++)
-            for(int x=0;x<xSteps;x++)
-            {
-                int a=z*(xSteps+1)+x;
-                int b=a+1;
-                int c0=a+(xSteps+1);
-                int d=c0+1;
-                triangles[t++]=a;triangles[t++]=c0;triangles[t++]=b;
-                triangles[t++]=b;triangles[t++]=c0;triangles[t++]=d;
-            }
-
-            var go=new GameObject("World Region 1 · terrain base");
-            go.transform.SetParent(root,true);
-            var mesh=new Mesh{name="World Region 1 · terrain mesh",vertices=vertices,uv=uv,triangles=triangles};
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            var terrainRenderer=go.AddComponent<MeshRenderer>();
-            terrainRenderer.sharedMaterial=WorldLandscapeMaterial();
+            // Canonical environment_surface planner route; gameplay remains untouched.
+            WorldRegion1SurfaceV2.Build(root);
         }
 
         static Material WorldLandscapeMaterial()
@@ -465,7 +423,7 @@ namespace Eldoria.Presentation
                 float d=Mathf.Sqrt(u*u+v*v);
                 float noise=Mathf.PerlinNoise(x*.07f+seed*.013f,y*.07f+seed*.021f);
                 float alpha=1f-Mathf.SmoothStep(.48f,.98f,d+(noise-.5f)*.22f);
-                var col=tint*(.88f+noise*.18f);col.a=alpha*.72f;
+                var col=tint*(.88f+noise*.18f);col.a=alpha*.34f;
                 pixels[y*size+x]=col;
             }
             texture.SetPixels(pixels);texture.Apply(true,false);
@@ -531,7 +489,7 @@ namespace Eldoria.Presentation
             var vertices=new Vector3[sides+1];
             var uv=new Vector2[sides+1];
             var triangles=new int[sides*3];
-            vertices[0]=Vector3.zero;uv[0]=new Vector2(.5f,.5f);
+            vertices[0]=new Vector3(0,WorldRegion1SurfaceV2.Height(position.x,position.z)-position.y+.018f,0);uv[0]=new Vector2(.5f,.5f);
             int seed=Mathf.Abs(name.GetHashCode()%97);
             for(int i=0;i<sides;i++)
             {
@@ -539,7 +497,10 @@ namespace Eldoria.Presentation
                 float jitter=.86f+(((i*37+seed*11)%17)/100f);
                 float x=Mathf.Cos(angle)*scale.x*.5f*jitter;
                 float z=Mathf.Sin(angle)*scale.z*.5f*(.90f+(((i*19+seed)%13)/100f));
-                vertices[i+1]=new Vector3(x,0,z);
+                float rad=yaw*Mathf.Deg2Rad;
+                float wx=position.x+x*Mathf.Cos(rad)+z*Mathf.Sin(rad);
+                float wz=position.z-x*Mathf.Sin(rad)+z*Mathf.Cos(rad);
+                vertices[i+1]=new Vector3(x,WorldRegion1SurfaceV2.Height(wx,wz)-position.y+.018f,z);
                 uv[i+1]=new Vector2(.5f+x/Mathf.Max(.01f,scale.x),.5f+z/Mathf.Max(.01f,scale.z));
                 int n=(i+1)%sides;
                 triangles[i*3]=0;triangles[i*3+1]=i+1;triangles[i*3+2]=n+1;
@@ -562,11 +523,21 @@ namespace Eldoria.Presentation
             var route=WorldRouteKit.MarchRoute(name,centre,length,width,yaw);
             if(route==null)return;
             route.transform.SetParent(root,true);
-            bool renamed=false;
+            // Keep one soft-edged, authored track renderer visible for strategic
+            // route readability and semantic tests. Only the terrain underneath
+            // carries the broader worn corridor; rock/fence props keep own materials.
+            bool trackNamed=false;
             foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.sharedMaterial=WorldTrailMaterial();
-                if(!renamed){renderer.gameObject.name=name+" · track 0";renamed=true;}
+                if(!trackNamed)
+                {
+                    renderer.gameObject.name=name+" · track 0";
+                    renderer.sharedMaterial=WorldTrailMaterial();
+                    renderer.enabled=true;
+                    trackNamed=true;
+                }
+                else if(renderer.gameObject.name.Contains("mud wear"))
+                    renderer.enabled=false;
             }
             foreach(var collider in route.GetComponentsInChildren<Collider>(true))
                 collider.enabled=false;
@@ -574,6 +545,7 @@ namespace Eldoria.Presentation
 
         static void WorldBush(string name,Vector3 position,float scale,int variant)
         {
+            position=WorldRegion1SurfaceV2.Grounded(position,.015f);
             var bush=WorldInventoryPiece("Bush01",name,position,1.35f*scale,.95f*scale,
                 Quaternion.Euler(0f,(variant*37f)%360f,0f));
             if(bush!=null)
@@ -587,6 +559,7 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
+            position=WorldRegion1SurfaceV2.Grounded(position,.015f);
             var inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",
                 name,position,2.45f*scale,4.1f*scale,
                 Quaternion.Euler(0f,(variant*47f)%360f,0f));
@@ -594,6 +567,7 @@ namespace Eldoria.Presentation
             {
                 Parent(inventoryTree);
                 foreach(var col in inventoryTree.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                TintWorldVisual(inventoryTree,new Color(.68f,.78f,.66f,1f));
                 return;
             }
 
@@ -603,6 +577,7 @@ namespace Eldoria.Presentation
 
         static void WorldRock(string name,Vector3 position,float scale,int variant)
         {
+            position=WorldRegion1SurfaceV2.Grounded(position,.01f);
             var inventoryRock=WorldInventoryPiece(variant%2==0?"Rock01":"Rock02",
                 name,position,3.0f*scale,1.65f*scale,
                 Quaternion.Euler(0f,(variant*61f)%360f,0f));
@@ -628,6 +603,19 @@ namespace Eldoria.Presentation
                 }
             }
             ValoriaKit.RockCluster(name,position,.88f*scale,5);
+        }
+
+        static void TintWorldVisual(GameObject visual,Color tint)
+        {
+            var block=new MaterialPropertyBlock();
+            foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.GetPropertyBlock(block);
+                block.SetColor("_BaseColor",tint);
+                block.SetColor("_Color",tint);
+                renderer.SetPropertyBlock(block);
+                block.Clear();
+            }
         }
 
         static GameObject WorldInventoryPiece(string resourceName,string name,Vector3 ground,

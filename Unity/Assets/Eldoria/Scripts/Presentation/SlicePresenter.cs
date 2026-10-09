@@ -21,7 +21,7 @@ namespace Eldoria.Presentation
         string currentBuildingId="";
         RectTransform[] ambientMotes=Array.Empty<RectTransform>();
         Vector2[] ambientMoteOrigins=Array.Empty<Vector2>();
-        Button buildingAction, primaryAction, homeButton, cityNavButton, worldNavButton, resetButton;
+        Button buildingAction, forestSurveyAction, forestHarvestAction, primaryAction, homeButton, cityNavButton, worldNavButton, resetButton;
         string feedback="";
         float refreshAt;
         float resetQaArmedUntil;
@@ -135,10 +135,35 @@ namespace Eldoria.Presentation
             bool mouseHeld=mouse!=null&&mouse.leftButton.isPressed;
             bool mouseReleased=mouse!=null&&mouse.leftButton.wasReleasedThisFrame;
 
+            // Unity WebGL may expose browser touch events to the legacy Input API
+            // even when InputSystem.Touchscreen does not publish primaryTouch frames.
+            // Prefer the Input System when it works, but do not discard real
+            // mobile swipes if only the legacy backend receives them.
+            bool legacyTouchUsed=false;
+            Vector2 legacyTouchPoint=Vector2.zero;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(!touchPressed&&!touchHeld&&!touchReleased&&UnityEngine.Input.touchCount>0)
+            {
+                if(UnityEngine.Input.touchCount>1)
+                {
+                    pointerActive=false;
+                    pointerDragged=true;
+                    return; // Never mistake a two-finger gesture for a building tap.
+                }
+                var legacy=UnityEngine.Input.GetTouch(0);
+                legacyTouchUsed=true;
+                legacyTouchPoint=legacy.position;
+                touchPressed=legacy.phase==UnityEngine.TouchPhase.Began;
+                touchReleased=legacy.phase==UnityEngine.TouchPhase.Ended||legacy.phase==UnityEngine.TouchPhase.Canceled;
+                touchHeld=legacy.phase==UnityEngine.TouchPhase.Began||legacy.phase==UnityEngine.TouchPhase.Moved||legacy.phase==UnityEngine.TouchPhase.Stationary;
+                if(touchPressed||touchReleased)
+                    Debug.Log("ELDORIA_PLAYABLE_TOUCH_SOURCE legacy=True phase="+legacy.phase);
+            }
+#endif
             bool usingTouch=touchHeld||touchPressed||touchReleased;
-            Vector2 point=usingTouch&&touch!=null
-                ?touch.primaryTouch.position.ReadValue()
-                :(mouse!=null?mouse.position.ReadValue():Vector2.zero);
+            Vector2 point=legacyTouchUsed?legacyTouchPoint:
+                (usingTouch&&touch!=null?touch.primaryTouch.position.ReadValue():
+                (mouse!=null?mouse.position.ReadValue():Vector2.zero));
             bool pressed=usingTouch?touchPressed:mousePressed;
             bool held=usingTouch?touchHeld:mouseHeld;
             bool released=usingTouch?touchReleased:mouseReleased;
@@ -161,6 +186,13 @@ namespace Eldoria.Presentation
 
             if(pointerActive&&released)
             {
+                // Some mobile WebGL gestures deliver the final displacement only on
+                // release. Classify that movement before interpreting a gesture as a
+                // building tap; otherwise a quick swipe opens a building by mistake.
+                if(!pointerDragged&&IsPanGesture(pointerStart,point))pointerDragged=true;
+                if(pointerDragged&&!pointerStartedOverUi)
+                    PanCameraByScreenDelta(point-pointerLast);
+                pointerLast=point;
                 bool shouldSelect=!pointerStartedOverUi&&!pointerDragged;
 #if UNITY_WEBGL && !UNITY_EDITOR
                 if(usingTouch&&!pointerDragged)
@@ -436,6 +468,28 @@ namespace Eldoria.Presentation
                     if(d<bestLineDistance){bestLineDistance=d;bestTarget=spot;}
                 }
                 if(bestTarget!=null)return bestTarget;
+                // The presented WebGL image is wider than the physics proxy. Give the
+                // visible building centre a bounded touch target without widening the
+                // collider or intercepting drags and UI buttons.
+                if(productionParcels!=null)
+                {
+                    WorldHotspot nearby=null;
+                    float nearest=28f*28f;
+                    foreach(var id in new[]{"sawmill","barracks","bastion"})
+                    {
+                        var target=GameObject.Find(InteractiveTargetName(id));
+                        if(target==null)continue;
+                        var spot=target.GetComponent<WorldHotspot>();
+                        var collider=target.GetComponent<Collider>();
+                        if(spot==null||collider==null||!collider.enabled)continue;
+                        var projected=PresentedScreenPoint(camera,collider.bounds.center);
+                        if(projected.z<=0f||projected.x<0f||projected.x>=Screen.width||
+                            projected.y<0f||projected.y>=Screen.height)continue;
+                        float distance=(new Vector2(projected.x,projected.y)-point).sqrMagnitude;
+                        if(distance<nearest){nearest=distance;nearby=spot;}
+                    }
+                    if(nearby!=null)return nearby;
+                }
             }
 
             foreach(var hit in hits)
@@ -473,6 +527,9 @@ namespace Eldoria.Presentation
             if(buildingPanel==null)return;
             var s=gateway.Snapshot();
             SetBuildingPanelOpen(true);
+            buildingPanel.GetComponent<RectTransform>().sizeDelta=new Vector2(276,id=="forest-valoria"&&string.IsNullOrEmpty(s.RegionOneForestChoice)?270:178);
+            forestSurveyAction.gameObject.SetActive(false);
+            forestHarvestAction.gameObject.SetActive(false);
             buildingAction.onClick.RemoveAllListeners();
 #if UNITY_WEBGL && !UNITY_EDITOR
             Canvas.ForceUpdateCanvases();
@@ -483,7 +540,16 @@ namespace Eldoria.Presentation
             if(id=="forest-valoria")
             {
                 buildingTitle.text="BOSQUE DE VALORIA";
-                buildingBody.text="Nodo de madera · "+s.ForestRemaining+" disponibles.\nEnvía una Marcha desde Valoria y la recompensa se acredita al regresar.";
+                buildingBody.text="Nodo de madera · "+s.ForestRemaining+" disponibles.\n"+(string.IsNullOrEmpty(s.RegionOneForestChoice)?"Decide: explorar +20 madera sin agotar bosque, o aprovechar +40 madera consumiendo 40 del bosque.":"Decisión guardada: "+s.RegionOneForestChoice+".") + "\nPuedes enviar una Marcha para la recolección normal."; 
+                if(string.IsNullOrEmpty(s.RegionOneForestChoice) && s.March.Phase=="idle")
+                {
+                    forestSurveyAction.gameObject.SetActive(true);
+                    forestHarvestAction.gameObject.SetActive(s.ForestRemaining>=40);
+                    forestSurveyAction.onClick.RemoveAllListeners();
+                    forestHarvestAction.onClick.RemoveAllListeners();
+                    forestSurveyAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("ChooseRegionOneForest","forest-valoria:survey");});
+                    forestHarvestAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("ChooseRegionOneForest","forest-valoria:harvest");});
+                }
                 buildingAction.GetComponentInChildren<Text>().text="ENVIAR MARCHA";
                 buildingAction.interactable=s.ForestRemaining>0&&s.March.Phase=="idle";
                 if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("Gather",id);});
@@ -524,6 +590,9 @@ namespace Eldoria.Presentation
             var s=gateway.Snapshot();
             currentBuildingId=id;
             SetBuildingPanelOpen(true);
+            buildingPanel.GetComponent<RectTransform>().sizeDelta=new Vector2(276,178);
+            forestSurveyAction.gameObject.SetActive(false);
+            forestHarvestAction.gameObject.SetActive(false);
             PositionBuildingPanel(id);
             buildingAction.onClick.RemoveAllListeners();
             if(id=="sawmill")
@@ -1162,6 +1231,24 @@ namespace Eldoria.Presentation
             var actionText=Label("Text",actionGo.transform,13,new Color(.07f,.09f,.11f),44);
             actionText.text="ACCIÓN";actionText.alignment=TextAnchor.MiddleCenter;
             var ar=actionText.rectTransform;ar.anchorMin=Vector2.zero;ar.anchorMax=Vector2.one;ar.offsetMin=ar.offsetMax=Vector2.zero;
+            var surveyGo=new GameObject("Forest survey choice",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
+            surveyGo.transform.SetParent(buildingPanel.transform,false);
+            surveyGo.GetComponent<Image>().color=new Color(.18f,.43f,.39f,.98f);
+            surveyGo.GetComponent<LayoutElement>().preferredHeight=36;
+            forestSurveyAction=surveyGo.GetComponent<Button>();
+            var surveyText=Label("Text",surveyGo.transform,11,new Color(.96f,.98f,.93f),36);
+            surveyText.text="EXPLORAR · +20";surveyText.alignment=TextAnchor.MiddleCenter;
+            var sr=surveyText.rectTransform;sr.anchorMin=Vector2.zero;sr.anchorMax=Vector2.one;sr.offsetMin=sr.offsetMax=Vector2.zero;
+            surveyGo.SetActive(false);
+            var harvestGo=new GameObject("Forest harvest choice",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
+            harvestGo.transform.SetParent(buildingPanel.transform,false);
+            harvestGo.GetComponent<Image>().color=new Color(.50f,.30f,.16f,.98f);
+            harvestGo.GetComponent<LayoutElement>().preferredHeight=36;
+            forestHarvestAction=harvestGo.GetComponent<Button>();
+            var harvestText=Label("Text",harvestGo.transform,11,new Color(.96f,.98f,.93f),36);
+            harvestText.text="APROVECHAR · +40";harvestText.alignment=TextAnchor.MiddleCenter;
+            var hr=harvestText.rectTransform;hr.anchorMin=Vector2.zero;hr.anchorMax=Vector2.one;hr.offsetMin=hr.offsetMax=Vector2.zero;
+            harvestGo.SetActive(false);
             var closeGo=new GameObject("Cerrar",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             closeGo.transform.SetParent(buildingPanel.transform,false);
             closeGo.GetComponent<Image>().color=new Color(.15f,.16f,.16f,.98f);

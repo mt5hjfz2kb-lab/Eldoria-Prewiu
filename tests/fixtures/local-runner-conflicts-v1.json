@@ -1,0 +1,49 @@
+{
+    "cases":  [
+                  {
+                      "conflict":  false,
+                      "resources":  [
+
+                                    ]
+                  },
+                  {
+                      "conflict":  true,
+                      "resources":  [
+                                        "windows-runner-heavy"
+                                    ]
+                  },
+                  {
+                      "conflict":  true,
+                      "resources":  [
+                                        "windows-self-hosted-unity-6000-3-23f1"
+                                    ]
+                  },
+                  {
+                      "conflict":  false,
+                      "resources":  [
+                                        "github-hosted-blender"
+                                    ]
+                  },
+                  {
+                      "conflict":  true,
+                      "resources":  [
+                                        "windows-runner-heavy",
+                                        "windows-self-hosted-unity-6000-3-23f1"
+                                    ]
+                  },
+                  {
+                      "conflict":  true,
+                      "resources":  [
+                                        "linux-qa",
+                                        "windows-runner-heavy"
+                                    ]
+                  },
+                  {
+                      "conflict":  false,
+                      "resources":  [
+                                        "linux-qa",
+                                        "github-hosted-blender"
+                                    ]
+                  }
+              ]
+}

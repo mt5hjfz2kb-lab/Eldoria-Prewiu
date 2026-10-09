@@ -1,0 +1,8 @@
+# M03-C — Published byte identity and auditable certificate history (isolated V1)
+The module `tools/m03/publication-history.mjs` validates a **supplied** publication manifest against browser-fetched file bytes, observed release identity and expected source SHA/build SHA/artifact/deployment/policy digest. Input `files[path]` is base64 of actual downloaded bytes, not a claim that may be inferred from Pages metadata. SHA-256 is computed over decoded bytes.
+**Crucial:** this module does not fetch the live site; the manifest, live byte capture, trust anchor and deployment identity must be collected independently by an authorized probe. Therefore passing an isolated byte test does NOT certify any current Eldoria deployment.
+
+`appendEvent` creates a hash-linked append-only logical journal with ISSUED/REVOKED/SUPERSEDED; `verifyJournal` detects in-place alterations; `certificateState` respects revocation. This is **tamper-evident only against a trusted externally pinned head**. JSON alone is not durable, signed, or protected from wholesale rewrite. Persistence to an independently controlled append-only store and writer authorization/CAS are future integrations; no existing certificates or evidence were changed. Event `approval_id` is required but its authority is not yet verified; this is NOT final authorization enforcement.
+
+Tests: `node --test tests/m03/publication-history.test.mjs` (Node built-in runner; no Unity). Existing M03 and M16 tests are unchanged.
+Published-proof integration is BLOCKED on the current Pages/Unity workstream reservation; never alter `.github/workflows/pages.yml` or runtime markers until scope release. M16-B must not use this demonstration as production release acceptance.

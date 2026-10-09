@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M03 Policy V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "frozen_at",
+    "frozen_for_sha",
+    "required_gates",
+    "requirements"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "frozen_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "frozen_for_sha": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{40}$"
+    },
+    "required_gates": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "TECH",
+          "FUNCTIONAL",
+          "PUBLISHED",
+          "MOBILE_INTERACTION",
+          "VISUAL",
+          "EXPERIENCE_REVIEW"
+        ]
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "required": [
+        "TECH",
+        "FUNCTIONAL",
+        "PUBLISHED",
+        "MOBILE_INTERACTION",
+        "VISUAL",
+        "EXPERIENCE_REVIEW"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(TECH|FUNCTIONAL|PUBLISHED|MOBILE_INTERACTION|VISUAL|EXPERIENCE_REVIEW)$": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required",
+            "scenarios"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "scenarios": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

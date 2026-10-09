@@ -1,0 +1,419 @@
+name: Eldoria coordinator recovery supervisor
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-coordinator-failure-recovery.yml'
+      - 'pipeline/active-workstreams.json'
+      # Recheck only the existing R2-B probe after an authorized bounded QA-source repair.
+      - 'qa/r2b-webgl-choice-probe.cjs'
+  workflow_run:
+    workflows: ["Eldoria local agent isolated pilot v1", "[PRODUCTION] Valoria First Playable City Slice v1", "Publish Eldoria Preview"]
+    types: [completed]
+permissions:
+  actions: read
+  contents: read
+  issues: write
+concurrency:
+  group: eldoria-recovery-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+jobs:
+  classify-and-escalate:
+    if: >-
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout canonical coordinator module
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/m04
+            pipeline/active-workstreams.json
+      - name: Read exact jobs and publish an idempotent coordinator handoff
+        uses: actions/github-script@v7
+        env:
+          WORKER_ID: ${{ github.event.workflow_run.id }}
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const {findingFromWorkflowFailure,ingest,executiveReport,routeWorkflowFailure} = await import(process.env.GITHUB_WORKSPACE+'/tools/m04/incidents.mjs');
+            const {readFileSync} = require('node:fs');
+            const { owner, repo } = context.repo;
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner, repo, run_id: run.id, per_page: 100
+            });
+            const failed = jobs.filter(j => j.conclusion === 'failure');
+            if (!failed.length) return;
+            const registry=JSON.parse(readFileSync('pipeline/active-workstreams.json','utf8'));
+            const route=routeWorkflowFailure(run,failed,registry);
+            const target=route.issue;
+            const marker = '<!-- eldoria-coordinator-failure-' + run.id + ' -->';
+            const existing = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: target, per_page: 100
+            });
+            if (existing.some(c => (c.body || '').includes(marker))) return;
+            const details = failed.map(j => '- ' + j.name + ': ' + j.conclusion).join('\n');
+            let incidents = {schema_version:1,incidents:[]};
+            for (const job of failed) {
+              const finding = findingFromWorkflowFailure(run,job,{
+                observed_at:run.updated_at || run.created_at || new Date().toISOString()
+              });
+              incidents = ingest(incidents,finding);
+            }
+            const report = executiveReport(incidents);
+            const body = [
+              '**M04:** ' + report.total + ' classified incident(s); ' + report.critical + ' critical; same-SHA deterministic retry prohibited',
+              marker,
+              '### Coordinador — fallo recibido; recuperación pendiente',
+              '**Workstream:** ' + route.workstream,
+              '**Responsable de corrección:** ' + route.executor + (route.owner ? ' (claim '+route.owner+')' : ''),
+              '**QA independiente:** ' + (route.qa || 'por asignar'),
+              '**Ejecución:** ' + run.html_url,
+              '**SHA exacto:** `' + run.head_sha + '`',
+              '**Jobs fallidos:**\n' + details,
+              '**Estado:** BLOQUEADO / NO PASS. No se ha validado ninguna reparación.',
+              '',
+              'La ejecución ha fallado. El coordinador conserva el caso abierto y solicita ',
+              'diagnóstico, corrección sobre rama y nuevo run en el SHA reparado. ',
+              'No se repite automáticamente un SHA conocido como defectuoso. ',
+              'No se hace merge, no se libera el claim y no se inicia Unity ni otra misión.',
+              '',
+              '**Escalado a Dirección General:** la incidencia precisa una vía autorizada',
+              'de ejecución del SHA corregido y verificación independiente antes de cerrar.',
+              'Un comentario de GitHub no equivale a una notificación al propietario fuera de GitHub.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner, repo, issue_number: target, body});
+
+  round1-dependency-review:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    outputs:
+      verdict: ${{ steps.coordinator.outputs.verdict }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/eldoria-coordinator-v1.cjs
+            pipeline/active-workstreams.json
+      - name: Evaluate actual authorized R1 M07→QA dependency without usurping owner
+        id: coordinator
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-coordinator-v1.cjs > round1-dependency-report.json
+          jq -e '.schema_version == 1 and (.verdict == "BLOCKED_NO_HANDOFF" or .verdict == "READY_FOR_QA_HANDOFF_REVIEW")' round1-dependency-report.json
+          echo "verdict=$(jq -r .verdict round1-dependency-report.json)" >> "$GITHUB_OUTPUT"
+      - name: Emit deduplicated canonical handoff assessment to DG
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const report=JSON.parse(fs.readFileSync('round1-dependency-report.json','utf8'));
+            const {owner,repo}=context.repo;
+            const passed=(report.checks||[]).filter(x=>x.passed).length;
+            const marker='<!-- eldoria-r1-dependency-'+report.verdict+'-'+passed+' -->';
+            const all=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(all.some(x=>(x.body||'').includes(marker)))return;
+            const body=[
+              marker,
+              '### Coordinador — dependencia real de la Ronda 1',
+              '**Estado:** '+report.verdict,
+              '**Comprobaciones:** '+passed+'/'+(report.checks||[]).length,
+              '**Fuente:** '+context.sha,
+              '**Trabajo:** m07-r1-sawmill-construction-visual-correction',
+              '**Consecuencia:** '+(report.verdict==='READY_FOR_QA_HANDOFF_REVIEW'?
+                'Solo elegible para revisión de traspaso por el propietario y QA existente. NO se ejecuta QA sin los permisos y la entrega correspondientes.':
+                'Sin distribución a M11/QA; el propietario M07 y su dependencia permanecen protegidos.'),
+              'No se ha ejecutado Unity, no se han consumido créditos y no se ha abierto otra ronda.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  round1-independent-qa:
+    needs: round1-dependency-review
+    if: >-
+      github.event_name == 'push' &&
+      needs.round1-dependency-review.outputs.verdict == 'READY_FOR_QA_HANDOFF_REVIEW'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Independently recheck real M07 acceptance evidence before QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-coordinator-v1.cjs > qa-dependency-proof.json
+          jq -e '.verdict == "READY_FOR_QA_HANDOFF_REVIEW" and ([.checks[].passed] | all)' qa-dependency-proof.json
+      - name: Execute existing independent certification and coordinator suites
+        run: |
+          node --test tests/m03/certify.test.mjs tests/m16a/evaluate.test.mjs
+      - name: Record technical gate only; never claim visual or published QA
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const marker='<!-- eldoria-r1-qa-tech-'+context.runId+' -->';
+            const body=[marker,'### QA técnico independiente Ronda 1','**Estado:** M03/M16 contract gate PASS; M07 evidence rechecked.','**Run:** '+context.runId,'**SHA:** '+context.sha,'**Alcance:** técnico de certificación; NO equivale a QA visual, gameplay o WebGL publicado. No se libera M07 ni se cierra Ronda 1.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  r2b-production-independent-review:
+    if: >-
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.name == '[PRODUCTION] Valoria First Playable City Slice v1' &&
+      github.event.workflow_run.head_repository.full_name == github.repository) ||
+      (github.event_name == 'push' &&
+      github.event.head_commit.message == 'ops(m16): verify real Unity R2-B intake via existing recovery receiver')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: QA independent M03 existing certification tests
+        run: node --test tests/m03/certify.test.mjs
+      - name: Download canonical actual Unity capture evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-first-playable-city-slice-v1
+          run-id: ${{ github.event.workflow_run.id || 37838898425 }}
+          github-token: ${{ github.token }}
+          path: actual-unity-evidence
+      - name: Inspect real Unity state, screenshot manifest and test results
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, pathlib, xml.etree.ElementTree as ET
+          p=pathlib.Path('actual-unity-evidence/ValoriaFirstPlayableCitySliceV1Captures')
+          prod=json.loads((p/'production-slice-evidence.json').read_text())
+          state=json.loads((p/'runtime-state-evidence.json').read_text())
+          assert prod.get('tech_gate_pass') is True, 'Unity production technical gate not proven'
+          assert state.get('tech_pass') is True and state.get('save_reload_pass') is True and state.get('idempotency_pass') is True, 'Unity runtime proof failed'
+          for n in ['bastion-editmode.xml','parcel-playmode.xml','presentation-parity-playmode.xml']:
+            root=ET.parse(p/n).getroot()
+            assert root.attrib.get('result')=='Passed' and int(root.attrib.get('failed','1'))==0, n+' has failing tests'
+          for n in ['runtime-home-initial.png','runtime-left-under-construction.png','runtime-left-built.png','runtime-both-built.png']:
+            assert (p/n).stat().st_size>10000, n+' screenshot absent'
+          print('ACTUAL_UNITY_TECH_EVIDENCE_PASS')
+          print('INTEGRATED_VISUAL_PASS=',prod.get('gate_pass'), 'RUNTIME_FINAL_PASS=',state.get('final_pass'))
+          print('NOTE: official production screenshots do not by themselves prove R2-B World touch choices or a playable WebGL build')
+          PY
+      - name: Correlate exact Unity source, artifact and QA then report Directorate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const run=context.payload.workflow_run || (await github.rest.actions.getWorkflowRun({owner,repo,run_id:37838898425})).data;
+            const candidate='6e0e12396a98b04333b595fff704afa3e849c30a';
+            if(run.head_sha!==candidate)return;
+            const marker='<!-- eldoria-r2b-unity-evidence-'+run.id+' -->';
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(comments.some(c=>(c.body||'').includes(marker)))return;
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:run.id,per_page:100});
+            const artifact=artifacts.find(a=>a.name==='valoria-first-playable-city-slice-v1'&&!a.expired);
+            const listing=await github.rest.actions.listWorkflowRunsForRepo({owner,repo,head_sha:run.head_sha,per_page:100});
+            const test=listing.data.workflow_runs.find(x=>x.name==='UI Progression Certification (fast)'&&x.conclusion==='success');
+            const verified=run.conclusion==='success'&&!!artifact&&!!test;
+            const verdict=verified?'PASS_UNITY_CANDIDATE_EVIDENCE_NOT_WEBGL':'BLOCKED_UNITY_EVIDENCE_OR_QA';
+            const body=[marker,'### M16→Unity producción→M03 QA→DG: R2-B evidencia real',
+              '**Veredicto:** '+verdict,'**Run real:** '+run.html_url,'**SHA:** '+run.head_sha,
+              '**Artefacto Unity:** '+(artifact?artifact.id:'ausente'),
+              '**QA UI mismo SHA:** '+(test?test.html_url:'ausente'),
+              '**Suite M03 independiente:** ejecutada en este workflow',
+              '**No se cierra R2-B:** faltan candidato WebGL independiente, ambas alternativas táctiles, recompensas, recarga y revisión visual.',
+              '**Defectos de jugador:** EXP-CAM-01 y EXP-BLD-02 siguen abiertos.',
+              '**M04:** ante fallo, mantener owner y clasificar; no repetir un SHA determinísticamente fallido.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            if(!verified)core.setFailed(verdict);
+
+  r2b-candidate-gate:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.name == 'Publish Eldoria Preview' &&
+      (github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event_name == 'workflow_run') ||
+      (github.event_name == 'push' &&
+      (github.event.head_commit.message == 'ops(r2-b): resume already built candidate WebGL QA without Unity' ||
+       startsWith(github.event.head_commit.message, 'fix(r2-e): ')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      authorized: ${{ steps.check.outputs.authorized }}
+    steps:
+      - name: Verify bounded R2-B request at exact producing SHA
+        uses: actions/github-script@v7
+        id: check
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            // GitHub push webhook head_commit.modified can be absent for API file writes;
+            // inspect the exact commit through the authenticated API instead. Never
+            // launch arbitrary work for an unrelated R2-E commit.
+            if(context.eventName==='push' && (context.payload.head_commit?.message||'').startsWith('fix(r2-e): ')){
+              const revision=await github.rest.repos.getCommit({owner,repo,ref:context.sha});
+              const paths=(revision.data.files||[]).map(f=>f.filename);
+              if(paths.length!==1||paths[0]!=='qa/r2b-webgl-choice-probe.cjs'){
+                core.warning('Unauthorized or non-isolated R2-E QA source update');
+                core.setOutput('authorized','false');return;
+              }
+            }
+            const run=context.payload.workflow_run || (await github.rest.actions.getWorkflowRun({owner,repo,run_id:37855962045})).data;
+            let request;
+            try{
+              const response=await github.rest.repos.getContent({owner,repo,path:'pipeline/r2b-candidate-build.json',ref:run.head_sha});
+              request=JSON.parse(Buffer.from(response.data.content,'base64').toString('utf8'));
+            }catch(e){
+              core.info('This is not an R2-B candidate production run: '+e.message);
+              core.setOutput('authorized','false');return;
+            }
+            const valid=(run.display_title||'').startsWith('ops(r2-b):')&&request.enabled===true&&request.mode==='r2b-isolated-candidate'&&
+              request.source_sha==='6e0e12396a98b04333b595fff704afa3e849c30a'&&
+              request.stable_publish===false&&request.paid_credits===0&&
+              request.production_artifact_id===11576784810&&request.parcel_source_artifact_id===11576579158;
+            if(!valid){core.info('No R2-B authorization at producing SHA');core.setOutput('authorized','false');return;}
+            const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:run.id,per_page:100});
+            const goodBuild=jobs.some(j=>j.name==='unity-webgl'&&j.conclusion==='success');
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:run.id,per_page:100});
+            const validArtifact=artifacts.some(a=>a.name==='eldoria-unity-webgl-'+run.head_sha&&!a.expired&&
+                a.digest==='sha256:eb267cf6fb8813100ddee1a20fc877b7bc399c12985d3b341d4e79cdbf8d6d96');
+            if(!goodBuild||!validArtifact){core.info('Pinned real Unity job/artifact not available');core.setOutput('authorized','false');return;}
+            core.info('Original Windows Unity production SUCCESS and identical candidate artifact pin; Pages QC regex-only failure not retried.');
+            core.setOutput('authorized','true');
+  r2b-candidate-functional-qa:
+    needs: r2b-candidate-gate
+    if: >-
+      needs.r2b-candidate-gate.outputs.authorized == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.event.workflow_run.head_sha || '224b9647f1aa86226b8dcf45fcc2fa7baf5174e2' }}
+          run-id: ${{ github.event.workflow_run.id || 37855962045 }}
+          github-token: ${{ github.token }}
+          path: r2b-webgl-candidate
+      - name: Verify real WebGL package is not a screenshot artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Independent QA must reject missing browser shell, SHARP scene source or engine binary.
+          test -s r2b-webgl-candidate/index.html
+          test -s r2b-webgl-candidate/splat-state-0.ply
+          find r2b-webgl-candidate/Build -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.br|wasm\.gz)$'
+      - name: Install original QA Playwright toolchain
+        run: npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
+      - name: Run real forest decisions and persistence on isolated candidate
+        env:
+          ELDORIA_URL: http://127.0.0.1:4173/
+          ELDORIA_EVIDENCE_DIR: r2b-webgl-qa-evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory r2b-webgl-candidate >/tmp/eldoria-r2b-qa-http.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          node qa/r2b-webgl-choice-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-r2b-real-webgl-choice-qa
+          path: r2b-webgl-qa-evidence/**
+          retention-days: 14
+          if-no-files-found: warn
+  r2b-candidate-directorate-intake:
+    needs: [r2b-candidate-gate, r2b-candidate-functional-qa]
+    if: always() && needs.r2b-candidate-gate.outputs.authorized == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/m04
+      - name: Independent QA result and bounded M04 incident routing
+        uses: actions/github-script@v7
+        env:
+          R2B_CANDIDATE_QA: ${{ needs.r2b-candidate-functional-qa.result }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const run=context.payload.workflow_run || (await github.rest.actions.getWorkflowRun({owner,repo,run_id:37855962045})).data;
+            const marker='<!-- eldoria-r2b-webgl-followup-'+run.id+'-review-'+context.runId+' -->';
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(comments.some(x=>(x.body||'').includes(marker)))return;
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:run.id,per_page:100});
+            const build=artifacts.find(x=>x.name==='eldoria-unity-webgl-'+run.head_sha&&!x.expired);
+            const status=process.env.R2B_CANDIDATE_QA;
+            const pass=!!build&&status==='success';
+            const verdict=pass?'FUNCTIONAL_CHOICE_QA_PASS__VISUAL_REVIEW_AND_HOSTED_LINK_PENDING':'BLOCKED_CANDIDATE_BUILD_OR_FUNCTIONAL_QA';
+            const lines=[marker,'### R2-B — M16 → existing Pages WebGL builder → real candidate Playwright → DG',
+              '**Verdict:** '+verdict,'**Build run:** '+run.html_url,'**Candidate HEAD:** '+run.head_sha,
+              '**Approved gameplay SHA:** 6e0e12396a98b04333b595fff704afa3e849c30a',
+              '**WebGL artifact:** '+(build?.id||'missing'),'**Independent R2-B Playwright QA:** '+status,
+              '**QA followup:** https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,
+              '**Stable unity-owner/:** untouched by build request',
+              '**No final closure:** physical mobile/visual experience EXP-CAM-01 and EXP-BLD-02 remain unresolved; hosting candidate independently requires safe publication verification.'];
+            if(!pass){
+              const m04=await import(process.env.GITHUB_WORKSPACE+'/tools/m04/incidents.mjs');
+              const finding={schema_version:1,
+                id:'r2b-candidate-'+run.id+'-qa-'+context.runId,
+                subsystem:'github-actions-r2b-webgl',
+                scenario:'R2B_CANDIDATE_WEBGL_QA',
+                error_code:'CANDIDATE_QA_OR_PACKAGING_VERIFICATION_FAILURE',
+                failure_signature:'run '+run.id+' pages='+run.conclusion+' candidate_qa='+status,
+                kind:'PROBE',
+                origin:'probe',
+                impact:'blocking',source_sha:run.head_sha,run_id:String(run.id),
+                artifact_id:String(build?.id||'not-reported'),evidence_ref:run.html_url,
+                observed_at:new Date().toISOString()};
+              let incident={schema_version:1,incidents:[]};
+              incident=m04.ingest(incident,finding);
+              const report=m04.executiveReport(incident);
+              lines.push('**M04:** '+report.total+' classified incident(s), owner unchanged, failure source '+run.html_url+', no deterministic replay without repaired SHA.');
+            }
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body:lines.join('\n')});
+
+  r2b-candidate-hosted-preview:
+    needs: [r2b-candidate-gate, r2b-candidate-functional-qa]
+    if: >-
+      needs.r2b-candidate-gate.outputs.authorized == 'true' &&
+      needs.r2b-candidate-functional-qa.result == 'success'
+    uses: ./.github/workflows/pages.yml
+    with:
+      candidate_run_id: ${{ github.event.workflow_run.id || 37855962045 }}
+      candidate_head_sha: ${{ github.event.workflow_run.head_sha || '224b9647f1aa86226b8dcf45fcc2fa7baf5174e2' }}
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+      issues: write
+

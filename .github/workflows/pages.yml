@@ -2,6 +2,18 @@ name: Publish Eldoria Preview
 # Runner-throughput maintenance trigger: workflow-only changes stay off the Windows Unity lane.
 
 on:
+  workflow_call:
+    inputs:
+      candidate_run_id:
+        required: true
+        type: number
+      candidate_head_sha:
+        required: true
+        type: string
+      local_unity_candidate:
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
   push:
     branches: [main]
@@ -17,6 +29,10 @@ on:
       - 'playtest/**'
       - 'tester-v0265/**'
       - 'pipeline/unity-publish-request.json'
+      - 'pipeline/r2b-candidate-build.json'
+      - 'tools/eldoria-rendered-frame-readiness.cjs'
+      - 'tests/eldoria-rendered-frame-readiness.test.cjs'
+      - 'tests/eldoria-focused-checkout.test.cjs'
 
 permissions:
   contents: read
@@ -25,17 +41,27 @@ permissions:
   id-token: write
 
 concurrency:
-  group: eldoria-pages-main
+  # Candidate build is isolated from normal Pages source/QA pushes; a routine QA commit must never cancel Unity candidate.
+  group: eldoria-pages-${{ inputs.local_unity_candidate && 'local-save-candidate' || inputs.candidate_run_id > 0 && 'r2b-preview' || ((github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ops(r2-b):')) && 'r2b-candidate' || 'stable') }}
   # Each coherent green push certifies and publishes the exact candidate.
   # Only the newest main candidate matters during an active development block.
   # Superseded runs are cancelled so stale candidates cannot block final certification.
-  cancel-in-progress: true
+  cancel-in-progress: ${{ inputs.candidate_run_id == 0 && !inputs.local_unity_candidate }}
 
 jobs:
   source-preflight:
+    if: inputs.candidate_run_id == 0
     runs-on: ubuntu-latest
     outputs:
       heavy_required: ${{ steps.impact.outputs.heavy_required }}
+      candidate_only: ${{ steps.impact.outputs.candidate_only }}
+      deploy_only: ${{ steps.impact.outputs.deploy_only }}
+      deploy_run_id: ${{ steps.impact.outputs.deploy_run_id }}
+      deploy_head_sha: ${{ steps.impact.outputs.deploy_head_sha }}
+      qa_only: ${{ steps.impact.outputs.qa_only }}
+      qa_scope: ${{ steps.impact.outputs.qa_scope }}
+      qa_candidate_sha: ${{ steps.resolve.outputs.sha }}
+      qa_candidate_run: ${{ steps.resolve.outputs.run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +70,14 @@ jobs:
         id: impact
         shell: bash
         run: |
+          if [[ "${{ inputs.local_unity_candidate }}" == "true" ]]; then
+            node -e "const r=require('./pipeline/agent-local-preflight-request.json');if(r.mode!=='unity-local-save-notice-v1'||r.enabled!==true||r.phase!=='build'||r.stable_publish!==false||r.budget_eur!==0)throw Error('Local candidate not authorized')"
+            echo "candidate_only=true" >> "$GITHUB_OUTPUT"
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "candidate_only=false" >> "$GITHUB_OUTPUT"
             echo "heavy_required=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -55,11 +88,49 @@ jobs:
           fi
           files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
           echo "$files"
+          # A verifier-only change must test the existing immutable Unity binary.
+          # It must neither wake Windows nor attempt a legacy/stable deployment.
+          if grep -Eq '^(qa/eldoria-gameplay-camera-experience-probe.cjs|qa/r2b-building-selection-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs)$' <<< "$files" &&
+             ! grep -Ev '^(qa/eldoria-gameplay-camera-experience-probe.cjs|qa/r2b-building-selection-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs|.github/workflows/pages.yml|.github/workflows/eldoria-m16-independent-provenance-tests.yml)$' <<< "$files"; then
+            echo "qa_only=true" >> "$GITHUB_OUTPUT"
+            if ! grep -Ev '^(qa/r2b-building-selection-probe.cjs|.github/workflows/pages.yml)$' <<< "$files"; then
+              echo "qa_scope=building" >> "$GITHUB_OUTPUT"
+            else
+              echo "qa_scope=full" >> "$GITHUB_OUTPUT"
+            fi
+            echo "candidate_only=true" >> "$GITHUB_OUTPUT"
+            echo "heavy_required=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qx 'pipeline/r2b-candidate-build.json' <<< "$files"; then
+            jq -e '.enabled == true and .mode == "r2b-isolated-candidate" and .paid_credits == 0 and .stable_publish == false' pipeline/r2b-candidate-build.json
+            if jq -e '.delivery_phase == "publish_verified_artifact" and .source_sha == "d9c12eec8461587181fe9234e65b3da5d0ac2510" and .candidate_run_id == 37941767116 and .candidate_head_sha == "c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7"' pipeline/r2b-candidate-build.json; then
+              echo "candidate_only=false" >> "$GITHUB_OUTPUT"
+              echo "deploy_only=true" >> "$GITHUB_OUTPUT"
+              echo "deploy_run_id=37941767116" >> "$GITHUB_OUTPUT"
+              echo "deploy_head_sha=c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7" >> "$GITHUB_OUTPUT"
+              echo "heavy_required=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "candidate_only=true" >> "$GITHUB_OUTPUT"
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "candidate_only=false" >> "$GITHUB_OUTPUT"
           heavy=false
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
-              pipeline/unity-publish-request.json|Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs)
+              pipeline/unity-publish-request.json)
+                # A closure-only transition to enabled=false must release the Windows
+                # Unity runner instead of launching one final unnecessary WebGL build.
+                if node -e "const c=require('./pipeline/unity-publish-request.json'); process.exit(c.enabled===true?0:1)"; then
+                  heavy=true
+                  break
+                fi
+                continue
+                ;;
+              Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs)
                 heavy=true
                 break
                 ;;
@@ -79,13 +150,49 @@ jobs:
           done <<< "$files"
           echo "heavy_required=$heavy" >> "$GITHUB_OUTPUT"
 
+      - name: Resolve existing exact candidate for verifier-only feedback
+        id: resolve
+        if: steps.impact.outputs.qa_only == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const runs=await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id:'pages.yml',branch:'main',per_page:30,status:'completed'});
+            for(const run of runs.data.workflow_runs){
+              const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:run.id,per_page:100});
+              if(jobs.some(j=>j.name==='r2b-candidate-pages-preview'&&j.conclusion==='success')&&jobs.some(j=>j.name==='r2b-candidate-artifact-qa'&&j.conclusion==='success')){
+                core.setOutput('sha',run.head_sha);core.setOutput('run',run.id);return;
+              }
+            }
+            core.setFailed('No real previously published candidate/package found; do not rebuild or guess a URL.');
+
   unity-webgl:
     needs: source-preflight
-    if: needs.source-preflight.outputs.heavy_required == 'true'
+    if: inputs.candidate_run_id == 0 && needs.source-preflight.outputs.heavy_required == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 45
+    env:
+      ELDORIA_BUILD_WORKSPACE: ${{ inputs.local_unity_candidate && format('{0}/local-unity-candidate', github.workspace) || github.workspace }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.local_unity_candidate && format('{0}/local-unity-candidate', github.workspace) || github.workspace }}
     steps:
+      - name: Verify temporary local candidate runner loan before touching workspace
+        if: inputs.local_unity_candidate
+        working-directory: ${{ github.workspace }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(Get-Process Unity,Blender,ollama -ErrorAction SilentlyContinue){throw 'Productive process active; do not touch its workspace'}
+          $reg=Invoke-RestMethod "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/main/pipeline/active-workstreams.json"
+          $claim=@($reg.active|Where-Object{$_.id -eq 'eldoria-local-agent-preflight-v1' -and $_.owner -eq 'chat-work-local-recovery-20261009' -and $_.status -eq 'active'})
+          if($claim.Count -ne 1 -or $claim[0].runner_loan.status -ne 'authorized_temporary'){throw 'Runner loan absent'}
+          if([DateTimeOffset]::Parse($claim[0].runner_loan.expires_at) -lt [DateTimeOffset]::UtcNow){throw 'Runner loan expired'}
+          $other=@($reg.active|Where-Object{$_.id -notin @('eldoria-local-agent-preflight-v1','r2-b-strategic-choice') -and $_.status -eq 'active' -and @($_.resources|Where-Object{$_ -in @('windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1')}).Count})
+          if($other.Count){throw 'Other productive owner reserved Windows'}
+
       - name: Expose Git installed with GitHub Desktop
+        working-directory: ${{ github.workspace }}
         shell: powershell
         run: |
           $git = Get-Command git.exe -ErrorAction SilentlyContinue
@@ -109,6 +216,26 @@ jobs:
           }
           git --version
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          path: ${{ inputs.local_unity_candidate && 'local-unity-candidate' || '.' }}
+          # Retain ONLY Unity's generated import/build cache in a focused iteration.
+          # The strict cleanup below removes every other untracked/staged residue.
+          clean: ${{ needs.source-preflight.outputs.candidate_only != 'true' }}
+      - name: Clean focused candidate source while retaining generated Unity cache
+        if: needs.source-preflight.outputs.candidate_only == 'true'
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(Get-Process Unity,Blender -ErrorAction SilentlyContinue){throw 'Productive process active; candidate workspace cannot be cleaned'}
+          git reset --hard '${{ github.sha }}'
+          if($LASTEXITCODE -ne 0){throw 'Exact candidate source reset failed'}
+          git clean -ffdx -e Unity/Library/
+          if($LASTEXITCODE -ne 0){throw 'Focused source cleanup failed'}
+          git diff --exit-code '${{ github.sha }}' -- Unity
+          if($LASTEXITCODE -ne 0){throw 'Tracked Unity source drift after cleanup'}
+          $cache=Join-Path $env:ELDORIA_BUILD_WORKSPACE 'Unity/Library'
+          Write-Host ('ELDORIA_FOCUSED_CACHE_RETAINED='+[string](Test-Path $cache))
       - name: Ensure WebGL Build Support
         shell: powershell
         run: |
@@ -116,6 +243,7 @@ jobs:
           $editorDir = Split-Path $env:UNITY_EDITOR_PATH
           $webgl = Join-Path $editorDir 'Data\PlaybackEngines\WebGLSupport'
           if (Test-Path $webgl) { Write-Host 'WebGL Build Support already installed.'; exit 0 }
+          if ('${{ inputs.local_unity_candidate }}' -eq 'true') { throw 'Existing WebGL module missing; no installation authorized for local candidate' }
           $unityCli = Get-Command unity.exe -ErrorAction SilentlyContinue
           if (-not $unityCli) {
             $candidates = @(
@@ -133,12 +261,58 @@ jobs:
           if ($code -ne 0) { throw "Unity CLI WebGL module install failed with exit code $code." }
           if (-not (Test-Path $webgl)) { throw 'Unity CLI completed but WebGL Build Support path is still missing.' }
           Write-Host 'WebGL Build Support installed successfully.'
+      - name: Stage isolated R2-B candidate request in temporary runner only
+        if: needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate
+        shell: powershell
+        run: |
+          $req = Get-Content 'pipeline/r2b-candidate-build.json' -Raw | ConvertFrom-Json
+          if ($req.enabled -ne $true -or $req.stable_publish -ne $false -or $req.mode -ne 'r2b-isolated-candidate' -or $req.paid_credits -ne 0) { throw 'Candidate authorization invalid' }
+          if ($req.source_sha -notin @('6e0e12396a98b04333b595fff704afa3e849c30a','5922520120c1bd682cdfa80a90f748939922ce29','689cfb84ce81cdb39f3669a247c63faad57d39b6','d9c12eec8461587181fe9234e65b3da5d0ac2510','4fa3cfdf19b1b4e5a84465a5a806bc39dbda8c15')) { throw 'Candidate source SHA unauthorized' }
+          if ($req.production_artifact_id -ne 11576784810 -or $req.parcel_source_artifact_id -ne 11576579158) { throw 'Candidate Unity evidence IDs mismatch' }
+          git fetch --no-tags --depth=1 origin $req.source_sha
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot recover pinned source commit for content verification' }
+          git cat-file -e "$($req.source_sha)^{commit}"
+          if ($LASTEXITCODE -ne 0) { throw 'Authorized source SHA unavailable after fetch' }
+          git diff --exit-code $req.source_sha HEAD -- Unity/Assets/Eldoria/Scripts/Domain/GameState.cs Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs
+          if ($LASTEXITCODE -ne 0) { throw 'Gameplay source differs from approved SHA' }
+          $cfg = @{mode='current-valoria-production';production_artifact_id=$req.production_artifact_id;parcel_source_artifact_id=$req.parcel_source_artifact_id} | ConvertTo-Json
+          Set-Content -Path 'pipeline/unity-publish-request.json' -Value $cfg -Encoding UTF8
+          Write-Host 'Candidate mode active in ephemeral Windows workspace only; main request and public stable untouched.'
+      - name: Stage owner-authorized LOCAL policy candidate with existing certified art
+        if: inputs.local_unity_candidate
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $req=Get-Content 'pipeline/agent-local-preflight-request.json' -Raw|ConvertFrom-Json
+          if($req.mode -ne 'unity-local-save-notice-v1' -or $req.enabled -ne $true -or $req.phase -ne 'build' -or $req.stable_publish -ne $false -or $req.budget_eur -ne 0){throw 'Local production order invalid'}
+          $hash=(Get-FileHash 'Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs' -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -ne $req.accepted_code_sha256){throw 'Integrated model source changed after independent QA'}
+          git fetch --no-tags --deepen=40 origin main
+          if($LASTEXITCODE -ne 0){throw 'Protected source history unavailable'}
+          git diff --exit-code $req.protected_base_sha HEAD -- Unity/Assets/Eldoria/Scripts/Domain/GameState.cs Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs
+          if($LASTEXITCODE -ne 0){throw 'Protected productive source changed; local scope must not alter it'}
+          @{mode='current-valoria-production';production_artifact_id=11576784810;parcel_source_artifact_id=11576579158}|ConvertTo-Json|Set-Content 'pipeline/unity-publish-request.json' -Encoding UTF8
+          Write-Host 'LOCAL_UNITY_CANDIDATE isolated project, protected owners unchanged, no stable deploy'
+      - name: Reuse existing compiled import cache by isolated copy only
+        if: inputs.local_unity_candidate
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(Get-Process Unity,Blender,ollama -ErrorAction SilentlyContinue){throw 'Productive process detected; do not copy live cache'}
+          $source=Join-Path $env:GITHUB_WORKSPACE 'Unity\Library'
+          $destination=Join-Path $env:ELDORIA_BUILD_WORKSPACE 'Unity\Library'
+          if(Test-Path $source){
+            robocopy $source $destination /E /COPY:DAT /DCOPY:DAT /R:1 /W:1 /NFL /NDL /NJH /NJS /NP
+            if($LASTEXITCODE -gt 7){throw 'Isolated existing cache copy failed'}
+            $global:LASTEXITCODE=0
+            Write-Host 'Existing cache copied into isolated project only; Unity still compiles actual revised source'
+          }
       - name: Stage current certified Valoria production scene when requested
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          $cfg = Get-Content "$env:ELDORIA_BUILD_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
           if ($cfg.mode -ne "current-valoria-production") {
             Write-Host "Legacy Unity publication mode."
             exit 0
@@ -148,21 +322,21 @@ jobs:
           $zip = Join-Path $env:RUNNER_TEMP "valoria-current-production.zip"
           $extract = Join-Path $env:RUNNER_TEMP "valoria-current-production"
           $splatsZip = Join-Path $env:RUNNER_TEMP "valoria-webgl-splats.zip"
-          $splats = Join-Path $env:GITHUB_WORKSPACE "webgl-external-splats"
+          $splats = Join-Path $env:ELDORIA_BUILD_WORKSPACE "webgl-external-splats"
           Remove-Item $extract -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item $splats -Recurse -Force -ErrorAction SilentlyContinue
           $headers = @{ Authorization="Bearer $env:GH_TOKEN"; Accept="application/vnd.github+json"; "X-GitHub-Api-Version"="2022-11-28" }
           Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.production_artifact_id)/zip" -OutFile $zip
           Expand-Archive -Path $zip -DestinationPath $extract -Force
           $src = Join-Path $extract "Assets\Eldoria\ProductionSlice"
-          $dst = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\ProductionSlice"
+          $dst = Join-Path $env:ELDORIA_BUILD_WORKSPACE "Unity\Assets\Eldoria\ProductionSlice"
           if (-not (Test-Path (Join-Path $src "Runtime\Valoria.unity"))) { throw "Certified production Valoria scene missing from artifact." }
           Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path (Split-Path $dst) -Force | Out-Null
           Copy-Item $src $dst -Recurse -Force
 
           $captures = Join-Path $extract "ValoriaFirstPlayableCitySliceV1Captures"
-          $backgrounds = Join-Path $env:GITHUB_WORKSPACE "webgl-certified-backgrounds"
+          $backgrounds = Join-Path $env:ELDORIA_BUILD_WORKSPACE "webgl-certified-backgrounds"
           Remove-Item $backgrounds -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path $backgrounds -Force | Out-Null
           $backgroundMap = @{
@@ -198,13 +372,13 @@ jobs:
       - name: Stage minimal Eldoria Resources for owner WebGL transport
         shell: powershell
         run: |
-          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          $cfg = Get-Content "$env:ELDORIA_BUILD_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
           if ($cfg.mode -ne "current-valoria-production") {
             Write-Host "Legacy Unity publication mode; Resources staging unchanged."
             exit 0
           }
 
-          $resources = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\Resources"
+          $resources = Join-Path $env:ELDORIA_BUILD_WORKSPACE "Unity\Assets\Eldoria\Resources"
           $stash = Join-Path $env:RUNNER_TEMP "eldoria-full-resources"
           Remove-Item $stash -Recurse -Force -ErrorAction SilentlyContinue
           if (-not (Test-Path $resources)) { throw "Eldoria Resources folder missing before WebGL staging." }
@@ -240,14 +414,18 @@ jobs:
           Write-Host "WEBGL_MINIMAL_RESOURCES_PASS kept=WorldPlayerCity,WorldInventory,ExternalAssetLibrary,Crate excluded=historical-valoria-resources"
 
       - name: Build Unity WebGL current requested slice
+        env:
+          # Default production stays clean; the existing isolated R2-B candidate
+          # uses Unity's incremental cache but still compiles the exact checked-out source.
+          ELDORIA_FOCUSED_UNITY_ITERATION: ${{ needs.source-preflight.outputs.candidate_only == 'true' && '1' || '0' }}
         shell: powershell
         run: |
-          Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
-          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          Remove-Item "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
+          $cfg = Get-Content "$env:ELDORIA_BUILD_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
           $method = if ($cfg.mode -eq "current-valoria-production") { "Eldoria.EditorTools.ValoriaCurrentWebGLBuildV1.Build" } else { "Eldoria.EditorTools.SceneSetup.BuildWebGL" }
           Write-Host "Unity WebGL build method: $method"
           $log = "$env:RUNNER_TEMP/Eldoria-WebGL.log"
-          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod",$method,"-logFile",$log)
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:ELDORIA_BUILD_WORKSPACE/Unity","-executeMethod",$method,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if (-not $process.WaitForExit(1200000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -258,21 +436,21 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Tail 300 }
             throw "Unity WebGL build failed with exit code $($process.ExitCode)."
           }
-          if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
+          if (-not (Test-Path "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
           if ($cfg.mode -eq "current-valoria-production") {
             foreach ($i in 0..3) {
-              Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/state-$i.ply" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/splat-state-$i.ply" -Force
+              Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-external-splats/state-$i.ply" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/splat-state-$i.ply" -Force
             }
-            Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
+            Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
             foreach ($i in 0..3) {
-              Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/valoria-state-$i.png" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/valoria-state-$i.png" -Force
+              Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-certified-backgrounds/valoria-state-$i.png" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/valoria-state-$i.png" -Force
             }
-            Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/valoria-bastion-ii.png" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/valoria-bastion-ii.png" -Force
+            Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-certified-backgrounds/valoria-bastion-ii.png" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/valoria-bastion-ii.png" -Force
             foreach ($state in @(0,3)) {
               foreach ($pan in @("-0.5","0","0.5")) {
                 foreach ($zoom in @("0.9","1","1.1")) {
                   $name = "valoria-state$state-pan$pan-zoom$zoom.png"
-                  Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/$name" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/$name" -Force
+                  Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-certified-backgrounds/$name" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/$name" -Force
                 }
               }
             }
@@ -280,11 +458,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-unity-webgl-${{ github.sha }}
-          path: Unity/Builds/WebGL/
+          path: ${{ env.ELDORIA_BUILD_WORKSPACE }}/Unity/Builds/WebGL/
           retention-days: 7
 
   deploy:
-    needs: unity-webgl
+    concurrency:
+      group: eldoria-pages-site-publication
+      cancel-in-progress: false
+    needs: [source-preflight, unity-webgl]
+    if: inputs.candidate_run_id == 0 && needs.source-preflight.outputs.candidate_only != 'true' && needs.source-preflight.outputs.qa_only != 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -325,7 +507,7 @@ jobs:
       - name: Install Playwright QA browser
         if: steps.web-impact.outputs.required == 'true'
         run: |
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
           npx playwright install --with-deps chromium
       - name: Full local-equivalent certification gate
         if: steps.web-impact.outputs.required == 'true'
@@ -392,4 +574,319 @@ jobs:
         run: |
           UNITY_URL='${{ steps.deployment.outputs.page_url }}unity-owner/?cb=${{ github.run_id }}'
           curl -fsSL -H "Cache-Control: no-cache" "$UNITY_URL" | grep -qi "<canvas\\|unity"
+
+
+  r2b-candidate-artifact-qa:
+    needs: [source-preflight, unity-webgl]
+    if: needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.sha }}
+          path: r2b-webgl-candidate
+      - name: Independently verify runnable WebGL package (NOT gameplay pass)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s r2b-webgl-candidate/index.html
+          test -d r2b-webgl-candidate/Build
+          find r2b-webgl-candidate/Build -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.br|wasm\.gz)$'
+          test -s r2b-webgl-candidate/splat-state-0.ply
+          printf 'WEBGL_CANDIDATE_PACKAGE_PASS; no stable Pages deployment; runtime choice QA and mobile screenshots NOT YET PROVEN\n'
+      - name: Report verifiable candidate artifact to Directorate
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          QA: ${{ job.status }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const marker='<!-- eldoria-r2b-isolated-webgl-'+context.runId+' -->';
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:context.runId,per_page:100});
+            const candidate=artifacts.find(x=>x.name==='eldoria-unity-webgl-'+context.sha);
+            const body=[marker,'### R2-B — candidate WebGL package / existing Pages builder',
+              '**Status:** '+process.env.QA,
+              '**Run:** https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,
+              '**Build SHA:** '+context.sha,
+              '**Gameplay source authority:** 6e0e12396a98b04333b595fff704afa3e849c30a',
+              '**Artifact ID:** '+(candidate?.id||'missing'),
+              '**Stable unity-owner/:** NOT DEPLOYED/MODIFIED by this candidate run',
+              '**Gameplay acceptance:** still PENDING — must serve isolated build and validate both forest choices, persistence, navigation and visual/touch experience.',
+              '**EXP-CAM-01 / EXP-BLD-02:** remain open.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  r2b-candidate-pages-preview:
+    needs: [source-preflight, unity-webgl, r2b-candidate-artifact-qa]
+    # Fast focused path: the same authorized build advances automatically to
+    # isolated publication only after independent package QA passes.
+    if: >-
+      always() && (inputs.candidate_run_id > 0 || needs.source-preflight.outputs.deploy_only == 'true' ||
+      (needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate &&
+      needs.unity-webgl.result == 'success' && needs.r2b-candidate-artifact-qa.result == 'success'))
+    concurrency:
+      group: eldoria-pages-site-publication
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+      issues: write
+    steps:
+      - name: Confirm pinned owner-approved candidate and original stable site provenance
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if('${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}'.length!==40)throw Error('Candidate SHA invalid');
+            const {owner,repo}=context.repo;
+            const stable=await github.rest.actions.getArtifact({owner,repo,artifact_id:11587236262});
+            const old=stable.data;
+            if(old.expired||old.name!=='github-pages'||old.digest!=='sha256:a087f088d191fbef00fb846fe22209f693aa707176a1dc58de5387efaa2be9df')
+              throw Error('Pinned original stable Pages site unavailable or digest changed');
+            const candidate=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:${{ inputs.candidate_run_id > 0 && inputs.candidate_run_id || needs.source-preflight.outputs.candidate_only == 'true' && github.run_id || needs.source-preflight.outputs.deploy_run_id }},per_page:100});
+            if(!candidate.data.artifacts.some(a=>a.name==='eldoria-unity-webgl-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}'&&!a.expired))
+              throw Error('Candidate WebGL artifact not available from verified production run');
+      - uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          run-id: 37862462679
+          github-token: ${{ github.token }}
+          path: pinned-stable-pages
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}
+          run-id: ${{ inputs.candidate_run_id > 0 && inputs.candidate_run_id || needs.source-preflight.outputs.candidate_only == 'true' && github.run_id || needs.source-preflight.outputs.deploy_run_id }}
+          github-token: ${{ github.token }}
+          path: isolated-candidate-webgl
+      - name: Reconstruct EXACT stable deployed payload and ADD candidate subdirectory
+        id: stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          oldtar="$(find pinned-stable-pages -type f -name '*.tar' -print -quit)"
+          test -n "$oldtar"
+          mkdir -p site
+          tar -xf "$oldtar" -C site
+          test -s site/unity-owner/index.html
+          test -s site/r2-candidates/r2-b-6e0e1239/index.html
+          test -s isolated-candidate-webgl/index.html
+          test -s isolated-candidate-webgl/splat-state-0.ply
+          find site/unity-owner site/r2-candidates/r2-b-6e0e1239 -type f -print0 | sort -z | xargs -0 sha256sum > stable-before.sha256
+          curl -fLsS --retry 4 --max-time 30 'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html' -o stable-current-index.html
+          cmp stable-current-index.html site/unity-owner/index.html || { echo 'PUBLIC_STABLE_IS_NOT_PINNED_STABLE_ABORT';exit 1; }
+          for rel in Build/WebGL.loader.js Build/WebGL.framework.js.unityweb; do
+            curl -fLsS --retry 3 --max-time 30 "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/$rel" -o stable-public-runtime-part
+            cmp stable-public-runtime-part "site/unity-owner/$rel" || { echo "CURRENT_STABLE_RUNTIME_DIFFERS_FROM_PINNED:$rel";exit 1; }
+          done
+          target="site/r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}"
+          test ! -e "$target" || { echo 'Existing candidate must not be overwritten';exit 1; }
+          mkdir -p "$target"
+          cp -a isolated-candidate-webgl/. "$target/"
+          find site/unity-owner site/r2-candidates/r2-b-6e0e1239 -type f -print0 | sort -z | xargs -0 sha256sum > stable-after.sha256
+          cmp stable-before.sha256 stable-after.sha256
+          test -s "$target/index.html"
+          find "$target/Build" -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.gz|wasm\.br)$'
+          echo 'STABLE_BYTES_IDENTICAL_CANDIDATE_ADDITIVE_PASS'
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Verify live stable index remains identical and candidate is truly accessible
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          for n in $(seq 1 10); do
+            curl -fLsS --max-time 30 "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/index.html" -o candidate-current-index.html && break || sleep 10
+          done
+          test -s candidate-current-index.html
+          cmp stable-current-index.html <(curl -fLsS --max-time 30 "${base}unity-owner/index.html")
+          printf 'R2B_PREVIEW_HOSTED_STABLE_AND_OLD_CANDIDATE_BYTES_UNCHANGED %s\n' "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/"
+      - name: Record independent playable candidate without claiming experiential signoff
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/';
+            const body=['### R2-B WebGL de supervisión — despliegue ADITIVO validado',
+              '**Candidato jugable:** '+url,
+              '**SHA gameplay autorizado:** 5922520120c1bd682cdfa80a90f748939922ce29',
+              '**Build SHA:** ${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}',
+              '**Ejecución de publicación candidata:** '+context.runId,
+              '**Estable unity-owner/:** comprobado byte a byte intacto desde último deploy oficial antes de publicación y HTML público antes/después.',
+              '**Alcance:** build de supervisión, no PASS visual ni EXPERIENCIA. EXP-CAM-01 / EXP-BLD-02 permanecen abiertos.',
+              '**Probar:** ambas elecciones de bosque sobre saves separados; cámara vertical Valoria y selección de edificios.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  r2b-published-mobile-qa:
+    needs: [source-preflight, r2b-candidate-pages-preview, r2b-candidate-artifact-qa]
+    # Direct build -> package QA -> isolated URL -> real-touch QA: no additional
+    # DG/M16 approval, JSON transition or human prompt once the order is authorized.
+    if: >-
+      always() && (needs.source-preflight.outputs.deploy_only == 'true' ||
+      (needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate &&
+      needs.r2b-candidate-artifact-qa.result == 'success')) &&
+      needs.r2b-candidate-pages-preview.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install independent Unity WebGL browser QA
+        run: |
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
+          npx playwright install --with-deps chromium
+      - name: Verify real gameplay choices, rewards and save reload on CORRECTED Unity build
+        id: choice
+        continue-on-error: true
+        env:
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/
+          ELDORIA_EVIDENCE_DIR: r2b-corrected-choice-qa
+        run: node qa/r2b-webgl-choice-probe.cjs
+      - name: Independently check corrected Unity touch camera motion in landscape and portrait
+        id: camera
+        continue-on-error: true
+        env:
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/
+          ELDORIA_SOURCE_SHA: ${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}
+          ELDORIA_EVIDENCE_DIR: r2b-corrected-camera-qa
+        run: node qa/eldoria-gameplay-camera-experience-probe.cjs
+      - name: Independently verify real building selection in both orientations
+        id: building
+        continue-on-error: true
+        env:
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/
+          ELDORIA_SOURCE_SHA: ${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}
+          ELDORIA_EVIDENCE_DIR: r2b-corrected-building-qa
+        run: node qa/r2b-building-selection-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-r2b-corrected-real-playability-qa
+          path: |
+            r2b-corrected-choice-qa/
+            r2b-corrected-camera-qa/
+            r2b-corrected-building-qa/
+          if-no-files-found: error
+      - name: Fail closed unless gameplay AND mobile camera pass independently
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' r2b-corrected-choice-qa/report.json
+          jq -e '.all_gestures_observed == true and (.scenarios | length >= 2) and .scenarios[0].pass == true and .scenarios[1].pass == true' r2b-corrected-camera-qa/report.json
+          jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' r2b-corrected-building-qa/report.json
+          echo 'TECH_AND_REAL_TOUCH_QA_PASS; visual artistic/experience subjective review remains independent and required'
+
+  focused-candidate-retest:
+    needs: source-preflight
+    if: needs.source-preflight.outputs.qa_only == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      issues: write
+    env:
+      ELDORIA_SOURCE_SHA: ${{ needs.source-preflight.outputs.qa_candidate_sha }}
+      ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.qa_candidate_sha }}/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify existing candidate still represents current player source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$ELDORIA_SOURCE_SHA"
+          # Only the already-approved incremental-build implementation may differ.
+          # Any runtime, asset, scene or project-setting drift blocks binary reuse.
+          git diff --exit-code "$ELDORIA_SOURCE_SHA" HEAD -- Unity ':!Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs'
+          git show "$ELDORIA_SOURCE_SHA:pipeline/r2b-candidate-build.json" > /tmp/built-request.json
+          node -e "const fs=require('fs'),a=JSON.parse(fs.readFileSync('/tmp/built-request.json')),b=require('./pipeline/r2b-candidate-build.json');for(const k of ['source_sha','production_artifact_id','parcel_source_artifact_id'])if(a[k]!==b[k])throw Error('Candidate provenance drift: '+k);if(b.stable_publish!==false||b.paid_credits!==0)throw Error('Invalid candidate authorization')"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install focused independent browser QA
+        run: |
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
+          npx playwright install chromium
+      - name: Test rendered-frame readiness contract
+        run: node --test tests/eldoria-rendered-frame-readiness.test.cjs tests/eldoria-focused-checkout.test.cjs
+      - name: Test existing binary with real touch and rendered-frame evidence
+        if: needs.source-preflight.outputs.qa_scope != 'building'
+        id: camera
+        continue-on-error: true
+        env:
+          ELDORIA_EVIDENCE_DIR: focused-camera-qa
+        run: node qa/eldoria-gameplay-camera-experience-probe.cjs
+      - name: Verify adjacent strategic choice and reload regression
+        if: needs.source-preflight.outputs.qa_scope != 'building'
+        id: choice
+        continue-on-error: true
+        env:
+          ELDORIA_EVIDENCE_DIR: focused-choice-qa
+        run: node qa/r2b-webgl-choice-probe.cjs
+      - name: Diagnose real building selection on the existing candidate
+        id: building
+        continue-on-error: true
+        env:
+          ELDORIA_EVIDENCE_DIR: focused-building-qa
+        run: node qa/r2b-building-selection-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-focused-existing-candidate-qa
+          path: |
+            focused-camera-qa/
+            focused-choice-qa/
+            focused-building-qa/
+          if-no-files-found: error
+      - name: Preserve independent acceptance gates
+        if: always()
+        run: |
+          if [[ '${{ needs.source-preflight.outputs.qa_scope }}' != building ]]; then
+            jq -e '.all_gestures_observed == true' focused-camera-qa/report.json
+            jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' focused-choice-qa/report.json
+          fi
+          jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' focused-building-qa/report.json
+      - name: Record focused feedback without game completion claim
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          CAMERA: ${{ steps.camera.outcome }}
+          CHOICE: ${{ steps.choice.outcome }}
+          BUILDING: ${{ steps.building.outcome }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const body=['### Recuperación del flujo — QA focal sobre binario existente',
+              'Run: https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,
+              'Build SHA: '+process.env.ELDORIA_SOURCE_SHA,'URL: '+process.env.ELDORIA_URL,
+              'Touch: '+process.env.CAMERA+'; elección/persistencia: '+process.env.CHOICE+'; selección real de edificio (diagnóstico, pendiente de corrección si falla): '+process.env.BUILDING,
+              'Windows builds: 0. Stable deployments: 0. No se declara cierre artístico/UX ni trabajo autónomo de 15 departamentos.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
 

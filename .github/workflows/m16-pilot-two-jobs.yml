@@ -1,0 +1,64 @@
+name: M16 Pilot A to B (GitHub hosted)
+# DG 2026-10-08: existing QA contracts additionally cover independent parallel-ready workstreams
+on:
+  workflow_call:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/m16-pilot-two-jobs.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: m16-pilot-two-jobs
+  cancel-in-progress: false
+jobs:
+  job_a:
+    name: A - validate M16-A and emit handoff
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Execute real M16-A tests
+        run: node --test tests/m16a/evaluate.test.mjs
+      - name: Produce verifiable handoff
+        env:
+          SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p pilot-handoff
+          printf '%s\n' "$SHA" > pilot-handoff/source-sha.txt
+          printf '%s\n' "$RUN_ID" > pilot-handoff/run-id.txt
+          sha256sum pilot-handoff/source-sha.txt > pilot-handoff/source-sha.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m16-pilot-handoff
+          path: pilot-handoff/
+          if-no-files-found: error
+  job_b:
+    name: B - verify A output and run M03 checks
+    needs: job_a
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@v4
+        with:
+          name: m16-pilot-handoff
+          path: pilot-handoff/
+      - name: Verify exact upstream run and commit
+        env:
+          SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          sha256sum -c pilot-handoff/source-sha.sha256
+          test "$(cat pilot-handoff/source-sha.txt)" = "$SHA"
+          test "$(cat pilot-handoff/run-id.txt)" = "$RUN_ID"
+      - name: Execute independent M03 contract tests
+        run: node --test tests/m03/certify.test.mjs
