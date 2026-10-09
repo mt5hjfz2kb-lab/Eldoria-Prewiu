@@ -295,6 +295,25 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
+    },
+    {
+      "id": "eldoria-m16-executed-qa-proof-v1",
+      "title": "M16 require executed independent QA job evidence before M07 handoff",
+      "owner": "chat-dg-v4-20261009",
+      "scope": [
+        "tools/eldoria-coordinator-v1.cjs",
+        "tests/eldoria-coordinator-v1.test.cjs",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-09T10:45:00+02:00",
+      "base_main_sha": "a27585eb849654bc97810799bb880dbdfdd31684",
+      "status": "active",
+      "phase": "BOUNDED QA EVIDENCE ACCEPTANCE PATCH",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only fail-closed read-only coordinator acceptance contract; no game, visual or publication writes.",
+      "paid_credits": 0,
+      "next": "Reject skipped and worker-self-reported QA, validate with existing independent M16 tests and close."
     }
   ],
   "history": [
