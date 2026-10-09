@@ -35,6 +35,24 @@ jobs:
           }
           $ollama=Get-Process ollama -ErrorAction SilentlyContinue
           Write-Output ("OLLAMA_RUNNING=" + [bool]$ollama)
+          # Runner-safe Ollama discovery: no installation, service start, or model invocation.
+          Write-Output 'ELDORIA_OLLAMA_DISCOVERY_START'
+          $candidatePaths=@(
+            (Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'),
+            (Join-Path $env:ProgramFiles 'Ollama\ollama.exe'),
+            (Join-Path $env:ProgramFiles 'Ollama\app.exe')
+          )
+          foreach($p in $candidatePaths) {
+            if(Test-Path -LiteralPath $p -PathType Leaf) { Write-Output 'OLLAMA_STANDARD_INSTALL=FOUND' }
+          }
+          $ollamaService=Get-Service -Name '*ollama*' -ErrorAction SilentlyContinue
+          if($ollamaService) { Write-Output ('OLLAMA_SERVICE_STATUS=' + (($ollamaService | Select-Object -First 1).Status)) }
+          else { Write-Output 'OLLAMA_SERVICE_STATUS=NOT_FOUND' }
+          try {
+            $res=Invoke-WebRequest -Uri 'http://127.0.0.1:11434/api/version' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+            Write-Output ('OLLAMA_LOCAL_API_HTTP=' + [int]$res.StatusCode)
+          } catch { Write-Output 'OLLAMA_LOCAL_API_HTTP=UNREACHABLE' }
+          Write-Output 'ELDORIA_OLLAMA_DISCOVERY_END'
           $disk=Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object -First 1
           if ($disk) { Write-Output ("LOCAL_DISK_FREE_GB=" + [math]::Round($disk.FreeSpace / 1GB,1)) }
           Write-Output 'ELDORIA_PREFLIGHT_FINISHED_NO_INSTALL_NO_GAME_CHANGES'
