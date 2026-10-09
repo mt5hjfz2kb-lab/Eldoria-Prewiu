@@ -582,9 +582,11 @@ jobs:
             candidate-server.log
           if-no-files-found: error
       - name: Fail closed on any actual gameplay or notice defect
+        env:
+          EXACT_UNITY_SOURCE: ${{ needs.prepare.outputs.reuse_source || github.sha }}
         if: always()
         run: |
-          node -e "const a=require('./local-adjacent-gameplay/report.json'),b=require('./local-save-playable/report.json');if(a.pass!==true||b.pass!==true||b.source_sha!==process.env.GITHUB_SHA)throw Error('REAL_UNITY_GAME_QA_FAILED');console.log('REAL_UNITY_FUNCTIONAL_AND_REGRESSION_PASS; visual signoff still separate')"
+          node -e "const a=require('./local-adjacent-gameplay/report.json'),b=require('./local-save-playable/report.json');if(a.pass!==true||b.pass!==true||b.source_sha!==process.env.EXACT_UNITY_SOURCE)throw Error('REAL_UNITY_GAME_QA_FAILED');console.log('REAL_UNITY_FUNCTIONAL_AND_REGRESSION_PASS; visual signoff still separate')"
       - name: Stop owned temporary HTTP server
         if: always()
         run: test ! -f candidate-server.pid || kill "$(cat candidate-server.pid)"
@@ -629,7 +631,7 @@ jobs:
             for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:'### D06 local programming → Unity → independent real playability\nRun https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId+'\nExact Unity source '+process.env.ACTUAL_SOURCE+'\nActual Unity build run '+process.env.BUILD_RUN+'\nBUILD '+process.env.BUILD+'\nFUNCTIONAL/REGRESSION '+process.env.PLAYABLE+'\nVISUAL NOT_VERIFIED\nFINAL NOT_ACCEPTED\nTemporary runner loan returned; R2-B reservation untouched; stable deployment disabled. Evidence artifact eldoria-local-unity-real-playability-'+context.runId});
 
             const images=[];
-            for(const name of ['portrait-healthy-before.png','portrait-notice.png','portrait-acknowledged.png','landscape-healthy-before.png','landscape-notice.png','landscape-acknowledged.png']){
+            for(const name of ['portrait-healthy-before.png','portrait-notice.png','portrait-acknowledged.png','landscape-healthy-before.png','landscape-notice.png','landscape-acknowledged.png','landscape-rotated-notice.png','portrait-FAIL.png','landscape-FAIL.png']){
               const file='playable-evidence/local-save-playable/'+name;
               if(!fs.existsSync(file))continue;
               const bytes=fs.readFileSync(file);
