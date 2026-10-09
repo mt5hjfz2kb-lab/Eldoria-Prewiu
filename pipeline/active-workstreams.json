@@ -429,9 +429,9 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "INDEPENDENT D13 UI REPAIR APPLIED / LOCAL MODEL CODE RETAINED / FRESH ACTUAL UNITY BUILD REQUIRED",
+      "phase": "ACTUAL REPAIRED UNITY WEBGL BUILD SUCCESS / WINDOWS RETURNED / INDEPENDENT PLAYER QA IN PROGRESS",
       "dependency": "R2-B/SlicePresenter/GameState/LocalGateway, M07 and Region1 sources protected. Only unowned SliceBoot load-exception feedback plus new pure policy allowed.",
-      "next": "Existing isolated Unity candidate build, independent genuine gameplay/save/barrier/rotation/DPI QA, independent visual review; never stable publish.",
+      "next": "Independent Linux real player/save/barrier/rotation/DPI QA, then independent visual review. R2-B reservation and all productive owners remain unchanged.",
       "art_production_routing_reason": "Functional save-load error feedback only; no new production art, geometry or scene beauty.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -449,7 +449,7 @@
         "authorization": "Owner 2026-10-09 continuation: coordinated safe nonconflicting local programming and candidate build",
         "expires_at": "2026-10-09T17:30:00Z",
         "policy": "Existing reservation retained; defer productive jobs; single runner queue; no cancel; exact temporary inference then existing isolated Unity builder; return after each job",
-        "status": "authorized_temporary"
+        "status": "returned"
       },
       "historical_runtime_proof": {
         "run_id": 37820089071,
@@ -511,7 +511,16 @@
         },
         "owner_instruction": "Owner continuation into real Unity 2026-10-09 15:19 Europe/Madrid"
       },
-      "blocker": null
+      "blocker": null,
+      "runner_release_evidence": {
+        "run_id": 37946776091,
+        "job_id": 113875374904,
+        "job_conclusion": "success",
+        "unity_editor_exited": true,
+        "actual_build_source_sha": "2c41f3151cd7deaa9522c22d82f3bad896a34af1",
+        "artifact_id": 11624148894,
+        "returned_before_hosted_playable_qa": true
+      }
     }
   ],
   "history": [
