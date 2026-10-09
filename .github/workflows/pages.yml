@@ -567,9 +567,13 @@ jobs:
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
 
   r2b-candidate-pages-preview:
-    needs: source-preflight
+    needs: [source-preflight, unity-webgl, r2b-candidate-artifact-qa]
+    # Fast focused path: the same authorized build advances automatically to
+    # isolated publication only after independent package QA passes.
     if: >-
-      always() && (inputs.candidate_run_id > 0 || needs.source-preflight.outputs.deploy_only == 'true')
+      always() && (inputs.candidate_run_id > 0 || needs.source-preflight.outputs.deploy_only == 'true' ||
+      (needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate &&
+      needs.unity-webgl.result == 'success' && needs.r2b-candidate-artifact-qa.result == 'success'))
     concurrency:
       group: eldoria-pages-site-publication
       cancel-in-progress: false
@@ -589,14 +593,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            if('${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}'.length!==40)throw Error('Candidate SHA invalid');
+            if('${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}'.length!==40)throw Error('Candidate SHA invalid');
             const {owner,repo}=context.repo;
             const stable=await github.rest.actions.getArtifact({owner,repo,artifact_id:11587236262});
             const old=stable.data;
             if(old.expired||old.name!=='github-pages'||old.digest!=='sha256:a087f088d191fbef00fb846fe22209f693aa707176a1dc58de5387efaa2be9df')
               throw Error('Pinned original stable Pages site unavailable or digest changed');
-            const candidate=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:${{ inputs.candidate_run_id > 0 && inputs.candidate_run_id || needs.source-preflight.outputs.deploy_run_id }},per_page:100});
-            if(!candidate.data.artifacts.some(a=>a.name==='eldoria-unity-webgl-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}'&&!a.expired))
+            const candidate=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:${{ inputs.candidate_run_id > 0 && inputs.candidate_run_id || needs.source-preflight.outputs.candidate_only == 'true' && github.run_id || needs.source-preflight.outputs.deploy_run_id }},per_page:100});
+            if(!candidate.data.artifacts.some(a=>a.name==='eldoria-unity-webgl-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}'&&!a.expired))
               throw Error('Candidate WebGL artifact not available from verified production run');
       - uses: actions/download-artifact@v4
         with:
@@ -606,8 +610,8 @@ jobs:
           path: pinned-stable-pages
       - uses: actions/download-artifact@v4
         with:
-          name: eldoria-unity-webgl-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}
-          run-id: ${{ inputs.candidate_run_id > 0 && inputs.candidate_run_id || needs.source-preflight.outputs.deploy_run_id }}
+          name: eldoria-unity-webgl-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}
+          run-id: ${{ inputs.candidate_run_id > 0 && inputs.candidate_run_id || needs.source-preflight.outputs.candidate_only == 'true' && github.run_id || needs.source-preflight.outputs.deploy_run_id }}
           github-token: ${{ github.token }}
           path: isolated-candidate-webgl
       - name: Reconstruct EXACT stable deployed payload and ADD candidate subdirectory
@@ -630,7 +634,7 @@ jobs:
             curl -fLsS --retry 3 --max-time 30 "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/$rel" -o stable-public-runtime-part
             cmp stable-public-runtime-part "site/unity-owner/$rel" || { echo "CURRENT_STABLE_RUNTIME_DIFFERS_FROM_PINNED:$rel";exit 1; }
           done
-          target="site/r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}"
+          target="site/r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}"
           test ! -e "$target" || { echo 'Existing candidate must not be overwritten';exit 1; }
           mkdir -p "$target"
           cp -a isolated-candidate-webgl/. "$target/"
@@ -651,22 +655,22 @@ jobs:
           set -euo pipefail
           base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
           for n in $(seq 1 10); do
-            curl -fLsS --max-time 30 "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}/index.html" -o candidate-current-index.html && break || sleep 10
+            curl -fLsS --max-time 30 "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/index.html" -o candidate-current-index.html && break || sleep 10
           done
           test -s candidate-current-index.html
           cmp stable-current-index.html <(curl -fLsS --max-time 30 "${base}unity-owner/index.html")
-          printf 'R2B_PREVIEW_HOSTED_STABLE_AND_OLD_CANDIDATE_BYTES_UNCHANGED %s\n' "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}/"
+          printf 'R2B_PREVIEW_HOSTED_STABLE_AND_OLD_CANDIDATE_BYTES_UNCHANGED %s\n' "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/"
       - name: Record independent playable candidate without claiming experiential signoff
         if: success()
         uses: actions/github-script@v7
         with:
           script: |
             const {owner,repo}=context.repo;
-            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}/';
+            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/';
             const body=['### R2-B WebGL de supervisión — despliegue ADITIVO validado',
               '**Candidato jugable:** '+url,
               '**SHA gameplay autorizado:** 5922520120c1bd682cdfa80a90f748939922ce29',
-              '**Build SHA:** ${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.deploy_head_sha }}',
+              '**Build SHA:** ${{ inputs.candidate_run_id > 0 && inputs.candidate_head_sha || needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}',
               '**Ejecución de publicación candidata:** '+context.runId,
               '**Estable unity-owner/:** comprobado byte a byte intacto desde último deploy oficial antes de publicación y HTML público antes/después.',
               '**Alcance:** build de supervisión, no PASS visual ni EXPERIENCIA. EXP-CAM-01 / EXP-BLD-02 permanecen abiertos.',
@@ -674,9 +678,13 @@ jobs:
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
 
   r2b-published-mobile-qa:
-    needs: [source-preflight, r2b-candidate-pages-preview]
+    needs: [source-preflight, r2b-candidate-pages-preview, r2b-candidate-artifact-qa]
+    # Direct build -> package QA -> isolated URL -> real-touch QA: no additional
+    # DG/M16 approval, JSON transition or human prompt once the order is authorized.
     if: >-
-      always() && needs.source-preflight.outputs.deploy_only == 'true' &&
+      always() && (needs.source-preflight.outputs.deploy_only == 'true' ||
+      (needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate &&
+      needs.r2b-candidate-artifact-qa.result == 'success')) &&
       needs.r2b-candidate-pages-preview.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -698,15 +706,15 @@ jobs:
         id: choice
         continue-on-error: true
         env:
-          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7/
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/
           ELDORIA_EVIDENCE_DIR: r2b-corrected-choice-qa
         run: node qa/r2b-webgl-choice-probe.cjs
       - name: Independently check corrected Unity touch camera motion in landscape and portrait
         id: camera
         continue-on-error: true
         env:
-          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7/
-          ELDORIA_SOURCE_SHA: c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}/
+          ELDORIA_SOURCE_SHA: ${{ needs.source-preflight.outputs.candidate_only == 'true' && github.sha || needs.source-preflight.outputs.deploy_head_sha }}
           ELDORIA_EVIDENCE_DIR: r2b-corrected-camera-qa
         run: node qa/eldoria-gameplay-camera-experience-probe.cjs
       - uses: actions/upload-artifact@v4
