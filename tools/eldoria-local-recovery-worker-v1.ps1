@@ -47,7 +47,7 @@ try{
  }
  # Structural schema prevents omission; semantic values still come from Qwen and independent QA.
  if($task.kind -eq 'unity-save-notice-policy'){
-  $schema=@{type='object';additionalProperties=$false;required=@('source');properties=@{source=@{type='string'}}}
+  $schema=@{type='object';additionalProperties=$false;required=@('implementation');properties=@{implementation=@{type='string'}}}
  }elseif($task.kind -eq 'runner-resource-aliases'){
   $props=@{'windows-runner-heavy'=@{type='string'};'windows-self-hosted-unity-6000-3-23f1'=@{type='string'}}
   $schema=@{type='object';additionalProperties=$false;required=@('aliases');properties=@{aliases=@{type='object';additionalProperties=$false;required=@('windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1');properties=$props}}}
@@ -78,6 +78,12 @@ try{
   $body=@{model=$task.model;stream=$false;keep_alive='0';format=$schema;options=@{temperature=0;num_predict=800;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 15
   $response=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
   $response|ConvertTo-Json -Depth 8|Set-Content (Join-Path $EvidenceDir 'model-response.json') -Encoding UTF8
+ }
+ if($task.kind -eq 'unity-save-notice-policy'){
+  $implementation=($response.response|ConvertFrom-Json).implementation
+  if($implementation -isnot [string] -or $implementation.Length -gt 1000){throw 'No bounded C# implementation produced'}
+  $source="namespace Eldoria.Presentation { public static class SaveLoadNoticePolicy { public static string Message(bool loadFailed) { $implementation } } }"
+  $response.response=@{source=$source}|ConvertTo-Json -Compress
  }
  [IO.File]::WriteAllText((Join-Path $EvidenceDir 'candidate.json'),$response.response,[Text.UTF8Encoding]::new($false))
  $hash=(Get-FileHash (Join-Path $EvidenceDir 'candidate.json') -Algorithm SHA256).Hash.ToLowerInvariant()

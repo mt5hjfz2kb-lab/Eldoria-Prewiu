@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "mode": "unity-local-save-notice-v1",
-  "enabled": false,
+  "enabled": true,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
-  "order_id": "unity-local-save-notice-20261009-v1",
+  "order_id": "unity-local-save-notice-20261009-v2",
   "authorization": "Owner explicit continuation into real Unity programming 2026-10-09 15:19 Europe/Madrid; DG/M16 coordination comments 6081801910 / 6081802143",
   "department": "D06",
   "model": "qwen2.5-coder:3b",
   "budget_eur": 0,
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
-  "requested_at": "2026-10-09T13:35:25.247Z",
-  "phase": "blocked_model",
+  "requested_at": "2026-10-09T13:44:34.593Z",
+  "phase": "code",
   "stable_publish": false,
   "install": false,
   "protected_base_sha": "c8ac15b26990742384cce142082346631be92d77",
@@ -28,5 +28,7 @@
     {
       "kind": "unity-save-notice-policy"
     }
-  ]
+  ],
+  "previous_rejected_order": "unity-local-save-notice-20261009-v1",
+  "repaired_integration_context": "Qwen omitted namespace/class/method braces twice. Trusted fixed compiler scaffold; model produces only the actual return implementation, same compiler and independent semantics."
 }

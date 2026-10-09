@@ -426,12 +426,12 @@
       "resources": [],
       "claimed_at": "2026-10-09T13:24:55.172Z",
       "base_main_sha": "c8ac15b26990742384cce142082346631be92d77",
-      "status": "blocked",
+      "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "REAL LOCAL CSHARP REJECTED / BOUNDED ATTEMPTS EXHAUSTED",
+      "phase": "GENUINE MODEL FULL-CLASS SYNTAX FAIL / TRUSTED WRAPPER AND MODEL IMPLEMENTATION NEXT",
       "dependency": "R2-B/SlicePresenter/GameState/LocalGateway, M07 and Region1 sources protected. Only unowned SliceBoot load-exception feedback plus new pure policy allowed.",
-      "next": "Ollama produces bounded pure C# policy; independent hosted compile/semantic QA; integration through authenticated coordinator only; existing Pages Unity builder in isolated candidate-only mode; real browser QA; no stable publishing.",
+      "next": "Preserve rejected full-class run 37938598691; try exact trusted scaffold plus real model return statement, same independent compile/semantic gates, at most two new attempts.",
       "art_production_routing_reason": "Functional save-load error feedback only; no new production art, geometry or scene beauty.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -449,7 +449,7 @@
         "authorization": "Owner 2026-10-09 continuation: coordinated safe nonconflicting local programming and candidate build",
         "expires_at": "2026-10-09T17:30:00Z",
         "policy": "Existing reservation retained; defer productive jobs; single runner queue; no cancel; exact temporary inference then existing isolated Unity builder; return after each job",
-        "status": "returned"
+        "status": "authorized_temporary"
       },
       "historical_runtime_proof": {
         "run_id": 37820089071,
@@ -467,7 +467,7 @@
         "append_only_shared_handoff": true
       },
       "completed_at": null,
-      "runner_released": true,
+      "runner_released": false,
       "result": null,
       "resume_authorization": {
         "previous_support_result": {
@@ -500,7 +500,7 @@
         },
         "owner_instruction": "Owner continuation into real Unity 2026-10-09 15:19 Europe/Madrid"
       },
-      "blocker": "Real local model code did not pass independent compile/semantic QA. No integration, build, stable write or artificial approval."
+      "blocker": null
     }
   ],
   "history": [
