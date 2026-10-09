@@ -468,6 +468,28 @@ namespace Eldoria.Presentation
                     if(d<bestLineDistance){bestLineDistance=d;bestTarget=spot;}
                 }
                 if(bestTarget!=null)return bestTarget;
+                // The presented WebGL image is wider than the physics proxy. Give the
+                // visible building centre a bounded touch target without widening the
+                // collider or intercepting drags and UI buttons.
+                if(productionParcels!=null)
+                {
+                    WorldHotspot nearby=null;
+                    float nearest=28f*28f;
+                    foreach(var id in new[]{"sawmill","barracks","bastion"})
+                    {
+                        var target=GameObject.Find(InteractiveTargetName(id));
+                        if(target==null)continue;
+                        var spot=target.GetComponent<WorldHotspot>();
+                        var collider=target.GetComponent<Collider>();
+                        if(spot==null||collider==null||!collider.enabled)continue;
+                        var projected=PresentedScreenPoint(camera,collider.bounds.center);
+                        if(projected.z<=0f||projected.x<0f||projected.x>=Screen.width||
+                            projected.y<0f||projected.y>=Screen.height)continue;
+                        float distance=(new Vector2(projected.x,projected.y)-point).sqrMagnitude;
+                        if(distance<nearest){nearest=distance;nearby=spot;}
+                    }
+                    if(nearby!=null)return nearby;
+                }
             }
 
             foreach(var hit in hits)
