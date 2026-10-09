@@ -60,7 +60,7 @@ async function storage(page,mutate){
      const next=typeof e.key==='string'&&e.key.endsWith('/PlayerPrefs')?change(e.value):null;inventory.push({db:info.name,store,key:e.key,type:typeof e.value,preview:typeof e.value==='string'?e.value.slice(0,180):JSON.stringify({keys:Object.keys(e.value||{}).slice(0,8),bytes:e.value?.byteLength,contentsBytes:e.value?.contents?.byteLength})});
      if(next!==null){
       if(mutate)await new Promise((resolve,reject)=>{const tx=db.transaction(store,'readwrite');const os=tx.objectStore(store);const req=os.keyPath?os.put(next):os.put(next,e.key);req.onerror=()=>reject(req.error);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});
-      found.push({db:info.name,store,key:e.key,value:Array.from((mutate?next:e.value).contents||[])});
+      found.push({db:info.name,store,key:e.key,value:((mutate?next:e.value).contents instanceof ArrayBuffer?Array.from(new Uint8Array((mutate?next:e.value).contents)):Array.from((mutate?next:e.value).contents||[]))});
      }
     }
    }
@@ -130,7 +130,7 @@ async function scenario(browser,label,viewport,dpr=1){
     await page.screenshot({path:out+'/'+label+'-rotated-notice.png'});
     item.real_orientation_change={from:initialViewport,to:viewport,requires_independent_visual_review:true};
   }
-  const before=await storage(page,false);assert(before.found.length>0);assert(JSON.stringify(before.found)===JSON.stringify(fixture.found),'Original corrupted save was overwritten at load');
+  const before=await storage(page,false);assert(before.found.length>0);assert(before.found.every(x=>Array.isArray(x.value)&&x.value.length>0),'Preservation proof must include actual original PlayerPrefs bytes');assert(JSON.stringify(before.found)===JSON.stringify(fixture.found),'Original corrupted save was overwritten at load');
   const rect=await canvas.boundingBox(),pixels=await canvas.evaluate(e=>({width:e.width,height:e.height}));
   const ack={x:rect.x+rect.width/2,y:rect.y+rect.height/2+86*noticeScale*rect.height/pixels.height};assert(ack.y<viewport.height,'Acknowledgement button unreachable');
   start=logs.length;await page.touchscreen.tap(ack.x,ack.y);await wait(logs,/ELDORIA_SAVE_RECOVERY_NOTICE acknowledged=true/,'real notice acknowledgement',start);await sleep(500);
