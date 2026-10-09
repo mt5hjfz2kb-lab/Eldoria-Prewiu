@@ -44,6 +44,11 @@ jobs:
               });
               const deploy = jobs.find(j => j.name === 'deploy');
               const build = jobs.find(j => j.name === 'unity-webgl');
+              if (build && build.conclusion === 'skipped' && deploy && deploy.conclusion === 'skipped') {
+                core.setOutput('kind', 'no_delivery');
+                core.info('Publication was paused: no build/deployment to certify. Probe skipped, no PASS claimed.');
+                return;
+              }
               if ((!build || build.conclusion !== 'success') && (!deploy || deploy.conclusion !== 'success'))
                 throw new Error('Trigger neither built nor deployed a verified Unity artifact');
               if (!deploy || deploy.conclusion !== 'success') kind = 'candidate';
@@ -81,9 +86,12 @@ jobs:
           done
           exit 1
       - run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 pixelmatch@5.3.0 && npx playwright install --with-deps chromium
+        if: steps.target.outputs.kind != 'no_delivery'
       - name: Verify published probe acceptance contract
+        if: steps.target.outputs.kind != 'no_delivery'
         run: node --test tests/published-probe-contract.test.cjs
       - name: Probe actual published Unity startup
+        if: steps.target.outputs.kind != 'no_delivery'
         env:
           ELDORIA_PROBE_URL: ${{ steps.target.outputs.url }}
           ELDORIA_PROBE_KIND: ${{ steps.target.outputs.kind }}
@@ -538,7 +546,7 @@ jobs:
           JS
           node /tmp/eldoria-startup.cjs
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.target.outputs.kind != 'no_delivery'
         with:
           name: eldoria-webgl-startup-evidence
           path: webgl-startup-evidence/
