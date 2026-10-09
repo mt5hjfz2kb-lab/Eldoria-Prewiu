@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T10:05:00+02:00",
+  "updated_at": "2026-10-09",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -27,7 +27,10 @@
       "next": "Retrieve run/artifact for exact third correction SHA 52101a1f5449544608537c83bee96f9210cafca7, inspect actual Unity initial/under-construction/reloaded-under-construction/built captures at native approved camera. If fails, repair local construction again; if passes, then independent WebGL published verification before closing. No M11/QA.",
       "completed_at": null,
       "runner_released": true,
-      "blocker": "Third source correction 52101a1f5449544608537c83bee96f9210cafca7 committed after independently reviewing run 37785467062 artifact 11553239582 VISUAL FAIL. Tool environment cannot list push-triggered Actions runs, so no new run ID/artifact yet to inspect. Cannot certify visual result or close."
+      "blocker": "Third source correction 52101a1f5449544608537c83bee96f9210cafca7 committed after independently reviewing run 37785467062 artifact 11553239582 VISUAL FAIL. Tool environment cannot list push-triggered Actions runs, so no new run ID/artifact yet to inspect. Cannot certify visual result or close.",
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "chat-art-m07-r1-20261008"
     },
     {
       "id": "eldoria-local-agent-preflight-v1",
@@ -48,7 +51,10 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner.",
-      "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged."
+      "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "chat-local-agent-pilot-20261008"
     },
     {
       "id": "eldoria-dg-original-route-recovery-v1",
@@ -80,7 +86,10 @@
         "owner_notification_requested": true,
         "owner_notification_delivered": "NOT_VERIFIED",
         "zero_paid_apis": true
-      }
+      },
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "chat-dg-original-route-recovery-20261008"
     },
     {
       "id": "eldoria-m04-limited-recovery-v1",
@@ -132,7 +141,10 @@
         "authorized_by": "owner explicit chat authorization 2026-10-09",
         "transfer_scope": "existing M04 workstream only",
         "preserve_existing_results": true
-      }
+      },
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "chat-dg-v4-20261009"
     },
     {
       "id": "r2-a-world-readability",
@@ -150,7 +162,10 @@
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Read-only World POI audit and screenshot comparison; visual changes wait for R1 M07 release"
+      "next": "Read-only World POI audit and screenshot comparison; visual changes wait for R1 M07 release",
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
     },
     {
       "id": "r2-b-strategic-choice",
@@ -207,7 +222,10 @@
           "verification": "SOURCE_REGRESSION_PASS; UNITY_BUILD_EXPERIENCE_NOT_VERIFIED",
           "required": "isolated Unity build, mobile swipe/tap touch, visual UX and regressions; shared windows runner currently owned by world-region1"
         }
-      ]
+      ],
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
     },
     {
       "id": "r2-c-mobile-ux",
@@ -224,7 +242,10 @@
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Read-only screenshots and touch hierarchy audit; UI code changes held until resource exclusion"
+      "next": "Read-only screenshots and touch hierarchy audit; UI code changes held until resource exclusion",
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
     },
     {
       "id": "r2-d-ambient-life-audio",
@@ -241,7 +262,10 @@
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "M11-R1 closure",
-      "next": "M11 R1 completion is mandatory"
+      "next": "M11 R1 completion is mandatory",
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
     },
     {
       "id": "r2-e-performance-qa",
@@ -278,7 +302,10 @@
         "webgl_package_pass": true,
         "stable_unchanged": true,
         "visual_experience_full_signoff": false
-      }
+      },
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
     },
     {
       "id": "eldoria-world-region-1-visual-convergence-v2",
@@ -304,7 +331,10 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-visual-convergence-v2.json",
       "paid_credits": 0,
       "geometry_gap_proven": false,
-      "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
+      "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership.",
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "automation-world-region-1-visual-v2-20261009"
     }
   ],
   "history": [
@@ -4985,5 +5015,23 @@
         "paid_credits": 0
       }
     }
-  ]
+  ],
+  "directorate_accountability": {
+    "owner": "D01-Direccion-General",
+    "applies_to": "all_active_workstreams",
+    "delegated_executor_ownership_preserved": true,
+    "mandate": "DG responsible for coordination, defects, QA, correction, closure and truthful delivery; a departmental executor retains exclusive source/file claim until coordinated handoff",
+    "no_stop_until": "certified_delivery_or_genuine_human_platform_blocker",
+    "quality_gates": [
+      "TECH",
+      "FUNCTIONAL",
+      "VISUAL",
+      "EXPERIENCE",
+      "REGRESSION",
+      "PUBLISHED_WHEN_APPLICABLE"
+    ],
+    "incomplete_work_never_cleared_on_commit": true,
+    "shared_runner_policy": "one_owner_at_a_time",
+    "cost_ceiling_eur": 0
+  }
 }
