@@ -45,6 +45,11 @@ jobs:
           foreach($p in $candidatePaths) {
             if(Test-Path -LiteralPath $p -PathType Leaf) { Write-Output 'OLLAMA_STANDARD_INSTALL=FOUND' }
           }
+          # Existing proven Eldoria-local installation used by maintenance run 37820089071.
+          $eldoriaExe=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI/ollama-v0.40.1/ollama.exe'
+          $eldoriaModels=Join-Path $env:LOCALAPPDATA 'EldoriaLocalAI/models'
+          Write-Output ('OLLAMA_ELDORIA_LOCAL_EXE=' + $(if(Test-Path -LiteralPath $eldoriaExe -PathType Leaf){'FOUND'}else{'MISSING'}))
+          Write-Output ('OLLAMA_ELDORIA_LOCAL_MODELS=' + $(if(Test-Path -LiteralPath $eldoriaModels -PathType Container){'FOUND'}else{'MISSING'}))
           $ollamaService=Get-Service -Name '*ollama*' -ErrorAction SilentlyContinue
           if($ollamaService) { Write-Output ('OLLAMA_SERVICE_STATUS=' + (($ollamaService | Select-Object -First 1).Status)) }
           else { Write-Output 'OLLAMA_SERVICE_STATUS=NOT_FOUND' }
