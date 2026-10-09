@@ -295,7 +295,9 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-independent-playability-qa-policy-v1",
       "title": "Independent end-to-end gameplay, visual and experience acceptance policy",
@@ -308,15 +310,22 @@
       "resources": [],
       "claimed_at": "2026-10-09T09:48:00+02:00",
       "base_main_sha": "read-main-20261009",
-      "status": "active",
-      "phase": "OWNER-AUTHORIZED GOVERNANCE-ONLY UPDATE",
+      "status": "completed",
+      "phase": "GOVERNANCE_POLICY_DOCUMENTED / NO AUTOMATED WORKER DISPATCH",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "QA governance documentation only; no player-visible visual/art change.",
       "paid_credits": 0,
-      "next": "Record independent functional/visual/experience acceptance policy and close with file verification; no runner dispatch."
-    }
-  ],
-  "history": [
+      "next": "Apply this acceptance policy to future significant player-facing changes through existing department handoffs; implement automated enforcement only under a separately authorized compatible workstream.",
+      "completed_at": "2026-10-09T09:48:00+02:00",
+      "runner_released": true,
+      "result": {
+        "agents_md_commit": "620e5f3e7c9c7cebd1017f68ddd787d14f57c24e",
+        "qa_and_deploy_commit": "b4105093be478876cb1773f63dac2ca714984399",
+        "documentation_verified": true,
+        "automation_enforcement_proven": false,
+        "paid_credits": 0
+      }
+    },
     {
       "id": "eldoria-local-agent-first-maintenance-v1",
       "title": "First useful local agent contribution — coordinator evidence BOM regression fixture",
