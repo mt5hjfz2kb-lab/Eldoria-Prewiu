@@ -161,7 +161,8 @@
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs",
-        "pipeline/r2b-candidate-build.json"
+        "pipeline/r2b-candidate-build.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       ],
       "resources": [],
       "status": "active",
@@ -197,12 +198,14 @@
         "isolated_candidate_hosted_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/",
         "stable_site_unchanged_confirmed_by_run": 37862462679
       },
-      "delegated_scopes": [
+      "delegated_scopes": [],
+      "pending_independent_qa": [
         {
-          "scope": "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
-          "owner": "chat-dg-gameplay-touch-repair-20261009",
-          "reason": "Owner explicitly requested continuing real gameplay corrections; temporary bounded allocation to avoid concurrent write collision",
-          "at": "2026-10-09T11:55:00+02:00"
+          "incident": "EXP-BLD-02-adjacent-fast-swipe",
+          "source_commit": "5922520120c1bd682cdfa80a90f748939922ce29",
+          "source_qa_run": 37906265687,
+          "verification": "SOURCE_REGRESSION_PASS; UNITY_BUILD_EXPERIENCE_NOT_VERIFIED",
+          "required": "isolated Unity build, mobile swipe/tap touch, visual UX and regressions; shared windows runner currently owned by world-region1"
         }
       ]
     },
@@ -302,7 +305,9 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-gameplay-touch-release-correction-v1",
       "title": "Eliminate mobile swipe-release false building selections in Unity",
@@ -316,15 +321,28 @@
       "resources": [],
       "claimed_at": "2026-10-09T11:55:00+02:00",
       "base_main_sha": "main",
-      "status": "active",
-      "phase": "BOUNDED UX CORRECTION / NO WINDOWS RUNNER",
+      "status": "handoff",
+      "phase": "SOURCE_PATCH + INDEPENDENT STATIC QA PASS / DELIVERED BACK TO R2B OWNER / INTEGRATED GAME EXPERIENCE NOT CERTIFIED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Touch interpretation bug repair; no art or asset replacement.",
       "paid_credits": 0,
-      "next": "Run independent CI source gesture regression; Unity new-build experience QA remains unverified until runner ownership allows Unity build and capture"
-    }
-  ],
-  "history": [
+      "next": "Original R2B owner resumes control and completes real Unity build/experience independently once Windows shared resource released; DG mission remains open",
+      "runner_released": true,
+      "handoff_at": "2026-10-09T12:00:00+02:00",
+      "result": {
+        "fix_commit": "5922520120c1bd682cdfa80a90f748939922ce29",
+        "source_test_commit": "5781a0106a69eec28a709c97cdb67d552f467bd5",
+        "independent_ci_run": 37906265687,
+        "ci_conclusion": "success",
+        "ci_artifact": 11604029063,
+        "owner_issue_comment": 6077500377,
+        "gameplay_build": "NOT_BUILT",
+        "published_candidate": "UNCHANGED",
+        "regression_type": "STATIC_SOURCE_ONLY",
+        "full_gameplay_qa": "NOT_VERIFIED",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "eldoria-gameplay-audit-dispatch-recovery-v1",
       "title": "Connect existing DG owner gameplay order to independent published QA baseline",
