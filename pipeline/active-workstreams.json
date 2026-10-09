@@ -22,6 +22,27 @@
       "phase": "CI RELEASE GUARD INSTALLED / BUILD RETRIGGER PENDING",
       "paid_credits": 0,
       "next": "Request one Unity WebGL build using existing automatic trigger; verify run, build and public playability before closing. Stable is not certified."
+    },
+    {
+      "id": "eldoria-direct-flow-recovery-v1",
+      "title": "Reconnect existing WebGL probe to build-only candidate and restore direct execution authority",
+      "owner": "chat-direct-flow-recovery-20261010",
+      "scope": [
+        "AGENTS.md",
+        "docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md",
+        ".github/workflows/unity-webgl-startup.yml"
+      ],
+      "resources": [
+        "unity-webgl-probe-routing"
+      ],
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "3ad1e542b67654a2885c8814674171166ce92d17",
+      "status": "active",
+      "phase": "RESTORE EXISTING DIRECT FLOW",
+      "paid_credits": 0,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Execution rules and QA transport only; no gameplay, scene, assets, camera, stable deployment or Windows runner changes.",
+      "next": "Patch existing startup workflow to test triggering build artifact when stable deployment is skipped; verify candidate and preserve separate published acceptance."
     }
   ],
   "history": [
