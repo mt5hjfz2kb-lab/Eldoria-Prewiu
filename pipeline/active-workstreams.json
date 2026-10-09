@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T17:41:26.827Z",
+  "updated_at": "2026-10-09T17:47:52.512Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -32,64 +32,6 @@
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
       "department_executor_owner": "chat-art-m07-r1-20261008",
       "delivery_kind": "unity_player_facing"
-    },
-    {
-      "id": "eldoria-dg-original-route-recovery-v1",
-      "title": "DG V2 canonical inventory and authentic existing-chain acceptance",
-      "owner": "chat-work-flow-recovery-20261009",
-      "scope": [
-        "docs/evidence/dg-original-route-recovery-v1/**",
-        ".github/workflows/pages.yml",
-        "qa/eldoria-gameplay-camera-experience-probe.cjs",
-        "tests/eldoria-rendered-frame-readiness.test.cjs",
-        "tools/eldoria-rendered-frame-readiness.cjs",
-        "tests/eldoria-focused-checkout.test.cjs",
-        ".github/workflows/eldoria-m16-independent-provenance-tests.yml"
-      ],
-      "resources": [],
-      "claimed_at": "2026-10-08T18:20:03.937Z",
-      "base_main_sha": "ab8dc2b74a2fa95dce08c12641017394a1414526",
-      "status": "active",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read existing infrastructure evidence and consolidate Directorate inventory; no player-visible changes.",
-      "paid_credits": 0,
-      "phase": "FOCUSED_EXISTING_BINARY_QA_RUNNING / CHECKOUT_CACHE_REPAIR_TESTED",
-      "next": "Reproduce splash false negative on existing exact candidate; repair rendered readiness, run focused independent QA without Unity rebuild, measure feedback latency; preserve claims/stable.",
-      "runner_released": true,
-      "blocked_at": "2026-10-08T18:31:44.877Z",
-      "blocker": null,
-      "result": {
-        "run": 37824280532,
-        "source_sha": "ec6707a9b8a6a884fcea69c6f9fb88cba300ae9e",
-        "artifact": 11570822134,
-        "dg_bot_comment": 6066453208,
-        "inventory_report": 6066485617,
-        "github_chain": "PASS",
-        "autonomy_general": "NOT_CERTIFIED",
-        "owner_notification_requested": true,
-        "owner_notification_delivered": "NOT_VERIFIED",
-        "zero_paid_apis": true,
-        "focused_recovery": {
-          "commit": "adff3567102d23379af3d4ae65fd38b8ec84c8c9",
-          "run": 37967607802,
-          "false_negative_evidence_artifact": 11631956140,
-          "cause": "Probe sends input while real screenshot is still Unity splash",
-          "qa_only_windows_builds": 0,
-          "stable_deployments": 0,
-          "cache_deletion_evidence_job": 113915750898,
-          "cache_fix_speed_verified": false
-        }
-      },
-      "accountable_director": "D01-Direccion-General",
-      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-dg-original-route-recovery-20261008",
-      "delivery_kind": "support_only",
-      "owner_transfer": {
-        "from": "chat-dg-original-route-recovery-20261008",
-        "to": "chat-work-flow-recovery-20261009",
-        "authorized_by": "Owner explicit 2026-10-09 recover pre-DG pipeline and fix delivery delays",
-        "scope": "Existing workflow recovery; unclaimed Pages workflow and camera QA only; no protected game/art source"
-      }
     },
     {
       "id": "eldoria-m04-limited-recovery-v1",
@@ -5408,6 +5350,88 @@
         "artifact_id": 11624148894,
         "returned_before_hosted_playable_qa": true
       }
+    },
+    {
+      "id": "eldoria-dg-original-route-recovery-v1",
+      "title": "DG V2 canonical inventory and authentic existing-chain acceptance",
+      "owner": "chat-work-flow-recovery-20261009",
+      "scope": [
+        "docs/evidence/dg-original-route-recovery-v1/**",
+        ".github/workflows/pages.yml",
+        "qa/eldoria-gameplay-camera-experience-probe.cjs",
+        "tests/eldoria-rendered-frame-readiness.test.cjs",
+        "tools/eldoria-rendered-frame-readiness.cjs",
+        "tests/eldoria-focused-checkout.test.cjs",
+        ".github/workflows/eldoria-m16-independent-provenance-tests.yml"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-08T18:20:03.937Z",
+      "base_main_sha": "ab8dc2b74a2fa95dce08c12641017394a1414526",
+      "status": "completed",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read existing infrastructure evidence and consolidate Directorate inventory; no player-visible changes.",
+      "paid_credits": 0,
+      "phase": "FOCUSED_CANDIDATE_FEEDBACK_RECOVERY_ACCEPTED / GENERAL_AUTONOMY_NOT_CERTIFIED",
+      "next": "Owning departments use direct implementation -> focused candidate -> independent exact-build QA. Reuse binary for verifier-only changes; build actual changed Unity source using retained cache. Preserve all other workstream claims.",
+      "runner_released": true,
+      "blocked_at": "2026-10-08T18:31:44.877Z",
+      "blocker": null,
+      "result": {
+        "run": 37824280532,
+        "source_sha": "ec6707a9b8a6a884fcea69c6f9fb88cba300ae9e",
+        "artifact": 11570822134,
+        "dg_bot_comment": 6066453208,
+        "inventory_report": 6066485617,
+        "github_chain": "PASS",
+        "autonomy_general": "NOT_CERTIFIED",
+        "owner_notification_requested": true,
+        "owner_notification_delivered": "NOT_VERIFIED",
+        "zero_paid_apis": true,
+        "focused_recovery": {
+          "commit": "adff3567102d23379af3d4ae65fd38b8ec84c8c9",
+          "run": 37967607802,
+          "false_negative_evidence_artifact": 11631956140,
+          "cause": "Probe sends input while real screenshot is still Unity splash",
+          "qa_only_windows_builds": 0,
+          "stable_deployments": 0,
+          "cache_deletion_evidence_job": 113915750898,
+          "cache_fix_speed_verified": false,
+          "cache_checkout_commit": "e2df4c12521a7fbc13697d478ec63b5ccc0b2006",
+          "accepted_runs": [
+            {
+              "run": 37967607802,
+              "artifact": 11634073412,
+              "elapsed_seconds": 254
+            },
+            {
+              "run": 37968189300,
+              "artifact": 11634805526,
+              "elapsed_seconds": 193
+            }
+          ],
+          "touch_landscape_portrait": "PASS",
+          "forest_survey_harvest_reward_reload": "PASS",
+          "actual_frame_screenshots_reviewed": true,
+          "windows_builds": 0,
+          "focused_checkout_contract": "PASS_6_TESTS_GIT_CACHE_RETENTION_AND_RENDERED_READINESS",
+          "independent_guards": "ARCHITECTURE_WORKFLOW_GOVERNANCE_QUARANTINE_M16_PASS",
+          "remaining_game_issues": "R2B EXP-BLD-02 and broader visual/experience review retain existing ownership and remain unaccepted",
+          "general_15_department_autonomy": "NOT_CERTIFIED",
+          "evidence": "docs/evidence/dg-original-route-recovery-v1/FOCUSED_FLOW_RECOVERY_2026-10-09.md"
+        }
+      },
+      "accountable_director": "D01-Direccion-General",
+      "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
+      "department_executor_owner": "chat-dg-original-route-recovery-20261008",
+      "delivery_kind": "support_only",
+      "owner_transfer": {
+        "from": "chat-dg-original-route-recovery-20261008",
+        "to": "chat-work-flow-recovery-20261009",
+        "authorized_by": "Owner explicit 2026-10-09 recover pre-DG pipeline and fix delivery delays",
+        "scope": "Existing workflow recovery; unclaimed Pages workflow and camera QA only; no protected game/art source"
+      },
+      "completed_at": "2026-10-09T17:47:52.512Z",
+      "completion_scope": "Owner-requested pre-DG iteration recovery in existing Pages/QA path; support-only. Does not close R2B, M07, World1 or certify prior owner notification receipt."
     }
   ],
   "directorate_accountability": {
