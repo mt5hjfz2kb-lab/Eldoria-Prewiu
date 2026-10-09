@@ -77,8 +77,8 @@ jobs:
             if(comments.some(c=>(c.body||'').includes(marker)))return;
             let status='BLOCKED_NO_RUNTIME_EVIDENCE',details='missing probe report';
             try{const r=JSON.parse(fs.readFileSync('eldoria-gameplay-camera-experience/report.json'));
-              status=r.all_gestures_observed?'BOUNDED_TOUCH_MOTION_PASS_ONLY':'REAL_MOBILE_EXPERIENCE_DEFECT_OPEN';
-              details=r.scenarios.map(x=>x.label+' '+x.finding+' pan='+x.pan_event_count+' axis_delta='+x.observed_axis_delta+(x.error||'')).join('; ');
+              status=r.all_gestures_observed?'BOUNDED_TOUCH_MOTION_PASS_ONLY':'BLOCKED_TOUCH_INPUT_NOT_INDEPENDENTLY_VERIFIED';
+              details=r.scenarios.map(x=>x.label+' '+x.finding+' pan='+x.pan_event_count+' axis_delta='+x.observed_axis_delta+' mouse_events='+x.mouse_pan_event_count+(x.error||'')).join('; ');
             }catch(e){details=String(e);}
             const body=[marker,'### D09/D13 — Prueba Unity WebGL real de cámara móvil',
               'Build existente R2-B: 6e0e12396a98b04333b595fff704afa3e849c30a',
@@ -86,4 +86,4 @@ jobs:
               'Veredicto: '+status,'Evidencia: '+details,
               'No evalúa todavía fuente Unity corregida 5922520. Propietario R2-B conserva el código; compilación nueva y UX visual + retest pendientes. No cierre o publicación estable.'].join('\n');
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
-            if(status!=='BOUNDED_TOUCH_MOTION_PASS_ONLY')core.setFailed('Experience baseline requires owning D09/D10 repair and new Unity build');
+            if(status!=='BOUNDED_TOUCH_MOTION_PASS_ONLY')core.setFailed('Mobile camera input was not certified; repair/probe diagnosis and new Unity build required');
