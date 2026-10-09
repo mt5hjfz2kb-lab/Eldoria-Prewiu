@@ -25,3 +25,47 @@ test('independent QA and provenance required',()=>{
  assert.throws(()=>step(s,6,'REVIEW',{actor:'runner',pass:true,proof:'false-pass'}),/INDEPENDENT_REVIEW_REQUIRED/);
 });
 test('event replay collision protection',()=>{let s=step(empty(),1,'PROPOSE',prop);assert.deepEqual(step(s,1,'PROPOSE',prop),s);assert.throws(()=>step(s,1,'PROPOSE',{...prop,owner:'another'}),/EVENT_ID_COLLISION/)});
+
+\n// Test each existing department against the same authorization, execution,
+ // independent-review and directorate-delivery contract. Synthetic, not a claim
+ // that production workers for all departments are already wired.
+const DEPARTMENTS=[
+  'Direccion-General-y-Gobierno-de-Produccion',
+  'Arquitectura-Tecnica',
+  'Automatizacion-y-Orquestacion',
+  'Investigacion-y-Desarrollo-Visual',
+  'Produccion-y-Pipeline-Artistico',
+  'Estado-del-Juego-y-Persistencia',
+  'Gameplay-y-Progresion',
+  'Mundo-Estrategico-4X',
+  'Camara-e-Interaccion-del-Jugador',
+  'Interfaz-de-Usuario-y-Experiencia-de-Usuario',
+  'Integracion-Visual-de-Escenarios',
+  'Animacion-y-Vida-del-Mundo',
+  'Control-de-Calidad-y-Certificacion',
+  'Compilacion-Publicacion-y-Experiencia-Movil',
+  'Audio-y-Produccion-Audiovisual'
+];
+for(const [index,department] of DEPARTMENTS.entries()){
+  test('department '+String(index+1).padStart(2,'0')+' '+department+' gated work contract',()=>{
+    const job_id='department_'+String(index+1).padStart(2,'0');
+    const apply=(state,n,type,details={})=>evolve(state,{id:job_id+'_event_'+n,job_id,type,...details});
+    let state=apply(empty(),1,'PROPOSE',{owner:department,scope:'isolated-verification',retry_limit:1});
+    assert.throws(()=>apply(state,2,'QUEUE',{actor:'coordinator'}),/UNAUTHORIZED_DISPATCH/);
+    state=apply(state,2,'APPROVE',{actor:'owner',authorization:'existing-approved-scope'});
+    state=apply(state,3,'QUEUE',{actor:'coordinator'});
+    state=apply(state,4,'START',{actor:'runner',run_id:'synthetic-'+index});
+    state=apply(state,5,'SUBMIT',{actor:'runner',artifact:'synthetic-proof-'+index,sha:'a'.repeat(40)});
+    assert.throws(()=>apply(state,6,'REVIEW',{actor:'runner',pass:true,proof:'self-certification'}),/INDEPENDENT_REVIEW_REQUIRED/);
+    state=apply(state,6,'REVIEW',{actor:'independent-qa',pass:false,proof:'independent-defect-'+index});
+    assert.equal(state.jobs[0].state,'CORRECTING');
+    state=apply(state,7,'QUEUE',{actor:'coordinator'});
+    state=apply(state,8,'START',{actor:'runner',run_id:'synthetic-repair-'+index});
+    state=apply(state,9,'SUBMIT',{actor:'runner',artifact:'synthetic-fixed-'+index,sha:'b'.repeat(40)});
+    state=apply(state,10,'REVIEW',{actor:'independent-qa',pass:true,proof:'independent-retest-'+index});
+    assert.equal(state.jobs[0].state,'ACCEPTED');
+    state=apply(state,11,'REPORT',{actor:'directorate',report:'synthetic-verified-'+index});
+    assert.equal(state.jobs[0].state,'REPORTED');
+    assert.equal(state.jobs[0].attempt,2);
+  });
+}
