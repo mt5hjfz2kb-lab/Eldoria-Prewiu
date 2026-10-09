@@ -424,6 +424,31 @@
         "departments_covered": 15,
         "scope": "synthetic authorized state-machine regression, not real Unity execution or independent department functionality"
       }
+    },
+    {
+      "id": "eldoria-coordinator-startup-recovery-20261009",
+      "title": "Restore existing coordinator startup and independent regression evidence",
+      "owner": "chat-work-executive-recovery-20261009",
+      "scope": [
+        ".github/workflows/eldoria-coordinator-v1.yml"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-09T12:10:43.744Z",
+      "base_main_sha": "bb641f6477e2f42709abea06e8a9134bc658cd8a",
+      "paid_credits": 0,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Repair existing workflow caller permissions only; no game or art modification",
+      "accountable_director": "D01-Direccion-General",
+      "department_executor_owner": "chat-work-executive-recovery-20261009",
+      "delivery_kind": "support_only",
+      "acceptance": [
+        "Existing coordinator starts on GitHub",
+        "Independent regression tests pass",
+        "M07 remains blocked unless its actual gates pass",
+        "No Windows runner use or stable publication"
+      ],
+      "next": "Repair missing permission at existing reusable QA caller and verify actual run; local integration awaits existing owner handoff and R2-B runner release"
     }
   ],
   "history": [
