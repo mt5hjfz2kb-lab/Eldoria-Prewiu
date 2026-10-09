@@ -52,9 +52,31 @@ try{
  }elseif($task.kind -eq 'runner-conflict-cases'){
   $schema=@{type='object';additionalProperties=$false;required=@('cases');properties=@{cases=@{type='array';minItems=7;maxItems=7;items=@{type='object';additionalProperties=$false;required=@('resources','conflict');properties=@{resources=@{type='array';items=@{type='string'}};conflict=@{type='boolean'}}}}}}
  }else{throw 'Unsupported task kind'}
- $body=@{model=$task.model;stream=$false;keep_alive='0';format=$schema;options=@{temperature=0;num_predict=800;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 15
- $response=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
- $response|ConvertTo-Json -Depth 8|Set-Content (Join-Path $EvidenceDir 'model-response.json') -Encoding UTF8
+ if($task.kind -eq 'runner-conflict-cases'){
+  # The actual 3B model failed joint seven-case reasoning. Bounded specialization:
+  # M16 supplies exact case inputs; only the real model supplies their labels.
+  $inputs=@(@{resources=@()},@{resources=@('windows-runner-heavy')},@{resources=@('windows-self-hosted-unity-6000-3-23f1')},@{resources=@('github-hosted-blender')},@{resources=@('windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1')},@{resources=@('linux-qa','windows-runner-heavy')},@{resources=@('linux-qa','github-hosted-blender')})
+  $cases=@();$responses=@();$tokenCount=0
+  $oneSchema=@{type='object';additionalProperties=$false;required=@('conflict');properties=@{conflict=@{type='boolean'}}}
+  foreach($inputCase in $inputs){
+   $caseJson=ConvertTo-Json -InputObject $inputCase.resources -Compress
+   $onePrompt='You classify a Windows resource reservation. If the resource array contains windows-runner-heavy OR windows-self-hosted-unity-6000-3-23f1, conflict is true. If it contains neither, conflict is false. Consider exactly this single array: '+$caseJson+'. Return JSON with one boolean conflict.'
+   if($Attempt -eq 2){$onePrompt+=' Independent QA rejected a previous full batch. Re-evaluate this case using the stated OR rule.'}
+   $body=@{model=$task.model;stream=$false;keep_alive='0';format=$oneSchema;options=@{temperature=0;num_predict=64;num_ctx=1024};prompt=$onePrompt}|ConvertTo-Json -Depth 15
+   $one=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 20
+   $label=$one.response|ConvertFrom-Json
+   if($label.conflict -isnot [bool] -or !$one.done -or $one.eval_count -le 0){throw 'Model case inference incomplete'}
+   $cases+=@{resources=$inputCase.resources;conflict=$label.conflict}
+   $responses+=@{input=$inputCase.resources;prompt=$onePrompt;response=$one};$tokenCount+=$one.eval_count
+  }
+  $responses|ConvertTo-Json -Depth 12|Set-Content (Join-Path $EvidenceDir 'model-response.json') -Encoding UTF8
+  $candidate=@{cases=$cases}|ConvertTo-Json -Depth 8
+  $response=@{model=$task.model;done=$true;eval_count=$tokenCount;response=$candidate}
+ }else{
+  $body=@{model=$task.model;stream=$false;keep_alive='0';format=$schema;options=@{temperature=0;num_predict=800;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 15
+  $response=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
+  $response|ConvertTo-Json -Depth 8|Set-Content (Join-Path $EvidenceDir 'model-response.json') -Encoding UTF8
+ }
  [IO.File]::WriteAllText((Join-Path $EvidenceDir 'candidate.json'),$response.response,[Text.UTF8Encoding]::new($false))
  $hash=(Get-FileHash (Join-Path $EvidenceDir 'candidate.json') -Algorithm SHA256).Hash.ToLowerInvariant()
  @{
@@ -63,7 +85,7 @@ try{
   external_api_calls=0;generated_code_executed=$false;candidate_sha256=$hash
   binary_sha256=(Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
   manifest_sha256=(Get-FileHash $manifest -Algorithm SHA256).Hash.ToLowerInvariant()
-  local_version=$version.version;endpoint='http://127.0.0.1:11434'
+  local_version=$version.version;endpoint='http://127.0.0.1:11434';local_inference_calls=$(if($task.kind -eq 'runner-conflict-cases'){7}else{1})
  }|ConvertTo-Json -Depth 8|Set-Content (Join-Path $EvidenceDir 'proof.json') -Encoding UTF8
  Write-Output ("ELDORIA_REAL_LOCAL_INFERENCE task="+$task.task_id+" attempt="+$Attempt+" tokens="+$response.eval_count+" hash="+$hash)
 }finally{

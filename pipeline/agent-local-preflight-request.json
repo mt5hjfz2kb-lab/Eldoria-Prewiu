@@ -11,7 +11,7 @@
   "budget_eur": 0,
   "max_attempts": 2,
   "expires_at": "2026-10-09T15:30:00Z",
-  "requested_at": "2026-10-09T13:02:46.659Z",
+  "requested_at": "2026-10-09T13:05:40.780Z",
   "install": false,
   "launch_agents": true,
   "modify_game": false,
@@ -35,6 +35,7 @@
     "return": "R2-B reservation unchanged; worker process/listener/lock released before independent hosted QA and next bounded task"
   },
   "previous_rejected_order": "executive-local-recovery-20261009-v1",
-  "corrected_cause": "Actual repair changed wrong label but uncovered absent two-alias coverage. Fix ambiguous BOTH wording in task context with exact resource arrays; keep model-derived conflict labels and independent seven-case oracle unchanged.",
-  "repair_revision": 2
+  "corrected_cause": "Qwen 3B failed seven-case joint semantic reasoning despite feedback. Specialize existing worker to seven isolated model decisions on exact authorized case inputs; labels still come only from real inference. Seven calls per attempt, two attempts max; no change to independent oracle or accepted first task.",
+  "repair_revision": 3,
+  "max_local_inferences_per_attempt": 7
 }

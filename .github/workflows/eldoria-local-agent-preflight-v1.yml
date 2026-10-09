@@ -327,7 +327,7 @@ jobs:
               await github.rest.issues.createComment({owner,repo,issue_number:23,body});
             }
             if(!pass){core.setFailed('Independent QA or real worker failed; bounded attempts exhausted/unavailable');return;}
-            if(index===0){
+            if(index===0||index===1){
               await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id:'eldoria-local-agent-preflight-v1.yml',ref:'main'});
               core.notice('NEXT_AUTHORIZED_REAL_LOCAL_TASK_DISPATCHED_WITHOUT_CHAT');
             }
