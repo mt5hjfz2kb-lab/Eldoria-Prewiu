@@ -1,0 +1,52 @@
+{
+    "external_api_calls":  0,
+    "model":  "qwen2.5-coder:3b",
+    "loaded_models":  {
+                          "models":  [
+                                         {
+                                             "name":  "qwen2.5-coder:3b",
+                                             "model":  "qwen2.5-coder:3b",
+                                             "size":  2081779875,
+                                             "digest":  "f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225",
+                                             "details":  {
+                                                             "parent_model":  "",
+                                                             "format":  "gguf",
+                                                             "family":  "qwen2",
+                                                             "families":  [
+                                                                              "qwen2"
+                                                                          ],
+                                                             "parameter_size":  "3.1B",
+                                                             "quantization_level":  "Q4_K_M"
+                                                         },
+                                             "expires_at":  "2026-10-08T17:36:46.9758123+02:00",
+                                             "size_vram":  2081779875,
+                                             "context_length":  2048,
+                                             "runner":  "llamacpp"
+                                         }
+                                     ]
+                      },
+    "eval_duration_ns":  510640000,
+    "digest":  "f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225",
+    "method":  "closed-grammar interpretation of generated pure PowerShell function",
+    "eval_count":  65,
+    "source_sha256":  "3ff393a1747f815029f468f9758e813811fd627857850bf1bbf76a55a6cb0f33",
+    "arbitrary_generated_code_executed":  false,
+    "status":  "PASS",
+    "test_cases_passed":  9,
+    "parsed_program":  [
+                           {
+                               "op":  "lt",
+                               "b":  "low",
+                               "a":  "value",
+                               "r":  "low"
+                           },
+                           {
+                               "op":  "gt",
+                               "b":  "high",
+                               "a":  "value",
+                               "r":  "high"
+                           }
+                       ],
+    "endpoint":  "http://127.0.0.1:11434",
+    "final_return":  "value"
+}

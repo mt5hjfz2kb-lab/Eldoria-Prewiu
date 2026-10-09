@@ -59,7 +59,16 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
-              pipeline/unity-publish-request.json|Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs)
+              pipeline/unity-publish-request.json)
+                # A closure-only transition to enabled=false must release the Windows
+                # Unity runner instead of launching one final unnecessary WebGL build.
+                if node -e "const c=require('./pipeline/unity-publish-request.json'); process.exit(c.enabled===true?0:1)"; then
+                  heavy=true
+                  break
+                fi
+                continue
+                ;;
+              Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs)
                 heavy=true
                 break
                 ;;

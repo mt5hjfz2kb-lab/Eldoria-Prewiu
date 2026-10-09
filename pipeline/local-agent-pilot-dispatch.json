@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-local-agent-isolated-pilot-v1",
+  "owner": "chat-direction-local-agent-20261008",
+  "director_issue": 23,
+  "pilot_issue": 25,
+  "kind": "one_time_authorized_local_coding_proof",
+  "model": "qwen2.5-coder:3b",
+  "independent_test_cases": 9,
+  "external_api_budget": 0,
+  "generated_code_execution_allowed": false,
+  "changes_to_game_allowed": false,
+  "coordinator": "eldoria-coordinator-v1",
+  "commit_dispatch": "ops: dispatch integrated local pilot into DG Issue #25"
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M03 Evidence V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "gate",
+    "scenario",
+    "result",
+    "source_sha",
+    "build_id",
+    "build_sha256",
+    "artifact_id",
+    "producer_id",
+    "provenance",
+    "run_id",
+    "reference",
+    "observed_at",
+    "expires_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gate": {
+      "enum": [
+        "TECH",
+        "FUNCTIONAL",
+        "PUBLISHED",
+        "MOBILE_INTERACTION",
+        "VISUAL",
+        "EXPERIENCE_REVIEW"
+      ]
+    },
+    "scenario": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "source_sha": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{40}$"
+    },
+    "build_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "build_sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provenance": {
+      "enum": [
+        "CI",
+        "INDEPENDENT_REVIEW",
+        "VERIFIED_DEPLOY"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "publication": {
+      "type": "object",
+      "required": [
+        "deployment_id",
+        "observed_build_sha256",
+        "observed_source_sha"
+      ],
+      "properties": {
+        "deployment_id": {
+          "type": "string"
+        },
+        "observed_build_sha256": {
+          "type": "string"
+        },
+        "observed_source_sha": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

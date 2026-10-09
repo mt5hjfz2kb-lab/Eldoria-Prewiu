@@ -1,0 +1,70 @@
+name: Eldoria DG - pilot result intake
+on:
+  workflow_run:
+    workflows: ["Eldoria local agent isolated pilot v1"]
+    types: [completed]
+permissions:
+  actions: read
+  contents: read
+  issues: write
+concurrency:
+  group: eldoria-dg-pilot-intake-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+jobs:
+  intake:
+    if: github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.event == 'issue_comment'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Evaluate worker evidence and notify existing Directorate issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          WORKER_RUN: ${{ github.event.workflow_run.id }}
+          WORKER_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKER_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          outcome="BLOCKED / NO AUTONOMOUS PILOT PASS"
+          details="Worker did not complete successfully or independent evidence is unavailable."
+          mkdir -p evidence
+          if [[ "$WORKER_CONCLUSION" == "success" ]]; then
+            if gh run download "$WORKER_RUN" -n "eldoria-local-agent-pilot-$WORKER_RUN" -D evidence; then
+              if [[ -f evidence/proof.json && -f evidence/final-check.json && -f evidence/pilot-report.json ]]; then
+                if jq -e '.status=="PASS" and .test_cases_passed==9 and .external_api_calls==0 and .arbitrary_generated_code_executed==false' evidence/proof.json >/dev/null &&                    jq -e '.status=="PASS"' evidence/final-check.json >/dev/null &&                    jq -e --argjson run "$WORKER_RUN" --arg sha "$WORKER_SHA" '.order_id=="eldoria-local-agent-isolated-pilot-v1" and (.run_id|tostring)==($run|tostring) and .source_sha==$sha and .independent_test_cases_passed==9 and .external_api_calls==0 and .cleanup=="PASS" and .verdict=="LOCAL_WORKER_PASS_AWAITING_INDEPENDENT_COORDINATOR_REVIEW"' evidence/pilot-report.json >/dev/null; then
+                  if node tools/eldoria-coordinator-v1.cjs --verify-local-pilot evidence "$WORKER_RUN" "$WORKER_SHA"; then
+                    outcome="LOCAL_PILOT_EVIDENCE_VERIFIED_BY_COORDINATOR"
+                    details="Existing read-only Coordinator independently verified SHA/run, task ID, local model/digest, generated code hash, all nine tests, zero external APIs, no arbitrary execution and cleanup. This does not authorize gameplay, QA or additional work."
+                  else
+                    details="Worker artifact fields passed intake precheck but failed independent Coordinator verification."
+                  fi
+                else
+                  details="Worker reported success, but one or more evidence contract checks failed."
+                fi
+              else
+                details="Worker reported success, but a required evidence file was missing."
+              fi
+            else
+              details="Worker reported success, but the expected evidence artifact could not be downloaded."
+            fi
+          fi
+          {
+            printf '%s\n' '### Dirección General — recepción automática del piloto local #25'
+            printf '\n**Estado:** %s\n' "$outcome"
+            printf '\n**Worker:** https://github.com/%s/actions/runs/%s\n' "$GH_REPO" "$WORKER_RUN"
+            printf '**Commit:** %s\n' "$WORKER_SHA"
+            printf '**Conclusión GitHub:** %s\n\n' "$WORKER_CONCLUSION"
+            printf '%s\n' "$details"
+            printf '\n**Control:** no se autoriza QA, Unity, otra ronda, gasto ni nueva misión. El resultado queda pendiente de decisión de Dirección General y validación independiente.\n'
+          } > message.txt
+          gh issue comment 25 --body-file message.txt
+      - name: Preserve independent coordinator verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-local-agent-coordinator-${{ github.event.workflow_run.id }}
+          path: evidence/coordinator-verification.json
+          if-no-files-found: warn
+          retention-days: 14
