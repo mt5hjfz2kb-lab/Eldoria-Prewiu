@@ -12,7 +12,7 @@
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
   "requested_at": "2026-10-09T13:54:34.275Z",
-  "phase": "code",
+  "phase": "build",
   "stable_publish": false,
   "install": false,
   "protected_base_sha": "c8ac15b26990742384cce142082346631be92d77",
@@ -30,5 +30,24 @@
     }
   ],
   "previous_rejected_order": "unity-local-save-notice-20261009-v2",
-  "repaired_integration_context": "Adapter falsely rejected valid empty C# literal and decoded UTF-8 via Windows default charset; fix these causes without relaxing semantic QA. Reporter now durably records rejection before bounded compare-and-rebase commit."
+  "repaired_integration_context": "Adapter falsely rejected valid empty C# literal and decoded UTF-8 via Windows default charset; fix these causes without relaxing semantic QA. Reporter now durably records rejection before bounded compare-and-rebase commit.",
+  "accepted_code_sha256": "04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de",
+  "code_generation_run_id": 37940904129,
+  "source_qa": {
+    "schema_version": 1,
+    "task_id": "unity-local-save-notice-20261009-v3",
+    "kind": "unity-save-notice-policy",
+    "source_sha": "52e90a30cdbc4c2187f25af16ccbea50a548300c",
+    "run_id": "37940904129",
+    "attempt": 1,
+    "pass": true,
+    "independent_checks": 5,
+    "candidate_sha256": "636f5e4c06ca6e2dea2c43e5d6563fc39c10f6ee61d507342f29036825f0ba9c",
+    "model": "qwen2.5-coder:3b",
+    "digest": "f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225",
+    "target": "Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs",
+    "scope": "Unity save-load feedback policy; game acceptance still requires real candidate build and independent playable/visual QA",
+    "code_sha256": "04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de",
+    "generated_code_execution": "Restricted pure C# on independent Linux; no worker execution"
+  }
 }

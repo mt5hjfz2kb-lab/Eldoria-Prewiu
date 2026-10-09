@@ -1,0 +1,1 @@
+namespace Eldoria.Presentation { public static class SaveLoadNoticePolicy { public static string Message(bool loadFailed) { return loadFailed ? "El guardado original se conserva. El progreso de esta sesión no se guardará." : ""; } } }

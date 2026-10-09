@@ -37,6 +37,7 @@ namespace Eldoria.Presentation
             {
                 Debug.LogError("Eldoria save load failed; existing save untouched: " + error);
                 ui.Initialize(new LocalGateway(new SystemClock(), new VolatileStore()));
+                ShowSaveRecoveryNotice();
             }
             SceneManager.sceneLoaded += ui.OnSceneLoaded;
             if (SceneManager.GetActiveScene().name == "Bootstrap") SceneManager.LoadScene("Valoria");
@@ -101,6 +102,61 @@ namespace Eldoria.Presentation
             }
         }
 #endif
+
+
+        private static void ShowSaveRecoveryNotice()
+        {
+            var message = SaveLoadNoticePolicy.Message(true);
+            var root = new GameObject("Eldoria save recovery notice", typeof(RectTransform),
+                typeof(Canvas), typeof(UnityEngine.UI.GraphicRaycaster));
+            Object.DontDestroyOnLoad(root);
+            var canvas = root.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 32000;
+            var backdrop = NoticeElement("Backdrop", root.transform, new Vector2(Screen.width, Screen.height), Vector2.zero);
+            var shade = backdrop.AddComponent<UnityEngine.UI.Image>();
+            shade.color = new Color(0, 0, 0, 0.65f);
+            var width = Mathf.Min(Screen.width - 32f, 560f);
+            var card = NoticeElement("Save notice", root.transform, new Vector2(width, 240), Vector2.zero);
+            card.AddComponent<UnityEngine.UI.Image>().color = new Color(0.08f, 0.12f, 0.18f, 1f);
+            NoticeText(card.transform, "Problema con el guardado", new Vector2(width - 36, 42), new Vector2(0, 83), 20);
+            NoticeText(card.transform, message, new Vector2(width - 36, 116), new Vector2(0, 10), 18);
+            var buttonObject = NoticeElement("Continue without saving", card.transform, new Vector2(width - 36, 44), new Vector2(0, -86));
+            buttonObject.AddComponent<UnityEngine.UI.Image>().color = new Color(0.18f, 0.35f, 0.50f, 1);
+            var button = buttonObject.AddComponent<UnityEngine.UI.Button>();
+            button.onClick.AddListener(() => {
+                Debug.Log("ELDORIA_SAVE_RECOVERY_NOTICE acknowledged=true");
+                Object.Destroy(root);
+            });
+            NoticeText(buttonObject.transform, "Continuar sin guardar", new Vector2(width - 48, 40), Vector2.zero, 18);
+            Debug.Log("ELDORIA_SAVE_RECOVERY_NOTICE shown=true message=" + message);
+            Debug.Log("ELDORIA_SAVE_RECOVERY_LAYOUT width=" + width + " height=240 font=18 screen=" + Screen.width + "x" + Screen.height);
+        }
+
+        private static GameObject NoticeElement(string name, Transform parent, Vector2 size, Vector2 position)
+        {
+            var element = new GameObject(name, typeof(RectTransform));
+            var rect = element.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = size;
+            rect.anchoredPosition = position;
+            return element;
+        }
+
+        private static void NoticeText(Transform parent, string value, Vector2 size, Vector2 position, int fontSize)
+        {
+            var obj = NoticeElement("Notice text", parent, size, position);
+            var text = obj.AddComponent<UnityEngine.UI.Text>();
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.text = value;
+            text.fontSize = fontSize;
+            text.color = Color.white;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.raycastTarget = false;
+        }
 
         private sealed class VolatileStore : IStateStore
         {
