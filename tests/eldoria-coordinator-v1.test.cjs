@@ -19,7 +19,7 @@ function evaluate(record, active=true) {
   } finally { fs.rmSync(cwd,{recursive:true,force:true}); }
 }
 const SHA = 'a'.repeat(40);
-const complete = () => ({id:'m07-r1-sawmill-construction-visual-correction',status:'completed',runner_released:true,result:{post_patch_capture_reviewed:true,post_patch_capture_artifact_id:123,post_patch_capture_source_sha:SHA,independent_visual_pass:true,visual_review_evidence:'review',published_webgl_verified:true,published_probe_run_id:456,published_source_sha:SHA}});
+const complete = () => ({id:'m07-r1-sawmill-construction-visual-correction',status:'completed',runner_released:true,result:{post_patch_capture_reviewed:true,post_patch_capture_artifact_id:123,post_patch_capture_source_sha:SHA,independent_visual_pass:true,visual_review_evidence:'review',published_webgl_verified:true,published_probe_run_id:456,published_source_sha:SHA,published_probe_conclusion:'success',published_probe_job_conclusion:'success',published_probe_independent_review:true}});
 test('realistic blocked M07 stays blocked',()=>{
   const o=evaluate({...complete(),status:'blocked',result:{}});
   assert.equal(o.verdict,'BLOCKED_NO_HANDOFF');
@@ -65,4 +65,17 @@ test('invalid or zero capture artifact cannot certify visual capture',()=>{
 test('skipped or absent published run cannot certify QA',()=>{
   const r=complete();r.result.published_probe_run_id='skipped';
   assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
+});
+
+test('skipped published QA job cannot be presented as PASS',()=>{
+ const r=complete();r.result.published_probe_job_conclusion='skipped';
+ assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
+});
+test('workflow SUCCESS with missing independent review still blocks handoff',()=>{
+ const r=complete();r.result.published_probe_independent_review=false;
+ assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
+});
+test('workflow without proven success blocks handoff',()=>{
+ const r=complete();delete r.result.published_probe_conclusion;
+ assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
 });
