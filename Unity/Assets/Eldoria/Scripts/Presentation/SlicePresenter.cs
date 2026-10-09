@@ -201,25 +201,27 @@ namespace Eldoria.Presentation
 
         void TryScheduleWebBottomNavFallback(Vector2 point)
         {
-            var area=Screen.safeArea;
-            bool landscape=area.width>area.height*1.08f;
-            // ReferenceUiArtPass deliberately moves the visible landscape controls:
-            // MUNDO is the far-left medallion and BASTIÓN/REINO is the far-right medallion.
-            // Keep this WebGL fallback aligned with what the player actually sees. It exists
-            // only to recover a touch that the overlay/raycast stack fails to deliver to the
-            // underlying Unity Button; normal Button navigation remains the primary path.
-            float navHeight=Mathf.Max(28f,area.height*(landscape?.18f:(68f/844f)));
-            if(point.y<area.yMin||point.y>area.yMin+navHeight)return;
-            float nx=Mathf.Clamp01((point.x-area.xMin)/Mathf.Max(1f,area.width));
-            // The controlled vertical-slice migration exposes only two real navigation
-            // surfaces: CIUDAD/REINO on the left and MUNDO on the right.
-            if(nx<.5f)
+            // Fallback must follow the actual displayed controls, not a fixed half-screen
+            // guess. ReferenceUiArtPass repositions the nav medallions differently in
+            // landscape and portrait. A half-screen fallback could open the wrong scene
+            // when tapping empty HUD space (or after responsive relayout).
+            // Unity UI Button.onClick remains authoritative; deferred fallback only
+            // recovers an unhandled release inside the matching live button rectangle.
+            if(city)
             {
-                if(!city) StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
+                if(worldNavButton==null || !worldNavButton.isActiveAndEnabled
+                    || !worldNavButton.interactable)return;
+                var rect=worldNavButton.GetComponent<RectTransform>();
+                if(rect!=null && RectTransformUtility.RectangleContainsScreenPoint(rect,point,null))
+                    StartCoroutine(WebNavFallbackAfterUi("Frontier",true));
             }
             else
             {
-                if(city) StartCoroutine(WebNavFallbackAfterUi("Frontier",true));
+                if(cityNavButton==null || !cityNavButton.isActiveAndEnabled
+                    || !cityNavButton.interactable)return;
+                var rect=cityNavButton.GetComponent<RectTransform>();
+                if(rect!=null && RectTransformUtility.RectangleContainsScreenPoint(rect,point,null))
+                    StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
             }
         }
 
