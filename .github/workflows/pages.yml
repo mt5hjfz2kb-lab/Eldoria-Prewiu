@@ -44,6 +44,12 @@ jobs:
         id: impact
         shell: bash
         run: |
+          # Explicit release switch: never build or deploy when publication is paused.
+          if ! node -e 'const c=require("./pipeline/unity-publish-request.json"); process.exit(c.enabled === true ? 0 : 1)'; then
+            echo "Publication disabled: no Windows build and no Pages deploy."
+            echo "heavy_required=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "heavy_required=true" >> "$GITHUB_OUTPUT"
             exit 0
