@@ -405,14 +405,16 @@
       "resources": [],
       "claimed_at": "2026-10-09T13:52:00+02:00",
       "base_main_sha": "fe0776f2c19c9d76517ceb1992f7857e2d18a3ab",
-      "status": "active",
-      "phase": "EXISTING_WORKFLOW_SAFE_ORCHESTRATION_TEST",
+      "status": "blocked",
+      "phase": "CONTRACT_TESTS_COMMITTED / EXECUTION_TRIGGER_PLATFORM_BLOCKED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Support-only regression proof of existing M16 workflow; no Unity, Windows runner or game edits",
       "paid_credits": 0,
-      "next": "Exercise actual existing orchestration workflow with all 15 department contracts; no claims of live execution without per-department evidence.",
+      "next": "Resume with approved workflow edit/dispatch through permitted execution surface, collect actual run logs and independent per-department worker evidence; do not claim PASS based on synthetic tests.",
       "delivery_kind": "support_only",
-      "accountable_director": "D01-Direccion-General"
+      "accountable_director": "D01-Direccion-General",
+      "blocker": "GitHub connector safety controls blocked modification of the existing authorized-orchestration workflow to enable main push; no supported workflow_dispatch action available. The 15 synthetic department state-machine tests are code-only, not executed or certification of departments.",
+      "runner_released": true
     }
   ],
   "history": [
