@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "unity-local-save-notice-v1",
-  "enabled": false,
+  "enabled": true,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
   "order_id": "unity-local-save-notice-20261009-v3",
@@ -12,7 +12,7 @@
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
   "requested_at": "2026-10-09T13:54:34.275Z",
-  "phase": "awaiting_independent_visual",
+  "phase": "build",
   "stable_publish": false,
   "install": false,
   "protected_base_sha": "78619787c5bd5073bfc12694d180288901537f60",
@@ -81,5 +81,5 @@
   "authorized_reuse_run_id": 37946776091,
   "reuse_reason": "Exact already-compiled repaired Unity tree; Linux-only independent post-ack real Commit/reward/preserved-byte retest. No Windows/model/build repetition.",
   "visual_retest_only": true,
-  "visual_retest_reason": "Reuse existing certified exact Unity binary and independent hosted QA; recapture actual warning modal after Unity splash; no Windows build or Unity source change."
+  "visual_retest_reason": "Independent D13/D10 screenshot anti-splash gate requiring actual rendered game + distinct modal picture at both viewport orientations, reuse existing immutable Unity artifact; no Windows job"
 }
