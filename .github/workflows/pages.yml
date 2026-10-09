@@ -89,8 +89,8 @@ jobs:
           echo "$files"
           # A verifier-only change must test the existing immutable Unity binary.
           # It must neither wake Windows nor attempt a legacy/stable deployment.
-          if grep -Eq '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs)$' <<< "$files" &&
-             ! grep -Ev '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs|.github/workflows/pages.yml|.github/workflows/eldoria-m16-independent-provenance-tests.yml)$' <<< "$files"; then
+          if grep -Eq '^(qa/eldoria-gameplay-camera-experience-probe.cjs|qa/r2b-building-selection-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs)$' <<< "$files" &&
+             ! grep -Ev '^(qa/eldoria-gameplay-camera-experience-probe.cjs|qa/r2b-building-selection-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs|.github/workflows/pages.yml|.github/workflows/eldoria-m16-independent-provenance-tests.yml)$' <<< "$files"; then
             echo "qa_only=true" >> "$GITHUB_OUTPUT"
             echo "candidate_only=true" >> "$GITHUB_OUTPUT"
             echo "heavy_required=false" >> "$GITHUB_OUTPUT"
@@ -832,6 +832,12 @@ jobs:
         env:
           ELDORIA_EVIDENCE_DIR: focused-choice-qa
         run: node qa/r2b-webgl-choice-probe.cjs
+      - name: Diagnose real building selection on the existing candidate
+        id: building
+        continue-on-error: true
+        env:
+          ELDORIA_EVIDENCE_DIR: focused-building-qa
+        run: node qa/r2b-building-selection-probe.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -839,6 +845,7 @@ jobs:
           path: |
             focused-camera-qa/
             focused-choice-qa/
+            focused-building-qa/
           if-no-files-found: error
       - name: Preserve independent acceptance gates
         if: always()
@@ -851,13 +858,14 @@ jobs:
         env:
           CAMERA: ${{ steps.camera.outcome }}
           CHOICE: ${{ steps.choice.outcome }}
+          BUILDING: ${{ steps.building.outcome }}
         with:
           script: |
             const {owner,repo}=context.repo;
             const body=['### Recuperación del flujo — QA focal sobre binario existente',
               'Run: https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,
               'Build SHA: '+process.env.ELDORIA_SOURCE_SHA,'URL: '+process.env.ELDORIA_URL,
-              'Touch: '+process.env.CAMERA+'; elección/persistencia: '+process.env.CHOICE,
+              'Touch: '+process.env.CAMERA+'; elección/persistencia: '+process.env.CHOICE+'; selección real de edificio (diagnóstico, pendiente de corrección si falla): '+process.env.BUILDING,
               'Windows builds: 0. Stable deployments: 0. No se declara cierre artístico/UX ni trabajo autónomo de 15 departamentos.'].join('\n');
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
 
