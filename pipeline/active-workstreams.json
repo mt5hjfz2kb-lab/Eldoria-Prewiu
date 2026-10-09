@@ -114,7 +114,15 @@
         "automatic_delivery": "VERIFIED_GITHUB_ISSUE",
         "production_worker_dispatch": "NOT_VERIFIED",
         "qa_handoff": "NOT_VERIFIED",
-        "zero_paid_apis": true
+        "zero_paid_apis": true,
+        "r2b_repair_and_retest": {
+          "original_failure_run": 37860489647,
+          "source_corrections_by": "chat-dg-v4-20261009 (not autonomous coding executor)",
+          "scoped_auto_retest_run": 37862462679,
+          "independent_qa_pass": true,
+          "independent_candidate_published": true,
+          "autonomous_coding_executor_proven": false
+        }
       },
       "runner_released": true,
       "blocker": "M07 owner still BLOCKED 2/6 gates; cannot execute R1 QA on unaccepted visual work. Existing workflow needs gate installed at fed8478394, but no READY event / successful new QA job is available for certification. M04 bounded repair-to-retest across departments remains out of scope of this QA technical gate.",
@@ -158,7 +166,7 @@
       ],
       "resources": [],
       "status": "active",
-      "phase": "UNITY TECH PASS / R2B ISOLATED WEBGL CANDIDATE REQUEST AUTHORISED / EXTERNAL BUILD PENDING",
+      "phase": "R2B REAL MOBILE FUNCTIONAL QA PASS / ISOLATED WEBGL CANDIDATE HOSTED / EXP-CAM-01 EXP-BLD-02 REMAIN OPEN",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
@@ -175,11 +183,20 @@
         "dg_auto_report_comment": 6070341811,
         "unity_tech_pass": true,
         "visual_pass": false,
-        "webgl_candidate_pass": false,
+        "webgl_candidate_pass": true,
         "game_experience_player_defects_open": [
           "EXP-CAM-01",
           "EXP-BLD-02"
-        ]
+        ],
+        "webgl_candidate_build_run": 37855962045,
+        "webgl_candidate_artifact_id": 11584812559,
+        "independent_webgl_qa_run": 37862462679,
+        "independent_webgl_qa_artifact_id": 11587216025,
+        "webgl_survey_landscape_pass": true,
+        "webgl_harvest_portrait_pass": true,
+        "webgl_reload_persistence_pass": true,
+        "isolated_candidate_hosted_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/",
+        "stable_site_unchanged_confirmed_by_run": 37862462679
       }
     },
     {
@@ -226,13 +243,32 @@
       ],
       "resources": [],
       "status": "active",
-      "phase": "AUTHORIZED R2-B CANDIDATE WEBGL REAL FUNCTIONAL QA / PROTECT STABLE",
+      "phase": "R2B WEBGL TOUCH CHOICE / REWARD / RELOAD QA PASS / PUBLISHED CANDIDATE PROVEN / BROADER UX REGRESSIONS OPEN",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Read-only QA baseline, no final R2 certification prior to integration"
+      "next": "Read-only QA baseline, no final R2 certification prior to integration",
+      "result": {
+        "webgl_test_run": 37862462679,
+        "evidence_artifact": 11587216025,
+        "landscape_survey": {
+          "passed": true,
+          "wood_before": 230,
+          "wood_after": 250,
+          "wood_reloaded": 250
+        },
+        "portrait_harvest": {
+          "passed": true,
+          "wood_before": 230,
+          "wood_after": 270,
+          "wood_reloaded": 270
+        },
+        "webgl_package_pass": true,
+        "stable_unchanged": true,
+        "visual_experience_full_signoff": false
+      }
     }
   ],
   "history": [
