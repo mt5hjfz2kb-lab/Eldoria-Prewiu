@@ -36,7 +36,7 @@
     {
       "id": "eldoria-local-agent-preflight-v1",
       "title": "Eldoria local zero-cost agent feasibility and runner governance repair",
-      "owner": "chat-local-agent-pilot-20261008",
+      "owner": "chat-local-agent-integration-20261009",
       "scope": [
         ".github/workflows/eldoria-hardware-inventory.yml",
         ".github/workflows/eldoria-local-agent-preflight-v1.yml",
@@ -49,14 +49,22 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
+      "phase": "OWNER AUTHORIZED TRANSFER / SAFE READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner.",
+      "next": "Reconcile existing Ollama and runner status; develop isolated read-only handoff proof without Unity/main writes or Windows runner interference.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-local-agent-pilot-20261008",
-      "delivery_kind": "support_only"
+      "department_executor_owner": "chat-local-agent-integration-20261009",
+      "delivery_kind": "support_only",
+      "transfer": {
+        "previous_owner": "chat-local-agent-pilot-20261008",
+        "new_owner": "chat-local-agent-integration-20261009",
+        "authorized_by": "owner explicit chat authorization 2026-10-09",
+        "scope": "existing local-agent-preflight-v1 only",
+        "preserve_existing_results": true,
+        "runner_claim": false
+      }
     },
     {
       "id": "eldoria-dg-original-route-recovery-v1",
