@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T11:51:00Z",
-  "active": [
+  "updated_at": "2026-10-10",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
       "title": "Valoria Bastion I-II presentation parity correction v1",
@@ -40,25 +41,25 @@
       ],
       "claimed_at": "2026-10-07T19:18:00Z",
       "base_main_sha": "724ca7ad097b05bc06d618f9d559357a45ee60ec",
-      "status": "active",
-      "phase": "VISUAL EVIDENCE CORRECTION / CURRENT-HEAD RECERTIFICATION",
+      "status": "cancelled",
+      "phase": "OWNER STOP — NO FURTHER EXECUTION",
       "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions remain in scope: canonical fresh-start reset and art-integrated real building-level indicators. Owner/manual review is NOT a closure dependency; close autonomously when current-head production, published WebGL, device-equivalent visual/interaction evidence, persistence and required parity gates pass. Later concrete owner feedback may revoke/reopen the PASS.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Recertify current-head UI cleanup that removes duplicate CTA clutter and prevents quest/context overlap; capture matched mobile evidence, publish exact certified build, rerun full published Bastion I-II/reset/persistence probe, inspect screenshots, then close autonomously.",
+      "next": "None. Owner requested stopping all ongoing Eldoria work. Do not resume or dispatch until owner explicitly authorizes.",
       "completed_at": null,
-      "runner_released": false,
-      "blocker": null,
+      "runner_released": true,
+      "blocker": "Explicit owner stop",
       "reopened_at": "2026-10-08T11:50:00Z",
       "previous_owner": "chat-work-parity-repair-20261008",
       "transferred_at": "2026-10-08T10:24:00Z",
       "transfer_authority": "Owner explicitly authorized continuation in this chat after Work credits were exhausted.",
       "result": {
-        "note": "Prior technical closure at 0e32b350 passed the full published macroloop, but direct visual inspection of its evidence revealed duplicate primary/context CTA clutter and landscape quest/context overlap. Same workstream reopened for bounded presentation cleanup and current-head recertification."
+        "note": "Prior technical closure at 0e32b350 passed the full published macroloop, but direct visual inspection of its evidence revealed duplicate primary/context CTA clutter and landscape quest/context overlap. Same workstream reopened for bounded presentation cleanup and current-head recertification.",
+        "stop_reason": "Owner explicitly requested all current work to stop; not a technical or visual PASS.",
+        "no_acceptance_claim": true
       }
-    }
-  ],
-  "history": [
+    },
     {
       "id": "eldoria-published-probe-integrity-v1",
       "title": "Published probe integrity and explicit certification coverage",
