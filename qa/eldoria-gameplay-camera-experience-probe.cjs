@@ -7,9 +7,9 @@ const output=process.env.ELDORIA_EVIDENCE_DIR||'eldoria-gameplay-camera-experien
 const site=process.env.ELDORIA_URL||'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/';
 fs.mkdirSync(output,{recursive:true});
 const results={schema_version:1,source_candidate_sha:process.env.ELDORIA_SOURCE_SHA||'6e0e12396a98b04333b595fff704afa3e849c30a',url:site,independent_review:'AUTOMATED_TOUCH_GEOMETRY_ONLY',scenarios:[],visual_experience_accepted:false,gameplay_defect_certified:false};
-async function run(browser,label,viewport,axis){
+async function run(browser,label,viewport,axis,cssOverride=false){
  const context=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36'});
- const page=await context.newPage(); const logs=[];const item={label,viewport,axis,pass:false};
+ const page=await context.newPage(); const logs=[];const item={label,viewport,axis,css_override_experiment:cssOverride,pass:false};
  page.on('console',m=>logs.push(m.text())); page.on('pageerror',e=>logs.push('PAGEERROR '+e));
  try {
   await page.goto(site+'?exp-probe='+label,{waitUntil:'domcontentloaded',timeout:60000});
@@ -18,6 +18,7 @@ async function run(browser,label,viewport,axis){
   const readyUntil=Date.now()+120000;
   while(Date.now()<readyUntil&&!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x))){await page.waitForTimeout(300);}
   if(!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x)))throw Error('BLOCKED_UNITY_PLAYABLE_STATE_NOT_OBSERVED');
+  if(cssOverride)await page.addStyleTag({content:'html,body,#unity-container,#unity-canvas,canvas{touch-action:none!important;overscroll-behavior:none!important}'});
   const canvas=page.locator('canvas').first(),rect=await canvas.boundingBox();if(!rect)throw Error('NO_UNITY_CANVAS');
   item.web_input_css=await canvas.evaluate(el=>({canvasTouchAction:getComputedStyle(el).touchAction,canvasPointerEvents:getComputedStyle(el).pointerEvents,canvasStyle:el.getAttribute('style'),parents:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(x=>({tag:x.tagName,touchAction:getComputedStyle(x).touchAction,overflow:getComputedStyle(x).overflow})),bodyTouchAction:getComputedStyle(document.body).touchAction,bodyOverflow:getComputedStyle(document.body).overflow,postbuildMarkerPresent:!!document.getElementById('eldoria-webgl-touch-action-v1')}));
   if(process.env.ELDORIA_REQUIRE_TOUCH_FIX==='1' && (!item.web_input_css.postbuildMarkerPresent || item.web_input_css.canvasTouchAction!=='none'))throw Error('UNITY_WEBGL_TOUCH_ACTION_FIX_NOT_IN_BUILT_CANDIDATE');
@@ -50,4 +51,4 @@ async function run(browser,label,viewport,axis){
   item.console_sample=logs.slice(0,15);
  }catch(err){item.finding='BLOCKED_PROBE';item.error=String(err);await page.screenshot({path:output+'/'+label+'-error.png'}).catch(()=>{});}finally{results.scenarios.push(item);await context.close();}
 }
-(async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{await run(browser,'landscape-horizontal',{width:844,height:390},'horizontal');await run(browser,'portrait-vertical',{width:390,height:844},'vertical');}finally{await browser.close();}results.all_gestures_observed=results.scenarios.every(x=>x.pass);fs.writeFileSync(output+'/report.json',JSON.stringify(results,null,2));console.log('ELDORIA_REAL_TOUCH_EXPERIENCE',JSON.stringify(results));if(!results.all_gestures_observed)process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1;});
+(async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{await run(browser,'landscape-horizontal',{width:844,height:390},'horizontal');await run(browser,'portrait-vertical',{width:390,height:844},'vertical');await run(browser,'landscape-css-override-touch',{width:844,height:390},'horizontal',true);}finally{await browser.close();}results.all_gestures_observed=results.scenarios.filter(x=>!x.css_override_experiment).every(x=>x.pass);results.css_experiment_restored=results.scenarios.find(x=>x.css_override_experiment)?.pass===true;fs.writeFileSync(output+'/report.json',JSON.stringify(results,null,2));console.log('ELDORIA_REAL_TOUCH_EXPERIENCE',JSON.stringify(results));if(!results.all_gestures_observed)process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1;});
