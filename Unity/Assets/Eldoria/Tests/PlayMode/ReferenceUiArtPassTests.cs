@@ -103,7 +103,9 @@ namespace Eldoria.Tests
                     var state=gateway.Snapshot();
                     if(Eldoria.Domain.SliceRules.CurrentObjectiveKey(state)=="b2.complete"&&
                        state.March.Phase=="idle"&&SceneManager.GetActiveScene().name=="Valoria")break;
-                    var primary=GameObject.Find("CONTINUAR").GetComponent<Button>();
+                    var primaryObject=GameObject.Find("CONTINUAR");
+                    Assert.That(primaryObject,Is.Not.Null,"Guided HUD missing at "+Eldoria.Domain.SliceRules.CurrentObjectiveKey(state));
+                    var primary=primaryObject.GetComponent<Button>();
                     Assert.That(primary.interactable,Is.True,"Guided action stalled at "+Eldoria.Domain.SliceRules.CurrentObjectiveKey(state));
                     primary.onClick.Invoke();
                     yield return null;
