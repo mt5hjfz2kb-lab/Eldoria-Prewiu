@@ -2,7 +2,7 @@ param([string]$EvidenceDir,[int]$Attempt=1,[string]$FeedbackFile='')
 $ErrorActionPreference='Stop'
 $ProgressPreference='SilentlyContinue'
 New-Item -ItemType Directory -Force -Path $EvidenceDir | Out-Null
-$task=Get-Content (Join-Path $EvidenceDir 'task.json') -Raw | ConvertFrom-Json
+$task=Get-Content (Join-Path $EvidenceDir 'task.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 if($task.issuer -ne 'eldoria-coordinator-v1' -or $task.owner -ne 'chat-work-local-recovery-20261009' -or $task.model -ne 'qwen2.5-coder:3b' -or $task.budget_eur -ne 0 -or $Attempt -gt 2){throw 'Untrusted order'}
 $live=Invoke-RestMethod ("https://raw.githubusercontent.com/"+$env:GITHUB_REPOSITORY+"/main/pipeline/active-workstreams.json") -TimeoutSec 30
 $order=Invoke-RestMethod ("https://raw.githubusercontent.com/"+$env:GITHUB_REPOSITORY+"/main/pipeline/agent-local-preflight-request.json") -TimeoutSec 30
@@ -42,7 +42,7 @@ try{
  $prompt=$task.prompt
  if($Attempt -eq 2){
   if(!(Test-Path $FeedbackFile)){throw 'Independent feedback absent'}
-  $feedback=Get-Content $FeedbackFile -Raw
+  $feedback=Get-Content $FeedbackFile -Raw -Encoding UTF8
   $prompt+=[Environment]::NewLine+"Independent QA rejected your previous candidate. Correct only this task. QA feedback: $feedback"
  }
  # Structural schema prevents omission; semantic values still come from Qwen and independent QA.
@@ -76,7 +76,10 @@ try{
   $response=@{model=$task.model;done=$true;eval_count=$tokenCount;response=$candidate}
  }else{
   $body=@{model=$task.model;stream=$false;keep_alive='0';format=$schema;options=@{temperature=0;num_predict=800;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 15
-  $response=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
+  $rawResponse=Invoke-WebRequest 'http://127.0.0.1:11434/api/generate' -UseBasicParsing -Method Post -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
+ $rawResponse.RawContentStream.Position=0
+ $reader=[IO.StreamReader]::new($rawResponse.RawContentStream,[Text.Encoding]::UTF8)
+ try{$response=$reader.ReadToEnd()|ConvertFrom-Json}finally{$reader.Dispose()}
   $response|ConvertTo-Json -Depth 8|Set-Content (Join-Path $EvidenceDir 'model-response.json') -Encoding UTF8
  }
  if($task.kind -eq 'unity-save-notice-policy'){

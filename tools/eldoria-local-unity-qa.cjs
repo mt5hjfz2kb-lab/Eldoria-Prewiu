@@ -17,9 +17,9 @@ function verifyCode(folder,source,run,attempt){
  const {verify}=require('./eldoria-local-recovery-v1.cjs'); // Performs shared independent provenance/cleanup checks.
  const shared=verify(folder,source,run,attempt);
  const read=n=>JSON.parse(fs.readFileSync(path.join(folder,n),'utf8').replace(/^\uFEFF/,''));
- const candidate=read('candidate.json');assert.deepEqual(Object.keys(candidate),['source']);assert.equal(typeof candidate.source,'string');assert(candidate.source.length<2400);
+ const candidate=read('candidate.json');assert.deepEqual(Object.keys(candidate),['source']);assert.equal(typeof candidate.source,'string');assert(candidate.source.length<2400);assert(!/[ÃÂ\uFFFD]/.test(candidate.source),'UTF-8 player text was corrupted by the adapter');
  // Compile/execute only this fully constrained pure expression: no arbitrary generated C#.
- const grammar=/^\s*namespace\s+Eldoria\.Presentation\s*\{\s*public\s+static\s+class\s+SaveLoadNoticePolicy\s*\{\s*public\s+static\s+string\s+Message\s*\(\s*bool\s+loadFailed\s*\)\s*\{\s*return\s+!?loadFailed\s*\?\s*(?:"[^"\\\r\n]{1,350}"|string\.Empty)\s*:\s*(?:"[^"\\\r\n]{1,350}"|string\.Empty)\s*;\s*\}\s*\}\s*\}\s*$/;
+ const grammar=/^\s*namespace\s+Eldoria\.Presentation\s*\{\s*public\s+static\s+class\s+SaveLoadNoticePolicy\s*\{\s*public\s+static\s+string\s+Message\s*\(\s*bool\s+loadFailed\s*\)\s*\{\s*return\s+!?loadFailed\s*\?\s*(?:"[^"\\\r\n]{0,350}"|string\.Empty)\s*:\s*(?:"[^"\\\r\n]{0,350}"|string\.Empty)\s*;\s*\}\s*\}\s*\}\s*$/;
  assert(grammar.test(candidate.source),'Unsupported C# syntax: use the requested pure ternary, exact namespace/class/method, ordinary string literals and string.Empty only');
  const dir=path.join(folder,'independent-csharp');fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(path.join(dir,'Policy.cs'),candidate.source);

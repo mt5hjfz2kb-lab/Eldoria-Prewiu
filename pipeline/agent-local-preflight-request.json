@@ -4,14 +4,14 @@
   "enabled": true,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
-  "order_id": "unity-local-save-notice-20261009-v2",
+  "order_id": "unity-local-save-notice-20261009-v3",
   "authorization": "Owner explicit continuation into real Unity programming 2026-10-09 15:19 Europe/Madrid; DG/M16 coordination comments 6081801910 / 6081802143",
   "department": "D06",
   "model": "qwen2.5-coder:3b",
   "budget_eur": 0,
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
-  "requested_at": "2026-10-09T13:44:34.593Z",
+  "requested_at": "2026-10-09T13:54:34.275Z",
   "phase": "code",
   "stable_publish": false,
   "install": false,
@@ -29,6 +29,6 @@
       "kind": "unity-save-notice-policy"
     }
   ],
-  "previous_rejected_order": "unity-local-save-notice-20261009-v1",
-  "repaired_integration_context": "Qwen omitted namespace/class/method braces twice. Trusted fixed compiler scaffold; model produces only the actual return implementation, same compiler and independent semantics."
+  "previous_rejected_order": "unity-local-save-notice-20261009-v2",
+  "repaired_integration_context": "Adapter falsely rejected valid empty C# literal and decoded UTF-8 via Windows default charset; fix these causes without relaxing semantic QA. Reporter now durably records rejection before bounded compare-and-rebase commit."
 }
