@@ -112,7 +112,7 @@ async function scenario(browser,label,viewport,dpr=1){
   const l=layout.match(/width=([0-9.]+) height=([0-9.]+) font=([0-9.]+)(?: scale=([0-9.]+))? screen=([0-9]+)x([0-9]+)/),noticeScale=Number(l[4]||1);
   assert(Number(l[1])<=Number(l[5])-32&&Number(l[2])<=Number(l[6])-32,'Modal clipped in viewport');
   assert(Number(l[3])*box.width/cv.width>=16,'Actual notice font is unreadable on high-DPI device');
-  await page.screenshot({path:out+'/'+label+'-notice.png'});
+  // Unity can emit layout logs before the first rendered player frame replaces its splash.\n  // Allow real WebGL frames to settle before taking visual-review evidence.\n  await sleep(2400);\n  await page.screenshot({path:out+'/'+label+'-notice.png'});
   // Exercise genuine underlying navigation/reset controls while the warning is open.
   const blockedStart=logs.length;
   for(const id of ['worldNav','reset','reset']){
