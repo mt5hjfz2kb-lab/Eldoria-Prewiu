@@ -153,9 +153,9 @@ namespace Eldoria.Presentation
                 var legacy=UnityEngine.Input.GetTouch(0);
                 legacyTouchUsed=true;
                 legacyTouchPoint=legacy.position;
-                touchPressed=legacy.phase==TouchPhase.Began;
-                touchReleased=legacy.phase==TouchPhase.Ended||legacy.phase==TouchPhase.Canceled;
-                touchHeld=legacy.phase==TouchPhase.Began||legacy.phase==TouchPhase.Moved||legacy.phase==TouchPhase.Stationary;
+                touchPressed=legacy.phase==UnityEngine.TouchPhase.Began;
+                touchReleased=legacy.phase==UnityEngine.TouchPhase.Ended||legacy.phase==UnityEngine.TouchPhase.Canceled;
+                touchHeld=legacy.phase==UnityEngine.TouchPhase.Began||legacy.phase==UnityEngine.TouchPhase.Moved||legacy.phase==UnityEngine.TouchPhase.Stationary;
                 if(touchPressed||touchReleased)
                     Debug.Log("ELDORIA_PLAYABLE_TOUCH_SOURCE legacy=True phase="+legacy.phase);
             }
