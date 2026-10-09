@@ -1,0 +1,309 @@
+{
+  "completed_at": "2026-10-09T23:12:31.478Z",
+  "result": {
+    "verdict": "DIRECT FLOW RECOVERED / BUILD PASS / EXACT CANDIDATE QA PASS / EXACT ARTIFACT RELEASE PASS / PUBLISHED FULL I-II PASS",
+    "historical_reference": "2026-10-08 around 14:00 Europe/Madrid; last preceding main bdeef4038d03a62dcc207c93005bbad868fd7909",
+    "build_source_sha": "3bfb1f5d48e7e14f118990f0942cf172a432512c",
+    "build_run_id": 37999090263,
+    "build_artifact_id": 11648897327,
+    "candidate_probe_run_id": 38001165965,
+    "candidate_probe_artifact_id": 11649201968,
+    "publish_run_id": 38002114168,
+    "published_probe_run_id": 38002471123,
+    "published_probe_artifact_id": 11649573545,
+    "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+    "published_file_identity": {
+      "files": 45,
+      "all_match": true
+    },
+    "full_bastion_i_ii": true,
+    "landscape": true,
+    "portrait": true,
+    "persistence": true,
+    "reset": true,
+    "runtime_errors": 0,
+    "visual_quality_pass": false,
+    "physical_device_tested": false,
+    "paid_credits": 0,
+    "evidence": "docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json"
+  },
+  "binary_identity": {
+    "publish_run_id": 38002114168,
+    "build_run_id": 37999090263,
+    "artifact_id": 11648897327,
+    "files": 45,
+    "all_match": true,
+    "results": [
+      {
+        "path": "Build/WebGL.data.unityweb",
+        "match": true,
+        "sha256": "abb6eb24253addbd9cbb9cf7241991ca57db174de463dd98fdac0c62c42dfc6d",
+        "published_sha256": "abb6eb24253addbd9cbb9cf7241991ca57db174de463dd98fdac0c62c42dfc6d"
+      },
+      {
+        "path": "Build/WebGL.framework.js.unityweb",
+        "match": true,
+        "sha256": "89e1e713d0b85b64f9e694051d807f4046c967354aeb41cf6f8f6d4bf5905e97",
+        "published_sha256": "89e1e713d0b85b64f9e694051d807f4046c967354aeb41cf6f8f6d4bf5905e97"
+      },
+      {
+        "path": "Build/WebGL.loader.js",
+        "match": true,
+        "sha256": "fc85fb70c04e761ee08ffec7d5ea720ff81676c3e3c099d65656aeee3fe0a01b",
+        "published_sha256": "fc85fb70c04e761ee08ffec7d5ea720ff81676c3e3c099d65656aeee3fe0a01b"
+      },
+      {
+        "path": "Build/WebGL.wasm.unityweb",
+        "match": true,
+        "sha256": "3579ed81569bfb593a84733e1d51cdc9d4693a25fa090d0b7c0584e23758f4aa",
+        "published_sha256": "3579ed81569bfb593a84733e1d51cdc9d4693a25fa090d0b7c0584e23758f4aa"
+      },
+      {
+        "path": "index.html",
+        "match": true,
+        "sha256": "f5b362dd80277239af1d8e7053c640b71e9ca07cce61327f764fe0bb6494ef27",
+        "published_sha256": "f5b362dd80277239af1d8e7053c640b71e9ca07cce61327f764fe0bb6494ef27"
+      },
+      {
+        "path": "parcel-source.json",
+        "match": true,
+        "sha256": "c0bfb230dfad4bf11eef80c9fefbbf88631886cd370b7e05a324cb256068f71e",
+        "published_sha256": "c0bfb230dfad4bf11eef80c9fefbbf88631886cd370b7e05a324cb256068f71e"
+      },
+      {
+        "path": "splat-state-1.ply",
+        "match": true,
+        "sha256": "0c483a4a228d581d633a14856301dd04e9eb19bae2a5500f5b5cabd3f72401d7",
+        "published_sha256": "0c483a4a228d581d633a14856301dd04e9eb19bae2a5500f5b5cabd3f72401d7"
+      },
+      {
+        "path": "splat-state-0.ply",
+        "match": true,
+        "sha256": "c1619acdb59a06facb23bf6c2353d80c3efa47c97fe47307c95cfc2ca862d6f0",
+        "published_sha256": "c1619acdb59a06facb23bf6c2353d80c3efa47c97fe47307c95cfc2ca862d6f0"
+      },
+      {
+        "path": "splat-state-2.ply",
+        "match": true,
+        "sha256": "819679ce9fcc08ab44577e162a88032fee10844a39e7f628b4282e1a219b57b8",
+        "published_sha256": "819679ce9fcc08ab44577e162a88032fee10844a39e7f628b4282e1a219b57b8"
+      },
+      {
+        "path": "splat-state-3.ply",
+        "match": true,
+        "sha256": "0a718c67192c007f383b76cbe5ac87674eac60b2bca2ea7f4fa8f3636f6ab2c4",
+        "published_sha256": "0a718c67192c007f383b76cbe5ac87674eac60b2bca2ea7f4fa8f3636f6ab2c4"
+      },
+      {
+        "path": "TemplateData/favicon.ico",
+        "match": true,
+        "sha256": "9c13beb90ee8f70580d52a21d5233970d1c89e71e4a34a462c22610941c3c77f",
+        "published_sha256": "9c13beb90ee8f70580d52a21d5233970d1c89e71e4a34a462c22610941c3c77f"
+      },
+      {
+        "path": "TemplateData/fullscreen-button.png",
+        "match": true,
+        "sha256": "21221581673a54b8139d408d4a3f8d2b879e86827d4b6fc53b995ff7a99ee3e9",
+        "published_sha256": "21221581673a54b8139d408d4a3f8d2b879e86827d4b6fc53b995ff7a99ee3e9"
+      },
+      {
+        "path": "TemplateData/progress-bar-empty-dark.png",
+        "match": true,
+        "sha256": "bbee7131afe8a3365906240d89184dc86234c119467f390bc4bc6802328fdb4d",
+        "published_sha256": "bbee7131afe8a3365906240d89184dc86234c119467f390bc4bc6802328fdb4d"
+      },
+      {
+        "path": "TemplateData/MemoryProfiler.png",
+        "match": true,
+        "sha256": "0ce87be20d0c24ab6cb73b57de2004da261cc2a641e69319c6ae3fe11fc85483",
+        "published_sha256": "0ce87be20d0c24ab6cb73b57de2004da261cc2a641e69319c6ae3fe11fc85483"
+      },
+      {
+        "path": "TemplateData/progress-bar-empty-light.png",
+        "match": true,
+        "sha256": "143696c060ad43d6c30f19ff5f49000927a139a2a1e4c9f45fafaa2b90d7d2be",
+        "published_sha256": "143696c060ad43d6c30f19ff5f49000927a139a2a1e4c9f45fafaa2b90d7d2be"
+      },
+      {
+        "path": "TemplateData/progress-bar-full-dark.png",
+        "match": true,
+        "sha256": "3306a6244dcb3926fca38a28e3ced589df8ff1beed955eb17c0bbf01c918bc62",
+        "published_sha256": "3306a6244dcb3926fca38a28e3ced589df8ff1beed955eb17c0bbf01c918bc62"
+      },
+      {
+        "path": "TemplateData/progress-bar-full-light.png",
+        "match": true,
+        "sha256": "12395ea785480c5cdf12fade6e6cbf49666d5bb1cef7240c113dbcba6bdc5c87",
+        "published_sha256": "12395ea785480c5cdf12fade6e6cbf49666d5bb1cef7240c113dbcba6bdc5c87"
+      },
+      {
+        "path": "TemplateData/style.css",
+        "match": true,
+        "sha256": "8e3625e108a61dcd1d31303376d9e02d7bdc08921d254e8f4359b892b3825caa",
+        "published_sha256": "8e3625e108a61dcd1d31303376d9e02d7bdc08921d254e8f4359b892b3825caa"
+      },
+      {
+        "path": "TemplateData/unity-logo-dark.png",
+        "match": true,
+        "sha256": "c1b72d26c096487dabc948b54bc203f8dac7ed4e3f5733918798e858acb4b159",
+        "published_sha256": "c1b72d26c096487dabc948b54bc203f8dac7ed4e3f5733918798e858acb4b159"
+      },
+      {
+        "path": "TemplateData/unity-logo-light.png",
+        "match": true,
+        "sha256": "002990aea0d946833cadc1519d5b7e50a4570bd537a0517dd79a59d3eec84da7",
+        "published_sha256": "002990aea0d946833cadc1519d5b7e50a4570bd537a0517dd79a59d3eec84da7"
+      },
+      {
+        "path": "TemplateData/unity-logo-title-footer.png",
+        "match": true,
+        "sha256": "9e8b3bdb67c2446d16362fe59449d892100931dbbadfe6a9d923a4142b57a79f",
+        "published_sha256": "9e8b3bdb67c2446d16362fe59449d892100931dbbadfe6a9d923a4142b57a79f"
+      },
+      {
+        "path": "TemplateData/webmemd-icon.png",
+        "match": true,
+        "sha256": "c56f5494640cedda273aad38d58e6ab9da625d5b3f4d875c0ff92c6192a569c2",
+        "published_sha256": "c56f5494640cedda273aad38d58e6ab9da625d5b3f4d875c0ff92c6192a569c2"
+      },
+      {
+        "path": "valoria-bastion-ii.png",
+        "match": true,
+        "sha256": "37b05cb1b2793cce75305348bed296c3b851136bfc9a0217f0196e770569f264",
+        "published_sha256": "37b05cb1b2793cce75305348bed296c3b851136bfc9a0217f0196e770569f264"
+      },
+      {
+        "path": "valoria-state-0.png",
+        "match": true,
+        "sha256": "e15012ea4a77ee05001cbe2fe0160e58a247b04920421c22b438376008d79dde",
+        "published_sha256": "e15012ea4a77ee05001cbe2fe0160e58a247b04920421c22b438376008d79dde"
+      },
+      {
+        "path": "valoria-state-1.png",
+        "match": true,
+        "sha256": "047d1020a62307e798379698d46ce972d40c541af4a122aedcab1363c4a5be56",
+        "published_sha256": "047d1020a62307e798379698d46ce972d40c541af4a122aedcab1363c4a5be56"
+      },
+      {
+        "path": "valoria-state-2.png",
+        "match": true,
+        "sha256": "e15012ea4a77ee05001cbe2fe0160e58a247b04920421c22b438376008d79dde",
+        "published_sha256": "e15012ea4a77ee05001cbe2fe0160e58a247b04920421c22b438376008d79dde"
+      },
+      {
+        "path": "valoria-state-3.png",
+        "match": true,
+        "sha256": "ef1a822deef9515315e56627ac7c0ddd99e0e77036ee9bada576c5046b75ba06",
+        "published_sha256": "ef1a822deef9515315e56627ac7c0ddd99e0e77036ee9bada576c5046b75ba06"
+      },
+      {
+        "path": "valoria-state0-pan-0.5-zoom0.9.png",
+        "match": true,
+        "sha256": "4d6557f7614d98e0fb894e4f4c29e4ae6b3c16141c0e933f5dc248a9fe94b4ae",
+        "published_sha256": "4d6557f7614d98e0fb894e4f4c29e4ae6b3c16141c0e933f5dc248a9fe94b4ae"
+      },
+      {
+        "path": "valoria-state0-pan-0.5-zoom1.1.png",
+        "match": true,
+        "sha256": "95d568fdcbf0043ce46641d497b165779fb4aec69db294522d8f2a4f82d4fb82",
+        "published_sha256": "95d568fdcbf0043ce46641d497b165779fb4aec69db294522d8f2a4f82d4fb82"
+      },
+      {
+        "path": "valoria-state0-pan-0.5-zoom1.png",
+        "match": true,
+        "sha256": "716ed7a5e8fc57a80422fac6ef6d8685d30ba747a4c42de12a502101559ce5bb",
+        "published_sha256": "716ed7a5e8fc57a80422fac6ef6d8685d30ba747a4c42de12a502101559ce5bb"
+      },
+      {
+        "path": "valoria-state0-pan0-zoom0.9.png",
+        "match": true,
+        "sha256": "9e852acabf33204c1a713bb5e1591b3cc1948cfeeedbc41003c47879d94baa05",
+        "published_sha256": "9e852acabf33204c1a713bb5e1591b3cc1948cfeeedbc41003c47879d94baa05"
+      },
+      {
+        "path": "valoria-state0-pan0-zoom1.1.png",
+        "match": true,
+        "sha256": "27e2237ce7bf1687388533a0e84d05f68f3d96914c90635e64bfccd5887f084f",
+        "published_sha256": "27e2237ce7bf1687388533a0e84d05f68f3d96914c90635e64bfccd5887f084f"
+      },
+      {
+        "path": "valoria-state0-pan0-zoom1.png",
+        "match": true,
+        "sha256": "c4d743e5e7edb7e13838cb82b6b5f1fe13d6c9c06e54cae3f648da99dddda552",
+        "published_sha256": "c4d743e5e7edb7e13838cb82b6b5f1fe13d6c9c06e54cae3f648da99dddda552"
+      },
+      {
+        "path": "valoria-state0-pan0.5-zoom0.9.png",
+        "match": true,
+        "sha256": "a9a4f3e39855c8c0f816eb16a8e23130ef692d0f19270af77d8f0f2085b457ec",
+        "published_sha256": "a9a4f3e39855c8c0f816eb16a8e23130ef692d0f19270af77d8f0f2085b457ec"
+      },
+      {
+        "path": "valoria-state0-pan0.5-zoom1.1.png",
+        "match": true,
+        "sha256": "60859628a01b1fa933a4ced503c0ead280684ccae1ba54c51803136b9201476f",
+        "published_sha256": "60859628a01b1fa933a4ced503c0ead280684ccae1ba54c51803136b9201476f"
+      },
+      {
+        "path": "valoria-state0-pan0.5-zoom1.png",
+        "match": true,
+        "sha256": "2539b9582bcd8c271b91b7543d9846ed7370c7a864cd2631e515327a94268302",
+        "published_sha256": "2539b9582bcd8c271b91b7543d9846ed7370c7a864cd2631e515327a94268302"
+      },
+      {
+        "path": "valoria-state3-pan-0.5-zoom0.9.png",
+        "match": true,
+        "sha256": "17809a93dc7fddc341cfca926d58685d2d6d5d8e543403e966d6adfb89c629ed",
+        "published_sha256": "17809a93dc7fddc341cfca926d58685d2d6d5d8e543403e966d6adfb89c629ed"
+      },
+      {
+        "path": "valoria-state3-pan-0.5-zoom1.1.png",
+        "match": true,
+        "sha256": "a15918b1292fc697f97f81c0a1803e48502def35b87add3ab8eaeda934f018fe",
+        "published_sha256": "a15918b1292fc697f97f81c0a1803e48502def35b87add3ab8eaeda934f018fe"
+      },
+      {
+        "path": "valoria-state3-pan-0.5-zoom1.png",
+        "match": true,
+        "sha256": "ff450592ced009fa768ceb6320f795ab9ba7e2b9ee4b1c0d2ad0bb6e17ff2115",
+        "published_sha256": "ff450592ced009fa768ceb6320f795ab9ba7e2b9ee4b1c0d2ad0bb6e17ff2115"
+      },
+      {
+        "path": "valoria-state3-pan0-zoom0.9.png",
+        "match": true,
+        "sha256": "f788484dbdbe92d1759d05a7aa051519aacab45eda68f08dcedce638e04d44e4",
+        "published_sha256": "f788484dbdbe92d1759d05a7aa051519aacab45eda68f08dcedce638e04d44e4"
+      },
+      {
+        "path": "valoria-state3-pan0-zoom1.1.png",
+        "match": true,
+        "sha256": "812e8cdf8f713bbfb9acfba8fc4953c6834f71cc748e9c790f86149e8cdb3b4b",
+        "published_sha256": "812e8cdf8f713bbfb9acfba8fc4953c6834f71cc748e9c790f86149e8cdb3b4b"
+      },
+      {
+        "path": "valoria-state3-pan0-zoom1.png",
+        "match": true,
+        "sha256": "e9f82080d3fc0abf684f9b74d3734ed860ba18e49b80cb4a1865ef6b5f0b9aaf",
+        "published_sha256": "e9f82080d3fc0abf684f9b74d3734ed860ba18e49b80cb4a1865ef6b5f0b9aaf"
+      },
+      {
+        "path": "valoria-state3-pan0.5-zoom0.9.png",
+        "match": true,
+        "sha256": "7927b563d057c5e359f0d0b35d49509f081d3e186f313ebcc23af7596c4e8d06",
+        "published_sha256": "7927b563d057c5e359f0d0b35d49509f081d3e186f313ebcc23af7596c4e8d06"
+      },
+      {
+        "path": "valoria-state3-pan0.5-zoom1.1.png",
+        "match": true,
+        "sha256": "1603f9a573fea18f2d2ce9af8e15839912b1e57ece3b763c225473448e598fa4",
+        "published_sha256": "1603f9a573fea18f2d2ce9af8e15839912b1e57ece3b763c225473448e598fa4"
+      },
+      {
+        "path": "valoria-state3-pan0.5-zoom1.png",
+        "match": true,
+        "sha256": "93d9905cfdbe58492aea6fded81770133d8a3fb0df95fe976fcd1ed4ab70dee9",
+        "published_sha256": "93d9905cfdbe58492aea6fded81770133d8a3fb0df95fe976fcd1ed4ab70dee9"
+      }
+    ]
+  }
+}

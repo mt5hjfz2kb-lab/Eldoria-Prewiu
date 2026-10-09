@@ -2,7 +2,8 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": "eldoria-ci-production-recovery-v1",
       "title": "Restore controlled Unity Windows WebGL production",
@@ -12,31 +13,51 @@
         "pipeline/unity-publish-request.json",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json"
       ],
-      "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
-        "github-pages-unity-owner"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-10",
       "base_main_sha": "c27c2faaa417785669cfbfb40fc5bc82e35d6430",
-      "status": "active",
-      "phase": "EXACT CANDIDATE QA PASS / RELEASE AND PUBLISHED VERIFICATION",
+      "status": "completed",
+      "phase": "RECOVERY VERIFIED / PUBLISHED FULL LOOP PASS / CLOSED",
       "paid_credits": 0,
-      "next": "Promote through existing Pages workflow; verify actual published build and close after PASS. Candidate QA 38001165965 verified exact build 37999090263, SHA 3bfb1f5d48e7e14f118990f0942cf172a432512c; full I-II and reset/persistence passed both orientations, no runtime errors.",
+      "next": "No further recovery execution. Next owner-authorized bounded Unity task uses the restored direct flow; no departmental round or migration restart.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "CI/build-only transport recovery; no player-visible art, geometry, materials, camera or gameplay changes. Preserve existing production authority and certification gates.",
       "previous_owner": "chat-github-ci-recovery-20261010",
       "transferred_at": "2026-10-10",
       "transfer_authority": "Owner explicitly requests restoration of the complete productive flow in this session and instructs continuation through completion. Reuse completed build; no active Windows production run remains. Existing recovery workstream continues; no duplicate recovery is opened.",
       "result": {
+        "verdict": "DIRECT FLOW RECOVERED / BUILD PASS / EXACT CANDIDATE QA PASS / EXACT ARTIFACT RELEASE PASS / PUBLISHED FULL I-II PASS",
+        "historical_reference": "2026-10-08 around 14:00 Europe/Madrid; last preceding main bdeef4038d03a62dcc207c93005bbad868fd7909",
+        "build_source_sha": "3bfb1f5d48e7e14f118990f0942cf172a432512c",
         "build_run_id": 37999090263,
         "build_artifact_id": 11648897327,
         "candidate_probe_run_id": 38001165965,
         "candidate_probe_artifact_id": 11649201968,
-        "candidate_pass": true,
-        "published_pass": false
-      }
+        "publish_run_id": 38002114168,
+        "published_probe_run_id": 38002471123,
+        "published_probe_artifact_id": 11649573545,
+        "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "published_file_identity": {
+          "files": 45,
+          "all_match": true
+        },
+        "full_bastion_i_ii": true,
+        "landscape": true,
+        "portrait": true,
+        "persistence": true,
+        "reset": true,
+        "runtime_errors": 0,
+        "visual_quality_pass": false,
+        "physical_device_tested": false,
+        "paid_credits": 0,
+        "evidence": "docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json"
+      },
+      "completed_at": "2026-10-09T23:12:31.478Z",
+      "runner_released": true,
+      "blocker": null
     },
     {
       "id": "eldoria-direct-flow-recovery-v1",
@@ -47,20 +68,46 @@
         "docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md",
         ".github/workflows/unity-webgl-startup.yml"
       ],
-      "resources": [
-        "unity-webgl-probe-routing"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-10",
       "base_main_sha": "3ad1e542b67654a2885c8814674171166ce92d17",
-      "status": "active",
-      "phase": "RESTORE EXISTING DIRECT FLOW",
+      "status": "completed",
+      "phase": "RECOVERY VERIFIED / PUBLISHED FULL LOOP PASS / CLOSED",
       "paid_credits": 0,
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Execution rules and QA transport only; no gameplay, scene, assets, camera, stable deployment or Windows runner changes.",
-      "next": "Patch existing startup workflow to test triggering build artifact when stable deployment is skipped; verify candidate and preserve separate published acceptance."
-    }
-  ],
-  "history": [
+      "next": "No further recovery execution. Next owner-authorized bounded Unity task uses the restored direct flow; no departmental round or migration restart.",
+      "completed_at": "2026-10-09T23:12:31.478Z",
+      "runner_released": true,
+      "blocker": null,
+      "result": {
+        "verdict": "DIRECT FLOW RECOVERED / BUILD PASS / EXACT CANDIDATE QA PASS / EXACT ARTIFACT RELEASE PASS / PUBLISHED FULL I-II PASS",
+        "historical_reference": "2026-10-08 around 14:00 Europe/Madrid; last preceding main bdeef4038d03a62dcc207c93005bbad868fd7909",
+        "build_source_sha": "3bfb1f5d48e7e14f118990f0942cf172a432512c",
+        "build_run_id": 37999090263,
+        "build_artifact_id": 11648897327,
+        "candidate_probe_run_id": 38001165965,
+        "candidate_probe_artifact_id": 11649201968,
+        "publish_run_id": 38002114168,
+        "published_probe_run_id": 38002471123,
+        "published_probe_artifact_id": 11649573545,
+        "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "published_file_identity": {
+          "files": 45,
+          "all_match": true
+        },
+        "full_bastion_i_ii": true,
+        "landscape": true,
+        "portrait": true,
+        "persistence": true,
+        "reset": true,
+        "runtime_errors": 0,
+        "visual_quality_pass": false,
+        "physical_device_tested": false,
+        "paid_credits": 0,
+        "evidence": "docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json"
+      }
+    },
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
       "title": "Valoria Bastion I-II presentation parity correction v1",

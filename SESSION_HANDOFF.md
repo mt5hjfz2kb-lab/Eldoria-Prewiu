@@ -1,12 +1,16 @@
-## 2026-10-10 — CURRENT OPERATIONS: CONTROLLED UNITY RECOVERY (NOT CERTIFIED)
+## 2026-10-10 — CURRENT OPERATIONS: DIRECT UNITY FLOW RECOVERED / CLOSED
 
-**Canonical priority:** restore one safe Unity WebGL build and a verified playable mobile loop; then return to direct Unity gameplay/visual development (World Region 1 first). The owner explicitly requested the simpler execution flow used before the departmental reorganization. Do not create departments or a parallel orchestration system, and do not reset game source or rewrite history.
+The owner-requested recovery is **COMPLETE**. `Unity/` remains the real game source (Unity 6000.3.23f1); the baseline around 2026-10-08 14:00 Europe/Madrid was preserved. No gameplay, asset, camera or economy redesign was made in this recovery.
 
-**Live registry authority:** `pipeline/active-workstreams.json` lists one active `eldoria-ci-production-recovery-v1`, owner `chat-github-ci-recovery-20261010`, with Windows Unity runner, `.github/workflows/pages.yml`, `pipeline/unity-publish-request.json` and registry reserved. The previous `valoria-bastion-i-ii-presentation-parity-correction-v1` is in history as **cancelled**, not active. The 2026-10-08 parity entry immediately below is preserved as **historical evidence only** and must not be interpreted as a current instruction or an open workstream.
+**Operating method:** one bounded order → direct Unity implementation → focused tests/captures → Windows build → exact candidate QA → repair/retest when needed → release the approved artifact → published QA → closure and playable build. The executing agent carries the corrections and transitions; Actions executes builds/tests. Departments, DG/M16 rounds and another owner message are not dependencies between already-authorized routine steps. Existing canonical visual identity, architecture, gameplay/persistence and paid-resource authorization remain protected.
 
-**Publication safety:** The current publish request has `release_approved=false`; it is a **build-only recovery** and does not authorize deployment of an uncertified build. The historical production run `37767338367` has three jobs completed successfully, but that is not proof of the latest recovery commit `3bfb1f5d48e7e14f118990f0942cf172a432512c`, nor a current published mobile PASS. The active recovery owner must verify the new build and its artifacts, then certify fatal-error-free startup and HOME → real touch pan → MUNDO → Region 1 action/reward → REINO/Valoria → reload persistence, including landscape and portrait, before promotion.
+**Actual evidence:** Windows build **37999090263**, source `3bfb1f5d48e7e14f118990f0942cf172a432512c`, artifact **11648897327**. Exact-candidate QA **38001165965 / 11649201968** passed. Release **38002114168** promoted that exact artifact without recompiling. Independent public-byte comparison matched **45/45 files**. Final published QA **38002471123 / 11649573545** passed startup, touch pan/navigation, building selection, construction/resources, Bastion I→II, recruitment, configured march/combat/reward, exact reload persistence and deliberate reset/reset reload in both landscape and portrait; **0 runtime errors**.
 
-**No collateral changes:** This entry reconciles stale document heads only, without editing game code, publication settings, the runner, or shared recovery ownership. Following certified recovery and registry release, resume one bounded Unity task at a time. Zero paid credits.
+**Playable owner build:** https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
+
+**Limits:** Chromium mobile emulation and inspected captures, not physical Safari/iPhone, human enjoyment or premium visual-quality certification. Game quality work remains distinct from this production-flow recovery.
+
+**Closeout:** both recovery entries are in registry history as completed; no active recovery reservation remains. The publish request is disabled after delivery. Evidence: `docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json`. Continue the next explicitly authorized bounded Unity block from live main; World Region 1 visual convergence remains the prior queued priority. No new department, pipeline or broad audit is required.
 
 ---
 
