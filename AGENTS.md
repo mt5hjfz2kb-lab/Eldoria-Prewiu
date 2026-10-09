@@ -54,7 +54,7 @@ The repository is the source of truth. Chat history is disposable.
 
 If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; never reconstruct active code from history.
 
-Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_CONTRACT.md`, `UNITY_ARCHITECTURE.md`, `UNITY_VERTICAL_SLICE.md` and `Unity/README.md`. A separate Unity source project exists at `Unity/`, fixed to Editor 6000.3.23f1; its first executable/player build has **not** been validated until a Unity Editor and license run tests and build. It does not replace the current web source, certification or frozen tester rules. Do not call source preflight a Unity test or claim screenshots/build without opening it.
+Unity production authority: `Unity/` is the real game source, fixed to Editor 6000.3.23f1. The Windows Unity builds and WebGL probes recorded in the current handoff are real execution evidence; the former first-build-unvalidated statement is obsolete. Read `UNITY_CORE_CONTRACT.md`, `UNITY_ARCHITECTURE.md` and migration documents when their contracts are relevant, not as an instruction to restart migration. Preserve legacy web compatibility and frozen tester output. Never call source preflight a Unity execution or claim a build/capture without actual evidence.
 
 ## Fast start
 1. Read this file.
@@ -78,10 +78,11 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 
 ## Active line and versions
 - Development branch: `main` only.
-- Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
+- Canonical game production source: `Unity/`; Windows Unity + owner WebGL are the delivery pipeline.
+- Legacy web compatibility source: `v0220/index.html` + `v0220/js/`; do not use it to rebuild or replace the Unity game.
 - `v0220` is a compatibility directory name, not the product version.
-- Active development version: **v0.32.0**.
-- Generated development build: `playtest/`; never edit it as source.
+- Legacy web metadata version: **v0.32.0**. Unity delivery identity is the actual source SHA, production/build run and artifact; do not infer Unity acceptance from the web version.
+- Generated legacy web build: `playtest/`; never edit it as source.
 - Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** at `/tester-v0265/`; never use it as a development baseline.
 - Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
 
