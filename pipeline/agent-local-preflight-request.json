@@ -15,7 +15,7 @@
   "phase": "build",
   "stable_publish": false,
   "install": false,
-  "protected_base_sha": "c8ac15b26990742384cce142082346631be92d77",
+  "protected_base_sha": "78619787c5bd5073bfc12694d180288901537f60",
   "dg_authorized_loan": {
     "authorization": "owner-executive-recovery-20261009",
     "source_reservation": "r2-b-strategic-choice",
@@ -49,5 +49,6 @@
     "scope": "Unity save-load feedback policy; game acceptance still requires real candidate build and independent playable/visual QA",
     "code_sha256": "04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de",
     "generated_code_execution": "Restricted pure C# on independent Linux; no worker execution"
-  }
+  },
+  "protected_baseline_reason": "Preserve R2-B owner's actual mobile touch correction d9c12eec8461587181fe9234e65b3da5d0ac2510 authorized by 78619787c5bd5073bfc12694d180288901537f60. D06 owns no protected source; exact diff reviewed; build waits for actual production release."
 }
