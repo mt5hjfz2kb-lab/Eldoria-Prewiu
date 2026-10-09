@@ -1,3 +1,11 @@
+## Owner authority 2026-10-10 — restore direct production flow
+- The owner requests the productive execution loop used around 2026-10-08 14:00 Europe/Madrid: one bounded order → direct Unity implementation → relevant tests/captures → build → real candidate QA → repair and repeat → safe publication → published QA → closure and playable build.
+- This directive takes precedence over conflicting departmental/round approval requirements and stale historical blockers. Departments, DG/M16 routing and extra organizational audits are not execution dependencies. Reuse existing tools and workflows; do not create a replacement organization or reset game source/history.
+- Keep one owner for each shared production resource. Consume an existing in-flight build rather than duplicating it. Build-only success is not deployment success: test its exact artifact, and record build SHA/run and candidate versus published coverage explicitly.
+- The executing agent owns diagnosis and correction across pipeline transitions. Actions executes builds/tests; job chaining alone is not an autonomous code-repair system. Do not wait for a new owner message between known reversible steps.
+- Preserve paid-resource authorization, architecture integrity, real gameplay/persistence, canonical visual identity and evidence-based acceptance. A green workflow cannot substitute for inspecting the game. A candidate PASS cannot certify stable publication.
+- Close only after the requested scope and the actual delivery gates pass; return the playable build and evidence. Stop only for a concrete unavailable capability, indispensable owner decision or failed access, stating the exact pending action.
+
 ## Owner authority 2026-10-08 — autonomous closure; owner review is optional
 - A workstream MUST NOT remain open merely to wait for the owner to manually inspect, play, approve, or confirm a build when the requested scope can be objectively certified by repository evidence, automated/device-equivalent probes, screenshots/captures, gameplay/state/persistence tests, release gates, and published-build verification.
 - Owner review is an optional additional quality signal, not a mandatory closure dependency, unless the owner explicitly makes a specific subjective creative choice the acceptance criterion for that workstream.

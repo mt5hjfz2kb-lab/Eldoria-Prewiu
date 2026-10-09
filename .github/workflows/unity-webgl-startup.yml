@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 jobs:
   startup:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
@@ -21,10 +22,63 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - name: Resolve exact build or published target
+        id: target
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const cfg = JSON.parse(fs.readFileSync('pipeline/unity-publish-request.json', 'utf8'));
+            let run = context.payload.workflow_run;
+            if (!run && cfg.enabled === true && cfg.release_approved === false) {
+              const result = await github.rest.actions.listWorkflowRuns({
+                ...context.repo, workflow_id: 'pages.yml', branch: 'main', status: 'success', per_page: 1
+              });
+              run = result.data.workflow_runs[0];
+              if (!run) throw new Error('No successful recovery build exists for candidate QA');
+            }
+            let kind = 'published';
+            if (run) {
+              const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+                ...context.repo, run_id: run.id, per_page: 100
+              });
+              const build = jobs.find(j => j.name === 'unity-webgl');
+              if (!build || build.conclusion !== 'success') throw new Error('Trigger did not produce a successful Unity build');
+              const deploy = jobs.find(j => j.name === 'deploy');
+              if (!deploy || deploy.conclusion !== 'success') kind = 'candidate';
+            }
+            core.setOutput('kind', kind);
+            core.setOutput('run_id', run ? String(run.id) : '');
+            core.setOutput('source_sha', run ? run.head_sha : 'unknown-published-source');
+            core.setOutput('url', kind === 'candidate' ? 'http://127.0.0.1:8765/unity-owner/' :
+              'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/');
+      - name: Download exact successful build for candidate QA
+        if: steps.target.outputs.kind == 'candidate'
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.target.outputs.run_id }}
+          name: eldoria-unity-webgl-${{ steps.target.outputs.source_sha }}
+          path: candidate-webgl/unity-owner
+      - name: Serve candidate without publishing stable
+        if: steps.target.outputs.kind == 'candidate'
+        run: |
+          test -f candidate-webgl/unity-owner/index.html
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory candidate-webgl > /tmp/eldoria-candidate-server.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8765/unity-owner/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
       - run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 pixelmatch@5.3.0 && npx playwright install --with-deps chromium
       - name: Verify published probe acceptance contract
         run: node --test tests/published-probe-contract.test.cjs
       - name: Probe actual published Unity startup
+        env:
+          ELDORIA_PROBE_URL: ${{ steps.target.outputs.url }}
+          ELDORIA_PROBE_KIND: ${{ steps.target.outputs.kind }}
+          ELDORIA_PROBE_SOURCE_SHA: ${{ steps.target.outputs.source_sha }}
+          ELDORIA_PROBE_BUILD_RUN: ${{ steps.target.outputs.run_id }}
         run: |
           mkdir -p webgl-startup-evidence
           cat > /tmp/eldoria-startup.cjs <<'JS'
@@ -34,9 +88,14 @@ jobs:
           const fs = require('fs');
           const { controlPoint, persistenceSnapshot, certifyMacroloop, fatalRuntimeLogs } = require(process.cwd() + '/tools/published-probe-contract.cjs');
 
-          const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
+          const target=process.env.ELDORIA_PROBE_URL;
+          if(!target)throw new Error('Probe target was not resolved');
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
           const report={failure:null,logs:[],requests:[],checks:{navigationGatherPersistencePass:false},states:[],coverage:{fullBastionIToIIPass:false,visualQualityPass:false,independentHumanPlaythroughPass:false},scope:'Published limited macroloop probe: real touch pan/home, limited gather loop, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority. Includes separate uninterrupted guided Bastion I-II and reset/reload flows in both orientations. Does not certify artistic quality or human playability.'};
+
+          report.delivery={kind:process.env.ELDORIA_PROBE_KIND,target,
+            sourceSha:process.env.ELDORIA_PROBE_SOURCE_SHA,buildRunId:process.env.ELDORIA_PROBE_BUILD_RUN,
+            candidateOnly:process.env.ELDORIA_PROBE_KIND==='candidate',publishedPass:false};
 
           function parseState(text){
             const m=text.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+) gatheredWood=(\d+) gatheredStone=(\d+) march=([^ ]+) sawmill=(\d+) bastion=(\d+)/);
@@ -309,7 +368,7 @@ jobs:
             page.on('response',r=>{if(r.url().includes('/unity-owner/'))requests.push({url:r.url(),status:r.status()});});
             page.on('requestfailed',r=>requests.push({url:r.url(),failure:r.failure()}));
             page.on('dialog',async d=>{logs.push({type:'dialog',text:d.message()});await d.dismiss();});
-            await page.route(/^https:\/\/mt5hjfz2kb-lab\.github\.io\/Eldoria-Prewiu\/unity-owner\/(?:\?.*)?$/,async route=>{
+            await page.route(url=>url.href.split('?')[0]===target,async route=>{
               const response=await route.fetch();
               const html=await response.text();
               const token='.then((unityInstance) => {';
@@ -461,6 +520,7 @@ jobs:
               await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
             }
             report.runtimeErrors=fatalRuntimeLogs(logs);
+            report.delivery.publishedPass=report.delivery.kind==='published'&&!report.failure;
             fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify(report,null,2));
             await browser.close();
             if(report.failure)throw new Error(report.failure);

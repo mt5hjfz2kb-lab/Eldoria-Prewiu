@@ -7,12 +7,20 @@ Updated: 2026-09-30.
 
 Reduce elapsed development time without weakening certification. The pipeline should automatically carry work to the last point where human judgment is actually required.
 
-Human gates remain mandatory for:
+Current owner authority (2026-10-10, AGENTS.md): execute one bounded Unity block through implementation, focused tests/captures, build, exact-candidate QA, correction/retry, safe publication, published QA and closure. Departmental rounds and new owner messages are not dependencies between these steps. Do not reset game source or add an orchestration system.
+
+Human authorization remains mandatory for:
 - paid/credit-spending actions;
-- visual/art-direction acceptance;
+- an explicit subjective art-direction choice that the owner has reserved;
 - irreversible city/topology decisions.
 
 Everything else should be machine-checkable and chainable.
+
+The executing agent reviews evidence and authors repairs; Actions job chaining does not itself author corrective code. Preserve the distinction between automated reachability, reviewed visual evidence and physical-device experience.
+
+The existing `unity-webgl-startup.yml` consumes the triggering build artifact when Pages deployment was skipped, serves it locally and applies the same gameplay probes. Its report records candidate/published target, exact build run and source SHA. Build-only candidate QA never certifies the stable URL. After authorized promotion, run the published probe on the delivered build before closure.
+
+Historical reconstruction: the last main commit before 2026-10-08 14:00 Europe/Madrid is `bdeef4038d03a62dcc207c93005bbad868fd7909` (13:52:07), which reopened parity for visual cleanup. Earlier production `37767338367`, publication `37768050958` and probe `37770987758` are historical evidence, not current acceptance. Preserve the direct execution method without resurrecting revoked PASSes or rolling back the entire repository.
 
 ## Current measured baseline
 
