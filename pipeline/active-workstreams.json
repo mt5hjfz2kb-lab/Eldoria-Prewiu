@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09",
+  "updated_at": "2026-10-09T17:34:57.279Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -36,22 +36,26 @@
     {
       "id": "eldoria-dg-original-route-recovery-v1",
       "title": "DG V2 canonical inventory and authentic existing-chain acceptance",
-      "owner": "chat-dg-original-route-recovery-20261008",
+      "owner": "chat-work-flow-recovery-20261009",
       "scope": [
-        "docs/evidence/dg-original-route-recovery-v1/**"
+        "docs/evidence/dg-original-route-recovery-v1/**",
+        ".github/workflows/pages.yml",
+        "qa/eldoria-gameplay-camera-experience-probe.cjs",
+        "tests/eldoria-rendered-frame-readiness.test.cjs",
+        "tools/eldoria-rendered-frame-readiness.cjs"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T18:20:03.937Z",
       "base_main_sha": "ab8dc2b74a2fa95dce08c12641017394a1414526",
-      "status": "blocked",
+      "status": "active",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read existing infrastructure evidence and consolidate Directorate inventory; no player-visible changes.",
       "paid_credits": 0,
-      "phase": "GITHUB_CHAIN_PASS / OWNER_NOTIFICATION_DELIVERY_UNVERIFIABLE",
-      "next": "Consume existing DG notification outcome if genuine platform delivery evidence becomes available. Do not redispatch completed pilot/maintenance or modify M07. Existing dispatcher source scope released; further authorized bounded department integration may consume the certified chain without creating a replacement.",
+      "phase": "RESTORE_EXISTING_FOCUSED_QA_AND_CANDIDATE_FEEDBACK",
+      "next": "Reproduce splash false negative on existing exact candidate; repair rendered readiness, run focused independent QA without Unity rebuild, measure feedback latency; preserve claims/stable.",
       "runner_released": true,
       "blocked_at": "2026-10-08T18:31:44.877Z",
-      "blocker": "Actual GitHub authorized chain and DG bot report PASS; existing owner-notification run requested. Exposed automation tools provide no delivery receipt/content, so proactive receipt cannot be independently certified. No new paid/external messaging integration or duplicated watch is justified.",
+      "blocker": null,
       "result": {
         "run": 37824280532,
         "source_sha": "ec6707a9b8a6a884fcea69c6f9fb88cba300ae9e",
@@ -67,7 +71,13 @@
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
       "department_executor_owner": "chat-dg-original-route-recovery-20261008",
-      "delivery_kind": "support_only"
+      "delivery_kind": "support_only",
+      "owner_transfer": {
+        "from": "chat-dg-original-route-recovery-20261008",
+        "to": "chat-work-flow-recovery-20261009",
+        "authorized_by": "Owner explicit 2026-10-09 recover pre-DG pipeline and fix delivery delays",
+        "scope": "Existing workflow recovery; unclaimed Pages workflow and camera QA only; no protected game/art source"
+      }
     },
     {
       "id": "eldoria-m04-limited-recovery-v1",
