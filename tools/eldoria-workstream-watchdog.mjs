@@ -7,6 +7,15 @@ const findings=[];
 const director='D01-Direccion-General';
 if(data.directorate_accountability?.owner!==director)throw Error('DIRECTORATE_ACCOUNTABILITY_MISSING');
 const claims=new Map();
+const gameProduction=new Set(['r2-b-strategic-choice','r2-c-mobile-ux','r2-a-world-readability','r2-d-ambient-life-audio','eldoria-world-region-1-visual-convergence-v2','m07-r1-sawmill-construction-visual-correction']);
+for(const w of data.active){
+ if(!gameProduction.has(w.id))continue;
+ const result=w.result||{};
+ const built=Boolean(result.unity_source_sha&&result.unity_integrated_build_run_id);
+ const accepted=Boolean(result.independent_gameplay_accepted&&result.visual_experience_accepted&&result.regression_accepted);
+ if(!built||!accepted) findings.push({id:w.id,status:'UNITY_PLAYER_PRODUCTION_OPEN',owner:w.owner,next:built?'Request independent real-build functional visual experience regression QA and verify before acceptance':'Integrate in Unity and build from exact SHA under owned runner, then run independent QA',resources:w.resources||[]});
+}
+
 for(const w of data.active){
  if(!w.id||!w.owner||!['active','blocked'].includes(w.status))throw Error('INVALID_WORKSTREAM');
  if(w.accountable_director!==director || w.department_executor_owner!==w.owner) findings.push({id:w.id,status:'DIRECTORATE_UNASSIGNED',owner:w.owner,next:'Reconcile with DG without changing exclusive executor ownership',resources:w.resources||[]});
