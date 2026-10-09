@@ -11,8 +11,14 @@
   "stable_publish": false,
   "paid_credits": 0,
   "authorization": "Ronda 2 A-E DG Issue #23 owner approval 6068111056",
-  "purpose": "Build actual Unity WebGL gameplay with fast-swipe release correction from source 592252; preserve stable and old candidate; new playable QA required.",
+  "purpose": "Publish an ADDITIVE corrected Unity WebGL candidate after real Windows build + independent package QA, with existing stable and earlier R2-B candidate byte-preserved; separately run published-playability QA.",
   "acceptance": "Actual new Unity WebGL exported package at exact SHA; independent mobile touch/selection/camera visual experience and reward/reload regressions required; no technical PASS-only acceptance.",
   "retry": 0,
-  "retry_reason": "Fresh owner-authorized Unity mobile swipe-release correction; actual source files independently compared against the exact 592252 source SHA; isolated candidate, stable disabled, shared runner handed to R2B by DG."
+  "retry_reason": "Fresh owner-authorized Unity mobile swipe-release correction; actual source files independently compared against the exact 592252 source SHA; isolated candidate, stable disabled, shared runner handed to R2B by DG.",
+  "delivery_phase": "publish_verified_artifact",
+  "candidate_run_id": 37914588629,
+  "candidate_head_sha": "fec7c5b0d157d360ab30000dd2ea2b093f4e5e14",
+  "candidate_artifact_id": 11608699622,
+  "independent_package_qa_run_id": 37914588629,
+  "independent_package_qa_verdict": "PASS_PACKAGE_ONLY"
 }
