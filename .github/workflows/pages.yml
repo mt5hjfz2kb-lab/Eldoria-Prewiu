@@ -168,7 +168,7 @@ jobs:
         run: |
           $req = Get-Content 'pipeline/r2b-candidate-build.json' -Raw | ConvertFrom-Json
           if ($req.enabled -ne $true -or $req.stable_publish -ne $false -or $req.mode -ne 'r2b-isolated-candidate' -or $req.paid_credits -ne 0) { throw 'Candidate authorization invalid' }
-          if ($req.source_sha -ne '6e0e12396a98b04333b595fff704afa3e849c30a') { throw 'Candidate source SHA unauthorized' }
+          if ($req.source_sha -notin @('6e0e12396a98b04333b595fff704afa3e849c30a','5922520120c1bd682cdfa80a90f748939922ce29')) { throw 'Candidate source SHA unauthorized' }
           if ($req.production_artifact_id -ne 11576784810 -or $req.parcel_source_artifact_id -ne 11576579158) { throw 'Candidate Unity evidence IDs mismatch' }
           git fetch --no-tags --deepen=50 origin main
           if ($LASTEXITCODE -ne 0) { throw 'Cannot recover pinned source commit for content verification' }
