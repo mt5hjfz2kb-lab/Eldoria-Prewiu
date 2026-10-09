@@ -49,7 +49,7 @@ jobs:
         with:
           script: |
             const cfg = require('./pipeline/unity-publish-request.json');
-            if (cfg.release_approved !== true || !cfg.reuse_webgl_build_run_id) return;
+            if (cfg.enabled !== true || cfg.release_approved !== true || !cfg.reuse_webgl_build_run_id) return;
             const run = (await github.rest.actions.getWorkflowRun({
               ...context.repo, run_id: cfg.reuse_webgl_build_run_id
             })).data;
@@ -118,6 +118,7 @@ jobs:
           # Explicit release switch: never build or deploy when publication is paused.
           if ! node -e 'const c=require("./pipeline/unity-publish-request.json"); process.exit(c.enabled === true ? 0 : 1)'; then
             echo "Publication disabled: no Windows build and no Pages deploy."
+            echo "deploy_approved=false" >> "$GITHUB_OUTPUT"
             echo "heavy_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
