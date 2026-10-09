@@ -9,6 +9,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
       - 'Unity/Assets/Eldoria/Tests/EditMode/**'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/**'
+      - '.github/workflows/ui-progression-cert.yml'
   workflow_dispatch:
 
 permissions:
@@ -82,7 +83,18 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Tail 240 }
             throw "Unity PlayMode timed out after 10 minutes."
           }
-          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 240 }; throw "Unity PlayMode failed with exit code $($process.ExitCode)." }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $xml) {
+              [xml]$failed = Get-Content $xml
+              $failed.SelectNodes("//test-case[@result='Failed']") | ForEach-Object {
+                Write-Host "FAILED TEST: $($_.GetAttribute('fullname'))"
+                Write-Host $_.failure.message
+                Write-Host $_.failure.'stack-trace'
+              }
+            }
+            if (Test-Path $log) { Get-Content $log -Tail 100 }
+            throw "Unity PlayMode failed with exit code $($process.ExitCode)."
+          }
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
 
