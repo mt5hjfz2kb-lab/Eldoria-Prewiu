@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T17:47:52.512Z",
+  "updated_at": "2026-10-09T18:09:52.064Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -121,19 +121,21 @@
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/RegionOneStrategicChoiceTests.cs",
         "pipeline/r2b-candidate-build.json",
-        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "qa/r2b-building-selection-probe.cjs",
+        ".github/workflows/pages.yml"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
       "status": "active",
-      "phase": "DG AUTHORIZED UNITY PLAYABLE BUILD SLOT / EXP-CAM-01 EXP-BLD-02 QA OPEN",
+      "phase": "DIRECT_DEPARTMENT_MICROFIX / REPRODUCE_REAL_BUILDING_SELECTION_FIRST",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Use original pages.yml candidate-only Unity job to build source 6e0e1239 using certified 11576784810 and 11576579158, no stable deploy; verify exact candidate artifact and independent WebGL experience on an isolated URL, without opening M07 claimed request.",
+      "next": "Run diagnostic real touch targeting logged sawmill/bastion buildings in both viewports of existing immutable R2-B candidate; correct confirmed input/UI root cause in owned SlicePresenter only, integrate exact Unity candidate, independent QA touch/navigation/choices/reload, report before acceptance. Preserve other owners and stable.",
       "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md",
       "result": {
         "unity_production_run": 37838898425,
@@ -195,7 +197,7 @@
       ],
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "eldoria-dg-r2-approved-20261008",
+      "department_executor_owner": "chat-d09-d10-flow-recovery-20261009",
       "delivery_kind": "unity_player_facing",
       "resource_handoff": {
         "from": "eldoria-world-region-1-visual-convergence-v2",
@@ -213,6 +215,19 @@
         "scope": "read-only recovered EldoriaLocalAI proof",
         "timeout_minutes": 4,
         "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2"
+      },
+      "department_assignment": {
+        "implementers": [
+          "D09-Camera-Interaction",
+          "D10-UI-UX"
+        ],
+        "independent_verifier": "D13-QA",
+        "coordinator": "M16-existing",
+        "directive": "Owner 2026-10-09 continue productive pre-DG Unity flow within authorized R2-B; retain existing claim, Windows slot and no-spend; source -> exact Unity build -> focused real-touch selection -> bounded retest",
+        "assigned_at": "2026-10-09T18:09:52.060Z",
+        "open_defects": [
+          "EXP-BLD-02"
+        ]
       }
     },
     {
