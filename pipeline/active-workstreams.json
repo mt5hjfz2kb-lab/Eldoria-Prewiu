@@ -129,13 +129,13 @@
         "windows-runner-heavy"
       ],
       "status": "active",
-      "phase": "DIRECT_DEPARTMENT_MICROFIX / REPRODUCE_REAL_BUILDING_SELECTION_FIRST",
+      "phase": "DIRECT UNITY MICROFIX / EXACT WEBGL CANDIDATE FUNCTIONAL QA PASS / VISUAL EXPERIENCE REVIEW PENDING",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
       "paid_credits": 0,
       "dependency": "R1 resource/scopes protected for integration",
-      "next": "Run diagnostic real touch targeting logged sawmill/bastion buildings in both viewports of existing immutable R2-B candidate; correct confirmed input/UI root cause in owned SlicePresenter only, integrate exact Unity candidate, independent QA touch/navigation/choices/reload, report before acceptance. Preserve other owners and stable.",
+      "next": "Review genuine QA screenshots in run 37981582520 artifact 11642660690 against approved mobile visual/UX criteria. The bounded 24 CSS-pixel sawmill tap, center sawmill/build command, portrait bastion, camera gestures and strategic choice/reload passed independent browser QA. Keep candidate isolated; accept this specific touch fix only after applicable direct visual/experience review. Do not close whole R2-B or promote stable without its remaining gates.",
       "evidence": "docs/evidence/eldoria-r2-b/PRODUCTION_SPEC.md",
       "result": {
         "unity_production_run": 37838898425,
@@ -159,7 +159,20 @@
         "webgl_harvest_portrait_pass": true,
         "webgl_reload_persistence_pass": true,
         "isolated_candidate_hosted_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/",
-        "stable_site_unchanged_confirmed_by_run": 37862462679
+        "stable_site_unchanged_confirmed_by_run": 37862462679,
+        "latest_functional_candidate": {
+          "source_commit": "4fa3cfdf19b1b4e5a84465a5a806bc39dbda8c15",
+          "build_head": "417c23fea894ed546aa37541e9fffe9f3fe3145c",
+          "ui_editor_run": 37981130953,
+          "webgl_run": 37981582520,
+          "webgl_artifact_id": 11641865636,
+          "independent_qa_artifact_id": 11642660690,
+          "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-417c23fea894ed546aa37541e9fffe9f3fe3145c/",
+          "functional_touch_camera_choice_reload": "PASS",
+          "edge_tap_24_css_pixels": "PASS_AFTER_PREVIOUS_FAIL",
+          "visual_experience": "NOT_VERIFIED_BY_DIRECT_REVIEW",
+          "stable_promotion": false
+        }
       },
       "delegated_scopes": [],
       "pending_independent_qa": [
@@ -168,7 +181,8 @@
           "source_commit": "5922520120c1bd682cdfa80a90f748939922ce29",
           "source_qa_run": 37906265687,
           "verification": "SOURCE_REGRESSION_PASS; UNITY_BUILD_EXPERIENCE_NOT_VERIFIED",
-          "required": "isolated Unity build, mobile swipe/tap touch, visual UX and regressions; shared windows runner currently owned by world-region1"
+          "required": "isolated Unity build, mobile swipe/tap touch, visual UX and regressions; shared windows runner currently owned by world-region1",
+          "latest_retest": "Run 37981582520: exact new Unity candidate, landscape center and 24px adjacent sawmill tap, Build command, portrait Bastion selection PASS; QA artifact 11642660690. Direct visual/experience review remains open."
         },
         {
           "incident": "EXP-CAM-01-webgl-canvas-touch-action",
@@ -192,7 +206,8 @@
           "required": "D09 owner diagnose InputSystem touch sampling and portrait camera pan; keep source 5922520 release gesture patch, build actual Unity via owned Windows lane after World1 runner handoff; run independent touch and visual UX real candidate. No stable promotion.",
           "windows_resource_dependency": "eldoria-world-region-1-visual-convergence-v2 holds windows-runner-heavy",
           "css_hypothesis": "REJECTED_AS_SOLE_ROOT_CAUSE",
-          "latest_dom_reproduction_run": 37913247245
+          "latest_dom_reproduction_run": 37913247245,
+          "latest_retest": "Run 37981582520: landscape and portrait camera gesture QA PASS on hosted exact candidate, strategic choice/reload PASS; physical device and direct visual/experience review remain open."
         }
       ],
       "accountable_director": "D01-Direccion-General",
