@@ -70,4 +70,4 @@ async function caseFor(browser,label,viewport,id,offsetX=0,diagnostic=false){
  await caseFor(browser,'portrait-bastion',{width:390,height:844},'bastion');
  await caseFor(browser,'landscape-sawmill-edge',{width:844,height:390},'sawmill',24,true);
 }finally{await browser.close();}
-results.pass=results.cases.every(c=>c.pass);fs.writeFileSync(dir+'/report.json',JSON.stringify(results,null,2));console.log('ELDORIA_R2B_BUILDING_SELECTION',JSON.stringify(results));if(!results.pass)process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1;});
+results.pass=results.cases.every(c=>c.pass)&&results.diagnostics.length===1&&results.diagnostics[0].pass;fs.writeFileSync(dir+'/report.json',JSON.stringify(results,null,2));console.log('ELDORIA_R2B_BUILDING_SELECTION',JSON.stringify(results));if(!results.pass)process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1;});

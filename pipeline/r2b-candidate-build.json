@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "r2b-isolated-candidate",
-  "source_sha": "d9c12eec8461587181fe9234e65b3da5d0ac2510",
+  "source_sha": "4fa3cfdf19b1b4e5a84465a5a806bc39dbda8c15",
   "production_run_id": 37838898425,
   "production_artifact_id": 11576784810,
   "parcel_source_artifact_id": 11576579158,
@@ -11,11 +11,11 @@
   "stable_publish": false,
   "paid_credits": 0,
   "authorization": "Ronda 2 A-E DG Issue #23 owner approval 6068111056",
-  "purpose": "Publish an ADDITIVE corrected Unity WebGL candidate after real Windows build + independent package QA, with existing stable and earlier R2-B candidate byte-preserved; separately run published-playability QA.",
+  "purpose": "Compile exact R2-B Unity source with bounded touch target, publish an additive isolated WebGL candidate, independently verify adjacent touch, building Build command, both forest choices/reload and camera. Stable byte-identical.",
   "acceptance": "Actual new Unity WebGL exported package at exact SHA; independent mobile touch/selection/camera visual experience and reward/reload regressions required; no technical PASS-only acceptance.",
-  "retry": 3,
-  "retry_reason": "Publish additive exact previously compiled Unity candidate with new touch-phase fix; run genuine mobile touch and gameplay QA on that binary; keep stable byte-identical.",
-  "delivery_phase": "rebuild_isolated_candidate_for_real_touch_retest",
+  "retry": 4,
+  "retry_reason": "Bounded 28px presented-building touch correction after real 24px adjacent mobile tap failed on immutable prior candidate; source gate then new Unity WebGL build and independent touch/choice/camera QA.",
+  "delivery_phase": "rebuild_isolated_candidate_for_nearby_building_touch",
   "candidate_run_id": 37941767116,
   "candidate_head_sha": "c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7",
   "candidate_artifact_id": 11622593301,
@@ -24,5 +24,5 @@
   "dg_execution_note": "Owner authorized R2-B Unity production: build corrected source 5922520 on reserved Windows, fresh independent actual touch/UX QA required; do not promote stable.",
   "dg_dispatched_at": "2026-10-09",
   "dg_dispatched_revision": 5,
-  "fast_lane_one_shot": "Pre-DG focused workflow restoration acceptance test: existing authorized R2B Windows reservation; build exact corrected touch source -> independent package QA -> additive Pages isolated candidate -> genuine touch QA, all in one existing Actions run, without new chat/JSON handoffs or stable promotion"
+  "fast_lane_one_shot": "Existing R2-B Windows reservation; source gate -> exact incremental Unity candidate -> package QA -> isolated Pages -> independent real touch; no extra owner approval between correction and retest."
 }
