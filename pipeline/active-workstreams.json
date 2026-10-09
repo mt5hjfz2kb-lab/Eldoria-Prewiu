@@ -226,6 +226,23 @@
           "source_qa_run": 37906265687,
           "verification": "SOURCE_REGRESSION_PASS; UNITY_BUILD_EXPERIENCE_NOT_VERIFIED",
           "required": "isolated Unity build, mobile swipe/tap touch, visual UX and regressions; shared windows runner currently owned by world-region1"
+        },
+        {
+          "incident": "EXP-CAM-01-webgl-canvas-touch-action",
+          "classification": "UNITY_WEBGL_EXPORTED_TOUCH_INTERCEPTION",
+          "baseline_real_browser_run": 37912348373,
+          "baseline_source_sha": "6e0e12396a98b04333b595fff704afa3e849c30a",
+          "observed": {
+            "canvas_touch_action": "auto",
+            "touch_pan_events": 0,
+            "mouse_pan_events_positive": true,
+            "game_scene_loaded": true
+          },
+          "unity_export_source_commit": "bf31399842f535942e8410d82c556a9d855e6879",
+          "independent_source_qa_run": 37912666877,
+          "qa_status": "SOURCE_STATIC_PASS_NEW_WEBGL_BUILD_REQUIRED",
+          "required": "Build a fresh Unity WebGL candidate with EldoriaWebGLTouchActionPostprocess applied; assert marker style and touch-action none in actual export; replay real horizontal+vertical touch gestures, building selection, R2B forest reward/persistence, compare direct screenshot and regression; stable not promoted.",
+          "windows_resource_dependency": "eldoria-world-region-1-visual-convergence-v2 holds windows-runner-heavy"
         }
       ],
       "accountable_director": "D01-Direccion-General",
