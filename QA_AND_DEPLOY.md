@@ -1,3 +1,17 @@
+## Canonical pipeline enforcement — owner reinstatement 2026-10-09
+
+The original Eldoria production pipeline is the **single route** for all player-facing changes, including work produced by local Ollama, ChatGPT Work, DG and M16. This operational requirement complements the independent playable-build acceptance gate below and does not create a second pipeline, workflow, department or claim.
+
+**Dispatch and ownership:** M16 consults `pipeline/active-workstreams.json` and allocates only a bounded already-authorized order within the owning department's scope. The source SHA, owner, runner reservation and authorized next transition are preserved. R2-B owns `windows-runner-heavy` except during explicitly coordinated, completed loans.
+
+**Production route:** specialist implementation → exact-source integration into real Unity project → source/editor verification → existing Unity candidate build (or authenticated exact-tree reuse) → independent D13/D14/D02 technical and functional QA → D09/D10 mobile/UX review and M05 visual review where applicable → genuine candidate playable-path and reload/regression checks → M03/M16 acceptance → approved delivery. QA scope exclusions must be justified, never silently skipped. No stable Pages publication or ownership release on partial PASS.
+
+**Failure route:** return the exact defect, failing job/artifact, source revision and permitted files to the existing department via M04/M16; bounded repair → new independent QA against the corrected revision. Prevent retries on unchanged failing SHA. If a runner is busy, defer/requeue the authorized order and resume via the existing durable trigger; never start a competing runner job. Keep workstream OPEN/BLOCKED with real evidence until acceptance or genuine owner/platform intervention.
+
+**Single source of truth:** each authorized workstream phase must distinguish produced / Unity-integrated / built / independently-playtested / accepted / delivered; reconcile stale registry phases against actual runs before dispatch. Historical QA SUCCESS on an earlier source must never be attached to a newer candidate. Support-only work may close independently but must not be represented as player-facing delivery.
+
+**Application to active work:** owners of R2-B and `eldoria-local-agent-preflight-v1` must continue their currently authorized claims through this same route and update their owned workflow code only as necessary. This policy does not itself grant access to occupied scopes or runners, trigger a build, create a new workstream or certify existing incomplete work.
+
 # Eldoria — QA, Test Mode and deployment
 
 ## Independent playable-build acceptance gate
