@@ -405,16 +405,25 @@
       "resources": [],
       "claimed_at": "2026-10-09T13:52:00+02:00",
       "base_main_sha": "fe0776f2c19c9d76517ceb1992f7857e2d18a3ab",
-      "status": "blocked",
-      "phase": "CONTRACT_TESTS_COMMITTED / EXECUTION_TRIGGER_PLATFORM_BLOCKED",
+      "status": "active",
+      "phase": "15_DEPARTMENT_SYNTHETIC_CONTRACT_TESTS_20_OF_20_PASS / REAL_WORKER_PROOF_PENDING",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Support-only regression proof of existing M16 workflow; no Unity, Windows runner or game edits",
       "paid_credits": 0,
-      "next": "Resume with approved workflow edit/dispatch through permitted execution surface, collect actual run logs and independent per-department worker evidence; do not claim PASS based on synthetic tests.",
+      "next": "Preserve active existing owners and expand only with non-conflicting actual workflow evidence; prove real dispatch, correction and independent retest for each responsible department, not synthetic state transitions.",
       "delivery_kind": "support_only",
       "accountable_director": "D01-Direccion-General",
-      "blocker": "GitHub connector safety controls blocked modification of the existing authorized-orchestration workflow to enable main push; no supported workflow_dispatch action available. The 15 synthetic department state-machine tests are code-only, not executed or certification of departments.",
-      "runner_released": true
+      "blocker": null,
+      "runner_released": true,
+      "result": {
+        "proof_run": 37927724454,
+        "proof_branch": "ops/dg-orchestration-recovery-20261008",
+        "proof_sha": "2f1abdf58115789452bcfd69344b6d67e562ba7e",
+        "node_tests_passed": 20,
+        "node_tests_failed": 0,
+        "departments_covered": 15,
+        "scope": "synthetic authorized state-machine regression, not real Unity execution or independent department functionality"
+      }
     }
   ],
   "history": [
