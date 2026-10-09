@@ -4,7 +4,7 @@
   "enabled": true,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
-  "order_id": "executive-local-recovery-20261009-v1",
+  "order_id": "executive-local-recovery-20261009-v2",
   "authorization": "Owner explicit executive recovery and new small isolated support tasks, 2026-10-09 14:42 Europe/Madrid",
   "department": "D03",
   "model": "qwen2.5-coder:3b",
@@ -33,5 +33,7 @@
     "no_install": true,
     "no_game_changes": true,
     "return": "R2-B reservation unchanged; worker process/listener/lock released before independent hosted QA and next bounded task"
-  }
+  },
+  "previous_rejected_order": "executive-local-recovery-20261009-v1",
+  "corrected_cause": "Missing alias coverage in model output; require declared delivery schema without changing independent semantic QA"
 }

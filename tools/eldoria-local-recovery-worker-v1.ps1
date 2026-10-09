@@ -45,7 +45,14 @@ try{
   $feedback=Get-Content $FeedbackFile -Raw
   $prompt+=[Environment]::NewLine+"Independent QA rejected your previous candidate. Correct only this task. QA feedback: $feedback"
  }
- $body=@{model=$task.model;stream=$false;keep_alive='0';format='json';options=@{temperature=0;num_predict=800;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 8
+ # Structural schema prevents omission; semantic values still come from Qwen and independent QA.
+ if($task.kind -eq 'runner-resource-aliases'){
+  $props=@{'windows-runner-heavy'=@{type='string'};'windows-self-hosted-unity-6000-3-23f1'=@{type='string'}}
+  $schema=@{type='object';additionalProperties=$false;required=@('aliases');properties=@{aliases=@{type='object';additionalProperties=$false;required=@('windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1');properties=$props}}}
+ }elseif($task.kind -eq 'runner-conflict-cases'){
+  $schema=@{type='object';additionalProperties=$false;required=@('cases');properties=@{cases=@{type='array';minItems=7;maxItems=7;items=@{type='object';additionalProperties=$false;required=@('resources','conflict');properties=@{resources=@{type='array';items=@{type='string'}};conflict=@{type='boolean'}}}}}}
+ }else{throw 'Unsupported task kind'}
+ $body=@{model=$task.model;stream=$false;keep_alive='0';format=$schema;options=@{temperature=0;num_predict=800;num_ctx=2048};prompt=$prompt}|ConvertTo-Json -Depth 15
  $response=Invoke-RestMethod 'http://127.0.0.1:11434/api/generate' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
  $response|ConvertTo-Json -Depth 8|Set-Content (Join-Path $EvidenceDir 'model-response.json') -Encoding UTF8
  [IO.File]::WriteAllText((Join-Path $EvidenceDir 'candidate.json'),$response.response,[Text.UTF8Encoding]::new($false))

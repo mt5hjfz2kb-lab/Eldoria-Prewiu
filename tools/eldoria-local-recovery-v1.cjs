@@ -3,7 +3,13 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const ID='eldoria-local-agent-preflight-v1',OWNER='chat-work-local-recovery-20261009';
 const ALIASES={'windows-runner-heavy':'windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1':'windows-runner-heavy'};
 function normalize(r,aliases=ALIASES){return aliases[r]||r;}
-function conflicts(reg,id,aliases=ALIASES){return reg.active.filter(w=>w.id!==id&&w.status==='active'&&(w.resources||[]).some(r=>normalize(r,aliases)==='windows-runner-heavy'));}
+function acceptedAliases(){
+ const policy=path.resolve('pipeline/local-runner-resource-aliases.json');
+ if(!fs.existsSync(policy))return ALIASES; // Conservative bootstrap before first independent acceptance.
+ const aliases=JSON.parse(fs.readFileSync(policy,'utf8')).aliases;
+ assert.deepEqual(aliases,ALIASES,'Accepted resource policy corrupted');return aliases;
+}
+function conflicts(reg,id,aliases=acceptedAliases()){return reg.active.filter(w=>w.id!==id&&w.status==='active'&&(w.resources||[]).some(r=>normalize(r,aliases)==='windows-runner-heavy'));}
 function authorize(reg,request,sha,taskIndex=0){
  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(request.mode,'local-recovery-v1');
  assert.equal(request.owner,OWNER);assert.equal(request.workstream_id,ID);

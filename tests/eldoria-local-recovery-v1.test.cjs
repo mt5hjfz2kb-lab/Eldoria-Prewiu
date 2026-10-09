@@ -21,9 +21,8 @@ test('independent verifier rejects forged hash, SHA and cleanup',()=>{
   assert.throws(()=>verify(dir,'b'.repeat(40),'1',1));assert.throws(()=>verify(dir,sha,'2',1));
  }finally{fs.rmSync(dir,{recursive:true,force:true})}
 });
-test('independent model-produced regression data contributes actual gate coverage when present',()=>{
+test('independent model-produced regression data contributes actual gate coverage when present',{skip:!fs.existsSync(path.resolve(__dirname,'fixtures/local-runner-conflicts-v1.json'))},()=>{
  const f=path.resolve(__dirname,'fixtures/local-runner-conflicts-v1.json');
- if(!fs.existsSync(f))return;
  const {cases}=JSON.parse(fs.readFileSync(f,'utf8'));
  for(const c of cases)assert.equal(conflicts({active:[{id:'other',status:'active',resources:c.resources}]},id).length>0,c.conflict);
  assert.equal(cases.length,7);
