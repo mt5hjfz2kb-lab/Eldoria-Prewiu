@@ -2,7 +2,28 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [],
+  "active": [
+    {
+      "id": "eldoria-ci-production-recovery-v1",
+      "title": "Restore controlled Unity Windows WebGL production",
+      "owner": "chat-github-ci-recovery-20261010",
+      "scope": [
+        ".github/workflows/pages.yml",
+        "pipeline/unity-publish-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-unity-owner"
+      ],
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "c27c2faaa417785669cfbfb40fc5bc82e35d6430",
+      "status": "active",
+      "phase": "CI RELEASE GUARD INSTALLED / BUILD RETRIGGER PENDING",
+      "paid_credits": 0,
+      "next": "Request one Unity WebGL build using existing automatic trigger; verify run, build and public playability before closing. Stable is not certified."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
