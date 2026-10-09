@@ -77,7 +77,7 @@ async function scenario(browser,label,viewport,dpr=1){
  try{
   await page.goto(url,{waitUntil:'domcontentloaded'});
   await wait(logs,/ELDORIA_PLAYABLE_STATE tag=scene-loaded/,'healthy playable boot');
-  await page.waitForFunction(()=>{const e=document.querySelector('#unity-loading-bar');return e&&getComputedStyle(e).display==='none';},null,{timeout:180000});await sleep(500);
+  await page.waitForFunction(()=>{const e=document.querySelector('#unity-loading-bar');return e&&getComputedStyle(e).display==='none';},null,{timeout:180000});await sleep(6000); // Unity splash can outlive scene logs/loading DOM; independent screenshots must show the rendered player.
   assert(!logs.some(l=>l.includes('ELDORIA_SAVE_RECOVERY_NOTICE shown=true')),'Healthy save displays erroneous warning');
   await page.screenshot({path:out+'/'+label+'-healthy-before.png'});
   // Genuine touch: ordinary world navigation creates/persists the player's real state.
@@ -107,12 +107,12 @@ async function scenario(browser,label,viewport,dpr=1){
   start=logs.length;await page.goto(url,{waitUntil:'domcontentloaded'});
   const recoveryStart=start;
   await wait(logs,/ELDORIA_SAVE_RECOVERY_NOTICE shown=true/,'real load-failure notice',start);
-  await page.waitForFunction(()=>{const e=document.querySelector('#unity-loading-bar');return e&&getComputedStyle(e).display==='none';},null,{timeout:180000});await sleep(700);
+  await page.waitForFunction(()=>{const e=document.querySelector('#unity-loading-bar');return e&&getComputedStyle(e).display==='none';},null,{timeout:180000});await sleep(6000); // Inspect the actual scene after the Unity splash before exercising the modal.
   const layout=await wait(logs,/ELDORIA_SAVE_RECOVERY_LAYOUT width=([0-9.]+) height=([0-9.]+) font=([0-9.]+)(?: scale=([0-9.]+))? screen=([0-9]+)x([0-9]+)/,'actual Unity layout',start);
   const l=layout.match(/width=([0-9.]+) height=([0-9.]+) font=([0-9.]+)(?: scale=([0-9.]+))? screen=([0-9]+)x([0-9]+)/),noticeScale=Number(l[4]||1);
   assert(Number(l[1])<=Number(l[5])-32&&Number(l[2])<=Number(l[6])-32,'Modal clipped in viewport');
   assert(Number(l[3])*box.width/cv.width>=16,'Actual notice font is unreadable on high-DPI device');
-  // Unity can emit layout logs before the first rendered player frame replaces its splash.\n  // Allow real WebGL frames to settle before taking visual-review evidence.\n  await sleep(2400);\n  await page.screenshot({path:out+'/'+label+'-notice.png'});
+  await page.screenshot({path:out+'/'+label+'-notice.png'});
   // Exercise genuine underlying navigation/reset controls while the warning is open.
   const blockedStart=logs.length;
   for(const id of ['worldNav','reset','reset']){
@@ -142,14 +142,32 @@ async function scenario(browser,label,viewport,dpr=1){
   const resumedBox=await canvas.boundingBox(),resumedCanvas=await canvas.evaluate(e=>({width:e.width,height:e.height}));
   const resumePoint={x:resumedBox.x+Number(rm[1])*resumedBox.width/resumedCanvas.width,y:resumedBox.y+(resumedCanvas.height-Number(rm[2]))*resumedBox.height/resumedCanvas.height};
   start=logs.length;await page.touchscreen.tap(resumePoint.x,resumePoint.y);
-  await wait(logs,/ELDORIA_PLAYABLE_STATE.*scene=Frontier/,'real gameplay after notice acknowledgement',start);
+  const frontierState=await wait(logs,/ELDORIA_PLAYABLE_STATE.*scene=Frontier/,'real gameplay after notice acknowledgement',start);
+  const stateNumbers=s=>{const m=s.match(/revision=(\d+) wood=(\d+) stone=(\d+)/);assert(m,'Missing actual authoritative state');return {revision:Number(m[1]),wood:Number(m[2]),stone:Number(m[3])};};
+  const preCommit=stateNumbers(frontierState);
+  const realHotspot=await wait(logs,/ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=([0-9.]+) y=([0-9.]+)/,'post-ack actual forest',start);
+  const rh=realHotspot.match(/forest-valoria x=([0-9.]+) y=([0-9.]+)/);
+  let freshBox=await canvas.boundingBox(),freshPixels=await canvas.evaluate(e=>({width:e.width,height:e.height}));
+  start=logs.length;await page.touchscreen.tap(freshBox.x+Number(rh[1])*freshBox.width/freshPixels.width,freshBox.y+Number(rh[2])*freshBox.height/freshPixels.height);
+  const realAction=await wait(logs,/ELDORIA_PLAYABLE_UI id=buildingAction x=([-0-9.]+) y=([-0-9.]+)/,'post-ack forest choice',start);
+  const ra=realAction.match(/buildingAction x=([-0-9.]+) y=([-0-9.]+)/);
+  freshBox=await canvas.boundingBox();freshPixels=await canvas.evaluate(e=>({width:e.width,height:e.height}));
+  const currentScale=Math.sqrt(freshPixels.width/(viewport.width>viewport.height?844:390)*freshPixels.height/(viewport.width>viewport.height?390:844));
+  start=logs.length;await page.touchscreen.tap(freshBox.x+Number(ra[1])*freshBox.width/freshPixels.width,freshBox.y+(freshPixels.height-Number(ra[2])+68*currentScale)*freshBox.height/freshPixels.height);
+  const committedCommand=await wait(logs,/ELDORIA_PLAYABLE_COMMAND kind=ChooseRegionOneForest target=forest-valoria:harvest ok=True/,'post-ack actual Commit command',start);
+  const committedState=await wait(logs,/ELDORIA_PLAYABLE_STATE tag=command-ChooseRegionOneForest-/,'post-ack authoritative Commit',start);
+  const postCommit=stateNumbers(committedState);
+  assert.equal(postCommit.revision,preCommit.revision+1,'Actual Commit revision did not advance');
+  assert.equal(postCommit.wood,preCommit.wood+40,'Actual harvest reward missing');
+  assert.equal(postCommit.stone,preCommit.stone,'Unexpected adjacent state mutation');
+  item.real_volatile_commit={command:committedCommand,before:preCommit,after:postCommit,state:committedState};
   await sleep(800);
   const played=await storage(page,false);assert.deepEqual(played.found,before.found,'Volatile gameplay overwrote the original incompatible save');
   item.real_gameplay_resumed=true;item.volatile_gameplay_preserved_original=true;
   start=logs.length;await page.reload({waitUntil:'domcontentloaded'});await wait(logs,/ELDORIA_SAVE_RECOVERY_NOTICE shown=true/,'reload keeps failure explanation',start);
   item.pass=true;item.original_save_preserved=true;item.real_touch_acknowledged=true;item.reload_repeats_notice=true;item.healthy_no_false_warning=true;item.layout=layout;
  }catch(e){item.error=String(e);await page.screenshot({path:out+'/'+label+'-FAIL.png'}).catch(()=>{});}
- finally{item.logs=logs.filter(l=>/ELDORIA_SAVE_RECOVERY|ELDORIA_PLAYABLE_STATE|PAGEERROR|save load failed/.test(l)).slice(-50);result.scenarios.push(item);await context.close();}
+ finally{item.logs=logs.filter(l=>/ELDORIA_SAVE_RECOVERY|ELDORIA_PLAYABLE_STATE|ELDORIA_PLAYABLE_COMMAND|PAGEERROR|save load failed/.test(l)).slice(-50);result.scenarios.push(item);await context.close();}
 }
 (async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{await scenario(browser,'portrait',{width:390,height:844});await scenario(browser,'landscape',{width:844,height:390},2);}finally{await browser.close();}
  result.pass=result.scenarios.length===2&&result.scenarios.every(s=>s.pass);fs.writeFileSync(out+'/report.json',JSON.stringify(result,null,2));

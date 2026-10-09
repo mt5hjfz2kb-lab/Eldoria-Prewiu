@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "unity-local-save-notice-v1",
-  "enabled": false,
+  "enabled": true,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
   "order_id": "unity-local-save-notice-20261009-v3",
@@ -12,7 +12,7 @@
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
   "requested_at": "2026-10-09T13:54:34.275Z",
-  "phase": "awaiting_independent_visual",
+  "phase": "build",
   "stable_publish": false,
   "install": false,
   "protected_base_sha": "78619787c5bd5073bfc12694d180288901537f60",
@@ -54,9 +54,9 @@
   "candidate_run_id": 37946776091,
   "candidate_source_sha": "2c41f3151cd7deaa9522c22d82f3bad896a34af1",
   "actual_build_run_id": 37946776091,
-  "playable_attempt": 3,
-  "previous_playable_run_id": 37945435156,
-  "bounded_retest_reason": "Observed FILE_DATA/PlayerPrefs binary record2194bytes; patch only same-length schema digit1→9, preserve all envelope bytes. Apply D13-approved UI glue repair through existing guarded bot integration, retain real Qwen policy and provenance. Fresh actual Unity build/independent playable QA; not accepted.",
+  "playable_attempt": 4,
+  "previous_playable_run_id": 37946776091,
+  "bounded_retest_reason": "Independent D13 identified navigation alone does not Commit. Require actual harvest success, revision+1, wood+40, full nonempty original bytes after Commit and reload warning. UI source unchanged. D13 rejected initial screenshots showing Unity splash; wait for rendered scene before healthy/notice captures and real pre-ack taps; independent image review still mandatory.",
   "approved_ui_repair_sha256": "0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5",
   "independent_source_review": {
     "department": "D13/D10",
@@ -77,5 +77,7 @@
     ]
   },
   "ui_repair_applied_sha256": "0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5",
-  "previous_real_unity_build_run_id": 37941767116
+  "previous_real_unity_build_run_id": 37941767116,
+  "authorized_reuse_run_id": 37946776091,
+  "reuse_reason": "Exact already-compiled repaired Unity tree; Linux-only independent post-ack real Commit/reward/preserved-byte retest. No Windows/model/build repetition."
 }

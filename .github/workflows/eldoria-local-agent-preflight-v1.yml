@@ -102,9 +102,9 @@ jobs:
                 if(request.authorized_reuse_run_id){
                   const assert=require('assert').strict;
                   const reused=(await github.rest.actions.getWorkflowRun({owner,repo,run_id:request.authorized_reuse_run_id})).data;
-                  assert.equal(reused.name,'Publish Eldoria Preview');assert.equal(reused.head_branch,'main');
+                  assert(['Publish Eldoria Preview','Eldoria local agent feasibility (read-only)'].includes(reused.name),'Unapproved Unity builder');assert.equal(reused.head_branch,'main');
                   const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:reused.id,per_page:100});
-                  const built=jobs.find(j=>j.name==='unity-webgl');
+                  const built=jobs.find(j=>['unity-webgl','unity-candidate / unity-webgl'].includes(j.name));
                   if(reused.status!=='completed'){core.setOutput('build','false');core.notice('WAIT_EXISTING_AUTHORIZED_UNITY_BUILD_'+reused.id);return;}
                   core.setOutput('reuse_source',reused.head_sha);
                   const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:reused.id,per_page:100});
