@@ -87,3 +87,36 @@ jobs:
           body=$(printf '### DG — resultado automático autorizado\n\n%s\n\n**Veredicto:** %s\n**Run:** https://github.com/%s/actions/runs/%s\n**SHA:** %s\n\n%s\n\nEste resultado no demuestra 15 agentes locales ni notificación instantánea a ChatGPT.' "$marker" "$verdict" "$GH_REPO" "$RUN_ID" "$SOURCE_SHA" "$details")
           gh api "repos/$GH_REPO/issues/23/comments" -f body="$body" >/dev/null
           test "$verdict" = E2E_COORDINATOR_CHAIN_PASS
+
+  gameplay-owner-baseline:
+    if: >-
+      github.event.issue.number == 23 && github.event.comment.user.login == 'mt5hjfz2kb-lab' && github.event.comment.author_association == 'OWNER' && github.event.comment.body == 'ELDORIA_DG_GAMEPLAY_BASELINE_AUDIT_V1_20261009'
+    uses: ./.github/workflows/unity-webgl-startup.yml
+    permissions:
+      contents: read
+  gameplay-baseline-dg-receipt:
+    needs: gameplay-owner-baseline
+    if: >-
+      always() && github.event.issue.number == 23 && github.event.comment.user.login == 'mt5hjfz2kb-lab' && github.event.comment.author_association == 'OWNER' && github.event.comment.body == 'ELDORIA_DG_GAMEPLAY_BASELINE_AUDIT_V1_20261009'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Independently classify executed published QA (not gameplay acceptance)
+        uses: actions/github-script@v7
+        env:
+          PROBE_JOB: ${{ needs.gameplay-owner-baseline.result }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:context.runId,per_page:100});
+            const probe=jobs.filter(x=>x.name.includes('gameplay-owner-baseline') && x.conclusion!=='skipped');
+            const verified=process.env.PROBE_JOB==='success'&&probe.some(x=>x.conclusion==='success');
+            const marker='<!-- eldoria-gameplay-owner-baseline-'+context.runId+' -->';
+            const existing=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:23,per_page:100});
+            if(existing.some(c=>(c.body||'').includes(marker)))return;
+            const body=[marker,'### M16 → D13/D14: recepción técnica del encargo de jugabilidad','Run: '+context.runId,'SHA: '+context.sha,'Reusable published probe result: '+process.env.PROBE_JOB,'Non-skipped successful probe job: '+verified,'Verdict: '+(verified?'PUBLISHED_TECH_BASELINE_ONLY':'BLOCKED_NO_QA_PASS'),'No code correction, vertical-slice comparison, experiential/visual PASS, intelligent agent dispatch, or stable promotion implied. Gameplay mission remains OPEN.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            if(!verified)core.setFailed('No executed independent published QA proof');
