@@ -99,9 +99,12 @@ requireGate('M07_CLOSED', !!m07 && m07.status === 'completed' && !active.some(x 
 requireGate('RUNNER_RELEASED', !!m07 && m07.runner_released === true, 'Shared resources must be released');
 // Evidence must be explicitly certified, not inferred from green CI, code or filenames.
 const result = m07 && m07.result || {};
-requireGate('POST_PATCH_UNITY_CAPTURE', result.post_patch_capture_reviewed === true && !!result.post_patch_capture_artifact_id && !!result.post_patch_capture_source_sha, 'Reviewed Unity captures linked to exact correction SHA required');
+const isSha = value => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
+const positiveId = value => (typeof value === 'number' && Number.isSafeInteger(value) && value > 0) || (typeof value === 'string' && /^[1-9][0-9]*$/.test(value));
+const sameCandidate = isSha(result.post_patch_capture_source_sha) && isSha(result.published_source_sha) && result.post_patch_capture_source_sha === result.published_source_sha;
+requireGate('POST_PATCH_UNITY_CAPTURE', result.post_patch_capture_reviewed === true && positiveId(result.post_patch_capture_artifact_id) && isSha(result.post_patch_capture_source_sha), 'Reviewed Unity captures linked to exact correction SHA required');
 requireGate('INDEPENDENT_VISUAL_PASS', result.independent_visual_pass === true && !!result.visual_review_evidence, 'Independent visual review required; technical green is insufficient');
-requireGate('WEBGL_QA_RELEVANT_PASS', result.published_webgl_verified === true && !!result.published_probe_run_id && !!result.published_source_sha, 'Exact published build and QA-relevant checks required');
+requireGate('WEBGL_QA_RELEVANT_PASS', result.published_webgl_verified === true && positiveId(result.published_probe_run_id) && sameCandidate, 'Exact candidate SHA match and published run required; a second unrelated SHA is not evidence');
 const verdict = checks.every(c => c.passed) ? 'READY_FOR_QA_HANDOFF_REVIEW' : 'BLOCKED_NO_HANDOFF';
 const report = {schema_version: 1,generated_at: new Date().toISOString(),workstream: m07id,verdict,checks,notes:['Read-only assessment. READY is not QA execution or QA approval.','A separate authorized owner and executor are required to start QA.','No chat, Work task, PR, workflow or paid resource is triggered by this script.']};
 const output = JSON.stringify(report,null,2)+'\n';
