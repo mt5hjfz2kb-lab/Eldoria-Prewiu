@@ -112,7 +112,13 @@ async function scenario(browser,label,viewport,dpr=1){
   const l=layout.match(/width=([0-9.]+) height=([0-9.]+) font=([0-9.]+)(?: scale=([0-9.]+))? screen=([0-9]+)x([0-9]+)/),noticeScale=Number(l[4]||1);
   assert(Number(l[1])<=Number(l[5])-32&&Number(l[2])<=Number(l[6])-32,'Modal clipped in viewport');
   assert(Number(l[3])*box.width/cv.width>=16,'Actual notice font is unreadable on high-DPI device');
-  await page.screenshot({path:out+'/'+label+'-notice.png'});
+  const noticePng=await page.screenshot({path:out+'/'+label+'-notice.png'});
+  // On some WebGL builds Unity reports a live notice before the splash has vacated
+  // the framebuffer. A near-empty PNG is not independently reviewable evidence.
+  assert(noticePng.length>75000,'VISUAL_EVIDENCE_SPLASH_OR_UNRENDERED_PLAYER');
+  const healthyPng=fs.readFileSync(out+'/'+label+'-healthy-before.png');
+  assert(!noticePng.equals(healthyPng),'VISUAL_EVIDENCE_NOTICE_SAME_AS_HEALTHY_PLAYER');
+  item.capture_bytes=noticePng.length;item.visual_capture='RENDERED_NOT_SPLASH_VERIFIED';
   // Exercise genuine underlying navigation/reset controls while the warning is open.
   const blockedStart=logs.length;
   for(const id of ['worldNav','reset','reset']){
