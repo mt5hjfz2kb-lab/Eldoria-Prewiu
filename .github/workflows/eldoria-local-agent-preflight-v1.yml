@@ -5,13 +5,95 @@ on:
     branches: [main]
     paths:
       - 'pipeline/agent-local-preflight-request.json'
+  schedule:
+    - cron: '*/15 * * * *'
 permissions:
   contents: read
 concurrency:
   group: eldoria-local-agent-preflight
   cancel-in-progress: false
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+    outputs:
+      execute: ${{ steps.order.outputs.execute }}
+      diagnostic: ${{ steps.order.outputs.diagnostic }}
+      index: ${{ steps.order.outputs.index }}
+      source: ${{ steps.order.outputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/eldoria-coordinator-v1.cjs
+            tools/eldoria-local-recovery-v1.cjs
+            tools/eldoria-local-recovery-worker-v1.ps1
+            pipeline/agent-local-preflight-request.json
+            pipeline/active-workstreams.json
+            pipeline/local-runner-resource-aliases.json
+      - name: M16 verifies live ownership, finite order and productive Windows jobs
+        id: order
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process');
+            const {owner,repo}=context.repo;
+            const get=async path=>{
+              const {data}=await github.rest.repos.getContent({owner,repo,path,ref:'main'});
+              const text=Buffer.from(data.content,'base64').toString('utf8');
+              fs.mkdirSync(require('path').dirname(path),{recursive:true});fs.writeFileSync(path,text);
+              return JSON.parse(text);
+            };
+            const request=await get('pipeline/agent-local-preflight-request.json');
+            if(request.mode==='local-recovery-v1'&&request.enabled!==true){core.notice('ORDER_DISABLED');return;}
+            if(request.mode!=='local-recovery-v1'){
+              core.setOutput('diagnostic',context.eventName==='schedule'?'false':'true');return;
+            }
+            const registry=await get('pipeline/active-workstreams.json');
+            const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(head!==context.sha){core.notice('DEFERRED_STALE_SOURCE; next authorized schedule reevaluates');return;}
+            const {authorize}=require(process.env.GITHUB_WORKSPACE+'/tools/eldoria-local-recovery-v1.cjs');
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
+            let index=-1;
+            for(let i=0;i<2;i++){
+              const marker='<!-- eldoria-local-accepted-'+request.order_id+'-'+i+' -->';
+              if(!comments.some(c=>c.user.type==='Bot'&&(c.body||'').includes(marker))){index=i;break;}
+            }
+            if(index<0){core.notice('FINITE_AUTHORIZED_QUEUE_COMPLETE; no further model inference');return;}
+            const rejected='<!-- eldoria-local-rejected-'+request.order_id+'-'+index+' -->';
+            if(comments.some(c=>c.user.type==='Bot'&&(c.body||'').includes(rejected))){core.notice('BLOCKED_RETRY_LIMIT; no repetition of rejected task');return;}
+            const task=authorize(registry,request,head,index);
+            if(index===1){
+              const policy=await get('pipeline/local-runner-resource-aliases.json');
+              require('assert').deepStrictEqual(policy.aliases,task.aliases);
+            }
+            const runs=await github.paginate(github.rest.actions.listWorkflowRunsForRepo,{owner,repo,status:'in_progress',per_page:100});
+            for(const run of runs){
+              if(run.id===context.runId)continue;
+              const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:run.id,per_page:100});
+              if(jobs.some(j=>j.status==='in_progress'&&(j.labels||[]).some(l=>/self-hosted|unity-6000-3-23f1/i.test(l)))){
+                core.notice('DEFERRED_PRODUCTIVE_WINDOWS_RUN_'+run.id);return;
+              }
+            }
+            fs.mkdirSync('local-task',{recursive:true});
+            fs.writeFileSync('local-task/task.json',JSON.stringify(task,null,2));
+            fs.copyFileSync('tools/eldoria-local-recovery-worker-v1.ps1','local-task/worker.ps1');
+            cp.execFileSync('node',['tools/eldoria-coordinator-v1.cjs','--prepare-local-recovery','local-task/task.json',head,String(index)],{stdio:'inherit'});
+            core.setOutput('execute','true');core.setOutput('index',String(index));core.setOutput('source',head);
+      - uses: actions/upload-artifact@v4
+        if: steps.order.outputs.execute == 'true'
+        with:
+          name: local-order-${{ github.run_id }}
+          path: local-task
+          if-no-files-found: error
   preflight:
+    needs: prepare
+    if: needs.prepare.outputs.diagnostic == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 4
     steps:
@@ -61,3 +143,187 @@ jobs:
           $disk=Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object -First 1
           if ($disk) { Write-Output ("LOCAL_DISK_FREE_GB=" + [math]::Round($disk.FreeSpace / 1GB,1)) }
           Write-Output 'ELDORIA_PREFLIGHT_FINISHED_NO_INSTALL_NO_GAME_CHANGES'
+
+
+  local-worker:
+    needs: prepare
+    if: needs.prepare.outputs.execute == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 6
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-order-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-1
+      - name: Execute only existing private Ollama in isolated workspace
+        shell: powershell
+        run: |
+          & (Join-Path $env:RUNNER_TEMP "eldoria-recovery-$env:GITHUB_RUN_ID-1/worker.ps1") -EvidenceDir (Join-Path $env:RUNNER_TEMP "eldoria-recovery-$env:GITHUB_RUN_ID-1") -Attempt 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-1
+          if-no-files-found: error
+  independent-qa:
+    needs: [prepare, local-worker]
+    if: always() && needs.prepare.outputs.execute == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      pass: ${{ steps.review.outputs.pass }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/eldoria-local-recovery-v1.cjs
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: evidence
+      - name: Independent Linux QA of authentic model candidate and cleanup
+        id: review
+        env:
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        run: |
+          node tools/eldoria-local-recovery-v1.cjs verify evidence "$SOURCE" "$GITHUB_RUN_ID" 1 qa-report.json
+          echo "pass=$(node -p "JSON.parse(require('fs').readFileSync('qa-report.json')).pass")" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: qa-report.json
+          if-no-files-found: error
+  bounded-repair:
+    needs: [prepare, local-worker, independent-qa]
+    if: >-
+      always() && needs.prepare.outputs.execute == 'true' &&
+      needs.local-worker.result == 'success' && needs.independent-qa.outputs.pass == 'false'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 6
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-order-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-2
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-2/feedback
+      - name: Existing local worker receives independent defect feedback, one correction only
+        shell: powershell
+        run: |
+          $dir=Join-Path $env:RUNNER_TEMP "eldoria-recovery-$env:GITHUB_RUN_ID-2"
+          & (Join-Path $dir 'worker.ps1') -EvidenceDir $dir -Attempt 2 -FeedbackFile (Join-Path $dir 'feedback/qa-report.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: ${{ runner.temp }}/eldoria-recovery-${{ github.run_id }}-2
+          if-no-files-found: error
+  independent-retest:
+    needs: [prepare, bounded-repair]
+    if: always() && needs.bounded-repair.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      pass: ${{ steps.review.outputs.pass }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/eldoria-local-recovery-v1.cjs
+      - uses: actions/download-artifact@v4
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: evidence
+      - name: Fresh independent retest of corrected candidate
+        id: review
+        env:
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        run: |
+          node tools/eldoria-local-recovery-v1.cjs verify evidence "$SOURCE" "$GITHUB_RUN_ID" 2 qa-report.json
+          echo "pass=$(node -p "JSON.parse(require('fs').readFileSync('qa-report.json')).pass")" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-qa-${{ github.run_id }}-2
+          path: qa-report.json
+          if-no-files-found: error
+  directorate-and-next:
+    needs: [prepare, local-worker, independent-qa, bounded-repair, independent-retest]
+    if: always() && needs.prepare.outputs.execute == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: write
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.independent-qa.outputs.pass == 'true'
+        with:
+          name: local-result-${{ github.run_id }}-1
+          path: evidence
+      - uses: actions/download-artifact@v4
+        if: needs.independent-retest.outputs.pass == 'true'
+        with:
+          name: local-result-${{ github.run_id }}-2
+          path: evidence
+      - uses: actions/download-artifact@v4
+        if: needs.independent-qa.outputs.pass == 'true'
+        with:
+          name: local-qa-${{ github.run_id }}-1
+          path: qa
+      - uses: actions/download-artifact@v4
+        if: needs.independent-retest.outputs.pass == 'true'
+        with:
+          name: local-qa-${{ github.run_id }}-2
+          path: qa
+      - name: M16 returns verified result to DG and dispatches only the next finite authorized task
+        uses: actions/github-script@v7
+        env:
+          QA_FIRST: ${{ needs.independent-qa.outputs.pass }}
+          QA_RETEST: ${{ needs.independent-retest.outputs.pass }}
+          TASK_INDEX: ${{ needs.prepare.outputs.index }}
+          SOURCE: ${{ needs.prepare.outputs.source }}
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),assert=require('assert');
+            const {owner,repo}=context.repo;
+            const fetchJson=async path=>{
+              const {data}=await github.rest.repos.getContent({owner,repo,path,ref:'main'});
+              return {data,value:JSON.parse(Buffer.from(data.content,'base64').toString('utf8'))};
+            };
+            const request=(await fetchJson('pipeline/agent-local-preflight-request.json')).value;
+            const reg=(await fetchJson('pipeline/active-workstreams.json')).value;
+            const claim=reg.active.find(w=>w.id==='eldoria-local-agent-preflight-v1'&&w.owner==='chat-work-local-recovery-20261009'&&w.status==='active');
+            assert(claim,'Ownership changed before acceptance');
+            const index=Number(process.env.TASK_INDEX);
+            const pass=process.env.QA_FIRST==='true'||process.env.QA_RETEST==='true';
+            let proof='Worker/QA or cleanup failed; no acceptance, no next task.';
+            if(pass){
+              const report=JSON.parse(fs.readFileSync('qa/qa-report.json','utf8'));
+              const task=JSON.parse(fs.readFileSync('evidence/task.json','utf8').replace(/^\uFEFF/,''));
+              const candidate=fs.readFileSync('evidence/candidate.json');
+              assert(report.pass&&report.source_sha===process.env.SOURCE&&report.run_id===String(context.runId));
+              assert.equal(crypto.createHash('sha256').update(candidate).digest('hex'),report.candidate_sha256);
+              assert.equal(task.task_id,request.order_id+'-'+index);
+              const target=['pipeline/local-runner-resource-aliases.json','tests/fixtures/local-runner-conflicts-v1.json'][index];
+              assert.equal(task.target,target);assert(claim.scope.includes(target));
+              let old;try{old=(await github.rest.repos.getContent({owner,repo,path:target,ref:'main'})).data;}catch(e){if(e.status!==404)throw e;}
+              await github.rest.repos.createOrUpdateFileContents({owner,repo,path:target,branch:'main',sha:old?.sha,content:candidate.toString('base64'),message:'ops(local-agent): accept independently verified '+task.kind+' from run '+context.runId});
+              proof='Independent Linux QA PASS; candidate '+report.candidate_sha256+'; checks '+report.independent_checks+'; attempt '+report.attempt+'. Owned Ollama stopped, localhost listener closed, lock released. No Unity/stable changes.';
+            }
+            const marker='<!-- eldoria-local-'+(pass?'accepted':'rejected')+'-'+request.order_id+'-'+index+' -->';
+            const body=[marker,'### D03 local executor → independent QA → DG',pass?'PASS_SUPPORT_ONLY':'BLOCKED_NO_ACCEPTANCE','Run https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,'Source '+process.env.SOURCE,'Task '+request.order_id+'-'+index,proof,'R2-B reservation preserved; Windows job ended and shared runner returned. No general 15-department or Unity acceptance claimed.'].join('\n');
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
+            if(!comments.some(c=>c.user.type==='Bot'&&(c.body||'').includes(marker))){
+              await github.rest.issues.createComment({owner,repo,issue_number:25,body});
+              await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+            }
+            if(!pass){core.setFailed('Independent QA or real worker failed; bounded attempts exhausted/unavailable');return;}
+            if(index===0){
+              await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id:'eldoria-local-agent-preflight-v1.yml',ref:'main'});
+              core.notice('NEXT_AUTHORIZED_REAL_LOCAL_TASK_DISPATCHED_WITHOUT_CHAT');
+            }

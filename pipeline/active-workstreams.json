@@ -46,7 +46,9 @@
         "tools/eldoria-local-recovery-worker-v1.ps1",
         "tests/eldoria-local-recovery-v1.test.cjs",
         "tools/eldoria-coordinator-v1.cjs",
-        "docs/evidence/eldoria-local-agent-preflight-v1/**"
+        "docs/evidence/eldoria-local-agent-preflight-v1/**",
+        "pipeline/local-runner-resource-aliases.json",
+        "tests/fixtures/local-runner-conflicts-v1.json"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T14:18:00Z",
@@ -54,7 +56,7 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "OWNER AUTHORIZED EXECUTIVE TRANSFER / NEW ISOLATED LOCAL TASK AND INDEPENDENT QA",
+      "phase": "NEW REAL LOCAL MODEL SUPPORT TASKS / BOUNDED CORRECTION AND INDEPENDENT QA",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Recover inference with two finite authorized support tasks using existing preflight workflow, independent hosted QA and bounded model feedback; no Unity/main generated writes.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
@@ -69,21 +71,11 @@
         "preserve_existing_results": true
       },
       "runner_loan": {
-        "from": "r2-b-strategic-choice",
         "resource": "windows-runner-heavy",
-        "state": "COMPLETED",
-        "run_id": 37931125987,
-        "job_id": 113821812032,
-        "return_verified": true,
-        "no_claim_transfer": true,
-        "findings": {
-          "private_exe": "FOUND",
-          "private_models_directory": "FOUND",
-          "model_qwen25_coder_3b": "HISTORICAL_ONLY_NOT_RECHECKED",
-          "service": "NOT_FOUND",
-          "local_api": "UNREACHABLE"
-        },
-        "game_changes": false
+        "from": "r2-b-strategic-choice",
+        "authorized_by": "Owner current task: explicit temporary runner coordination",
+        "policy": "R2-B reservation retained; no active productive job or Unity/Blender process; single runner queue and owned process lock; timeout bounded; return immediately at job end",
+        "expires_at": "2026-10-09T15:30:00Z"
       },
       "historical_runtime_proof": {
         "run_id": 37820089071,

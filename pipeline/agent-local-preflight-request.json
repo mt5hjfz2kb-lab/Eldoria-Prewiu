@@ -1,21 +1,37 @@
 {
   "schema_version": 1,
-  "requested_at": "2026-10-09T13:55:00Z",
-  "purpose": "Third controlled read-only original Eldoria Ollama path verification per owner 2026-10-09 and commit 77fcc8299",
+  "mode": "local-recovery-v1",
+  "enabled": true,
+  "workstream_id": "eldoria-local-agent-preflight-v1",
+  "owner": "chat-work-local-recovery-20261009",
+  "order_id": "executive-local-recovery-20261009-v1",
+  "authorization": "Owner explicit executive recovery and new small isolated support tasks, 2026-10-09 14:42 Europe/Madrid",
+  "department": "D03",
+  "model": "qwen2.5-coder:3b",
+  "budget_eur": 0,
+  "max_attempts": 2,
+  "expires_at": "2026-10-09T15:30:00Z",
+  "requested_at": "2026-10-09T12:51:49.930Z",
   "install": false,
-  "launch_agents": false,
+  "launch_agents": true,
   "modify_game": false,
+  "tasks": [
+    {
+      "kind": "runner-resource-aliases"
+    },
+    {
+      "kind": "runner-conflict-cases"
+    }
+  ],
   "dg_authorized_loan": {
-    "authorization": "owner-2026-10-09-recovered-runtime",
-    "owner": "chat-local-agent-integration-20261009",
+    "authorization": "owner-executive-recovery-20261009",
+    "owner": "chat-work-local-recovery-20261009",
     "resource": "windows-runner-heavy",
     "source_reservation": "r2-b-strategic-choice",
-    "windows_timeout_minutes": 4,
-    "one_shot": true,
-    "read_only": true,
+    "windows_timeout_minutes": 6,
+    "read_only": false,
     "no_install": true,
     "no_game_changes": true,
-    "return": "R2-B claim unchanged; GitHub Actions releases runner at job completion",
-    "diagnostic": "preexisting private EldoriaLocalAI executable and models"
+    "return": "R2-B reservation unchanged; worker process/listener/lock released before independent hosted QA and next bounded task"
   }
 }

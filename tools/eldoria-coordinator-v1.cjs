@@ -3,6 +3,14 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+if (process.argv[2] === '--prepare-local-recovery') {
+  const {authorize}=require('./eldoria-local-recovery-v1.cjs');
+  const request=JSON.parse(fs.readFileSync('pipeline/agent-local-preflight-request.json','utf8'));
+  const registry=JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
+  const task=authorize(registry,request,process.argv[4],Number(process.argv[5]||0));
+  fs.writeFileSync(process.argv[3],JSON.stringify(task,null,2));console.log(JSON.stringify(task));
+  process.exit(0);
+}
 
 
 // Independent coordinator verification of a bounded zero-cost local maintenance result.
