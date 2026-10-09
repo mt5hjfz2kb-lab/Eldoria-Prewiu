@@ -49,9 +49,9 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "OWNER AUTHORIZED TRANSFER / SAFE READ-ONLY LOCAL AGENT PREFLIGHT",
+      "phase": "READ_ONLY_WINDOWS_PREFLIGHT_SUCCESS / LOCAL_MODEL_AVAILABILITY_BLOCKED",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Reconcile existing Ollama and runner status; develop isolated read-only handoff proof without Unity/main writes or Windows runner interference.",
+      "next": "Owner chat-local-agent-integration-20261009 should diagnose runner Ollama PATH/install before attempting actual isolated agent. Continue separate Unity work; R2-B Windows priority restored.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -72,7 +72,12 @@
         "window_timeout_minutes": 4,
         "returns_to": "r2-b-strategic-choice",
         "no_claim_transfer": true,
-        "state": "AUTHORIZED_ONE_SHOT"
+        "state": "COMPLETED",
+        "run_id": 37929565276,
+        "job_id": 113816664841,
+        "return_verified": "R2-B held original windows-runner-heavy registry claim throughout",
+        "finding": "Ollama executable missing in runner PATH and process not running; Python present; Git missing in runner PATH",
+        "game_changes": false
       }
     },
     {
@@ -289,8 +294,13 @@
         "timeout_minutes": 4,
         "automatic_return": "GitHub Actions job termination releases Windows runner; R2-B resource claim never transferred",
         "conditions": "zero running productive runs at checkout; no cancellation; Unity must not be interrupted",
-        "state": "AUTHORIZED_ONE_SHOT",
-        "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2"
+        "state": "COMPLETED_RETURNED_TO_R2B",
+        "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2",
+        "run_id": 37929565276,
+        "job_id": 113816664841,
+        "job_conclusion": "success",
+        "runner_released_by": "GitHub Actions job completed",
+        "verified_at": "2026-10-09T12:22:15Z"
       }
     },
     {
