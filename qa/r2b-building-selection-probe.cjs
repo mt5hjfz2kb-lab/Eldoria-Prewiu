@@ -46,6 +46,22 @@ async function caseFor(browser,label,viewport,id){
   report.wrong_navigation=report.after_logs.some(x=>/ELDORIA_PLAYABLE_NAV|ELDORIA_PLAYABLE_RESET/.test(x));
   report.pass=report.panel_open&&!report.wrong_navigation;
   report.finding=report.pass?'BUILDING_SELECTION_OBSERVED':report.wrong_navigation?'WRONG_UI_ACTION':'BUILDING_SELECTION_NOT_OBSERVED';
+  if(report.pass&&id==='sawmill'){
+   const action=report.after_logs.find(x=>/ELDORIA_PLAYABLE_UI id=buildingAction/.test(x));
+   const centre=action?.match(/x=([-\d.]+) y=([-\d.]+) enabled=True/);
+   if(!centre){report.pass=false;report.finding='SAWMILL_BUILD_ACTION_NOT_ENABLED';return;}
+   const actionPoint={x:box.x+(+centre[1]/pixels.width)*box.width,y:box.y+(+centre[2]/pixels.height)*box.height};
+   report.action_touch=actionPoint;
+   if(actionPoint.x<0||actionPoint.x>=viewport.width||actionPoint.y<0||actionPoint.y>=viewport.height){report.pass=false;report.finding='SAWMILL_BUILD_ACTION_OFFSCREEN';return;}
+   const actionBefore=logs.length;
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:actionPoint.x,y:actionPoint.y,radiusX:5,radiusY:5,force:1,id:2}]});
+   await pause(90);await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+   await pause(500);
+   report.action_logs=logs.slice(actionBefore).filter(x=>/ELDORIA_PLAYABLE_(COMMAND|UI|RESET|NAV)/.test(x)).slice(-20);
+   report.build_command_ok=report.action_logs.some(x=>/ELDORIA_PLAYABLE_COMMAND kind=Build target=sawmill ok=True/.test(x));
+   report.pass=report.build_command_ok;
+   report.finding=report.pass?'BUILDING_SELECTION_AND_BUILD_COMMAND_OBSERVED':'SAWMILL_BUILD_COMMAND_NOT_OBSERVED';
+  }
  }catch(e){report.finding='PROBE_BLOCKED';report.error=String(e);await page.screenshot({path:dir+'/'+label+'-error.png'}).catch(()=>{});}finally{report.elapsed_ms=Date.now()-started;results.cases.push(report);await context.close();}
 }
 (async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{
