@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "requested_at": "2026-10-09T12:26:00Z",
-  "purpose": "Second one-shot read-only Ollama discovery using the previously extended existing workflow; owner issue23 comment 6080837818",
+  "requested_at": "2026-10-09T13:55:00Z",
+  "purpose": "Third controlled read-only original Eldoria Ollama path verification per owner 2026-10-09 and commit 77fcc8299",
   "install": false,
   "launch_agents": false,
   "modify_game": false,
   "dg_authorized_loan": {
-    "authorization": "owner-2026-10-09-second-window",
+    "authorization": "owner-2026-10-09-recovered-runtime",
     "owner": "chat-local-agent-integration-20261009",
     "resource": "windows-runner-heavy",
     "source_reservation": "r2-b-strategic-choice",
@@ -15,9 +15,7 @@
     "read_only": true,
     "no_install": true,
     "no_game_changes": true,
-    "return": "Runner automatically freed after GitHub Actions job finishes; R2-B claim unchanged",
-    "evidence_request": "issue23-comment-6080837818",
-    "preflight_verified": "No active Windows work; only DG watchdog ubuntu-latest",
-    "diagnostic": "standard installation paths, service state, local API 127.0.0.1:11434"
+    "return": "R2-B claim unchanged; GitHub Actions releases runner at job completion",
+    "diagnostic": "preexisting private EldoriaLocalAI executable and models"
   }
 }
