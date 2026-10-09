@@ -35,11 +35,16 @@ jobs:
         run: |
           set -euo pipefail
           jq -e '.schema_version==1 and .kind=="READ_ONLY_DG_TRIAGE" and (.findings|type=="array")' watchdog-report.json >/dev/null
+          # Paginate once to a file: grep -q against a live pipeline can SIGPIPE gh
+          # under pipefail and inadvertently post duplicate BLOCKED/STALE alerts.
+          comments_file="$(mktemp)"
+          trap 'rm -f "$comments_file"' EXIT
+          gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' > "$comments_file"
           jq -c '.findings[]' watchdog-report.json | while IFS= read -r finding; do
             id=$(jq -r '.id' <<<"$finding")
             status=$(jq -r '.status' <<<"$finding")
             marker="ELDORIA_DG_WATCHDOG_${id}_${status}"
-            if gh api "repos/$GH_REPO/issues/23/comments?per_page=100" --paginate --jq '.[].body' | grep -Fq "$marker"; then continue; fi
+            if grep -Fq -- "$marker" "$comments_file"; then continue; fi
             body=$(printf '### DG — vigilancia automática de workstream\n\n%s\n\nEstado: **%s**\nWorkstream: `%s`\n\nEste aviso es solo detección, NO es prueba de cierre ni permiso para crear una misión, reintentar indefinidamente o gastar créditos. Dirección General debe reconciliar el estado real y actuar bajo la autorización existente.' "$marker" "$status" "$id")
             gh api "repos/$GH_REPO/issues/23/comments" -f body="$body" >/dev/null
           done
