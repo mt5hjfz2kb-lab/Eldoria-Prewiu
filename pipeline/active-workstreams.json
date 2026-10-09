@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T17:34:57.279Z",
+  "updated_at": "2026-10-09T17:40:07.395Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -42,7 +42,8 @@
         ".github/workflows/pages.yml",
         "qa/eldoria-gameplay-camera-experience-probe.cjs",
         "tests/eldoria-rendered-frame-readiness.test.cjs",
-        "tools/eldoria-rendered-frame-readiness.cjs"
+        "tools/eldoria-rendered-frame-readiness.cjs",
+        "tests/eldoria-focused-checkout.test.cjs"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T18:20:03.937Z",
@@ -51,7 +52,7 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read existing infrastructure evidence and consolidate Directorate inventory; no player-visible changes.",
       "paid_credits": 0,
-      "phase": "RESTORE_EXISTING_FOCUSED_QA_AND_CANDIDATE_FEEDBACK",
+      "phase": "FOCUSED_EXISTING_BINARY_QA_RUNNING / CHECKOUT_CACHE_REPAIR_TESTED",
       "next": "Reproduce splash false negative on existing exact candidate; repair rendered readiness, run focused independent QA without Unity rebuild, measure feedback latency; preserve claims/stable.",
       "runner_released": true,
       "blocked_at": "2026-10-08T18:31:44.877Z",
@@ -66,7 +67,17 @@
         "autonomy_general": "NOT_CERTIFIED",
         "owner_notification_requested": true,
         "owner_notification_delivered": "NOT_VERIFIED",
-        "zero_paid_apis": true
+        "zero_paid_apis": true,
+        "focused_recovery": {
+          "commit": "adff3567102d23379af3d4ae65fd38b8ec84c8c9",
+          "run": 37967607802,
+          "false_negative_evidence_artifact": 11631956140,
+          "cause": "Probe sends input while real screenshot is still Unity splash",
+          "qa_only_windows_builds": 0,
+          "stable_deployments": 0,
+          "cache_deletion_evidence_job": 113915750898,
+          "cache_fix_speed_verified": false
+        }
       },
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
