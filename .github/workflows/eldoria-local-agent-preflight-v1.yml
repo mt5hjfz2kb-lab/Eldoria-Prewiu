@@ -4,12 +4,13 @@ on:
   issue_comment:
     types: [created]
   workflow_run:
-    workflows: ['Publish Eldoria Preview', 'UI Progression Certification (fast)', '[PRODUCTION] Valoria First Playable City Slice v1']
+    workflows: ['Publish Eldoria Preview', 'UI Progression Certification (fast)', '\[PRODUCTION\] Valoria First Playable City Slice v1']
     types: [completed]
   push:
     branches: [main]
     paths:
       - 'pipeline/agent-local-preflight-request.json'
+      - '.github/workflows/eldoria-local-agent-preflight-v1.yml'
   schedule:
     - cron: '*/15 * * * *'
 permissions:
