@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "r2b-isolated-candidate",
-  "source_sha": "689cfb84ce81cdb39f3669a247c63faad57d39b6",
+  "source_sha": "d9c12eec8461587181fe9234e65b3da5d0ac2510",
   "production_run_id": 37838898425,
   "production_artifact_id": 11576784810,
   "parcel_source_artifact_id": 11576579158,
@@ -13,8 +13,8 @@
   "authorization": "Ronda 2 A-E DG Issue #23 owner approval 6068111056",
   "purpose": "Publish an ADDITIVE corrected Unity WebGL candidate after real Windows build + independent package QA, with existing stable and earlier R2-B candidate byte-preserved; separately run published-playability QA.",
   "acceptance": "Actual new Unity WebGL exported package at exact SHA; independent mobile touch/selection/camera visual experience and reward/reload regressions required; no technical PASS-only acceptance.",
-  "retry": 2,
-  "retry_reason": "Source comparison guard correctly rejected stale 5922520: current owner correction 689cfb84 adds legacy touch fallback. Build and verify EXACT newer approved R2B touch source, no bypass of SHA diff check.",
+  "retry": 3,
+  "retry_reason": "Build of 689cfb failed genuinely on six ambiguous UnityEngine.TouchPhase names, corrected in exact source d9c12e; source gate retains hash comparison and whitelist; existing player-facing behavior otherwise unchanged.",
   "delivery_phase": "rebuild_isolated_candidate_for_real_touch_retest",
   "candidate_run_id": 37914588629,
   "candidate_head_sha": "fec7c5b0d157d360ab30000dd2ea2b093f4e5e14",
@@ -23,5 +23,5 @@
   "independent_package_qa_verdict": "PASS_PACKAGE_ONLY",
   "dg_execution_note": "Owner authorized R2-B Unity production: build corrected source 5922520 on reserved Windows, fresh independent actual touch/UX QA required; do not promote stable.",
   "dg_dispatched_at": "2026-10-09",
-  "dg_dispatched_revision": 3
+  "dg_dispatched_revision": 4
 }
