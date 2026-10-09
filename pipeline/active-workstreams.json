@@ -295,7 +295,9 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-gameplay-audit-dispatch-recovery-v1",
       "title": "Connect existing DG owner gameplay order to independent published QA baseline",
@@ -307,15 +309,28 @@
       "resources": [],
       "claimed_at": "2026-10-09T11:15:00+02:00",
       "base_main_sha": "main",
-      "status": "active",
-      "phase": "REPAIR SKIPPED REAL GAMEPLAY INTAKE / READONLY EXISTING QA",
+      "status": "completed",
+      "phase": "REAL OWNER DG ORDER → EXECUTED R2B MOBILE PLAYTEST → DG RECEIPT / NOT INTELLIGENT REPAIR",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "GitHub workflow reuses published mobile QA, without modifying game, art or renderer.",
       "paid_credits": 0,
-      "next": "Connect signed owner command to reusable published QA workflow; validate real jobs/results and return to DG. Do not claim gameplay improvement before code owner accepts and repairs."
-    }
-  ],
-  "history": [
+      "next": "Gameplay qualitative and EXP-CAM-01/EXP-BLD-02 improvement remain open under r2-c-mobile-ux/r2-b owners; independent visual/experience QA and intelligent correction cycle still required.",
+      "completed_at": "2026-10-09T11:30:00+02:00",
+      "runner_released": true,
+      "result": {
+        "workflow_fix_commit": "cab8f7cecdbff0489c91c05dca203f529d02b3b3",
+        "failed_reusable_attempt": 37905146475,
+        "real_executed_run": 37905273423,
+        "qa_artifact": 11604675631,
+        "dg_receipt_comment": 6077371369,
+        "real_touch_survey": "PASS",
+        "real_touch_harvest": "PASS",
+        "vertical_slice_experience_comparison": "NOT_PERFORMED",
+        "intelligent_repair": "NOT_PROVEN",
+        "gameplay_changes": 0,
+        "paid_credits": 0
+      }
+    },
     {
       "id": "eldoria-m16-executed-qa-proof-v1",
       "title": "M16 require executed independent QA job evidence before M07 handoff",
