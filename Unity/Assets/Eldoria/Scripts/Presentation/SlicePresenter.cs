@@ -161,6 +161,13 @@ namespace Eldoria.Presentation
 
             if(pointerActive&&released)
             {
+                // Some mobile WebGL gestures deliver the final displacement only on
+                // release. Classify that movement before interpreting a gesture as a
+                // building tap; otherwise a quick swipe opens a building by mistake.
+                if(!pointerDragged&&IsPanGesture(pointerStart,point))pointerDragged=true;
+                if(pointerDragged&&!pointerStartedOverUi)
+                    PanCameraByScreenDelta(point-pointerLast);
+                pointerLast=point;
                 bool shouldSelect=!pointerStartedOverUi&&!pointerDragged;
 #if UNITY_WEBGL && !UNITY_EDITOR
                 if(usingTouch&&!pointerDragged)
