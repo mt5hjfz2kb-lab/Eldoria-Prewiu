@@ -50,5 +50,7 @@
     "code_sha256": "04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de",
     "generated_code_execution": "Restricted pure C# on independent Linux; no worker execution"
   },
-  "protected_baseline_reason": "Preserve R2-B owner's actual mobile touch correction d9c12eec8461587181fe9234e65b3da5d0ac2510 authorized by 78619787c5bd5073bfc12694d180288901537f60. D06 owns no protected source; exact diff reviewed; build waits for actual production release."
+  "protected_baseline_reason": "Preserve R2-B owner's actual mobile touch correction d9c12eec8461587181fe9234e65b3da5d0ac2510 authorized by 78619787c5bd5073bfc12694d180288901537f60. D06 owns no protected source; exact diff reviewed; build waits for actual production release.",
+  "authorized_reuse_run_id": 37941767116,
+  "reuse_reason": "Existing authorized R2-B actual Unity build contains identical complete Unity source, including D06 local-policy SHA256 04722b819245bf50a1ab0d16046446cb60fce8259a25c4f9a1d1bc9d21fc25de. Reuse immutable package only after real build success and exact Unity-tree/code hash verification; no duplicate Windows build, no stable publication."
 }

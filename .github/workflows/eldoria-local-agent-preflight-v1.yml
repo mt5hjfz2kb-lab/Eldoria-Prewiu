@@ -38,6 +38,9 @@ jobs:
       diagnostic: ${{ steps.order.outputs.diagnostic }}
       index: ${{ steps.order.outputs.index }}
       source: ${{ steps.order.outputs.source }}
+      reuse: ${{ steps.order.outputs.reuse }}
+      reuse_source: ${{ steps.order.outputs.reuse_source }}
+      reuse_failed: ${{ steps.order.outputs.reuse_failed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,7 +91,25 @@ jobs:
                 const code=(await github.rest.repos.getContent({owner,repo,path:task.target,ref:'main'})).data;
                 const bytes=Buffer.from(code.content,'base64');
                 require('assert').strictEqual(require('crypto').createHash('sha256').update(bytes).digest('hex'),request.accepted_code_sha256);
-                core.setOutput('build','true');return;
+                core.setOutput('build','true');
+                if(request.authorized_reuse_run_id){
+                  const assert=require('assert').strict;
+                  const reused=(await github.rest.actions.getWorkflowRun({owner,repo,run_id:request.authorized_reuse_run_id})).data;
+                  assert.equal(reused.name,'Publish Eldoria Preview');assert.equal(reused.head_branch,'main');
+                  const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:reused.id,per_page:100});
+                  const built=jobs.find(j=>j.name==='unity-webgl');
+                  if(reused.status!=='completed'){core.setOutput('build','false');core.notice('WAIT_EXISTING_AUTHORIZED_UNITY_BUILD_'+reused.id);return;}
+                  core.setOutput('reuse_source',reused.head_sha);
+                  const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{owner,repo,run_id:reused.id,per_page:100});
+                  const artifact=artifacts.find(a=>a.name==='eldoria-unity-webgl-'+reused.head_sha&&!a.expired);
+                  if(!built||built.conclusion!=='success'||!artifact){core.setOutput('reuse_failed','true');core.notice('EXISTING_UNITY_BUILD_REJECTED_NO_DUPLICATE_COMPILE');return;}
+                  const unityTree=async ref=>{const tree=(await github.rest.git.getCommit({owner,repo,commit_sha:ref})).data.tree.sha;return (await github.rest.git.getTree({owner,repo,tree_sha:tree})).data.tree.find(e=>e.path==='Unity').sha;};
+                  assert.equal(await unityTree(head),await unityTree(reused.head_sha),'Existing build does not match current complete Unity source tree');
+                  const compiled=(await github.rest.repos.getContent({owner,repo,path:task.target,ref:reused.head_sha})).data;
+                  assert.equal(require('crypto').createHash('sha256').update(Buffer.from(compiled.content,'base64')).digest('hex'),request.accepted_code_sha256);
+                  core.setOutput('reuse',String(reused.id));core.notice('REUSE_ACTUAL_UNITY_PACKAGE_EXACT_SOURCE_'+reused.head_sha);
+                }
+                return;
               }
               if(request.phase!=='code'){core.notice('UNITY_FINITE_ORDER_STOPPED_'+request.phase);return;}
               const prior=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number:25,per_page:100});
@@ -491,7 +512,7 @@ jobs:
 
   unity-candidate:
     needs: prepare
-    if: needs.prepare.outputs.unity == 'true' && needs.prepare.outputs.build == 'true'
+    if: needs.prepare.outputs.unity == 'true' && needs.prepare.outputs.build == 'true' && needs.prepare.outputs.reuse == '' && needs.prepare.outputs.reuse_failed != 'true'
     permissions:
       contents: read
       actions: read
@@ -507,7 +528,7 @@ jobs:
 
   unity-playable-qa:
     needs: [prepare, unity-candidate]
-    if: needs.prepare.outputs.build == 'true' && needs.unity-candidate.result == 'success'
+    if: always() && needs.prepare.outputs.build == 'true' && (needs.unity-candidate.result == 'success' || needs.prepare.outputs.reuse != '')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
@@ -519,7 +540,9 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: eldoria-unity-webgl-${{ github.sha }}
+          name: eldoria-unity-webgl-${{ needs.prepare.outputs.reuse_source || github.sha }}
+          run-id: ${{ needs.prepare.outputs.reuse || github.run_id }}
+          github-token: ${{ github.token }}
           path: isolated-webgl
       - uses: actions/setup-node@v4
         with:
@@ -544,7 +567,7 @@ jobs:
         continue-on-error: true
         env:
           ELDORIA_URL: http://127.0.0.1:4173/
-          ELDORIA_SOURCE_SHA: ${{ github.sha }}
+          ELDORIA_SOURCE_SHA: ${{ needs.prepare.outputs.reuse_source || github.sha }}
           ELDORIA_EVIDENCE_DIR: local-save-playable
         run: node tools/eldoria-local-save-playable-probe.cjs
       - uses: actions/upload-artifact@v4
@@ -581,7 +604,9 @@ jobs:
       - name: M16 records actual candidate result without replacing visual acceptance
         uses: actions/github-script@v7
         env:
-          BUILD: ${{ needs.unity-candidate.result }}
+          BUILD: ${{ needs.prepare.outputs.reuse_failed == 'true' && 'failure' || needs.prepare.outputs.reuse != '' && 'success' || needs.unity-candidate.result }}
+          ACTUAL_SOURCE: ${{ needs.prepare.outputs.reuse_source || github.sha }}
+          BUILD_RUN: ${{ needs.prepare.outputs.reuse || github.run_id }}
           PLAYABLE: ${{ needs.unity-playable-qa.result }}
         with:
           script: |
@@ -593,13 +618,13 @@ jobs:
             const claim=reg.active.find(w=>w.id==='eldoria-local-agent-preflight-v1'&&w.owner==='chat-work-local-recovery-20261009');
             if(!claim||request.phase!=='build')throw Error('Live production ownership changed');
             const pass=process.env.BUILD==='success'&&process.env.PLAYABLE==='success';
-            request.enabled=false;request.phase=pass?'awaiting_independent_visual':'blocked_candidate';request.candidate_run_id=context.runId;request.candidate_source_sha=context.sha;
+            request.enabled=false;request.phase=pass?'awaiting_independent_visual':'blocked_candidate';request.candidate_run_id=context.runId;request.candidate_source_sha=process.env.ACTUAL_SOURCE;request.actual_build_run_id=Number(process.env.BUILD_RUN);
             claim.status='blocked';claim.runner_released=true;claim.runner_loan.status='returned';claim.resources=[];
             claim.phase=pass?'ACTUAL UNITY BUILD AND PLAYABLE QA PASS / INDEPENDENT VISUAL REVIEW REQUIRED':'ACTUAL UNITY CANDIDATE BUILD/PLAYABILITY FAIL / NO ACCEPTANCE';
-            claim.result={code_generation_run:request.code_generation_run_id,candidate_run:context.runId,source_sha:context.sha,build:process.env.BUILD,functional:process.env.PLAYABLE,visual:'NOT_VERIFIED',accepted:false,stable_published:false,paid_cost:0};
+            claim.result={code_generation_run:request.code_generation_run_id,candidate_run:context.runId,source_sha:process.env.ACTUAL_SOURCE,actual_build_run_id:Number(process.env.BUILD_RUN),build:process.env.BUILD,functional:process.env.PLAYABLE,visual:'NOT_VERIFIED',accepted:false,stable_published:false,paid_cost:0};
             claim.blocker=pass?'Exact candidate captures require independent visual/readability review. No synthetic or technical PASS may close the player-facing delivery.':'Inspect actual failed build/playability evidence; preserve original owners and independent gates. No unchanged deterministic rerun.';
             for(const [path,data,content] of [['pipeline/agent-local-preflight-request.json',order.data,request],['pipeline/active-workstreams.json',registry.data,reg]])await github.rest.repos.createOrUpdateFileContents({owner,repo,path,branch:'main',sha:data.sha,content:Buffer.from(JSON.stringify(content,null,2)+'\n').toString('base64'),message:'ops(local-agent): record actual Unity candidate evidence and return temporary runner'});
-            for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:'### D06 local programming → Unity → independent real playability\nRun https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId+'\nExact Unity source '+context.sha+'\nBUILD '+process.env.BUILD+'\nFUNCTIONAL/REGRESSION '+process.env.PLAYABLE+'\nVISUAL NOT_VERIFIED\nFINAL NOT_ACCEPTED\nTemporary runner loan returned; R2-B reservation untouched; stable deployment disabled. Evidence artifact eldoria-local-unity-real-playability-'+context.runId});
+            for(const issue_number of [23,25])await github.rest.issues.createComment({owner,repo,issue_number,body:'### D06 local programming → Unity → independent real playability\nRun https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId+'\nExact Unity source '+process.env.ACTUAL_SOURCE+'\nActual Unity build run '+process.env.BUILD_RUN+'\nBUILD '+process.env.BUILD+'\nFUNCTIONAL/REGRESSION '+process.env.PLAYABLE+'\nVISUAL NOT_VERIFIED\nFINAL NOT_ACCEPTED\nTemporary runner loan returned; R2-B reservation untouched; stable deployment disabled. Evidence artifact eldoria-local-unity-real-playability-'+context.runId});
 
             const images=[];
             for(const name of ['portrait-healthy-before.png','portrait-notice.png','portrait-acknowledged.png','landscape-healthy-before.png','landscape-notice.png','landscape-acknowledged.png']){
