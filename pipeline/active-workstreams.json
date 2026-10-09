@@ -295,7 +295,9 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-m16-executed-qa-proof-v1",
       "title": "M16 require executed independent QA job evidence before M07 handoff",
@@ -308,15 +310,28 @@
       "resources": [],
       "claimed_at": "2026-10-09T10:45:00+02:00",
       "base_main_sha": "a27585eb849654bc97810799bb880dbdfdd31684",
-      "status": "active",
-      "phase": "BOUNDED QA EVIDENCE ACCEPTANCE PATCH",
+      "status": "completed",
+      "phase": "INDEPENDENT NEGATIVE QA PASS / M07 CORRECTLY BLOCKED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Only fail-closed read-only coordinator acceptance contract; no game, visual or publication writes.",
       "paid_credits": 0,
-      "next": "Reject skipped and worker-self-reported QA, validate with existing independent M16 tests and close."
-    }
-  ],
-  "history": [
+      "next": "Use independently certified non-skipped QA evidence when M07 owner produces verified visual results. General producer→corrector→QA loop still needs authorized intelligent executor.",
+      "completed_at": "2026-10-09T10:30:00+02:00",
+      "runner_released": true,
+      "result": {
+        "source_commit": "eb52d40c4d078ce338a04be9036eb6e1e043e510",
+        "tests_commit": "5e8fbb99dc593b4684f375dca857028a7c3d62ac",
+        "run": 37904470109,
+        "conclusion": "success",
+        "artifacts": [
+          11603727098
+        ],
+        "m07_handoff": "BLOCKED_NO_HANDOFF",
+        "full_agent_studio": "NOT_CERTIFIED",
+        "original_coordinator_startup": "FAILURE_STILL_OPEN",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "eldoria-m16-evidence-provenance-hardening-v1",
       "title": "Harden existing M16 independent QA handoff source/artifact provenance",
