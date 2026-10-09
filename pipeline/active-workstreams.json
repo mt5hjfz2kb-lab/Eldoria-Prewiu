@@ -184,9 +184,11 @@
         "pipeline/r2b-candidate-build.json",
         "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "status": "active",
-      "phase": "R2B REAL MOBILE FUNCTIONAL QA PASS / ISOLATED WEBGL CANDIDATE HOSTED / EXP-CAM-01 EXP-BLD-02 REMAIN OPEN",
+      "phase": "DG AUTHORIZED UNITY PLAYABLE BUILD SLOT / EXP-CAM-01 EXP-BLD-02 QA OPEN",
       "claimed_at": "2026-10-08T21:51:00+02:00",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Planning/read-only scope; production art needs planner and dedicated ownership",
@@ -255,7 +257,12 @@
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
       "department_executor_owner": "eldoria-dg-r2-approved-20261008",
-      "delivery_kind": "unity_player_facing"
+      "delivery_kind": "unity_player_facing",
+      "resource_handoff": {
+        "from": "eldoria-world-region-1-visual-convergence-v2",
+        "reason": "Owner authorized game production priority; Windows heavy slot held only for isolated Unity playable candidate build and QA",
+        "needs_release": true
+      }
     },
     {
       "id": "r2-c-mobile-ux",
@@ -352,13 +359,11 @@
         "pipeline/art-production-requests/eldoria-world-region-1-visual-convergence-v2.json",
         "docs/evidence/eldoria-world-region-1-visual-convergence-v2/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-09T06:28:33.930Z",
       "base_main_sha": "872a6ec00cd3912f9ce92da338283eeb79eb26f7",
       "status": "active",
-      "phase": "BASELINE DIRECT VISUAL FAIL / CANONICAL PLANNER NEXT",
+      "phase": "ACTIVE ART WORK; TEMPORARY RUNNER SLOT RELEASED FOR R2-B UNITY GAMEPLAY BUILD",
       "dependency": "Playable link CLOSED PASS: Pages 37642420392; published probe 37646186097. Region1 v1 source/editor 37549083306. M07 separate source and released runner; R2-A read-only planning, R2-B owns other code.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-visual-convergence-v2.json",
@@ -368,7 +373,15 @@
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
       "department_executor_owner": "automation-world-region-1-visual-v2-20261009",
-      "delivery_kind": "unity_player_facing"
+      "delivery_kind": "unity_player_facing",
+      "resource_handoff": {
+        "resource": "windows-runner-heavy",
+        "to": "r2-b-strategic-choice",
+        "authorized_by": "owner-DG-2026-10-09",
+        "reason": "DG priority to deliver current gameplay touch correction in a real Unity candidate; scoped and reversible, World Region1 work remains active with same file ownership",
+        "resumption": "After R2B Unity build and independent QA, restore world Region1 resource claim",
+        "previous_phase": "BASELINE DIRECT VISUAL FAIL / CANONICAL PLANNER NEXT"
+      }
     }
   ],
   "history": [
