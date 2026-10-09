@@ -46,3 +46,6 @@ Las transiciones de esta orden terminada fueron ejecutadas por Actions y Ollama,
 No se ha construido un ejecutor general para encargos arbitrarios de Unity, arte o audio ni se ha certificado aceptación jugable. Los scopes productivos y sus defectos siguen bajo los propietarios actuales. La extensión requerirá adaptadores de herramientas y evidencia individual de capacidad; el fracaso auténtico de Qwen 3B obliga a mantener tareas pequeñas. No se activó ningún modelo alternativo.
 
 QA anterior de Unity no se debilitó: 37932899075 conserva fallo de experiencia/cámara del candidato R2-B; sus tests independientes de orquestación y regresión de fuente sí pasaron. El soporte reparado no cierra esos defectos. Dirección General puede continuar las transiciones automatizadas existentes, pero no se puede afirmar que todo el desarrollo Unity continúe autónomamente sin intervención.
+
+## Control final del cierre
+El guard de arquitectura 37935107538 detectó que Work había dejado la entrada completed dentro de active. Se corrigió moviendo exclusivamente esa entrada a history, conforme al esquema existente, sin modificar el guard ni otros propietarios. El request deshabilitado fue verificado en 37935107407: seis pruebas PASS, ORDER_DISABLED, ningún job Windows. Este fallo de registro no altera las evidencias de inferencia/QA anteriores.
