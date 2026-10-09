@@ -345,6 +345,25 @@
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
       "department_executor_owner": "automation-world-region-1-visual-v2-20261009",
       "delivery_kind": "unity_player_facing"
+    },
+    {
+      "id": "eldoria-real-playability-d09-d13-probe-v1",
+      "title": "Existing QA: real Unity mobile camera and building interaction defects",
+      "owner": "D09-D13-DG-20261009",
+      "accountable_director": "D01-Direccion-General",
+      "department_executor_owner": "D09-D13-DG-20261009",
+      "delivery_kind": "support_only",
+      "status": "active",
+      "claimed_at": "2026-10-09T11:15:00+02:00",
+      "phase": "R2B PUBLISHED REAL TOUCH EXPERIENCE DEFECT REPRODUCTION",
+      "scope": [
+        "qa/eldoria-gameplay-camera-experience-probe.cjs",
+        ".github/workflows/eldoria-m16-independent-provenance-tests.yml",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "paid_credits": 0,
+      "next": "Execute independently on existing R2B candidate; classify real camera and touch defect, hand back to original code owner for Unity integrated repair and QA. Stable unchanged."
     }
   ],
   "history": [
