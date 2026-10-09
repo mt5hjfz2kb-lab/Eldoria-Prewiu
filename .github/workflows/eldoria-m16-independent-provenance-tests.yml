@@ -9,6 +9,8 @@ on:
       - 'tests/eldoria-gameplay-touch-release.test.cjs'
       - '.github/workflows/eldoria-m16-independent-provenance-tests.yml'
       - 'qa/eldoria-gameplay-camera-experience-probe.cjs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/EldoriaWebGLTouchActionPostprocess.cs'
+      - 'tests/eldoria-unity-webgl-touch-action.test.cjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,6 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check Unity real WebGL generated HTML touch interception fix
+        run: node --test tests/eldoria-unity-webgl-touch-action.test.cjs
       - name: Check Unity mobile rapid swipe vs building tap source regression
         run: node --test tests/eldoria-gameplay-touch-release.test.cjs
       - name: Independently test M16 coordinator including negative provenance cases
