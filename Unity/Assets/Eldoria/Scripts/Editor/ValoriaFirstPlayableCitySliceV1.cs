@@ -464,6 +464,27 @@ namespace Eldoria.EditorTools
                             new Vector3(-sx*(.06f+.32f*t),sy*(.73f-.28f*t),sz*.08f),
                             new Vector3(sx*.23f,.075f,sz*.76f),roofing,-24f);
                     }
+                    // Owner-reported defect: the previous state reads as a lone fence.
+                    // Add an unmistakable incomplete workshop shell with open doorway,
+                    // short side infill, and visible saw-frame; these are construction-only
+                    // meshes and never alter the SHARP finished building or game state.
+                    foreach(float x in new[]{-sx*.35f,-sx*.25f,sx*.25f,sx*.35f})
+                        Beam("front half-height timber infill",new Vector3(x,-sy*.23f,-sz*.31f),
+                            new Vector3(sx*.075f,sy*.44f,.085f),timber);
+                    Beam("front doorway lintel",new Vector3(0f,sy*.20f,-sz*.34f),
+                        new Vector3(sx*.49f,.13f,.14f),timber);
+                    foreach(float z in new[]{-sz*.17f,sz*.03f,sz*.23f})
+                        Beam("unfinished side wall timber",new Vector3(sx*.40f,-sy*.16f,z),
+                            new Vector3(.10f,sy*.59f,sz*.13f),timber);
+                    Beam("saw bench base",new Vector3(0f,-sy*.34f,0f),
+                        new Vector3(sx*.37f,sy*.13f,sz*.22f),timber);
+                    foreach(float x in new[]{-sx*.16f,sx*.16f})
+                        Beam("saw bench support",new Vector3(x,-sy*.43f,0f),
+                            new Vector3(.10f,sy*.20f,.10f),timber);
+                    // Strong asymmetric diagonal is readable even at the HOME camera,
+                    // distinguishing a half-built roof from the completed silhouette.
+                    Beam("unfinished roof support",new Vector3(sx*.18f,sy*.51f,-sz*.31f),
+                        new Vector3(sx*.55f,.14f,.12f),timber,-30f);
                     // Crosswise timber braces and construction supplies give readable
                     // unfinished detail without hiding the certified SHARP city.
                     Beam("front cross brace left",new Vector3(-sx*.27f,sy*.12f,-sz*.32f),
