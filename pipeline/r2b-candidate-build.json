@@ -15,7 +15,7 @@
   "acceptance": "Actual new Unity WebGL exported package at exact SHA; independent mobile touch/selection/camera visual experience and reward/reload regressions required; no technical PASS-only acceptance.",
   "retry": 3,
   "retry_reason": "Publish additive exact previously compiled Unity candidate with new touch-phase fix; run genuine mobile touch and gameplay QA on that binary; keep stable byte-identical.",
-  "delivery_phase": "publish_verified_artifact",
+  "delivery_phase": "rebuild_isolated_candidate_for_real_touch_retest",
   "candidate_run_id": 37941767116,
   "candidate_head_sha": "c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7",
   "candidate_artifact_id": 11622593301,
@@ -23,5 +23,6 @@
   "independent_package_qa_verdict": "PASS_PACKAGE_ONLY",
   "dg_execution_note": "Owner authorized R2-B Unity production: build corrected source 5922520 on reserved Windows, fresh independent actual touch/UX QA required; do not promote stable.",
   "dg_dispatched_at": "2026-10-09",
-  "dg_dispatched_revision": 4
+  "dg_dispatched_revision": 5,
+  "fast_lane_one_shot": "Pre-DG focused workflow restoration acceptance test: existing authorized R2B Windows reservation; build exact corrected touch source -> independent package QA -> additive Pages isolated candidate -> genuine touch QA, all in one existing Actions run, without new chat/JSON handoffs or stable promotion"
 }
