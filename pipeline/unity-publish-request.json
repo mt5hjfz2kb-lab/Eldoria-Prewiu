@@ -1,20 +1,23 @@
 {
   "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "Owner-authorized 2026-10-08 14:00 historical regression: compile and publish restored Unity main for fresh QA; do not claim PASS before published checks.",
+  "reason": "Complete owner-authorized direct-flow recovery after exact candidate QA PASS; publish restored Unity baseline through existing canonical Pages workflow.",
   "production_run_id": 37767338367,
   "production_artifact_id": 11546715716,
   "production_head_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "final_unity_gate_run_id": 37767338361,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
-  "requested_by": "owner-authorized-controlled-production-recovery-2026-10-10",
+  "requested_by": "owner-authorized-direct-flow-recovery-2026-10-10",
   "updated_at": "2026-10-10",
-  "retry": 45,
-  "retry_reason": "Compile current Unity main on existing Windows runner as build-only recovery. Explicitly prohibit stable GitHub Pages deployment until independent QA approves.",
+  "retry": 46,
+  "retry_reason": "Candidate probe 38001165965 / artifact 11649201968 verified exact build 37999090263 in both orientations: I-II, building touch selection, economy, recruitment/combat, exact persistence and reset; fatal errors absent. Existing stable bytes differ, so current candidate must be delivered and probed before closure.",
   "parcel_source_artifact_id": 11544987850,
   "retry_after_commit": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 37767338225,
-  "release_approved": false
+  "release_approved": true,
+  "candidate_qa_run_id": 38001165965,
+  "candidate_qa_artifact_id": 11649201968,
+  "candidate_build_run_id": 37999090263
 }
