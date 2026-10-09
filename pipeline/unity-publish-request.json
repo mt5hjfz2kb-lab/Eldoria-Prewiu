@@ -9,8 +9,8 @@
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "owner-authorized-direct-flow-recovery-2026-10-10",
   "updated_at": "2026-10-10",
-  "retry": 46,
-  "retry_reason": "Candidate probe 38001165965 / artifact 11649201968 verified exact build 37999090263 in both orientations: I-II, building touch selection, economy, recruitment/combat, exact persistence and reset; fatal errors absent. Existing stable bytes differ, so current candidate must be delivered and probed before closure.",
+  "retry": 47,
+  "retry_reason": "Promote exact already-tested candidate instead of recompiling identical Unity source. Source/preflight verifies successful build, unchanged Unity/reference source, exact artifact existence and matching candidate report (both orientations, I-II, persistence/reset, zero runtime errors).",
   "parcel_source_artifact_id": 11544987850,
   "retry_after_commit": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
@@ -19,5 +19,7 @@
   "release_approved": true,
   "candidate_qa_run_id": 38001165965,
   "candidate_qa_artifact_id": 11649201968,
-  "candidate_build_run_id": 37999090263
+  "candidate_build_run_id": 37999090263,
+  "reuse_webgl_build_run_id": 37999090263,
+  "reuse_webgl_source_sha": "3bfb1f5d48e7e14f118990f0942cf172a432512c"
 }
