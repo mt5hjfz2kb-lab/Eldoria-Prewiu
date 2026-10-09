@@ -515,9 +515,9 @@ jobs:
           script: |
             if('${{ inputs.candidate_head_sha }}'.length!==40)throw Error('Candidate SHA invalid');
             const {owner,repo}=context.repo;
-            const stable=await github.rest.actions.getArtifact({owner,repo,artifact_id:11551042802});
+            const stable=await github.rest.actions.getArtifact({owner,repo,artifact_id:11587236262});
             const old=stable.data;
-            if(old.expired||old.name!=='github-pages'||old.digest!=='sha256:cf9b3bee7d1b69e8d9627c68c101147faac17639e4db6bb6d8da57ed13d250a5')
+            if(old.expired||old.name!=='github-pages'||old.digest!=='sha256:a087f088d191fbef00fb846fe22209f693aa707176a1dc58de5387efaa2be9df')
               throw Error('Pinned original stable Pages site unavailable or digest changed');
             const candidate=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:${{ inputs.candidate_run_id }},per_page:100});
             if(!candidate.data.artifacts.some(a=>a.name==='eldoria-unity-webgl-${{ inputs.candidate_head_sha }}'&&!a.expired))
@@ -525,7 +525,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: github-pages
-          run-id: 37776564090
+          run-id: 37862462679
           github-token: ${{ github.token }}
           path: pinned-stable-pages
       - uses: actions/download-artifact@v4
@@ -544,20 +544,21 @@ jobs:
           mkdir -p site
           tar -xf "$oldtar" -C site
           test -s site/unity-owner/index.html
+          test -s site/r2-candidates/r2-b-6e0e1239/index.html
           test -s isolated-candidate-webgl/index.html
           test -s isolated-candidate-webgl/splat-state-0.ply
-          find site/unity-owner -type f -print0 | sort -z | xargs -0 sha256sum > stable-before.sha256
+          find site/unity-owner site/r2-candidates/r2-b-6e0e1239 -type f -print0 | sort -z | xargs -0 sha256sum > stable-before.sha256
           curl -fLsS --retry 4 --max-time 30 'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html' -o stable-current-index.html
           cmp stable-current-index.html site/unity-owner/index.html || { echo 'PUBLIC_STABLE_IS_NOT_PINNED_STABLE_ABORT';exit 1; }
           for rel in Build/WebGL.loader.js Build/WebGL.framework.js.unityweb; do
             curl -fLsS --retry 3 --max-time 30 "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/$rel" -o stable-public-runtime-part
             cmp stable-public-runtime-part "site/unity-owner/$rel" || { echo "CURRENT_STABLE_RUNTIME_DIFFERS_FROM_PINNED:$rel";exit 1; }
           done
-          target="site/r2-candidates/r2-b-6e0e1239"
+          target="site/r2-candidates/r2-b-swipe-${{ inputs.candidate_head_sha }}"
           test ! -e "$target" || { echo 'Existing candidate must not be overwritten';exit 1; }
           mkdir -p "$target"
           cp -a isolated-candidate-webgl/. "$target/"
-          find site/unity-owner -type f -print0 | sort -z | xargs -0 sha256sum > stable-after.sha256
+          find site/unity-owner site/r2-candidates/r2-b-6e0e1239 -type f -print0 | sort -z | xargs -0 sha256sum > stable-after.sha256
           cmp stable-before.sha256 stable-after.sha256
           test -s "$target/index.html"
           find "$target/Build" -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.gz|wasm\.br)$'
@@ -574,21 +575,21 @@ jobs:
           set -euo pipefail
           base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
           for n in $(seq 1 10); do
-            curl -fLsS --max-time 30 "${base}r2-candidates/r2-b-6e0e1239/index.html" -o candidate-current-index.html && break || sleep 10
+            curl -fLsS --max-time 30 "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_head_sha }}/index.html" -o candidate-current-index.html && break || sleep 10
           done
           test -s candidate-current-index.html
           cmp stable-current-index.html <(curl -fLsS --max-time 30 "${base}unity-owner/index.html")
-          printf 'R2B_PREVIEW_HOSTED_STABLE_BYTES_UNCHANGED %s\n' "${base}r2-candidates/r2-b-6e0e1239/"
+          printf 'R2B_PREVIEW_HOSTED_STABLE_AND_OLD_CANDIDATE_BYTES_UNCHANGED %s\n' "${base}r2-candidates/r2-b-swipe-${{ inputs.candidate_head_sha }}/"
       - name: Record independent playable candidate without claiming experiential signoff
         if: success()
         uses: actions/github-script@v7
         with:
           script: |
             const {owner,repo}=context.repo;
-            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/';
+            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ inputs.candidate_head_sha }}/';
             const body=['### R2-B WebGL de supervisión — despliegue ADITIVO validado',
               '**Candidato jugable:** '+url,
-              '**SHA gameplay autorizado:** 6e0e12396a98b04333b595fff704afa3e849c30a',
+              '**SHA gameplay autorizado:** 5922520120c1bd682cdfa80a90f748939922ce29',
               '**Build SHA:** ${{ inputs.candidate_head_sha }}',
               '**Ejecución de publicación candidata:** '+context.runId,
               '**Estable unity-owner/:** comprobado byte a byte intacto desde último deploy oficial antes de publicación y HTML público antes/después.',
