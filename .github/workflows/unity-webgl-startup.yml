@@ -42,10 +42,20 @@ jobs:
               const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
                 ...context.repo, run_id: run.id, per_page: 100
               });
-              const build = jobs.find(j => j.name === 'unity-webgl');
-              if (!build || build.conclusion !== 'success') throw new Error('Trigger did not produce a successful Unity build');
               const deploy = jobs.find(j => j.name === 'deploy');
+              const build = jobs.find(j => j.name === 'unity-webgl');
+              if ((!build || build.conclusion !== 'success') && (!deploy || deploy.conclusion !== 'success'))
+                throw new Error('Trigger neither built nor deployed a verified Unity artifact');
               if (!deploy || deploy.conclusion !== 'success') kind = 'candidate';
+              if (deploy && deploy.conclusion === 'success' && build && build.conclusion === 'skipped') {
+                if (!cfg.reuse_webgl_build_run_id || !cfg.reuse_webgl_source_sha)
+                  throw new Error('Promoted build provenance is missing');
+                run = (await github.rest.actions.getWorkflowRun({
+                  ...context.repo, run_id: cfg.reuse_webgl_build_run_id
+                })).data;
+                if (run.conclusion !== 'success' || run.head_sha !== cfg.reuse_webgl_source_sha)
+                  throw new Error('Promoted build provenance mismatch');
+              }
             }
             core.setOutput('kind', kind);
             core.setOutput('run_id', run ? String(run.id) : '');

@@ -37,10 +37,74 @@ jobs:
     outputs:
       heavy_required: ${{ steps.impact.outputs.heavy_required }}
       deploy_approved: ${{ steps.impact.outputs.deploy_approved }}
+      reuse_run_id: ${{ steps.reuse.outputs.run_id }}
+      reuse_source_sha: ${{ steps.reuse.outputs.source_sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+      - name: Resolve QA-approved exact WebGL artifact for promotion
+        id: reuse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cfg = require('./pipeline/unity-publish-request.json');
+            if (cfg.release_approved !== true || !cfg.reuse_webgl_build_run_id) return;
+            const run = (await github.rest.actions.getWorkflowRun({
+              ...context.repo, run_id: cfg.reuse_webgl_build_run_id
+            })).data;
+            if (run.status !== 'completed' || run.conclusion !== 'success' ||
+                run.head_branch !== 'main' || run.head_sha !== cfg.reuse_webgl_source_sha)
+              throw new Error('Approved build identity/status mismatch');
+            const qa = (await github.rest.actions.getWorkflowRun({
+              ...context.repo, run_id: cfg.candidate_qa_run_id
+            })).data;
+            if (qa.status !== 'completed' || qa.conclusion !== 'success' ||
+                qa.path !== '.github/workflows/unity-webgl-startup.yml')
+              throw new Error('Candidate QA has not passed');
+            const comparison = (await github.rest.repos.compareCommitsWithBasehead({
+              ...context.repo, basehead: `${run.head_sha}...${context.sha}`
+            })).data;
+            if (comparison.files.some(f => /^(Unity\/|references\/)/.test(f.filename)))
+              throw new Error('Unity/reference source changed after approved build; rebuild required');
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              ...context.repo, run_id: run.id, per_page: 100
+            });
+            if (!artifacts.some(a => !a.expired && a.name === `eldoria-unity-webgl-${run.head_sha}`))
+              throw new Error('Approved WebGL artifact is missing or expired');
+            core.setOutput('run_id', String(run.id));
+            core.setOutput('source_sha', run.head_sha);
+            core.setOutput('qa_run_id', String(qa.id));
+      - name: Download candidate QA evidence for exact artifact promotion
+        if: steps.reuse.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.reuse.outputs.qa_run_id }}
+          name: eldoria-webgl-startup-evidence
+          path: approved-candidate-qa
+      - name: Require matching clean full candidate QA before promotion
+        if: steps.reuse.outputs.run_id != ''
+        env:
+          APPROVED_BUILD_RUN: ${{ steps.reuse.outputs.run_id }}
+          APPROVED_BUILD_SHA: ${{ steps.reuse.outputs.source_sha }}
+        run: |
+          node <<'JS'
+          const r = require('./approved-candidate-qa/report.json');
+          const assert = require('node:assert/strict');
+          assert.equal(r.delivery.kind, 'candidate');
+          assert.equal(r.delivery.sourceSha, process.env.APPROVED_BUILD_SHA);
+          assert.equal(String(r.delivery.buildRunId), process.env.APPROVED_BUILD_RUN);
+          assert.equal(r.failure, null);
+          assert.equal(r.runtimeErrors.length, 0);
+          assert.equal(r.checks.navigationGatherPersistencePass, true);
+          assert.equal(r.coverage.fullBastionIToIIPass, true);
+          for (const orientation of ['landscape', 'portrait']) {
+            const flow = r.fullFlows.find(f => f.orientation === orientation);
+            assert.ok(flow && flow.pass && flow.persistencePass && flow.resetPass);
+          }
+          console.log('EXACT_CANDIDATE_PROMOTION_QA=PASS');
+          JS
       - name: Decide whether Unity WebGL build is required
         id: impact
         shell: bash
@@ -54,6 +118,11 @@ jobs:
           # Explicit release switch: never build or deploy when publication is paused.
           if ! node -e 'const c=require("./pipeline/unity-publish-request.json"); process.exit(c.enabled === true ? 0 : 1)'; then
             echo "Publication disabled: no Windows build and no Pages deploy."
+            echo "heavy_required=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ -n "${{ steps.reuse.outputs.run_id }}" ]]; then
+            echo "Promote exact QA-approved artifact; no redundant Windows rebuild."
             echo "heavy_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -298,7 +367,7 @@ jobs:
 
   deploy:
     needs: [source-preflight, unity-webgl]
-    if: needs.source-preflight.outputs.deploy_approved == 'true'
+    if: always() && needs.source-preflight.result == 'success' && needs.source-preflight.outputs.deploy_approved == 'true' && (needs.unity-webgl.result == 'success' || needs.source-preflight.outputs.reuse_run_id != '')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -333,7 +402,9 @@ jobs:
       - name: Download Unity WebGL build
         uses: actions/download-artifact@v4
         with:
-          name: eldoria-unity-webgl-${{ github.sha }}
+          github-token: ${{ github.token }}
+          run-id: ${{ needs.source-preflight.outputs.reuse_run_id || github.run_id }}
+          name: eldoria-unity-webgl-${{ needs.source-preflight.outputs.reuse_source_sha || github.sha }}
           path: unity-owner
 
       - name: Install Playwright QA browser
