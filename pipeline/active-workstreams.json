@@ -426,10 +426,10 @@
       "resources": [],
       "claimed_at": "2026-10-09T13:24:55.172Z",
       "base_main_sha": "c8ac15b26990742384cce142082346631be92d77",
-      "status": "active",
+      "status": "blocked",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "INDEPENDENT D13 DEFECTS / CORRECT ACTUAL SAVE FIXTURE AND STRICT RETEST ORIGINAL UNITY PACKAGE",
+      "phase": "ACTUAL UNITY CANDIDATE BUILD/PLAYABILITY FAIL / NO ACCEPTANCE",
       "dependency": "R2-B/SlicePresenter/GameState/LocalGateway, M07 and Region1 sources protected. Only unowned SliceBoot load-exception feedback plus new pure policy allowed.",
       "next": "Linux independent fresh real browser QA on immutable built candidate; model C# retained; no stable acceptance or Windows use.",
       "art_production_routing_reason": "Functional save-load error feedback only; no new production art, geometry or scene beauty.",
@@ -449,7 +449,7 @@
         "authorization": "Owner 2026-10-09 continuation: coordinated safe nonconflicting local programming and candidate build",
         "expires_at": "2026-10-09T17:30:00Z",
         "policy": "Existing reservation retained; defer productive jobs; single runner queue; no cancel; exact temporary inference then existing isolated Unity builder; return after each job",
-        "status": "authorized_temporary"
+        "status": "returned"
       },
       "historical_runtime_proof": {
         "run_id": 37820089071,
@@ -470,7 +470,7 @@
       "runner_released": true,
       "result": {
         "code_generation_run": 37940904129,
-        "candidate_run": 37944373674,
+        "candidate_run": 37945435156,
         "source_sha": "c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7",
         "actual_build_run_id": 37941767116,
         "build": "success",
@@ -511,7 +511,7 @@
         },
         "owner_instruction": "Owner continuation into real Unity 2026-10-09 15:19 Europe/Madrid"
       },
-      "blocker": null
+      "blocker": "Inspect actual failed build/playability evidence; preserve original owners and independent gates. No unchanged deterministic rerun."
     }
   ],
   "history": [
