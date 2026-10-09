@@ -1,5 +1,29 @@
 # Eldoria — QA, Test Mode and deployment
 
+## Independent playable-build acceptance gate
+
+**Applies to every significant player-facing change.** This is an acceptance gate within the existing departments, not a new team or authorization to launch jobs. Follow `AGENTS.md` and current workstream ownership before dispatch.
+
+| Existing owner/reviewer | Required independent assessment |
+| --- | --- |
+| Implementing department | Deliver exact candidate source SHA, runnable URL, affected flow, expected outcomes and changed-surface list; do not self-certify acceptance |
+| D13/D14/D02 (QA) | Build/runtime errors, real gameplay interactions, state/economy/progression, reload persistence, affected regressions and full fresh-save loop where risk warrants |
+| D10/D09 (UX) | Real mobile/touch navigation, camera/pan, accessibility of controls, discoverability, comprehension, feedback and clear next action; landscape/portrait as applicable |
+| M05 / existing visual reviewer | Direct inspection of genuine candidate captures/video at canonical cameras, before/after comparison, framing, visual consistency and regression; never infer visual PASS from a green CI |
+| M16/M03 (independent coordinator/verifier) | Confirm exact SHA/run/artifact linkage, actual non-skipped QA execution, separation of reviewer from implementer and all applicable gate verdicts; route defects to existing M04/owner |
+
+**Minimum playable scenario:** Launch the actual candidate/published build in a fresh isolated save; reach the affected feature by ordinary controls (not a test-only state injection as the sole proof); perform the player action; observe visible response and resource/state change; navigate away and back; reload to check persistence when applicable; inspect landscape and portrait mobile captures, and execute the complete progression loop for milestone/release or economy/progression changes. Include an unaffected adjacent flow to detect regressions. For art-only changes, direct before/after visual inspection is mandatory; for audio, inspect actual playback/trigger evidence where tooling supports it.
+
+**Evidence record (per delivery):**
+- Workstream, implementing owner, independent reviewer(s), source SHA, exact candidate URL/build and version.
+- Real run ID, job/step conclusions (including skipped vs executed), artifact IDs, screenshots/video, browser/viewport/touch configuration and tested steps.
+- `TECH`, `FUNCTIONAL`, `VISUAL`, `EXPERIENCE`, `REGRESSION`, `PUBLISHED` (when applicable): each `PASS`, `FAIL`, `BLOCKED/NOT_VERIFIED`, or `N/A` with justification.
+- Defect IDs and before/after retest evidence; objective UX findings, plus explicit limits (automated mobile emulation is not a physical-device/human enjoyment test).
+- Final coordinator verdict and links to canonical GitHub issue/workstream record.
+
+**Acceptance:** A green workflow, skipped job, successful Unity build, static screenshot or implementation-only assertion is not independent gameplay/experience acceptance. Missing applicable evidence is `NOT_VERIFIED`, never PASS. A failed visual or experience gate overrides functional PASS for final acceptance. Route failures through existing M03/M04 and the original owner for bounded correction; rerun an independent test against the corrected SHA and update the evidence. Only after all applicable gates PASS may the coordinator record `ACCEPTED`, close the workstream, release its resources and trigger an already-authorized compatible handoff. No mandatory owner playtest, new department, paid services, or automatic dispatch is implied.
+
+
 ## Development build
 Canonical gameplay source remains `v0220/index.html` + `v0220/js/`. `tools/build-preview.mjs` generates `playtest/` and, only for that development build, injects the isolated QA support files. Never edit `playtest/` directly.
 
