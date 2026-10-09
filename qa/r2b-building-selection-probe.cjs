@@ -25,12 +25,14 @@ async function caseFor(browser,label,viewport,id){
   const m=geometry?.match(/x=([-\d.]+) y=([-\d.]+)/);if(!m)throw Error('NO_CANONICAL_HOTSPOT_GEOMETRY');
   const canvas=page.locator('canvas').first(),box=await canvas.boundingBox();const pixels=await canvas.evaluate(c=>({width:c.width,height:c.height}));
   report.target={x:+m[1],y:+m[2]};report.canvas={box,pixels};
+  report.browser=await page.evaluate(()=>({innerWidth,innerHeight,devicePixelRatio,visualViewport:{width:visualViewport?.width,height:visualViewport?.height,scale:visualViewport?.scale},metaViewport:document.querySelector('meta[name="viewport"]')?.content||null,canvasStyle:document.querySelector('canvas')?.getAttribute('style'),containerStyle:document.querySelector('#unity-container')?.getAttribute('style')}));
   if(!box)throw Error('NO_CANVAS');
   const point={x:box.x+(report.target.x/pixels.width)*box.width,y:box.y+(report.target.y/pixels.height)*box.height};
   report.touch=point;
-  report.on_screen=point.x>=box.x&&point.x<=box.x+box.width&&point.y>=box.y&&point.y<=box.y+box.height;
+  report.on_screen=point.x>=box.x&&point.x<box.x+box.width&&point.y>=box.y&&point.y<box.y+box.height&&point.x>=0&&point.x<viewport.width&&point.y>=0&&point.y<viewport.height;
   if(!report.on_screen){report.finding='CANONICAL_BUILDING_TARGET_OFFSCREEN';return;}
   report.dom_target=await page.evaluate(({x,y})=>{const el=document.elementFromPoint(x,y);return {tag:el?.tagName,id:el?.id};},point);
+  if(report.dom_target.id!=='unity-canvas'){report.finding='CANONICAL_BUILDING_TARGET_OCCLUDED';return;}
   await page.screenshot({path:dir+'/'+label+'-before.png'});
   const before=logs.length;
   const cdp=await context.newCDPSession(page);
