@@ -8,12 +8,13 @@
   "final_unity_gate_run_id": 37772733932,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "valoria-bastion-i-ii-presentation-parity-correction-v1",
-  "updated_at": "2026-10-08T12:23:00Z",
-  "retry": 43,
-  "retry_reason": "Bounded presentation cleanup after visually inspecting prior successful published probe evidence; exact candidate 4d70b9bd passed UI progression and production.",
+  "updated_at": "2026-10-09T22:45:00+02:00",
+  "retry": 44,
+  "retry_reason": "Rebuild historic certified recovery baseline 7063fd36 and publish via original Pages Unity runner pipeline; verify SHA, published functional macroloop, portrait/landscape and screenshots. No future organizational changes.",
   "parcel_source_artifact_id": 11547989564,
   "retry_after_commit": "4d70b9bdc5532ffb3108867a7d5450a72ea460bc",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
-  "ui_certification_run_id": 37772733872
+  "ui_certification_run_id": 37772733872,
+  "recovery_baseline_sha": "7063fd36c0d2840f22ad2d1290fbccfe074ffd49"
 }
