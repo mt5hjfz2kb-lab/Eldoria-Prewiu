@@ -30,7 +30,8 @@
       "blocker": "Third source correction 52101a1f5449544608537c83bee96f9210cafca7 committed after independently reviewing run 37785467062 artifact 11553239582 VISUAL FAIL. Tool environment cannot list push-triggered Actions runs, so no new run ID/artifact yet to inspect. Cannot certify visual result or close.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-art-m07-r1-20261008"
+      "department_executor_owner": "chat-art-m07-r1-20261008",
+      "delivery_kind": "unity_player_facing"
     },
     {
       "id": "eldoria-local-agent-preflight-v1",
@@ -54,7 +55,8 @@
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-local-agent-pilot-20261008"
+      "department_executor_owner": "chat-local-agent-pilot-20261008",
+      "delivery_kind": "support_only"
     },
     {
       "id": "eldoria-dg-original-route-recovery-v1",
@@ -89,7 +91,8 @@
       },
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-dg-original-route-recovery-20261008"
+      "department_executor_owner": "chat-dg-original-route-recovery-20261008",
+      "delivery_kind": "support_only"
     },
     {
       "id": "eldoria-m04-limited-recovery-v1",
@@ -144,7 +147,8 @@
       },
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-dg-v4-20261009"
+      "department_executor_owner": "chat-dg-v4-20261009",
+      "delivery_kind": "support_only"
     },
     {
       "id": "r2-a-world-readability",
@@ -165,7 +169,8 @@
       "next": "Read-only World POI audit and screenshot comparison; visual changes wait for R1 M07 release",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008",
+      "delivery_kind": "unity_player_facing"
     },
     {
       "id": "r2-b-strategic-choice",
@@ -225,7 +230,8 @@
       ],
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008",
+      "delivery_kind": "unity_player_facing"
     },
     {
       "id": "r2-c-mobile-ux",
@@ -245,7 +251,8 @@
       "next": "Read-only screenshots and touch hierarchy audit; UI code changes held until resource exclusion",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008",
+      "delivery_kind": "unity_player_facing"
     },
     {
       "id": "r2-d-ambient-life-audio",
@@ -265,7 +272,8 @@
       "next": "M11 R1 completion is mandatory",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008",
+      "delivery_kind": "unity_player_facing"
     },
     {
       "id": "r2-e-performance-qa",
@@ -305,7 +313,8 @@
       },
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "eldoria-dg-r2-approved-20261008"
+      "department_executor_owner": "eldoria-dg-r2-approved-20261008",
+      "delivery_kind": "unity_player_facing"
     },
     {
       "id": "eldoria-world-region-1-visual-convergence-v2",
@@ -334,7 +343,8 @@
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "automation-world-region-1-visual-v2-20261009"
+      "department_executor_owner": "automation-world-region-1-visual-v2-20261009",
+      "delivery_kind": "unity_player_facing"
     }
   ],
   "history": [
@@ -5032,6 +5042,15 @@
     ],
     "incomplete_work_never_cleared_on_commit": true,
     "shared_runner_policy": "one_owner_at_a_time",
-    "cost_ceiling_eur": 0
+    "cost_ceiling_eur": 0,
+    "delivery_lifecycle": [
+      "STARTED",
+      "PRODUCED",
+      "INTEGRATED_UNITY",
+      "VERIFIED",
+      "ACCEPTED",
+      "PLAYER_DELIVERED"
+    ],
+    "gameplay_completion_requires": "verified Unity candidate exact source SHA, independent technical/functional/visual/experience/regression QA, authorized playable publication; no skipped gates"
   }
 }
