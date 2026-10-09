@@ -348,22 +348,25 @@
     },
     {
       "id": "eldoria-real-playability-d09-d13-probe-v1",
-      "title": "Existing QA: real Unity mobile camera and building interaction defects",
+      "title": "D09 browser touch gesture fix integrated into Unity WebGL exporter + independent QA",
       "owner": "D09-D13-DG-20261009",
       "accountable_director": "D01-Direccion-General",
       "department_executor_owner": "D09-D13-DG-20261009",
-      "delivery_kind": "support_only",
+      "delivery_kind": "unity_player_facing",
       "status": "active",
       "claimed_at": "2026-10-09T11:15:00+02:00",
-      "phase": "R2B PUBLISHED REAL TOUCH EXPERIENCE DEFECT REPRODUCTION",
+      "phase": "PUBLISHED_WEBGL_REPRODUCED_TOUCH-ACTION_AUTO / MOUSE_PANS / TOUCH_SWIPES_NOT_OBSERVED; UNITY POSTBUILD REPAIR",
       "scope": [
         "qa/eldoria-gameplay-camera-experience-probe.cjs",
         ".github/workflows/eldoria-m16-independent-provenance-tests.yml",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaWebGLTouchActionPostprocess.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaWebGLTouchActionPostprocess.cs.meta",
+        "tests/eldoria-unity-webgl-touch-action.test.cjs"
       ],
       "resources": [],
       "paid_credits": 0,
-      "next": "Execute independently on existing R2B candidate; classify real camera and touch defect, hand back to original code owner for Unity integrated repair and QA. Stable unchanged."
+      "next": "Integrate WebGL touch-action CSS via canonical Unity build callback, independent static tests, wait Windows owner to release, then build actual candidate and retest real mobile swipe and no regressions."
     }
   ],
   "history": [
