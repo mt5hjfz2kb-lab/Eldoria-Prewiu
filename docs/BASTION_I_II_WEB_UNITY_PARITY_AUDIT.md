@@ -1,7 +1,17 @@
 # Eldoria — Bastion I–II Web ↔ Unity Parity Audit
 
-Status: ACTIVE MIGRATION CONTRACT  
-Updated: 2026-09-29
+Status: HISTORICAL MIGRATION BASELINE; current review in `docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md`  
+Updated: 2026-10-10
+
+## Current reading rule
+
+The “Current Unity” paragraphs below describe the September 29 implementation, before the
+October 7 migration and October 10 published WebGL recovery. They are retained as the original
+gap analysis, not an active defect list. The owner WebGL build explicitly selects `OWNER_I_II`
+in `SliceBoot`; `QA_FAST` remains the default for other native launches unless opted in.
+The current review above compares live source and the exact published I–II flow, including
+mission rewards and the Bastion III boundary. Do not promote the old “OWNER staged/inactive”
+verdict as a statement about the published game.
 
 ## Purpose
 

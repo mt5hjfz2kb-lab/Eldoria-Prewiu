@@ -1,7 +1,15 @@
 # Eldoria — Bastion I–II Playtest Readiness Plan
 
-Status: ACTIVE EXECUTION PRIORITY  
-Updated: 2026-09-29
+Status: HISTORICAL READINESS PLAN; current evidence in `docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md`  
+Updated: 2026-10-10
+
+## Current reading rule
+
+This plan records the September 29 backlog and is not a current release gate. The WebGL
+owner build now selects `OWNER_I_II` explicitly and later published probes completed the
+fresh-save Bastion I→II loop in both orientations. A human/physical-device judgment still
+has its own evidence status, but its absence does not hold a technically certified workstream
+open. Use the current review for the live parity result and limits; keep this plan as history.
 
 ## Current execution status — 2026-09-29
 

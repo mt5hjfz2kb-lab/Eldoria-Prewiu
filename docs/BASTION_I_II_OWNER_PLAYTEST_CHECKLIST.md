@@ -1,7 +1,11 @@
 # Eldoria — Bastion I–II Owner Playtest Checklist
 
-Status: ACTIVE ACCEPTANCE CHECKLIST  
-Updated: 2026-09-29
+Status: HUMAN EXPERIENCE CHECKLIST; technical publication gates are recorded separately  
+Updated: 2026-10-10
+
+The published WebGL owner build explicitly runs `OWNER_I_II`. The `QA_FAST` line below
+describes the September 29 native candidate and is historical. A device or human playtest
+can identify new defects, but its absence does not block evidence-based technical closure.
 
 ## Purpose
 
