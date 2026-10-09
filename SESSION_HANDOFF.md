@@ -1,3 +1,15 @@
+## 2026-10-10 — CURRENT OPERATIONS: CONTROLLED UNITY RECOVERY (NOT CERTIFIED)
+
+**Canonical priority:** restore one safe Unity WebGL build and a verified playable mobile loop; then return to direct Unity gameplay/visual development (World Region 1 first). The owner explicitly requested the simpler execution flow used before the departmental reorganization. Do not create departments or a parallel orchestration system, and do not reset game source or rewrite history.
+
+**Live registry authority:** `pipeline/active-workstreams.json` lists one active `eldoria-ci-production-recovery-v1`, owner `chat-github-ci-recovery-20261010`, with Windows Unity runner, `.github/workflows/pages.yml`, `pipeline/unity-publish-request.json` and registry reserved. The previous `valoria-bastion-i-ii-presentation-parity-correction-v1` is in history as **cancelled**, not active. The 2026-10-08 parity entry immediately below is preserved as **historical evidence only** and must not be interpreted as a current instruction or an open workstream.
+
+**Publication safety:** The current publish request has `release_approved=false`; it is a **build-only recovery** and does not authorize deployment of an uncertified build. The historical production run `37767338367` has three jobs completed successfully, but that is not proof of the latest recovery commit `3bfb1f5d48e7e14f118990f0942cf172a432512c`, nor a current published mobile PASS. The active recovery owner must verify the new build and its artifacts, then certify fatal-error-free startup and HOME → real touch pan → MUNDO → Region 1 action/reward → REINO/Valoria → reload persistence, including landscape and portrait, before promotion.
+
+**No collateral changes:** This entry reconciles stale document heads only, without editing game code, publication settings, the runner, or shared recovery ownership. Following certified recovery and registry release, resume one bounded Unity task at a time. Zero paid credits.
+
+---
+
 ## 2026-10-08 — Presentation parity repair REOPENED / NOT YET CERTIFIED
 
 The previous CLOSED/PASS declarations below are historical and are revoked as current publication acceptance. Published probe **37741999794** found fatal Unity scene errors (`level0`, position out of bounds) despite the older macroloop passing. The active canonical workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is owned by `chat-work-parity-repair-20261008` following the owner's explicit takeover authorization. Do not report current published PASS until the repaired build passes fatal-error acceptance and full fresh-save Bastion I–II interaction/persistence checks in landscape and portrait.
