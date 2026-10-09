@@ -50,7 +50,8 @@ async function caseFor(browser,label,viewport,id){
    const action=report.after_logs.find(x=>/ELDORIA_PLAYABLE_UI id=buildingAction/.test(x));
    const centre=action?.match(/x=([-\d.]+) y=([-\d.]+) enabled=True/);
    if(!centre){report.pass=false;report.finding='SAWMILL_BUILD_ACTION_NOT_ENABLED';return;}
-   const actionPoint={x:box.x+(+centre[1]/pixels.width)*box.width,y:box.y+(+centre[2]/pixels.height)*box.height};
+   // Unity button telemetry uses bottom-origin y; projected hotspots use top-origin y.
+   const actionPoint={x:box.x+(+centre[1]/pixels.width)*box.width,y:box.y+((pixels.height-(+centre[2]))/pixels.height)*box.height};
    report.action_touch=actionPoint;
    if(actionPoint.x<0||actionPoint.x>=viewport.width||actionPoint.y<0||actionPoint.y>=viewport.height){report.pass=false;report.finding='SAWMILL_BUILD_ACTION_OFFSCREEN';return;}
    const actionBefore=logs.length;
