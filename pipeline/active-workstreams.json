@@ -2,7 +2,38 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [],
+  "active": [
+    {
+      "id": "bastion-i-ii-web-parity-playthrough-v1",
+      "title": "Bastion I-II web parity and firsthand playability correction",
+      "owner": "chat-bastion-parity-playthrough-20261010",
+      "scope": [
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-requests/bastion-i-ii-web-parity-playthrough-v1.json",
+        "Unity/Assets/Eldoria/Scripts/Domain/**",
+        "Unity/Assets/Eldoria/Scripts/Application/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/**",
+        "Unity/Assets/Eldoria/Tests/**",
+        "pipeline/unity-publish-request.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "docs/BASTION_I_II_WEB_UNITY_PARITY_AUDIT.md",
+        "docs/BASTION_I_II_PLAYTEST_READINESS_PLAN.md",
+        "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/**"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-unity-owner"
+      ],
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "8ba407cba33100602e24bf80ad668c58c5828a00",
+      "status": "active",
+      "phase": "COMPARE WEB/UNITY AND FIRSTHAND PLAY",
+      "paid_credits": 0,
+      "art_production_routing": "required",
+      "next": "Compare web contract with real Unity, play public build, correct evidenced I-II defects, certify exact candidate, publish and verify."
+    }
+  ],
   "history": [
     {
       "id": "eldoria-ci-production-recovery-v1",
