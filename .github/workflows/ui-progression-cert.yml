@@ -87,8 +87,7 @@ jobs:
               [xml]$failed = Get-Content $xml
               $failed.SelectNodes("//test-case[@result='Failed']") | ForEach-Object {
                 Write-Host "FAILED TEST: $($_.GetAttribute('fullname'))"
-                Write-Host $_.failure.message
-                Write-Host $_.failure.'stack-trace'
+                Write-Host $_.OuterXml
               }
             }
             if (Test-Path $log) { Get-Content $log -Tail 100 }
