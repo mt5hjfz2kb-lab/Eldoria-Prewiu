@@ -13,8 +13,8 @@
   "authorization": "Ronda 2 A-E DG Issue #23 owner approval 6068111056",
   "purpose": "Publish an ADDITIVE corrected Unity WebGL candidate after real Windows build + independent package QA, with existing stable and earlier R2-B candidate byte-preserved; separately run published-playability QA.",
   "acceptance": "Actual new Unity WebGL exported package at exact SHA; independent mobile touch/selection/camera visual experience and reward/reload regressions required; no technical PASS-only acceptance.",
-  "retry": 0,
-  "retry_reason": "Fresh owner-authorized Unity mobile swipe-release correction; actual source files independently compared against the exact 592252 source SHA; isolated candidate, stable disabled, shared runner handed to R2B by DG.",
+  "retry": 1,
+  "retry_reason": "Corrected genuine Windows shallow Git fetch blocker: fetch exact already-authorized source SHA. No new source or acceptance gate changed.",
   "delivery_phase": "rebuild_isolated_candidate_for_real_touch_retest",
   "candidate_run_id": 37914588629,
   "candidate_head_sha": "fec7c5b0d157d360ab30000dd2ea2b093f4e5e14",
@@ -22,5 +22,6 @@
   "independent_package_qa_run_id": 37914588629,
   "independent_package_qa_verdict": "PASS_PACKAGE_ONLY",
   "dg_execution_note": "Owner authorized R2-B Unity production: build corrected source 5922520 on reserved Windows, fresh independent actual touch/UX QA required; do not promote stable.",
-  "dg_dispatched_at": "2026-10-09"
+  "dg_dispatched_at": "2026-10-09",
+  "dg_dispatched_revision": 2
 }
