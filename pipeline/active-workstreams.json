@@ -49,9 +49,9 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "SECOND_DIAGNOSTIC_COMPLETED / OLLAMA_NOT_AVAILABLE_TO_RUNNER",
+      "phase": "HISTORICAL_LOCAL_OLLAMA_PATH_RECOVERED / READ_ONLY_VERIFICATION_AWAITS_RUNNER_WINDOW",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Existing local-agent owner: diagnose account-specific Ollama install/runner service user and PATH; obtain authorization before any repair, installation or model start. R2-B original Windows priority preserved.",
+      "next": "Check existing EldoriaLocalAI private exe and models with updated preflight at SHA 054ee4a6; requires R2-B controlled one-shot loan; then evaluate isolated prior-model execution with separate authorization and independent QA.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -82,6 +82,16 @@
           "no standard installation discovered under probed runner-account paths"
         ],
         "game_changes": false
+      },
+      "historical_runtime_proof": {
+        "run_id": 37820089071,
+        "job_id": 113460051849,
+        "ollama_exe": "%LOCALAPPDATA%/EldoriaLocalAI/ollama-v0.40.1/ollama.exe",
+        "models": "%LOCALAPPDATA%/EldoriaLocalAI/models",
+        "model": "qwen2.5-coder:3b",
+        "execution": "started transiently and stopped after bounded task",
+        "updated_preflight_sha": "054ee4a6ba2bc140b2f41e0469228a79bbab01ae",
+        "runner_status": "R2-B owns windows-runner-heavy; no third loan granted yet"
       }
     },
     {
