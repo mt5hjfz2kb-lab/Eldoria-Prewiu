@@ -18,7 +18,8 @@ function evaluate(record, active=true) {
     return persisted;
   } finally { fs.rmSync(cwd,{recursive:true,force:true}); }
 }
-const complete = () => ({id:'m07-r1-sawmill-construction-visual-correction',status:'completed',runner_released:true,result:{post_patch_capture_reviewed:true,post_patch_capture_artifact_id:123,post_patch_capture_source_sha:'abc',independent_visual_pass:true,visual_review_evidence:'review',published_webgl_verified:true,published_probe_run_id:456,published_source_sha:'abc'}});
+const SHA = 'a'.repeat(40);
+const complete = () => ({id:'m07-r1-sawmill-construction-visual-correction',status:'completed',runner_released:true,result:{post_patch_capture_reviewed:true,post_patch_capture_artifact_id:123,post_patch_capture_source_sha:SHA,independent_visual_pass:true,visual_review_evidence:'review',published_webgl_verified:true,published_probe_run_id:456,published_source_sha:SHA}});
 test('realistic blocked M07 stays blocked',()=>{
   const o=evaluate({...complete(),status:'blocked',result:{}});
   assert.equal(o.verdict,'BLOCKED_NO_HANDOFF');
@@ -47,4 +48,21 @@ test('missing record fails closed',()=>{
     assert.equal(run.status,0,run.stderr);
     assert.equal(JSON.parse(run.stdout).verdict,'BLOCKED_NO_HANDOFF');
   } finally {fs.rmSync(cwd,{recursive:true,force:true});}
+});
+
+test('mismatched published source SHA rejects false handoff',()=>{
+  const r=complete();r.result.published_source_sha='b'.repeat(40);
+  assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
+});
+test('non-SHA source cannot satisfy evidence gate',()=>{
+  const r=complete();r.result.post_patch_capture_source_sha='abc';
+  assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
+});
+test('invalid or zero capture artifact cannot certify visual capture',()=>{
+  const r=complete();r.result.post_patch_capture_artifact_id=0;
+  assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
+});
+test('skipped or absent published run cannot certify QA',()=>{
+  const r=complete();r.result.published_probe_run_id='skipped';
+  assert.equal(evaluate(r,false).verdict,'BLOCKED_NO_HANDOFF');
 });
