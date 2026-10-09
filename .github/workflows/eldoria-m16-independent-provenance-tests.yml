@@ -5,6 +5,8 @@ on:
     paths:
       - 'tools/eldoria-coordinator-v1.cjs'
       - 'tests/eldoria-coordinator-v1.test.cjs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
+      - 'tests/eldoria-gameplay-touch-release.test.cjs'
       - '.github/workflows/eldoria-m16-independent-provenance-tests.yml'
   workflow_dispatch:
 permissions:
@@ -20,6 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check Unity mobile rapid swipe vs building tap source regression
+        run: node --test tests/eldoria-gameplay-touch-release.test.cjs
       - name: Independently test M16 coordinator including negative provenance cases
         run: node --test tests/eldoria-coordinator-v1.test.cjs
       - name: Verify fail-closed current M07 without handoff
