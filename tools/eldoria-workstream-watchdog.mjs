@@ -7,9 +7,9 @@ const findings=[];
 const director='D01-Direccion-General';
 if(data.directorate_accountability?.owner!==director)throw Error('DIRECTORATE_ACCOUNTABILITY_MISSING');
 const claims=new Map();
-const gameProduction=new Set(['r2-b-strategic-choice','r2-c-mobile-ux','r2-a-world-readability','r2-d-ambient-life-audio','eldoria-world-region-1-visual-convergence-v2','m07-r1-sawmill-construction-visual-correction']);
+
 for(const w of data.active){
- if(!gameProduction.has(w.id))continue;
+ if(w.delivery_kind!=='unity_player_facing')continue;
  const result=w.result||{};
  const built=Boolean(result.unity_source_sha&&result.unity_integrated_build_run_id);
  const accepted=Boolean(result.independent_gameplay_accepted&&result.visual_experience_accepted&&result.regression_accepted);
