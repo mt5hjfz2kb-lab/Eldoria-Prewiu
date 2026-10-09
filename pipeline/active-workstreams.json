@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T11:51:00Z",
-  "active": [
+  "updated_at": "2026-10-09T20:50:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
       "title": "Valoria Bastion I-II presentation parity correction v1",
-      "owner": "chat-parity-repair-20261008-transfer2",
+      "owner": "chat-owner-directed-unity-recovery-20261009",
       "scope": [
         "pipeline/active-workstreams.json",
         "pipeline/art-production-requests/valoria-bastion-i-ii-presentation-parity-correction-v1.json",
@@ -40,25 +41,37 @@
       ],
       "claimed_at": "2026-10-07T19:18:00Z",
       "base_main_sha": "724ca7ad097b05bc06d618f9d559357a45ee60ec",
-      "status": "active",
-      "phase": "VISUAL EVIDENCE CORRECTION / CURRENT-HEAD RECERTIFICATION",
+      "status": "completed",
+      "phase": "RECOVERED UNITY WEBGL PUBLISHED / REAL MOBILE MACROLOOP QA PASS",
       "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions remain in scope: canonical fresh-start reset and art-integrated real building-level indicators. Owner/manual review is NOT a closure dependency; close autonomously when current-head production, published WebGL, device-equivalent visual/interaction evidence, persistence and required parity gates pass. Later concrete owner feedback may revoke/reopen the PASS.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Recertify current-head UI cleanup that removes duplicate CTA clutter and prevents quest/context overlap; capture matched mobile evidence, publish exact certified build, rerun full published Bastion I-II/reset/persistence probe, inspect screenshots, then close autonomously.",
-      "completed_at": null,
-      "runner_released": false,
+      "next": null,
+      "completed_at": "2026-10-09T20:50:00Z",
+      "runner_released": true,
       "blocker": null,
       "reopened_at": "2026-10-08T11:50:00Z",
-      "previous_owner": "chat-work-parity-repair-20261008",
+      "previous_owner": "chat-parity-repair-20261008-transfer2",
       "transferred_at": "2026-10-08T10:24:00Z",
-      "transfer_authority": "Owner explicitly authorized continuation in this chat after Work credits were exhausted.",
+      "transfer_authority": "Owner directed this conversation to complete the same historical Unity recovery and certify published real gameplay without waiting for manual review.",
       "result": {
-        "note": "Prior technical closure at 0e32b350 passed the full published macroloop, but direct visual inspection of its evidence revealed duplicate primary/context CTA clutter and landscape quest/context overlap. Same workstream reopened for bounded presentation cleanup and current-head recertification."
+        "status": "functional_playable_pass",
+        "game_code_sha": "7063fd36c0d2840f22ad2d1290fbccfe074ffd49",
+        "build_run": 37776564090,
+        "build_artifact_id": 11551017451,
+        "deploy_run": 37776564090,
+        "published_qa_run": 37779269570,
+        "published_qa_job": 114017201648,
+        "published_qa_artifact_id": 11644786176,
+        "full_bastion_i_ii_landscape_pass": true,
+        "full_bastion_i_ii_portrait_pass": true,
+        "persistence_and_reset_pass": true,
+        "building_selection_pass": true,
+        "fatal_runtime_errors": 0,
+        "visual_review": "Inspected selected building and I-II end screenshots in both orientations; no visible blocking overlap/white screen. Does NOT claim premium aesthetic visualQualityPass, live SHARP, or physical iPhone validation.",
+        "paid_credits": 0
       }
-    }
-  ],
-  "history": [
+    },
     {
       "id": "eldoria-published-probe-integrity-v1",
       "title": "Published probe integrity and explicit certification coverage",
