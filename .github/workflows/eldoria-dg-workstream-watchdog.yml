@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/eldoria-workstream-watchdog.mjs'
       - 'tests/eldoria-dg-accountability-watchdog.test.mjs'
+      - 'pipeline/active-workstreams.json'
       - '.github/workflows/eldoria-dg-workstream-watchdog.yml'
   schedule:
     - cron: '7 * * * *'
