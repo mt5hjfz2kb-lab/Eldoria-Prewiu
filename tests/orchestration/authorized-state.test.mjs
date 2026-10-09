@@ -26,7 +26,8 @@ test('independent QA and provenance required',()=>{
 });
 test('event replay collision protection',()=>{let s=step(empty(),1,'PROPOSE',prop);assert.deepEqual(step(s,1,'PROPOSE',prop),s);assert.throws(()=>step(s,1,'PROPOSE',{...prop,owner:'another'}),/EVENT_ID_COLLISION/)});
 
-\n// Test each existing department against the same authorization, execution,
+
+// Test each existing department against the same authorization, execution,
  // independent-review and directorate-delivery contract. Synthetic, not a claim
  // that production workers for all departments are already wired.
 const DEPARTMENTS=[
