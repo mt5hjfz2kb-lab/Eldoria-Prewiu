@@ -609,3 +609,56 @@ jobs:
               '**Alcance:** build de supervisión, no PASS visual ni EXPERIENCIA. EXP-CAM-01 / EXP-BLD-02 permanecen abiertos.',
               '**Probar:** ambas elecciones de bosque sobre saves separados; cámara vertical Valoria y selección de edificios.'].join('\n');
             await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
+  r2b-published-mobile-qa:
+    needs: [source-preflight, r2b-candidate-pages-preview]
+    if: >-
+      always() && needs.source-preflight.outputs.deploy_only == 'true' &&
+      needs.r2b-candidate-pages-preview.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install independent Unity WebGL browser QA
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Verify real gameplay choices, rewards and save reload on CORRECTED Unity build
+        id: choice
+        continue-on-error: true
+        env:
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-fec7c5b0d157d360ab30000dd2ea2b093f4e5e14/
+          ELDORIA_EVIDENCE_DIR: r2b-corrected-choice-qa
+        run: node qa/r2b-webgl-choice-probe.cjs
+      - name: Independently check corrected Unity touch camera motion in landscape and portrait
+        id: camera
+        continue-on-error: true
+        env:
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-fec7c5b0d157d360ab30000dd2ea2b093f4e5e14/
+          ELDORIA_SOURCE_SHA: fec7c5b0d157d360ab30000dd2ea2b093f4e5e14
+          ELDORIA_EVIDENCE_DIR: r2b-corrected-camera-qa
+        run: node qa/eldoria-gameplay-camera-experience-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-r2b-corrected-real-playability-qa
+          path: |
+            r2b-corrected-choice-qa/
+            r2b-corrected-camera-qa/
+          if-no-files-found: error
+      - name: Fail closed unless gameplay AND mobile camera pass independently
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' r2b-corrected-choice-qa/report.json
+          jq -e '.all_gestures_observed == true and (.scenarios | length >= 2) and .scenarios[0].pass == true and .scenarios[1].pass == true' r2b-corrected-camera-qa/report.json
+          echo 'TECH_AND_REAL_TOUCH_QA_PASS; visual artistic/experience subjective review remains independent and required'
