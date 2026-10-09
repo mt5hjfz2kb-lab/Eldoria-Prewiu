@@ -6,11 +6,13 @@
     {
       "id": "eldoria-ci-production-recovery-v1",
       "title": "Restore controlled Unity Windows WebGL production",
-      "owner": "chat-github-ci-recovery-20261010",
+      "owner": "chat-direct-flow-recovery-20261010",
       "scope": [
         ".github/workflows/pages.yml",
         "pipeline/unity-publish-request.json",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -19,11 +21,22 @@
       "claimed_at": "2026-10-10",
       "base_main_sha": "c27c2faaa417785669cfbfb40fc5bc82e35d6430",
       "status": "active",
-      "phase": "CI RELEASE GUARD INSTALLED / BUILD RETRIGGER PENDING",
+      "phase": "EXACT CANDIDATE QA PASS / RELEASE AND PUBLISHED VERIFICATION",
       "paid_credits": 0,
-      "next": "Request one Unity WebGL build using existing automatic trigger; verify run, build and public playability before closing. Stable is not certified.",
+      "next": "Promote through existing Pages workflow; verify actual published build and close after PASS. Candidate QA 38001165965 verified exact build 37999090263, SHA 3bfb1f5d48e7e14f118990f0942cf172a432512c; full I-II and reset/persistence passed both orientations, no runtime errors.",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "CI/build-only transport recovery; no player-visible art, geometry, materials, camera or gameplay changes. Preserve existing production authority and certification gates."
+      "art_production_routing_reason": "CI/build-only transport recovery; no player-visible art, geometry, materials, camera or gameplay changes. Preserve existing production authority and certification gates.",
+      "previous_owner": "chat-github-ci-recovery-20261010",
+      "transferred_at": "2026-10-10",
+      "transfer_authority": "Owner explicitly requests restoration of the complete productive flow in this session and instructs continuation through completion. Reuse completed build; no active Windows production run remains. Existing recovery workstream continues; no duplicate recovery is opened.",
+      "result": {
+        "build_run_id": 37999090263,
+        "build_artifact_id": 11648897327,
+        "candidate_probe_run_id": 38001165965,
+        "candidate_probe_artifact_id": 11649201968,
+        "candidate_pass": true,
+        "published_pass": false
+      }
     },
     {
       "id": "eldoria-direct-flow-recovery-v1",
