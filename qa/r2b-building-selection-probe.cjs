@@ -13,7 +13,7 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
 async function caseFor(browser,label,viewport,id){
  const context=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36'});
  const page=await context.newPage();const logs=[];page.on('console',m=>logs.push(m.text()));page.on('pageerror',e=>logs.push('PAGEERROR '+String(e)));
- const report={label,id,viewport,pass:false};
+ const started=Date.now();const report={label,id,viewport,pass:false};
  try{
   await page.goto(url+'?building-probe='+label,{waitUntil:'domcontentloaded',timeout:60000});
   const readyUntil=Date.now()+180000;
@@ -46,7 +46,7 @@ async function caseFor(browser,label,viewport,id){
   report.wrong_navigation=report.after_logs.some(x=>/ELDORIA_PLAYABLE_NAV|ELDORIA_PLAYABLE_RESET/.test(x));
   report.pass=report.panel_open&&!report.wrong_navigation;
   report.finding=report.pass?'BUILDING_SELECTION_OBSERVED':report.wrong_navigation?'WRONG_UI_ACTION':'BUILDING_SELECTION_NOT_OBSERVED';
- }catch(e){report.finding='PROBE_BLOCKED';report.error=String(e);await page.screenshot({path:dir+'/'+label+'-error.png'}).catch(()=>{});}finally{results.cases.push(report);await context.close();}
+ }catch(e){report.finding='PROBE_BLOCKED';report.error=String(e);await page.screenshot({path:dir+'/'+label+'-error.png'}).catch(()=>{});}finally{report.elapsed_ms=Date.now()-started;results.cases.push(report);await context.close();}
 }
 (async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{
  await caseFor(browser,'landscape-sawmill',{width:844,height:390},'sawmill');

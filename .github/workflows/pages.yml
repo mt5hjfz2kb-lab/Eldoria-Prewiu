@@ -833,7 +833,7 @@ jobs:
       - name: Install focused independent browser QA
         run: |
           npm install --no-save playwright@1.55.0 pngjs@7.0.0
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
       - name: Test rendered-frame readiness contract
         run: node --test tests/eldoria-rendered-frame-readiness.test.cjs tests/eldoria-focused-checkout.test.cjs
       - name: Test existing binary with real touch and rendered-frame evidence
