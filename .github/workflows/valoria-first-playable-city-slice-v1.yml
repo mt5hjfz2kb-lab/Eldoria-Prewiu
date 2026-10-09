@@ -14,7 +14,8 @@ on:
       - "pipeline/art-production-requests/valoria-bastion-i-ii-presentation-parity-correction-v1.json"
       - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
       - "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
+      # SlicePresenter UI/touch iterations use the dedicated fast UI gate; production capture
+      # is requested explicitly with its existing production request when visual output changes.
       - "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs"
       - "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs"
       - "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs"
