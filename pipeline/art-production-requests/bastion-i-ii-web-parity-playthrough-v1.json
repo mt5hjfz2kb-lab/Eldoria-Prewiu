@@ -6,7 +6,7 @@
   "asset_or_sector": "Bastion I-II player HUD feedback and legibility in published WebGL",
   "profile": "environment_composition",
   "visual_gate_state": "correction",
-  "diagnosis": "Published exact-build captures show the disabled chapter-complete primary button with near-black text on a dark background. Recruitment countdown is also hidden by an incorrectly attached else-if in RefreshClock. Preserve canonical SHARP and gameplay while correcting UI states.",
+  "diagnosis": "Published exact-build captures show all disabled primary buttons (construction, recruitment, March, completion) with near-black text on a dark background. The recruitment timer was hidden by an incorrectly attached else-if; the screenshot during recruitment also mislabels the objective as a resource shortage after its cost has already been paid. Put the pending task and its remaining seconds in the large primary affordance while preserving canonical SHARP and gameplay.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {"approved": false, "authorized_credit_cost": 0},
