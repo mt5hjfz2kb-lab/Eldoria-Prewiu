@@ -36,12 +36,17 @@
     {
       "id": "eldoria-local-agent-preflight-v1",
       "title": "Eldoria local zero-cost agent feasibility and runner governance repair",
-      "owner": "chat-local-agent-integration-20261009",
+      "owner": "chat-work-local-recovery-20261009",
       "scope": [
         ".github/workflows/eldoria-hardware-inventory.yml",
         ".github/workflows/eldoria-local-agent-preflight-v1.yml",
         "pipeline/agent-local-preflight-request.json",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "tools/eldoria-local-recovery-v1.cjs",
+        "tools/eldoria-local-recovery-worker-v1.ps1",
+        "tests/eldoria-local-recovery-v1.test.cjs",
+        "tools/eldoria-coordinator-v1.cjs",
+        "docs/evidence/eldoria-local-agent-preflight-v1/**"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T14:18:00Z",
@@ -49,21 +54,19 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "PRIVATE_OLLAMA_EXECUTABLE_AND_MODELS_DIRECTORY_VERIFIED / INFERENCE_NOT_RETESTED",
+      "phase": "OWNER AUTHORIZED EXECUTIVE TRANSFER / NEW ISOLATED LOCAL TASK AND INDEPENDENT QA",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Existing owner: verify exact model blobs and perform isolated inference only through previously authorized bounded workflow with explicit current claim and one-shot Windows window; never rerun old pilot that has passed.",
+      "next": "Recover inference with two finite authorized support tasks using existing preflight workflow, independent hosted QA and bounded model feedback; no Unity/main generated writes.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
-      "department_executor_owner": "chat-local-agent-integration-20261009",
+      "department_executor_owner": "chat-work-local-recovery-20261009",
       "delivery_kind": "support_only",
       "transfer": {
-        "previous_owner": "chat-local-agent-pilot-20261008",
-        "new_owner": "chat-local-agent-integration-20261009",
-        "authorized_by": "owner explicit chat authorization 2026-10-09",
-        "scope": "existing local-agent-preflight-v1 only",
-        "preserve_existing_results": true,
-        "runner_claim": false
+        "previous_owner": "chat-local-agent-integration-20261009",
+        "new_owner": "chat-work-local-recovery-20261009",
+        "authorized_by": "Owner explicit takeover in current task 2026-10-09 14:42 Europe/Madrid",
+        "preserve_existing_results": true
       },
       "runner_loan": {
         "from": "r2-b-strategic-choice",
