@@ -473,8 +473,8 @@ jobs:
               Object.assign(current,{phase:claim.phase,status:claim.status,next:claim.next,blocker:claim.blocker,runner_released:claim.runner_released});
               current.runner_loan.status=claim.runner_loan.status;
               for(const file of files){
-                if(file.path==='pipeline/active-workstreams.json')file.content=JSON.stringify(latestReg,null,2)+'\\n';
-                if(file.path==='pipeline/agent-local-preflight-request.json')file.content=JSON.stringify({...latestRequest,...request},null,2)+'\\n';
+                if(file.path==='pipeline/active-workstreams.json')file.content=JSON.stringify(latestReg,null,2)+'\n';
+                if(file.path==='pipeline/agent-local-preflight-request.json')file.content=JSON.stringify({...latestRequest,...request},null,2)+'\n';
               }
               const tree=(await github.rest.git.getCommit({owner,repo,commit_sha:head})).data.tree.sha;
               const entries=[];
