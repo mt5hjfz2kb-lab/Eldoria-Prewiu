@@ -523,12 +523,20 @@ namespace Eldoria.Presentation
             var route=WorldRouteKit.MarchRoute(name,centre,length,width,yaw);
             if(route==null)return;
             route.transform.SetParent(root,true);
-            // Roads are now painted into the continuous terrain, not floating strips.
-            // Keep low-salience verge stones/fences with their original materials.
+            // Keep one soft-edged, authored track renderer visible for strategic
+            // route readability and semantic tests. Only the terrain underneath
+            // carries the broader worn corridor; rock/fence props keep own materials.
+            bool trackNamed=false;
             foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
             {
-                string visualName=renderer.gameObject.name;
-                if(visualName.Contains("march trail")||visualName.Contains("mud wear"))
+                if(!trackNamed)
+                {
+                    renderer.gameObject.name=name+" · track 0";
+                    renderer.sharedMaterial=WorldTrailMaterial();
+                    renderer.enabled=true;
+                    trackNamed=true;
+                }
+                else if(renderer.gameObject.name.Contains("mud wear"))
                     renderer.enabled=false;
             }
             foreach(var collider in route.GetComponentsInChildren<Collider>(true))

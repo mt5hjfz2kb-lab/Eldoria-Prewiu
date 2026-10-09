@@ -5,8 +5,8 @@
   "request_id": "eldoria-world-region-1-visual-convergence-v2",
   "asset_or_sector": "World Region 1 existing 4X visual-only terrain, relief, forest/geology contact, routes and composition at 19/12/9/mobile; preserve gameplay/state/POIs/Valoria SHARP/WebGL",
   "profile": "environment_surface",
-  "visual_gate_state": "REVOKED_PRIOR_VISUAL_PASS",
-  "diagnosis": "Direct review of final Unity run 37549083306 capture artifact 11452875393: terrain is near-uniform flat olive plane; disconnected vivid-green tree clumps, floating isolated grey rocks and mountains, roads effectively unreadable; Valoria sits like an isolated icon; portrait leaves large empty lower field. Primary surface/relief/integration plus composition defect. Geometry gap NOT proven. Old functional PASS remains protected.",
+  "visual_gate_state": "ITERATION_1_TECH_REGRESSION_ROUTE_RENDERER_FAIL",
+  "diagnosis": "Direct review of final Unity run 37549083306 capture artifact 11452875393: terrain is near-uniform flat olive plane; disconnected vivid-green tree clumps, floating isolated grey rocks and mountains, roads effectively unreadable; Valoria sits like an isolated icon; portrait leaves large empty lower field. Primary surface/relief/integration plus composition defect. Geometry gap NOT proven. Old functional PASS remains protected. Iteration 1 source b4d8a073: EditMode 23/23 PASS but PlayMode 27/29; two failures require keeping the authored soft-edged route renderer visible and named track 0. The initial attempt hid the route ribbon entirely, violating route semantic/readability gates. Correct within the SAME environment_surface route, retain integrated terrain and the distinct authored worn-trail texture; do not weaken tests.",
   "failure_class": "surface_material_or_relief",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -25,8 +25,8 @@
   "validation": {
     "source_gate": "Only WorldRegion1Runtime/WorldRouteKit/WorldResourceKit or isolated visual-only helper; no R2-B SlicePresenter, M07 ValoriaFirstPlayableCitySliceV1, gameplay, POI IDs, camera controls, SHARP or WebGL delivery changes.",
     "planner_gate": "Run canonical tools/plan-art-production.mjs then known-evidence fallback tools/route-visual-fallback.mjs for surface_material_or_relief; no R&D or geometry generation.",
-    "final_gate": "Direct 19/12/9/mobile final captures: continuous believable terrain/relief, blended paths, rooted vegetation/geology, recognizable strategic Valoria and POIs/march, coherent dark medieval look. Independent tech/gameplay/navigation/save/reload/4X/bounded-camera/mobile regression gates PASS."
+    "final_gate": "Direct 19/12/9/mobile final captures: continuous believable terrain/relief, blended paths, rooted vegetation/geology, recognizable strategic Valoria and POIs/march, coherent dark medieval look. Independent tech/gameplay/navigation/save/reload/4X/bounded-camera/mobile regression gates PASS. PlayMode must retain visible route track renderer with distinct blended worn-trail texture."
   },
-  "notes": "Authorized 2026-10-09 zero-credit post-playable-link correction. R2-A world-readability owns planning evidence only, no game-art claim. M07 source disjoint and runner released. R2-B source disjoint; do not touch its files. No new geometry or paid calls.",
+  "notes": "Authorized 2026-10-09 zero-credit post-playable-link correction. R2-A world-readability owns planning evidence only, no game-art claim. M07 source disjoint and runner released. R2-B source disjoint; do not touch its files. No new geometry or paid calls. Corrective retest after PlayMode failures in run 37894016201; no new geometry, no method pivot.",
   "status": "ACTIVE"
 }

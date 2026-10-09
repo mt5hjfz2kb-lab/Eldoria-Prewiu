@@ -1,0 +1,18 @@
+{
+  "workstream_id": "eldoria-world-region-1-visual-convergence-v2",
+  "iteration": 1,
+  "source_sha": "b4d8a073a5099bf3a62f91463593892134fc3309",
+  "run_id": 37894016201,
+  "artifact_id": 11598964522,
+  "editmode": "PASS 23/23",
+  "playmode": "FAIL 27/29",
+  "failed_tests": [
+    "FrontierTrailUsesDarkerEarthThanValley",
+    "FrontierUsesSemanticGroundAndContinuousMarchTrail"
+  ],
+  "root_cause": "The first surface pass disabled the first/only authored route renderer, violating visible distinct route semantics; gameplay itself did not fail.",
+  "correction": "Restore first track renderer and soft-edged WorldTrailMaterial, leave integrated terrain and original verge material, retest",
+  "route": "environment_surface",
+  "geometry_gap_proven": false,
+  "paid_credits": 0
+}
