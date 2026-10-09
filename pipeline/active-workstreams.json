@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T09:48:00+02:00",
+  "updated_at": "2026-10-09T10:05:00+02:00",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -295,7 +295,9 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-dg-watchdog-dedupe-repair-v1",
       "title": "Repair existing DG watchdog duplicate finding notifications",
@@ -308,15 +310,26 @@
       "resources": [],
       "claimed_at": "2026-10-09T10:00:00+02:00",
       "base_main_sha": "4b18480045bd76200cf1591c1c6b7a10e5975a64",
-      "status": "active",
-      "phase": "BOUNDED EXISTING WATCHDOG REPAIR",
+      "status": "completed",
+      "phase": "EXISTING WATCHDOG DEDUP REPAIR VERIFIED ON GITHUB / ACTIVE CLAIM RELEASED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing GitHub notification workflow only; no player-visible content.",
       "paid_credits": 0,
-      "next": "Fix duplicate comment idempotence and verify new triggered GitHub Actions run; leave other owners untouched"
-    }
-  ],
-  "history": [
+      "next": "No further watchdog edits; existing schedule continues. Independently verify wider cross-department code-repair loop only under its owning M04 workstream.",
+      "completed_at": "2026-10-09T10:05:00+02:00",
+      "runner_released": true,
+      "result": {
+        "commit": "46041272c5abf98c0daeeec897c0ffebfa1fdfcb",
+        "run": 37901967337,
+        "artifact": 11602822057,
+        "job": "audit",
+        "conclusion": "success",
+        "evidence_doc": "docs/evidence/eldoria-dg-watchdog-dedupe-repair-v1/DG_V4_OPERATIONAL_AUDIT_2026-10-09.md",
+        "owner_notifications_outside_github": "NOT_VERIFIED",
+        "smart_agents_autonomy": "NOT_CERTIFIED",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "eldoria-independent-playability-qa-policy-v1",
       "title": "Independent end-to-end gameplay, visual and experience acceptance policy",
