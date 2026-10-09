@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T17:40:07.395Z",
+  "updated_at": "2026-10-09T17:41:26.827Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -43,7 +43,8 @@
         "qa/eldoria-gameplay-camera-experience-probe.cjs",
         "tests/eldoria-rendered-frame-readiness.test.cjs",
         "tools/eldoria-rendered-frame-readiness.cjs",
-        "tests/eldoria-focused-checkout.test.cjs"
+        "tests/eldoria-focused-checkout.test.cjs",
+        ".github/workflows/eldoria-m16-independent-provenance-tests.yml"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T18:20:03.937Z",
