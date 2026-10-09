@@ -21,7 +21,9 @@
       "status": "active",
       "phase": "CI RELEASE GUARD INSTALLED / BUILD RETRIGGER PENDING",
       "paid_credits": 0,
-      "next": "Request one Unity WebGL build using existing automatic trigger; verify run, build and public playability before closing. Stable is not certified."
+      "next": "Request one Unity WebGL build using existing automatic trigger; verify run, build and public playability before closing. Stable is not certified.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "CI/build-only transport recovery; no player-visible art, geometry, materials, camera or gameplay changes. Preserve existing production authority and certification gates."
     },
     {
       "id": "eldoria-direct-flow-recovery-v1",
