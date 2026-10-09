@@ -30,3 +30,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Enforce workflow governance
         run: node tools/check-workflow-governance.mjs
+      - name: Diagnose existing M16 startup with pinned actionlint (non-blocking)
+        continue-on-error: true
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -color .github/workflows/eldoria-coordinator-v1.yml
