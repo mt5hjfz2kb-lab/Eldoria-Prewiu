@@ -83,11 +83,11 @@ jobs:
           echo "$files"
           if grep -qx 'pipeline/r2b-candidate-build.json' <<< "$files"; then
             jq -e '.enabled == true and .mode == "r2b-isolated-candidate" and .paid_credits == 0 and .stable_publish == false' pipeline/r2b-candidate-build.json
-            if jq -e '.delivery_phase == "publish_verified_artifact" and .source_sha == "5922520120c1bd682cdfa80a90f748939922ce29" and .candidate_run_id == 37914588629 and .candidate_head_sha == "fec7c5b0d157d360ab30000dd2ea2b093f4e5e14"' pipeline/r2b-candidate-build.json; then
+            if jq -e '.delivery_phase == "publish_verified_artifact" and .source_sha == "d9c12eec8461587181fe9234e65b3da5d0ac2510" and .candidate_run_id == 37941767116 and .candidate_head_sha == "c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7"' pipeline/r2b-candidate-build.json; then
               echo "candidate_only=false" >> "$GITHUB_OUTPUT"
               echo "deploy_only=true" >> "$GITHUB_OUTPUT"
-              echo "deploy_run_id=37914588629" >> "$GITHUB_OUTPUT"
-              echo "deploy_head_sha=fec7c5b0d157d360ab30000dd2ea2b093f4e5e14" >> "$GITHUB_OUTPUT"
+              echo "deploy_run_id=37941767116" >> "$GITHUB_OUTPUT"
+              echo "deploy_head_sha=c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7" >> "$GITHUB_OUTPUT"
               echo "heavy_required=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
@@ -698,15 +698,15 @@ jobs:
         id: choice
         continue-on-error: true
         env:
-          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-fec7c5b0d157d360ab30000dd2ea2b093f4e5e14/
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7/
           ELDORIA_EVIDENCE_DIR: r2b-corrected-choice-qa
         run: node qa/r2b-webgl-choice-probe.cjs
       - name: Independently check corrected Unity touch camera motion in landscape and portrait
         id: camera
         continue-on-error: true
         env:
-          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-fec7c5b0d157d360ab30000dd2ea2b093f4e5e14/
-          ELDORIA_SOURCE_SHA: fec7c5b0d157d360ab30000dd2ea2b093f4e5e14
+          ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7/
+          ELDORIA_SOURCE_SHA: c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7
           ELDORIA_EVIDENCE_DIR: r2b-corrected-camera-qa
         run: node qa/eldoria-gameplay-camera-experience-probe.cjs
       - uses: actions/upload-artifact@v4
