@@ -1,0 +1,38 @@
+{
+  "workstream_id": "eldoria-world-region-1-visual-convergence-v2",
+  "baseline": {
+    "head": "255769573712e053790df3fdf369a9534d4fc7d1",
+    "unity_run": 37549083306,
+    "artifact": 11452875393,
+    "views": [
+      "frontier-i-ii-19.png",
+      "frontier-i-ii-12.png",
+      "frontier-i-ii-9.png",
+      "frontier-i-ii-mobile.png"
+    ],
+    "direct_visual_verdict": "FAIL"
+  },
+  "diagnosis": {
+    "composition": "Sparse, detached POIs and oversized dead lower mobile field",
+    "surface_relief": "Near-uniform flat terrain with little meaningful relief and roads visually missing",
+    "identity": "Bright repeated conifers and isolated grey boulders; inconsistent with Valoria",
+    "geometry_gap_proven": false
+  },
+  "planner": {
+    "run": 37893720184,
+    "artifact": 11599157356,
+    "profile": "environment_surface",
+    "fallback": "surface_material_or_relief",
+    "stages": [
+      "unity_surface_diagnosis",
+      "unity_environment_art",
+      "official_camera_validation"
+    ],
+    "zero_spend": true
+  },
+  "iteration_1": {
+    "status": "SOURCE_CANDIDATE_UNTESTED",
+    "scope": "Continuous terrain height/biome/path surface, ground-aligned existing vegetation and rock props, no 4X state/collider/camera mutation"
+  },
+  "paid_credits": 0
+}
