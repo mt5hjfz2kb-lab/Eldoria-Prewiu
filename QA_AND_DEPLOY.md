@@ -1,3 +1,6 @@
+## Fast focused production restored from the pre-DG method (2026-10-09)
+Small bounded Unity fixes follow the September 22 documented focused path: single owning implementer -> exact Unity compile -> one independent actual affected-feature browser/device-equivalent test + one adjacent regression -> acceptance. Reuse the current candidate rather than rebuilding for QA-only probes; keep stable isolated. M16/DG is not a blocking intermediate for each step. Preserve all global invariant safety/ownership protections. Reserve exhaustive QA and multi-department signoff for changes whose risk actually spans subsystems or a stable release. Historical proof: commit f52aa3e9e7 QA_AND_DEPLOY.md "Fast focused iteration / Probar solo el cambio".
+
 ## Canonical pipeline enforcement — owner reinstatement 2026-10-09
 
 The original Eldoria production pipeline is the **single route** for all player-facing changes, including work produced by local Ollama, ChatGPT Work, DG and M16. This operational requirement complements the independent playable-build acceptance gate below and does not create a second pipeline, workflow, department or claim.
