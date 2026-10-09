@@ -64,6 +64,15 @@
         "scope": "existing local-agent-preflight-v1 only",
         "preserve_existing_results": true,
         "runner_claim": false
+      },
+      "runner_loan": {
+        "from": "r2-b-strategic-choice",
+        "resource": "windows-runner-heavy",
+        "kind": "single bounded read-only preflight",
+        "window_timeout_minutes": 4,
+        "returns_to": "r2-b-strategic-choice",
+        "no_claim_transfer": true,
+        "state": "AUTHORIZED_ONE_SHOT"
       }
     },
     {
@@ -270,6 +279,18 @@
         "from": "eldoria-world-region-1-visual-convergence-v2",
         "reason": "Owner authorized game production priority; Windows heavy slot held only for isolated Unity playable candidate build and QA",
         "needs_release": true
+      },
+      "temporary_runner_loan": {
+        "borrower": "eldoria-local-agent-preflight-v1",
+        "executor": "chat-local-agent-integration-20261009",
+        "authorized_by": "owner explicit 2026-10-09",
+        "reservation_retained_by": "r2-b-strategic-choice",
+        "scope": "one existing read-only GitHub Actions preflight job only",
+        "timeout_minutes": 4,
+        "automatic_return": "GitHub Actions job termination releases Windows runner; R2-B resource claim never transferred",
+        "conditions": "zero running productive runs at checkout; no cancellation; Unity must not be interrupted",
+        "state": "AUTHORIZED_ONE_SHOT",
+        "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2"
       }
     },
     {
