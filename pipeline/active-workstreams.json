@@ -295,6 +295,25 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
+    },
+    {
+      "id": "eldoria-dg-watchdog-dedupe-repair-v1",
+      "title": "Repair existing DG watchdog duplicate finding notifications",
+      "owner": "chat-dg-v4-capability-audit-20261009",
+      "scope": [
+        ".github/workflows/eldoria-dg-workstream-watchdog.yml",
+        "docs/evidence/eldoria-dg-watchdog-dedupe-repair-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-09T10:00:00+02:00",
+      "base_main_sha": "4b18480045bd76200cf1591c1c6b7a10e5975a64",
+      "status": "active",
+      "phase": "BOUNDED EXISTING WATCHDOG REPAIR",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Existing GitHub notification workflow only; no player-visible content.",
+      "paid_credits": 0,
+      "next": "Fix duplicate comment idempotence and verify new triggered GitHub Actions run; leave other owners untouched"
     }
   ],
   "history": [
