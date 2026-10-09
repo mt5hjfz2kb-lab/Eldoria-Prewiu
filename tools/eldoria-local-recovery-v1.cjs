@@ -53,7 +53,7 @@ function verify(folder,sha,run,attempt){
      const key=[...c.resources].sort().join('|');assert(!signatures.has(key),'Duplicate coverage');signatures.add(key);
      // Independent oracle: exact known identifiers, never candidate-supplied labels or rules.
      const expected=c.resources.includes('windows-runner-heavy')||c.resources.includes('windows-self-hosted-unity-6000-3-23f1');
-     assert.equal(c.conflict,expected);assert.equal(conflicts({active:[{id:'other',status:'active',resources:c.resources}]},ID).length>0,expected);checks++;
+     assert.equal(c.conflict,expected,'Wrong conflict for resources '+JSON.stringify(c.resources)+': received '+c.conflict+', expected '+expected+'. Empty and non-Windows resource lists do not reserve the Windows PC.');assert.equal(conflicts({active:[{id:'other',status:'active',resources:c.resources}]},ID).length>0,expected);checks++;
    }
    for(const key of ['', 'windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1','github-hosted-blender','windows-runner-heavy|windows-self-hosted-unity-6000-3-23f1','linux-qa|windows-runner-heavy','github-hosted-blender|linux-qa'])assert(signatures.has(key),'Missing critical coverage '+key);
  }
@@ -63,7 +63,7 @@ module.exports={authorize,verify,conflicts,ALIASES};
 if(require.main===module){
  const [mode,...args]=process.argv.slice(2);
  if(mode==='verify'){
-  let report;try{report=verify(args[0],args[1],args[2],Number(args[3]));}catch(e){report={pass:false,errors:[e.message],run_id:args[2],source_sha:args[1],attempt:Number(args[3])};}
+  let report;try{report=verify(args[0],args[1],args[2],Number(args[3]));}catch(e){report={pass:false,errors:[e.message],run_id:args[2],source_sha:args[1],attempt:Number(args[3])};try{const prior=fs.readFileSync(path.join(args[0],'candidate.json'),'utf8');if(prior.length<8000)report.rejected_candidate=JSON.parse(prior.replace(/^\uFEFF/,''));}catch{}}
   fs.writeFileSync(args[4],JSON.stringify(report,null,2));console.log(JSON.stringify(report));
  }else throw Error('Use existing M16 prepare mode to issue orders');
 }
