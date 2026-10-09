@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "unity-local-save-notice-v1",
-  "enabled": true,
+  "enabled": false,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
   "order_id": "unity-local-save-notice-20261009-v1",
@@ -12,7 +12,7 @@
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
   "requested_at": "2026-10-09T13:35:25.247Z",
-  "phase": "code",
+  "phase": "blocked_model",
   "stable_publish": false,
   "install": false,
   "protected_base_sha": "c8ac15b26990742384cce142082346631be92d77",
