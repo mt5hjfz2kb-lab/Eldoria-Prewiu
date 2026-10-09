@@ -295,6 +295,25 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
+    },
+    {
+      "id": "eldoria-m16-evidence-provenance-hardening-v1",
+      "title": "Harden existing M16 independent QA handoff source/artifact provenance",
+      "owner": "chat-dg-v4-20261009-m16-proof",
+      "scope": [
+        "tools/eldoria-coordinator-v1.cjs",
+        "tests/eldoria-coordinator-v1.test.cjs",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-09T10:20:00+02:00",
+      "base_main_sha": "39b812d5d3c6eddb4dbb12190a896ee464122cd4",
+      "status": "active",
+      "phase": "BOUNDED COORDINATOR EVIDENCE VALIDATION",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only coordinator provenance gate, no gameplay or art source changes.",
+      "paid_credits": 0,
+      "next": "Reject fabricated or cross-SHA M07 QA handoff data, independently validate with existing coordinator tests; no QA dispatch."
     }
   ],
   "history": [
