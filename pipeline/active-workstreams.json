@@ -49,9 +49,9 @@
       "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "HISTORICAL_LOCAL_OLLAMA_PATH_RECOVERED / READ_ONLY_VERIFICATION_AWAITS_RUNNER_WINDOW",
+      "phase": "PRIVATE_OLLAMA_EXECUTABLE_AND_MODELS_DIRECTORY_VERIFIED / INFERENCE_NOT_RETESTED",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
-      "next": "Check existing EldoriaLocalAI private exe and models with updated preflight at SHA 054ee4a6; requires R2-B controlled one-shot loan; then evaluate isolated prior-model execution with separate authorization and independent QA.",
+      "next": "Existing owner: verify exact model blobs and perform isolated inference only through previously authorized bounded workflow with explicit current claim and one-shot Windows window; never rerun old pilot that has passed.",
       "art_production_routing_reason": "Hardware/agent capability preflight only, with no player-visible art assets, production geometry or visual output; owner and scope unchanged.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -68,19 +68,18 @@
       "runner_loan": {
         "from": "r2-b-strategic-choice",
         "resource": "windows-runner-heavy",
-        "kind": "second diagnostic read-only",
         "state": "COMPLETED",
-        "run_id": 37930206878,
-        "job_id": 113818782909,
-        "returns_to": "r2-b-strategic-choice",
+        "run_id": 37931125987,
+        "job_id": 113821812032,
+        "return_verified": true,
         "no_claim_transfer": true,
-        "findings": [
-          "Ollama not in PATH",
-          "Ollama process not running",
-          "Ollama service NOT_FOUND",
-          "local API 127.0.0.1:11434 UNREACHABLE",
-          "no standard installation discovered under probed runner-account paths"
-        ],
+        "findings": {
+          "private_exe": "FOUND",
+          "private_models_directory": "FOUND",
+          "model_qwen25_coder_3b": "HISTORICAL_ONLY_NOT_RECHECKED",
+          "service": "NOT_FOUND",
+          "local_api": "UNREACHABLE"
+        },
         "game_changes": false
       },
       "historical_runtime_proof": {
@@ -302,15 +301,13 @@
       "temporary_runner_loan": {
         "borrower": "eldoria-local-agent-preflight-v1",
         "executor": "chat-local-agent-integration-20261009",
-        "authorized_by": "owner issue23 comment6080837818 and explicit chat instruction 2026-10-09",
-        "reservation_retained_by": "r2-b-strategic-choice",
-        "scope": "second one-shot read-only Ollama discovery",
-        "timeout_minutes": 4,
-        "automatic_return": "GitHub Actions job terminated; original runner reservation unchanged",
         "state": "COMPLETED_RETURNED_TO_R2B",
-        "run_id": 37930206878,
-        "job_id": 113818782909,
+        "run_id": 37931125987,
+        "job_id": 113821812032,
         "job_conclusion": "success",
+        "reservation_retained_by": "r2-b-strategic-choice",
+        "scope": "read-only recovered EldoriaLocalAI proof",
+        "timeout_minutes": 4,
         "next_priority": "r2-b-strategic-choice then eldoria-world-region-1-visual-convergence-v2"
       }
     },
