@@ -1,8 +1,33 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-09T20:50:00Z",
-  "active": [],
+  "updated_at": "2026-10-09T21:00:00Z",
+  "active": [
+    {
+      "id": "unity-mobile-migrated-gameplay-review-v1",
+      "title": "Unity migrated gameplay and mobile UX correction",
+      "owner": "chat-direct-unity-mobile-20261009",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "pipeline/unity-publish-request.json"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-unity-owner"
+      ],
+      "claimed_at": "2026-10-09T21:00:00Z",
+      "base_main_sha": "8938fff5eec1bc3689281d5a2651cf25009e8957",
+      "status": "active",
+      "phase": "MIGRATION GAMEPLAY AND MOBILE INPUT VALIDATION",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Functional/touch UX correction without new visual assets or art method",
+      "paid_credits": 0
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
