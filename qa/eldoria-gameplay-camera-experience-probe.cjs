@@ -14,6 +14,10 @@ async function run(browser,label,viewport,axis){
  try {
   await page.goto(site+'?exp-probe='+label,{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(()=>{const bar=document.querySelector('#unity-loading-bar');return bar&&getComputedStyle(bar).display==='none';},null,{timeout:180000});
+  // Unity's loading overlay can disappear before SlicePresenter announces its playable state.
+  const readyUntil=Date.now()+120000;
+  while(Date.now()<readyUntil&&!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x))){await page.waitForTimeout(300);}
+  if(!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x)))throw Error('BLOCKED_UNITY_PLAYABLE_STATE_NOT_OBSERVED');
   const canvas=page.locator('canvas').first(),rect=await canvas.boundingBox();if(!rect)throw Error('NO_UNITY_CANVAS');
   await page.screenshot({path:output+'/'+label+'-before.png'});
   const start={x:rect.x+rect.width*.52,y:rect.y+rect.height*.46};
