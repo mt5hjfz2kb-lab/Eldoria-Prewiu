@@ -44,6 +44,8 @@ namespace Eldoria.Application
         private void NormalizeMissionProgress()
         {
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+            if (state.ChapterProgress.GrantedRewards == null)
+                state.ChapterProgress.GrantedRewards = new System.Collections.Generic.List<string>();
             if (state.ScoutDefeated) state.ChapterProgress.RouteCleared = true;
             if (state.BastionLevel >= 2) state.ChapterProgress.BastionTwoReached = true;
             if (state.MarchConfigured)
@@ -64,6 +66,7 @@ namespace Eldoria.Application
                 PlayerId=s.PlayerId, RealmId=s.RealmId, WorldId=s.WorldId,
                 Resources=new ResourceWallet { Wood=s.Resources.Wood, Stone=s.Resources.Stone, Food=s.Resources.Food },
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
+                MissionPower=s.MissionPower,
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
@@ -98,7 +101,8 @@ namespace Eldoria.Application
                     RouteCleared=s.ChapterProgress?.RouteCleared??false,
                     BastionTwoReached=s.ChapterProgress?.BastionTwoReached??false,
                     MarchConfirmed=s.ChapterProgress?.MarchConfirmed??false,
-                    EngendroDefeated=s.ChapterProgress?.EngendroDefeated??false
+                    EngendroDefeated=s.ChapterProgress?.EngendroDefeated??false,
+                    GrantedRewards=new System.Collections.Generic.List<string>(s.ChapterProgress?.GrantedRewards??new System.Collections.Generic.List<string>())
                 },
                 CompletedCommandIds=new System.Collections.Generic.List<string>(s.CompletedCommandIds),
                 CompletedTaskIds=new System.Collections.Generic.List<string>(s.CompletedTaskIds)
@@ -213,6 +217,7 @@ namespace Eldoria.Application
                     break;
                 default: return Fail("Acción desconocida");
             }
+            GrantWebMissionRewards();
             state.CompletedCommandIds.Add(command.Id);
             Commit();
             return new CommandResult(true, "Acción iniciada", state.Revision);
@@ -359,7 +364,40 @@ namespace Eldoria.Application
                     state.ChapterProgress.RouteCleared;
                 if (chapterOneReady) { state.JourneyComplete = true; changed = true; }
             }
+            if (GrantWebMissionRewards()) changed = true;
             if (changed) Commit();
+            return changed;
+        }
+        private bool GrantWebMissionRewards()
+        {
+            // Web chapter rewards belong to the owner profile only. The ledger is saved with
+            // progress so offline completion, reload and replay cannot pay a mission twice.
+            if (SliceContentProfiles.ActiveRuntimeProfile != SliceContentProfiles.OwnerIiiId) return false;
+            var p = state.ChapterProgress;
+            if (p == null) return false;
+            if (p.GrantedRewards == null) p.GrantedRewards = new System.Collections.Generic.List<string>();
+            bool changed = false;
+            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0)
+            {
+                if (!complete || p.GrantedRewards.Contains(id)) return;
+                p.GrantedRewards.Add(id);
+                state.Resources.Wood += wood;
+                state.Resources.Stone += stone;
+                state.MissionPower += power;
+                changed = true;
+            }
+            Grant("c1-sawmill", state.SawmillLevel>0, wood:120);
+            Grant("c1-wood", p.GatheredWood>=SliceContentProfiles.OwnerIiiCandidate.Chapter1GatherWood, stone:80);
+            Grant("c1-stone", p.GatheredStone>=SliceContentProfiles.OwnerIiiCandidate.Chapter1GatherStone, wood:120);
+            Grant("c1-route", p.RouteCleared, wood:90, stone:55);
+            Grant("c1-bastion", state.BastionLevel>=2, power:80);
+            Grant("chapter-1", state.BastionLevel>=2, wood:180, stone:140, power:120);
+            Grant("c2-barracks", state.BarracksLevel>0, wood:140, stone:90);
+            Grant("c2-train", p.TrainedArchers>=SliceContentProfiles.OwnerIiiCandidate.Chapter2TrainArchers, wood:220, stone:150);
+            Grant("c2-power", p.ConfirmedExpeditionPower>=SliceContentProfiles.OwnerIiiCandidate.Chapter2ExpeditionPower, power:100);
+            Grant("c2-spawnling", p.EngendroDefeated, wood:120, stone:120);
+            // The web's c2-bastion and chapter-2 rewards require Bastion III. This slice
+            // intentionally ends at II, so neither completion nor payout is fabricated.
             return changed;
         }
         private void Commit() { state.Revision++; store.Save(state); }

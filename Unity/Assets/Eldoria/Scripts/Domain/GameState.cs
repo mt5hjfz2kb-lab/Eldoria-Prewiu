@@ -48,6 +48,7 @@ namespace Eldoria.Domain
         public bool BastionTwoReached;
         public bool MarchConfirmed;
         public bool EngendroDefeated;
+        public List<string> GrantedRewards = new List<string>();
     }
     [Serializable] public sealed class PlayerState
     {
@@ -63,6 +64,7 @@ namespace Eldoria.Domain
             Food = SliceContentProfiles.Active.InitialFood
         };
         public int BastionLevel = 1;
+        public int MissionPower;
         public int SawmillLevel;
         public int BarracksLevel;
         public bool CorruptionDiscovered;
@@ -195,7 +197,7 @@ namespace Eldoria.Domain
         }
 
         public static PowerParts TotalPower(PlayerState s)
-            => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel + 190 * s.BarracksLevel,
+            => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel + 190 * s.BarracksLevel + s.MissionPower,
                 18 * (s.Available.Total + s.Wounded.Total + (s.March.Phase == "idle" ? 0 : s.March.Troops.Total)), 1204, 0, 0);
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)

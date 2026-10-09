@@ -327,6 +327,39 @@ namespace Eldoria.Tests
             finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
         }
 
+        [Test] public void OwnerMissionRewardsMatchWebAndRemainIdempotentAfterReload()
+        {
+            SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+            try
+            {
+                var state=new PlayerState { BastionLevel=2, SawmillLevel=1, BarracksLevel=1,
+                    EngendroDefeated=true };
+                state.ChapterProgress.GatheredWood=600;
+                state.ChapterProgress.GatheredStone=500;
+                state.ChapterProgress.RouteCleared=true;
+                state.ChapterProgress.TrainedArchers=20;
+                state.ChapterProgress.ConfirmedExpeditionPower=2250;
+                state.ChapterProgress.EngendroDefeated=true;
+                var store=new Memory { Value=state };
+                var clock=new Clock();
+                var gateway=new LocalGateway(clock,store);
+                var awarded=gateway.Snapshot();
+                Assert.That(awarded.Resources.Wood,Is.EqualTo(230+120+120+90+180+140+220+120));
+                Assert.That(awarded.Resources.Stone,Is.EqualTo(150+80+55+140+90+150+120));
+                Assert.That(awarded.MissionPower,Is.EqualTo(80+120+100));
+                Assert.That(awarded.ChapterProgress.GrantedRewards.Count,Is.EqualTo(10));
+                Assert.That(awarded.ChapterProgress.GrantedRewards,Does.Not.Contain("chapter-2"));
+                var revision=awarded.Revision;
+                gateway=new LocalGateway(clock,store);
+                Assert.That(gateway.Snapshot().Revision,Is.EqualTo(revision));
+                Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(awarded.Resources.Wood));
+                Assert.That(gateway.Snapshot().MissionPower,Is.EqualTo(awarded.MissionPower));
+                awarded.ChapterProgress.GrantedRewards.Clear();
+                Assert.That(gateway.Snapshot().ChapterProgress.GrantedRewards.Count,Is.EqualTo(10));
+            }
+            finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
+        }
+
         [Test] public void OwnerCandidateIsIsolatedAndMatchesWebContract()
         {
             Assert.That(SliceContentProfiles.ActiveRuntimeProfile,Is.EqualTo(SliceContentProfiles.QaFastId));

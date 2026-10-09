@@ -779,7 +779,7 @@ namespace Eldoria.Presentation
                         : "Aldric: «La Brecha dejó Valoria en ruinas. Trae madera del bosque; volveremos a levantar el Aserradero.»"))
                 : FrontierDescription(s,march,expedition);
             message.text=string.IsNullOrEmpty(feedback)?
-                (s.EngendroDefeated?"Bastión II asegurado. La Brecha sigue siendo una amenaza.":
+                (s.EngendroDefeated?"Engendro derrotado. El ascenso a Bastión III queda para el siguiente hito.":
                  s.JourneyComplete&&s.BastionLevel==1?"Valoria vuelve a respirar. Asciende el Bastión para continuar.":
                  city?"Pulsa MUNDO para abrir el mapa 4X; vuelve con recursos para construir.":
                  "Selecciona una ciudad, recurso, ruina o amenaza para actuar en la Región I."):feedback;
@@ -811,7 +811,7 @@ namespace Eldoria.Presentation
                 case "b2.prepare-march": return "BASTIÓN II · prepara y confirma la Marcha";
                 case "b2.raise-expedition-power": return "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.Active.Chapter2ExpeditionPower;
                 case "b2.defeat-engendro": return "BASTIÓN II · derrota al Engendro de la ruta";
-                case "b2.complete": return "CAPÍTULO II COMPLETO · Valoria puede defenderse";
+                case "b2.complete": return "BASTIÓN II ASEGURADO · próximo hito: Bastión III";
                 default: return "ELDORIA · objetivo no disponible";
             }
         }

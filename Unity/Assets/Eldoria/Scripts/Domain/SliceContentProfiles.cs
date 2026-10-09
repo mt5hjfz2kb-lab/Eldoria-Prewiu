@@ -2,15 +2,15 @@ namespace Eldoria.Domain
 {
     /// <summary>
     /// Explicitly separates fast technical-slice values from the validated web product contract.
-    /// QA_FAST remains the active runtime profile until OWNER_I_II is human-paced and explicitly promoted.
+    /// QA_FAST is the native default; SliceBoot explicitly selects OWNER_I_II in published WebGL.
     /// Runtime code must consume Active so one profile is selected as a whole; never mix individual values.
     /// </summary>
     public static class SliceContentProfiles
     {
         public const string QaFastId = "QA_FAST";
         public const string OwnerIiiId = "OWNER_I_II";
-        // QA_FAST remains the normal/default launch. OWNER_I_II is opt-in for the first
-        // human pacing pass and never silently replaces QA.
+        // QA_FAST remains the native default. OWNER_I_II is explicit in the WebGL
+        // owner build, while native owner playtesting uses the opt-in launcher.
         // Owner launcher/CLI: --eldoria-profile=OWNER_I_II
         static string runtimeProfileOverride;
         public static string ActiveRuntimeProfile => string.IsNullOrEmpty(runtimeProfileOverride)
@@ -69,8 +69,7 @@ namespace Eldoria.Domain
         }
 
         /// <summary>
-        /// Candidate values for the first owner-facing Bastion I-II playtest.
-        /// This profile is intentionally NOT active yet. Contract values come from the web.
+        /// Web-contract values used by the owner-facing WebGL build.
         /// Travel/gather/recruit cadence remains provisional until the first human pacing pass,
         /// but is fully self-contained here so OWNER_I_II can never fall through to QA_FAST values.
         /// </summary>
@@ -106,7 +105,7 @@ namespace Eldoria.Domain
 
         /// <summary>
         /// Single runtime facade. Runtime profile selection is explicit through SelectRuntimeProfile/CLI;
-        /// QA_FAST remains the default and OWNER_I_II is opt-in. Save files are profile-scoped by SliceBoot
+        /// QA_FAST remains the native default; WebGL selects OWNER_I_II. Save files are profile-scoped by SliceBoot
         /// so an OWNER_I_II test cannot reuse QA_FAST state.
         /// </summary>
         public static class Active
@@ -139,7 +138,7 @@ namespace Eldoria.Domain
 
         /// <summary>
         /// Product-contract values extracted from the canonical web vertical slice.
-        /// These are reference requirements, not yet the active Unity runtime balance profile.
+        /// These are the owner profile's I-II reference requirements; remaining cadence is provisional.
         /// </summary>
         public static class WebContract
         {
