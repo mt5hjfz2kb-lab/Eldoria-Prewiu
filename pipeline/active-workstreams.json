@@ -48,7 +48,8 @@
         "tools/eldoria-coordinator-v1.cjs",
         "docs/evidence/eldoria-local-agent-preflight-v1/**",
         "pipeline/local-runner-resource-aliases.json",
-        "tests/fixtures/local-runner-conflicts-v1.json"
+        "tests/fixtures/local-runner-conflicts-v1.json",
+        "SESSION_HANDOFF.md"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T14:18:00Z",
@@ -86,6 +87,11 @@
         "execution": "started transiently and stopped after bounded task",
         "updated_preflight_sha": "054ee4a6ba2bc140b2f41e0469228a79bbab01ae",
         "runner_status": "R2-B owns windows-runner-heavy; no third loan granted yet"
+      },
+      "scope_extension": {
+        "reason": "Append verified support recovery and handback to shared canonical handoff; no product-state changes",
+        "authorized_by": "Owner executive local recovery 2026-10-09",
+        "append_only_shared_handoff": true
       }
     },
     {
