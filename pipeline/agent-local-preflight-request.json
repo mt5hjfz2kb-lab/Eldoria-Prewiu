@@ -12,7 +12,7 @@
   "max_attempts": 2,
   "expires_at": "2026-10-09T17:30:00Z",
   "requested_at": "2026-10-09T13:54:34.275Z",
-  "phase": "awaiting_independent_visual",
+  "phase": "accepted",
   "stable_publish": false,
   "install": false,
   "protected_base_sha": "78619787c5bd5073bfc12694d180288901537f60",
@@ -78,8 +78,17 @@
   },
   "ui_repair_applied_sha256": "0b5cb39ece8266e1655a2e052340d06cae52fabd8177d6cc08dcd32a6c30c9d5",
   "previous_real_unity_build_run_id": 37941767116,
-  "authorized_reuse_run_id": 37946776091,
   "reuse_reason": "Exact already-compiled repaired Unity tree; Linux-only independent post-ack real Commit/reward/preserved-byte retest. No Windows/model/build repetition.",
   "visual_retest_only": true,
-  "visual_retest_reason": "Independent D13/D10 screenshot anti-splash gate requiring actual rendered game + distinct modal picture at both viewport orientations, reuse existing immutable Unity artifact; no Windows job"
+  "visual_retest_reason": "Independent D13/D10 screenshot anti-splash gate requiring actual rendered game + distinct modal picture at both viewport orientations, reuse existing immutable Unity artifact; no Windows job",
+  "acceptance": {
+    "scope": "D06 save-load failure warning in Unity; objective mobile modal geometry and rendered-frame proof; no general game UX/art approval",
+    "code_generation_run": 37940904129,
+    "actual_unity_build_run": 37946776091,
+    "visual_and_gameplay_qa_run": 37953544631,
+    "visual_capture_guard_commit": "6a650eb185808ec2c1aee02f8326f12d949b8b95",
+    "production_acceptance_commit": "87a0af49b93f38c1f631e303e281b4cbe5c206ee",
+    "source_sha": "2c41f3151cd7deaa9522c22d82f3bad896a34af1",
+    "stable_published": false
+  }
 }
