@@ -1,0 +1,35 @@
+name: Eldoria M16 independent provenance tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/eldoria-coordinator-v1.cjs'
+      - 'tests/eldoria-coordinator-v1.test.cjs'
+      - '.github/workflows/eldoria-m16-independent-provenance-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  independent-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Independently test M16 coordinator including negative provenance cases
+        run: node --test tests/eldoria-coordinator-v1.test.cjs
+      - name: Verify fail-closed current M07 without handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-coordinator-v1.cjs > /tmp/m16-report.json
+          jq -e '.verdict == "BLOCKED_NO_HANDOFF" and ([.checks[].passed] | all | not)' /tmp/m16-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-m16-independent-provenance-proof
+          path: pipeline/reports/coordinator-v1-latest.json
+          retention-days: 14
