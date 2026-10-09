@@ -11,6 +11,7 @@ function acceptedAliases(){
 }
 function conflicts(reg,id,aliases=acceptedAliases()){return reg.active.filter(w=>w.id!==id&&w.status==='active'&&(w.resources||[]).some(r=>normalize(r,aliases)==='windows-runner-heavy'));}
 function authorize(reg,request,sha,taskIndex=0){
+ if(request.mode==='unity-local-save-notice-v1')return require('./eldoria-local-unity-qa.cjs').authorize(reg,request,sha);
  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(request.mode,'local-recovery-v1');
  assert.equal(request.owner,OWNER);assert.equal(request.workstream_id,ID);
  assert.equal(request.model,'qwen2.5-coder:3b');assert.equal(request.budget_eur,0);
@@ -40,7 +41,10 @@ function verify(folder,sha,run,attempt){
  assert.equal(clean.listener_closed,true);assert.equal(clean.owned_process_stopped,true);assert.equal(clean.lock_released,true);
  assert.equal(p.candidate_sha256,crypto.createHash('sha256').update(bytes).digest('hex'));
  let checks=0;
- if(t.kind==='runner-resource-aliases'){
+ if(t.kind==='unity-save-notice-policy'){
+  assert.deepEqual(Object.keys(candidate),['source']);assert.equal(typeof candidate.source,'string');
+  assert.equal(t.department,'D06');checks=0;
+ }else if(t.kind==='runner-resource-aliases'){
    assert.deepEqual(Object.keys(candidate),['aliases']);assert.deepEqual(candidate.aliases,ALIASES);
    const cases=[{r:[],want:false},{r:['windows-runner-heavy'],want:true},{r:['windows-self-hosted-unity-6000-3-23f1'],want:true},{r:['github-hosted-blender'],want:false}];
    for(const x of cases){assert.equal(conflicts({active:[{id:'other',status:'active',resources:x.r}]},ID,candidate.aliases).length>0,x.want);checks++;}

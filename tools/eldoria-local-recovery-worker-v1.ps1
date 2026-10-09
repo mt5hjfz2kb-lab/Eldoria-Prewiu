@@ -46,7 +46,9 @@ try{
   $prompt+=[Environment]::NewLine+"Independent QA rejected your previous candidate. Correct only this task. QA feedback: $feedback"
  }
  # Structural schema prevents omission; semantic values still come from Qwen and independent QA.
- if($task.kind -eq 'runner-resource-aliases'){
+ if($task.kind -eq 'unity-save-notice-policy'){
+  $schema=@{type='object';additionalProperties=$false;required=@('source');properties=@{source=@{type='string'}}}
+ }elseif($task.kind -eq 'runner-resource-aliases'){
   $props=@{'windows-runner-heavy'=@{type='string'};'windows-self-hosted-unity-6000-3-23f1'=@{type='string'}}
   $schema=@{type='object';additionalProperties=$false;required=@('aliases');properties=@{aliases=@{type='object';additionalProperties=$false;required=@('windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1');properties=$props}}}
  }elseif($task.kind -eq 'runner-conflict-cases'){

@@ -10,6 +10,10 @@ on:
       candidate_head_sha:
         required: true
         type: string
+      local_unity_candidate:
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
   push:
     branches: [main]
@@ -35,11 +39,11 @@ permissions:
 
 concurrency:
   # Candidate build is isolated from normal Pages source/QA pushes; a routine QA commit must never cancel Unity candidate.
-  group: eldoria-pages-${{ inputs.candidate_run_id > 0 && 'r2b-preview' || ((github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ops(r2-b):')) && 'r2b-candidate' || 'stable') }}
+  group: eldoria-pages-${{ inputs.local_unity_candidate && 'local-save-candidate' || inputs.candidate_run_id > 0 && 'r2b-preview' || ((github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ops(r2-b):')) && 'r2b-candidate' || 'stable') }}
   # Each coherent green push certifies and publishes the exact candidate.
   # Only the newest main candidate matters during an active development block.
   # Superseded runs are cancelled so stale candidates cannot block final certification.
-  cancel-in-progress: ${{ inputs.candidate_run_id == 0 }}
+  cancel-in-progress: ${{ inputs.candidate_run_id == 0 && !inputs.local_unity_candidate }}
 
 jobs:
   source-preflight:
@@ -59,6 +63,12 @@ jobs:
         id: impact
         shell: bash
         run: |
+          if [[ "${{ inputs.local_unity_candidate }}" == "true" ]]; then
+            node -e "const r=require('./pipeline/agent-local-preflight-request.json');if(r.mode!=='unity-local-save-notice-v1'||r.enabled!==true||r.phase!=='build'||r.stable_publish!==false||r.budget_eur!==0)throw Error('Local candidate not authorized')"
+            echo "candidate_only=true" >> "$GITHUB_OUTPUT"
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "candidate_only=false" >> "$GITHUB_OUTPUT"
             echo "heavy_required=true" >> "$GITHUB_OUTPUT"
@@ -124,8 +134,28 @@ jobs:
     if: inputs.candidate_run_id == 0 && needs.source-preflight.outputs.heavy_required == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 45
+    env:
+      ELDORIA_BUILD_WORKSPACE: ${{ inputs.local_unity_candidate && format('{0}/local-unity-candidate', github.workspace) || github.workspace }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.local_unity_candidate && format('{0}/local-unity-candidate', github.workspace) || github.workspace }}
     steps:
+      - name: Verify temporary local candidate runner loan before touching workspace
+        if: inputs.local_unity_candidate
+        working-directory: ${{ github.workspace }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(Get-Process Unity,Blender,ollama -ErrorAction SilentlyContinue){throw 'Productive process active; do not touch its workspace'}
+          $reg=Invoke-RestMethod "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/main/pipeline/active-workstreams.json"
+          $claim=@($reg.active|Where-Object{$_.id -eq 'eldoria-local-agent-preflight-v1' -and $_.owner -eq 'chat-work-local-recovery-20261009' -and $_.status -eq 'active'})
+          if($claim.Count -ne 1 -or $claim[0].runner_loan.status -ne 'authorized_temporary'){throw 'Runner loan absent'}
+          if([DateTimeOffset]::Parse($claim[0].runner_loan.expires_at) -lt [DateTimeOffset]::UtcNow){throw 'Runner loan expired'}
+          $other=@($reg.active|Where-Object{$_.id -notin @('eldoria-local-agent-preflight-v1','r2-b-strategic-choice') -and $_.status -eq 'active' -and @($_.resources|Where-Object{$_ -in @('windows-runner-heavy','windows-self-hosted-unity-6000-3-23f1')}).Count})
+          if($other.Count){throw 'Other productive owner reserved Windows'}
+
       - name: Expose Git installed with GitHub Desktop
+        working-directory: ${{ github.workspace }}
         shell: powershell
         run: |
           $git = Get-Command git.exe -ErrorAction SilentlyContinue
@@ -149,6 +179,9 @@ jobs:
           }
           git --version
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          path: ${{ inputs.local_unity_candidate && 'local-unity-candidate' || '.' }}
       - name: Ensure WebGL Build Support
         shell: powershell
         run: |
@@ -156,6 +189,7 @@ jobs:
           $editorDir = Split-Path $env:UNITY_EDITOR_PATH
           $webgl = Join-Path $editorDir 'Data\PlaybackEngines\WebGLSupport'
           if (Test-Path $webgl) { Write-Host 'WebGL Build Support already installed.'; exit 0 }
+          if ('${{ inputs.local_unity_candidate }}' -eq 'true') { throw 'Existing WebGL module missing; no installation authorized for local candidate' }
           $unityCli = Get-Command unity.exe -ErrorAction SilentlyContinue
           if (-not $unityCli) {
             $candidates = @(
@@ -174,7 +208,7 @@ jobs:
           if (-not (Test-Path $webgl)) { throw 'Unity CLI completed but WebGL Build Support path is still missing.' }
           Write-Host 'WebGL Build Support installed successfully.'
       - name: Stage isolated R2-B candidate request in temporary runner only
-        if: needs.source-preflight.outputs.candidate_only == 'true'
+        if: needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate
         shell: powershell
         run: |
           $req = Get-Content 'pipeline/r2b-candidate-build.json' -Raw | ConvertFrom-Json
@@ -190,12 +224,27 @@ jobs:
           $cfg = @{mode='current-valoria-production';production_artifact_id=$req.production_artifact_id;parcel_source_artifact_id=$req.parcel_source_artifact_id} | ConvertTo-Json
           Set-Content -Path 'pipeline/unity-publish-request.json' -Value $cfg -Encoding UTF8
           Write-Host 'Candidate mode active in ephemeral Windows workspace only; main request and public stable untouched.'
+      - name: Stage owner-authorized LOCAL policy candidate with existing certified art
+        if: inputs.local_unity_candidate
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $req=Get-Content 'pipeline/agent-local-preflight-request.json' -Raw|ConvertFrom-Json
+          if($req.mode -ne 'unity-local-save-notice-v1' -or $req.enabled -ne $true -or $req.phase -ne 'build' -or $req.stable_publish -ne $false -or $req.budget_eur -ne 0){throw 'Local production order invalid'}
+          $hash=(Get-FileHash 'Unity/Assets/Eldoria/Scripts/Presentation/SaveLoadNoticePolicy.cs' -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -ne $req.accepted_code_sha256){throw 'Integrated model source changed after independent QA'}
+          git fetch --no-tags --deepen=40 origin main
+          if($LASTEXITCODE -ne 0){throw 'Protected source history unavailable'}
+          git diff --exit-code $req.protected_base_sha HEAD -- Unity/Assets/Eldoria/Scripts/Domain/GameState.cs Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs
+          if($LASTEXITCODE -ne 0){throw 'Protected productive source changed; local scope must not alter it'}
+          @{mode='current-valoria-production';production_artifact_id=11576784810;parcel_source_artifact_id=11576579158}|ConvertTo-Json|Set-Content 'pipeline/unity-publish-request.json' -Encoding UTF8
+          Write-Host 'LOCAL_UNITY_CANDIDATE isolated project, protected owners unchanged, no stable deploy'
       - name: Stage current certified Valoria production scene when requested
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          $cfg = Get-Content "$env:ELDORIA_BUILD_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
           if ($cfg.mode -ne "current-valoria-production") {
             Write-Host "Legacy Unity publication mode."
             exit 0
@@ -205,21 +254,21 @@ jobs:
           $zip = Join-Path $env:RUNNER_TEMP "valoria-current-production.zip"
           $extract = Join-Path $env:RUNNER_TEMP "valoria-current-production"
           $splatsZip = Join-Path $env:RUNNER_TEMP "valoria-webgl-splats.zip"
-          $splats = Join-Path $env:GITHUB_WORKSPACE "webgl-external-splats"
+          $splats = Join-Path $env:ELDORIA_BUILD_WORKSPACE "webgl-external-splats"
           Remove-Item $extract -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item $splats -Recurse -Force -ErrorAction SilentlyContinue
           $headers = @{ Authorization="Bearer $env:GH_TOKEN"; Accept="application/vnd.github+json"; "X-GitHub-Api-Version"="2022-11-28" }
           Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.production_artifact_id)/zip" -OutFile $zip
           Expand-Archive -Path $zip -DestinationPath $extract -Force
           $src = Join-Path $extract "Assets\Eldoria\ProductionSlice"
-          $dst = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\ProductionSlice"
+          $dst = Join-Path $env:ELDORIA_BUILD_WORKSPACE "Unity\Assets\Eldoria\ProductionSlice"
           if (-not (Test-Path (Join-Path $src "Runtime\Valoria.unity"))) { throw "Certified production Valoria scene missing from artifact." }
           Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path (Split-Path $dst) -Force | Out-Null
           Copy-Item $src $dst -Recurse -Force
 
           $captures = Join-Path $extract "ValoriaFirstPlayableCitySliceV1Captures"
-          $backgrounds = Join-Path $env:GITHUB_WORKSPACE "webgl-certified-backgrounds"
+          $backgrounds = Join-Path $env:ELDORIA_BUILD_WORKSPACE "webgl-certified-backgrounds"
           Remove-Item $backgrounds -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path $backgrounds -Force | Out-Null
           $backgroundMap = @{
@@ -255,13 +304,13 @@ jobs:
       - name: Stage minimal Eldoria Resources for owner WebGL transport
         shell: powershell
         run: |
-          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          $cfg = Get-Content "$env:ELDORIA_BUILD_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
           if ($cfg.mode -ne "current-valoria-production") {
             Write-Host "Legacy Unity publication mode; Resources staging unchanged."
             exit 0
           }
 
-          $resources = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\Resources"
+          $resources = Join-Path $env:ELDORIA_BUILD_WORKSPACE "Unity\Assets\Eldoria\Resources"
           $stash = Join-Path $env:RUNNER_TEMP "eldoria-full-resources"
           Remove-Item $stash -Recurse -Force -ErrorAction SilentlyContinue
           if (-not (Test-Path $resources)) { throw "Eldoria Resources folder missing before WebGL staging." }
@@ -299,12 +348,12 @@ jobs:
       - name: Build Unity WebGL current requested slice
         shell: powershell
         run: |
-          Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
-          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          Remove-Item "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
+          $cfg = Get-Content "$env:ELDORIA_BUILD_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
           $method = if ($cfg.mode -eq "current-valoria-production") { "Eldoria.EditorTools.ValoriaCurrentWebGLBuildV1.Build" } else { "Eldoria.EditorTools.SceneSetup.BuildWebGL" }
           Write-Host "Unity WebGL build method: $method"
           $log = "$env:RUNNER_TEMP/Eldoria-WebGL.log"
-          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod",$method,"-logFile",$log)
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:ELDORIA_BUILD_WORKSPACE/Unity","-executeMethod",$method,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if (-not $process.WaitForExit(1200000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -315,21 +364,21 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Tail 300 }
             throw "Unity WebGL build failed with exit code $($process.ExitCode)."
           }
-          if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
+          if (-not (Test-Path "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
           if ($cfg.mode -eq "current-valoria-production") {
             foreach ($i in 0..3) {
-              Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/state-$i.ply" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/splat-state-$i.ply" -Force
+              Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-external-splats/state-$i.ply" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/splat-state-$i.ply" -Force
             }
-            Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
+            Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
             foreach ($i in 0..3) {
-              Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/valoria-state-$i.png" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/valoria-state-$i.png" -Force
+              Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-certified-backgrounds/valoria-state-$i.png" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/valoria-state-$i.png" -Force
             }
-            Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/valoria-bastion-ii.png" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/valoria-bastion-ii.png" -Force
+            Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-certified-backgrounds/valoria-bastion-ii.png" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/valoria-bastion-ii.png" -Force
             foreach ($state in @(0,3)) {
               foreach ($pan in @("-0.5","0","0.5")) {
                 foreach ($zoom in @("0.9","1","1.1")) {
                   $name = "valoria-state$state-pan$pan-zoom$zoom.png"
-                  Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/$name" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/$name" -Force
+                  Copy-Item "$env:ELDORIA_BUILD_WORKSPACE/webgl-certified-backgrounds/$name" "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL/$name" -Force
                 }
               }
             }
@@ -337,7 +386,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-unity-webgl-${{ github.sha }}
-          path: Unity/Builds/WebGL/
+          path: ${{ env.ELDORIA_BUILD_WORKSPACE }}/Unity/Builds/WebGL/
           retention-days: 7
 
   deploy:
@@ -457,7 +506,7 @@ jobs:
 
   r2b-candidate-artifact-qa:
     needs: [source-preflight, unity-webgl]
-    if: needs.source-preflight.outputs.candidate_only == 'true'
+    if: needs.source-preflight.outputs.candidate_only == 'true' && !inputs.local_unity_candidate
     runs-on: ubuntu-latest
     permissions:
       contents: read

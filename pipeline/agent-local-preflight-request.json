@@ -1,44 +1,32 @@
 {
   "schema_version": 1,
-  "mode": "local-recovery-v1",
-  "enabled": false,
+  "mode": "unity-local-save-notice-v1",
+  "enabled": true,
   "workstream_id": "eldoria-local-agent-preflight-v1",
   "owner": "chat-work-local-recovery-20261009",
-  "order_id": "executive-local-recovery-20261009-v2",
-  "authorization": "Owner explicit executive recovery and new small isolated support tasks, 2026-10-09 14:42 Europe/Madrid",
-  "department": "D03",
+  "order_id": "unity-local-save-notice-20261009-v1",
+  "authorization": "Owner explicit continuation into real Unity programming 2026-10-09 15:19 Europe/Madrid; DG/M16 coordination comments 6081801910 / 6081802143",
+  "department": "D06",
   "model": "qwen2.5-coder:3b",
   "budget_eur": 0,
   "max_attempts": 2,
-  "expires_at": "2026-10-09T15:30:00Z",
-  "requested_at": "2026-10-09T13:05:40.780Z",
+  "expires_at": "2026-10-09T17:30:00Z",
+  "requested_at": "2026-10-09T13:35:25.247Z",
+  "phase": "code",
+  "stable_publish": false,
   "install": false,
-  "launch_agents": true,
-  "modify_game": false,
-  "tasks": [
-    {
-      "kind": "runner-resource-aliases"
-    },
-    {
-      "kind": "runner-conflict-cases"
-    }
-  ],
+  "protected_base_sha": "c8ac15b26990742384cce142082346631be92d77",
   "dg_authorized_loan": {
     "authorization": "owner-executive-recovery-20261009",
-    "owner": "chat-work-local-recovery-20261009",
-    "resource": "windows-runner-heavy",
     "source_reservation": "r2-b-strategic-choice",
-    "windows_timeout_minutes": 6,
-    "read_only": false,
-    "no_install": true,
     "no_game_changes": true,
-    "return": "R2-B reservation unchanged; worker process/listener/lock released before independent hosted QA and next bounded task"
+    "no_game_changes_reason": "Inference worker writes only isolated output; game source integration is a separate independent-QA-gated coordinator step",
+    "no_install": true,
+    "windows_timeout_minutes": 6
   },
-  "previous_rejected_order": "executive-local-recovery-20261009-v1",
-  "corrected_cause": "Qwen 3B failed seven-case joint semantic reasoning despite feedback. Specialize existing worker to seven isolated model decisions on exact authorized case inputs; labels still come only from real inference. Seven calls per attempt, two attempts max; no change to independent oracle or accepted first task.",
-  "repair_revision": 3,
-  "max_local_inferences_per_attempt": 7,
-  "completed_at": "2026-10-09T13:10:47.045Z",
-  "outcome": "Two real operational deliveries independently accepted; finite queue complete, no further inference authorized.",
-  "evidence": "docs/evidence/eldoria-local-agent-preflight-v1/REAL_RECOVERY_RESULT_20261009.md"
+  "tasks": [
+    {
+      "kind": "unity-save-notice-policy"
+    }
+  ]
 }
