@@ -135,10 +135,35 @@ namespace Eldoria.Presentation
             bool mouseHeld=mouse!=null&&mouse.leftButton.isPressed;
             bool mouseReleased=mouse!=null&&mouse.leftButton.wasReleasedThisFrame;
 
+            // Unity WebGL may expose browser touch events to the legacy Input API
+            // even when InputSystem.Touchscreen does not publish primaryTouch frames.
+            // Prefer the Input System when it works, but do not discard real
+            // mobile swipes if only the legacy backend receives them.
+            bool legacyTouchUsed=false;
+            Vector2 legacyTouchPoint=Vector2.zero;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(!touchPressed&&!touchHeld&&!touchReleased&&UnityEngine.Input.touchCount>0)
+            {
+                if(UnityEngine.Input.touchCount>1)
+                {
+                    pointerActive=false;
+                    pointerDragged=true;
+                    return; // Never mistake a two-finger gesture for a building tap.
+                }
+                var legacy=UnityEngine.Input.GetTouch(0);
+                legacyTouchUsed=true;
+                legacyTouchPoint=legacy.position;
+                touchPressed=legacy.phase==TouchPhase.Began;
+                touchReleased=legacy.phase==TouchPhase.Ended||legacy.phase==TouchPhase.Canceled;
+                touchHeld=legacy.phase==TouchPhase.Began||legacy.phase==TouchPhase.Moved||legacy.phase==TouchPhase.Stationary;
+                if(touchPressed||touchReleased)
+                    Debug.Log("ELDORIA_PLAYABLE_TOUCH_SOURCE legacy=True phase="+legacy.phase);
+            }
+#endif
             bool usingTouch=touchHeld||touchPressed||touchReleased;
-            Vector2 point=usingTouch&&touch!=null
-                ?touch.primaryTouch.position.ReadValue()
-                :(mouse!=null?mouse.position.ReadValue():Vector2.zero);
+            Vector2 point=legacyTouchUsed?legacyTouchPoint:
+                (usingTouch&&touch!=null?touch.primaryTouch.position.ReadValue():
+                (mouse!=null?mouse.position.ReadValue():Vector2.zero));
             bool pressed=usingTouch?touchPressed:mousePressed;
             bool held=usingTouch?touchHeld:mouseHeld;
             bool released=usingTouch?touchReleased:mouseReleased;
