@@ -3,6 +3,7 @@
 // R2-B candidate is immutable: a failure is an input to owning D09/D10/D13, NOT an approval.
 const fs=require('node:fs');
 const {chromium}=require('playwright');
+const {renderedGameFrame}=require('../tools/eldoria-rendered-frame-readiness.cjs');
 const output=process.env.ELDORIA_EVIDENCE_DIR||'eldoria-gameplay-camera-experience';
 const site=process.env.ELDORIA_URL||'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/';
 fs.mkdirSync(output,{recursive:true});
@@ -18,6 +19,13 @@ async function run(browser,label,viewport,axis,cssOverride=false){
   const readyUntil=Date.now()+120000;
   while(Date.now()<readyUntil&&!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x))){await page.waitForTimeout(300);}
   if(!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x)))throw Error('BLOCKED_UNITY_PLAYABLE_STATE_NOT_OBSERVED');
+  const frameDeadline=Date.now()+30000;
+  do {
+   item.rendered_frame=renderedGameFrame(await page.screenshot());
+   if(item.rendered_frame.ready)break;
+   await page.waitForTimeout(300);
+  }while(Date.now()<frameDeadline);
+  if(!item.rendered_frame.ready)throw Error('BLOCKED_GAME_FRAME_NOT_RENDERED');
   if(cssOverride)await page.addStyleTag({content:'html,body,#unity-container,#unity-canvas,canvas{touch-action:none!important;overscroll-behavior:none!important}'});
   const canvas=page.locator('canvas').first(),rect=await canvas.boundingBox();if(!rect)throw Error('NO_UNITY_CANVAS');
   item.web_input_css=await canvas.evaluate(el=>({canvasTouchAction:getComputedStyle(el).touchAction,canvasPointerEvents:getComputedStyle(el).pointerEvents,canvasStyle:el.getAttribute('style'),parents:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(x=>({tag:x.tagName,touchAction:getComputedStyle(x).touchAction,overflow:getComputedStyle(x).overflow})),bodyTouchAction:getComputedStyle(document.body).touchAction,bodyOverflow:getComputedStyle(document.body).overflow,postbuildMarkerPresent:!!document.getElementById('eldoria-webgl-touch-action-v1')}));
@@ -63,3 +71,4 @@ async function run(browser,label,viewport,axis,cssOverride=false){
  }catch(err){item.finding='BLOCKED_PROBE';item.error=String(err);await page.screenshot({path:output+'/'+label+'-error.png'}).catch(()=>{});}finally{results.scenarios.push(item);await context.close();}
 }
 (async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{await run(browser,'landscape-horizontal',{width:844,height:390},'horizontal');await run(browser,'portrait-vertical',{width:390,height:844},'vertical');await run(browser,'landscape-css-override-touch',{width:844,height:390},'horizontal',true);}finally{await browser.close();}results.all_gestures_observed=results.scenarios.filter(x=>!x.css_override_experiment).every(x=>x.pass);results.css_experiment_restored=results.scenarios.find(x=>x.css_override_experiment)?.pass===true;fs.writeFileSync(output+'/report.json',JSON.stringify(results,null,2));console.log('ELDORIA_REAL_TOUCH_EXPERIENCE',JSON.stringify(results));if(!results.all_gestures_observed)process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1;});
+

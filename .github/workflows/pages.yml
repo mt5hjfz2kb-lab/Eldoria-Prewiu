@@ -30,6 +30,8 @@ on:
       - 'tester-v0265/**'
       - 'pipeline/unity-publish-request.json'
       - 'pipeline/r2b-candidate-build.json'
+      - 'tools/eldoria-rendered-frame-readiness.cjs'
+      - 'tests/eldoria-rendered-frame-readiness.test.cjs'
 
 permissions:
   contents: read
@@ -55,6 +57,9 @@ jobs:
       deploy_only: ${{ steps.impact.outputs.deploy_only }}
       deploy_run_id: ${{ steps.impact.outputs.deploy_run_id }}
       deploy_head_sha: ${{ steps.impact.outputs.deploy_head_sha }}
+      qa_only: ${{ steps.impact.outputs.qa_only }}
+      qa_candidate_sha: ${{ steps.resolve.outputs.sha }}
+      qa_candidate_run: ${{ steps.resolve.outputs.run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,6 +86,15 @@ jobs:
           fi
           files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
           echo "$files"
+          # A verifier-only change must test the existing immutable Unity binary.
+          # It must neither wake Windows nor attempt a legacy/stable deployment.
+          if grep -Eq '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs)$' <<< "$files" &&
+             ! grep -Ev '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|.github/workflows/pages.yml)$' <<< "$files"; then
+            echo "qa_only=true" >> "$GITHUB_OUTPUT"
+            echo "candidate_only=true" >> "$GITHUB_OUTPUT"
+            echo "heavy_required=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if grep -qx 'pipeline/r2b-candidate-build.json' <<< "$files"; then
             jq -e '.enabled == true and .mode == "r2b-isolated-candidate" and .paid_credits == 0 and .stable_publish == false' pipeline/r2b-candidate-build.json
             if jq -e '.delivery_phase == "publish_verified_artifact" and .source_sha == "d9c12eec8461587181fe9234e65b3da5d0ac2510" and .candidate_run_id == 37941767116 and .candidate_head_sha == "c1688375846c47d7ab22b64f1fc1d0cdd8ede6d7"' pipeline/r2b-candidate-build.json; then
@@ -128,6 +142,22 @@ jobs:
             esac
           done <<< "$files"
           echo "heavy_required=$heavy" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve existing exact candidate for verifier-only feedback
+        id: resolve
+        if: steps.impact.outputs.qa_only == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const runs=await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id:'pages.yml',branch:'main',per_page:30,status:'completed'});
+            for(const run of runs.data.workflow_runs){
+              const jobs=await github.paginate(github.rest.actions.listJobsForWorkflowRun,{owner,repo,run_id:run.id,per_page:100});
+              if(jobs.some(j=>j.name==='r2b-candidate-pages-preview'&&j.conclusion==='success')&&jobs.some(j=>j.name==='r2b-candidate-artifact-qa'&&j.conclusion==='success')){
+                core.setOutput('sha',run.head_sha);core.setOutput('run',run.id);return;
+              }
+            }
+            core.setFailed('No real previously published candidate/package found; do not rebuild or guess a URL.');
 
   unity-webgl:
     needs: source-preflight
@@ -412,7 +442,7 @@ jobs:
       group: eldoria-pages-site-publication
       cancel-in-progress: false
     needs: [source-preflight, unity-webgl]
-    if: inputs.candidate_run_id == 0 && needs.source-preflight.outputs.candidate_only != 'true'
+    if: inputs.candidate_run_id == 0 && needs.source-preflight.outputs.candidate_only != 'true' && needs.source-preflight.outputs.qa_only != 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -453,7 +483,7 @@ jobs:
       - name: Install Playwright QA browser
         if: steps.web-impact.outputs.required == 'true'
         run: |
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
           npx playwright install --with-deps chromium
       - name: Full local-equivalent certification gate
         if: steps.web-impact.outputs.required == 'true'
@@ -704,7 +734,7 @@ jobs:
           node-version: '22'
       - name: Install independent Unity WebGL browser QA
         run: |
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
           npx playwright install --with-deps chromium
       - name: Verify real gameplay choices, rewards and save reload on CORRECTED Unity build
         id: choice
@@ -737,3 +767,79 @@ jobs:
           jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' r2b-corrected-choice-qa/report.json
           jq -e '.all_gestures_observed == true and (.scenarios | length >= 2) and .scenarios[0].pass == true and .scenarios[1].pass == true' r2b-corrected-camera-qa/report.json
           echo 'TECH_AND_REAL_TOUCH_QA_PASS; visual artistic/experience subjective review remains independent and required'
+
+  focused-candidate-retest:
+    needs: source-preflight
+    if: needs.source-preflight.outputs.qa_only == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      issues: write
+    env:
+      ELDORIA_SOURCE_SHA: ${{ needs.source-preflight.outputs.qa_candidate_sha }}
+      ELDORIA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-swipe-${{ needs.source-preflight.outputs.qa_candidate_sha }}/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify existing candidate still represents current player source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$ELDORIA_SOURCE_SHA"
+          # Only the already-approved incremental-build implementation may differ.
+          # Any runtime, asset, scene or project-setting drift blocks binary reuse.
+          git diff --exit-code "$ELDORIA_SOURCE_SHA" HEAD -- Unity ':!Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs'
+          git show "$ELDORIA_SOURCE_SHA:pipeline/r2b-candidate-build.json" > /tmp/built-request.json
+          node -e "const fs=require('fs'),a=JSON.parse(fs.readFileSync('/tmp/built-request.json')),b=require('./pipeline/r2b-candidate-build.json');for(const k of ['source_sha','production_artifact_id','parcel_source_artifact_id'])if(a[k]!==b[k])throw Error('Candidate provenance drift: '+k);if(b.stable_publish!==false||b.paid_credits!==0)throw Error('Invalid candidate authorization')"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install focused independent browser QA
+        run: |
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
+          npx playwright install --with-deps chromium
+      - name: Test rendered-frame readiness contract
+        run: node --test tests/eldoria-rendered-frame-readiness.test.cjs
+      - name: Test existing binary with real touch and rendered-frame evidence
+        id: camera
+        continue-on-error: true
+        env:
+          ELDORIA_EVIDENCE_DIR: focused-camera-qa
+        run: node qa/eldoria-gameplay-camera-experience-probe.cjs
+      - name: Verify adjacent strategic choice and reload regression
+        id: choice
+        continue-on-error: true
+        env:
+          ELDORIA_EVIDENCE_DIR: focused-choice-qa
+        run: node qa/r2b-webgl-choice-probe.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-focused-existing-candidate-qa
+          path: |
+            focused-camera-qa/
+            focused-choice-qa/
+          if-no-files-found: error
+      - name: Preserve independent acceptance gates
+        if: always()
+        run: |
+          jq -e '.all_gestures_observed == true' focused-camera-qa/report.json
+          jq -e '.pass == true and (.cases | length == 2) and ([.cases[].pass] | all)' focused-choice-qa/report.json
+      - name: Record focused feedback without game completion claim
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          CAMERA: ${{ steps.camera.outcome }}
+          CHOICE: ${{ steps.choice.outcome }}
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const body=['### Recuperación del flujo — QA focal sobre binario existente',
+              'Run: https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId,
+              'Build SHA: '+process.env.ELDORIA_SOURCE_SHA,'URL: '+process.env.ELDORIA_URL,
+              'Touch: '+process.env.CAMERA+'; elección/persistencia: '+process.env.CHOICE,
+              'Windows builds: 0. Stable deployments: 0. No se declara cierre artístico/UX ni trabajo autónomo de 15 departamentos.'].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:23,body});
+
