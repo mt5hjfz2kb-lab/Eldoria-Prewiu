@@ -310,7 +310,8 @@
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
         "tests/eldoria-gameplay-touch-release.test.cjs",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        ".github/workflows/eldoria-m16-independent-provenance-tests.yml"
       ],
       "resources": [],
       "claimed_at": "2026-10-09T11:55:00+02:00",
@@ -320,7 +321,7 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Touch interpretation bug repair; no art or asset replacement.",
       "paid_credits": 0,
-      "next": "Fix final pointer-release gesture classification, add test, run independent CI; wait for authorized Unity gameplay QA before acceptance."
+      "next": "Run independent CI source gesture regression; Unity new-build experience QA remains unverified until runner ownership allows Unity build and capture"
     }
   ],
   "history": [
