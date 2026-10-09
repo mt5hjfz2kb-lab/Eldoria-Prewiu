@@ -426,12 +426,12 @@
       "resources": [],
       "claimed_at": "2026-10-09T13:24:55.172Z",
       "base_main_sha": "c8ac15b26990742384cce142082346631be92d77",
-      "status": "blocked",
+      "status": "active",
       "art_production_routing": "not_applicable",
       "paid_credits": 0,
-      "phase": "ACTUAL UNITY CANDIDATE BUILD/PLAYABILITY FAIL / NO ACCEPTANCE",
+      "phase": "INDEPENDENT D13 UI REPAIR APPROVED / REAL BINARY FIXTURE ADAPTER CORRECTED / REBUILD REQUIRED",
       "dependency": "R2-B/SlicePresenter/GameState/LocalGateway, M07 and Region1 sources protected. Only unowned SliceBoot load-exception feedback plus new pure policy allowed.",
-      "next": "Linux independent fresh real browser QA on immutable built candidate; model C# retained; no stable acceptance or Windows use.",
+      "next": "Existing M16 bot applies exact independently reviewed SliceBoot glue, retains Qwen C#, dispatches isolated Unity build, then independent fresh playable/visual QA. No stable deployment.",
       "art_production_routing_reason": "Functional save-load error feedback only; no new production art, geometry or scene beauty.",
       "accountable_director": "D01-Direccion-General",
       "directorate_mandate": "OWNER_2026-10-09_DG_ASSUMES_END_TO_END_ACCOUNTABILITY",
@@ -449,7 +449,7 @@
         "authorization": "Owner 2026-10-09 continuation: coordinated safe nonconflicting local programming and candidate build",
         "expires_at": "2026-10-09T17:30:00Z",
         "policy": "Existing reservation retained; defer productive jobs; single runner queue; no cancel; exact temporary inference then existing isolated Unity builder; return after each job",
-        "status": "returned"
+        "status": "authorized_temporary"
       },
       "historical_runtime_proof": {
         "run_id": 37820089071,
@@ -511,7 +511,7 @@
         },
         "owner_instruction": "Owner continuation into real Unity 2026-10-09 15:19 Europe/Madrid"
       },
-      "blocker": "Inspect actual failed build/playability evidence; preserve original owners and independent gates. No unchanged deterministic rerun."
+      "blocker": null
     }
   ],
   "history": [

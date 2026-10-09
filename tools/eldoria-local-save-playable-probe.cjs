@@ -18,8 +18,26 @@ async function storage(page,mutate){
    if(v instanceof ArrayBuffer||ArrayBuffer.isView(v)){
     const bytes=v instanceof ArrayBuffer?new Uint8Array(v):new Uint8Array(v.buffer,v.byteOffset,v.byteLength);
     if(bytes.byteLength>65536)return null;
-    const text=new TextDecoder().decode(bytes);
-    if(text.trim().startsWith('{')&&text.includes('"SchemaVersion"')){const b=new TextEncoder().encode(corrupt);return v instanceof ArrayBuffer?b.buffer:b;}
+    // Observed actual Unity6000 FILE_DATA/PlayerPrefs record contains a binary envelope.
+    // Change only the saved JSON schema digit 1→9, preserving envelope length and all other bytes.
+    const patches=new Set();
+    for(const literal of ['"SchemaVersion"','&quot;SchemaVersion&quot;','\\"SchemaVersion\\"']){
+      for(const stride of [1,2]){
+        const ascii=new TextEncoder().encode(literal),pattern=stride===1?ascii:Uint8Array.from(Array.from(ascii).flatMap(x=>[x,0]));
+        for(let i=0;i<=bytes.length-pattern.length;i++){
+          if(!pattern.every((x,k)=>bytes[i+k]===x))continue;
+          let at=i+pattern.length;
+          while([9,10,13,32].includes(bytes[at]))at+=stride;
+          if(bytes[at]!==58)continue;at+=stride;
+          while([9,10,13,32].includes(bytes[at]))at+=stride;
+          if(bytes[at]===49||bytes[at]===57)patches.add(at);
+        }
+      }
+    }
+    if(patches.size!==1)return null;
+    const copy=new Uint8Array(bytes);for(const at of patches)copy[at]=57;
+    if(v instanceof ArrayBuffer)return copy.buffer;
+    if(v instanceof Uint8Array)return copy;
     return null;
    }
    if(v&&typeof v==='object'){
@@ -39,10 +57,10 @@ async function storage(page,mutate){
    for(const store of Array.from(db.objectStoreNames)){
     const entries=await new Promise((resolve,reject)=>{const data=[];const tx=db.transaction(store,'readonly'),c=tx.objectStore(store).openCursor();c.onsuccess=()=>{const x=c.result;if(x){data.push({key:x.key,value:x.value});x.continue();}else resolve(data);};c.onerror=()=>reject(c.error);});
     for(const e of entries){
-     const next=change(e.value);inventory.push({db:info.name,store,key:e.key,type:typeof e.value,preview:typeof e.value==='string'?e.value.slice(0,180):JSON.stringify({keys:Object.keys(e.value||{}).slice(0,8),bytes:e.value?.byteLength,contentsBytes:e.value?.contents?.byteLength})});
+     const next=typeof e.key==='string'&&e.key.endsWith('/PlayerPrefs')?change(e.value):null;inventory.push({db:info.name,store,key:e.key,type:typeof e.value,preview:typeof e.value==='string'?e.value.slice(0,180):JSON.stringify({keys:Object.keys(e.value||{}).slice(0,8),bytes:e.value?.byteLength,contentsBytes:e.value?.contents?.byteLength})});
      if(next!==null){
       if(mutate)await new Promise((resolve,reject)=>{const tx=db.transaction(store,'readwrite');const os=tx.objectStore(store);const req=os.keyPath?os.put(next):os.put(next,e.key);req.onerror=()=>reject(req.error);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});
-      found.push({db:info.name,store,key:e.key,value:mutate?next:e.value});
+      found.push({db:info.name,store,key:e.key,value:Array.from((mutate?next:e.value).contents||[])});
      }
     }
    }

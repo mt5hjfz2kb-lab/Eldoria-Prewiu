@@ -213,9 +213,9 @@ jobs:
         run: |
           $req = Get-Content 'pipeline/r2b-candidate-build.json' -Raw | ConvertFrom-Json
           if ($req.enabled -ne $true -or $req.stable_publish -ne $false -or $req.mode -ne 'r2b-isolated-candidate' -or $req.paid_credits -ne 0) { throw 'Candidate authorization invalid' }
-          if ($req.source_sha -notin @('6e0e12396a98b04333b595fff704afa3e849c30a','5922520120c1bd682cdfa80a90f748939922ce29','689cfb84ce81cdb39f3669a247c63faad57d39b6','d9c12eec8461587181fe9234e65b3da5d0ac2510')) { throw 'Candidate source SHA unauthorized' }
+          if ($req.source_sha -notin @('6e0e12396a98b04333b595fff704afa3e849c30a','5922520120c1bd682cdfa80a90f748939922ce29')) { throw 'Candidate source SHA unauthorized' }
           if ($req.production_artifact_id -ne 11576784810 -or $req.parcel_source_artifact_id -ne 11576579158) { throw 'Candidate Unity evidence IDs mismatch' }
-          git fetch --no-tags --depth=1 origin $req.source_sha
+          git fetch --no-tags --deepen=50 origin main
           if ($LASTEXITCODE -ne 0) { throw 'Cannot recover pinned source commit for content verification' }
           git cat-file -e "$($req.source_sha)^{commit}"
           if ($LASTEXITCODE -ne 0) { throw 'Authorized source SHA unavailable after fetch' }
@@ -239,6 +239,20 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Protected productive source changed; local scope must not alter it'}
           @{mode='current-valoria-production';production_artifact_id=11576784810;parcel_source_artifact_id=11576579158}|ConvertTo-Json|Set-Content 'pipeline/unity-publish-request.json' -Encoding UTF8
           Write-Host 'LOCAL_UNITY_CANDIDATE isolated project, protected owners unchanged, no stable deploy'
+      - name: Reuse existing compiled import cache by isolated copy only
+        if: inputs.local_unity_candidate
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(Get-Process Unity,Blender,ollama -ErrorAction SilentlyContinue){throw 'Productive process detected; do not copy live cache'}
+          $source=Join-Path $env:GITHUB_WORKSPACE 'Unity\Library'
+          $destination=Join-Path $env:ELDORIA_BUILD_WORKSPACE 'Unity\Library'
+          if(Test-Path $source){
+            robocopy $source $destination /E /COPY:DAT /DCOPY:DAT /R:1 /W:1 /NFL /NDL /NJH /NJS /NP
+            if($LASTEXITCODE -gt 7){throw 'Isolated existing cache copy failed'}
+            $global:LASTEXITCODE=0
+            Write-Host 'Existing cache copied into isolated project only; Unity still compiles actual revised source'
+          }
       - name: Stage current certified Valoria production scene when requested
         shell: powershell
         env:
