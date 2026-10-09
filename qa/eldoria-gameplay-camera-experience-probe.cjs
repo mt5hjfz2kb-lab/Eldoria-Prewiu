@@ -25,7 +25,9 @@ async function run(browser,label,viewport,axis){
   const cdp=await context.newCDPSession(page);
   const dispatch=async (type,x,y)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y}]});
   await dispatch('touchStart',start.x,start.y);
-  for(let i=1;i<=12;i++){const f=i/12;await dispatch('touchMove',start.x+(finish.x-start.x)*f,start.y+(finish.y-start.y)*f);await page.waitForTimeout(25);}
+  // Let Unity InputSystem sample the initial pressed frame before streaming moves.
+  await page.waitForTimeout(300);
+  for(let i=1;i<=12;i++){const f=i/12;await dispatch('touchMove',start.x+(finish.x-start.x)*f,start.y+(finish.y-start.y)*f);await page.waitForTimeout(80);}
   await dispatch('touchEnd',finish.x,finish.y);
   await page.waitForTimeout(700);
   await page.screenshot({path:output+'/'+label+'-after.png'});
