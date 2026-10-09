@@ -390,6 +390,29 @@
         "resumption": "After R2B Unity build and independent QA, restore world Region1 resource claim",
         "previous_phase": "BASELINE DIRECT VISUAL FAIL / CANONICAL PLANNER NEXT"
       }
+    },
+    {
+      "id": "eldoria-existing-department-orchestration-proof-v1",
+      "title": "Verify existing 15-department orchestration contract without replacing architecture",
+      "owner": "chat-dg-operational-recovery-20261009",
+      "scope": [
+        "tools/eldoria-authorized-orchestration.mjs",
+        "tests/orchestration/authorized-state.test.mjs",
+        ".github/workflows/eldoria-authorized-orchestration-proof.yml",
+        "docs/evidence/eldoria-existing-department-orchestration-proof-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-09T13:52:00+02:00",
+      "base_main_sha": "fe0776f2c19c9d76517ceb1992f7857e2d18a3ab",
+      "status": "active",
+      "phase": "EXISTING_WORKFLOW_SAFE_ORCHESTRATION_TEST",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Support-only regression proof of existing M16 workflow; no Unity, Windows runner or game edits",
+      "paid_credits": 0,
+      "next": "Exercise actual existing orchestration workflow with all 15 department contracts; no claims of live execution without per-department evidence.",
+      "delivery_kind": "support_only",
+      "accountable_director": "D01-Direccion-General"
     }
   ],
   "history": [
