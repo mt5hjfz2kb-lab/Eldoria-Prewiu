@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "bastion-i-ii-web-parity-playthrough-v1",
+  "request_id": "bastion-i-ii-web-parity-playthrough-v1",
+  "asset_or_sector": "Bastion I-II player HUD feedback and legibility in published WebGL",
+  "profile": "environment_composition",
+  "visual_gate_state": "correction",
+  "diagnosis": "Published exact-build captures show the disabled chapter-complete primary button with near-black text on a dark background. Recruitment countdown is also hidden by an incorrectly attached else-if in RefreshClock. Preserve canonical SHARP and gameplay while correcting UI states.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {"approved": false, "authorized_credit_cost": 0},
+  "capabilities": {"unity_material_blending": false, "existing_qualified_donor_assets": true, "blender_material_consolidation": false},
+  "validation": {
+    "source_gate": "Compare v0220 Bastion I-II contract with OWNER_I_II Unity runtime and inspect the exact published flow captures. Keep real state, persistence and SHARP authority.",
+    "final_gate": "Readable primary action in disabled/completed states and visible recruitment countdown; complete I-II exact-candidate and published landscape/portrait flow with zero runtime errors, unchanged state/persistence. Inspect matched captures."
+  },
+  "escalation": {"on_next_visual_fail": "Classify the failed UI state and rerun the same composition planner before another iteration; no new geometry or paid generation."},
+  "notes": "Zero-spend bounded gameplay feedback correction; no Bastion III or broad art redesign.",
+  "status": "ACTIVE"
+}
