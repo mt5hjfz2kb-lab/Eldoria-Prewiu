@@ -69,6 +69,8 @@ jobs:
     uses: ./.github/workflows/unity-webgl-startup.yml
     permissions:
       contents: read
+      # Existing reusable QA reports independently to DG; keep this permission local to the caller.
+      issues: write
   mobile-qa-independent-report:
     if: always() && needs.authorize-mobile-qa.outputs.authorized == 'true'
     needs: [authorize-mobile-qa, mobile-published-qa]
