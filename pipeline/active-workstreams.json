@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T19:50:00Z",
+  "updated_at": "2026-10-09T06:28:33.930Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -269,6 +269,32 @@
         "stable_unchanged": true,
         "visual_experience_full_signoff": false
       }
+    },
+    {
+      "id": "eldoria-world-region-1-visual-convergence-v2",
+      "title": "World Region 1 Visual Convergence Correction v2",
+      "owner": "automation-world-region-1-visual-v2-20261009",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRouteKit.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldResourceKit.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1SurfaceV2.cs",
+        "pipeline/art-production-requests/eldoria-world-region-1-visual-convergence-v2.json",
+        "docs/evidence/eldoria-world-region-1-visual-convergence-v2/**"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-10-09T06:28:33.930Z",
+      "base_main_sha": "872a6ec00cd3912f9ce92da338283eeb79eb26f7",
+      "status": "active",
+      "phase": "BASELINE DIRECT VISUAL FAIL / CANONICAL PLANNER NEXT",
+      "dependency": "Playable link CLOSED PASS: Pages 37642420392; published probe 37646186097. Region1 v1 source/editor 37549083306. M07 separate source and released runner; R2-A read-only planning, R2-B owns other code.",
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-visual-convergence-v2.json",
+      "paid_credits": 0,
+      "geometry_gap_proven": false,
+      "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
     }
   ],
   "history": [
