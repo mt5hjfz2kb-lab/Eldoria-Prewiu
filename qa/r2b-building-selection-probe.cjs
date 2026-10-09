@@ -1,5 +1,6 @@
 'use strict';
-// Independent real WebGL interaction diagnosis. A source-only check cannot certify selection.
+// Independent real WebGL selection gate. A source-only check cannot certify selection.
+// Keep the Android user agent and viewport bounds: desktop canvas touch injection can falsely pass offscreen.
 const fs=require('node:fs');
 const {chromium}=require('playwright');
 const {renderedGameFrame}=require('../tools/eldoria-rendered-frame-readiness.cjs');
