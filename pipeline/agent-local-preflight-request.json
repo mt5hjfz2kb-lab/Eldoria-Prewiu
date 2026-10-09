@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "requested_at": "2026-10-08T14:18:00Z",
-  "purpose": "Read-only Windows runner Ollama resource check",
+  "requested_at": "2026-10-09T12:26:00Z",
+  "purpose": "Second one-shot read-only Ollama discovery using the previously extended existing workflow; owner issue23 comment 6080837818",
   "install": false,
   "launch_agents": false,
   "modify_game": false,
   "dg_authorized_loan": {
-    "authorization": "owner-2026-10-09",
+    "authorization": "owner-2026-10-09-second-window",
     "owner": "chat-local-agent-integration-20261009",
     "resource": "windows-runner-heavy",
     "source_reservation": "r2-b-strategic-choice",
@@ -15,7 +15,9 @@
     "read_only": true,
     "no_install": true,
     "no_game_changes": true,
-    "return": "R2-B reservation preserved; GitHub releases runner on job completion",
-    "verified_active_workflows": "only ubuntu-latest governance checks"
+    "return": "Runner automatically freed after GitHub Actions job finishes; R2-B claim unchanged",
+    "evidence_request": "issue23-comment-6080837818",
+    "preflight_verified": "No active Windows work; only DG watchdog ubuntu-latest",
+    "diagnostic": "standard installation paths, service state, local API 127.0.0.1:11434"
   }
 }
