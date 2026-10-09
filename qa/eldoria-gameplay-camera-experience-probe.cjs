@@ -23,6 +23,15 @@ async function run(browser,label,viewport,axis,cssOverride=false){
   item.web_input_css=await canvas.evaluate(el=>({canvasTouchAction:getComputedStyle(el).touchAction,canvasPointerEvents:getComputedStyle(el).pointerEvents,canvasStyle:el.getAttribute('style'),parents:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(x=>({tag:x.tagName,touchAction:getComputedStyle(x).touchAction,overflow:getComputedStyle(x).overflow})),bodyTouchAction:getComputedStyle(document.body).touchAction,bodyOverflow:getComputedStyle(document.body).overflow,postbuildMarkerPresent:!!document.getElementById('eldoria-webgl-touch-action-v1')}));
   if(process.env.ELDORIA_REQUIRE_TOUCH_FIX==='1' && (!item.web_input_css.postbuildMarkerPresent || item.web_input_css.canvasTouchAction!=='none'))throw Error('UNITY_WEBGL_TOUCH_ACTION_FIX_NOT_IN_BUILT_CANDIDATE');
   await page.screenshot({path:output+'/'+label+'-before.png'});
+  await page.evaluate(()=>{
+    window.__eldoriaInputTrace=[];
+    for(const type of ['touchstart','touchmove','touchend','touchcancel','pointerdown','pointermove','pointerup']){
+      window.addEventListener(type,e=>{
+        const trace=window.__eldoriaInputTrace;
+        if(trace.length<250)trace.push({type,target:e.target?.tagName||'',id:e.target?.id||'',defaultPrevented:e.defaultPrevented,points:e.touches?.length??null});
+      },{capture:true,passive:true});
+    }
+  });
   const start={x:rect.x+rect.width*.52,y:rect.y+rect.height*.46};
   const finish=axis==='horizontal'?{x:start.x-85,y:start.y}:{x:start.x,y:start.y-85};
   const cdp=await context.newCDPSession(page);
@@ -34,6 +43,8 @@ async function run(browser,label,viewport,axis,cssOverride=false){
   await dispatch('touchEnd',finish.x,finish.y);
   await page.waitForTimeout(700);
   await page.screenshot({path:output+'/'+label+'-after.png'});
+  item.dom_input_trace=await page.evaluate(()=>window.__eldoriaInputTrace||[]);
+  item.dom_input_counts=Object.fromEntries(['touchstart','touchmove','touchend','touchcancel','pointerdown','pointermove','pointerup'].map(k=>[k,item.dom_input_trace.filter(x=>x.type===k).length]));
   const touchLogEnd=logs.length;
   // Independent diagnostic input channel: mouse events use a different WebGL path.
   // Its success must NEVER be counted as mobile touch success.
