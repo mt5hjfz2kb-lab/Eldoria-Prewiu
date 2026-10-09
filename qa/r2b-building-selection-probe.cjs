@@ -8,12 +8,12 @@ const url=process.env.ELDORIA_URL;
 const dir=process.env.ELDORIA_EVIDENCE_DIR||'r2b-building-selection-qa';
 if(!url||!/^https:\/\/mt5hjfz2kb-lab\.github\.io\/Eldoria-Prewiu\/r2-candidates\//.test(url))throw Error('Exact isolated R2-B URL required');
 fs.mkdirSync(dir,{recursive:true});
-const results={url,source_sha:process.env.ELDORIA_SOURCE_SHA,scope:'Real touch on logged projected canonical building target centres; no automated subjective UX signoff',cases:[]};
+const results={url,source_sha:process.env.ELDORIA_SOURCE_SHA,scope:'Real touch on logged projected canonical building target centres; no automated subjective UX signoff',cases:[],diagnostics:[]};
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
-async function caseFor(browser,label,viewport,id){
+async function caseFor(browser,label,viewport,id,offsetX=0,diagnostic=false){
  const context=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36'});
  const page=await context.newPage();const logs=[];page.on('console',m=>logs.push(m.text()));page.on('pageerror',e=>logs.push('PAGEERROR '+String(e)));
- const started=Date.now();const report={label,id,viewport,pass:false};
+ const started=Date.now();const report={label,id,viewport,offsetX,diagnostic,pass:false};
  try{
   await page.goto(url+'?building-probe='+label,{waitUntil:'domcontentloaded',timeout:60000});
   const readyUntil=Date.now()+180000;
@@ -28,7 +28,7 @@ async function caseFor(browser,label,viewport,id){
   report.target={x:+m[1],y:+m[2]};report.canvas={box,pixels};
   report.browser=await page.evaluate(()=>({innerWidth,innerHeight,devicePixelRatio,visualViewport:{width:visualViewport?.width,height:visualViewport?.height,scale:visualViewport?.scale},metaViewport:document.querySelector('meta[name="viewport"]')?.content||null,canvasStyle:document.querySelector('canvas')?.getAttribute('style'),containerStyle:document.querySelector('#unity-container')?.getAttribute('style')}));
   if(!box)throw Error('NO_CANVAS');
-  const point={x:box.x+(report.target.x/pixels.width)*box.width,y:box.y+(report.target.y/pixels.height)*box.height};
+  const point={x:box.x+((report.target.x+offsetX)/pixels.width)*box.width,y:box.y+(report.target.y/pixels.height)*box.height};
   report.touch=point;
   report.on_screen=point.x>=box.x&&point.x<box.x+box.width&&point.y>=box.y&&point.y<box.y+box.height&&point.x>=0&&point.x<viewport.width&&point.y>=0&&point.y<viewport.height;
   if(!report.on_screen){report.finding='CANONICAL_BUILDING_TARGET_OFFSCREEN';return;}
@@ -63,10 +63,11 @@ async function caseFor(browser,label,viewport,id){
    report.pass=report.build_command_ok;
    report.finding=report.pass?'BUILDING_SELECTION_AND_BUILD_COMMAND_OBSERVED':'SAWMILL_BUILD_COMMAND_NOT_OBSERVED';
   }
- }catch(e){report.finding='PROBE_BLOCKED';report.error=String(e);await page.screenshot({path:dir+'/'+label+'-error.png'}).catch(()=>{});}finally{report.elapsed_ms=Date.now()-started;results.cases.push(report);await context.close();}
+ }catch(e){report.finding='PROBE_BLOCKED';report.error=String(e);await page.screenshot({path:dir+'/'+label+'-error.png'}).catch(()=>{});}finally{report.elapsed_ms=Date.now()-started;(diagnostic?results.diagnostics:results.cases).push(report);await context.close();}
 }
 (async()=>{const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{
  await caseFor(browser,'landscape-sawmill',{width:844,height:390},'sawmill');
  await caseFor(browser,'portrait-bastion',{width:390,height:844},'bastion');
+ await caseFor(browser,'landscape-sawmill-edge',{width:844,height:390},'sawmill',45,true);
 }finally{await browser.close();}
 results.pass=results.cases.every(c=>c.pass);fs.writeFileSync(dir+'/report.json',JSON.stringify(results,null,2));console.log('ELDORIA_R2B_BUILDING_SELECTION',JSON.stringify(results));if(!results.pass)process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1;});
