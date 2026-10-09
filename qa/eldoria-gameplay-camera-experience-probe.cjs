@@ -6,7 +6,7 @@ const {chromium}=require('playwright');
 const output=process.env.ELDORIA_EVIDENCE_DIR||'eldoria-gameplay-camera-experience';
 const site=process.env.ELDORIA_URL||'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/r2-candidates/r2-b-6e0e1239/';
 fs.mkdirSync(output,{recursive:true});
-const results={schema_version:1,source_candidate_sha:'6e0e12396a98b04333b595fff704afa3e849c30a',url:site,independent_review:'AUTOMATED_TOUCH_GEOMETRY_ONLY',scenarios:[],visual_experience_accepted:false,gameplay_defect_certified:false};
+const results={schema_version:1,source_candidate_sha:process.env.ELDORIA_SOURCE_SHA||'6e0e12396a98b04333b595fff704afa3e849c30a',url:site,independent_review:'AUTOMATED_TOUCH_GEOMETRY_ONLY',scenarios:[],visual_experience_accepted:false,gameplay_defect_certified:false};
 async function run(browser,label,viewport,axis){
  const context=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36'});
  const page=await context.newPage(); const logs=[];const item={label,viewport,axis,pass:false};
@@ -19,7 +19,8 @@ async function run(browser,label,viewport,axis){
   while(Date.now()<readyUntil&&!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x))){await page.waitForTimeout(300);}
   if(!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x)))throw Error('BLOCKED_UNITY_PLAYABLE_STATE_NOT_OBSERVED');
   const canvas=page.locator('canvas').first(),rect=await canvas.boundingBox();if(!rect)throw Error('NO_UNITY_CANVAS');
-  item.web_input_css=await canvas.evaluate(el=>({canvasTouchAction:getComputedStyle(el).touchAction,canvasPointerEvents:getComputedStyle(el).pointerEvents,canvasStyle:el.getAttribute('style'),parents:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(x=>({tag:x.tagName,touchAction:getComputedStyle(x).touchAction,overflow:getComputedStyle(x).overflow})),bodyTouchAction:getComputedStyle(document.body).touchAction,bodyOverflow:getComputedStyle(document.body).overflow}));
+  item.web_input_css=await canvas.evaluate(el=>({canvasTouchAction:getComputedStyle(el).touchAction,canvasPointerEvents:getComputedStyle(el).pointerEvents,canvasStyle:el.getAttribute('style'),parents:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(x=>({tag:x.tagName,touchAction:getComputedStyle(x).touchAction,overflow:getComputedStyle(x).overflow})),bodyTouchAction:getComputedStyle(document.body).touchAction,bodyOverflow:getComputedStyle(document.body).overflow,postbuildMarkerPresent:!!document.getElementById('eldoria-webgl-touch-action-v1')}));
+  if(process.env.ELDORIA_REQUIRE_TOUCH_FIX==='1' && (!item.web_input_css.postbuildMarkerPresent || item.web_input_css.canvasTouchAction!=='none'))throw Error('UNITY_WEBGL_TOUCH_ACTION_FIX_NOT_IN_BUILT_CANDIDATE');
   await page.screenshot({path:output+'/'+label+'-before.png'});
   const start={x:rect.x+rect.width*.52,y:rect.y+rect.height*.46};
   const finish=axis==='horizontal'?{x:start.x-85,y:start.y}:{x:start.x,y:start.y-85};
