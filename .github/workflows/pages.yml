@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       heavy_required: ${{ steps.impact.outputs.heavy_required }}
+      deploy_approved: ${{ steps.impact.outputs.deploy_approved }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +45,12 @@ jobs:
         id: impact
         shell: bash
         run: |
+          # Release to stable requires explicit separate approval; default is build-only.
+          if node -e 'const c=require("./pipeline/unity-publish-request.json"); process.exit(c.release_approved === true ? 0 : 1)'; then
+            echo "deploy_approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy_approved=false" >> "$GITHUB_OUTPUT"
+          fi
           # Explicit release switch: never build or deploy when publication is paused.
           if ! node -e 'const c=require("./pipeline/unity-publish-request.json"); process.exit(c.enabled === true ? 0 : 1)'; then
             echo "Publication disabled: no Windows build and no Pages deploy."
@@ -290,7 +297,8 @@ jobs:
           retention-days: 7
 
   deploy:
-    needs: unity-webgl
+    needs: [source-preflight, unity-webgl]
+    if: needs.source-preflight.outputs.deploy_approved == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
