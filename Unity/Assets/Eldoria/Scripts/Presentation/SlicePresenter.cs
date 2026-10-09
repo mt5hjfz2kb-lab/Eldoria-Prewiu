@@ -846,10 +846,10 @@ namespace Eldoria.Presentation
                 message.text="Marcha: "+s.March.Phase+" · destino "+s.March.TargetId+" · regreso y recompensa automáticos";
             else if(s.BuildingCompletesUtcTicks>0)
                 message.text="Reconstrucción: "+Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
-            RefreshBuildingPanelClock(s);
-            if(constructionActivityFx!=null)constructionActivityFx.SetActive(city&&s.BuildingCompletesUtcTicks>0);
             else if(s.RecruitmentCompletesUtcTicks>0)
                 message.text="Entrenamiento: "+Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
+            RefreshBuildingPanelClock(s);
+            if(constructionActivityFx!=null)constructionActivityFx.SetActive(city&&s.BuildingCompletesUtcTicks>0);
         }
         void CreateHud()
         {
@@ -1014,23 +1014,23 @@ namespace Eldoria.Presentation
         void ConfigurePrimaryAction(PlayerState s)
         {
             if(primaryAction==null||primaryActionText==null||s==null)return;
-            primaryAction.interactable=true;
+            SetPrimaryActionEnabled(true);
             if(s.BuildingCompletesUtcTicks>0)
             {
                 primaryActionText.text="RECONSTRUCCIÓN EN CURSO";
-                primaryAction.interactable=false;
+                SetPrimaryActionEnabled(false);
                 return;
             }
             if(s.RecruitmentCompletesUtcTicks>0)
             {
                 primaryActionText.text="ENTRENAMIENTO EN CURSO";
-                primaryAction.interactable=false;
+                SetPrimaryActionEnabled(false);
                 return;
             }
             if(s.March.Phase!="idle")
             {
                 primaryActionText.text="MARCHA EN CURSO";
-                primaryAction.interactable=false;
+                SetPrimaryActionEnabled(false);
                 return;
             }
 
@@ -1060,7 +1060,7 @@ namespace Eldoria.Presentation
                     break;
                 case "b1.return":
                     primaryActionText.text=city?"RUTA ASEGURADA":"REGRESAR A VALORIA";
-                    primaryAction.interactable=!city;
+                    SetPrimaryActionEnabled(!city);
                     break;
                 case "b1.ascend":
                     primaryActionText.text=city?"ASCENDER A BASTIÓN II":"REGRESAR A VALORIA";
@@ -1085,12 +1085,28 @@ namespace Eldoria.Presentation
                     break;
                 case "b2.complete":
                     primaryActionText.text=city?"BASTIÓN II ASEGURADO":"REGRESAR A VALORIA";
-                    primaryAction.interactable=!city;
+                    SetPrimaryActionEnabled(!city);
                     break;
                 default:
                     primaryActionText.text="CONTINUAR";
                     break;
             }
+        }
+
+        void SetPrimaryActionEnabled(bool enabled)
+        {
+            primaryAction.interactable=enabled;
+            // The default Button disabled tint darkens the ochre plate, leaving its dark
+            // active label unreadable. Keep completion/wait feedback legible on mobile.
+            var colors=primaryAction.colors;
+            colors.disabledColor=Color.white;
+            primaryAction.colors=colors;
+            primaryAction.GetComponent<Image>().color=enabled
+                ?new Color(.73f,.61f,.36f,.98f)
+                :new Color(.14f,.17f,.19f,.98f);
+            primaryActionText.color=enabled
+                ?new Color(.07f,.09f,.11f)
+                :new Color(.94f,.84f,.63f);
         }
 
         void InvokePrimaryObjective()

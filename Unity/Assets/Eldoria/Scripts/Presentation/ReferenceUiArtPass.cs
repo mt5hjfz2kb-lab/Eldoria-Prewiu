@@ -664,7 +664,12 @@ namespace Eldoria.Presentation
             bool primary=button.gameObject.name=="CONTINUAR"||button.gameObject.name=="Building action";
             bool nav=button.transform.parent!=null&&button.transform.parent.name=="Bottom navigation";
             var cb=button.colors;
-            if(!button.interactable)image.color=nav?new Color(.025f,.030f,.033f,.92f):Disabled;
+            if(!button.interactable)
+            {
+                image.color=nav?new Color(.025f,.030f,.033f,.92f)
+                    :primary?new Color(.14f,.17f,.19f,.98f):Disabled;
+                if(primary)cb.disabledColor=Color.white;
+            }
             else if(primary){image.color=Gold;cb.normalColor=Gold;cb.highlightedColor=GoldSoft;cb.pressedColor=new Color(.53f,.39f,.19f,1);cb.selectedColor=GoldSoft;}
             else if(!nav){image.color=PanelDeep;cb.normalColor=PanelDeep;cb.highlightedColor=new Color(.13f,.12f,.09f,.98f);cb.pressedColor=new Color(.08f,.065f,.045f,.98f);}
             button.colors=cb;
@@ -680,7 +685,13 @@ namespace Eldoria.Presentation
         {
             if(text==null||text.transform.parent==null)return;
             bool primary=text.transform.parent.name=="CONTINUAR"||text.transform.parent.name=="Building action";
-            if(primary){text.color=Ink;text.fontStyle=FontStyle.Bold;text.fontSize=13;}
+            if(primary)
+            {
+                var button=text.GetComponentInParent<Button>();
+                text.color=button!=null&&!button.interactable
+                    ?new Color(.94f,.84f,.63f):Ink;
+                text.fontStyle=FontStyle.Bold;text.fontSize=13;
+            }
             else if(text.name=="Quest kicker"||text.name=="Building title"){text.color=GoldSoft;text.fontStyle=FontStyle.Bold;}
         }
 

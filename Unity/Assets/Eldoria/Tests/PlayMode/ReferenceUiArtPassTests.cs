@@ -115,6 +115,12 @@ namespace Eldoria.Tests
                         Assert.That(action.interactable,Is.True,"Building action must be usable at the guided step.");
                         action.onClick.Invoke();
                     }
+                    if(gateway.Snapshot().RecruitmentCompletesUtcTicks>0)
+                    {
+                        typeof(Eldoria.Presentation.SlicePresenter).GetMethod("RefreshClock",flags).Invoke(presenter,null);
+                        Assert.That(GameObject.Find("Feedback").GetComponent<Text>().text,
+                            Does.StartWith("Entrenamiento:"),"The live recruitment countdown must reach the player HUD.");
+                    }
                     clock.UtcTicks+=System.TimeSpan.FromSeconds(30).Ticks;
                     gateway.Advance();
                     typeof(Eldoria.Presentation.SlicePresenter).GetMethod("Refresh",flags).Invoke(presenter,null);
@@ -131,6 +137,11 @@ namespace Eldoria.Tests
                 Assert.That(final.EngendroDefeated,Is.True);
                 Assert.That(final.March.Phase,Is.EqualTo("idle"));
                 Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("Valoria"));
+                yield return new WaitForSecondsRealtime(.3f);
+                var completeAction=GameObject.Find("CONTINUAR").GetComponent<Button>();
+                Assert.That(completeAction.interactable,Is.False);
+                Assert.That(completeAction.GetComponentInChildren<Text>().color.r,Is.GreaterThan(.8f),
+                    "Chapter completion must remain readable against its disabled dark plate.");
             }
             finally
             {
