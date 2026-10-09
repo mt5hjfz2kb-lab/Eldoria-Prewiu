@@ -19,6 +19,7 @@ async function run(browser,label,viewport,axis){
   while(Date.now()<readyUntil&&!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x))){await page.waitForTimeout(300);}
   if(!logs.some(x=>/ELDORIA_PLAYABLE_STATE tag=scene-loaded/.test(x)))throw Error('BLOCKED_UNITY_PLAYABLE_STATE_NOT_OBSERVED');
   const canvas=page.locator('canvas').first(),rect=await canvas.boundingBox();if(!rect)throw Error('NO_UNITY_CANVAS');
+  item.web_input_css=await canvas.evaluate(el=>({canvasTouchAction:getComputedStyle(el).touchAction,canvasPointerEvents:getComputedStyle(el).pointerEvents,canvasStyle:el.getAttribute('style'),parents:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(x=>({tag:x.tagName,touchAction:getComputedStyle(x).touchAction,overflow:getComputedStyle(x).overflow})),bodyTouchAction:getComputedStyle(document.body).touchAction,bodyOverflow:getComputedStyle(document.body).overflow}));
   await page.screenshot({path:output+'/'+label+'-before.png'});
   const start={x:rect.x+rect.width*.52,y:rect.y+rect.height*.46};
   const finish=axis==='horizontal'?{x:start.x-85,y:start.y}:{x:start.x,y:start.y-85};
