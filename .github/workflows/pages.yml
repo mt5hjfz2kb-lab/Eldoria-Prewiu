@@ -360,6 +360,10 @@ jobs:
           Write-Host "WEBGL_MINIMAL_RESOURCES_PASS kept=WorldPlayerCity,WorldInventory,ExternalAssetLibrary,Crate excluded=historical-valoria-resources"
 
       - name: Build Unity WebGL current requested slice
+        env:
+          # Default production stays clean; the existing isolated R2-B candidate
+          # uses Unity's incremental cache but still compiles the exact checked-out source.
+          ELDORIA_FOCUSED_UNITY_ITERATION: ${{ needs.source-preflight.outputs.candidate_only == 'true' && '1' || '0' }}
         shell: powershell
         run: |
           Remove-Item "$env:ELDORIA_BUILD_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
