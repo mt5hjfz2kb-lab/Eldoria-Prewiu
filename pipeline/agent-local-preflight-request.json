@@ -11,7 +11,7 @@
   "budget_eur": 0,
   "max_attempts": 2,
   "expires_at": "2026-10-09T15:30:00Z",
-  "requested_at": "2026-10-09T13:00:40.172Z",
+  "requested_at": "2026-10-09T13:02:46.659Z",
   "install": false,
   "launch_agents": true,
   "modify_game": false,
@@ -35,6 +35,6 @@
     "return": "R2-B reservation unchanged; worker process/listener/lock released before independent hosted QA and next bounded task"
   },
   "previous_rejected_order": "executive-local-recovery-20261009-v1",
-  "corrected_cause": "Second task rejected naturally twice; independent QA previously supplied generic true !== false without resource context. Deliver exact mismatching resources plus rejected candidate to existing bounded repair. Preserve accepted task 0 and all semantic QA.",
-  "repair_revision": 1
+  "corrected_cause": "Actual repair changed wrong label but uncovered absent two-alias coverage. Fix ambiguous BOTH wording in task context with exact resource arrays; keep model-derived conflict labels and independent seven-case oracle unchanged.",
+  "repair_revision": 2
 }
