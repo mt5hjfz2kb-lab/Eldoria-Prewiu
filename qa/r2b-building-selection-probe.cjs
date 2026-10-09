@@ -10,7 +10,7 @@ fs.mkdirSync(dir,{recursive:true});
 const results={url,source_sha:process.env.ELDORIA_SOURCE_SHA,scope:'Real touch on logged projected canonical building target centres; no automated subjective UX signoff',cases:[]};
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 async function caseFor(browser,label,viewport,id){
- const context=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1});
+ const context=await browser.newContext({viewport,hasTouch:true,isMobile:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36'});
  const page=await context.newPage();const logs=[];page.on('console',m=>logs.push(m.text()));page.on('pageerror',e=>logs.push('PAGEERROR '+String(e)));
  const report={label,id,viewport,pass:false};
  try{
