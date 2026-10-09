@@ -53,6 +53,19 @@ export function findingFromWorkflowFailure(run,job,{observed_at,artifact_id='not
  validateFinding(f);
  return f;
 }
+/** Route a real failed job to its existing claim; this does not execute a repair. */
+export function routeWorkflowFailure(run,jobs,workstreams){
+ const failed=(jobs||[]).filter(j=>j.conclusion==='failure');
+ const names=new Set(failed.map(j=>j.name));
+ if(!failed.length)throw Error('NO_FAILED_JOB');
+ if([...names].some(n=>n==='maintenance-worker'||n==='maintenance-review'))return {issue:25,workstream:'eldoria-local-agent-first-maintenance-v1',executor:'maintenance owner',qa:'independent reviewer'};
+ const r2b=(workstreams?.workstreams||workstreams?.active||[]).find(w=>w.id==='r2-b'||/r2.b/i.test(w.id||''));
+ if(run?.name==='Publish Eldoria Preview'&&r2b&&r2b.status!=='closed'&&
+    [...names].some(n=>['focused-candidate-retest','r2b-candidate-artifact-qa','r2b-candidate-pages-preview','r2b-published-mobile-qa','unity-webgl'].includes(n))){
+  return {issue:23,workstream:r2b.id,executor:'D09/D10',qa:'D13',owner:r2b.owner||r2b.owner_id||null};
+ }
+ return {issue:23,workstream:'unassigned',executor:'M16 triage',qa:null};
+}
 /**
  * Deterministic retry advice; it NEVER initiates GitHub Actions.
  * A deterministic source failure requires a repaired source SHA.
@@ -65,3 +78,4 @@ export function retryDecision({attempts=0,max_attempts=2,transient=false,source_
  if(!transient&&!source_changed)return {allowed:false,reason:'SAME_SOURCE_DETERMINISTIC_FAILURE'};
  return {allowed:true,reason:source_changed?'FIXED_SOURCE_CANDIDATE':'TRANSIENT_RETRY',attempt_number:attempts+1};
 }
+

@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {classify,ingest,transition,executiveReport,forM16,findingFromWorkflowFailure,retryDecision} from '../../tools/m04/incidents.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {classify,ingest,transition,executiveReport,forM16,findingFromWorkflowFailure,retryDecision,routeWorkflowFailure} from '../../tools/m04/incidents.mjs';
 const f=()=>({schema_version:1,id:'one',subsystem:'webgl',scenario:'reload',error_code:'FATAL',failure_signature:'stable signature',kind:'PUBLISHED',origin:'product',impact:'fatal',source_sha:'a'.repeat(40),run_id:'12',artifact_id:'22',evidence_ref:'https://example.test/a',observed_at:'2026-10-08T10:00:00Z'});
 const empty=()=>({schema_version:1,incidents:[]});
 const create=()=>ingest(empty(),f());
@@ -55,3 +55,12 @@ test('22 max two bounded retries with immutable budget',()=>{
  assert.equal(retryDecision({authorized:true,transient:true,attempts:2}).reason,'RETRY_EXHAUSTED');
  assert.throws(()=>retryDecision({max_attempts:100}),/INVALID_RETRY_BUDGET/);
 });
+test('23 real candidate failure routes to existing R2-B owner and independent QA',()=>{
+ const run={id:37976320384,name:'Publish Eldoria Preview'};
+ const jobs=[{name:'focused-candidate-retest',conclusion:'failure'}];
+ const registry={active:[{id:'r2-b-strategic-choice',status:'active',owner:'eldoria-dg-r2-approved-20261008'}]};
+ assert.deepEqual(routeWorkflowFailure(run,jobs,registry),{issue:23,workstream:'r2-b-strategic-choice',executor:'D09/D10',qa:'D13',owner:'eldoria-dg-r2-approved-20261008'});
+ assert.equal(routeWorkflowFailure(run,[{name:'deploy',conclusion:'failure'}],registry).workstream,'unassigned');
+ assert.throws(()=>routeWorkflowFailure(run,[{name:'focused-candidate-retest',conclusion:'success'}],registry),/NO_FAILED_JOB/);
+});
+
