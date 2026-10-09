@@ -295,7 +295,9 @@
       "paid_credits": 0,
       "geometry_gap_proven": false,
       "next": "Execute planner and known-evidence fallback, then visual-only Unity surface integration and full 19/12/9/mobile capture review; preserve all gameplay and active workstream ownership."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-m16-evidence-provenance-hardening-v1",
       "title": "Harden existing M16 independent QA handoff source/artifact provenance",
@@ -309,26 +311,28 @@
       "resources": [],
       "claimed_at": "2026-10-09T10:20:00+02:00",
       "base_main_sha": "39b812d5d3c6eddb4dbb12190a896ee464122cd4",
-      "status": "blocked",
-      "phase": "RECOVERY VIA DEDICATED INDEPENDENT TEST HARNESS / LEGACY COORDINATOR STARTUP FAILURE PRESERVED",
+      "status": "completed",
+      "phase": "INDEPENDENT NEGATIVE QA PASS / EXISTING COORDINATOR STARTUP SEPARATELY OPEN",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read-only coordinator provenance gate, no gameplay or art source changes.",
       "paid_credits": 0,
-      "next": "Use isolated CI test harness for exact M16 tests because existing coordinator startup fails before job creation; do not replace/disable any coordinator or publication workflow.",
+      "next": "Source evidence provenance certified. Old general coordinator workflow startup_failure remains distinct issue requiring scoped workflow owner and diagnosis; do not claim this QA run cures its startup failure.",
       "runner_released": true,
       "blocker": "Coordinator workflow cannot start before any job is created: 37903070387 startup_failure / jobs []; identical existing issue observed at 37902171945 before this patch. No test PASS may be inferred. Need diagnose GitHub Actions workflow validation/platform issue via available metadata or authorized workflow owner; avoid rerunning unchanged SHA.",
       "result": {
-        "source_commit": "9074d681820051e9b53c81e067b23d5220002e5a",
-        "negative_tests_commit": "beb5046325ef9c16a4a8ecc8bd14447d8a3b2901",
-        "attempted_run": 37903070387,
-        "run_conclusion": "startup_failure",
-        "jobs_created": 0,
-        "test_verdict": "NOT_RUN",
-        "zero_paid_credits": true
-      }
-    }
-  ],
-  "history": [
+        "code_commit": "9074d681820051e9b53c81e067b23d5220002e5a",
+        "tests_commit": "beb5046325ef9c16a4a8ecc8bd14447d8a3b2901",
+        "independent_run": 37903576584,
+        "independent_qa": "PASS",
+        "artifact_ids": [
+          11603227813
+        ],
+        "m07_verdict": "BLOCKED_NO_HANDOFF",
+        "legacy_coordinator_workflow": "STARTUP_FAILURE_NOT_REPAIRED",
+        "paid_credits": 0
+      },
+      "completed_at": "2026-10-09T10:15:00+02:00"
+    },
     {
       "id": "eldoria-dg-watchdog-dedupe-repair-v1",
       "title": "Repair existing DG watchdog duplicate finding notifications",
