@@ -27,10 +27,19 @@ jobs:
         run: node --test tests/eldoria-dg-accountability-watchdog.test.mjs
       - name: Detect abandoned or blocked workstreams
         run: node tools/eldoria-workstream-watchdog.mjs > watchdog-report.json
+      - name: Run existing M16 dependency coordinator on the SAME persistent DG schedule
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/eldoria-coordinator-v1.test.cjs
+          node tools/eldoria-coordinator-v1.cjs > m16-dependency-report.json
+          jq -e '.schema_version==1 and (.verdict=="BLOCKED_NO_HANDOFF" or .verdict=="READY_FOR_QA_HANDOFF_REVIEW")' m16-dependency-report.json
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-dg-workstream-watchdog
-          path: watchdog-report.json
+          path: |
+            watchdog-report.json
+            m16-dependency-report.json
       - name: Report new findings to existing Directorate
         shell: bash
         env:
