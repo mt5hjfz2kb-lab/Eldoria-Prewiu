@@ -40,6 +40,9 @@ jobs:
           retention-days: 14
 
   playable-camera-ux:
+    # Historical 6e0 candidate diagnostic is manual-only. Current candidate QA
+    # is chained once by Pages; do not reopen old binary defects on each source push.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 16
     permissions:
@@ -54,7 +57,7 @@ jobs:
           node-version: '22'
       - name: Install existing browser QA tools
         run: |
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
           npx playwright install --with-deps chromium
       - name: D09 actual Unity published candidate touch/camera experience
         id: touch

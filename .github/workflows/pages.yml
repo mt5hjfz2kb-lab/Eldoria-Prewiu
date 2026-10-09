@@ -32,6 +32,7 @@ on:
       - 'pipeline/r2b-candidate-build.json'
       - 'tools/eldoria-rendered-frame-readiness.cjs'
       - 'tests/eldoria-rendered-frame-readiness.test.cjs'
+      - 'tests/eldoria-focused-checkout.test.cjs'
 
 permissions:
   contents: read
@@ -88,8 +89,8 @@ jobs:
           echo "$files"
           # A verifier-only change must test the existing immutable Unity binary.
           # It must neither wake Windows nor attempt a legacy/stable deployment.
-          if grep -Eq '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs)$' <<< "$files" &&
-             ! grep -Ev '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|.github/workflows/pages.yml)$' <<< "$files"; then
+          if grep -Eq '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs)$' <<< "$files" &&
+             ! grep -Ev '^(qa/eldoria-gameplay-camera-experience-probe.cjs|tools/eldoria-rendered-frame-readiness.cjs|tests/eldoria-rendered-frame-readiness.test.cjs|tests/eldoria-focused-checkout.test.cjs|.github/workflows/pages.yml|.github/workflows/eldoria-m16-independent-provenance-tests.yml)$' <<< "$files"; then
             echo "qa_only=true" >> "$GITHUB_OUTPUT"
             echo "candidate_only=true" >> "$GITHUB_OUTPUT"
             echo "heavy_required=false" >> "$GITHUB_OUTPUT"
@@ -212,6 +213,23 @@ jobs:
         with:
           persist-credentials: false
           path: ${{ inputs.local_unity_candidate && 'local-unity-candidate' || '.' }}
+          # Retain ONLY Unity's generated import/build cache in a focused iteration.
+          # The strict cleanup below removes every other untracked/staged residue.
+          clean: ${{ needs.source-preflight.outputs.candidate_only != 'true' }}
+      - name: Clean focused candidate source while retaining generated Unity cache
+        if: needs.source-preflight.outputs.candidate_only == 'true'
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(Get-Process Unity,Blender -ErrorAction SilentlyContinue){throw 'Productive process active; candidate workspace cannot be cleaned'}
+          git reset --hard '${{ github.sha }}'
+          if($LASTEXITCODE -ne 0){throw 'Exact candidate source reset failed'}
+          git clean -ffdx -e Unity/Library/
+          if($LASTEXITCODE -ne 0){throw 'Focused source cleanup failed'}
+          git diff --exit-code '${{ github.sha }}' -- Unity
+          if($LASTEXITCODE -ne 0){throw 'Tracked Unity source drift after cleanup'}
+          $cache=Join-Path $env:ELDORIA_BUILD_WORKSPACE 'Unity/Library'
+          Write-Host ('ELDORIA_FOCUSED_CACHE_RETAINED='+[string](Test-Path $cache))
       - name: Ensure WebGL Build Support
         shell: powershell
         run: |
@@ -801,7 +819,7 @@ jobs:
           npm install --no-save playwright@1.55.0 pngjs@7.0.0
           npx playwright install --with-deps chromium
       - name: Test rendered-frame readiness contract
-        run: node --test tests/eldoria-rendered-frame-readiness.test.cjs
+        run: node --test tests/eldoria-rendered-frame-readiness.test.cjs tests/eldoria-focused-checkout.test.cjs
       - name: Test existing binary with real touch and rendered-frame evidence
         id: camera
         continue-on-error: true
