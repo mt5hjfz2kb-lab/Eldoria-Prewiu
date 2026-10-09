@@ -13,7 +13,7 @@ Estado: **en verificación de build y publicación**.
 | Cuartel 180/120, entrenar 20 por 400/240, poder de expedición 2250, Marcha explícita, Engendro | Perfil dueño, composición confirmada, combate e informe persistentes | Implementado, con lote único de 20 en lugar de selector 5/10/20; la selección de cantidades sigue pendiente de una necesidad de juego demostrada. |
 | Recompensas de misiones y capítulo | Unity registraba objetivos sin pagarlas | Corregido para `OWNER_I_II` con libro de pagos persistente, recursos y Poder total; ninguna recompensa se cobra dos veces. `QA_FAST` conserva su economía técnica. |
 | Capítulo II incluye elevar Bastión III | Slice termina al derrotar Engendro en Bastión II | El cierre ahora dice “Bastión II asegurado · próximo hito: Bastión III”; no simula misión ni recompensa del capítulo II. |
-| Tiempo y feedback de entrenamiento | La cuenta atrás no se mostraba por una rama `else if` mal asociada al efecto de obra | Corregido; PlayMode comprueba el mensaje en un entrenamiento real. |
+| Tiempo y feedback de entrenamiento | La cuenta atrás no se mostraba por una rama `else if` mal asociada al efecto de obra; después de pagar, la tarjeta aún reclamaba los recursos ya gastados | Corregido; segundos visibles en el CTA principal y objetivo “entrenando 20 arqueros”. PlayMode comprueba ambos estados. |
 | Estado completado legible | Captura exacta publicada: texto oscuro sobre botón desactivado oscuro | Corregido en `SlicePresenter` y en la capa de arte que redecora la interfaz cada 0,2 s. |
 
 ## Alcance de las recompensas

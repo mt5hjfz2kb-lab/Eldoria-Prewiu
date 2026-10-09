@@ -787,6 +787,12 @@ namespace Eldoria.Presentation
         }
         string ObjectiveText(PlayerState s,ChapterProgressState cp)
         {
+            if(s.RecruitmentCompletesUtcTicks>0)
+                return "BASTIÓN II · entrenando "+s.PendingRecruitArchers+" arqueros";
+            if(s.BuildingCompletesUtcTicks>0)
+                return (s.BuildingTaskId??"").StartsWith("barracks:")
+                    ?"BASTIÓN II · Cuartel en construcción"
+                    :"BASTIÓN I · Aserradero en reconstrucción";
             switch(SliceRules.CurrentObjectiveKey(s))
             {
                 case "b1.build-sawmill":
@@ -845,9 +851,17 @@ namespace Eldoria.Presentation
             if(s.March.Phase!="idle")
                 message.text="Marcha: "+s.March.Phase+" · destino "+s.March.TargetId+" · regreso y recompensa automáticos";
             else if(s.BuildingCompletesUtcTicks>0)
-                message.text="Reconstrucción: "+Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
+            {
+                int remaining=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+                message.text="Reconstrucción: "+remaining+" s";
+                if(primaryAction!=null&&!primaryAction.interactable)primaryActionText.text="OBRA EN CURSO · "+remaining+" s";
+            }
             else if(s.RecruitmentCompletesUtcTicks>0)
-                message.text="Entrenamiento: "+Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
+            {
+                int remaining=Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+                message.text="Entrenamiento: "+remaining+" s";
+                if(primaryAction!=null&&!primaryAction.interactable)primaryActionText.text="ENTRENAMIENTO · "+remaining+" s";
+            }
             RefreshBuildingPanelClock(s);
             if(constructionActivityFx!=null)constructionActivityFx.SetActive(city&&s.BuildingCompletesUtcTicks>0);
         }

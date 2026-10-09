@@ -120,6 +120,10 @@ namespace Eldoria.Tests
                         typeof(Eldoria.Presentation.SlicePresenter).GetMethod("RefreshClock",flags).Invoke(presenter,null);
                         Assert.That(GameObject.Find("Feedback").GetComponent<Text>().text,
                             Does.StartWith("Entrenamiento:"),"The live recruitment countdown must reach the player HUD.");
+                        Assert.That(GameObject.Find("CONTINUAR").GetComponentInChildren<Text>().text,
+                            Does.StartWith("ENTRENAMIENTO ·"),"The large primary feedback must expose remaining seconds.");
+                        Assert.That(GameObject.Find("Objective").GetComponent<Text>().text,
+                            Does.Contain("entrenando"),"After payment the objective must not ask for resources again.");
                     }
                     clock.UtcTicks+=System.TimeSpan.FromSeconds(30).Ticks;
                     gateway.Advance();
