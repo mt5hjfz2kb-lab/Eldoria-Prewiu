@@ -292,6 +292,21 @@ for mat in [stone,trim,paving,earth,grass,rock,wood,pine]:
     ramp.color_ramp.elements[1].color=colors[1]
     links.new(noise.outputs["Fac"],ramp.inputs["Fac"])
     links.new(ramp.outputs["Color"],bs.inputs["Base Color"])
+# Exportable image-based base colors for Unity glTF; Blender procedural noise alone
+# is not reliably carried into Unity's material importer.
+# Reuse locally committed authoring textures only; external provenance remains a release gate.
+texture_dir=ROOT/"art-source/valoria/production/bastion-family-v1"
+for mat,filename in [(stone,"masonry_albedo.png"),(trim,"hero_masonry_albedo.png"),
+                     (paving,"paving_albedo.png"),(wood,"timber_albedo.png"),
+                     (rock,"stone_grain_albedo.png")]:
+    path=texture_dir/filename
+    if not path.exists():continue
+    bs=mat.node_tree.nodes.get("Principled BSDF")
+    if not bs:continue
+    image_node=mat.node_tree.nodes.new("ShaderNodeTexImage")
+    image_node.image=bpy.data.images.load(str(path),check_existing=True)
+    image_node.interpolation="Linear"
+    mat.node_tree.links.new(image_node.outputs["Color"],bs.inputs["Base Color"])
 # Author a restrained emissive torch hue with a separate warm point light cluster.
 torch_bs=glow.node_tree.nodes.get("Principled BSDF")
 if "Emission Color" in torch_bs.inputs:torch_bs.inputs["Emission Color"].default_value=(1,.30,.035,1)
