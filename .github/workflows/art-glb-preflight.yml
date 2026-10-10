@@ -7,6 +7,7 @@ on:
       - prototype/valoria-bastion1-no-sharp-20261010
     paths:
       - 'tools/art-rd/audit_glb.py'
+      - 'tools/art-rd/test_audit_glb.py'
       - 'art-source/**/*.glb'
       - 'Unity/Assets/Eldoria/ProductionSlice/Experimental/**/*.glb'
   workflow_dispatch:
@@ -20,6 +21,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Regression test GLB parser
+        run: python3 -m unittest discover -s tools/art-rd -p 'test_*.py' -v
       - name: Scan existing production/prototype GLBs without GPU or paid API
         shell: bash
         run: |
