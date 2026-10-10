@@ -247,6 +247,15 @@ cuboid("Lower gate shadow threshold",(0,-17.93,9.3),(7.2,.12,2.1),rock,.04)
 tower("Upper stronghold keep",-1.5,34,13.05,10,8.5)
 tower("Upper west rear guard",-15,35,13.05,7,4)
 tower("Upper east rear guard",15,35,13.05,7.6,4)
+# The Bastion I focal skyline has a true raised watch and stone roofline,
+# not merely a rectangular command-hall block. All supports start at the upper terrace.
+tower("Eastern command watch",10.8,36.4,13.05,11.4,4.5)
+cuboid("Command watch connective masonry",(6.6,35.4,18.1),(7.6,4.1,9.5),stone,.14)
+cuboid("Command watch upper sentry platform",(10.8,36.4,24.63),(5.4,5.3,.62),trim,.13)
+# Fortified rear wall defines a physically enclosed inner ward around the keep.
+cuboid("Citadel back curtain",(-1.2,40.2,16.1),(38.1,2.2,6.0),stone,.11)
+for px in (-18,-12,-6,0,6,12,18):
+    cuboid("Back curtain merlon",(px,40.2,19.75),(1.8,2.4,1.2),stone,.07)
 # Continuous high curtain, with gap revealing dominant keep.
 cuboid("Upper curtain left",(-11.5,37.3,16.1),(14,2.4,6.1),stone,.10)
 cuboid("Upper curtain right",(11.5,37.3,16.1),(14,2.4,6.1),stone,.10)
