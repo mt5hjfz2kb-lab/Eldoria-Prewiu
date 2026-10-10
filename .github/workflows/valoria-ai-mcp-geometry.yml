@@ -1,0 +1,49 @@
+name: Eldoria local vision to real Blender MCP geometric edit
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['tools/art-rd/eldoria_mcp_geometry_agent.py','.github/workflows/valoria-ai-mcp-geometry.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-art-windows-agent
+  cancel-in-progress: false
+jobs:
+  controlled-geometry:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Git from Desktop
+        shell: powershell
+        run: |
+          $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1
+          if($git){Split-Path $git.FullName|Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append}
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Local inference + model-directed BlenderMCP TCP geometry + matched renders
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ollama="$env:LOCALAPPDATA/Programs/Ollama/ollama.exe"
+          if(-not (Test-Path $ollama)){throw "Local Ollama missing"}
+          try {$null=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 2}
+          catch {Start-Process -FilePath $ollama -ArgumentList 'serve' -WindowStyle Hidden;Start-Sleep -Seconds 5}
+          $tags=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 8
+          if(-not (@($tags.models.name) -contains "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M")){throw "No local vision model"}
+          $env:ELDORIA_GEOMETRY_OUTPUT="$env:RUNNER_TEMP/eldoria-ai-geometry"
+          $stdout="$env:RUNNER_TEMP/geometry-out.log";$stderr="$env:RUNNER_TEMP/geometry-err.log"
+          $p=Start-Process -FilePath "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -ArgumentList @("-b","--python","tools/art-rd/eldoria_mcp_geometry_agent.py") -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 25
+          if($p.ExitCode -ne 0){Get-Content $stderr -Tail 40;throw "AI-MCP geometry proof failed"}
+          if(-not (Test-Path "$env:ELDORIA_GEOMETRY_OUTPUT/after.png")){throw "Missing real after"}
+          if(-not (Select-String -Path $stdout -Pattern 'ELDORIA_AI_MCP_GEOMETRY_EDIT_PASS' -Quiet)){throw "Missing real AI-MCP proof"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-vision-mcp-geometry
+          path: |
+            ${{ runner.temp }}/eldoria-ai-geometry/
+            ${{ runner.temp }}/geometry-out.log
+            ${{ runner.temp }}/geometry-err.log
+          retention-days: 14
