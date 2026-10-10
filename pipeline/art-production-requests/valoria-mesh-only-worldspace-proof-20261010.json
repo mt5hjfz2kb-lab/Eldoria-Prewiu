@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "valoria-mesh-only-worldspace-proof-20261010",
+  "request_id": "valoria-mesh-only-worldspace-proof-20261010",
+  "asset_or_sector": "Isolated Bastion I architectural/terrain source and diagnostic Unity GLB import",
+  "profile": "environment_new_geometry",
+  "visual_gate_state": "diagnostic_only_not_approved",
+  "diagnosis": "Multiple reproduced mesh-only scene revisions, including existing Hero Bastion reuse, remain below the approved reference. Dominant primitive perimeter/terrain and inconsistent scene sources prove a geometry/coherence gap. Current Unity check validates portability of the unchanged rejected source, not art acceptance.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "blender_professional_authoring": true
+  },
+  "validation": {
+    "source_gate": "Use isolated branch and exact inspected GLB c42b88fb55c6d075e759f172790927e5238728bf. Reproduce authored source/camera evidence; keep reference ART FAIL until a coherent new scene passes. Zero new generation credits.",
+    "final_gate": "Diagnostic import/render may establish TECH_PASS only. Production requires ART_SOURCE_PASS and INTEGRATED_VISUAL_PASS from actual reference-matched Unity captures, plus required runtime/performance checks. Never replace canonical SHARP main based on structural/render execution success."
+  },
+  "escalation": {
+    "on_next_visual_fail": "Author a coherent architectural/environment source with matching materials/terrain/vegetation; do not add primitive decoration to the rejected scene."
+  },
+  "notes": "Owner authorized both existing workstreams. Shared Windows lease transferred explicitly after the Region 1 build completed; isolated diagnostic never publishes."
+}
