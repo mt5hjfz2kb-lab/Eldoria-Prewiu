@@ -573,7 +573,10 @@ namespace Eldoria.Presentation
             {
                 if(renderer.gameObject.name=="Frontier · march trail" ||
                     renderer.gameObject.name.StartsWith("Frontier · march trail"))
+                {
                     renderer.sharedMaterial=WorldTrailMaterial();
+                    renderer.gameObject.name=name+" · track 0";
+                }
             }
             foreach(var collider in route.GetComponentsInChildren<Collider>(true))
                 collider.enabled=false;
