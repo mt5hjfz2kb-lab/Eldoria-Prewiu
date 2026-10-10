@@ -54,6 +54,9 @@ jobs:
             if (Test-Path $candidate) { $uvx=$candidate }
           }
           if (-not $uvx) { throw "uvx unavailable after free Python package installation" }
+          $env:PYTHONIOENCODING='utf-8'
+          $env:PYTHONUTF8='1'
+          [Console]::OutputEncoding=[System.Text.Encoding]::UTF8
           & $uvx --from mcp-for-blender mcp-for-blender install-addon
           if ($LASTEXITCODE -ne 0) { throw "MCP add-on installation failed" }
       - name: Verify genuine Blender addon scene edit
