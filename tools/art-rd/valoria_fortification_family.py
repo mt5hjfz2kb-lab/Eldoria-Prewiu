@@ -87,6 +87,23 @@ def scene(target,scale):
  ob.location=(16,-22,16);ob.rotation_euler=(Vector(target)-ob.location).to_track_quat('-Z','Y').to_euler()
  cam.type='ORTHO';cam.ortho_scale=scale;s.camera=ob
 def export(name):
+ # Apply each masonry bevel, then batch geometries per shared stone material.
+ # One GLB mesh per material rather than hundreds of mobile draw calls.
+ for ob in [o for o in bpy.data.objects if o.type=='MESH']:
+  bpy.ops.object.select_all(action='DESELECT')
+  ob.select_set(True);bpy.context.view_layer.objects.active=ob
+  for mod in list(ob.modifiers):
+   bpy.ops.object.modifier_apply(modifier=mod.name)
+ material_groups={}
+ for ob in [o for o in bpy.data.objects if o.type=='MESH']:
+  material_groups.setdefault(ob.data.materials[0].name,[]).append(ob)
+ for matname,objects in material_groups.items():
+  if len(objects)<2:continue
+  bpy.ops.object.select_all(action='DESELECT')
+  for ob in objects:ob.select_set(True)
+  bpy.context.view_layer.objects.active=objects[0]
+  bpy.ops.object.join()
+  bpy.context.view_layer.objects.active.name='batched_'+matname
  meshes=[o for o in bpy.data.objects if o.type=='MESH']
  assert meshes
  bpy.ops.object.select_all(action='DESELECT')
