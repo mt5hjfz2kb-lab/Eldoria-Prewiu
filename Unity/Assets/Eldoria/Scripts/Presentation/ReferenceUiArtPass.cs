@@ -687,7 +687,10 @@ namespace Eldoria.Presentation
             bool primary=text.transform.parent.name=="CONTINUAR"||text.transform.parent.name=="Building action";
             if(primary)
             {
-                var button=text.GetComponentInParent<Button>();
+                // The live label is a direct child of its Button. Inspect that exact
+                // control: ancestor searches can resolve a different button after
+                // presentation chrome is reparented during scene/layout updates.
+                var button=text.transform.parent.GetComponent<Button>();
                 text.color=button!=null&&!button.interactable
                     ?new Color(.94f,.84f,.63f):Ink;
                 text.fontStyle=FontStyle.Bold;text.fontSize=13;
