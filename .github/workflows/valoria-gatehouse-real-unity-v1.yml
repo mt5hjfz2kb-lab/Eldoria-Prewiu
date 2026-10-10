@@ -43,5 +43,6 @@ jobs:
           name: valoria-gatehouse-real-unity-v1
           path: |
             Unity/ValoriaGatehouseRealUnityV1Captures/*
+            Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity
           retention-days: 30
           if-no-files-found: warn
