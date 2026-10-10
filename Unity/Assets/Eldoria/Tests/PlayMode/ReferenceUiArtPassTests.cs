@@ -121,9 +121,9 @@ namespace Eldoria.Tests
                     {
                         typeof(Eldoria.Presentation.SlicePresenter).GetMethod("RefreshClock",flags).Invoke(presenter,null);
                         var messageValue=typeof(Eldoria.Presentation.SlicePresenter).GetField("message",flags).GetValue(presenter);
-                        Assert.That(messageValue,Is.InstanceOf<Text>(),"Unexpected feedback component: "+messageValue?.GetType().FullName);
-                        var liveMessage=messageValue as Text;
-                        var liveAction=typeof(Eldoria.Presentation.SlicePresenter).GetField("primaryActionText",flags).GetValue(presenter) as Text;
+                        Assert.That(messageValue,Is.InstanceOf<UnityEngine.UI.Text>(),"Unexpected feedback component: "+messageValue?.GetType().FullName);
+                        var liveMessage=messageValue as UnityEngine.UI.Text;
+                        var liveAction=typeof(Eldoria.Presentation.SlicePresenter).GetField("primaryActionText",flags).GetValue(presenter) as UnityEngine.UI.Text;
                         var liveObjective=typeof(Eldoria.Presentation.SlicePresenter).GetField("objective",flags).GetValue(presenter) as Text;
                         Assert.That(liveMessage,Is.Not.Null,"The presenter must own a feedback label during recruitment.");
                         Assert.That(liveMessage.gameObject.activeInHierarchy,Is.True,"The recruitment feedback must remain visible.");
@@ -151,7 +151,7 @@ namespace Eldoria.Tests
                 yield return new WaitForSecondsRealtime(.3f);
                 var completeAction=GameObject.Find("CONTINUAR").GetComponent<Button>();
                 Assert.That(completeAction.interactable,Is.False);
-                Assert.That(completeAction.GetComponentInChildren<Text>().color.r,Is.GreaterThan(.8f),
+                Assert.That(completeAction.GetComponentInChildren<UnityEngine.UI.Text>().color.r,Is.GreaterThan(.8f),
                     "Chapter completion must remain readable against its disabled dark plate.");
             }
             finally
