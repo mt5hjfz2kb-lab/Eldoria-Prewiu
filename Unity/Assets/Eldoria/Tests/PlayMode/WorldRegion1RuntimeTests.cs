@@ -47,6 +47,38 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority()
+        {
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+            yield return null;
+
+            var terrain=GameObject.Find("World Region 1 · terrain base");
+            Assert.That(terrain,Is.Not.Null);
+            Assert.That(terrain.GetComponent<Collider>(),Is.Null,
+                "Visual landscape relief must not replace logical hotspot collision.");
+
+            var mesh=terrain.GetComponent<MeshFilter>()?.sharedMesh;
+            Assert.That(mesh,Is.Not.Null);
+            Assert.That(mesh.vertexCount,Is.GreaterThanOrEqualTo(2000),
+                "Terrain needs sufficient vertices to avoid faceted distant ridges.");
+
+            float outerMin=float.PositiveInfinity;
+            float outerMax=float.NegativeInfinity;
+            foreach(var p in mesh.vertices)
+            {
+                if(Mathf.Max(Mathf.Abs(p.x),Mathf.Abs(p.z-3f))<26f)continue;
+                outerMin=Mathf.Min(outerMin,p.y);
+                outerMax=Mathf.Max(outerMax,p.y);
+            }
+            Assert.That(outerMax-outerMin,Is.GreaterThan(.25f),
+                "Outer terrain must read as varied geography, not a flat sheet.");
+            AssertHotspot("World Region 1 · forest target","forest-valoria");
+            AssertHotspot("World Region 1 · quarry target","quarry-valoria");
+            AssertHotspot("World Region 1 · corrupt scout target","corrupt-scout");
+        }
+
+        [UnityTest]
         public IEnumerator WorldPanIsBoundedAndKeepsFixedCameraDirection()
         {
             SceneManager.LoadScene("Frontier");
