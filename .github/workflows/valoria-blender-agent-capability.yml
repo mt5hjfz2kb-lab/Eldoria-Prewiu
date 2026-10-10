@@ -22,7 +22,9 @@ jobs:
           python3 -m uv --version || true
           timeout 150 sudo apt-get update -qq
           timeout 220 sudo apt-get install -y blender
-          timeout 180 uvx --from mcp-for-blender mcp-for-blender --help > /tmp/mcp-cli.txt 2>&1 || true
+          timeout 180 uvx --from mcp-for-blender mcp-for-blender --help > /tmp/mcp-cli.txt 2>&1
+          timeout 180 uvx --from mcp-for-blender mcp-for-blender install-addon > /tmp/mcp-addon.txt 2>&1
+          test -s /tmp/mcp-addon.txt
           blender --version | head -3
       - name: Evaluate actual available capability without keys or paid credits
         shell: bash
@@ -35,4 +37,5 @@ jobs:
           path: |
             /tmp/eldoria-agent-probe.json
             /tmp/mcp-cli.txt
+            /tmp/mcp-addon.txt
           retention-days: 14

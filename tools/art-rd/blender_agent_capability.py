@@ -17,6 +17,7 @@ report={
     "blender_version":command([blender,"--version"]) if blender else None,
     "mcp_cli_downloaded":Path("/tmp/mcp-cli.txt").exists(),
     "mcp_cli_log":Path("/tmp/mcp-cli.txt").read_text(errors="replace")[:1600] if Path("/tmp/mcp-cli.txt").exists() else None,
+    "addon_install_log":Path("/tmp/mcp-addon.txt").read_text(errors="replace")[:1400] if Path("/tmp/mcp-addon.txt").exists() else None,
     "agent_authenticated":False,
     "agent_blender_live_connection_tested":False,
     "visual_improvement_approved":False,
