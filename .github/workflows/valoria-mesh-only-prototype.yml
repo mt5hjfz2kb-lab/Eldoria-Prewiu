@@ -14,8 +14,8 @@ jobs:
         run: |
           from pathlib import Path
           s=Path("Unity/Assets/Eldoria/Scripts/Editor/ValoriaMeshOnlyBastionOneProof.cs").read_text()
-          assert "Gsplat" not in s and ".ply" not in s and "SHARP" not in s.replace("SHARP assets loaded","").replace("SHARP PLY, SHARP splats, SHARP-generated textures","").replace("UNLICENSED_SOURCE_FREE__MESH_ONLY_GEOMETRY","")
-          assert 'static readonly Family[] Families' in s and 'EditorSceneManager.SaveScene' in s
+          assert all(forbidden not in s for forbidden in ("Gsplat", ".ply", "SharpGaussianSource", "ValoriaWebGLSplatStateLoader", "VALORIA_SHARP"))
+          assert 'ValoriaMeshOnlyWorld.glb' in s and 'EditorSceneManager.SaveScene' in s
           for name in ["Bastion","Bridge","LowerGate","Road","Stair","Wall","RockTerrain"]:
               assert any(Path("art-source/valoria/production").glob(f"*-family-v1/{name}FamilyV1.blend")), name+" Blender source absent"
               assert any(Path("art-source/valoria/production").glob(f"*-family-v1/{name}FamilyV1.glb")), name+" exported GLB absent"
