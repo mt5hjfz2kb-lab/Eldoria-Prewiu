@@ -83,7 +83,7 @@ cuboid("Upper terrace edge retaining wall left",(-21,17.6,10.6),(3,2,5.6),stone,
 cuboid("Upper terrace edge retaining wall right",(21,17.6,10.6),(3,2,5.6),stone,.16)
 # Paving, physical connection, staircase transitioning z=8 to z=13.
 cuboid("Approach from bridge to gate",(0,-28.0,8.08),(7.4,15,.14),paving)
-cuboid("Gate to stair main street",(0,0,8.08),(7.4,32,.14),paving)
+cuboid("Gate to stair main street",(0,0,8.08),(7.4,34,.14),paving)
 for i in range(15):
     y=14+i*.55
     z=8.13+i*(5/15)
@@ -284,7 +284,7 @@ if asset_out.stat().st_size>22000000:
 def approximately(a,b,tol=.65): return abs(a-b)<=tol
 bridge_y=(-29-14/2,-29+14/2)
 gate_y=(-18-3.5/2,-18+3.5/2)
-road_y=(-32/2,32/2)
+road_y=(-34/2,34/2)
 upper_y=(28.6-22/2,28.6+22/2)
 stairs_y=(14-.59/2,14+(14*.55)+.59/2)
 assert bridge_y[1]>=gate_y[0], "Bridge cannot reach gate"
