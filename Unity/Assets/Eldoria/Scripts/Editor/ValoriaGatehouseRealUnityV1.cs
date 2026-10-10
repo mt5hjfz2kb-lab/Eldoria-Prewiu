@@ -107,6 +107,7 @@ namespace Eldoria.EditorTools
             var undergrowth = MaterialOf("Undergrowth",new Color(.25f,.32f,.16f));
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
             BuildPlateau(world.transform,grass,rock);
+            RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=45f; RenderSettings.fogEndDistance=115f;
             // Route winds in from the south; individually placed pavers avoid flat decal geometry.
             for(int i=0;i<70;i++){
                 float z=-40f+i*.83f;
@@ -142,11 +143,11 @@ namespace Eldoria.EditorTools
             }
             camera.transform.position=new Vector3(44f,36f,-57f);
             camera.transform.LookAt(new Vector3(0f,0f,0f));
-            camera.orthographicSize=44f;
+            camera.orthographicSize=35f;
             Save(camera,Output+"/unity-valoria-slice-landscape-1280x720.png",1280,720);
             camera.transform.position=new Vector3(42f,39f,-56f);
             camera.transform.LookAt(new Vector3(0f,0f,-3f));
-            camera.orthographicSize=47f;
+            camera.orthographicSize=38f;
             Save(camera,Output+"/unity-valoria-slice-portrait-390x844.png",390,844);
             var scenePath="Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity";
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),scenePath);
@@ -181,63 +182,85 @@ namespace Eldoria.EditorTools
         static float HeightAt(float x,float z){
             return -.25f+.35f*Mathf.Sin(x*.18f)*Mathf.Cos(z*.14f);
         }
+
         static void BuildPlateau(Transform parent,Material grass,Material cliff){
-            int n=36;float step=2.2f;
-            var verts=new Vector3[(n+1)*(n+1)];var tris=new int[n*n*6];
-            for(int z=0;z<=n;z++)for(int x=0;x<=n;x++){
-                float px=(x-n*.5f)*step,pz=(z-n*.5f)*step;
-                verts[z*(n+1)+x]=new Vector3(px,HeightAt(px,pz)-.10f,pz);
+            const int sectors=96, rings=18;
+            float radius=41f;
+            var verts=new Vector3[(rings+1)*(sectors+1)];
+            var indices=new int[rings*sectors*6];
+            for(int ring=0;ring<=rings;ring++){
+                float fraction=(float)ring/rings;
+                for(int sec=0;sec<=sectors;sec++){
+                    float angle=sec*Mathf.PI*2f/sectors;
+                    float perimeter=radius+2.0f*Mathf.Sin(angle*7f)+1.1f*Mathf.Cos(angle*13f);
+                    float x=Mathf.Cos(angle)*perimeter*fraction;
+                    float z=Mathf.Sin(angle)*perimeter*fraction;
+                    verts[ring*(sectors+1)+sec]=new Vector3(x,HeightAt(x,z),z);
+                }
             }
-            int t=0;for(int z=0;z<n;z++)for(int x=0;x<n;x++){
-                int a=z*(n+1)+x,b=a+1,c=a+n+1,d=c+1;
-                tris[t++]=a;tris[t++]=c;tris[t++]=b;
-                tris[t++]=b;tris[t++]=c;tris[t++]=d;
+            int k=0;
+            for(int ring=0;ring<rings;ring++)for(int sec=0;sec<sectors;sec++){
+                int a=ring*(sectors+1)+sec,b=a+1,c=a+sectors+1,d=c+1;
+                indices[k++]=a;indices[k++]=c;indices[k++]=b;
+                indices[k++]=b;indices[k++]=c;indices[k++]=d;
             }
-            var mesh=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32,vertices=verts,triangles=tris};
-            mesh.RecalculateNormals();
-            var ground=new GameObject("Continuous elevated courtyard terrain");
+            var surface=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32,vertices=verts,triangles=indices};
+            surface.RecalculateNormals();
+            var ground=new GameObject("Organic circular highland grass surface");
             ground.transform.SetParent(parent);
-            ground.AddComponent<MeshFilter>().sharedMesh=mesh;
+            ground.AddComponent<MeshFilter>().sharedMesh=surface;
             ground.AddComponent<MeshRenderer>().sharedMaterial=grass;
-            // Perimeter escarpment follows the terrain boundary rather than detached wall blocks.
-            int segments=72;var v=new Vector3[(segments+1)*2];var idx=new int[segments*6];
-            for(int i=0;i<=segments;i++){
-                float ang=i*Mathf.PI*2f/segments;
-                float c=Mathf.Cos(ang),sn=Mathf.Sin(ang);
-                float r=35.5f+1.5f*Mathf.Sin(ang*5f);
-                float px=c*r,pz=sn*r;
-                v[2*i]=new Vector3(px,HeightAt(px,pz)-.15f,pz);
-                v[2*i].z=pz;
-                v[2*i+1]=new Vector3(c*(r+3f),-7.5f-1.2f*Mathf.Sin(ang*7f),sn*(r+3f));
+            var edge=new Vector3[(sectors+1)*3];
+            var faces=new int[sectors*12];
+            for(int sec=0;sec<=sectors;sec++){
+                float ang=sec*Mathf.PI*2f/sectors;
+                float outer=radius+2f*Mathf.Sin(ang*7f)+1.1f*Mathf.Cos(ang*13f);
+                float x=outer*Mathf.Cos(ang),z=outer*Mathf.Sin(ang);
+                int i=sec*3;
+                edge[i]=new Vector3(x,HeightAt(x,z)-.05f,z);
+                edge[i+1]=new Vector3((outer+1.1f)*Mathf.Cos(ang),-3.8f+Mathf.Sin(ang*17f)*.6f,(outer+1.1f)*Mathf.Sin(ang));
+                edge[i+2]=new Vector3((outer+3.6f)*Mathf.Cos(ang),-9.5f+Mathf.Sin(ang*11f)*1.3f,(outer+3.6f)*Mathf.Sin(ang));
             }
-            for(int i=0;i<segments;i++){
-                int a=i*2,b=a+1,c=a+2,d=a+3,j=i*6;
-                idx[j]=a;idx[j+1]=b;idx[j+2]=c;
-                idx[j+3]=c;idx[j+4]=b;idx[j+5]=d;
+            for(int sec=0;sec<sectors;sec++){
+                int a=3*sec,b=a+1,c=a+2,d=a+3,e=d+1,f=d+2,j=sec*12;
+                faces[j]=a;faces[j+1]=d;faces[j+2]=b;
+                faces[j+3]=d;faces[j+4]=e;faces[j+5]=b;
+                faces[j+6]=b;faces[j+7]=e;faces[j+8]=c;
+                faces[j+9]=e;faces[j+10]=f;faces[j+11]=c;
             }
-            var rockmesh=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32,vertices=v,triangles=idx};
-            rockmesh.RecalculateNormals();
-            var cliffs=new GameObject("Continuous rocky escarpment");
+            var strata=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32,vertices=edge,triangles=faces};
+            strata.RecalculateNormals();
+            var cliffs=new GameObject("Jagged contiguous cliff ring");
             cliffs.transform.SetParent(parent);
-            cliffs.AddComponent<MeshFilter>().sharedMesh=rockmesh;
+            cliffs.AddComponent<MeshFilter>().sharedMesh=strata;
             cliffs.AddComponent<MeshRenderer>().sharedMaterial=cliff;
         }
         static void MakePine(Transform parent,Vector3 position,float height,Material wood,Material pine){
             var trunk=GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            trunk.name="Forest pine";
+            trunk.name="Alpine pine trunk";
             trunk.transform.SetParent(parent);
-            trunk.transform.position=position+Vector3.up*height*.35f;
-            trunk.transform.localScale=new Vector3(.19f,height*.35f,.19f);
+            trunk.transform.position=position+Vector3.up*height*.33f;
+            trunk.transform.localScale=new Vector3(.09f,height*.34f,.09f);
             trunk.GetComponent<Renderer>().sharedMaterial=wood;
             Object.DestroyImmediate(trunk.GetComponent<Collider>());
-            for(int i=0;i<3;i++){
-                var crown=GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                crown.name="Needle canopy tier";
-                crown.transform.SetParent(trunk.transform,true);
-                crown.transform.position=position+Vector3.up*(height*(.55f+i*.17f));
-                crown.transform.localScale=new Vector3(height*(.29f-i*.065f),height*.18f,height*(.29f-i*.065f));
-                crown.GetComponent<Renderer>().sharedMaterial=pine;
-                Object.DestroyImmediate(crown.GetComponent<Collider>());
+            for(int level=0;level<3;level++){
+                float baseY=height*(.36f+level*.19f);
+                float crownHeight=height*(.43f-level*.07f);
+                float crownRadius=height*(.17f-level*.045f);
+                const int sides=7;
+                var v=new Vector3[sides+1];var ix=new int[sides*3];
+                for(int i=0;i<sides;i++){
+                    float a=i*Mathf.PI*2f/sides;
+                    v[i]=new Vector3(crownRadius*Mathf.Cos(a),0f,crownRadius*Mathf.Sin(a));
+                    ix[i*3]=i;ix[i*3+1]=sides;ix[i*3+2]=(i+1)%sides;
+                }
+                v[sides]=new Vector3(0,crownHeight,0);
+                var mesh=new Mesh{vertices=v,triangles=ix};mesh.RecalculateNormals();
+                var section=new GameObject("Tapered evergreen branches");
+                section.transform.SetParent(parent);
+                section.transform.position=position+Vector3.up*baseY;
+                section.AddComponent<MeshFilter>().sharedMesh=mesh;
+                section.AddComponent<MeshRenderer>().sharedMaterial=pine;
             }
         }
         static void Save(Camera camera,string name,int w,int h)
