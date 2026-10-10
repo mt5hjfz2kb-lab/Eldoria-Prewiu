@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "valoria-four-way-touch-camera-20261010",
+  "request_id": "valoria-four-way-touch-camera-20261010",
+  "asset_or_sector": "Valoria WebGL four-direction touch camera and visible bounded city coverage",
+  "profile": "environment_composition",
+  "visual_gate_state": "verification",
+  "diagnosis": "Editor camera position assertions do not certify frame-based WebGL visible movement, edge coverage, or synchronized picking.",
+  "failure_class": "composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": false,
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": false
+  },
+  "validation": {
+    "source_gate": "Reuse candidate Pages run 38041337479 and canonical SHARP/Valoria source. Preserve gameplay, persistence, Region 1 and published stable until exact candidate QA passes.",
+    "final_gate": "Inspect actual candidate rendered HOME and left/right/up/down touch travel in landscape and portrait; four visibly different covered areas without voids, synchronized selection, reset/HOME, and full Bastion I-II gameplay/state regression. Promote exact approved artifact then verify published result."
+  },
+  "escalation": {
+    "on_next_visual_fail": "Classify image-envelope vs camera/picking failure; correct existing WebGL presentation and rerun exact candidate QA before promotion. No new generator or paid credits."
+  },
+  "status": "ACTIVE",
+  "notes": "Continuation of owner-requested camera mission from in-flight 38041337479; visual gate required, no duplicate Windows build."
+}
