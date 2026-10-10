@@ -1,3 +1,15 @@
+<!-- OWNER_TWO_TRACK_REVIEW_START -->
+## 2026-10-10 — CURRENT: TWO ART TRACKS / NOT VISUALLY APPROVED
+
+The owner authorized continuation of Region 1 v3 and the isolated Valoria mesh-only alternative. Current executor: `chat-owner-authorized-two-track-takeover-20261010`. Neither art workstream is visually complete; do not infer approval from older closed camera/I–II delivery records.
+
+**Region 1:** runtime source `71a72c067bed362a73c0f84d6daef704dec3de69` passed real native Unity tests/build/captures in run **38077985186**. Reworked connected terrain ridges, upright existing forest sources, ruin, quarry and soil routes. Exact candidate build **38079128676 / 11679937540**, source `243fb19d282daf4a4d9d0544991f4e49cbbfa3c8`, passed full WebGL candidate QA **38080379093 / 11679823738**: both I–II orientations, persistence, reset, four-way camera and zero runtime errors. Direct captures remain **ART FAIL**. Actual WebGL also revealed that the build-time library filter removed NatureTree01–04 and RuinedTower. Bounded fix `393f6d03ea948a73d0b9bdf1428c22d6c07c8e43` now retains every external reference used by WorldRegion1Runtime; source/governance checks passed. Corrected exact candidate build **38081014318**, head `5a51970bb9ebaaa401db5f43e8d722c698ee3d8e`, is in progress and must be checked before claiming corrected WebGL parity.
+
+**Valoria alternative:** isolated branch `prototype/valoria-bastion1-no-sharp-20261010`; final inspected source `683ff91bb188c39a06e3eb99c7221a6c52eef282`, Blender run **38079353952 / 11679846513**. Reproducible Blender/PNG/GLB; authored exportable textures/UVs, static batching and existing previously authorized Hero Bastion reuse. Exact GLB **16,477,940 bytes, 27 meshes, ~233,212 triangles, zero audit errors/warnings**. **ART FAIL**: detailed central bastion does not make the geometric surrounding scene match the approved reference. This revision has not been imported/rendered in Unity or profiled on physical mobile hardware. No promotion to main.
+
+**Decision:** no new paid generation credits or purchases. Published city/certified camera/I–II gameplay remain protected. Complete the running exact Region 1 checks, inspect its actual captures, and record the final technical/visual verdict. Both art scopes need a coherent authored environment source rather than repeated primitive decoration; source/export success is not production art acceptance.
+<!-- OWNER_TWO_TRACK_REVIEW_END -->
+
 ## 2026-10-10 — PERMANENT DIRECT UNITY DELIVERY AND ACTIONS RECOVERY
 - On every Eldoria production chat, read live `main` and follow this rule even if past conversations were interrupted. The source repository is authoritative.
 - Do not stop on progress summaries, intermediate commits, green tests, build dispatch, or partial QA. Within the live chat, continue implementation → Unity tests → Windows compilation → exact build QA → corrections and retests → controlled publication → published QA → finished playable delivery. Only an actual external platform constraint, indispensable human decision, or unavailable tool can prevent closure; report exact blockage without claiming PASS. No paid credits without explicit authorization.
@@ -5,7 +17,7 @@
 - Source-level camera movement tests are insufficient to certify visible city exploration. Verify real rendered left/right/up/down travel in published WebGL, landscape and portrait, bounded coverage without voids, reset/HOME and preserved gameplay.
 - A running or queued Windows job must not be duplicated; keep checking within available execution time, and do not invent an asynchronous continuation or suggest that the chat remains active after the response.
 
-## 2026-10-10 — CURRENT: BASTION I–II PARITY CORRECTIONS / PUBLISHED QA PASS / CLOSED
+## 2026-10-10 — DELIVERED HISTORY: BASTION I–II PARITY CORRECTIONS / PUBLISHED QA PASS / CLOSED
 
 The owner-requested continuation of the blocked chat is **COMPLETE**. Workstream `bastion-i-ii-web-parity-playthrough-v1` is closed after testing the exact candidate and the public game. This is the current I–II delivery record; earlier recovery/repair entries below are historical, not active instructions.
 
