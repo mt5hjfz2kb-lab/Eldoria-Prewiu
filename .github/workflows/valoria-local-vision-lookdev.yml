@@ -26,8 +26,12 @@ jobs:
         run: |
           $env:ELDORIA_VISION_OUTPUT="$env:RUNNER_TEMP/eldoria-vision-lookdev"
           $blender="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
-          & $blender -b --python tools/art-rd/eldoria_blender_vision_loop.py 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP/eldoria-vision-lookdev.log"
-          if($LASTEXITCODE -ne 0){throw "Local vision lookdev iteration failed"}
+          $stdout="$env:RUNNER_TEMP/eldoria-vision-stdout.log"
+          $stderr="$env:RUNNER_TEMP/eldoria-vision-stderr.log"
+          $p=Start-Process -FilePath $blender -ArgumentList @("-b","--python","tools/art-rd/eldoria_blender_vision_loop.py") -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          (Get-Content $stdout -Raw)+(Get-Content $stderr -Raw) | Set-Content "$env:RUNNER_TEMP/eldoria-vision-lookdev.log" -Encoding UTF8
+          Get-Content "$env:RUNNER_TEMP/eldoria-vision-lookdev.log" -Tail 90
+          if($p.ExitCode -ne 0){throw "Local vision lookdev iteration failed exit=$($p.ExitCode)"}
           if(-not (Test-Path "$env:ELDORIA_VISION_OUTPUT/after.png")){throw "Missing real after render"}
           if(-not (Select-String -Path "$env:RUNNER_TEMP/eldoria-vision-lookdev.log" -Pattern "ELDORIA_LOCAL_VISION_ITERATION_PASS" -Quiet)){throw "Missing actual model-guided command proof"}
       - uses: actions/upload-artifact@v4
