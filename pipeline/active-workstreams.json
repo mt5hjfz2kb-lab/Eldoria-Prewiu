@@ -6,7 +6,7 @@
     {
       "id": "valoria-four-way-touch-camera-20261010",
       "title": "Valoria four-way touch camera candidate to published QA",
-      "owner": "chat-direct-camera-continuation-20261010",
+      "owner": "chat-chief-programmer-takeover-20261010",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
@@ -28,8 +28,9 @@
       "base_main_sha": "cf0fb18f10062aa5048456091066862bc03ec2b6",
       "art_production_routing": "required",
       "art_production_routing_reason": "Player-visible Valoria camera framing and candidate visual gate require production routing.",
-      "phase": "In-flight Pages build; strengthening existing candidate probe to verify visible four-way touch travel in landscape and portrait.",
-      "next": "Await exact candidate and automatic WebGL QA; inspect rendered four-direction captures; correct, retest and publish only after gates."
+      "phase": "Owner-authorized takeover of stalled four-way camera release. Previous Pages build 38041337479 successful but candidate QA not certified; reestablish exact build QA before release.",
+      "next": "Finish camera candidate WebGL QA and exact-artifact publication, then release shared runner and Pages slot for Region 1 visual v3.",
+      "takeover_reason": "Explicit owner request to reclaim and complete the camera workstream blocking Region 1; no live Actions runs during takeover."
     }
   ],
   "history": [
