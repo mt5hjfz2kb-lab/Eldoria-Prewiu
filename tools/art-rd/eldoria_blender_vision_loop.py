@@ -18,6 +18,7 @@ bpy.ops.import_scene.gltf(filepath=str(src))
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
 scene.cycles.samples=8
+scene.cycles.seed=17
 scene.render.resolution_x=960
 scene.render.resolution_y=640
 scene.render.resolution_percentage=100
@@ -82,9 +83,21 @@ if changes==0: raise RuntimeError('No material categories matched actual source'
 if all(abs(x-1.0)<.007 for x in factors.values()):
  raise RuntimeError('Local model proposed no meaningful material correction')
 scene.render.filepath=str(after);bpy.ops.render.render(write_still=True)
+# Pixel-level evidence is not artistic approval, but rules out false no-op renders.
+def pixel_sample(path):
+ image=bpy.data.images.load(str(path),check_existing=False)
+ rgba=list(image.pixels[::557])
+ bpy.data.images.remove(image)
+ return rgba
+before_sample=pixel_sample(before)
+after_sample=pixel_sample(after)
+assert len(before_sample)==len(after_sample)
+mean_pixel_delta=sum(abs(a-b) for a,b in zip(before_sample,after_sample))/max(1,len(before_sample))
+if mean_pixel_delta < 0.0005:
+ raise RuntimeError('Blender art model proposed edits that did not materially change rendered pixels')
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'eldoria-vision-lookdev.blend'))
 report={"visual_pass":False,"unity_tested":False,"model":"gemma3:4b",
-        "actual_blender_pre_and_post":True,"fixed_camera":True,"material_count_touched":changes,
+        "actual_blender_pre_and_post":True,"fixed_camera":True,"material_count_touched":changes,"mean_pixel_delta":round(mean_pixel_delta,6),
         "factors":factors,"model_observation":str(data.get('observation',''))[:1000],
         "note":"Bounded material-only feasibility; geometry and commercial art reference still unapproved."}
 (out/'agent-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
