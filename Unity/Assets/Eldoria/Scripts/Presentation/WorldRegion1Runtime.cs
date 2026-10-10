@@ -133,19 +133,33 @@ namespace Eldoria.Presentation
             GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.04f,-7f),
                 new Vector3(14f,.07f,8f),new Color(.40f,.36f,.28f),5f);
 
+            // Low rugged stone escarpments read as traversable geography rather than
+            // bright isolated snow-cones. Existing licensed inventory rocks retain
+            // their PBR textures, silhouettes and normal maps.
             int mountainIndex=0;
             foreach(var p in new[]{
-                new Vector3(-22f,-1.4f,11f),new Vector3(-16f,-1.6f,23f),
-                new Vector3(21f,-1.4f,16f),new Vector3(7f,-1.8f,27f)})
+                new Vector3(-22f,-.45f,11f),new Vector3(-16f,-.45f,23f),
+                new Vector3(21f,-.45f,16f),new Vector3(7f,-.45f,27f)})
             {
-                var mountain=WorldInventoryPiece("Mountain01",
-                    "World Region 1 · mountain barrier",p,13.5f,8.8f,
-                    Quaternion.Euler(0f,(p.x+p.z)*5f+mountainIndex*23f,0f));
-                if(mountain==null)
-                    mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
-                        "World Region 1 · mountain barrier",p,11f,6.5f,
-                        Quaternion.Euler(0f,(p.x+p.z)*5f,0f),new Color(.34f,.36f,.34f,1f));
-                Parent(mountain);
+                float yaw=(p.x+p.z)*5f+mountainIndex*23f;
+                var ridge=WorldInventoryPiece("Rock01","World Region 1 · mountain barrier",
+                    p,9.1f,4.0f,Quaternion.Euler(0f,yaw,0f));
+                if(ridge==null)
+                    ridge=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
+                        "World Region 1 · mountain barrier",p,9.1f,4.0f,
+                        Quaternion.Euler(0f,yaw,0f),new Color(.34f,.36f,.34f,1f));
+                Parent(ridge);
+                var foothill=WorldInventoryPiece("Rock02",
+                    "World Region 1 · mountain foothill",
+                    p+new Vector3(3.0f,.05f,-2.2f),5.5f,2.2f,
+                    Quaternion.Euler(0f,yaw+57f,0f));
+                Parent(foothill);
+                if(ridge!=null)
+                    foreach(var collider in ridge.GetComponentsInChildren<Collider>(true))
+                        collider.enabled=false;
+                if(foothill!=null)
+                    foreach(var collider in foothill.GetComponentsInChildren<Collider>(true))
+                        collider.enabled=false;
                 mountainIndex++;
             }
 
@@ -161,7 +175,13 @@ namespace Eldoria.Presentation
                 {
                     float a=i*2.39996f+cluster*.71f;
                     float radius=.62f+Mathf.Sqrt(i+.5f)*.88f;
-                    var p=centres[cluster]+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
+                    // Disrupt the evident diagonal planting rows with spatially
+                    // deterministic jitter; colliders and resource nodes are unchanged.
+                    float jitterX=(Mathf.PerlinNoise(i*.61f+cluster*7.1f,4.3f)-.5f)*1.6f;
+                    float jitterZ=(Mathf.PerlinNoise(8.1f,i*.53f+cluster*9.7f)-.5f)*1.6f;
+                    var p=centres[cluster]+new Vector3(
+                        Mathf.Cos(a)*radius+jitterX,0,
+                        Mathf.Sin(a)*radius+jitterZ);
                     // Stratify the canopy without moving logical resource targets.
                     // Deterministic cluster/angle variation removes the visible size cadence.
                     float canopyScale=.70f+.26f*Mathf.PerlinNoise(
