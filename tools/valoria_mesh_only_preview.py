@@ -67,4 +67,16 @@ light=bpy.data.objects.new("SoftSun",light_data);sc.collection.objects.link(ligh
 light.rotation_euler=(math.radians(30),math.radians(-25),math.radians(10))
 bpy.ops.render.render(write_still=True)
 OUT.with_suffix(".json").write_text(json.dumps({"purpose":"independent Blender-preview, NOT Unity or commercial visual certification","families":results},indent=2))
-print("MESH_ONLY_PREVIEW",OUT)
+# Persist a small review thumbnail as UTF-8 on the isolated branch.
+# This enables independent visual inspection without binary-artifact API access.
+import base64
+thumbnail=bpy.data.images.load(str(OUT))
+thumbnail.scale(420,289)
+thumbnail.filepath_raw=str(OUT.with_name("valoria-mesh-review.jpg"))
+thumbnail.file_format="JPEG"
+thumbnail.save()
+thumb=Path(thumbnail.filepath_raw)
+review=ROOT/"docs/evidence/valoria-mesh-only-prototype"
+review.mkdir(parents=True,exist_ok=True)
+(review/"preview.jpg.base64.txt").write_text(base64.b64encode(thumb.read_bytes()).decode("ascii"))
+print("MESH_ONLY_PREVIEW",OUT, "review_bytes",thumb.stat().st_size)
