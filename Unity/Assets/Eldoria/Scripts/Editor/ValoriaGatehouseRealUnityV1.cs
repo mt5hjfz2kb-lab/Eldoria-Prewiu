@@ -107,7 +107,7 @@ namespace Eldoria.EditorTools
             var undergrowth = MaterialOf("Undergrowth",new Color(.25f,.32f,.16f));
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
             BuildPlateau(world.transform,grass,rock);
-            RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=45f; RenderSettings.fogEndDistance=115f;
+            RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=85f; RenderSettings.fogEndDistance=180f;
             // Route winds in from the south; individually placed pavers avoid flat decal geometry.
             for(int i=0;i<70;i++){
                 float z=-40f+i*.83f;
@@ -141,11 +141,11 @@ namespace Eldoria.EditorTools
                 brush.GetComponent<Renderer>().sharedMaterial=undergrowth;
                 Object.DestroyImmediate(brush.GetComponent<Collider>());
             }
-            camera.transform.position=new Vector3(44f,36f,-57f);
+            camera.transform.position=new Vector3(44f,34f,-57f);
             camera.transform.LookAt(new Vector3(0f,0f,0f));
             camera.orthographicSize=35f;
             Save(camera,Output+"/unity-valoria-slice-landscape-1280x720.png",1280,720);
-            camera.transform.position=new Vector3(42f,39f,-56f);
+            camera.transform.position=new Vector3(42f,38f,-56f);
             camera.transform.LookAt(new Vector3(0f,0f,-3f));
             camera.orthographicSize=38f;
             Save(camera,Output+"/unity-valoria-slice-portrait-390x844.png",390,844);
@@ -201,8 +201,8 @@ namespace Eldoria.EditorTools
             int k=0;
             for(int ring=0;ring<rings;ring++)for(int sec=0;sec<sectors;sec++){
                 int a=ring*(sectors+1)+sec,b=a+1,c=a+sectors+1,d=c+1;
-                indices[k++]=a;indices[k++]=c;indices[k++]=b;
-                indices[k++]=b;indices[k++]=c;indices[k++]=d;
+                indices[k++]=a;indices[k++]=b;indices[k++]=c;
+                indices[k++]=b;indices[k++]=d;indices[k++]=c;
             }
             var surface=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32,vertices=verts,triangles=indices};
             surface.RecalculateNormals();
