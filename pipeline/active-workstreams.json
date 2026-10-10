@@ -34,12 +34,11 @@
       "title": "Native Android playtest build preparation",
       "owner": "chat-android-native-playtest-20261010",
       "scope": [
-        "Unity/Assets/Eldoria/Scripts/Editor/AndroidPlaytestBuild.cs",
-        "Unity/Assets/Eldoria/Scripts/Editor/AndroidPlaytestBuild.cs.meta",
         ".github/workflows/android-playtest.yml",
         "pipeline/android-playtest-request.json",
         "docs/ANDROID_NATIVE_PLAYTEST.md",
-        "docs/evidence/android-native-playtest-v1-20261010/**"
+        "docs/evidence/android-native-playtest-v1-20261010/**",
+        "tools/android-playtest/**"
       ],
       "resources": [],
       "status": "active",
@@ -48,7 +47,7 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Native build transport only; reuse current certified scene without art/gameplay mutation.",
       "phase": "Prepare Android build without using occupied Windows runner.",
-      "next": "Validate build configuration and native support; claim runner only after existing owner releases it."
+      "next": "Run read-only Android toolchain/device inventory; do not build until runner ownership released."
     }
   ],
   "history": [
