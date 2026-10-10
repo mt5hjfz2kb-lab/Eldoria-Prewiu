@@ -146,15 +146,15 @@ namespace Eldoria.Presentation
             {
                 float yaw=(p.x+p.z)*5f+mountainIndex*23f;
                 var ridge=WorldInventoryPiece("Rock01","World Region 1 · mountain barrier",
-                    p,9.1f,4.0f,Quaternion.Euler(0f,yaw,0f));
+                    p,6.6f,3.1f,Quaternion.Euler(0f,yaw,0f));
                 if(ridge==null)
                     ridge=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
-                        "World Region 1 · mountain barrier",p,9.1f,4.0f,
+                        "World Region 1 · mountain barrier",p,6.6f,3.1f,
                         Quaternion.Euler(0f,yaw,0f),new Color(.34f,.36f,.34f,1f));
                 Parent(ridge);
                 var foothill=WorldInventoryPiece("Rock02",
                     "World Region 1 · mountain foothill",
-                    p+new Vector3(3.0f,.05f,-2.2f),5.5f,2.2f,
+                    p+new Vector3(3.0f,.05f,-2.2f),4.3f,1.8f,
                     Quaternion.Euler(0f,yaw+57f,0f));
                 Parent(foothill);
                 if(ridge!=null)
