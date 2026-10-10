@@ -7,11 +7,11 @@ Effective: 2026-10-02
 
 Prevent two ChatGPT/agent sessions from silently converging onto the same Eldoria work, duplicating experiments, overwriting canonical state, competing for the Windows runner, or spending Tripo credits twice.
 
-The repository remains the source of truth. This protocol adds a small coordination layer; it does not replace project-state documents or certified evidence.
+The repository remains the source of truth. This protocol adds a small coordination layer; it does not replace project-state documents or certified evidence. Example file paths below are illustrative, not a source of runtime authority; actual Unity presentation and visual authority are decided by current code and canonical routing.
 
 ## Permanent continuous-execution rule
 
-Once an agent successfully claims a workstream, it must continue autonomously through diagnosis, correction, rerun, validation and closeout. **Progress updates are informational only and MUST NOT suspend execution.** The agent must not wait for the owner to say `continúa`, `sigue`, `reanuda` or equivalent when the next action is already determined by the repository, existing evidence, canonical planner/routing, tests or zero-cost tooling.
+Once an agent successfully claims a workstream, it must continue through diagnosis, correction, rerun, validation and closeout within the available live execution. This rule does not create unlimited session duration or background execution. **Progress updates are informational only and MUST NOT suspend execution.** The agent must not wait for the owner to say `continúa`, `sigue`, `reanuda` or equivalent when the next action is already determined by the repository, existing evidence, canonical planner/routing, tests or zero-cost tooling.
 
 A failed gate is the beginning of the next bounded diagnostic/correction cycle; it is **not** a valid reason to end the work session.
 ### Autonomous closure without owner-review dependency
@@ -70,7 +70,7 @@ Example active entry:
   "title": "Valoria World Composition v3",
   "owner": "chat-valoria-composition",
   "scope": [
-    "Unity/Assets/Eldoria/Runtime/Valoria/VisualWorld.cs",
+    "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
     "docs/VALORIA_*"
   ],
   "resources": [
