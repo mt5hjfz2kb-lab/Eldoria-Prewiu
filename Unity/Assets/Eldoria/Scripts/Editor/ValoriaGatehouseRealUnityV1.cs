@@ -59,6 +59,24 @@ namespace Eldoria.EditorTools
             camera.transform.LookAt(new Vector3(0f,3.15f,0f));
             camera.orthographicSize=16f;
             Save(camera,Output+"/unity-mobile-390x844.png",390,844);
+            var prior=new GameObject("Current Valoria architecture comparison");
+            var priorImport=new GltfImport(null,new UninterruptedDeferAgent());
+            if(!await priorImport.LoadFile(Path.GetFullPath(PriorPath)))throw new Exception("Cannot load existing Valoria gate");
+            if(!await priorImport.InstantiateMainSceneAsync(prior.transform))throw new Exception("Cannot instantiate existing Valoria gate");
+            var previousParts=prior.GetComponentsInChildren<Renderer>();
+            var previousBounds=previousParts[0].bounds;
+            foreach(var p in previousParts)previousBounds.Encapsulate(p.bounds);
+            prior.transform.localScale*=17.3f/previousBounds.size.x;
+            previousParts=prior.GetComponentsInChildren<Renderer>();
+            previousBounds=previousParts[0].bounds;
+            foreach(var p in previousParts)previousBounds.Encapsulate(p.bounds);
+            prior.transform.position-=new Vector3(previousBounds.center.x,previousBounds.min.y,previousBounds.center.z);
+            root.SetActive(false);
+            camera.transform.position=new Vector3(18.2f,14.6f,-25.8f);
+            camera.transform.LookAt(new Vector3(0f,3.15f,5.8f));
+            camera.orthographicSize=9f;
+            Save(camera,Output+"/unity-existing-gate-1280x720.png",1280,720);
+            prior.SetActive(false);root.SetActive(true);
             long triangles=0;int materials=0;
             foreach(var mesh in root.GetComponentsInChildren<MeshFilter>(true))
                 if(mesh.sharedMesh!=null) for(int i=0;i<mesh.sharedMesh.subMeshCount;i++)triangles+=mesh.sharedMesh.GetIndexCount(i)/3;
