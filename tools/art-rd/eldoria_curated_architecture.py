@@ -65,13 +65,17 @@ for i,(cx,cy) in enumerate(centers):
    x=(old.x-(minx+maxx)/2)*scale;y=(old.y-(miny+maxy)/2)*scale
    v.co=(cx+x*math.cos(angle)-y*math.sin(angle),cy+x*math.sin(angle)+y*math.cos(angle),8.05+(old.z-minz)*scale)
   o.name='Curated Slavic medieval variant '+str(i)
-  for m in o.data.materials:
-   if not m:continue
-   m.use_nodes=True
-   bs=m.node_tree.nodes.get('Principled BSDF')
-   if bs and not bs.inputs['Base Color'].is_linked:
-    tex=m.node_tree.nodes.new('ShaderNodeTexImage');tex.image=image
-    m.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+  # The stock atlas import placed UVs into neon-purple cells. Retire that
+  # invalid visual interpretation rather than declaring the candidate art-ready.
+  # Trial neutral masonry/wood hues: no unverified texture export.
+  mat=bpy.data.materials.new('Eldoria neutral-weathered-medieval-'+str(i))
+  mat.use_nodes=True
+  node=mat.node_tree.nodes.get('Principled BSDF')
+  color=(.28,.245,.215,1.0) if i%4!=3 else (.39,.345,.285,1.0)
+  node.inputs['Base Color'].default_value=color
+  node.inputs['Roughness'].default_value=.92
+  o.data.materials.clear()
+  o.data.materials.append(mat)
  results.append({'source':name,'placement':[cx,cy],'scale':round(scale,3),'objects':len(lod0)})
 sc.render.filepath=str(out/'after.png');bpy.ops.render.render(write_still=True)
 report={'method':'licensed-library-curated-fbx-render-only','commercial_rights_unreviewed':True,
