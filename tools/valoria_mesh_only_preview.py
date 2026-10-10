@@ -232,6 +232,19 @@ cam.location=(55,-82,78)
 target=Vector((0,6,8))
 cam.rotation_euler=(target-Vector(cam.location)).to_track_quat("-Z","Y").to_euler()
 cam_d.type="ORTHO";cam_d.ortho_scale=102
+# Export all visual mesh geometry in the same continuous world space for Unity import.
+# Blender-specific noise shaders are not a Unity material certification.
+asset_out=ROOT/"Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb"
+asset_out.parent.mkdir(parents=True,exist_ok=True)
+bpy.ops.object.select_all(action="DESELECT")
+for ob in bpy.data.objects:
+    if ob.type=="MESH":ob.select_set(True)
+bpy.ops.export_scene.gltf(filepath=str(asset_out), export_format="GLB",
+                          use_selection=True,export_apply=True,export_yup=True)
+if not asset_out.exists() or asset_out.stat().st_size<10000:
+    raise RuntimeError("Worldspace GLB export missing or invalid")
+if asset_out.stat().st_size>22000000:
+    raise RuntimeError("Worldspace GLB exceeds prototype repository size budget")
 bpy.ops.render.render(write_still=True)
 report={"result":"BLENDER WORLDSPACE VISUAL PROOF ONLY; UNITY NOT TESTED",
         "basis":"single scene coordinates, world-space mesh bases and a connected authored substrate",
