@@ -7,6 +7,8 @@ on:
       - '.github/workflows/valoria-gatehouse-real-unity-v1.yml'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaGatehouseRealUnityV1.cs'
   workflow_dispatch:
+permissions:
+  contents: write
 concurrency:
   group: valoria-gatehouse-real-unity-v1
   cancel-in-progress: false
@@ -36,6 +38,18 @@ jobs:
           if(Test-Path $log){Get-Content $log -Tail 120}
           if($p.ExitCode -ne 0){throw "Unity gatehouse capture failed $($p.ExitCode)"}
           if(-not (Test-Path "$env:GITHUB_WORKSPACE\\Unity\\ValoriaGatehouseRealUnityV1Captures\\unity-strategic-1280x720.png")){throw 'Real Unity strategic screenshot missing'}
+      - name: Preserve generated Unity scene in isolated branch
+        shell: powershell
+        continue-on-error: true
+        run: |
+          git config user.name "eldoria-art-ci"
+          git config user.email "eldoria-art-ci@users.noreply.github.com"
+          git add Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) {
+            git commit -m "art(unity): persist regenerated Valoria vertical slice scene [skip ci]"
+            git push origin HEAD:integration/valoria-gatehouse-unity-v1-20261011
+          }
       - name: Preserve artifacts
         uses: actions/upload-artifact@v4
         if: always()
