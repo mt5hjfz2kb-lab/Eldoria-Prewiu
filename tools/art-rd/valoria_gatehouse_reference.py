@@ -31,6 +31,38 @@ if stone_albedo.exists():
    nm=material.node_tree.nodes.new("ShaderNodeNormalMap");nm.inputs["Strength"].default_value=.52
    material.node_tree.links.new(nt.outputs["Color"],nm.inputs["Color"])
    material.node_tree.links.new(nm.outputs["Normal"],bs.inputs["Normal"])
+# Artistic convergence V2: restrained weathered masonry instead of regular
+# curtain-wall grids; modify EXISTING facade stones rather than stacking cubes.
+masonry_rng=random.Random(2142)
+for ob in list(bpy.data.objects):
+ if ob.type!="MESH" or "_irregular_stone" not in ob.name:continue
+ if not ob.name.startswith("gate_pier_"):continue
+ # Different joint widths and recess depth without separating structural backing.
+ ob.location.x+=masonry_rng.uniform(-.045,.045)
+ ob.location.z+=masonry_rng.uniform(-.037,.037)
+ ob.location.y+=(-1 if ob.location.y<0 else 1)*masonry_rng.uniform(-.029,.032)
+ ob.scale.x*=masonry_rng.uniform(.91,1.07)
+ ob.scale.z*=masonry_rng.uniform(.91,1.06)
+ ob.rotation_euler[1]+=masonry_rng.uniform(-.021,.021)
+# Material differentiation and tiling adapted to existing UV coordinates.
+rough_file=textures/"stone_smoothness.png"
+if rough_file.exists():
+ rough_image=bpy.data.images.load(str(rough_file),check_existing=True)
+ rough_image.colorspace_settings.name="Non-Color"
+ for m in list(base.stone)+[base.trim]:
+  bs=m.node_tree.nodes.get("Principled BSDF")
+  tex=m.node_tree.nodes.new("ShaderNodeTexImage");tex.image=rough_image
+  inv=m.node_tree.nodes.new("ShaderNodeInvert")
+  m.node_tree.links.new(tex.outputs["Color"],inv.inputs["Color"])
+  m.node_tree.links.new(inv.outputs["Color"],bs.inputs["Roughness"])
+# Existing in-project wood surface provides actual grain in Blender and GLB.
+wood_path=Path(__file__).resolve().parents[2]/"Unity/Assets/Eldoria/ArtTests/OriginalHero/Textures/oak.png"
+if wood_path.exists():
+ wood_image=bpy.data.images.load(str(wood_path),check_existing=True)
+ for mat in base.wood:
+  bs=mat.node_tree.nodes.get("Principled BSDF")
+  tex=mat.node_tree.nodes.new("ShaderNodeTexImage");tex.image=wood_image
+  mat.node_tree.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
 # Dark Valoria slate provides a distinctive distant silhouette.
 slate=base.mat("valoria_roof_dark_slate",(.115,.15,.18),.81)
 slate_edge=base.mat("slate_ridge_edge",(.20,.24,.25),.86)
@@ -42,6 +74,15 @@ for sx in (-1,1):
  roof=base.frustum("Valoria_pitched_watch_roof",(tx,0,8.16),1.86,.07,2.35,slate,12)
  base.frustum("slate_roof_eave",(tx,0,7.02),1.95,1.85,.16,slate_edge,24)
  boxp=base.cube("worn_roof_finial",(tx,0,9.42),(.16,.16,.46),base.iron,.04)
+  # Nonuniform slate tiles follow pitched roof slope; silhouettes remain intact.
+ for course in range(5):
+  z=7.17+course*.40
+  radius=1.86-(z-6.985)/2.35*1.79
+  for j in range(12):
+   angle=(j+.30*(course%2))*math.tau/12
+   a=tx+radius*math.cos(angle);bb=radius*math.sin(angle)
+   tile=base.cube("slate_lap_tile",(a,bb,z),(.48,.17,.19),slate_edge if (j+course)%4==0 else slate,.013)
+   tile.rotation_euler[2]=angle
  # One unmistakable banner per defensive tower facing the camera.
  pole=base.cube("heraldic_banner_mast",(tx,-2.23,7.36),(.065,.075,3.2),base.iron,.014)
  cloth=base.cube("Valoria_long_pennant",(tx,-2.32,6.72),(.64,.06,1.41),banner,.025)
