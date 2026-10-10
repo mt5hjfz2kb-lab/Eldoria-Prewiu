@@ -155,10 +155,13 @@ namespace Eldoria.EditorTools
                 if(mf.sharedMesh!=null)for(int si=0;si<mf.sharedMesh.subMeshCount;si++)worldTriangles+=mf.sharedMesh.GetIndexCount(si)/3;
             }
             foreach(var rend in world.GetComponentsInChildren<Renderer>()){worldSlots+=rend.sharedMaterials.Length;worldRenderers++;}
-            File.WriteAllText(Output+"/slice-metrics.json",
-                "{\\n  \\"environment_triangles\\": "+worldTriangles+",\\n  \\"environment_renderers\\": "+worldRenderers+
-                ",\\n  \\"environment_material_slots\\": "+worldSlots+
-                ",\\n  \\"includes_original_gatehouse\\": true,\\n  \\"includes_original_walls\\": true,\\n  \\"mobile_device_tested\\": false\\n}"); 
+            File.WriteAllText(Output+"/slice-metrics.txt",
+                "environment_triangles="+worldTriangles+Environment.NewLine+
+                "environment_renderers="+worldRenderers+Environment.NewLine+
+                "environment_material_slots="+worldSlots+Environment.NewLine+
+                "includes_original_gatehouse=true"+Environment.NewLine+
+                "includes_original_walls=true"+Environment.NewLine+
+                "mobile_device_tested=false"+Environment.NewLine);
             long triangles=0;int materials=0;
             foreach(var mesh in root.GetComponentsInChildren<MeshFilter>(true))
                 if(mesh.sharedMesh!=null) for(int i=0;i<mesh.sharedMesh.subMeshCount;i++)triangles+=mesh.sharedMesh.GetIndexCount(i)/3;
