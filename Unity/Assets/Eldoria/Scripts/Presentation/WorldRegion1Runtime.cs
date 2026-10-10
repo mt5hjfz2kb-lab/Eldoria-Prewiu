@@ -550,10 +550,10 @@ namespace Eldoria.Presentation
             var texture=new Texture2D(size,size,TextureFormat.RGB24,true)
             {name="Eldoria Region 1 continuous biome soil",wrapMode=TextureWrapMode.Clamp};
             var pixels=new Color[size*size];
-            var soil=new Color(.275f,.254f,.204f);
-            var grass=new Color(.205f,.276f,.174f);
-            var moor=new Color(.198f,.226f,.192f);
-            var gravel=new Color(.325f,.307f,.269f);
+            var soil=new Color(.225f,.250f,.196f);
+            var grass=new Color(.160f,.245f,.160f);
+            var moor=new Color(.165f,.213f,.195f);
+            var gravel=new Color(.310f,.292f,.247f);
             for(int y=0;y<size;y++)
             for(int x=0;x<size;x++)
             {
@@ -572,7 +572,7 @@ namespace Eldoria.Presentation
                 var col=Color.Lerp(soil,grass,Mathf.Clamp01(meadow+forest*.25f));
                 col=Color.Lerp(col,moor,highland);
                 col=Color.Lerp(col,gravel,grit*.64f);
-                float detailFactor=.87f+detail*.18f+grain*.09f;
+                float detailFactor=.82f+detail*.23f+grain*.12f;
                 pixels[y*size+x]=col*detailFactor;
             }
             texture.SetPixels(pixels);texture.Apply(true,false);
@@ -761,7 +761,7 @@ namespace Eldoria.Presentation
             if(inventoryTree!=null)
             {
                 Parent(inventoryTree);
-                TintWorldDonor(inventoryTree,new Color(.78f,.82f,.74f,1f));
+                TintWorldDonor(inventoryTree,new Color(.62f,.72f,.63f,1f));
                 foreach(var col in inventoryTree.GetComponentsInChildren<Collider>(true))col.enabled=false;
                 return;
             }
