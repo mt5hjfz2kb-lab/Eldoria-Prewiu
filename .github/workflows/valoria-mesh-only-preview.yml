@@ -30,6 +30,7 @@ jobs:
           path: |
             ${{ runner.temp }}/valoria-mesh-proof.png
             ${{ runner.temp }}/valoria-mesh-proof.json
+            Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb
       - name: Save low-resolution visual-review thumbnail on isolated branch
         if: success()
         env:
@@ -38,6 +39,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/evidence/valoria-mesh-only-prototype/
+          git add docs/evidence/valoria-mesh-only-prototype/ Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb
           git commit -m "Store isolated low-res Blender visual proof for direct review"
           git push
