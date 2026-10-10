@@ -12,7 +12,7 @@ OUT.parent.mkdir(parents=True, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=20
+scene.cycles.samples=32
 for layer in scene.view_layers: layer.cycles.use_denoising=False
 scene.render.resolution_x=1152
 scene.render.resolution_y=768
@@ -501,6 +501,115 @@ for i,y in enumerate((-19,-5,10,24,35)):
     for x in (-5,5):
         cuboid("Torch standard",(x,y,9 if y<12 else 14),(0.24,.24,2.1),wood)
         cuboid("Emissive torch cue",(x,y,10.1 if y<12 else 15.1),(.33,.33,.4),glow)
+def beam_between(name,a,b,radius,mat,vertices=6):
+    av,bv=Vector(a),Vector(b)
+    delta=bv-av
+    bpy.ops.mesh.primitive_cylinder_add(vertices=vertices,radius=radius,
+        depth=delta.length,location=(av+bv)*.5)
+    ob=bpy.context.object;ob.name=name
+    ob.rotation_euler=delta.to_track_quat('Z','Y').to_euler()
+    ob.data.materials.append(mat)
+    return ob
+
+# Remove the deliberately failed roof slabs and conical tree proxies. This pass
+# replaces their geometry rather than accumulating props over the failed shapes.
+for ob in list(bpy.data.objects):
+    if ob.type!='MESH':continue
+    if any(key in ob.name for key in ('Slate pitched roof proxy','Command hall slate cap',
+          'Fir canopy','Valoria perimeter fir foliage','Valoria perimeter fir trunk')):
+        bpy.data.objects.remove(ob,do_unlink=True)
+
+plaster=material('Limewashed infill',(.47,.42,.32))
+# High-pitched roofs, actual eaves and half-timber frames are the secondary
+# architectural language. Macro features remain visible at strategic scale.
+for side in (-1,1):
+    for i in range(4):
+        x=side*(11+(i%2)*6);y=-11+(i//2)*13
+        cuboid('Cottage lime infill front',(x,y-2.66,9.45),(4.65,.16,2.65),plaster,.02)
+        cuboid('Cottage lime infill side',(x+side*2.47,y,9.45),(.16,4.9,2.65),plaster,.02)
+        pitched_roof('Timbered steep gable',x,y,10.8,6.3,6.5,2.3)
+        for dx in (-2.35,0,2.35):
+            beam_between('Exposed facade structural stud',(x+dx,y-2.82,8.2),
+                (x+dx,y-2.82,10.85),.10,wood)
+        for dx in (-2.35,2.35):
+            beam_between('Raking gable structural beam',(x+dx,y-3.31,10.85),
+                (x,y-3.31,13.1),.12,wood)
+            beam_between('Braced cottage panel',(x+dx,y-2.83,8.3),
+                (x,y-2.83,10.3),.075,wood)
+        cuboid('Cottage projecting eave',(x,y-3.3,10.81),(6.55,.32,.22),wood,.02)
+        for dx in (-1.45,1.45):
+            cuboid('Cottage dark recessed window',(x+dx,y-2.88,9.75),(.73,.14,.87),dark,.02)
+            cuboid('Carved window sill',(x+dx,y-3.0,9.25),(1.05,.32,.18),trim,.025)
+        cuboid('Cottage stone chimney',(x+1.7,y+.6,12.1),(.73,.82,3.5),stone,.05)
+pitched_roof('Command hall steep slate roof',9,29,17.4,12.4,9.5,3.6)
+
+def country_height(x,y):
+    # Plateau joins an extensive world, with a sunken approach rather than a
+    # floating island on a blue studio background.
+    r=math.sqrt((x/29.0)**2+((y-2)/43.0)**2)
+    shoulder=7.4*math.exp(-max(0,r-1)*2.5)
+    distant=2.6*math.sin(x*.036+y*.018)+1.7*math.cos(y*.057-x*.011)
+    return -2.5+shoulder+distant*min(1,max(0,r-1))
+
+nx=90;ny=110;verts=[];faces=[]
+for j in range(ny+1):
+    y=-140+j*310/ny
+    for i in range(nx+1):
+        x=-150+i*300/nx
+        verts.append((x,y,country_height(x,y)))
+for j in range(ny):
+    for i in range(nx):
+        a=j*(nx+1)+i
+        faces.append((a,a+1,a+nx+2,a+nx+1))
+me=bpy.data.meshes.new('Continuous hinterland sculpt')
+me.from_pydata(verts,[],faces);me.update()
+ob=bpy.data.objects.new('Valoria continuous inhabited hinterland',me)
+scene.collection.objects.link(ob);ob.data.materials.append(earth)
+for face in me.polygons:face.use_smooth=True
+
+def branch_fir(x,y,ground,height,seed):
+    rr=random.Random(seed)
+    beam_between('Fir tapered trunk',(x,y,ground),(x,y,ground+height),.12,wood)
+    for level in range(5):
+        z=ground+height*(.28+level*.125)
+        reach=height*(.27-level*.039)
+        for k in range(5):
+            angle=k*2*math.pi/5+level*.79+rr.uniform(-.12,.12)
+            end=(x+math.cos(angle)*reach,y+math.sin(angle)*reach,z-.18)
+            beam_between('Fir radial branch',(x,y,z),end,.04,wood)
+            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,
+                location=(x+math.cos(angle)*reach*.67,y+math.sin(angle)*reach*.67,z+.15))
+            crown=bpy.context.object;crown.name='Fir layered irregular needle crown'
+            crown.scale=(reach*.80,reach*.51,height*.12)
+            crown.rotation_euler[2]=angle
+            crown.data.materials.append(leaf_deep if (k+level)%3 else leaf_mid)
+
+forest_rng=random.Random(421)
+for k in range(64):
+    side=-1 if k%2 else 1
+    x=side*forest_rng.uniform(31,72);y=forest_rng.uniform(-43,79)
+    branch_fir(x,y,country_height(x,y),forest_rng.uniform(6,10),k+810)
+for k,(x,y) in enumerate([(-25,-10),(-25,3),(25,-9),(25,7),(-24,28),(24,32)]):
+    branch_fir(x,y,7.5,5.7+k*.3,k+900)
+
+# Human scale and colour are established by gardens, stone threshold transitions,
+# broken yard edges, and a kept central street rather than miniature torch blocks.
+for side in (-1,1):
+    for y in (-7,7):
+        for k in range(6):
+            cuboid('Kitchen garden cultivated bed',(side*17.7,y+k*.38,8.15),
+                (3.0,.22,.14),earth,.02)
+        for k in range(5):
+            beam_between('Garden rustic fence',(side*19.5,y+k*.5,8.05),
+                (side*19.5,y+k*.5,9.15),.06,wood)
+
+# Join cliff into talus rather than exposing an enormous vertical pedestal.
+for ob in bpy.data.objects:
+    if ob.type=='MESH' and ob.name.startswith('Organic connected cliff foundation'):
+        for v in ob.data.vertices:
+            if v.co.z<1:v.co.z=1+(v.co.z-1)*.42
+
+
 # Procedural mid-frequency PBR variation: avoid flat prototype color slabs.
 for mat in [stone,trim,paving,earth,grass,rock,wood,pine]:
     nodes=mat.node_tree.nodes
@@ -567,7 +676,7 @@ if world and world.use_nodes:
 scene.view_settings.view_transform="Standard"
 scene.view_settings.look="Medium High Contrast"
 scene.view_settings.exposure=.45
-cam_d.type="ORTHO";cam_d.ortho_scale=102
+cam_d.type="ORTHO";cam_d.ortho_scale=94
 # Export all visual mesh geometry in the same continuous world space for Unity import.
 # Blender-specific noise shaders are not a Unity material certification.
 asset_out=ROOT/"Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb"
@@ -612,3 +721,4 @@ review=ROOT/"docs/evidence/valoria-mesh-only-prototype"
 review.mkdir(parents=True,exist_ok=True)
 (review/"preview.jpg.base64.txt").write_text(base64.b64encode(thumb.read_bytes()).decode("ascii"))
 print("WORLDSPACE PROOF OUTPUT",str(OUT))
+
