@@ -1,0 +1,11 @@
+{
+  "enabled": false,
+  "probe_toolchain": true,
+  "workstream_id": "android-native-playtest-v1-20261010",
+  "production_artifact_id": 11546715716,
+  "production_source_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
+  "package_id": "com.eldoria.playtest",
+  "reason": "Prepare native Android diagnostic APK without interrupting the active Region 1 runner owner. Enable only after obtaining the runner lease.",
+  "device_acceptance": "pending",
+  "paid_credits": 0
+}

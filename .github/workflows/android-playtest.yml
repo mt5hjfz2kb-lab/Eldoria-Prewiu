@@ -1,0 +1,165 @@
+name: Android native playtest
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/android-playtest-request.json'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: eldoria-android-playtest
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.gate.outputs.enabled }}
+      probe: ${{ steps.gate.outputs.probe }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require exclusive runner lease and exact native source artifact
+        id: gate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cfg = require('./pipeline/android-playtest-request.json');
+            core.setOutput('probe', String(cfg.probe_toolchain === true));
+            core.setOutput('enabled', 'false');
+            if (cfg.enabled !== true) {
+              core.info('Android preparation only; no Windows runner requested.');
+              return;
+            }
+            // Read LIVE ownership; a queued build may have been superseded.
+            const res = await github.rest.repos.getContent({ ...context.repo,
+              path: 'pipeline/active-workstreams.json', ref: 'main' });
+            const reg = JSON.parse(Buffer.from(res.data.content, 'base64').toString());
+            const heavy = w => (w.resources || []).some(r =>
+              /windows.*(runner|unity)|runner.*windows/i.test(r));
+            const owner = reg.active.find(w => w.id === cfg.workstream_id);
+            if (!owner || !heavy(owner)) throw new Error('Android has no exclusive Windows runner lease');
+            if (reg.active.some(w => w.id !== cfg.workstream_id && heavy(w)))
+              throw new Error('Windows runner belongs to another active workstream');
+            if (cfg.paid_credits !== 0) throw new Error('Only zero-credit playtests are authorized');
+            const artifact = (await github.rest.actions.getArtifact({ ...context.repo,
+              artifact_id: cfg.production_artifact_id })).data;
+            if (artifact.expired || artifact.workflow_run.head_sha !== cfg.production_source_sha)
+              throw new Error('Native scene artifact expired or source identity mismatched');
+            const run = (await github.rest.actions.getWorkflowRun({ ...context.repo,
+              run_id: artifact.workflow_run.id })).data;
+            if (run.conclusion !== 'success') throw new Error('Native source production run has not passed');
+            core.setOutput('enabled', 'true');
+
+  toolchain:
+    needs: preflight
+    if: needs.preflight.outputs.probe == 'true'
+    # Read-only seconds-long inventory; does not launch Unity or mutate installed modules.
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Inspect native Android support and connected test devices
+        shell: powershell
+        run: |
+          $editor = $env:UNITY_EDITOR_PATH
+          $android = Join-Path (Split-Path $editor) 'Data\PlaybackEngines\AndroidPlayer'
+          $adb = Join-Path $android 'SDK\platform-tools\adb.exe'
+          $devices = 0
+          if (Test-Path $adb) {
+            $lines = & $adb devices
+            $devices = @($lines | Where-Object { $_ -match '\sdevice$' }).Count
+          }
+          $result = @{ android_support=(Test-Path $android); sdk=(Test-Path (Join-Path $android 'SDK')); ndk=(Test-Path (Join-Path $android 'NDK')); openjdk=(Test-Path (Join-Path $android 'OpenJDK')); authorized_android_devices=$devices; unity_started=$false; paid_credits=0 }
+          $result | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/android-toolchain.json"
+          $result | ConvertTo-Json | Write-Host
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-toolchain
+          path: ${{ runner.temp }}/android-toolchain.json
+
+  build:
+    needs: preflight
+    if: needs.preflight.outputs.enabled == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate = Get-ChildItem "$env:LOCALAPPDATA\GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found on Windows runner.' }
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+      - name: Recheck live ownership and Android toolchain before building
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $cfg = Get-Content 'pipeline/android-playtest-request.json' -Raw | ConvertFrom-Json
+          $headers = @{ Authorization="Bearer $env:GH_TOKEN"; Accept='application/vnd.github+json' }
+          $live = Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $reg = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($live.content)) | ConvertFrom-Json
+          $owners = @($reg.active | Where-Object { @($_.resources | Where-Object { $_ -match 'windows.*(runner|unity)|runner.*windows' }).Count -gt 0 })
+          if ($owners.Count -ne 1 -or $owners[0].id -ne $cfg.workstream_id) { throw 'Runner lease changed before Android build.' }
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH missing.' }
+          $android = Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data\PlaybackEngines\AndroidPlayer'
+          foreach ($part in @('', 'SDK', 'NDK', 'OpenJDK')) {
+            if (-not (Test-Path (Join-Path $android $part))) { throw "Android toolchain missing: $part. Install the matching Unity Android module and dependencies." }
+          }
+      - name: Stage unchanged certified native production scene
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $cfg = Get-Content 'pipeline/android-playtest-request.json' -Raw | ConvertFrom-Json
+          $headers = @{ Authorization="Bearer $env:GH_TOKEN"; Accept='application/vnd.github+json' }
+          $zip = Join-Path $env:RUNNER_TEMP 'android-native-production.zip'
+          $stage = Join-Path $env:RUNNER_TEMP 'android-native-production'
+          Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
+          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$($cfg.production_artifact_id)/zip" -OutFile $zip
+          Expand-Archive $zip $stage -Force
+          $src = Join-Path $stage 'Assets\Eldoria\ProductionSlice'
+          if (-not (Test-Path (Join-Path $src 'Runtime\Valoria.unity'))) { throw 'Certified native scene absent.' }
+          $dst = Join-Path $env:GITHUB_WORKSPACE 'Unity\Assets\Eldoria\ProductionSlice'
+          Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item $src $dst -Recurse -Force
+      - name: Build diagnostic native APK
+        shell: powershell
+        run: |
+          Copy-Item 'tools/android-playtest/AndroidPlaytestBuild.cs' 'Unity/Assets/Eldoria/Scripts/Editor/AndroidPlaytestBuild.cs' -Force
+          Copy-Item 'tools/android-playtest/AndroidPlaytestBuild.cs.meta' 'Unity/Assets/Eldoria/Scripts/Editor/AndroidPlaytestBuild.cs.meta' -Force
+          $log = Join-Path $env:RUNNER_TEMP 'Eldoria-Android.log'
+          $args = @('-batchmode', '-nographics', '-quit', '-projectPath', "`"$env:GITHUB_WORKSPACE/Unity`"", '-buildTarget', 'Android', '-executeMethod', 'Eldoria.EditorTools.AndroidPlaytestBuild.Build', '-logFile', "`"$log`"")
+          $process = Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(3000000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            throw 'Android build timed out.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { Get-Content $log -Tail 200; throw "Android build failed: $($process.ExitCode)" }
+          $apk = 'Unity/Builds/Android/Eldoria-Playtest.apk'
+          if (-not (Test-Path $apk)) { throw 'APK missing after Unity build.' }
+          $cfg = Get-Content 'pipeline/android-playtest-request.json' -Raw | ConvertFrom-Json
+          @{ source_sha=$env:GITHUB_SHA; production_artifact_id=$cfg.production_artifact_id; apk_sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant(); bytes=(Get-Item $apk).Length; build='PASS'; device_acceptance='NOT_TESTED'; paid_credits=0 } |
+            ConvertTo-Json | Set-Content 'Unity/Builds/Android/build-result.json'
+      - name: Upload APK and identity
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-android-${{ github.sha }}
+          path: Unity/Builds/Android/*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve Android build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-android-log-${{ github.sha }}
+          path: ${{ runner.temp }}/Eldoria-Android.log
+          if-no-files-found: ignore
