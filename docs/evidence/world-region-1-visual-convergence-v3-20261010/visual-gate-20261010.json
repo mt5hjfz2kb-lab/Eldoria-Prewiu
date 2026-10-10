@@ -1,0 +1,27 @@
+{
+  "workstream": "world-region-1-visual-convergence-v3-20261010",
+  "status": "OPEN_VISUAL_GATE",
+  "candidate_source_sha": "6e9e6fabc9ab26846d20a228534922c8f7b677f2",
+  "candidate_build_run_id": 38073844504,
+  "candidate_build_artifact_id": 11678288283,
+  "candidate_qa_run_id": 38075124008,
+  "candidate_qa_artifact_id": 11677904690,
+  "technical_qa": {
+    "candidate": true,
+    "qa_conclusion": "success",
+    "runtime_errors": 0,
+    "full_bastion_i_ii": true,
+    "landscape": true,
+    "portrait": true,
+    "persistence": true,
+    "reset": true,
+    "four_way_pan": true
+  },
+  "visual_review": {
+    "status": "FAIL",
+    "reason": "Real world-before-action.png screenshot remains visibly provisional: flat sparse terrain, toy-scale trees/bushes and rocks, isolated city, simplistic road/silhouette; not a commercially credible dark-medieval 4X world. Automated report coverage.visualQualityPass=false. No artistic release approval."
+  },
+  "release_approved": false,
+  "next": "Rework scene composition, terrain structure, coherent forests, geological silhouettes, roads and POI art using existing assets and repeat Unity capture/technical candidate QA; do not promote 38073844504 merely because technical gate succeeded.",
+  "paid_credits": 0
+}
