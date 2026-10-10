@@ -48,17 +48,24 @@ for display,folder,u,v,w,h,depth in FAMILIES:
         mw=ob.matrix_world.copy();ob.parent=parent;ob.matrix_world=mw
     bpy.context.view_layer.update()
     coords=[ob.matrix_world@Vector(corner) for ob in loaded for corner in ob.bound_box]
-    lo=Vector(tuple(min(c[i] for c in coords) for i in range(3)))
-    hi=Vector(tuple(max(c[i] for c in coords) for i in range(3)))
-    center=(lo+hi)*.5
-    size=hi-lo
-    scale=min(w*2*depth*tan*aspect/max(.001,size.x),h*2*depth*tan/max(.001,size.z))
+    def extent(axis):
+        values=[(p-cam.location).dot(axis) for p in coords]
+        return max(values)-min(values)
+    # Scale by actual camera-plane coordinates (not world axes).
+    width=max(.001,extent(right))
+    height=max(.001,extent(up))
+    scale=min(w*2*depth*tan*aspect/width,h*2*depth*tan/height)
+    if not math.isfinite(scale) or scale<=0:raise RuntimeError("Bad scale "+display)
     parent.scale=(scale,)*3
     bpy.context.view_layer.update()
     coords=[ob.matrix_world@Vector(corner) for ob in loaded for corner in ob.bound_box]
-    center=sum(coords,Vector())/len(coords)
+    xvals=[p.dot(right) for p in coords]
+    yvals=[p.dot(up) for p in coords]
+    zvals=[p.dot(forward) for p in coords]
+    middle=right*((min(xvals)+max(xvals))*.5)+up*((min(yvals)+max(yvals))*.5)+forward*((min(zvals)+max(zvals))*.5)
     target=cam.location+forward*depth+right*((u-.5)*2*depth*tan*aspect)+up*((v-.5)*2*depth*tan)
-    parent.location+=target-center
+    parent.location+=target-middle
+    bpy.context.view_layer.update()
     results.append({"family":display,"mesh_count":len(loaded),"input":str(src.relative_to(ROOT)),"scale":scale})
 world=sc.world
 world.use_nodes=True
