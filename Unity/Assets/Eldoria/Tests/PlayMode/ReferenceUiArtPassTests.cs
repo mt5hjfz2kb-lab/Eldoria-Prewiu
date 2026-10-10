@@ -120,12 +120,15 @@ namespace Eldoria.Tests
                     if(gateway.Snapshot().RecruitmentCompletesUtcTicks>0)
                     {
                         typeof(Eldoria.Presentation.SlicePresenter).GetMethod("RefreshClock",flags).Invoke(presenter,null);
-                        Assert.That(GameObject.Find("Feedback").GetComponent<Text>().text,
-                            Does.StartWith("Entrenamiento:"),"The live recruitment countdown must reach the player HUD.");
-                        Assert.That(GameObject.Find("CONTINUAR").GetComponentInChildren<Text>().text,
-                            Does.StartWith("ENTRENAMIENTO ·"),"The large primary feedback must expose remaining seconds.");
-                        Assert.That(GameObject.Find("Objective").GetComponent<Text>().text,
-                            Does.Contain("entrenando"),"After payment the objective must not ask for resources again.");
+                        var liveMessage=(Text)typeof(Eldoria.Presentation.SlicePresenter).GetField("message",flags).GetValue(presenter);
+                        var liveAction=(Text)typeof(Eldoria.Presentation.SlicePresenter).GetField("primaryActionText",flags).GetValue(presenter);
+                        var liveObjective=(Text)typeof(Eldoria.Presentation.SlicePresenter).GetField("objective",flags).GetValue(presenter);
+                        Assert.That(liveMessage,Is.Not.Null,"The presenter must own a feedback label during recruitment.");
+                        Assert.That(liveMessage.gameObject.activeInHierarchy,Is.True,"The recruitment feedback must remain visible.");
+                        Assert.That(liveMessage.text,Does.StartWith("Entrenamiento:"),"The live recruitment countdown must reach the player HUD.");
+                        Assert.That(liveAction,Is.Not.Null);
+                        Assert.That(liveAction.text,Does.StartWith("ENTRENAMIENTO ·"),"The large primary feedback must expose remaining seconds.");
+                        Assert.That(liveObjective.text,Does.Contain("entrenando"),"After payment the objective must not ask for resources again.");
                     }
                     clock.UtcTicks+=System.TimeSpan.FromSeconds(30).Ticks;
                     gateway.Advance();
