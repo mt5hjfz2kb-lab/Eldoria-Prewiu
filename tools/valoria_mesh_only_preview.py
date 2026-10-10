@@ -219,6 +219,47 @@ for x,y,z,h in [(-28,-21,7.4,6),(-29,8,7.4,7.2),(29,6,7.4,6.5),
 cuboid("Bridge lower abutment",(0,-35,6.7),(10.0,5.0,3.3),rock,.23)
 cuboid("Bridge continuous walkway",(0,-29,8.15),(7.7,14,.23),paving,.08)
 cuboid("Bridge gate connecting sill",(0,-20.5,8.12),(7.7,4,.21),paving,.03)
+# Trial of separately verified CC0 medieval geometry for reproducible commercial rights.
+# Git blob SHA pins bytes; nothing downloads from AI services or paid endpoints.
+import urllib.request, hashlib
+inventory=json.loads((ROOT/"docs/evidence/valoria-mesh-only-prototype/cc0-assets.json").read_text())
+assert inventory["license"]=="CC0-1.0"
+cache=ROOT/"Unity/Assets/Eldoria/ProductionSlice/Experimental/cc0-cache"
+cache.mkdir(parents=True,exist_ok=True)
+def import_cc0(asset,origin,width):
+    source="https://raw.githubusercontent.com/Hidencod/tge-assets/main/"+asset["path"]
+    path=cache/Path(asset["path"]).name
+    if not path.exists():
+        with urllib.request.urlopen(source,timeout=20) as response: data=response.read()
+        sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\x00"+data).hexdigest()
+        if sha!=asset["sha"]:raise RuntimeError("CC0 blob hash mismatch: "+asset["path"])
+        path.write_bytes(data)
+    before=set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=str(path))
+    items=[o for o in bpy.data.objects if o not in before and o.type=="MESH"]
+    if not items:raise RuntimeError("Empty CC0 model: "+asset["path"])
+    parent=bpy.data.objects.new("Kenney CC0 "+path.stem,None)
+    scene.collection.objects.link(parent)
+    for item in items:
+        mat=item.matrix_world.copy();item.parent=parent;item.matrix_world=mat
+    bpy.context.view_layer.update()
+    points=[item.matrix_world@Vector(c) for item in items for c in item.bound_box]
+    minx=min(v.x for v in points);maxx=max(v.x for v in points)
+    miny=min(v.y for v in points);maxy=max(v.y for v in points)
+    minz=min(v.z for v in points)
+    scale=width/max(.001,maxx-minx)
+    parent.scale=(scale,)*3
+    parent.location=(origin[0]-scale*(minx+maxx)*.5,
+                     origin[1]-scale*(miny+maxy)*.5,
+                     origin[2]-scale*minz)
+    return path.stem
+assets={x["path"].split("/")[-1]:x for x in inventory["assets"]}
+for loc in [(-22,-1,13),(22,7,13)]:
+    import_cc0(assets["tower-square.glb"],loc,3.5)
+for loc in [(-27,-5,7.5),(27,-17,7.5),(26,35,7.5)]:
+    import_cc0(assets["tree-large.glb"],loc,4.0)
+for loc in [(-25,20,8),(-21,-23,7)]:
+    import_cc0(assets["rocks-large.glb"],loc,3.0)
 # Animated-look static light sources for proof only.
 for i,y in enumerate((-19,-5,10,24,35)):
     for x in (-5,5):
