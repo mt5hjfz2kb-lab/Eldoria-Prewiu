@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "world-region-1-visual-convergence-v3-20261010",
+  "request_id": "world-region-1-visual-convergence-v3-20261010",
+  "asset_or_sector": "World Region 1 strategic forest/moor/rock escarpment/road biome and map landmark visual convergence",
+  "profile": "environment_composition",
+  "visual_gate_state": "verification",
+  "diagnosis": "World Region 1 gameplay passes but terrain still reads as uniformly tiled open field with disconnected forest and oversized edge cliffs; the native mobile strategic map requires legible textured biome composition.",
+  "failure_class": "surface",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": true,
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": false
+  },
+  "validation": {
+    "source_gate": "Preserve current Region 1 hotspots, resources, march, navigation and state. Use Unity 6000.3.23f1 with existing licensed art and zero paid credits.",
+    "final_gate": "Unity EditMode/PlayMode and Windows PASS, exact matched captures of Region 1 including landscape/mobile examined for biome texture and route legibility, exact WebGL candidate gameplay/state QA in landscape/portrait, exact artifact publication and published QA."
+  },
+  "escalation": {
+    "on_next_visual_fail": "Improve authored in-Unity terrain palette/composition with existing donor materials, routes and POIs; correct visible failures and rerun before promotion. No paid Tripo credits."
+  },
+  "status": "ACTIVE",
+  "notes": "Owner-authorized continuation after camera workstream fully published and closed; code and gameplay topology remain canonical."
+}
