@@ -28,6 +28,24 @@
       "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
       "phase": "Pre-existing v3 visual commits passed Unity; claim released runner/Pages and complete final visual convergence.",
       "next": "Improve Region 1 visual scene and verify exact final Windows/QA captures; build candidate WebGL, run exact candidate QA and publish after gate."
+    },
+    {
+      "id": "valoria-mesh-only-worldspace-proof-20261010",
+      "title": "Valoria Bastion I mesh-only coherent world-space proof",
+      "owner": "chat-valoria-no-sharp-prototype",
+      "scope": [
+        "tools/valoria_mesh_only_preview.py",
+        ".github/workflows/valoria-mesh-only-preview.yml",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMeshOnlyBastionOneProof.cs",
+        "docs/evidence/valoria-mesh-only-prototype/**"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "a3ad770564fb6818d8a2f3d2495c9e5b2b723f59",
+      "art_production_routing": "required",
+      "phase": "World-space connected prototype; Blender Ubuntu only, no shared Windows/Pages",
+      "next": "Author physically connected environment; render inspect; import Unity when owner resources legitimately released"
     }
   ],
   "history": [
