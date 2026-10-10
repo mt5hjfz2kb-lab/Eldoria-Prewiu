@@ -33,6 +33,31 @@ namespace Eldoria.EditorTools
         [MenuItem("Eldoria/Experimental/Create Bastion I Mesh-Only Proof")]
         public static void Create()
         {
+            // Stage the already committed Blender exports into Unity only for this isolated experiment.
+            // The production importer normally stages these files in its own workflow.
+            foreach(var family in Families)
+            {
+                if(AssetDatabase.LoadAssetAtPath<GameObject>(family.Path)!=null)continue;
+                var source=Path.Combine(
+                    Directory.GetParent(Application.dataPath).Parent.FullName,
+                    "art-source","valoria","production",
+                    family.Name=="LowerGate"?"lower-gate-family-v1":
+                    family.Name=="MainRoad"?"road-family-v1":
+                    family.Name=="CentralStair"?"stair-family-v1":
+                    family.Name=="UpperWalls"?"wall-family-v1":
+                    family.Name=="TerrainCliffSupport"?"rock-terrain-family-v1":
+                    family.Name.ToLowerInvariant()+"-family-v1",
+                    family.Name=="MainRoad"?"RoadFamilyV1.glb":
+                    family.Name=="CentralStair"?"StairFamilyV1.glb":
+                    family.Name=="UpperWalls"?"WallFamilyV1.glb":
+                    family.Name=="TerrainCliffSupport"?"RockTerrainFamilyV1.glb":
+                    family.Name+"FamilyV1.glb");
+                if(!File.Exists(source))throw new FileNotFoundException("Missing committed Blender GLB",source);
+                var destination=Path.Combine(Application.dataPath,family.Path.Substring("Assets/".Length));
+                Directory.CreateDirectory(Path.GetDirectoryName(destination));
+                File.Copy(source,destination,true);
+                AssetDatabase.ImportAsset(family.Path,ImportAssetOptions.ForceSynchronousImport);
+            }
             // Preflight before touching any scene, with explicit independent asset availability.
             foreach(var f in Families)
                 if(AssetDatabase.LoadAssetAtPath<GameObject>(f.Path)==null)
