@@ -27,6 +27,20 @@ namespace Eldoria.EditorTools
             var camera=Camera.main;
             if(camera==null)throw new System.Exception("Frontier camera missing.");
 
+            // Region 1 visual R&D acceptance: the integrated Breach stone dressing is real,
+            // bounded to visual-only renderers, and never takes over gameplay collision.
+            int scarCount=0;
+            foreach(var sceneObject in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            {
+                if(!sceneObject.name.StartsWith("4X · breach scar weathered stone",System.StringComparison.Ordinal))continue;
+                scarCount++;
+                if(sceneObject.GetComponentInChildren<Renderer>(true)==null)
+                    throw new System.Exception("Breach scar object has no renderer.");
+                foreach(var collider in sceneObject.GetComponentsInChildren<Collider>(true))
+                    if(collider.enabled)throw new System.Exception("Breach scar must not own gameplay collision.");
+            }
+            if(scarCount!=10)throw new System.Exception("Expected 10 zero-credit Breach scar details; actual="+scarCount);
+
             var forestHotspot=GameObject.Find("Bosque de Valoria · recolectar");
             if(forestHotspot==null||forestHotspot.GetComponent<WorldHotspot>()==null)
                 throw new System.Exception("Forest gameplay hotspot missing.");
