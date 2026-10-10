@@ -38,7 +38,8 @@ namespace Eldoria.EditorTools
             var camera=cameraObject.AddComponent<Camera>();
             camera.tag="MainCamera";
             camera.orthographic=true;
-            camera.orthographicSize=51f;
+            // Blender ortho_scale is the horizontal span at this landscape aspect.
+            camera.orthographicSize=94f*CaptureHeight/CaptureWidth*.5f;
             camera.nearClipPlane=.1f;
             camera.farClipPlane=350f;
             camera.clearFlags=CameraClearFlags.SolidColor;
