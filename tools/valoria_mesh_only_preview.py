@@ -636,7 +636,7 @@ def branch_fir(x,y,ground,height,seed):
 
 
 forest_rng=random.Random(421)
-for k in range(64):
+for k in range(40):
     side=-1 if k%2 else 1
     x=side*forest_rng.uniform(31,72);y=forest_rng.uniform(-43,79)
     branch_fir(x,y,country_height(x,y),forest_rng.uniform(6,10),k+810)
