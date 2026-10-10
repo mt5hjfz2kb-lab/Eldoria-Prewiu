@@ -77,17 +77,23 @@ def wall(name,x=0,y=0,length=8,detail=True):
     cube(name+"_buttress_cap",(px,y+s*.81,3.27),(.72,.75,.2),trim,.045)
  crenels(name,x0,x1,y,4.57)
 def tower(name,x=0,y=0):
- # Silhouette is a continuous tapered drum, not 180 overlapping boxes.
- frustum(name+"_recessed_drum",(x,y,3.35),2.38,2.16,6.7,mortar,24)
+ # Continuous tapered drum with individually laid radial masonry courses.
+ frustum(name+"_recessed_drum",(x,y,3.35),2.32,2.11,6.7,mortar,32)
  rng=random.Random(53)
  for j in range(14):
-  z=j*.46+.22
+  z0=j*.46+.03;z1=z0+.42
   for k in range(24):
-   theta=(k+(j%2)*.48)*math.tau/24
-   radius=2.33-(z/6.7)*.22
-   face=arch_segment(name+"_curved_masonry",x,y,z, radius,theta,theta+math.tau/24-.012,.24,stone[rng.randrange(len(stone))],.12)
-   # Wedges wrap around tower with continuous curved surface.
-   face.rotation_euler[2]=0
+   a0=(k+(j%2)*.48)*math.tau/24+.008
+   a1=a0+math.tau/24-.016
+   r0=2.34-(z0/6.7)*.21;r1=2.34-(z1/6.7)*.21
+   vertices=[]
+   for z,r in ((z0,r0),(z1,r1)):
+    for rr,a in ((r-.14,a0),(r,a0),(r,a1),(r-.14,a1)):
+     vertices.append((x+rr*math.cos(a),y+rr*math.sin(a),z))
+   faces=[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]
+   mesh=bpy.data.meshes.new(name+"_stone_mesh");mesh.from_pydata(vertices,[],faces);mesh.update()
+   ob=bpy.data.objects.new(name+"_radial_ashlar",mesh);bpy.context.collection.objects.link(ob)
+   mesh.materials.append(stone[rng.randrange(len(stone))])
  for z,radius in ((.44,2.39),(4.45,2.23),(6.65,2.19)):
   frustum(name+"_annular_band",(x,y,z),radius+.14,radius+.14,.16,trim,32)
  for k in range(12):
@@ -96,7 +102,6 @@ def tower(name,x=0,y=0):
    obj=cube(name+"_crown_merlon",(x+2.22*math.cos(t),y+2.22*math.sin(t),7.16),(.93,.68,.96),trim,.07)
    obj.rotation_euler[2]=t
   if k%3==0:
-   # Vertical blind arrow slit on masonry face.
    obj=cube(name+"_loophole",(x+2.19*math.cos(t),y+2.19*math.sin(t),4.9),(.12,.075,.92),iron,.012)
    obj.rotation_euler[2]=t
 def gate():
