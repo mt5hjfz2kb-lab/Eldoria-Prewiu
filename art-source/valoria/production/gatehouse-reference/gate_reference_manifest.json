@@ -1,0 +1,12 @@
+{
+  "triangles": 26072,
+  "mesh_count": 22,
+  "materials": 22,
+  "glb_bytes": 2142396,
+  "wall_to_tower_edge_contact_x": [
+    -8.65,
+    8.65
+  ],
+  "visual_certification": "requires review",
+  "unity_mobile_tested": false
+}
