@@ -32,9 +32,15 @@ req=urllib.request.Request("http://127.0.0.1:11434/api/chat",data=json.dumps(pay
 with urllib.request.urlopen(req,timeout=210) as f: resp=json.loads(f.read().decode('utf8'))
 answer=resp.get('message',{}).get('content','')
 (out/'model-response.txt').write_text(answer,encoding='utf8')
-match=re.search(r'"rock_relief_strength"\s*:\s*(0\.\d+)',answer)
-if not match:raise RuntimeError('Local model did not return a valid geometry instruction')
-strength=float(match.group(1))
+# Qwen JSON can encode the same safe numeric choice as a JSON string.
+try:
+    decision=json.loads(answer)
+    value=decision['rock_relief_strength']
+    if isinstance(value,bool) or not isinstance(value,(str,int,float)):
+        raise ValueError('Invalid geometry strength type')
+    strength=float(value)
+except (ValueError,TypeError,KeyError,json.JSONDecodeError) as exc:
+    raise RuntimeError('Local model did not return a valid geometry instruction') from exc
 if strength not in (0.22,0.36,0.52,0.68):raise RuntimeError('Non-whitelisted strength')
 rocknames=[ob.name for ob in bpy.data.objects if ob.type=='MESH' and 'Dark slate bedrock' in ob.name]
 if not rocknames:raise RuntimeError('No target rock geometry in actual city source')
