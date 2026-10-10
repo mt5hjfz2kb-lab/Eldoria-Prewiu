@@ -677,6 +677,28 @@ scene.view_settings.view_transform="Standard"
 scene.view_settings.look="Medium High Contrast"
 scene.view_settings.exposure=.45
 cam_d.type="ORTHO";cam_d.ortho_scale=94
+# Collapse static authored geometry into a small material vocabulary before
+# exporting: the previous 1163 independent mesh renderers are unacceptable as
+# a mobile production baseline. Preserve world coordinates and material slots.
+material_groups={}
+for ob in list(bpy.data.objects):
+    if ob.type!='MESH':continue
+    key=tuple(m.name if m else 'none' for m in ob.data.materials)
+    material_groups.setdefault(key,[]).append(ob)
+for key,objects in material_groups.items():
+    if len(objects)<2:continue
+    bpy.ops.object.select_all(action='DESELECT')
+    for ob in objects:ob.select_set(True)
+    bpy.context.view_layer.objects.active=objects[0]
+    bpy.ops.object.join()
+    bpy.context.object.name='Static material batch '+str(len(objects))+' '+key[0]
+mesh_metrics={'mesh_objects':sum(ob.type=='MESH' for ob in bpy.data.objects),
+              'triangles':sum(sum(len(p.vertices)-2 for p in ob.data.polygons)
+                              for ob in bpy.data.objects if ob.type=='MESH'),
+              'materials':len(bpy.data.materials),
+              'device_profiled':False}
+print('STATIC_SOURCE_METRICS',json.dumps(mesh_metrics))
+
 # Export all visual mesh geometry in the same continuous world space for Unity import.
 # Blender-specific noise shaders are not a Unity material certification.
 asset_out=ROOT/"Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb"
@@ -711,7 +733,7 @@ print("WORLDSPACE_CONNECTIVITY_PASS: bridge, gate, main road, stair, upper court
 bpy.ops.render.render(write_still=True)
 report={"result":"BLENDER WORLDSPACE VISUAL PROOF ONLY; UNITY NOT TESTED",
         "basis":"single scene coordinates, world-space mesh bases and a connected authored substrate",
-        "no_sharp":True,"families":results}
+        "no_sharp":True,"families":results,"static_source_metrics":mesh_metrics}
 OUT.with_suffix(".json").write_text(json.dumps(report,indent=2))
 # Store direct-review thumbnail in branch as UTF-8 for independent visual inspection.
 img=bpy.data.images.load(str(OUT));img.scale(540,360)
