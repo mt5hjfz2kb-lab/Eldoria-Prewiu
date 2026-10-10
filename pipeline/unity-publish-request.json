@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "Region 1 authored vegetation, terrain, soil routes and landmarks; exact Unity gate 38077985186 passed. Build and probe candidate; visual release approval remains false.",
+  "reason": "Build corrected Region 1 WebGL resource parity candidate: retain only four approved forest sources and RuinedTower; previous exact QA 38080379093 passed gameplay but revealed reference pruning.",
   "production_run_id": 37767338367,
   "production_artifact_id": 11546715716,
   "production_head_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
@@ -9,10 +9,10 @@
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "world-region-1-visual-convergence-v3-20261010",
   "updated_at": "2026-10-10",
-  "retry": 63,
+  "retry": 64,
   "retry_reason": "Build exact owner-authorized current candidate after native compile/tests/capture review.",
   "parcel_source_artifact_id": 11544987850,
-  "retry_after_commit": "71a72c067bed362a73c0f84d6daef704dec3de69",
+  "retry_after_commit": "393f6d03ea948a73d0b9bdf1428c22d6c07c8e43",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 38038180064,
@@ -114,5 +114,6 @@
     "evidence": "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/release-result.json"
   },
   "region_1_native_gate_run_id": 38077985186,
-  "region_1_native_source_sha": "71a72c067bed362a73c0f84d6daef704dec3de69"
+  "region_1_native_source_sha": "71a72c067bed362a73c0f84d6daef704dec3de69",
+  "region_1_webgl_resource_fix_source_sha": "393f6d03ea948a73d0b9bdf1428c22d6c07c8e43"
 }
