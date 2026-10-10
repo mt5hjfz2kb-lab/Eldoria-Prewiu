@@ -436,18 +436,16 @@ namespace Eldoria.Presentation
             var ruin=new GameObject("World Region 1 · old watch ruin");
             ruin.transform.SetParent(root,true);
 
-            var arch=WorldInventoryPiece("Arch_Gothic","World Region 1 · ruin arch",
-                RuinPosition+new Vector3(-.75f,0f,.25f),5.7f,5.8f,Quaternion.Euler(0,-18f,0));
-            var wall=WorldInventoryPiece("Wall_Broken","World Region 1 · ruin wall",
-                RuinPosition+new Vector3(1.25f,0f,.65f),5.0f,4.3f,Quaternion.Euler(0,38f,0));
-            Parent(arch);Parent(wall);
-
-            if(arch==null&&wall==null)
+            var authored=ValoriaKit.BenchmarkPiece("World Region 1 · ruin authored",
+                externalLibrary!=null?externalLibrary.RuinedTower:null,
+                RuinPosition,4.4f,4.1f,Quaternion.Euler(0f,-18f,0f));
+            Parent(authored);
+            if(authored!=null)TintWorldDonor(authored,new Color(.82f,.84f,.78f,1f));
+            if(authored==null)
             {
-                var rescued=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
-                if(rescued!=null)
-                    Parent(ValoriaKit.BenchmarkPieceTinted("World Region 1 · ruin authored",
-                        rescued,RuinPosition,4.2f,3.3f,Quaternion.Euler(0,-18f,0),Stone));
+                var arch=WorldInventoryPiece("Arch_Gothic","World Region 1 · ruin arch",
+                    RuinPosition+new Vector3(-.75f,0f,.25f),4.2f,3.7f,Quaternion.Euler(0,-18f,0));
+                Parent(arch);
             }
 
             var rubble=WorldInventoryPiece("Rock02","World Region 1 · ruin rubble",
@@ -505,7 +503,20 @@ namespace Eldoria.Presentation
 
         static void BuildQuarry(PlayerState state)
         {
-            Parent(WorldResourceKit.QuarryResourcePocket("World Region 1 · quarry resource",QuarryPosition,2.9f));
+            var quarry=new GameObject("World Region 1 · quarry resource");
+            quarry.transform.SetParent(root,true);
+            var face=WorldInventoryPiece("Rock01","World Region 1 · quarry geological face",
+                QuarryPosition+new Vector3(.1f,-.04f,1.05f),5.3f,2.7f,
+                Quaternion.Euler(0f,28f,0f));
+            if(face!=null)face.transform.SetParent(quarry.transform,true);
+            for(int i=0;i<7;i++)
+            {
+                float a=i*2.39996f;
+                var p=QuarryPosition+new Vector3(Mathf.Cos(a)*1.65f,0f,Mathf.Sin(a)*1.2f);
+                WorldRock("World Region 1 · quarry textured spoil",p,.42f+(i%3)*.15f,170+i);
+            }
+            GroundPatch("World Region 1 · quarry worn apron",QuarryPosition+new Vector3(0f,-.005f,-.3f),
+                new Vector3(5.4f,.05f,4.2f),new Color(.30f,.285f,.225f),13f);
             var target=Hotspot("World Region 1 · quarry target","quarry-valoria",
                 QuarryPosition+new Vector3(0,1f,0),new Vector3(4.8f,2.5f,4.4f));
             if(state.QuarryRemaining<=0)
@@ -581,6 +592,20 @@ namespace Eldoria.Presentation
             return p;
         }
 
+        // Paint the certified route layout into the actual soil as well as its
+        // overlaid mesh. Paths remain legible when transparent overlays are lost
+        // against a closely coloured ground, without owning movement or collision.
+        static float TrailMask(float x,float z,float cx,float cz,float length,float width,float yaw)
+        {
+            float a=yaw*Mathf.Deg2Rad;
+            float dx=x-cx,dz=z-cz;
+            float across=dx*Mathf.Cos(a)-dz*Mathf.Sin(a);
+            float along=dx*Mathf.Sin(a)+dz*Mathf.Cos(a);
+            float outside=Mathf.Max(0f,Mathf.Abs(along)-length*.5f);
+            float distance=Mathf.Sqrt(across*across+outside*outside);
+            return 1f-Mathf.SmoothStep(width*.29f,width*.85f,distance);
+        }
+
         static Material WorldLandscapeMaterial()
         {
             if(worldLandscapeMaterial!=null)return worldLandscapeMaterial;
@@ -613,6 +638,14 @@ namespace Eldoria.Presentation
                 var col=Color.Lerp(soil,grass,Mathf.Clamp01(meadow+forest*.25f));
                 col=Color.Lerp(col,moor,highland);
                 col=Color.Lerp(col,gravel,grit*.64f);
+                float altitude=LandscapeHeight(wx,wz);
+                float exposed=Mathf.Clamp01((altitude-.45f)/3.8f);
+                col=Color.Lerp(col,new Color(.29f,.285f,.252f),exposed*.72f);
+                float route=Mathf.Max(TrailMask(wx,wz,0f,-2.5f,8.5f,1.42f,0f),
+                    Mathf.Max(TrailMask(wx,wz,-3f,2.2f,8.2f,1.18f,-38f),
+                    Mathf.Max(TrailMask(wx,wz,2.7f,2f,7f,1.13f,38f),
+                              TrailMask(wx,wz,6.7f,7.5f,6.2f,.98f,29f))));
+                col=Color.Lerp(col,new Color(.34f,.27f,.18f),route*.87f);
                 float detailFactor=.82f+detail*.23f+grain*.12f;
                 pixels[y*size+x]=col*detailFactor;
             }
