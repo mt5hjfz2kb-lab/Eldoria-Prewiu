@@ -357,6 +357,35 @@ for side in (-1,1):
 # The courtyard facade now actually encloses the entrance, not merely two towers.
 
 # Rejected CC0 style experiment: third-party cartoon assets failed Dark Noble Strategy silhouette consistency.
+# Coherent stonemason-authored surface articulation: courses and window reveals.
+# This pass makes the two fortress elevations read at the strategic camera.
+dark=material("Deep aperture shadow",(.038,.043,.046))
+for xx in (-5.2,-3.15,-1.1,0.95,3.0):
+    for zz in (15.7,18.0,20.3):
+        cuboid("Keep vertical stone reveals",(xx,28.52,zz),(.22,.14,1.35),trim,.018)
+        cuboid("Keep recessed glazing",(xx+.45,28.43,zz),(.55,.10,.98),dark,.014)
+for yy in (25.5,28.0,30.5,33.0):
+    for xx in (5.7,8.1,10.5,12.9):
+        cuboid("Command hall carved masonry",(xx,yy,17.05),(.15,.19,.28),trim)
+for side in (-1,1):
+    for yy in (-22,-16,-10,-4,2,8,14):
+        cuboid("Lower curtain external pilaster",(side*23.35,yy,10.7),
+               (1.0,1.7,5.2),stone,.04)
+        for height in (9.0,10.3,11.6):
+            cuboid("Lower curtain course joint",(side*23.91,yy,height),
+                   (.08,2.6,.05),trim)
+# Turn plain cottages into inhabited timberframe houses, without blocking the axis.
+for side in (-1,1):
+    for i in range(4):
+        x=side*(11+(i%2)*6);y=-11+(i//2)*13
+        for dx in (-2.25,2.25):
+            cuboid("Cottage exposed timber stud",(x+dx,y-2.68,9.25),
+                   (.24,.18,2.6),wood,.015)
+        cuboid("Cottage front door recess",(x,y-2.71,9.2),
+               (1.0,.10,1.75),dark,.015)
+        cuboid("Cottage cross brace",(x,y-2.73,10.0),
+               (4.6,.14,.19),wood)
+# Robust warm torchlights and richer atmospheric contrast.
 # Animated-look static light sources for proof only.
 for i,y in enumerate((-19,-5,10,24,35)):
     for x in (-5,5):
