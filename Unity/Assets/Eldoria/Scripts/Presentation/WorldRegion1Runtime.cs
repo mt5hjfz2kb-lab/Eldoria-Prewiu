@@ -162,7 +162,11 @@ namespace Eldoria.Presentation
                     float a=i*2.39996f+cluster*.71f;
                     float radius=.62f+Mathf.Sqrt(i+.5f)*.88f;
                     var p=centres[cluster]+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
-                    WorldTree("World Region 1 · forest mass",p,.78f+(i%5)*.055f,i+cluster);
+                    // Stratify the canopy without moving logical resource targets.
+                    // Deterministic cluster/angle variation removes the visible size cadence.
+                    float canopyScale=.70f+.26f*Mathf.PerlinNoise(
+                        cluster*7.3f+i*.37f,cluster*3.1f+i*.61f);
+                    WorldTree("World Region 1 · forest mass",p,canopyScale,i+cluster);
                     if(i%3==1)WorldBush("World Region 1 · forest understory",
                         p+new Vector3(.32f*Mathf.Cos(a+.9f),0,.32f*Mathf.Sin(a+.9f)),.72f,i+cluster);
                 }
@@ -562,11 +566,14 @@ namespace Eldoria.Presentation
             var route=WorldRouteKit.MarchRoute(name,centre,length,width,yaw);
             if(route==null)return;
             route.transform.SetParent(root,true);
-            bool renamed=false;
+            // Skin only the walkable trail body. Earlier code assigned the dirt shader
+            // to every descendant, turning authored stones and ruined markers into mud.
+            // Those props are presentation-only; the route and interaction topology stay intact.
             foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.sharedMaterial=WorldTrailMaterial();
-                if(!renamed){renderer.gameObject.name=name+" · track 0";renamed=true;}
+                if(renderer.gameObject.name=="Frontier · march trail" ||
+                    renderer.gameObject.name.StartsWith("Frontier · march trail"))
+                    renderer.sharedMaterial=WorldTrailMaterial();
             }
             foreach(var collider in route.GetComponentsInChildren<Collider>(true))
                 collider.enabled=false;
