@@ -29,6 +29,7 @@ jobs:
           blender -b -noaudio --python tools/valoria_mesh_only_preview.py
           test -s "${{ runner.temp }}/valoria-mesh-proof.png"
           test -s "docs/evidence/valoria-mesh-only-prototype/preview.jpg.base64.txt"
+          python3 tools/art-rd/audit_glb.py Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb > "${{ runner.temp }}/valoria-glb-audit.json"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -36,6 +37,8 @@ jobs:
           path: |
             ${{ runner.temp }}/valoria-mesh-proof.png
             ${{ runner.temp }}/valoria-mesh-proof.json
+            ${{ runner.temp }}/valoria-mesh-proof.blend
+            ${{ runner.temp }}/valoria-glb-audit.json
             Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb
       - name: Save low-resolution visual-review thumbnail on isolated branch
         if: success()

@@ -12,7 +12,7 @@ OUT.parent.mkdir(parents=True, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=32
+scene.cycles.samples=16
 for layer in scene.view_layers: layer.cycles.use_denoising=False
 scene.render.resolution_x=1152
 scene.render.resolution_y=768
@@ -591,21 +591,49 @@ scene.collection.objects.link(ob);ob.data.materials.append(earth)
 for face in me.polygons:face.use_smooth=True
 
 def branch_fir(x,y,ground,height,seed):
-    rr=random.Random(seed)
-    beam_between('Fir tapered trunk',(x,y,ground),(x,y,ground+height),.12,wood)
+    # Author the whole tree as one indexed mesh. Thousands of bpy operator calls
+    # repeatedly rebuilt the dependency graph; direct source construction keeps
+    # the same layered branch silhouette with linear authoring cost.
+    rr=random.Random(seed);vertices=[];faces=[];slots=[]
+    def cylinder(a,b,radius,slot):
+        av,bv=Vector(a),Vector(b);axis=(bv-av).normalized()
+        u=axis.cross(Vector((0,0,1)))
+        if u.length<.01:u=Vector((1,0,0))
+        u.normalize();v=axis.cross(u).normalized();first=len(vertices)
+        for center,r in [(av,radius),(bv,radius*.48)]:
+            for k in range(6):
+                angle=k*math.pi/3
+                vertices.append(tuple(center+r*(u*math.cos(angle)+v*math.sin(angle))))
+        for k in range(6):
+            faces.append((first+k,first+(k+1)%6,first+6+(k+1)%6,first+6+k));slots.append(slot)
+        faces.append(tuple(first+k for k in range(5,-1,-1)));slots.append(slot)
+        faces.append(tuple(first+6+k for k in range(6)));slots.append(slot)
+    cylinder((x,y,ground),(x,y,ground+height),.12,0)
     for level in range(5):
-        z=ground+height*(.28+level*.125)
-        reach=height*(.27-level*.039)
+        z=ground+height*(.28+level*.125);reach=height*(.27-level*.039)
         for k in range(5):
             angle=k*2*math.pi/5+level*.79+rr.uniform(-.12,.12)
-            end=(x+math.cos(angle)*reach,y+math.sin(angle)*reach,z-.18)
-            beam_between('Fir radial branch',(x,y,z),end,.04,wood)
-            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,
-                location=(x+math.cos(angle)*reach*.67,y+math.sin(angle)*reach*.67,z+.15))
-            crown=bpy.context.object;crown.name='Fir layered irregular needle crown'
-            crown.scale=(reach*.80,reach*.51,height*.12)
-            crown.rotation_euler[2]=angle
-            crown.data.materials.append(leaf_deep if (k+level)%3 else leaf_mid)
+            cylinder((x,y,z),(x+math.cos(angle)*reach,y+math.sin(angle)*reach,z-.18),.04,0)
+            cx=x+math.cos(angle)*reach*.67;cy=y+math.sin(angle)*reach*.67
+            first=len(vertices);long=reach*.80;wide=reach*.51;h=height*.12
+            vertices.append((cx,cy,z+.15+h))
+            for ring in (-.42,.42):
+                for n in range(6):
+                    a=n*math.pi/3
+                    dx=math.cos(a)*long*.91;dy=math.sin(a)*wide*.91
+                    vertices.append((cx+dx*math.cos(angle)-dy*math.sin(angle),
+                        cy+dx*math.sin(angle)+dy*math.cos(angle),z+.15+ring*h))
+            vertices.append((cx,cy,z+.15-h))
+            slot=1 if (k+level)%3 else 2
+            for n in range(6):
+                faces.append((first,first+7+n,first+7+(n+1)%6));slots.append(slot)
+                faces.append((first+1+n,first+1+(n+1)%6,first+7+(n+1)%6,first+7+n));slots.append(slot)
+                faces.append((first+13,first+1+(n+1)%6,first+1+n));slots.append(slot)
+    me=bpy.data.meshes.new('Authored branch fir source');me.from_pydata(vertices,[],faces);me.update()
+    ob=bpy.data.objects.new('Authored layered branch fir',me);scene.collection.objects.link(ob)
+    for mat in (wood,leaf_deep,leaf_mid):me.materials.append(mat)
+    for polygon,slot in zip(me.polygons,slots):polygon.material_index=slot
+
 
 forest_rng=random.Random(421)
 for k in range(64):
@@ -700,6 +728,45 @@ scene.view_settings.view_transform="Standard"
 scene.view_settings.look="Medium High Contrast"
 scene.view_settings.exposure=.45
 cam_d.type="ORTHO";cam_d.ortho_scale=94
+# Export-safe source surfaces and explicit UVs. Procedural Blender nodes are
+# replaced by authored image tiles; the same material data travels into Unity.
+import numpy as np
+surface_dir=ROOT/'docs/evidence/valoria-mesh-only-prototype/generated-surfaces'
+surface_dir.mkdir(parents=True,exist_ok=True)
+for mat,base in [(grass,(.145,.195,.095)),(earth,(.24,.215,.145)),
+                 (plaster,(.47,.42,.32)),(leaf_deep,(.045,.095,.068)),
+                 (leaf_mid,(.067,.135,.082))]:
+    size=256
+    yy,xx=np.mgrid[0:size,0:size]
+    # Multi-scale deterministic mineral/grass mottling in source albedo; no light
+    # or camera baked into it. These textures are original authored derivatives.
+    rr=np.random.RandomState(712)
+    noise=(np.sin(xx*.043+np.sin(yy*.067))*np.cos(yy*.036)*.15+
+           np.sin(xx*.31+yy*.24)*.07+rr.uniform(-.065,.065,(size,size)))
+    pixels=np.ones((size,size,4),dtype=np.float32)
+    for channel,c in enumerate(base):pixels[:,:,channel]=np.clip(c*(1+noise),.005,.95)
+    image=bpy.data.images.new('Eldoria exportable '+mat.name,width=size,height=size)
+    image.pixels=pixels.ravel().tolist()
+    image.filepath_raw=str(surface_dir/(mat.name.replace(' ','_')+'.png'))
+    image.file_format='PNG';image.save();image.pack()
+    bs=mat.node_tree.nodes.get('Principled BSDF')
+    tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=image
+    mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+
+for ob in bpy.data.objects:
+    if ob.type!='MESH' or ob.data.uv_layers:continue
+    uv=ob.data.uv_layers.new(name='SourceWorldUV')
+    for polygon in ob.data.polygons:
+        normal=polygon.normal
+        axis=max(range(3),key=lambda k:abs(normal[k]))
+        for loop in polygon.loop_indices:
+            vertex=ob.matrix_world@ob.data.vertices[ob.data.loops[loop].vertex_index].co
+            coords=(vertex.y,vertex.z) if axis==0 else (vertex.x,vertex.z) if axis==1 else (vertex.x,vertex.y)
+            uv.data[loop].uv=(coords[0]*.18,coords[1]*.18)
+
+
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT.with_suffix('.blend')))
+
 # Collapse static authored geometry into a small material vocabulary before
 # exporting: the previous 1163 independent mesh renderers are unacceptable as
 # a mobile production baseline. Preserve world coordinates and material slots.
@@ -766,4 +833,5 @@ review=ROOT/"docs/evidence/valoria-mesh-only-prototype"
 review.mkdir(parents=True,exist_ok=True)
 (review/"preview.jpg.base64.txt").write_text(base64.b64encode(thumb.read_bytes()).decode("ascii"))
 print("WORLDSPACE PROOF OUTPUT",str(OUT))
+
 
