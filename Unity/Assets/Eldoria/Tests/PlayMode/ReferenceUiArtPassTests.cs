@@ -124,7 +124,7 @@ namespace Eldoria.Tests
                         Assert.That(messageValue,Is.InstanceOf<UnityEngine.UI.Text>(),"Unexpected feedback component: "+messageValue?.GetType().FullName);
                         var liveMessage=messageValue as UnityEngine.UI.Text;
                         var liveAction=typeof(Eldoria.Presentation.SlicePresenter).GetField("primaryActionText",flags).GetValue(presenter) as UnityEngine.UI.Text;
-                        var liveObjective=typeof(Eldoria.Presentation.SlicePresenter).GetField("objective",flags).GetValue(presenter) as Text;
+                        var liveObjective=typeof(Eldoria.Presentation.SlicePresenter).GetField("objective",flags).GetValue(presenter) as UnityEngine.UI.Text;
                         Assert.That(liveMessage,Is.Not.Null,"The presenter must own a feedback label during recruitment.");
                         Assert.That(liveMessage.gameObject.activeInHierarchy,Is.True,"The recruitment feedback must remain visible.");
                         Assert.That(liveMessage.text,Does.StartWith("Entrenamiento:"),"The live recruitment countdown must reach the player HUD.");
