@@ -8,6 +8,8 @@ OUT.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 sc=bpy.context.scene
 sc.render.engine="CYCLES";sc.cycles.samples=16
+# Ubuntu apt Blender is built without OpenImageDenoiser; avoid unsupported CPU denoising.
+for layer in sc.view_layers: layer.cycles.use_denoising=False
 sc.render.resolution_x=1120;sc.render.resolution_y=770;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format="PNG";sc.render.filepath=str(OUT)
 sc.world.color=(.08,.095,.12)
