@@ -300,6 +300,29 @@ cuboid("Sawmill foundation not completed",(-14,-10,8.24),(12,9,.34),stone,.11)
 # Restrained banners provide composition scale and kingdom identity.
 for x,y,z in [(-6,-18,14),(6,-18,14),(-1.5,33,23)]:
     cuboid("Heraldic cloth blue",(x,y-.5,z-1.7),(1.15,.11,3.5),blue,.02)
+# Tapered noble-blue cloth standards are true polygonal drapes, not rigid cubes.
+# Faced toward the main player's approach and fixed to masonry with timber crossbars.
+def embroidered_banner(name,x,y,top_z,width=2.0,length=4.8):
+    cuboid(name+" timber crossbar",(x,y+.05,top_z+.1),(width+.45,.21,.26),wood,.04)
+    verts=[]
+    for row in range(7):
+        t=row/6
+        z=top_z-t*length
+        hw=width*(.5-.14*t)
+        flutter=.10*math.sin(row*.9)
+        for sign in (-1,1):
+            verts.append((x+sign*hw,y-.09+flutter,z))
+    faces=[(i*2,i*2+1,(i+1)*2+1,(i+1)*2) for i in range(6)]
+    mesh=bpy.data.meshes.new(name+" woven cloth")
+    mesh.from_pydata(verts,[],faces);mesh.update()
+    banner=bpy.data.objects.new(name,mesh);scene.collection.objects.link(banner)
+    banner.data.materials.append(blue)
+    # Stylized gold heraldic lozenge keeps the faction legible from a distant mobile camera.
+    cuboid(name+" gold embroidered badge",(x,y-.17,top_z-length*.39),(.52,.075,.75),trim,.03)
+for bx,by,bz,w,l in [
+    (-4.1,28.35,23.0,2.0,4.5),(1.1,28.35,23.0,2.0,4.5),
+    (-6.0,-20.04,16.9,1.6,3.2),(6.0,-20.04,16.9,1.6,3.2)]:
+    embroidered_banner("Valoria blue and gold banner",bx,by,bz,w,l)
 # Keep roof silhouette is stronger than guard towers but secondary to keep mass.
 pitched_roof("Keep commanding timber roof",-1.5,34,23.2,9.8,9.8,2.2)
 # World-space architectural variation: irregular dressed stone ridges and roof tiles.
