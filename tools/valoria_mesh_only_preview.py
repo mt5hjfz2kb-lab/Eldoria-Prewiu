@@ -32,8 +32,8 @@ FAMILIES=[
 ("MainRoad","road",.467480,.508876,.14,.25,48),
 ("CentralStair","stair",.534959,.673373,.126,.12,54),
 ("UpperWalls","wall",.788618,.801183,.51,.21,60),
-("Bastion","bastion",.604878,.842604,.24,.21,61),
-("TerrainCliffSupport","rock-terrain",.72,.36,.90,.60,65)]
+("Bastion","bastion",.604878,.842604,.24,.21,61)
+]
 results=[]
 for display,folder,u,v,w,h,depth in FAMILIES:
     basename={"MainRoad":"Road","CentralStair":"Stair","UpperWalls":"Wall","TerrainCliffSupport":"RockTerrain"}.get(display,display)
