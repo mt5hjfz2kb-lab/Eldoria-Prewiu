@@ -487,6 +487,25 @@ jobs:
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'HOME camera reset after vertical pan');
               await sleep(500);
 
+              const beforePanVerticalDownLogs=logs.length;
+              await touchDrag(cdp,cx,cy-70,cx,cy+70);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
+                return !!m&&(+m[2])<=-.10;
+              },15000,'real touch vertical pan opposite direction',beforePanVerticalDownLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-vertical-down-landscape.png'});
+              const panVerticalDownDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-vertical-down-landscape.png');
+              const panVerticalSidesDiff=diffRatio('webgl-startup-evidence/pan-vertical-landscape.png','webgl-startup-evidence/pan-vertical-down-landscape.png');
+              report.checks.panVerticalDownDiffRatio=panVerticalDownDiff;
+              report.checks.panVerticalSidesDiffRatio=panVerticalSidesDiff;
+              if(panVerticalDownDiff<.002||panVerticalSidesDiff<.002)
+                throw new Error('Opposite vertical touch pans are not visually distinct');
+              await page.touchscreen.tap(hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after opposite vertical pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'HOME camera reset after opposite vertical pan');
+              await sleep(500);
+
               const worldStart=logs.length;
               const worldTap=await tapNamedNavigationControl(page,box,canvasInfo,logs,'worldNav',
                 t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),
@@ -536,6 +555,47 @@ jobs:
               const portraitStats=imageStats('webgl-startup-evidence/portrait.png');
               report.checks.portraitVisual=portraitStats;
               if(portraitStats.stdev<24||portraitStats.whiteRatio>.32)throw new Error('Portrait lacks sufficient Valoria visual content');
+
+              if(report.delivery.kind==='candidate') {
+                // The editor camera test cannot certify WebGL's frame-based presentation.
+                // Exercise both signs on each axis in the actual candidate viewport.
+                const portraitBox=await canvasLocator.boundingBox();
+                const portraitCanvas=await canvasLocator.evaluate(c=>({width:c.width,height:c.height,clientWidth:c.clientWidth,clientHeight:c.clientHeight}));
+                if(!portraitBox||!portraitCanvas.width||!portraitCanvas.height)throw new Error('Portrait canvas missing');
+                const px=portraitBox.x+portraitBox.width*.50, py=portraitBox.y+portraitBox.height*.44;
+                const portraitHome=parseUi(logs,'home');
+                if(!portraitHome)throw new Error('Portrait HOME touch target missing');
+                const portraitHomePoint=screenPoint(portraitHome,portraitBox,portraitCanvas);
+                report.checks.portraitCameraViews={};
+                for(const [name,dx,dy,axis,sign] of [
+                  ['right',-180,0,'x',1],['left',180,0,'x',-1],
+                  ['up',0,-160,'y',1],['down',0,160,'y',-1]]) {
+                  const start=logs.length;
+                  await touchDrag(cdp,px-dx*.5,py-dy*.5,px+dx*.5,py+dy*.5);
+                  await waitLog(logs,t=>{
+                    const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
+                    if(!m)return false;
+                    const value=+(axis==='x'?m[1]:m[2]);
+                    return sign*value>=(axis==='x'?.35:.10);
+                  },15000,'portrait touch pan '+name,start);
+                  await sleep(800);
+                  const path='webgl-startup-evidence/pan-'+name+'-portrait.png';
+                  await page.screenshot({path});
+                  const changed=diffRatio('webgl-startup-evidence/portrait.png',path);
+                  report.checks.portraitCameraViews[name]={diffRatio:changed,image:imageStats(path)};
+                  if(changed<.002)throw new Error('Portrait '+name+' touch pan moved camera log without visible city change');
+                  const homeStart=logs.length;
+                  await page.touchscreen.tap(portraitHomePoint.x,portraitHomePoint.y);
+                  await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'portrait HOME after '+name,homeStart);
+                  await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'portrait camera reset after '+name,homeStart);
+                  await sleep(400);
+                }
+                for(const [a,b] of [['right','left'],['up','down']]) {
+                  const ratio=diffRatio('webgl-startup-evidence/pan-'+a+'-portrait.png','webgl-startup-evidence/pan-'+b+'-portrait.png');
+                  report.checks.portraitCameraViews[a+'Vs'+b]=ratio;
+                  if(ratio<.002)throw new Error('Portrait opposite '+a+'/'+b+' views are not visibly distinct');
+                }
+              }
 
               try { certifyMacroloop(report); }
               catch(error) {
