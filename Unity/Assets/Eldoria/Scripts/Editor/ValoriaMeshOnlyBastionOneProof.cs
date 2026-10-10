@@ -59,7 +59,7 @@ namespace Eldoria.EditorTools
             sunObject.transform.rotation=Quaternion.Euler(45f,-34f,10f);
             Directory.CreateDirectory(Path.GetDirectoryName(Output));
             EditorSceneManager.SaveScene(scene,Output);
-            var outputFolder=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ValoriaMeshOnlyProof"));
+            var outputFolder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","ValoriaMeshOnlyProof"));
             Directory.CreateDirectory(outputFolder);
             var outputPath=Path.Combine(outputFolder,"mesh-only-bastion-i-unity.png");
             var target=new RenderTexture(CaptureWidth,CaptureHeight,24,RenderTextureFormat.ARGB32);
