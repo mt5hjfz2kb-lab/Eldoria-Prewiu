@@ -1,0 +1,65 @@
+name: Eldoria free local vision agent bootstrap
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['.github/workflows/valoria-local-vision-bootstrap.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-art-windows-agent
+  cancel-in-progress: false
+jobs:
+  ollama-model:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Expose Git from GitHub Desktop
+        shell: powershell
+        run: |
+          $git = Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1
+          if ($git) { Split-Path $git.FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Install official free local Ollama using WinGet
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+          if (-not $ollama) {
+            $winget=Get-Command winget.exe -ErrorAction SilentlyContinue
+            if (-not $winget) { throw "WinGet unavailable in Windows runner service session. Need official portable option." }
+            & $winget.Source install --id Ollama.Ollama --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity
+            if ($LASTEXITCODE -ne 0) { throw "Official Ollama installation failed" }
+            foreach ($loc in @("$env:LOCALAPPDATA/Programs/Ollama/ollama.exe","$env:ProgramFiles/Ollama/ollama.exe")) {
+              if (Test-Path $loc) { $ollama=$loc;break }
+            }
+          }
+          if (-not $ollama) { throw "Ollama executable not found after installation" }
+          "ELDORIA_OLLAMA=$ollama" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          & $ollama --version
+      - name: Download free vision model and verify local HTTP inference
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $health=$false
+          try {$null=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 3;$health=$true} catch {}
+          if (-not $health) {
+            Start-Process -FilePath $env:ELDORIA_OLLAMA -ArgumentList 'serve' -WindowStyle Hidden
+            Start-Sleep -Seconds 5
+          }
+          $tags=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 15
+          if (-not (@($tags.models.name) -contains 'gemma3:4b')) {
+            & $env:ELDORIA_OLLAMA pull gemma3:4b
+            if ($LASTEXITCODE -ne 0) { throw "Free Gemma 3 vision model download failed" }
+          }
+          $body=@{model="gemma3:4b";stream=$false;messages=@(@{role="user";content="Reply only with the word READY."})}|ConvertTo-Json -Depth 6
+          $result=Invoke-RestMethod -Uri "http://127.0.0.1:11434/api/chat" -Method Post -ContentType "application/json" -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
+          if (-not $result.message.content) { throw "Local language model produced empty output" }
+          "ELDORIA_LOCAL_MODEL_PASS model=gemma3:4b"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-vision-bootstrap
+          path: ${{ runner.temp }}/eldoria-local-vision-boot.log
+          if-no-files-found: ignore
