@@ -5,11 +5,11 @@ from mathutils import Vector
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import valoria_fortification_family as base
 # Prior v2 gate render has matching 960x640 camera, target and ortho scale.
+OUT=Path(os.environ.get("ELDORIA_GATE_REFERENCE_OUTPUT",str(Path(__file__).resolve().parents[2]/"artifacts-local/gate-reference")))
+OUT.mkdir(parents=True,exist_ok=True)
 from shutil import copyfile
 baseline=Path(os.environ.get('ELDORIA_FORTIFICATION_OUTPUT',''))/'gate.png'
 if baseline.is_file():copyfile(str(baseline),str(OUT/'gate_before_same_camera.png'))
-OUT=Path(os.environ.get("ELDORIA_GATE_REFERENCE_OUTPUT",str(Path(__file__).resolve().parents[2]/"artifacts-local/gate-reference")))
-OUT.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 random.seed(98)
 # Existing architecture is retained; this stage supplements its legibility, wear and identity.
