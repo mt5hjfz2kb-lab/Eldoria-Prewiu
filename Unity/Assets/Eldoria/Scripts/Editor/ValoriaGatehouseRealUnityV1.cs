@@ -203,7 +203,7 @@ namespace Eldoria.EditorTools
                 float c=Mathf.Cos(ang),sn=Mathf.Sin(ang);
                 float r=35.5f+1.5f*Mathf.Sin(ang*5f);
                 float px=c*r,pz=sn*r;
-                v[2*i]=new Vector3(px,HeightAt(px,pz)-.15f);
+                v[2*i]=new Vector3(px,HeightAt(px,pz)-.15f,pz);
                 v[2*i].z=pz;
                 v[2*i+1]=new Vector3(c*(r+3f),-7.5f-1.2f*Mathf.Sin(ang*7f),sn*(r+3f));
             }
