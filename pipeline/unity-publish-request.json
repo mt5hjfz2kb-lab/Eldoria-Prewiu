@@ -1,18 +1,18 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "I-II parity corrections delivered and public full-flow QA verified; publishing paused after closure.",
+  "reason": "Valoria city four-way touch camera bounded navigation regression verification; build-only candidate, no release without exact candidate QA.",
   "production_run_id": 37767338367,
   "production_artifact_id": 11546715716,
   "production_head_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "final_unity_gate_run_id": 37767338361,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
-  "requested_by": "bastion-i-ii-web-parity-playthrough-v1",
+  "requested_by": "valoria-four-way-touch-camera-20261010",
   "updated_at": "2026-10-10",
   "retry": 52,
-  "retry_reason": "Exact candidate 38038397612 passed full fresh-save I-II landscape/portrait QA 38039578310. Direct capture inspection confirms readable training countdown/completion. Promote same artifact 11664888284 without rebuilding.",
+  "retry_reason": "Unity PlayMode regression adds independent left/right/up/down pan and HOME assertions at de528f427; build candidate for verification.",
   "parcel_source_artifact_id": 11544987850,
-  "retry_after_commit": "6add911217465d2f4ab264815af8a8eb2d0cf454",
+  "retry_after_commit": "de528f42724f38c3eb2b264a7b12e4f96b92bf73",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 38038180064,
@@ -114,7 +114,5 @@
     ],
     "paid_credits": 0,
     "evidence": "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/release-result.json"
-  },
-  "reuse_webgl_build_run_id": 38038397612,
-  "reuse_webgl_source_sha": "47422ca94609f3672f6f60ad794d6f23e81bdc6a"
+  }
 }
