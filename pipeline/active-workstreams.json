@@ -2,7 +2,8 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": "github-actions-chat-access-and-issue23-retirement-v1",
       "title": "Shared GitHub Actions access and Issue 23 retirement",
@@ -19,14 +20,16 @@
       "resources": [
         "repository-governance-actions"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-10T09:38:29.805Z",
       "base_main_sha": "91a89ef95fa4691f0567832dd6b859dbb5e0f6a4",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "GitHub Actions access, issue retirement and operational documentation only; no player-visible art or Unity runner use."
-    }
-  ],
-  "history": [
+      "art_production_routing_reason": "GitHub Actions access, issue retirement and operational documentation only; no player-visible art or Unity runner use.",
+      "completed_at": "2026-10-10T09:41:45.270Z",
+      "result": "Direct GitHub Actions run collection and SHA-based job/artifact lookup documented in AGENTS, handoff and QA guide. Removed Pages Issue 23 locator and issues:write permission. Issue 23 archived, closed and locked. Architecture, workflow governance/quarantine, art governance, routing and convergence checks passed on 243bcd4386d53cb33e8980ac99614d80b3a813a6.",
+      "commit_sha": "243bcd4386d53cb33e8980ac99614d80b3a813a6",
+      "issue": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/23"
+    },
     {
       "id": "bastion-i-ii-web-parity-playthrough-v1",
       "title": "Bastion I-II web parity and firsthand playability correction",
