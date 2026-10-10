@@ -124,6 +124,20 @@ namespace Eldoria.Presentation
             if(state.BastionLevel>=3)
             for(int i=0;i<3;i++)Primitive("4X · food provision bundle · placeholder",PrimitiveType.Sphere,
                 new Vector3(-8.8f+(i-1)*.28f,.35f,-4.7f),new Vector3(.30f,.48f,.44f),new Color(.47f,.37f,.20f));
+            // Region 1 visual R&D wedge (zero spend): a restrained, reusable Breach stone scar.
+            // Reuses shipped rock meshes rather than procedurally inventing new hero architecture.
+            // Independent from game nodes, colliders, economy and the camera workstream.
+            // Fixed positions/rotations make matched-camera visual QA reproducible.
+            for(int i=0;i<10;i++)
+            {
+                float angle=(i*137.50776f+14f)*Mathf.Deg2Rad;
+                float radius=2.0f+(i%4)*.48f;
+                var point=new Vector3(10f+Mathf.Cos(angle)*radius,.015f,8f+Mathf.Sin(angle)*radius*.73f);
+                float height=.36f+(i%3)*.13f;
+                var stoneTint=Color.Lerp(new Color(.32f,.29f,.32f),new Color(.43f,.31f,.38f),(i%4)/3f);
+                Imported("4X · breach scar weathered stone",i%3==0?"Rock02":"Rock01",point,
+                    .65f+(i%3)*.22f,height,i*41f,stoneTint,false);
+            }
             // Existing territorial scar gains an installation silhouette, without neon crystals.
             Imported("4X · breach broken arch","Arch_Gothic",new Vector3(9.4f,.02f,8.4f),2.5f,3.25f,-22,new Color(.23f,.22f,.26f),false);
             Imported("4X · breach ruin flank","Wall_Broken",new Vector3(11.3f,.03f,8.0f),1.6f,1.6f,53,new Color(.27f,.25f,.28f),false);
