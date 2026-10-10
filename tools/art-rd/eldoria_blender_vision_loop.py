@@ -64,10 +64,23 @@ for m in bpy.data.materials:
  else:continue
  bs=m.node_tree.nodes.get('Principled BSDF')
  if bs:
-  color=bs.inputs['Base Color'].default_value
-  bs.inputs['Base Color'].default_value=tuple(min(1,max(0,float(c)*factor)) for c in color[:3])+(float(color[3]),)
+  socket=bs.inputs['Base Color']
+  if socket.is_linked:
+   # glTF textures override default socket colors: actively insert a multiplier.
+   prior=socket.links[0].from_socket
+   mix=m.node_tree.nodes.new('ShaderNodeMixRGB')
+   mix.blend_type='MULTIPLY'
+   mix.inputs[0].default_value=1.0
+   mix.inputs[2].default_value=(factor,factor,factor,1.0)
+   m.node_tree.links.new(prior,mix.inputs[1])
+   m.node_tree.links.new(mix.outputs[0],socket)
+  else:
+   color=socket.default_value
+   socket.default_value=tuple(min(1,max(0,float(c)*factor)) for c in color[:3])+(float(color[3]),)
   changes+=1
 if changes==0: raise RuntimeError('No material categories matched actual source')
+if all(abs(x-1.0)<.007 for x in factors.values()):
+ raise RuntimeError('Local model proposed no meaningful material correction')
 scene.render.filepath=str(after);bpy.ops.render.render(write_still=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'eldoria-vision-lookdev.blend'))
 report={"visual_pass":False,"unity_tested":False,"model":"gemma3:4b",
