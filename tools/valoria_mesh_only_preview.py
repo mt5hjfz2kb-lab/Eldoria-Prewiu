@@ -80,7 +80,23 @@ def plateau_mesh():
     scene.collection.objects.link(ob);ob.data.materials.append(rock)
     return ob
 plateau_mesh()
-cuboid("Lower enclosed courtyard",(0,-5.0,7.96),(44,54,.16),grass,.15)
+# Lower ground is a fitted irregular mesh, not an overhanging rectangular platform.
+def courtyard_surface():
+    nx,ny=22,28
+    verts=[]
+    for iy in range(ny+1):
+        y=-26.5+iy*(43.5/ny)
+        for ix in range(nx+1):
+            x=-20.5+ix*(41.0/nx)
+            disturbance=.055*math.sin(ix*1.8+iy*.8)*math.sin(iy*.65)
+            verts.append((x,y,8.04+disturbance))
+    faces=[(iy*(nx+1)+ix,iy*(nx+1)+ix+1,(iy+1)*(nx+1)+ix+1,(iy+1)*(nx+1)+ix)
+           for iy in range(ny) for ix in range(nx)]
+    mesh=bpy.data.meshes.new("Molded grassland quad mesh")
+    mesh.from_pydata(verts,[],faces);mesh.update()
+    terrain=bpy.data.objects.new("Embedded uneven lower courtyard",mesh)
+    scene.collection.objects.link(terrain);terrain.data.materials.append(grass)
+courtyard_surface()
 cuboid("Upper enclosed citadel terrace",(0,26.4,12.89),(42,22,.20),grass,.10)
 # A continuous elevated shoulder makes the upper courtyard physically supported.
 cuboid("Upper plateau bedrock", (0,27.3,10.4),(43,23,5),rock,.3)
