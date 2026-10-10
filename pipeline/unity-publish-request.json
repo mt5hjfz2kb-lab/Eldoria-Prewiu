@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "Owner-authorized camera workstream takeover: compile current main as candidate, require exact WebGL four-way visible touch QA; never deploy without release gate.",
+  "reason": "Owner-authorized Valoria four-way camera exact candidate release after complete rendered pan in both orientations, HOME and Bastion I-II full candidate QA PASS.",
   "production_run_id": 37767338367,
   "production_artifact_id": 11546715716,
   "production_head_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
@@ -16,10 +16,10 @@
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 38038180064,
-  "release_approved": false,
-  "candidate_qa_run_id": 38039578310,
-  "candidate_qa_artifact_id": 11665293571,
-  "candidate_build_run_id": 38038397612,
+  "release_approved": true,
+  "candidate_qa_run_id": 38051805862,
+  "candidate_qa_artifact_id": 11669474578,
+  "candidate_build_run_id": 38050689775,
   "last_verified_release": {
     "workstream": "bastion-i-ii-web-parity-playthrough-v1",
     "status": "COMPLETED",
@@ -114,5 +114,7 @@
     ],
     "paid_credits": 0,
     "evidence": "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/release-result.json"
-  }
+  },
+  "reuse_webgl_build_run_id": 38050689775,
+  "reuse_webgl_source_sha": "4744b431ac3220f2fad093abb908d85eac675486"
 }
