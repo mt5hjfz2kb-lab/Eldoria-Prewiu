@@ -2,6 +2,14 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## Unity I–II parity correction — 2026-10-10
+
+- Added web-contract mission/chapter-I rewards with a saved idempotent ledger in OWNER_I_II; preserved QA_FAST economy.
+- Fixed recruitment countdown/objective feedback and disabled/completed CTA contrast in both mobile orientations.
+- Clarified the Bastion II completion boundary without inventing Bastion III/chapter-II completion.
+- Exact build 38038397612 passed candidate QA 38039578310, was promoted without rebuilding in 38040075806, and passed published full I–II QA 38040278321 including reload/reset.
+- Bounded UI captures reviewed; physical-iPhone, human enjoyment and global Region I visual quality are not certified. 0 paid credits. Unity release identity is source SHA/run/artifact; legacy web v0.32.0 unchanged.
+
 ## v0.32.0 — 2026-09-24
 
 - Added the Hospital of Valoria as a real Bastion X military recovery system.

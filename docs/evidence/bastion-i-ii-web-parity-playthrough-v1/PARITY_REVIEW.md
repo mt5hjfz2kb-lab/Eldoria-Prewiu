@@ -2,7 +2,7 @@
 
 Workstream: `bastion-i-ii-web-parity-playthrough-v1`  
 Referencia: `v0220/js/gameplay.js`, `v0220/js/chapters.js`, `v0220/js/hero-army.js`; Unity `SliceContentProfiles`, `GameState`, `LocalGateway`, `SlicePresenter`, `ReferenceUiArtPass`, `SliceBoot`.  
-Estado: **en verificación de build y publicación**.
+Estado: **CERRADO: candidato y publicación verificados; correcciones I–II entregadas**.
 
 ## Qué se comparó
 
@@ -30,4 +30,8 @@ El navegador Work de esta sesión indicó que no soporta WebGL y quedó en la ca
 
 ## Certificación de la nueva build
 
-Pendiente de registrar aquí el SHA de código, run de compilación, artifact exacto, QA del candidato, capturas corregidas, publicación y QA sobre la URL final. La build anterior sigue siendo la versión pública hasta promoción explícita.
+Completada el 10-10-2026. Fuente UI `006c0b360030d432a2d5b86f90c0e7b4b24ea3d0`: UI 38038180064 (20/20 EditMode y 29/29 PlayMode) y producción nativa 38038180076 aprobadas. Build WebGL 38038397612, fuente `47422ca94609f3672f6f60ad794d6f23e81bdc6a`, artefacto 11664888284. QA candidato 38039578310 / 11665293571 aprobada. Publicación 38040075806 promovió ese mismo artefacto, sin recompilar, y verificó su SHA-256. QA real publicada 38040278321 / 11665726793 aprobada.
+
+En horizontal y vertical: recorrido limpio I→II, selección táctil de Aserradero/Bastión/Cuartel, construcción, recursos, cantera, Corrupto, ascenso, reclutamiento, Marcha preparada, Engendro, recarga exacta y reinicio/recarga. Cero errores de ejecución. Estado final idéntico por orientación: revisión 26, madera 1030, piedra 995, 56 arqueros y 20 entrenados. Capturas del candidato y publicación inspeccionadas directamente: «ENTRENAMIENTO · 7 s» y «BASTIÓN II ASEGURADO» legibles. Este PASS visual es acotado a esos estados de interfaz; no certifica arte global de Región I, encuadre HOME, iPhone físico ni una partida humana independiente.
+
+La comparación HTTP de todos los archivos públicos no pudo ejecutarse desde este entorno; no se declara 45/45. La identidad del paquete publicado está respaldada por el gate de promoción, artefacto y digest de descarga, y la experiencia publicada por su probe separado. Resultado persistido en [release-result.json](release-result.json). Enlace: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ . Créditos pagados: 0.

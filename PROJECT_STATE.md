@@ -1,4 +1,20 @@
-## 2026-10-10 — CURRENT OPERATIONS: DIRECT UNITY FLOW RECOVERED / CLOSED
+## 2026-10-10 — CURRENT: BASTION I–II PARITY CORRECTIONS / PUBLISHED QA PASS / CLOSED
+
+The owner-requested continuation of the blocked chat is **COMPLETE**. Workstream `bastion-i-ii-web-parity-playthrough-v1` is closed after testing the exact candidate and the public game. This is the current I–II delivery record; earlier recovery/repair entries below are historical, not active instructions.
+
+**Delivered corrections:** OWNER_I_II now pays the web mission/chapter-I rewards once through a persisted ledger; recruitment displays its real countdown and “training 20 Archers” after charging the cost; disabled/completed primary labels remain readable in landscape/portrait; the slice ends truthfully at “BASTIÓN II ASEGURADO · próximo hito: Bastión III”. QA_FAST economy remains isolated. No Bastion III was implemented.
+
+**Evidence:** UI **38038180064** passed **20/20 EditMode + 29/29 PlayMode**; current native production **38038180076** passed. Exact WebGL build **38038397612 / artifact 11664888284**, source `47422ca94609f3672f6f60ad794d6f23e81bdc6a`; candidate QA **38039578310 / 11665293571**; exact-artifact release **38040075806**, with no recompilation and matching downloaded SHA-256; public QA **38040278321 / 11665726793**. Both uninterrupted fresh-save I→II flows passed real touch building selection, construction/resources, forest/quarry, Corrupt route, ascent, Cuartel, training, configured March, Engendro/rewards, exact final-state reload and deliberate reset/reload. **0 runtime errors**. Final state in both orientations: revision 26, wood 1030, stone 995, Bastion II, 56 Archers/20 trained.
+
+Candidate and published training/completion captures were directly inspected: bounded countdown/contrast correction **PASS**. This is **not global artistic-quality, physical-iPhone or independent human-playthrough approval**; Work browser reports WebGL unsupported. Region I global art and HOME Bastion framing remain separate visual work. Web quantity selector 5/10/20 remains a known bounded simplification (current batch 20).
+
+**Playable Unity build:** https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
+
+**Current authority:** `docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md` and `release-result.json`. The old September parity/readiness documents are explicitly historical. Unity delivery identity is source SHA/run/artifact; legacy web metadata stays v0.32.0. Paid credits **0**. Resources are released; publication request is disabled after delivery. Do not restart recovery, migration, departments or Bastion III automatically.
+
+---
+
+## 2026-10-10 — HISTORICAL: DIRECT UNITY FLOW RECOVERED / CLOSED
 
 The owner-requested recovery is **COMPLETE**. `Unity/` remains the real game source (Unity 6000.3.23f1); the baseline around 2026-10-08 14:00 Europe/Madrid was preserved. No gameplay, asset, camera or economy redesign was made in this recovery.
 
@@ -14,7 +30,7 @@ The owner-requested recovery is **COMPLETE**. `Unity/` remains the real game sou
 
 ---
 
-## 2026-10-08 — Presentation parity repair REOPENED / NOT YET CERTIFIED
+## 2026-10-08 — HISTORICAL REPAIR STATE (superseded by the current I–II release)
 
 The previous CLOSED/PASS declarations below are historical and are revoked as current publication acceptance. Published probe **37741999794** found fatal Unity scene errors (`level0`, position out of bounds) despite the older macroloop passing. The active canonical workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is owned by `chat-work-parity-repair-20261008` following the owner's explicit takeover authorization. Do not report current published PASS until the repaired build passes fatal-error acceptance and full fresh-save Bastion I–II interaction/persistence checks in landscape and portrait.
 

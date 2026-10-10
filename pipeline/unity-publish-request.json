@@ -1,7 +1,7 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "current-valoria-production",
-  "reason": "Bastion I-II web parity: final readable countdown/completion CTA and persisted mission rewards.",
+  "reason": "I-II parity corrections delivered and public full-flow QA verified; publishing paused after closure.",
   "production_run_id": 37767338367,
   "production_artifact_id": 11546715716,
   "production_head_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
@@ -16,36 +16,104 @@
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 38038180064,
-  "release_approved": true,
+  "release_approved": false,
   "candidate_qa_run_id": 38039578310,
   "candidate_qa_artifact_id": 11665293571,
   "candidate_build_run_id": 38038397612,
   "last_verified_release": {
-    "verdict": "DIRECT FLOW RECOVERED / BUILD PASS / EXACT CANDIDATE QA PASS / EXACT ARTIFACT RELEASE PASS / PUBLISHED FULL I-II PASS",
-    "historical_reference": "2026-10-08 around 14:00 Europe/Madrid; last preceding main bdeef4038d03a62dcc207c93005bbad868fd7909",
-    "build_source_sha": "3bfb1f5d48e7e14f118990f0942cf172a432512c",
-    "build_run_id": 37999090263,
-    "build_artifact_id": 11648897327,
-    "candidate_probe_run_id": 38001165965,
-    "candidate_probe_artifact_id": 11649201968,
-    "publish_run_id": 38002114168,
-    "published_probe_run_id": 38002471123,
-    "published_probe_artifact_id": 11649573545,
-    "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
-    "published_file_identity": {
-      "files": 45,
-      "all_match": true
+    "workstream": "bastion-i-ii-web-parity-playthrough-v1",
+    "status": "COMPLETED",
+    "verdict": "BOUNDED I-II PARITY CORRECTIONS / EXACT CANDIDATE PASS / EXACT ARTIFACT PUBLICATION PASS / PUBLISHED FULL I-II PASS",
+    "completed_at": "2026-10-10",
+    "build_source_sha": "47422ca94609f3672f6f60ad794d6f23e81bdc6a",
+    "ui_source_sha": "006c0b360030d432a2d5b86f90c0e7b4b24ea3d0",
+    "ui_certification_run_id": 38038180064,
+    "ui_editmode": {
+      "passed": 20,
+      "failed": 0
     },
+    "ui_playmode": {
+      "passed": 29,
+      "failed": 0
+    },
+    "native_production_run_id": 38038180076,
+    "native_production_artifact_id": 11664846651,
+    "build_run_id": 38038397612,
+    "build_artifact_id": 11664888284,
+    "build_artifact_digest": "sha256:23bafbca3ffcf46aebeae8059f381a2fa9325d8e6f0fe7ffc30451221f987c86",
+    "candidate_probe_run_id": 38039578310,
+    "candidate_probe_artifact_id": 11665293571,
+    "publish_run_id": 38040075806,
+    "pages_artifact_id": 11664624723,
+    "published_probe_run_id": 38040278321,
+    "published_probe_artifact_id": 11665726793,
+    "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+    "exact_artifact_promotion": {
+      "no_recompile": true,
+      "downloaded_artifact_id": 11664888284,
+      "download_digest_matches": true,
+      "verified_deploy_job_id": 114178494604,
+      "independent_public_http_file_comparison": false,
+      "comparison_limit": "Direct public-file network request was unavailable in this execution environment. Exact artifact identity is evidenced by the successful release gate and deploy download digest; public gameplay is separately verified."
+    },
+    "corrections": [
+      "OWNER_I_II mission/chapter rewards with persistent idempotent ledger, without QA_FAST economy drift",
+      "Visible real recruitment countdown and training objective after costs are paid",
+      "Readable disabled/completed primary CTA in both orientations",
+      "Truthful Bastion II completion boundary; no fabricated Bastion III or chapter II final reward"
+    ],
     "full_bastion_i_ii": true,
     "landscape": true,
     "portrait": true,
     "persistence": true,
     "reset": true,
     "runtime_errors": 0,
+    "presented_building_selection": true,
+    "bounded_ui_visual_review": {
+      "training_countdown": true,
+      "completion_contrast": true,
+      "landscape": true,
+      "portrait": true,
+      "training_bright_pixels": {
+        "landscape": 645,
+        "portrait": 666
+      },
+      "completion_bright_pixels": {
+        "landscape": 754,
+        "portrait": 786
+      },
+      "candidate_captures_inspected": true,
+      "published_captures_inspected": true
+    },
+    "final_state": {
+      "revision": 26,
+      "wood": 1030,
+      "stone": 995,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": true,
+      "objective": "b2.complete"
+    },
     "visual_quality_pass": false,
+    "independent_human_playthrough": false,
     "physical_device_tested": false,
+    "limits": [
+      "Chromium mobile emulation with software rendering; not physical Safari/iPhone",
+      "Work browser reports WebGL unsupported; no independent manual game there",
+      "Global Region I art quality and HOME Bastion framing are not certified or redesigned",
+      "Recruitment uses a bounded batch of 20, not web quantity selector 5/10/20",
+      "Bastion III is outside the I-II slice"
+    ],
     "paid_credits": 0,
-    "evidence": "docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json"
+    "evidence": "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/release-result.json"
   },
   "reuse_webgl_build_run_id": 38038397612,
   "reuse_webgl_source_sha": "47422ca94609f3672f6f60ad794d6f23e81bdc6a"

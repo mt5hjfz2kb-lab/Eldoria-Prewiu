@@ -2,7 +2,8 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": "bastion-i-ii-web-parity-playthrough-v1",
       "title": "Bastion I-II web parity and firsthand playability correction",
@@ -19,23 +20,117 @@
         "PROJECT_STATE.md",
         "docs/BASTION_I_II_WEB_UNITY_PARITY_AUDIT.md",
         "docs/BASTION_I_II_PLAYTEST_READINESS_PLAN.md",
-        "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/**"
+        "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/**",
+        "CHANGELOG.md"
       ],
-      "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
-        "github-pages-unity-owner"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-10",
       "base_main_sha": "8ba407cba33100602e24bf80ad668c58c5828a00",
-      "status": "active",
-      "phase": "CONTINUING EXISTING BUILD 38038397612 / EXACT CANDIDATE QA THEN PUBLICATION",
+      "status": "completed",
+      "phase": "BOUNDED I-II CORRECTIONS / EXACT PUBLICATION AND FULL PUBLISHED QA PASS / CLOSED",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Consume existing WebGL build; inspect candidate full-flow screenshots, promote exact artifact only after PASS, verify published game, reconcile documents and close.",
-      "continuation_authorized_by": "Owner 2026-10-10: previous chat blocked; verify completion and continue."
-    }
-  ],
-  "history": [
+      "next": "No further I-II execution. Preserve this certified release; Region I visual convergence is separate previously queued scope.",
+      "continuation_authorized_by": "Owner 2026-10-10: previous chat blocked; verify completion and continue.",
+      "completed_at": "2026-10-10",
+      "runner_released": true,
+      "blocker": null,
+      "result": {
+        "workstream": "bastion-i-ii-web-parity-playthrough-v1",
+        "status": "COMPLETED",
+        "verdict": "BOUNDED I-II PARITY CORRECTIONS / EXACT CANDIDATE PASS / EXACT ARTIFACT PUBLICATION PASS / PUBLISHED FULL I-II PASS",
+        "completed_at": "2026-10-10",
+        "build_source_sha": "47422ca94609f3672f6f60ad794d6f23e81bdc6a",
+        "ui_source_sha": "006c0b360030d432a2d5b86f90c0e7b4b24ea3d0",
+        "ui_certification_run_id": 38038180064,
+        "ui_editmode": {
+          "passed": 20,
+          "failed": 0
+        },
+        "ui_playmode": {
+          "passed": 29,
+          "failed": 0
+        },
+        "native_production_run_id": 38038180076,
+        "native_production_artifact_id": 11664846651,
+        "build_run_id": 38038397612,
+        "build_artifact_id": 11664888284,
+        "build_artifact_digest": "sha256:23bafbca3ffcf46aebeae8059f381a2fa9325d8e6f0fe7ffc30451221f987c86",
+        "candidate_probe_run_id": 38039578310,
+        "candidate_probe_artifact_id": 11665293571,
+        "publish_run_id": 38040075806,
+        "pages_artifact_id": 11664624723,
+        "published_probe_run_id": 38040278321,
+        "published_probe_artifact_id": 11665726793,
+        "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "exact_artifact_promotion": {
+          "no_recompile": true,
+          "downloaded_artifact_id": 11664888284,
+          "download_digest_matches": true,
+          "verified_deploy_job_id": 114178494604,
+          "independent_public_http_file_comparison": false,
+          "comparison_limit": "Direct public-file network request was unavailable in this execution environment. Exact artifact identity is evidenced by the successful release gate and deploy download digest; public gameplay is separately verified."
+        },
+        "corrections": [
+          "OWNER_I_II mission/chapter rewards with persistent idempotent ledger, without QA_FAST economy drift",
+          "Visible real recruitment countdown and training objective after costs are paid",
+          "Readable disabled/completed primary CTA in both orientations",
+          "Truthful Bastion II completion boundary; no fabricated Bastion III or chapter II final reward"
+        ],
+        "full_bastion_i_ii": true,
+        "landscape": true,
+        "portrait": true,
+        "persistence": true,
+        "reset": true,
+        "runtime_errors": 0,
+        "presented_building_selection": true,
+        "bounded_ui_visual_review": {
+          "training_countdown": true,
+          "completion_contrast": true,
+          "landscape": true,
+          "portrait": true,
+          "training_bright_pixels": {
+            "landscape": 645,
+            "portrait": 666
+          },
+          "completion_bright_pixels": {
+            "landscape": 754,
+            "portrait": 786
+          },
+          "candidate_captures_inspected": true,
+          "published_captures_inspected": true
+        },
+        "final_state": {
+          "revision": 26,
+          "wood": 1030,
+          "stone": 995,
+          "gatheredWood": 720,
+          "gatheredStone": 700,
+          "march": "idle",
+          "sawmill": 1,
+          "bastion": 2,
+          "barracks": 1,
+          "archers": 56,
+          "trained": 20,
+          "configured": true,
+          "scout": true,
+          "engendro": true,
+          "objective": "b2.complete"
+        },
+        "visual_quality_pass": false,
+        "independent_human_playthrough": false,
+        "physical_device_tested": false,
+        "limits": [
+          "Chromium mobile emulation with software rendering; not physical Safari/iPhone",
+          "Work browser reports WebGL unsupported; no independent manual game there",
+          "Global Region I art quality and HOME Bastion framing are not certified or redesigned",
+          "Recruitment uses a bounded batch of 20, not web quantity selector 5/10/20",
+          "Bastion III is outside the I-II slice"
+        ],
+        "paid_credits": 0,
+        "evidence": "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/release-result.json"
+      }
+    },
     {
       "id": "eldoria-ci-production-recovery-v1",
       "title": "Restore controlled Unity Windows WebGL production",
