@@ -2,7 +2,30 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [],
+  "active": [
+    {
+      "id": "github-actions-chat-access-and-issue23-retirement-v1",
+      "title": "Shared GitHub Actions access and Issue 23 retirement",
+      "owner": "chat-actions-access-20261010",
+      "scope": [
+        "AGENTS.md",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        ".github/workflows/pages.yml",
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "pipeline/active-workstreams.json",
+        "GitHub Issue #23"
+      ],
+      "resources": [
+        "repository-governance-actions"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-10T09:38:29.805Z",
+      "base_main_sha": "91a89ef95fa4691f0567832dd6b859dbb5e0f6a4",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "GitHub Actions access, issue retirement and operational documentation only; no player-visible art or Unity runner use."
+    }
+  ],
   "history": [
     {
       "id": "bastion-i-ii-web-parity-playthrough-v1",
