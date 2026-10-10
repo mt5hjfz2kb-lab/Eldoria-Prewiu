@@ -316,7 +316,13 @@ for side in (-1,1):
 # Retaining face beneath the upper terrace is a complete solid masonry front.
 for side in (-1,1):
     cuboid("Joined inner terrace retaining face", (side*11.9,16.9,10.5),(12.2,2.2,5),stone,.11)
-# Central 11.6m portal is left open for the actual stair navigation corridor.
+# Outer dressed-stone frontage covers the exposed black bedrock step, except
+# for the genuine 8.2m central stair corridor. This is a continuous architectural face.
+for side in (-1,1):
+    cuboid("Stone-faced upper terrace fascia",(side*12.9,15.42,10.45),(17.4,1.4,4.9),stone,.13)
+    for xstep in (7,12,17,21):
+        cuboid("Upper terrace facade buttress",(side*xstep,14.55,10.55),(.72,2.0,5.1),trim,.08)
+# Central 8.2m portal remains open for actual stair navigation corridor.
 # Open the main stair passage with two independently capped parapets.
 for side in (-1,1):
     cuboid("Central stair balustrade",(side*4.15,19.2,11.1),(.9,11.4,1.4),stone,.13)
