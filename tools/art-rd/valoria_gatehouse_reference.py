@@ -1,7 +1,8 @@
 """Focused gatehouse art pass; preserves existing six-piece family generator."""
-import bpy, math, random, os, json
+import bpy, math, random, os, json, sys
 from pathlib import Path
 from mathutils import Vector
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import valoria_fortification_family as base
 OUT=Path(os.environ.get("ELDORIA_GATE_REFERENCE_OUTPUT",str(Path(__file__).resolve().parents[2]/"artifacts-local/gate-reference")))
 OUT.mkdir(parents=True,exist_ok=True)
