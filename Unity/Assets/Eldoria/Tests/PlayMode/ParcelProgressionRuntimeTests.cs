@@ -109,6 +109,19 @@ namespace Eldoria.Tests
             visual.Home();
             visual.Pan(new Vector2(-150f,0f));
             Assert.That(camera.transform.position.x,Is.GreaterThan(1f),"A normal mobile drag must visibly move the city camera");
+            // Four independent touch directions must reveal different city areas and remain bounded.
+            visual.Home();
+            visual.Pan(new Vector2(150f,0f));
+            Assert.That(camera.transform.position.x,Is.LessThan(-1f),"drag right reveals the left city edge");
+            Assert.That(camera.transform.position.y,Is.EqualTo(0f).Within(.001f));
+            visual.Home();
+            visual.Pan(new Vector2(0f,-150f));
+            Assert.That(camera.transform.position.y,Is.GreaterThan(.5f),"drag down reveals the upper city");
+            Assert.That(camera.transform.position.x,Is.EqualTo(0f).Within(.001f));
+            visual.Home();
+            visual.Pan(new Vector2(0f,150f));
+            Assert.That(camera.transform.position.y,Is.LessThan(-.5f),"drag up reveals the lower city");
+            Assert.That(camera.transform.position.x,Is.EqualTo(0f).Within(.001f));
             visual.Home();
             Assert.That(ValoriaParcelPresentation.PresentationHomeScale,Is.GreaterThanOrEqualTo(.95f),"HOME must not restart at the over-zoomed 80% FOV crop");
             visual.Pan(new Vector2(-10000,10000));Assert.That(camera.transform.position.x,Is.EqualTo(ValoriaParcelPresentation.HorizontalPanHalfExtent));
