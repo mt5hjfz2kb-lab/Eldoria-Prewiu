@@ -15,11 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install open-source Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
       - name: Render independent GLB families (no SHARP assets)
         env:
           VALORIA_PROOF_OUTPUT: ${{ runner.temp }}/valoria-mesh-proof.png
-        run: blender -b -noaudio --python tools/valoria_mesh_only_preview.py
+        run: |
+          blender -b -noaudio --python tools/valoria_mesh_only_preview.py
+          test -s "${{ runner.temp }}/valoria-mesh-proof.png"
+          test -s "docs/evidence/valoria-mesh-only-prototype/preview.jpg.base64.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
