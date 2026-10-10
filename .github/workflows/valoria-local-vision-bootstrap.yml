@@ -7,7 +7,7 @@ permissions:
   contents: read
 concurrency:
   group: eldoria-art-windows-agent
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   ollama-model:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -21,21 +21,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           clean: false
-      - name: Install official free local Ollama using WinGet
+      - name: Load official free Ollama portable locally with no installer UI
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+          foreach ($loc in @("$env:LOCALAPPDATA/Programs/Ollama/ollama.exe","$env:ProgramFiles/Ollama/ollama.exe")) {
+            if (-not $ollama -and (Test-Path $loc)) { $ollama=$loc }
+          }
           if (-not $ollama) {
-            $winget=Get-Command winget.exe -ErrorAction SilentlyContinue
-            if (-not $winget) { throw "WinGet unavailable in Windows runner service session. Need official portable option." }
-            & $winget.Source install --id Ollama.Ollama --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity
-            if ($LASTEXITCODE -ne 0) { throw "Official Ollama installation failed" }
-            foreach ($loc in @("$env:LOCALAPPDATA/Programs/Ollama/ollama.exe","$env:ProgramFiles/Ollama/ollama.exe")) {
-              if (Test-Path $loc) { $ollama=$loc;break }
+            $target="$env:LOCALAPPDATA/Eldoria/OllamaPortable"
+            $exe=Get-ChildItem $target -Filter ollama.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($exe) { $ollama=$exe.FullName }
+            else {
+              New-Item -ItemType Directory -Force -Path $target | Out-Null
+              $archive="$env:RUNNER_TEMP/ollama-windows-amd64.zip"
+              $ProgressPreference='SilentlyContinue'
+              Invoke-WebRequest -Uri "https://github.com/ollama/ollama/releases/latest/download/ollama-windows-amd64.zip" -OutFile $archive -UseBasicParsing -TimeoutSec 1500
+              if ((Get-Item $archive).Length -lt 10000000) { throw "Official portable Ollama archive is unexpectedly small" }
+              Expand-Archive -LiteralPath $archive -DestinationPath $target -Force
+              $exe=Get-ChildItem $target -Filter ollama.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+              if (-not $exe) { throw "Portable Ollama executable missing after archive extraction" }
+              $ollama=$exe.FullName
             }
           }
-          if (-not $ollama) { throw "Ollama executable not found after installation" }
           "ELDORIA_OLLAMA=$ollama" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
           & $ollama --version
       - name: Download free vision model and verify local HTTP inference
