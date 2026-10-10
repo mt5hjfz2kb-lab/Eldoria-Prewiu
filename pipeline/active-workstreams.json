@@ -44,9 +44,16 @@
       "claimed_at": "2026-10-10",
       "base_main_sha": "a3ad770564fb6818d8a2f3d2495c9e5b2b723f59",
       "art_production_routing": "required",
-      "phase": "Owner explicitly authorized continuation of both existing tracks; inspect exact evidence and implement macro visual corrections.",
-      "next": "Author physically connected environment; render inspect; import Unity when owner resources legitimately released",
-      "resumed_at": "2026-10-10T18:50:00Z"
+      "phase": "Final source proof inspected: structural PASS, reference visual FAIL; no production approval.",
+      "next": "Change to a coherent authored architectural/environment source; reject further primitive prop patches. Exact rejected proof 38079353952/artifact11679846513. Unity remains unverified because source art failed.",
+      "resumed_at": "2026-10-10T18:50:00Z",
+      "last_review": {
+        "run_id": 38079353952,
+        "artifact_id": 11679846513,
+        "source_sha": "683ff91bb188c39a06e3eb99c7221a6c52eef282",
+        "visual_pass": false,
+        "paid_credits": 0
+      }
     }
   ],
   "history": [
