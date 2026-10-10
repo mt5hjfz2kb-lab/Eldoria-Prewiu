@@ -120,9 +120,11 @@ namespace Eldoria.Tests
                     if(gateway.Snapshot().RecruitmentCompletesUtcTicks>0)
                     {
                         typeof(Eldoria.Presentation.SlicePresenter).GetMethod("RefreshClock",flags).Invoke(presenter,null);
-                        var liveMessage=(Text)typeof(Eldoria.Presentation.SlicePresenter).GetField("message",flags).GetValue(presenter);
-                        var liveAction=(Text)typeof(Eldoria.Presentation.SlicePresenter).GetField("primaryActionText",flags).GetValue(presenter);
-                        var liveObjective=(Text)typeof(Eldoria.Presentation.SlicePresenter).GetField("objective",flags).GetValue(presenter);
+                        var messageValue=typeof(Eldoria.Presentation.SlicePresenter).GetField("message",flags).GetValue(presenter);
+                        Assert.That(messageValue,Is.InstanceOf<Text>(),"Unexpected feedback component: "+messageValue?.GetType().FullName);
+                        var liveMessage=messageValue as Text;
+                        var liveAction=typeof(Eldoria.Presentation.SlicePresenter).GetField("primaryActionText",flags).GetValue(presenter) as Text;
+                        var liveObjective=typeof(Eldoria.Presentation.SlicePresenter).GetField("objective",flags).GetValue(presenter) as Text;
                         Assert.That(liveMessage,Is.Not.Null,"The presenter must own a feedback label during recruitment.");
                         Assert.That(liveMessage.gameObject.activeInHierarchy,Is.True,"The recruitment feedback must remain visible.");
                         Assert.That(liveMessage.text,Does.StartWith("Entrenamiento:"),"The live recruitment countdown must reach the player HUD.");
