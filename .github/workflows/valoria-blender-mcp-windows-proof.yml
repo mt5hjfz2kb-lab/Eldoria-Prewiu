@@ -1,0 +1,61 @@
+name: Eldoria Blender MCP Windows owner proof
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths:
+      - '.github/workflows/valoria-blender-mcp-windows-proof.yml'
+      - 'tools/art-rd/blender_mcp_socket_probe.py'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-art-windows-agent
+  cancel-in-progress: false
+jobs:
+  windows-mcp-proof:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Expose Git from GitHub Desktop
+        shell: powershell
+        run: |
+          $git = Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1
+          if ($git) { Split-Path $git.FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Detect installed Blender
+        shell: powershell
+        run: |
+          $paths=@()
+          foreach ($p in @("$env:ProgramFiles/Blender Foundation","$env:LOCALAPPDATA/Programs/Blender Foundation")){
+            if (Test-Path $p) { $paths+=@(Get-ChildItem $p -Filter blender.exe -File -Recurse -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName) }
+          }
+          $b=$paths | Select-Object -First 1
+          if (-not $b) { $b=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source }
+          if (-not $b) { throw "Blender executable not found on owner Windows host" }
+          "ELDORIA_BLENDER=$b" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          & $b --version
+      - name: Install free MCP addon locally
+        shell: powershell
+        run: |
+          $uvx=(Get-Command uvx.exe -ErrorAction SilentlyContinue).Source
+          if (-not $uvx) {
+            $candidate="$env:USERPROFILE/.local/bin/uvx.exe"
+            if (Test-Path $candidate) { $uvx=$candidate }
+          }
+          if (-not $uvx) { throw "uvx not installed on Windows; no paid inference or uncontrolled installer attempted" }
+          & $uvx --from mcp-for-blender mcp-for-blender install-addon
+          if ($LASTEXITCODE -ne 0) { throw "MCP add-on installation failed" }
+      - name: Verify genuine Blender addon scene edit
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP/eldoria-blender-mcp-windows.log"
+          & $env:ELDORIA_BLENDER -b --python tools/art-rd/blender_mcp_socket_probe.py 2>&1 | Tee-Object -FilePath $log
+          if ($LASTEXITCODE -ne 0) { throw "Blender MCP command execution failed" }
+          if (-not (Select-String -Path $log -Pattern "ELDORIA_SOCKET_REQUEST_PASS" -Quiet)) { throw "No source-verified Blender edit proof" }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-blender-mcp-windows-evidence
+          path: ${{ runner.temp }}/eldoria-blender-mcp-windows.log
+          retention-days: 14
