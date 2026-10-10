@@ -2,7 +2,7 @@
   "triangles": 31352,
   "mesh_count": 22,
   "materials": 22,
-  "glb_bytes": 2908376,
+  "glb_bytes": 2908380,
   "wall_to_tower_edge_contact_x": [
     -8.65,
     8.65
