@@ -122,7 +122,6 @@ namespace Eldoria.Presentation
         static void BuildGeography()
         {
             BuildTerrainBase();
-            BuildReliefContours();
             BuildSurfaceDressing();
 
             GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.05f,8f),
@@ -180,74 +179,6 @@ namespace Eldoria.Presentation
                 WorldRock("World Region 1 · edge geology",p,
                     .88f+.12f*Mathf.PerlinNoise(p.x*.13f+2f,p.z*.17f+4f),
                     geologyIndex++);
-        }
-
-        // Small authored landscape shoulders: no colliders, no changes to target
-        // positions, and restrained heights so the tactical map stays readable.
-        // Separate pockets avoid turning the playable world into a raised board.
-        static void BuildReliefContours()
-        {
-            var shoulders=new[]{
-                new Vector4(-23f,-8f,8f,.80f),
-                new Vector4(21f,10f,9f,1.0f),
-                new Vector4(-15f,24f,9f,.85f),
-                new Vector4(13f,24f,8f,.72f),
-                new Vector4(1f,-17f,11f,.58f)
-            };
-            for(int i=0;i<shoulders.Length;i++)
-                ReliefShoulder("World Region 1 · earth shoulder "+i,
-                    new Vector3(shoulders[i].x,-.38f,shoulders[i].y),
-                    shoulders[i].z,shoulders[i].w,i);
-        }
-
-        static void ReliefShoulder(string name,Vector3 centre,float radius,float height,int seed)
-        {
-            const int segments=20;
-            const int rings=4;
-            var vertices=new Vector3[1+segments*rings];
-            var uv=new Vector2[vertices.Length];
-            var triangles=new int[segments*(1+2*(rings-1))*3];
-            vertices[0]=new Vector3(0f,height,0f);
-            uv[0]=new Vector2(0f,0f);
-            for(int ring=1;ring<=rings;ring++)
-            {
-                float r=ring/(float)rings;
-                float rise=height*Mathf.Pow(1f-r*r,2f);
-                for(int i=0;i<segments;i++)
-                {
-                    float a=i*Mathf.PI*2f/segments;
-                    float wobble=1f+.075f*Mathf.Sin(a*3f+seed*1.7f);
-                    float x=Mathf.Cos(a)*radius*r*wobble;
-                    float z=Mathf.Sin(a)*radius*.67f*r*wobble;
-                    int index=1+(ring-1)*segments+i;
-                    vertices[index]=new Vector3(x,rise,z);
-                    uv[index]=new Vector2(x*.085f,z*.085f);
-                }
-            }
-            int cursor=0;
-            for(int i=0;i<segments;i++)
-            {
-                triangles[cursor++]=0;
-                triangles[cursor++]=1+(i+1)%segments;
-                triangles[cursor++]=1+i;
-            }
-            for(int ring=1;ring<rings;ring++)
-            for(int i=0;i<segments;i++)
-            {
-                int a=1+(ring-1)*segments+i;
-                int b=1+(ring-1)*segments+(i+1)%segments;
-                int c=1+ring*segments+i;
-                int d=1+ring*segments+(i+1)%segments;
-                triangles[cursor++]=a;triangles[cursor++]=b;triangles[cursor++]=c;
-                triangles[cursor++]=b;triangles[cursor++]=d;triangles[cursor++]=c;
-            }
-            var go=new GameObject(name);
-            go.transform.SetParent(root,true);
-            go.transform.position=centre;
-            var mesh=new Mesh{name=name+" mesh",vertices=vertices,uv=uv,triangles=triangles};
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=WorldLandscapeMaterial();
         }
 
         static void BuildSurfaceDressing()
