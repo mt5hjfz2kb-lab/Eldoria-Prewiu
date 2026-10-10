@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: valoria-fortification-family
+  group: valoria-fortification-family-v2
   cancel-in-progress: false
 jobs:
   fortifications:
