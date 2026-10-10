@@ -752,6 +752,9 @@ namespace Eldoria.Presentation
             if(bush!=null)
             {
                 Parent(bush);
+                // The donor leaves were too saturated under dusk lighting;
+                // neutralize neon greens while retaining their original textures.
+                TintWorldDonor(bush,new Color(.61f,.72f,.55f,1f));
                 foreach(var col in bush.GetComponentsInChildren<Collider>(true))col.enabled=false;
                 return;
             }
