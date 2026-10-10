@@ -6,7 +6,7 @@
     {
       "id": "bastion-i-ii-web-parity-playthrough-v1",
       "title": "Bastion I-II web parity and firsthand playability correction",
-      "owner": "chat-bastion-parity-playthrough-20261010",
+      "owner": "chat-bastion-parity-continuation-20261010",
       "scope": [
         "pipeline/active-workstreams.json",
         "pipeline/art-production-requests/bastion-i-ii-web-parity-playthrough-v1.json",
@@ -28,10 +28,11 @@
       "claimed_at": "2026-10-10",
       "base_main_sha": "8ba407cba33100602e24bf80ad668c58c5828a00",
       "status": "active",
-      "phase": "COMPARE WEB/UNITY AND FIRSTHAND PLAY",
+      "phase": "CONTINUING EXISTING BUILD 38038397612 / EXACT CANDIDATE QA THEN PUBLICATION",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Compare web contract with real Unity, play public build, correct evidenced I-II defects, certify exact candidate, publish and verify."
+      "next": "Consume existing WebGL build; inspect candidate full-flow screenshots, promote exact artifact only after PASS, verify published game, reconcile documents and close.",
+      "continuation_authorized_by": "Owner 2026-10-10: previous chat blocked; verify completion and continue."
     }
   ],
   "history": [
