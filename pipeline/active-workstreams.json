@@ -30,6 +30,23 @@
       "art_production_routing_reason": "Player-visible Valoria camera framing and candidate visual gate require production routing.",
       "phase": "In-flight Pages build; strengthening existing candidate probe to verify visible four-way touch travel in landscape and portrait.",
       "next": "Await exact candidate and automatic WebGL QA; inspect rendered four-direction captures; correct, retest and publish only after gates."
+    },
+    {
+      "id": "direct-chat-executor-authority-20261010",
+      "title": "Restore concise director-executor authority in normal chats",
+      "owner": "chat-direct-flow-correction-20261010",
+      "scope": [
+        "AGENTS.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "b09a9abb147863212f7806b1ff669ec1d897e175",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Agent operating instructions only; no Unity assets, gameplay, CI, runner or publication changes.",
+      "phase": "Clarify precedence and prevent premature report-only completion",
+      "next": "Update AGENTS.md, read back and release claim."
     }
   ],
   "history": [
