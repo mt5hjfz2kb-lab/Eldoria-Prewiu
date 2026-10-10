@@ -192,12 +192,38 @@ for i,y in enumerate((-19,-5,10,24,35)):
     for x in (-5,5):
         cuboid("Torch standard",(x,y,9 if y<12 else 14),(0.24,.24,2.1),wood)
         cuboid("Emissive torch cue",(x,y,10.1 if y<12 else 15.1),(.33,.33,.4),glow)
+# Procedural mid-frequency PBR variation: avoid flat prototype color slabs.
+for mat in [stone,trim,paving,earth,grass,rock,wood,pine]:
+    nodes=mat.node_tree.nodes
+    links=mat.node_tree.links
+    bs=nodes.get("Principled BSDF")
+    if not bs:continue
+    base=tuple(bs.inputs["Base Color"].default_value[:3])
+    noise=nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value=3.2 if mat in [rock,grass,earth] else 8.0
+    noise.inputs["Detail"].default_value=3.0
+    ramp=nodes.new("ShaderNodeValToRGB")
+    colors=[tuple(max(0.001,c*.62) for c in base)+(1,),
+            tuple(min(.98,c*1.36) for c in base)+(1,)]
+    ramp.color_ramp.elements[0].color=colors[0]
+    ramp.color_ramp.elements[1].color=colors[1]
+    links.new(noise.outputs["Fac"],ramp.inputs["Fac"])
+    links.new(ramp.outputs["Color"],bs.inputs["Base Color"])
+# Author a restrained emissive torch hue with a separate warm point light cluster.
+torch_bs=glow.node_tree.nodes.get("Principled BSDF")
+torch_bs.inputs["Emission"].default_value=(1,.30,.035,1)
+torch_bs.inputs["Emission Strength"].default_value=2
+for x,y,z in [(-6,-18,16),(6,-18,16),(0,24,17),(0,34,24)]:
+    lamp=bpy.data.lights.new("Amber fire contrast","POINT")
+    lamp.energy=420;lamp.color=(1,.42,.18)
+    ob=bpy.data.objects.new("Amber fire contrast",lamp)
+    scene.collection.objects.link(ob);ob.location=(x,y,z)
 world=bpy.data.worlds.new("Cold forest dusk")
 scene.world=world;world.use_nodes=True
 world.node_tree.nodes["Background"].inputs["Color"].default_value=(.09,.12,.18,1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value=1.2
+world.node_tree.nodes["Background"].inputs["Strength"].default_value=2.3
 ld=bpy.data.lights.new("Raking soft key","AREA");l=bpy.data.objects.new("Raking soft key",ld);scene.collection.objects.link(l)
-l.location=(5,-20,62);ld.energy=7200;ld.size=25
+l.location=(5,-20,62);ld.energy=13000;ld.size=25
 # Explicit architectural composition camera, not SHARP camera-space placement.
 cam_d=bpy.data.cameras.new("Valoria Worldspace Camera")
 cam=bpy.data.objects.new("Valoria Worldspace Camera",cam_d)
