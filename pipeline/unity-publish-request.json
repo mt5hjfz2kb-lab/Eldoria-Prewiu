@@ -1,24 +1,22 @@
 {
   "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "Owner-authorized release of exact camera candidate after current Unity source WebGL build and successful four-way camera/Bastion I-II candidate QA.",
+  "reason": "Region 1 v3 visual production candidate only: build current canonical Unity World Region 1 with retained Valoria I-II gameplay; no release before exact candidate/rendered QA.",
   "production_run_id": 37767338367,
   "production_artifact_id": 11546715716,
   "production_head_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "final_unity_gate_run_id": 37767338361,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
-  "requested_by": "valoria-four-way-touch-camera-20261010",
+  "requested_by": "world-region-1-visual-convergence-v3-20261010",
   "updated_at": "2026-10-10",
-  "retry": 55,
-  "retry_reason": "Candidate 38050689775 QA PASS but new Unity/ProductionVisualIntegration.cs source commit 8ed00d60 after build invalidates exact-artifact release; rebuild current main and re-QA.",
+  "retry": 56,
+  "retry_reason": "Build current Region 1 v3 source after camera workstream completion; preserve stable until exact QA passes.",
   "parcel_source_artifact_id": 11544987850,
   "retry_after_commit": "4b7fdc6dd86301860d5292af01e55ea953896fe0",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 38038180064,
-  "release_approved": true,
-  "candidate_qa_run_id": 38053409120,
-  "candidate_qa_artifact_id": 11670682401,
+  "release_approved": false,
   "candidate_build_run_id": 38052288931,
   "last_verified_release": {
     "workstream": "bastion-i-ii-web-parity-playthrough-v1",
@@ -114,7 +112,5 @@
     ],
     "paid_credits": 0,
     "evidence": "docs/evidence/bastion-i-ii-web-parity-playthrough-v1/release-result.json"
-  },
-  "reuse_webgl_build_run_id": 38052288931,
-  "reuse_webgl_source_sha": "753df15314059bacea792024d7a66ae40c4a5f9e"
+  }
 }
