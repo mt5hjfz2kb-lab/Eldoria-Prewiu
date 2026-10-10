@@ -73,7 +73,7 @@ def build(kind):
  if kind=='gate':gate()
  if kind=='parapet':wall('reinforced_wall',length=5)
 def scene(target,scale):
- s=bpy.context.scene;s.render.engine='CYCLES';s.cycles.samples=16
+ s=bpy.context.scene;s.render.engine='CYCLES';s.cycles.samples=16;s.cycles.use_denoising=False;s.view_layers[0].cycles.use_denoising=False
  s.render.resolution_x=960;s.render.resolution_y=640;s.render.resolution_percentage=100
  world=bpy.data.worlds.new('overcast sky');s.world=world;world.use_nodes=True
  world.node_tree.nodes['Background'].inputs['Color'].default_value=(.38,.40,.43,1)
