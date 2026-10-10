@@ -231,7 +231,7 @@ def import_cc0(asset,origin,width):
     path=cache/Path(asset["path"]).name
     if not path.exists():
         with urllib.request.urlopen(source,timeout=20) as response: data=response.read()
-        sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\x00"+data).hexdigest()
+        sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\x00"+data).hexdigest()
         if sha!=asset["sha"]:raise RuntimeError("CC0 blob hash mismatch: "+asset["path"])
         path.write_bytes(data)
     before=set(bpy.data.objects)
