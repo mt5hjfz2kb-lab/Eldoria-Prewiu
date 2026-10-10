@@ -1,11 +1,11 @@
 {
   "workstream": "world-region-1-visual-convergence-v3-20261010",
   "status": "OPEN_VISUAL_GATE",
-  "candidate_source_sha": "6e9e6fabc9ab26846d20a228534922c8f7b677f2",
-  "candidate_build_run_id": 38073844504,
-  "candidate_build_artifact_id": 11678288283,
-  "candidate_qa_run_id": 38075124008,
-  "candidate_qa_artifact_id": 11677904690,
+  "candidate_source_sha": "5a51970bb9ebaaa401db5f43e8d722c698ee3d8e",
+  "candidate_build_run_id": 38081014318,
+  "candidate_build_artifact_id": 11681016193,
+  "candidate_qa_run_id": 38082308989,
+  "candidate_qa_artifact_id": 11680598519,
   "technical_qa": {
     "candidate": true,
     "qa_conclusion": "success",
@@ -15,13 +15,21 @@
     "portrait": true,
     "persistence": true,
     "reset": true,
-    "four_way_pan": true
+    "four_way_pan": true,
+    "not_certified": [
+      "physical-device performance",
+      "human enjoyment/usability",
+      "live SHARP rendering in WebGL"
+    ]
   },
   "visual_review": {
     "status": "FAIL",
-    "reason": "Real world-before-action.png screenshot remains visibly provisional: flat sparse terrain, toy-scale trees/bushes and rocks, isolated city, simplistic road/silhouette; not a commercially credible dark-medieval 4X world. Automated report coverage.visualQualityPass=false. No artistic release approval."
+    "reason": "Direct corrected WebGL world-before-action capture shows authored RuinedTower retained after the library allowlist fix. Terrain, route readability, forest and POI integration still fall below the approved art reference; coverage.visualQualityPass=false. Technical success does not authorize release."
   },
   "release_approved": false,
-  "next": "Rework scene composition, terrain structure, coherent forests, geological silhouettes, roads and POI art using existing assets and repeat Unity capture/technical candidate QA; do not promote 38073844504 merely because technical gate succeeded.",
-  "paid_credits": 0
+  "next": "Produce coherent authored environment source and inspect reference-matched Unity/WebGL captures before release; current technical iteration is validated but art workstream remains unfinished.",
+  "paid_credits": 0,
+  "native_source_sha": "71a72c067bed362a73c0f84d6daef704dec3de69",
+  "native_run_id": 38077985186,
+  "webgl_resource_parity_fix_sha": "393f6d03ea948a73d0b9bdf1428c22d6c07c8e43"
 }
