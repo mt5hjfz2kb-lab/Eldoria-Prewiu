@@ -55,11 +55,22 @@ def audit(path):
     for i, b in enumerate(buffers):
         if not b.get("uri") and b.get("byteLength", 0) > len(blob):
             findings["errors"].append(f"Buffer {i} exceeds binary chunk")
+    # Khronos glTF 2.0: bufferViews are byte ranges inside a declared buffer.
+    for i, view in enumerate(views):
+        bi = view.get("buffer")
+        offset, length = view.get("byteOffset", 0), view.get("byteLength", 0)
+        if not isinstance(bi, int) or bi < 0 or bi >= len(buffers):
+            findings["errors"].append(f"bufferView {i} refers to absent buffer")
+        elif not all(isinstance(x, int) and x >= 0 for x in (offset, length)) or offset + length > buffers[bi].get("byteLength", 0):
+            findings["errors"].append(f"bufferView {i} exceeds declared buffer range")
+    # Unknown required extensions cannot be silently treated as supported in Unity.
+    for extension in data.get("extensionsRequired", []):
+        findings["warnings"].append(f"Required glTF extension needs importer check: {extension}")
     for i, a in enumerate(accessors):
         if a.get("componentType") not in COMPONENT_BYTES or a.get("type") not in ACCESSOR_SIZES:
             findings["errors"].append(f"Accessor {i} has invalid component/type")
             continue
-        if a.get("count", 0) < 0:
+        if not isinstance(a.get("count"), int) or a["count"] < 1:
             findings["errors"].append(f"Accessor {i} has invalid count")
         vi = a.get("bufferView")
         if vi is not None and (not isinstance(vi, int) or vi < 0 or vi >= len(views)):
