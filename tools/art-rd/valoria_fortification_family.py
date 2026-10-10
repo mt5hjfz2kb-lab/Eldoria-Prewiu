@@ -34,13 +34,17 @@ def parapet(name,left,right,y,z):
 def wall(name,x=0,y=0,length=8):
  courses(name,x-length/2,x+length/2,y-.65,y+.65,0,4.4)
  block(name+'_coping',(x,y,4.5),(length+0.16,1.53,.18),stones[1])
+ for side in [-1,1]:
+  for offset in range(max(1,int(length/2)-1)):
+   bx=x-length/2+1.6+offset*1.9
+   block(name+'_buttress',(bx,y+side*.78,1.25),(.43,.78,2.5),stones[2],.045)
  parapet(name,x-length/2,x+length/2,y,4.61)
 def tower(name,x=0,y=0):
  r=2.2
  for row in range(15):
   for k in range(12):
    theta=(k+.5)*math.tau/12+(row%2)*math.tau/24
-   o=block(name+'_curved_ashlar',(x+r*math.cos(theta),y+r*math.sin(theta),row*.48+.24),(.95,.76,.45),stones[(k+row)%4])
+   o=block(name+'_curved_ashlar',(x+r*math.cos(theta),y+r*math.sin(theta),row*.48+.24),(1.14,1.13,.475),stones[(k+row)%4])
    o.rotation_euler[2]=theta+math.pi/2
  for k in range(12):
   if k%2==0:
@@ -95,7 +99,7 @@ manifest=[]
 for kind in ['wall','corner_inner','corner_outer','tower','gate','parapet']:
  build(kind);scene((0,0,3.3),18);manifest.append(export(kind))
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
-wall('west',-10,0,8);wall('east',10,0,8);gate();tower('west_tower',-16,0);tower('east_tower',16,0)
+wall('west',-8.5,0,8.6);wall('east',8.5,0,8.6);gate();tower('west_tower',-14.6,0);tower('east_tower',14.6,0)
 scene((0,0,4),46);assembly=export('assembled_gatehouse')
 (out/'manifest.json').write_text(json.dumps({'status':'awaiting visual review and Unity import','pieces':manifest,'assembly':assembly},indent=2))
 print('ELDORIA_FORTIFICATION_EXPORT_PASS',len(manifest))
