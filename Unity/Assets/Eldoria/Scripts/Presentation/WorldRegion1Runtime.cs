@@ -486,8 +486,8 @@ namespace Eldoria.Presentation
 
         static void BuildTerrainBase()
         {
-            const int xSteps=24;
-            const int zSteps=22;
+            const int xSteps=48;
+            const int zSteps=44;
             const float width=108f;
             const float depth=94f;
             var vertices=new Vector3[(xSteps+1)*(zSteps+1)];
@@ -505,7 +505,15 @@ namespace Eldoria.Presentation
                 float broad=Mathf.Sin(px*.085f)*.18f+Mathf.Cos(pz*.071f)*.15f+
                     Mathf.Sin((px+pz)*.043f)*.10f;
                 float centreFade=Mathf.Clamp01((Mathf.Abs(px)+Mathf.Abs(pz-3f))/34f);
-                float y=-.42f+broad*(.45f+.55f*centreFade);
+                // Landscape relief is concentrated beyond the playable crossroads.
+                // A smooth inner exclusion keeps all resource hotspots, paths and
+                // the Valoria approach on their established interaction plane.
+                float outskirts=Mathf.SmoothStep(0f,1f,
+                    Mathf.Clamp01((Mathf.Max(Mathf.Abs(px),Mathf.Abs(pz-3f))-12f)/22f));
+                float rollingRidge=
+                    Mathf.Sin(px*.19f+pz*.065f)*Mathf.Cos(pz*.145f-px*.035f)*.28f+
+                    (Mathf.PerlinNoise(px*.065f+17f,pz*.065f+21f)-.5f)*.32f;
+                float y=-.42f+broad*(.45f+.55f*centreFade)+rollingRidge*outskirts;
                 vertices[v]=new Vector3(px,y,pz);
                 uv[v]=new Vector2(nx,nz);
                 v++;
