@@ -32,7 +32,7 @@
     {
       "id": "valoria-mesh-only-worldspace-proof-20261010",
       "title": "Valoria Bastion I mesh-only coherent world-space proof",
-      "owner": "chat-valoria-no-sharp-prototype",
+      "owner": "chat-owner-authorized-two-track-takeover-20261010",
       "scope": [
         "tools/valoria_mesh_only_preview.py",
         ".github/workflows/valoria-mesh-only-preview.yml",
@@ -44,8 +44,9 @@
       "claimed_at": "2026-10-10",
       "base_main_sha": "a3ad770564fb6818d8a2f3d2495c9e5b2b723f59",
       "art_production_routing": "required",
-      "phase": "World-space connected prototype; Blender Ubuntu only, no shared Windows/Pages",
-      "next": "Author physically connected environment; render inspect; import Unity when owner resources legitimately released"
+      "phase": "Owner explicitly authorized continuation of both existing tracks; inspect exact evidence and implement macro visual corrections.",
+      "next": "Author physically connected environment; render inspect; import Unity when owner resources legitimately released",
+      "resumed_at": "2026-10-10T18:50:00Z"
     }
   ],
   "history": [
