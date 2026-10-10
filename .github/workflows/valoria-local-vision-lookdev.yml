@@ -1,0 +1,40 @@
+name: Eldoria local AI-guided real city lookdev
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['tools/art-rd/eldoria_blender_vision_loop.py','.github/workflows/valoria-local-vision-lookdev.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-art-windows-agent
+  cancel-in-progress: false
+jobs:
+  bounded-agent:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Expose Git from GitHub Desktop
+        shell: powershell
+        run: |
+          $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1
+          if($git){Split-Path $git.FullName|Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append}
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Render actual GLB, ask free local vision model, render correction
+        shell: powershell
+        run: |
+          $env:ELDORIA_VISION_OUTPUT="$env:RUNNER_TEMP/eldoria-vision-lookdev"
+          $blender="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+          & $blender -b --python tools/art-rd/eldoria_blender_vision_loop.py 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP/eldoria-vision-lookdev.log"
+          if($LASTEXITCODE -ne 0){throw "Local vision lookdev iteration failed"}
+          if(-not (Test-Path "$env:ELDORIA_VISION_OUTPUT/after.png")){throw "Missing real after render"}
+          if(-not (Select-String -Path "$env:RUNNER_TEMP/eldoria-vision-lookdev.log" -Pattern "ELDORIA_LOCAL_VISION_ITERATION_PASS" -Quiet)){throw "Missing actual model-guided command proof"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-vision-lookdev
+          path: |
+            ${{ runner.temp }}/eldoria-vision-lookdev/
+            ${{ runner.temp }}/eldoria-vision-lookdev.log
+          retention-days: 14
