@@ -556,6 +556,17 @@ scene.collection.objects.link(cam);scene.camera=cam
 cam.location=(55,-82,78)
 target=Vector((0,6,8))
 cam.rotation_euler=(target-Vector(cam.location)).to_track_quat("-Z","Y").to_euler()
+# View-specific fog and depth behind the structure (not exported to Unity).
+# Correct muted daylight reference: castle readable on mobile, warm lanterns as accents.
+world=scene.world
+if world and world.use_nodes:
+    bg=world.node_tree.nodes.get("Background")
+    if bg:
+        bg.inputs["Color"].default_value=(.28,.34,.44,1)
+        bg.inputs["Strength"].default_value=.85
+scene.view_settings.view_transform="Standard"
+scene.view_settings.look="Medium High Contrast"
+scene.view_settings.exposure=.45
 cam_d.type="ORTHO";cam_d.ortho_scale=102
 # Export all visual mesh geometry in the same continuous world space for Unity import.
 # Blender-specific noise shaders are not a Unity material certification.
