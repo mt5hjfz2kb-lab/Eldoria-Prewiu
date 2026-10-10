@@ -141,7 +141,7 @@ def build(kind):
  elif kind=="gate":gate()
  elif kind=="parapet":wall("reinforced_short_wall",length=5)
 def scene(target,scale):
- s=bpy.context.scene;s.render.engine="CYCLES";s.cycles.samples=24
+ s=bpy.context.scene;s.render.engine="CYCLES";s.cycles.samples=24;s.cycles.use_denoising=False;s.view_layers[0].cycles.use_denoising=False
  s.render.resolution_x=960;s.render.resolution_y=640;s.render.resolution_percentage=100
  s.view_settings.view_transform="Standard";s.view_settings.look="Medium High Contrast"
  world=bpy.data.worlds.new("cloudy_world");s.world=world;world.use_nodes=True
