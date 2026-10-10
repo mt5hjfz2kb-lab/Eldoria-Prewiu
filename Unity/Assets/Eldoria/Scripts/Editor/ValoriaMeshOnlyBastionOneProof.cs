@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -8,130 +7,83 @@ using UnityEngine.Rendering;
 
 namespace Eldoria.EditorTools
 {
-    // Experimental, isolated mesh-only proof. Never used by the canonical runtime or publication.
-    // Excludes SHARP PLY, SHARP splats, SHARP-generated textures and reference projection.
+    // Entirely separate prototype, not a replacement of the certified Valoria scene.
+    // The source is the authored Blender mesh-only GLB on this experiment branch.
     public static class ValoriaMeshOnlyBastionOneProof
     {
-        const string OutputScene = "Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyBastionOne.unity";
-        readonly struct Family
-        {
-            public readonly string Name, Path;
-            public readonly Vector2 Uv;
-            public readonly float Width, Height, Depth;
-            public Family(string name, string path, float x, float y, float w, float h, float depth)
-            { Name=name; Path=path; Uv=new Vector2(x,y); Width=w; Height=h; Depth=depth; }
-        }
-        static readonly Family[] Families = {
-            new Family("Bridge","Assets/Eldoria/ProductionSlice/BridgeFamilyV1.glb", .288618f,.100592f,.28f,.22f,36f),
-            new Family("LowerGate","Assets/Eldoria/ProductionSlice/LowerGateFamilyV1.glb", .394309f,.319527f,.21f,.225f,42f),
-            new Family("MainRoad","Assets/Eldoria/ProductionSlice/RoadFamilyV1.glb", .467480f,.508876f,.14f,.25f,48f),
-            new Family("CentralStair","Assets/Eldoria/ProductionSlice/StairFamilyV1.glb", .534959f,.673373f,.126f,.12f,54f),
-            new Family("UpperWalls","Assets/Eldoria/ProductionSlice/WallFamilyV1.glb", .788618f,.801183f,.51f,.21f,60f),
-            new Family("Bastion","Assets/Eldoria/ProductionSlice/BastionFamilyV1.glb", .604878f,.842604f,.24f,.21f,61f),
-            new Family("TerrainCliffSupport","Assets/Eldoria/ProductionSlice/RockTerrainFamilyV1.glb", .72f,.36f,.90f,.60f,65f)
-        };
-        [MenuItem("Eldoria/Experimental/Create Bastion I Mesh-Only Proof")]
+        const string Source = "Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb";
+        const string Output = "Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyBastionOne.unity";
+        const int CaptureWidth=1152, CaptureHeight=768;
+
+        [MenuItem("Eldoria/Experimental/Build SHARP-free Bastion I")]
         public static void Create()
         {
-            // Stage the already committed Blender exports into Unity only for this isolated experiment.
-            // The production importer normally stages these files in its own workflow.
-            foreach(var family in Families)
-            {
-                if(AssetDatabase.LoadAssetAtPath<GameObject>(family.Path)!=null)continue;
-                var source=Path.Combine(
-                    Directory.GetParent(Application.dataPath).Parent.FullName,
-                    "art-source","valoria","production",
-                    family.Name=="LowerGate"?"lower-gate-family-v1":
-                    family.Name=="MainRoad"?"road-family-v1":
-                    family.Name=="CentralStair"?"stair-family-v1":
-                    family.Name=="UpperWalls"?"wall-family-v1":
-                    family.Name=="TerrainCliffSupport"?"rock-terrain-family-v1":
-                    family.Name.ToLowerInvariant()+"-family-v1",
-                    family.Name=="MainRoad"?"RoadFamilyV1.glb":
-                    family.Name=="CentralStair"?"StairFamilyV1.glb":
-                    family.Name=="UpperWalls"?"WallFamilyV1.glb":
-                    family.Name=="TerrainCliffSupport"?"RockTerrainFamilyV1.glb":
-                    family.Name+"FamilyV1.glb");
-                if(!File.Exists(source))throw new FileNotFoundException("Missing committed Blender GLB",source);
-                var destination=Path.Combine(Application.dataPath,family.Path.Substring("Assets/".Length));
-                Directory.CreateDirectory(Path.GetDirectoryName(destination));
-                File.Copy(source,destination,true);
-                AssetDatabase.ImportAsset(family.Path,ImportAssetOptions.ForceSynchronousImport);
-            }
-            // Preflight before touching any scene, with explicit independent asset availability.
-            foreach(var f in Families)
-                if(AssetDatabase.LoadAssetAtPath<GameObject>(f.Path)==null)
-                    throw new FileNotFoundException("Mesh-only proof missing independently licensed GLB: "+f.Path);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            var source=AssetDatabase.LoadAssetAtPath<GameObject>(Source);
+            if(source==null)throw new FileNotFoundException("Mesh-only authored GLB failed Unity import",Source);
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-            var cameraGo=new GameObject("MeshOnlyProofCamera");
-            var camera=cameraGo.AddComponent<Camera>();
-            camera.tag="MainCamera"; camera.fieldOfView=44.42281f; camera.nearClipPlane=.1f; camera.farClipPlane=250f;
-            camera.transform.SetPositionAndRotation(Vector3.zero,Quaternion.identity);
+            var root=(GameObject)PrefabUtility.InstantiatePrefab(source);
+            if(root==null)throw new InvalidOperationException("Worldspace GLB cannot instantiate");
+            root.name="Valoria_BastionI_MeshOnly_Prototype";
+            root.transform.SetPositionAndRotation(Vector3.zero,Quaternion.identity);
+            root.transform.localScale=Vector3.one;
+            var renderers=root.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length==0)throw new InvalidOperationException("Mesh-only GLB has no renderers");
+            var bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            if(bounds.size.magnitude<10f || bounds.size.magnitude>10000f)
+                throw new InvalidOperationException("Imported worldspace bounds implausible: "+bounds);
+
+            var cameraObject=new GameObject("WorldspaceProofCamera");
+            var camera=cameraObject.AddComponent<Camera>();
+            camera.tag="MainCamera";
+            camera.orthographic=true;
+            camera.orthographicSize=51f;
+            camera.nearClipPlane=.1f;
+            camera.farClipPlane=350f;
             camera.clearFlags=CameraClearFlags.SolidColor;
-            camera.backgroundColor=new Color(.075f,.105f,.125f,1f);
-            var root=new GameObject("UNLICENSED_SOURCE_FREE__MESH_ONLY_GEOMETRY");
-            float tan=Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad), aspect=1230f/845f;
-            var results=new List<string>();
-            foreach(var f in Families)
-            {
-                var go=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(f.Path));
-                go.transform.SetParent(root.transform,false);go.name=f.Name+"_GLB";
-                // Transform a GLB authored for the original approved oblique camera into the
-                // isolated identity-camera layout. This is a composition proof, not a final world rig.
-                var originalPosition=new Vector3(30.8183f,63.0934f,-84.6726f);
-                var rotation=Quaternion.LookRotation((-originalPosition).normalized,Vector3.up);
-                go.transform.rotation=Quaternion.Inverse(rotation);
-                var renderers=go.GetComponentsInChildren<Renderer>(true);
-                if(renderers.Length==0)throw new InvalidOperationException("Mesh-only proof GLB has no renderers: "+f.Name);
-                var bounds=renderers[0].bounds;
-                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-                float sx=(f.Width*2f*f.Depth*tan*aspect)/Mathf.Max(.001f,bounds.size.x);
-                float sy=(f.Height*2f*f.Depth*tan)/Mathf.Max(.001f,bounds.size.y);
-                float scale=Mathf.Min(sx,sy);
-                if(float.IsNaN(scale)||float.IsInfinity(scale)||scale<=0)throw new InvalidOperationException("Invalid scale "+f.Name);
-                go.transform.localScale*=scale;
-                bounds=renderers[0].bounds;
-                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-                var target=new Vector3((f.Uv.x-.5f)*2f*f.Depth*tan*aspect,(f.Uv.y-.5f)*2f*f.Depth*tan,f.Depth);
-                go.transform.position+=target-bounds.center;
-                foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
-                results.Add(f.Name+" renderers="+renderers.Length);
-            }
-            var lightGo=new GameObject("CoolAmbientDirectional");
-            var light=lightGo.AddComponent<Light>();
-            light.type=LightType.Directional;light.color=new Color(.88f,.91f,1f);light.intensity=1.25f;
-            lightGo.transform.rotation=Quaternion.Euler(35f,-28f,0f);
+            camera.backgroundColor=new Color(.34f,.43f,.54f);
+            var cameraTarget=new Vector3(0f,8f,-6f);
+            camera.transform.position=new Vector3(55f,78f,82f);
+            camera.transform.rotation=Quaternion.LookRotation(cameraTarget-camera.transform.position,Vector3.up);
+            camera.aspect=(float)CaptureWidth/CaptureHeight;
+
             RenderSettings.ambientMode=AmbientMode.Flat;
-            RenderSettings.ambientLight=new Color(.31f,.34f,.39f);
-            Directory.CreateDirectory(Path.GetDirectoryName(OutputScene));
-            EditorSceneManager.SaveScene(scene,OutputScene);
-            // Matched camera proof image. Experimental evidence only; not commercial beauty certification.
-            const int width=1230, height=845;
-            var imagePath=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ValoriaMeshOnlyProof","mesh-only-bastion-i-unity.png"));
-            Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
-            var renderTarget=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
-            var oldTarget=camera.targetTexture;
-            var oldActive=RenderTexture.active;
-            var image=new Texture2D(width,height,TextureFormat.RGB24,false);
+            RenderSettings.ambientLight=new Color(.67f,.68f,.74f);
+            var sunObject=new GameObject("WorldspaceProofSun");
+            var sunlight=sunObject.AddComponent<Light>();
+            sunlight.type=LightType.Directional;
+            sunlight.color=new Color(1f,.86f,.67f);
+            sunlight.intensity=1.3f;
+            sunObject.transform.rotation=Quaternion.Euler(45f,-34f,10f);
+            Directory.CreateDirectory(Path.GetDirectoryName(Output));
+            EditorSceneManager.SaveScene(scene,Output);
+            var outputFolder=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ValoriaMeshOnlyProof"));
+            Directory.CreateDirectory(outputFolder);
+            var outputPath=Path.Combine(outputFolder,"mesh-only-bastion-i-unity.png");
+            var target=new RenderTexture(CaptureWidth,CaptureHeight,24,RenderTextureFormat.ARGB32);
+            var previousTarget=camera.targetTexture;
+            var previousActive=RenderTexture.active;
+            var capture=new Texture2D(CaptureWidth,CaptureHeight,TextureFormat.RGB24,false);
             try
             {
-                camera.aspect=(float)width/height;
-                camera.targetTexture=renderTarget;
-                RenderTexture.active=renderTarget;
+                camera.targetTexture=target;
+                RenderTexture.active=target;
                 camera.Render();
-                image.ReadPixels(new Rect(0,0,width,height),0,0);
-                image.Apply();
-                File.WriteAllBytes(imagePath,image.EncodeToPNG());
+                capture.ReadPixels(new Rect(0,0,CaptureWidth,CaptureHeight),0,0);
+                capture.Apply();
+                File.WriteAllBytes(outputPath,capture.EncodeToPNG());
             }
             finally
             {
-                camera.targetTexture=oldTarget;
-                RenderTexture.active=oldActive;
-                UnityEngine.Object.DestroyImmediate(image);
-                renderTarget.Release();
-                UnityEngine.Object.DestroyImmediate(renderTarget);
+                camera.targetTexture=previousTarget;
+                RenderTexture.active=previousActive;
+                UnityEngine.Object.DestroyImmediate(capture);
+                target.Release();
+                UnityEngine.Object.DestroyImmediate(target);
             }
-            Debug.Log("[VALORIA MESH ONLY] Proof scene saved, matched-camera capture: "+imagePath+"; families: "+string.Join("; ",results));
+            Debug.Log("[VALORIA MESH ONLY] Import and render complete. Bounds="+bounds
+                +" renderers="+renderers.Length+" screenshot="+outputPath);
         }
     }
 }
