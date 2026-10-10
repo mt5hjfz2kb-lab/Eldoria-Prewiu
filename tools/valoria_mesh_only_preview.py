@@ -270,6 +270,38 @@ for x,y,z in [(-6,-18,14),(6,-18,14),(-1.5,33,23)]:
     cuboid("Heraldic cloth blue",(x,y-.5,z-1.7),(1.15,.11,3.5),blue,.02)
 # Keep roof silhouette is stronger than guard towers but secondary to keep mass.
 pitched_roof("Keep commanding timber roof",-1.5,34,23.2,9.8,9.8,2.2)
+# World-space architectural variation: irregular dressed stone ridges and roof tiles.
+# Every piece shares the terrain coordinate system; no camera-space impostors.
+def dressed_arch(name,x,y,z,w=4.8,depth=1.25,height=3.8):
+    # Two stone jambs and a wedge-course lintel over an actual open passage.
+    for xx in (x-w/2,x+w/2):
+        cuboid(name+" dressed pier",(xx,y,z+height*.48),(.85,depth,height),stone,.09)
+        for course in range(4):
+            cuboid(name+" recessed cut ashlar",(xx,y-depth/2-.06,z+.45+course*.85),
+                   (.75,.08,.06),trim,.012)
+    for j in range(7):
+        xc=x-w/2+(j+.5)*w/7
+        cuboid(name+" segmented lintel",(xc,y,z+height+.22),
+               (w/7+.045,depth+.20,.65),stone if j%2 else trim,.03)
+dressed_arch("Front postern ceremonial arch",0,-18,8.18,w=6.9,depth=2.4,height=5.0)
+# A larger genuinely three-dimensional tapered stair landing and solid support.
+for side in (-1,1):
+    for step in range(12):
+        y=14.2+step*.67
+        z=8.1+(step/11.0)*4.9
+        cuboid("Joined stair edge footing",(side*4.08,y,z-.36),
+               (1.10,.70,.90),stone,.07)
+# Irregular roof slates create a reading of real roofing instead of big smooth polygons.
+for cx,cy,roofz,rw,rd in [(-1.5,34,23.2,9.8,9.8),
+                         (9,29,17.4,11.8,8.8)]:
+    for side in (-1,1):
+        for i in range(12):
+            yy=cy-rd*.46+(i+.5)*rd/12
+            px=cx+side*rw*.235
+            zz=roofz+1.1
+            slate=cuboid("Layered miniature slate courses",(px,yy,zz),
+                    (rw*.48,rd/11.3,.105),rock,.015)
+            slate.rotation_euler[1]=side*math.radians(17)
 # Environmental silhouette: natural trees remain away from approach, not on streets.
 bark=material("Dark forest bark",(.085,.065,.05))
 pine=material("Cool fir needles",(.075,.14,.115))
