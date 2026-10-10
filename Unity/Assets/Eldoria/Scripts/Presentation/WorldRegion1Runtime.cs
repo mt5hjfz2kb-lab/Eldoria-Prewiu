@@ -208,11 +208,11 @@ namespace Eldoria.Presentation
         static void BuildWildernessEdges()
         {
             var belts=new[]{
-                new Vector3(-25f,0,-10f),new Vector3(-22f,0,-16f),
-                new Vector3(-27f,0,3f),new Vector3(-24f,0,16f),
-                new Vector3(24f,0,-10f),new Vector3(27f,0,0f),
-                new Vector3(25f,0,11f),new Vector3(22f,0,23f),
-                new Vector3(-8f,0,31f),new Vector3(3f,0,33f)
+                new Vector3(-13f,0,-14f),new Vector3(-18f,0,-7f),
+                new Vector3(-21f,0,4f),new Vector3(-20f,0,19f),
+                new Vector3(13f,0,-15f),new Vector3(19f,0,-6f),
+                new Vector3(21f,0,10f),new Vector3(17f,0,21f),
+                new Vector3(-8f,0,27f),new Vector3(3f,0,27f)
             };
             for(int belt=0;belt<belts.Length;belt++)
             {
@@ -307,6 +307,7 @@ namespace Eldoria.Presentation
                     rs=city.GetComponentsInChildren<Renderer>(true);
                     bounds=rs[0].bounds;for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     city.transform.position+=ValoriaPosition-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+                    TintWorldDonor(city,new Color(.85f,.81f,.76f,1f));
                 }
             }
             else
@@ -688,6 +689,32 @@ namespace Eldoria.Presentation
             WorldShrub(name,position,scale,variant);
         }
 
+        // Apply tonal art direction per instance without replacing textured donor
+        // materials or mutating shared prefab assets.
+        static void TintWorldDonor(GameObject go,Color multiplier)
+        {
+            if(go==null)return;
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var material=mats[i];
+                    if(material==null)continue;
+                    string colorProperty=material.HasProperty("_BaseColor")?"_BaseColor":
+                        material.HasProperty("_Color")?"_Color":null;
+                    if(colorProperty==null)continue;
+                    var source=material.GetColor(colorProperty);
+                    var block=new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(block,i);
+                    block.SetColor(colorProperty,new Color(
+                        source.r*multiplier.r,source.g*multiplier.g,
+                        source.b*multiplier.b,source.a));
+                    renderer.SetPropertyBlock(block,i);
+                }
+            }
+        }
+
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
             var inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",
@@ -696,6 +723,7 @@ namespace Eldoria.Presentation
             if(inventoryTree!=null)
             {
                 Parent(inventoryTree);
+                TintWorldDonor(inventoryTree,new Color(.78f,.82f,.74f,1f));
                 foreach(var col in inventoryTree.GetComponentsInChildren<Collider>(true))col.enabled=false;
                 return;
             }
