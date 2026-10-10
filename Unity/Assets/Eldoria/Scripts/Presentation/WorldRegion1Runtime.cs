@@ -124,6 +124,7 @@ namespace Eldoria.Presentation
             BuildTerrainBase();
             BuildSurfaceDressing();
             BuildWildernessEdges();
+            BuildForegroundFringe();
 
             GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.05f,8f),
                 new Vector3(19f,.08f,25f),Meadow*.94f,-9f);
@@ -234,6 +235,35 @@ namespace Eldoria.Presentation
                 if(belt%3==0)
                     WorldTree("World Region 1 · wilderness edge pine",
                         center+new Vector3(1.25f,0,-.85f),.58f,belt+200);
+            }
+        }
+
+        // Fill the otherwise vacant near-camera envelope with small, separated
+        // landscape groves. Keep the Valoria approach and interaction corridor clear.
+        // These borrowed trees and stones have no physics authority.
+        static void BuildForegroundFringe()
+        {
+            var groves=new[]{
+                new Vector3(-19f,0f,-14f),new Vector3(19f,0f,-14f),
+                new Vector3(-11f,0f,-23f),new Vector3(11f,0f,-23f)
+            };
+            for(int grove=0;grove<groves.Length;grove++)
+            {
+                var centre=groves[grove];
+                GroundPatch("World Region 1 · foreground forest floor",
+                    centre+new Vector3(0f,-.013f,0f),
+                    new Vector3(6.6f,.038f,5.4f),new Color(.215f,.258f,.188f),grove*27f);
+                for(int i=0;i<5;i++)
+                {
+                    float angle=i*2.39996f+grove*.77f;
+                    var position=centre+new Vector3(Mathf.Cos(angle)*(1.2f+i*.30f),
+                        0f,Mathf.Sin(angle)*(1.0f+i*.22f));
+                    WorldTree("World Region 1 · foreground framing pine",position,
+                        .52f+.13f*Mathf.PerlinNoise(grove*1.7f+i*.42f,i*.35f),
+                        300+grove*13+i);
+                    if(i%2==0)WorldBush("World Region 1 · foreground brush",
+                        position+new Vector3(.46f,0f,-.33f),.58f,400+grove*13+i);
+                }
             }
         }
 
