@@ -264,7 +264,7 @@ namespace Eldoria.Presentation
                 if(primary!=null)
                 {
                     primary.SetActive(true);
-                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=12;}
+                    var text=primary.GetComponentInChildren<Text>();if(text!=null){StyleText(text);text.fontSize=12;}
                     var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
                 }
             }
@@ -337,7 +337,7 @@ namespace Eldoria.Presentation
                 var primary=GameObject.Find("CONTINUAR");
                 if(primary!=null)
                 {
-                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=12;}
+                    var text=primary.GetComponentInChildren<Text>();if(text!=null){StyleText(text);text.fontSize=12;}
                     var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
                 }
             }
