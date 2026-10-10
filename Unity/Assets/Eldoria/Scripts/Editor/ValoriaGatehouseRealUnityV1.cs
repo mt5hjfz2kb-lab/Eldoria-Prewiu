@@ -29,7 +29,7 @@ namespace Eldoria.EditorTools
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var root = new GameObject("Blender authored gatehouse candidate");
-            var gltf = new GltfImport();
+            var gltf = new GltfImport(null, new UninterruptedDeferAgent());
             var path = Path.GetFullPath(AssetPath);
             if(!File.Exists(path)) throw new FileNotFoundException(path);
             if(!await gltf.LoadFile(path)) throw new Exception("glTFast could not load exact Blender GLB");
