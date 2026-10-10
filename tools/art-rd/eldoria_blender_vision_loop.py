@@ -39,10 +39,10 @@ scene.render.filepath=str(before);bpy.ops.render.render(write_still=True)
 prompt=(
  'You are the art-direction assistant for a dark medieval 4X mobile game. '
  'The FIRST image is the latest actual Blender rendering; SECOND image is the approved visual reference. '
- 'Choose one conservative MATERIAL lookdev correction; do not claim shape, architecture or art PASS. '
+ 'Choose ONE VISIBLE stone, rock or roof material correction in the first image to move it TOWARD the second. Do not claim shape, architecture or art PASS. '
  'Respond ONLY as JSON: '
  '{"stone_brightness":number,"rock_brightness":number,"roof_brightness":number,"observation":string}. '
- 'Each brightness is a multiplier between 0.75 and 1.25. '
+ 'Each brightness must be one of 0.80, 0.88, 0.94, 1.00, 1.08, 1.16, 1.24. At least ONE value MUST differ from 1.00 by 0.08 or more. '
  'Identify a concrete visual weakness in observation. Do not demand paid tools.'
 )
 images=[base64.b64encode(p.read_bytes()).decode('ascii') for p in (before,reference)]
@@ -53,6 +53,8 @@ body=json.dumps(payload).encode('utf-8')
 req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=body,headers={'Content-Type':'application/json'})
 with urllib.request.urlopen(req,timeout=210) as f: response=json.loads(f.read().decode('utf-8'))
 msg=response.get('message',{}).get('content','')
+(out/'model-response.json').write_text(msg[:4000],encoding='utf8')
+print('ELDORIA_AI_MODEL_PROPOSAL',msg[:1200])
 data=json.loads(msg)
 factors={k:max(.75,min(1.25,float(data.get(k,1)))) for k in ('stone_brightness','rock_brightness','roof_brightness')}
 changes=0
