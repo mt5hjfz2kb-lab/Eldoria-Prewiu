@@ -43,7 +43,7 @@ prompt=(
  'Respond ONLY as JSON: '
  '{"stone_brightness":number,"rock_brightness":number,"roof_brightness":number,"observation":string}. '
  'Each brightness must be one of 0.80, 0.88, 0.94, 1.00, 1.08, 1.16, 1.24. At least ONE value MUST differ from 1.00 by 0.08 or more. '
- 'Identify a concrete visual weakness in observation. Do not demand paid tools.'
+ 'Use no more than 12 words for observation. Do not repeat sentences. Do not demand paid tools.'
 )
 images=[base64.b64encode(p.read_bytes()).decode('ascii') for p in (before,reference)]
 payload={"model":"hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M","stream":False,"format":"json",
@@ -55,7 +55,17 @@ with urllib.request.urlopen(req,timeout=210) as f: response=json.loads(f.read().
 msg=response.get('message',{}).get('content','')
 (out/'model-response.json').write_text(msg[:4000],encoding='utf8')
 print('ELDORIA_AI_MODEL_PROPOSAL',msg[:1200])
-data=json.loads(msg)
+try:
+ data=json.loads(msg)
+except json.JSONDecodeError:
+ # Small local VLMs sometimes truncate a repetitive explanation, even though
+ # the three machine-checked numeric decisions precede it.
+ matched=re.findall(r'"(stone_brightness|rock_brightness|roof_brightness)"\\s*:\\s*(-?[0-9]+(?:\\.[0-9]+)?)',msg)
+ decision={k:float(v) for k,v in matched}
+ if set(decision)!={'stone_brightness','rock_brightness','roof_brightness'}:
+  raise
+ decision['observation']='Local model response truncated after numeric decisions; see model-response.json'
+ data=decision
 factors={k:max(.75,min(1.25,float(data.get(k,1)))) for k in ('stone_brightness','rock_brightness','roof_brightness')}
 changes=0
 for m in bpy.data.materials:
