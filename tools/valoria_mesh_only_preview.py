@@ -156,6 +156,41 @@ for display,folder,source,anchor,target_width in FAMILIES:
     results.append({"family":display,"objects":len(meshes),"world_anchor":anchor,
                     "source_dimensions":[round(right-left,2),round(back-front,2)],
                     "scale":round(scale,4)})
+# Continuous defensive parapet runs, with varying alignments and authored stone supports.
+# Curved walls are created from a single swept mesh, avoiding visible gaps between blocks.
+def swept_curtain(name,points,height,width,mat):
+    vertices=[]
+    for i,(x,y,z) in enumerate(points):
+        if i==0:direction=Vector((points[1][0]-x,points[1][1]-y))
+        elif i==len(points)-1:direction=Vector((x-points[i-1][0],y-points[i-1][1]))
+        else:direction=Vector((points[i+1][0]-points[i-1][0],
+                               points[i+1][1]-points[i-1][1]))
+        direction.normalize()
+        nrm=Vector((-direction.y,direction.x,0))*width/2
+        base=Vector((x,y,z))
+        vertices.extend([tuple(base+nrm),tuple(base-nrm),
+                         tuple(base+nrm+Vector((0,0,height))),
+                         tuple(base-nrm+Vector((0,0,height)))])
+    faces=[]
+    for i in range(len(points)-1):
+        a=4*i;b=4*(i+1)
+        faces.extend([(a,b,b+2,a+2),(a+1,a+3,b+3,b+1),(a+2,b+2,b+3,a+3),(a,b,b+1,a+1)])
+    faces.extend([(0,1,3,2),(len(vertices)-4,len(vertices)-2,len(vertices)-1,len(vertices)-3)])
+    mesh=bpy.data.meshes.new(name+" continuous masonry mesh")
+    mesh.from_pydata(vertices,[],faces);mesh.update()
+    ob=bpy.data.objects.new(name,mesh);scene.collection.objects.link(ob)
+    ob.data.materials.append(mat)
+    return ob
+# Bastion rear wall is naturally kinked to respond to rock contour, with zero floating bays.
+for side in (-1,1):
+    swept_curtain("Citadel shoulder masonry "+str(side),
+        [(side*20.9,17.8,13.0),(side*21.1,23.3,13.0),
+         (side*20.4,29.5,13.0),(side*19.0,35.0,13.0)],4.6,1.5,stone)
+# The ramp between the courtyards receives retaining shoulders physically attached to both ends.
+for side in (-1,1):
+    swept_curtain("Grand staircase retaining flank "+str(side),
+        [(side*4.4,12.9,8.03),(side*4.3,15.6,8.8),
+         (side*4.3,18.8,10.8),(side*4.4,22.6,12.9)],1.45,.75,stone)
 # Small props and houses only within enclosed courtyard, away from route.
 for side in [-1,1]:
     for i in range(4):
