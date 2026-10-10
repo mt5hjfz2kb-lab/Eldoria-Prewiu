@@ -546,9 +546,9 @@ for x,y,z in [(-6,-18,16),(6,-18,16),(0,24,17),(0,34,24)]:
 world=bpy.data.worlds.new("Cold forest dusk")
 scene.world=world;world.use_nodes=True
 world.node_tree.nodes["Background"].inputs["Color"].default_value=(.09,.12,.18,1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value=2.3
+world.node_tree.nodes["Background"].inputs["Strength"].default_value=.95
 ld=bpy.data.lights.new("Raking soft key","AREA");l=bpy.data.objects.new("Raking soft key",ld);scene.collection.objects.link(l)
-l.location=(5,-20,62);ld.energy=13000;ld.size=25
+l.location=(-38,-24,66);ld.energy=11500;ld.size=22;ld.color=(1.0,.78,.55)
 # Explicit architectural composition camera, not SHARP camera-space placement.
 cam_d=bpy.data.cameras.new("Valoria Worldspace Camera")
 cam=bpy.data.objects.new("Valoria Worldspace Camera",cam_d)
