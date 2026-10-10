@@ -108,6 +108,22 @@ namespace Eldoria.EditorTools
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
             BuildPlateau(world.transform,grass,rock);
             RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=85f; RenderSettings.fogEndDistance=180f;
+            // Reuse authored fortification at the upper defensive terrace.
+            var upper=Object.Instantiate(root);
+            upper.name="Upper Valoria fortified gatehouse";
+            upper.transform.SetParent(world.transform,true);
+            upper.transform.localScale*=.79f;
+            upper.transform.position=new Vector3(0f,HeightAt(0f,27f),27f);
+            var upperWallLeft=Object.Instantiate(wall);
+            upperWallLeft.name="Upper western curtain wall";
+            upperWallLeft.transform.SetParent(world.transform,true);
+            upperWallLeft.transform.localScale*=.78f;
+            upperWallLeft.transform.position=new Vector3(-9.1f,HeightAt(-9f,27f),27f);
+            var upperWallRight=Object.Instantiate(wallRight);
+            upperWallRight.name="Upper eastern curtain wall";
+            upperWallRight.transform.SetParent(world.transform,true);
+            upperWallRight.transform.localScale*=.78f;
+            upperWallRight.transform.position=new Vector3(9.1f,HeightAt(9f,27f),27f);
             // Route winds in from the south; individually placed pavers avoid flat decal geometry.
             for(int i=0;i<70;i++){
                 float z=-40f+i*.83f;
@@ -129,6 +145,18 @@ namespace Eldoria.EditorTools
                 if(Mathf.Abs(x)>36f || Mathf.Abs(z)>36f)continue;
                 float h=2.0f+(float)rand.NextDouble()*4.7f;
                 MakePine(world.transform,new Vector3(x,HeightAt(x,z),z),h,wood,pine);
+            }
+            for(int i=0;i<52;i++){
+                float angle=(float)rand.NextDouble()*Mathf.PI*2f;
+                float r=36f+(float)rand.NextDouble()*4f;
+                float bx=Mathf.Cos(angle)*r,bz=Mathf.Sin(angle)*r;
+                var boulder=GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                boulder.name="Cliff talus and weathered boulder";
+                boulder.transform.SetParent(world.transform);
+                boulder.transform.position=new Vector3(bx,HeightAt(bx,bz)-.4f,bz);
+                boulder.transform.localScale=new Vector3(1.1f+(float)rand.NextDouble()*2.1f,.7f+(float)rand.NextDouble()*1.7f,.9f+(float)rand.NextDouble()*1.7f);
+                boulder.GetComponent<Renderer>().sharedMaterial=rock;
+                Object.DestroyImmediate(boulder.GetComponent<Collider>());
             }
             for(int i=0;i<150;i++){
                 float x=(float)(rand.NextDouble()*72-36),z=(float)(rand.NextDouble()*72-36);
@@ -180,7 +208,8 @@ namespace Eldoria.EditorTools
             m.name=name;m.color=color;return m;
         }
         static float HeightAt(float x,float z){
-            return -.25f+.35f*Mathf.Sin(x*.18f)*Mathf.Cos(z*.14f);
+            float rise=Mathf.SmoothStep(0f,5.2f,Mathf.InverseLerp(8f,26f,z));
+            return -.25f+rise+.35f*Mathf.Sin(x*.18f)*Mathf.Cos(z*.14f);
         }
 
         static void BuildPlateau(Transform parent,Material grass,Material cliff){
