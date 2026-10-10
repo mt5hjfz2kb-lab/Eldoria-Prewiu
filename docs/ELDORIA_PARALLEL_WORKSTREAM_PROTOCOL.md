@@ -79,7 +79,8 @@ Example active entry:
   ],
   "status": "active",
   "claimed_at": "2026-10-02T10:40:00Z",
-  "base_main_sha": "<sha>"
+  "base_main_sha": "<sha>",
+  "art_production_routing": "required"
 }
 ```
 

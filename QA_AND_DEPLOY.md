@@ -116,7 +116,9 @@ Also audit responsibility boundaries: Barracks, troops, heroes, march preparatio
 A green functional test does not override a failed novice-player UX pass. The build remains unverified until both are green.
 
 ## Deployment
-`.github/workflows/pages.yml` runs on pushes to `main`. It remains final clean-environment certification/deployment and guards the frozen tester snapshot. Important/release candidates still run the integral gate before being called stable. Do not use Actions as the normal iteration debugger when local targeted QA is sufficient.
+`.github/workflows/pages.yml` runs on relevant `main` paths (including `pipeline/unity-publish-request.json`) or manual dispatch. Its preflight may skip the Windows build and deployment when the publication request is disabled; a queued WebGL job can wait for the single shared Windows runner. Release requires the explicit enabled and approved request, successful exact-artifact candidate QA, Pages deployment and published-build verification. The frozen tester snapshot is guarded during deployment. Important/release candidates still run the integral gate before being called stable. Use focused local QA for normal iteration.
+
+For any chat with the connected GitHub tools, list Actions runs directly at `https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs?per_page=100`, match the exact source SHA, then inspect the selected run's jobs and artifacts. CI discovery and handoff use the repository and workflow runs directly. A manual-only workflow needs a real dispatch capability; a push to unrelated paths does not start it.
 
 A build is only called published after Pages deployment succeeds and only called verified after the published Chromium check succeeds.
 
