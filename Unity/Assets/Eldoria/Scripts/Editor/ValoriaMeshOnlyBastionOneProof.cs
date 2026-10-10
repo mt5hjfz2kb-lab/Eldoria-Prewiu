@@ -63,7 +63,7 @@ namespace Eldoria.EditorTools
                 float sx=(f.Width*2f*f.Depth*tan*aspect)/Mathf.Max(.001f,bounds.size.x);
                 float sy=(f.Height*2f*f.Depth*tan)/Mathf.Max(.001f,bounds.size.y);
                 float scale=Mathf.Min(sx,sy);
-                if(!float.IsFinite(scale)||scale<=0)throw new InvalidOperationException("Invalid scale "+f.Name);
+                if(float.IsNaN(scale)||float.IsInfinity(scale)||scale<=0)throw new InvalidOperationException("Invalid scale "+f.Name);
                 go.transform.localScale*=scale;
                 bounds=renderers[0].bounds;
                 for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
