@@ -77,11 +77,11 @@ for sx in (-1,1):
   # Nonuniform slate tiles follow pitched roof slope; silhouettes remain intact.
  for course in range(5):
   z=7.17+course*.40
-  radius=1.86-(z-6.985)/2.35*1.79
+  radius=1.81-(z-6.985)/2.35*1.79
   for j in range(12):
    angle=(j+.30*(course%2))*math.tau/12
    a=tx+radius*math.cos(angle);bb=radius*math.sin(angle)
-   tile=base.cube("slate_lap_tile",(a,bb,z),(.48,.17,.19),slate_edge if (j+course)%4==0 else slate,.013)
+   tile=base.cube("slate_lap_tile",(a,bb,z),(.235,.10,.065),slate_edge if (j+course)%5==0 else slate,.008)
    tile.rotation_euler[2]=angle
  # One unmistakable banner per defensive tower facing the camera.
  pole=base.cube("heraldic_banner_mast",(tx,-2.23,7.36),(.065,.075,3.2),base.iron,.014)
