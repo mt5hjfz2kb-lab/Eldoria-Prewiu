@@ -1,0 +1,39 @@
+name: Valoria modular fortifications Blender export
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['tools/art-rd/valoria_fortification_family.py','.github/workflows/valoria-fortification-family.yml']
+permissions:
+  contents: read
+concurrency:
+  group: valoria-fortification-family
+  cancel-in-progress: false
+jobs:
+  fortifications:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export six modular fortifications and render individual plus assembled proof
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:ELDORIA_FORTIFICATION_OUTPUT = "$env:RUNNER_TEMP/valoria-fortification-family"
+          $stdout="$env:RUNNER_TEMP/fortifications-out.log"
+          $stderr="$env:RUNNER_TEMP/fortifications-err.log"
+          $p=Start-Process -FilePath "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -ArgumentList @("-b","--python","tools/art-rd/valoria_fortification_family.py") -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 20
+          if($p.ExitCode -ne 0 -or -not (Test-Path "$env:ELDORIA_FORTIFICATION_OUTPUT/manifest.json")){
+            Get-Content $stderr -Tail 60
+            throw "Fortification library export failed"
+          }
+          if(-not (Select-String -Path $stdout -Pattern 'ELDORIA_FORTIFICATION_EXPORT_PASS' -Quiet)){throw "Missing certification marker"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-modular-fortification-family
+          path: |
+            ${{ runner.temp }}/valoria-fortification-family/
+            ${{ runner.temp }}/fortifications-out.log
+            ${{ runner.temp }}/fortifications-err.log
+          retention-days: 14
