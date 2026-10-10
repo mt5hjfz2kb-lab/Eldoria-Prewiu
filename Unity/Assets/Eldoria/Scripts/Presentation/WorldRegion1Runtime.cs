@@ -187,7 +187,7 @@ namespace Eldoria.Presentation
                         Mathf.Sin(a)*radius+jitterZ);
                     // Stratify the canopy without moving logical resource targets.
                     // Deterministic cluster/angle variation removes the visible size cadence.
-                    float canopyScale=.70f+.26f*Mathf.PerlinNoise(
+                    float canopyScale=1.00f+.34f*Mathf.PerlinNoise(
                         cluster*7.3f+i*.37f,cluster*3.1f+i*.61f);
                     WorldTree("World Region 1 · forest mass",p,canopyScale,i+cluster);
                     if(i%3==1)WorldBush("World Region 1 · forest understory",
@@ -517,8 +517,8 @@ namespace Eldoria.Presentation
 
         static void BuildTerrainBase()
         {
-            const int xSteps=48;
-            const int zSteps=44;
+            const int xSteps=80;
+            const int zSteps=72;
             const float width=108f;
             const float depth=94f;
             var vertices=new Vector3[(xSteps+1)*(zSteps+1)];
@@ -533,18 +533,7 @@ namespace Eldoria.Presentation
                 float nz=z/(float)zSteps;
                 float px=(nx-.5f)*width;
                 float pz=(nz-.5f)*depth+4f;
-                float broad=Mathf.Sin(px*.085f)*.18f+Mathf.Cos(pz*.071f)*.15f+
-                    Mathf.Sin((px+pz)*.043f)*.10f;
-                float centreFade=Mathf.Clamp01((Mathf.Abs(px)+Mathf.Abs(pz-3f))/34f);
-                // Landscape relief is concentrated beyond the playable crossroads.
-                // A smooth inner exclusion keeps all resource hotspots, paths and
-                // the Valoria approach on their established interaction plane.
-                float outskirts=Mathf.SmoothStep(0f,1f,
-                    Mathf.Clamp01((Mathf.Max(Mathf.Abs(px),Mathf.Abs(pz-3f))-12f)/22f));
-                float rollingRidge=
-                    Mathf.Sin(px*.19f+pz*.065f)*Mathf.Cos(pz*.145f-px*.035f)*.28f+
-                    (Mathf.PerlinNoise(px*.065f+17f,pz*.065f+21f)-.5f)*.32f;
-                float y=-.42f+broad*(.45f+.55f*centreFade)+rollingRidge*outskirts;
+                float y=LandscapeHeight(px,pz);
                 vertices[v]=new Vector3(px,y,pz);
                 uv[v]=new Vector2(nx,nz);
                 v++;
@@ -569,6 +558,27 @@ namespace Eldoria.Presentation
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var terrainRenderer=go.AddComponent<MeshRenderer>();
             terrainRenderer.sharedMaterial=WorldLandscapeMaterial();
+        }
+
+        // Broad connected ridges give the map a geographical silhouette. The inner
+        // crossroads stays at its established presentation plane; no physics is added.
+        static float LandscapeHeight(float x,float z)
+        {
+            float exclusion=Mathf.SmoothStep(0f,1f,
+                Mathf.Clamp01((Mathf.Max(Mathf.Abs(x),Mathf.Abs(z-3f))-11f)/9f));
+            float west=4.8f*Mathf.Exp(-((x+19f)*(x+19f)/70f+(z-10f)*(z-10f)/280f));
+            float east=3.5f*Mathf.Exp(-((x-20f)*(x-20f)/90f+(z-13f)*(z-13f)/240f));
+            float north=5.2f*Mathf.Exp(-((x+2f)*(x+2f)/440f+(z-29f)*(z-29f)/85f));
+            float erosion=(Mathf.PerlinNoise(x*.16f+17f,z*.16f+21f)-.5f)*.65f;
+            return -.42f+exclusion*(west+east+north+erosion);
+        }
+
+        static Vector3 LandscapeSeat(Vector3 p)
+        {
+            // Props never levitate over the new ridges; authored gameplay targets
+            // and all road pieces retain their original world coordinates.
+            p.y+=Mathf.Max(0f,LandscapeHeight(p.x,p.z)+.42f);
+            return p;
         }
 
         static Material WorldLandscapeMaterial()
@@ -747,6 +757,7 @@ namespace Eldoria.Presentation
 
         static void WorldBush(string name,Vector3 position,float scale,int variant)
         {
+            position=LandscapeSeat(position);
             var bush=WorldInventoryPiece("Bush01",name,position,1.35f*scale,.95f*scale,
                 Quaternion.Euler(0f,(variant*37f)%360f,0f));
             if(bush!=null)
@@ -789,13 +800,20 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
-            var inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",
-                name,position,2.45f*scale,4.1f*scale,
+            position=LandscapeSeat(position);
+            // Prefer the licensed upright Nature Starter trees. Inventory shrubs
+            // stretched into trees produced a toy-scale flat canopy in real captures.
+            var inventoryTree=ValoriaKit.BenchmarkPiece(name,NatureTreePrefab(variant),
+                position,2.65f*scale,4.8f*scale,
                 Quaternion.Euler(0f,(variant*47f)%360f,0f));
+            if(inventoryTree==null)
+                inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",
+                    name,position,2.45f*scale,4.1f*scale,
+                    Quaternion.Euler(0f,(variant*47f)%360f,0f));
             if(inventoryTree!=null)
             {
                 Parent(inventoryTree);
-                TintWorldDonor(inventoryTree,new Color(.62f,.72f,.63f,1f));
+                TintWorldDonor(inventoryTree,new Color(.48f,.57f,.46f,1f));
                 foreach(var col in inventoryTree.GetComponentsInChildren<Collider>(true))col.enabled=false;
                 return;
             }
@@ -806,6 +824,7 @@ namespace Eldoria.Presentation
 
         static void WorldRock(string name,Vector3 position,float scale,int variant)
         {
+            position=LandscapeSeat(position);
             var inventoryRock=WorldInventoryPiece(variant%2==0?"Rock01":"Rock02",
                 name,position,3.0f*scale,1.65f*scale,
                 Quaternion.Euler(0f,(variant*61f)%360f,0f));
@@ -843,7 +862,14 @@ namespace Eldoria.Presentation
 
         static Object NatureTreePrefab(int variant)
         {
-            return null;
+            if(externalLibrary==null)return null;
+            switch(Mathf.Abs(variant)%4)
+            {
+                case 0:return externalLibrary.NatureTree01;
+                case 1:return externalLibrary.NatureTree02;
+                case 2:return externalLibrary.NatureTree03;
+                default:return externalLibrary.NatureTree04;
+            }
         }
 
         static void NatureBush(string name,Vector3 position,float scale,int variant)
@@ -920,3 +946,4 @@ namespace Eldoria.Presentation
         static void Parent(GameObject go){if(go!=null&&root!=null)go.transform.SetParent(root,true);}
     }
 }
+
