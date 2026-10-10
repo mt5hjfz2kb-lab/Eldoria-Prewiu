@@ -2,7 +2,34 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-10",
-  "active": [],
+  "active": [
+    {
+      "id": "valoria-four-way-touch-camera-20261010",
+      "title": "Valoria four-way touch camera candidate to published QA",
+      "owner": "chat-direct-camera-continuation-20261010",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        "pipeline/unity-publish-request.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "pipeline/active-workstreams.json",
+        "docs/evidence/valoria-four-way-touch-camera-20261010/**"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-owner-publication"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-10T09:55:26.313Z",
+      "base_main_sha": "cf0fb18f10062aa5048456091066862bc03ec2b6",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Player-visible Valoria camera framing and candidate visual gate require production routing.",
+      "phase": "Consuming existing Pages WebGL build 38041337479; no duplicate runner dispatch.",
+      "next": "Await exact candidate and automatic WebGL QA; inspect rendered four-direction captures; correct, retest and publish only after gates."
+    }
+  ],
   "history": [
     {
       "id": "github-actions-chat-access-and-issue23-retirement-v1",
