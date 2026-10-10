@@ -6,7 +6,7 @@
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
       "title": "World Region 1 production visual convergence v3 and WebGL delivery",
-      "owner": "chat-chief-programmer-takeover-20261010",
+      "owner": "chat-owner-authorized-two-track-takeover-20261010",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/WorldRegion1RuntimeTests.cs",
@@ -26,8 +26,9 @@
       "base_main_sha": "431a08a8627d4deb8c03534c39789d2a5d0a95b9",
       "art_production_routing": "required",
       "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
-      "phase": "Pre-existing v3 visual commits passed Unity; claim released runner/Pages and complete final visual convergence.",
-      "next": "Improve Region 1 visual scene and verify exact final Windows/QA captures; build candidate WebGL, run exact candidate QA and publish after gate."
+      "phase": "Owner explicitly authorized continuation of both existing tracks; inspect exact evidence and implement macro visual corrections.",
+      "next": "Improve Region 1 visual scene and verify exact final Windows/QA captures; build candidate WebGL, run exact candidate QA and publish after gate.",
+      "resumed_at": "2026-10-10T18:50:00Z"
     }
   ],
   "history": [
