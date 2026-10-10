@@ -55,7 +55,9 @@ namespace Eldoria.EditorTools
             camera.transform.position=new Vector3(18.2f,14.6f,-25.8f);
             camera.transform.LookAt(new Vector3(0f,3.15f,5.8f));
             Save(camera,Output+"/unity-strategic-1280x720.png",1280,720);
-            camera.orthographicSize=20f;
+            camera.transform.position=new Vector3(18.2f,14.6f,-31.6f);
+            camera.transform.LookAt(new Vector3(0f,3.15f,0f));
+            camera.orthographicSize=16f;
             Save(camera,Output+"/unity-mobile-390x844.png",390,844);
             long triangles=0;int materials=0;
             foreach(var mesh in root.GetComponentsInChildren<MeshFilter>(true))
