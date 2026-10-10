@@ -1,0 +1,37 @@
+name: Valoria gatehouse reference Blender render
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths:
+      - 'tools/art-rd/valoria_gatehouse_reference.py'
+      - '.github/workflows/valoria-gatehouse-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gate-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+      - name: Author and render Valoria reference gate
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/valoria-gatehouse-reference"
+          export ELDORIA_GATE_REFERENCE_OUTPUT="$RUNNER_TEMP/valoria-gatehouse-reference"
+          export ELDORIA_FORTIFICATION_OUTPUT="$RUNNER_TEMP/valoria-fortification-temp"
+          blender -b --python tools/art-rd/valoria_gatehouse_reference.py > "$RUNNER_TEMP/gatehouse-out.log" 2> "$RUNNER_TEMP/gatehouse-err.log" || { tail -100 "$RUNNER_TEMP/gatehouse-err.log"; tail -30 "$RUNNER_TEMP/gatehouse-out.log"; exit 1; }
+          grep -q ELDORIA_GATE_REFERENCE_PASS "$RUNNER_TEMP/gatehouse-out.log"
+          test -s "$ELDORIA_GATE_REFERENCE_OUTPUT/valoria_gate_reference.glb"
+          test -s "$ELDORIA_GATE_REFERENCE_OUTPUT/valoria_gate_reference.blend"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-gatehouse-reference
+          path: |
+            ${{ runner.temp }}/valoria-gatehouse-reference/
+            ${{ runner.temp }}/gatehouse-out.log
+            ${{ runner.temp }}/gatehouse-err.log
+          retention-days: 14
