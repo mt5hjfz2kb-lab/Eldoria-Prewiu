@@ -9,6 +9,12 @@ Prevent two ChatGPT/agent sessions from silently converging onto the same Eldori
 
 The repository remains the source of truth. This protocol adds a small coordination layer; it does not replace project-state documents or certified evidence. Example file paths below are illustrative, not a source of runtime authority; actual Unity presentation and visual authority are decided by current code and canonical routing.
 
+## Estado actual frente a histórico
+
+El campo `active` del registro delimita exclusivamente los trabajos vivos. `history` documenta tareas antiguas, incluidos `STOP`, `handoff`, `blocked`, `review pending` y `cancelled`: **no es una lista de órdenes aplicables al siguiente chat**. Las cabeceras vigentes de `SESSION_HANDOFF.md` y `PROJECT_STATE.md` tienen prioridad sobre sus entradas cronológicas antiguas. No consultar todo el historial para decidir la próxima acción salvo que el trabajo exija recuperar una prueba o una decisión concreta.
+
+Un agente que informa de una fase intermedia, verifica un gate o escribe un commit sigue siendo responsable de ejecutar el próximo paso permitido. Solo se libera el trabajo ante entrega comprobada o bloqueo/suspensión real, nunca por el mero hecho de enviar texto al usuario. Ante un gate rojo recuperable, reparar y revalidar; ante conflicto de propiedad, respetar el alcance y resolver o señalar **el conflicto exacto**, sin invadir archivos ajenos. No se prometen ejecuciones infinitas ni tareas en segundo plano.
+
 ## Permanent continuous-execution rule
 
 Once an agent successfully claims a workstream, it must continue through diagnosis, correction, rerun, validation and closeout within the available live execution. This rule does not create unlimited session duration or background execution. **Progress updates are informational only and MUST NOT suspend execution.** The agent must not wait for the owner to say `continúa`, `sigue`, `reanuda` or equivalent when the next action is already determined by the repository, existing evidence, canonical planner/routing, tests or zero-cost tooling.
