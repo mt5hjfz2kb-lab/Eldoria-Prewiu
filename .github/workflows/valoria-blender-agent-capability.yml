@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/valoria-blender-agent-capability.yml'
       - 'tools/art-rd/blender_agent_capability.py'
+      - 'tools/art-rd/blender_mcp_socket_probe.py'
   workflow_dispatch:
 permissions:
   contents: read
