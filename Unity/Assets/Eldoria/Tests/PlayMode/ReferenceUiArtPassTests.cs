@@ -151,7 +151,11 @@ namespace Eldoria.Tests
                 yield return new WaitForSecondsRealtime(.3f);
                 var completeAction=GameObject.Find("CONTINUAR").GetComponent<Button>();
                 Assert.That(completeAction.interactable,Is.False);
-                Assert.That(completeAction.GetComponentInChildren<UnityEngine.UI.Text>().color.r,Is.GreaterThan(.8f),
+                var completionLabel=typeof(Eldoria.Presentation.SlicePresenter)
+                    .GetField("primaryActionText",flags).GetValue(presenter) as UnityEngine.UI.Text;
+                Assert.That(completionLabel,Is.Not.Null);
+                Assert.That(completionLabel.gameObject.activeInHierarchy,Is.True);
+                Assert.That(completionLabel.color.r,Is.GreaterThan(.8f),
                     "Chapter completion must remain readable against its disabled dark plate.");
             }
             finally
