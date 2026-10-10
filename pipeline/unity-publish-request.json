@@ -9,17 +9,17 @@
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "bastion-i-ii-web-parity-playthrough-v1",
   "updated_at": "2026-10-10",
-  "retry": 51,
-  "retry_reason": "Build corrected UI source 006c0b360: landscape/portrait layout preserves disabled CTA contrast; Unity UI PlayMode 38038180064 PASS. Candidate-only until exact build QA.",
+  "retry": 52,
+  "retry_reason": "Exact candidate 38038397612 passed full fresh-save I-II landscape/portrait QA 38039578310. Direct capture inspection confirms readable training countdown/completion. Promote same artifact 11664888284 without rebuilding.",
   "parcel_source_artifact_id": 11544987850,
   "retry_after_commit": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
   "paid_credits": 0,
   "ui_certification_run_id": 38038180064,
-  "release_approved": false,
-  "candidate_qa_run_id": 38001165965,
-  "candidate_qa_artifact_id": 11649201968,
-  "candidate_build_run_id": 37999090263,
+  "release_approved": true,
+  "candidate_qa_run_id": 38039578310,
+  "candidate_qa_artifact_id": 11665293571,
+  "candidate_build_run_id": 38038397612,
   "last_verified_release": {
     "verdict": "DIRECT FLOW RECOVERED / BUILD PASS / EXACT CANDIDATE QA PASS / EXACT ARTIFACT RELEASE PASS / PUBLISHED FULL I-II PASS",
     "historical_reference": "2026-10-08 around 14:00 Europe/Madrid; last preceding main bdeef4038d03a62dcc207c93005bbad868fd7909",
@@ -46,5 +46,7 @@
     "physical_device_tested": false,
     "paid_credits": 0,
     "evidence": "docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json"
-  }
+  },
+  "reuse_webgl_build_run_id": 38038397612,
+  "reuse_webgl_source_sha": "47422ca94609f3672f6f60ad794d6f23e81bdc6a"
 }
