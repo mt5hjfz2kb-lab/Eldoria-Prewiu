@@ -18,7 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install open-source Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+        run: |
+          # Ubuntu image has apt indexes; avoid unbounded update hangs on mirrors.
+          timeout 240 sudo apt-get install -y blender python3-numpy
       - name: Render independent GLB families (no SHARP assets)
         env:
           VALORIA_PROOF_OUTPUT: ${{ runner.temp }}/valoria-mesh-proof.png
