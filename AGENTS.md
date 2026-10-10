@@ -11,6 +11,19 @@
 
 **Success standard:** deliver the actual authorized result with checkable evidence, or name the precise objective blocker and remaining step. Default user-facing output is a concise delivery, not an extensive interim audit.
 
+## REGLA OPERATIVA DE CONTINUIDAD — 2026-10-10
+
+**Ámbito:** un encargo de implementación autorizado en un chat normal o Work. Esta sección es una regla de ejecución, no otro departamento ni una tarea automática. El historial de `SESSION_HANDOFF.md`, `PROJECT_STATE.md` y `pipeline/active-workstreams.json.history` es evidencia consultable, **no una cola de tareas, órdenes de parada ni aprobaciones pendientes**. Para seleccionar trabajo se usa el encargo actual y únicamente `active` del registro, verificando el HEAD y el alcance del propietario.
+
+**Clasificación obligatoria antes de detenerse:**
+- **Fallo recuperable** (tests, compilación, probe, captura, asset, bug, runner temporalmente ocupado): diagnosticar, corregir y repetir, o seguir consultando la ejecución ya iniciada mientras esta sesión y las herramientas sigan disponibles. Nunca convertir FAIL, queue o PARTIAL PASS en informe final.
+- **Puerta de seguridad objetiva** (arquitectura roja, conflicto de titularidad, gasto no autorizado, publicación insegura): NO saltarse la puerta. Investigar y corregir por vías autorizadas y dentro del alcance. Si la solución exige tocar un ámbito reservado, una decisión irreversible o pago, registrar el bloqueo preciso; proseguir en pasos independientes seguros.
+- **Cierre permitido:** entrega solicitada verificada; decisión humana verdaderamente indispensable; herramienta/acceso no disponible; o fin efectivo de los recursos de la ejecución. En caso de interrupción, registrar evidencia verificable y siguiente paso, sin declarar entrega ni fingir continuación en segundo plano.
+
+**Mensaje no es handoff:** una notificación breve de progreso, una respuesta parcial, comentario de issue, commit, gate aprobado o informe de QA **no libera el workstream, no termina el encargo y no obliga al usuario a escribir «continúa»**. Tras el mensaje, volver a usar las herramientas y avanzar hasta una condición real de cierre en la misma ejecución disponible. No confundir la obligación de mantener informado al usuario con la orden de suspender el trabajo.
+
+**Lectura eficiente:** primero las reglas superiores de este archivo, luego cabeceras vigentes de handoff/estado, entrada `active` y evidencia pertinente. No recorrer ni reactivar las decenas de páginas de historia salvo necesidad concreta. Las palabras históricas STOP, HANDOFF, REVIEW PENDING, BLOCKED y CLOSED no son instrucciones operativas actuales.
+
 ---
 
 ## 2026-10-10 — PERMANENT DIRECT UNITY DELIVERY AND ACTIONS RECOVERY
