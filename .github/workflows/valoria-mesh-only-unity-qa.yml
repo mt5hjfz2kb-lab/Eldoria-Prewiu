@@ -1,0 +1,40 @@
+name: Valoria mesh-only Unity visual QA (isolated, manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unity-mesh-only-qa:
+    # MUST NOT BE DISPATCHED until existing Region 1 owner releases Windows runner.
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Unity 6000.3.23f1
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version $version" }
+      - name: Import worldspace GLB and render isolated production-camera proof
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP/mesh-only-unity.log"
+          $argv=@("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaMeshOnlyBastionOneProof.Create","-logFile",$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $argv -Wait -PassThru
+          if (Test-Path $log) { Get-Content $log -Tail 130 }
+          if ($p.ExitCode -ne 0) { throw "Unity failed exit $($p.ExitCode)" }
+          $png="$env:GITHUB_WORKSPACE/Unity/ValoriaMeshOnlyProof/mesh-only-bastion-i-unity.png"
+          $scene="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyBastionOne.unity"
+          if (-not (Test-Path $png)) { throw "Missing actual Unity render" }
+          if (-not (Test-Path $scene)) { throw "Missing actual Unity scene" }
+          if ((Get-Item $png).Length -lt 15000) { throw "Unity render unexpectedly small" }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-mesh-only-unity-evidence
+          path: |
+            Unity/ValoriaMeshOnlyProof/mesh-only-bastion-i-unity.png
+            Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyBastionOne.unity
+            ${{ runner.temp }}/mesh-only-unity.log
+          retention-days: 14
