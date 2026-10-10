@@ -1,7 +1,10 @@
 # Eldoria — QA, Test Mode and deployment
 
-## Development build
-Canonical gameplay source remains `v0220/index.html` + `v0220/js/`. `tools/build-preview.mjs` generates `playtest/` and, only for that development build, injects the isolated QA support files. Never edit `playtest/` directly.
+## Fuente canónica y QA Unity (2026-10-10)
+El juego principal es `Unity/` (Unity 6000.3.23f1), rama `main`, publicación `/unity-owner/`. Una entrega exige compilación Unity real, pruebas del artefacto exacto, publicación controlada y QA sobre el WebGL publicado; los PASS técnicos y de calidad visual son distintos. El prototipo web heredado y sus pruebas JavaScript nunca certifican Unity. Se ejecuta el encargo autorizado hasta entregar o identificar un bloqueo genuino, sin usar auditorías o aprobaciones intermedias como sustituto.
+
+## Development build — solo prototipo web heredado
+`v0220/index.html` + `v0220/js/` son fuente exclusivamente del prototipo web de compatibilidad. `tools/build-preview.mjs` genera `playtest/` e inyecta allí utilidades QA. Nunca editar `playtest/` directamente.
 
 Local setup:
 ```bash
@@ -116,7 +119,7 @@ Also audit responsibility boundaries: Barracks, troops, heroes, march preparatio
 A green functional test does not override a failed novice-player UX pass. The build remains unverified until both are green.
 
 ## Deployment
-`.github/workflows/pages.yml` runs on relevant `main` paths (including `pipeline/unity-publish-request.json`) or manual dispatch. Its preflight may skip the Windows build and deployment when the publication request is disabled; a queued WebGL job can wait for the single shared Windows runner. Release requires the explicit enabled and approved request, successful exact-artifact candidate QA, Pages deployment and published-build verification. The frozen tester snapshot is guarded during deployment. Important/release candidates still run the integral gate before being called stable. Use focused local QA for normal iteration.
+`.github/workflows/pages.yml` runs on relevant `main` paths (including `pipeline/unity-publish-request.json`) or manual dispatch. Its preflight may skip the Windows build and deployment when the publication request is disabled; a queued WebGL job can wait for the single shared Windows runner. Release requires the explicit enabled and approved request, successful exact-artifact candidate QA, Pages deployment and published-build verification. The frozen tester snapshot is guarded during deployment. Unity releases must pass the applicable Unity production, candidate and published gates; legacy web integral tests apply to legacy web releases only. Use focused local QA for legacy web iteration.
 
 For any chat with the connected GitHub tools, list Actions runs directly at `https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs?per_page=100`, match the exact source SHA, then inspect the selected run's jobs and artifacts. CI discovery and handoff use the repository and workflow runs directly. A manual-only workflow needs a real dispatch capability; a push to unrelated paths does not start it.
 
