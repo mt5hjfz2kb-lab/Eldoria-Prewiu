@@ -444,6 +444,35 @@ for side in (-1,1):
         z=13.9+math.sin(theta)*1.28
         cuboid("Entrance dressed voussoir",(x,-19.2,z),(.66,.55,.48),trim,.04)
 # Robust warm torchlights and richer atmospheric contrast.
+# Controlled environment dressing, authored to the real plateau silhouette.
+# Low-cost pine clusters and undergrowth restore the forested frontier identity.
+leaf_deep=material("Blue-dark fir needles",(.055,.115,.092))
+leaf_mid=material("Evergreen fir needles",(.085,.17,.117))
+bush=material("Bramble scrub",(.19,.24,.12))
+def fir(name,x,y,ground,height):
+    cuboid(name+" trunk",(x,y,ground+height*.28),(.25,.28,height*.55),wood)
+    for k in range(3):
+        z=ground+height*(.42+k*.18)
+        radius=height*(.215-k*.045)
+        bpy.ops.mesh.primitive_cone_add(vertices=9,radius1=radius,radius2=0,
+            depth=height*.45,location=(x,y,z))
+        crown=bpy.context.object;crown.name=name+" foliage"
+        crown.data.materials.append(leaf_deep if k%2 else leaf_mid)
+for x,y,g,h in [
+    (-26,-12,7.65,5.1),(-27,-3,7.55,6.4),(-27,20,7.65,6.7),
+    (27,-11,7.6,6.3),(27,16,7.6,6.0),(27,27,7.4,7.3),
+    (-24,31,7.4,5.8),(-24,-25,7.5,4.7)]:
+    fir("Valoria perimeter fir",x,y,g,h)
+for x,y in [(-19,-17),(-19,6),(-16,11),(19,-13),(17,3),(18,11),
+            (-14,26),(16,25)]:
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,
+        location=(x,y,8.33 if y<15 else 13.38))
+    o=bpy.context.object;o.name="Embedded gorse scrub"
+    o.scale=(1.25,.9,.5);o.data.materials.append(bush)
+# Cobblestone course blocks give the road readable micro-scale without extra textures.
+for yy in range(-34,13,3):
+    for xx in (-2.7,-1.35,0,1.35,2.7):
+        cuboid("Road individual sett",(xx,yy,8.22),(1.18,2.4,.08),trim,.08)
 # Animated-look static light sources for proof only.
 for i,y in enumerate((-19,-5,10,24,35)):
     for x in (-5,5):
