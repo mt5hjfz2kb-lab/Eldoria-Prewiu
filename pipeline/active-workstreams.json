@@ -15,7 +15,8 @@
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
-        "docs/evidence/world-region-1-visual-convergence-v3-20261010/**"
+        "docs/evidence/world-region-1-visual-convergence-v3-20261010/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -26,8 +27,8 @@
       "base_main_sha": "431a08a8627d4deb8c03534c39789d2a5d0a95b9",
       "art_production_routing": "required",
       "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
-      "phase": "Owner explicitly authorized continuation of both existing tracks; inspect exact evidence and implement macro visual corrections.",
-      "next": "Improve Region 1 visual scene and verify exact final Windows/QA captures; build candidate WebGL, run exact candidate QA and publish after gate.",
+      "phase": "Exact candidate technical PASS revealed WebGL-only removal of native-approved forest/ruin references; correcting bounded resource allowlist.",
+      "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
       "resumed_at": "2026-10-10T18:50:00Z"
     }
   ],

@@ -236,7 +236,10 @@ namespace Eldoria.EditorTools
 
             var keep = new HashSet<string>(StringComparer.Ordinal)
             {
-                "SlavicBoulder", "SlavicFlatRock", "SlavicMudFlat", "SlavicMoss"
+                "SlavicBoulder", "SlavicFlatRock", "SlavicMudFlat", "SlavicMoss",
+                // Region 1 uses these exact native-approved sources. Keep their serialized
+                // dependencies so WebGL does not silently fall back to provisional art.
+                "NatureTree01", "NatureTree02", "NatureTree03", "NatureTree04", "RuinedTower"
             };
             var so = new SerializedObject(library);
             var iterator = so.GetIterator();
