@@ -19,7 +19,6 @@
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs"
       ],
       "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
         "github-pages-owner-publication"
       ],
       "status": "active",
@@ -27,9 +26,41 @@
       "base_main_sha": "431a08a8627d4deb8c03534c39789d2a5d0a95b9",
       "art_production_routing": "required",
       "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
-      "phase": "Exact candidate technical PASS revealed WebGL-only removal of native-approved forest/ruin references; correcting bounded resource allowlist.",
+      "phase": "Corrected WebGL candidate built; exact QA completed; Windows lease handed to same-owner isolated prototype diagnostic.",
       "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
       "resumed_at": "2026-10-10T18:50:00Z"
+    },
+    {
+      "id": "valoria-mesh-only-worldspace-proof-20261010",
+      "title": "Valoria Bastion I mesh-only coherent world-space proof",
+      "owner": "chat-owner-authorized-two-track-takeover-20261010",
+      "scope": [
+        "tools/valoria_mesh_only_preview.py",
+        ".github/workflows/valoria-mesh-only-preview.yml",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMeshOnlyBastionOneProof.cs",
+        "docs/evidence/valoria-mesh-only-prototype/**",
+        ".github/workflows/valoria-mesh-only-unity-qa.yml",
+        "pipeline/valoria-mesh-only-unity-qa-request.json"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "a3ad770564fb6818d8a2f3d2495c9e5b2b723f59",
+      "art_production_routing": "required",
+      "phase": "Isolated Unity import/render diagnostic of unchanged rejected GLB; no promotion or art approval.",
+      "next": "Inspect exact Unity screenshot and logs; no production approval without a coherent authored scene and reference-matched visual PASS.",
+      "resumed_at": "2026-10-10T18:50:00Z",
+      "last_review": {
+        "run_id": 38079353952,
+        "artifact_id": 11679846513,
+        "source_sha": "683ff91bb188c39a06e3eb99c7221a6c52eef282",
+        "visual_pass": false,
+        "paid_credits": 0
+      },
+      "branch": "prototype/valoria-bastion1-no-sharp-20261010",
+      "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
     }
   ],
   "history": [
