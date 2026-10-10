@@ -1,7 +1,7 @@
 # Eldoria — Development Pipeline v2
 
 Status: active optimization plan.  
-Updated: 2026-09-30.
+Updated: 2026-10-10 (operational clarification).
 
 ## Objective
 
@@ -115,7 +115,7 @@ Unity Accelerator is the second option, especially if more runners/dev machines 
 
 Canonical state machine:
 
-`approved reference -> exact-input identity -> pre-spend stage -> OWNER CREDIT APPROVAL -> generation -> task watch -> export -> SHA identity -> Blender normalization/refine -> isolated Unity gate -> visual evidence -> OWNER VISUAL APPROVAL -> promotion -> integrated Unity regression -> certification`
+`approved reference -> exact-input identity -> pre-spend stage -> OWNER CREDIT APPROVAL -> generation -> task watch -> export -> SHA identity -> Blender normalization/refine -> isolated Unity gate -> visual evidence -> explicit owner creative decision only if reserved -> objective visual acceptance -> promotion -> integrated Unity regression -> certification`
 
 Rules:
 - no new paid generation after the approved spend without a new owner gate;
@@ -162,3 +162,7 @@ The single Windows Unity runner may preserve `Unity/Library` in selected lightwe
 The canonical production/release Unity gate remains clean and authoritative. Do not copy the warm-workspace rule into release validation merely for speed.
 
 If a warm visual diagnostic behaves suspiciously, force a one-off clean diagnostic rather than reverting all fast visual loops to cold imports.
+
+## Clarificación de autoridad (2026-10-10)
+
+La revisión visual rutinaria, una captura o un resultado CI no imponen aprobación humana. El director técnico completa los siguientes pasos reversibles disponibles dentro de la ejecución activa. Solo solicitar decisión del propietario si hay gasto, alternativa artística subjetiva expresamente reservada o una acción irreversible. TECH PASS no equivale a VISUAL PASS. GitHub Actions automatiza pruebas y builds; no es un agente capaz de corregir código por sí solo. No se presupone una sesión ilimitada ni ejecución en segundo plano.
