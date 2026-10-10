@@ -60,7 +60,7 @@ try:
 except json.JSONDecodeError:
  # Small local VLMs sometimes truncate a repetitive explanation, even though
  # the three machine-checked numeric decisions precede it.
- matched=re.findall(r'"(stone_brightness|rock_brightness|roof_brightness)"\\s*:\\s*(-?[0-9]+(?:\\.[0-9]+)?)',msg)
+ matched=re.findall(r'"(stone_brightness|rock_brightness|roof_brightness)"\s*:\s*(-?[0-9]+(?:\.[0-9]+)?)',msg)
  decision={k:float(v) for k,v in matched}
  if set(decision)!={'stone_brightness','rock_brightness','roof_brightness'}:
   raise
