@@ -216,9 +216,25 @@ for x,y,z,h in [(-28,-21,7.4,6),(-29,8,7.4,7.2),(29,6,7.4,6.5),
                                     depth=h*.72,location=(x,y,z+h*.63))
     bpy.context.object.name="Fir canopy";bpy.context.object.data.materials.append(pine)
 # Smooth road blocks and river threshold to secure one unified central route.
-cuboid("Bridge lower abutment",(0,-35,6.7),(10.0,5.0,3.3),rock,.23)
-cuboid("Bridge continuous walkway",(0,-29,8.15),(7.7,14,.23),paving,.08)
+# Stone bridge physically crosses an excavated outer approach rather than hovering
+# as a flat block in the middle of a courtyard.
+cuboid("Bridge lower abutment",(0,-38.4,4.0),(10.4,7.0,8.1),rock,.22)
+cuboid("Bridge approach from wild country",(0,-41.0,8.15),(7.7,8.5,.23),paving,.07)
+cuboid("Bridge continuous walkway",(0,-29,8.15),(7.7,17,.23),paving,.08)
 cuboid("Bridge gate connecting sill",(0,-20.5,8.12),(7.7,4,.21),paving,.03)
+for side in (-1,1):
+    bx=side*4.45
+    cuboid("Stone bridge parapet",(bx,-31,9.14),(.75,17,1.7),stone,.1)
+    for yy in (-37,-32,-27,-23):
+        cuboid("Bridge coping finial",(bx,yy,10.15),(1.12,1.0,.38),trim,.05)
+# Face wall / retaining curtain on both sides of the real gate opening.
+cuboid("Lower outer curtain left",(-15.6,-19,10.7),(13.0,2.8,5.3),stone,.10)
+cuboid("Lower outer curtain right",(15.6,-19,10.7),(13.0,2.8,5.3),stone,.10)
+for side in (-1,1):
+    for xx in (9.5,15.5,20.0):
+        cuboid("Front crenellation",(side*xx,-19,13.82),(1.85,2.9,1.05),stone,.06)
+# The courtyard facade now actually encloses the entrance, not merely two towers.
+
 # Rejected CC0 style experiment: third-party cartoon assets failed Dark Noble Strategy silhouette consistency.
 # Animated-look static light sources for proof only.
 for i,y in enumerate((-19,-5,10,24,35)):
@@ -282,7 +298,7 @@ if asset_out.stat().st_size>22000000:
 # Hard fail on basic spatial discontinuities before producing reassuring render evidence.
 # These checks do not replace visual approval.
 def approximately(a,b,tol=.65): return abs(a-b)<=tol
-bridge_y=(-29-14/2,-29+14/2)
+bridge_y=(-29-17/2,-29+17/2)
 gate_y=(-18-3.5/2,-18+3.5/2)
 road_y=(-34/2,34/2)
 upper_y=(28.6-22/2,28.6+22/2)
