@@ -1,15 +1,39 @@
-name: Valoria mesh-only Unity visual QA (isolated, manual)
+name: Valoria mesh-only Unity visual QA (isolated diagnostic)
 on:
   workflow_dispatch:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: [pipeline/valoria-mesh-only-unity-qa-request.json]
 permissions:
   contents: read
 jobs:
   unity-mesh-only-qa:
-    # MUST NOT BE DISPATCHED until existing Region 1 owner releases Windows runner.
+    # Owner-authorized isolated diagnostic only; the runner lease is checked before Unity.
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
     steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell
+        run: |
+          $git = Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1
+          if ($git) { Split-Path $git.FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append }
       - uses: actions/checkout@v4
+      - name: Verify explicit diagnostic request and global runner lease
+        shell: powershell
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE/pipeline/valoria-mesh-only-unity-qa-request.json" -Raw | ConvertFrom-Json
+          if (-not $request.enabled -or -not $request.diagnostic_only) { throw "Explicit isolated diagnostic request missing" }
+          if ($env:GITHUB_REF -ne "refs/heads/prototype/valoria-bastion1-no-sharp-20261010") { throw "Isolated branch required" }
+          $hash = & git rev-parse "HEAD:Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb"
+          if ($LASTEXITCODE -ne 0 -or $hash.Trim() -ne $request.source_glb_blob_sha) { throw "GLB differs from inspected source" }
+          $headers = @{ Authorization="Bearer $env:GITHUB_TOKEN"; Accept="application/vnd.github+json" }
+          $response = Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main"
+          $global = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($response.content)) | ConvertFrom-Json
+          $holders = @($global.active | Where-Object { $_.resources -contains "windows-self-hosted-unity-6000-3-23f1" })
+          if ($holders.Count -ne 1 -or $holders[0].id -ne $request.workstream -or $holders[0].owner -ne $request.owner) { throw "Global runner lease changed" }
+          Write-Host "EXPLICIT_ISOLATED_DIAGNOSTIC_PASS source=$hash no-promotion=true"
       - name: Verify Unity 6000.3.23f1
         shell: powershell
         run: |

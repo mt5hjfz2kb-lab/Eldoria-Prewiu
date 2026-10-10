@@ -6,7 +6,7 @@
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
       "title": "World Region 1 production visual convergence v3 and WebGL delivery",
-      "owner": "chat-chief-programmer-takeover-20261010",
+      "owner": "chat-owner-authorized-two-track-takeover-20261010",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/WorldRegion1RuntimeTests.cs",
@@ -18,7 +18,6 @@
         "docs/evidence/world-region-1-visual-convergence-v3-20261010/**"
       ],
       "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
         "github-pages-owner-publication"
       ],
       "status": "active",
@@ -37,15 +36,19 @@
         "tools/valoria_mesh_only_preview.py",
         ".github/workflows/valoria-mesh-only-preview.yml",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMeshOnlyBastionOneProof.cs",
-        "docs/evidence/valoria-mesh-only-prototype/**"
+        "docs/evidence/valoria-mesh-only-prototype/**",
+        ".github/workflows/valoria-mesh-only-unity-qa.yml",
+        "pipeline/valoria-mesh-only-unity-qa-request.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1"
+      ],
       "status": "active",
       "claimed_at": "2026-10-10",
       "base_main_sha": "a3ad770564fb6818d8a2f3d2495c9e5b2b723f59",
       "art_production_routing": "required",
-      "phase": "Final source proof inspected: structural PASS, reference visual FAIL; no production approval.",
-      "next": "Change to a coherent authored architectural/environment source; reject further primitive prop patches. Exact rejected proof 38079353952/artifact11679846513. Unity remains unverified because source art failed.",
+      "phase": "Isolated Unity import/render diagnostic of unchanged rejected GLB; no promotion or art approval.",
+      "next": "Inspect exact Unity screenshot and logs; no production approval without a coherent authored scene and reference-matched visual PASS.",
       "resumed_at": "2026-10-10T18:50:00Z",
       "last_review": {
         "run_id": 38079353952,
@@ -53,7 +56,9 @@
         "source_sha": "683ff91bb188c39a06e3eb99c7221a6c52eef282",
         "visual_pass": false,
         "paid_credits": 0
-      }
+      },
+      "branch": "prototype/valoria-bastion1-no-sharp-20261010",
+      "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
     }
   ],
   "history": [
