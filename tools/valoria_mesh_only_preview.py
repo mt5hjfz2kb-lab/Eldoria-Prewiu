@@ -212,7 +212,7 @@ for mat in [stone,trim,paving,earth,grass,rock,wood,pine]:
 # Author a restrained emissive torch hue with a separate warm point light cluster.
 torch_bs=glow.node_tree.nodes.get("Principled BSDF")
 torch_bs.inputs["Emission"].default_value=(1,.30,.035,1)
-torch_bs.inputs["Emission Strength"].default_value=2
+if "Emission Strength" in torch_bs.inputs:torch_bs.inputs["Emission Strength"].default_value=2
 for x,y,z in [(-6,-18,16),(6,-18,16),(0,24,17),(0,34,24)]:
     lamp=bpy.data.lights.new("Amber fire contrast","POINT")
     lamp.energy=420;lamp.color=(1,.42,.18)
