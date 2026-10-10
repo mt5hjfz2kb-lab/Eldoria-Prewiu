@@ -123,6 +123,7 @@ namespace Eldoria.Presentation
         {
             BuildTerrainBase();
             BuildSurfaceDressing();
+            BuildWildernessEdges();
 
             GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.05f,8f),
                 new Vector3(19f,.08f,25f),Meadow*.94f,-9f);
@@ -199,6 +200,41 @@ namespace Eldoria.Presentation
                 WorldRock("World Region 1 · edge geology",p,
                     .88f+.12f*Mathf.PerlinNoise(p.x*.13f+2f,p.z*.17f+4f),
                     geologyIndex++);
+        }
+
+        // Keep the playable crossroads clear while making the wilderness feel
+        // inhabited by terrain rather than isolated specimen trees. All donor
+        // props are collision-neutral and positioned beyond the core targets.
+        static void BuildWildernessEdges()
+        {
+            var belts=new[]{
+                new Vector3(-25f,0,-10f),new Vector3(-22f,0,-16f),
+                new Vector3(-27f,0,3f),new Vector3(-24f,0,16f),
+                new Vector3(24f,0,-10f),new Vector3(27f,0,0f),
+                new Vector3(25f,0,11f),new Vector3(22f,0,23f),
+                new Vector3(-8f,0,31f),new Vector3(3f,0,33f)
+            };
+            for(int belt=0;belt<belts.Length;belt++)
+            {
+                var center=belts[belt];
+                // Understory must vary deterministically across visits/reloads.
+                for(int i=0;i<5;i++)
+                {
+                    float a=i*2.39996f+belt*.51f;
+                    float spread=1.05f+.36f*i;
+                    var position=center+new Vector3(Mathf.Cos(a)*spread,0f,
+                        Mathf.Sin(a)*spread*.78f);
+                    WorldBush("World Region 1 · wilderness shrub",position,
+                        .52f+.18f*Mathf.PerlinNoise(belt*.83f,i*.61f),
+                        belt*11+i);
+                    if(i==1||i==4)
+                        WorldRock("World Region 1 · wilderness loose stone",
+                            position+new Vector3(.55f,0f,-.29f),.20f,belt*11+i+7);
+                }
+                if(belt%3==0)
+                    WorldTree("World Region 1 · wilderness edge pine",
+                        center+new Vector3(1.25f,0,-.85f),.58f,belt+200);
+            }
         }
 
         static void BuildSurfaceDressing()
