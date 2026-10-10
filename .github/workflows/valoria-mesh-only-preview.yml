@@ -33,20 +33,6 @@ jobs:
           OUTPUT_IMAGE: ${{ runner.temp }}/valoria-mesh-proof.png
         shell: bash
         run: |
-          python3 -m pip install --break-system-packages pillow
-          python3 - <<'PY'
-          from PIL import Image
-          from pathlib import Path
-          import os, base64
-          source=Image.open(os.environ['OUTPUT_IMAGE']).convert('RGB')
-          source.thumbnail((420,300))
-          dest=Path('docs/evidence/valoria-mesh-only-prototype')
-          dest.mkdir(parents=True,exist_ok=True)
-          jpg=dest/'preview.jpg'
-          source.save(jpg,quality=52,optimize=True)
-          (dest/'preview.jpg.base64.txt').write_text(base64.b64encode(jpg.read_bytes()).decode())
-          print('Preview bytes',jpg.stat().st_size)
-          PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/evidence/valoria-mesh-only-prototype/
