@@ -23,6 +23,7 @@ permissions:
   actions: read
   pages: write
   id-token: write
+  issues: write
 
 concurrency:
   group: eldoria-pages-main
@@ -40,6 +41,19 @@ jobs:
       reuse_run_id: ${{ steps.reuse.outputs.run_id }}
       reuse_source_sha: ${{ steps.reuse.outputs.source_sha }}
     steps:
+      - name: Publish build run locator for connected GitHub clients
+        if: github.event_name == 'push'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: 23,
+              body: 'ELDORIA_CI_RUN_LOCATOR workflow=pages run=' + context.runId +
+                ' sha=' + context.sha + ' url=https://github.com/' +
+                context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId
+            });
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
