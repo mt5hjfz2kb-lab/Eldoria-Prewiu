@@ -216,6 +216,29 @@ def tower(name,x,y,z0,h,w=4.1):
                 (1.15,1.15,.88),stone,.045)
 tower("Lower gate west tower",-6,-18,8.1,6.7,4.4)
 tower("Lower gate east tower",6,-18,8.1,6.7,4.4)
+# Actual medieval voussoir arches on the gatehouse and raised keep entrance.
+# Each voussoir is a closed 3D wedge with distinct radial joints, not a decal or flat bar.
+def stone_arch(name,x,y,base_z,clear_halfspan,thickness,depth,blocks=13):
+    for i in range(blocks):
+        a0=math.pi*i/blocks
+        a1=math.pi*(i+1)/blocks
+        # semicircle from left spring to right spring
+        def corner(theta,r,dy):
+            return (x+math.cos(theta)*r,y+dy,base_z+math.sin(theta)*r)
+        r0=clear_halfspan
+        r1=clear_halfspan+thickness
+        v=[corner(a0,r0,-depth/2),corner(a1,r0,-depth/2),
+           corner(a1,r1,-depth/2),corner(a0,r1,-depth/2),
+           corner(a0,r0,depth/2),corner(a1,r0,depth/2),
+           corner(a1,r1,depth/2),corner(a0,r1,depth/2)]
+        faces=[(0,3,2,1),(4,5,6,7),(0,1,5,4),(3,7,6,2),(0,4,7,3),(1,2,6,5)]
+        mesh=bpy.data.meshes.new(name+" voussoir mesh")
+        mesh.from_pydata(v,[],faces);mesh.update()
+        obj=bpy.data.objects.new(name+" stone voussoir "+str(i),mesh)
+        scene.collection.objects.link(obj)
+        obj.data.materials.append(trim if i%3==0 else stone)
+stone_arch("Lower monumental portal",0,-19.6,10.8,3.05,1.05,3.1,15)
+stone_arch("Upper stair victory arch",0,15.25,11.7,3.8,.52,.7,13)
 # Gate frame with a real dark pass-through zone; never block main route visually.
 cuboid("Lower gate lintel",(0,-18,14.25),(8.0,3.5,1.45),stone,.14)
 for xx in (-3.95,3.95):
