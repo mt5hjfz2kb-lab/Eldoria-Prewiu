@@ -31,6 +31,9 @@ jobs:
           blender -b --python tools/art-rd/blender_mcp_addon_smoke.py > /tmp/eldoria-blender-addon-smoke.txt 2>&1
           cat /tmp/eldoria-blender-addon-smoke.txt
           grep -q "ELDORIA_MCP_ADDON_LOAD_PASS" /tmp/eldoria-blender-addon-smoke.txt
+          blender -b --python tools/art-rd/blender_mcp_socket_probe.py > /tmp/eldoria-mcp-socket.txt 2>&1
+          cat /tmp/eldoria-mcp-socket.txt
+          grep -q "ELDORIA_SOCKET_REQUEST_PASS" /tmp/eldoria-mcp-socket.txt
       - name: Evaluate actual available capability without keys or paid credits
         shell: bash
         run: |
@@ -44,4 +47,5 @@ jobs:
             /tmp/mcp-cli.txt
             /tmp/mcp-addon.txt
             /tmp/eldoria-blender-addon-smoke.txt
+            /tmp/eldoria-mcp-socket.txt
           retention-days: 14
