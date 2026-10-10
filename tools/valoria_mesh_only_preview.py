@@ -174,6 +174,38 @@ for x,y in [(-15,-6),(-11,7),(13,-4),(12,9)]:
     for ox in (-2,2):
         cuboid("Lean-to post",(x+ox,y-1.2,8.7),(.28,.28,1.55),wood,.02)
     cuboid("Stacked timber",(x+.6,y+.3,8.3),(2.0,1.15,.4),wood)
+# Make major buildings read as inhabited and playable at strategic camera scale.
+# Gabled stone-slate roofing uses actual sloped surfaces rather than floating boxes.
+def pitched_roof(name,x,y,z,w,d,pitch=1.55):
+    verts=[(x-w/2,y-d/2,z),(x+w/2,y-d/2,z),
+           (x+w/2,y+d/2,z),(x-w/2,y+d/2,z),
+           (x,y-d/2,z+pitch),(x,y+d/2,z+pitch)]
+    faces=[(0,1,4),(3,5,2),(0,4,5,3),(1,2,5,4)]
+    me=bpy.data.meshes.new(name+"Slates")
+    me.from_pydata(verts,[],faces);me.update()
+    ob=bpy.data.objects.new(name+" actual pitched roof",me)
+    scene.collection.objects.link(ob);ob.data.materials.append(rock)
+for side in (-1,1):
+    for i in range(4):
+        cx=side*(11+(i%2)*6);cy=-11+(i//2)*13
+        pitched_roof("Bastion I modest cottage",cx,cy,10.5,5.9,6.0,1.35)
+# Visible central route has joint rhythm and continuous navigation.
+for j in range(40):
+    yy=-34+j*1.10
+    if 14<=yy<=23:continue
+    elev=13.23 if yy>23 else 8.19
+    cuboid("Road stone courses",(0,yy,elev),(7.1,.035,.035),trim)
+# Inhabited work sites and a convincing ruined-sawmill reservation.
+for xx in (-16,-12,-8):
+    cuboid("Sawmill timber reserve",(xx,-12.7,8.45),(3.2,.65,.55),wood,.04)
+for xx in (-18,-10):
+    cuboid("Sawmill unfinished wooden scaffolding",(xx,-9,9.8),(.25,.25,3.5),wood)
+cuboid("Sawmill foundation not completed",(-14,-10,8.24),(12,9,.34),stone,.11)
+# Restrained banners provide composition scale and kingdom identity.
+for x,y,z in [(-6,-18,14),(6,-18,14),(-1.5,33,23)]:
+    cuboid("Heraldic cloth blue",(x,y-.5,z-1.7),(1.15,.11,3.5),blue,.02)
+# Keep roof silhouette is stronger than guard towers but secondary to keep mass.
+pitched_roof("Keep commanding timber roof",-1.5,34,23.2,9.8,9.8,2.2)
 # Environmental silhouette: natural trees remain away from approach, not on streets.
 bark=material("Dark forest bark",(.085,.065,.05))
 pine=material("Cool fir needles",(.075,.14,.115))
