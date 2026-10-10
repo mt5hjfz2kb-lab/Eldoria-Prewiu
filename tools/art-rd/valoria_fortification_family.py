@@ -67,7 +67,8 @@ def build(kind):
   for o in bpy.data.objects:
    if o.name not in existing and o.type=='MESH':
     o.rotation_euler[2]=math.pi/2
-    o.location.x,o.location.y=(-3 if kind=='corner_inner' else 3)-o.location.y,3+o.location.x
+    ox,oy=o.location.x,o.location.y
+    o.location.x,o.location.y=(-3 if kind=='corner_inner' else 3)-oy,3+ox
  if kind=='tower':tower('round_tower')
  if kind=='gate':gate()
  if kind=='parapet':wall('reinforced_wall',length=5)
