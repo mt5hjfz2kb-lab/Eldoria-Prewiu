@@ -314,7 +314,9 @@ for side in (-1,1):
         ob.scale=(2.9,2.4,2.4)
         ob.data.materials.append(rock)
 # Retaining face beneath the upper terrace is a complete solid masonry front.
-cuboid("Joined inner terrace retaining face",(0,16.9,10.5),(36,2.2,5),stone,.11)
+for side in (-1,1):
+    cuboid("Joined inner terrace retaining face", (side*11.9,16.9,10.5),(12.2,2.2,5),stone,.11)
+# Central 11.6m portal is left open for the actual stair navigation corridor.
 # Open the main stair passage with two independently capped parapets.
 for side in (-1,1):
     cuboid("Central stair balustrade",(side*4.15,19.2,11.1),(.9,11.4,1.4),stone,.13)
