@@ -207,6 +207,17 @@ jobs:
             const mean=sum/n, variance=sum2/n-mean*mean;
             return {width:png.width,height:png.height,mean,stdev:Math.sqrt(Math.max(0,variance)),whiteRatio:white/n};
           }
+          function primaryCtaBrightPixels(path,orientation){
+            const png=PNG.sync.read(fs.readFileSync(path));
+            const box=orientation==='portrait'?[.21,.86,.79,.89]:[.39,.72,.61,.78];
+            let bright=0;
+            for(let y=Math.floor(png.height*box[1]);y<Math.floor(png.height*box[3]);y++)
+              for(let x=Math.floor(png.width*box[0]);x<Math.floor(png.width*box[2]);x++){
+                const i=(y*png.width+x)*4;
+                if(Math.max(png.data[i],png.data[i+1],png.data[i+2])>150)bright++;
+              }
+            return bright;
+          }
           function diffRatio(aPath,bPath){
             const a=PNG.sync.read(fs.readFileSync(aPath)), b=PNG.sync.read(fs.readFileSync(bPath));
             if(a.width!==b.width||a.height!==b.height)throw new Error('Screenshot dimensions differ');
@@ -333,7 +344,12 @@ jobs:
               }
               const changed=await waitState(logs,s=>s.revision!==state.revision||s.scene!==state.scene||s.objective!==state.objective,30000,'guided step effect '+state.objective,before);
               result.steps.push({step,objective:state.objective,scene:state.scene,primary:tapped,buildingAction:buildingTap,after:changed});
-              await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-step-'+String(step).padStart(2,'0')+'-'+state.objective+'.png'});
+              const stepImage='webgl-startup-evidence/'+orientation+'-step-'+String(step).padStart(2,'0')+'-'+state.objective+'.png';
+              await page.screenshot({path:stepImage});
+              if(state.objective==='b2.train-archers'){
+                result.trainingCtaBrightPixels=primaryCtaBrightPixels(stepImage,orientation);
+                if(result.trainingCtaBrightPixels<30)throw new Error('Recruitment CTA contrast failed '+orientation+': '+result.trainingCtaBrightPixels+' bright pixels');
+              }
               const quiet=Date.now();
               while(Date.now()-quiet<90000){
                 const current=lastState(logs,flowStart),button=detailedUi(logs,'primary',before);
@@ -346,7 +362,10 @@ jobs:
             if(!result.presentedBuildingSelectionPass)throw new Error('Presented city selection unverified');
             if(final.bastion!==2||final.sawmill!==1||final.barracks!==1||final.trained!==20||!final.configured||!final.scout||!final.engendro||final.gatheredWood<600||final.gatheredStone<500)throw new Error('Full final state incomplete: '+JSON.stringify(final));
             result.final=fullSnapshot(final);
-            await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-bastion-ii-complete.png'});
+            const completedImage='webgl-startup-evidence/'+orientation+'-bastion-ii-complete.png';
+            await page.screenshot({path:completedImage});
+            result.completionCtaBrightPixels=primaryCtaBrightPixels(completedImage,orientation);
+            if(result.completionCtaBrightPixels<30)throw new Error('Completed CTA contrast failed '+orientation+': '+result.completionCtaBrightPixels+' bright pixels');
             const beforeReload=logs.length;
             await page.reload({waitUntil:'domcontentloaded',timeout:60000});
             await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
