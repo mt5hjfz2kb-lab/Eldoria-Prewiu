@@ -25,6 +25,12 @@ jobs:
         shell: powershell
         run: |
           $env:ELDORIA_VISION_OUTPUT="$env:RUNNER_TEMP/eldoria-vision-lookdev"
+          $ollama="$env:LOCALAPPDATA/Programs/Ollama/ollama.exe"
+          if(-not (Test-Path $ollama)){throw "Local Ollama executable missing"}
+          try { $null=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 2 }
+          catch { Start-Process -FilePath $ollama -ArgumentList 'serve' -WindowStyle Hidden; Start-Sleep -Seconds 5 }
+          $tags=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 10
+          if(-not (@($tags.models.name) -contains "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M")) { throw "Local free vision model not installed" }
           $blender="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
           $stdout="$env:RUNNER_TEMP/eldoria-vision-stdout.log"
           $stderr="$env:RUNNER_TEMP/eldoria-vision-stderr.log"
