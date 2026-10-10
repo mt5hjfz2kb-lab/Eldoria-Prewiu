@@ -233,11 +233,18 @@ namespace Eldoria.Presentation
             RoadSegment("World Region 1 · forest route",new Vector3(-3.0f,.03f,2.2f),8.2f,1.18f,-38f);
             RoadSegment("World Region 1 · ruin route",new Vector3(2.7f,.03f,2.0f),7.0f,1.13f,38f);
             RoadSegment("World Region 1 · threat route",new Vector3(6.7f,.03f,7.5f),6.2f,.98f,29f);
+            // Irregular low roadside ecology: group licensed bushes and stones beside,
+            // not on top of, the navigable trail. Decorative instances have no colliders.
             foreach(var p in new[]{
                 new Vector3(-2.0f,0f,-.8f),new Vector3(1.7f,0f,-.2f),
                 new Vector3(-4.7f,0f,3.6f),new Vector3(4.3f,0f,3.0f),
                 new Vector3(6.8f,0f,6.0f),new Vector3(-5.5f,0f,6.9f)})
-                WorldShrub("World Region 1 · route scrub",p,.42f,(int)((p.x+12f)*7f+p.z));
+            {
+                int seed=(int)((p.x+12f)*7f+p.z);
+                WorldBush("World Region 1 · route understory",p,.56f,seed);
+                WorldRock("World Region 1 · route weathered stone",
+                    p+new Vector3(.62f,0f,-.43f),.22f,seed+3);
+            }
         }
 
         static void BuildValoria()
