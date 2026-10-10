@@ -176,7 +176,9 @@ namespace Eldoria.Presentation
             foreach(var p in new[]{new Vector3(-19f,0,-4f),new Vector3(18f,0,-5f),
                 new Vector3(-18f,0,24f),new Vector3(20f,0,23f),
                 new Vector3(-2f,0,12f),new Vector3(12f,0,6f)})
-                WorldRock("World Region 1 · edge geology",p,1.55f,geologyIndex++);
+                WorldRock("World Region 1 · edge geology",p,
+                    .88f+.12f*Mathf.PerlinNoise(p.x*.13f+2f,p.z*.17f+4f),
+                    geologyIndex++);
         }
 
         static void BuildSurfaceDressing()
@@ -338,17 +340,30 @@ namespace Eldoria.Presentation
             scout.transform.SetParent(root,true);scout.transform.position=ScoutPosition;
             GroundPatch("World Region 1 · corruption stain",ScoutPosition+new Vector3(0,-.005f,0),
                 new Vector3(5.0f,.08f,4.4f),new Color(.24f,.14f,.25f),13f);
-            var body=Primitive("World Region 1 · scout silhouette",PrimitiveType.Capsule,
-                ScoutPosition+new Vector3(0,.90f,0),new Vector3(1.0f,1.9f,1.0f),new Color(.18f,.13f,.19f));
-            body.transform.SetParent(scout.transform,true);
-            for(int i=0;i<3;i++)
+            // This strategic threat is a corrupted stone sentinel, not a capsule
+            // placeholder. Reuse the licensed gothic inventory silhouette and retain
+            // the existing logical hotspot and reward/defeat state unchanged.
+            var sentinel=WorldInventoryPiece("Column_Round",
+                "World Region 1 · corrupted sentinel",ScoutPosition,1.75f,2.65f,
+                Quaternion.Euler(0f,24f,0f));
+            if(sentinel!=null)
             {
-                var shard=Primitive("World Region 1 · corruption shard",PrimitiveType.Cube,
-                    ScoutPosition+new Vector3((i-1)*.85f,.55f,.75f+Mathf.Abs(i-1)*.35f),
-                    new Vector3(.28f,1.05f,.28f),Violet);
-                shard.transform.rotation=Quaternion.Euler(0,25f+i*33f,18f*(i-1));
-                shard.transform.SetParent(scout.transform,true);
-                var col=shard.GetComponent<Collider>();if(col!=null)col.enabled=false;
+                sentinel.transform.SetParent(scout.transform,true);
+                foreach(var col in sentinel.GetComponentsInChildren<Collider>(true))
+                    col.enabled=false;
+            }
+            else
+            {
+                // Missing-asset safety path only; no visible collision is introduced.
+                var marker=WorldInventoryPiece("Rock02",
+                    "World Region 1 · corrupted standing stone",ScoutPosition,
+                    1.45f,2.1f,Quaternion.Euler(0f,41f,0f));
+                if(marker!=null)
+                {
+                    marker.transform.SetParent(scout.transform,true);
+                    foreach(var col in marker.GetComponentsInChildren<Collider>(true))
+                        col.enabled=false;
+                }
             }
             ValoriaKit.RockCluster("World Region 1 · corruption rocks",ScoutPosition+new Vector3(0,0,.7f),.85f,5);
             var threatRuin=WorldInventoryPiece("Wall_Broken","World Region 1 · threat ruin",
