@@ -60,6 +60,21 @@ class TestAuditGlb(unittest.TestCase):
         self.payload["buffers"][0]["byteLength"] = 1024
         self.assertTrue(self.write()["errors"])
 
+    def test_buffer_view_overrun_is_error(self):
+        self.payload["bufferViews"] = [{"buffer": 0, "byteOffset": 32, "byteLength": 16}]
+        self.payload["accessors"][0]["bufferView"] = 0
+        self.assertTrue(any("bufferView 0" in e for e in self.write()["errors"]))
+
+    def test_zero_count_accessor_is_error(self):
+        self.payload["accessors"][0]["count"] = 0
+        self.assertTrue(any("invalid count" in e for e in self.write()["errors"]))
+
+    def test_required_extension_needs_importer_check(self):
+        self.payload["extensionsRequired"] = ["KHR_draco_mesh_compression"]
+        result = self.write()
+        self.assertEqual(result["errors"], [])
+        self.assertTrue(any("KHR_draco" in x for x in result["warnings"]))
+
     def test_missing_uv_is_warning_not_failure(self):
         report = self.write()
         self.assertEqual(report["errors"], [])
