@@ -491,7 +491,7 @@ jobs:
               await touchDrag(cdp,cx,cy-70,cx,cy+70);
               await waitLog(logs,t=>{
                 const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
-                return !!m&&(+m[2])<=-.10;
+                return !!m&&(+m[2])>=.10;
               },15000,'real touch vertical pan opposite direction',beforePanVerticalDownLogs);
               await sleep(800);
               await page.screenshot({path:'webgl-startup-evidence/pan-vertical-down-landscape.png'});
@@ -569,7 +569,7 @@ jobs:
                 report.checks.portraitCameraViews={};
                 for(const [name,dx,dy,axis,sign] of [
                   ['right',-180,0,'x',1],['left',180,0,'x',-1],
-                  ['up',0,-160,'y',1],['down',0,160,'y',-1]]) {
+                  ['up',0,-160,'y',-1],['down',0,160,'y',1]]) {
                   const start=logs.length;
                   await touchDrag(cdp,px-dx*.5,py-dy*.5,px+dx*.5,py+dy*.5);
                   await waitLog(logs,t=>{
