@@ -1,0 +1,24 @@
+{
+  "workstream": "android-native-playtest-v1-20261010",
+  "status": "BLOCKED_BEFORE_NATIVE_BUILD",
+  "preparation_commit": "31912e1638b8fa63fffe065796203b3c5b52d750",
+  "builder_correction_commit": "4e3b6377836e34bb295f5ca36ca97fe3ef877ac7",
+  "toolchain_run_id": 38058101010,
+  "toolchain_job_id": 114230713698,
+  "toolchain_artifact_id": 11672875414,
+  "observations": {
+    "android_support": false,
+    "sdk": false,
+    "ndk": false,
+    "openjdk": false,
+    "bundled_adb_authorized_device_count": 0,
+    "unity_started_by_probe": false,
+    "paid_credits": 0
+  },
+  "device_count_limit": "Bundled adb is absent; no conclusion about devices accessible through another adb installation.",
+  "passed": ["request preflight", "repository architecture", "workflow governance", "workflow quarantine", "read-only runner toolchain inventory"],
+  "not_run": ["module installation", "Android C# compilation", "APK build", "native gameplay", "native visuals", "native performance"],
+  "dependency": "World Region 1 workstream still owns the Windows Unity installation/runner. A finished source job does not grant ownership. Do not install modules or compile until release/authorized transfer.",
+  "next": "Reclaim the same Android workstream after ownership release; verify live production artifact; enable free module install and APK build; test native app; keep WebGL gates until native acceptance.",
+  "principal_platform_changed": false
+}

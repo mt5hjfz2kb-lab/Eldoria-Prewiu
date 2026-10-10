@@ -22,6 +22,9 @@ jobs:
       probe: ${{ steps.gate.outputs.probe }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: pipeline/android-playtest-request.json
+          sparse-checkout-cone-mode: false
       - name: Require exclusive runner lease and exact native source artifact
         id: gate
         uses: actions/github-script@v7
@@ -110,6 +113,23 @@ jobs:
           if ($owners.Count -ne 1 -or $owners[0].id -ne $cfg.workstream_id) { throw 'Runner lease changed before Android build.' }
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH missing.' }
           $android = Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data\PlaybackEngines\AndroidPlayer'
+          $missing = @(@('', 'SDK', 'NDK', 'OpenJDK') | Where-Object { -not (Test-Path (Join-Path $android $_)) })
+          if ($missing.Count -gt 0 -and $cfg.install_missing_modules -eq $true) {
+            if (Get-Process Unity -ErrorAction SilentlyContinue) { throw 'An existing Unity process is running; do not modify its installation.' }
+            $candidates = @(
+              "$env:USERPROFILE\.unity\bin\unity.exe",
+              "$env:LOCALAPPDATA\Programs\Unity\bin\unity.exe",
+              "$env:LOCALAPPDATA\Unity\bin\unity.exe"
+            )
+            $cli = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $cli) {
+              $command = Get-Command unity.exe -ErrorAction SilentlyContinue
+              if ($command -and $command.Source -ne $env:UNITY_EDITOR_PATH) { $cli = $command.Source }
+            }
+            if (-not $cli) { throw 'Unity CLI unavailable for the free Android module installation.' }
+            & $cli install-modules -e 6000.3.23f1 -m android --cm --format human
+            if ($LASTEXITCODE -ne 0) { throw "Android module installation failed: $LASTEXITCODE" }
+          }
           foreach ($part in @('', 'SDK', 'NDK', 'OpenJDK')) {
             if (-not (Test-Path (Join-Path $android $part))) { throw "Android toolchain missing: $part. Install the matching Unity Android module and dependencies." }
           }

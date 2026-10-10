@@ -1,11 +1,14 @@
 {
   "enabled": false,
-  "probe_toolchain": true,
+  "probe_toolchain": false,
+  "install_missing_modules": true,
   "workstream_id": "android-native-playtest-v1-20261010",
   "production_artifact_id": 11546715716,
   "production_source_sha": "6add911217465d2f4ab264815af8a8eb2d0cf454",
   "package_id": "com.eldoria.playtest",
-  "reason": "Prepare native Android diagnostic APK without interrupting the active Region 1 runner owner. Enable only after obtaining the runner lease.",
+  "reason": "Toolchain probe 38058101010 confirmed missing Android support/SDK/NDK/OpenJDK. Installation and APK build need the Windows lease still owned by Region 1. No native delivery PASS.",
+  "toolchain_probe_run_id": 38058101010,
+  "toolchain_probe_artifact_id": 11672875414,
   "device_acceptance": "pending",
   "paid_credits": 0
 }

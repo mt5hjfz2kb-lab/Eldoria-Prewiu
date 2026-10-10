@@ -28,26 +28,6 @@
       "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
       "phase": "Pre-existing v3 visual commits passed Unity; claim released runner/Pages and complete final visual convergence.",
       "next": "Improve Region 1 visual scene and verify exact final Windows/QA captures; build candidate WebGL, run exact candidate QA and publish after gate."
-    },
-    {
-      "id": "android-native-playtest-v1-20261010",
-      "title": "Native Android playtest build preparation",
-      "owner": "chat-android-native-playtest-20261010",
-      "scope": [
-        ".github/workflows/android-playtest.yml",
-        "pipeline/android-playtest-request.json",
-        "docs/ANDROID_NATIVE_PLAYTEST.md",
-        "docs/evidence/android-native-playtest-v1-20261010/**",
-        "tools/android-playtest/**"
-      ],
-      "resources": [],
-      "status": "active",
-      "claimed_at": "2026-10-10",
-      "base_main_sha": "f57b2e074271fa71582ac8490676ea1fd1b5fbfc",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Native build transport only; reuse current certified scene without art/gameplay mutation.",
-      "phase": "Prepare Android build without using occupied Windows runner.",
-      "next": "Run read-only Android toolchain/device inventory; do not build until runner ownership released."
     }
   ],
   "history": [
@@ -4516,6 +4496,30 @@
         "required_sentinels_missing": 0,
         "note": "GitHub-hosted architecture workflow was queued at close; direct repository-tree validation passed all configured invariants."
       }
+    },
+    {
+      "id": "android-native-playtest-v1-20261010",
+      "title": "Native Android playtest build preparation",
+      "owner": "chat-android-native-playtest-20261010",
+      "scope": [
+        ".github/workflows/android-playtest.yml",
+        "pipeline/android-playtest-request.json",
+        "docs/ANDROID_NATIVE_PLAYTEST.md",
+        "docs/evidence/android-native-playtest-v1-20261010/**",
+        "tools/android-playtest/**"
+      ],
+      "resources": [],
+      "status": "blocked",
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "f57b2e074271fa71582ac8490676ea1fd1b5fbfc",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Native build transport only; reuse current certified scene without art/gameplay mutation.",
+      "phase": "Preparation validated; Android toolchain absent; installation/build blocked by Region 1 Windows lease",
+      "next": "Reclaim same workstream after lease release, install free Android module/dependencies, compile APK and perform native app QA.",
+      "blocked_at": "2026-10-10",
+      "blocker": "Cannot install Android modules or execute Unity without taking the active Region 1 runner/installation lease; no transfer capability between these separate chats is available here.",
+      "toolchain_run_id": 38058101010,
+      "toolchain_artifact_id": 11672875414
     }
   ]
 }
