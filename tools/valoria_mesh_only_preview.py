@@ -215,6 +215,40 @@ for x,y,z,h in [(-28,-21,7.4,6),(-29,8,7.4,7.2),(29,6,7.4,6.5),
     bpy.ops.mesh.primitive_cone_add(vertices=8,radius1=h*.22,radius2=0,
                                     depth=h*.72,location=(x,y,z+h*.63))
     bpy.context.object.name="Fir canopy";bpy.context.object.data.materials.append(pine)
+# Scaled rock strata physically attached to the cliff, no free-floating scenic fragments.
+# Distorted icospheres mask the square top/bedrock transition with coherent talus geology.
+rng=random.Random(318)
+for side in (-1,1):
+    for k in range(22):
+        y=-24+k*2.9 + rng.uniform(-.45,.45)
+        x=side*(23.5 + rng.uniform(-.7,2.6))
+        z=6.3+rng.uniform(-3.0,.9)
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,
+             location=(x,y,z))
+        cliffrock=bpy.context.object
+        cliffrock.name="Embedded cliff fracture"
+        cliffrock.scale=(rng.uniform(1.25,2.3),rng.uniform(1.8,3.9),rng.uniform(1.8,4.8))
+        cliffrock.data.materials.append(rock)
+# Sparse natural debris clusters and vegetation on the courtyard edge, outside the route.
+for k in range(32):
+    side=-1 if k%2==0 else 1
+    x=side*rng.uniform(19.0,23.4)
+    y=rng.uniform(-24,10)
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,
+        location=(x,y,8.06))
+    pebble=bpy.context.object;pebble.name="Embedded courtyard scree"
+    pebble.scale=(rng.uniform(.30,.85),rng.uniform(.35,1.1),rng.uniform(.15,.40))
+    pebble.data.materials.append(rock)
+# Stone courses break monolithic keep walls into a built structure.
+for z in [15.5,17.0,18.5,20.0,21.5]:
+    for xx in [-5.45,-3.6,-1.75,.10,1.95]:
+        cuboid("Citadel dressed stone joint",(xx,29.68,z),(.09,.07,.07),trim)
+# Dark recesses and a large visibly occupied hall; no painted texture pretending to be a door.
+black=material("Deep inner void",(.035,.034,.030))
+for xx in [-4.0,-1.5,1.0]:
+    cuboid("Upper keep dark arrow slit",(xx,28.55,18.65),(.48,.16,1.7),black,.025)
+for xx in [5.8,9.0,12.2]:
+    cuboid("Citadel hall recess",(xx,24.85,15.4),(.9,.12,1.25),black,.03)
 # Smooth road blocks and river threshold to secure one unified central route.
 # Stone bridge physically crosses an excavated outer approach rather than hovering
 # as a flat block in the middle of a courtyard.
