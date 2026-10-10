@@ -440,7 +440,7 @@ namespace Eldoria.Presentation
                 float centreFade=Mathf.Clamp01((Mathf.Abs(px)+Mathf.Abs(pz-3f))/34f);
                 float y=-.42f+broad*(.45f+.55f*centreFade);
                 vertices[v]=new Vector3(px,y,pz);
-                uv[v]=new Vector2(nx*10f,nz*9f);
+                uv[v]=new Vector2(nx,nz);
                 v++;
             }
 
@@ -468,28 +468,43 @@ namespace Eldoria.Presentation
         static Material WorldLandscapeMaterial()
         {
             if(worldLandscapeMaterial!=null)return worldLandscapeMaterial;
+            // Paint a continuous, world-aligned biome texture once, rather than
+            // repeating a tiny noise tile across the full strategic landscape.
+            // This is presentation-only; hotspots, state and terrain topology remain.
             const int size=512;
             var texture=new Texture2D(size,size,TextureFormat.RGB24,true)
-            {name="Eldoria Region 1 continuous soil and moss",wrapMode=TextureWrapMode.Repeat};
+            {name="Eldoria Region 1 continuous biome soil",wrapMode=TextureWrapMode.Clamp};
             var pixels=new Color[size*size];
-            var soil=new Color(.27f,.245f,.19f);
-            var moss=new Color(.20f,.27f,.17f);
-            var gravel=new Color(.34f,.32f,.26f);
+            var soil=new Color(.275f,.254f,.204f);
+            var grass=new Color(.205f,.276f,.174f);
+            var moor=new Color(.198f,.226f,.192f);
+            var gravel=new Color(.325f,.307f,.269f);
             for(int y=0;y<size;y++)
             for(int x=0;x<size;x++)
             {
-                float broad=Mathf.PerlinNoise(x*.018f+14.3f,y*.018f+5.7f);
-                float medium=Mathf.PerlinNoise(x*.052f+31f,y*.052f+47f);
-                float detail=Mathf.PerlinNoise(x*.25f+3.1f,y*.25f+11.2f);
-                var col=Color.Lerp(soil,moss,Mathf.SmoothStep(.28f,.72f,broad));
-                col=Color.Lerp(col,gravel,Mathf.Clamp01((medium-.60f)*2.2f));
-                pixels[y*size+x]=col*(.90f+detail*.17f);
+                float wx=x/(float)(size-1)*108f-54f;
+                float wz=y/(float)(size-1)*94f-43f;
+                float broad=Mathf.PerlinNoise(wx*.055f+14.3f,wz*.055f+5.7f);
+                float medium=Mathf.PerlinNoise(wx*.19f+31f,wz*.19f+47f);
+                float detail=Mathf.PerlinNoise(wx*.82f+3.1f,wz*.82f+11.2f);
+                float grain=Mathf.PerlinNoise(wx*2.4f+9f,wz*2.4f+17f);
+                float forest=Mathf.Clamp01((wz+1f)/18f)*
+                    Mathf.Clamp01((.58f-broad)*2.1f+.35f);
+                float meadow=Mathf.Clamp01((8f-wx)/34f)*(.18f+forest*.46f);
+                float highland=Mathf.Clamp01((wz-9f)/30f)*(.25f+medium*.24f);
+                float grit=Mathf.Clamp01((medium-.55f)*2.6f+
+                    (Mathf.Abs(wx)>22f?.14f:0f));
+                var col=Color.Lerp(soil,grass,Mathf.Clamp01(meadow+forest*.25f));
+                col=Color.Lerp(col,moor,highland);
+                col=Color.Lerp(col,gravel,grit*.64f);
+                float detailFactor=.87f+detail*.18f+grain*.09f;
+                pixels[y*size+x]=col*detailFactor;
             }
             texture.SetPixels(pixels);texture.Apply(true,false);
             worldLandscapeMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"))
             {name="Eldoria Region 1 · continuous landscape"};
             worldLandscapeMaterial.SetTexture("_BaseMap",texture);
-            worldLandscapeMaterial.SetTextureScale("_BaseMap",new Vector2(3.2f,2.8f));
+            worldLandscapeMaterial.SetTextureScale("_BaseMap",Vector2.one);
             worldLandscapeMaterial.SetColor("_BaseColor",Color.white);
             worldLandscapeMaterial.SetFloat("_Smoothness",.018f);
             worldLandscapeMaterial.SetFloat("_Metallic",0f);
