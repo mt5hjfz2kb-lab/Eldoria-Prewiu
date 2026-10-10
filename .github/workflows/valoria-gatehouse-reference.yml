@@ -7,7 +7,7 @@ on:
       - '.github/workflows/valoria-gatehouse-reference.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   gate-reference:
     runs-on: ubuntu-latest
@@ -26,6 +26,20 @@ jobs:
           grep -q ELDORIA_GATE_REFERENCE_PASS "$RUNNER_TEMP/gatehouse-out.log"
           test -s "$ELDORIA_GATE_REFERENCE_OUTPUT/valoria_gate_reference.glb"
           test -s "$ELDORIA_GATE_REFERENCE_OUTPUT/valoria_gate_reference.blend"
+      - name: Preserve source GLB and validation images on art branch
+        if: success()
+        shell: bash
+        run: |
+          destination="art-source/valoria/production/gatehouse-reference"
+          mkdir -p "$destination"
+          cp "$RUNNER_TEMP/valoria-gatehouse-reference/"{valoria_gate_reference.glb,valoria_gate_reference.blend,gate_reference_hero.png,gate_reference_mobile.png,gate_reference_assembled.png,gate_before_same_camera.png,gate_reference_manifest.json} "$destination/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f "$destination"
+          if ! git diff --cached --quiet; then
+            git commit -m "art: preserve Valoria gatehouse source and review renders"
+            git push origin "HEAD:prototype/valoria-bastion1-no-sharp-20261010"
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
