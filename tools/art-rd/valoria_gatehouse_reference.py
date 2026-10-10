@@ -4,6 +4,10 @@ from pathlib import Path
 from mathutils import Vector
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import valoria_fortification_family as base
+# Prior v2 gate render has matching 960x640 camera, target and ortho scale.
+from shutil import copyfile
+baseline=Path(os.environ.get('ELDORIA_FORTIFICATION_OUTPUT',''))/'gate.png'
+if baseline.is_file():copyfile(str(baseline),str(OUT/'gate_before_same_camera.png'))
 OUT=Path(os.environ.get("ELDORIA_GATE_REFERENCE_OUTPUT",str(Path(__file__).resolve().parents[2]/"artifacts-local/gate-reference")))
 OUT.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -135,10 +139,10 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in objects:ob.select_set(True)
 bpy.context.view_layer.objects.active=objects[0]
 bpy.ops.export_scene.gltf(filepath=str(OUT/"valoria_gate_reference.glb"),export_format='GLB',use_selection=True)
-data={"triangles":sum(len(p.vertices)-2 for o in objects for p in o.data.polygons),"mesh_count":len(objects),"materials":len({m.name for o in objects for m in o.data.materials}),"glb_bytes":(OUT/"valoria_gate_reference.glb").stat().st_size,"gate_joint_centers_x":[-4.5,4.5],"visual_certification":"requires review","unity_mobile_tested":False}
+data={"triangles":sum(len(p.vertices)-2 for o in objects for p in o.data.polygons),"mesh_count":len(objects),"materials":len({m.name for o in objects for m in o.data.materials}),"glb_bytes":(OUT/"valoria_gate_reference.glb").stat().st_size,"wall_to_tower_edge_contact_x":[-8.65,8.65],"visual_certification":"requires review","unity_mobile_tested":False}
 (OUT/"gate_reference_manifest.json").write_text(json.dumps(data,indent=2))
 # Render context after gate-only source/export has been written.
-base.wall("west_attach",-10.9,0,8.3)
-base.wall("east_attach",10.9,0,8.3)
+base.wall("west_attach",-12.8,0,8.3)
+base.wall("east_attach",12.8,0,8.3)
 save("gate_reference_assembled",48,(0,0,4.5))
 print("ELDORIA_GATE_REFERENCE_PASS",data)
