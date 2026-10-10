@@ -124,6 +124,7 @@ namespace Eldoria.Presentation
             BuildTerrainBase();
             BuildSurfaceDressing();
             BuildWildernessEdges();
+            BuildNaturalMosaic();
             BuildForegroundFringe();
 
             GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.05f,8f),
@@ -235,6 +236,36 @@ namespace Eldoria.Presentation
                 if(belt%3==0)
                     WorldTree("World Region 1 · wilderness edge pine",
                         center+new Vector3(1.25f,0,-.85f),.58f,belt+200);
+            }
+        }
+
+        // Natural transition belts break up the central empty rectangle without
+        // changing the logical world targets or introducing collidable art.
+        static void BuildNaturalMosaic()
+        {
+            var groves=new[]{
+                new Vector3(-12f,0f,-6f),new Vector3(-16f,0f,1f),
+                new Vector3(-13f,0f,13f),new Vector3(13f,0f,12f),
+                new Vector3(16f,0f,-1f),new Vector3(2f,0f,20f)
+            };
+            for(int g=0;g<groves.Length;g++)
+            {
+                var centre=groves[g];
+                GroundPatch("World Region 1 · organic grove floor",centre+
+                    new Vector3(0f,-.014f,0f),new Vector3(8.5f,.042f,7.1f),
+                    new Color(.17f,.235f,.16f),g*41f);
+                for(int i=0;i<8;i++)
+                {
+                    float angle=i*2.399963f+g*.83f;
+                    float radius=.6f+Mathf.Sqrt(i+.5f)*1.01f;
+                    var p=centre+new Vector3(Mathf.Cos(angle)*radius,0f,
+                        Mathf.Sin(angle)*radius*.82f);
+                    WorldTree("World Region 1 · natural grove pine",p,
+                        .54f+.20f*Mathf.PerlinNoise(g*.74f+i*.33f,i*.59f),g*23+i+510);
+                    if(i%3==0)
+                        WorldRock("World Region 1 · grove broken stone",
+                            p+new Vector3(.48f,0f,-.39f),.20f,g*19+i+520);
+                }
             }
         }
 
