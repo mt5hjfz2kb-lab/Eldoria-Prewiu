@@ -1,91 +1,176 @@
-import bpy, math, os, sys, json
-from mathutils import Vector
+"""Valoria I mesh-only world-space architectural continuity experiment.
+Blender 2.83+ headless compatible, original committed GLB geometry + independent terrain.
+Never imports SHARP, splats, canonical projection images or private textures.
+"""
+import bpy, math, os, json, base64, random
 from pathlib import Path
+from mathutils import Vector
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=Path(os.environ.get("VALORIA_PROOF_OUTPUT","/tmp/valoria-mesh-proof.png"))
-OUT.parent.mkdir(parents=True,exist_ok=True)
-bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
-sc=bpy.context.scene
-sc.render.engine="CYCLES";sc.cycles.samples=16
-# Ubuntu apt Blender is built without OpenImageDenoiser; avoid unsupported CPU denoising.
-for layer in sc.view_layers: layer.cycles.use_denoising=False
-sc.render.resolution_x=1120;sc.render.resolution_y=770;sc.render.resolution_percentage=100
-sc.render.image_settings.file_format="PNG";sc.render.filepath=str(OUT)
-sc.world.color=(.08,.095,.12)
-cam_data=bpy.data.cameras.new("MatchedLayoutCamera");cam=bpy.data.objects.new("MatchedLayoutCamera",cam_data)
-sc.collection.objects.link(cam);sc.camera=cam
-cam.location=Vector((30.8183,63.0934,-84.6726))
-look=(Vector((0,0,0))-cam.location)
-cam.rotation_euler=look.to_track_quat("-Z","Y").to_euler()
-cam_data.type="PERSP";cam_data.lens=35
-cam_data.sensor_fit="VERTICAL"
-cam_data.angle=math.radians(44.42281)
-aspect=sc.render.resolution_x/sc.render.resolution_y
-tan=math.tan(cam_data.angle*.5)
-right=cam.rotation_euler.to_matrix()@Vector((1,0,0))
-up=cam.rotation_euler.to_matrix()@Vector((0,1,0))
-forward=cam.rotation_euler.to_matrix()@Vector((0,0,-1))
+OUT.parent.mkdir(parents=True, exist_ok=True)
+bpy.ops.wm.read_factory_settings(use_empty=True)
+scene=bpy.context.scene
+scene.render.engine="CYCLES"
+scene.cycles.samples=20
+for layer in scene.view_layers: layer.cycles.use_denoising=False
+scene.render.resolution_x=1152
+scene.render.resolution_y=768
+scene.render.resolution_percentage=100
+scene.render.image_settings.file_format="PNG"
+scene.render.filepath=str(OUT)
+scene.render.film_transparent=False
+
+def material(name,color,rough=.85):
+    m=bpy.data.materials.new(name);m.diffuse_color=(*color,1)
+    m.use_nodes=True
+    bs=m.node_tree.nodes.get("Principled BSDF")
+    bs.inputs["Base Color"].default_value=(*color,1)
+    bs.inputs["Roughness"].default_value=rough
+    return m
+stone=material("Warm weathered structural stone",(.36,.32,.27))
+trim=material("Masonry copings",(.48,.42,.34))
+paving=material("Worn road paving",(.38,.345,.29))
+earth=material("Earth of the plateau",(.22,.225,.16))
+grass=material("Grass",(.155,.22,.13))
+rock=material("Dark slate bedrock",(.17,.185,.19))
+wood=material("Timber",(.20,.115,.06))
+blue=material("Blue Valoria flag",(.025,.09,.24))
+glow=material("Warm amber",(.75,.35,.075))
+def cuboid(name,xyz,dimensions,mat,bevel=0):
+    bpy.ops.mesh.primitive_cube_add(size=1,location=xyz)
+    o=bpy.context.object;o.name=name;o.dimensions=dimensions
+    bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+    if bevel:
+        m=o.modifiers.new("bevel","BEVEL");m.width=bevel;m.segments=2
+        try:bpy.ops.object.modifier_apply(modifier=m.name)
+        except Exception:pass
+    o.data.materials.append(mat)
+    return o
+
+# Continuous stepped upper and lower courtyards are one walkable connected rock substrate.
+# Global frame: z up, main bridge / gate / road / stair / keep advance along increasing Y.
+# Lower terrace z=8, upper terrace z=13.
+def plateau_mesh():
+    n=44; random.seed(18)
+    rings=[]
+    for z,rx,ry,cx,cy in [
+        (-7,32,46,0,3), (1.0,27.8,42,0,3), (7.6,25.6,39.3,0,3),
+        (8.0,25.1,38.9,0,3)]:
+        v=[]
+        for i in range(n):
+            theta=2*math.pi*i/n
+            jitter=1+.055*math.sin(5*theta+1.4)+.025*math.sin(11*theta)
+            v.append((cx+rx*jitter*math.cos(theta),cy+ry*jitter*math.sin(theta),z))
+        rings.append(v)
+    verts=[v for ring in rings for v in ring]
+    faces=[]
+    for r in range(len(rings)-1):
+        for i in range(n):faces.append((r*n+i,r*n+(i+1)%n,(r+1)*n+(i+1)%n,(r+1)*n+i))
+    faces.append(tuple((len(rings)-1)*n+i for i in range(n)))
+    me=bpy.data.meshes.new("continuous bedrock mesh")
+    me.from_pydata(verts,[],faces);me.update()
+    ob=bpy.data.objects.new("One continuous rocky plateau",me)
+    scene.collection.objects.link(ob)
+    ob.data.materials.append(rock)
+    return ob
+plateau_mesh()
+cuboid("Lower enclosed courtyard",(0,-5.0,7.96),(44,54,.16),grass,.15)
+cuboid("Upper enclosed citadel terrace",(0,26.4,12.89),(42,22,.20),grass,.10)
+# A continuous elevated shoulder makes the upper courtyard physically supported.
+cuboid("Upper plateau bedrock", (0,27.3,10.4),(43,23,5),rock,.3)
+cuboid("Upper terrace edge retaining wall left",(-21,17.6,10.6),(3,2,5.6),stone,.16)
+cuboid("Upper terrace edge retaining wall right",(21,17.6,10.6),(3,2,5.6),stone,.16)
+# Paving, physical connection, staircase transitioning z=8 to z=13.
+cuboid("Approach from bridge to gate",(0,-28.0,8.08),(7.4,15,.14),paving)
+cuboid("Gate to stair main street",(0,0,8.08),(7.4,32,.14),paving)
+for i in range(15):
+    y=14+i*.55
+    z=8.13+i*(5/15)
+    cuboid(f"Continuous staircase {i+1}",(0,y,z-.25),(7.4,.59,.55),paving,.025)
+cuboid("Bastion court paved axis",(0,28.6,13.09),(8.5,22,.14),paving)
+# Explicit connecting walls and ramparts, not free-standing model fragments.
+for xx in (-22,22):
+    cuboid("Curtain continuity west" if xx<0 else "Curtain continuity east",
+           (xx,-.7,10.35),(2.6,50,5.3),stone,.1)
+    cuboid("Wall cap west" if xx<0 else "Wall cap east",(xx,-.7,13.04),(3.1,50,.46),trim,.08)
+    for yy in [-23,-17,-10,-3,4,11,18,24]:
+        cuboid(f"Battlement x{xx} y{yy}",(xx,yy,13.58),(3.0,2.0,1.1),stone,.06)
+
+# Existing accepted source geometry: import and normalize in a single world coordinate system.
+# Read each mesh's actual axis-aligned world-space bounds and anchor its base to terrain.
 FAMILIES=[
-("Bridge","bridge",.288618,.100592,.28,.22,36),
-("LowerGate","lower-gate",.394309,.319527,.21,.225,42),
-("MainRoad","road",.467480,.508876,.14,.25,48),
-("CentralStair","stair",.534959,.673373,.126,.12,54),
-("UpperWalls","wall",.788618,.801183,.51,.21,60),
-("Bastion","bastion",.604878,.842604,.24,.21,61)
+    ("Bridge","bridge","Bridge",(-0.2,-28,8.15),9.0),
+    ("LowerGate","lower-gate","LowerGate",(0,-18.0,8.15),12.0),
+    ("MainRoad","road","Road",(0,-1,8.20),9.0),
+    ("CentralStair","stair","Stair",(0,18.0,12.0),8.0),
+    ("UpperWalls","wall","Wall",(0,33.4,13.05),38.0),
+    ("Bastion","bastion","Bastion",(0,32.5,13.05),19.0),
 ]
 results=[]
-for display,folder,u,v,w,h,depth in FAMILIES:
-    basename={"MainRoad":"Road","CentralStair":"Stair","UpperWalls":"Wall","TerrainCliffSupport":"RockTerrain"}.get(display,display)
-    src=ROOT/"art-source"/"valoria"/"production"/(folder+"-family-v1")/(basename+"FamilyV1.glb")
-    if not src.exists():raise FileNotFoundError(src)
+for display,folder,source,anchor,target_width in FAMILIES:
+    src=ROOT/"art-source"/"valoria"/"production"/(folder+"-family-v1")/(source+"FamilyV1.glb")
+    if not src.exists():raise FileNotFoundError(str(src))
     before=set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=str(src))
-    loaded=[o for o in bpy.data.objects if o not in before and o.type=="MESH"]
-    if not loaded:raise RuntimeError("Empty family: "+display)
-    parent=bpy.data.objects.new(display+"_PreviewRoot",None);sc.collection.objects.link(parent)
-    for ob in loaded:
-        mw=ob.matrix_world.copy();ob.parent=parent;ob.matrix_world=mw
+    meshes=[o for o in bpy.data.objects if o not in before and o.type=="MESH"]
+    if not meshes:raise RuntimeError("No mesh: "+display)
+    # Place all source meshes under a shared transform. Keep their authored local relations.
+    parent=bpy.data.objects.new(display+" WorldspaceRoot",None)
+    scene.collection.objects.link(parent)
+    for ob in meshes:
+        matrix=ob.matrix_world.copy()
+        ob.parent=parent; ob.matrix_world=matrix
     bpy.context.view_layer.update()
-    coords=[ob.matrix_world@Vector(corner) for ob in loaded for corner in ob.bound_box]
-    def extent(axis):
-        values=[(p-cam.location).dot(axis) for p in coords]
-        return max(values)-min(values)
-    # Scale by actual camera-plane coordinates (not world axes).
-    width=max(.001,extent(right))
-    height=max(.001,extent(up))
-    scale=min(w*2*depth*tan*aspect/width,h*2*depth*tan/height)
-    if not math.isfinite(scale) or scale<=0:raise RuntimeError("Bad scale "+display)
-    parent.scale=(scale,)*3
-    bpy.context.view_layer.update()
-    coords=[ob.matrix_world@Vector(corner) for ob in loaded for corner in ob.bound_box]
-    xvals=[p.dot(right) for p in coords]
-    yvals=[p.dot(up) for p in coords]
-    zvals=[p.dot(forward) for p in coords]
-    middle=right*((min(xvals)+max(xvals))*.5)+up*((min(yvals)+max(yvals))*.5)+forward*((min(zvals)+max(zvals))*.5)
-    target=cam.location+forward*depth+right*((u-.5)*2*depth*tan*aspect)+up*((v-.5)*2*depth*tan)
-    parent.location+=target-middle
-    bpy.context.view_layer.update()
-    results.append({"family":display,"mesh_count":len(loaded),"input":str(src.relative_to(ROOT)),"scale":scale})
-world=sc.world
-world.use_nodes=True
-bg=world.node_tree.nodes.get("Background");bg.inputs["Color"].default_value=(.11,.14,.2,1)
-bg.inputs["Strength"].default_value=.75
-light_data=bpy.data.lights.new("SoftSun","SUN");light_data.energy=2
-light=bpy.data.objects.new("SoftSun",light_data);sc.collection.objects.link(light)
-light.rotation_euler=(math.radians(30),math.radians(-25),math.radians(10))
+    coords=[ob.matrix_world@Vector(c) for ob in meshes for c in ob.bound_box]
+    left=min(v.x for v in coords);right=max(v.x for v in coords)
+    front=min(v.y for v in coords);back=max(v.y for v in coords)
+    low=min(v.z for v in coords)
+    scale=target_width/max(.001,right-left)
+    parent.scale=(scale,scale,scale)
+    # Translate actual model base and center into coherent global coordinates.
+    parent.location=Vector((anchor[0]-scale*(left+right)*.5,
+                            anchor[1]-scale*(front+back)*.5,
+                            anchor[2]-scale*low))
+    results.append({"family":display,"objects":len(meshes),"world_anchor":anchor,
+                    "source_dimensions":[round(right-left,2),round(back-front,2)],
+                    "scale":round(scale,4)})
+# Small props and houses only within enclosed courtyard, away from route.
+for side in [-1,1]:
+    for i in range(4):
+        x=side*(11+(i%2)*6);y=-11+(i//2)*13
+        cuboid(f"Settlement cottage {side} {i}",(x,y,9.0),(5.0,5.2,2.2),wood,.16)
+        cuboid(f"Slate pitched roof proxy {side} {i}",(x,y,10.2),(5.7,5.8,.48),rock,.18)
+        cuboid(f"Storage near building {side} {i}",(x+1.6,y-2.8,8.45),(1.6,1.0,1),wood,.05)
+# Animated-look static light sources for proof only.
+for i,y in enumerate((-19,-5,10,24,35)):
+    for x in (-5,5):
+        cuboid("Torch standard",(x,y,9 if y<12 else 14),(0.24,.24,2.1),wood)
+        cuboid("Emissive torch cue",(x,y,10.1 if y<12 else 15.1),(.33,.33,.4),glow)
+world=bpy.data.worlds.new("Cold forest dusk")
+scene.world=world;world.use_nodes=True
+world.node_tree.nodes["Background"].inputs["Color"].default_value=(.09,.12,.18,1)
+world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
+ld=bpy.data.lights.new("Raking soft key","AREA");l=bpy.data.objects.new("Raking soft key",ld);scene.collection.objects.link(l)
+l.location=(5,-20,62);ld.energy=4200;ld.size=35
+# Explicit architectural composition camera, not SHARP camera-space placement.
+cam_d=bpy.data.cameras.new("Valoria Worldspace Camera")
+cam=bpy.data.objects.new("Valoria Worldspace Camera",cam_d)
+scene.collection.objects.link(cam);scene.camera=cam
+cam.location=(55,-82,78)
+target=Vector((0,6,8))
+cam.rotation_euler=(target-Vector(cam.location)).to_track_quat("-Z","Y").to_euler()
+cam_d.type="ORTHO";cam_d.ortho_scale=106
 bpy.ops.render.render(write_still=True)
-OUT.with_suffix(".json").write_text(json.dumps({"purpose":"independent Blender-preview, NOT Unity or commercial visual certification","families":results},indent=2))
-# Persist a small review thumbnail as UTF-8 on the isolated branch.
-# This enables independent visual inspection without binary-artifact API access.
-import base64
-thumbnail=bpy.data.images.load(str(OUT))
-thumbnail.scale(420,289)
-thumbnail.filepath_raw=str(OUT.with_name("valoria-mesh-review.jpg"))
-thumbnail.file_format="JPEG"
-thumbnail.save()
-thumb=Path(thumbnail.filepath_raw)
+report={"result":"BLENDER WORLDSPACE VISUAL PROOF ONLY; UNITY NOT TESTED",
+        "basis":"single scene coordinates, world-space mesh bases and a connected authored substrate",
+        "no_sharp":True,"families":results}
+OUT.with_suffix(".json").write_text(json.dumps(report,indent=2))
+# Store direct-review thumbnail in branch as UTF-8 for independent visual inspection.
+img=bpy.data.images.load(str(OUT));img.scale(540,360)
+thumb=OUT.with_name("valoria-mesh-review.jpg")
+img.filepath_raw=str(thumb);img.file_format="JPEG";img.save()
 review=ROOT/"docs/evidence/valoria-mesh-only-prototype"
 review.mkdir(parents=True,exist_ok=True)
 (review/"preview.jpg.base64.txt").write_text(base64.b64encode(thumb.read_bytes()).decode("ascii"))
-print("MESH_ONLY_PREVIEW",OUT, "review_bytes",thumb.stat().st_size)
+print("WORLDSPACE PROOF OUTPUT",str(OUT))
