@@ -10,6 +10,38 @@ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=Fals
 random.seed(98)
 # Existing architecture is retained; this stage supplements its legibility, wear and identity.
 base.gate()
+# Reuse owned Eldoria production textures; no third-party download or license ambiguity.
+textures=Path(__file__).resolve().parents[2]/"Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures"
+stone_albedo=textures/"stone_albedo.png"
+stone_normal=textures/"stone_normal.png"
+if stone_albedo.exists():
+ image=bpy.data.images.load(str(stone_albedo),check_existing=True)
+ norm_image=bpy.data.images.load(str(stone_normal),check_existing=True) if stone_normal.exists() else None
+ if norm_image:norm_image.colorspace_settings.name="Non-Color"
+ for material in list(base.stone)+[base.trim,base.mortar]:
+  bs=material.node_tree.nodes.get("Principled BSDF")
+  tex=material.node_tree.nodes.new("ShaderNodeTexImage");tex.image=image
+  material.node_tree.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
+  if norm_image:
+   nt=material.node_tree.nodes.new("ShaderNodeTexImage");nt.image=norm_image
+   nm=material.node_tree.nodes.new("ShaderNodeNormalMap");nm.inputs["Strength"].default_value=.52
+   material.node_tree.links.new(nt.outputs["Color"],nm.inputs["Color"])
+   material.node_tree.links.new(nm.outputs["Normal"],bs.inputs["Normal"])
+# Dark Valoria slate provides a distinctive distant silhouette.
+slate=base.mat("valoria_roof_dark_slate",(.115,.15,.18),.81)
+slate_edge=base.mat("slate_ridge_edge",(.20,.24,.25),.86)
+banner=base.mat("valoria_faded_burgundy",(.30,.085,.105),.92)
+banner_gilt=base.mat("banner_worn_ochre",(.59,.36,.13),.74)
+for sx in (-1,1):
+ tx=sx*6.37
+ # Steep roof remains recessed inside crenellation, with readable silhouette.
+ roof=base.frustum("Valoria_pitched_watch_roof",(tx,0,8.16),1.86,.07,2.35,slate,12)
+ base.frustum("slate_roof_eave",(tx,0,7.02),1.95,1.85,.16,slate_edge,24)
+ boxp=base.cube("worn_roof_finial",(tx,0,9.42),(.16,.16,.46),base.iron,.04)
+ # One unmistakable banner per defensive tower facing the camera.
+ pole=base.cube("heraldic_banner_mast",(tx,-2.23,7.36),(.065,.075,3.2),base.iron,.014)
+ cloth=base.cube("Valoria_long_pennant",(tx,-2.32,6.72),(.64,.06,1.41),banner,.025)
+ base.cube("pennant_ochre_chevron",(tx,-2.38,6.62),(.39,.04,.15),banner_gilt,.015)
 def box(n,p,s,m,b=.02):return base.cube(n,p,s,m,b)
 stone=base.stone;oak=base.wood;iron=base.iron;trim=base.trim
 patina=base.mat("soot_oxide",(.18,.18,.16))
@@ -105,4 +137,8 @@ bpy.context.view_layer.objects.active=objects[0]
 bpy.ops.export_scene.gltf(filepath=str(OUT/"valoria_gate_reference.glb"),export_format='GLB',use_selection=True)
 data={"triangles":sum(len(p.vertices)-2 for o in objects for p in o.data.polygons),"mesh_count":len(objects),"materials":len({m.name for o in objects for m in o.data.materials}),"glb_bytes":(OUT/"valoria_gate_reference.glb").stat().st_size,"gate_joint_centers_x":[-4.5,4.5],"visual_certification":"requires review","unity_mobile_tested":False}
 (OUT/"gate_reference_manifest.json").write_text(json.dumps(data,indent=2))
+# Render context after gate-only source/export has been written.
+base.wall("west_attach",-10.9,0,8.3)
+base.wall("east_attach",10.9,0,8.3)
+save("gate_reference_assembled",48,(0,0,4.5))
 print("ELDORIA_GATE_REFERENCE_PASS",data)
