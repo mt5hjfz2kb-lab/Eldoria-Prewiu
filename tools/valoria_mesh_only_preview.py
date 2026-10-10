@@ -302,6 +302,29 @@ for cx,cy,roofz,rw,rd in [(-1.5,34,23.2,9.8,9.8),
             slate=cuboid("Layered miniature slate courses",(px,yy,zz),
                     (rw*.48,rd/11.3,.105),rock,.015)
             slate.rotation_euler[1]=side*math.radians(17)
+# Physically set roof tiling follows each gable slope, instead of merely painting
+# rows into a surface. Kept modest for mobile-compatible low-density geometry.
+tile=material("Weathered slate roof variation",(.105,.127,.153))
+def roof_shingles(name,cx,cy,z,w,d,pitch):
+    for side in (-1,1):
+        for row in range(7):
+            px=cx+side*((row+.55)*(w*.5/7))
+            surface=z+pitch*(1-2*abs(px-cx)/w)
+            for col in range(7):
+                py=cy-d*.5+(col+.5)*d/7
+                bpy.ops.mesh.primitive_cube_add(size=1,location=(px,py,surface+.035))
+                sh=bpy.context.object;sh.name=name+" overlapping slate"
+                sh.dimensions=(w/15,d/7.5,.07)
+                sh.rotation_euler[1]=(-1 if side<0 else 1)*math.atan2(2*pitch,w)
+                sh.data.materials.append(tile)
+roof_shingles("Stronghold roof",-1.5,34,23.2,9.8,9.8,2.2)
+# Wood-clad visible frames give the houses inhabited window and eave detail.
+for side in (-1,1):
+    for i in range(4):
+        xx=side*(11+(i%2)*6); yy=-11+(i//2)*13
+        for dx in (-2.15,2.15):
+            cuboid("Timber house corner brace",(xx+dx,yy-2.63,9.15),(.20,.18,2.2),wood,.03)
+        cuboid("Cottage window reveal",(xx,yy-2.68,9.25),(.66,.10,.85),rock,.025)
 # Environmental silhouette: natural trees remain away from approach, not on streets.
 bark=material("Dark forest bark",(.085,.065,.05))
 pine=material("Cool fir needles",(.075,.14,.115))
