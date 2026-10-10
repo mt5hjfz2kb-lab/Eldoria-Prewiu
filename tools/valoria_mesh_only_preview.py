@@ -52,27 +52,32 @@ def cuboid(name,xyz,dimensions,mat,bevel=0):
 # Global frame: z up, main bridge / gate / road / stair / keep advance along increasing Y.
 # Lower terrace z=8, upper terrace z=13.
 def plateau_mesh():
-    n=44; random.seed(18)
+    # Cross-section loft with independent noise per level: natural scarps, not a square slab.
+    n=96
     rings=[]
-    for z,rx,ry,cx,cy in [
-        (-7,32,46,0,3), (1.0,27.8,42,0,3), (7.6,25.6,39.3,0,3),
-        (8.0,25.1,38.9,0,3)]:
-        v=[]
+    for z,rx,ry,cx,cy,seed in [
+        (-11,24,33,0,1,6),(-6,28,39,0,2,5),(1,29.4,41,0,2,4),
+        (5.8,27.2,39.8,0,2,3),(7.95,26,39.0,0,2,2)]:
+        ring=[]
         for i in range(n):
             theta=2*math.pi*i/n
-            jitter=1+.055*math.sin(5*theta+1.4)+.025*math.sin(11*theta)
-            v.append((cx+rx*jitter*math.cos(theta),cy+ry*jitter*math.sin(theta),z))
-        rings.append(v)
-    verts=[v for ring in rings for v in ring]
+            noise=(.048*math.sin(7*theta+seed*.7)+.025*math.sin(19*theta+seed)+
+                   .014*math.sin(31*theta+seed*1.3))
+            ring.append((cx+rx*(1+noise)*math.cos(theta),
+                         cy+ry*(1+noise)*math.sin(theta),
+                         z+(.12*math.sin(theta*13))*(1 if z>1 else .35)))
+        rings.append(ring)
+    verts=[p for ring in rings for p in ring]
     faces=[]
     for r in range(len(rings)-1):
-        for i in range(n):faces.append((r*n+i,r*n+(i+1)%n,(r+1)*n+(i+1)%n,(r+1)*n+i))
+        for i in range(n):
+            a=r*n+i;b=r*n+(i+1)%n;c=(r+1)*n+(i+1)%n;d=(r+1)*n+i
+            faces.append((a,b,c,d))
     faces.append(tuple((len(rings)-1)*n+i for i in range(n)))
-    me=bpy.data.meshes.new("continuous bedrock mesh")
+    me=bpy.data.meshes.new("Stratified organic cliff mesh")
     me.from_pydata(verts,[],faces);me.update()
-    ob=bpy.data.objects.new("One continuous rocky plateau",me)
-    scene.collection.objects.link(ob)
-    ob.data.materials.append(rock)
+    ob=bpy.data.objects.new("Organic connected cliff foundation",me)
+    scene.collection.objects.link(ob);ob.data.materials.append(rock)
     return ob
 plateau_mesh()
 cuboid("Lower enclosed courtyard",(0,-5.0,7.96),(44,54,.16),grass,.15)
@@ -145,8 +150,16 @@ for side in [-1,1]:
 # Architecturally anchored volume completion, independent of source GLB camera proxies.
 # The underlying imported GLBs remain visible, but no longer define the structural topology.
 def tower(name,x,y,z0,h,w=4.1):
-    cuboid(name+" mass",(x,y,z0+h/2),(w,w,h),stone,.10)
-    cuboid(name+" coping",(x,y,z0+h+.15),(w+.40,w+.40,.34),trim,.08)
+    # Eight-sided battered medieval tower shell: actual taper and differentiated course.
+    for i in range(12):
+        low=z0+i*h/12
+        bpy.ops.mesh.primitive_cylinder_add(vertices=8, radius=w*.62*(1.07-.14*i/12),
+            depth=h/12+.04, location=(x,y,low+h/24))
+        o=bpy.context.object;o.name=name+" octagonal masonry course "+str(i)
+        o.data.materials.append(stone if i%4 else trim)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=8,radius=w*.69,depth=.34,
+        location=(x,y,z0+h+.12))
+    bpy.context.object.name=name+" crenellated coping";bpy.context.object.data.materials.append(trim)
     for ax,ay in [(0,w*.32),(0,-w*.32),(w*.32,0),(-w*.32,0)]:
         cuboid(name+" battlement",(x+ax,y+ay,z0+h+.62),
                 (1.15,1.15,.88),stone,.045)
