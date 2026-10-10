@@ -15,7 +15,9 @@
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
         "pipeline/active-workstreams.json",
-        "docs/evidence/valoria-four-way-touch-camera-20261010/**"
+        "docs/evidence/valoria-four-way-touch-camera-20261010/**",
+        ".github/workflows/unity-webgl-startup.yml",
+        "pipeline/art-production-requests/valoria-four-way-touch-camera-20261010.json"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -26,7 +28,7 @@
       "base_main_sha": "cf0fb18f10062aa5048456091066862bc03ec2b6",
       "art_production_routing": "required",
       "art_production_routing_reason": "Player-visible Valoria camera framing and candidate visual gate require production routing.",
-      "phase": "Consuming existing Pages WebGL build 38041337479; no duplicate runner dispatch.",
+      "phase": "In-flight Pages build; strengthening existing candidate probe to verify visible four-way touch travel in landscape and portrait.",
       "next": "Await exact candidate and automatic WebGL QA; inspect rendered four-direction captures; correct, retest and publish only after gates."
     }
   ],
