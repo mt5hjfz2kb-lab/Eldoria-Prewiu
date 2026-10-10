@@ -797,7 +797,6 @@ for ob in bpy.data.objects:
             uv.data[loop].uv=(coords[0]*.18,coords[1]*.18)
 
 
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT.with_suffix('.blend')))
 
 # Meaningful technique change after the primitive architecture failed review:
 # reuse the previously authorized 49.8K-triangle Hero Bastion source. No generation
@@ -838,6 +837,8 @@ for ob in meshes:
 results.append({'family':'Existing authorized Hero Bastion','new_paid_credits':0,
     'source':'Valoria_HeroBastion_v1.glb','target_width':27,'source_triangles':49800})
 
+
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT.with_suffix('.blend')))
 
 # Collapse static authored geometry into a small material vocabulary before
 # exporting: the previous 1163 independent mesh renderers are unacceptable as
