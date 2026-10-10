@@ -740,7 +740,7 @@ scene.world=world;world.use_nodes=True
 world.node_tree.nodes["Background"].inputs["Color"].default_value=(.09,.12,.18,1)
 world.node_tree.nodes["Background"].inputs["Strength"].default_value=.95
 ld=bpy.data.lights.new("Raking soft key","AREA");l=bpy.data.objects.new("Raking soft key",ld);scene.collection.objects.link(l)
-l.location=(-38,-24,66);ld.energy=11500;ld.size=22;ld.color=(1.0,.78,.55)
+l.location=(-38,-24,66);ld.energy=22000;ld.size=22;ld.color=(1.0,.78,.55)
 # Explicit architectural composition camera, not SHARP camera-space placement.
 cam_d=bpy.data.cameras.new("Valoria Worldspace Camera")
 cam=bpy.data.objects.new("Valoria Worldspace Camera",cam_d)
@@ -798,6 +798,46 @@ for ob in bpy.data.objects:
 
 
 bpy.ops.wm.save_as_mainfile(filepath=str(OUT.with_suffix('.blend')))
+
+# Meaningful technique change after the primitive architecture failed review:
+# reuse the previously authorized 49.8K-triangle Hero Bastion source. No generation
+# request and no new credits. This remains an isolated architectural feasibility proof.
+hero_path=ROOT/'Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb'
+if not hero_path.exists():raise FileNotFoundError(str(hero_path))
+remove_prefixes=('Upper stronghold keep','Keep commanding timber roof','Stronghold roof',
+    'Upper courtyard command hall','Command hall','Citadel hall recess',
+    'Citadel dressed stone joint','Upper keep dark arrow slit','Keep vertical stone reveals',
+    'Keep recessed glazing','Layered miniature slate courses')
+for ob in list(bpy.data.objects):
+    if ob.type=='MESH' and (ob.name.startswith(remove_prefixes) or
+         (ob.parent is not None and ob.parent.name.startswith('Bastion WorldspaceRoot'))):
+        bpy.data.objects.remove(ob,do_unlink=True)
+before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(hero_path))
+meshes=[ob for ob in bpy.data.objects if ob not in before and ob.type=='MESH']
+if not meshes:raise RuntimeError('Approved existing Hero Bastion has no mesh')
+hero_parent=bpy.data.objects.new('Existing Hero Bastion integrated source',None)
+scene.collection.objects.link(hero_parent)
+for ob in meshes:
+    matrix=ob.matrix_world.copy();ob.parent=hero_parent;ob.matrix_world=matrix
+bpy.context.view_layer.update()
+coords=[ob.matrix_world@Vector(c) for ob in meshes for c in ob.bound_box]
+left,right=min(v.x for v in coords),max(v.x for v in coords)
+front,back=min(v.y for v in coords),max(v.y for v in coords)
+bottom=min(v.z for v in coords);scale=27.0/max(.001,right-left)
+hero_parent.scale=(scale,scale,scale)
+hero_parent.location=(-scale*(left+right)/2,29.8-scale*(front+back)/2,12.8-scale*bottom)
+for ob in meshes:
+    for mat in ob.data.materials:
+        if mat is None or not mat.use_nodes:continue
+        for node in mat.node_tree.nodes:
+            if node.type!='TEX_IMAGE' or node.image is None:continue
+            image=node.image
+            if max(image.size)>1024:
+                factor=1024/max(image.size);image.scale(int(image.size[0]*factor),int(image.size[1]*factor))
+                image.pack()
+results.append({'family':'Existing authorized Hero Bastion','new_paid_credits':0,
+    'source':'Valoria_HeroBastion_v1.glb','target_width':27,'source_triangles':49800})
+
 
 # Collapse static authored geometry into a small material vocabulary before
 # exporting: the previous 1163 independent mesh renderers are unacceptable as
