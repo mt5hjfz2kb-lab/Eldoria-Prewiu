@@ -142,6 +142,51 @@ for side in [-1,1]:
         cuboid(f"Settlement cottage {side} {i}",(x,y,9.0),(5.0,5.2,2.2),wood,.16)
         cuboid(f"Slate pitched roof proxy {side} {i}",(x,y,10.2),(5.7,5.8,.48),rock,.18)
         cuboid(f"Storage near building {side} {i}",(x+1.6,y-2.8,8.45),(1.6,1.0,1),wood,.05)
+# Architecturally anchored volume completion, independent of source GLB camera proxies.
+# The underlying imported GLBs remain visible, but no longer define the structural topology.
+def tower(name,x,y,z0,h,w=4.1):
+    cuboid(name+" mass",(x,y,z0+h/2),(w,w,h),stone,.10)
+    cuboid(name+" coping",(x,y,z0+h+.15),(w+.40,w+.40,.34),trim,.08)
+    for ax,ay in [(0,w*.32),(0,-w*.32),(w*.32,0),(-w*.32,0)]:
+        cuboid(name+" battlement",(x+ax,y+ay,z0+h+.62),
+                (1.15,1.15,.88),stone,.045)
+tower("Lower gate west tower",-6,-18,8.1,6.7,4.4)
+tower("Lower gate east tower",6,-18,8.1,6.7,4.4)
+# Gate frame with a real dark pass-through zone; never block main route visually.
+cuboid("Lower gate lintel",(0,-18,14.25),(8.0,3.5,1.45),stone,.14)
+for xx in (-3.95,3.95):
+    cuboid("Lower arched gate side post",(xx,-18,11.0),(1.1,3.5,5.6),trim,.08)
+cuboid("Lower gate shadow threshold",(0,-17.93,9.3),(7.2,.12,2.1),rock,.04)
+tower("Upper stronghold keep",-1.5,34,13.05,10,8.5)
+tower("Upper west rear guard",-15,35,13.05,7,4)
+tower("Upper east rear guard",15,35,13.05,7.6,4)
+# Continuous high curtain, with gap revealing dominant keep.
+cuboid("Upper curtain left",(-11.5,37.3,16.1),(14,2.4,6.1),stone,.10)
+cuboid("Upper curtain right",(11.5,37.3,16.1),(14,2.4,6.1),stone,.10)
+cuboid("Upper courtyard command hall",(9,29,15.1),(11,8,4.0),stone,.14)
+cuboid("Command hall slate cap",(9,29,17.2),(11.8,8.8,.36),rock,.12)
+# Keep lower to upper transition must be clearly bounded by supporting retaining face.
+for xx in (-17,-12,12,17):
+    cuboid("Terrace buttress",(xx,16.55,10.85),(1.8,2.0,5.9),stone,.08)
+# Timber details, exposed on the plausible service side; a sparse frontier settlement.
+for x,y in [(-15,-6),(-11,7),(13,-4),(12,9)]:
+    cuboid("Open work lean-to",(x,y,9.3),(4.7,3.1,.2),wood,.05)
+    for ox in (-2,2):
+        cuboid("Lean-to post",(x+ox,y-1.2,8.7),(.28,.28,1.55),wood,.02)
+    cuboid("Stacked timber",(x+.6,y+.3,8.3),(2.0,1.15,.4),wood)
+# Environmental silhouette: natural trees remain away from approach, not on streets.
+bark=material("Dark forest bark",(.085,.065,.05))
+pine=material("Cool fir needles",(.075,.14,.115))
+for x,y,z,h in [(-28,-21,7.4,6),(-29,8,7.4,7.2),(29,6,7.4,6.5),
+                 (27,31,7.5,8),(-26,34,7.4,7.8),(-31,37,3,8),(30,-27,2.5,8.5)]:
+    cuboid("Fir trunk",(x,y,z+h*.27),(.48,.48,h*.55),bark)
+    bpy.ops.mesh.primitive_cone_add(vertices=8,radius1=h*.22,radius2=0,
+                                    depth=h*.72,location=(x,y,z+h*.63))
+    bpy.context.object.name="Fir canopy";bpy.context.object.data.materials.append(pine)
+# Smooth road blocks and river threshold to secure one unified central route.
+cuboid("Bridge lower abutment",(0,-35,6.7),(10.0,5.0,3.3),rock,.23)
+cuboid("Bridge continuous walkway",(0,-29,8.15),(7.7,14,.23),paving,.08)
+cuboid("Bridge gate connecting sill",(0,-20.5,8.12),(7.7,4,.21),paving,.03)
 # Animated-look static light sources for proof only.
 for i,y in enumerate((-19,-5,10,24,35)):
     for x in (-5,5):
@@ -150,9 +195,9 @@ for i,y in enumerate((-19,-5,10,24,35)):
 world=bpy.data.worlds.new("Cold forest dusk")
 scene.world=world;world.use_nodes=True
 world.node_tree.nodes["Background"].inputs["Color"].default_value=(.09,.12,.18,1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
+world.node_tree.nodes["Background"].inputs["Strength"].default_value=1.2
 ld=bpy.data.lights.new("Raking soft key","AREA");l=bpy.data.objects.new("Raking soft key",ld);scene.collection.objects.link(l)
-l.location=(5,-20,62);ld.energy=4200;ld.size=35
+l.location=(5,-20,62);ld.energy=7200;ld.size=25
 # Explicit architectural composition camera, not SHARP camera-space placement.
 cam_d=bpy.data.cameras.new("Valoria Worldspace Camera")
 cam=bpy.data.objects.new("Valoria Worldspace Camera",cam_d)
@@ -160,7 +205,7 @@ scene.collection.objects.link(cam);scene.camera=cam
 cam.location=(55,-82,78)
 target=Vector((0,6,8))
 cam.rotation_euler=(target-Vector(cam.location)).to_track_quat("-Z","Y").to_euler()
-cam_d.type="ORTHO";cam_d.ortho_scale=106
+cam_d.type="ORTHO";cam_d.ortho_scale=102
 bpy.ops.render.render(write_still=True)
 report={"result":"BLENDER WORLDSPACE VISUAL PROOF ONLY; UNITY NOT TESTED",
         "basis":"single scene coordinates, world-space mesh bases and a connected authored substrate",
