@@ -279,6 +279,23 @@ if not asset_out.exists() or asset_out.stat().st_size<10000:
     raise RuntimeError("Worldspace GLB export missing or invalid")
 if asset_out.stat().st_size>22000000:
     raise RuntimeError("Worldspace GLB exceeds prototype repository size budget")
+# Hard fail on basic spatial discontinuities before producing reassuring render evidence.
+# These checks do not replace visual approval.
+def approximately(a,b,tol=.65): return abs(a-b)<=tol
+bridge_y=(-29-14/2,-29+14/2)
+gate_y=(-18-3.5/2,-18+3.5/2)
+road_y=(-32/2,32/2)
+upper_y=(28.6-22/2,28.6+22/2)
+stairs_y=(14-.59/2,14+(14*.55)+.59/2)
+assert bridge_y[1]>=gate_y[0], "Bridge cannot reach gate"
+assert road_y[0]<=gate_y[1], "Gate cannot connect road"
+assert stairs_y[0]<=road_y[1], "Stairs do not contact main road"
+assert stairs_y[1]>=upper_y[0], "Stairs do not reach upper courtyard"
+assert approximately(8.08,8.15,.25), "Bridge/main street level mismatch"
+assert approximately(8.13,8.08,.25), "Lower stair tread disconnected"
+assert approximately(8.13+14*(5/15),13.09,.45), "Upper stair tread disconnected"
+assert 21<25.1, "Upper courtyard exceeds supporting bedrock"
+print("WORLDSPACE_CONNECTIVITY_PASS: bridge, gate, main road, stair, upper courtyard, rock support")
 bpy.ops.render.render(write_still=True)
 report={"result":"BLENDER WORLDSPACE VISUAL PROOF ONLY; UNITY NOT TESTED",
         "basis":"single scene coordinates, world-space mesh bases and a connected authored substrate",
