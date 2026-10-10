@@ -105,7 +105,33 @@ namespace Eldoria.EditorTools
             RenderSettings.ambientLight=new Color(.31f,.34f,.39f);
             Directory.CreateDirectory(Path.GetDirectoryName(OutputScene));
             EditorSceneManager.SaveScene(scene,OutputScene);
-            Debug.Log("[VALORIA MESH ONLY] Authored isolated geometry proof; no SHARP assets loaded. "+string.Join("; ",results));
+            // Matched camera proof image. Experimental evidence only; not commercial beauty certification.
+            const int width=1230, height=845;
+            var imagePath=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ValoriaMeshOnlyProof","mesh-only-bastion-i-unity.png"));
+            Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+            var renderTarget=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
+            var oldTarget=camera.targetTexture;
+            var oldActive=RenderTexture.active;
+            var image=new Texture2D(width,height,TextureFormat.RGB24,false);
+            try
+            {
+                camera.aspect=(float)width/height;
+                camera.targetTexture=renderTarget;
+                RenderTexture.active=renderTarget;
+                camera.Render();
+                image.ReadPixels(new Rect(0,0,width,height),0,0);
+                image.Apply();
+                File.WriteAllBytes(imagePath,image.EncodeToPNG());
+            }
+            finally
+            {
+                camera.targetTexture=oldTarget;
+                RenderTexture.active=oldActive;
+                UnityEngine.Object.DestroyImmediate(image);
+                renderTarget.Release();
+                UnityEngine.Object.DestroyImmediate(renderTarget);
+            }
+            Debug.Log("[VALORIA MESH ONLY] Proof scene saved, matched-camera capture: "+imagePath+"; families: "+string.Join("; ",results));
         }
     }
 }
