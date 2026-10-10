@@ -173,3 +173,20 @@ No bloquear la producción por estas decisiones; resolverlas mediante el benchma
 - familia definitiva de UI e iconografía.
 
 Estas decisiones se cierran por comparación visual dentro de Unity, no por texto aislado.
+
+
+## 11. Destino de producto: aplicación móvil nativa (decisión del propietario, 2026-10-10)
+
+**Eldoria es un videojuego para Android e iOS creado en Unity.** La compilación WebGL móvil y su enlace de GitHub Pages son un **canal auxiliar de pruebas y distribución rápida de candidatos**, no el producto final ni la plataforma que define por sí sola el techo de calidad artística. No crear un segundo juego: un solo proyecto Unity y variantes de compilación.
+
+- Priorizar la dirección artística, interacción táctil, legibilidad y presupuesto de rendimiento de **aplicaciones móviles nativas**. Validar capacidades reales con builds y perfiles en dispositivos Android/iOS; no atribuir a nativo capacidades ilimitadas.
+- Mantener WebGL como prueba útil de flujos, progreso, persistencia y acceso rápido. Una limitación específica de Safari/WebGL no justifica degradar globalmente assets ni rechazar SHARP/Gaussian Splatting u otra técnica que pueda funcionar en nativo. Registrar limitaciones y fallbacks por plataforma cuando corresponda.
+- Diferenciar explícitamente en informes: **calidad artística nativa objetivo**, **funcionalidad WebGL verificada**, **rendimiento nativo medido** y **rendimiento WebGL medido**. No declarar equivalencias no probadas.
+- Antes de cerrar una decisión de gran alcance sobre 3D, efectos o renderizado, probar una escena representativa en Android nativo y, cuando sea viable, iOS nativo; no suponer que una captura de WebGL demuestra desempeño nativo.
+- El pipeline WebGL, las pruebas publicadas y la arquitectura de gameplay se conservan. Esta es una norma de producto y evaluación artística; **no autoriza** cambios inmediatos del proyecto, CI o lanzamientos ni modifica los ámbitos de trabajo activos.
+
+### Investigación Tripo y generación gráfica
+
+Tripo es un **candidato condicionado** para modelos aislados y módulos reutilizables (props, recursos, criaturas, piezas de arquitectura); no está aprobado como generador automático de ciudades completas ni como método de arte final sin validación. Reusar el pipeline histórico de Tripo/Blender/Unity y el registro de métodos rechazados antes de abrir uno nuevo. La referencia visual aprobada, compatibilidad con la cámara, fidelidad estructural y legibilidad tienen prioridad sobre el número de polígonos.
+
+Prueba exigida: mismo asset representativo, fuente y licencia documentadas, evaluación visual aislada contra referencia, topología y texturas, adaptación Blender cuando proceda, integración Unity sin cambiar gameplay y perfil nativo real. Un TECH PASS no es ART PASS. No gastar créditos de Tripo ni usar assets gratuitos de licencia no comercial en el producto distribuido sin aprobación y derechos adecuados.
