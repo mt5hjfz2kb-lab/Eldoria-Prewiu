@@ -123,6 +123,10 @@ The Windows self-hosted runner is not globally locked for all work. Only jobs th
 
 Short zero-credit/read-only probes may coexist when safe. Tripo spend remains governed by the separate explicit owner-authorization gate regardless of workstream ownership.
 
+### Runner dependency is not an automatic end of task
+
+A workstream holding a runner resource and a job actually executing on that runner are separate facts. Check the live claim and real job queue. Never override another owner's claim merely because a phase/status string says it should be released. When a required Windows certification collides with a valid claim, do every independent safe step possible without using that resource; periodically recheck within the live execution. A GLB/importer passing code checks is an intermediate gate, **not a visually approved Unity integration**. Release/ownership discrepancies must be reconciled by the claimant or in a conflict-safe authorized handoff. End only when no actionable safe work remains and the dependence cannot resolve within the available session; record this specific dependency and exact next test, not a completed result.
+
 ## Main reconciliation
 
 A workstream claim does not freeze `main`. Before each substantial promotion/merge/closeout:
