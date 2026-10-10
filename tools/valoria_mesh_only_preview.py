@@ -303,6 +303,21 @@ for k in range(32):
     pebble=bpy.context.object;pebble.name="Embedded courtyard scree"
     pebble.scale=(rng.uniform(.30,.85),rng.uniform(.35,1.1),rng.uniform(.15,.40))
     pebble.data.materials.append(rock)
+# Lithic apron fills gaps beneath vertical outer walls; avoid dark void between wall and cliff.
+for side in (-1,1):
+    for j in range(20):
+        yy=-24+j*2.25
+        xx=side*(20.0+1.0*math.sin(yy*.14))
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,
+            location=(xx,yy,6.3))
+        ob=bpy.context.object;ob.name="Continuous foundation scree"
+        ob.scale=(2.9,2.4,2.4)
+        ob.data.materials.append(rock)
+# Retaining face beneath the upper terrace is a complete solid masonry front.
+cuboid("Joined inner terrace retaining face",(0,16.9,10.5),(36,2.2,5),stone,.11)
+# Open the main stair passage with two independently capped parapets.
+for side in (-1,1):
+    cuboid("Central stair balustrade",(side*4.15,19.2,11.1),(.9,11.4,1.4),stone,.13)
 # Stone courses break monolithic keep walls into a built structure.
 for z in [15.5,17.0,18.5,20.0,21.5]:
     for xx in [-5.45,-3.6,-1.75,.10,1.95]:
