@@ -797,7 +797,7 @@ bpy.ops.object.select_all(action="DESELECT")
 for ob in bpy.data.objects:
     if ob.type=="MESH":ob.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(asset_out), export_format="GLB",
-                          use_selection=True,export_apply=True,export_yup=True)
+                          use_selection=True,export_apply=True,export_yup=True,\n                          export_image_format="JPEG")
 if not asset_out.exists() or asset_out.stat().st_size<10000:
     raise RuntimeError("Worldspace GLB export missing or invalid")
 if asset_out.stat().st_size>22000000:
