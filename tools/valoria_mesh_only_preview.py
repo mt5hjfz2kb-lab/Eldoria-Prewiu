@@ -385,6 +385,32 @@ for side in (-1,1):
                (1.0,.10,1.75),dark,.015)
         cuboid("Cottage cross brace",(x,y-2.73,10.0),
                (4.6,.14,.19),wood)
+# Structural limestone masonry in variable coursed ashlar blocks; scaled for a strategy camera.
+# Visual break-up is authored physically, not only by noise in image textures.
+stone2=material("Aged pale limestone",(.43,.39,.32))
+rng_masonry=random.Random(904)
+for side in (-1,1):
+    for row in range(4):
+        z=9.00+row*1.13
+        for k in range(22):
+            y=-24.0+k*2.15+(1.07 if row%2 else 0)
+            if y>24:continue
+            x=side*23.47
+            d=rng_masonry.uniform(.15,.35)
+            cuboid("Stone course individual voussoir",(x,y,z),(.26,1.85,1.00),
+                   stone if (k+row)%4 else stone2,.018)
+# Inset taller arrow-slit doors and windows with lintels at distant strategic zoom.
+for side in (-1,1):
+    for y in (-15,-5,5,15):
+        cuboid("Curtain sentry slit",(side*23.69,y,11.7),(.09,.30,1.02),dark,.02)
+        cuboid("Curtain stone opening lintel",(side*23.75,y,12.3),(.17,.65,.18),trim,.03)
+# Main entry gets angled arch stones and an accent blue banner, not flat gate frontage.
+for side in (-1,1):
+    for k in range(7):
+        theta=math.pi*k/6
+        x=side*3.05+math.cos(theta)*1.25
+        z=13.9+math.sin(theta)*1.28
+        cuboid("Entrance dressed voussoir",(x,-19.2,z),(.66,.55,.48),trim,.04)
 # Robust warm torchlights and richer atmospheric contrast.
 # Animated-look static light sources for proof only.
 for i,y in enumerate((-19,-5,10,24,35)):
