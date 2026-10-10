@@ -46,7 +46,7 @@ prompt=(
  'Identify a concrete visual weakness in observation. Do not demand paid tools.'
 )
 images=[base64.b64encode(p.read_bytes()).decode('ascii') for p in (before,reference)]
-payload={"model":"gemma3:4b","stream":False,"format":"json",
+payload={"model":"hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M","stream":False,"format":"json",
          "messages":[{"role":"user","content":prompt,"images":images}],
          "options":{"temperature":0.2,"num_predict":210}}
 body=json.dumps(payload).encode('utf-8')
@@ -96,7 +96,7 @@ mean_pixel_delta=sum(abs(a-b) for a,b in zip(before_sample,after_sample))/max(1,
 if mean_pixel_delta < 0.0005:
  raise RuntimeError('Blender art model proposed edits that did not materially change rendered pixels')
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'eldoria-vision-lookdev.blend'))
-report={"visual_pass":False,"unity_tested":False,"model":"gemma3:4b",
+report={"visual_pass":False,"unity_tested":False,"model":"hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
         "actual_blender_pre_and_post":True,"fixed_camera":True,"material_count_touched":changes,"mean_pixel_delta":round(mean_pixel_delta,6),
         "factors":factors,"model_observation":str(data.get('observation',''))[:1000],
         "note":"Bounded material-only feasibility; geometry and commercial art reference still unapproved."}

@@ -58,14 +58,14 @@ jobs:
             Start-Sleep -Seconds 5
           }
           $tags=Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 15
-          if (-not (@($tags.models.name) -contains 'gemma3:4b')) {
-            & $env:ELDORIA_OLLAMA pull gemma3:4b
-            if ($LASTEXITCODE -ne 0) { throw "Free Gemma 3 vision model download failed" }
+          if (-not (@($tags.models.name) -contains 'hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M')) {
+            & $env:ELDORIA_OLLAMA pull hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M
+            if ($LASTEXITCODE -ne 0) { throw "Free Qwen3-VL vision model download failed" }
           }
-          $body=@{model="gemma3:4b";stream=$false;messages=@(@{role="user";content="Reply only with the word READY."})}|ConvertTo-Json -Depth 6
+          $body=@{model="hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M";stream=$false;messages=@(@{role="user";content="Reply only with the word READY."})}|ConvertTo-Json -Depth 6
           $result=Invoke-RestMethod -Uri "http://127.0.0.1:11434/api/chat" -Method Post -ContentType "application/json" -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 180
           if (-not $result.message.content) { throw "Local language model produced empty output" }
-          "ELDORIA_LOCAL_MODEL_PASS model=gemma3:4b"
+          "ELDORIA_LOCAL_MODEL_PASS model=hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
