@@ -159,52 +159,69 @@ def save(name,scale=23,target=(0,0,3.4)):
  setup(scale,target)
  bpy.context.scene.render.filepath=str(OUT/(name+".png"))
  bpy.ops.render.render(write_still=True)
-# Art-director v1: controlled major geometric intervention, not a cosmetic prop pass.
-# Baseline is the original 2026-10-10 authored gate; all new meshes remain editable.
-# The gate's enclosed defensible passage is emphasized by two tapered structural haunches
-# and a deep central elevated chamber, preserving the original towers and doors.
-def architectural_wedge(name, side, mat):
-    # Width increases at the base. Depth and height are structural rather than decals.
-    x0 = side * 3.15
-    yfront, yback = -1.55, 1.28
-    zbottom, ztop = .14, 6.95
-    near = side * 5.05
-    far = side * 3.63
-    verts = [(x,y,z) for z,x in ((zbottom,near),(ztop,far)) for y in (yfront,yback)]
-    # A closed tapered volume with outward-facing sides and lintel contact.
-    faces = [(0,1,3,2),(0,2,3,1)] if False else [(0,1,3,2)]
-    # Build 8 vertices with rectangular inner/outer widths at each elevation.
-    outerbottom,innerbottom = side*5.13,side*3.22
-    outertop,innertop = side*4.63,side*3.22
-    v=[(x,y,z) for z,inn,out in ((zbottom,innerbottom,outerbottom),(ztop,innertop,outertop))
-       for x,y in ((inn,yfront),(out,yfront),(out,yback),(inn,yback))]
-    f=[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]
-    mesh=bpy.data.meshes.new(name+"_solid_mesh");mesh.from_pydata(v,[],f);mesh.update()
-    obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
-    obj.data.materials.append(mat)
-    bevel=obj.modifiers.new("battered-stone-edges","BEVEL");bevel.width=.13;bevel.segments=3
-    obj.modifiers.new("weighted-normals","WEIGHTED_NORMAL")
-    return obj
+# FULL ART BRAIN FOCUS V2 — edit structural mesh, not decorative Lego.
+# Controlled interventions: organic battered side masses, vaulted entry recession,
+# mixed-height irregular parapet and unified roof contours.
+def structural_mesh(name,verts,faces,material,bevel=.08):
+ mesh=bpy.data.meshes.new(name+"_mesh")
+ mesh.from_pydata(verts,[],faces);mesh.update()
+ obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
+ obj.data.materials.append(material)
+ if bevel:
+  m=obj.modifiers.new("architectural_edge_softening","BEVEL");m.width=bevel;m.segments=2
+ obj.modifiers.new("weighted_normals","WEIGHTED_NORMAL")
+ return obj
+
+def battered_pier(side):
+ # Six courses of a contiguous sloping profile, irregularized at large scale.
+ xs=[(3.12,5.18),(3.08,5.10),(3.09,4.99),(3.04,4.91),
+     (3.06,4.81),(3.03,4.71)]
+ zs=[0,1.25,2.62,3.97,5.31,6.75]
+ verts=[]
+ for i,(inner,outer) in enumerate(xs):
+  for x,y in ((side*inner,-1.67),(side*outer,-1.53),
+              (side*outer,1.30),(side*inner,1.37)):
+   verts.append((x,y,zs[i]))
+ faces=[(3,2,1,0),(20,21,22,23)]
+ for i in range(5):
+  for j in range(4):
+   a=i*4+j;b=i*4+(j+1)%4
+   faces.append((a,b,b+4,a+4))
+ return structural_mesh("organic_battered_pier_"+str(side),verts,faces,stone[2],.12)
 
 for side in (-1,1):
-    architectural_wedge("valoria_integral_battered_buttress_"+str(side),side,stone[2])
-    # Recessed high defensive walk with a thick continuous bridge behind the parapet.
-    box("upper_defensive_walk", (side*2.05,.32,6.65),(3.55,2.66,.55),stone[4],.09)
-    # Robust roofline terminating in solid, sloping stone rather than stacked cubes.
-    x=side*3.15
-    for height,extent in ((6.98,1.55),(7.25,1.31)):
-        box("buttress_weathering_cap",(x,-1.34,height),(extent,.61,.19),trim,.085)
-# A strong, continuous outer arch band, integrated into front masonry.
-for j in range(18):
-    theta0=math.pi*j/18
-    theta1=math.pi*(j+1)/18-.004
-    base.arch_segment("monumental_loadbearing_outer_arch",0,-1.42,3.02,2.10,theta0,theta1,.34,stone[(j+3)%8],.105)
-# Continuous battlement platform creates an identifiable central gatehouse silhouette.
-box("continuous_gatehouse_crown",(0,.48,7.25),(8.55,3.2,.51),stone[5],.13)
-for ix in (-3.6,-2.4,-1.2,0,1.2,2.4,3.6):
-    box("gatehouse_parapet_merlon",(ix,-1.12,7.79),(.67,.57,1.02),stone[1],.075)
-# Capture major-geometry operation in the manifest for later independent review.
-art_director_geometry={"baseline":"gate_reference_hero","operation":"two_integrated_tapered_buttresses_plus_full_arch_and_crown","chosen_for":"stronger depth silhouette and structural continuity","artistic_status":"REVIEW_REQUIRED"}
+ battered_pier(side)
+ # Deep stone portal cheek returns into the passage, creating actual perspective.
+ base.cube("deep_portal_cheek",(side*2.17,-.54,2.80),(.41,2.75,5.52),stone[4],.14)
+ # Offset tower-side roof joins rather than a detachable series of boxes.
+ base.frustum("tower_transition_hip",(side*5.01,.24,7.24),1.19,.48,1.18,slate,8)
+ # Slender arrow recess on the main structural pier, not a black painted patch.
+ base.cube("arrow_reveal",(side*3.81,-1.71,3.90),(.14,.11,1.12),patina,.025)
+# Second nested radius: continuous layered arch conveys a defended tunnel.
+for j in range(20):
+ a0=math.pi*j/20;a1=math.pi*(j+1)/20-.004
+ base.arch_segment("deep_arch_voussoir",0,-1.59,3.0,2.0,a0,a1,.38,stone[(j+2)%8],.13)
+ base.arch_segment("inner_portal_recession",0,-.93,3.0,1.89,a0,a1,.33,trim,.09)
+# The central gatehouse mass must read as one building, not stacked floating headers.
+structural_mesh("continuous_gatehouse_roof",
+ [(-4.55,-1.0,7.00),(4.55,-1.0,7.00),(4.55,1.55,7.00),(-4.55,1.55,7.00),
+  (-4.16,-.68,8.20),(4.16,-.68,8.20),(4.16,1.21,8.20),(-4.16,1.21,8.20)],
+ [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],stone[5],.11)
+# One staggered defensive rhythm. Suppress the old identical merlons on central crown.
+for ob in list(bpy.data.objects):
+ if ob.name.startswith("gate_crown_merlon"):ob.hide_render=True
+heights=[.96,1.08,.78,1.34,.92,1.16,.83]
+widths=[.64,.75,.62,.84,.68,.76,.66]
+for j,(height,width) in enumerate(zip(heights,widths)):
+ x=-3.68+j*1.23
+ structural_mesh("authored_variable_merlon_"+str(j),
+ [(x-width/2,-1.50,8.04),(x+width/2,-1.50,8.04),
+  (x+width/2,-.79,8.04),(x-width/2,-.79,8.04),
+  (x-width*.43,-1.44,8.04+height),(x+width*.41,-1.44,8.04+height),
+  (x+width*.41,-.86,8.04+height),(x-width*.43,-.86,8.04+height)],
+ [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
+ stone[j%len(stone)],.055)
+art_director_geometry={"baseline":"run_38136991434","operations":["contiguous_battered_piers","deep_nested_arched_entry","authored_nonuniform_parapet","continuous_roof_mass","tower_transitional_hips"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
