@@ -165,7 +165,7 @@ for poly in mesh.polygons:
         else:
             uv=(vert.x/3,vert.y/3)
         uvmap.data[li].uv=uv
-families=[(grass,"ground"),(stone,"rock"),(needle,"vegetation"),([path],"stone"),(bushes,"vegetation")]
+families=[(stone,"rock"),([path],"stone")]
 texture_count=0
 for ids,family in families:
     png=os.path.join(texture_dir,family+"_albedo.png")
