@@ -19,6 +19,8 @@ jobs:
           run-id: 38170413822
           github-token: ${{ github.token }}
           path: art-source/valoria/production/asset-family-v2
+      - name: Install free Pillow for real local vision images
+        run: sudo apt-get update -qq && sudo apt-get install -y python3-pil
       - name: Start already established free Qwen Ollama brain
         run: |
           git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
