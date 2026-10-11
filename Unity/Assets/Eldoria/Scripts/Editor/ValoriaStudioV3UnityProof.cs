@@ -108,8 +108,7 @@ namespace Eldoria.EditorTools
                             copy.SetTexture("_BaseMap", mat.GetTexture("baseColorTexture"));
                             if (mat.HasProperty("normalTexture") && mat.GetTexture("normalTexture") != null)
                             {
-                                copy.SetTexture("_BumpMap", mat.GetTexture("normalTexture"));
-                                copy.EnableKeyword("_NORMALMAP");
+                                // Native glTF normals require a correctly packed Unity normal-map import.\n                                // Keep stable albedo-only URP material until that path is verified.
                             }
                             if (mat.HasProperty("alphaCutoff") && mat.GetFloat("alphaCutoff") > 0.001f)
                             {
