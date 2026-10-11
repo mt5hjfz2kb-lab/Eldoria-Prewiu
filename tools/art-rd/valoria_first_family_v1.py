@@ -264,10 +264,13 @@ def dressed_wall(name,x=0,y=0,length=8,detail=True):
    o.data.update()
  # Recessed defensive openings, flanked by dressed jambs. Integrated into
  # the empty spaces between the existing buttresses rather than overlaid on them.
- count=max(1,int(length/4))
- for i in range(count):
-  offset=-length/2+(i+.5)*length/count+.10
-  px=x+offset
+ buttress_x=sorted(set(round(o.location.x,3) for o in authored
+       if o.name.startswith(name+'_buttress') and '_cap' not in o.name))
+ boundaries=[x-length/2]+buttress_x+[x+length/2]
+ gaps=[(boundaries[i]+boundaries[i+1])/2 for i in range(len(boundaries)-1)]
+ # Alternate empty bays: openings must never coincide with a solid buttress.
+ sockets=gaps[::2]
+ for i,px in enumerate(sockets):
   # The central dark void is set behind protruding jamb faces.
   ns['cube'](name+'_embrasure_shadow',(px,y-.694,2.56),(.18,.025,1.30),ns['mortar'],.008)
   for side in (-1,1):
