@@ -1,0 +1,33 @@
+{
+  "status": "BLENDER_SOURCE_IMPROVED_GLTF_CANDIDATE_NOT_FINAL",
+  "director_decision": "Retain the real CC0 Blender source and exports as an improved terrain study; reject final art and Unity acceptance pending cliff-contact, repetition, import fidelity, and mobile validation.",
+  "baseline": "V1 triangulated cliff and flat grass; V2MCP two scanned CC0 rock donors with real TCP BlenderMCP contact correction; V3 unchanged geology plus baked CC0 ground photo/normal.",
+  "objective_visual_evidence": [
+    "studio-rocks-v1/before-cliff.png",
+    "studio-rocks-v2-mcp/Blender-V1-V2-Comparacion.png",
+    "studio-rocks-v3-ground/Blender-V2-V3-GLB-Comparacion.png"
+  ],
+  "visible_improvements": [
+    "faceted cliff silhouette replaced with scanned rock geometry and PBR relief",
+    "second scan breaks some repeated module appearance",
+    "flat grass changed to photographic earthy variation in matched camera render"
+  ],
+  "remaining_defects": [
+    "obvious repeated rounded boulder rhythm around perimeter",
+    "dark terrain-rock gap at the lip and disconnected contact stones",
+    "large empty ground, incomplete paths, vegetation and architectural environmental integration",
+    "distance from supplied reference remains substantial"
+  ],
+  "qwen_role": "Auxiliary only; its V2 report contradicted visible defects by claiming reference quality, so no Qwen visual gate.",
+  "local_blender_4_5_3_glb_roundtrip_RGB_MAE_0_to_255": 0.448,
+  "github_runner_blender_4_0_2_glb_roundtrip_RGB_MAE_0_to_255": 1.516,
+  "github_runner_foreground_rock_region_RGB_MAE_0_to_255": 6.452,
+  "gltf_portability_conclusion": "Rock shading visibly differs on Blender 4.0.2 reimport. Structural GLB audit passes, but visual fidelity is not accepted across Blender versions; Unity not run.",
+  "workflow_run": 38131142788,
+  "artifact_id": 11699550417,
+  "unity_tested": false,
+  "mobile_performance_tested": false,
+  "reference_quality_met": false,
+  "visual_pass": false,
+  "paid_services_used": false
+}
