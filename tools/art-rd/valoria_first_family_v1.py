@@ -130,16 +130,21 @@ def rocks():
  # Closed sculpted crown and cliff share the SAME perimeter vertices.
  # Concentric radial rings ensure every face meets the exposed cliff edge.
  prior=0
- for layer,ratio in enumerate((.78,.55,.32,.12)):
+ ratios=[1-j/20 for j in range(1,20)]
+ for layer,ratio in enumerate(ratios):
   offset=len(verts)
   for k,(x,y,top) in enumerate(perimeter):
    x2=x*ratio;y2=y*ratio
-   z=crown(x2,y2)+.09*math.sin(k*.39+layer*.72)
+   # Geological surface height is a continuous spatial function, not
+   # polar-indexed bands that form an artificial central pinwheel.
+   z=(crown(x2,y2)+.034*math.sin(x2*2.7+y2*1.6)
+      +.022*math.sin(x2*4.8-y2*3.7))
    verts.append((x2,y2,z))
    faces.append((prior+k,prior+(k+1)%n,offset+(k+1)%n,offset+k))
-   materials.append((k//11+layer//2)%8)
+   materials.append((k//11+layer//5)%8)
   prior=offset
- center_index=len(verts);verts.append((0,0,crown(0,0)))
+ center_index=len(verts)
+ verts.append((0,0,crown(0,0)))
  for k in range(n):
   faces.append((prior+k,prior+(k+1)%n,center_index))
   materials.append((k//14)%8)
@@ -148,7 +153,18 @@ def rocks():
  ob=bpy.data.objects.new('Sculpted continuous bedrock face and irregular crown',mesh)
  bpy.context.collection.objects.link(ob)
  for material in ns['stone']:mesh.materials.append(material)
- for poly,index in zip(mesh.polygons,materials):poly.material_index=index;poly.use_smooth=True
+ uv=mesh.uv_layers.new(name='UVMap')
+ for poly,index in zip(mesh.polygons,materials):
+  poly.material_index=index
+  poly.use_smooth=poly.index>=rings*n
+  # Existing Hero V3's image-based PBR needs actual noncollapsed UVs.
+  normal=poly.normal
+  for loop_index in poly.loop_indices:
+   v=mesh.vertices[mesh.loops[loop_index].vertex_index].co
+   if abs(normal.z)>.66: coords=(v.x*.30,v.y*.30)
+   elif abs(normal.x)>abs(normal.y): coords=(v.y*.30,v.z*.30)
+   else:coords=(v.x*.30,v.z*.30)
+   uv.data[loop_index].uv=coords
  bevel=ob.modifiers.new('Subtle cliff facet weathering','BEVEL');bevel.width=.035;bevel.segments=2
  ob.modifiers.new('Weighted geological shading','WEIGHTED_NORMAL')
  # Integrated talus at the foot, only partially visible and buried into cliff.
