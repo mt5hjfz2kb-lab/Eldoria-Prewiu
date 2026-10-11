@@ -70,16 +70,21 @@ def box(name,center,size,material=None,bevel=.023,wear=.009):
 
 def complete_v3(predicate,offset=(0,0,0),prefix='V3 preserved '):
  with bpy.data.libraries.load(str(GATE),link=False) as (src,dst):dst.objects=list(src.objects)
- chosen=[]
- for ob in dst.objects:
-  if ob is None:continue
-  if ob.type=='MESH' and predicate(ob):
-   bpy.context.scene.collection.objects.link(ob)
-   matrix=ob.matrix_world.copy();ob.parent=None;ob.data=ob.data.copy()
+ # Imported datablocks have no evaluated world matrices/bounds until linked.
+ # Evaluate complete source first, then select and bake, then remove context.
+ source=[ob for ob in dst.objects if ob is not None]
+ for ob in source:bpy.context.scene.collection.objects.link(ob)
+ bpy.context.view_layer.update()
+ chosen=[ob for ob in source if ob.type=='MESH' and predicate(ob)]
+ matrices={ob:ob.matrix_world.copy() for ob in chosen}
+ for ob in source:
+  if ob in matrices:
+   matrix=matrices[ob];ob.parent=None;ob.data=ob.data.copy()
    for v in ob.data.vertices:v.co=matrix@v.co+Vector(offset)
-   ob.matrix_world.identity();ob.name=prefix+ob.name;chosen.append(ob)
+   ob.matrix_world.identity();ob.data.update();ob.name=prefix+ob.name
   else:bpy.data.objects.remove(ob,do_unlink=True)
  assert chosen
+ bpy.context.view_layer.update()
  return chosen
 
 def cx(ob):
@@ -88,7 +93,7 @@ def cx(ob):
 def tower(plan):
  prefixes=('Tower ','Battered tower','Machicolation support','Arrow loop','Royal blue Valoria banner','Valoria lily embroidery','Banner mounting bar','Heraldic lily band')
  chosen=complete_v3(lambda ob:ob.name.startswith(prefixes) and cx(ob)>1.5,(-3.42,-.25,0),'V3 complete watchtower / ')
- assert len(chosen)>300
+ assert len(chosen)>300,('incomplete V3 tower',len(chosen))
  LOG.append({'operation':'v3_complete_tower','parts':len(chosen),'source_sha256':GATE_HASH,'whole_component_affine_translation_only':True})
  # The tower keeps all existing relief and crown; artist secondary detail is
  # a masonry threshold and rear ladder, never a deforming taper of global vertices.
@@ -102,9 +107,9 @@ def wall_run(length,plan,x=0,y=0,angle=0,end_faces=True,loops=True,buttresses=Tr
  h=4.48;t=1.25;rowh=plan['stone_height'];nrows=math.ceil(h/rowh);rowh=h/nrows
  loops_x=[-length/2+length*(i+1)/(plan['loop_count']+1) for i in range(plan['loop_count'])] if loops else []
  # Backing follows the same embrasure holes as face stones: true voids.
- spans=[];cursor=-length/2
+ spans=[];cursor=-length/2+.085
  for q in loops_x:spans.append((cursor,q-.095));cursor=q+.095
- spans.append((cursor,length/2))
+ spans.append((cursor,length/2-.085))
  for a,b in spans:box('Masonry recessed structural backing',((a+b)/2,0,h/2),(b-a,1.08,h),MATS['mortar'],0,0)
  for q in loops_x:
   for lo,hi in ((0,2.48),(3.45,h)):box('Loop backing above or below opening',(q,0,(lo+hi)/2),(.19,1.08,hi-lo),MATS['mortar'],0,0)
@@ -128,7 +133,7 @@ def wall_run(length,plan,x=0,y=0,angle=0,end_faces=True,loops=True,buttresses=Tr
  if end_faces:
   for side in (-1,1):
    for j in range(nrows):
-    for k in range(2):box('Dressed modular end face',(side*(length/2-.08),(k-.5)*.62,(j+.5)*rowh),(.16,.60,rowh-.018),bevel=.02)
+    for k in range(2):box('Dressed modular end face',(side*(length/2-.05),(k-.5)*.62,(j+.5)*rowh),(.10,.60,rowh-.018),bevel=.015,wear=.002)
  # Bonded foot rather than monolithic block strip.
  for j in range(math.ceil(length/.9)):
   w=length/math.ceil(length/.9)
@@ -166,10 +171,14 @@ def wall_run(length,plan,x=0,y=0,angle=0,end_faces=True,loops=True,buttresses=Tr
 
 def wall(plan):wall_run(8,plan)
 def corner(plan):
- wall_run(4,plan,x=-2,loops=False,buttresses=False,end_faces=False)
- wall_run(4,plan,y=2,angle=math.pi/2,loops=False,buttresses=False,end_faces=False)
+ wall_run(3.32,plan,x=-2.34,loops=False,buttresses=False,end_faces=False)
+ wall_run(3.32,plan,y=2.34,angle=math.pi/2,loops=False,buttresses=False,end_faces=False)
  # Join dressed corner quoin pier overlaps structural core, not facades.
  for j in range(14):box('Alternating bonded corner quoin',(0,0,(j+.5)*.32),(1.36,1.36,.304),bevel=.023)
+ box('Corner walkway dressed coping',(0,0,4.52),(1.54,1.54,.22),MATS['trim'],.028)
+ for q in [(-.52,-.52),(.52,-.52)]:
+  box('Corner bonded parapet',(q[0],q[1],4.83),(.58,.47,.42),bevel=.023)
+  box('Corner bonded crenel',(q[0],q[1],5.21),(.58,.47,.44),bevel=.033)
  LOG.append({'operation':'dressed_corner_bond','turn_degrees':90,'wall_walkway_height':4.52})
 def connections(plan):
  wall_run(2,plan,loops=False,buttresses=False)
@@ -221,7 +230,7 @@ def cliff(plan):
   shoulder=anchors[i]*(1-f)+anchors[i+1]*f
   groove=-depth*max(0,1-abs((v+.17)%1-.5)*7)
   # Slope continuous rock backward near crown; fractures change over depth.
-  return -1.8-lean*u+shoulder+groove*(.65+.35*u)
+  return -1.8-lean*(1-u)+shoulder+groove*(.65+.35*u)
  for k in range(levels+1):
   u=k/levels
   for i in range(N+1):
@@ -240,17 +249,48 @@ def cliff(plan):
  faces.append(tuple([i for i in range(N,-1,-1)]+[rear0+2,rear0+3]))
  faces.append((rear0,rear0+1,rear0+3,rear0+2))
  bed=mesh('Continuous angular escarpment bedrock',verts,faces,MATS['rock'],.018)
- # 11 asymmetric broad slab buttresses partially sunk into the continuous face.
- for i in range(11):
-  x=-5.6+i*1.1;w=.65+RNG.random()*.27
-  bottom=(x+.24,-1.94,-3.42);topx=x-.18-RNG.random()*.25
-  v=[(bottom[0]-w,-2.12,-3.48),(bottom[0]+w,-2.08,-3.48),(topx+w*.72,-2.08-lean,-.10),(topx-w*.75,-2.16-lean,-.12),
-     (bottom[0]-w,-1.35,-3.48),(bottom[0]+w,-1.35,-3.48),(topx+w*.72,-1.63,-.14),(topx-w*.75,-1.63,-.18)]
-  mesh('Authored broad leaning fault slab',v,[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)],MATS['rock'],.018)
+ # Reuse the proven CC0 scan as a sculptural donor, not a pasted texture.
+ # Its 1017-vertex worn shape breaks the low-detail prism/organ-pipe ceiling.
+ donor_source=BASE/'cliff_rocks/cliff_rocks-v2-1.blend'
+ with bpy.data.libraries.load(str(donor_source),link=False) as (src,dst):
+  donor_names=[n for n in src.objects if n.startswith('CC0 horizontal integrated bedrock strata')]
+  assert donor_names,'Verified CC0 photogrammetric geology source missing'
+  dst.objects=[donor_names[0]]
+ donor=dst.objects[0];donor_mesh=donor.data.copy();bpy.data.objects.remove(donor,do_unlink=True)
+ low=Vector([min(v.co[k] for v in donor_mesh.vertices) for k in range(3)])
+ high=Vector([max(v.co[k] for v in donor_mesh.vertices) for k in range(3)]);extent=high-low
+ for vertex in donor_mesh.vertices:vertex.co=Vector([(vertex.co[k]-low[k])/extent[k] for k in range(3)])
+ # Unequal angular fault masses, each with three geological planes and clipped
+ # side facets. Major visible shapes replace the uniform extruded facade.
+ widths=[1.4,1.1,.85,1.55,.7,1.25,1.4,.9,1.35,1.5];left=-6
+ for i,width in enumerate(widths):
+  center=left+width/2;left+=width;v=[];leanx=RNG.uniform(-.25,.16)
+  if i%3!=1:
+   data=donor_mesh.copy();data.materials.clear();data.materials.append(MATS['rock'])
+   rock=bpy.data.objects.new('AI-sculpted CC0 fractured bedrock mass '+str(i),data);bpy.context.scene.collection.objects.link(rock)
+   height=3.47+RNG.uniform(-.10,.03);facey=-2.62+RNG.uniform(-.10,.12)
+   for vertex in data.vertices:
+    px,py,pz=vertex.co
+    if i%2:px=1-px
+    vertex.co=(center+(px-.5)*width*1.72+leanx*pz,
+               facey+(py-.5)*1.48+lean*pz,
+               -3.52+pz*height)
+   for face in data.polygons:face.use_smooth=False
+   data.update();uv_project(rock,.3)
+   continue
+  for layer,(z,scale,fy,shift) in enumerate([(-3.49,1.12,-2.80,0),(-1.60,.97,-2.28,leanx*.5),(-.10,.83,-1.83,leanx)]):
+   cx0=center+shift;fy+=RNG.uniform(-.18,.18);half=width*scale/2
+   outline=[(-half+.08,fy+.30),(-half+.17,fy),(half-.13,fy+.02),(half+.015,fy+.34),(half-.06,-1.22),(-half+.06,-1.22)]
+   for k,(dx,yy) in enumerate(outline):v.append((cx0+dx,yy,z+RNG.uniform(-.06,.05) if layer else z))
+  f=[tuple(range(5,-1,-1)),tuple(range(12,18))]
+  for layer in range(2):
+   for k in range(6):f.append((layer*6+k,layer*6+(k+1)%6,(layer+1)*6+(k+1)%6,(layer+1)*6+k))
+  mesh('Authored broad leaning fractured fault mass',v,f,MATS['rock'],.023)
  soil=plan['crest_soil_depth'];v=[]
  for i in range(N+1):
   x=-6+12*i/N;f=front(x,1)-.012
-  v.extend([(x,f,0),(x,2,0),(x,f-.03,-soil),(x,2,-soil)])
+  # Positive crown offset avoids coplanar soil/bedrock surfaces after export.
+  v.extend([(x,f,.065),(x,2,.065),(x,f-.03,-soil),(x,2,-soil)])
  f=[]
  for i in range(N):
   a=4*i;f.extend([(a,a+4,a+5,a+1),(a,a+2,a+6,a+4),(a+1,a+5,a+7,a+3),(a+2,a+3,a+7,a+6)])
@@ -262,7 +302,7 @@ def cliff(plan):
   for k in range(6):
    s=1.0 if k==0 else RNG.uniform(.25,.60)
    rock_mass('Embedded angular talus cluster',(x+RNG.uniform(-.7,.7),-2.65+RNG.uniform(-.25,.35),-3.34+s*.15),(s*.86,s*.72,s*.86),3310+j*31+k)
- LOG.append({'operation':'fault_plane_escarpment','continuous_vertices':len(verts),'primary_fault_slabs':11,'fault_lean_m':lean,'fracture_depth_m':depth,'embedded_talus_clusters':clusters,'soil_depth_m':soil,'footing_plane_z':0})
+ LOG.append({'operation':'fault_plane_escarpment','continuous_vertices':len(verts),'primary_fault_slabs':len(widths),'real_cc0_scanned_masses':7,'cc0_source':'https://opengameart.org/content/free-photogrammetric-rock','donor_blend_sha256':hashlib.sha256(donor_source.read_bytes()).hexdigest(),'fault_lean_m':lean,'fracture_depth_m':depth,'embedded_talus_clusters':clusters,'soil_depth_m':soil,'footing_plane_z':.065})
 
 def props(plan):
  labels=('Royal blue Valoria banner','Valoria lily embroidery','Heraldic lily band','Banner mounting bar','Torch pedestal','Torch stone cap','Carved ember flame','Iron brazier bowl')
@@ -270,7 +310,7 @@ def props(plan):
  # Move the banner AND attached embroidery as one design group.
  for ob in chosen:
   isbanner=any(k in ob.name for k in ('banner','embroidery','lily band','mounting bar'))
-  sign=1 if cx(ob)>0 else -1
+  sign=1 if sum(v.co.x for v in ob.data.vertices)/len(ob.data.vertices)>0 else -1
   for v in ob.data.vertices:
    if isbanner:v.co.x-=sign*1.35;v.co.z-=2.1
    else:v.co.x-=sign*.90;v.co.y+=1.55
@@ -301,7 +341,7 @@ def bounds():
 
 def render(folder,label):
  sc=bpy.context.scene
- scale={'watchtower':11.5,'wall_straight':11.7,'wall_corner':10.2,'wall_connections':8,'stone_path_platform':12.4,'cliff_rocks':18,'defensive_props':10.4}[CURRENT]
+ scale={'watchtower':13.3,'wall_straight':11.7,'wall_corner':10.2,'wall_connections':8,'stone_path_platform':12.4,'cliff_rocks':18,'defensive_props':10.4}[CURRENT]
  target=Vector((0,0,-1.4) if CURRENT=='cliff_rocks' else (0,0,.3) if CURRENT=='stone_path_platform' else (0,0,3.5) if CURRENT=='watchtower' else (0,0,2.5))
  for view,pos,scale in [('hero',(13,-19,13),scale),('strategic',(16,-23,18),scale*1.35)]:
   cam=sc.camera;cam.location=target+Vector(pos);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=scale
@@ -313,8 +353,35 @@ def export(asset,folder):
  bpy.ops.wm.save_as_mainfile(filepath=str(folder/(asset+'.blend')))
  deps=bpy.context.evaluated_depsgraph_get()
  for o in meshes:
-  if o.modifiers:
-   o.data=bpy.data.meshes.new_from_object(o.evaluated_get(deps),preserve_all_data_layers=True,depsgraph=deps);o.modifiers.clear()
+  mod=o.modifiers.new('Portable explicit triangulation for tangent normals','TRIANGULATE')
+  if hasattr(mod,'keep_custom_normals'):mod.keep_custom_normals=True
+  bpy.context.view_layer.update()
+  o.data=bpy.data.meshes.new_from_object(o.evaluated_get(deps),preserve_all_data_layers=True,depsgraph=deps);o.modifiers.clear()
+  bm=bmesh.new();bm.from_mesh(o.data)
+  bmesh.ops.triangulate(bm,faces=[f for f in bm.faces if len(f.verts)>4])
+  bm.to_mesh(o.data);bm.free();o.data.update()
+ # V3 patina copies often use exactly the same linked shader. Merge only
+ # identical effective PBR values/images, not visually different limestone.
+ def signature(mat):
+  if not mat.use_nodes:return ('flat',tuple(mat.diffuse_color))
+  values=[]
+  for node in mat.node_tree.nodes:
+   if node.type=='OUTPUT_MATERIAL':continue
+   entry=[node.type]
+   if node.type=='TEX_IMAGE' and node.image:
+    im=node.image;entry.append(hashlib.sha256(im.packed_file.data).hexdigest() if im.packed_file else im.filepath)
+   for inp in node.inputs:
+    if inp.is_linked or not hasattr(inp,'default_value'):continue
+    value=inp.default_value
+    try:value=list(value)
+    except TypeError:pass
+    if isinstance(value,(str,int,float,bool,list)):entry.append([inp.name,value])
+   values.append(entry)
+  return json.dumps(sorted(values,key=str),sort_keys=True)
+ canonical={}
+ for ob in meshes:
+  for i,mat in enumerate(ob.data.materials):
+   key=signature(mat);canonical.setdefault(key,mat);ob.data.materials[i]=canonical[key]
  # Merge only identical-material geometry for mobile draw calls, preserving source.
  groups={}
  for ob in meshes:
@@ -329,7 +396,18 @@ def export(asset,folder):
  bpy.context.view_layer.objects.active=meshes[0]
  bpy.ops.export_scene.gltf(filepath=str(folder/(asset+'.glb')),export_format='GLB',use_selection=True,export_materials='EXPORT',export_texcoords=True,export_normals=True,export_tangents=True)
  triangles=sum(len(p.vertices)-2 for o in meshes for p in o.data.polygons)
- result={'asset':asset,'triangles':triangles,'export_meshes':len(meshes),'bounds_m':bounds(),'glb_bytes':(folder/(asset+'.glb')).stat().st_size,'source_gate_sha256':GATE_HASH,'ai_plan':PLANS[asset],'executed_operations':LOG,'art_pass':False,'unity_pass':False}
+ lods=[]
+ for level,ratio in [(1,.60),(2,.36)]:
+  backups={o:o.data for o in meshes}
+  for ob in meshes:
+   ob.data=ob.data.copy();bpy.context.view_layer.objects.active=ob
+   mod=ob.modifiers.new('Distance LOD '+str(level),'DECIMATE');mod.ratio=ratio;mod.use_collapse_triangulate=True
+   bpy.ops.object.modifier_apply(modifier=mod.name)
+  count=sum(len(p.vertices)-2 for o in meshes for p in o.data.polygons)
+  bpy.ops.export_scene.gltf(filepath=str(folder/(asset+'-LOD'+str(level)+'.glb')),export_format='GLB',use_selection=True,export_materials='EXPORT',export_texcoords=True,export_normals=True,export_tangents=True)
+  lods.append({'level':level,'triangles':count,'relative_to_lod0':round(count/triangles,3),'visual_distance_use':'requires engine-screen-size selection; not physical-device certified'})
+  for ob,data in backups.items():ob.data=data
+ result={'asset':asset,'triangles':triangles,'export_meshes':len(meshes),'effective_materials':len(canonical),'lods':lods,'bounds_m':bounds(),'glb_bytes':(folder/(asset+'.glb')).stat().st_size,'source_gate_sha256':GATE_HASH,'ai_plan':PLANS[asset],'executed_operations':LOG,'art_pass':False,'unity_pass':False}
  (folder/'evidence.json').write_text(json.dumps(result,indent=2))
  return result
 

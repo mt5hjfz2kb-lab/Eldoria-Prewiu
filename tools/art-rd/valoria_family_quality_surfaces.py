@@ -8,8 +8,10 @@ ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'art-source/valoria/production/asset-family-v2/quality-textures';OUT.mkdir(parents=True,exist_ok=True)
 N=1024;rng=np.random.default_rng(331011)
 def noise(radius):
- a=rng.integers(0,256,(N,N),dtype=np.uint8)
- b=np.asarray(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius)),dtype=np.float32)
+ a=rng.normal(size=(N,N))
+ fy=np.fft.fftfreq(N)[:,None];fx=np.fft.fftfreq(N)[None,:]
+ filt=np.exp(-2*np.pi*np.pi*radius*radius*(fx*fx+fy*fy))
+ b=np.fft.ifft2(np.fft.fft2(a)*filt).real.astype(np.float32)
  return np.clip((b-b.mean())/(b.std()+1e-5),-2.4,2.4)
 def save(name,a):Image.fromarray(np.uint8(np.clip(a,0,255))).save(OUT/name)
 fine,grain,large,patch=noise(.7),noise(3),noise(21),noise(64)

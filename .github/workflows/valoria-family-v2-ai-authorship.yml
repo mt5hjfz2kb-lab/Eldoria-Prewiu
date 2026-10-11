@@ -24,6 +24,7 @@ jobs:
           assert p['enabled'] and p['paid_credits']==0
           with open(os.environ['GITHUB_ENV'],'a') as f:
             f.write('SOURCE_RUN='+str(p['source_run'])+'\nSOURCE_ARTIFACT='+p['source_artifact']+'\n')
+            f.write('ARTIST_RUN='+str(p.get('reuse_artist_run',0))+'\n')
           PY
       - uses: actions/download-artifact@v4
         with:
@@ -32,6 +33,7 @@ jobs:
           github-token: ${{ github.token }}
           path: art-source/valoria/production/asset-family-v2
       - name: Recover established free Qwen runtime
+        if: env.ARTIST_RUN == '0'
         run: |
           git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
           git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
@@ -40,14 +42,33 @@ jobs:
           sudo apt-get install -y python3-pil python3-numpy
           bash "$RUNNER_TEMP/start-qwen.sh"
       - name: External artist directs seven substantial designs before mesh construction
+        if: env.ARTIST_RUN == '0'
         run: python3 tools/art-rd/valoria_family_v2_1_qwen_art_director.py
       - name: Preserve real artistic inference separately before production
+        if: env.ARTIST_RUN == '0'
         uses: actions/upload-artifact@v4
         with:
           name: valoria-family-quality-genuine-artist-directions
           path: art-source/valoria/production/asset-family-v2/qwen-family-quality-*.json
+      - name: Reuse exact successful artistic decisions for safe workshop repair
+        if: env.ARTIST_RUN != '0'
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-quality-genuine-artist-directions
+          run-id: ${{ env.ARTIST_RUN }}
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - name: Validate genuine complete external plans before Blender
+        run: |
+          python3 - <<'PY'
+          import json
+          p=json.load(open('art-source/valoria/production/asset-family-v2/qwen-family-quality-directions.json'))
+          assert len(p['plans'])==7 and not p.get('TEST_FIXTURE_NON_AUTHORITATIVE')
+          PY
       - name: Install exact Blender workshop
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-pil python3-numpy
           curl -fL --retry 2 https://download.blender.org/release/Blender4.3/blender-4.3.2-linux-x64.tar.xz -o "$RUNNER_TEMP/blender.tar.xz"
           tar -xf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/blender-4.3.2-linux-x64" >> "$GITHUB_PATH"

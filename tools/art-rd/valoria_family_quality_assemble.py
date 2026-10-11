@@ -33,9 +33,19 @@ for side in (-1,1):
  part('wall_corner',(side*(gate_edge+13.8),0,0),0 if side==1 else math.pi)
  part('watchtower',(side*(gate_edge+13.8),4.9,0))
 # Repeat original-width modules without anisotropic geometry scaling.
-for i in range(5):part('cliff_rocks',(-24+i*12,1.9,-.06))
+for i in range(5):part('cliff_rocks',(-24+i*12,-6,-.06))
 for i in range(2):part('stone_path_platform',(0,-4+i*8,.005))
 part('defensive_props',(0,7.5,0))
+# QA-only backing ground supports the path and fortifications behind the cliff.
+# It is explicitly context, not an eighth family asset or a game terrain claim.
+soil=next(m for m in bpy.data.materials if m.name.startswith('Valoria family soil portable'))
+verts=[(-30,-4,-.5),(30,-4,-.5),(30,12,-.5),(-30,12,-.5),(-30,-4,.005),(30,-4,.005),(30,12,.005),(-30,12,.005)]
+data=bpy.data.meshes.new('QA ground context');data.from_pydata(verts,[],[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]);data.update();data.materials.append(soil)
+ground=bpy.data.objects.new('QA_CONTEXT_ONLY - ground support, excluded from asset delivery',data);sc=bpy.context.scene;sc.collection.objects.link(ground)
+uv=data.uv_layers.new(name='UVMap')
+for poly in data.polygons:
+ for li in poly.loop_indices:
+  v=data.vertices[data.loops[li].vertex_index].co;uv.data[li].uv=(v.x*.3,v.y*.3)
 sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=int(os.environ.get('ELDORIA_FAMILY_SAMPLES','48'));sc.cycles.use_denoising=True
 sc.render.resolution_x=1600;sc.render.resolution_y=1000;sc.render.resolution_percentage=100;sc.render.image_settings.file_format='PNG'
 sc.view_settings.view_transform='AgX';sc.view_settings.look='None'
@@ -47,4 +57,4 @@ for view,pos,target,scale in [('hero',(32,-47,30),(0,0,1),57),('strategic',(35,-
  ob.location=pos;ob.rotation_euler=(Vector(target)-ob.location).to_track_quat('-Z','Y').to_euler();cam.ortho_scale=scale;sc.render.filepath=str(BASE/('assembly-'+view+'.png'));bpy.ops.render.render(write_still=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'family-assembly.blend'))
 assert hashlib.sha256(GATE.read_bytes()).hexdigest()==gate_hash
-(BASE/'assembly-evidence.json').write_text(json.dumps({'frozen_gate_sha256':gate_hash,'exact_glb_reimports':records,'no_anisotropic_scaling':True,'art_pass':False,'unity_pass':False,'scope':'offline modular family QA, not game integration'},indent=2))
+(BASE/'assembly-evidence.json').write_text(json.dumps({'frozen_gate_sha256':gate_hash,'exact_glb_reimports':records,'no_anisotropic_scaling':True,'ground_support':'explicit QA-only context, not a delivered family member','art_pass':False,'unity_pass':False,'scope':'offline modular family QA, not game integration'},indent=2))
