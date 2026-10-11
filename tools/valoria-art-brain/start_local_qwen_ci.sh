@@ -7,7 +7,7 @@ export OLLAMA_MODELS="${RUNNER_TEMP:-/tmp}/eldoria-ollama-models"
 export OLLAMA_NUM_PARALLEL=1
 export OLLAMA_MAX_LOADED_MODELS=1
 export OLLAMA_KEEP_ALIVE=0
-MODEL="${ELDORIA_VISION_MODEL:-qwen3-vl:2b}"
+MODEL="${ELDORIA_VISION_MODEL:-qwen2.5vl:3b}"
 mkdir -p "$OLLAMA_MODELS"
 if ! command -v ollama >/dev/null 2>&1; then
   curl -fsSL https://ollama.com/install.sh -o "${RUNNER_TEMP:-/tmp}/ollama-install.sh"
@@ -27,7 +27,7 @@ python3 - <<'PY'
 import base64,json,urllib.request
 # A local 1x1 white PNG: probe API/model capacity, not model quality.
 png=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/iFEAAAAASUVORK5CYII=")
-p={'model':'qwen3-vl:2b','stream':False,'think':False,'messages':[{'role':'user','content':'Describe the image in three words.', 'images':[base64.b64encode(png).decode()]}], 'options':{'num_predict':600,'num_ctx':2048}}
+p={'model':'qwen2.5vl:3b','stream':False,'think':False,'messages':[{'role':'user','content':'Describe the image in three words.', 'images':[base64.b64encode(png).decode()]}], 'options':{'num_predict':180,'num_ctx':2048}}
 req=urllib.request.Request("http://127.0.0.1:11434/api/chat",data=json.dumps(p).encode(),headers={'Content-Type':'application/json'})
 with urllib.request.urlopen(req,timeout=360) as response: d=json.load(response)
 assert d.get('message',{}).get('content'),d
