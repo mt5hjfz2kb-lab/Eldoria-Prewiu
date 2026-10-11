@@ -195,8 +195,9 @@ def fittings():
  assert len(originals)>=12,'V3 authored banner and flame detail missing'
  copied=0
  for source in originals:
-  original_world=source.matrix_world.translation.copy()
-  sign=-1 if original_world.x<0 else 1
+  world_verts=[source.matrix_world@v.co for v in source.data.vertices]
+  centroid_x=sum(p.x for p in world_verts)/len(world_verts)
+  sign=-1 if centroid_x<0 else 1
   is_banner=source.name.startswith(('Royal blue','Banner'))
   part=source.copy();part.data=source.data.copy()
   bpy.context.scene.collection.objects.link(part)
