@@ -61,6 +61,27 @@
       },
       "branch": "prototype/valoria-bastion1-no-sharp-20261010",
       "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
+    },
+    {
+      "id": "valoria-studio-recovery-rocks-v1-20261011",
+      "owner": "work-art-studio-recovery-20261011",
+      "title": "Isolated recovery of local-vision decision loop and geological donor production",
+      "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+      "scope": [
+        "tools/art-studio-recovery/**",
+        "pipeline/art-studio-recovery-v1.json",
+        "art-source/valoria/production/studio-rocks-v1/**",
+        ".github/workflows/art-studio-recovery-v1.yml"
+      ],
+      "resources": [
+        "isolated-linux-blender"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-11T08:48:01.688422+00:00",
+      "base_main_sha": "65f28094b2757021148dfde8f1fbb9dc672e6169",
+      "phase": "Recover existing tool capabilities; independent Blender rock study; no shared Windows use",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-authorized isolated art recovery with real before/after and retained visual rejection until inspection"
     }
   ],
   "history": [
@@ -417,7 +438,7 @@
       "claimed_at": "2026-10-07T19:18:00Z",
       "base_main_sha": "724ca7ad097b05bc06d618f9d559357a45ee60ec",
       "status": "cancelled",
-      "phase": "OWNER STOP — NO FURTHER EXECUTION",
+      "phase": "OWNER STOP \u2014 NO FURTHER EXECUTION",
       "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions remain in scope: canonical fresh-start reset and art-integrated real building-level indicators. Owner/manual review is NOT a closure dependency; close autonomously when current-head production, published WebGL, device-equivalent visual/interaction evidence, persistence and required parity gates pass. Later concrete owner feedback may revoke/reopen the PASS.",
       "paid_credits": 0,
       "art_production_routing": "required",
@@ -923,7 +944,7 @@
     },
     {
       "id": "valoria-first-playable-city-slice-v1",
-      "title": "VALORIA PRODUCTION PHASE v1 — FIRST PLAYABLE CITY SLICE",
+      "title": "VALORIA PRODUCTION PHASE v1 \u2014 FIRST PLAYABLE CITY SLICE",
       "owner": "chat-first-playable-city-slice",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
@@ -942,8 +963,8 @@
       "base_main_sha": "b182a3299212af294dced0a6838e0cda0f943042",
       "status": "completed",
       "phase": "TECH/INTERACTION RETAINED; PRIOR VISUAL PASS REVOKED",
-      "dependency": "Consumes locked VALORIA_PRODUCTION_RECIPE_V1 and certified Gates 1–5 only. No new visual R&D, paid credits or commercial assets.",
-      "next": "Build and validate Bridge → Lower Gate → Main Road → Central Stair → Upper Gate/Walls/Bastion as one playable Unity slice with SHARP visual authority, real geometry, semantic anchors, bounded camera and comparative evidence.",
+      "dependency": "Consumes locked VALORIA_PRODUCTION_RECIPE_V1 and certified Gates 1\u20135 only. No new visual R&D, paid credits or commercial assets.",
+      "next": "Build and validate Bridge \u2192 Lower Gate \u2192 Main Road \u2192 Central Stair \u2192 Upper Gate/Walls/Bastion as one playable Unity slice with SHARP visual authority, real geometry, semantic anchors, bounded camera and comparative evidence.",
       "blocker": null,
       "paid_credits": 0,
       "completed_at": "2026-10-06T13:31:00Z",
@@ -1012,14 +1033,14 @@
       "claimed_at": "2026-10-06T10:59:00Z",
       "base_main_sha": "2f599152d2f96f08ede1dddc876af2c3c1817729",
       "status": "completed",
-      "phase": "CONVERGENCE CLOSED / GATES 1–5 PASS / PRODUCTION RECIPE LOCKED",
+      "phase": "CONVERGENCE CLOSED / GATES 1\u20135 PASS / PRODUCTION RECIPE LOCKED",
       "dependency": "SOLE ACTIVE VISUAL PRODUCTION AUTHORITY. Independent visual-generator R&D is frozen. Existing in-flight legacy runs may finish naturally, but no new exploratory lanes are authorized unless this workstream documents a production blocker and explicitly reopens one.",
-      "next": "Lock the repeatable Valoria production recipe from Gates 1–5: canonical inputs, SHARP 600K visual layer, approved real geometry, interaction substrate, appearance projection/material path, validation thresholds and known fallback classes. No new R&D or method change.",
+      "next": "Lock the repeatable Valoria production recipe from Gates 1\u20135: canonical inputs, SHARP 600K visual layer, approved real geometry, interaction substrate, appearance projection/material path, validation thresholds and known fallback classes. No new R&D or method change.",
       "last_pass": {
         "run_id": 37456541286,
         "artifact_id": 11409359136,
         "source_artifact_id": 11408853949,
-        "verdict": "PRODUCTION BASELINE PASS — CLEAN SHARP 600K / UNITY 6 URP / BOUNDED CAMERA"
+        "verdict": "PRODUCTION BASELINE PASS \u2014 CLEAN SHARP 600K / UNITY 6 URP / BOUNDED CAMERA"
       },
       "result_gate_1b": {
         "run_id": 37455916168,
@@ -1071,7 +1092,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -1082,7 +1103,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
@@ -1158,7 +1179,7 @@
       "claimed_at": "2026-10-06T11:30:00Z",
       "base_main_sha": "3d63d0986a6680f4390b74b3a15a42ec05befe60",
       "status": "stopped_by_convergence",
-      "phase": "IMPLEMENT DIAGNOSIS → KNOWN FALLBACK ROUTING",
+      "phase": "IMPLEMENT DIAGNOSIS \u2192 KNOWN FALLBACK ROUTING",
       "dependency": "Must not mutate SHARP Unity proof files, art-production-request.json, Unity packages, current convergence evidence, or dispatch heavy/paid work. Uses only already-classified R&D evidence and zero-spend routing.",
       "next": "Do not resume unless the central convergence workstream explicitly reopens it.",
       "completed_at": "2026-10-06T11:29:00Z",
@@ -1271,7 +1292,7 @@
       "claimed_at": "2026-10-06T10:25:30Z",
       "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
       "status": "handoff",
-      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / SANITATION FIX REQUIRED",
+      "phase": "SHARP 3D GAUSSIAN SCENE \u2192 UNITY 6 URP INTEGRATION PROOF / SANITATION FIX REQUIRED",
       "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
       "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
       "run_id": 37453051254,
@@ -1448,7 +1469,7 @@
       "status": "completed",
       "phase": "ZERO-SPEND CAMERA-CONTROLLED VIEW-SYNTHESIS PROOF",
       "dependency": "Isolated R&D only. Must not touch SHARP Unity, production Unity, Lower Gate production, commercial acquisition or paid credits. This proof is visual/view-synthesis only and cannot be promoted without runtime/gameplay evidence.",
-      "next": "Reuse only as evidence that target appearance can survive bounded camera motion. Production priority remains SHARP PLY → Unity 6 URP plus real 3D interaction geometry.",
+      "next": "Reuse only as evidence that target appearance can survive bounded camera motion. Production priority remains SHARP PLY \u2192 Unity 6 URP plus real 3D interaction geometry.",
       "completed_at": "2026-10-06T10:46:54Z",
       "run_id": 37451749211,
       "artifact_id": 11405329846,
@@ -1613,7 +1634,7 @@
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "cb7d5d3ca2aad11c3aceb9f48f896be0ea8b1edd",
       "status": "completed",
-      "phase": "SEMANTIC 2.5D CAMERA-FIRST — FINAL FAIL / REJECTED",
+      "phase": "SEMANTIC 2.5D CAMERA-FIRST \u2014 FINAL FAIL / REJECTED",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
       "next": "STOP. Await explicit owner selection of a genuinely different visual production method; do not resume camera-first semantic card iterations.",
       "final_bounded_run_id": 37368890740,
@@ -1621,7 +1642,7 @@
       "strongest_bounded_run_id": 37368033376,
       "strongest_bounded_artifact_id": 11368942273,
       "resumed_at": "2026-10-06T08:00:00Z",
-      "authorization": "Owner explicitly authorizes professional mesh reconstruction of only the Golden crop visible primary forms: Lower Gate, Bridge, continuous local cliff/ground/shore, and local vegetation source. Preserve canonical camera/composition, macro Gate/Bridge positions, Gate→Road→Stair→Bastion axis, gameplay topology, parcels, hotspots, Road, Stair, Bastion, platform and all families outside Golden crop. No Unity before isolated >=4/5 source gate; no Tripo; no cosmetic procedural continuation.",
+      "authorization": "Owner explicitly authorizes professional mesh reconstruction of only the Golden crop visible primary forms: Lower Gate, Bridge, continuous local cliff/ground/shore, and local vegetation source. Preserve canonical camera/composition, macro Gate/Bridge positions, Gate\u2192Road\u2192Stair\u2192Bastion axis, gameplay topology, parcels, hotspots, Road, Stair, Bastion, platform and all families outside Golden crop. No Unity before isolated >=4/5 source gate; no Tripo; no cosmetic procedural continuation.",
       "blocked_at": "2026-10-05T22:47:00Z",
       "blocker": null,
       "integrated_source01_run_id": 37370017454,
@@ -1629,7 +1650,7 @@
       "integrated_source02_authoring_run_id": 37370511627,
       "integrated_source02_evidence_run_id": 37370727523,
       "integrated_source02_artifact_id": 11369951282,
-      "source_visual_gate": "FAIL — Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
+      "source_visual_gate": "FAIL \u2014 Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
       "unity_integration": "AUTHORIZED ONLY AS ISOLATED 2.5D DEPTH-SHELL PROOF",
       "credits_spent": 0,
       "source01_evidence_status": "NOT PRODUCED / NOT A VALID VISUAL ITERATION",
@@ -1641,7 +1662,7 @@
       "professional_reconstruction_artifact_id": 11376050764,
       "professional_reconstruction_evidence_commit": "eb34d8238b39887011ae25b121b42c3f973aa760",
       "professional_reconstruction_visual_gate_commit": "1e548e25d1616e6e046437a43f31bbec3228d649",
-      "professional_reconstruction_visual_gate": "FAIL — Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
+      "professional_reconstruction_visual_gate": "FAIL \u2014 Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
       "pipeline_stabilization": "Portable Blender cache + sparse checkout. Corrupted Pages workflow restored. Run 37381915933 completed SUCCESS end-to-end.",
       "professional_reconstruction_gate_commit": "1e548e25d1616e6e046437a43f31bbec3228d649",
       "professional_reconstruction_scores": {
@@ -1693,7 +1714,7 @@
       "status": "completed",
       "phase": "VISUAL FAIL / METHOD PIVOT",
       "dependency": "Preserve camera, target composition, gameplay axis, Bridge/Lower Gate/Road/Bastion/Sawmill/Camp positions, global platform, gameplay and hotspots. Local presentation-only uplift in Bridge -> Lower Gate -> Road hero test zone. No Props + Background. No Tripo; 0 credits.",
-      "next": "VALORIA GOLDEN LOOKDEV SLICE v1 — owner-authorized. Prove one tiny reference-matched lookdev slice with real surface authoring + lighting before any further broad scene production.",
+      "next": "VALORIA GOLDEN LOOKDEV SLICE v1 \u2014 owner-authorized. Prove one tiny reference-matched lookdev slice with real surface authoring + lighting before any further broad scene production.",
       "completed_at": "2026-10-05T18:15:00Z",
       "result": "FIVE ITERATIONS: TECH PASS, PREMIUM VISUAL FAIL. Lighting + flat-color/contact-patch tuning cannot reach the canonical premium target. Stop iterative full-frame cosmetic tuning.",
       "final_run_id": 37353878139,
@@ -1774,7 +1795,7 @@
       "cumulative_artifact_id": 11358071612,
       "bastion1_initial_run_id": 37339834245,
       "bastion1_initial_artifact_id": 11357369035,
-      "next": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1 — owner-authorized in current task; not yet claimed by this cleanup commit."
+      "next": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1 \u2014 owner-authorized in current task; not yet claimed by this cleanup commit."
     },
     {
       "id": "valoria-structural-quality-bar-review-v1",
@@ -1802,7 +1823,7 @@
       "current_frame_run_id": 37328467482,
       "current_frame_artifact_id": 11352609605,
       "controlled_uplift_recommendation": "Rock/Terrain Source09: localized dark upper-shelf seam beneath Bastion only; no wholesale family reopening/redesign.",
-      "next": "Owner authorization required. Recommended: controlled Rock/Terrain upper-shelf seam uplift, then Cabin/Sawmill + Camp → Vegetation + Water/Shore → Props + Background → Lighting/presentation."
+      "next": "Owner authorization required. Recommended: controlled Rock/Terrain upper-shelf seam uplift, then Cabin/Sawmill + Camp \u2192 Vegetation + Water/Shore \u2192 Props + Background \u2192 Lighting/presentation."
     },
     {
       "id": "valoria-bastion-family-v1",
@@ -1832,7 +1853,7 @@
       "base_main_sha": "e1093da38df1d01d7045a5e63f4f01b77bfebcd2",
       "status": "completed",
       "phase": "PRODUCTION FAMILY PASS / CLOSED",
-      "dependency": "Bastion only. Source01–04 strict hero reviews exposed a generic-fortress ceiling. Source05 may use the already-certified historical Hero Bastion ONLY as zero-credit geometric relief donor inside the current Keep envelope. No donor macro silhouette, roofs, rock base, camera/composition movement, adjacent-family edits or Tripo.",
+      "dependency": "Bastion only. Source01\u201304 strict hero reviews exposed a generic-fortress ceiling. Source05 may use the already-certified historical Hero Bastion ONLY as zero-credit geometric relief donor inside the current Keep envelope. No donor macro silhouette, roofs, rock base, camera/composition movement, adjacent-family edits or Tripo.",
       "completed_at": "2026-10-05T16:57:00+02:00",
       "result": "PRODUCTION FAMILY PASS / CLOSED / SOURCE08 AUTHORITATIVE / HERO QUALITY BAR PASS / 0 TRIPO",
       "result_doc": "docs/VALORIA_BASTION_FAMILY_V1.md",
@@ -2147,7 +2168,7 @@
       "status": "completed",
       "claimed_at": "2026-10-04T18:09:00Z",
       "base_main_sha": "5e1470422137d3d3e6013edfa885586849f650d4",
-      "dependency": "One strong structural-frame intervention. Reauthor only the 2–4 dominant grey support masses into integrated civic/retaining architecture linking Hero Bastion to upper/lower city. Preserve promoted lower-city groups, Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, terrain/ground dressing and gameplay. Blender allowed immediately when existing certified sources cannot achieve the required authored silhouette. Zero Tripo credits unless owner separately authorizes.",
+      "dependency": "One strong structural-frame intervention. Reauthor only the 2\u20134 dominant grey support masses into integrated civic/retaining architecture linking Hero Bastion to upper/lower city. Preserve promoted lower-city groups, Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, terrain/ground dressing and gameplay. Blender allowed immediately when existing certified sources cannot achieve the required authored silhouette. Zero Tripo credits unless owner separately authorizes.",
       "completed_at": "2026-10-04T18:26:00Z",
       "planner_run_id": 37223687136,
       "blender_source_run_id": 37223931751,
@@ -2184,7 +2205,7 @@
       "status": "completed",
       "claimed_at": "2026-10-04T17:36:00Z",
       "base_main_sha": "066badef6b6e883dde5ff0a8755dc667b0c7de46",
-      "dependency": "One structural, zero-credit lower-city massing pass against the canonical reference image. Recompose the dominant orange-roof/frontage band into 2–3 differentiated urban groups using existing rich/authored sources first. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, routes/parcels/reserves and Final Look. No camera/ground/support-form reopen, no Forja/Hospital/Cantera, no Tripo spend.",
+      "dependency": "One structural, zero-credit lower-city massing pass against the canonical reference image. Recompose the dominant orange-roof/frontage band into 2\u20133 differentiated urban groups using existing rich/authored sources first. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, routes/parcels/reserves and Final Look. No camera/ground/support-form reopen, no Forja/Hospital/Cantera, no Tripo spend.",
       "completed_at": "2026-10-04T17:55:00Z",
       "planner_run_id": 37221347279,
       "run_id": 37221732105,
@@ -2232,7 +2253,7 @@
       "result_commit": "8b1e4b085053b8c258bd21165f296116776fbe9e",
       "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
       "result_doc": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
-      "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1; dominant visible frontage as 2–3 differentiated groups. Restore canonical reference binary before direct image-to-image benchmark claims.",
+      "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1; dominant visible frontage as 2\u20133 differentiated groups. Restore canonical reference binary before direct image-to-image benchmark claims.",
       "confirmation_run_id": 37219883054,
       "confirmation_artifact_id": 11309782754
     },
@@ -2826,7 +2847,7 @@
     },
     {
       "id": "valoria-production-art-system-reset-governance-v1",
-      "title": "Valoria Production Art System Reset v1 — Governance Foundation",
+      "title": "Valoria Production Art System Reset v1 \u2014 Governance Foundation",
       "owner": "chat-valoria-production-art-system-reset-v1",
       "scope": [
         "docs/VALORIA_VISUAL_BIBLE.md",
@@ -2948,7 +2969,7 @@
     },
     {
       "id": "valoria-tripo-selective-replacement-proof-v1-resume",
-      "title": "Valoria Tripo Selective Replacement Proof v1 — resume",
+      "title": "Valoria Tripo Selective Replacement Proof v1 \u2014 resume",
       "owner": "chat-resume-after-work-credit-limit",
       "scope": [
         "pipeline/tripo-studio-request.json",
@@ -3364,7 +3385,7 @@
       "status": "completed",
       "claimed_at": "2026-10-03T15:39:00Z",
       "base_main_sha": "ecac491e734329171c8b0cbf5d329e379a577020",
-      "dependency": "New owner-approved compositional reference: 75–85% buildable flat/very-gentle city plane; Hero Bastion remains the only major elevation; clear Bastion→plaza→city axis; continuous outer wall; sparse functional buildings; reduced background; preserve gameplay/hotspots/colliders/cameras. No mountain-rescue, no district-by-district terraces, no scan plates/photographic foreground/voxel/fused terrain, no Tripo.",
+      "dependency": "New owner-approved compositional reference: 75\u201385% buildable flat/very-gentle city plane; Hero Bastion remains the only major elevation; clear Bastion\u2192plaza\u2192city axis; continuous outer wall; sparse functional buildings; reduced background; preserve gameplay/hotspots/colliders/cameras. No mountain-rescue, no district-by-district terraces, no scan plates/photographic foreground/voxel/fused terrain, no Tripo.",
       "completed_at": "2026-10-03T15:57:00Z",
       "result_commit": "93692caa1c17ee87eb880fc640d27584a3326d64",
       "run_id": 37134976736,
@@ -3374,7 +3395,7 @@
     },
     {
       "id": "valoria-shell-v2-worldframe-district-cells",
-      "title": "Valoria Visual Shell v2 — World Frame + district terrace cells",
+      "title": "Valoria Visual Shell v2 \u2014 World Frame + district terrace cells",
       "owner": "chat-valoria-shell-v2-worldframe-district-cells-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaDistrictTerraceCellsV1.cs",
@@ -3400,7 +3421,7 @@
     },
     {
       "id": "valoria-shell-v2-volumetric-landform",
-      "title": "Valoria Visual Shell v2 — volumetric contour-loft landform",
+      "title": "Valoria Visual Shell v2 \u2014 volumetric contour-loft landform",
       "owner": "chat-valoria-shell-v2-volumetric-landform-20261003",
       "scope": [
         "tools/valoria-shell-v2-volumetric-landform/**",
@@ -3427,7 +3448,7 @@
     },
     {
       "id": "valoria-shell-v2-bastion-continuity",
-      "title": "Valoria Visual Shell v2 — fixed-camera authored DCC set",
+      "title": "Valoria Visual Shell v2 \u2014 fixed-camera authored DCC set",
       "owner": "chat-valoria-shell-v2-bastion-continuity-20261003",
       "scope": [
         "tools/valoria-shell-v2-bastion-continuity/**",
@@ -3455,7 +3476,7 @@
     },
     {
       "id": "valoria-shell-v2-authored-environment",
-      "title": "Valoria Visual Shell v2 — coherent photogrammetry midground",
+      "title": "Valoria Visual Shell v2 \u2014 coherent photogrammetry midground",
       "owner": "chat-valoria-shell-v2-authored-environment-continuation-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
@@ -3487,12 +3508,12 @@
       "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
       "dependency": "Fused authored transition e88d821 / run 37126944625 TECH PASS / VISUAL FAIL: manifold base improved continuity but remained a floating asset island and lower-city quality lagged Hero Bastion. Historical Slavic architecture proof is coherent but visibly too low-detail/stylized. Directed research selects zero-cost CC0 photogrammetric cliff/mountainside models as a materially different hero-quality midground shell, architecture retained and buried into it; no Tripo.",
       "completed_at": "2026-10-03T14:24:00Z",
-      "result": "HANDOFF after two photogrammetry attempts. Run 37127805549 TECH PASS / VISUAL FAIL: high-detail scan rocks remained separate floating plates. Run 37129227661 TECH PASS / VISUAL FAIL: territorial-scale CC0 scans improved intrinsic geology but still produced visible scan boundaries/terrain-sheet edges and did not solve Bastion→city continuity. Photogrammetry placement family closed under stop rule; no production promotion, 0 Tripo credits.",
+      "result": "HANDOFF after two photogrammetry attempts. Run 37127805549 TECH PASS / VISUAL FAIL: high-detail scan rocks remained separate floating plates. Run 37129227661 TECH PASS / VISUAL FAIL: territorial-scale CC0 scans improved intrinsic geology but still produced visible scan boundaries/terrain-sheet edges and did not solve Bastion\u2192city continuity. Photogrammetry placement family closed under stop rule; no production promotion, 0 Tripo credits.",
       "next": "Switch method: author a continuous Hero-Bastion-to-city landform macroform first, using existing real rock geometry only as donor/projection detail via Blender shrinkwrap/boolean; preserve official cameras/gameplay and validate 19/12/9/mobile."
     },
     {
       "id": "valoria-shell-v2-composition-frame",
-      "title": "Valoria Visual Shell v2 — composition-first complete frame",
+      "title": "Valoria Visual Shell v2 \u2014 composition-first complete frame",
       "owner": "chat-valoria-shell-v2-composition-frame-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
@@ -3530,7 +3551,7 @@
     },
     {
       "id": "valoria-shell-v2-blender-transition",
-      "title": "Valoria Visual Shell v2 — authored Blender rock/terrace transition",
+      "title": "Valoria Visual Shell v2 \u2014 authored Blender rock/terrace transition",
       "owner": "chat-valoria-shell-v2-blender-transition-20261003",
       "scope": [
         "tools/valoria-shell-v2/**",
@@ -3571,7 +3592,7 @@
     },
     {
       "id": "valoria-visual-shell-v2-native-geometry",
-      "title": "Valoria Visual Shell v2 — native terrain/architecture full-frame proof",
+      "title": "Valoria Visual Shell v2 \u2014 native terrain/architecture full-frame proof",
       "owner": "chat-valoria-visual-shell-v2-native-geometry-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2NativeGeometry.cs",
@@ -3627,7 +3648,7 @@
     },
     {
       "id": "valoria-visual-shell-v2-continuous-terrain",
-      "title": "Valoria Visual Shell v2 — continuous terrain full-frame proof",
+      "title": "Valoria Visual Shell v2 \u2014 continuous terrain full-frame proof",
       "owner": "chat-valoria-visual-shell-v2-resume-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2.cs",
@@ -3649,7 +3670,7 @@
       "status": "completed",
       "claimed_at": "2026-10-03T11:40:32.047Z",
       "base_main_sha": "007985fae42d560de8cae49f42f1ba1f65579055",
-      "dependency": "Experimental continuous landform visual-only. Existing projected-matte method 1–3 visual fail; no production promotion. Preserve gameplay/hotspots/colliders/routes/camera, zero Tripo.",
+      "dependency": "Experimental continuous landform visual-only. Existing projected-matte method 1\u20133 visual fail; no production promotion. Preserve gameplay/hotspots/colliders/routes/camera, zero Tripo.",
       "completed_at": "2026-10-03T11:51:07.618Z",
       "result_commit": "7b913fa8c8ce72ee1ccf310c242797059309cdc7",
       "run_ids": [
@@ -3665,7 +3686,7 @@
     },
     {
       "id": "valoria-visual-shell-v2",
-      "title": "Valoria Visual Shell v2 — isolated complete-frame proof",
+      "title": "Valoria Visual Shell v2 \u2014 isolated complete-frame proof",
       "owner": "chat-valoria-visual-shell-v2",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2.cs",
@@ -3695,7 +3716,7 @@
     },
     {
       "id": "valoria-full-frame-convergence-iteration-1",
-      "title": "Valoria Full-Frame Convergence Iterations 1–N",
+      "title": "Valoria Full-Frame Convergence Iterations 1\u2013N",
       "owner": "chat-valoria-full-frame-convergence-iteration-1",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameConvergenceIteration1.cs",
@@ -4491,7 +4512,7 @@
       "unity_run_id": 37334848469,
       "unity_artifact_id": 11356615175,
       "gameplay_regression": "PASS",
-      "visual_gate": "PASS — v1b removes the prior technical/pillar read and breaks the contact into geological facets without changing geometry",
+      "visual_gate": "PASS \u2014 v1b removes the prior technical/pillar read and breaks the contact into geological facets without changing geometry",
       "credits_spent": 0,
       "next": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1 may be claimed only by explicit owner instruction."
     },
