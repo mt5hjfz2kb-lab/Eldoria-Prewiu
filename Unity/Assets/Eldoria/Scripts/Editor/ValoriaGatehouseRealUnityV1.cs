@@ -106,7 +106,14 @@ namespace Eldoria.EditorTools
             var wood = MaterialOf("Pine trunk",new Color(.23f,.16f,.11f));
             var undergrowth = TexturedMaterial("Undergrowth",new Color(.52f,.75f,.43f),"vegetation",2f);
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
-            BuildPlateau(world.transform,grass,rock);
+            var authoredPath="Assets/Eldoria/ArtTests/ValoriaGatehouseV1/valoria_visual_slice_environment_v2.glb";
+            var environmentImport=new GltfImport(null,new UninterruptedDeferAgent());
+            if(!File.Exists(Path.GetFullPath(authoredPath)) || !await environmentImport.LoadFile(Path.GetFullPath(authoredPath)))
+                throw new Exception("Blender authored landscape V2 missing or invalid");
+            if(!await environmentImport.InstantiateMainSceneAsync(world.transform))
+                throw new Exception("Blender landscape GLB could not be instantiated");
+            if(world.GetComponentsInChildren<Renderer>().Length==0)
+                throw new Exception("Blender landscape has no renderers");
             RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=85f; RenderSettings.fogEndDistance=180f;
             // Reuse authored fortification at the upper defensive terrace.
             var upper=Object.Instantiate(root);
@@ -146,39 +153,6 @@ namespace Eldoria.EditorTools
                 paving.transform.localScale=new Vector3(3.0f,.09f,.72f);
                 paving.GetComponent<Renderer>().sharedMaterial=pathMat;
                 Object.DestroyImmediate(paving.GetComponent<Collider>());
-            }
-            var rand=new System.Random(93011);
-            for(int i=0;i<85;i++){
-                float a=(float)rand.NextDouble()*Mathf.PI*2f;
-                float r=12f+(float)rand.NextDouble()*31f;
-                float x=Mathf.Cos(a)*r, z=Mathf.Sin(a)*r;
-                if(Mathf.Abs(x)<5f && z>-40f && z<28f)continue;
-                if(Mathf.Abs(x)>36f || Mathf.Abs(z)>36f)continue;
-                float h=2.0f+(float)rand.NextDouble()*4.7f;
-                MakePine(world.transform,new Vector3(x,HeightAt(x,z),z),h,wood,pine);
-            }
-            for(int i=0;i<52;i++){
-                float angle=(float)rand.NextDouble()*Mathf.PI*2f;
-                float r=36f+(float)rand.NextDouble()*4f;
-                float bx=Mathf.Cos(angle)*r,bz=Mathf.Sin(angle)*r;
-                var boulder=GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                boulder.name="Cliff talus and weathered boulder";
-                boulder.transform.SetParent(world.transform);
-                boulder.transform.position=new Vector3(bx,HeightAt(bx,bz)-.4f,bz);
-                boulder.transform.localScale=new Vector3(1.1f+(float)rand.NextDouble()*2.1f,.7f+(float)rand.NextDouble()*1.7f,.9f+(float)rand.NextDouble()*1.7f);
-                boulder.GetComponent<Renderer>().sharedMaterial=rock;
-                Object.DestroyImmediate(boulder.GetComponent<Collider>());
-            }
-            for(int i=0;i<110;i++){
-                float x=(float)(rand.NextDouble()*72-36),z=(float)(rand.NextDouble()*72-36);
-                if(Mathf.Abs(x)<4f&&z>-40f&&z<30f)continue;
-                var brush=GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                brush.name="Heather and brush";
-                brush.transform.SetParent(world.transform);
-                brush.transform.position=new Vector3(x,HeightAt(x,z)+.2f,z);
-                brush.transform.localScale=new Vector3(.55f+.7f*(float)rand.NextDouble(),.35f,.6f);
-                brush.GetComponent<Renderer>().sharedMaterial=undergrowth;
-                Object.DestroyImmediate(brush.GetComponent<Collider>());
             }
             camera.transform.position=new Vector3(44f,34f,-57f);
             camera.transform.LookAt(new Vector3(0f,0f,0f));
