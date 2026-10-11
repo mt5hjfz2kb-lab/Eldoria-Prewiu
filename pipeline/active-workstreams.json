@@ -59,26 +59,6 @@
       },
       "branch": "prototype/valoria-bastion1-no-sharp-20261010",
       "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
-    },
-    {
-      "id": "valoria-first-hero-asset-v1-20261011",
-      "owner": "chat-first-hero-asset-work",
-      "branch": "art/valoria-first-hero-asset-v1-20261011",
-      "scope": [
-        "tools/art-rd/valoria_first_hero_asset.py",
-        "art-source/valoria/production/first-hero-gate-v1/**",
-        "docs/evidence/valoria-first-hero-asset-v1/**",
-        ".github/workflows/valoria-first-hero-asset.yml"
-      ],
-      "resources": [
-        "isolated-linux-blender"
-      ],
-      "status": "active",
-      "paid_credits": 0,
-      "phase": "Observe exact reference and historical gates; isolated authored candidate. Does not mutate active V5 calibration or shared Unity runner.",
-      "art_production_routing": "required",
-      "claimed_at": "2026-10-11",
-      "base_main_sha": "852ea7c1fad9f3151fd6d0fd45b285153cb76d10"
     }
   ],
   "history": [
@@ -4547,6 +4527,34 @@
         "required_sentinels_missing": 0,
         "note": "GitHub-hosted architecture workflow was queued at close; direct repository-tree validation passed all configured invariants."
       }
+    },
+    {
+      "id": "valoria-first-hero-asset-v1-20261011",
+      "owner": "chat-first-hero-asset-work",
+      "branch": "art/valoria-first-hero-asset-v1-20261011",
+      "scope": [
+        "tools/art-rd/valoria_first_hero_asset.py",
+        "art-source/valoria/production/first-hero-gate-v1/**",
+        "docs/evidence/valoria-first-hero-asset-v1/**",
+        ".github/workflows/valoria-first-hero-asset.yml",
+        "tools/art-rd/first-hero-support/**",
+        "tools/art-rd/valoria_first_hero_delivery.py"
+      ],
+      "resources": [],
+      "status": "blocked",
+      "paid_credits": 0,
+      "phase": "Source complete, visually retained for Unity test; exact hosted reproduction and GLB roundtrip verified. Unity validation blocked by existing Windows resource ownership and absent local editor.",
+      "art_production_routing": "required",
+      "claimed_at": "2026-10-11",
+      "base_main_sha": "852ea7c1fad9f3151fd6d0fd45b285153cb76d10",
+      "source_commit": "9ca81653880395f13acd2ed1fc806fcd5f3a7155",
+      "asset_commit": "12a1405d4603bd144ffe2f9a559ea6c6e968d3b7",
+      "run_id": 38145882931,
+      "artifact_id": 11704772340,
+      "source_visual_decision": "retain_candidate_for_engine_test",
+      "visual_pass": false,
+      "unity_tested": false,
+      "next": "Continue this same gate with exact isolated Unity strategic/mobile captures and saved-scene reload only after the existing runner lease is released; do not regenerate architecture."
     }
   ]
 }
