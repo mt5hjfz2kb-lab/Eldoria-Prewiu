@@ -78,27 +78,60 @@ for asset,choices in allowed.items():
    h=hashlib.sha256(name.encode()).digest()
    strength=.025+(h[0]/255)*.025
    vertices=mesh.vertices
+   xs=[v.co.x for v in vertices];zs=[v.co.z for v in vertices]
+   zmin,zmax=min(zs),max(zs)
+   vertical_span=max(.01,zmax-zmin)
    for v in vertices:
     x,y,z=v.co
-    # Purposeful high points, worn lower joints, slanted masonry contact.
-    if op in ('sculpt_stone_treads','disrupt_paving_repetition'):
-     v.co.z+=strength*math.sin(x*2.3+y*1.8+int(h[1])*.02)
-     v.co.x+=strength*.35*math.sin(y*3.8)
-    elif op in ('weather_radial_ashlar','break_ashlar_cadence','chip_dressed_edges'):
-     v.co.z+=strength*math.sin(1.5*x+2.2*z+int(h[2])*.02)
-    elif op in ('taper_crown_silhouette','taper_socket_contacts','dress_miter_join'):
-     v.co.x+=strength*math.sin(z*1.8)*(1 if x>=0 else -1)
-     v.co.y+=strength*.4*math.sin(x*1.9)
-    elif op in ('relax_banner_silhouette','weather_defensive_stakes'):
-     v.co.x+=strength*math.sin(z*3.1+y*2.8)
-    else:
-     v.co.z+=strength*.42*math.sin(2.3*x+1.5*y)
+    # AI chooses a bounded, named artistic intervention. These are real
+    # shape changes to source mesh topology/cross-section in BlenderMCP,
+    # not only procedural object jitter or raster image evaluation.
+    if op=='soften_buttress_arrises':
+     taper=.11*(z-zmin)/vertical_span
+     v.co.x=x*(1-taper);v.co.y=y*(1-.55*taper)
+     v.co.z+=.025*math.sin(2.5*x+4.1*z)
+    elif op=='break_ashlar_cadence':
+     # Local irregular stone setting and chipped face relief.
+     v.co.z+=.075*math.sin(1.8*x+2.3*z+int(h[2])*.04)
+     v.co.y+=.022*math.sin(4.3*x+1.4*z)
+    elif op=='sculpt_stone_treads':
+     # Distinct worn high/low stone faces, uneven joints and rounded upper edge.
+     v.co.z+=.095*math.sin(x*2.1+y*1.6+int(h[1])*.03)
+     v.co.x+=.025*math.sin(y*3.8)
+    elif op=='disrupt_paving_repetition':
+     v.co.x+=.08*math.sin(2.0*y+int(h[1])*.031)
+     v.co.y+=.056*math.cos(2.8*x+int(h[3])*.03)
+     v.co.z+=.064*math.sin(1.6*x+1.9*y+int(h[2])*.04)
+    elif op=='relax_banner_silhouette':
+     # A real hanging cloth wave; maximum deformation 12 cm.
+     v.co.x+=.12*math.sin((z+1)*2.3+y*2.6)
+     v.co.y+=.04*math.sin(x*3.1+z*1.8)
+    elif op=='weather_defensive_stakes':
+     v.co.x+=.07*math.sin(z*3.1+y*2.8)
+     v.co.y+=.035*math.cos(z*2.1)
+     v.co.z+=.07*math.sin(x*4.1)
+    elif op=='taper_crown_silhouette':
+     v.co.x=x*(1-.085*(z-zmin)/vertical_span)
+     v.co.y=y*(1-.045*(z-zmin)/vertical_span)
+     v.co.z+=.045*math.sin(x*3.1+z*1.2)
+    elif op=='weather_radial_ashlar':
+     v.co.z+=.048*math.sin(1.5*x+2.2*z+int(h[2])*.02)
+     v.co.y+=.019*math.sin(z*3.4)
+    elif op in ('taper_socket_contacts','dress_miter_join'):
+     taper=.095*(z-zmin)/vertical_span
+     v.co.x+=taper*(1 if x>=0 else -1)
+     v.co.y+=.035*math.sin(x*2.2+z*1.8)
+    elif op in ('soften_corner_coping','chip_dressed_edges'):
+     v.co.z+=.071*math.sin(2.8*x+1.5*y+int(h[1])*.045)
+     v.co.x+=.032*math.sin(z*3.0)
+   # Substantial repair of real dressed edges; keep architectural contacts.
    mesh.update()
    for modifier in ob.modifiers:
     if modifier.type=='BEVEL':
      modifier.segments=max(2,modifier.segments)
-     modifier.width=max(.012,min(.085,modifier.width))
-   edited.append({'object':ob.name,'vertices':len(vertices)})
+     modifier.width=max(.024,min(.085,modifier.width*1.42))
+   edited.append({'object':ob.name,'vertices':len(vertices),
+                  'art_action':op,'deformation_scale_m':.095 if 'stone' in name else .11})
   assert edited,'MCP command did not change relevant artist-authored geometry'
  run_mcp(sculpt)
  sc=bpy.context.scene;cam=sc.camera
