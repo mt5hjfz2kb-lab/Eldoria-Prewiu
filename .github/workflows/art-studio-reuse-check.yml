@@ -1,0 +1,23 @@
+name: '[EXPERIMENT] Eldoria art studio reusable entrypoint smoke test'
+on:
+  push:
+    branches:
+      - art/studio-reuse-handoff-20261011
+    paths:
+      - 'tools/art-studio-reuse/**'
+      - '.github/workflows/art-studio-reuse-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reusable-entrypoint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify reusable studio source and no-spend safety contract
+        run: node tools/art-studio-reuse/prepare-task.mjs --check
+      - name: Verify reference-bound task manifest generation
+        run: |
+          node tools/art-studio-reuse/prepare-task.mjs --family rock --reference pipeline/art-studio-recovery-v1.json --camera 'fixed strategic test view' --out /tmp/eldoria-art-studio-smoke.json
+          node -e "const x=require('/tmp/eldoria-art-studio-smoke.json');if(!x.reuse_proven_pipeline||x.auto_accept||x.auto_integrate_unity||x.paid_generation_allowed||!x.reference_sha256)process.exit(1)"
