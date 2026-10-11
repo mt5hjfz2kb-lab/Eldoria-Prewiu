@@ -233,8 +233,37 @@ art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 s
 for j in range(10):
  a0=math.pi*j/10;a1=math.pi*(j+1)/10-.005
  base.arch_segment("observation_hood_voussoir",0,-.47,8.30,.45,a0,a1,.14,trim,.065)
+# FULL ART BRAIN FOCUS V7: radical square tower reinterpretation.
+# Source tower ashlar is remeshed in place, preserving original masonry and stone materials.
+# Do not apply any operation to the separate wall library.
+bpy.context.view_layer.update()
+tower_mesh_edited=0
+for ob in list(bpy.data.objects):
+ if ob.type!="MESH" or not ob.name.startswith("gate_flank_tower"):continue
+ local_from_world=ob.matrix_world.inverted()
+ for vert in ob.data.vertices:
+  pt=ob.matrix_world @ vert.co
+  cx=6.37 if pt.x>0 else -6.37
+  dx=pt.x-cx;dy=pt.y
+  radius=math.hypot(dx,dy)
+  if radius>.015:
+   # Cylindrical ashlar becomes rounded-square ashlar, no block overlay.
+   square_ratio=radius/max(abs(dx),abs(dy),.001)
+   morph=1.0+.73*(square_ratio-1.0)
+   pt.x=cx+dx*morph;pt.y=dy*morph
+  pt.z*=1.20
+  vert.co=local_from_world @ pt
+ tower_mesh_edited+=1
+# Conical blue roofs were visually rejected: retain real crenellated stone crowns.
+for ob in list(bpy.data.objects):
+ if ob.type=="MESH" and (ob.name.startswith("Valoria_pitched_watch_roof")
+  or ob.name.startswith("slate_roof_eave")
+  or ob.name.startswith("slate_lap_tile")
+  or ob.name.startswith("worn_roof_finial")):
+  bpy.data.objects.remove(ob,do_unlink=True)
+# Towers now end as fortified stone walkways; avoid floating ornaments.
 # Overwrite the art history AFTER all authored operations, just before rendering.
-art_director_geometry={"baseline":"run_38136991434","rejected_predecessors":["V2_smooth_piers","V3_minor_delta","V4_roof_on_stilts","V5_oversized_merlons"],"operations":["historical_ashlar_preserved","deep_portal_arch","engaged_buttresses","stone_chamber","reduced_profile_crown_merlons","arched_observation_slot"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+art_director_geometry={"baseline":"run_38136991434","rejected_predecessors":["V2_smooth_piers","V3_minor_delta","V4_roof_on_stilts","V5_oversized_merlons","V6_insufficient_tower_quality"],"operations":["historical_ashlar_preserved","deep_portal_arch","engaged_buttresses","stone_chamber","reduced_crown_merlons","arched_observation_slot","square_tower_mesh_reshape_and_stretch","remove_conical_roof_geometry"],"tower_meshes_modified":tower_mesh_edited,"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 # Final V6 provenance recorded above. Do not overwrite with predecessor metadata.
 
