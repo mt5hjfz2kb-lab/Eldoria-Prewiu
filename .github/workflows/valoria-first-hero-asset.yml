@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/art-rd/first-hero-support/quality_surfaces.py'
       - 'tools/art-rd/first-hero-support/quality_v2.py'
+      - 'tools/art-rd/first-hero-support/quality_v3.py'
       - 'tools/art-rd/first-hero-support/quality_board.py'
       - 'tools/art-rd/first-hero-support/verify_export.py'
       - '.github/workflows/valoria-first-hero-asset.yml'
@@ -41,11 +42,15 @@ jobs:
           blender -b -t 8 --python tools/art-rd/first-hero-support/verify_export.py > "$RUNNER_TEMP/hero-verify.log" 2>&1 || { tail -80 "$RUNNER_TEMP/hero-verify.log"; exit 1; }
           grep -q ELDORIA_HERO_GLTF_ROUNDTRIP_PASS "$RUNNER_TEMP/hero-verify.log"
           python3 tools/art-rd/first-hero-support/quality_board.py
+      - name: Produce preserved V3 candidate from editable V2
+        run: |
+          blender -b -t 8 --python tools/art-rd/first-hero-support/quality_v3.py > "$RUNNER_TEMP/hero-v3.log" 2>&1 || { tail -100 "$RUNNER_TEMP/hero-v3.log"; exit 1; }
+          grep -q ELDORIA_HERO_V3_EXPORTED "$RUNNER_TEMP/hero-v3.log"
       - name: Preserve editable source on task branch
         run: |
           git config user.name 'eldoria-art-ci'
           git config user.email 'eldoria-art-ci@users.noreply.github.com'
-          git add -f art-source/valoria/production/first-hero-gate-v1/quality-v2
+          git add -f art-source/valoria/production/first-hero-gate-v1/quality-v2 art-source/valoria/production/first-hero-gate-v1/quality-v3
           git commit -m 'art: preserve visually reauthored hero gate V2 and matched proof [skip ci]' || exit 0
           git push origin HEAD:art/valoria-first-hero-asset-v1-20261011
       - uses: actions/upload-artifact@v4
@@ -54,6 +59,8 @@ jobs:
           name: valoria-hero-gate-quality-v2
           path: |
             art-source/valoria/production/first-hero-gate-v1/quality-v2/
+            art-source/valoria/production/first-hero-gate-v1/quality-v3/
+            ${{ runner.temp }}/hero-v3.log
             ${{ runner.temp }}/hero-blender.log
             ${{ runner.temp }}/hero-verify.log
           retention-days: 30
