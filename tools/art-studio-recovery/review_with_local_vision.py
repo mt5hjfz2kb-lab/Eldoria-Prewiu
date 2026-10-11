@@ -5,6 +5,9 @@ import base64,json,urllib.request,os,sys,hashlib,io
 from PIL import Image
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'art-source/valoria/production/studio-rocks-v1'
+post='--post-mcp' in sys.argv
+report_name='qwen-post-mcp-decision' if post else 'qwen-art-decision'
+raw_name='qwen-post-mcp-raw-response' if post else 'qwen-raw-response'
 config=json.loads((ROOT/'pipeline/art-studio-recovery-v1.json').read_text())
 reference=ROOT/config['reference'];assert hashlib.sha256(reference.read_bytes()).hexdigest()==config['reference_sha256']
 images=[OUT/'before-overview.png',OUT/'after-overview.png',reference,OUT/'before-cliff.png',OUT/'after-cliff.png']
@@ -17,10 +20,10 @@ payload={'model':config['model'],'stream':False,'format':'json','messages':[{'ro
 req=urllib.request.Request(endpoint+'/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
 try:
  with urllib.request.urlopen(req,timeout=480) as response:raw=json.load(response)
- text=raw['message']['content'];(OUT/'qwen-raw-response.json').write_text(json.dumps(raw,indent=2));result=json.loads(text)
+ text=raw['message']['content'];(OUT/(raw_name+'.json')).write_text(json.dumps(raw,indent=2));result=json.loads(text)
  assert result['decision'] in ('retain_candidate','reject_candidate')
  assert result['next_action'] in ('keep_for_unity_test','bury_seams','change_donor','retain_baseline')
- result.update(model=config['model'],actual_images=[str(p.relative_to(ROOT)) for p in images],visual_pass=False,unity_tested=False,paid_services_used=False)
- (OUT/'qwen-art-decision.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2))
+ result.update(review_phase='post_mcp_correction' if post else 'pre_mcp_correction',model=config['model'],actual_images=[str(p.relative_to(ROOT)) for p in images],visual_pass=False,unity_tested=False,paid_services_used=False)
+ (OUT/(report_name+'.json')).write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2))
 except Exception as e:
- (OUT/'qwen-art-decision.json').write_text(json.dumps({'status':'unavailable_or_invalid','error':str(e),'visual_pass':False,'model':config['model']},indent=2));raise
+ (OUT/(report_name+'.json')).write_text(json.dumps({'status':'unavailable_or_invalid','error':str(e),'visual_pass':False,'model':config['model']},indent=2));raise

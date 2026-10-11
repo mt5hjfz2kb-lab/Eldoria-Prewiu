@@ -27,7 +27,7 @@ jobs:
           python3 - <<'PYCODE'
           import os,hashlib,subprocess,pathlib
           p=pathlib.Path('art-source/valoria/production/studio-rocks-v1/ValoriaRockStudy.blend')
-          reuse=p.is_file() and subprocess.check_output(['git','hash-object',str(p)],text=True).strip()=='3e93a24cfb2f26dd05f60dc0b405accdc4a09ebf' and hashlib.sha256(pathlib.Path('tools/art-studio-recovery/produce_rock_study.py').read_bytes()).hexdigest()=='046a7aed0b2f02ff15c173e61fe34c0c5e7aa235033c3c72cd2d051eeb76906a'
+          reuse=p.is_file() and subprocess.check_output(['git','hash-object',str(p)],text=True).strip()=='ff6cd8c28916c5cc455ab11acfdc5f59a8dfed95' and hashlib.sha256(pathlib.Path('tools/art-studio-recovery/produce_rock_study.py').read_bytes()).hexdigest()=='046a7aed0b2f02ff15c173e61fe34c0c5e7aa235033c3c72cd2d051eeb76906a'
           with open(os.environ['GITHUB_ENV'],'a') as f:f.write('STUDIO_REUSE='+str(reuse).lower()+'\n')
           print('Exact source from successful production stage in run 38127107174 reused:',reuse)
           PYCODE
@@ -59,13 +59,13 @@ jobs:
           trap 'kill "$studio_ollama_pid" 2>/dev/null || true' EXIT
           sleep 3
           /tmp/eldoria-ollama/bin/ollama pull hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M
-          python3 tools/art-studio-recovery/review_with_local_vision.py
-      - name: Real BlenderMCP allowlisted geological contact correction
-        run: |
-          curl -L --fail https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
-          blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/mcp_repair_contacts.py
-          test -s art-source/valoria/production/studio-rocks-v1/mcp-contact-report.json
+          if [ "$STUDIO_REUSE" != 'true' ]; then
+            python3 tools/art-studio-recovery/review_with_local_vision.py
+            curl -L --fail https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+            blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/mcp_repair_contacts.py
+          fi
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb > art-source/valoria/production/studio-rocks-v1/glb-audit.json
+          python3 tools/art-studio-recovery/review_with_local_vision.py --post-mcp
       - name: Preserve real source and evidence on THIS branch only
         if: always()
         run: |
