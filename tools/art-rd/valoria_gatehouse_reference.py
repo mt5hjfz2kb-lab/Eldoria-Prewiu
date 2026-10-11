@@ -159,69 +159,54 @@ def save(name,scale=23,target=(0,0,3.4)):
  setup(scale,target)
  bpy.context.scene.render.filepath=str(OUT/(name+".png"))
  bpy.ops.render.render(write_still=True)
-# FULL ART BRAIN FOCUS V2 — edit structural mesh, not decorative Lego.
-# Controlled interventions: organic battered side masses, vaulted entry recession,
-# mixed-height irregular parapet and unified roof contours.
-def structural_mesh(name,verts,faces,material,bevel=.08):
- mesh=bpy.data.meshes.new(name+"_mesh")
- mesh.from_pydata(verts,[],faces);mesh.update()
- obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
- obj.data.materials.append(material)
+# FULL ART BRAIN FOCUS V3: real render review rejected V1 and V2 smooth masses.
+# Restore the original authored masonry facade and tower silhouette.
+# High-impact edits: arc depth, flanking half-height tapered supports,
+# varied existing battlements and inset stone hood with no giant roof slab.
+def director_poly(name,v,faces,material,bevel=.04):
+ m=bpy.data.meshes.new(name+"_mesh");m.from_pydata(v,[],faces);m.update()
+ o=bpy.data.objects.new(name,m);bpy.context.collection.objects.link(o);m.materials.append(material)
  if bevel:
-  m=obj.modifiers.new("architectural_edge_softening","BEVEL");m.width=bevel;m.segments=2
- obj.modifiers.new("weighted_normals","WEIGHTED_NORMAL")
- return obj
-
-def battered_pier(side):
- # Six courses of a contiguous sloping profile, irregularized at large scale.
- xs=[(3.12,5.18),(3.08,5.10),(3.09,4.99),(3.04,4.91),
-     (3.06,4.81),(3.03,4.71)]
- zs=[0,1.25,2.62,3.97,5.31,6.75]
- verts=[]
- for i,(inner,outer) in enumerate(xs):
-  for x,y in ((side*inner,-1.67),(side*outer,-1.53),
-              (side*outer,1.30),(side*inner,1.37)):
-   verts.append((x,y,zs[i]))
- faces=[(3,2,1,0),(20,21,22,23)]
- for i in range(5):
-  for j in range(4):
-   a=i*4+j;b=i*4+(j+1)%4
-   faces.append((a,b,b+4,a+4))
- return structural_mesh("organic_battered_pier_"+str(side),verts,faces,stone[2],.12)
-
-for side in (-1,1):
- battered_pier(side)
- # Deep stone portal cheek returns into the passage, creating actual perspective.
- base.cube("deep_portal_cheek",(side*2.17,-.54,2.80),(.41,2.75,5.52),stone[4],.14)
- # Offset tower-side roof joins rather than a detachable series of boxes.
- base.frustum("tower_transition_hip",(side*5.01,.24,7.24),1.19,.48,1.18,slate,8)
- # Slender arrow recess on the main structural pier, not a black painted patch.
- base.cube("arrow_reveal",(side*3.81,-1.71,3.90),(.14,.11,1.12),patina,.025)
-# Second nested radius: continuous layered arch conveys a defended tunnel.
-for j in range(20):
- a0=math.pi*j/20;a1=math.pi*(j+1)/20-.004
- base.arch_segment("deep_arch_voussoir",0,-1.59,3.0,2.0,a0,a1,.38,stone[(j+2)%8],.13)
- base.arch_segment("inner_portal_recession",0,-.93,3.0,1.89,a0,a1,.33,trim,.09)
-# The central gatehouse mass must read as one building, not stacked floating headers.
-structural_mesh("continuous_gatehouse_roof",
- [(-4.55,-1.0,7.00),(4.55,-1.0,7.00),(4.55,1.55,7.00),(-4.55,1.55,7.00),
-  (-4.16,-.68,8.20),(4.16,-.68,8.20),(4.16,1.21,8.20),(-4.16,1.21,8.20)],
- [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],stone[5],.11)
-# One staggered defensive rhythm. Suppress the old identical merlons on central crown.
-for ob in list(bpy.data.objects):
- if ob.name.startswith("gate_crown_merlon"):ob.hide_render=True
-heights=[.96,1.08,.78,1.34,.92,1.16,.83]
-widths=[.64,.75,.62,.84,.68,.76,.66]
-for j,(height,width) in enumerate(zip(heights,widths)):
- x=-3.68+j*1.23
- structural_mesh("authored_variable_merlon_"+str(j),
- [(x-width/2,-1.50,8.04),(x+width/2,-1.50,8.04),
-  (x+width/2,-.79,8.04),(x-width/2,-.79,8.04),
-  (x-width*.43,-1.44,8.04+height),(x+width*.41,-1.44,8.04+height),
-  (x+width*.41,-.86,8.04+height),(x-width*.43,-.86,8.04+height)],
+  mod=o.modifiers.new("handcut_edges","BEVEL");mod.width=bevel;mod.segments=2
+ o.modifiers.new("weighted_normals","WEIGHTED_NORMAL")
+ return o
+def buttress(side):
+ # Narrow engaged buttress outside the portal, preserving 80%+ of visible ashlar.
+ # Sculptural pitched crown and steep 2D battered rise.
+ x=side*4.38;wi=.36
+ profile=[(x-side*.24,-1.17,.06),(x+side*.32,-1.20,.06),
+          (x+side*.24,-1.21,2.95),(x+side*.12,-1.09,4.42),
+          (x-side*.20,-1.08,4.42)]
+ vertices=profile+[(xx,yy+1.15,zz) for xx,yy,zz in profile]
+ n=len(profile)
+ faces=[tuple(reversed(range(n))),tuple(range(n,n*2))]
+ for i in range(n):
+  j=(i+1)%n
+  faces.append((i,j,j+n,i+n))
+ director_poly("engaged_battered_support_"+str(side),vertices,faces,stone[4],.067)
+ # Recessed hinge/arrow pier receives volume from stone surround.
+ base.cube("stone_arrow_reveal_lintel",(side*4.34,-1.25,3.47),(.24,.14,.19),trim,.037)
+for s in (-1,1): buttress(s)
+# Deep load-bearing outer arch, two forward nested masonry layers.
+for j in range(18):
+ a0=math.pi*j/18;a1=math.pi*(j+1)/18-.008
+ base.arch_segment("ashlar_portal_outboard",0,-1.16,3.0,2.06,a0,a1,.31,stone[(j+3)%8],.09)
+ base.arch_segment("portal_recess_course",0,-.69,3.0,1.91,a0,a1,.23,stone[(j+1)%8],.08)
+# Keep original segmented stone crest; vary actual existing crenel widths/heights.
+for obj in bpy.data.objects:
+ if obj.type=="MESH" and obj.name.startswith("gate_crown_merlon"):
+  x=obj.location.x
+  salt=int(abs(x)*137)%7
+  obj.scale.z*=([1.0,.88,1.08,.93,1.12,.97,1.04][salt])
+  obj.scale.x*=([.98,1.04,.95,1.08,.92,1.0,1.06][salt])
+# A narrow sloped coping behind merlons, within their silhouette.
+director_poly("gate_parapet_recessed_stone_hip",
+ [(-4.12,.48,6.94),(4.12,.48,6.94),(4.12,1.28,6.94),(-4.12,1.28,6.94),
+  (-3.91,.58,7.42),(3.91,.58,7.42),(3.91,1.17,7.42),(-3.91,1.17,7.42)],
  [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
- stone[j%len(stone)],.055)
-art_director_geometry={"baseline":"run_38136991434","operations":["contiguous_battered_piers","deep_nested_arched_entry","authored_nonuniform_parapet","continuous_roof_mass","tower_transitional_hips"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+ slate,.07)
+# Stone voussoirs and structural buttress meshes are the only additions.
+art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 smooth facade and heavy crown","operations":["recover_visible_historic_ashlar","tapered_engaged_side_buttresses","deep_nested_load_bearing_arch","vary_existing_merlon_proportions","recessed_hip_coping"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
