@@ -36,6 +36,11 @@ def render(name):
   if o.type=='LIGHT':bpy.data.objects.remove(o,do_unlink=True)
 def process(label,source,kind):
  bpy.ops.wm.read_factory_settings(use_empty=True)
+ global limestone, dark, moss, iron
+ limestone=mat("Valoria worn pale limestone",(.36,.32,.27))
+ dark=mat("Valoria recessed joints",(.13,.12,.11))
+ moss=mat("Valoria muted moss",(.13,.19,.105))
+ iron=mat("Valoria oxidized iron",(.14,.12,.10),.6,.3)
  bpy.ops.import_scene.gltf(filepath=os.path.join(SOURCE,source+".glb"))
  imported=[o for o in bpy.context.scene.objects if o.type=='MESH']
  if not imported:raise RuntimeError("Missing imported mesh: "+source)
