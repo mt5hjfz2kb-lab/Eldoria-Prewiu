@@ -236,8 +236,7 @@ for j in range(10):
 # Overwrite the art history AFTER all authored operations, just before rendering.
 art_director_geometry={"baseline":"run_38136991434","rejected_predecessors":["V2_smooth_piers","V3_minor_delta","V4_roof_on_stilts","V5_oversized_merlons"],"operations":["historical_ashlar_preserved","deep_portal_arch","engaged_buttresses","stone_chamber","reduced_profile_crown_merlons","arched_observation_slot"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
-# Stone voussoirs and structural buttress meshes are the only additions.
-art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 smooth facade and heavy crown","operations":["recover_visible_historic_ashlar","tapered_engaged_side_buttresses","deep_nested_load_bearing_arch","vary_existing_merlon_proportions","recessed_hip_coping"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+# Final V6 provenance recorded above. Do not overwrite with predecessor metadata.
 
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
