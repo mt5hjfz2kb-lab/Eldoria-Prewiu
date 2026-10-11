@@ -52,6 +52,8 @@ sc.view_settings.view_transform='AgX';sc.view_settings.look='None'
 world=bpy.data.worlds.new('Family dusk studio');world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.17,.22,.31,1);world.node_tree.nodes['Background'].inputs['Strength'].default_value=.5;sc.world=world
 for name,pos,power,color,size in [('Warm sunset',(-18,-24,32),7000,(1,.77,.53),18),('Sky',(18,-2,27),5000,(.49,.64,1),15),('Rim',(-16,20,28),6000,(1,.71,.48),18)]:
  light=bpy.data.lights.new(name,'AREA');ob=bpy.data.objects.new(name,light);sc.collection.objects.link(ob);ob.location=pos;ob.rotation_euler=(Vector((0,0,0))-ob.location).to_track_quat('-Z','Y').to_euler();light.energy=power;light.color=color;light.size=size
+sun=bpy.data.lights.new('Scale-independent warm daylight','SUN');sun.energy=1.8;sun.angle=.22;sun.color=(1,.83,.66)
+sun_ob=bpy.data.objects.new('Scale-independent warm daylight',sun);sc.collection.objects.link(sun_ob);sun_ob.rotation_euler=(Vector((0,0,0))-Vector((-18,-24,32))).to_track_quat('-Z','Y').to_euler()
 cam=bpy.data.cameras.new('Export roundtrip camera');ob=bpy.data.objects.new('Export roundtrip camera',cam);sc.collection.objects.link(ob);sc.camera=ob;cam.type='ORTHO'
 for view,pos,target,scale in [('hero',(32,-47,30),(0,0,1),57),('strategic',(35,-50,43),(0,0,0),67),('gate-contact',(14,-20,13),(3,0,3),20)]:
  ob.location=pos;ob.rotation_euler=(Vector(target)-ob.location).to_track_quat('-Z','Y').to_euler();cam.ortho_scale=scale;sc.render.filepath=str(BASE/('assembly-'+view+'.png'));bpy.ops.render.render(write_still=True)

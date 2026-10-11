@@ -5,6 +5,7 @@ Architecture is bonded, not warped; geology is constructed as fault planes.
 import bpy, bmesh, hashlib, json, math, os, random, sys
 from pathlib import Path
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 ROOT=Path(__file__).resolve().parents[2]
 BASE=ROOT/'art-source/valoria/production/asset-family-v2'
 OUT=BASE/'quality-v3';OUT.mkdir(parents=True,exist_ok=True)
@@ -223,13 +224,13 @@ def rock_mass(name,center,size,seed,material=None):
  return mesh(name,verts,faces,material or MATS['rock'],.018)
 
 def cliff(plan):
- lean=plan['fault_lean'];depth=plan['fracture_depth'];N=75;levels=10
+ lean=plan['fault_lean'];depth=plan['fracture_depth'];N=96;levels=28
  verts=[]
  # Angular primary mass, longitudinal faults. Continuous topology without
  # concentric rings or sinusoidal cake shelves. Shared top and base edges.
- anchors=[0,.22,-.10,.36,-.18,.09,.32,-.12,.23,-.20,.17,0]
+ anchors=[0,.31,-.27,.12,-.16,0]
  def front(x,u):
-  v=(x+6)/12*11;i=min(10,int(v));f=v-i
+  v=min(5,max(0,(x+6+.58*(1-u))/12*5));i=min(4,int(v));f=v-i
   shoulder=anchors[i]*(1-f)+anchors[i+1]*f
   groove=-depth*max(0,1-abs((v+.17)%1-.5)*7)
   # Slope continuous rock backward near crown; fractures change over depth.
@@ -265,30 +266,34 @@ def cliff(plan):
  for vertex in donor_mesh.vertices:vertex.co=Vector([(vertex.co[k]-low[k])/extent[k] for k in range(3)])
  # Unequal angular fault masses, each with three geological planes and clipped
  # side facets. Major visible shapes replace the uniform extruded facade.
- widths=[1.4,1.1,.85,1.55,.7,1.25,1.4,.9,1.35,1.5];left=-6
+ widths=[2.75,2.05,3.4,3.8];left=-6
  for i,width in enumerate(widths):
-  center=left+width/2;left+=width;v=[];leanx=RNG.uniform(-.25,.16)
-  if i%3!=1:
+  center=left+width/2;left+=width;v=[];leanx=[.60,-.42,.74,-.55][i]
+  if True:
    data=donor_mesh.copy();data.materials.clear();data.materials.append(MATS['rock'])
    rock=bpy.data.objects.new('AI-sculpted CC0 fractured bedrock mass '+str(i),data);bpy.context.scene.collection.objects.link(rock)
-   height=3.47+RNG.uniform(-.10,.03);facey=-2.62+RNG.uniform(-.10,.12)
+   height=3.50+RNG.uniform(-.04,.02);facey=-2.25+RNG.uniform(-.08,.08)
    for vertex in data.vertices:
     px,py,pz=vertex.co
     if i%2:px=1-px
-    vertex.co=(center+(px-.5)*width*1.72+leanx*pz,
-               facey+(py-.5)*1.48+lean*pz,
+    vertex.co=(max(-6,min(6,center+(px-.5)*width*1.37+leanx*(pz-.35))),
+               facey+(py-.5)*2.00+lean*pz,
                -3.52+pz*height)
    for face in data.polygons:face.use_smooth=False
    data.update();uv_project(rock,.3)
    continue
-  for layer,(z,scale,fy,shift) in enumerate([(-3.49,1.12,-2.80,0),(-1.60,.97,-2.28,leanx*.5),(-.10,.83,-1.83,leanx)]):
-   cx0=center+shift;fy+=RNG.uniform(-.18,.18);half=width*scale/2
-   outline=[(-half+.08,fy+.30),(-half+.17,fy),(half-.13,fy+.02),(half+.015,fy+.34),(half-.06,-1.22),(-half+.06,-1.22)]
-   for k,(dx,yy) in enumerate(outline):v.append((cx0+dx,yy,z+RNG.uniform(-.06,.05) if layer else z))
-  f=[tuple(range(5,-1,-1)),tuple(range(12,18))]
-  for layer in range(2):
-   for k in range(6):f.append((layer*6+k,layer*6+(k+1)%6,(layer+1)*6+(k+1)%6,(layer+1)*6+k))
-  mesh('Authored broad leaning fractured fault mass',v,f,MATS['rock'],.023)
+ # Transfer the actual scan surface into ONE connected sculpted cliff face.
+ # Orthographic sampling removes the pasted-boulder-over-flat-wall silhouette:
+ # every fault mass becomes real relief in the escarpment topology.
+ bpy.context.view_layer.update()
+ masses=[o for o in bpy.context.scene.objects if o.name.startswith('AI-sculpted CC0 fractured bedrock mass')]
+ bvhs=[BVHTree.FromObject(o,bpy.context.evaluated_depsgraph_get()) for o in masses]
+ for vertex in list(bed.data.vertices)[:(N+1)*(levels+1)]:
+  x,y,z=vertex.co
+  hits=[b.ray_cast(Vector((x,-12,z)),Vector((0,1,0)),16)[0] for b in bvhs]
+  vertex.co.y=min([y]+[hit.y for hit in hits if hit is not None])
+ for ob in masses:bpy.data.objects.remove(ob,do_unlink=True)
+ bed.data.update();uv_project(bed,.3)
  soil=plan['crest_soil_depth'];v=[]
  for i in range(N+1):
   x=-6+12*i/N;f=front(x,1)-.012
@@ -305,7 +310,7 @@ def cliff(plan):
   for k in range(6):
    s=1.0 if k==0 else RNG.uniform(.25,.60)
    rock_mass('Embedded angular talus cluster',(x+RNG.uniform(-.7,.7),-2.65+RNG.uniform(-.25,.35),-3.34+s*.15),(s*.86,s*.72,s*.86),3310+j*31+k)
- LOG.append({'operation':'fault_plane_escarpment','continuous_vertices':len(verts),'primary_fault_slabs':len(widths),'real_cc0_scanned_masses':7,'cc0_source':'https://opengameart.org/content/free-photogrammetric-rock','donor_blend_sha256':hashlib.sha256(donor_source.read_bytes()).hexdigest(),'fault_lean_m':lean,'fracture_depth_m':depth,'embedded_talus_clusters':clusters,'soil_depth_m':soil,'footing_plane_z':.065})
+ LOG.append({'operation':'fault_plane_escarpment','continuous_vertices':len(verts),'primary_fault_slabs':len(widths),'scan_to_connected_surface_transfer':True,'real_cc0_scanned_masses':len(widths),'cc0_source':'https://opengameart.org/content/free-photogrammetric-rock','donor_blend_sha256':hashlib.sha256(donor_source.read_bytes()).hexdigest(),'fault_lean_m':lean,'fracture_depth_m':depth,'embedded_talus_clusters':clusters,'soil_depth_m':soil,'footing_plane_z':.065})
 
 def props(plan):
  labels=('Royal blue Valoria banner','Valoria lily embroidery','Heraldic lily band','Banner mounting bar','Torch pedestal','Torch stone cap','Carved ember flame','Iron brazier bowl')

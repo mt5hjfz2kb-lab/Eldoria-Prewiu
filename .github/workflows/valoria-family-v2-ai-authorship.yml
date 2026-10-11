@@ -45,7 +45,7 @@ jobs:
         if: env.ARTIST_RUN == '0'
         run: python3 tools/art-rd/valoria_family_v2_1_qwen_art_director.py
       - name: Preserve real artistic inference separately before production
-        if: env.ARTIST_RUN == '0'
+        if: always() && env.ARTIST_RUN == '0'
         uses: actions/upload-artifact@v4
         with:
           name: valoria-family-quality-genuine-artist-directions
@@ -81,6 +81,7 @@ jobs:
       - name: Exact reimport assembly and structural preflight
         run: |
           blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_quality_assemble.py
+          blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_quality_verify.py
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/asset-family-v2/quality-v3/*/*.glb > art-source/valoria/production/asset-family-v2/quality-v3/glb-preflight.json
       - name: Preserve editable family, actual renders and inference
         if: always()
