@@ -183,17 +183,39 @@ def rocks():
  cc0.dress_continuous_cliff_with_cc0()
 
 def fittings():
- for j in range(2):
-  x=(-2.5,2.5)[j]
-  ns["cube"](f"torch_iron_bracket_{j}",(x,-.6,2.2),(.17,.6,.16),ns["iron"],.02)
-  ns["cube"](f"torch_brazier_{j}",(x,-.92,2.42),(.4,.38,.3),ns["iron"],.04)
-  ns["frustum"](f"torch_flame_{j}",(x,-.92,2.8),.19,.03,.7,ns["mat"]("torch_amber_%s"%j,(.92,.37,.055),.4),9)
- for s in (-1,1):
-  x=3*s
-  ns["cube"]("banner_pole",(x,0,3.25),(.12,.12,3.2),ns["wood"][0],.025)
-  ns["cube"]("banner_cloth",(x+s*.43,-.06,3.35),(.85,.08,1.65),ns["mat"]("faded_oxblood_%s"%s,(.32,.055,.045)),.025)
- for i in range(6):
-  ns["cube"]("defense_stake",(i*.82-2.1,1.1,1.0),(.18,.18,2),ns["wood"][i%3],.06)
+ # REUSE the genuine V3 banners and torch pedestals/flames, not paper
+ # rectangles or orange conical fire. Original V3 remains unchanged.
+ with bpy.data.libraries.load(str(GATE),link=False) as (src,dst):
+  assert 'VALORIA_HERO_GATE' in src.collections
+  dst.collections=['VALORIA_HERO_GATE']
+ coll=dst.collections[0]
+ tags=('Royal blue Valoria banner','Banner mounting bar','Torch pedestal',
+       'Torch stone cap','Carved ember flame')
+ originals=[o for o in coll.objects if o.type=='MESH' and o.name.startswith(tags)]
+ assert len(originals)>=12,'V3 authored banner and flame detail missing'
+ copied=0
+ for source in originals:
+  original_world=source.matrix_world.translation.copy()
+  sign=-1 if original_world.x<0 else 1
+  is_banner=source.name.startswith(('Royal blue','Banner'))
+  part=source.copy();part.data=source.data.copy()
+  bpy.context.scene.collection.objects.link(part)
+  part.name='Hero V3 extracted defensive prop '+source.name
+  part.matrix_world=source.matrix_world.copy()
+  if is_banner:
+   part.matrix_world.translation.x+=sign*(2.65-3.42)
+   part.matrix_world.translation.z-=2.75
+  else:
+   part.matrix_world.translation.x+=sign*(1.55-2.24)
+   part.matrix_world.translation.y-=1
+  copied+=1
+ # Tapered, soil-set wooden palisade stakes; avoid cubic Lego ends.
+ for i in range(5):
+  x=(i-2)*.74
+  ns['frustum'](f'defensive_stake_tapered_{i}',(x,2.35,.9),.14,.045,1.8,
+                ns['wood'][i%3],7)
+ ns['cube']('palisade_rear_crossbrace',(0,2.48,1.08),(3.5,.12,.15),ns['wood'][0],.025)
+ assert copied>=12
 def source_hero_tower(x=0,y=0):
  # Preserve the artistic quality of the frozen V3 masonry: extract the
  # architecture's existing right tower as a standalone compatible module.
