@@ -1,0 +1,28 @@
+{
+  "license": "Project-authored transformation of existing Eldoria sources",
+  "assets": [
+    {
+      "id": "Valoria_Wall_LibraryV1",
+      "mesh_count": 77,
+      "source": "Valoria_WallSegment_DefV1",
+      "technical_status": "PENDING_UNITY",
+      "art_status": "REWORK_UNTIL_INDEPENDENT_COMPARISON"
+    },
+    {
+      "id": "Valoria_Tower_LibraryV1",
+      "mesh_count": 84,
+      "source": "Valoria_Tower_DefV1",
+      "technical_status": "PENDING_UNITY",
+      "art_status": "REWORK_UNTIL_INDEPENDENT_COMPARISON"
+    },
+    {
+      "id": "Valoria_Gate_LibraryV1",
+      "mesh_count": 84,
+      "source": "Valoria_MainGate_DefV1",
+      "technical_status": "PENDING_UNITY",
+      "art_status": "REWORK_UNTIL_INDEPENDENT_COMPARISON"
+    }
+  ],
+  "art_pass": false,
+  "unity_pass": false
+}
