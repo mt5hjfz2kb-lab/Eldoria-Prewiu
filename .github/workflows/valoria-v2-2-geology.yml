@@ -1,0 +1,40 @@
+name: Valoria V2.2 major geological Qwen BlenderMCP rework
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['tools/art-rd/valoria_cliff_v2_2_major_geology.py','.github/workflows/valoria-v2-2-geology.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  geology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-v2-1-real-qwen-mcp-second-art-pass
+          run-id: 38174276796
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Restore verified BlenderMCP
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Modify full continuous geological cliff and crest under real BlenderMCP
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_cliff_v2_2_major_geology.py
+      - name: Native GLB integrity gate
+        run: |
+          ROOT=art-source/valoria/production/asset-family-v2/cliff_rocks
+          for F in cliff_rocks-v2-2.blend cliff_rocks-v2-2.glb v2-2-hero.png v2-2-strategic.png cliff_rocks-v2-2-evidence.json; do test -s "$ROOT/$F"; done
+          python3 tools/art-rd/audit_glb.py "$ROOT/cliff_rocks-v2-2.glb" > "$ROOT/v2-2-geometry-audit.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-v2-2-major-geological-cliff-blender-mcp
+          path: art-source/valoria/production/asset-family-v2/cliff_rocks/
+          retention-days: 30
