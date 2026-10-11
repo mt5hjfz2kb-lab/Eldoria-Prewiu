@@ -38,7 +38,17 @@ def rocks():
   height=rng.uniform(.4,2.0)
   ob=ns["frustum"](f"cliff_stratum_{i}",(x,y,-1.4-height/2),rng.uniform(.48,.94),rng.uniform(.15,.55),height,ns["stone"][i%8],7)
   ob.rotation_euler=(rng.uniform(-.2,.2),rng.uniform(-.15,.15),rng.random()*6.28)
- ns["cube"]("cliff_top",(0,0,-.22),(8.5,7.3,.35),ns["stone"][5],.10)
+ # Sculpt a broken ridge instead of a floating flat rectangular lid.
+ rng=random.Random(1221)
+ for i in range(13):
+  for j in range(10):
+   x=-4+i*.67;y=-3+j*.68
+   z=-.22+.17*math.sin(i*.65)+.11*math.cos(j*.8)+rng.uniform(-.09,.09)
+   ns["frustum"](f"weathered_cliff_crown_{i}_{j}",(x,y,z-.22),.57,.44,.55,ns["stone"][(i*3+j)%8],7)
+ for k in range(15):
+  a=k*math.tau/15
+  ob=ns["frustum"](f"cliff_erosion_spur_{k}",(3.6*math.cos(a),2.9*math.sin(a),-1.4),.42,.21,rng.uniform(1.1,2.8),ns["stone"][k%8],6)
+  ob.rotation_euler.z=a
 def fittings():
  for j in range(2):
   x=(-2.5,2.5)[j]
@@ -83,7 +93,7 @@ def export(name,phase):
  sc=bpy.context.scene;sc.render.filepath=str(folder/(phase+"-hero.png"));bpy.ops.render.render(write_still=True)
  sc.camera.location=(16,-23,18)
  sc.camera.rotation_euler=(Vector((0,0,2.5))-sc.camera.location).to_track_quat("-Z","Y").to_euler()
- sc.camera.data.ortho_scale=24
+ sc.camera.data.ortho_scale=55 if name=="assembled_family" else 24
  sc.render.filepath=str(folder/(phase+"-strategic.png"));bpy.ops.render.render(write_still=True)
  if phase=="after":
   bpy.ops.wm.save_as_mainfile(filepath=str(folder/(name+".blend")))
@@ -102,6 +112,11 @@ kinds={"wall_straight":lambda:ns["wall"]("valoria_wall",length=8),
 def assemble():
  ns["wall"]("west",-9,0,7,False);ns["wall"]("east",9,0,7,False)
  ns["tower"]("watch",-14,0);platform();fittings()
+ # Use the FROZEN, existing Hero V3 GLB; never regenerate its architecture.
+ hero=ROOT/"art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb"
+ assert hero.exists(), "Frozen hero V3 GLB is required for real assembly"
+ bpy.ops.import_scene.gltf(filepath=str(hero))
+ for ob in bpy.context.selected_objects: ob.name="FROZEN_V3_"+ob.name
 # The agent must emit machine-readable changes. Never fabricate agent authorship.
 decision_file=OUT/"agent-decisions.json"
 if len(sys.argv)>sys.argv.index("--")+1 if "--" in sys.argv else False:
@@ -110,7 +125,7 @@ phase=os.environ.get("ELDORIA_FAMILY_PHASE","before")
 decisions=json.loads(decision_file.read_text()) if phase=="after" and decision_file.exists() else {}
 manifest={"baseline":"unchanged hero V3; reuse source materials","phase":phase,"assets":{},"agent_decisions":decisions}
 for name,create in list(kinds.items())+[("assembled_family",assemble)]:
- reset();create();setup_camera(scale=33 if name=="assembled_family" else 18)
+ reset();create();setup_camera(scale=47 if name=="assembled_family" else 18)
  if phase=="after":
   tweak=decisions.get(name,{})
   # Qwen-chosen changes to geometry and stone layout, not just image scoring.
