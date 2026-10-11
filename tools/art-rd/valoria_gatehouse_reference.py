@@ -266,8 +266,37 @@ for material in list(base.stone)+[base.trim,base.mortar]:
 for material in base.wood:
  bs=material.node_tree.nodes.get("Principled BSDF")
  if bs:bs.inputs["Roughness"].default_value=.77
+# Portable PBR color variation: bake three distinct variants of owned stone bitmap.
+# Unlike Noise/Ramp shading, image pixels travel inside exported GLB.
+portable_maps=[]
+if stone_albedo.exists():
+ original=bpy.data.images.load(str(stone_albedo),check_existing=True)
+ count=len(original.pixels)
+ source_pixels=list(original.pixels[:])
+ for slot,(tint,gain) in enumerate(((.96,1.01),(1.0,.96),(1.035,1.04))):
+  variant=original.copy()
+  variant.name="Valoria_stone_baked_variation_"+str(slot)
+  pixels=source_pixels[:]
+  for i in range(0,count,4):
+   # Artist-controlled warm/cool mineral differences, not noisy RGB static.
+   pixels[i]=min(1.0,max(0,pixels[i]*tint*gain))
+   pixels[i+1]=min(1.0,max(0,pixels[i+1]*tint))
+   pixels[i+2]=min(1.0,max(0,pixels[i+2]*gain))
+  variant.pixels[:]=pixels
+  variant.pack()
+  portable_maps.append(variant)
+ for index,material in enumerate(list(base.stone)+[base.trim,base.mortar]):
+  bs=material.node_tree.nodes.get("Principled BSDF")
+  if not bs:continue
+  for inp in list(bs.inputs["Base Color"].links):
+   material.node_tree.links.remove(inp)
+  node=material.node_tree.nodes.new("ShaderNodeTexImage")
+  node.image=portable_maps[index%len(portable_maps)]
+  material.node_tree.links.new(node.outputs["Color"],bs.inputs["Base Color"])
+# Metal and wood preserve owned source maps; architecture is unchanged.
+
 # Fixed camera and same geometry enable before/after appearance inspection.
-art_director_geometry={"baseline":"V5_commit_64f5975960","intervention":"existing_stone_surface_microrelief_and_material_roughness","existing_stone_meshes_refined":surface_changes,"architecture_changes":0,"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+art_director_geometry={"baseline":"V5_commit_64f5975960","intervention":"stone_microrelief_and_portable_variation_maps","existing_stone_meshes_refined":surface_changes,"architecture_changes":0,"portable_albedo_variants":len(portable_maps),"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
