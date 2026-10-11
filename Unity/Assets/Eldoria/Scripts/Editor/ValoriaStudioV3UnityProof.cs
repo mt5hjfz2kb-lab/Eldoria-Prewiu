@@ -128,8 +128,7 @@ namespace Eldoria.EditorTools
                                 if (tex == null || AssetDatabase.Contains(tex)) continue;
                                 if (!textures.TryGetValue(tex, out var stored))
                                 {
-                                    stored = UnityEngine.Object.Instantiate(tex);
-                                    AssetDatabase.CreateAsset(stored, folder + "/tex-" + textures.Count + ".asset");
+                                    stored = PersistTexture(tex, folder, textures.Count, prop);
                                     textures[tex] = stored;
                                 }
                                 copy.SetTexture(prop, stored);
@@ -143,6 +142,37 @@ namespace Eldoria.EditorTools
             }
             AssetDatabase.SaveAssets();
             Debug.Log("V3_PERSISTENCE meshes=" + next + " materials=" + materials.Count + " textures=" + textures.Count);
+        }
+        static Texture PersistTexture(Texture source, string folder, int index, string property)
+        {
+            var rt = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
+            var previous = RenderTexture.active;
+            var readback = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+            try
+            {
+                Graphics.Blit(source, rt);
+                RenderTexture.active = rt;
+                readback.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+                readback.Apply();
+                var path = folder + "/tex-" + index + ".png";
+                File.WriteAllBytes(Path.GetFullPath(path), readback.EncodeToPNG());
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (importer != null)
+                {
+                    bool isNormal = property.ToLowerInvariant().Contains("normal") || property.Contains("Bump");
+                    importer.sRGBTexture = !isNormal;
+                    importer.alphaIsTransparency = property.ToLowerInvariant().Contains("base") || property.Contains("MainTex");
+                    importer.SaveAndReimport();
+                }
+                return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            }
+            finally
+            {
+                RenderTexture.active = previous;
+                RenderTexture.ReleaseTemporary(rt);
+                UnityEngine.Object.DestroyImmediate(readback);
+            }
         }
         static void Save(Camera camera, string path)
         {
