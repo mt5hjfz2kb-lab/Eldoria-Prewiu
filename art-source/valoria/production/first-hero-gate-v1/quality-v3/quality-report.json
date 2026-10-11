@@ -1,13 +1,14 @@
 {
   "origin": "quality-v2 saved .blend",
-  "baseline_v2_sha256": "85aa1b27e4727c0ec7552f9ae14f4ffaa76c7e5edfe68ed8143d947736fff52a",
+  "baseline_v2_sha256": "3398fa41a4e4ff810713f64435ec2d8249d36ffe788156e1bbb83cc8bcd2287a",
   "objects_before": 1037,
   "objects_after": 1037,
   "stones_selectively_edited": 806,
+  "patina_material_variants": 41,
   "hero_camera": "matched to quality-v2 after-hero",
   "strategic_camera": "matched to quality-v2 after-strategic",
-  "blend_bytes": 21463608,
-  "glb_bytes": 21485544,
+  "blend_bytes": 22889588,
+  "glb_bytes": 21490744,
   "art_acceptance": "pending genuine side by side",
   "unity_tested": false
 }
