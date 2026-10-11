@@ -12,10 +12,12 @@ src=(ROOT/"tools/art-rd/valoria_fortification_family.py").read_text().split("\nm
 ns={"__file__":str(ROOT/"tools/art-rd/valoria_fortification_family.py")}
 exec(compile(src,"existing_valoria_studio","exec"),ns)
 # Import existing V3 materials without touching the source artwork.
+studio_material_names={m.name for m in bpy.data.materials}
 with bpy.data.libraries.load(str(GATE),link=False) as (s,d):
  d.materials=list(s.materials)
-available=[m for m in bpy.data.materials if m.use_nodes]
+available=[m for m in bpy.data.materials if m.use_nodes and m.name not in studio_material_names]
 stone_candidates=[m for m in available if any(t in m.name.lower() for t in ("stone","ashlar","limestone","mortar"))]
+assert len(stone_candidates)>=6, "Hero V3 material transfer failed; never fall back to flat studio colors"
 if stone_candidates:
  for i in range(len(ns["stone"])): ns["stone"][i]=stone_candidates[i%len(stone_candidates)]
  ns["trim"]=stone_candidates[0]
