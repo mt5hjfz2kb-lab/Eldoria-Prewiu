@@ -97,6 +97,13 @@ def rocks():
   size=.48+(i*7%9)*.075
   o=ns['frustum'](f'embedded_talus_{i}',(x,y,-4.35),size*1.2,size*.57,size,ns['stone'][i%8],7)
   o.rotation_euler=(.10*math.sin(i),.15*math.cos(i),a)
+ # Preserve the recovered Eldoria CC0 artistic rock donor, including its real
+ # scanned topology and albedo/normal, rather than inventing a substitute.
+ import importlib.util
+ cc0_file=ROOT/'tools/art-rd/valoria_family_cc0_scanned_cliff.py'
+ spec=importlib.util.spec_from_file_location('eldoria_scanned_rock',str(cc0_file))
+ cc0=importlib.util.module_from_spec(spec);spec.loader.exec_module(cc0)
+ cc0.dress_continuous_cliff_with_cc0()
 
 def fittings():
  for j in range(2):
@@ -159,6 +166,11 @@ kinds={"wall_straight":lambda:ns["wall"]("valoria_wall",length=8),
 "cliff_rocks":rocks,
 "defensive_props":fittings}
 def assemble():
+ # The full architectural family sits on the REAL continuous cliff module.
+ rocks()
+ for item in objset():
+  item.location.x*=2.9;item.location.y*=2.6
+  item.scale.x*=2.9;item.scale.y*=2.6
  ns["wall"]("west",-9,0,7,False);ns["wall"]("east",9,0,7,False)
  ns["tower"]("watch",-14,0);platform();fittings()
  # Use the FROZEN, existing Hero V3 GLB; never regenerate its architecture.
