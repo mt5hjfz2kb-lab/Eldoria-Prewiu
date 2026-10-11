@@ -307,7 +307,7 @@ for map_name,suffix in (("albedo","diff"),("normal","nor_gl")):
  try:
   with urllib.request.urlopen(url,timeout=60) as response:
    data=response.read()
-  if not data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):raise RuntimeError("non-PNG asset")
+  if not data.startswith(b"\x89PNG\r\n\x1a\n"):raise RuntimeError("non-PNG asset")
   target.write_bytes(data)
   cc0maps[map_name]=str(target)
   print("POLYHAVEN_CC0",map_name,hashlib.sha256(data).hexdigest(),len(data))
