@@ -1,0 +1,54 @@
+name: Valoria V3 isolated Unity visual proof
+on:
+  push:
+    branches:
+      - integration/valoria-studio-rocks-unity-v1-20261011
+    paths:
+      - '.github/workflows/valoria-studio-v3-unity-proof.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaStudioV3UnityProof.cs'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-windows-unity-valoria-v3
+  cancel-in-progress: false
+jobs:
+  proof:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Capture before and after on the existing Unity scene
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP\ValoriaStudioV3Capture.log"
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaStudioV3UnityProof.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity V3 capture timeout'}
+          if(Test-Path $log){Get-Content $log -Tail 150}
+          if($p.ExitCode -ne 0){throw "Unity capture failed $($p.ExitCode)"}
+          foreach($file in @('before.png','after.png','metrics.txt')){
+            if(-not (Test-Path "$env:GITHUB_WORKSPACE\Unity\ValoriaStudioV3Proof\$file")){throw "Missing $file"}
+          }
+      - name: Reload proof scene in a separate Unity process
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP\ValoriaStudioV3Reload.log"
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaStudioV3UnityProof.Verify','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1200000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity reload timeout'}
+          if(Test-Path $log){Get-Content $log -Tail 120}
+          if($p.ExitCode -ne 0){throw "Unity scene reload failed $($p.ExitCode)"}
+          if(-not (Test-Path "$env:GITHUB_WORKSPACE\Unity\ValoriaStudioV3Proof\reloaded.png")){throw 'Reload screenshot missing'}
+      - name: Preserve visual evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-v3-unity-before-after
+          path: |
+            Unity/ValoriaStudioV3Proof/*
+            Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaStudioV3Proof.unity
+          retention-days: 30
+          if-no-files-found: warn
