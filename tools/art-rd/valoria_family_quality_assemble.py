@@ -46,6 +46,19 @@ uv=data.uv_layers.new(name='UVMap')
 for poly in data.polygons:
  for li in poly.loop_indices:
   v=data.vertices[data.loops[li].vertex_index].co;uv.data[li].uv=(v.x*.3,v.y*.3)
+# Identical embedded pixels remain identical, with one packed image per hash.
+# This keeps the editable QA assembly compact without changing any export.
+canonical_images={};deduplicated=0
+for mat in bpy.data.materials:
+ if not mat.use_nodes:continue
+ for node in mat.node_tree.nodes:
+  if node.type!='TEX_IMAGE' or node.image is None or not node.image.packed_file:continue
+  im=node.image;key=(hashlib.sha256(im.packed_file.data).hexdigest(),im.colorspace_settings.name)
+  if key in canonical_images:
+   node.image=canonical_images[key];deduplicated+=1
+  else:canonical_images[key]=im
+for im in list(bpy.data.images):
+ if im.users==0:bpy.data.images.remove(im)
 sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=int(os.environ.get('ELDORIA_FAMILY_SAMPLES','48'));sc.cycles.use_denoising=True
 sc.render.resolution_x=1600;sc.render.resolution_y=1000;sc.render.resolution_percentage=100;sc.render.image_settings.file_format='PNG'
 sc.view_settings.view_transform='AgX';sc.view_settings.look='None'
@@ -59,4 +72,4 @@ for view,pos,target,scale in [('hero',(32,-47,30),(0,0,1),57),('strategic',(35,-
  ob.location=pos;ob.rotation_euler=(Vector(target)-ob.location).to_track_quat('-Z','Y').to_euler();cam.ortho_scale=scale;sc.render.filepath=str(BASE/('assembly-'+view+'.png'));bpy.ops.render.render(write_still=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'family-assembly.blend'))
 assert hashlib.sha256(GATE.read_bytes()).hexdigest()==gate_hash
-(BASE/'assembly-evidence.json').write_text(json.dumps({'frozen_gate_sha256':gate_hash,'exact_glb_reimports':records,'no_anisotropic_scaling':True,'ground_support':'explicit QA-only context, not a delivered family member','art_pass':False,'unity_pass':False,'scope':'offline modular family QA, not game integration'},indent=2))
+(BASE/'assembly-evidence.json').write_text(json.dumps({'frozen_gate_sha256':gate_hash,'exact_glb_reimports':records,'no_anisotropic_scaling':True,'identical_packed_image_references_deduplicated':deduplicated,'ground_support':'explicit QA-only context, not a delivered family member','art_pass':False,'unity_pass':False,'scope':'offline modular family QA, not game integration'},indent=2))

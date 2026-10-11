@@ -354,7 +354,7 @@ def bounds():
 
 def render(folder,label):
  sc=bpy.context.scene
- scale={'watchtower':13.3,'wall_straight':11.7,'wall_corner':10.2,'wall_connections':8,'stone_path_platform':12.4,'cliff_rocks':18,'defensive_props':10.4}[CURRENT]
+ scale={'watchtower':13.3,'wall_straight':11.7,'wall_corner':11.7,'wall_connections':8,'stone_path_platform':12.4,'cliff_rocks':18,'defensive_props':10.4}[CURRENT]
  target=Vector((0,0,-1.4) if CURRENT=='cliff_rocks' else (0,0,.3) if CURRENT=='stone_path_platform' else (0,0,3.5) if CURRENT=='watchtower' else (0,0,2.5))
  for view,pos,scale in [('hero',(13,-19,13),scale),('strategic',(16,-23,18),scale*1.35)]:
   cam=sc.camera;cam.location=target+Vector(pos);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=scale
@@ -363,6 +363,12 @@ def render(folder,label):
 def export(asset,folder):
  sc=bpy.context.scene;meshes=[o for o in sc.objects if o.type=='MESH']
  # Source stays individually editable. Render-only environment is not exported.
+ # Do not ship unused reference textures/materials in every editable source.
+ used={m for ob in meshes for m in ob.data.materials if m is not None}
+ for mat in list(bpy.data.materials):
+  if mat not in used:bpy.data.materials.remove(mat)
+ for im in list(bpy.data.images):
+  if im.users==0:bpy.data.images.remove(im)
  bpy.ops.wm.save_as_mainfile(filepath=str(folder/(asset+'.blend')))
  deps=bpy.context.evaluated_depsgraph_get()
  for o in meshes:
@@ -414,6 +420,8 @@ def export(asset,folder):
   backups={o:o.data for o in meshes}
   for ob in meshes:
    ob.data=ob.data.copy();bpy.context.view_layer.objects.active=ob
+   # Preserve thin heraldry, mounting metal and emissive flame silhouettes.
+   if any(any(token in mat.name.lower() for token in ('brass','blue_cloth','ember','flame','forged_iron')) for mat in ob.data.materials):continue
    mod=ob.modifiers.new('Distance LOD '+str(level),'DECIMATE');mod.ratio=ratio;mod.use_collapse_triangulate=True
    bpy.ops.object.modifier_apply(modifier=mod.name)
   count=sum(len(p.vertices)-2 for o in meshes for p in o.data.polygons)
@@ -431,7 +439,6 @@ for asset in selected:
  plan=PLANS[asset];folder=OUT/asset;folder.mkdir(exist_ok=True)
  # Matched old-source capture with same studio illumination and framing.
  old=BASE/asset/(asset+'-v2-1.blend')
- if asset=='watchtower':old=BASE/asset/'watchtower-v2-2.blend'
  if old.exists():
   bpy.ops.wm.open_mainfile(filepath=str(old))
   for ob in list(bpy.context.scene.objects):

@@ -10,7 +10,7 @@ from mathutils import Vector
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / 'art-source/valoria/production/asset-family-v2/quality-v3'
 PRESETS = {'watchtower': (13.3, 3.5), 'wall_straight': (11.7, 2.5),
-           'wall_corner': (10.2, 2.5), 'wall_connections': (8, 2.5),
+           'wall_corner': (11.7, 2.5), 'wall_connections': (8, 2.5),
            'stone_path_platform': (12.4, .3), 'cliff_rocks': (18, -1.4),
            'defensive_props': (10.4, 2.5)}
 reports = []

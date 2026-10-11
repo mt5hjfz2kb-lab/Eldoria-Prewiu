@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "iteration": 6,
+  "iteration": 7,
   "owner": "chat-work-valoria-family-quality-takeover-20261011",
   "source_run": 38174276796,
   "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
