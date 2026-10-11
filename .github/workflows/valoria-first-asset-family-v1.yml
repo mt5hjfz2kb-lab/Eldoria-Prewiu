@@ -4,6 +4,12 @@ on:
     branches: [art/valoria-first-asset-family-v1-20261011]
     paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml', 'tools/art-rd/valoria_family_mcp_cliff.py', 'tools/art-rd/valoria_family_mcp_secondary.py', 'tools/art-rd/valoria_family_cc0_scanned_cliff.py', 'tools/art-rd/valoria_family_qwen_decisions.py', 'tools/art-rd/valoria_family_comparisons.py']
   workflow_dispatch:
+# Only the most recent family production should consume Blender/Qwen resources.
+# A new push supersedes obsolete runs on this same branch, not unrelated workflows.
+concurrency:
+  group: valoria-first-asset-family-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 jobs:
