@@ -1,0 +1,23 @@
+{
+  "decision": "reject_candidate",
+  "reference_gap": "the reference image shows a full landscape with a castle and a path, while the candidate only shows the rock terrain and a few scattered rocks, missing the castle and path, and the grass is not properly connected to the rock base",
+  "defects": [
+    "the rock terrain in the candidate is not properly connected to the grass, with gaps and mismatched style",
+    "the candidate lacks the castle and path, which are present in the reference image",
+    "the grass is not properly connected to the rock base, with gaps and mismatched style",
+    "the rock terrain is not fully rendered, with gaps and mismatched style"
+  ],
+  "next_action": "bury_seams",
+  "review_phase": "post_mcp_correction",
+  "model": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+  "actual_images": [
+    "art-source/valoria/production/studio-rocks-v1/before-overview.png",
+    "art-source/valoria/production/studio-rocks-v1/after-overview.png",
+    "art-source/valoria/production/studio-rocks-v1/owner-reference.jpeg",
+    "art-source/valoria/production/studio-rocks-v1/before-cliff.png",
+    "art-source/valoria/production/studio-rocks-v1/after-cliff.png"
+  ],
+  "visual_pass": false,
+  "unity_tested": false,
+  "paid_services_used": false
+}
