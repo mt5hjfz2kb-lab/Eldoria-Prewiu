@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/valoria-gatehouse-real-unity-v1.yml'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaGatehouseRealUnityV1.cs'
+      - 'tools/art-rd/valoria_visual_slice_environment_v2.py'
   workflow_dispatch:
 permissions:
   contents: write
@@ -28,6 +29,28 @@ jobs:
         with:
           ref: integration/valoria-gatehouse-unity-v1-20261011
           clean: false
+      - name: Produce original organic landscape using installed Blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $roots=@('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")
+            foreach($root in $roots){
+              if($candidate){break}
+              if(Test-Path $root){
+                $candidate=Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if(-not $candidate){throw 'Blender unavailable on Windows runner'}
+          $out="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ValoriaGatehouseV1\valoria_visual_slice_environment_v2.glb"
+          $report="$env:RUNNER_TEMP\ValoriaEnvironmentBlenderV2.json"
+          $log="$env:RUNNER_TEMP\ValoriaEnvironmentBlenderV2.log"
+          & $candidate -b --python "$env:GITHUB_WORKSPACE\tools\art-rd\valoria_visual_slice_environment_v2.py" -- --output $out --report $report *> $log
+          if($LASTEXITCODE -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Blender failed $LASTEXITCODE"}
+          if(-not (Test-Path $out)){throw 'Blender GLB missing'}
+          Get-Content $report
       - name: Render exact Blender gatehouse in Unity
         shell: powershell
         run: |
@@ -44,7 +67,7 @@ jobs:
         run: |
           git config user.name "eldoria-art-ci"
           git config user.email "eldoria-art-ci@users.noreply.github.com"
-          git add Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity
+          git add Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/valoria_visual_slice_environment_v2.glb
           git diff --cached --quiet
           if ($LASTEXITCODE -ne 0) {
             git commit -m "art(unity): persist regenerated Valoria vertical slice scene [skip ci]"
@@ -58,5 +81,6 @@ jobs:
           path: |
             Unity/ValoriaGatehouseRealUnityV1Captures/*
             Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity
+            Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/valoria_visual_slice_environment_v2.glb
           retention-days: 30
           if-no-files-found: warn
