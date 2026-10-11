@@ -1,0 +1,40 @@
+name: Valoria family V2 integration assembly review
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['tools/art-rd/valoria_asset_family_v2_assemble.py', '.github/workflows/valoria-family-v2-assembly.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  assembly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-v2-seven-sources-renders-evidence
+          run-id: 38170413822
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Assemble unchanged Hero V3 and seven authentic V2 GLBs
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_asset_family_v2_assemble.py
+      - name: Structural evidence
+        run: |
+          test -s art-source/valoria/production/asset-family-v2/assembled-v2.blend
+          test -s art-source/valoria/production/asset-family-v2/assembled-v2-hero.png
+          test -s art-source/valoria/production/asset-family-v2/assembled-v2-strategic.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-family-v2-assembled-real-v3-scene
+          path: |
+            art-source/valoria/production/asset-family-v2/assembled-v2.blend
+            art-source/valoria/production/asset-family-v2/assembled-v2-hero.png
+            art-source/valoria/production/asset-family-v2/assembled-v2-strategic.png
+            art-source/valoria/production/asset-family-v2/assembled-v2-report.json
+          retention-days: 30
