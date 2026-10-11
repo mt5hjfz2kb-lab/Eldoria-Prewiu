@@ -5,23 +5,27 @@
       "V2_smooth_piers",
       "V3_minor_delta",
       "V4_roof_on_stilts",
-      "V5_oversized_merlons"
+      "V5_oversized_merlons",
+      "V6_insufficient_tower_quality"
     ],
     "operations": [
       "historical_ashlar_preserved",
       "deep_portal_arch",
       "engaged_buttresses",
       "stone_chamber",
-      "reduced_profile_crown_merlons",
-      "arched_observation_slot"
+      "reduced_crown_merlons",
+      "arched_observation_slot",
+      "square_tower_mesh_reshape_and_stretch",
+      "remove_conical_roof_geometry"
     ],
+    "tower_meshes_modified": 700,
     "artistic_status": "REVIEW_REQUIRED",
     "no_additional_asset_families": true
   },
-  "triangles": 34820,
-  "mesh_count": 22,
-  "materials": 22,
-  "glb_bytes": 3163092,
+  "triangles": 29180,
+  "mesh_count": 21,
+  "materials": 21,
+  "glb_bytes": 2737680,
   "wall_to_tower_edge_contact_x": [
     -8.65,
     8.65
