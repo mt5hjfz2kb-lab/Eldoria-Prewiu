@@ -1,0 +1,56 @@
+name: Valoria asset family V2 active IA BlenderMCP production
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['.github/workflows/valoria-family-v2-ai-authorship.yml', 'tools/art-rd/valoria_asset_family_v2_author.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-family-v2-art-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  make-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore actual V1 Blender sources and model decisions; no rebuild
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-first-asset-family-v1-production
+          run-id: 38164428109
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/first-asset-family-v1
+      - name: Check editable sources and recorded Qwen choices before edits
+        run: |
+          ROOT=art-source/valoria/production/first-asset-family-v1
+          test -s "$ROOT/agent-decisions.json"
+          for A in wall_straight watchtower wall_corner wall_connections stone_path_platform cliff_rocks defensive_props; do
+            test -s "$ROOT/$A/$A.blend" || { echo "MISSING $A"; exit 1; }
+          done
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Fetch proven immutable BlenderMCP addon
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Perform seven real substantial BlenderMCP edits and matched renders
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_asset_family_v2_author.py
+      - name: Validate all seven V2 exports and real MCP evidence
+        run: |
+          OUT=art-source/valoria/production/asset-family-v2
+          for A in wall_straight watchtower wall_corner wall_connections stone_path_platform cliff_rocks defensive_props; do
+            for F in "$A-v2.blend" "$A-v2.glb" v2-after-hero.png v2-after-strategic.png v2-ai-mcp-authoring.json; do
+              test -s "$OUT/$A/$F" || { echo "MISSING $A/$F"; exit 1; }
+            done
+          done
+          python3 tools/art-rd/audit_glb.py "$OUT"/*/*-v2.glb > "$OUT/glb-audit.json"
+      - name: Preserve all deliverables even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-family-v2-seven-sources-renders-evidence
+          path: art-source/valoria/production/asset-family-v2/
+          retention-days: 30
