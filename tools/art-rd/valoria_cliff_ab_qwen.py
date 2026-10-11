@@ -46,7 +46,14 @@ for attempt in range(3):
         p=item["profiles"];lv=item["levels"]
         assert len(p)==12 and len(lv)==7
         assert all(len(v)==4 and -5.5<=v[0]<=5.5 and -5<=v[1]<=5 and .05<=v[2]<=.35 and .02<=v[3]<=.30 for v in p)
-        assert abs(lv[0])<.4 and -5.1<lv[-1]<-4.4
+        # Normalize AI height units while preserving its relative stratum spacing.
+        assert all(lv[i]>lv[i+1] for i in range(6)) or all(lv[i]<lv[i+1] for i in range(6))
+        original_levels=lv[:]
+        span=lv[-1]-lv[0]
+        assert abs(span)>.01
+        item["levels"]=[round(-4.8*(v-lv[0])/span,4) for v in lv]
+        item["original_ai_levels"]=original_levels
+        lv=item["levels"]
         assert all(lv[i]>lv[i+1] for i in range(6))
         assert len(set((round(v[0],1),round(v[1],1)) for v in p))>=10
         assert all(str(item[k]).strip() for k in ("diagnosis","formation","artistic_decision","integration"))
