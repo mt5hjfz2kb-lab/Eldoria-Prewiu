@@ -194,15 +194,16 @@ def import_frozen_v3_subset(predicate,prefix):
  mesh=[o for o in imported if o.type=='MESH']
  accepted=[o for o in mesh if predicate(o)]
  assert accepted,('No authentic V3 components identified',prefix)
- for item in imported:
-  if item not in accepted:bpy.data.objects.remove(item,do_unlink=True)
  for item in accepted:
-  # Evaluated world coordinates are materialized into editable mesh object
-  # coords so the full asset can be moved as one modular unit.
+  # Bake world transform before unlinking imported scene parent nodes.
   transform=item.matrix_world.copy()
+  item.parent=None
+  if item.data.users>1:item.data=item.data.copy()
   for v in item.data.vertices:v.co=transform@v.co
   item.matrix_world.identity()
   item.name=prefix+item.name
+ for item in imported:
+  if item not in accepted:bpy.data.objects.remove(item,do_unlink=True)
  return accepted
 
 def world_center_x(o):
