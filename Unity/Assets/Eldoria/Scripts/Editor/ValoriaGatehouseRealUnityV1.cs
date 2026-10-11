@@ -357,6 +357,53 @@ namespace Eldoria.EditorTools
                 section.AddComponent<MeshRenderer>().sharedMaterial=pine;
             }
         }
+
+        // A successful capture alone does not prove that reopening the saved scene retains its meshes.
+        public static void VerifySavedScene()
+        {
+            try {
+                Directory.CreateDirectory(Output);
+                SceneSetup.SetupRenderPipeline();
+                var path="Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity";
+                var scene=EditorSceneManager.OpenScene(path,OpenSceneMode.Single);
+                int meshCount=0,missing=0,rendererCount=0;
+                long triangles=0;
+                bool hasAuthoredEnvironment=false,hasBlenderGate=false;
+                foreach(var root in scene.GetRootGameObjects()){
+                    if(root.name=="Valoria Bastion I - visual vertical slice")hasAuthoredEnvironment=true;
+                    if(root.name=="Blender authored gatehouse candidate")hasBlenderGate=true;
+                    foreach(var renderer in root.GetComponentsInChildren<Renderer>(true))
+                        if(renderer.enabled)rendererCount++;
+                    foreach(var mf in root.GetComponentsInChildren<MeshFilter>(true)){
+                        if(mf.sharedMesh==null){missing++;continue;}
+                        meshCount++;
+                        for(int i=0;i<mf.sharedMesh.subMeshCount;i++)triangles+=mf.sharedMesh.GetIndexCount(i)/3;
+                    }
+                }
+                string textReport="reloaded_scene="+path+Environment.NewLine+
+                   "mesh_filters_with_mesh="+meshCount+Environment.NewLine+
+                   "mesh_filters_missing_mesh="+missing+Environment.NewLine+
+                   "enabled_renderers="+rendererCount+Environment.NewLine+
+                   "triangle_indices="+triangles+Environment.NewLine+
+                   "has_blender_environment="+hasAuthoredEnvironment+Environment.NewLine+
+                   "has_blender_gate="+hasBlenderGate+Environment.NewLine;
+                File.WriteAllText(Output+"/scene-reload-verification.txt",textReport);
+                Debug.Log("VALORIA_SCENE_RELOAD "+textReport);
+                if(!hasAuthoredEnvironment||!hasBlenderGate||meshCount<70||rendererCount<70)
+                    throw new Exception("Scene reload failed to preserve important geometry");
+                Camera camera=null;
+                foreach(var root in scene.GetRootGameObjects()){
+                    camera=root.GetComponentInChildren<Camera>(true);
+                    if(camera!=null)break;
+                }
+                if(camera==null)throw new Exception("Strategic camera missing from persisted scene");
+                camera.transform.position=new Vector3(39f,31f,-47f);
+                camera.transform.LookAt(new Vector3(0f,3f,5f));
+                camera.orthographic=true;camera.orthographicSize=24f;
+                Save(camera,Output+"/unity-reloaded-scene-1280x720.png",1280,720);
+                EditorApplication.Exit(0);
+            }catch(Exception ex){Debug.LogException(ex);EditorApplication.Exit(1);}
+        }
         static void Save(Camera camera,string name,int w,int h)
         {
             var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32){antiAliasing=4};
