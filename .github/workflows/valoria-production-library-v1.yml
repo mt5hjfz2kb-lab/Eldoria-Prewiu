@@ -26,7 +26,9 @@ jobs:
           sudo apt-get install -y blender python3-numpy libegl1 libgl1-mesa-dri
       - name: Produce editable Blender scenes, GLBs and evidence
         run: |
-          blender -b --python tools/valoria-production-library/build_library_v1.py
+          rm -rf art-source/valoria/production/library-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/LibraryV1
+          blender -b --python tools/valoria-production-library/build_library_v1.py 2>&1 | tee /tmp/valoria-library-blender.log
+          if grep -E "Traceback \\(most recent call last\\)|NameError:|RuntimeError:" /tmp/valoria-library-blender.log; then exit 1; fi
           for a in Valoria_Wall_LibraryV1 Valoria_Tower_LibraryV1 Valoria_Gate_LibraryV1; do
             test -s "art-source/valoria/production/library-v1/$a.blend"
             test -s "art-source/valoria/production/library-v1/$a.png"
