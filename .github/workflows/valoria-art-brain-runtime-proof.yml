@@ -1,0 +1,36 @@
+name: Eldoria existing art brain runtime proof
+on:
+  push:
+    branches: [ops/valoria-art-brain-runtime-recovery-20261011]
+    paths:
+      - tools/valoria-art-brain/runtime_probe.py
+      - .github/workflows/valoria-art-brain-runtime-proof.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Recover exact existing studio sources
+        run: |
+          git fetch --no-tags origin refs/heads/art/studio-reuse-handoff-20261011:refs/remotes/origin/art/studio-reuse-handoff-20261011
+          python3 tools/valoria-art-brain/bridge.py --stage "$RUNNER_TEMP/eldoria-art-brain" > "$RUNNER_TEMP/bridge-proof.json"
+          python3 -m py_compile "$RUNNER_TEMP/eldoria-art-brain/tools/art-studio-recovery/review_with_local_vision.py" "$RUNNER_TEMP/eldoria-art-brain/tools/art-studio-recovery/mcp_repair_contacts.py"
+      - name: Check runtime rather than equating source with running agent
+        run: |
+          python3 tools/valoria-art-brain/runtime_probe.py | tee "$RUNNER_TEMP/runtime-proof.json"
+          python3 -m json.tool "$RUNNER_TEMP/runtime-proof.json" >/dev/null
+          git diff --exit-code -- tools/valoria-art-brain/runtime_probe.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-art-brain-runtime-recovery-proof
+          path: |
+            ${{ runner.temp }}/bridge-proof.json
+            ${{ runner.temp }}/runtime-proof.json
+          retention-days: 14
