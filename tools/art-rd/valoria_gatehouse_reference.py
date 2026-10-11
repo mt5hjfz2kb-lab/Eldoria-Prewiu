@@ -159,6 +159,53 @@ def save(name,scale=23,target=(0,0,3.4)):
  setup(scale,target)
  bpy.context.scene.render.filepath=str(OUT/(name+".png"))
  bpy.ops.render.render(write_still=True)
+# Art-director v1: controlled major geometric intervention, not a cosmetic prop pass.
+# Baseline is the original 2026-10-10 authored gate; all new meshes remain editable.
+# The gate's enclosed defensible passage is emphasized by two tapered structural haunches
+# and a deep central elevated chamber, preserving the original towers and doors.
+def architectural_wedge(name, side, mat):
+    # Width increases at the base. Depth and height are structural rather than decals.
+    x0 = side * 3.15
+    yfront, yback = -1.55, 1.28
+    zbottom, ztop = .14, 6.95
+    near = side * 5.05
+    far = side * 3.63
+    verts = [(x,y,z) for z,x in ((zbottom,near),(ztop,far)) for y in (yfront,yback)]
+    # A closed tapered volume with outward-facing sides and lintel contact.
+    faces = [(0,1,3,2),(0,2,3,1)] if False else [(0,1,3,2)]
+    # Build 8 vertices with rectangular inner/outer widths at each elevation.
+    outerbottom,innerbottom = side*5.13,side*3.22
+    outertop,innertop = side*4.63,side*3.22
+    v=[(x,y,z) for z,inn,out in ((zbottom,innerbottom,outerbottom),(ztop,innertop,outertop))
+       for x,y in ((inn,yfront),(out,yfront),(out,yback),(inn,yback))]
+    f=[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]
+    mesh=bpy.data.meshes.new(name+"_solid_mesh");mesh.from_pydata(v,[],f);mesh.update()
+    obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
+    obj.data.materials.append(mat)
+    bevel=obj.modifiers.new("battered-stone-edges","BEVEL");bevel.width=.13;bevel.segments=3
+    obj.modifiers.new("weighted-normals","WEIGHTED_NORMAL")
+    return obj
+
+for side in (-1,1):
+    architectural_wedge("valoria_integral_battered_buttress_"+str(side),side,stone[2])
+    # Recessed high defensive walk with a thick continuous bridge behind the parapet.
+    box("upper_defensive_walk", (side*2.05,.32,6.65),(3.55,2.66,.55),stone[4],.09)
+    # Robust roofline terminating in solid, sloping stone rather than stacked cubes.
+    x=side*3.15
+    for height,extent in ((6.98,1.55),(7.25,1.31)):
+        box("buttress_weathering_cap",(x,-1.34,height),(extent,.61,.19),trim,.085)
+# A strong, continuous outer arch band, integrated into front masonry.
+for j in range(18):
+    theta0=math.pi*j/18
+    theta1=math.pi*(j+1)/18-.004
+    base.arch_segment("monumental_loadbearing_outer_arch",0,-1.42,3.02,2.10,theta0,theta1,.34,stone[(j+3)%8],.105)
+# Continuous battlement platform creates an identifiable central gatehouse silhouette.
+box("continuous_gatehouse_crown",(0,.48,7.25),(8.55,3.2,.51),stone[5],.13)
+for ix in (-3.6,-2.4,-1.2,0,1.2,2.4,3.6):
+    box("gatehouse_parapet_merlon",(ix,-1.12,7.79),(.67,.57,1.02),stone[1],.075)
+# Capture major-geometry operation in the manifest for later independent review.
+art_director_geometry={"baseline":"gate_reference_hero","operation":"two_integrated_tapered_buttresses_plus_full_arch_and_crown","chosen_for":"stronger depth silhouette and structural continuity","artistic_status":"REVIEW_REQUIRED"}
+
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
 # Save editable source before packing geometry.
@@ -180,7 +227,7 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in objects:ob.select_set(True)
 bpy.context.view_layer.objects.active=objects[0]
 bpy.ops.export_scene.gltf(filepath=str(OUT/"valoria_gate_reference.glb"),export_format='GLB',use_selection=True)
-data={"triangles":sum(len(p.vertices)-2 for o in objects for p in o.data.polygons),"mesh_count":len(objects),"materials":len({m.name for o in objects for m in o.data.materials}),"glb_bytes":(OUT/"valoria_gate_reference.glb").stat().st_size,"wall_to_tower_edge_contact_x":[-8.65,8.65],"visual_certification":"requires review","unity_mobile_tested":False}
+data={"art_director_geometry":art_director_geometry,"triangles":sum(len(p.vertices)-2 for o in objects for p in o.data.polygons),"mesh_count":len(objects),"materials":len({m.name for o in objects for m in o.data.materials}),"glb_bytes":(OUT/"valoria_gate_reference.glb").stat().st_size,"wall_to_tower_edge_contact_x":[-8.65,8.65],"visual_certification":"requires review","unity_mobile_tested":False}
 (OUT/"gate_reference_manifest.json").write_text(json.dumps(data,indent=2))
 # Render context after gate-only source/export has been written.
 base.wall("west_attach",-12.8,0,8.3)
