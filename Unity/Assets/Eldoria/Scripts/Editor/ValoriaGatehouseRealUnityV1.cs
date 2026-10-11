@@ -99,12 +99,12 @@ namespace Eldoria.EditorTools
             // Visual vertical slice: isolated environment around the authored gateway.
             prior.SetActive(false); root.SetActive(true); wall.SetActive(true); wallRight.SetActive(true);
             var world = new GameObject("Valoria Bastion I - visual vertical slice");
-            var grass = MaterialOf("Highland meadow",new Color(.34f,.39f,.20f));
-            var rock = MaterialOf("Stratified slate cliffs",new Color(.28f,.30f,.35f));
-            var pathMat = MaterialOf("Warm cobbled approach",new Color(.48f,.39f,.31f));
-            var pine = MaterialOf("Pine dark needles",new Color(.105f,.18f,.13f));
+            var grass = TexturedMaterial("Highland meadow",new Color(.76f,.82f,.65f),"ground",9f);
+            var rock = TexturedMaterial("Stratified slate cliffs",new Color(.78f,.8f,.85f),"rock",8f);
+            var pathMat = TexturedMaterial("Warm cobbled approach",new Color(.9f,.82f,.71f),"stone",4f);
+            var pine = TexturedMaterial("Pine dark needles",new Color(.43f,.65f,.48f),"vegetation",2f);
             var wood = MaterialOf("Pine trunk",new Color(.23f,.16f,.11f));
-            var undergrowth = MaterialOf("Undergrowth",new Color(.25f,.32f,.16f));
+            var undergrowth = TexturedMaterial("Undergrowth",new Color(.52f,.75f,.43f),"vegetation",2f);
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
             BuildPlateau(world.transform,grass,rock);
             RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=85f; RenderSettings.fogEndDistance=180f;
@@ -124,6 +124,17 @@ namespace Eldoria.EditorTools
             upperWallRight.transform.SetParent(world.transform,true);
             upperWallRight.transform.localScale*=.78f;
             upperWallRight.transform.position=new Vector3(9.1f,HeightAt(9f,27f),27f);
+            // Cold dusk and warm entrance lighting retained by the strategic camera.
+            light.intensity=.87f;
+            light.color=new Color(.78f,.85f,1f);
+            RenderSettings.ambientLight=new Color(.31f,.36f,.43f);
+            foreach(var p in new[]{new Vector3(-5f,4.2f,-1f),new Vector3(5f,4.2f,-1f),new Vector3(-3f,8f,27f),new Vector3(3f,8f,27f)}){
+                var torch=new GameObject("Amber torch light").AddComponent<Light>();
+                torch.type=LightType.Point;
+                torch.color=new Color(1f,.48f,.16f);
+                torch.intensity=2.3f;torch.range=10f;torch.shadows=LightShadows.None;
+                torch.transform.position=p;
+            }
             // Route winds in from the south; individually placed pavers avoid flat decal geometry.
             for(int i=0;i<70;i++){
                 float z=-40f+i*.83f;
@@ -137,7 +148,7 @@ namespace Eldoria.EditorTools
                 Object.DestroyImmediate(paving.GetComponent<Collider>());
             }
             var rand=new System.Random(93011);
-            for(int i=0;i<105;i++){
+            for(int i=0;i<85;i++){
                 float a=(float)rand.NextDouble()*Mathf.PI*2f;
                 float r=12f+(float)rand.NextDouble()*31f;
                 float x=Mathf.Cos(a)*r, z=Mathf.Sin(a)*r;
@@ -158,7 +169,7 @@ namespace Eldoria.EditorTools
                 boulder.GetComponent<Renderer>().sharedMaterial=rock;
                 Object.DestroyImmediate(boulder.GetComponent<Collider>());
             }
-            for(int i=0;i<150;i++){
+            for(int i=0;i<110;i++){
                 float x=(float)(rand.NextDouble()*72-36),z=(float)(rand.NextDouble()*72-36);
                 if(Mathf.Abs(x)<4f&&z>-40f&&z<30f)continue;
                 var brush=GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -173,9 +184,17 @@ namespace Eldoria.EditorTools
             camera.transform.LookAt(new Vector3(0f,0f,0f));
             camera.orthographicSize=35f;
             Save(camera,Output+"/unity-valoria-slice-landscape-1280x720.png",1280,720);
+            camera.orthographicSize=25f;
+            camera.transform.position=new Vector3(28f,23f,-37f);
+            camera.transform.LookAt(new Vector3(0f,3f,5f));
+            Save(camera,Output+"/unity-valoria-slice-closeup-1280x720.png",1280,720);
+            camera.orthographicSize=48f;
+            camera.transform.position=new Vector3(49f,42f,-65f);
+            camera.transform.LookAt(new Vector3(0f,1f,0f));
+            Save(camera,Output+"/unity-valoria-slice-overview-1280x720.png",1280,720);
             camera.transform.position=new Vector3(42f,38f,-56f);
             camera.transform.LookAt(new Vector3(0f,0f,-3f));
-            camera.orthographicSize=38f;
+            camera.orthographicSize=30f;
             Save(camera,Output+"/unity-valoria-slice-portrait-390x844.png",390,844);
             var scenePath="Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity";
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),scenePath);
@@ -203,13 +222,29 @@ namespace Eldoria.EditorTools
             Debug.Log("GATEHOUSE_UNITY_CAPTURE_COMPLETE "+Path.GetFullPath(Output));
         }
 
+        static Material TexturedMaterial(string name,Color tint,string family,float repeat){
+            var mat=MaterialOf(name,tint);
+            var dir="Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/";
+            var albedo=AssetDatabase.LoadAssetAtPath<Texture2D>(dir+family+"_albedo.png");
+            var normal=AssetDatabase.LoadAssetAtPath<Texture2D>(dir+family+"_normal.png");
+            if(albedo!=null){
+                mat.mainTexture=albedo;
+                mat.mainTextureScale=new Vector2(repeat,repeat);
+                if(mat.HasProperty("_BaseMap")){mat.SetTexture("_BaseMap",albedo);mat.SetTextureScale("_BaseMap",new Vector2(repeat,repeat));}
+            }
+            if(normal!=null){
+                mat.SetTexture("_BumpMap",normal);
+                mat.EnableKeyword("_NORMALMAP");
+            }
+            return mat;
+        }
         static Material MaterialOf(string name,Color color){
             var m=new Material(Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard"));
             m.name=name;m.color=color;return m;
         }
         static float HeightAt(float x,float z){
             float rise=Mathf.SmoothStep(0f,5.2f,Mathf.InverseLerp(8f,26f,z));
-            return -.25f+rise+.35f*Mathf.Sin(x*.18f)*Mathf.Cos(z*.14f);
+            return -.25f+rise+.35f*Mathf.Sin(x*.18f)*Mathf.Cos(z*.14f)+.19f*Mathf.Sin(x*.43f+z*.37f);
         }
 
         static void BuildPlateau(Transform parent,Material grass,Material cliff){
@@ -221,7 +256,7 @@ namespace Eldoria.EditorTools
                 float fraction=(float)ring/rings;
                 for(int sec=0;sec<=sectors;sec++){
                     float angle=sec*Mathf.PI*2f/sectors;
-                    float perimeter=radius+2.0f*Mathf.Sin(angle*7f)+1.1f*Mathf.Cos(angle*13f);
+                    float perimeter=radius+2.0f*Mathf.Sin(angle*7f)+1.1f*Mathf.Cos(angle*13f)+.4f*Mathf.Sin(angle*29f);
                     float x=Mathf.Cos(angle)*perimeter*fraction;
                     float z=Mathf.Sin(angle)*perimeter*fraction;
                     verts[ring*(sectors+1)+sec]=new Vector3(x,HeightAt(x,z),z);
@@ -243,7 +278,7 @@ namespace Eldoria.EditorTools
             var faces=new int[sectors*12];
             for(int sec=0;sec<=sectors;sec++){
                 float ang=sec*Mathf.PI*2f/sectors;
-                float outer=radius+2f*Mathf.Sin(ang*7f)+1.1f*Mathf.Cos(ang*13f);
+                float outer=radius+2f*Mathf.Sin(ang*7f)+1.1f*Mathf.Cos(ang*13f)+.4f*Mathf.Sin(ang*29f);
                 float x=outer*Mathf.Cos(ang),z=outer*Mathf.Sin(ang);
                 int i=sec*3;
                 edge[i]=new Vector3(x,HeightAt(x,z)-.05f,z);
