@@ -177,94 +177,6 @@
       "capture": "wall_connections/roundtrip-LOD2-strategic.png"
     },
     {
-      "asset": "stone_path_platform",
-      "lod": 0,
-      "file_sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
-      "meshes": 7,
-      "triangles": 7980,
-      "bounds_m": [
-        [
-          -2.359464645385742,
-          2.359464645385742
-        ],
-        [
-          -4.0,
-          4.0
-        ],
-        [
-          -0.25999999046325684,
-          0.06176890805363655
-        ]
-      ],
-      "capture": "stone_path_platform/roundtrip-hero.png"
-    },
-    {
-      "asset": "stone_path_platform",
-      "lod": 2,
-      "file_sha256": "dd98fb0c983c2d7b5595dd30fc83f96c6cb382029193b2d515927f9523400374",
-      "meshes": 7,
-      "triangles": 2867,
-      "bounds_m": [
-        [
-          -2.359464645385742,
-          2.359464645385742
-        ],
-        [
-          -4.0,
-          4.0
-        ],
-        [
-          -0.25177741050720215,
-          0.06176890805363655
-        ]
-      ],
-      "capture": "stone_path_platform/roundtrip-LOD2-strategic.png"
-    },
-    {
-      "asset": "cliff_rocks",
-      "lod": 0,
-      "file_sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
-      "meshes": 2,
-      "triangles": 25666,
-      "bounds_m": [
-        [
-          -6.3436994552612305,
-          6.23118257522583
-        ],
-        [
-          -3.5602569580078125,
-          2.0
-        ],
-        [
-          -3.66115140914917,
-          0.06499999761581421
-        ]
-      ],
-      "capture": "cliff_rocks/roundtrip-hero.png"
-    },
-    {
-      "asset": "cliff_rocks",
-      "lod": 2,
-      "file_sha256": "948a18bc32b41b2cf79b9e97125da7493fc3b435947f8d2602fe157ffb71f424",
-      "meshes": 2,
-      "triangles": 9239,
-      "bounds_m": [
-        [
-          -6.3428521156311035,
-          6.23118257522583
-        ],
-        [
-          -3.559711217880249,
-          2.0
-        ],
-        [
-          -3.659507989883423,
-          0.06500039249658585
-        ]
-      ],
-      "capture": "cliff_rocks/roundtrip-LOD2-strategic.png"
-    },
-    {
       "asset": "defensive_props",
       "lod": 0,
       "file_sha256": "5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c",
@@ -307,6 +219,94 @@
         ]
       ],
       "capture": "defensive_props/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "stone_path_platform",
+      "lod": 0,
+      "file_sha256": "26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1",
+      "meshes": 7,
+      "triangles": 8088,
+      "bounds_m": [
+        [
+          -2.359464645385742,
+          2.359464645385742
+        ],
+        [
+          -4.0,
+          4.0
+        ],
+        [
+          -0.25999999046325684,
+          0.022593840956687927
+        ]
+      ],
+      "capture": "stone_path_platform/roundtrip-hero.png"
+    },
+    {
+      "asset": "stone_path_platform",
+      "lod": 2,
+      "file_sha256": "fd18f6fc57e3beb71ff8567f75460a3c90876abfb892c13ef1b95c2773212f0a",
+      "meshes": 7,
+      "triangles": 2907,
+      "bounds_m": [
+        [
+          -2.359464645385742,
+          2.359464645385742
+        ],
+        [
+          -4.0,
+          4.0
+        ],
+        [
+          -0.25177741050720215,
+          0.020179394632577896
+        ]
+      ],
+      "capture": "stone_path_platform/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "cliff_rocks",
+      "lod": 0,
+      "file_sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
+      "meshes": 2,
+      "triangles": 24298,
+      "bounds_m": [
+        [
+          -6.148065090179443,
+          6.373531341552734
+        ],
+        [
+          -3.61665415763855,
+          2.0
+        ],
+        [
+          -3.66115140914917,
+          0.06499999761581421
+        ]
+      ],
+      "capture": "cliff_rocks/roundtrip-hero.png"
+    },
+    {
+      "asset": "cliff_rocks",
+      "lod": 2,
+      "file_sha256": "4589f062082a855118a84c52cd854d35dd760a3d9d78427e649509123d4aa226",
+      "meshes": 2,
+      "triangles": 8746,
+      "bounds_m": [
+        [
+          -6.147832870483398,
+          6.373536109924316
+        ],
+        [
+          -3.617018461227417,
+          2.0
+        ],
+        [
+          -3.659507989883423,
+          0.06500031799077988
+        ]
+      ],
+      "capture": "cliff_rocks/roundtrip-LOD2-strategic.png"
     }
   ],
   "art_pass": false,

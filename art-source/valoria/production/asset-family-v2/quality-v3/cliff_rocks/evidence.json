@@ -1,37 +1,37 @@
 {
   "asset": "cliff_rocks",
-  "triangles": 25666,
+  "triangles": 24298,
   "export_meshes": 2,
   "effective_materials": 2,
   "lods": [
     {
       "level": 1,
-      "triangles": 15399,
+      "triangles": 14578,
       "relative_to_lod0": 0.6,
       "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
     },
     {
       "level": 2,
-      "triangles": 9239,
+      "triangles": 8746,
       "relative_to_lod0": 0.36,
       "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
     }
   ],
   "bounds_m": [
     [
-      -6.3428521156311035,
-      6.23118257522583
+      -6.147832870483398,
+      6.373536109924316
     ],
     [
-      -3.559711217880249,
+      -3.617018461227417,
       2.0
     ],
     [
       -3.659507989883423,
-      0.06500039249658585
+      0.06500031799077988
     ]
   ],
-  "glb_bytes": 8646584,
+  "glb_bytes": 8301040,
   "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
   "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
   "ai_plan": {
@@ -59,8 +59,12 @@
     {
       "operation": "fault_plane_escarpment",
       "continuous_vertices": 2817,
+      "closed_bedrock_edge_manifold_verified": true,
       "primary_fault_slabs": 4,
       "scan_to_connected_surface_transfer": true,
+      "angular_fault_planes_with_scanned_secondary_relief": true,
+      "recessed_fissures_positive_depth": true,
+      "matched_end_profiles_verified": true,
       "real_cc0_scanned_masses": 4,
       "cc0_source": "https://opengameart.org/content/free-photogrammetric-rock",
       "donor_blend_sha256": "924ca5676a60d2fe3487ba98b66ec0ff4befb96c0954d0f95beff83227f598d4",

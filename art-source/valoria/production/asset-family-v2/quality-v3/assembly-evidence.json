@@ -21,7 +21,7 @@
         0,
         0
       ],
-      "angle": 3.141592653589793
+      "angle": 0
     },
     {
       "asset": "wall_straight",
@@ -32,7 +32,7 @@
         0,
         0
       ],
-      "angle": 3.141592653589793
+      "angle": 0
     },
     {
       "asset": "wall_corner",
@@ -43,7 +43,7 @@
         0,
         0
       ],
-      "angle": 3.141592653589793
+      "angle": -1.5707963267948966
     },
     {
       "asset": "watchtower",
@@ -102,7 +102,7 @@
     },
     {
       "asset": "cliff_rocks",
-      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
       "meshes": 2,
       "position": [
         -24,
@@ -113,7 +113,7 @@
     },
     {
       "asset": "cliff_rocks",
-      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
       "meshes": 2,
       "position": [
         -12,
@@ -124,7 +124,7 @@
     },
     {
       "asset": "cliff_rocks",
-      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
       "meshes": 2,
       "position": [
         0,
@@ -135,7 +135,7 @@
     },
     {
       "asset": "cliff_rocks",
-      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
       "meshes": 2,
       "position": [
         12,
@@ -146,7 +146,7 @@
     },
     {
       "asset": "cliff_rocks",
-      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
       "meshes": 2,
       "position": [
         24,
@@ -157,22 +157,22 @@
     },
     {
       "asset": "stone_path_platform",
-      "sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "sha256": "26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1",
       "meshes": 7,
       "position": [
         0,
-        -4,
+        -3.5,
         0.005
       ],
       "angle": 0
     },
     {
       "asset": "stone_path_platform",
-      "sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "sha256": "26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1",
       "meshes": 7,
       "position": [
         0,
-        4,
+        4.5,
         0.005
       ],
       "angle": 0

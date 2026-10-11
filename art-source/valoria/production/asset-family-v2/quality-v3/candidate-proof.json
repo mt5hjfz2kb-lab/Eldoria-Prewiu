@@ -1,42 +1,42 @@
 {
   "assets": {
     "cliff_rocks": {
-      "blend_sha256": "764caa520eba1a744e919e06ab0637de3687ecc6012f9004d8de04b594cc3e0c",
-      "glb_sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "blend_sha256": "f58431288a7eebfdcefb871d12193fcd1a2f0a9cf61f51832ff9516b7ccb8dfa",
+      "glb_sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
       "evidence": {
         "asset": "cliff_rocks",
-        "triangles": 25666,
+        "triangles": 24298,
         "export_meshes": 2,
         "effective_materials": 2,
         "lods": [
           {
             "level": 1,
-            "triangles": 15399,
+            "triangles": 14578,
             "relative_to_lod0": 0.6,
             "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
           },
           {
             "level": 2,
-            "triangles": 9239,
+            "triangles": 8746,
             "relative_to_lod0": 0.36,
             "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
           }
         ],
         "bounds_m": [
           [
-            -6.3428521156311035,
-            6.23118257522583
+            -6.147832870483398,
+            6.373536109924316
           ],
           [
-            -3.559711217880249,
+            -3.617018461227417,
             2.0
           ],
           [
             -3.659507989883423,
-            0.06500039249658585
+            0.06500031799077988
           ]
         ],
-        "glb_bytes": 8646584,
+        "glb_bytes": 8301040,
         "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
         "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
         "ai_plan": {
@@ -64,8 +64,12 @@
           {
             "operation": "fault_plane_escarpment",
             "continuous_vertices": 2817,
+            "closed_bedrock_edge_manifold_verified": true,
             "primary_fault_slabs": 4,
             "scan_to_connected_surface_transfer": true,
+            "angular_fault_planes_with_scanned_secondary_relief": true,
+            "recessed_fissures_positive_depth": true,
+            "matched_end_profiles_verified": true,
             "real_cc0_scanned_masses": 4,
             "cc0_source": "https://opengameart.org/content/free-photogrammetric-rock",
             "donor_blend_sha256": "924ca5676a60d2fe3487ba98b66ec0ff4befb96c0954d0f95beff83227f598d4",
@@ -319,23 +323,23 @@
       }
     },
     "stone_path_platform": {
-      "blend_sha256": "913a4e642e29b6b236692876073d71f689009d64c668baef9d90db4b23190bf3",
-      "glb_sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "blend_sha256": "8642f6d93cc869c6cd9cf8043391384811f7dc7babce84b9c7e2ebfe7ad53c66",
+      "glb_sha256": "26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1",
       "evidence": {
         "asset": "stone_path_platform",
-        "triangles": 7980,
+        "triangles": 8088,
         "export_meshes": 7,
         "effective_materials": 7,
         "lods": [
           {
             "level": 1,
-            "triangles": 4782,
+            "triangles": 4848,
             "relative_to_lod0": 0.599,
             "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
           },
           {
             "level": 2,
-            "triangles": 2867,
+            "triangles": 2907,
             "relative_to_lod0": 0.359,
             "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
           }
@@ -351,10 +355,10 @@
           ],
           [
             -0.25177741050720215,
-            0.06176890805363655
+            0.020179394632577896
           ]
         ],
-        "glb_bytes": 13762960,
+        "glb_bytes": 13768884,
         "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
         "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
         "ai_plan": {
@@ -387,7 +391,8 @@
               4,
               8
             ],
-            "maximum_relief_m": 0.025
+            "maximum_relief_m": 0.022617550566792488,
+            "maximum_relief_contract_m": 0.025
           }
         ],
         "art_pass": false,
@@ -561,64 +566,71 @@
   },
   "renders": {
     "art-source/valoria/production/asset-family-v2/quality-v3/assembly-gate-contact.jpg": {
-      "png_sha256": "de57bff4c94d1d72a0f89340f7b41009474c5d37d68c1787f210b259c07ccc6c",
-      "jpeg_sha256": "e517e933c750841693a1119ac3999a69c9852c8459b3934f02d72527f69e5f3b",
+      "png_sha256": "d4639580535d4e743e5c5bc75c0b054784d0dbdb07afc7546df5535f1b9b7987",
+      "jpeg_sha256": "e3212bf096091e71275a269d39857897e3918e6eba1ecb5c7b521f9334c3951f",
       "width": 1600,
       "height": 1000,
-      "bytes": 406944
+      "bytes": 408629
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/assembly-hero.jpg": {
-      "png_sha256": "54872862a8533dadcb6cdf90fb36fddaec60bbb322fb4d0062cecd24b78e03de",
-      "jpeg_sha256": "a49c4513feeaec2a1b12c9125a0161714fe7cf16a603891387e4de37cfcc7d47",
+      "png_sha256": "52dede5254c6d804d9be74eb1dd7f285b87c7ca3d91cf6899bc965f32cbce2cc",
+      "jpeg_sha256": "3e76e83ca21ffc5f4acadfa289669d56ea892b975a905b1e9d25eef87627a319",
       "width": 1600,
       "height": 1000,
-      "bytes": 235610
+      "bytes": 234919
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/assembly-strategic.jpg": {
-      "png_sha256": "4b2011847d8ac8249e1ac3377d7573a421a2c9357298c33d81a1ad4c28d56a26",
-      "jpeg_sha256": "9749afac792dd09585527c147b14172688f3b6627517becad2eba4deefb68f84",
+      "png_sha256": "1e7c5d7e65dfd4068bd760f02c0462779905b1b2967755462e271d6d89722f4e",
+      "jpeg_sha256": "bbd5eb61d66dc6ed916037bcddfb237665af0044f4f977a1fbeb31bbf4239eda",
       "width": 1600,
       "height": 1000,
-      "bytes": 205541
+      "bytes": 205760
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/family-board.jpg": {
+      "png_sha256": "9b3f5db2cbd10509c5f3c53ea94fd30e1a2dd374d3b9e844e0b7cb2115c81ece",
+      "jpeg_sha256": "eaa08cfad8857bc4bb5305f1080ba6e117c18e40166769970848df2481c3a57d",
+      "width": 2200,
+      "height": 976,
+      "bytes": 302680
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/after-strategic.jpg": {
-      "png_sha256": "2cc4e3dcc80ab1ec69f2cca89c756166f7f1753053d2d8240720fcc32b55439c",
-      "jpeg_sha256": "ad853ddf30facc2265ace16f0c233b5a05d43f42d1376a2dad173609e7755238",
+      "png_sha256": "6b2fe27c0649395fe530a6c4daee6b2e64a834ac550369cfe25478cc07bfb794",
+      "jpeg_sha256": "1aa56a14a456103b0ba5f9e11c11eadc519e8f25e074d41c452c1ffe325bfa07",
       "width": 1100,
       "height": 850,
-      "bytes": 68285
+      "bytes": 67539
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/after-hero.jpg": {
-      "png_sha256": "38b34f74051fc08b8c63559b315faa963f628aa93ff0fbd0645dbbaa572503d6",
-      "jpeg_sha256": "64424aec0a36c1ec46f4bb149ec791ef671609325f77cad8c686df3ac0677dd3",
+      "png_sha256": "cf8e6ba3467fa0a9b59403db39118d04da378c39a88d71c14a68243a8f494508",
+      "jpeg_sha256": "fb79e58e2075eb7dcd7d6631e32d8b1bb4d157cf8ce05b62e651336395430109",
       "width": 1100,
       "height": 850,
-      "bytes": 91755
+      "bytes": 90683
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/roundtrip-LOD2-strategic.jpg": {
-      "png_sha256": "08f1e3da261d01af7921f2d94127213aaf5b77c4b7ed581bf5cb498b5b0c4b7a",
-      "jpeg_sha256": "fefa8fa8476fa23f6fb4e1cf9bb9838f73453ea87e01fc653354e9b09e3a6c33",
+      "png_sha256": "0916f1d52c3c4d688fd5dfb9af5e0dd5dc0ec0a4e1c7b0a9a51672fc4c3c57d3",
+      "jpeg_sha256": "604a1b34f7c18d0b5043437680711c373ada188ad8c7cf331c306d1c69d33979",
       "width": 1100,
       "height": 850,
-      "bytes": 68423
+      "bytes": 67757
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/roundtrip-hero.jpg": {
-      "png_sha256": "da5a20bbe598d68d4a7de1ef665eb8966f8c326b5086561dd395420a9e143c5a",
-      "jpeg_sha256": "db0419d487e0e6bdffe33a87963294384714c815612a3dac2f84b7a3259fd863",
+      "png_sha256": "bfaf7af647b7497b4b769474484a348f4c46cf208a732d6293db30ebe03748d5",
+      "jpeg_sha256": "8bed04cbdc21021bc06cad0630a4ada2bf5eec8c15c696f93536c8725cd53440",
       "width": 1100,
       "height": 850,
-      "bytes": 92047
+      "bytes": 90952
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/before-hero.jpg": {
-      "png_sha256": "c6c5f3e39e4425f05ec915f37e54ae15dbf59e5ce9fe20110338a6de0db875ae",
-      "jpeg_sha256": "541fed59a7cf2a7fd92579884bac2ec3284400ecfd81cf0bb02010eb0046e360",
+      "png_sha256": "4921a9672c2d4cad0891048b4171ca4a50b70a40041483967d550099ae6278ec",
+      "jpeg_sha256": "4e0b6ed2fdca9aa83573c7bec46949975bc243e907e1e510618b76caf9aa327b",
       "width": 1100,
       "height": 850,
-      "bytes": 105161
+      "bytes": 105195
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/before-strategic.jpg": {
-      "png_sha256": "35a0f145aef69040edebd40feecfa8e024446ef107528c9b4a7e0a530617c994",
-      "jpeg_sha256": "6b619b70bc938cb6d310563e09953edcc8dc87aea80430bc8c3d383d07e697c2",
+      "png_sha256": "39eddf48fc0471a01f740395ece159eaf6c037c6e9e0ecb858a3b5979f377d73",
+      "jpeg_sha256": "069e7e5be2cf29b66016864927dd2d6ccadeca3f849f6b6e2e90b732f93c5792",
       "width": 1100,
       "height": 850,
       "bytes": 77148
@@ -750,46 +762,46 @@
       "bytes": 83767
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/after-strategic.jpg": {
-      "png_sha256": "959ea60642fdb37303e5ec98f2a0eb7c880ca8f757b3192aecb99c4840fe55f3",
-      "jpeg_sha256": "a51ea34cbb24dc7cb075d8b4559db82afe26513ac1ff497868288ec7b37f82d5",
+      "png_sha256": "4a19df51e6b28438c3392857c7ccdd39a0e44cac4ca89e9eaa85850ec08f1a28",
+      "jpeg_sha256": "2115f9863788b4ee6ae14a511afdc7156565da4265155a50c63f29673dcd565d",
       "width": 1100,
       "height": 850,
-      "bytes": 64561
+      "bytes": 63450
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/after-hero.jpg": {
-      "png_sha256": "78b08954ed828387b530d5f284a76d9c54b1c49e68396c568849f49535b4e116",
-      "jpeg_sha256": "3148818e506b590b91a788826578840f3bdbb946aecf3209a9ee1e87330881ce",
+      "png_sha256": "8aaf8ecdabbd518ebbd8ec189f76a8e5b7b0c6258903a84b125b230eec7c1379",
+      "jpeg_sha256": "4b5e545a65da31bbf119d15f0eae0a9f9c630b146050f298c89d9da938d9f792",
       "width": 1100,
       "height": 850,
-      "bytes": 80212
+      "bytes": 79086
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/roundtrip-LOD2-strategic.jpg": {
-      "png_sha256": "1342fcfb16f199fdd3dfe89ed30d37b9b8852dbe4cefca628cbec93ee2044b12",
-      "jpeg_sha256": "2e61accddf5c462d5f07c8c3ab3a380af9cc657713b07b648a18cb9859e8f2c1",
+      "png_sha256": "df1da2aceed70f2a19044a34741bc2ddcaec8fd5f5fa841b0d03663f2b3f1803",
+      "jpeg_sha256": "d48d1d213db260067038d97740c201a45362ece199ece11081c300623a2024fb",
       "width": 1100,
       "height": 850,
-      "bytes": 65639
+      "bytes": 65511
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/roundtrip-hero.jpg": {
-      "png_sha256": "5edee0c7a2525ddf6c4dfdd7cfd49b1ae4fcfbadd4520fa9dd83b49988814512",
-      "jpeg_sha256": "609d565de4af129885d88d20c4d0742ddfdcb7007a3475f25d27d338627816fd",
+      "png_sha256": "cc57eb6cbeaabfe255c5e78e2b40720c291feadc66ca1f546a76e938d7ae94d3",
+      "jpeg_sha256": "40ff41260c1a67dfa43b56cb6eb791e169406bf76a33467668184bdf42e61fbb",
       "width": 1100,
       "height": 850,
-      "bytes": 80442
+      "bytes": 79184
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/before-hero.jpg": {
-      "png_sha256": "17d384b298822dc6d9126240d06124100c38ac27867f86840fe3bbca06446410",
+      "png_sha256": "20bbfc32e0a6445e7997a42c3be53d91ce651fe4e1082b0a96c0f9fc4911226b",
       "jpeg_sha256": "4f19c5f6addacb0deed8b4767120d7f0a35ef8b54631f05efd3c8e217a28dde0",
       "width": 1100,
       "height": 850,
       "bytes": 132513
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/before-strategic.jpg": {
-      "png_sha256": "4ea6bfb714921f8bd3de69871622c713b4202e8532fe572a08398eac79523905",
-      "jpeg_sha256": "5aff738f2a8b1bfd2a3bfefa59657b7861d4e1f5a455d8bc7e0413abda387c36",
+      "png_sha256": "436d4307fc2bca68df871fb8aadd10d74111d509305e2cea50548a07a3741c68",
+      "jpeg_sha256": "de3b5b127fecc4e538929f1efa76e81a69e16399a3e49394ab73ffed9c886f61",
       "width": 1100,
       "height": 850,
-      "bytes": 99807
+      "bytes": 99811
     },
     "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/after-strategic.jpg": {
       "png_sha256": "a364c3228a41d4d687b0774fea991ba680e6fada523d9f633e1f0635a1c6e49f",
