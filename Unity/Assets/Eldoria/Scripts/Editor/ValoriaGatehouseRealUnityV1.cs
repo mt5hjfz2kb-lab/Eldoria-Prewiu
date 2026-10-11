@@ -132,9 +132,9 @@ namespace Eldoria.EditorTools
             upperWallRight.transform.localScale*=.78f;
             upperWallRight.transform.position=new Vector3(9.1f,HeightAt(9f,27f),27f);
             // Cold dusk and warm entrance lighting retained by the strategic camera.
-            light.intensity=1.45f;
+            light.intensity=1.05f;
             light.color=new Color(.96f,.86f,.74f);
-            RenderSettings.ambientLight=new Color(.58f,.62f,.68f);
+            RenderSettings.ambientLight=new Color(.43f,.49f,.58f);
             foreach(var p in new[]{new Vector3(-5f,4.2f,-1f),new Vector3(5f,4.2f,-1f),new Vector3(-3f,8f,27f),new Vector3(3f,8f,27f)}){
                 var torch=new GameObject("Amber torch light").AddComponent<Light>();
                 torch.type=LightType.Point;
@@ -155,22 +155,22 @@ namespace Eldoria.EditorTools
                 Object.DestroyImmediate(paving.GetComponent<Collider>());
             }
             // Existing Eldoria panorama used as an actual distant visual layer, not as gameplay.
-            camera.transform.position=new Vector3(44f,34f,-57f);
-            camera.transform.LookAt(new Vector3(0f,0f,0f));
-            camera.orthographicSize=35f;
+            camera.transform.position=new Vector3(39f,31f,-47f);
+            camera.transform.LookAt(new Vector3(0f,3f,5f));
+            camera.orthographicSize=24f;
             var backdrop=CreateValleyBackdrop(camera);
             Save(camera,Output+"/unity-valoria-slice-landscape-1280x720.png",1280,720);
-            camera.orthographicSize=25f;
+            camera.orthographicSize=17f;
             camera.transform.position=new Vector3(28f,23f,-37f);
             camera.transform.LookAt(new Vector3(0f,3f,5f));
             Save(camera,Output+"/unity-valoria-slice-closeup-1280x720.png",1280,720);
-            camera.orthographicSize=48f;
+            camera.orthographicSize=41f;
             camera.transform.position=new Vector3(49f,42f,-65f);
             camera.transform.LookAt(new Vector3(0f,1f,0f));
             Save(camera,Output+"/unity-valoria-slice-overview-1280x720.png",1280,720);
             camera.transform.position=new Vector3(42f,38f,-56f);
             camera.transform.LookAt(new Vector3(0f,0f,-3f));
-            camera.orthographicSize=30f;
+            camera.orthographicSize=28f;
             Save(camera,Output+"/unity-valoria-slice-portrait-390x844.png",390,844);
             var scenePath="Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity";
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),scenePath);
