@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "iteration": 8,
+  "iteration": 9,
   "owner": "chat-work-valoria-family-quality-takeover-20261011",
   "source_run": 38174276796,
   "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
@@ -12,5 +12,11 @@
   "unity_pass": false,
   "reuse_artist_run": 0,
   "initial_artist_reference": "references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
-  "failed_artist_run": 38178403301
+  "failed_artist_run": 38178403301,
+  "failed_artist_runs": [
+    38178403301,
+    38180415035
+  ],
+  "artist_model": "qwen3-vl:4b",
+  "measurement_contract": "Explicit per-stone/per-slab metre values and grammar-enforced finite numerical choices; no synthetic clamping"
 }

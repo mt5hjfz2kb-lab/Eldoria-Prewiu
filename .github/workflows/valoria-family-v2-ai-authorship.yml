@@ -5,7 +5,7 @@ on:
     paths: ['pipeline/valoria-family-quality-request.json']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   actions: read
 concurrency:
   group: valoria-family-art-${{ github.ref }}
@@ -41,6 +41,8 @@ jobs:
           sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
           sudo apt-get update -qq
           sudo apt-get install -y python3-pil python3-numpy
+          sed -i 's/qwen2.5vl:3b/qwen3-vl:4b/g' "$RUNNER_TEMP/start-qwen.sh"
+          python3 -m py_compile tools/art-rd/valoria_family_v2_1_qwen_art_director.py
           bash "$RUNNER_TEMP/start-qwen.sh"
       - name: External artist directs seven substantial designs before mesh construction
         if: env.ARTIST_RUN == '0'
@@ -87,6 +89,22 @@ jobs:
           blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_quality_assemble.py
           blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_quality_verify.py
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/asset-family-v2/quality-v3/*/*.glb > art-source/valoria/production/asset-family-v2/quality-v3/glb-preflight.json
+      - name: Preserve unreviewed real-source candidate on the isolated artistic branch
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          base=pathlib.Path('art-source/valoria/production/asset-family-v2')
+          p=json.load(open(base/'quality-v3/glb-preflight.json'))
+          assert p['structural_pass'] and len(p['assets'])==21
+          assert all(not a['errors'] and not a['warnings'] for a in p['assets'])
+          files=[f for f in (base/'quality-v3').rglob('*') if f.is_file() and not f.name.startswith('.') and f.suffix in ('.blend','.glb','.png','.json') and f.stat().st_size<95*1024*1024]
+          files += list(base.glob('qwen-family-quality-*.json'))+list(base.glob('*-artist-input-*.jpg'))+list((base/'quality-textures').glob('*.png'))
+          subprocess.run(['git','add','-f',*[str(f) for f in files]],check=True)
+          subprocess.run(['git','config','user.name','Codex Art Workshop'],check=True)
+          subprocess.run(['git','config','user.email','art-workshop@users.noreply.github.com'],check=True)
+          subprocess.run(['git','commit','-m','art: preserve genuine artist source candidate and exact export captures; visual review pending'],check=True)
+          subprocess.run(['git','push','origin','HEAD:art/valoria-asset-family-v2-ai-authorship-20261011'],check=True)
+          PY
       - name: Preserve editable family, actual renders and inference
         if: always()
         uses: actions/upload-artifact@v4
