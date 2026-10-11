@@ -1,0 +1,45 @@
+{
+  "donor": {
+    "author": "Yughues",
+    "name": "Free Photogrammetric Rock",
+    "license": "CC0",
+    "source_page": "https://opengameart.org/content/free-photogrammetric-rock",
+    "historical_run": 37445549161,
+    "historical_artifact": 11403535192,
+    "archive_sha256": "f33dbb5b2a2315a2fba5e5db09fabf799094fe8b5c437486ba52546e4486138d",
+    "lod_used": "LOD4 / 1998 source triangles; 1758 after broad-crown cut",
+    "modified": true,
+    "maps": [
+      "1024px albedo",
+      "1024px tangent normal"
+    ],
+    "new_purchase": false
+  },
+  "blender": {
+    "license": "GPL; authoring tool, not donor asset license",
+    "local_version": "4.5.3 LTS"
+  },
+  "blender_mcp": {
+    "source": "https://github.com/ahujasid/blender-mcp",
+    "commit": "7a0373ec9199183cb460068c4f96aed9c579fb4f",
+    "license": "MIT",
+    "paid_integrations_enabled": false,
+    "telemetry_enabled": false
+  },
+  "qwen": {
+    "original_model": "Qwen/Qwen3-VL-2B-Instruct",
+    "original_license": "Apache-2.0",
+    "runtime_quantization": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+    "weights_distributed_in_repo": false,
+    "cloud_inference": false
+  },
+  "store_fbx_donors": {
+    "use": "Inspection/renders only; not repackaged or exported as new runtime assets",
+    "provenance_limit": "Owner import documented; listing/receipt unresolved as recorded in docs/UNITY_IMPORTED_ASSET_AUDIT.md"
+  },
+  "existing_tripo_assets": {
+    "use": "Inspection only",
+    "new_api_calls": 0,
+    "credits_spent": 0
+  }
+}

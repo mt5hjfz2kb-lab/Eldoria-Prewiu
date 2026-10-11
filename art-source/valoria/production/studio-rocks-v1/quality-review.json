@@ -1,0 +1,66 @@
+{
+  "reviewer": "assistant direct inspection of actual Blender renders",
+  "rating_method": "qualitative 0-5 judgement, not an objective image similarity score",
+  "reference": "owner-reference.jpeg",
+  "baseline_unity_run": 38125830074,
+  "baseline_unity_artifact": 11696877248,
+  "matched_blender_views": [
+    "overview",
+    "cliff",
+    "mobile"
+  ],
+  "before": {
+    "geological_primary_forms": 1,
+    "surface_depth": 1.5,
+    "ground_contact": 2,
+    "repetition_control": 1.5,
+    "reference_style": 1.5
+  },
+  "improvements": [
+    "Large random triangle facets replaced by real scanned rocky primary forms",
+    "Embedded albedo and normal map survive GLB roundtrip",
+    "No open view through most of the perimeter after contact correction"
+  ],
+  "residual_failures": [
+    "Repeated scanned ridge and patch patterns along front cliff",
+    "Ground still flat-shaded, grassy lip abrupt and uneven",
+    "Baseline architecture too small and simplified compared with reference",
+    "No new vegetation, paths or lighting uplift in this isolated terrain scope"
+  ],
+  "rejected_iterations": [
+    {
+      "id": "picket-v1",
+      "reason": "Narrow boulder tips leave unsupported grass and visible gaps"
+    },
+    {
+      "id": "crown-v2",
+      "reason": "Wider cut crowns still have open caps and visible upper seams"
+    }
+  ],
+  "accepted_for_study_only": "exact CI MCP contact receiver from run38127483365",
+  "art_source_pass": false,
+  "integrated_visual_pass": false,
+  "mission_complete": false,
+  "source_roundtrip_mean_absolute_rgb_byte_difference": [
+    0.00056,
+    0.00064,
+    0.00067
+  ],
+  "roundtrip_metric_scope": "Local equivalent correction GLB portability diagnostic only; not CI art quality evidence.",
+  "latest_unity_run_inspected": 38126449936,
+  "latest_unity_artifact": 11697377359,
+  "after_ci_mcp": {
+    "geological_primary_forms": 3,
+    "surface_depth": 3.5,
+    "ground_contact": 2.5,
+    "repetition_control": 2,
+    "reference_style": 2.5
+  },
+  "qwen_final_claim": {
+    "rock_change": "improved",
+    "reference_quality_met": true,
+    "next_action": "change_donor"
+  },
+  "director_verdict": "Surface and primary rock form improved. Reference quality NOT met. Contradictory model acceptance rejected; preserve study only.",
+  "model_acceptance_overridden": true
+}

@@ -4,13 +4,20 @@ No arbitrary AI code. No paid integrations, telemetry or remote services.
 import bpy,bmesh,json,os,sys,socket,threading,time,importlib.util,hashlib,math
 from pathlib import Path
 from mathutils import Vector
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from decision_policy import semantic_conflicts
 ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'art-source/valoria/production/studio-rocks-v1'
 bpy.ops.wm.open_mainfile(filepath=str(OUT/'ValoriaRockStudy.blend'))
 plan_path=OUT/'qwen-art-decision.json'
 plan=json.loads(plan_path.read_text()) if plan_path.exists() else {}
 if plan.get('status')=='unavailable_or_invalid' or not plan.get('next_action'):
+ if '--director-contact-review' not in sys.argv:
+  (OUT/'mcp-contact-report.json').write_text(json.dumps({'status':'blocked_missing_valid_vision_decision','mcp_used':False,'visual_pass':False},indent=2));raise SystemExit(0)
  plan={'next_action':'bury_seams','decision':'reject_candidate','source':'assistant_direct_visual_review','reason':'v2: summit cut opens cavities and grass-to-rock contacts still require continuous buried support.'}
  (OUT/'director-contact-decision.json').write_text(json.dumps(plan,indent=2))
+conflicts=semantic_conflicts(plan)
+if conflicts:
+ (OUT/'mcp-contact-report.json').write_text(json.dumps({'status':'blocked_contradictory_vision_decision','conflicts':conflicts,'decision':plan,'mcp_used':False,'visual_pass':False},indent=2));raise SystemExit(0)
 if plan['next_action'] in ('change_donor','retain_baseline','keep_for_unity_test'):
  (OUT/'mcp-contact-report.json').write_text(json.dumps({'status':'no_geometry_correction_selected','decision':plan,'mcp_used':False,'visual_pass':False},indent=2));print('Candidate rejected; no forced correction');raise SystemExit(0)
 addon=Path(os.environ.get('ELDORIA_BLENDER_MCP_ADDON','/tmp/eldoria-blender-mcp.py'))

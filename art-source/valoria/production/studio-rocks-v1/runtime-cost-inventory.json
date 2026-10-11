@@ -1,0 +1,11 @@
+{
+  "bytes": 6151464,
+  "sha256": "722ee42aad515474bf5e75ffa3ffc6222d31e1f8569d389e14b924e7540052fa",
+  "unique_mesh_triangles": 21427,
+  "instantiated_mesh_triangles": 146516,
+  "nodes": 70,
+  "materials": 13,
+  "performance_measured": false,
+  "mobile_runtime_certified": false,
+  "note": "Unique mesh estimate 21427 is not the scene workload: 146516 triangles are instantiated. Runtime LOD/instancing/device performance remains unmeasured."
+}

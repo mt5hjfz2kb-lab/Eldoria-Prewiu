@@ -1,0 +1,12 @@
+{
+  "actual_first_decision_conflicts": [],
+  "actual_focused_decision_conflicts": [
+    "retain_candidate_conflicts_with_replacing_it",
+    "reference_quality_claim_conflicts_with_replacement"
+  ],
+  "focused_action_executed": false,
+  "director_override": "Candidate surface improved, reference quality NOT met; preserve for study, no ART PASS or new MCP iteration",
+  "model_role": "bounded proposal transport; unreliable sole art quality judge",
+  "paid_services_used": false,
+  "test_input": "actual Qwen reports from runs38127483365 and38128846228"
+}

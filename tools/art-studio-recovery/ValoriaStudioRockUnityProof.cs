@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using GLTFast;
 using UnityEditor;
@@ -14,6 +15,13 @@ namespace Eldoria.EditorTools {
    catch(Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
   }
   static async Task Execute() {
+   // Refuse later integration assets until the candidate is rebased; no stale replacement.
+   var baseline=Path.GetFullPath("Assets/Eldoria/ArtTests/ValoriaGatehouseV1/valoria_visual_slice_environment_v2.glb");
+   using(var sha=SHA256.Create()) {
+    var actual=BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(baseline))).Replace("-", "").ToLowerInvariant();
+    if(actual!="98366806ef12197e9c77b51edf9b02cb58cf340900ef167e1e7b8e4a58881595")
+     throw new Exception("Integration terrain changed: rebase this isolated candidate before comparison");
+   }
    // Reuse the exact existing scene author, including the original camera,
    // fortifications and vegetation, rather than inventing another Unity world.
    var method=typeof(ValoriaGatehouseRealUnityV1).GetMethod("Execute",BindingFlags.Static|BindingFlags.NonPublic);

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-10",
+  "updated_at": "2026-10-11",
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
@@ -61,27 +61,6 @@
       },
       "branch": "prototype/valoria-bastion1-no-sharp-20261010",
       "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
-    },
-    {
-      "id": "valoria-studio-recovery-rocks-v1-20261011",
-      "owner": "work-art-studio-recovery-20261011",
-      "title": "Isolated recovery of local-vision decision loop and geological donor production",
-      "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
-      "scope": [
-        "tools/art-studio-recovery/**",
-        "pipeline/art-studio-recovery-v1.json",
-        "art-source/valoria/production/studio-rocks-v1/**",
-        ".github/workflows/art-studio-recovery-v1.yml"
-      ],
-      "resources": [
-        "isolated-linux-blender"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-11T08:48:01.688422+00:00",
-      "base_main_sha": "65f28094b2757021148dfde8f1fbb9dc672e6169",
-      "phase": "Recover existing tool capabilities; independent Blender rock study; no shared Windows use",
-      "art_production_routing": "required",
-      "art_production_routing_reason": "Owner-authorized isolated art recovery with real before/after and retained visual rejection until inspection"
     }
   ],
   "history": [
@@ -4574,6 +4553,35 @@
       "blocker": "Cannot install Android modules or execute Unity without taking the active Region 1 runner/installation lease; no transfer capability between these separate chats is available here.",
       "toolchain_run_id": 38058101010,
       "toolchain_artifact_id": 11672875414
+    },
+    {
+      "id": "valoria-studio-recovery-rocks-v1-20261011",
+      "owner": "work-art-studio-recovery-20261011",
+      "title": "Isolated recovery of local-vision decision loop and geological donor production",
+      "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+      "scope": [
+        "tools/art-studio-recovery/**",
+        "pipeline/art-studio-recovery-v1.json",
+        "art-source/valoria/production/studio-rocks-v1/**",
+        ".github/workflows/art-studio-recovery-v1.yml"
+      ],
+      "resources": [
+        "isolated-linux-blender"
+      ],
+      "status": "blocked",
+      "claimed_at": "2026-10-11T08:48:01.688422+00:00",
+      "base_main_sha": "65f28094b2757021148dfde8f1fbb9dc672e6169",
+      "phase": "Real CC0 donor production and Qwen-directed MCP correction preserved; ART PASS and Unity PASS withheld",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-authorized isolated art recovery with real before/after and retained visual rejection until inspection",
+      "blocked_at": "2026-10-11T09:42:24.308132+00:00",
+      "blocker": "Windows lease belongs to chat-owner-authorized-two-track-takeover-20261010; integration terrain changed; Qwen artistic acceptance is not trustworthy; reference quality still not met",
+      "evidence_commit": "1aaa73c087a80c40be5e250d9e080cc19dad55fe",
+      "production_run": 38127483365,
+      "focused_review_run": 38128846228,
+      "artifact_id": 11698756439,
+      "services_cost_eur": 0,
+      "next": "Reclaim this same branch workstream and request, rebase the isolated donor study to exact current integration terrain; after Windows handoff generate genuine matched Unity captures. Do not merge/promote the rejected candidate."
     }
   ]
 }

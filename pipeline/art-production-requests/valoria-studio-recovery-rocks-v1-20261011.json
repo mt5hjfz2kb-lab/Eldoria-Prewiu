@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "BLOCKED",
   "workstream_id": "valoria-studio-recovery-rocks-v1-20261011",
   "request_id": "valoria-studio-recovery-rocks-v1-20261011",
   "asset_or_sector": "Isolated Valoria cliff receiver and existing donor comparison",
@@ -26,5 +26,6 @@
   "escalation": {
     "on_next_visual_fail": "Author a coherent architectural/environment source with matching materials/terrain/vegetation; do not add primitive decoration to the rejected scene."
   },
-  "notes": "Owner authorized both existing workstreams. Shared Windows lease transferred explicitly after the Region 1 build completed; isolated diagnostic never publishes."
+  "notes": "Owner authorized both existing workstreams. Shared Windows lease transferred explicitly after the Region 1 build completed; isolated diagnostic never publishes.",
+  "blocker": "Preserved isolated partial production proof; no ART/Unity acceptance. Reclaim matching workstream before next execution."
 }

@@ -1,0 +1,29 @@
+{
+  "source_run": 38127483365,
+  "artifact_id": 11697419875,
+  "artifact_digest": "sha256:a906d57ff8c63e72aa24bef391169e7c5c2307fffc6a23d8285f9d8cc9580006",
+  "initial_vision_render_commit": "c8fd1fb67b32e2732db8b8a439d228fa365a4405",
+  "corrected_source_commit": "b8904ee1770debb5c2f3ee57a3ca6e46d2180755",
+  "reference_restored_before_inference_commit": "dd3f237326587f451947e7ace8fe65d0b4a3404d",
+  "image_provenance": "Actual Cycles renders of editable .blend; no imagegen results used. Unity baseline is a separate existing engine artifact; no new Unity captures claimed.",
+  "same_blender_camera_and_lighting": true,
+  "final_evidence_sha256": {
+    "owner-reference.jpeg": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "after-cliff.png": "c6aea8c4268ec67ae692e378374da7215b985315500391bb35f4f3c980e32f50",
+    "ValoriaRockStudy.blend": "822a65acfa7eead9e58ff1309a4bdf0a8886036bc0eee8261a44c53135309852",
+    "ValoriaScannedCliffCandidate.glb": "e44168d89107efb9795d5aea63f7db9c2d4fe1cb1fe1785f950665b51e0f8cfd",
+    "before-cliff.png": "a6cf5b872c7313604460d5a03dbb3d55ccfe21f7cd8a544097b6d86d7364c1c6",
+    "ValoriaEnvironmentCandidate.glb": "722ee42aad515474bf5e75ffa3ffc6222d31e1f8569d389e14b924e7540052fa",
+    "before-overview.png": "2596fed8b454a9f699ed98e9c62b49fa82aebbc1a57f4f7178745ffe63635206",
+    "after-overview.png": "e856d019c0f7a8d825ed032126580d856dd8148fd179e4f4216da4cf038b3b8f",
+    "before-mobile.png": "6a5206d70db7ae1b0aad7ffb7f94e89eac8b24dc5939fcb91eb8bcab9a2a72c0",
+    "after-mobile.png": "6291ee34a3bda209a86e3aa852698b66eb6782e01c3de71499f0bf7292cb971b"
+  },
+  "first_post_review_run": 38128263672,
+  "first_post_review_artifact_id": 11698850663,
+  "full_scene_review_commit": "86a7e8d6505c9ef63383eff31e8fd34f1a4cef1e",
+  "focused_review_run": 38128846228,
+  "focused_review_artifact_id": 11698756439,
+  "focused_review_artifact_digest": "sha256:f4d301f761825fb84366e8d5ac9f4ad9994e28076ca3fe37e9b175811164f20d",
+  "focused_evidence_commit": "1aaa73c087a80c40be5e250d9e080cc19dad55fe"
+}

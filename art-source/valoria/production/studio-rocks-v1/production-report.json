@@ -10,24 +10,27 @@
   "fixed_camera_lighting_samples": true,
   "geometry_modified": true,
   "pbr_albedo_and_normal_exportable": true,
-  "model_used": "assistant visual review; Ollama runtime connection pending",
-  "mcp_used": false,
+  "model_used": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M; actual five-image review in run 38127483365",
+  "mcp_used": true,
   "visual_pass": false,
   "unity_tested": false,
   "credits_spent": 0,
   "exports": {
     "ValoriaScannedCliffCandidate.glb": {
-      "bytes": 4000288,
-      "sha256": "4d8f8b0c760a1e29ef66b9e38cda66b047e1f7b5dded6d18fec2bceb9758ed5e"
+      "bytes": 4321576,
+      "sha256": "e44168d89107efb9795d5aea63f7db9c2d4fe1cb1fe1785f950665b51e0f8cfd"
     },
     "ValoriaEnvironmentCandidate.glb": {
-      "bytes": 5830168,
-      "sha256": "becc37ac64102d3ce61c6390e09485884476f169c39224addc88589263a0928e"
+      "bytes": 6151464,
+      "sha256": "722ee42aad515474bf5e75ffa3ffc6222d31e1f8569d389e14b924e7540052fa"
     }
   },
   "limitations": [
     "No Unity certification; isolated Blender context differs from full Unity scene",
     "Artist acceptance requires actual before/after inspection",
-    "Draw calls/LOD/device performance not certified"
-  ]
+    "Draw calls/LOD/device performance not certified",
+    "Original production report predates correction; current export hashes updated from exact CI artifact11697419875."
+  ],
+  "mcp_run_id": 38127483365,
+  "phase": "post_qwen_rejection_and_mcp_contact_repair"
 }

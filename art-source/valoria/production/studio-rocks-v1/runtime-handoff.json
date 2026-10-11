@@ -1,0 +1,36 @@
+{
+  "state": "NOT_UNITY_VALIDATED",
+  "candidate_scene": "ValoriaEnvironmentCandidate.glb",
+  "candidate_rock_only": "ValoriaScannedCliffCandidate.glb",
+  "source": "ValoriaRockStudy.blend",
+  "baseline_branch": "integration/valoria-gatehouse-unity-v1-20261011",
+  "baseline_sha": "65f28094b2757021148dfde8f1fbb9dc672e6169",
+  "unity_version": "6000.3.23f1",
+  "main_observed_sha": "852ea7c1fad9f3151fd6d0fd45b285153cb76d10",
+  "protected_gameplay_changed": false,
+  "merge_authorized": false,
+  "windows_lease": {
+    "workstream_id": "valoria-mesh-only-worldspace-proof-20261010",
+    "owner": "chat-owner-authorized-two-track-takeover-20261010",
+    "resource": "windows-self-hosted-unity-6000-3-23f1",
+    "runner_was_idle_at_recheck": true,
+    "lease_overridden": false
+  },
+  "next_exact_test": {
+    "source_script": "tools/art-studio-recovery/ValoriaStudioRockUnityProof.cs",
+    "operation": "After lease release/explicit handoff, stage this editor test inside the isolated branch and execute Eldoria.EditorTools.ValoriaStudioRockUnityProof.Capture. Review unity-before.png and unity-after.png. Do not publish.",
+    "captured_frames_are_unity_evidence_only_if_generated": true,
+    "requires": "Owner release or explicit transfer of Windows lease, candidate rebase to latest integration terrain and independent art rejection resolved before any promotion"
+  },
+  "known_constraints": [
+    "Inherited valoria-gatehouse-real-unity-v1.yml fails workflow-governance rule against self-triggered heavy Windows workflow edits; no main promotion",
+    "Full-art-reference convergence, full scene/environment coherence, physical device performance still pending",
+    "Integration terrain changed while isolated recovery ran. Rebase candidate to exact later environment before any renderer replacement."
+  ],
+  "latest_integration_source_sha": "429c2ce89dee6a09efa895bbd96d325e08f103de",
+  "latest_environment_blob": "533f8a40cdbab56e1136501c2bd85d4fe53d4945",
+  "study_base_environment_blob": "66b03a9463464bb66401cf7f8f01c9abc6007def",
+  "integration_compatibility_verified": false,
+  "blocked_at": "2026-10-11T09:42:24.306314+00:00",
+  "tests_prepared_not_executed_in_unity": true
+}
