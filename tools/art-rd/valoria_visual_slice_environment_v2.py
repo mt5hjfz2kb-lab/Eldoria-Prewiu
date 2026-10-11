@@ -17,9 +17,9 @@ def mat(name,rgb,roughness=0.86):
     bs.inputs["Roughness"].default_value=roughness
     materials.append(m)
     return len(materials)-1
-grass=[mat("Grass lichen moss %d"%i,c) for i,c in enumerate([(0.30,.36,.18),(.35,.39,.20),(.28,.34,.18),(.39,.38,.22)])]
-stone=[mat("Weathered layered granite %d"%i,c) for i,c in enumerate([(.32,.33,.35),(.39,.38,.38),(.27,.30,.34),(.43,.39,.36),(.26,.27,.28)])]
-needle=[mat("Conifer foliage %d"%i,c) for i,c in enumerate([(.075,.16,.115),(.11,.22,.16),(.14,.24,.175),(.085,.19,.15),(.18,.25,.18)])]
+grass=[mat("Grass lichen moss %d"%i,c) for i,c in enumerate([(0.15,.20,.085),(.165,.215,.093),(.14,.19,.084),(.18,.22,.097)])]
+stone=[mat("Weathered layered granite %d"%i,c) for i,c in enumerate([(.14,.155,.185),(.19,.185,.19),(.13,.16,.19),(.20,.19,.18),(.12,.14,.16)])]
+needle=[mat("Conifer foliage %d"%i,c) for i,c in enumerate([(.025,.095,.053),(.034,.112,.067),(.043,.12,.077),(.03,.10,.064),(.055,.12,.065)])]
 bark=mat("Bark weathered",(.22,.17,.13))
 path=mat("Path sandstone",(.48,.43,.36))
 dirt=mat("Disturbed earth",(.36,.32,.23))
@@ -55,7 +55,9 @@ for ri in range(rings):
     for si in range(sectors):
         a0,b0,c0,d0=rows[ri][si],rows[ri][si+1],rows[ri+1][si],rows[ri+1][si+1]
         # Introduce controlled grassy variation while leaving paths to 3D paving.
-        k=grass[(ri*13+si*7+((ri//4)*(si//9)))%len(grass)]
+        px,pz,_=V[a0]
+        patch=math.sin(px*.115+pz*.035)+.55*math.cos(pz*.12-px*.052)
+        k=grass[0 if patch<-.5 else 1 if patch<.4 else 2 if patch<1.15 else 3]
         face((a0,c0,b0),k);face((b0,c0,d0),k)
 # multi-shelf jagged cliff: fractured radial creases with no smooth uniform cylindrical wall
 levels=[0,.22,.53,.78,1]
