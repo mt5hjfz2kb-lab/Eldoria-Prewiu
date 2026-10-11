@@ -15,6 +15,24 @@ limestone=mat("Valoria worn pale limestone",(.36,.32,.27))
 dark=mat("Valoria recessed joints",(.13,.12,.11))
 moss=mat("Valoria muted moss",(.13,.19,.105))
 iron=mat("Valoria oxidized iron",(.14,.12,.10),.6,.3)
+def stone_texture(material,label,base):
+ os.makedirs(os.path.join(DEST,"textures"),exist_ok=True)
+ name=label.replace(" ","_")
+ image=bpy.data.images.new(name,width=256,height=256,alpha=True)
+ pixels=[]
+ rng=random.Random(11011+sum(ord(ch) for ch in name))
+ for y in range(256):
+  for x in range(256):
+   f=.58+.11*math.sin(x*.19+y*.13)+.07*math.sin(x*.83-y*.49)+.06*math.sin(x*.041+y*.067)+rng.uniform(-.07,.07)
+   f=max(.28,min(.91,f))
+   pixels.extend((base[0]*f,base[1]*f,base[2]*f,1.0))
+ image.pixels.foreach_set(pixels)
+ image.filepath_raw=os.path.join(DEST,"textures",name+".png")
+ image.file_format="PNG";image.save();image.pack()
+ nodes=material.node_tree.nodes
+ tex=nodes.new("ShaderNodeTexImage");tex.image=image
+ tex.interpolation="Linear"
+ material.node_tree.links.new(tex.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
 def block(n,pos,size,material):
  bpy.ops.mesh.primitive_cube_add(size=1, location=pos)
  o=bpy.context.object;o.name=n;o.dimensions=size;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
