@@ -154,9 +154,11 @@ namespace Eldoria.EditorTools
                 paving.GetComponent<Renderer>().sharedMaterial=pathMat;
                 Object.DestroyImmediate(paving.GetComponent<Collider>());
             }
+            // Existing Eldoria panorama used as an actual distant visual layer, not as gameplay.
             camera.transform.position=new Vector3(44f,34f,-57f);
             camera.transform.LookAt(new Vector3(0f,0f,0f));
             camera.orthographicSize=35f;
+            var backdrop=CreateValleyBackdrop(camera);
             Save(camera,Output+"/unity-valoria-slice-landscape-1280x720.png",1280,720);
             camera.orthographicSize=25f;
             camera.transform.position=new Vector3(28f,23f,-37f);
@@ -196,6 +198,26 @@ namespace Eldoria.EditorTools
             Debug.Log("GATEHOUSE_UNITY_CAPTURE_COMPLETE "+Path.GetFullPath(Output));
         }
 
+        static GameObject CreateValleyBackdrop(Camera camera){
+            var tex=AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Eldoria/ArtTests/LayeredValoria/valley-backdrop.png");
+            if(tex==null) throw new Exception("Existing Eldoria valley panorama missing");
+            var background=new GameObject("Existing Eldoria distant valley panorama");
+            var mesh=new Mesh();
+            mesh.vertices=new[]{new Vector3(-85f,-55f,0f),new Vector3(85f,-55f,0f),new Vector3(85f,55f,0f),new Vector3(-85f,55f,0f)};
+            mesh.uv=new[]{new Vector2(0,0),new Vector2(1,0),new Vector2(1,1),new Vector2(0,1)};
+            mesh.triangles=new[]{0,2,1,0,3,2};
+            mesh.RecalculateNormals();
+            background.AddComponent<MeshFilter>().sharedMesh=mesh;
+            var renderer=background.AddComponent<MeshRenderer>();
+            var mat=new Material(Shader.Find("Universal Render Pipeline/Unlit")??Shader.Find("Unlit/Texture"));
+            mat.name="Distant Valley Original Eldoria Art";
+            mat.mainTexture=tex;
+            if(mat.HasProperty("_BaseMap"))mat.SetTexture("_BaseMap",tex);
+            renderer.sharedMaterial=mat;
+            background.transform.rotation=camera.transform.rotation;
+            background.transform.position=camera.transform.position+camera.transform.forward*125f;
+            return background;
+        }
         static Material TexturedMaterial(string name,Color tint,string family,float repeat){
             var mat=MaterialOf(name,tint);
             var dir="Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/";
