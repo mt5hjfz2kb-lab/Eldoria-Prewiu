@@ -360,6 +360,9 @@ for name,create in list(kinds.items())+[("assembled_family",assemble)]:
   variation=float(tweak.get("masonry_irregularity",.025))
   variation=max(.008,min(.07,variation))
   for idx,ob in enumerate(objset()):
+   # Explicit owner protection: even the assembled test must never mutate
+   # the original V3 baseline meshes imported as FROZEN_V3_.
+   if ob.name.startswith('FROZEN_V3_'):continue
    if any(z in ob.name.lower() for z in ("stone","ashlar","stratum","flagstone","buttress")):
     rng=random.Random(1000+idx)
     ob.location.z+=rng.uniform(-variation,variation)
