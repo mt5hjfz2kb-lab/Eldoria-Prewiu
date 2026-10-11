@@ -17,8 +17,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          blender_run=$(gh api "repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/workflows/valoria-family-v2-1-real-mcp.yml/runs?branch=art%2Fvaloria-asset-family-v2-ai-authorship-20261011&per_page=10" --jq '.workflow_runs[0].id')
+          test -n "$blender_run" && test "$blender_run" != "null"
+          echo "BLENDER_RUN_ID=$blender_run" >> "$GITHUB_ENV"
+          echo "Waiting for latest Blender second pass: $blender_run"
           for i in $(seq 1 75); do
-            state=$(gh api repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38171523083 --jq '.status+" "+(.conclusion//"pending")')
+            state=$(gh api "repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/$blender_run" --jq '.status+" "+(.conclusion//"pending")')
             echo "BlenderMCP: $state"
             if [[ "$state" == 'completed success' ]]; then exit 0; fi
             if [[ "$state" == completed* ]]; then exit 1; fi
@@ -28,7 +32,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: valoria-family-v2-1-real-qwen-mcp-second-art-pass
-          run-id: 38171523083
+          run-id: ${{ env.BLENDER_RUN_ID }}
           github-token: ${{ github.token }}
           path: art-source/valoria/production/asset-family-v2
       - name: Install free Blender
