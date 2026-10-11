@@ -1,0 +1,13 @@
+{
+  "origin": "quality-v2 saved .blend",
+  "baseline_v2_sha256": "85aa1b27e4727c0ec7552f9ae14f4ffaa76c7e5edfe68ed8143d947736fff52a",
+  "objects_before": 1037,
+  "objects_after": 1037,
+  "stones_selectively_edited": 806,
+  "hero_camera": "matched to quality-v2 after-hero",
+  "strategic_camera": "matched to quality-v2 after-strategic",
+  "blend_bytes": 21463608,
+  "glb_bytes": 21485544,
+  "art_acceptance": "pending genuine side by side",
+  "unity_tested": false
+}

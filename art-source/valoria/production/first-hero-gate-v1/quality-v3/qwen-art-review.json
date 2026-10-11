@@ -1,0 +1,29 @@
+{
+  "runtime": "local Ollama on GitHub Actions",
+  "model": "qwen2.5vl:3b",
+  "resizing": "preserve aspect JPEG 448 max",
+  "real_image_review": [
+    {
+      "inputs": [
+        "art-source/valoria/production/first-hero-gate-v1/quality-v2/after-hero-matched.png",
+        "art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png"
+      ],
+      "advisory": "**Visible Stone Realism:**\n- **V2 Hero Gate:** The stone realism is present but may lack some fine details, giving it a slightly less polished appearance.\n- **V3 Hero Gate:** The stone realism is more detailed and realistic, with more pronounced textures and a more polished finish.\n\n**Repetition:**\n- **V2 Hero Gate:** The repetition is consistent, with the same design elements and color scheme.\n- **V3 Hero Gate:** The repetition is consistent, but the details are more refined, maintaining the same design elements and color scheme.\n\n**Craftsmanship:**\n- **V2 Hero Gate:** The craftsmanship is evident but may not be as refined as in V3.\n- **V3 Hero Gate:** The craftsmanship is more refined, with more detailed textures and a polished finish.\n\n**Readability:**\n- **V2 Hero Gate:** The readability is good, with clear design elements and color contrasts.\n- **V3 Hero Gate:** The readability is better, with more detailed textures and a polished finish, making the design elements and color contrasts more pronounced.\n\n**Concrete Differences:**\n- **Stone Realism:** More pronounced in V3.\n- **Repetition:** Consistent in both versions.\n- **"
+    },
+    {
+      "inputs": [
+        "art-source/valoria/production/first-hero-gate-v1/quality-v2/after-strategic.png",
+        "art-source/valoria/production/first-hero-gate-v1/quality-v3/after-strategic.png"
+      ],
+      "advisory": "**V2 Strategic Camera:**\n- **Stone Realism:** The stone appears to be more detailed and realistic, with visible textures and shadows that enhance the depth and dimensionality.\n- **Repetition:** The repetition of the stone blocks is more pronounced, creating a more uniform and cohesive look.\n- **Craftsmanship:** The craftsmanship is evident in the way the stones are arranged, with a clear delineation between different types of stone.\n- **Readability:** The readability is high, with clear distinctions between the different elements of the gate.\n\n**V3 Strategic Camera:**\n- **Stone Realism:** The stone realism has improved, with more detailed textures and shadows that add to the visual appeal.\n- **Repetition:** The repetition of the stone blocks is more subtle, creating a more natural and organic appearance.\n- **Craftsmanship:** The craftsmanship is more refined, with a smoother transition between different types of stone.\n- **Readability:** The readability is still high, but the subtle repetition and refined craftsmanship make the gate appear more lifelike and less artificial.\n\n**Concrete Differences:**\n- **Stone Realism:** The V3 render has more detailed textures and shadows, enhancing the realism.\n- **Repetition:** The V3"
+    },
+    {
+      "inputs": [
+        "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+        "art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png"
+      ],
+      "advisory": "The first approved target reference and the actual V3 hero render both depict a medieval gate with similar stone realism, craftsmanship, and readability. The differences are subtle and may not be immediately noticeable to the untrained eye. The actual V3 hero appears slightly more detailed and refined in texture, particularly around the edges and corners of the stone blocks. The lighting and shadows also seem more pronounced, giving a slightly more three-dimensional feel to the structure. Overall, the improvement is noticeable but subtle, enhancing the visual appeal without detracting from the overall medieval aesthetic."
+    }
+  ],
+  "art_acceptance": "human comparison required"
+}
