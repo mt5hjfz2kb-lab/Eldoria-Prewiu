@@ -1,4 +1,4 @@
-name: '[EXPERIMENT] Eldoria isolated art studio rock recovery V2'
+name: '[EXPERIMENT] Eldoria isolated art studio rock and ground recovery V3'
 on:
   push:
     branches: [art/valoria-studio-recovery-rocks-v1-20261011]
@@ -67,7 +67,17 @@ jobs:
           fi
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb > art-source/valoria/production/studio-rocks-v1/glb-audit.json
           python3 tools/art-studio-recovery/review_with_local_vision.py --post-mcp --focused
+      - name: Reuse exact V2MCP source already produced by run 38130229366
+        run: |
+          python3 - <<'PYCODE'
+          import os,subprocess,pathlib
+          p=pathlib.Path('art-source/valoria/production/studio-rocks-v2-mcp/ValoriaRockStudyV2MCP.blend')
+          reuse=p.is_file() and subprocess.check_output(['git','hash-object',str(p)],text=True).strip()=='51e86650fc0e1212e95feaefb82a172ab081c6a7'
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('STUDIO_V2_REUSE='+str(reuse).lower()+'\n')
+          print('Exact prior production source reused:',reuse)
+          PYCODE
       - name: Second CC0 rock scan and real BlenderMCP contact correction
+        if: env.STUDIO_V2_REUSE != 'true'
         run: |
           curl -fL --retry 2 -A 'EldoriaResearch/1.0' 'https://opengameart.org/sites/default/files/Test%20-%20Photogrammetric%20ClusterRock.7z' -o /tmp/eldoria-cluster.7z
           echo '10d97fbf68e004f827d7d7de9853722db21fda93ddba4fcb6f2bf5cb8fee560e  /tmp/eldoria-cluster.7z' | sha256sum -c -
@@ -78,6 +88,7 @@ jobs:
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v2-mcp/ValoriaEnvironmentV2MCP.glb > art-source/valoria/production/studio-rocks-v2-mcp/glb-audit.json
           python3 tools/art-studio-recovery/finalize_v2_study.py
       - name: Qwen3-VL auxiliary visual opinion; no automatic art approval
+        if: env.STUDIO_V2_REUSE != 'true'
         continue-on-error: true
         env:
           OLLAMA_NO_CLOUD: 'true'
@@ -93,12 +104,22 @@ jobs:
           sleep 3
           /tmp/eldoria-ollama/bin/ollama pull hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M
           python3 tools/art-studio-recovery/review_v2_advisory.py
+      - name: Photo-based CC0 ground and glTF round-trip against fixed cameras
+        run: |
+          curl -fL --retry 2 'https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/leafy_grass/leafy_grass_diff_1k.jpg' -o /tmp/eldoria-leafy-diff.jpg
+          curl -fL --retry 2 'https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/leafy_grass/leafy_grass_nor_gl_1k.jpg' -o /tmp/eldoria-leafy-nor.jpg
+          echo 'cfa40bc9d9417d1852db8753a8d5917f110c40101179f63543c382e39bc05e4a  /tmp/eldoria-leafy-diff.jpg' | sha256sum -c -
+          echo '832328216adc0a7e1f70a31d5ee48c9ab7f2152d83816122736cf42ac4b2ebd6  /tmp/eldoria-leafy-nor.jpg' | sha256sum -c -
+          blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/author_ground_v3.py
+          python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v3-ground/ValoriaRockAndGroundV3-ENV.glb > art-source/valoria/production/studio-rocks-v3-ground/glb-audit.json
+          blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/verify_ground_v3.py
+          python3 tools/art-studio-recovery/finalize_ground_v3.py
       - name: Preserve real source and evidence on THIS branch only
         if: always()
         run: |
           git config user.name eldoria-art-studio
           git config user.email eldoria-art-studio@users.noreply.github.com
-          git add art-source/valoria/production/studio-rocks-v1/ art-source/valoria/production/studio-rocks-v2/ art-source/valoria/production/studio-rocks-v2-mcp/
+          git add art-source/valoria/production/studio-rocks-v1/ art-source/valoria/production/studio-rocks-v2/ art-source/valoria/production/studio-rocks-v2-mcp/ art-source/valoria/production/studio-rocks-v3-ground/
           if ! git diff --cached --quiet; then
             git commit -m 'art: preserve isolated real Blender source, exports and visual decisions [skip ci]'
             git push origin HEAD:art/valoria-studio-recovery-rocks-v1-20261011
@@ -106,9 +127,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-art-studio-rocks-v2
+          name: eldoria-art-studio-rocks-v3
           path: |
             art-source/valoria/production/studio-rocks-v2/
             art-source/valoria/production/studio-rocks-v2-mcp/
+            art-source/valoria/production/studio-rocks-v3-ground/
           retention-days: 30
           if-no-files-found: error
