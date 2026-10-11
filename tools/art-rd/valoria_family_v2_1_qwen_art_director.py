@@ -16,7 +16,7 @@ options={
 "defensive_props":("resculpt_hanging_fabric","rebuild_torch_hardware")}
 def encode(file):
  with Image.open(file) as image:
-  image=image.convert("RGB");image.thumbnail((400,400))
+  image=image.convert("RGB");image.thumbnail((320,320))
   stream=io.BytesIO();image.save(stream,format="JPEG",quality=70)
   return base64.b64encode(stream.getvalue()).decode()
 def ask(asset,choice):
@@ -33,23 +33,26 @@ def ask(asset,choice):
  "Avoid generic descriptions of medieval castles. Operation must affect 3D mesh shapes, not only color. "+
  "Return strict JSON observation, architectural_intent, operation, strength 0.25-0.85.")
  payload={"model":"qwen2.5vl:3b","stream":False,"think":False,"format":schema,
- "options":{"temperature":0.0,"num_predict":280,"num_ctx":4096},
+ "options":{"temperature":0.0,"num_predict":200,"num_ctx":4096},
  "messages":[{"role":"user","content":prompt,"images":[encode(ref),encode(out/asset/"v2-after-hero.png"),encode(out/asset/"v2-after-strategic.png")]}]}
  traces=[]
  for retry in range(2):
+  print("QWEN_V2_1_START",asset,"attempt",retry+1,"of 2",flush=True)
+  started=time.monotonic()
   try:
    request=urllib.request.Request("http://127.0.0.1:11434/api/chat",data=json.dumps(payload).encode(),headers={"Content-Type":"application/json"})
-   with urllib.request.urlopen(request,timeout=500) as response:result=json.load(response)
+   with urllib.request.urlopen(request,timeout=195) as response:result=json.load(response)
    raw=result.get("message",{}).get("content","")
    candidate=json.JSONDecoder().raw_decode(raw[raw.index("{"):])[0]
    assert candidate["operation"] in choice
    assert .25<=float(candidate["strength"])<=.85
    assert len(candidate["observation"].strip())>=12
    assert len(candidate["architectural_intent"].strip())>=12
-   traces.append({"retry":retry,"model_raw_response":raw,"accepted":True})
+   traces.append({"retry":retry,"elapsed_seconds":round(time.monotonic()-started,1),"model_raw_response":raw,"accepted":True})
    return candidate,traces
   except Exception as exc:
-   traces.append({"retry":retry,"model_raw_response":locals().get("raw",""),"error":str(exc)})
+   print("QWEN_V2_1_ATTEMPT_FAILED",asset,retry+1,str(exc),flush=True)
+   traces.append({"retry":retry,"elapsed_seconds":round(time.monotonic()-started,1),"model_raw_response":locals().get("raw",""),"error":str(exc)})
    (out/"qwen-v2-1-raw-inference-traces.json").write_text(json.dumps({asset:traces},indent=2))
  raise RuntimeError("Real vision agent could not propose valid "+asset+" geometry decision")
 plans={};traces={}
