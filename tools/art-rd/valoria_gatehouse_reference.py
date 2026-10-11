@@ -295,8 +295,42 @@ if stone_albedo.exists():
   material.node_tree.links.new(node.outputs["Color"],bs.inputs["Base Color"])
 # Metal and wood preserve owned source maps; architecture is unchanged.
 
+# CC0 real masonry material study (Poly Haven medieval_blocks_03 by Rob Tuytel).
+# Source: https://polyhaven.com/a/medieval_blocks_03 ; CC0, author retained for provenance.
+# Download once on free GitHub runner. Embed image maps in BLEND/GLB, never require paid API.
+import urllib.request,hashlib
+cc0dir=OUT/"cc0-stone";cc0dir.mkdir(exist_ok=True)
+cc0maps={}
+for map_name,suffix in (("albedo","diff"),("normal","nor_gl")):
+ url="https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/medieval_blocks_03/medieval_blocks_03_"+suffix+"_1k.png"
+ target=cc0dir/("medieval_blocks_03_"+suffix+"_1k.png")
+ try:
+  with urllib.request.urlopen(url,timeout=60) as response:
+   data=response.read()
+  if not data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):raise RuntimeError("non-PNG asset")
+  target.write_bytes(data)
+  cc0maps[map_name]=str(target)
+  print("POLYHAVEN_CC0",map_name,hashlib.sha256(data).hexdigest(),len(data))
+ except Exception as e:
+  print("POLYHAVEN_DOWNLOAD_UNAVAILABLE",map_name,str(e))
+if len(cc0maps)==2:
+ cc_albedo=bpy.data.images.load(cc0maps["albedo"],check_existing=True)
+ cc_normal=bpy.data.images.load(cc0maps["normal"],check_existing=True)
+ cc_normal.colorspace_settings.name="Non-Color"
+ cc_albedo.pack();cc_normal.pack()
+ for material in list(base.stone)+[base.trim,base.mortar]:
+  bs=material.node_tree.nodes.get("Principled BSDF")
+  if not bs:continue
+  al=material.node_tree.nodes.new("ShaderNodeTexImage");al.image=cc_albedo
+  material.node_tree.links.new(al.outputs["Color"],bs.inputs["Base Color"])
+  no=material.node_tree.nodes.new("ShaderNodeTexImage");no.image=cc_normal
+  nm=material.node_tree.nodes.new("ShaderNodeNormalMap")
+  nm.inputs["Strength"].default_value=.63
+  material.node_tree.links.new(no.outputs["Color"],nm.inputs["Color"])
+  material.node_tree.links.new(nm.outputs["Normal"],bs.inputs["Normal"])
+
 # Fixed camera and same geometry enable before/after appearance inspection.
-art_director_geometry={"baseline":"V5_commit_64f5975960","intervention":"stone_microrelief_and_portable_variation_maps","existing_stone_meshes_refined":surface_changes,"architecture_changes":0,"portable_albedo_variants":len(portable_maps),"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+art_director_geometry={"baseline":"V5_commit_64f5975960","intervention":"stone_microrelief_and_portable_variation_maps","existing_stone_meshes_refined":surface_changes,"architecture_changes":0,"portable_albedo_variants":len(portable_maps),"cc0_pbr_maps_loaded":list(cc0maps.keys()),"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
