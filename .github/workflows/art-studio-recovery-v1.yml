@@ -1,4 +1,4 @@
-name: '[EXPERIMENT] Eldoria isolated art studio rock recovery V1'
+name: '[EXPERIMENT] Eldoria isolated art studio rock recovery V2'
 on:
   push:
     branches: [art/valoria-studio-recovery-rocks-v1-20261011]
@@ -46,6 +46,7 @@ jobs:
           blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/produce_rock_study.py
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb > art-source/valoria/production/studio-rocks-v1/glb-audit.json
       - name: Existing free Ollama Qwen3-VL decision transport; no cloud inference
+        if: env.STUDIO_REUSE != 'true'
         env:
           OLLAMA_NO_CLOUD: 'true'
           OLLAMA_MODELS: /tmp/eldoria-ollama-models
@@ -66,12 +67,38 @@ jobs:
           fi
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb > art-source/valoria/production/studio-rocks-v1/glb-audit.json
           python3 tools/art-studio-recovery/review_with_local_vision.py --post-mcp --focused
+      - name: Second CC0 rock scan and real BlenderMCP contact correction
+        run: |
+          curl -fL --retry 2 -A 'EldoriaResearch/1.0' 'https://opengameart.org/sites/default/files/Test%20-%20Photogrammetric%20ClusterRock.7z' -o /tmp/eldoria-cluster.7z
+          echo '10d97fbf68e004f827d7d7de9853722db21fda93ddba4fcb6f2bf5cb8fee560e  /tmp/eldoria-cluster.7z' | sha256sum -c -
+          python3 tools/art-studio-recovery/extract_cc0.py /tmp/eldoria-cluster.7z /tmp/eldoria-cluster-source
+          blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/author_cluster_v2.py
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/mcp_cluster_contacts_v2.py
+          python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v2-mcp/ValoriaEnvironmentV2MCP.glb > art-source/valoria/production/studio-rocks-v2-mcp/glb-audit.json
+          python3 tools/art-studio-recovery/finalize_v2_study.py
+      - name: Qwen3-VL auxiliary visual opinion; no automatic art approval
+        continue-on-error: true
+        env:
+          OLLAMA_NO_CLOUD: 'true'
+          OLLAMA_MODELS: /tmp/eldoria-ollama-models
+        run: |
+          mkdir -p /tmp/eldoria-ollama
+          curl -fL --retry 2 https://github.com/ollama/ollama/releases/download/v0.40.3/ollama-linux-amd64.tar.zst -o /tmp/ollama.tar.zst
+          tar --zstd -xf /tmp/ollama.tar.zst -C /tmp/eldoria-ollama --exclude='lib/ollama/cuda*' --exclude='lib/ollama/vulkan*'
+          export LD_LIBRARY_PATH=/tmp/eldoria-ollama/lib/ollama
+          /tmp/eldoria-ollama/bin/ollama serve > /tmp/ollama-studio.log 2>&1 &
+          studio_ollama_pid=$!
+          trap 'kill "$studio_ollama_pid" 2>/dev/null || true' EXIT
+          sleep 3
+          /tmp/eldoria-ollama/bin/ollama pull hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M
+          python3 tools/art-studio-recovery/review_v2_advisory.py
       - name: Preserve real source and evidence on THIS branch only
         if: always()
         run: |
           git config user.name eldoria-art-studio
           git config user.email eldoria-art-studio@users.noreply.github.com
-          git add art-source/valoria/production/studio-rocks-v1/
+          git add art-source/valoria/production/studio-rocks-v1/ art-source/valoria/production/studio-rocks-v2/ art-source/valoria/production/studio-rocks-v2-mcp/
           if ! git diff --cached --quiet; then
             git commit -m 'art: preserve isolated real Blender source, exports and visual decisions [skip ci]'
             git push origin HEAD:art/valoria-studio-recovery-rocks-v1-20261011
@@ -79,7 +106,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-art-studio-rocks-v1
-          path: art-source/valoria/production/studio-rocks-v1/
+          name: eldoria-art-studio-rocks-v2
+          path: |
+            art-source/valoria/production/studio-rocks-v2/
+            art-source/valoria/production/studio-rocks-v2-mcp/
           retention-days: 30
           if-no-files-found: error
