@@ -94,6 +94,16 @@ def author(asset,plan):
     key=int(hashlib.md5(o.name.encode()).hexdigest()[:4],16)
     edit(o,lambda p:(setattr(p,'z',p.z+.14*strength*math.sin(key*.4+p.x*5+p.y*3)),setattr(p,'y',p.y+.11*strength*math.cos(p.x*4+p.z*2))),records)
  elif asset=='watchtower':
+  # Real review rejected the V2 tower's skewed masonry courses.
+  # Algebraically undo the exact previous local-axis taper, restoring the
+  # historically coherent source geometry before choosing new AI intervention.
+  for o in meshes:
+   if 'tower' not in o.name.lower():continue
+   zs=[v.co.z for v in o.data.vertices]
+   if not zs:continue
+   localmin=min(zs);d=max(.01,max(zs)-localmin)
+   if d<.12:continue
+   edit(o,lambda p:(setattr(p,'x',p.x/(1-.07*(p.z-localmin)/d)),setattr(p,'y',p.y/(1-.07*(p.z-localmin)/d))),records)
   candidates=[o for o in meshes if 'tower' in o.name.lower()]
   for o in candidates:
    key=int(hashlib.md5(o.name.encode()).hexdigest()[:4],16)
