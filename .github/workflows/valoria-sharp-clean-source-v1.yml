@@ -1,0 +1,77 @@
+name: "[CONVERGENCE] Valoria SHARP Clean Source v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-sharp-clean-source-v1.json"
+      - ".github/workflows/valoria-sharp-clean-source-v1.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: valoria-sharp-clean-source-v1
+  cancel-in-progress: true
+
+jobs:
+  audit-clean-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build read-only comparison artifact
+        shell: bash
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image, ImageOps, ImageDraw
+          from pathlib import Path
+          import json, hashlib, shutil
+
+          candidates = [
+            ("canonical-golden-crop", Path("art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png")),
+            ("semantic-base", Path("docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-base.png")),
+            ("approved-reference", Path("references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg")),
+          ]
+          out = Path("docs/evidence/valoria-sharp-clean-source-v1")
+          out.mkdir(parents=True, exist_ok=True)
+
+          meta=[]
+          thumbs=[]
+          for label,path in candidates:
+            if not path.exists():
+              raise SystemExit(f"missing candidate: {path}")
+            raw=path.read_bytes()
+            im=Image.open(path).convert("RGB")
+            meta.append({
+              "label":label,
+              "path":str(path),
+              "width":im.width,
+              "height":im.height,
+              "bytes":len(raw),
+              "sha256":hashlib.sha256(raw).hexdigest(),
+            })
+            shutil.copy2(path, out / path.name.replace("VALORIA_APPROVED_VISUAL_REFERENCE","approved-reference"))
+            thumb=im.copy()
+            thumb.thumbnail((900,600), Image.Resampling.LANCZOS)
+            canvas=Image.new("RGB",(920,660),(18,18,22))
+            x=(920-thumb.width)//2
+            y=36+(600-thumb.height)//2
+            canvas.paste(thumb,(x,y))
+            d=ImageDraw.Draw(canvas)
+            d.text((16,12),f"{label} · {im.width}x{im.height}",fill=(240,240,240))
+            thumbs.append(canvas)
+
+          sheet=Image.new("RGB",(920,len(thumbs)*660),(10,10,12))
+          for i,t in enumerate(thumbs):
+            sheet.paste(t,(0,i*660))
+          sheet.save(out/"comparison-sheet.jpg",quality=92)
+          (out/"metadata.json").write_text(json.dumps(meta,indent=2)+"\n")
+          print(json.dumps(meta,indent=2))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-sharp-clean-source-v1
+          path: docs/evidence/valoria-sharp-clean-source-v1/*
+          if-no-files-found: error
+          retention-days: 30

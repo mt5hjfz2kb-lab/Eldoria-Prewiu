@@ -1,0 +1,633 @@
+name: Unity WebGL published startup probe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unity-webgl-startup.yml'
+      - 'tools/published-probe-contract.cjs'
+      - 'tests/published-probe-contract.test.cjs'
+  workflow_run:
+    workflows: ['Publish Eldoria Preview']
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+jobs:
+  startup:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve exact build or published target
+        id: target
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const cfg = JSON.parse(fs.readFileSync('pipeline/unity-publish-request.json', 'utf8'));
+            let run = context.payload.workflow_run;
+            if (!run && cfg.enabled === true && cfg.release_approved === false) {
+              const result = await github.rest.actions.listWorkflowRuns({
+                ...context.repo, workflow_id: 'pages.yml', branch: 'main', status: 'success', per_page: 1
+              });
+              run = result.data.workflow_runs[0];
+              if (!run) throw new Error('No successful recovery build exists for candidate QA');
+            }
+            let kind = 'published';
+            if (run) {
+              const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+                ...context.repo, run_id: run.id, per_page: 100
+              });
+              const deploy = jobs.find(j => j.name === 'deploy');
+              const build = jobs.find(j => j.name === 'unity-webgl');
+              if (build && build.conclusion === 'skipped' && deploy && deploy.conclusion === 'skipped') {
+                core.setOutput('kind', 'no_delivery');
+                core.info('Publication was paused: no build/deployment to certify. Probe skipped, no PASS claimed.');
+                return;
+              }
+              if ((!build || build.conclusion !== 'success') && (!deploy || deploy.conclusion !== 'success'))
+                throw new Error('Trigger neither built nor deployed a verified Unity artifact');
+              if (!deploy || deploy.conclusion !== 'success') kind = 'candidate';
+              if (deploy && deploy.conclusion === 'success' && build && build.conclusion === 'skipped') {
+                if (!cfg.reuse_webgl_build_run_id || !cfg.reuse_webgl_source_sha)
+                  throw new Error('Promoted build provenance is missing');
+                run = (await github.rest.actions.getWorkflowRun({
+                  ...context.repo, run_id: cfg.reuse_webgl_build_run_id
+                })).data;
+                if (run.conclusion !== 'success' || run.head_sha !== cfg.reuse_webgl_source_sha)
+                  throw new Error('Promoted build provenance mismatch');
+              }
+            }
+            core.setOutput('kind', kind);
+            core.setOutput('run_id', run ? String(run.id) : '');
+            core.setOutput('source_sha', run ? run.head_sha : 'unknown-published-source');
+            core.setOutput('url', kind === 'candidate' ? 'http://127.0.0.1:8765/unity-owner/' :
+              'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/');
+      - name: Download exact successful build for candidate QA
+        if: steps.target.outputs.kind == 'candidate'
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.target.outputs.run_id }}
+          name: eldoria-unity-webgl-${{ steps.target.outputs.source_sha }}
+          path: candidate-webgl/unity-owner
+      - name: Serve candidate without publishing stable
+        if: steps.target.outputs.kind == 'candidate'
+        run: |
+          test -f candidate-webgl/unity-owner/index.html
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory candidate-webgl > /tmp/eldoria-candidate-server.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8765/unity-owner/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 pixelmatch@5.3.0 && npx playwright install --with-deps chromium
+        if: steps.target.outputs.kind != 'no_delivery'
+      - name: Verify published probe acceptance contract
+        if: steps.target.outputs.kind != 'no_delivery'
+        run: node --test tests/published-probe-contract.test.cjs
+      - name: Probe actual published Unity startup
+        if: steps.target.outputs.kind != 'no_delivery'
+        env:
+          ELDORIA_PROBE_URL: ${{ steps.target.outputs.url }}
+          ELDORIA_PROBE_KIND: ${{ steps.target.outputs.kind }}
+          ELDORIA_PROBE_SOURCE_SHA: ${{ steps.target.outputs.source_sha }}
+          ELDORIA_PROBE_BUILD_RUN: ${{ steps.target.outputs.run_id }}
+        run: |
+          mkdir -p webgl-startup-evidence
+          cat > /tmp/eldoria-startup.cjs <<'JS'
+          const { chromium } = require(process.cwd() + '/node_modules/playwright');
+          const { PNG } = require(process.cwd() + '/node_modules/pngjs');
+          const pixelmatch = require(process.cwd() + '/node_modules/pixelmatch');
+          const fs = require('fs');
+          const { controlPoint, persistenceSnapshot, certifyMacroloop, fatalRuntimeLogs } = require(process.cwd() + '/tools/published-probe-contract.cjs');
+
+          const target=process.env.ELDORIA_PROBE_URL;
+          if(!target)throw new Error('Probe target was not resolved');
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          const report={failure:null,logs:[],requests:[],checks:{navigationGatherPersistencePass:false},states:[],coverage:{fullBastionIToIIPass:false,visualQualityPass:false,independentHumanPlaythroughPass:false},scope:'Published limited macroloop probe: real touch pan/home, limited gather loop, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority. Includes separate uninterrupted guided Bastion I-II and reset/reload flows in both orientations. Does not certify artistic quality or human playability.'};
+
+          report.delivery={kind:process.env.ELDORIA_PROBE_KIND,target,
+            sourceSha:process.env.ELDORIA_PROBE_SOURCE_SHA,buildRunId:process.env.ELDORIA_PROBE_BUILD_RUN,
+            candidateOnly:process.env.ELDORIA_PROBE_KIND==='candidate',publishedPass:false};
+
+          function parseState(text){
+            const m=text.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+) gatheredWood=(\d+) gatheredStone=(\d+) march=([^ ]+) sawmill=(\d+) bastion=(\d+)/);
+            if(!m)return null;
+            const extra=text.match(/barracks=(\d+) archers=(\d+) trained=(\d+) configured=(True|False) scout=(True|False) engendro=(True|False) objective=([^\s]+)/);
+            return {tag:m[1],scene:m[2],revision:+m[3],wood:+m[4],stone:+m[5],gatheredWood:+m[6],gatheredStone:+m[7],march:m[8],sawmill:+m[9],bastion:+m[10],...(extra?{barracks:+extra[1],archers:+extra[2],trained:+extra[3],configured:extra[4]==='True',scout:extra[5]==='True',engendro:extra[6]==='True',objective:extra[7]}:{})};
+          }
+          function parseUi(logs,id){
+            for(let i=logs.length-1;i>=0;i--){
+              const t=logs[i].text||'';
+              const m=t.match(new RegExp('ELDORIA_PLAYABLE_UI id='+id+' x=([-0-9.]+) y=([-0-9.]+)'));
+              if(m)return {x:+m[1],unityY:+m[2]};
+            }
+            return null;
+          }
+          function parseHotspot(logs,id){
+            for(let i=logs.length-1;i>=0;i--){
+              const t=logs[i].text||'';
+              const m=t.match(new RegExp('ELDORIA_PLAYABLE_HOTSPOT id='+id+' x=([0-9.]+) y=([0-9.]+)'));
+              if(m)return {x:+m[1],y:+m[2]};
+            }
+            return null;
+          }
+          async function waitLog(logs,predicate,timeout=60000,label='log',startIndex=0){
+            const started=Date.now();
+            while(Date.now()-started<timeout){
+              for(let i=logs.length-1;i>=startIndex;i--) if(predicate(logs[i].text||'')) return logs[i].text;
+              await sleep(250);
+            }
+            throw new Error('Timed out waiting for '+label);
+          }
+          async function waitState(logs,predicate,timeout=60000,label='state',startIndex=0){
+            const started=Date.now();
+            while(Date.now()-started<timeout){
+              for(let i=logs.length-1;i>=startIndex;i--){
+                const state=parseState(logs[i].text||'');
+                if(state&&predicate(state)){report.states.push(state);return state;}
+              }
+              await sleep(250);
+            }
+            throw new Error('Timed out waiting for '+label);
+          }
+          function screenPoint(ui,box,canvasInfo){
+            // Runtime logs use RectTransformUtility.WorldToScreenPoint, i.e. physical Unity
+            // screen pixels with bottom-left origin. Map them directly into the CSS canvas box.
+            return {
+              x:box.x+(ui.x/canvasInfo.width)*box.width,
+              y:box.y+((canvasInfo.height-ui.unityY)/canvasInfo.height)*box.height
+            };
+          }
+          function hotspotPoint(hotspot,box,canvasInfo){
+            return {
+              x:box.x+(hotspot.x/canvasInfo.width)*box.width,
+              y:box.y+(hotspot.y/canvasInfo.height)*box.height
+            };
+          }
+          async function touchTap(cdp,x,y){
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,radiusX:5,radiusY:5,force:1,id:1}]});
+            await sleep(80);
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+          }
+          async function touchDrag(cdp,x1,y1,x2,y2){
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:x1,y:y1,radiusX:5,radiusY:5,force:1,id:1}]});
+            for(let i=1;i<=8;i++){
+              const t=i/8;
+              await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x1+(x2-x1)*t,y:y1+(y2-y1)*t,radiusX:5,radiusY:5,force:1,id:1}]});
+              await sleep(35);
+            }
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+          }
+          async function tapNamedNavigationControl(page,box,canvasInfo,logs,controlId,predicate,label,startIndex){
+            const ui=parseUi(logs,controlId);
+            const point=controlPoint(ui,box,canvasInfo);
+            // One named control, one touch. Searching the entire navigation band can
+            // hide displaced/offscreen buttons and must not be accepted as usability proof.
+            await page.touchscreen.tap(point.x,point.y);
+            await waitLog(logs,predicate,10000,label,startIndex);
+            return {controlId,...point,attempts:1};
+          }
+          function imageStats(path){
+            const png=PNG.sync.read(fs.readFileSync(path));
+            let n=0, sum=0, sum2=0, white=0;
+            const x0=Math.floor(png.width*.18), x1=Math.floor(png.width*.82);
+            const y0=Math.floor(png.height*.12), y1=Math.floor(png.height*.88);
+            for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){
+              const i=(y*png.width+x)*4;
+              const r=png.data[i],g=png.data[i+1],b=png.data[i+2];
+              const v=(r+g+b)/3; n++; sum+=v; sum2+=v*v;
+              if(r>245&&g>245&&b>245)white++;
+            }
+            const mean=sum/n, variance=sum2/n-mean*mean;
+            return {width:png.width,height:png.height,mean,stdev:Math.sqrt(Math.max(0,variance)),whiteRatio:white/n};
+          }
+          function primaryCtaBrightPixels(path,orientation){
+            const png=PNG.sync.read(fs.readFileSync(path));
+            const box=orientation==='portrait'?[.21,.86,.79,.89]:[.39,.72,.61,.78];
+            let bright=0;
+            for(let y=Math.floor(png.height*box[1]);y<Math.floor(png.height*box[3]);y++)
+              for(let x=Math.floor(png.width*box[0]);x<Math.floor(png.width*box[2]);x++){
+                const i=(y*png.width+x)*4;
+                if(Math.max(png.data[i],png.data[i+1],png.data[i+2])>150)bright++;
+              }
+            return bright;
+          }
+          function diffRatio(aPath,bPath){
+            const a=PNG.sync.read(fs.readFileSync(aPath)), b=PNG.sync.read(fs.readFileSync(bPath));
+            if(a.width!==b.width||a.height!==b.height)throw new Error('Screenshot dimensions differ');
+            const out=new PNG({width:a.width,height:a.height});
+            const changed=pixelmatch(a.data,b.data,out.data,a.width,a.height,{threshold:.12});
+            return changed/(a.width*a.height);
+          }
+
+          function lastState(logs,start=0){
+            for(let i=logs.length-1;i>=start;i--){const state=parseState(logs[i].text||'');if(state)return state;}
+            return null;
+          }
+          function detailedUi(logs,id,start=0){
+            for(let i=logs.length-1;i>=start;i--){
+              const m=(logs[i].text||'').match(new RegExp('ELDORIA_PLAYABLE_UI id='+id+' x=([-0-9.]+) y=([-0-9.]+) enabled=(True|False) visible=(True|False) label=([^\\n]*)'));
+              if(m)return {x:+m[1],unityY:+m[2],enabled:m[3]==='True',visible:m[4]==='True',label:m[5]};
+            }
+            return null;
+          }
+          async function tapLoggedUi(page,logs,id,start=0){
+            let ui,lastMappingError=null;
+            const locator=page.locator('canvas');
+            const begin=Date.now();
+            while(Date.now()-begin<90000){
+              ui=detailedUi(logs,id,start);
+              if(ui&&ui.enabled&&ui.visible){
+                const box=await locator.boundingBox();
+                const dimensions=await locator.evaluate(c=>({width:c.width,height:c.height}));
+                try{
+                  const point=controlPoint(ui,box,dimensions);
+                  await page.touchscreen.tap(point.x,point.y);
+                  return {...ui,css:point};
+                }catch(error){
+                  // After a mobile orientation resize Unity can briefly expose the
+                  // previous frame's UI coordinates. Do not accept those stale
+                  // coordinates, but wait for the next runtime geometry publication.
+                  lastMappingError=error;
+                }
+              }
+              await sleep(200);
+            }
+            throw new Error('No usable named control '+id+(lastMappingError?': '+lastMappingError.message:''));
+          }
+          function fullSnapshot(s){
+            return Object.fromEntries(['revision','wood','stone','gatheredWood','gatheredStone','march','sawmill','bastion','barracks','archers','trained','configured','scout','engendro','objective'].map(k=>[k,s[k]]));
+          }
+          async function resetPublishedGame(page,logs){
+            // A deliberate two-step reset is part of the real owner UX. Observe the first
+            // touch before deciding whether it armed confirmation or already completed a
+            // previously armed reset, then require explicit execution evidence.
+            const start=logs.length;
+            await tapLoggedUi(page,logs,'reset');
+            const canonical=s=>s.revision===0&&s.sawmill===0&&s.bastion===1&&s.objective==='b1.build-sawmill';
+            const firstDeadline=Date.now()+2500;
+            let armed=false;
+            while(Date.now()<firstDeadline){
+              for(let i=logs.length-1;i>=start;i--){
+                const text=logs[i].text||'';
+                const state=parseState(text);
+                if(state&&canonical(state)){report.states.push(state);await sleep(1200);return state;}
+                if(text.includes('ELDORIA_PLAYABLE_RESET armed=True'))armed=true;
+              }
+              if(armed)break;
+              await sleep(100);
+            }
+            if(!armed)throw new Error('Reset first touch neither armed confirmation nor executed reset');
+            const executeStart=logs.length;
+            await tapLoggedUi(page,logs,'reset');
+            await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_RESET execute=True'),10000,'reset execution',executeStart);
+            const state=await waitState(logs,canonical,30000,'canonical reset',executeStart);
+            await sleep(1200);
+            return state;
+          }
+          async function fullPublishedFlow(page,logs,orientation){
+            const result={orientation,steps:[],selectedBuildings:[],pass:false,persistencePass:false,resetPass:false};
+            report.fullFlows=report.fullFlows||[];report.fullFlows.push(result);
+            await page.setViewportSize(orientation==='portrait'?{width:390,height:844}:{width:844,height:390});
+            await sleep(1000);
+            const fresh=await resetPublishedGame(page,logs);
+            if(fresh.wood!==230||fresh.stone!==150||fresh.barracks!==0||fresh.engendro)throw new Error('Reset is not canonical initial state');
+            const flowStart=0;
+            await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-fresh-bastion-i.png'});
+            let final;
+            for(let step=0;step<70;step++){
+              let state=lastState(logs,flowStart);
+              if(state&&state.objective==='b2.complete'&&state.march==='idle'&&state.scene!=='Frontier'){final=state;break;}
+              // Wait through genuine timers. Never inject state, advance clocks or invoke gateway methods.
+              const readyStart=Date.now();
+              let ui;
+              while(Date.now()-readyStart<90000){
+                ui=detailedUi(logs,'primary',flowStart);
+                state=lastState(logs,flowStart);
+                if(state&&state.objective==='b2.complete'&&state.march==='idle'&&state.scene!=='Frontier'){final=state;break;}
+                if(ui&&ui.enabled&&ui.visible)break;
+                await sleep(250);
+              }
+              if(final)break;
+              if(!ui||!ui.enabled||!ui.visible)throw new Error('Guided objective is unavailable: '+JSON.stringify(state));
+              state=lastState(logs,flowStart);
+              const before=logs.length;
+              const tapped=await tapLoggedUi(page,logs,'primary',flowStart);
+              await sleep(750);
+              const action=detailedUi(logs,'buildingAction',before);
+              let buildingTap=null;
+              if(action&&action.visible){
+                const buildingId=({'b1.build-sawmill':'sawmill','b1.ascend':'bastion','b2.build-barracks':'barracks','b2.train-archers':'barracks'})[state.objective];
+                if(buildingId&&!result.selectedBuildings.includes(buildingId)){
+                  // Independently select each real building at its visible presented-frame position.
+                  await tapLoggedUi(page,logs,'buildingClose',before);await sleep(500);
+                  const hotspot=parseHotspot(logs,buildingId);
+                  const canvas=page.locator('canvas'),hotspotBox=await canvas.boundingBox();
+                  const dim=await canvas.evaluate(c=>({width:c.width,height:c.height}));
+                  if(!hotspot)throw new Error('Presented '+buildingId+' geometry missing');
+                  const point=hotspotPoint(hotspot,hotspotBox,dim);
+                  if(point.x<hotspotBox.x||point.x>hotspotBox.x+hotspotBox.width||point.y<hotspotBox.y||point.y>hotspotBox.y+hotspotBox.height)throw new Error('Guided focus left '+buildingId+' outside viewport');
+                  const selectStart=logs.length;
+                  await page.touchscreen.tap(point.x,point.y);
+                  await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction ')&&/visible=True/.test(t),10000,'visible '+buildingId+' selection',selectStart);
+                  result.selectedBuildings.push(buildingId);
+                  result.presentedBuildingSelectionPass=result.selectedBuildings.length===3;
+                  await page.screenshot({path:'webgl-startup-evidence/'+orientation+'-selected-'+buildingId+'.png'});
+                }
+                buildingTap=await tapLoggedUi(page,logs,'buildingAction',before);await sleep(500);
+              }
+              const changed=await waitState(logs,s=>s.revision!==state.revision||s.scene!==state.scene||s.objective!==state.objective,30000,'guided step effect '+state.objective,before);
+              result.steps.push({step,objective:state.objective,scene:state.scene,primary:tapped,buildingAction:buildingTap,after:changed});
+              const stepImage='webgl-startup-evidence/'+orientation+'-step-'+String(step).padStart(2,'0')+'-'+state.objective+'.png';
+              await page.screenshot({path:stepImage});
+              if(state.objective==='b2.train-archers'){
+                result.trainingCtaBrightPixels=primaryCtaBrightPixels(stepImage,orientation);
+                if(result.trainingCtaBrightPixels<30)throw new Error('Recruitment CTA contrast failed '+orientation+': '+result.trainingCtaBrightPixels+' bright pixels');
+              }
+              const quiet=Date.now();
+              while(Date.now()-quiet<90000){
+                const current=lastState(logs,flowStart),button=detailedUi(logs,'primary',before);
+                if(current&&current.objective==='b2.complete'&&current.scene!=='Frontier'&&current.march==='idle')break;
+                if(current&&button&&button.enabled&&current.march==='idle')break;
+                await sleep(250);
+              }
+            }
+            if(!final)throw new Error('Full '+orientation+' flow never reached city chapter-II completion');
+            if(!result.presentedBuildingSelectionPass)throw new Error('Presented city selection unverified');
+            if(final.bastion!==2||final.sawmill!==1||final.barracks!==1||final.trained!==20||!final.configured||!final.scout||!final.engendro||final.gatheredWood<600||final.gatheredStone<500)throw new Error('Full final state incomplete: '+JSON.stringify(final));
+            result.final=fullSnapshot(final);
+            const completedImage='webgl-startup-evidence/'+orientation+'-bastion-ii-complete.png';
+            await page.screenshot({path:completedImage});
+            result.completionCtaBrightPixels=primaryCtaBrightPixels(completedImage,orientation);
+            if(result.completionCtaBrightPixels<30)throw new Error('Completed CTA contrast failed '+orientation+': '+result.completionCtaBrightPixels+' bright pixels');
+            const beforeReload=logs.length;
+            await page.reload({waitUntil:'domcontentloaded',timeout:60000});
+            await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
+            const restored=await waitState(logs,s=>s.scene!=='Frontier'&&s.objective==='b2.complete',90000,'full final reload',beforeReload);
+            if(JSON.stringify(fullSnapshot(restored))!==JSON.stringify(result.final))throw new Error('Full final save changed across reload');
+            result.persistencePass=true;
+            await sleep(1500);
+            const reset=await resetPublishedGame(page,logs);
+            const resetStart=logs.length;
+            await page.reload({waitUntil:'domcontentloaded',timeout:60000});
+            await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
+            const resetReloaded=await waitState(logs,s=>s.revision===0&&s.objective==='b1.build-sawmill',90000,'reset survives reload',resetStart);
+            if(JSON.stringify(fullSnapshot(resetReloaded))!==JSON.stringify(fullSnapshot(reset)))throw new Error('Reset state changed after reload');
+            result.resetPass=true;result.pass=true;
+          }
+
+          (async()=>{
+            let compressed=false;
+            for(let attempt=0;attempt<20;attempt++){
+              const response=await fetch(target+'?compression-check='+Date.now());
+              const html=await response.text();
+              if(html.includes('.unityweb')){compressed=true;break;}
+              await sleep(30000);
+            }
+            if(!compressed)throw new Error('Compressed publication was not observed');
+
+            const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+            const context=await browser.newContext({
+              viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,
+              userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
+            });
+            const page=await context.newPage();
+            const cdp=await context.newCDPSession(page);
+            const logs=report.logs, requests=report.requests;
+            page.on('console',m=>logs.push({type:m.type(),text:m.text()}));
+            page.on('pageerror',e=>logs.push({type:'pageerror',text:String(e)}));
+            page.on('response',r=>{if(r.url().includes('/unity-owner/'))requests.push({url:r.url(),status:r.status()});});
+            page.on('requestfailed',r=>requests.push({url:r.url(),failure:r.failure()}));
+            page.on('dialog',async d=>{logs.push({type:'dialog',text:d.message()});await d.dismiss();});
+            await page.route(url=>url.href.split('?')[0]===target,async route=>{
+              const response=await route.fetch();
+              const html=await response.text();
+              const token='.then((unityInstance) => {';
+              if(!html.includes(token))throw new Error('Published Unity loader callback changed');
+              await route.fulfill({response,body:html.replace(token,token+" document.body.dataset.eldoriaEngineReady='true';")});
+            });
+
+            try{
+              await page.goto(target+'?playable-probe='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
+              await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
+              await waitState(logs,s=>s.scene==='Valoria'||s.scene==='ValoriaWebGL',90000,'initial Valoria state');
+              await waitLog(logs,t=>t.includes('VALORIA_WEBGL_HUD_BACKGROUND_READY'),60000,'Valoria certified background');
+              await sleep(2500);
+
+              await page.screenshot({path:'webgl-startup-evidence/home-landscape.png'});
+              const homeStats=imageStats('webgl-startup-evidence/home-landscape.png');
+              report.checks.homeVisual=homeStats;
+              if(homeStats.stdev<28||homeStats.whiteRatio>.28)throw new Error('HOME lacks sufficient Valoria visual content');
+
+              const canvasLocator=page.locator('canvas');
+              const box=await canvasLocator.boundingBox();
+              if(!box)throw new Error('Unity canvas missing');
+              const canvasInfo=await canvasLocator.evaluate(c=>({width:c.width,height:c.height,clientWidth:c.clientWidth,clientHeight:c.clientHeight}));
+              report.checks.canvas=canvasInfo;
+              if(!canvasInfo.width||!canvasInfo.height)throw new Error('Unity canvas has invalid internal dimensions');
+              const cx=box.x+box.width*.56, cy=box.y+box.height*.48;
+              const beforePanRightLogs=logs.length;
+              await touchDrag(cdp,cx+100,cy,cx-120,cy);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+)/);
+                return !!m&&(+m[1])>=.35;
+              },15000,'real touch pan right',beforePanRightLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-right-landscape.png'});
+              const panRightDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-right-landscape.png');
+              report.checks.panRightDiffRatio=panRightDiff;
+              if(panRightDiff<.008)throw new Error('Right touch pan changed camera log but published view did not visibly change');
+
+              const homeUi=parseUi(logs,'home');
+              if(!homeUi)throw new Error('HOME touch target was not published by runtime');
+              const hp=screenPoint(homeUi,box,canvasInfo);
+              await page.touchscreen.tap(hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after right pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after right pan');
+              await sleep(500);
+
+              const beforePanLeftLogs=logs.length;
+              await touchDrag(cdp,cx-100,cy,cx+120,cy);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+)/);
+                return !!m&&(+m[1])<=-.35;
+              },15000,'real touch pan left',beforePanLeftLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-left-landscape.png'});
+              const panLeftDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-left-landscape.png');
+              const panSidesDiff=diffRatio('webgl-startup-evidence/pan-right-landscape.png','webgl-startup-evidence/pan-left-landscape.png');
+              report.checks.panLeftDiffRatio=panLeftDiff;
+              report.checks.panSidesDiffRatio=panSidesDiff;
+              if(panLeftDiff<.008||panSidesDiff<.008)throw new Error('Left/right touch pan views are not visually distinct');
+
+              await page.touchscreen.tap(hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after left pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
+              await sleep(500);
+
+              const beforePanVerticalLogs=logs.length;
+              await touchDrag(cdp,cx,cy+70,cx,cy-70);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
+                return !!m&&Math.abs(+m[2])>=.10;
+              },15000,'real touch vertical pan',beforePanVerticalLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-vertical-landscape.png'});
+              const panVerticalDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-vertical-landscape.png');
+              report.checks.panVerticalDiffRatio=panVerticalDiff;
+              if(panVerticalDiff<.002)throw new Error('Vertical touch pan changed camera log but published view did not visibly change');
+              await page.touchscreen.tap(hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after vertical pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'HOME camera reset after vertical pan');
+              await sleep(500);
+
+              const beforePanVerticalDownLogs=logs.length;
+              await touchDrag(cdp,cx,cy-70,cx,cy+70);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
+                return !!m&&(+m[2])>=.10;
+              },15000,'real touch vertical pan opposite direction',beforePanVerticalDownLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-vertical-down-landscape.png'});
+              const panVerticalDownDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-vertical-down-landscape.png');
+              const panVerticalSidesDiff=diffRatio('webgl-startup-evidence/pan-vertical-landscape.png','webgl-startup-evidence/pan-vertical-down-landscape.png');
+              report.checks.panVerticalDownDiffRatio=panVerticalDownDiff;
+              report.checks.panVerticalSidesDiffRatio=panVerticalSidesDiff;
+              if(panVerticalDownDiff<.002||panVerticalSidesDiff<.002)
+                throw new Error('Opposite vertical touch pans are not visually distinct');
+              await page.touchscreen.tap(hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after opposite vertical pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'HOME camera reset after opposite vertical pan');
+              await sleep(500);
+
+              const worldStart=logs.length;
+              const worldTap=await tapNamedNavigationControl(page,box,canvasInfo,logs,'worldNav',
+                t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),
+                'MUNDO button activation',worldStart);
+              report.checks.worldTapCss=worldTap;
+              await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition',worldStart);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria'),10000,'forest hotspot geometry',worldStart);
+              await sleep(1500);
+              await page.screenshot({path:'webgl-startup-evidence/world-before-action.png'});
+
+              const forest=parseHotspot(logs,'forest-valoria');
+              if(!forest)throw new Error('Forest hotspot screen coordinate missing');
+              const forestTapStart=logs.length;
+              const fp=hotspotPoint(forest,box,canvasInfo);
+              await page.touchscreen.tap(fp.x,fp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction'),10000,'forest action target',forestTapStart);
+              const worldAction=parseUi(logs,'buildingAction');
+              if(!worldAction)throw new Error('Forest action button missing');
+              const wa=screenPoint(worldAction,box,canvasInfo);
+              const gatherStart=logs.length;
+              await page.touchscreen.tap(wa.x,wa.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True'),10000,'Region 1 gather command',gatherStart);
+              const rewardState=await waitState(logs,s=>s.scene==='Frontier'&&s.march==='idle'&&s.gatheredWood>=360,20000,'Region 1 return/reward');
+              report.checks.rewardState=rewardState;
+              await page.screenshot({path:'webgl-startup-evidence/world-after-reward.png'});
+
+              const cityReturnStart=logs.length;
+              const cityTap=await tapNamedNavigationControl(page,box,canvasInfo,logs,'cityNav',
+                t=>t.includes('ELDORIA_PLAYABLE_NAV target=Valoria city=False'),
+                'REINO/CIUDAD button activation',cityReturnStart);
+              report.checks.cityTapCss=cityTap;
+              const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return',cityReturnStart);
+              await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
+
+              const persisted=persistenceSnapshot(returned);
+              report.checks.beforeReload=persisted;
+              const preReloadCount=logs.length;
+              await page.reload({waitUntil:'domcontentloaded',timeout:60000});
+              await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
+              const reloaded=await waitState(logs,s=>s.scene==='Valoria'||s.scene==='ValoriaWebGL',90000,'Valoria after reload',preReloadCount);
+              report.checks.afterReload=reloaded;
+              // Exact comparison happens in certifyMacroloop, including stone, Bastion and revision.
+
+              await page.setViewportSize({width:390,height:844});
+              await sleep(2500);
+              await page.screenshot({path:'webgl-startup-evidence/portrait.png'});
+              const portraitStats=imageStats('webgl-startup-evidence/portrait.png');
+              report.checks.portraitVisual=portraitStats;
+              if(portraitStats.stdev<24||portraitStats.whiteRatio>.32)throw new Error('Portrait lacks sufficient Valoria visual content');
+
+              if(report.delivery.kind==='candidate') {
+                // The editor camera test cannot certify WebGL's frame-based presentation.
+                // Exercise both signs on each axis in the actual candidate viewport.
+                const portraitBox=await canvasLocator.boundingBox();
+                const portraitCanvas=await canvasLocator.evaluate(c=>({width:c.width,height:c.height,clientWidth:c.clientWidth,clientHeight:c.clientHeight}));
+                if(!portraitBox||!portraitCanvas.width||!portraitCanvas.height)throw new Error('Portrait canvas missing');
+                const px=portraitBox.x+portraitBox.width*.50, py=portraitBox.y+portraitBox.height*.44;
+                const portraitHome=parseUi(logs,'home');
+                if(!portraitHome)throw new Error('Portrait HOME touch target missing');
+                const portraitHomePoint=screenPoint(portraitHome,portraitBox,portraitCanvas);
+                report.checks.portraitCameraViews={};
+                for(const [name,dx,dy,axis,sign] of [
+                  ['right',-180,0,'x',1],['left',180,0,'x',-1],
+                  ['up',0,-160,'y',-1],['down',0,160,'y',1]]) {
+                  const start=logs.length;
+                  await touchDrag(cdp,px-dx*.5,py-dy*.5,px+dx*.5,py+dy*.5);
+                  await waitLog(logs,t=>{
+                    const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
+                    if(!m)return false;
+                    const value=+(axis==='x'?m[1]:m[2]);
+                    return sign*value>=(axis==='x'?.35:.10);
+                  },15000,'portrait touch pan '+name,start);
+                  await sleep(800);
+                  const path='webgl-startup-evidence/pan-'+name+'-portrait.png';
+                  await page.screenshot({path});
+                  const changed=diffRatio('webgl-startup-evidence/portrait.png',path);
+                  report.checks.portraitCameraViews[name]={diffRatio:changed,image:imageStats(path)};
+                  if(changed<.002)throw new Error('Portrait '+name+' touch pan moved camera log without visible city change');
+                  const homeStart=logs.length;
+                  await page.touchscreen.tap(portraitHomePoint.x,portraitHomePoint.y);
+                  await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'portrait HOME after '+name,homeStart);
+                  await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'portrait camera reset after '+name,homeStart);
+                  await sleep(400);
+                }
+                for(const [a,b] of [['right','left'],['up','down']]) {
+                  const ratio=diffRatio('webgl-startup-evidence/pan-'+a+'-portrait.png','webgl-startup-evidence/pan-'+b+'-portrait.png');
+                  report.checks.portraitCameraViews[a+'Vs'+b]=ratio;
+                  if(ratio<.002)throw new Error('Portrait opposite '+a+'/'+b+' views are not visibly distinct');
+                }
+              }
+
+              try { certifyMacroloop(report); }
+              catch(error) {
+                // Gather downstream diagnostic evidence, while retaining unconditional failure.
+                if(!fatalRuntimeLogs(logs).length)throw error;
+                report.macroloopFailure=String(error);
+                report.diagnosticOnly=true;
+                report.coverage.executed=[];
+              }
+              await fullPublishedFlow(page,logs,'landscape');
+              await fullPublishedFlow(page,logs,'portrait');
+              report.coverage.fullBastionIToIIPass=report.fullFlows.every(f=>f.pass&&f.persistencePass&&f.resetPass);
+              report.coverage.executed.push('uninterrupted fresh-save I-II in both orientations','presented sawmill touch selection','recruitment and configured march','scout and Engendro combat/rewards','exact full final-state reload','deliberate reset and reset reload');
+              report.coverage.notExecuted=['physical-device performance','human usability and enjoyment','live SHARP rendering in WebGL'];
+              if(fatalRuntimeLogs(logs).length)throw new Error('Engine errors after full progression prevent certification');
+              if(report.macroloopFailure)throw new Error(report.macroloopFailure);
+            }catch(e){
+              report.failure=String(e);
+              await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
+            }
+            report.runtimeErrors=fatalRuntimeLogs(logs);
+            report.delivery.publishedPass=report.delivery.kind==='published'&&!report.failure;
+            fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify(report,null,2));
+            await browser.close();
+            if(report.failure)throw new Error(report.failure);
+          })().catch(e=>{console.error(e);process.exit(1);});
+          JS
+          node /tmp/eldoria-startup.cjs
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.target.outputs.kind != 'no_delivery'
+        with:
+          name: eldoria-webgl-startup-evidence
+          path: webgl-startup-evidence/
+          retention-days: 7
+

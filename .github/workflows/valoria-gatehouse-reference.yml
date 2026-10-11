@@ -1,0 +1,60 @@
+name: Valoria AI art director gate focus V2
+on:
+  push:
+    branches: [art/valoria-gate-quality-calibration-v1-20261011]
+    paths:
+      - 'tools/art-rd/valoria_gatehouse_reference.py'
+      - '.github/workflows/valoria-gatehouse-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  gate-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+      - name: Author and render Valoria reference gate
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/valoria-gate-v5-quality-calibration"
+          export ELDORIA_GATE_REFERENCE_OUTPUT="$RUNNER_TEMP/valoria-gate-v5-quality-calibration"
+          export ELDORIA_FORTIFICATION_OUTPUT="$RUNNER_TEMP/valoria-fortification-temp"
+          blender -b --python tools/art-rd/valoria_gatehouse_reference.py > "$RUNNER_TEMP/gatehouse-out.log" 2> "$RUNNER_TEMP/gatehouse-err.log" || { tail -100 "$RUNNER_TEMP/gatehouse-err.log"; tail -30 "$RUNNER_TEMP/gatehouse-out.log"; exit 1; }
+          grep -q ELDORIA_GATE_REFERENCE_PASS "$RUNNER_TEMP/gatehouse-out.log"
+          test -s "$ELDORIA_GATE_REFERENCE_OUTPUT/valoria_gate_reference.glb"
+          test -s "$ELDORIA_GATE_REFERENCE_OUTPUT/valoria_gate_reference.blend"
+      - name: Preserve source GLB and validation images on art branch
+        if: success()
+        shell: bash
+        run: |
+          # Use an isolated clean worktree: Blender may mutate tracked sources or index filters.
+          branch="art/valoria-gate-quality-calibration-v1-20261011"
+          git fetch origin "$branch"
+          publish="$RUNNER_TEMP/valoria-gate-publish"
+          git worktree add --detach "$publish" FETCH_HEAD
+          cd "$publish"
+          destination="art-source/valoria/production/gatehouse-v5-quality-calibration/runs/${{ github.run_id }}"
+          mkdir -p "$destination"
+          cp "$RUNNER_TEMP/valoria-gate-v5-quality-calibration/"{valoria_gate_reference.glb,valoria_gate_reference.blend,gate_reference_hero.png,gate_reference_mobile.png,gate_reference_assembled.png,gate_reference_manifest.json} "$destination/"
+          cp "art-source/valoria/production/gatehouse-reference/gate_reference_hero.png" "$destination/historical_gate_reference_hero.png"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f "$destination"
+          git commit -m "art: preserve Valoria gatehouse source and review renders"
+          # Commit was created from freshly fetched remote head in a disposable worktree.
+          # Avoid rebase: LFS-filtered Blender files can mark this checkout dirty.
+          # Non-fast-forward push rejects competing changes without overwriting them.
+          git status --short
+          git push origin "HEAD:$branch"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-gate-v5-quality-calibration
+          path: |
+            ${{ runner.temp }}/valoria-gate-v5-quality-calibration/
+            ${{ runner.temp }}/gatehouse-out.log
+            ${{ runner.temp }}/gatehouse-err.log
+          retention-days: 14

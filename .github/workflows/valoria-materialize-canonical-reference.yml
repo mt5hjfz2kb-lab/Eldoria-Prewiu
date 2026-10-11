@@ -1,0 +1,37 @@
+name: "[PREFLIGHT] Materialize Valoria Canonical Reference"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-projection-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+
+      - name: Verify exact canonical reference
+        run: |
+          test -s references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sha256sum references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          file references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-canonical-reference-exact
+          path: references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          if-no-files-found: error
+          retention-days: 7

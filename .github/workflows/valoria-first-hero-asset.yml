@@ -1,0 +1,59 @@
+name: Valoria hero gate surface quality V2
+on:
+  push:
+    branches: [art/valoria-first-hero-asset-v1-20261011]
+    paths:
+      - 'tools/art-rd/first-hero-support/quality_surfaces.py'
+      - 'tools/art-rd/first-hero-support/quality_v2.py'
+      - 'tools/art-rd/first-hero-support/quality_board.py'
+      - 'tools/art-rd/first-hero-support/verify_export.py'
+      - '.github/workflows/valoria-first-hero-asset.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: valoria-first-hero-isolated-blender
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender and bitmap dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-numpy python3-pil libxrender1 libxfixes3 libxi6 libxkbcommon0 libsm6 libgl1 libglu1-mesa
+          curl -L --fail -o "$RUNNER_TEMP/blender.tar.xz" https://download.blender.org/release/Blender4.2/blender-4.2.5-linux-x64.tar.xz
+          echo "cd28ab8164d88237c0c45a188ef7e4974bcb8c651de15fcbc3635166e584e4b3  $RUNNER_TEMP/blender.tar.xz" | sha256sum -c -
+          tar -xf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/blender-4.2.5-linux-x64" >> "$GITHUB_PATH"
+      - name: Verify existing art brain source
+        run: |
+          git fetch --no-tags origin refs/heads/art/studio-reuse-handoff-20261011:refs/remotes/origin/art/studio-reuse-handoff-20261011
+          python3 tools/valoria-art-brain/bridge.py --check
+      - name: Reauthor the preserved gate and render matched before/after
+        run: |
+          python3 tools/art-rd/first-hero-support/quality_surfaces.py
+          blender -b -t 8 --python tools/art-rd/first-hero-support/quality_v2.py > "$RUNNER_TEMP/hero-blender.log" 2>&1 || { tail -80 "$RUNNER_TEMP/hero-blender.log"; exit 1; }
+          grep -q ELDORIA_QUALITY_V2_EXPORTED "$RUNNER_TEMP/hero-blender.log"
+          export ELDORIA_HERO_VERIFY_OUTPUT="$GITHUB_WORKSPACE/art-source/valoria/production/first-hero-gate-v1/quality-v2"
+          blender -b -t 8 --python tools/art-rd/first-hero-support/verify_export.py > "$RUNNER_TEMP/hero-verify.log" 2>&1 || { tail -80 "$RUNNER_TEMP/hero-verify.log"; exit 1; }
+          grep -q ELDORIA_HERO_GLTF_ROUNDTRIP_PASS "$RUNNER_TEMP/hero-verify.log"
+          python3 tools/art-rd/first-hero-support/quality_board.py
+      - name: Preserve editable source on task branch
+        run: |
+          git config user.name 'eldoria-art-ci'
+          git config user.email 'eldoria-art-ci@users.noreply.github.com'
+          git add -f art-source/valoria/production/first-hero-gate-v1/quality-v2
+          git commit -m 'art: preserve visually reauthored hero gate V2 and matched proof [skip ci]' || exit 0
+          git push origin HEAD:art/valoria-first-hero-asset-v1-20261011
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-hero-gate-quality-v2
+          path: |
+            art-source/valoria/production/first-hero-gate-v1/quality-v2/
+            ${{ runner.temp }}/hero-blender.log
+            ${{ runner.temp }}/hero-verify.log
+          retention-days: 30

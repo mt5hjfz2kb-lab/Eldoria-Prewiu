@@ -1,0 +1,377 @@
+{
+  "schema_version": 1,
+  "classification": "PREPRODUCTION_ONLY",
+  "capture_commit": "73d0bfee2692faa3c9590b65486057080031ba9a",
+  "files": [
+    {
+      "path": ".github/workflows/valoria-production-art-reset-v1.yml",
+      "bytes": 5815,
+      "sha256": "36491b3f5d809ecc57cbf208cc2799dbc5d0f32eaa913b6d646f197a2e06d2b8"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 36821,
+      "sha256": "4fd789ed67499f9aa186f5bfddb8fe6d1714c69c3f3d24bf2fc108d791174df0"
+    },
+    {
+      "path": "PROJECT_STATE.md",
+      "bytes": 76278,
+      "sha256": "410f37acfd025a619e22c86cceb77d583f6635ffdd25e892d80ab4bd08d29c65"
+    },
+    {
+      "path": "SESSION_HANDOFF.md",
+      "bytes": 112575,
+      "sha256": "dcd4e36a978633b7caab0d22a17efa0cb659ea96657c6c9ff30b96b2d73d5b40"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+      "bytes": 7714,
+      "sha256": "31b8592943d95f407f8f1968e9bf5d4bd6dfcdb7d276e383a96ee0f35803e4cc"
+    },
+    {
+      "path": "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md",
+      "bytes": 12412,
+      "sha256": "994496a822f1073a3615fd638339838ab6d1963e069e5954a12711fad9034a7d"
+    },
+    {
+      "path": "docs/VALORIA_ART_PRODUCTION_RESET_V1.md",
+      "bytes": 14716,
+      "sha256": "18ee2c4956b963a4865a0d229b3df577f1e848baf307cab7ad21a76badf134ed"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_BIBLE.md",
+      "bytes": 10167,
+      "sha256": "464da4a24a85c25f7a31ef34dccc25484fa28a7420c5bc15ddb18e121b3b1e40"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-16x9-metrics.json",
+      "bytes": 21719,
+      "sha256": "8d4795cd0cb980d7c54534af8d6497a88106b22af29ba1af5f37198e1fa593b6"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-16x9.png",
+      "bytes": 49722,
+      "sha256": "131bf24408ee1ee23dd0255466ebe8dc43b25bd33c409e0296a285ac7db8fb03"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-mobile-landscape-metrics.json",
+      "bytes": 21786,
+      "sha256": "fb265a399b6298b6a6768394a0752624503b8125ed29f442672551e19319cd41"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-mobile-landscape-safe-areas.png",
+      "bytes": 36132,
+      "sha256": "8f62b5b9de55b6abc46816f57cd386bb5e1b113ba7b01082aae4226c9734f4e5"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-mobile-landscape.png",
+      "bytes": 33331,
+      "sha256": "12b438946691a2a2ff43c3dafab4e2284d19782968a2e99c3675bfaee4daab84"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-entry-metrics.json",
+      "bytes": 19121,
+      "sha256": "c093ca9fda23f143e22a05a700629863518fb72a0c6266bc693ebef62fb93bf8"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-entry-safe-areas.png",
+      "bytes": 12907,
+      "sha256": "a56bc453b85d08aecbf9bbf480feb2a5cdb5cfdda0f800924e51c3d4066eddcb"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-entry.png",
+      "bytes": 10620,
+      "sha256": "c1e4fd77ab49ea0c9940246ebd4067019c9fc43a5e30c8523df2ac879ac34f86"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-home-metrics.json",
+      "bytes": 19777,
+      "sha256": "8a6a11fad464bb43c0ea74f52699326f3387126f1ff849300e74dd46a24fe117"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-home-safe-areas.png",
+      "bytes": 13460,
+      "sha256": "293b874253f36c5dd3b2eb630ce19ed77965a0044fc41f374467b10a3da004a5"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-home.png",
+      "bytes": 11606,
+      "sha256": "8ab660e8e5b83a081fca2058565e969951faa3c1ccddcddb0cd4fc19ef0cf079"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-left-metrics.json",
+      "bytes": 18847,
+      "sha256": "8ac3fb56a1edec4221d8f65f28a4fb540f92587c5d404e0639663e86bf7b88fe"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-left-safe-areas.png",
+      "bytes": 14647,
+      "sha256": "86b280db2bcf9c8b2b77349cf905a0d7e6cf0aaca0510718118cb565506c72a2"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-left.png",
+      "bytes": 12473,
+      "sha256": "fe2c9c85cb7b2abc6a88b64799cc54b08a14ed7248b31c4c61bbff70e3d86b31"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-right-metrics.json",
+      "bytes": 18816,
+      "sha256": "cee9a716bc682588db7e25540a93464a141e5f45acbb2cefec8c60606a5b8380"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-right-safe-areas.png",
+      "bytes": 13671,
+      "sha256": "7b36578c03b307c74f7a5b2c08360ea43bc183f7b35aa889ea0f45642a2970a3"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-portrait-right.png",
+      "bytes": 11281,
+      "sha256": "d257a8db0485689502a37b4d909e2de2ed9fb6f087171692f021e72770a5f1d6"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-source-3x2-metrics.json",
+      "bytes": 21680,
+      "sha256": "86b4678c769b05cc5f647c95d51db909340416dcc95398a2216d2a1885920d31"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/BLOCKOUT-source-3x2.png",
+      "bytes": 47203,
+      "sha256": "8ad2097a56f7888e87b967415fbc53ca5412192567450642fa0b371d56f11cd4"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/CAMERA-legacy-orientation-metrics.json",
+      "bytes": 22100,
+      "sha256": "e5baf42b3f4740115fbc3ae122962b215bc85ae66204be4ba05e25b2ea22ec82"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/CAMERA-legacy-orientation.png",
+      "bytes": 36320,
+      "sha256": "f1d1f45451260f240d377130dce5c735f18eddcb1d833a1893c466ed218478f7"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/CAMERA-perspective-metrics.json",
+      "bytes": 22067,
+      "sha256": "8df4a36c6a4c69b7ff726e9da4e14ccbf2cced4a17a4caedbc8df0246f1e1e9e"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/CAMERA-perspective.png",
+      "bytes": 47231,
+      "sha256": "f8f0c208a674d66b6c5598d037504f3d21d6c16dfcf8b36bc525312512593d85"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/ITERATION-01-metrics.json",
+      "bytes": 20943,
+      "sha256": "73cc9386abae7baa81abee248450d68fc5e29abdbc434eb7fc52ba80000e0c5a"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/ITERATION-01-scene.json",
+      "bytes": 166656,
+      "sha256": "6175799c0d70041d682f3be5ca025268da6f924ff32c04c2515fe26bfa286bce"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/ITERATION-01.png",
+      "bytes": 46935,
+      "sha256": "069ae2effd9612a27998c91e07410088a8aa81ca86a283d569ba8ff2d062e503"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/ITERATION-02-scene.json",
+      "bytes": 168435,
+      "sha256": "744549944fb29bd8326c79c63d9492756ff227b5856794a53b716ff38ece2382"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/ITERATION-02.png",
+      "bytes": 48058,
+      "sha256": "567fadb009a2af8fe7483adb2b47db1bd317493698b4aa3957702b0dec01514a"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/TARGET-vs-BLOCKOUT.jpg",
+      "bytes": 747326,
+      "sha256": "f9ae20670c28473892ba99febab2f8a5031d8e63737954c9e3823939cb4d7dbe"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/UNITY-portrait-review.png",
+      "bytes": 52400,
+      "sha256": "882ace74acb07eff479711e792414b676f7c068a6d3df77ee6ab6e7f8b34d989"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/annotated-blockout.jpg",
+      "bytes": 157044,
+      "sha256": "486e5834083b2c91db72362ff40f9d38ed4681a4cf282490716eefd7f2f007e8"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/annotated-blockout.png",
+      "bytes": 70275,
+      "sha256": "57deb59fdf87242b8abfcb1b8085d528ccd2511349fb7918f21633a8c01fd1a4"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/annotated-target.jpg",
+      "bytes": 576177,
+      "sha256": "3cd4e375682c90f0b2a4724ecb30249ea7584b9b7856a9196e55953d06dd5138"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/art-production-plan.json",
+      "bytes": 812,
+      "sha256": "3119f61a8603658bbb96f994529bd2ae4bec982f4dbfe06ec141081ae73d4c8d"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/asset-families.json",
+      "bytes": 35607,
+      "sha256": "733a9531ebcd61ae5b5a4b3c7f142e5451b16b1ad354f09bb51a82b0ce77860e"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/blockout-scene.json",
+      "bytes": 170005,
+      "sha256": "4353612ac62ebe1d82165dd6fad48a79414565ca583a81129eba447f4cf7ad86"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+      "bytes": 702827,
+      "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/full-scene-greybox.obj",
+      "bytes": 44490,
+      "sha256": "a15558f065797f18c2130925dfa6402c54b55d909f91d388f1a0df21f15d8288"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/legacy-inventory.json",
+      "bytes": 30601,
+      "sha256": "15926caeb2b13c0ca1784953fd8ebf3f82f8dea2b4a24abbbd2b31976d57534b"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/preservation-proof.json",
+      "bytes": 485,
+      "sha256": "11cd3976a6cce76608a5d7e2991417119b9b02a49fa54db497918f487721f1dc"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/projection-crosscheck.json",
+      "bytes": 334,
+      "sha256": "6837a1aef4cb4f7137d5bf2ae83ad47d10da353fedab44049c87c3059e692ef5"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/reference-identity.json",
+      "bytes": 424,
+      "sha256": "4ffd2742be3d290f2ef564e886b4669f123c4b1cab68c00bda5fd3b4a0482b97"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/session-result.json",
+      "bytes": 2652,
+      "sha256": "c00436204f0341254700e3ebec57adbcc9823e119d6c05b3751d944c52f354bd"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/target-blockout-50pct-overlay.jpg",
+      "bytes": 396297,
+      "sha256": "e6b4cadee4ea0a38e97ed5c81f6102903f49520e7df07cdea45bbe88a71aad5f"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/target-blockout-comparison.json",
+      "bytes": 4899,
+      "sha256": "549a1db7524adc85e09aa8df987ca5f88d259b65eb0b0a3926bd76ac7508f258"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/target-overlay.svg",
+      "bytes": 1806,
+      "sha256": "e44a9fa91aabebacaf8009e5a9540fee5c77cbf3d5ec54279997a6842757c34a"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/target-spec.json",
+      "bytes": 7822,
+      "sha256": "90c3780ca5c45866246a4c7137feb7d02ec7d944860aa95a2e9c6c9517865cb3"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/test-summary.json",
+      "bytes": 786,
+      "sha256": "2369e2fcb545ba7d7061584cb7d5d1ab988e21008a2dfa3d40800a8157d27e15"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
+      "bytes": 153563,
+      "sha256": "2657514cee4e2266281f9d2639c7259eb6dd51b66ee877bd1ba9014a413bb61b"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/ProductionArtReset-PlayMode.log",
+      "bytes": 249131,
+      "sha256": "27e846275793a1f8ee4d5cb9f1a832b5aaa450c0bfc6d0b9533a604ea561f359"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/ProductionArtReset-PlayMode.xml",
+      "bytes": 6855,
+      "sha256": "7d2f5392fd5b61f710b87887295a328a89f92d185d8b3ac29c090afdd2b7141a"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-16x9.png",
+      "bytes": 85750,
+      "sha256": "50b77880d851a5f5acdb61858be9d25c13679716929a717c3e21328411c91fc7"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-mobile-landscape.png",
+      "bytes": 53663,
+      "sha256": "5636e3c3ca4f18bb90a4a8a0164a64a813812021818f42f6e775cea274245628"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-portrait-entry.png",
+      "bytes": 17202,
+      "sha256": "09f1a8ee72b7d1a487e0b225d3c457eeabaa31e61cb43548acab00d1c4019816"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-portrait-home.png",
+      "bytes": 18897,
+      "sha256": "5c626266f1435cefc944743537f1eab6ef58f4ccb01916cff141e3d97c05b23c"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-portrait-left.png",
+      "bytes": 19951,
+      "sha256": "f5cb2ca5a53a2783b82381f8ecb9bd75d584afea1df474b17c197b35099638db"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-portrait-right.png",
+      "bytes": 17925,
+      "sha256": "684a06a6daaaada7bde0f6028b23780880e02c2b40cb5d731d83c67cc47d0e01"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/UNITY-source-3x2.png",
+      "bytes": 78489,
+      "sha256": "817a6c658934948f4d277814a9af85fb7c79d8be38dd5a863241fbf46601775f"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/ValoriaProductionArtResetV1.log",
+      "bytes": 55193,
+      "sha256": "da041c65ace59cc65e2c1b423fec625808b92d5930ec8ef02f1488dc221115b6"
+    },
+    {
+      "path": "docs/evidence/valoria-art-production-reset-v1/unity-final/evidence.json",
+      "bytes": 194111,
+      "sha256": "d8aaa1fea8a9cf333141e2e8d35fed9d75b3c1c1ecb8345abf2a17f447e4b324"
+    },
+    {
+      "path": "pipeline/art-production-request.json",
+      "bytes": 1003,
+      "sha256": "cf7e21f82737056463e6e47a17b2c016f1dc41131d7eda88663bad816ebfbec3"
+    },
+    {
+      "path": "pipeline/valoria-production-art-reset-run-request.json",
+      "bytes": 2428,
+      "sha256": "3cd7e32a91d26d794607f5efc006f957c5b46645ddc6cf84d66b1036bc02dfcd"
+    },
+    {
+      "path": "tools/valoria-art-production-reset-v1/REPRODUCE.md",
+      "bytes": 2416,
+      "sha256": "ced1bf612e2b583b3c6c9d68df2dd07f6842f44be9effe078641a45ffc2bf5ae"
+    },
+    {
+      "path": "tools/valoria-art-production-reset-v1/blockout.py",
+      "bytes": 15018,
+      "sha256": "96b90638f7af3595642be4a52a6fbbd8c9af80fe010a55c96c6b0160a121a5bf"
+    },
+    {
+      "path": "tools/valoria-art-production-reset-v1/compare.py",
+      "bytes": 6199,
+      "sha256": "2e09b4be061c9c502a7e9cf1e696e9326ed72ac096a8e8a9be6123010adc453f"
+    },
+    {
+      "path": "tools/valoria-art-production-reset-v1/requirements.txt",
+      "bytes": 42,
+      "sha256": "0c019304303f7a5d2a33eec66879a0c6803bc4f03e61bc7cd3df8eee818721b4"
+    }
+  ]
+}

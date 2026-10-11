@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "enforced-by-governance",
+  "created_at": "2026-10-06T16:26:00Z",
+  "purpose": "Prevent superseded visual experiments from being treated as current Valoria production inputs while preserving historical evidence.",
+  "protected_current": [
+    "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity",
+    "docs/evidence/valoria-real-game-state-v1/**",
+    "docs/evidence/valoria-visual-authority-reset-v1/**",
+    ".github/workflows/valoria-sharp-*",
+    "pipeline/valoria-sharp-*",
+    "closed production-family sources and their evidence"
+  ],
+  "historical_only_patterns": [
+    ".github/workflows/valoria-camera-first-*",
+    "art-source/valoria/**/camera-first-*",
+    "pipeline/camera-first-*",
+    "tools/*camera-first*",
+    "docs/evidence/**/camera-first-*",
+    ".github/workflows/*tripo*",
+    "Unity/Assets/Eldoria/ArtTests/ImageTo3D/**",
+    "pipeline/*tripo*",
+    "tools/*tripo*",
+    ".github/workflows/valoria-{pixal3d,hunyuan3d,hi3dgen,craftsman3d}-*",
+    "tools/valoria-{pixal3d,hunyuan3d,hi3dgen,craftsman3d}-*"
+  ],
+  "rules": [
+    "Historical-only paths are not valid production authority or runtime input.",
+    "Do not dispatch historical-only workflows for Valoria production without explicit owner reauthorization.",
+    "Do not delete historical evidence solely to make the repository smaller.",
+    "If a historical file is referenced by current production, classify it before any mutation; ambiguity means keep.",
+    "Current WebGL mobile playtest scope is excluded from cleanup."
+  ],
+  "inventory_snapshot": {
+    "candidate_paths_matching_historical_families": 244,
+    "protected_current_matches_sampled": 29
+  },
+  "deletion_policy": "No physical deletion in this pass because AGENTS.md explicitly requires rejected Camera-First evidence to be preserved and current dependency proof is incomplete. Cleanup is quarantine/classification, not destructive erasure."
+}

@@ -1,0 +1,26 @@
+{
+  "verdict": "PROGRESSION VISUAL PASS",
+  "initial": {
+    "run": 37339834245,
+    "artifact_id": 11357369035,
+    "state": "BASTION I INITIAL",
+    "sawmill": "STATE 0 RESERVED / PREBUILD",
+    "camp": "VISIBLE / COMPATIBLE",
+    "read": "Incomplete foundation and staged timber; no functional building silhouette."
+  },
+  "after": {
+    "run": 37339430238,
+    "artifact_id": 11358071612,
+    "state": "BASTION I AFTER FIRST CONSTRUCTION",
+    "sawmill": "STATE 2 EARLY FUNCTIONAL",
+    "camp": "IDENTICAL",
+    "read": "Complete timber mill with roof/work face/log-processing rig; local occupation and height visibly increase."
+  },
+  "same_frame_camera": true,
+  "mobile_landscape_pass": true,
+  "source_3x2_pass": true,
+  "portrait_set_pass": true,
+  "external_player_inference": "before something is missing -> after it is built -> Valoria has grown",
+  "gameplay_regression": "PASS in both authoritative runs",
+  "note": "STATE 1 construction passed isolated ART SOURCE and is available as the transition state. Final progression proof intentionally compares the two player-facing milestone states."
+}

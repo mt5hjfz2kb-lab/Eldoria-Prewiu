@@ -1,0 +1,85 @@
+name: "[EVIDENCE] Golden Primary Forms Collector"
+
+on:
+  workflow_run:
+    workflows:
+      - "[PRODUCTION] Golden Primary Forms Reauthor v1"
+    types: [completed]
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: valoria-golden-primary-forms-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - name: Download source02 review artifact
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-golden-primary-forms-v1-source02-review
+          path: /tmp/golden-source02
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Collect evidence and status
+        env:
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
+        run: |
+          python3 - <<'PY'
+          import os, json, pathlib, shutil
+          root=pathlib.Path('/tmp/golden-source02')
+          dst=pathlib.Path('docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02')
+          dst.mkdir(parents=True,exist_ok=True)
+          wanted=[
+            'source-report.json',
+            'source02-clay-silhouette.png',
+            'source02-lit-three-quarter.png',
+            'source02-official-proxy.png',
+          ]
+          copied={}
+          if root.exists():
+              for name in wanted:
+                  hits=list(root.rglob(name))
+                  if hits:
+                      shutil.copy2(hits[0],dst/name)
+                      copied[name]=str(hits[0])
+          status={
+            'source_run_id':os.environ.get('SOURCE_RUN_ID'),
+            'source_run_attempt':os.environ.get('SOURCE_RUN_ATTEMPT'),
+            'source_head_sha':os.environ.get('SOURCE_HEAD_SHA'),
+            'source_conclusion':os.environ.get('SOURCE_CONCLUSION'),
+            'artifact_download_outcome':os.environ.get('DOWNLOAD_OUTCOME'),
+            'copied_files':sorted(copied),
+            'evidence_complete':all((dst/name).is_file() for name in wanted),
+          }
+          (dst/'collector-status.json').write_text(json.dumps(status,indent=2)+'\n')
+          print(json.dumps(status,indent=2))
+          PY
+
+      - name: Persist collected evidence
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02
+          if ! git diff --cached --quiet; then
+            git commit -m "Collect Golden primary forms source02 evidence"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

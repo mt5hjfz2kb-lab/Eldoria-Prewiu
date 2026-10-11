@@ -1,0 +1,31 @@
+{
+  "source": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "source_dimensions": [
+    1672,
+    941
+  ],
+  "depth_model": "depth-anything/DA3-BASE",
+  "depth_model_license": "Apache-2.0",
+  "inference_dimensions": [
+    1024,
+    576
+  ],
+  "mesh_grid": [
+    320,
+    180
+  ],
+  "vertices": 57600,
+  "triangles": 111596,
+  "depth_percentiles": {
+    "p02": 0.7123953676223755,
+    "p98": 3.7532325983047476
+  },
+  "receiver_depth_range": [
+    6.0,
+    18.0
+  ],
+  "fov_deg": 50.0,
+  "triangle_depth_discontinuity_threshold": 0.075,
+  "vendor_credits": 0,
+  "unity_touched": false
+}

@@ -1,0 +1,316 @@
+{
+  "source_blend": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+  "source_sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+  "assets": [
+    {
+      "asset_id": "Valoria_MainGate_v1",
+      "classification": "TEMPORARY",
+      "role": "PRIMARY",
+      "function": "MainGate",
+      "geometry": {
+        "triangles": 6028,
+        "materials": 5,
+        "uv0": true,
+        "normals": true
+      },
+      "materials": [
+        {
+          "slot": "stone",
+          "family": "Eldoria_Stone",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "timber",
+          "family": "Eldoria_Timber",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "slate",
+          "family": "Eldoria_Slate",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        }
+      ],
+      "export": {
+        "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_MainGate_v1.glb",
+        "sha256": "4e2fe4c74621c5e5cdee04a5190708cd684d706b8405ccfebb4c8c6480d4debf",
+        "scale": 1.0,
+        "forward_axis": "+Z",
+        "up_axis": "+Y"
+      },
+      "unity": {
+        "resource_path": "Valoria/ProductionArt/StarterFamily/Valoria_MainGate_v1",
+        "owns_gameplay_collider": false,
+        "owns_hotspot": false
+      },
+      "evidence": {
+        "zoom9": "",
+        "mobile": "",
+        "technical_verdict": "PENDING_UNITY",
+        "visual_verdict": "PENDING_VISUAL",
+        "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+      },
+      "source": {
+        "tool": "Blender",
+        "tool_version": "4.x",
+        "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+        "sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+        "reproducible": true,
+        "authoring_method": "architectural_boolean_custom_mesh"
+      }
+    },
+    {
+      "asset_id": "Valoria_WallSegment_v1",
+      "classification": "TEMPORARY",
+      "role": "SECONDARY",
+      "function": "WallSegment",
+      "geometry": {
+        "triangles": 3690,
+        "materials": 2,
+        "uv0": true,
+        "normals": true
+      },
+      "materials": [
+        {
+          "slot": "stone",
+          "family": "Eldoria_Stone",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "timber",
+          "family": "Eldoria_Timber",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "slate",
+          "family": "Eldoria_Slate",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        }
+      ],
+      "export": {
+        "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_WallSegment_v1.glb",
+        "sha256": "1a50f434039966dc3e58a7d66a2cfbc58e1f50dc00a52b0c5ec665382e78ddf2",
+        "scale": 1.0,
+        "forward_axis": "+Z",
+        "up_axis": "+Y"
+      },
+      "unity": {
+        "resource_path": "Valoria/ProductionArt/StarterFamily/Valoria_WallSegment_v1",
+        "owns_gameplay_collider": false,
+        "owns_hotspot": false
+      },
+      "evidence": {
+        "zoom9": "",
+        "mobile": "",
+        "technical_verdict": "PENDING_UNITY",
+        "visual_verdict": "PENDING_VISUAL",
+        "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+      },
+      "source": {
+        "tool": "Blender",
+        "tool_version": "4.x",
+        "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+        "sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+        "reproducible": true,
+        "authoring_method": "architectural_boolean_custom_mesh"
+      }
+    },
+    {
+      "asset_id": "Valoria_Tower_v1",
+      "classification": "TEMPORARY",
+      "role": "PRIMARY",
+      "function": "Tower",
+      "geometry": {
+        "triangles": 5412,
+        "materials": 7,
+        "uv0": true,
+        "normals": true
+      },
+      "materials": [
+        {
+          "slot": "stone",
+          "family": "Eldoria_Stone",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "timber",
+          "family": "Eldoria_Timber",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "slate",
+          "family": "Eldoria_Slate",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        }
+      ],
+      "export": {
+        "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Tower_v1.glb",
+        "sha256": "ef0d32265f5fda233709541c8b557423926d6b87cbfeaebd4f606a01e88d6179",
+        "scale": 1.0,
+        "forward_axis": "+Z",
+        "up_axis": "+Y"
+      },
+      "unity": {
+        "resource_path": "Valoria/ProductionArt/StarterFamily/Valoria_Tower_v1",
+        "owns_gameplay_collider": false,
+        "owns_hotspot": false
+      },
+      "evidence": {
+        "zoom9": "",
+        "mobile": "",
+        "technical_verdict": "PENDING_UNITY",
+        "visual_verdict": "PENDING_VISUAL",
+        "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+      },
+      "source": {
+        "tool": "Blender",
+        "tool_version": "4.x",
+        "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+        "sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+        "reproducible": true,
+        "authoring_method": "architectural_boolean_custom_mesh"
+      }
+    },
+    {
+      "asset_id": "Valoria_CivicHouse_v1",
+      "classification": "TEMPORARY",
+      "role": "SECONDARY",
+      "function": "CivicHouse",
+      "geometry": {
+        "triangles": 9800,
+        "materials": 6,
+        "uv0": true,
+        "normals": true
+      },
+      "materials": [
+        {
+          "slot": "stone",
+          "family": "Eldoria_Stone",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "timber",
+          "family": "Eldoria_Timber",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "slate",
+          "family": "Eldoria_Slate",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        }
+      ],
+      "export": {
+        "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1.glb",
+        "sha256": "eadcf08bf9f4afc675bb9da7d178418b8b0c001447b896d3f84a85b20613777a",
+        "scale": 1.0,
+        "forward_axis": "+Z",
+        "up_axis": "+Y"
+      },
+      "unity": {
+        "resource_path": "Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1",
+        "owns_gameplay_collider": false,
+        "owns_hotspot": false
+      },
+      "evidence": {
+        "zoom9": "",
+        "mobile": "",
+        "technical_verdict": "PENDING_UNITY",
+        "visual_verdict": "PENDING_VISUAL",
+        "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+      },
+      "source": {
+        "tool": "Blender",
+        "tool_version": "4.x",
+        "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+        "sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+        "reproducible": true,
+        "authoring_method": "architectural_boolean_custom_mesh"
+      }
+    },
+    {
+      "asset_id": "Valoria_Workshop_v1",
+      "classification": "TEMPORARY",
+      "role": "SECONDARY",
+      "function": "Workshop",
+      "geometry": {
+        "triangles": 5408,
+        "materials": 6,
+        "uv0": true,
+        "normals": true
+      },
+      "materials": [
+        {
+          "slot": "stone",
+          "family": "Eldoria_Stone",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "timber",
+          "family": "Eldoria_Timber",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        },
+        {
+          "slot": "slate",
+          "family": "Eldoria_Slate",
+          "maps": [
+            "authoring-procedural-placeholder"
+          ]
+        }
+      ],
+      "export": {
+        "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Workshop_v1.glb",
+        "sha256": "16014bf71c44fc2f4f2314680c13c98d0204f819c68172a1a084c15da1fb3a84",
+        "scale": 1.0,
+        "forward_axis": "+Z",
+        "up_axis": "+Y"
+      },
+      "unity": {
+        "resource_path": "Valoria/ProductionArt/StarterFamily/Valoria_Workshop_v1",
+        "owns_gameplay_collider": false,
+        "owns_hotspot": false
+      },
+      "evidence": {
+        "zoom9": "",
+        "mobile": "",
+        "technical_verdict": "PENDING_UNITY",
+        "visual_verdict": "PENDING_VISUAL",
+        "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+      },
+      "source": {
+        "tool": "Blender",
+        "tool_version": "4.x",
+        "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+        "sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+        "reproducible": true,
+        "authoring_method": "architectural_boolean_custom_mesh"
+      }
+    }
+  ]
+}

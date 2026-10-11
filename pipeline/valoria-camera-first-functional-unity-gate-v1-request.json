@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
+  "phase": "closed",
+  "nonce": "cfs-v1-unity-20261004-1430",
+  "source_gate": {
+    "run_id": 37208777268,
+    "artifact_id": 11305893049,
+    "granero": "SOURCE FUNCTIONAL PASS",
+    "cuartel": "SOURCE FUNCTIONAL PASS",
+    "final_visual_review": {
+      "granero": "SOURCE VISUAL FAIL",
+      "cuartel": "SOURCE VISUAL PASS"
+    }
+  },
+  "comparison": "current canonical playable runtime BEFORE vs camera-first Granero/Cuartel sources AFTER at established district anchors",
+  "preserve": [
+    "orthographic camera",
+    "RESET Final Look",
+    "Hero Bastion",
+    "accepted defense",
+    "terrain",
+    "gameplay",
+    "parcels",
+    "routes",
+    "future reserves",
+    "hotspots",
+    "colliders"
+  ],
+  "tripo": false,
+  "credits": 0,
+  "run_id": 37209373554,
+  "artifact_id": 11305759556,
+  "final_verdict": "TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY DIAGNOSTIC VISUAL FAIL / NOT PROMOTED",
+  "metrics": {
+    "before": {
+      "renderers": 852,
+      "materials": 81,
+      "triangles": 2083716,
+      "lights": 31
+    },
+    "after": {
+      "renderers": 873,
+      "materials": 94,
+      "triangles": 2295829,
+      "lights": 31
+    }
+  },
+  "visual_reason": "Granero macro additions improve functional visibility but read as pale/geometric non-production additions; Cuartel still lacks independent played-camera/mobile military read. Both functions do not survive simultaneously on mobile.",
+  "promotion": false,
+  "next": "Granero must use rich production geometry for camera-first macro storage/loading architecture. Retain Cuartel CFS only as source-level evidence. No second procedural CFS variant."
+}

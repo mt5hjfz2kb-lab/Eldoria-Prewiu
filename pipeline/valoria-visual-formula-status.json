@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "formula": "VALORIA_VISUAL_FORMULA_v1",
+  "status": "VALIDATED_V1",
+  "updated": "2026-09-29",
+  "gates": {
+    "A_aserradero": {
+      "goal": "prove reusable Surface v1 on accepted production geometry",
+      "geometry": "PASS",
+      "source_pbr_diagnostic": "PASS",
+      "source_pbr_run_id": 36493273686,
+      "integration_correction": "IMPLEMENTED_PRESERVE_AUTHORED_PBR",
+      "integration_rule": "preserve authored PBR via BenchmarkPiece",
+      "official_camera_visual_recheck": "PASS_VALORIA_V1_LOOKDEV",
+      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PASS",
+      "visual_baseline_diagnosis": "SURFACE_FAIL_CONFIRMED_FROM_OFFICIAL_CAPTURES",
+      "unity_pbr_evidence": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Aserradero_AP2_v1_basecolor",
+          "Valoria_Aserradero_AP2_v1_normal",
+          "Valoria_Aserradero_AP2_v1_rm"
+        ],
+        "verdict": "PASS_PBR_PRESERVED_IN_UNITY"
+      },
+      "formula_gate": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "technical": "PASS",
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Aserradero_AP2_v1_basecolor",
+          "Valoria_Aserradero_AP2_v1_normal",
+          "Valoria_Aserradero_AP2_v1_rm"
+        ],
+        "pbr_preserved_in_unity": true,
+        "official_camera_visual": "PASS_VALORIA_V1_LOOKDEV",
+        "next": "CLOSED_NO_GEOMETRY_REGENERATION"
+      },
+      "lookdev_run_id": 36529204672,
+      "production_formula_run_id": 36529730848
+    },
+    "B_cuartel": {
+      "goal": "prove the same surface/lookdev logic transfers to a second dedicated building",
+      "dedicated_asset": "PASS",
+      "unity_full_gate_run_id": 36493002127,
+      "unity_full_gate": "PASS",
+      "pbr_preservation": "IMPLEMENTED",
+      "formula_scene_recheck": "PASS_VALORIA_V1_LOOKDEV",
+      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PASS",
+      "visual_baseline_diagnosis": "OVERBRIGHT_BASELINE_CONFIRMED_FROM_OFFICIAL_CAPTURES",
+      "unity_pbr_evidence": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Cuartel_AP2_v1_basecolor",
+          "Valoria_Cuartel_AP2_v1_normal",
+          "Valoria_Cuartel_AP2_v1_rm"
+        ],
+        "verdict": "PASS_PBR_PRESERVED_IN_UNITY"
+      },
+      "formula_gate": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "technical": "PASS",
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Cuartel_AP2_v1_basecolor",
+          "Valoria_Cuartel_AP2_v1_normal",
+          "Valoria_Cuartel_AP2_v1_rm"
+        ],
+        "pbr_preserved_in_unity": true,
+        "official_camera_visual": "PASS_VALORIA_V1_LOOKDEV",
+        "next": "CLOSED_NO_GEOMETRY_REGENERATION"
+      },
+      "lookdev_run_id": 36529204672,
+      "production_formula_run_id": 36529730848
+    },
+    "C_hero_fragment": {
+      "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
+      "asset": "GateStreetRiseRock MV1",
+      "source_sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "recovery_artifact_id": 10941357361,
+      "role": "HERO_VISUAL_LANDMARK_ONLY",
+      "geometry": "FUNCTION_CERTIFIED",
+      "traversal": "DOCUMENTED_INTERFACE_FAIL_NOT_REOPENED",
+      "surface": "SEMANTIC_STONE_ROCK_VALORIA_V1",
+      "official_camera_visual": "PASS_19_12_9",
+      "verdict": "TECH_PASS_VISUAL_PASS_HERO_FRAGMENT",
+      "rule": "Hero visual validation may reuse this architecture+rock mass, but no result may claim the historical lower-entry-to-upper-exit route is repaired.",
+      "prototype_script": "tools/valoria_hero_surface_prototype.py",
+      "material_families": [
+        "Eldoria Stone",
+        "Eldoria Rock"
+      ],
+      "surface_prototype_policy": {
+        "geometry_mutation": false,
+        "route_recertification": false,
+        "materials": [
+          "Eldoria Stone",
+          "Eldoria Rock"
+        ],
+        "pbr_maps": [
+          "basecolor",
+          "roughness",
+          "normal"
+        ],
+        "texture_size": 1024,
+        "source": "tools/valoria_hero_surface_prototype.py"
+      },
+      "promotion_guard": "Hero prototype remains isolated until official-camera visual review passes.",
+      "prototype_build": {
+        "source": "GateStreetRiseRock MV1 certified geometry",
+        "run_id": 36497039155,
+        "blender": "PASS",
+        "triangles": 49799,
+        "vertices": 56282,
+        "geometry_modified": false,
+        "uv0": true,
+        "materials": [
+          "Eldoria Stone",
+          "Eldoria Rock"
+        ],
+        "texture_sets": "BaseColor + Roughness + Normal, 1024 each",
+        "stone_faces": 25991,
+        "rock_faces": 23808,
+        "unity_visual_capture": "PENDING_RERUN"
+      },
+      "final_run_id": 36534386365,
+      "final_artifact_id": 11017959075,
+      "final_commit": "4331a060e534fab14a9e8897f5bda006e8a2b6c9",
+      "geometry_modified": false,
+      "tripo_credits_spent": 0,
+      "visual_evidence": "Stone architecture remains lighter/readable against darker Rock at strategic/city/detail official zooms; monumental silhouette survives. Historical traversal/interface failure remains explicitly out of scope."
+    },
+    "D_integrated_formula_scene": {
+      "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
+      "workflow": ".github/workflows/valoria-visual-formula.yml",
+      "material_evidence": "IMPLEMENTED",
+      "captures": "PASS_GENERATED_OFFICIAL_19_12_9_AND_MOBILE",
+      "verdict": "TECH_PASS_VISUAL_LOOKDEV_PASS",
+      "lookdev": "PASS_VALID_5_PROFILE_RUN",
+      "run_id": 36498200151,
+      "artifact_id": 11004024446,
+      "tech_gate": "PASS",
+      "scene_metrics": {
+        "active_renderers": 521,
+        "unique_materials": 67,
+        "scene_triangles": 261180,
+        "lights": 8
+      },
+      "baseline_visual_verdict": "FAIL_OVERBRIGHT_DEDICATED_BUILDINGS_AND_WASHED_VALUE_SEPARATION",
+      "technical": "PASS",
+      "active_renderers": 521,
+      "unique_materials": 67,
+      "scene_triangles": 261180,
+      "lights": 8,
+      "pbr_evidence": "PASS_ASERRADERO_AND_CUARTEL",
+      "visual_baseline": "SUPERSEDED_BY_VALORIA_V1_LOOKDEV_PASS",
+      "lookdev_run_id": 36529204672,
+      "production_formula_run_id": 36529730848,
+      "production_formula_artifact_id": 11015563918,
+      "unity_slice_run_id": 36529204570,
+      "selected_profile": "neutral-overcast",
+      "geometry_regenerated": false,
+      "tripo_credits_spent": 0,
+      "production_profile_source": "VisualWorld.cs"
+    }
+  },
+  "formula_can_be_marked_validated_when": [
+    "Aserradero integrated official-camera result is accepted [SATISFIED]",
+    "Cuartel remains coherent under the same environment/material-family rules [SATISFIED]",
+    "GateStreetRiseRock MV1 passes as a bounded hero VISUAL fragment under the same material-family/lookdev language; traversal remains out of scope and failed [SATISFIED]",
+    "Integrated formula scene passes composition/surface/identity review [SATISFIED]"
+  ],
+  "historical_rescue": {
+    "registry": "pipeline/historical-module-rescue.json",
+    "inventory_run_id": 36495456630,
+    "inventory": "PASS",
+    "runner_downloads_exact_sha_found": [
+      "TowerWallRock"
+    ],
+    "artifact_recovery": "IMPLEMENTED_FOR_CERTIFIED_HISTORICAL_FAMILIES",
+    "dedicated_surface_rescue": [
+      "RockTerrainSeamFiller"
+    ],
+    "rule": "reuse certified geometry before any paid regeneration",
+    "towerwall_surface_diagnostic": {
+      "run_id": 36496907687,
+      "verdict": "FLAT_SURFACE_CONFIRMED_RESCUE_CANDIDATE",
+      "triangles": 50000,
+      "vertices": 54760,
+      "uv0": true,
+      "normals": true,
+      "materials": 1,
+      "images": 0,
+      "textures": 0,
+      "metallic": 0,
+      "roughness": 0.5
+    }
+  },
+  "historical_reuse": {
+    "seam_filler_rule": "RockTerrainSeamFiller rescue is isolated support-only and cannot alter production topology.",
+    "towerwall_rule": "TowerWallRock rescue may improve skyline/support identity but cannot define circulation.",
+    "no_paid_regeneration_before_reuse": true
+  },
+  "validated_v1": {
+    "frozen": true,
+    "rule": "Valoria Visual Formula v1 is the production visual baseline. Reopen only with new integrated official-camera evidence that demonstrates a concrete defect or measured target-device constraint.",
+    "production_lookdev": "neutral-overcast",
+    "production_lookdev_source": "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+    "final_hero_run_id": 36534386365,
+    "final_hero_artifact_id": 11017959075,
+    "final_hero_commit": "4331a060e534fab14a9e8897f5bda006e8a2b6c9",
+    "zero_credit_validation": true
+  },
+  "production_district_v1": {
+    "status": "PRODUCTION_INTEGRATED_VISUAL_PASS",
+    "updated": "2026-09-29",
+    "production_commit": "05141fff6ac88d6646e1b72e7188dcd5d5fc5731",
+    "formula_gate": {
+      "run_id": 36541695034,
+      "artifact_id": 11021096851,
+      "verdict": "SUCCESS",
+      "scene_metrics": {
+        "active_renderers": 513,
+        "unique_materials": 72,
+        "scene_triangles": 460236,
+        "lights": 8
+      }
+    },
+    "district_gate": {
+      "run_id": 36543056731,
+      "artifact_id": 11021850361,
+      "verdict": "SUCCESS",
+      "topology": "REAL_VISUALWORLD_PRODUCTION_DISTRICT",
+      "official_zooms": [
+        19,
+        12,
+        9
+      ],
+      "district_metrics": {
+        "active_renderers": 428,
+        "unique_materials": 55,
+        "scene_triangles": 460236,
+        "lights": 8
+      }
+    },
+    "runtime_gate": {
+      "run_id": 36541695042,
+      "verdict": "SUCCESS_EDITMODE_PLAYMODE_WINDOWS_BUILD_CAPTURE"
+    },
+    "lookdev_recheck": {
+      "run_id": 36541695060,
+      "verdict": "SUCCESS"
+    },
+    "production_assets": [
+      "Valoria_Aserradero_AP2_v1",
+      "Valoria_Cuartel_AP2_v1",
+      "ResidentialTerraceRock",
+      "RockTerrainSeamFiller x3"
+    ],
+    "deferred": [
+      "TerraceStairRock: rescued and Surface-v1-ready; omitted from this district because the certified 12-step route already owns the vertical transition and the module was visually redundant/occluded."
+    ],
+    "rules": [
+      "Gameplay, colliders and hotspots remain independent from rescued visual meshes.",
+      "Valoria Visual Formula v1 stays frozen; this district consumes it rather than reopening look-dev.",
+      "No Tripo credits were spent for historical rescue or district integration.",
+      "Do not reduce visual quality until representative target-device profiling identifies a measured bottleneck."
+    ],
+    "mobile_baseline": "pipeline/mobile-visual-performance-gate.json",
+    "documentation": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md"
+  },
+  "production_west_rebuilders_quarter_v1": {
+    "status": "PRODUCTION_INTEGRATED_VISUAL_PASS",
+    "updated": "2026-09-29",
+    "production_art_commit": "d84b31811fe044dbc3901f3ecd6edde13a635cc6",
+    "documentation": "docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md",
+    "visual_formula_gate": {
+      "run_id": 36546445386,
+      "artifact_id": 11022647974,
+      "verdict": "SUCCESS",
+      "official_zooms": [
+        19,
+        12,
+        9
+      ],
+      "scene_metrics": {
+        "active_renderers": 644,
+        "unique_materials": 80,
+        "scene_triangles": 567460,
+        "lights": 15
+      }
+    },
+    "lookdev_recheck": {
+      "run_id": 36546445341,
+      "verdict": "SUCCESS"
+    },
+    "runtime_evidence": {
+      "run_id": 36546445337,
+      "overall_workflow": "CANCELLED_BY_CONCURRENCY_AFTER_SUBSTANTIVE_STEPS",
+      "first_attempt_steps": {
+        "editmode": "SUCCESS",
+        "playmode": "SUCCESS",
+        "windows_desktop_build": "SUCCESS",
+        "valoria_art_benchmark": "SUCCESS",
+        "artifact_upload": "SUCCESS"
+      },
+      "rule": "Do not interpret the global cancelled conclusion as a failing product gate; the run was superseded by newer concurrent main work after all substantive first-attempt steps completed successfully."
+    },
+    "content": [
+      "west rebuilders terrace",
+      "west rebuilders upper shelf",
+      "west rebuilders route x6",
+      "west rebuilders homes x5",
+      "work courts x2",
+      "upper dwellings x2",
+      "RockTerrainSeamFiller x2 visual-only geology"
+    ],
+    "bastion_hero_pass": {
+      "result": "PASS_NO_DETACHED_CROWN_AT_OFFICIAL_CAMERA",
+      "change": "replace detached roof masses with grounded fortress crowns and remove final floating lantern cap",
+      "gameplay_changed": false
+    },
+    "performance_baseline": "pipeline/mobile-visual-performance-gate.json",
+    "tripo_credits_spent": 0
+  }
+}

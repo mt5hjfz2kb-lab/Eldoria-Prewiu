@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source01",
+  "source_run": 37312497501,
+  "artifact_id": 11346144168,
+  "source_sha": "59990cad73360faf497c9aed24b76a55fb225a532f8a17097126926f26415850",
+  "export_sha": "aa0d41d96101b1f2dda729ac62c6a13abcf00115b7299e591bb82c4173b26309",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 5616,
+    "vertices": 2912,
+    "modules": 6,
+    "materials": 5,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "hard_questions": {
+    "designed_not_assembled": "FAIL — official-camera/lit previews read as conventional rectangular wall + box-end-tower kit; authored buttress/merlon variation is not strong enough.",
+    "real_depth_thickness": "PASS — bodies, parapets, merlons and end pieces have real solid section.",
+    "repetition_control": "PARTIAL — merlon widths vary but overall cadence still reads modular.",
+    "mobile_crenellation": "PASS — chunky crest rhythm survives.",
+    "lower_gate_union": "PENDING UNITY, source endpoints remain blockout-bound.",
+    "rock_terrain_seating": "PARTIAL — plinth exists but vertical box bodies still look placed rather than grown/seated.",
+    "hierarchy": "PASS SOURCE — low peripheral silhouette remains subordinate.",
+    "material_family": "FAIL QUALITY — masonry-course texture dominates and pushes generic kit read; needs larger/subtler stone response.",
+    "frame_improvement": "FAIL QUALITY BAR — better than greybox technically, not yet the clear authored Valoria jump required."
+  },
+  "decision": "DO NOT INTEGRATE. Reauthor inside same locked Wall envelopes with battered/tapered bodies, stronger base/cap section, less boxy end pieces, lower-frequency stone material and fewer visible kit cues. Camera/composition/closed families unchanged.",
+  "tripo_credits": 0
+}

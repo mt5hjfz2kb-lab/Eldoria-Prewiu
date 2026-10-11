@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source08",
+  "source_run": 37308344056,
+  "artifact_id": 11344638101,
+  "source_sha": "559c32476c4df3f590ab9a5377f449aa44ec4d2956f2d18204d5716a0b0ad64b",
+  "export_sha": "f9e66881cfcbf61d135ec1a8ddf13027e6dac06228dfaef745f13fa2450b02ed",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1909,
+    "vertices": 3516,
+    "modules": 5,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "PASS — the visible plateau edge is now a continuous authored rock mass rather than blockout prisms/shoulders.",
+    "rock_rhythm": "PASS — broad diagonal and recessed facets read at medium/large scale without repeated pillar cadence.",
+    "silhouette": "PASS — locked macro plateau/terrace envelopes and 3/7/11 height anchors remain preserved.",
+    "depth_without_noise": "PASS — large recesses/facets provide depth without micro-rock scatter or surface chatter.",
+    "authored_not_procedural": "PASS — removing one-to-one shoulder proxies eliminates the repeated construction rhythm; cliff reads as one geological system.",
+    "mobile_scale": "PASS — dominant forms are large enough to survive landscape and portrait projection; no subpixel rock noise is relied upon.",
+    "architecture_integration": "AUTHORIZED FOR UNITY — source is visually quiet enough to receive Lower Gate/Bridge/Road/Stair without competing with them.",
+    "material_difference": "PASS — rock remains darker/cooler than earth; earth remains distinct from accepted civic paving.",
+    "real_quality_jump": "PASS — compared with approved blockout, Source08 changes the frame from flat technical support geometry to a coherent structural terrain foundation while preserving composition."
+  },
+  "legacy_reuse": "NONE — target-bound authored geometry only; legacy B/C candidates remain non-authoritative.",
+  "unity_gate": "AUTHORIZED NEXT — exact GLB SHA only; retain Lower Gate + Bridge + Road + Stair identically in BEFORE/AFTER; suppress the 12 Rock/Terrain blockout placeholders and replace with Source08 five-module family.",
+  "tripo_credits": 0
+}

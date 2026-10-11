@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <title>Valoria Bastion-to-City Frame Design Brief v1 — target overlay</title>
+  <desc>Transparent overlay for AFTER-HORIZONTAL-16x9.png from run 37221732105 artifact 11309549299. Place directly over the 1600x900 locked base capture.</desc>
+  <style>
+    .label{font:700 21px Arial,sans-serif;fill:#ffe8a6;paint-order:stroke;stroke:#111;stroke-width:5px;stroke-linejoin:round}
+    .small{font:700 18px Arial,sans-serif;fill:#fff;paint-order:stroke;stroke:#111;stroke-width:5px}
+  </style>
+  <polygon points="474,514 481,419 548,388 606,359 661,391 681,446 704,420 748,404 804,404 851,423 885,447 907,392 965,358 1024,390 1053,419 1066,519 1046,584 1014,626 956,643 906,626 866,603 838,623 705,623 676,600 629,627 566,642 514,622 480,579"
+    fill="#ffb347" fill-opacity="0.10" stroke="#ffd66d" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="610" y="35" width="555" height="440" rx="18" fill="none" stroke="#62d7ff" stroke-width="6"/>
+  <text x="625" y="70" class="small" fill="#62d7ff">CONSERVAR HERO BASTION</text>
+  <rect x="30" y="520" width="570" height="345" rx="18" fill="none" stroke="#72e39c" stroke-width="6"/>
+  <text x="45" y="552" class="small" fill="#72e39c">CONSERVAR LOWER CITY PROMOVIDA</text>
+  <rect x="652" y="414" width="251" height="213" rx="18" fill="none" stroke="#fff" stroke-width="5"/>
+  <text x="680" y="620" class="small">ESCALERA CENTRAL: CONSERVAR</text>
+  <g fill="none" stroke="#72c8ff" stroke-width="6">
+    <rect x="516" y="442" width="42" height="83" rx="10"/>
+    <rect x="569" y="430" width="44" height="85" rx="10"/>
+    <rect x="941" y="434" width="43" height="85" rx="10"/>
+    <rect x="995" y="447" width="35" height="80" rx="10"/>
+  </g>
+  <g fill="none" stroke="#ffbd5f" stroke-width="6" stroke-linejoin="round">
+    <polyline points="484,544 624,544 646,559"/>
+    <polyline points="497,585 592,566 630,579"/>
+    <polyline points="912,548 1048,543"/>
+    <polyline points="930,581 1028,592"/>
+    <polyline points="631,555 689,532 851,532 909,556"/>
+    <polyline points="647,593 886,593"/>
+  </g>
+  <g fill="none" stroke="#91e49f" stroke-width="6" stroke-linejoin="round">
+    <polyline points="470,548 486,570 474,592 501,611 486,628 525,636"/>
+    <polyline points="585,620 604,642 627,624 648,645"/>
+    <polyline points="1037,548 1055,571 1037,596 1047,617 1018,632"/>
+    <polyline points="931,618 912,640 887,625 866,644"/>
+  </g>
+  <text x="493" y="390" class="label">A · TERRAZA OESTE BAJA / HABITADA</text>
+  <text x="915" y="360" class="label">B · TERRAZA ESTE ALTA / CÍVICA</text>
+  <text x="490" y="540" class="label">C · ARCADAS PROFUNDAS</text>
+  <text x="907" y="550" class="label">D · RETRANQUEOS + SOMBRA</text>
+  <text x="635" y="670" class="label">E · BASAMENTO RECEPTOR CONTINUO</text>
+</svg>

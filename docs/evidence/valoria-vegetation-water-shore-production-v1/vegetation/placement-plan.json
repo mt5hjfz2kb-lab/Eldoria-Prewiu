@@ -1,0 +1,191 @@
+{
+  "placements": [
+    {
+      "placeholder": "TreeMass_00",
+      "module": "Tree_SecondaryB",
+      "label": "upper-west edge",
+      "position": {
+        "x": -16.4064,
+        "y": 11,
+        "z": 4.0972
+      },
+      "yaw": 18,
+      "scale": 1
+    },
+    {
+      "placeholder": "TreeMass_02",
+      "module": "Tree_Primary",
+      "label": "bastion west backdrop",
+      "position": {
+        "x": -12.0768,
+        "y": 11,
+        "z": 10.9781
+      },
+      "yaw": 61,
+      "scale": 1.15
+    },
+    {
+      "placeholder": "TreeMass_06",
+      "module": "Tree_Primary",
+      "label": "bastion east backdrop",
+      "position": {
+        "x": 14.7932,
+        "y": 11,
+        "z": 12.6699
+      },
+      "yaw": 124,
+      "scale": 1.15
+    },
+    {
+      "placeholder": "TreeMass_07",
+      "module": "Tree_Secondary",
+      "label": "upper-east depth",
+      "position": {
+        "x": 18.0748,
+        "y": 11,
+        "z": 16.1255
+      },
+      "yaw": 203,
+      "scale": 1.08
+    },
+    {
+      "placeholder": "TreeMass_09",
+      "module": "Tree_Secondary",
+      "label": "camp rear frame",
+      "position": {
+        "x": 26.2957,
+        "y": 7,
+        "z": 11.6297
+      },
+      "yaw": 247,
+      "scale": 1.03
+    },
+    {
+      "placeholder": "TreeMass_10",
+      "module": "Tree_Secondary",
+      "label": "camp outer frame",
+      "position": {
+        "x": 31.7974,
+        "y": 7,
+        "z": 8.8489
+      },
+      "yaw": 309,
+      "scale": 0.94
+    },
+    {
+      "placeholder": "TreeMass_11",
+      "module": "Tree_Secondary",
+      "label": "sawmill lower-left frame",
+      "position": {
+        "x": -22.111,
+        "y": 7,
+        "z": -21.2085
+      },
+      "yaw": 337,
+      "scale": 1.04
+    },
+    {
+      "placeholder": "TreeMass_13",
+      "module": "Tree_SecondaryB",
+      "label": "sawmill outer edge",
+      "position": {
+        "x": -20.8485,
+        "y": 7,
+        "z": -6.3121
+      },
+      "yaw": 42,
+      "scale": 1
+    },
+    {
+      "placeholder": "TreeMass_14",
+      "module": "Tree_SecondaryB",
+      "label": "lower-gate west surround",
+      "position": {
+        "x": -5.6642,
+        "y": 7,
+        "z": -18.7011
+      },
+      "yaw": 91,
+      "scale": 1
+    },
+    {
+      "placeholder": "TreeMass_15",
+      "module": "Tree_Primary",
+      "label": "foreground west framing",
+      "position": {
+        "x": -8.9408,
+        "y": 3,
+        "z": -32.8607
+      },
+      "yaw": 151,
+      "scale": 1.06
+    },
+    {
+      "placeholder": "TreeMass_17",
+      "module": "Tree_Primary",
+      "label": "deep foreground west anchor",
+      "position": {
+        "x": -17.1704,
+        "y": 3,
+        "z": -45.3356
+      },
+      "yaw": 221,
+      "scale": 1.34
+    },
+    {
+      "placeholder": "TreeMass_18",
+      "module": "Tree_Secondary",
+      "label": "deep foreground east anchor",
+      "position": {
+        "x": 17.2063,
+        "y": 3,
+        "z": -42.477
+      },
+      "yaw": 276,
+      "scale": 0.95
+    },
+    {
+      "placeholder": "TreeMass_19",
+      "module": "Tree_Primary",
+      "label": "bridge east surround",
+      "position": {
+        "x": 25.0353,
+        "y": 0,
+        "z": -26.0233
+      },
+      "yaw": 318,
+      "scale": 1.06
+    },
+    {
+      "placeholder": "TreeMass_21",
+      "module": "Tree_Secondary",
+      "label": "far east edge",
+      "position": {
+        "x": 41.9226,
+        "y": 0,
+        "z": -23.3556
+      },
+      "yaw": 11,
+      "scale": 1.04
+    }
+  ],
+  "removed_placeholders": [
+    "TreeMass_01",
+    "TreeMass_03",
+    "TreeMass_04",
+    "TreeMass_05",
+    "TreeMass_08",
+    "TreeMass_12",
+    "TreeMass_16",
+    "TreeMass_20"
+  ],
+  "principles": [
+    "few primary anchors",
+    "controlled secondary groups",
+    "negative space around Gate→Road→Stair→Bastion",
+    "Sawmill/Camp framing without occlusion",
+    "foreground framing without forest wall"
+  ],
+  "source_iteration": "source03",
+  "tripo_credits": 0
+}

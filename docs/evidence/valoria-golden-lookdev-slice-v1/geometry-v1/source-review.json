@@ -1,0 +1,30 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "scope": "GoldenLocalVisualShellV1 is accepted only as a bounded integrated-test candidate for VALORIA GOLDEN LOOKDEV SLICE v1 after the proven surface-only geometry blocker. It is not a family promotion and not GOLDEN LOOKDEV PASS.",
+  "source_iteration": "geometry-source01",
+  "source_sha": "12eea1d07b01c3d6c8d9f9fc25a68b26e2a5cd58c4c25a63a788018666757b2b",
+  "export_sha": "59db7086496c2ffb52aa9cecf88f6d8af3d6abf40287d64e8598d680a3553223",
+  "run_id": 37365576281,
+  "artifact_id": 11367909115,
+  "visual_review": {
+    "strengths": [
+      "Cliff shells replace the dominant coarse planar/faceted screen read with substantially denser smooth terrain surfaces.",
+      "Rock contacts use rounded authored profiles rather than the previous sparse faceted clusters.",
+      "Three local vegetation replacements remove the most obvious cone/tree silhouettes in the bounded Golden crop.",
+      "Source is editable BLEND + GLB with authored UVs, normals and exported tangents; 8,496 triangles total is mobile-reasonable for this proof."
+    ],
+    "risks": [
+      "Ground/road/shoulder pieces intentionally appear as isolated rectangles in source preview because they are overlap shells; any visible island or perimeter after integration is an automatic visual failure.",
+      "The three replacement trees are still deliberately economical and must be judged only at official gameplay camera.",
+      "No scale-out or closed-family promotion is authorized from this source gate."
+    ]
+  },
+  "performance": {
+    "triangles": 8496,
+    "vertices": 4646,
+    "objects": 39,
+    "colliders": 0,
+    "tripo_credits": 0
+  },
+  "next_gate": "Integrate only as AFTER-only Golden Slice visual shell; suppress the three superseded vegetation instances and source03 contact family; apply Golden Surface V2; judge close/16:9/mobile before any promotion."
+}

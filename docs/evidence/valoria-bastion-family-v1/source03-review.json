@@ -1,0 +1,49 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source03",
+  "source_run": 37321009434,
+  "artifact_id": 11350425988,
+  "source_sha": "7389fd319f1b6b1d1427f33f43300c4280eacb483fd8b7a7d3e70317e1f9f6bd",
+  "export_sha": "5a57ac72a5b0a145b44f4d7640a3a8f4f15adb220c5dab1ebf68f3632281c63a",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 19892,
+    "vertices": 10278,
+    "modules": 9,
+    "materials": 8,
+    "bounds_world_blender": [
+      [
+        -9.836312294006348,
+        4.238635063171387,
+        11.100000381469727
+      ],
+      [
+        20.288347244262695,
+        13.259100914001465,
+        18.700000762939453
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "PARTIAL — Keep portal and asymmetric towers help, but primary read remains a long fortified strip.",
+    "2_immediately_dominant_valoria_bastion": "PARTIAL FAIL — central Keep is identifiable, yet insufficiently monumental relative to curtain length.",
+    "3_primary_secondary_tertiary": "PASS",
+    "4_real_architectural_depth": "PASS",
+    "5_controlled_asymmetry": "PASS",
+    "6_no_cloned_modules": "PASS",
+    "7_rich_material_without_microdetail": "FAIL HERO — stone remains too dark/muted; hero focal value separation is weak.",
+    "8_coherent_lower_gate_walls": "PASS",
+    "9_gameplay_camera": "PARTIAL FAIL — portal/banner read, but command facade lacks enough screen-space relief to carry the frame.",
+    "10_authored_not_procedural": "PASS",
+    "11_not_castle_kit_generic": "PARTIAL FAIL — identity improved but still too close to generic crenellated fortress language.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — not yet strong enough to replace the dominant blockout landmark."
+  },
+  "decision": "DO NOT INTEGRATE. Source04 must concentrate authored richness on the Keep command facade/crown and use a brighter limestone hierarchy while keeping curtains quieter and all envelopes locked.",
+  "tripo_credits": 0
+}

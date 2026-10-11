@@ -1,0 +1,28 @@
+{
+  "schema_version": 6,
+  "enabled": false,
+  "mode": "complete",
+  "assets": [
+    {
+      "asset": "TerraceStairRock",
+      "input": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+      "source_sha256": "83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+      "expected_candidate_sha256": "4173b794b875c872aee1cb663e67a516bf37c96273c752f8ef4b6fb9225727b9"
+    },
+    {
+      "asset": "StreetLandingTransition",
+      "input": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+      "source_sha256": "ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+      "expected_candidate_sha256": "16b090b4f0fbd54284919887877e527d932c7366e3b78d970c546ae30837c28f"
+    }
+  ],
+  "candidate_root": "pipeline/candidates/asset-deep-uplift-v1",
+  "surface_profile": "rock",
+  "target_triangles": 49800,
+  "min_triangles": 49500,
+  "max_triangles": 50000,
+  "tripo_credits": 0,
+  "promotion": "blocked_pending_official_unity_validation",
+  "status": "blender_phase_complete_candidates_persisted",
+  "next": "official Unity 19/12/9/mobile validation after windows-runner-heavy and valoria-production-composition are released"
+}

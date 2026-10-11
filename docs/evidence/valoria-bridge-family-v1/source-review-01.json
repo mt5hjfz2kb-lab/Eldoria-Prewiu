@@ -1,0 +1,23 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "scope": "Bridge isolated source gate only; Unity intentionally blocked",
+  "source_run": 37296116400,
+  "artifact_id": 11338688062,
+  "source_sha": "abb570a1a0481e97a7a83bcc3578aad2a3fefeccd6cb0f15f71d4442a0b59627",
+  "export_sha": "c244935332b6def6d8820401377fabf4d3c79cb629a648c60d1e389b6f6f48bd",
+  "tech_pass": true,
+  "questions": {
+    "same_target_bridge": "PARTIAL: overall diagonal crossing/parapet envelope is correct.",
+    "same_visual_weight": "PASS at isolated proxy; exact Unity verification not run.",
+    "foreground_to_gate_continuity": "PASS geometrically.",
+    "lower_gate_language": "PARTIAL: masonry palette is coherent, but source form is still too technical.",
+    "deck_read": "FAIL: authored paver bands create an unintended central zipper/chevron seam absent from target.",
+    "support_read": "FAIL: underside support reads as rectangular legs + block lintel rather than credible masonry arch/support.",
+    "parapet_read": "PASS/PARTIAL: low walls and terminal posts are directionally correct.",
+    "production_art_quality": "FAIL: two dominant source-form defects are visible before integration."
+  },
+  "action": "Stay in Bridge Family v1. Remove geometric paver bands; use one continuous cut-stone top skin. Reauthor BridgeSupport as actual segmented masonry arch ring + piers/spandrel inside the same approved support bounds. Do not change blockout, camera, Lower Gate or other families.",
+  "unity_gate": "NOT RUN",
+  "tripo_credits": 0
+}

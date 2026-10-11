@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-sharp-runtime-budget-gate-v1",
+  "phase": "CONVERGENCE_GATE_4_RUNTIME_BUDGET",
+  "source_artifact_id": 11408853949,
+  "visual_authority_artifact_id": 11409079879,
+  "gate3_artifact_id": 11412317590,
+  "densities": [
+    300000,
+    450000,
+    600000
+  ],
+  "benchmark_scope": "relative_windows_unity_batchmode_not_mobile_certification",
+  "measurements": [
+    "preparation time",
+    "runtime load time",
+    "warmup/init time",
+    "20 repeated render+sort wall-time samples",
+    "average/p95/max render+sort wall time",
+    "Unity allocated/reserved memory delta",
+    "one HOME beauty capture per density"
+  ],
+  "requirements": [
+    "all three densities load and render stably",
+    "beauty capture exists at every density",
+    "no new visual method or generator",
+    "results are used for density selection only; mobile certification remains separate"
+  ],
+  "paid_credits": 0
+}

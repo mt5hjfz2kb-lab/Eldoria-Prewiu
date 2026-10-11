@@ -1,0 +1,51 @@
+{
+  "asset_id": "Valoria_WallSegment_v2",
+  "classification": "TEMPORARY",
+  "role": "PRIMARY",
+  "function": "wall segment",
+  "source": {
+    "tool": "Blender",
+    "tool_version": "4.0.2",
+    "path": "art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend",
+    "sha256": "c63c6d2216148952a421c0a695dadb096c4a9b0a961d981d651ef67c7915c8d5",
+    "reproducible": true,
+    "authoring_method": "certified_source_reauthoring_hybrid_v2",
+    "donor_sources": [
+      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb"
+    ]
+  },
+  "geometry": {
+    "triangles": 6440,
+    "materials": 1,
+    "uv0": true,
+    "normals": true
+  },
+  "materials": [
+    {
+      "slot": "source-preserved",
+      "family": "Eldoria_Stone",
+      "maps": [
+        "donor-source-materials"
+      ]
+    }
+  ],
+  "export": {
+    "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_WallSegment_v2.glb",
+    "sha256": "d589cf30fee21a72f6d9987e44b15495b371e79f28357fe3b3f0baa8c5f231d5",
+    "scale": 1.0,
+    "forward_axis": "+Z",
+    "up_axis": "+Y"
+  },
+  "unity": {
+    "resource_path": "Valoria/ProductionArt/StarterFamilyV2/Valoria_WallSegment_v2",
+    "owns_gameplay_collider": false,
+    "owns_hotspot": false
+  },
+  "evidence": {
+    "zoom9": "",
+    "mobile": "",
+    "technical_verdict": "PENDING_UNITY",
+    "visual_verdict": "PENDING_VISUAL",
+    "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+  }
+}

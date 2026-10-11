@@ -1,0 +1,51 @@
+{
+  "objective": "Replace flat grey blockout water with a mobile-safe opaque stylized water surface and irregular bank contact while preserving the accepted vegetation placement and all structural families.",
+  "water": {
+    "base_rgb": [
+      55,
+      104,
+      119
+    ],
+    "smoothness": 0.36,
+    "metallic": 0.04,
+    "opaque": true,
+    "grid": 16,
+    "wave_amplitude": 0.022,
+    "principles": [
+      "controlled teal/blue value",
+      "subtle specular",
+      "no mirror reflection",
+      "no transparency artifacts",
+      "low-frequency geometric ripple only"
+    ]
+  },
+  "shore": {
+    "wet_contact_rgb": [
+      58,
+      67,
+      59
+    ],
+    "width_range": [
+      0.55,
+      0.9
+    ],
+    "principles": [
+      "irregular polylines",
+      "dark contact before foam",
+      "foreground bank + lower-city water contact",
+      "no perfect straight border",
+      "no reeds/stones unless ribbon alone is insufficient"
+    ]
+  },
+  "acceptance": [
+    "adds foreground depth",
+    "Bridge contrast improves",
+    "shore no longer reads as perfect geometric line",
+    "water stays subordinate to Bastion",
+    "mobile contrast passes",
+    "no clipping",
+    "no transparency artifacts",
+    "performance remains sane"
+  ],
+  "tripo_credits": 0
+}

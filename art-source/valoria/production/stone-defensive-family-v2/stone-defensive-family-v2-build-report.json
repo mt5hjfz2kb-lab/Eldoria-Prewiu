@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "classification": "TEMPORARY",
+  "authoring_method": "source_reauthoring_from_certified_stone_architecture",
+  "donors": [
+    "HighStraightWall.glb"
+  ],
+  "blend": "art-source/valoria/production/stone-defensive-family-v2/Valoria_StoneDefensiveFamily_v2.blend",
+  "blend_sha256": "7cac2a14b27df921b2930c2d2809542ea74de32f09ee2e36bc4e98eccf7962c4",
+  "assets": [
+    {
+      "asset_id": "Valoria_WallSegment_StoneDefV2",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_WallSegment_StoneDefV2.glb",
+      "sha256": "e0a71115a3c46804239d8781de1e2507424d9f1399461e58b71f327e56b71b9a",
+      "geometry": {
+        "objects": 1,
+        "vertices": 5176,
+        "triangles": 6440,
+        "materials": [
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a"
+        ]
+      }
+    },
+    {
+      "asset_id": "Valoria_Tower_StoneDefV2",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_Tower_StoneDefV2.glb",
+      "sha256": "a5666ff9c523817eafe4ad288b16324d64b5be659b0adaf0873abcf36a94e687",
+      "geometry": {
+        "objects": 8,
+        "vertices": 41408,
+        "triangles": 51520,
+        "materials": [
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a"
+        ]
+      }
+    },
+    {
+      "asset_id": "Valoria_MainGate_StoneDefV2",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_MainGate_StoneDefV2.glb",
+      "sha256": "ad81ff3dd7c290f02efb5cbd13d253d816cb30257a1d04f197a7aff6eb1d97cd",
+      "geometry": {
+        "objects": 6,
+        "vertices": 31056,
+        "triangles": 38640,
+        "materials": [
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a"
+        ]
+      }
+    }
+  ]
+}

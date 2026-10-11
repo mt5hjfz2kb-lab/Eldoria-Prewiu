@@ -1,0 +1,52 @@
+name: Valoria Blender agent zero-cost capability probe
+on:
+  push:
+    branches:
+      - prototype/valoria-bastion1-no-sharp-20261010
+    paths:
+      - '.github/workflows/valoria-blender-agent-capability.yml'
+      - 'tools/art-rd/blender_agent_capability.py'
+      - 'tools/art-rd/blender_mcp_socket_probe.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  free-hosted-capability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender, uv, and MCP bridge
+        shell: bash
+        run: |
+          python3 -m pip install --user uv
+          python3 -m uv --version || true
+          timeout 150 sudo apt-get update -qq
+          timeout 220 sudo apt-get install -y blender
+          timeout 180 uvx --from mcp-for-blender mcp-for-blender --help > /tmp/mcp-cli.txt 2>&1
+          mkdir -p "$HOME/.config/blender/4.0/scripts/addons"
+          export BLENDERMCP_ADDONS_DIR="$HOME/.config/blender/4.0/scripts/addons"
+          timeout 180 uvx --from mcp-for-blender mcp-for-blender install-addon > /tmp/mcp-addon.txt 2>&1 || { cat /tmp/mcp-addon.txt; exit 1; }
+          test -s /tmp/mcp-addon.txt
+          blender --version | head -3
+          blender -b --python tools/art-rd/blender_mcp_addon_smoke.py > /tmp/eldoria-blender-addon-smoke.txt 2>&1
+          cat /tmp/eldoria-blender-addon-smoke.txt
+          grep -q "ELDORIA_MCP_ADDON_LOAD_PASS" /tmp/eldoria-blender-addon-smoke.txt
+          blender -b --python tools/art-rd/blender_mcp_socket_probe.py > /tmp/eldoria-mcp-socket.txt 2>&1
+          cat /tmp/eldoria-mcp-socket.txt
+          grep -q "ELDORIA_SOCKET_REQUEST_PASS" /tmp/eldoria-mcp-socket.txt
+      - name: Evaluate actual available capability without keys or paid credits
+        shell: bash
+        run: |
+          python3 tools/art-rd/blender_agent_capability.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-agent-capability-evidence
+          path: |
+            /tmp/eldoria-agent-probe.json
+            /tmp/mcp-cli.txt
+            /tmp/mcp-addon.txt
+            /tmp/eldoria-blender-addon-smoke.txt
+            /tmp/eldoria-mcp-socket.txt
+          retention-days: 14

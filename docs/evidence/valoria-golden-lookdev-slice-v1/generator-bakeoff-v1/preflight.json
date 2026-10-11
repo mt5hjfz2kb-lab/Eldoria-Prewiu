@@ -1,0 +1,18 @@
+{
+  "preflight": "PASS",
+  "zero_spend_guard": true,
+  "exact_multiview_ready": false,
+  "input_status": "AWAITING_EXACT_MULTIVIEW",
+  "candidates": [
+    {
+      "id": "tripo-p1",
+      "expected_credits": 40
+    },
+    {
+      "id": "meshy-7.1-2k",
+      "expected_credits": 25
+    }
+  ],
+  "expected_total_credits": 65,
+  "next": "CREATE/PERSIST CONSISTENT EXACT FOUR-VIEW PACKAGE; NO VENDOR CALLS"
+}

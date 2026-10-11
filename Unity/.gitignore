@@ -1,0 +1,26 @@
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+BenchmarkCaptures/
+AssetGateCaptures/
+OriginalHeroCaptures/
+Assets/Eldoria/ArtTests/**/*.fbx
+!Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx
+Assets/Eldoria/ArtTests/**/*.jpg
+Assets/Eldoria/ArtTests/**/*.meta
+Assets/Eldoria/ArtTests.meta
+Assets/Eldoria/ArtTests/*.meta
+Logs/
+UserSettings/
+MemoryCaptures/
+*.csproj
+*.sln
+*.unitypackage
+
+# Unity Test Runner generated runtime files
+Assets/Resources/PerformanceTestRunInfo.json
+Assets/Resources/PerformanceTestRunSettings.json
+Assets/Resources/PerformanceTestRunInfo.json.meta
+Assets/Resources/PerformanceTestRunSettings.json.meta

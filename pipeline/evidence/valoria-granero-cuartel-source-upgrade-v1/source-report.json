@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
+  "phase": "SOURCE_ISOLATED",
+  "source_strategy": "Granero uses certified dedicated granary source; Cuartel uses dedicated barracks core plus bounded accepted rich defensive geometry for guarded military compound identity",
+  "tripo": false,
+  "paid_credits": 0,
+  "blend": "art-source/valoria/production/granero-cuartel-source-upgrade-v1/Valoria_Granero_Cuartel_SourceUpgrade_v1.blend",
+  "blend_sha256": "26ad25398c876d39ace895a31c5470b3e36fcb4ef0ae982855197d630170fc70",
+  "assets": [
+    {
+      "role": "granero",
+      "asset_id": "Valoria_Granero_GCSUv1",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb"
+      ],
+      "source_sha256": [
+        "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67"
+      ],
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+      "glb_sha256": "565d282dc84d1244a212b43d310332fc89a2766b6adc742bf92bcccd6695b977",
+      "geometry": {
+        "objects": 1,
+        "vertices": 55232,
+        "triangles": 49800,
+        "materials": [
+          "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee"
+        ],
+        "bounds": [
+          -2.225,
+          -2.2192,
+          0,
+          2.225,
+          2.2192,
+          2.7256
+        ]
+      },
+      "prior_certification": {
+        "run": 36572780639,
+        "artifact": 11036129405,
+        "verdict": "TECH PASS / VISUAL PASS"
+      },
+      "method": "Granero: dedicated functional source normalization. Cuartel: dedicated barracks core + bounded accepted rich defensive modules forming guarded training forecourt; no MidTier donor recomposition; no primitive architecture.",
+      "preview": "docs/evidence/valoria-granero-cuartel-source-upgrade-v1/granero-source-3q.png"
+    },
+    {
+      "role": "cuartel",
+      "asset_id": "Valoria_Cuartel_GCSUv1",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb"
+      ],
+      "source_sha256": [
+        "948a79e8f14be5ba4df1b98ddcb01d5312a3806f9fbdc4ecd8541960e0a5b980",
+        "8431f5a0d3ab5cfcf26d36b3b9289c8ce94c0ae5d3df554d605ee0facd1bc220",
+        "0f23b50e4025617dc593f88e90bcac7947a1ae80d82f1167321d3b25ebfc43d2"
+      ],
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
+      "glb_sha256": "5e25e0258d228e6b424f779cf29b34021c992ae0c0d93f092acf7f8107be35fd",
+      "geometry": {
+        "objects": 5,
+        "vertices": 149211,
+        "triangles": 120015,
+        "materials": [
+          "Eldoria Rock · Hero Prototype",
+          "Eldoria Stone · Hero Prototype",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.002",
+          "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
+        ],
+        "bounds": [
+          -2.7632,
+          -1.3143,
+          0,
+          2.7632,
+          1.3143,
+          2.8657
+        ]
+      },
+      "prior_certification": {
+        "run": 36529204672,
+        "artifact": 11015563918,
+        "verdict": "dedicated source accepted technically; semantic military read requires stronger composition"
+      },
+      "method": "Granero: dedicated functional source normalization. Cuartel: dedicated barracks core + bounded accepted rich defensive modules forming guarded training forecourt; no MidTier donor recomposition; no primitive architecture.",
+      "preview": "docs/evidence/valoria-granero-cuartel-source-upgrade-v1/cuartel-source-3q.png"
+    }
+  ],
+  "source_visual_verdict": {
+    "granero": "SOURCE VISUAL PASS",
+    "cuartel": "SOURCE VISUAL PASS"
+  },
+  "integration_allowed": true,
+  "visual_review": {
+    "reviewed_against": [
+      "functional silhouette",
+      "hierarchy",
+      "depth",
+      "macrodetail",
+      "Hero Bastion / Visual Bible coherence",
+      "zoom9/mobile survivability"
+    ],
+    "granero": "Dedicated granary reads as agricultural storage through hall mass, dominant roof, deep loading access, annexes and secondary vertical storage volume.",
+    "cuartel": "Dedicated barracks core plus bounded stone defense reads as military compound through fortified entry, robust stone mass and guarded perimeter; banners are supporting cues rather than sole identity.",
+    "source_gate_run_id": 37206352843,
+    "source_gate_artifact_id": 11305265539
+  },
+  "unity_gate": {
+    "run_id": 37206779989,
+    "artifact_id": 11305635813,
+    "verdict": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+    "gameplay_signature_preserved": true,
+    "metrics": {
+      "before": {
+        "renderers": 852,
+        "materials": 81,
+        "triangles": 2083716,
+        "lights": 31
+      },
+      "after": {
+        "renderers": 850,
+        "materials": 81,
+        "triangles": 2166395,
+        "lights": 31
+      }
+    },
+    "reason": "Both sources pass isolated review, but played-camera zoom9/mobile does not make both functions unmistakable enough simultaneously."
+  },
+  "final_promotion": false
+}

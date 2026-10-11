@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "AUTHOR_SOURCE",
+  "workstream": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1",
+  "method": "Blender authored zero-credit geometry",
+  "outputs": [
+    "CivicRetainingBay.glb",
+    "LowerArcadedFront.glb",
+    "CuartelTerraceSupport.glb"
+  ],
+  "visual_goal": "Replace dominant technical support masses with integrated civic retaining architecture: arches, buttresses, cornice, parapet and vertical articulation.",
+  "tripo_credits": 0,
+  "paid_credits": 0,
+  "attempt": 2,
+  "tech_fix": "Install python3-numpy alongside apt Blender so the glTF exporter can import numpy. No geometry/design change.",
+  "previous_run_id": 37223697615,
+  "previous_result": "TECH FAIL before GLB export: Blender glTF exporter missing numpy; no candidate source produced."
+}

@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "policy_id": "valoria-visual-fallback-policy-v1",
+  "default_mode": "known_evidence_only",
+  "new_research_default": false,
+  "paid_actions_default": false,
+  "owner_approval_required_for": [
+    "paid_credit_spend",
+    "commercial_asset_purchase",
+    "new_rnd_family",
+    "production_method_pivot"
+  ],
+  "status_eligibility": {
+    "automatic": [
+      "LEADER",
+      "COMPONENT_PASS",
+      "BASE_3D_PASS",
+      "TECH_PASS_VISUAL_PARTIAL"
+    ],
+    "conditional": [
+      "BLOCKED",
+      "IN_PROGRESS",
+      "COMPONENT_PROBE"
+    ],
+    "forbidden": [
+      "REJECTED"
+    ]
+  },
+  "failure_classes": {
+    "runtime_density_or_gpu": {
+      "route": [
+        "reduce_or_step_density",
+        "preserve_SHARP_source",
+        "rerun_same_Unity_lifecycle",
+        "find_highest_stable_density"
+      ],
+      "tools": [
+        "SHARP",
+        "UnitySplats",
+        "Unity_6_URP"
+      ],
+      "auto": true,
+      "research": false
+    },
+    "source_contamination_or_framing": {
+      "route": [
+        "clean_canonical_target",
+        "regenerate_SHARP",
+        "repeat_bounded_Unity_gate"
+      ],
+      "tools": [
+        "SHARP",
+        "Unity_6_URP"
+      ],
+      "auto": true,
+      "research": false
+    },
+    "geometry_identity_or_silhouette": {
+      "route": [
+        "prefer_human_or_professional_mesh",
+        "use_existing_qualified_donor_only_if_helpful",
+        "Blender_professional_correction",
+        "isolated_art_source_gate",
+        "Unity_validation"
+      ],
+      "tools": [
+        "Blender",
+        "human_authored_geometry",
+        "TRELLIS_semantic_donor",
+        "Hi3DGen_seed7_donor",
+        "InstantMesh_blockout"
+      ],
+      "auto": true,
+      "research": false,
+      "exclusions": [
+        "TripoSR",
+        "Hunyuan3D_as_primary",
+        "CraftsMan3D_as_final",
+        "scripted_Blender_primary_authoring"
+      ]
+    },
+    "interaction_clickability_or_collision": {
+      "route": [
+        "add_real_3D_interactive_substrate",
+        "preserve_visual_representation_as_overlay_or_layer",
+        "validate_hotspots_colliders_occlusion"
+      ],
+      "tools": [
+        "Unity_6_URP",
+        "Blender",
+        "human_authored_geometry"
+      ],
+      "auto": true,
+      "research": false
+    },
+    "depth_or_occlusion_alignment": {
+      "route": [
+        "validate_real_geometry_first",
+        "use_existing_depth_component_if_needed",
+        "align_appearance_to_geometry",
+        "Unity_occlusion_gate"
+      ],
+      "tools": [
+        "Unity_6_URP",
+        "Marigold",
+        "geometry_anchored_projection"
+      ],
+      "auto": true,
+      "research": false,
+      "conditional_tools": [
+        "Marigold"
+      ]
+    },
+    "surface_material_or_relief": {
+      "route": [
+        "Unity_surface_diagnosis",
+        "target_derived_PBR",
+        "Blender_surface_processing",
+        "geometry_anchored_projection",
+        "compatible_photogrammetry_donor_if_needed",
+        "official_camera_validation"
+      ],
+      "tools": [
+        "Unity_Rendering_Debugger",
+        "Blender",
+        "target_derived_PBR",
+        "geometry_anchored_projection",
+        "photogrammetry_donor"
+      ],
+      "auto": true,
+      "research": false
+    },
+    "semantic_isolation": {
+      "route": [
+        "reuse_existing_semantic_isolation_assets_or_methods",
+        "do_not_open_new_segmentation_RND",
+        "return_to_geometry_or_representation_gate"
+      ],
+      "tools": [
+        "existing_semantic_isolation"
+      ],
+      "auto": true,
+      "research": false,
+      "conditional_tools": [
+        "SCoPE"
+      ]
+    },
+    "camera_disocclusion_or_parallax": {
+      "route": [
+        "reject_projection_shell_fix",
+        "increase_real_3D_support",
+        "restrict_visual_layer_to_valid_camera_envelope",
+        "Unity_camera_envelope_gate"
+      ],
+      "tools": [
+        "Unity_6_URP",
+        "real_3D_geometry",
+        "SHARP_if_within_valid_envelope"
+      ],
+      "auto": true,
+      "research": false,
+      "exclusions": [
+        "Semantic_2_5D_Camera_First",
+        "projection_cards_as_primary"
+      ]
+    },
+    "unknown": {
+      "route": [
+        "STOP",
+        "classify_against_existing_failure_classes",
+        "inspect_existing_evidence_register",
+        "do_not_search_for_new_tools"
+      ],
+      "tools": [],
+      "auto": false,
+      "research": false
+    }
+  }
+}

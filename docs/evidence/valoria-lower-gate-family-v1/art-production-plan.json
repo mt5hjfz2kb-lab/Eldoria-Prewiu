@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "request_id": "valoria-lower-gate-family-v1",
+  "asset_or_sector": "Lower Gate Family v1 only",
+  "profile": "environment_new_geometry",
+  "zero_spend_default": true,
+  "geometry_gap_proven": true,
+  "tripo_allowed": false,
+  "credit_authorized": false,
+  "authorized_credit_cost": 0,
+  "stop_before_credit_spend": false,
+  "stages": [
+    "geometry_gap_evidence",
+    "screen_space_art_brief",
+    "blender_professional_authoring",
+    "blender_isolated_art_source_review",
+    "unity_environment_art",
+    "official_camera_validation"
+  ],
+  "validation": {
+    "camera": "approved reset20/35/24, all7 views",
+    "source_gate": "required before Unity",
+    "scope": "replace exactly five LowerGate masses, gameplay intact"
+  },
+  "capabilities_requested": {},
+  "blender_authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "required_verdicts": [
+    "TECH_PASS",
+    "ART_SOURCE_PASS",
+    "INTEGRATED_VISUAL_PASS"
+  ]
+}

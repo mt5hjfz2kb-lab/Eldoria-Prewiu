@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-per-asset-impostor-unity-v1",
+  "method": "one canonical transparent visual impostor per building anchored to hidden functional 3D collider proxy; fixed orthographic orientation; pan+zoom; alpha-cutout depth; state texture swap",
+  "input": "canonical Gate semantic composite",
+  "rotation_contract": "locked",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}

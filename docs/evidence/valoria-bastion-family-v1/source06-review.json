@@ -1,0 +1,38 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source06",
+  "source_run": 37324327385,
+  "artifact_id": 11351696077,
+  "source_sha": "8675a113d2a0b2225dc081ebc5d1d1fc071bd452e3a73703cc43951fdb468aa3",
+  "export_sha": "9cdcf53f32deb58b6a42042ba6764201eb2a5dbe8b6c0e02191d4ecfacff53dd",
+  "tech_pass": false,
+  "geometry": {
+    "triangles": 27698,
+    "vertices": 16582,
+    "modules": 9,
+    "materials": 10,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 4065
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "PARTIAL PASS — silhouette is designed, but the donor relief does not change the principal wall-band read enough.",
+    "2_immediately_dominant_valoria_bastion": "FAIL — Keep remains too visually compressed against the long curtains.",
+    "3_primary_secondary_tertiary": "PASS",
+    "4_real_architectural_depth": "PASS",
+    "5_controlled_asymmetry": "PASS",
+    "6_no_cloned_modules": "PASS",
+    "7_rich_material_without_microdetail": "PARTIAL — source has geometric richness, but the neutral lit review remains too dark and donor relief is largely swallowed by the backing planes.",
+    "8_coherent_lower_gate_walls": "PASS",
+    "9_gameplay_camera": "FAIL HERO — official-camera proxy still does not match the target's pale command keep + large arch + visible scaffold hierarchy strongly enough.",
+    "10_authored_not_procedural": "PASS",
+    "11_not_castle_kit_generic": "PARTIAL FAIL — bespoke features exist, but material/value hierarchy prevents them from reading decisively.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — not yet a commercial hero step."
+  },
+  "technical_hard_stop": "FAIL — donor boundary hardening reduces non-manifold edges from 12,438 to 4,065 but does not eliminate them.",
+  "target_comparison": "Canonical target shows pale large-block stone, a strongly readable central banner keep, a large adjacent arch, clearly visible timber scaffold on the left and controlled right-side damage. Source06 already has the correct structural ingredients but does not present them with enough material/value separation at gameplay scale.",
+  "decision": "DO NOT INTEGRATE UNITY. Source07 removes donor geometry entirely, returns to the clean Source04/target-specific authored architecture, and fixes the actual remaining gap: pale large-block hero masonry, readable timber scaffold material, stronger Keep-vs-curtain value hierarchy and preserved target damage/arch/heraldry.",
+  "tripo_credits": 0
+}

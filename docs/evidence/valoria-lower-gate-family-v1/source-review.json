@@ -1,0 +1,41 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "scope": "Isolated source gate only; Unity visual gate remains mandatory",
+  "source_run": 37281447235,
+  "artifact_id": 11332112538,
+  "source_sha": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf",
+  "export_sha": "46600b6248f23fa580249b2e4867dde793067bb7371de844b3702304d45adce9",
+  "questions": {
+    "same_target_gate": "PASS: square paired towers, rounded arch, stone crenels, blue/gold front identity",
+    "same_visual_weight": "PASS in proxy: primary bbox within 0.3% of blockout height and same width; Unity verification pending",
+    "correct_aperture": "PASS: real curved void, 4.724m width, raised grille leaves passage open",
+    "tower_proportions": "PASS: inherited 3.3/3.7m widths and 3.2m depth, 8.3m height",
+    "crowning": "PASS: broad merlons and open parapets, no extra roof",
+    "too_generic": "Acceptable representative architecture with coarse cut-stone/structural material division and target identity; surface remains regular and clean",
+    "real_depth": "PASS: vault, rear returns, battered bodies, inset slit and actual open crowns visible in side/clay",
+    "integrates_without_blockout_changes": "Source bounds derived from immutable blockout; Unity must verify transform and screen occupancy"
+  },
+  "topology": "15,830 triangles, six semantic modules; intentional cloth borders/internal mating edges mean not a watertight collider mesh. UV/material transport corrected after source03 failure. No gameplay collider intended.",
+  "professional_review": {
+    "editable_source": true,
+    "metric_scale": true,
+    "custom_profile_arch_and_body": true,
+    "material_breakup": true,
+    "source03_uv_failure_fixed": true,
+    "direct_inspection": [
+      "01-clay-3quarter",
+      "02-lit-3quarter",
+      "03-frontal",
+      "04-lateral",
+      "05-approved-camera-proxy",
+      "06-wireframe"
+    ]
+  },
+  "limitations": [
+    "No final whole-scene lighting",
+    "No ornamental/weathering refinement beyond family readability",
+    "Unity material transport and mobile integrated readability not yet accepted"
+  ],
+  "tripo_credits": 0
+}

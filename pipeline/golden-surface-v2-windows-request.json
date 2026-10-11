@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "nonce": "golden-surface-v2-windows-fallback-01",
+  "request_id": "valoria-golden-lookdev-slice-v1-surface-v2",
+  "reason": "Hosted Ubuntu Actions queue delayed; execute identical Blender-authored persistent surface map method on already-claimed windows-runner-heavy. No geometry authoring, zero Tripo.",
+  "credits": 0
+}

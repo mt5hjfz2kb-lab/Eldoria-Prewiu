@@ -1,0 +1,174 @@
+name: Valoria LookDev diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-valoria-lookdev
+  cancel-in-progress: true
+
+jobs:
+  lookdev:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
+
+      - name: Render zero-credit LookDev profiles
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-LookDev.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaLookDevCapture.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(8)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            throw 'LookDev capture timed out after 8 minutes.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 200}; throw "LookDev capture failed: $($process.ExitCode)" }
+          $images=@(Get-ChildItem $folder -Filter '*.png' -File)
+          if($images.Count -ne 15){ throw "Expected 15 LookDev PNGs, found $($images.Count)" }
+          foreach($image in $images){ if($image.Length -lt 10000){ throw "Empty LookDev capture: $($image.Name)" } }
+
+      - name: Measure LookDev luminance and contrast
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $rows=@()
+          foreach($file in Get-ChildItem $folder -Filter '*.png' -File | Where-Object { $_.Name -ne 'lookdev-contact-sheet.png' }){
+            $img=[System.Drawing.Bitmap]::FromFile($file.FullName)
+            try {
+              $vals=New-Object System.Collections.Generic.List[double]
+              $high=0; $low=0; $count=0
+              for($y=0;$y -lt $img.Height;$y+=16){
+                for($x=0;$x -lt $img.Width;$x+=16){
+                  $c=$img.GetPixel($x,$y)
+                  $l=(0.2126*$c.R + 0.7152*$c.G + 0.0722*$c.B)/255.0
+                  $vals.Add($l); $count++
+                  if($l -ge 0.92){$high++}
+                  if($l -le 0.05){$low++}
+                }
+              }
+              $mean=($vals | Measure-Object -Average).Average
+              $sumSq=0.0
+              foreach($v in $vals){$d=$v-$mean;$sumSq += $d*$d}
+              $std=[math]::Sqrt($sumSq/[math]::Max(1,$vals.Count))
+              $rows += [pscustomobject]@{
+                file=$file.Name
+                mean_luminance=[math]::Round($mean,4)
+                luminance_stddev=[math]::Round($std,4)
+                clipped_high_pct=[math]::Round(($high/[math]::Max(1,$count))*100,2)
+                clipped_low_pct=[math]::Round(($low/[math]::Max(1,$count))*100,2)
+              }
+            } finally { $img.Dispose() }
+          }
+          $out=[pscustomobject]@{schema_version=1;sample_stride=16;images=$rows}
+          $out | ConvertTo-Json -Depth 6 | Set-Content "$folder\lookdev-metrics.json"
+          Get-Content "$folder\lookdev-metrics.json"
+
+      - name: Compare Valoria v1 candidate against baseline
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $metrics=Get-Content "$folder\lookdev-metrics.json" -Raw | ConvertFrom-Json
+          $views=@('overview','sawmill','barracks')
+          $rows=@()
+          foreach($view in $views){
+            $base=$metrics.images | Where-Object { $_.file -eq "baseline-$view.png" } | Select-Object -First 1
+            $cand=$metrics.images | Where-Object { $_.file -eq "valoria-v1-candidate-$view.png" } | Select-Object -First 1
+            if($null -eq $base -or $null -eq $cand){throw "Missing baseline/candidate metrics for $view"}
+            $rows += [pscustomobject]@{
+              view=$view
+              baseline_mean=[double]$base.mean_luminance
+              candidate_mean=[double]$cand.mean_luminance
+              delta_mean=[math]::Round(([double]$cand.mean_luminance-[double]$base.mean_luminance),4)
+              baseline_contrast=[double]$base.luminance_stddev
+              candidate_contrast=[double]$cand.luminance_stddev
+              delta_contrast=[math]::Round(([double]$cand.luminance_stddev-[double]$base.luminance_stddev),4)
+              baseline_high_clip=[double]$base.clipped_high_pct
+              candidate_high_clip=[double]$cand.clipped_high_pct
+              delta_high_clip=[math]::Round(([double]$cand.clipped_high_pct-[double]$base.clipped_high_pct),2)
+              baseline_low_clip=[double]$base.clipped_low_pct
+              candidate_low_clip=[double]$cand.clipped_low_pct
+              delta_low_clip=[math]::Round(([double]$cand.clipped_low_pct-[double]$base.clipped_low_pct),2)
+            }
+          }
+          [pscustomobject]@{
+            schema_version=1
+            candidate='valoria-v1-candidate'
+            baseline='baseline'
+            rule='Metrics inform review; they do not auto-select the visual winner.'
+            views=$rows
+          } | ConvertTo-Json -Depth 6 | Set-Content "$folder\lookdev-candidate-comparison.json"
+          Get-Content "$folder\lookdev-candidate-comparison.json"
+
+      - name: Build LookDev contact sheet
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $profiles=@('baseline','neutral-pbr','ruins-contrast','neutral-overcast','valoria-v1-candidate')
+          $cellW=640; $cellH=360
+          $canvas=New-Object System.Drawing.Bitmap ($cellW*3),($cellH*5)
+          $g=[System.Drawing.Graphics]::FromImage($canvas)
+          $g.Clear([System.Drawing.Color]::Black)
+          try {
+            for($row=0;$row -lt $profiles.Count;$row++){
+              $id=$profiles[$row]
+              $paths=@("$folder\$id-overview.png","$folder\$id-sawmill.png","$folder\$id-barracks.png")
+              for($col=0;$col -lt 3;$col++){
+                $img=[System.Drawing.Image]::FromFile($paths[$col])
+                try { $g.DrawImage($img,$col*$cellW,$row*$cellH,$cellW,$cellH) } finally { $img.Dispose() }
+              }
+            }
+            $out="$folder\lookdev-contact-sheet.png"
+            $canvas.Save($out,[System.Drawing.Imaging.ImageFormat]::Png)
+            if((Get-Item $out).Length -lt 20000){ throw 'LookDev contact sheet is unexpectedly small' }
+          } finally { $g.Dispose(); $canvas.Dispose() }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-lookdev-${{ github.run_id }}
+          path: |
+            Unity/LookDevCaptures/*
+            ${{ runner.temp }}/Eldoria-LookDev.log
+          if-no-files-found: warn
+          retention-days: 14

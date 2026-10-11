@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "provisional_until_mobile_profile",
+  "profiles": {
+    "support": {
+      "purpose": "background/support geometry whose read is mostly silhouette and mass at official cameras",
+      "geometry_policy": "use the lowest triangle budget that preserves official zoom 19/12/9 readability",
+      "texture_authoring_max_px": 1024,
+      "material_policy": "reuse canonical Eldoria material families; avoid unique material sets",
+      "lod_policy": "optional; only if measured benefit on target mobile"
+    },
+    "primary": {
+      "purpose": "important playable buildings such as Aserradero and Cuartel",
+      "geometry_policy": "preserve functional silhouette and readable architectural identity at zoom 12/9; current 49.8K gate remains a validation default, not a mandatory final budget",
+      "texture_authoring_max_px": 2048,
+      "material_policy": "canonical material families plus bounded asset-specific masks/accents",
+      "lod_policy": "evaluate after visual formula is stable and mobile profiling exists"
+    },
+    "hero": {
+      "purpose": "Bastion, monumental ruins and bounded hero fragments",
+      "geometry_policy": "prioritize macro silhouette and hero identity; triangle budget must be justified by official-camera evidence and target-device profiling",
+      "texture_authoring_max_px": 2048,
+      "material_policy": "canonical families with higher-quality masks/bakes/accents, never a disconnected shading model",
+      "lod_policy": "expected candidate once target-device profiling is available"
+    }
+  },
+  "promotion_rule": "No numeric production triangle budget becomes canonical solely by guesswork; compare official-camera quality and target-mobile performance first."
+}

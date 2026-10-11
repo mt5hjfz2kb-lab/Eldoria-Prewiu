@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "status": "production_certified_and_integrated",
+  "asset_name": "Valoria_Granero_BIII_v1",
+  "class": "DEDICATED_FUNCTIONAL",
+  "gameplay_unlock": "Bastion III",
+  "district": "West Growth / food-survival edge",
+  "integration_anchor": {
+    "x": -17.2,
+    "y": 0.34,
+    "z": -3
+  },
+  "principal_face": "south/front",
+  "target_footprint": {
+    "width_min": 4.1,
+    "width_max": 4.5,
+    "depth_min": 3.4,
+    "depth_max": 3.8,
+    "height_min": 3.7,
+    "height_max": 4.4
+  },
+  "reserved_upgrade_envelope": {
+    "width": 5.4,
+    "depth": 4.8,
+    "height_max": 5.8
+  },
+  "exact_input_requirements": {
+    "single_image": true,
+    "view": "slightly elevated 3/4 south-front + east side",
+    "background": "neutral light grey",
+    "full_building_visible": true,
+    "no_city": true,
+    "no_people": true,
+    "no_text": true,
+    "no_contact_sheet": true,
+    "tripo_ready": true
+  },
+  "credit_spend_authorized": false,
+  "next_safe_action": "Do not regenerate Granero. Use the certified production asset and continue with the next canonical Valoria production need.",
+  "exact_input": {
+    "file": "Valoria_Granero_BIII_v1_APPROVED_EXACT.jpeg",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 602970,
+    "sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a"
+  },
+  "tripo": {
+    "authorized_visible_cost_credits": 55,
+    "generated_task_id": "a50f42b8-1e96-4298-ba36-089334d934f6",
+    "raw_glb_bytes": 69308356,
+    "raw_glb_sha256": "b14cfbf85d608aac4a3b551a3804df57f8dc866264c786565e496cfac7fe647b"
+  },
+  "certification": {
+    "isolated_run_id": 36572780639,
+    "isolated_artifact_id": 11036129405,
+    "optimized_triangles": 49800,
+    "tech": "PASS",
+    "visual": "PASS",
+    "unity_yaw_degrees": 180,
+    "integrated_visual_formula_run_id": 36581806788,
+    "integrated_visual_formula_artifact_id": 11040631044,
+    "production_optimized_sha256": "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67",
+    "production_optimized_bytes": 12951524,
+    "unity_slice_run_id": 36581806847,
+    "unity_slice_result": "PASS_EDITMODE_PLAYMODE_WINDOWS_BUILD_VALORIA_BENCHMARK",
+    "unity_checks_artifact_id": 11040582911,
+    "unity_valoria_captures_artifact_id": 11041280293
+  },
+  "production_resource": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+  "integration": {
+    "visual_only": true,
+    "visible_from_bastion_level": 3,
+    "gameplay_collider_owned_by_visual": false,
+    "modifies_valoria_scene_asset": false
+  }
+}

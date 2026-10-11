@@ -1,0 +1,898 @@
+## 2026-10-10 — CURRENT: BASTION I–II PARITY CORRECTIONS / PUBLISHED QA PASS / CLOSED
+
+The owner-requested continuation of the blocked chat is **COMPLETE**. Workstream `bastion-i-ii-web-parity-playthrough-v1` is closed after testing the exact candidate and the public game. This is the current I–II delivery record; earlier recovery/repair entries below are historical, not active instructions.
+
+**Delivered corrections:** OWNER_I_II now pays the web mission/chapter-I rewards once through a persisted ledger; recruitment displays its real countdown and “training 20 Archers” after charging the cost; disabled/completed primary labels remain readable in landscape/portrait; the slice ends truthfully at “BASTIÓN II ASEGURADO · próximo hito: Bastión III”. QA_FAST economy remains isolated. No Bastion III was implemented.
+
+**Evidence:** UI **38038180064** passed **20/20 EditMode + 29/29 PlayMode**; current native production **38038180076** passed. Exact WebGL build **38038397612 / artifact 11664888284**, source `47422ca94609f3672f6f60ad794d6f23e81bdc6a`; candidate QA **38039578310 / 11665293571**; exact-artifact release **38040075806**, with no recompilation and matching downloaded SHA-256; public QA **38040278321 / 11665726793**. Both uninterrupted fresh-save I→II flows passed real touch building selection, construction/resources, forest/quarry, Corrupt route, ascent, Cuartel, training, configured March, Engendro/rewards, exact final-state reload and deliberate reset/reload. **0 runtime errors**. Final state in both orientations: revision 26, wood 1030, stone 995, Bastion II, 56 Archers/20 trained.
+
+Candidate and published training/completion captures were directly inspected: bounded countdown/contrast correction **PASS**. This is **not global artistic-quality, physical-iPhone or independent human-playthrough approval**; Work browser reports WebGL unsupported. Region I global art and HOME Bastion framing remain separate visual work. Web quantity selector 5/10/20 remains a known bounded simplification (current batch 20).
+
+**Playable Unity build:** https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
+
+**Current authority:** `docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md` and `release-result.json`. The old September parity/readiness documents are explicitly historical. Unity delivery identity is source SHA/run/artifact; legacy web metadata stays v0.32.0. Paid credits **0**. Resources are released; publication request is disabled after delivery. Do not restart recovery, migration, departments or Bastion III automatically.
+
+---
+
+## 2026-10-10 — HISTORICAL: DIRECT UNITY FLOW RECOVERED / CLOSED
+
+The owner-requested recovery is **COMPLETE**. `Unity/` remains the real game source (Unity 6000.3.23f1); the baseline around 2026-10-08 14:00 Europe/Madrid was preserved. No gameplay, asset, camera or economy redesign was made in this recovery.
+
+**Operating method:** one bounded order → direct Unity implementation → focused tests/captures → Windows build → exact candidate QA → repair/retest when needed → release the approved artifact → published QA → closure and playable build. The executing agent carries the corrections and transitions; Actions executes builds/tests. Departments, DG/M16 rounds and another owner message are not dependencies between already-authorized routine steps. Existing canonical visual identity, architecture, gameplay/persistence and paid-resource authorization remain protected.
+
+**Actual evidence:** Windows build **37999090263**, source `3bfb1f5d48e7e14f118990f0942cf172a432512c`, artifact **11648897327**. Exact-candidate QA **38001165965 / 11649201968** passed. Release **38002114168** promoted that exact artifact without recompiling. Independent public-byte comparison matched **45/45 files**. Final published QA **38002471123 / 11649573545** passed startup, touch pan/navigation, building selection, construction/resources, Bastion I→II, recruitment, configured march/combat/reward, exact reload persistence and deliberate reset/reset reload in both landscape and portrait; **0 runtime errors**.
+
+**Playable owner build:** https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
+
+**Limits:** Chromium mobile emulation and inspected captures, not physical Safari/iPhone, human enjoyment or premium visual-quality certification. Game quality work remains distinct from this production-flow recovery.
+
+**Closeout:** both recovery entries are in registry history as completed; no active recovery reservation remains. The publish request is disabled after delivery. Evidence: `docs/evidence/eldoria-ci-production-recovery-v1/recovery-result.json`. Continue the next explicitly authorized bounded Unity block from live main; World Region 1 visual convergence remains the prior queued priority. No new department, pipeline or broad audit is required.
+
+---
+
+## 2026-10-08 — HISTORICAL REPAIR STATE (superseded by the current I–II release)
+
+The previous CLOSED/PASS declarations below are historical and are revoked as current publication acceptance. Published probe **37741999794** found fatal Unity scene errors (`level0`, position out of bounds) despite the older macroloop passing. The active canonical workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is owned by `chat-work-parity-repair-20261008` following the owner's explicit takeover authorization. Do not report current published PASS until the repaired build passes fatal-error acceptance and full fresh-save Bastion I–II interaction/persistence checks in landscape and portrait.
+
+Repair source: **7323a7a1e36ef21e9643c4aabb36621efc57c690**. It aligns WebGL displayed-frame projection and picking, focuses reachable building parcels, improves HUD text and panel budgets, retains the canonical portrait resource, and removes native splat serialization from the temporary WebGL scene while preserving native production authority. The WebGL clean-cache/scene fix remains a hypothesis pending actual publication verification. Production **37746131694**, UI **37746131760**, and source/editor **37746131707** are pending; old-publication probe **37746131852** remains FAIL. Continue these gates, inspect dedicated production captures, update the existing publish request, verify the new published full flows, repair failures, then close and release resources. No paid credits; no Bastion III or visual-method R&D.
+
+Evidence limits: the Work browser reports WebGL unsupported. Automated published Chromium touch probes can certify bounded interactions, state and persistence; they do not certify physical-device performance, human enjoyment/usability, or live SHARP rendering in WebGL.
+
+## 2026-10-07 — Valoria Bastion I-II presentation parity correction CLOSED / PASS
+
+The presentation-parity correction against the canonical web vertical slice is complete and published. Production run **37681793700**, UI certification **37681793717**, source/editor gate **37681794138**, Pages/WebGL publication **37684790661**, and published mobile macroloop probe **37687592179** all passed. Probe artifact **11511827528** reports `playablePass=true` and preserves reload state (revision 4; wood 590; stone 150; gatheredWood 360; gatheredStone 0; sawmill 0; Bastion I). Owner build: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ .
+
+Closed scope: tighter city-first HOME with bounded pan, building-associated CTA, live construction countdown/feedback, safe ambient life/activity presentation, repeatable canonical owner reset, and real state-driven building-level indicators. No Bastion III, no World Region 1 redesign, no gameplay/economy/persistence/SHARP authority rewrite, and **0 paid credits**.
+
+## 2026-10-07 — Valoria Bastion I-II vertical-slice presentation migration
+
+The controlled Bastion I-II migration from the canonical web vertical slice to the real Unity gameplay is **COMPLETE / PASS**. Presentation hierarchy is compact/city-first and mobile-safe; only gameplay-backed controls are exposed. Real state/progression/persistence, SHARP authority and World Region 1 remain unchanged in authority. Final production **37667362790**, publish **37668173503**, published probe **37670831297** all pass. The published macroloop survives reload with revision 4 / wood 590 / gatheredWood 360. No paid credits were used.
+
+## Bastion I → II first complete city progression loop — CLOSED / PASS
+
+The first real city progression segment is now certified and published.
+
+Certified loop:
+**NEW GAME → Bastion I → rebuild Aserradero → recover resources in World Region 1 → clear route → ascend Bastion → visible Bastion II → build Cuartel → recruit → prepare March → Engendro → reward → save/reload**.
+
+Final gates are PASS across source/architecture, tech, initial state, construction, economy, progression, Bastion visual evolution, interaction, save/reload, idempotency, visual regression, mobile readability, payload sanity, City↔World and first macroloop.
+
+Evidence:
+- production run `37656607306`: SUCCESS
+- Unity gate `37656607356`: SUCCESS
+- publish run `37657298925`: SUCCESS
+- published probe `37660181336`: SUCCESS
+- probe artifact `11499884413`
+- public build: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/`
+- paid credits: 0
+
+Bastion III remains closed/not started. Current workstream registry is empty.
+
+## Mobile WebGL playable link — CLOSED / PASS
+
+The current Valoria production slice is now published and certified through the complete mobile WebGL loop.
+
+Certified published flow:
+**HOME → bounded horizontal pan → moderate vertical pan → Mundo → Region 1 gather/reward → Reino/Valoria → reload with state persistence retained**.
+
+Evidence:
+- Pages run `37642420392`: SUCCESS
+- published probe `37646186097`: SUCCESS
+- WebGL artifact `11493522998`
+- probe evidence artifact `11493999067`
+- persistence after reload retained revision 4, wood 590, gatheredWood 360
+- published probe reported `playablePass=true`
+- zero paid credits
+
+This closes `valoria-mobile-web-playtest-v1`. The published-link gate is no longer blocking World visual convergence or the next explicitly authorized gameplay progression block. Physical-device owner feedback remains higher authority if a real iPhone regression is later observed.
+
+## World Region 1 v1 — CLOSED / PASS
+
+Region 1 is closed on `main` at `255769573712e053790df3fdf369a9534d4fc7d1`.
+
+The first real 4X world loop is now certified: **Valoria city → Mundo → dedicated bounded 4X world screen → select resource/POI/threat → real march/interact/reward/persistence → Reino/Valoria → city state reflects result**.
+
+Final gates: TECH PASS, VISUAL PASS, WORLD/VALORIA CONTINUITY PASS, NAVIGATION PASS, INTERACTION PASS, GAMEPLAY LOOP PASS, SAVE/RELOAD PASS, BOUNDED CAMERA PASS, MOBILE READABILITY PASS, 4X ARCHITECTURE PASS.
+
+Final Unity run: `37549083306`. Final capture artifact: `eldoria-valoria-captures-255769573712e053790df3fdf369a9534d4fc7d1`.
+
+The accepted world is intentionally lower-density than Valoria but no longer reads as a generic/flat prototype. Future regions must preserve this strategic visual language and scalable region/sector/chunk architecture. Windows Unity runner released. Paid credits: 0.
+
+
+## World Region 1 v1 — canonical 4X design reconciled
+
+Legacy web + conceptual-world audit is complete and incorporated. Region 1 is not a bespoke exterior scene: it is the first bounded window into the future persistent shared 4X world. Canonical retained families: strategic player cities, resource nodes, hunt/PvE ladder, neutral/hostile POIs/Breach, visible marches and future alliance/territorial systems. `PlayerCity_v1.glb` is an existing reusable production asset. The minimum first slice remains intentionally small, but its architecture may not block region/sector/chunk scaling, randomized future player starts, node distribution/respawn, higher-level regions or streaming/culling. Old HTML/CSS/emoji and legacy Frontier visuals are functional/reference history only, not current art authority.
+
+## World Region 1 v1 — ACTIVE / dedicated 4X World screen
+
+- Canonical transition: **Valoria city → tap Mundo → separate bounded 4X World screen → tap Reino/select Valoria → Valoria city**.
+- Region 1 is **not** a continuous walkable exterior connected 1:1 to Valoria's gate.
+- Visual requirement: same Eldoria dark-medieval family and quality continuity, but at strategic-map scale; no requirement for city-density art across the full region.
+- World map minimum: recognizable Valoria landmark, roads, forest resource, old-watch ruin, corrupt scout, real marches/rewards/persistence.
+- Heavy Unity implementation remains deferred only while `valoria-mobile-web-playtest-v1` owns the Windows Unity runner.
+
+## 2026-10-06 — World Region 1 active
+
+`eldoria-world-region-1-v1` has begun from live main without reopening Valoria or visual R&D. Region 1 is defined as a scalable exterior region around certified Valoria, not a continent or detached abstract map. The first proof sector reuses the existing authoritative Unity world semantics (`forest-valoria`, `quarry-valoria`, `corrupt-scout`, march phases, one-time rewards and save/reload) and will replace only the old player-facing Frontier presentation.
+
+The region contract, bounded camera envelope, route/POI layout and test matrix are committed. Heavy Unity implementation/capture is intentionally not dispatched while `valoria-mobile-web-playtest-v1` owns the Windows Unity runner. Zero paid credits; no Valoria authority, SHARP line, parcels, GitHub Pages or mobile-WebGL resources changed by this block.
+
+## 2026-10-06 — VALORIA REAL GAME STATE v1 — LOCAL PLY VERIFIED / UNITY GATES PENDING
+
+Same active workstream `valoria-real-game-state-v1`; no new block or research.
+Implementation commit `b7fdd04039a133af791f255de1e3803d806647ba` integrates the verified
+local CPU terrain PLY through `pipeline/valoria-parcel-regions-v1.json` and one
+globally sorted SHARP scene. Local source run 37487411612 / artifact 11423748153
+produced a valid PLY in 136.706 seconds: SHA-256
+`d540d0fe80b766969bcfdb05129d8e7d15d567816a45f9ad02f4859f8b1e312e`.
+The workflow failed only after `LOCAL_SHARP_PLY_PASS` because Windows PowerShell
+read a null process exit code; the exact artifact was recovered and independently
+hashed. Do not repeat inference. Checkpoint SHA:
+`94211a75198c47f61fca7d739ba08a215418d8d398d48fddf023baccc24f073d`.
+
+Parcel-source generation and workflow governance PASS. Unity run **37488975868**
+is pending; actual capture, UI, save/reload, initial state and visual review must
+pass before closure. The manifest-driven generator verifies byte-identical
+out-of-mask working records and exact all-built working-source restoration.
+Look, reference, composition, camera, Gamma and authoritative gateway are retained.
+No final TECH/VISUAL PASS, runtime promotion or completed workstream is claimed.
+
+## 2026-10-06 — VALORIA REAL GAME STATE v1 — RESUMED / LOCAL SHARP INFERENCE
+
+Owner explicitly authorized moving the same official Apple SHARP model/checkpoint from
+public Space hosting to local CLI inference. Same workstream reclaimed; no new R&D,
+model, visual method, composition, Gamma or authority. Local source run **37485441326**
+uses the existing self-hosted Windows runner, pinned official source commit
+`aed6527499ef91cba3b54c18d49a870f25947190`, official `sharp_2572gikvuh.pt`, persistent
+checkpoint/dependency cache and fingerprint lineage. Setup passed; local prediction
+is in progress. Public ZeroGPU is an explicit fallback, not a production dependency.
+No source PLY PASS or final parcel PASS until actual outputs and Unity gates pass.
+Resume only `valoria-real-game-state-v1`; no expansion.
+
+## 2026-10-06 — VALORIA REAL GAME STATE v1 — BLOCKED / NOT COMPLETED
+
+Same workstream `valoria-real-game-state-v1`. Real gateway/store state capture
+demonstrated both parcel builds, chapter-I unlock progression, reload/idempotency
+and 81/81 bounded-camera rays (run 37479037112, artifact 11420563514). The integrated
+panel test failed, and direct visual review rejected blurry ground and multilayer
+sorting artifacts. No final PASS and no promotion.
+
+Empty-ground input transfer fixed in commit `7eda2d6228170901b651975b10ec87bb6b05eb58`.
+Latest SHARP run 37481997235 now passes fingerprints but is blocked by public
+ZeroGPU quota: 180s requested / 163s remaining, reset indicated around
+2026-10-07 01:22:47 UTC. Artifact 11422270605 has metadata/input only, no PLY.
+Original visual authority/Gamma/composition remain LOCKED.
+
+Resume this same unfinished block after free quota reset or authorized credential
+access. Preserve existing progression; use one combined renderer and manifest-driven
+parcel regions; validate real UI, save/reload and visual regression before closure.
+Draft correction is archived, unvalidated and unapplied.
+Details: `docs/VALORIA_REAL_GAME_STATE_V1.md` and
+`docs/evidence/valoria-real-game-state-v1/blocker.json`.
+No paid credits, no commercial assets, no new workstream or expansion.
+
+## 2026-10-06 — VALORIA VISUAL AUTHORITY RESET v1 — CORRECTION PASS / CLOSED
+
+The exact owner open-Valoria reference is canonical: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, SHA-256 `8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689`. The previous vertical source and its VISUAL PASS remain revoked as VISUAL_AUTHORITY_MISMATCH.
+
+Correct source run **37472982237**, artifact **11418315301**. Final integrated Unity run **37474695980**, artifact **11418118004**, capture commit `d912f89d0957aa5c49937736840070b1de6a753b`: **TECH PASS / VISUAL PASS / REFERENCE MATCH PASS / COMPOSITION PASS / INTERACTION PASS / BOUNDED CAMERA PASS** after direct HOME/pan review. Nine semantic anchors pass **45/45** raycasts over five camera states. Exact PLY camera: 1230×845, FOV 44.42281°, identity HOME, pan ±0.5, zoom FOV ×0.9/×1.1. Gamma-project sRGB conversion fixed. HOME MAE against exact source crop: 0.02237, corroborating direct review.
+
+SHARP owns all visible beauty. Seven approved GLBs remain editable, aligned real support geometry hidden in beauty, with separate diagnostic evidence. No visible mesh appearance replacement, mobile certification, free-camera certification or full-game release is claimed. Gates 1–5 infrastructure is retained; their old source-specific visual claims do not authorize the vertical source. No new production block, generator, purchase or credit spend. Canonical result: `docs/VALORIA_VISUAL_AUTHORITY_RESET_V1.md` and `docs/evidence/valoria-visual-authority-reset-v1/review.json`. Workstream released; do not begin another block without owner instruction.
+
+## 2026-10-06 — VISUAL AUTHORITY RESET — PREVIOUS VISUAL PASS REVOKED
+
+Owner-attached open Valoria is the binding literal composition: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, SHA-256 `8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689`. The vertical monumental reference and SHARP source artifact 11408853949/HOME artifact 11409079879 are historical technical evidence only. First playable slice run 37470805228 retains TECH/INTERACTION evidence, but its VISUAL PASS is revoked as **VISUAL_AUTHORITY_MISMATCH / NOT PROMOTED**. Gates 1–5 infrastructure is retained; reference match, composition and camera must be revalidated from this correct source. No further Valoria production or parcel block is authorized before all six correction criteria pass. Workstream: `valoria-visual-authority-reset-v1`.
+
+## 2026-10-06 — SEMANTIC 2.5D CAMERA-FIRST — FINAL FAIL / REJECTED
+
+The Camera-First / Semantic 2.5D depth-shell experiment is closed. Final authoritative gate: `docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md`.
+
+Final evidence: source run **37434039330** / artifact **11397359251**; first Unity run **37434455097** / artifact **11397984610**; edge-zero source correction run **37434938898**; alpha-fixed Unity run **37435354553** / artifact **11398437953**; final renderer-suppression Unity run **37435725415** / artifact **11398459304**.
+
+Verdict: **TECH PASS / VISUAL FAIL / CAMERA ENVELOPE FAIL / OCCLUSION-DEPTH FAIL / FUNCTIONAL 3D COMPATIBILITY PASS WITH VISUAL CAVEAT / PRODUCTION SCALABILITY FAIL → REJECT — DOES NOT SOLVE THE PRODUCTION PROBLEM.**
+
+The rectangular plate defect was eliminated, proving the alpha path itself. The remaining structural failure is spatial integration: the projection remains detached from the functional city, and bounded pan exposes severe disocclusion/card seams. Final proof hid 393 legacy renderers visually while preserving collider/hotspot signature, yet the result still failed visually. Do not continue mask/inpainting/parallax micro-iterations of this method. Preserve all evidence as historical R&D. Do not start the BROKEN→REPAIRED transition because adoption prerequisite failed. Tripo/paid credits: 0.
+
+Broad Valoria production remains frozen until a genuinely different visual production method is explicitly selected.
+
+## 2026-10-06 — Golden Primary Forms professional reconstruction: VISUAL FAIL / METHOD BLOCKED
+The owner-authorized Golden-crop professional reconstruction was executed source-first in Blender, run **37381915933**, artifact **11376050764**. It passed technical authoring/export but failed visual promotion: Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0 (threshold all >=4.0). Unity was not run and remains unauthorized. The headless fully code-authored mesh method is now closed; do not iterate it cosmetically. Broad Valoria production, Props+Background, world map and new families remain frozen. Next viable source requires interactive/artist-led Blender mesh/sculpt authoring from official camera, or fresh owner authorization for a genuinely different external geometry source. Tripo credits remain 0.
+
+## VALORIA GOLDEN LOOKDEV SLICE v1 — ACTIVE (2026-10-05)
+Premium Hero Test Zone iterations 01–05 established TECH PASS but persistent PREMIUM VISUAL FAIL; broad-scene lighting/flat-color/contact-patch iteration is stopped. Project has pivoted to a single bounded Golden Lookdev Slice using the real Lower Gate/rock/ground/water/vegetation scene. Broad content production is blocked until the slice proves authored surface/material richness, lighting depth, contact integration, atmosphere and mobile readability at >=4/5. Canonical spec: `docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md`. Existing closed families remain preserved/reusable and are not automatically reopened. Tripo 0.
+
+
+## VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1 — PASS / CLOSED (2026-10-05)
+
+Controlled uplift from Structural Quality Bar Review is complete. Rock/Terrain Source09 remains the base authority; only 11 UpperTerraceCliff band-3 material assignments changed from rock_shadow to existing rock_base. No geometry/silhouette/camera/platform/composition/gameplay or other-family authoring changed. Source run 37331798714 / artifact 11354318939; authoritative cumulative AFTER run 37333453008 / artifact 11355212258 SUCCESS; focused gameplay PASS; visual 16:9/mobile/3:2 PASS. The continuous dark Bastion-contact seam no longer reads as a single technical separator and no bright replacement band was introduced. Tripo 0. Workstream released; do not open Cabin/Sawmill + Camp without explicit owner instruction.
+## 2026-10-05 — STRUCTURAL QUALITY BAR REVIEW v1 — CLOSED
+**STRUCTURAL QUALITY BAR PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS.** Current structural frame is Bastion Source08 cumulative Unity run 37328467482 / artifact 11352609605. Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls + Bastion Source08 were reviewed as a frame against canonical target and approved blockout; none was reopened. The structural nucleus is viable, clearly beyond greybox and safe for secondary production. One bounded C gap remains: Rock/Terrain upper Bastion shelf shows a continuous very-dark seam/cut; future minimum uplift is localized contact/material/geometry correction only with macro envelope and every other closed family locked. Cabin/Camp, vegetation, water/shore, props, background and lighting/presentation are B gaps expected to improve in secondary production. No D target/composition problem. Recommended next after owner authorization: controlled Terrain seam uplift → Cabin/Sawmill + Camp → Vegetation + Water/Shore → Props + Background → Lighting/presentation. Review closed; no next family opened; Tripo 0.
+
+## 2026-10-05 — BASTION FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- **Source08 is authoritative**. Source07 passed isolated ART SOURCE but failed the cumulative HERO QUALITY gate because its near-white hero masonry read as a detached high-value band; Source08 preserves Source07 geometry and corrects only exported material/value hierarchy.
+- Source08 source run **37327905027**, artifact **11353460819**; BLEND SHA `5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893`; GLB SHA `3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477`; **22,690 tris / 11,727 source vertices / 9 modules / 9 materials / 0 nonmanifold edges**; UV/normals/tangents PASS; **0 Tripo**.
+- Cumulative Unity run **37328467482**, job **111825737885**, artifact **11352609605** — SUCCESS; focused gameplay tests PASS. All seven official capture poses were produced and reviewed.
+- Integrated verdict: **ART SOURCE PASS / UNITY TECH PASS / MATCHED-CAMERA VISUAL PASS / HERO QUALITY BAR PASS / PRODUCTION FAMILY PASS**. Warm Source08 stone restores coherence with accepted Lower Gate/Walls while the dominant Keep, blue/gold heraldry, adjacent command arch, asymmetry, scaffold/damage and architectural depth remain readable at wide/mobile gameplay scale.
+- Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls remain closed and unchanged. Camera, canonical target, global composition, platform and gameplay remain locked. Workstream released; `pipeline/active-workstreams.json` is empty.
+- Canonical result: `docs/VALORIA_BASTION_FAMILY_V1.md`; integrated review: `docs/evidence/valoria-bastion-family-v1/source08-unity-review.json`. **Do not start another family/workstream without explicit owner instruction.**
+
+## 2026-10-05 — BASTION FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+Source08 is authoritative. Source07 passed isolated source review but failed cumulative HERO quality because its near-white material hierarchy washed the Bastion into a high-value band. Source08 preserves Source07 geometry and all nine locked envelopes, changes only exported material/value hierarchy, and fixes the integration defect. Source run **37327905027** / artifact **11353460819**; BLEND SHA `5c7b7e09...`; GLB SHA `3a731789...`; 22,690 tris / 11,727 source verts / 9 modules / 9 materials / 0 nonmanifold. Cumulative Unity run **37328467482** / artifact **11352609605** is SUCCESS; focused gameplay tests PASS; 7 official poses captured; direct 16:9/mobile review is **MATCHED-CAMERA VISUAL PASS / HERO QUALITY BAR PASS**. Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls remain unchanged. Camera, target, composition, platform and gameplay remain locked. Tripo credits: 0. Result: **PRODUCTION FAMILY PASS / CLOSED**. No next family opened.
+
+## 2026-10-05 — WALL FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source03 is authoritative. Planner run **37312260323** / artifact **11345898190**; source run **37315121461** / artifact **11348240013**; cumulative Unity run **37315821080** / artifact **11347388530**.
+- Source01 was rejected for generic rectangular-kit / brick-course read. Source02 improved authored defense but failed exact envelope by ~0.196 m. Source03 preserves the improved design and restores every vertex inside its owning approved Wall envelope.
+- Source03 SHA: BLEND `0ac5ef48...`, GLB `22495d62...`; **9,368 tris / 6 modules / 5 materials**, UV/normals/tangents PASS, 0 nonmanifold edges, 0 Tripo.
+- Unity import: **9,368 tris / 26,870 imported vertices / 6 renderers / 5 materials / 2 textures / 30 submesh draws**, colliders 0; focused PlayMode **5/5 PASS**.
+- All seven official cameras pass; protected Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 remain at **0 px displacement**. Wall retains ~99.83% blockout width / ~97.93% height; max Wall center drift ~1.60 px.
+- Direct review: **MATCHED-CAMERA VISUAL PASS / REAL QUALITY BAR PASS**. Authored warm-stone partial perimeter improves defensive reading while preserving **Bastion > Lower Gate > Walls** hierarchy and the locked composition.
+- Camera, target, global composition, platform, Bastion and gameplay are unchanged. Requests parked; workstream released. **Do not start Bastion or another family without explicit owner instruction.**
+- Canonical result: `docs/VALORIA_WALL_FAMILY_V1.md` and `docs/evidence/valoria-wall-family-v1/`.
+
+## 2026-10-05 — ROCK / TERRAIN FAMILY v1 — SOURCE09 PRODUCTION FAMILY PASS / CLOSED
+- **Source09 is authoritative. Source08 is superseded**: Source08 proved the structural geometry but later strict integrated review identified pale/high-contrast washout; Source09 changes materials only and fixes that defect.
+- Source09: run **37310029846**, artifact **11345358292**, BLEND SHA `309a4cab...`, GLB SHA `e842a7c6...`; **1,909 tris / 5 modules / 7 materials**; geometry/interfaces/3-7-11 anchors unchanged; 0 Tripo.
+- Cumulative Unity: run **37310582556**, job **111764702509**, runner **DESKTOP-R10PE55**, artifact **11345546113** — SUCCESS.
+- All 7 official cameras PASS; **63 protected non-terrain elements/view at 0 px delta**; macro Rock/Terrain envelope remains effectively identical to approved blockout (<0.00002% width/height deviation; <0.0001 px center drift).
+- Material hierarchy PASS: darker/warmer rock, compressed facet contrast, quieter earth; civic paving and accepted architecture regain hierarchy while structural depth remains.
+- Unity import **1,909 tris / 5,298 verts / 5 renderers / 7 materials / 17 submesh draws**; UV/normals/tangents PASS; colliders 0; production scene not opened/saved; focused PlayMode **5/5 PASS**.
+- TARGET vs BLOCKOUT vs STRUCTURAL FRAME: **REAL QUALITY JUMP PASS**. Continuous authored geology replaces technical slab/shoulder-proxy reading without composition change.
+- Camera, target, composition, Bastion, Walls, BackgroundTerrain, BridgeSupport, Lower Gate, Bridge, Road, Stair and gameplay unchanged.
+- **No Walls, Bastion or next family started.**
+
+## 2026-10-05 — ROCK / TERRAIN FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source08 is authoritative **ART SOURCE PASS** after strict rejection of Source01–07 for banding/procedural/pillar/shoulder-proxy reads.
+- Source08: run **37308344056**, artifact **11344638101**, BLEND SHA `559c3247...`, GLB SHA `f9e66881...`; **1,909 tris / 5 modules / 7 materials**; UV/normals/tangents PASS; 0 Tripo.
+- Unity cumulative gate retained accepted Lower Gate + Bridge + Road + Stair identically and changed only Rock/Terrain: run **37309039558**, job **111759642435**, runner **DESKTOP-R10PE55**, artifact **11344907445** — SUCCESS.
+- Matched-camera: all 7 official views PASS; **63 protected non-terrain elements/view at 0 px delta**; Rock/Terrain macro envelope remains effectively 100% of approved blockout width/height with <0.0001 px center drift.
+- Source08 absorbs `CliffShoulder_0..6` into one continuous geological mass instead of reproducing greybox shoulder proxies.
+- Direct visual quality bar: **PASS / REAL QUALITY JUMP**. Plateau and upper rise now read as authored faceted rock + earth rather than flat greybox support geometry while composition is unchanged.
+- Unity import: **1,909 tris / 5,298 verts / 5 renderers / 7 materials / 17 submesh draws**, no texture payload, UV/normals/tangents present; colliders 0; focused PlayMode **5/5 PASS**.
+- TARGET vs BLOCKOUT vs STRUCTURAL comparison: target gap is materially reduced; remaining non-final areas are Walls/Bastion/Cabin/Camp/Vegetation/Props/Water-Shore/Background and remain intentionally untouched.
+- Camera, target, composition, Bastion, Walls, BackgroundTerrain, Lower Gate, Bridge, Road, Stair and gameplay unchanged. Result: **PRODUCTION FAMILY PASS**.
+- **No Walls, Bastion or next family started.**
+
+## 2026-10-05 — STAIR FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Planner: run **37301748302**, artifact **11341384021** — SUCCESS.
+- Source01: **ART SOURCE PASS**, run **37301752932**, artifact **11340838935**, BLEND SHA `84b1e5f4...`, GLB SHA `442fe2d2...`; **1,360 tris / 3 modules / 2 materials**; 0 Tripo.
+- Unity cumulative gate retained accepted Lower Gate + Bridge + Road identically in BEFORE/AFTER and replaced Stair only: run **37302198301**, job **111737317212**, runner **DESKTOP-R10PE55**, artifact **11340779541** — SUCCESS.
+- Matched-camera: all 7 official views TECH PASS; **72 protected elements/view at 0 px delta**; Stair union ~**99.787% width / 99.699% height** versus approved blockout; max center delta **0.0575 px**.
+- Direct visual gate: **VISUAL PASS**. Broad civic-stone treads and masonry cheeks replace the greybox while preserving the exact 4-unit rise and clean Road→Stair→UpperRoad/Bastion continuity.
+- Mobile landscape + portrait views PASS. Unity import: **1,360 tris / 3,756 verts / 3 renderers / 2 materials / 4 textures / 3 submesh draws**; UV/normals/tangents present; colliders 0; focused PlayMode **5/5 PASS**.
+- Camera, target, composition, platform, Bastion, Terrain, Walls, Ground, Lower Gate, Bridge, Road and gameplay unchanged. Result: **PRODUCTION FAMILY PASS**.
+- **No Terrain, Walls, Bastion or next family started.**
+
+## 2026-10-05 — Road Family v1: PRODUCTION FAMILY PASS / CLOSED
+Road is the third family closed under the Valoria reset production pipeline after Lower Gate and Bridge. Source03 passed ART SOURCE after source01/source02 were stopped at visible Road-internal surface/continuity defects. Cumulative Unity run **37300556571** / artifact **11341876912** retained accepted Lower Gate + Bridge identically and replaced only ForegroundRoad, GateThreshold, MainRoad and UpperRoad. All seven official cameras pass: 82 protected elements/view remain at 0 px delta and Road screen occupancy matches the approved blockout within ~0.01%. Direct matched-camera review is VISUAL PASS in 3:2, 16:9, mobile landscape and portrait. Unity import is 1,944 tris / 5,556 verts / 4 renderers / 3 materials / 4 textures, UV/normals/tangents present, colliders 0; PlayMode 5/5 PASS. Camera, target, global composition, platform, Bastion, Stair, Terrain, Walls, Lower Gate, Bridge and gameplay remain locked. Tripo credits: 0. No next family opened.
+
+## 2026-10-05 — Bridge Family v1: PRODUCTION FAMILY PASS / CLOSED
+Bridge is the second representative family to complete the new Valoria production pipeline end-to-end. Source03 passed ART SOURCE after source01/source02 correctly stopped at visible defects. Cumulative Unity integration run **37298002864** / artifact **11339213616** retained accepted Lower Gate identically in BEFORE/AFTER and replaced only the four Bridge placeholders. All seven official cameras pass technical alignment; 82 protected elements/view remain at 0 px projection delta. Direct matched-camera review passes the target silhouette, metric paving, parapets, masonry support and foreground→Lower Gate connection in landscape and portrait-entry. Unity import: 2,592 tris, 7,076 verts, 4 renderers, 3 materials, 6 textures, 8 submesh draws; UV/normals/tangents present; 0 colliders; focused PlayMode 5/5 PASS. Camera/composition/platform/Bastion/Road/Terrain/Lower Gate/gameplay remain unchanged. Tripo credits: 0. Source and Unity requests are parked. No next family started. See `docs/VALORIA_BRIDGE_FAMILY_V1.md` and `docs/evidence/valoria-bridge-family-v1/integrated-visual-review.json`.
+
+## 2026-10-05 — Bridge Family v1: PRODUCTION FAMILY PASS / CLOSED
+Bridge is now the second production family closed under the reset pipeline after Lower Gate. Source03 passed ART SOURCE after two deliberate source-gate corrections, then Unity run 37298002864 / artifact 11339213616 retained accepted Lower Gate identically and replaced only Bridge. All seven official matched cameras pass; 82 protected projected elements remain unchanged at 0 px, gameplay tests are 5/5 PASS, colliders remain 0, and direct integrated review is VISUAL PASS. Unity imported 2,592 tris, 7,076 vertices, 4 renderers, 3 materials and 6 textures with UV/normals/tangents present. Zero Tripo credits. Camera, composition, platform, Bastion, Road, Terrain, Lower Gate and gameplay remain locked. No next family has been opened.
+
+## 2026-10-05 — Lower Gate Family v1: PRODUCTION FAMILY PASS / CLOSED
+Representative Lower Gate production proof is now formally closed. Source ART SOURCE PASS (run 37281447235 / artifact 11332112538) was followed by successful Unity integration (run 37282357911 / artifact 11337479259 on DESKTOP-R10PE55), 5/5 focused PlayMode tests, zero collider/gameplay/camera/composition regression and direct matched-camera VISUAL PASS. All 84 non-Lower-Gate projected elements are unchanged at 0 px in every official view. Unity imported 15,830 tris, 42,112 verts, 6 renderers, 4 materials, 5 textures and 14 submesh draws with UV/normals/tangents present. Zero Tripo credits. The next recommended family is Bridge, but it is explicitly held for owner review. See `docs/VALORIA_LOWER_GATE_FAMILY_V1.md` and `docs/evidence/valoria-lower-gate-family-v1/integrated-visual-review.json`.
+
+## 2026-10-05 — VALORIA ART PRODUCTION RESET v1 — PREPRODUCTION PASS / OWNER REVIEW PENDING
+- New unchanged owner target: `docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg` (1536×1024 JPEG, SHA 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689).
+- New methodological workstream; no restart/deletion of Eldoria. Earlier artistic constraints are superseded for isolated preproduction, not gameplay.
+- Full-scene greybox: 85 meshes / 1115 triangles; JSON+OBJ and editor-only reconstruction. Orthographic pitch35/yaw20/size24; landscape16:9 and portrait HOME/left/right/entry.
+- Unity 6000.3.23f1 run 37275659322 SUCCESS, artifact 11329019907; capture main 73d0bfee2692faa3c9590b65486057080031ba9a. Five focused gameplay tests PASS.
+- Eight landmarks fit documented macro tolerances; CPU/Unity renderable bounds agree within0.02px. 14 asset families; 83 actual legacy files classified; zero geometry approved as-is/imported.
+- 0 Tripo credits; 0 final assets; 1000 original protected files unchanged by Git blob comparison; no original file deleted; production scene/runtime untouched.
+- Read `docs/VALORIA_ART_PRODUCTION_RESET_V1.md` and `session-result.json`. Next: owner's personal blockout approval, then one Lower Gate pipeline proof. Do not begin final art or resume old workstreams automatically.
+- Device performance, actual HUD/taps and final-art fidelity are later gates. Pages has a pre-existing workflow failure; no WebGL publication performed.
+
+## 2026-10-04 — Bastion-to-City Blender Authoring v1 closed at ART SOURCE
+The locked Bastion-to-city 2D design was translated into one reproducible BLENDER_PROFESSIONAL_V1 source and passed technical generation/export, but isolated clay/lit/matched-camera evidence still reads as large technical retaining masses rather than premium final capital architecture. ART SOURCE hard questions 1/3/4/7 fail, so Unity integration was correctly blocked and canonical runtime remains the promoted Lower-City state. See `docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md`.
+
+## 2026-10-04 — Bastion-to-City frame target locked
+Valoria now has a canonical screen-space design target for the future Bastion-to-city architectural transition. The base is the promoted Lower-City 16:9 AFTER capture (run 37221732105 / artifact 11309549299). The design locks the replacement envelope, protected Hero Bastion/lower-city/stair regions, asymmetric west/east retaining masses, nested depth, receiving terrace, material/value hierarchy and stone-rock interlock requirements. No runtime or production geometry changed. Future Blender work must construct this target rather than improvise a new shape. See `docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md`.
+
+## Valoria Bastion-to-City Architectural Frame v1 — closed 2026-10-04
+- **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / NOT PROMOTED**.
+- Canonical reference reviewed directly: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37225548192**; successful isolated Blender source run **37226253119**, artifact **11312172507**; source commit `649e9401bdaa0404aada894b42754983d72c59ed`.
+- One complete asymmetric frame was authored and reviewed as clay, lit 3/4 and game-camera proxy. Repetition is controlled and real recesses exist, but the dominant read remains blockout-like: large planar slabs, shallow trim/arch articulation, weak stone-rock transitions and insufficient layered depth versus the approved reference.
+- Source-first stop-gate correctly prevented Unity integration. No HOME/PAN/16:9 AFTER gate, production hook, runtime/gameplay/camera/parcel changes or promotion occurred. Tripo/paid credits: **0**.
+- Disabled Unity candidate/gate/workflow were removed after rejection; the promoted Lower-City state remains canonical.
+- Anti-loop closes this method. Do not create v2/v3 or micro-adjust this source. A future revisit must start from a locked high-fidelity played-frame 2D architectural design and change to genuinely freeform/source-rich DCC construction before another ART SOURCE gate.
+- Result: `docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md`.
+
+## Valoria Structural Frame / Urban Support Integration v1 — closed 2026-10-04
+- **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Direct comparison completed against the restored high-resolution canonical reference `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37223687136**; Blender source run **37223931751**, artifact **11310713075**; authoritative Unity A/B **37224171472**, artifact **11311297059**.
+- Zero-credit Blender authored three structural sources and Unity tested exactly four placements: twin civic retaining bays, lower arcaded front and Cuartel terrace support. 84 targeted support renderers were suppressed.
+- Gameplay signature, lower-city promoted groups, Hero Bastion, Granero, Cuartel, mobile HOME/panning/recenter and 16:9 remain preserved.
+- The A/B change is obvious and the new geometry reads more architecturally, but the main stair-flanking grey pillars still dominate and the very light new structural masses do not integrate materially with Bastion/city stone. HOME therefore still reads as a production scene rather than the requested final-game capital.
+- Candidate is disabled and not hooked to production; canonical runtime is unchanged from the promoted Lower-City state.
+- Anti-loop closes incremental support iteration. Next process must be **reference → deliberate complete structural-frame screen design → explicit authored 3D shape/material system → Unity comparison**, not STRUCTURAL FRAME v2/v3.
+- Result: `docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md`.
+
+## Valoria Lower-City Urban Massing Reauthoring v1 — promoted 2026-10-04
+- **TECH PASS / VISUAL PASS / PROMOTED**.
+- Direct canonical reference review completed against `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37221347279**; authoritative A/B **37221732105**, artifact **11309549299**; confirmation **37222027889**, artifact **11309364965**.
+- The old repeated band was caused by overlapping visual systems, not a lack of houses. Six reused civil houses plus Mid-Tier and Full Frame presentation layers were visually redundant.
+- Runtime now promotes three authored groups: west craft court, east merchant front, upper terrace houses. 18 pieces; 27 renderers and 10 lights from redundant presentation suppressed.
+- Gameplay/collider/hotspot signature, promoted camera policy, Hero Bastion, Granero, Cuartel, Flat Citadel, routes/parcels/reserves and Final Look preserved. Credits **0**.
+- Lower city now reads materially more as separated hierarchical urban groups and less as a prefab strip; direct reference convergence improves in massing, breathing and hierarchy while Valoria stays less dense.
+- Next priority: **VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1**. Remaining large gray supports are now the strongest screen-level prototype cue. Do not reopen house spacing/density.
+- Result: `docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md`.
+## Valoria Secondary / Support Form Replacement v1 — closed 2026-10-04
+- **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Planner: **37219017523 SUCCESS**. Authoritative final A/B: **37219568955 SUCCESS**, artifact **11309203816**.
+- A first MasonryWall + SlavicHouse technique passed technically in run **37219171093** / artifact **11310056089** but visually failed and was discarded.
+- Final technique: certified StoneArchitectureKit_v1 large supports + rescued ResidentialTerraceRock + subtractive west-housing articulation. Gameplay/camera/Hero/defense/Granero/Cuartel/Final Look preserved; credits **0**.
+- Support coherence improves locally, but the dominant lower-city roof/frontage band still reads compressed/repetitive and frame-level change is insufficient for promotion. Candidate remains disabled; runtime unchanged.
+- Repo currently documents an approved reference path whose image binary is absent; restore it before claiming direct reference-image scoring.
+- Next: **VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1**. Treat the visible frontage as 2–3 authored groups, not more house duplication. Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md`.
+## Valoria Visible Frame Cohesion v1 — closed 2026-10-04
+- Verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Authoritative matched A/B: run **37216176561 SUCCESS**, artifact **11309016498**; later identical technical confirmation run **37216912861 SUCCESS**, artifact **11308563246**.
+- Candidate improved some local ground/building contact and removed 4 visible planning proxies, but HOME/Granero/intermediate changed too little and Cuartel/16:9 still exposed broad platform-like/support forms.
+- The first long-road technique was visually rejected; the final irregular-ground technique passed gameplay/camera gates but remained below Visual Bible promotion threshold.
+- Candidate remains disabled; its production hook is removed. Canonical runtime is unchanged.
+- Camera/mobile navigation, Hero Bastion, defense, Granero/Cuartel, Final Look, routes/parcels/reserves and gameplay remain preserved. Credits: **0**.
+- Next visual priority: **VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1**, targeting the largest greybox-like retaining/support masses and architecture-terrain interfaces across HOME/PAN. Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md`.
+
+## Valoria mobile navigable city — promoted 2026-10-04
+- Portrait mobile is now an authored **HOME + bounded navigation** experience, not a whole-city fit.
+- Aspect <=0.72 uses HOME position (19.4,14.6,-28.6), target (1.2,3.35,2.8), orthographic size 12.2.
+- 16:9 remains on the existing canonical position/target and orthographic size 9.1.
+- Existing fixed-orientation pan, tap-vs-drag, pinch 9..19 and progression-aware bounds remain authoritative; HOME/recenter restores position + zoom.
+- Run **37213794236**, artifact **11307920631**: TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS.
+- Granero/Cuartel no longer need simultaneous portrait visibility. Do not move/compress them merely to make them fit together.
+- Camera investigation is complete for this blocker; the next priority is visible-frame art quality across the reachable pan envelope, especially terrain/edge transitions, secondary architecture, cohesion and lower-city richness.
+- Canonical result: `docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md`.
+
+## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
+
+## Valoria adaptive mobile home pose v1 — 2026-10-04
+**CLOSED: TECH PASS / M0 FAIL / M1 FAIL / M2 PARTIAL / NOT PROMOTED.** Run 37212276777, artifact 11307147019. M2 proves portrait-specific framing materially improves hierarchy while keeping Hero Bastion dominant, but the existing Granero/Cuartel screen-projected horizontal spread remains too wide: Cuartel reaches 100% visibility while Granero remains ~27%. No camera variant is promoted; runtime camera, panning and recenter behavior remain canonical/unchanged. No further mobile camera micro-variants or asset rebuilds. Next structural proof is a bounded functional-district anchor/parcel-presentation rebalance using the existing SOURCE VISUAL PASS pair and validating both 16:9 and portrait. Rollout remains HOLD.
+
+
+## Valoria screen-space breakpoint v1 — 2026-10-04
+**CLOSED: TECH PASS / A FAIL / B PARTIAL / C PARTIAL / NOT PROMOTED.** Run 37211095096, artifact 11307155373. Tighter orthographic framing materially improves 16:9 city scale and reduces the maquette-on-grass read, but portrait mobile is already dominated by crop pressure; tighter B/C worsen lower-city visibility and still do not make Granero/Cuartel simultaneously unmistakable. Orthographic/current global framing stays canonical pending an aspect-ratio-aware mobile home-pose/crop proof. Existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1 are retained; no further source variants. Production rollout remains HOLD.
+
+
+## Valoria paired functional Unity gate — 2026-10-04
+
+The strongest current Granero/Cuartel sources were paired in real Unity: run **37209941711**, artifact **11306341489**. Technical integrity passes, zoom9 improves, but portrait mobile still fails simultaneous independent Granero + Cuartel readability at canonical anchors. Both source assets are retained as SOURCE VISUAL PASS, runtime candidate is not promoted, and rollout remains HOLD. Further source/material/prop/micro-layout iteration is closed; the next move requires a structural composition or mobile-framing decision. See `docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md`.
+
+
+## Valoria camera-first functional source — 2026-10-04
+
+`VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1` is closed with a split source verdict: run **37208777268** / artifact **11305893049**. Cuartel passes isolated source review using a rich twin-tower guarded-court composition; Granero fails because visible procedural macro forms clash with the rich core. Unity was not run, credits remain 0, and no runtime promotion occurred. Next is Granero-only rich-geometry camera-first assembly, then a paired Unity gate only if it passes. See `docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md`.
+
+
+## Valoria functional screen readability — 2026-10-04
+
+`VALORIA FUNCTIONAL SCREEN READABILITY v1` is **CLOSED: TECH PASS / VISUAL PARTIAL / NOT PROMOTED**. Run **37208123181** / artifact **11305333489** preserved gameplay, camera, Final Look, defense, Hero Bastion and terrain with 0 credits. The one allowed layout/presentation hypothesis improved presence but did not make Granero and Cuartel simultaneously unmistakable at zoom9 + mobile. No further placement/material/prop pass is authorized; rollout remains HOLD and the next required method is camera-first functional source authoring. See `docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md`.
+
+
+**TECH PASS / SOURCE VISUAL PASS (BOTH) / UNITY VISUAL PARTIAL / NOT PROMOTED.** Isolated run **37206352843** / artifact **11305265539** proves substantially stronger dedicated Granero and military-compound Cuartel sources. Unity matched run **37206779989** / artifact **11305635813** preserves gameplay signature, orthographic camera, Final Look, defense and terrain, with focused gameplay tests PASS and 0 credits. However, at zoom9/mobile the two upgraded functions remain insufficiently distinct from the surrounding dense civil family to satisfy the required player-facing semantic jump. Upgraded sources are retained/certified at source level but runtime promotion remains disabled; rollout to Forja/Hospital/Cantera stays HOLD. Remaining gap is screen-space functional hierarchy/integration, not source geometry or pipeline capability. See `docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md`.
+
+## 2026-10-04 — Valoria First Production District v1 promoted to playable runtime
+
+**TECH PASS / VISUAL PARTIAL / BOUNDED PLAYABLE-RUNTIME PROMOTION.** Authoritative final run **37204193966 SUCCESS**, integrated artifact **11304401297**, source artifact **11304426130**. The first production district is now called by the normal playable `VisualWorld` path, with matched runtime BEFORE/AFTER proving the change rather than a gate-only overlay. Gameplay collider/hotspot signature is unchanged; focused gameplay tests PASS; paid/Tripo credits = **0**. Final runtime metrics: renderers **835 -> 852**, materials **75 -> 81**, triangles **1,847,720 -> 2,083,716**, lights unchanged at **31**. The new main gate/towers/walls are a clear local visual PASS and visibly transform the lower frame at zoom9/mobile. Granero/Cuartel are richer production replacements but remain VISUAL PARTIAL against Hero Bastion/reference because functional silhouette/semantic identity is still too weak. Therefore the Production Art System itself is validated by real player-facing change, but the current MidTier donor-composition recipe must not be propagated blindly to Forja/Hospital/Cantera. Use stronger source-level functional authorship for the next primary building. See `docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md`.
+
+## 2026-10-03 — Valoria Authored Gameplay Cell Art Direction v1 closed
+
+**TECH PASS / VISUAL FAIL / NOT PROMOTED.** Experimental branch closure `4ec9bd6902e8abacda1f011b45197770a9ee840a`; Unity runs `37153721252` and `37153946756` succeeded, artifact `11285112696` includes 19/12/9/mobile before/after real-HUD PNGs, 5/5 focused PlayMode tests. Rejected physically tiled plaza (visually flatter) and reversible construction staging (imperceptible; portrait exactly identical). No runtime promotion, new Blender/GLB asset, credit spend, gameplay/parcel change or owner build. VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530` remains best accepted visual. See `docs/VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESULT.md` and research. Next source-level Hero/secondary/wall language requires genuine semantic authoring and paired played-camera proof.
+
+## 2026-10-03 — Valoria Unified Visual Language Proof v1 closed
+
+The fixed Flat Citadel remains the only accepted composition. Limited whole-frame proof is **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Experimental closure `9565ca577eb920abcb76b2b09b69022686685a12` on `visual-proof/valoria-unified-visual-language-proof-v1`; attempted implementation `24ac0be70f9f5199686c1769303dfc5e510e1420` then `89ca7efc279b9c845aa746f1396755066d211320`; real Unity runs `37152534859` and `37152713806` SUCCESS, artifacts `11284955622` and `11284248212`, five focused PlayMode tests passed. Outer field/road strips were visibly technical; civic surface replacement was marginal/net-negative. No visual/runtime promotion, no paid credits, no published owner build, no gameplay/parcel changes. VQB visual `7a564bc5056bb7166b7704c313ae4db7d55d4530` remains the stronger accepted experimental presentation. Runtime city home orthographic 9.1 already occupies most width; strategic 19 is not gameplay home. The missing capability is a shared source-rich authored art direction across Hero, secondary architecture, defensive edge and occupied world, not a larger city. Next recommended block is `VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1`, not yet opened. Full result/research/screenshots are on the proof branch. Older mountain/terrain directives below are historical and do not reopen this locked layout.
+
+## 2026-10-03 — Authored Secondary Art Family proof
+
+Valoria's first source-authored secondary-family proof is closed **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Blender can now non-destructively split the canonical Aserradero into semantic material regions at unchanged **49,800-triangle** geometry, generate a deterministic shared Stone/Timber/Slate material set, and re-author canonical wall/gate support sources without paid generation. Integrated run **37151178579** / artifact **11283369532** preserved gameplay signature, Flat Citadel macrocomposition, F1 and gate circulation, but none of the tested families delivered a clear 19/12/9/mobile benchmark jump. Full rebuild lost detail; source-atlas v2 remained over-saturated/banded. No Cuartel/Granero rollout and no production promotion. The next Valoria visual step is an art-direction boundary, not another isolated asset/material micro-pass. See `docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md` on the proof branch.
+
+## 2026-10-03 — Current Valoria visual state
+
+Flat Citadel remains locked: elevated Hero Bastion, mainly flat city, outer wall, functional plots and protected growth; older mountain-based visual priorities below are historical. **VALORIA ASSET COHERENCE & GAME PRESENTATION v1 is closed TECH PASS / VISUAL FAIL**, experimental branch `visual-proof/valoria-asset-coherence-game-presentation-v1`, captured implementation `1071454bd1bd27ec1f5a0c754805d61a7a77e829`, evidence closure `df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac`, run **37143754581 SUCCESS**, artifact **11281586517**. Materials, contained edge, activity and real HUD improved; five focused tests passed, gameplay signature/parcel map preserved, credits=0. Fused rock, generic wall/source-family gaps remain. No runtime code promotion or new public player publication occurred. Mobile-resolution capture is not phone-performance evidence. Next recommended source-material/Bastion-interface authoring block is not opened. See the newest SESSION_HANDOFF entry and branch result/research/scalability documents.
+
+## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
+
+- Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
+- Final certified run: `36983913307`.
+- Artifact: `11216454398`.
+- Toolchain: `environment_composition`; `geometry_gap_proven=false`; `allow_tripo=false`; 0 credits.
+- Urban width: **37.650 -> 18.008**.
+- Gameplay collider/hotspot signature: unchanged.
+- Direction locked: Valoria is a compact, vertical fortress-city nucleus with visible room to grow; do not resume lateral residential expansion.
+- Full result: `docs/VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RESULT.md`.
+
+## Toolchain Automation v2 — 2026-10-01
+
+Canonical toolchain routing and zero-spend capability evidence live in `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md` and `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`. Planner request: `pipeline/art-production-request.json`; capability registry: `pipeline/toolchain-capabilities.json`; workflow: `.github/workflows/art-production-plan.yml`.
+
+Validated: Blender LOD generation; Blender high→low normal bake technical stage; Unity isolated import/gate for baked low assets; static availability of URP/Shader Graph/Terrain/Decal/MPB/probes/LOD/instancing/Volume; read-only Tripo Studio advanced-UI probe. Final proof run `36859609770`, 0 Tripo credits. Advanced Tripo transforms are still not execution-certified.
+
+## Canonical Valoria environment-art direction — 2026-10-01
+
+Read `docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md` before future Valoria visual work. Current direction is environment-art-system first, not isolated-model first: composition, modular assemblies, terrain/rock integration, coherent shared materials, blending/decals, lighting/atmosphere, secondary detail, then optimization. Existing modules must be tested as a construction vocabulary before new geometry is generated. Tripo is reserved for proven missing geometry and always requires fresh explicit credit authorization. Validate only in real 19/12/9/mobile frames; preserve gameplay topology/hotspots/colliders/circulation.
+
+## Valoria Hero Frame v1 — 2026-09-30
+- Whole-frame production art pass is integrated in real Valoria. The pass prioritizes composition, depth and hierarchy over isolated prefab replacement.
+- Visual changes: rebuilt authored-stone Bastion hero shell, valley heightfield, denser inhabited middle distance, ridge vegetation, restrained warm work lights and stronger Bastion focal hierarchy.
+- Existing certified/project assets only; **0 Tripo credits, 0 purchases** in this block.
+- Gameplay contract is preserved: visual layer owns no authoritative route/floor/hotspot topology; camera-matched evidence retains the collider/hotspot signature.
+- Final code checkpoint: **50b6bf732b1f7397376ddd891397f8b70b3e4344**.
+- Final validation: Valoria Visual Formula **36760390349 SUCCESS** / artifact **11118336388**; World Map Visual Formula **36760390465 SUCCESS**; Unity slice **36760390348 SUCCESS** including EditMode, PlayMode, Windows build and Valoria benchmark.
+- Result is a meaningful visual step change and establishes the preferred next production method: improve the full strategic frame. Remaining benchmark gap is primarily horizon/sky atmosphere, residential coherence and replacement of remaining lower-city placeholder families, not missing pipeline capability.
+
+## Terrain & Terrace Kit v1 citywide production reuse — 2026-09-30
+- Only certified source modules 01 SteppedRockTerrace and 07 BroadRockPlatform are used; groups 02–06 remain rejected.
+- Production Valoria uses **7 visual-only, top-aligned buried-support instances** distributed across suitable existing terrace/court edges; the original two-instance West Rebuilders pilot remains rejected.
+- The modules own no gameplay collision, routes, stairs, floors or hotspots. Same-scene gate reports unchanged collider/hotspot signature and no gameplay-topology change.
+- Final production code: **22ce25789322cef749c1f53e4e67cb1d2149e6f2**.
+- Validation: Valoria Visual Formula **36749796853 SUCCESS**, World Map **36749796941 SUCCESS**, Unity slice **36749796925 SUCCESS** (EditMode, PlayMode, Windows build, benchmark).
+- No additional Tripo credits were spent for this reuse pass. Canonical evidence: docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md.
+
+## Stone Architecture Kit v1 selective production result — 2026-09-30
+- The generated eight-piece sheet remains an overall **VISUAL KIT FAIL** despite technical PASS; it is not an eight-family production kit.
+- Exactly one strict visual PASS was promoted: **RockToWallTransition** at `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`.
+- Certified promoted identity: **12,414,676 bytes / SHA-256 116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0**. Selective promotion run **36707553542 SUCCESS**, artifact **11092856576**; source per-piece gate **36705459251 SUCCESS**, artifact **11091584269**.
+- Promotion commit `f5b9f9ecdd426a17166d7051500f3c8b6e43193a` adds only the GLB. Valoria.unity, VisualWorld, gameplay, hotspots and certified circulation/topology are unchanged.
+- Pieces 01/05/06 require cleanup before any promotion; pieces 03/04/07/08 remain rejected. Total Tripo spend for the generation is **55 credits once**.
+
+# Eldoria — PROJECT STATE
+## Valoria World Frame v1 — production visual frame promoted — 2026-10-02
+- The compact Valoria city is now framed by `ValoriaWorldFrameMountainTerrainV1`, a continuous visual-only mountain/valley mesh promoted into runtime presentation.
+- The frame owns no gameplay colliders, hotspots, routes or progression state and used **0 Tripo credits**.
+- Rejected alternatives are not production direction: legacy twin gates/towers, green hill/cliff wedges, floating PBR platforms, synthetic cliff curtains and pass-owned low-poly pine walls.
+- Production validation is green: World Frame run **37042030550**, World Map Visual Formula **37042030657**, Unity slice **37042030543**, and final Valoria Visual Formula **37043234440**.
+- The earlier Visual Formula failure was a clean-runner staging defect, now fixed by deterministic proof dependency staging.
+- Canonical closeout: `docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md`.
+
+## Stone Architecture Kit v1 final gate — 2026-09-30
+- Exact approved PNG was generated once in Tripo at the owner-authorized **55-credit** cost; exported GLB identity: **74,616,872 bytes / SHA-256 da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422**.
+- Canonical multipiece gate **36704168246 SUCCESS / artifact 11091836294** and per-piece visual gate **36705459251 SUCCESS / artifact 11091584269**.
+- Technical pipeline PASS: **1,951,506 raw triangles -> 49,800 optimized**; Unity extracted **8 groups / 49,792 triangles** with mesh/material/collider/UV0/normals present.
+- Production visual acceptance **FAIL**. No piece is certified for production as-is because dedicated front/oblique/rear/side evidence exposes detached residuals, protrusions/spikes or incorrect grouping. Piece 02 is the strongest cleanup candidate; pieces 01 and 05 are secondary cleanup candidates.
+- **No StoneArchitecture production promotion was performed.** Valoria.unity, VisualWorld, gameplay, hotspots and certified circulation/topology remain unchanged.
+- Canonical closeout: `docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md`. Reuse of this GLB requires a separate zero-credit cleanup/salvage gate; a new Tripo generation would require fresh owner authorization.
+
+## Valoria Granero BIII dedicated production asset — 2026-09-29
+- Bastion III now has a dedicated visual Granero in the west food/survival growth plot.
+- The certified production asset is `Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb`; runtime presentation uses the dedicated GLB only from Bastion III onward.
+- The visual mesh owns no gameplay collider/hotspot and replaces only a non-authoritative placeholder house, preserving the certified route/camera topology.
+- Canonical optimized geometry is **49,800 triangles** with UVs, normals and authored PBR texture channels preserved.
+- Isolated gate: run **36572780639 SUCCESS**, artifact **11036129405**, TECH PASS / VISUAL PASS.
+- Integrated Valoria evidence: Visual Formula run **36581806788 SUCCESS**, artifact **11040631044**, with dedicated Granero zoom 12 / 9 / mobile captures.
+
+Updated: 2026-09-29
+
+This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
+
+## Valoria west rebuilders quarter v1 — 2026-09-29
+- The west Master Envelope reserve now contains a bounded real production extension: staggered rebuilders housing, work courts, a connected stone/cobble route, upper-shelf dwellings and visual-only RockTerrainSeamFiller geology.
+- The expansion is integrated directly in `VisualWorld` and does not move certified gameplay topology, hotspots, the 12-step route, camera family or Master Envelope reservations.
+- Bastion Hero Pass removed the remaining detached/floating crown read; the skyline now uses grounded fortress crowns and the authored rear lantern tower.
+- Visual Formula run **36546445386** and LookDev run **36546445341** are green on art commit `d84b31811fe044dbc3901f3ecd6edde13a635cc6`.
+- Measured production complexity is now **567,460 triangles / 644 active renderers / 80 unique materials / 15 lights**. This is an editor production baseline, not a mobile limit.
+- Unity slice run **36546445337** completed EditMode, PlayMode, Windows build and Valoria benchmark successfully in its first attempt before the workflow was later superseded/cancelled by concurrent newer `main` work; no product test failure caused the cancellation.
+- Mobile quality must not be reduced before a representative physical-device profile identifies a measured bottleneck.
+- Record: `docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md`.
+
+## Valoria first production district v1 — 2026-09-29
+- `VALORIA_VISUAL_FORMULA_v1` is validated and frozen as the production visual baseline.
+- Real `VisualWorld` now uses dedicated Aserradero + Cuartel together with promoted rescued `ResidentialTerraceRock` and `RockTerrainSeamFiller` visual assets under the certified playable topology.
+- Rescued visual meshes do not own gameplay circulation, colliders or hotspots; the independent 12-step route remains authoritative.
+- `TerraceStairRock` is recovered/Surface-v1-ready but intentionally not used in this district after a real composition test showed it was redundant/occluded with the certified vertical route.
+- Production validation is green: Visual Formula run **36541695034**, district evidence run **36543056731**, full Unity slice **36541695042**, LookDev recheck **36541695060**.
+- District official evidence exists at zoom **19 / 12 / 9**. Measured scene complexity is **460,236 triangles**; device performance thresholds remain unset until representative mobile profiling.
+- Historical rescue and district integration used **0 additional Tripo credits**.
+- Record: `docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md`.
+
+
+## Valoria AP2 dedicated architecture + production LookDev — 2026-09-29
+- Dedicated Aserradero and Cuartel geometry are integrated in the certified Playable District without moving frozen gameplay topology or hotspots.
+- Cuartel production asset passed exact-input Tripo generation, canonical Blender reduction to 49,800 tris, isolated Unity gate and production promotion; its visual mesh remains separate from the functional hotspot/collider contract.
+- Authored glTF PBR is preserved in Unity for both Aserradero and Cuartel.
+- The former washed/overbright baseline is superseded by the zero-credit `valoria-v1-candidate` environment profile; no geometry regeneration and no additional Tripo credits were used.
+- Validation is green: LookDev run **36529204672**, full Unity slice **36529204570**, Visual Formula production gate **36529730848**; Visual Formula artifact **11015563918**.
+- This closes the Aserradero/Cuartel material-lighting LookDev issue. It does **not** certify the entire Eldoria visual benchmark or the remaining hero-fragment gate of `VALORIA_VISUAL_FORMULA_v1`.
+
+## Valoria master envelope / mobile pan implementation — 2026-09-28
+- The long-term master-envelope graybox is implemented around the certified Playable District Skeleton kernel with west/east growth reservations, upper civic/government reservation, future-system space and authored terrain aprons.
+- Valoria camera interaction now supports fixed-orientation bounded pan, progression-aware bounds and recenter while keeping orthographic zoom 9..19.
+- Runtime tap-vs-drag separation prevents a pan release from triggering a building; Aserradero, Cuartel and Bastion remain real hotspots after camera translation.
+- Unity run **36432979557** on `c8135a8c162e7849d852472d67e2492cd8a88af4` passed preflight, EditMode, PlayMode, Windows build and expansion/mobile captures. Artifact: **10974741738**.
+- Structural/camera gate is green; final-art quality remains pending production dressing. See `docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md`.
+
+## Valoria long-term city scope — 2026-09-28
+- The certified **Valoria Playable District Skeleton v1** is the structural kernel of the city, not the full production footprint.
+- Valoria is now planned as one persistent city that expands beyond the current Bastion I–X prologue toward the present long-range planning target of roughly **Bastion 25–35** without rebuilding the original terrain/circulation core.
+- Long-term growth uses major visual eras plus lighter per-level feedback: ruins/repair, district occupation, building tiers, walls, roads, civic density, life/props and Bastion silhouette progression.
+- The city is intentionally larger than one normal mobile viewport. The camera direction is fixed authored isometric orientation + controlled zoom + **bounded panning**, with progression-aware bounds as districts unlock; free 360° orbit remains out of scope.
+- Production art must reserve maximum building envelopes and future districts before final dressing. Certified Tripo families remain reusable art/reference inventory but do not dictate topology.
+- Canonical planning sources: `docs/VALORIA_MASTER_PLAN_V1.md`, `docs/VALORIA_PROGRESSION_MAP_V1.md`, `docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md`.
+- Next implementation proof is a larger-than-one-viewport Unity graybox around the certified kernel with reserved west/east/upper/future districts, bounded mobile pan, tap-vs-drag validation, real hotspot selection after pan, zoom 9/12/19 and mobile-aspect edge captures. Broad final-art dressing waits for this gate.
+
+## Active product
+- A **separate Unity source line** is active in `Unity/` (Editor 6000.3.23f1). The first Valoria → frontera → bosque/scout → retorno → Aserradero slice is compiled, played and automated on Windows, including persistence and the 2452→2622 Power transition. The self-hosted runner `DESKTOP-R10PE55` now certifies EditMode, PlayMode and a Windows player build from GitHub. The Unity line has also begun Bastion II: ascent from Bastion I, timed Cuartel construction, +12 Archer T1 recruitment, a 48-archer Engendro gate, persistent/idempotent rewards and corresponding HUD/world presentation. Canonical certification for this block is green on commit `85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf`, with artifact `eldoria-unity-checks-85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf` (~37 MB). Mobile/device validation and full Bastion I–X parity are still pending. `UNITY_CORE_CONTRACT.md` records the deliberate Power/March decisions. Web v0.32.0 remains the playable canonical reference until Unity replacement is explicitly approved.
+- Runtime/API milestone: **v0.32.0**.
+- Development branch: `main`, the only active development line.
+- Canonical editable source: `v0220/index.html` + `v0220/js/`.
+- `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
+- Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
+- `playtest/` is generated deployment output, never editable source.
+- Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** in `tester-v0265/`; it is isolated research output and is never a development source.
+- Frozen tester integration commit: `df618e86be9da399bb827d5e6cebc3f13e55ff97` (current re-frozen snapshot after the final-survey contrast hotfix).
+- Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
+- Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
+- Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.32.0 — Hospital, wounded troops and March reconciliation
+- Bastion X now introduces a real Hospital loop after the Herald battle: PvE can create wounded troops, while permanent PvE deaths remain explicitly **0**.
+- Wounded troops remain owned by Valoria but are removed from the available military roster until treatment completes; Troops and March explain this distinction directly.
+- Hospital treatment is a canonical timed task, persists across reload/offline time, and restores recovered troops to the available roster when complete.
+- March composition is reconciled against the actually available roster only when military state changes, preventing wounded troops from leaking back into expeditions without destabilizing unrelated UI renders.
+- The Hospital is first revealed through the Bastion X Herald flow and the chapter/finale path requires recovery before the final assault.
+- Future multiplayer semantics stay separated from the current slice: solo March exposes an operation-contribution contract, PvP casualty policy is reserved, and no fake rally/join UI is introduced.
+- Old saves migrate medical state safely without altering existing resources, progression or owned troops.
+- Dedicated regression: `qa/e2e-v032-hospital.js`, included in targeted/regression certification; the uninterrupted Arc I sweep now covers Herald wounds → Hospital treatment → recovered expedition readiness.
+- Frozen tester output remains unchanged.
+
+## v0.31.1 — Relicario Practice visual polish
+- Práctica now preserves a real portrait-card silhouette in both hand and board instead of flattening placed cards into square or text-block representations.
+- N/S/E/O are anchored consistently to the top, bottom, right and left card edges, including mobile layouts.
+- Practice reuses the current Relicario rarity language: Common gray, Rare blue, Epic purple and Legendary orange, with restrained medieval-dark framing rather than neon treatment.
+- Hand selection, board placement and capture states have clearer feedback while preserving the underlying Practice rules and collection state.
+- The historical v0.21 card direction was used only as a visual reference for proportion, framed presence and perimeter values; current v0.31 Relicario data, rarity and reveal semantics remain canonical.
+- Dedicated mobile and desktop Practice coverage validates portrait geometry, four-rarity legibility and N/S/E/O alignment. The pre-promotion candidate passed full local-equivalent certification, uninterrupted fresh-save Arc I, frozen tester guard, Pages deployment and published Chromium verification in GitHub Actions run **1433** at `d73cf809353864dfe05e5bfd4052383bcf191d2d`.
+- This patch changes presentation/UX only; card catalog, acquisition probabilities, effects, economy, progression and frozen tester output are unchanged.
+
+## v0.31.0 — Relicario collection, rarity, acquisition and card-use system
+- Relicario is a first-class system fully separate from Códice. Códice remains knowledge/discovery only; Relicario owns Reliquia collection, use/conserve decisions, reveal ceremony, Practice and future Duel behavior.
+- The initial collection contains 15 Eldoria-native cards: 6 Common, 4 Rare, 3 Epic and 2 Legendary, each with fixed N/S/E/O values, exact 4X use effects and optional card-specific Duel abilities.
+- Ordinary world-enemy victories perform exactly one Relicario rarity roll: Common 0.10%, Rare 0.05%, no card 99.85%. Hunting is explicitly 0%. Epic and Legendary cards are excluded from ordinary drop.
+- Card pools unlock only after the represented content has actually been discovered. Arc I progression no longer depends on rare random drops.
+- Epic random-reward support exists structurally for a future special reward source; no current ordinary source grants Epics. Legendary cards exist in data/design but have no active acquisition source.
+- Indestructible is an additional property, not a rarity. Its rarity-specific chance is evaluated after card selection; a player can own at most one Indestructible copy of a concrete card, while normal duplicates remain repeatable. Duplicate Indestructible outcomes reroute to another eligible card of the same rarity when possible.
+- Every obtained card uses a dedicated reveal ceremony with rarity-colored treatment, N/S/E/O, exact 4X effect, Duel ability when present and a second-stage INDESTRUCTIBLE reveal when applicable.
+- Normal cards consume one copy when used; Indestructible cards keep the card and apply cooldown/effect state. Temporary effects persist with timestamps and continue correctly across reload/offline time.
+- The first Relicario experience is integrated into the real Bastion VII flow: first card, reveal, progressive explanation of rarity/use/conserve/Indestructible and later N/S/E/O + Practice teaching. QA mode does not overwrite tutorial state.
+- Duel support now preserves card-specific abilities used by this collection, including Guardia, Distorsión and Corrupción, without making abilities automatic by rarity.
+- Dedicated Relicario coverage validates catalog/rarities, ordinary-drop probabilities, hunt exclusion, one-roll semantics, discovery gating, normal duplicates, Indestructible uniqueness/rerouting, use persistence, reveal UI, mobile/desktop surfaces and Códice separation.
+- The pre-promotion functional candidate passed the full local-equivalent certification, uninterrupted fresh-save Arc I, frozen tester guard, Pages deploy and published Chromium verification in GitHub Actions run **1418** at `665690a17e20397725e51354693eecea56ae893e`.
+
+## v0.30.4 — mobile UX clarity, continuity and system comprehension
+- The owner mobile-feedback block is integrated without expanding Arc I scope: the focus is clarity, navigation, feedback and continuity of actions.
+- A discreet in-game build label exposes the exact version without consuming meaningful HUD space.
+- Large resource values use readable K / M / B abbreviations while internal resource arithmetic remains unchanged.
+- Poder de expedición is explained as a separate concept from Poder Total, with contextual guidance toward troops, heroes, March composition and equipment.
+- March is a first-class discoverable destination with an explicit exit/back path. World actions that send an expedition now communicate travel with a short visible march animation before resolution.
+- Cuartel remains exclusively responsible for recruiting/upgrading troops. Its early-game presentation is simplified and mobile stacking/hitboxes were corrected so neighboring buildings cannot intercept recruitment actions.
+- Arcón keeps objects/materials/equipment distinct from Códice knowledge and Relicario Reliquias, with clearer grouping and contextual accelerator teaching.
+- Forge now explains its purpose, locked state, required anomalous material, output and relationship to hero equipment without adding unrelated systems.
+- Ambient audio was reduced/reworked so it reads as restrained dark-fantasy ambience rather than continuous noise.
+- Códice and Relicario remain fully independent peer systems; no v0.30.4 correction re-nests one inside the other.
+- Dedicated owner UX coverage is qa/e2e-v0304-owner-ux.js. The uninterrupted Arc I fresh-save and late-progression suites were synchronized with the new march-animation and full-node gathering semantics rather than bypassing them.
+- Pre-promotion functional certification passed GitHub Actions run **1386** on commit `7c7289c08b12c7cd610a6971e199aa8c6c783332`, including the full local-equivalent gate, frozen tester guard, Pages deploy and published Chromium verification. The version-promotion commit must pass the same workflow before final release claim.
+
+## v0.30.3 Códice / Relicario independence hardening
+- Códice and Relicario are now peer destinations in primary navigation, not parent/child surfaces.
+- Códice contains only world knowledge and discovery: La Brecha, Bestiario, Mundo and Personajes.
+- Relicario remains the transversal Reliquia system for Colección, Práctica and the visibly locked future Duelo PvP.
+- Both systems now explain their purpose independently on first use and in-screen, while preserving current saves and Chapter VII progression.
+- Mobile QA and uninterrupted fresh-save Arc I regression enforce that no Relicario portal remains inside Códice and no Códice back-link remains inside Relicario.
+
+## v0.30.3 — independent Códice / Relicario correction
+- **Códice and Relicario are now completely independent peer destinations in primary navigation.** Neither contains a portal/back-link that presents the other as a child or parent.
+- Códice is knowledge-only: La Brecha, Bestiario, Mundo and Personajes, with a first-open explanation focused on discovery and world understanding.
+- Relicario is the transversal Reliquia system: Colección, Práctica and future/locked Duelo PvP, with a separate first-open explanation of rarity, effect, state and use/conserve decisions.
+- Existing saves are migration-safe: players who had Códice unlocked automatically receive the independent Relicario destination.
+- Mobile navigation now supports the additional first-level Relicario destination and its touch/overflow contract is covered by QA.
+- Chapter VII and the uninterrupted fresh-save Arc I route use the independent Relicario entry point; no gameplay/reward semantics were removed.
+- Integral certification passed on GitHub Actions run 1331 before metadata/documentation promotion.
+
+## v0.30.2 Arc I completion hardening
+- Bastion VI → VII now uses one canonical equipment-ownership rule across mission progress, equipped gear and the Bastion gate; equipping the forged Aether Blade cannot revert the mission counter.
+- Ether Devourer now uses modeled PvE preparation, matchup forecast, trait resolution and the shared post-combat report instead of the legacy instant readout.
+- March accepts Aldric as a valid single-hero expedition before the late-game March Trial; the two-hero requirement remains reserved for the trial stage.
+- Lyra's affinity is rendered from the canonical hero/troop domain as +3% Archer Attack across Hero and March surfaces.
+- Decorative world labels no longer intercept node taps; active building actions are raised above neighboring city hitboxes, including mobile.
+- Player-facing development placeholders in the audited Arc I surfaces were replaced with in-world/locked-state language.
+- Permanent regression coverage includes the exact forge → equip → mission 1/1 → Bastion VII sequence plus mobile hitbox/combat checks.
+
+## Implemented Arc I scaffold
+The active slice supports the Valoria-first progression through Bastion X: rebuilding/production, world gathering, Corrupts, Fissure/Lyra, food/hunting, Cantera, Forge/Aether equipment, Nareth/Maelis, march configuration/trial and final Breach assault. The playtest now ends explicitly with an Arc I completion screen, survey, copyable summary, JSON session export and complete local reset. World combat now uses a layered PvE scaffold: hunting teaches Power, common threats teach five combat statistics and march composition, uncommon threats add real traits/counter-play, and world bosses use semiautomatic combat with one minimal hero intervention. PvP combat remains unimplemented; the Relicario exposes only a clearly locked future Duelo PvP tab, with no active matchmaking or rewards.
+
+Stable subsystems are separated under `v0220/js/` for economy/state, timestamp tasks/offline recovery, dialogue/tutorial, UI and gameplay helpers. `runtime-hotfix.js` remains migration/compatibility only.
+
+## Protected product direction
+The MVP question is whether the compact loop creates understanding, satisfaction and desire to continue:
+**Valoria → need/meaningful choice → world → gather/fight/discover → valuable reward → return → visible growth → new ambition.**
+
+Before scope expansion/Unity migration, the slice still needs to prove: a genuine economic trade-off, meaningful Breach gameplay, a useful relic/card reaching the Relicario with use/conserve tension, and a truthful simulated larger 4X horizon.
+
+## Implemented baseline inherited from v0.26 (historical label; active in v0.27)
+- Combat language now separates hunting PvE from threat PvE; PvP is explicitly reserved architecturally and not exposed as a fake live system.
+- Hero Hall and expedition configuration expose readable attack/defense/support roles and explain that Power is a development summary rather than a single combat verdict.
+- Arcón is a bottom-navigation inventory for objects/materials/equipment; cards and relics are managed strictly in the independent Relicario; Códice is knowledge-only.
+- World activity now yields named upgrade materials (ancient iron brace, ash hide, stone tusk) used by production-building upgrades, connecting exploration to city progression.
+- Bastion VII unlocks Códice and Relicario as separate peer systems. The first Reliquia is managed in Relicario; the Códice remains knowledge-only. Indestructible remains a quality, never a rarity.
+- Mobile world-map rendering has a dedicated v0.26 performance pass using transform containment/backface/will-change rules and removes transition work during touch panning.
+- Macro systems (server Breach, deep talents, resonances, oracle and full PvP) remain documented future scope, not implemented.
+
+## Layered PvE combat (introduced in v0.26.6; active in v0.27)
+- **Hunting:** Lobo ceniciento and Jabalí de roca resolve automatically from expedition Power and explain the threshold in the battle report.
+- **Common threat:** Engendro de la Fisura Nv.1 unlocks after the first route threat and introduces PREPARAR MARCHA, archer count, hero selection and the real ATQ / DEF / VIDA / RUP / PODER comparison.
+- **Uncommon threat:** Acechador de Ceniza Nv.3 has a real Emboscada trait: extra opening damage followed by exposed defense. Changing march composition changes the simulated result.
+- **World boss:** Heraldo de la Fisura Nv.5 is visually distinct, has a live timer and uses semiautomatic combat. Basic exchanges are automatic; the selected hero can intervene once with a small role-consistent ability.
+- Battle reports show both sides, remaining life, round exchanges and plain-language reasons for the outcome.
+- Troop recruitment currently exposes **Arqueros only**. Combat troop families are internally extensible, but later families remain undisclosed and unavailable until their narrative unlocks.
+- Progression principle is **find → understand → unlock**. Future troop families and PvP are not previewed in the player UI.
+- The Breach Manuscript still preserves its unrevealed future purpose, but v0.30.1 now presents its acquisition as a short narrative ceremony with Aldric's reaction and a restrained Valoria/Breach mystery hook.
+- Permanent mobile interaction QA: `qa/e2e-v0266-pve-combat.js`.
+
+## v0.28 — base system for heroes, troops and marches
+- A dedicated domain model now defines heroes, roles, affinities, base combat statistics, troop families and march composition independently from the final Hero Hall presentation.
+- **Sir Aldric** is defined as **Tank** with **Paladines** affinity: +3% Defense applies only to Paladines present in the march. The affinity grants a bonus but never restricts what troops or heroes may be combined.
+- **Lyra** is defined as **DPS** with **Arqueros** affinity: +3% Attack applies only to Arqueros present in the march and does not modify other troop families.
+- Aldric/Lyra base combat statistics are inherited from the already-active v0.26.6 combat model; this iteration does not introduce new balance numbers for them.
+- Arqueros keep their existing v0.26.6 troop stat profile. Paladines are structurally registered for affinity/march logic but remain hidden/reserved with combat stats deliberately unbalanced/unset until their own design pass, avoiding invented values.
+- March state now has explicit hero and troop-composition structures while retaining legacy compatibility fields used by the current slice. The domain model accepts mixed troop composition and applies per-family affinities before combat resolution.
+- Each integrated hero has two PvE skill slots and two PvP skill slots prepared with rank bounds I–V. Existing PvE abilities occupy the first PvE slot; future ranks/effects are not fabricated. Talent progression exposes an exclusive-choice structure without inventing the number or contents of talent tiers.
+- Maelis remains outside this new hero-domain integration for a later pass; her existing slice behavior is preserved.
+- Permanent focused QA: `qa/e2e-v027-hero-army.js`. Focused development preset: `hero-army-base`.
+
+## v0.28 — integrated military progression layer
+- The military loop is now treated as one progression layer: **Barracks → troop inventory/tiers → Hero Hall → individual hero profile → march preparation → expedition stats/combat**.
+- Barracks progression is independent from Bastion progression. Bastion only gates how far the Barracks may develop; upgrading the Barracks never grants troops automatically.
+- Archer tiers are persistent and coexist: T1 unlocks at Barracks 1, T2 at Barracks 4 and T3 at Barracks 10. Older tiers remain in the roster after higher tiers unlock.
+- The canonical roster is tiered (family → tier → count). Legacy saves migrate existing generic Archers into T1 without deleting troops. A pure promotion operation exists so future troop promotion can move chosen quantities upward explicitly; no automatic conversion exists.
+- Archer T1/T2/T3 combat profiles reuse values already present in the canonical v0.26.6 troop progression at the corresponding historical progression points (1/4/10). No new arbitrary combat numbers were introduced. Recruitment cost/time remains the existing generic Archer recruitment contract until tier-specific balance is formally defined.
+- Only **Arqueros** remain player-facing/recruitable. Paladines and Brujos stay hidden/reserved in player UI.
+- The Hero Hall is now a dedicated visual collection. Selecting a hero opens an individual character screen with the hero as the visual focus, visible level/power/role/affinity, equipment slots around the figure and separate Habilidades/Talentos tabs.
+- Aldric and Lyra retain the canonical role/affinity model. Affinity is a bonus only, never a composition restriction. Maelis remains visually available where progression already unlocks her, but her definitive hero-system data remains deferred.
+- March preparation supports up to three heroes structurally and tier-specific Archer quantities. Expedition ATQ/DEF/VIDA/RUP/Poder are calculated from the saved composition through the shared military domain model.
+- The central global Power model remains unchanged; hero power, troop/march power and global account Power are presented as distinct concepts and are not added twice to the global total.
+- Focused QA: `qa/e2e-v027-hero-army.js`, `qa/e2e-v027-military-circuit.js`, and the expanded Barracks recruitment regression.
+
+## v0.29 — Códice de Eldoria + Relicario
+- **Códice de Eldoria** is now a knowledge/discovery archive rather than a card manager. Its current sections are **La Brecha, Bestiario, Mundo and Personajes**, populated progressively from real state/discoveries.
+- **Relicario** is the dedicated card/Reliquia system and is a first-level destination independent from the Códice. It has three mobile-first tabs: **Colección**, **Práctica** and **Duelo PvP**.
+- Colección shows rarity, effect and state. Use/conserve remains intact: a normal Reliquia is consumed when used; an Indestructible remains in collection, enters cooldown and remains valid for practice/duel systems.
+- Tutorial phase 1 deliberately hides board language: the first Reliquia teaches only what it is, rarity/effect and the use-vs-conserve decision.
+- At three discovered Reliquias, **Maestre Orin** reveals side values and directs the player into Práctica by playing rather than through a rules wall.
+- Práctica uses the existing 3×3 capture mechanics with temporary cards and no permanent collection loss. After the guided pass, practice remains repeatable against Orin.
+- **Duelo PvP** is visible but explicitly locked/future; no matchmaking, rewards or fake PvP functionality are active.
+- Chapter 7/9 relic objectives now route to the Relicario while the Códice objective remains knowledge-oriented.
+- Focused QA preset: `relicario-v029`. Permanent regression: `qa/e2e-v029-codex-relicario.js`, plus updated legacy Codex/Chest and guided-practice coverage.
+
+## v0.30 — depth, autonomy and systemic feedback
+- Bastion I–X economy now includes four explicit development-priority decisions at Bastion IV, VI, VIII and IX. Each offers multiple viable routes, grants immediate strategic resources/Power and never blocks content or relies on artificial waiting.
+- Guidance is reduced progressively from Bastion VI, lighter by VIII, and Bastion IX replaces step-by-step routing with general objectives so the player chooses order and approach.
+- Total Power keeps the existing central model, adds a concise first-use explanation, visible gain feedback and restrained milestone ceremonies.
+- Simulated leaderboards now expose three categories: Total Power, Corrupts defeated and Reliquia collection. The player and immediate rival are always visible; profiles are explicitly simulated.
+- Battle reports now have exactly two reading levels: a clear summary and expandable full detail, while keeping hero intervention feedback visible.
+- Spanish/English localization is selectable from visible settings, persists locally, and v0.30 UI/system text is audited to avoid mixed-language presentation in the new layer.
+- The English audit also covers dynamic Arc I surfaces such as the World Boss heading; no mixed ES/EN labels remain in the certified path.
+- Bastion II/III background completion now returns coherently to the kingdom view, keeping newly unlocked structures such as the Barracks visible after offline/task-recovery completion.
+- HUD includes a compact UTC server/world clock prepared for future events without expanding the central play area.
+- First audio layer uses lightweight ambient music and action feedback with persistent music/SFX toggles in settings.
+- Ceremonies were reduced to real milestones; routine chapter completions use compact feedback.
+- Códice/Relicario separation remains intact; PvP remains future/locked; no new Breach mechanics, heroes, buildings or alliance systems were added.
+- Permanent focused regression: `qa/e2e-v030-depth.js`. Final certified v0.30 candidate: `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5` (GitHub Actions run 1231). Full release certification passed: fresh-save Arc I/Bastion I–X, mobile interaction, frozen tester guard, Pages deploy, published Chromium verification and frozen tester URL verification.
+
+## v0.30.1 — UX clarity, responsibility boundaries and novice-player QA
+- Barracks, Troops, Heroes and March are now separated by responsibility: Barracks recruits/upgrades, Troops shows owned army, Hero Hall manages characters only, and March is a dedicated expedition-composition screen.
+- First-entry micro-explanations were added for Barracks, Troops, Hero Hall and March without long text walls.
+- Hero Hall initial view is hero-only, with portrait collection, power/level summary and visible undiscovered slots; troop inventory and march composition no longer appear there.
+- Individual hero profiles keep full-character focus, Power, level, role, affinity, Skills/Talents tabs and prepared equipment slots.
+- March preparation now uses explicit hierarchy: Heroes → Troops → Composition → March Power → Confirm. Affinity copy explains concrete march bonuses where applicable.
+- Building labels are normalized to building name + Level X only; production/timers/resources moved out of city labels.
+- Mission panel discoverability now includes a compact first-use affordance, chevron state and touch-safe close control without growing the mobile HUD.
+- Universal Speedups now teach their purpose on first acquisition and expose a clearly visible ACCELERATE picker on compatible timed tasks; gathering remains non-accelerable.
+- Breach Manuscript acquisition is promoted to a short narrative ceremony with item presentation, Aldric reaction and a restrained mystery hook linking Valoria and the Breach without expanding Breach mechanics.
+- Important reward presentation was audited and strengthened proportionally for manuscript/Aether-style rare milestones while routine rewards remain compact.
+- Contrast/readability was hardened across dialogs, tutorials, missions, heroes, troops, march, Codex, Reliquary, Chest and Settings; touch targets were raised where the mobile pass found weak discoverability.
+- English localization was extended across the new UX clarity surfaces.
+- Permanent novice-player QA rule added to AGENTS.md and QA_AND_DEPLOY.md: **Discoverability → Comprehension → Interaction → Feedback → Next step**. Technical function alone is no longer sufficient for acceptance.
+- Permanent focused regression: `qa/e2e-v0301-ux-clarity.js`, plus updated military/chapter/fresh-save regressions.
+- Final certified v0.30.1 release candidate: `24855ee2a862676f36f9185be5ede8fc42dfa860`, GitHub Actions run 1275. Full integral gate green including fresh-save Bastion I–X, novice-player/mobile UX, frozen tester guard, Pages deployment, published Chromium verification and frozen tester URL verification.
+
+## Known functional gaps / debt
+- Bastion VI–X still need human pacing validation beyond automated reachability.
+- Hero Hall still needs the eventual full hero skill/talent system; v0.26.6 only establishes a minimal combat-ability seam for world-boss intervention.
+- Existing late-story combats outside the new layered PvE examples remain scaffolding and can migrate onto the same combat model later.
+- Economy pacing to Bastion X needs human/player-experience validation even when automated reachability is green.
+- The Relicario implements use/conserve decisions, Indestructible cooldown behavior, consumed-card discovery/Echo consequences and a 3×3 Practice board against Maestre Orin. PvP remains visibly future/locked. A wider relic economy and broader card pool remain future scope.
+- Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
+
+## Verification state
+Normal development continues exclusively on `main`. The frozen external tester cohort is **Eldoria Closed Playtest T1 / 0.26.5-test.2** and is not an active product line. Its immutable reference and feedback protocol are documented in `SESSION_HANDOFF.md` and `TESTER_FEEDBACK_PROTOCOL.md`.
+
+## Maintenance
+Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
+
+
+## Historical implementation notes retained for context
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.32.0.
+
+### v0.26.1 — coherence pass
+- World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
+- Combat and expedition expose ATQ / DEF / APO for heroes, troops and the active march; Power remains a summary.
+- Hero Hall and Codex receive high-contrast presentation.
+- Bastion IX attack interaction is part of release acceptance; real player path must remain actionable.
+- Codex / Orus / Relic Duel preserve the v0.21 clarity reference while staying integrated with current Arc I lore.
+
+
+### v0.26.2 — Códice / Reliquias / Arcón
+- Arcón is a dedicated full-screen view and no longer opens as a floating modal over the current map.
+- Códice is a dedicated full-screen archive view with stronger hierarchy and card presentation.
+- The v0.21 card principle is restored: using a normal relic consumes it for its immediate effect and leaves a weak Echo 1/1/1/1 for Duelo; conserving preserves its full N/E/S/O values and does not prevent later use.
+- Indestructible is a quality, not a rarity. Indestructible relics survive activation and enter cooldown.
+- The first Sello de Ceniza has a concrete outside-Duelo effect and a visible use/conserve decision.
+- Orus offers guided N/E/S/O training before the formal Duelo milestone.
+- At 5 discovered relics, the formal Duelo opens as a playable 3×3 board: select a card, choose a cell, compare touching N/E/S/O values, capture weaker adjacent cards, and gain +1 N/E/S/O in the central Breach-resonance cell.
+- Formal Duelo unlock progress is based on 5 discovered relics; consumed discoveries still count but enter the hand as Echoes 1/1/1/1.
+- qa/e2e-codex-chest.js protects dedicated views, use/conserve explanation, Indestructible cooldown semantics and Orus orientation training.
+
+
+### v0.26.3 — guidance, Hero Hall and sequencing
+- Salón de Héroes is a dedicated full-screen management surface. It combines hero role/stat reading, equipment and expedition formation instead of splitting them across modal flows.
+- Bastion IX has a device-independent persistent attack objective once a valid march exists; the action sits outside the pannable world transform.
+- Tutorial guidance extends beyond the opening chapters into Forge/Devorador, Códice/Orus, Nareth and the Bastion IX march trial.
+- The first Códice visit teaches the relic economy through Orus: outside-Duelo effects, N/E/S/O, use vs conserve, consumed Echoes and Indestructible cooldown.
+- Narrative reveals now respect discovery order: the Forge does not explain Aether before the material is found, and Maelis is not introduced before reaching Nareth. Duplicate explanatory beats were reduced.
+- Timed construction/upgrade costs are deducted when work starts. Completion applies the result only; legacy unpaid in-flight tasks remain migration-safe.
+- v0.26.3 acceptance adds mobile 390×844 checks for march/attack reachability and start-time resource spending while preserving the full Arc I regression.
+
+
+### v0.26.4 — unified visual / UX system
+- Functional rules are unchanged; this milestone is a presentation/navigation pass with explicit parity protection.
+- Bottom navigation is normalized to Ciudad, Mundo, Héroes, Arcón and Códice; Ranking remains available in the HUD.
+- Routine city/world interactions use a shared contextual bottom-sheet pattern while deep management remains full-screen.
+- Forge joins Héroes, Arcón and Códice as a full-screen management view.
+- Arcón presents an inventory grid plus non-destructive in-screen item details.
+- World node categories are visually differentiated without changing node behavior or rewards.
+- Mobile map movement uses direct pointer tracking, restrained inertia and dynamic limits while preserving object taps.
+- UI scale, spacing, safe areas, touch targets, panel hierarchy and restrained color semantics are centralized in the v0.26.4 visual layer.
+- `UI_PARITY_0264.md` and `qa/e2e-v0264-ui-parity.js` define and protect the before/after contract.
+
+
+### v0.26.5 — guidance, infrastructure and collection onboarding
+- Contextual progression guidance now names missing resources, quantities and where to obtain them, and can direct the player to the relevant world node or city building.
+- Barracks has two distinct loops: infrastructure upgrades and timestamp-based troop recruitment. Recruitment persists through view changes/offline time.
+- Bastion IV requires level-2 Aserradero, Cuartel and Granero, establishing the infrastructure gate before further fortification growth.
+- Lyra recruitment is the explicit onboarding moment for the Heroes layer.
+- The Devourer has a post-combat narrative consequence before the Aether material/Forge loop.
+- Arcón uses object-specific visual identity; Códice remains the exclusive Reliquia/card surface.
+- All deep management surfaces follow the mobile vertical-scroll contract.
+- Códice now frames discovery, conservation and activation as its core loop, and its first Duelo is a guided 3×3 training match with five temporary loan cards that never mutate the permanent collection.
+- The world frontier remains one pannable map but uses a larger spatial footprint and wider node distribution to communicate future 4X scale without pretending the final shared-world system exists.
+
+
+## Canonical MVP visual target — 2026-09-22
+- Art direction is now explicitly part of the MVP product definition: **stylized semi-realistic dark fantasy**, premium/solemn but mobile-readable.
+- Canonical city target: monumental vertical Valoria rebuilt over imperial ruins, with distinct interactive landmarks and visible reconstruction.
+- Canonical world target: readable 4X territory with routes, settlements, resources, marches, threats and integrated Breach corruption.
+- La Brecha uses a violet/magenta dimensional-corruption language and is a world phenomenon, not a generic portal.
+- Final-production visuals belong primarily to the future Unity phase; the web slice only needs enough presentation fidelity to validate gameplay/UX against this direction.
+- Source: `docs/MVP_ART_DIRECTION.md`.
+
+
+## v0.27 — chapter missions, rewards and accelerators
+- The old persistent guided-step block has been replaced by a compact chapter mission system that preserves guidance without covering the playfield.
+- Progression is organized into chapter objectives with numeric progress where appropriate, contextual destinations and chapter-completion rewards.
+- The mission panel is available from a compact control and opens as a mobile-budget drawer rather than a full-screen obstruction.
+- Resource collection objectives require meaningful quantities rather than a single interaction.
+- The Códice is integrated into the main progression instead of being treated as optional side content.
+- Universal accelerators are introduced as a real inventory/currency for eligible construction, upgrade and recruitment timestamp tasks. Gathering cannot be accelerated.
+- Mission/chapter rewards are idempotent and persist across reloads; analytics record chapter starts, mission completion, chapter completion, rewards and accelerator use.
+- Bastion VI–X economy costs were retuned to preserve resource pressure while remaining reachable through production, gathering and chapter rewards.
+- Permanent QA: `qa/e2e-v027-chapters.js`, plus the uninterrupted Arc I sweep with v0.27 economy pacing.
+- Frozen tester build remains untouched and is not a source for v0.27 development.
+
+
+## v0.27 owner-test correction — 2026-09-22
+- Chapter II's **Engendro de la Fisura** is reachable at Bastion II, matching the mission sequence.
+- Arcón classifies stored content by utility with dedicated tabs for Aceleradores, Materiales, Equipo and Especiales.
+- Universal accelerators awarded by chapters/missions are visible in Arcón as counted consumables; applying them still requires a compatible active timed task.
+- The correction is protected by mobile Playwright regression in `qa/e2e-v027-owner-feedback.js`.
+
+
+## 2026-09-28 — Valoria Playable District Skeleton v1
+
+Valoria's Unity production direction has moved from fused-diorama composition to bottom-up functional city construction.
+
+Current production skeleton:
+- continuous terrain/base;
+- Planta 0 civic floor and main street;
+- separated lower building plots;
+- independent 12-step physical connection from Planta 0 to Planta 1;
+- upper landing/plots/support layer;
+- Bastion, Barracks and Sawmill integrated as real clickable world buildings.
+
+The fixed orthographic Valoria camera is now the source of truth for composition and interaction; benchmark evidence is captured at zoom 19 / 12 / 9 with the same camera transform.
+
+Unity run **36423010456** on `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f` passed EditMode, PlayMode, Windows build and Valoria capture. Interaction tests verify Aserradero, Cuartel and Bastion open their real panels and retain existing game commands. A procedural-collider timing bug was fixed with `Physics.SyncTransforms()` after world construction.
+
+Verdicts: **TECH PASS / INTERACTION PASS / VISUAL-URBAN PASS for skeleton scope**. This does not certify final art quality.
+
+The six certified Tripo families remain valid reusable art/reference assets, but are no longer the topology contract for the city. See `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`.
+
+
+## 2026-10-02 — Valoria Asset Library Reprocessing v1
+- Asset-library recovery/recomposition has been certified against the real Valoria frame.
+- **TECH PASS / VISUAL PASS for this scope**: run **36994020902**, artifact **11220733685**.
+- The certified historical Hero Bastion is promoted as production visual art, with exact source SHA-256 `afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c`.
+- Fortress approach uses the exact certified `d508...` composition: buried Terrain/Terrace support, certified Stone Architecture retaining/seam pieces and paired visual-only TowerWallRock defensive flanks; the older single `Valoria · rescued hero flank` presentation is suppressed.
+- Matched 19/12/9/mobile evidence shows a material full-frame improvement; gameplay collider/hotspot signature remains unchanged.
+- Final measured active scene: **781 renderers / 74 materials / 1,647,618 triangles / 25 lights** after the pass.
+- Tripo spend: **0**. Geometry gap: **not proven / not required**.
+- This milestone improves the city-fortress presentation; it does not close all remaining architecture, surface or world-map art gaps.
+
+
+## 2026-10-04 — Known Valoria source-input gap
+- Bastion→city high-salience source generation still lacks an exact owner-approvable multiview 2D input set.
+- The required future package shape is fixed: **1 primary + 2 auxiliaries**, all depicting the same canonical Hero Bastion / locked transition design.
+- Zero-credit prep proved that visually rich generic fortress imagery is not acceptable if it changes the canonical Bastion, central receiver/stair relationship or lower-city continuity.
+- Current gate remains **TRIPO INPUT PREP FAIL**; Tripo generation, Blender reauthoring and Unity integration are blocked until the exact input set passes owner review.
+- This does not change gameplay or the promoted lower-city state.
+
+
+## 2026-10-04 — Bastion→city exact-source input gate
+- The exact-background-lock problem is now technically solved: a deterministic composite can preserve the canonical frame byte-for-byte outside the replacement envelope and preserve Hero Bastion, promoted lower city and the central stair protected regions exactly.
+- The remaining blocker is **visual source coherence**, not pixel preservation: current local image-generation/editing cannot produce one authored connected transition without either re-rendering Valoria globally or yielding composited fragments.
+- Current status: **EXACT SOURCE IMAGE FAIL / 0 CREDITS**.
+- Tripo remains blocked and no exact input is promoted.
+
+
+## 2026-10-05 — Vegetation + Water/Shore Production v1 closed
+Valoria Vegetation + Water/Shore is now formally **PRODUCTION PASS / CLOSED**. Final cumulative Unity run **37347735272** succeeded and produced artifact **11361740372** with the complete official capture set: 16:9, mobile landscape, 3:2 and portrait home/left/right/entry. Vegetation source/placement and Water/Shore pass their scoped gates; gameplay and performance sanity pass; Tripo credits remain 0. This closure does **not** assert that the complete scene matches the premium target. The next owner-authorized task is **VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1**, with Props + Background still blocked.
+
+## 2026-10-05 — Golden Lookdev Slice bounded-method ceiling
+VALORIA GOLDEN LOOKDEV SLICE v1 is **not passed**. Three surface iterations plus three bounded local-geometry proofs establish a real production ceiling under the current locked scope. The strongest bounded visual result is run **37368033376** / artifact **11368942273**, still approximately 3/5 on core premium metrics. Final V3 proof run **37368890740** / artifact **11368813433** confirms that further overlap-shell geometry creates visible substrate islands rather than premium continuity.
+
+Current state: **HUMAN SCOPE BLOCKER**. Broad production is frozen. The next meaningful action requires owner permission to reauthor continuous local Rock/Terrain + ground substrate, optionally together with Lower Gate/Bridge edge profiles. No Tripo credits were used.
+
+
+## Golden Lookdev Method B blocker — 2026-10-05
+The owner-authorized integrated Lower Gate + Bridge edge-profile + substrate micro-environment reauthor has reached its pre-Unity hard stop. Source01 and a materially reauthored source02 both failed the isolated >=4/5 visual gate. Source02 evidence authority: run **37370727523**, artifact **11369951282**; ~147k triangles, UV/normals/tangents valid, 0 colliders, 0 Tripo credits.
+
+No Unity integration was attempted because the source itself remained visibly production-mid/prototype-like. The proven blocker has moved from surface/local shell to the **screen-visible primary forms of Lower Gate and Bridge plus the retained vegetation source**. Current phase is **HUMAN SCOPE BLOCKER / INTEGRATED BASE METHOD EXHAUSTED**. Broad Valoria production remains frozen.
+
+
+## Golden Primary Forms source02 execution blocker — 2026-10-05
+GOLDEN PRIMARY FORMS REAUTHOR v1 has not reached a visual verdict. Source02 is authored as a material method change (void-first Gate, structural Bridge load path, plateau/cliff/wet-shelf terrain, continuous canopy masses), but the required isolated evidence has not executed through available automated GitHub event routes. Current state is **BLOCKED — HUMAN WORKFLOW DISPATCH REQUIRED**, not ART FAIL. Unity is not authorized; Tripo spend remains 0. Run `[PRODUCTION] Golden Primary Forms Source02 Manual Gate` once on `main`; the workflow persists the required clay/lit/official-proxy/report for immediate visual scoring.
+
+## 2026-10-05 — Golden Professional Primary Reconstruction v1 — code-authoring ceiling
+Run **37381915933** completed SUCCESS after stabilizing the Blender pipeline with a portable cached Blender distribution and sparse checkout. Artifact **11376050764** contains the authored .blend/.glb plus clay/lit/official-proxy/contact evidence.
+
+Visual verdict is **TECH PASS / VISUAL FAIL / CODE-AUTHORING CEILING / UNITY NOT AUTHORIZED**. Scores: Geometry/Silhouette **3.0/5**, Material **2.5/5**, Contact/Integration **2.5/5**, Environment Coherence **2.5/5**, Premium Perception **2.0/5**. The source materially improves authoring vocabulary over source02/source03 but still reads visibly algorithmic; Bridge, cliff integration, vegetation and Gate↔Bridge↔terrain contacts remain below the canonical premium target. Do not make another code-heavy cosmetic source iteration.
+
+The operational Actions blockage is separately resolved: cached portable Blender + sparse checkout removes the previous heavy Ubuntu apt/1GB-repo bottleneck; corrupted `pages.yml` was restored to the last healthy version. Tripo remains **0 credits**. Next meaningful method requires **interactive/artist-led Blender authoring** (preferred) or a separately authorized external geometry-source route followed by Blender reauthoring.
+
+
+
+## 2026-10-06 — Valoria first playable city slice
+
+Closed **VALORIA PRODUCTION PHASE v1 — FIRST PLAYABLE CITY SLICE** with **TECH PASS / INTERACTION PASS / VISUAL PASS**.
+
+Authoritative production run: `37470805228`; artifact: `11417486230`; evidence: `docs/evidence/valoria-first-playable-city-slice-v1/result.json`.
+
+Locked stack remains unchanged: clean SHARP 589,824 beauty authority, Unity 6 URP, bounded camera, real editable support geometry and standard Unity semantic colliders. Seven production families are present as real support geometry (Bridge, Lower Gate, Road, Stair, Walls, Bastion, Rock/Terrain) and seven semantic anchors pass **21/21** raycasts across HOME / pan-left / pan-right. Final beauty differs from SHARP-only by only **22 / 13 / 18** pixels respectively. No real-geometry beauty override is promoted yet; earlier localized appearance artifacts were explicitly rejected. Paid credits: **0**.
+
+Next prepared block, not started: `docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1.md` / `pipeline/valoria-left-right-parcels-next-block-v1.json` for **LEFT CABIN PARCEL + RIGHT CAMP PARCEL**.
+
+
+## 2026-10-08 — Bastion I–II presentation parity correction closed
+
+`valoria-bastion-i-ii-presentation-parity-correction-v1` is **PASS / CLOSED** for its declared presentation-parity scope.
+
+Final certified chain: production **37767338367** SUCCESS (artifact **11546715716**), UI progression **37767338225** SUCCESS, Unity source/editor **37767338361** SUCCESS, publish **37768050958** SUCCESS, and published WebGL probe **37770987758** SUCCESS (evidence artifact **11548212275**).
+
+The published probe completes the real fresh-save Bastion I→II loop in landscape and portrait with real visible Sawmill/Bastion/Barracks touch-selection, construction, resources, recruitment, configured march, Engendro combat/reward, exact final-state reload persistence, deliberate two-step reset, and reset surviving reload. Camera pan/recenter and mobile presentation evidence are included.
+
+Quality boundary: this closes the **declared parity/interactivity block**, not Eldoria's overall final artistic-quality target. The probe does not claim independent human-playability or final-art-quality certification. Later concrete physical-device feedback can reopen the block. Bastion III remains closed and World Region 1/gameplay/economy/persistence/SHARP authority were not redesigned.

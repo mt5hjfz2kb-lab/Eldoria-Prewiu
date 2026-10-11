@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "program": "VALORIA FIRST PRODUCTION DISTRICT v1",
+  "nonce": "fpd-v1-playable-runtime-20261004-1305",
+  "scope": [
+    "Hero-compatible visible defense",
+    "Granero",
+    "Cuartel",
+    "related visible proxies"
+  ],
+  "stop_gate": [
+    "zoom9",
+    "mobile"
+  ],
+  "camera": "ORTHOGRAPHIC",
+  "final_look": "RESET_ACCEPTED",
+  "credits": 0,
+  "tripo": false,
+  "closed_result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+  "final_run_id": 37202888357,
+  "final_artifact_id": 11303269944,
+  "runtime_integration": true
+}

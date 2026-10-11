@@ -1,0 +1,17 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "iteration": "source03",
+  "source_sha": "33081945236e4b88667a5d311f30a04861edbf2577018241b806064e8842e54a",
+  "export_sha": "9f0e41a75972bd15846a8e948e6f519a1071cb0631f5f61b8eb389713c4d3242",
+  "gate": {
+    "mobile_silhouette": "PASS — broken branch-driven conifer silhouette remains readable",
+    "eldoria_identity": "PASS — stylized directional foliage language is materially distinct from generic stacked-cone pack trees",
+    "authored_variation": "PASS — primary and two secondary archetypes differ in height, branch rhythm and crown density",
+    "trunk_canopy_depth": "PASS — visible trunk windows and radial sprays create real layered depth",
+    "material_lighting_fit": "PASS",
+    "reusable": "PASS — three semantic modules",
+    "cost": "PASS WITH PLACEMENT BUDGET — 19,544 tris total source; Unity must reuse modules/shared materials and keep density intentional"
+  },
+  "scale_rule": "Do not scatter indiscriminately. Use limited primary trees, controlled secondary groups, sparse tertiary support only if needed. Preserve negative space and all hotspots.",
+  "tripo_credits": 0
+}

@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "request_id": "valoria-real-game-state-v1",
+  "asset_or_sector": "Locked Valoria left sawmill and right barracks/camp parcel runtime state",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": true
+  },
+  "validation": {
+    "source_gate": "Exact locked SHARP source preserved; segment only player parcel content. Existing LocalGateway, FileStateStore, SliceRules and mission objectives own construction. No new geometry source or generator.",
+    "final_gate": "Runtime initial / available / under construction / built / save reload / both parcels / bounded camera / outside parcel visual regression."
+  },
+  "notes": "Approved look and central route immutable. Runtime conditional SHARP parcel layers with scene-ground support, existing scaffold presentation and approved support meshes.",
+  "status": "ACTIVE"
+}

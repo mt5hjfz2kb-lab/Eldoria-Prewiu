@@ -1,0 +1,102 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "cac5637167a7a006b327f9121cc420012c6de9bfabcd2b78de57934f64b64ad4",
+  "export_sha": "54d9155d130ceafd0ec0338ceb92a4e794a11ae995d46a86031322bfa4eb6523",
+  "source": "art-source/valoria/production/premium-hero-contact-uplift-v1/source03/PremiumHeroContactUpliftV3.blend",
+  "export": "art-source/valoria/production/premium-hero-contact-uplift-v1/source03/PremiumHeroContactUpliftV3.glb",
+  "geometry_metrics": {
+    "triangles": 3171,
+    "vertices": 1710,
+    "modules": 12,
+    "materials": 4,
+    "bounds_world_blender": [
+      [
+        -9.737000465393066,
+        -35.10985565185547,
+        -0.026767730712890625
+      ],
+      [
+        18.549999237060547,
+        -13.012999534606934,
+        7.340000152587891
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 213,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "earth",
+    "earth_dark",
+    "foundation",
+    "rock"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "hero_masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "timber": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03/lit-3q.png",
+    "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03/clay-3q.png",
+    "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03/topology.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    4,
+    -22,
+    7
+  ],
+  "unity_placement": {
+    "position": [
+      4.0,
+      7.0,
+      -22.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}

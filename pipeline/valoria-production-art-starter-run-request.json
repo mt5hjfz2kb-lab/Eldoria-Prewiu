@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "mode": "authored_mesh_family",
+  "request_id": "valoria-premium-square-metre-v1-source01",
+  "nonce": "premium-square-metre-v1-after-router-confirmed-01",
+  "mesh_spec": "docs/evidence/valoria-premium-square-metre-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/premium-square-metre-v1",
+  "evidence_dir": "docs/evidence/valoria-premium-square-metre-v1/source01",
+  "credits": 0,
+  "scope": "VALORIA PREMIUM SQUARE METRE v1. Isolated stone and buttress source proof only. Blender authored sculpt and detail method. No whole gate, no Unity integration, no paid generation."
+}

@@ -1,0 +1,63 @@
+{
+  "family": "VALORIA ROCK / TERRAIN FAMILY v1",
+  "result": "PRODUCTION FAMILY PASS / CLOSED",
+  "source_iteration": "source09",
+  "gates": {
+    "tech": "PASS",
+    "art_source": "PASS",
+    "unity_integration": "PASS",
+    "matched_camera_visual": "PASS",
+    "quality_bar": "PASS",
+    "performance_import_sanity": "PASS",
+    "gameplay_regression": "PASS"
+  },
+  "source": {
+    "run_id": 37310029846,
+    "artifact_id": 11345358292,
+    "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+    "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
+    "triangles": 1909
+  },
+  "unity": {
+    "run_id": 37310582556,
+    "job_id": 111764702509,
+    "artifact_id": 11345546113,
+    "runner": "DESKTOP-R10PE55"
+  },
+  "gameplay": {
+    "focused_tests": "5/5 PASS",
+    "colliders": 0
+  },
+  "protected_families": [
+    "Lower Gate",
+    "Bridge",
+    "Road",
+    "Stair"
+  ],
+  "locked_unchanged": [
+    "camera",
+    "target",
+    "global composition",
+    "platform macro envelope",
+    "Bastion",
+    "Walls",
+    "gameplay",
+    "BackgroundTerrain",
+    "BridgeSupport"
+  ],
+  "absorbed_greybox_proxies": [
+    "CliffShoulder_0",
+    "CliffShoulder_1",
+    "CliffShoulder_2",
+    "CliffShoulder_3",
+    "CliffShoulder_4",
+    "CliffShoulder_5",
+    "CliffShoulder_6"
+  ],
+  "credits": {
+    "tripo": 0
+  },
+  "quality_jump": "PASS — Source09 preserves the structural frame jump and corrects Source08's integrated washout/low-poly facet defect without composition change.",
+  "source08_status": "Superseded. Source08 Unity integration TECH PASS but strict integrated visual FAIL due pale/high-contrast facets; contradictory later Source08 PASS is non-authoritative.",
+  "next": "Owner review. Do not start Walls, Bastion or another family without explicit instruction."
+}

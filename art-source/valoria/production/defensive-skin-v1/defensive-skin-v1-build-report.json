@@ -1,0 +1,22 @@
+{
+  "classification": "TEMPORARY",
+  "method": "rich_donor_skin_over_authored_support",
+  "blend_sha256": "e4c29effb87ae9e95622b3f66f61838b1a7afedc44fae0f45341fdd93ffc4bea",
+  "assets": [
+    {
+      "asset_id": "Valoria_MainGate_SkinV1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_MainGate_SkinV1.glb",
+      "sha256": "e984dd5d53a4925f5b468082d09dfd6ab63a882c21ddd3948978f22b35f4f898"
+    },
+    {
+      "asset_id": "Valoria_WallSegment_SkinV1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_WallSegment_SkinV1.glb",
+      "sha256": "0287307376542341e55479ee5138848165ea59a15085c50381964e1d7804366c"
+    },
+    {
+      "asset_id": "Valoria_Tower_SkinV1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_Tower_SkinV1.glb",
+      "sha256": "90a77a8f2ad83372c75949bee23ca65b755fb955f09f6556b6f06da222097c96"
+    }
+  ]
+}

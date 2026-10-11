@@ -1,0 +1,36 @@
+name: Valoria existing art brain bridge smoke
+on:
+  push:
+    branches:
+      - art/valoria-gate-quality-calibration-v1-20261011
+    paths:
+      - tools/valoria-art-brain/bridge.py
+      - .github/workflows/valoria-art-brain-bridge.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch only reusable upstream studio source
+        run: git fetch --no-tags origin refs/heads/art/studio-reuse-handoff-20261011:refs/remotes/origin/art/studio-reuse-handoff-20261011
+      - name: Verify studio source inventory, no paid services
+        run: |
+          python3 tools/valoria-art-brain/bridge.py --check | tee "$RUNNER_TEMP/art-brain-inventory.json"
+          python3 tools/valoria-art-brain/bridge.py --stage "$RUNNER_TEMP/eldoria-art-brain" | tee "$RUNNER_TEMP/art-brain-staging.json"
+          python3 -m py_compile "$RUNNER_TEMP/eldoria-art-brain/tools/art-studio-recovery/"{review_with_local_vision,mcp_repair_contacts,decision_policy}.py
+          test -s "$RUNNER_TEMP/eldoria-art-brain/tools/art-studio-reuse/prepare-task.mjs"
+          git diff --exit-code -- tools/valoria-art-brain/bridge.py .github/workflows/valoria-art-brain-bridge.yml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-existing-art-brain-bridge-proof
+          path: |
+            ${{ runner.temp }}/art-brain-inventory.json
+            ${{ runner.temp }}/art-brain-staging.json
+          retention-days: 14

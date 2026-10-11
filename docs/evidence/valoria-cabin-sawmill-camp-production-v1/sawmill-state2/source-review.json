@@ -1,0 +1,22 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "family": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+  "subfamily": "SAWMILL STATE 2 — EARLY FUNCTIONAL",
+  "source_iteration": "source02-production-identity",
+  "source_run": 37337544717,
+  "artifact_id": 11357501193,
+  "source_sha": "7e7f6719806cadfef7a223bc6ef664b820ab17bc66db32fe6b27486d4236fec3",
+  "export_sha": "abe163c09de3690fbeabf39f126663349f7e6f8e2565c0ce204f824a366ef026",
+  "gate": {
+    "wood_production_read": true,
+    "functional_bastion_i": true,
+    "timber_depth": true,
+    "generic_cabin_fail_corrected": true,
+    "timber_stone_contrast": true,
+    "mobile_candidate": true,
+    "shared_progression_dna": true,
+    "note": "Open work face, dedicated log bed, saw frame and visible blade establish production identity while footprint/foundation remains shared with States 0/1."
+  },
+  "tripo_credits": 0
+}

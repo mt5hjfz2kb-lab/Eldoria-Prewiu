@@ -1,0 +1,36 @@
+name: Valoria modular fortifications Blender export
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['tools/art-rd/valoria_fortification_family.py','.github/workflows/valoria-fortification-family.yml']
+permissions:
+  contents: read
+concurrency:
+  group: valoria-fortification-linux
+  cancel-in-progress: false
+jobs:
+  fortifications:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+      - name: Export GLBs and render six pieces and assembly
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/valoria-fortification-family"
+          export ELDORIA_FORTIFICATION_OUTPUT="$RUNNER_TEMP/valoria-fortification-family"
+          blender -b --python tools/art-rd/valoria_fortification_family.py > "$RUNNER_TEMP/fortifications-out.log" 2> "$RUNNER_TEMP/fortifications-err.log" || { tail -60 "$RUNNER_TEMP/fortifications-err.log"; exit 1; }
+          tail -20 "$RUNNER_TEMP/fortifications-out.log"
+          test -f "$ELDORIA_FORTIFICATION_OUTPUT/manifest.json"
+          grep -q ELDORIA_FORTIFICATION_EXPORT_PASS "$RUNNER_TEMP/fortifications-out.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-modular-fortification-family
+          path: |
+            ${{ runner.temp }}/valoria-fortification-family/
+            ${{ runner.temp }}/fortifications-out.log
+            ${{ runner.temp }}/fortifications-err.log
+          retention-days: 14

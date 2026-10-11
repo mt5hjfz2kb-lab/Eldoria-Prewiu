@@ -1,0 +1,19 @@
+{
+  "verdict": "PASS",
+  "comparison": {
+    "target": "Partial peripheral fortification framing the lower city: substantial stone thickness, readable crenellation, stronger terminal masses, terrain-seated bases, subordinate to Lower Gate and upper Bastion.",
+    "approved_blockout": "Correct perimeter position/occupancy but six plain white rectangular wall/tower masses; no material hierarchy, authored crenellation rhythm, structural seating or defensive depth.",
+    "structural_frame_with_walls": "Same approved macro placement and occupancy, now with warm Valoria masonry, battered/chamfered terminal masses, foundation/shoulder/crown section, grouped non-uniform crenellation and visible wall thickness. Lower Gate, Bridge, Road, Stair and Rock/Terrain Source09 remain unchanged."
+  },
+  "conclusion": "Walls materially improve the defensive reading of the frame while remaining secondary. They frame the open construction ground and reinforce the perimeter, but their lower height, quieter value and separated peripheral placement do not challenge the Bastion or Lower Gate hierarchy.",
+  "remaining_out_of_scope": [
+    "Bastion final art",
+    "Cabin",
+    "Camp",
+    "Vegetation",
+    "Props",
+    "Water/Shore",
+    "Background",
+    "global lighting/VFX"
+  ]
+}

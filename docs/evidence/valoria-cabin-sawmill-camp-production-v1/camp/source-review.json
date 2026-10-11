@@ -1,0 +1,21 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "family": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+  "subfamily": "CAMP",
+  "source_run": 37338882930,
+  "artifact_id": 11357966355,
+  "source_sha": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
+  "export_sha": "34152243c51717149ed0cb1faf316178b77ffc5d30626f0e8c802554fe03832b",
+  "gate": {
+    "camp_read": true,
+    "bastion_i_modest": true,
+    "competes_with_hero": false,
+    "adds_color_life": true,
+    "valoria_material_fit": true,
+    "mobile_candidate": true,
+    "authored_not_pack": true,
+    "note": "Single main tent with timber ridge, small awning, camp-owned supplies and activity bench. Deliberately temporary and bounded."
+  },
+  "tripo_credits": 0
+}

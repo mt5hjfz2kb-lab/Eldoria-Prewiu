@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source09",
+  "source_run": 37310029846,
+  "artifact_id": 11345358292,
+  "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+  "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1909,
+    "vertices": 3516,
+    "modules": 5,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "locked_geometry": "PASS — same Source08 macro geometry/envelopes/interfaces; Source09 is material-hierarchy correction only.",
+  "hard_questions": {
+    "greybox_reduction": "PASS — continuous authored geological mass retained.",
+    "rock_rhythm": "PASS — broad diagonal/recessed facets retained without shoulder proxies.",
+    "silhouette": "PASS — exact locked macro plateau envelope and 3/7/11 anchors unchanged.",
+    "depth_without_noise": "PASS — depth remains geometry-driven; darker compressed palette removes pale facet chatter.",
+    "authored_not_procedural": "PASS — no repeated proxy/pillar cadence; color contrast no longer exposes a checker/triangle identity.",
+    "mobile_scale": "PASS at source — large facets remain readable while reduced value spread prevents micro-pattern dominance.",
+    "architecture_integration": "AUTHORIZED FOR UNITY — darker rock recedes beneath accepted architecture instead of competing with it.",
+    "material_difference": "PASS — rock is darker/warmer and compressed; earth remains distinct from civic paving without washout.",
+    "real_quality_jump": "PASS SOURCE — retains Source08 structural jump and directly fixes the integrated washout defect that caused the legitimate Source08 visual fail."
+  },
+  "unity_gate": "AUTHORIZED NEXT — rerender all seven official cameras with exact Source09 GLB; Lower Gate + Bridge + Road + Stair fixed; no geometry/camera/composition change.",
+  "tripo_credits": 0
+}

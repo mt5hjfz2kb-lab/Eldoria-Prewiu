@@ -1,0 +1,35 @@
+name: "[DIAGNOSTIC] Golden Actions Ping"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/golden-actions-ping.json'
+
+permissions:
+  contents: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Persist ping
+        run: |
+          mkdir -p docs/evidence/valoria-golden-lookdev-slice-v1/actions-ping
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/evidence/valoria-golden-lookdev-slice-v1/actions-ping/status.json')
+          p.write_text(json.dumps({
+            "run_id":os.environ.get("GITHUB_RUN_ID"),
+            "head_sha":os.environ.get("GITHUB_SHA"),
+            "runner":"ubuntu-latest"
+          },indent=2)+"\n")
+          PY
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/evidence/valoria-golden-lookdev-slice-v1/actions-ping/status.json
+          git commit -m "Record Golden Actions ping"
+          git pull --rebase origin main
+          git push origin HEAD:main

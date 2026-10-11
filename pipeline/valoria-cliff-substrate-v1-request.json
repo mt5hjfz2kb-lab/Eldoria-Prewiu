@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-cliff-substrate-v1",
+  "objective": "Replace disconnected foreground/cliff/residual rock fragments with one coherent faceted visual cliff substrate beneath the compact Valoria core, preserving all gameplay floors, colliders, routes, hotspots and reserved plots.",
+  "route": "environment_composition",
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "terrain_and_transitions",
+    "composition_and_mass",
+    "materials_and_surface"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_reserved_plots": true,
+    "suppress_only_visual_edge_fragments": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "strongest_composite_19_12_9_8_mobile",
+    "collider_hotspot_signature",
+    "integrated_full_frame"
+  ]
+}

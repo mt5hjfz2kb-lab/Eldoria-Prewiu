@@ -1,0 +1,42 @@
+name: Eldoria curated architectural variant proof
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['.github/workflows/valoria-curated-architecture.yml','tools/art-rd/eldoria_curated_architecture.py']
+permissions:
+  contents: read
+jobs:
+  render-licensed-candidate:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1
+          if($git){Split-Path $git.FullName|Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append}
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Render licensed kit internally without distributing assets
+        shell: powershell
+        run: |
+          $env:ELDORIA_CURATED_OUTPUT="$env:RUNNER_TEMP/eldoria-curated"
+          $out="$env:RUNNER_TEMP/eldoria-curated-stdout.log"
+          $err="$env:RUNNER_TEMP/eldoria-curated-stderr.log"
+          $p=Start-Process -FilePath "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -ArgumentList @("-b","--python","tools/art-rd/eldoria_curated_architecture.py") -Wait -PassThru -RedirectStandardOutput $out -RedirectStandardError $err
+          Get-Content $out -Tail 12
+          Get-Content $err -Tail 12
+          if($p.ExitCode -ne 0){throw "FBX proof failed exit $($p.ExitCode)"}
+          if(-not (Test-Path "$env:ELDORIA_CURATED_OUTPUT/after.png")){throw "Missing actual FBX proof render"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-curated-architectural-render-only
+          path: |
+            ${{ runner.temp }}/eldoria-curated/before.png
+            ${{ runner.temp }}/eldoria-curated/after.png
+            ${{ runner.temp }}/eldoria-curated/report.json
+            ${{ runner.temp }}/eldoria-curated-stdout.log
+            ${{ runner.temp }}/eldoria-curated-stderr.log
+          retention-days: 14

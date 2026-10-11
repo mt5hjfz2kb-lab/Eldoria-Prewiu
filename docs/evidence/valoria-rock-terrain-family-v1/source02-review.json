@@ -1,0 +1,32 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_run": 37304209849,
+  "artifact_id": 11342818449,
+  "source_sha": "ea0e7237ebf8f076c67e752b63343a3c451150c30a10d603b10628e1e0513cc0",
+  "export_sha": "e1b0913de6e978b56d4741ba46c1d0862ff0be2831ccb0c27076b0333f23e1e1",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1011,
+    "vertices": 1657,
+    "modules": 12,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "PARTIAL — geometric faceting is a real improvement over source01.",
+    "rock_rhythm": "PARTIAL — larger planes read, but face-by-face tonal alternation creates a low-poly checker pattern.",
+    "silhouette": "PASS — exact approved outer envelope remains intact.",
+    "depth_without_noise": "PASS geometrically / FAIL materially — large insets create depth, but tonal chatter adds visual noise.",
+    "authored_not_procedural": "FAIL — repeated per-face palette cadence reads algorithmic rather than geologically authored.",
+    "mobile_scale": "PASS geometry, PARTIAL material — facets survive mobile but tonal pattern is too busy.",
+    "architecture_integration": "PENDING UNITY — not authorized.",
+    "material_difference": "PASS in category separation, FAIL in rock refinement.",
+    "real_quality_jump": "PARTIAL — promising structure, insufficient material/face hierarchy for integration."
+  },
+  "decision": "REAUTHOR SOURCE03 IN SAME FAMILY. Preserve source02 faceted geometry approach; remove checkerboard cadence, use restrained broad rock tones and geometry/lighting for most variation.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0
+}

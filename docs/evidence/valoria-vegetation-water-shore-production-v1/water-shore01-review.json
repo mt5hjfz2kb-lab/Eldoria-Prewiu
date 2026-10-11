@@ -1,0 +1,19 @@
+{
+  "verdict": "WATER/SHORE VISUAL FAIL — ITERATE",
+  "iteration": "water-shore01",
+  "run_id": 37346763647,
+  "artifact_id": 11360558929,
+  "passes": [
+    "foreground separation",
+    "bridge contrast",
+    "opaque/no transparency artifacts",
+    "gameplay regression",
+    "vegetation unchanged"
+  ],
+  "fails": [
+    "water surface reads too uniformly flat in 16:9 and mobile",
+    "specular variation is not visually present enough"
+  ],
+  "action": "Keep geometry, color family and shore contacts; add deterministic low-frequency albedo variation + normal/specular micro-variation in the shared Unity water material. No transparency and no extra composition changes.",
+  "tripo_credits": 0
+}

@@ -1,0 +1,37 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source05",
+  "source_run": 37323228113,
+  "artifact_id": 11351226649,
+  "source_sha": "3feb9164a87942018479452c535a207aa123fa3efa03413a1ae2ed120c3accbc",
+  "export_sha": "e3fb283d96756379c749ca0790f7594fb966f175d61ee3bc7796ba267c6cbdc4",
+  "tech_pass": false,
+  "geometry": {
+    "triangles": 37680,
+    "vertices": 26219,
+    "modules": 9,
+    "materials": 9,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 12438
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "PARTIAL PASS — Source04 macroarchitecture remains coherent, but donor relief does not materially change the dominant long-curtain silhouette.",
+    "2_immediately_dominant_valoria_bastion": "FAIL — Keep remains the local focal mass but still does not command the family strongly enough at gameplay distance.",
+    "3_primary_secondary_tertiary": "PASS",
+    "4_real_architectural_depth": "PASS — donor adds local depth, but most of it is visually absorbed by the Keep body.",
+    "5_controlled_asymmetry": "PASS",
+    "6_no_cloned_modules": "PASS",
+    "7_rich_material_without_microdetail": "PARTIAL PASS — donor adds form information, but its low projection and shared material keep the facade visually flat.",
+    "8_coherent_lower_gate_walls": "PASS",
+    "9_gameplay_camera": "FAIL HERO — official-camera proxy still reads fortified wall first, singular Valoria hero second.",
+    "10_authored_not_procedural": "PASS METHOD — donor is certified geometry used as zero-credit authored relief, not procedural generation.",
+    "11_not_castle_kit_generic": "FAIL HERO — richer than Source04, still not a decisive bespoke-command-fortress read.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — not enough visual delta to justify Unity integration."
+  },
+  "technical_hard_stop": "FAIL — donor crop introduces 12,438 non-manifold edges. Even with stronger visuals this source would not be eligible for final promotion.",
+  "decision": "DO NOT INTEGRATE UNITY. Source06 keeps Source04 macroarchitecture but changes donor use: close donor crop boundaries, project the relief more strongly within Keep depth, reserve the central portal/banner clear zone, and use a brighter low-frequency relief material. No macro silhouette borrowing, no roof/base donor geometry, zero Tripo.",
+  "tripo_credits": 0
+}

@@ -1,0 +1,11 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reason": "Boolean operands introduced an active UVMap with zero UVs on tower groups. Primary stone samples grout corner and cloth loses gold heraldry. Intended MetricUV existed as second UV set; exporter material samples first set. Geometry silhouette, depth and opening are directionally correct but surface gate cannot pass.",
+  "run_id": 37280566115,
+  "artifact_id": 11332635871,
+  "source_sha": "d15dcd939148eaa2fcd043580937f1dc87a09201be1765ea70f07c9bbaec098c",
+  "export_sha": "b0491266eff23af738bcc436faabfc645a72362dbc0239fa3c16b6ef9bf3ed60",
+  "unity_not_run": true,
+  "correction": "Remove inherited UV layers after cutters; one active MetricUV across every module; regenerate all evidence, no camera/massing change",
+  "tripo_credits": 0
+}

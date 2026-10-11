@@ -1,0 +1,107 @@
+name: "[PRODUCTION] Golden Surface V2 Windows Fallback"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/golden-surface-v2-windows-request.json'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: valoria-golden-surface-v2-windows
+  cancel-in-progress: true
+
+jobs:
+  author:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            if (Test-Path $desktop) {
+              $candidate = Get-ChildItem $desktop -Recurse -Filter git.exe -ErrorAction SilentlyContinue |
+                Where-Object { $_.FullName -match '\\resources\\app\\git\\cmd\\git.exe$' } |
+                Select-Object -First 1
+              if ($candidate) { $env:PATH = "$($candidate.Directory.FullName);$env:PATH"; echo $candidate.Directory.FullName >> $env:GITHUB_PATH }
+            }
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Validate surface route
+        shell: powershell
+        run: |
+          node tools/plan-art-production.mjs
+          node tools/validate-blender-professional-authoring.mjs
+
+      - name: Resolve portable Blender
+        id: blender
+        shell: powershell
+        run: |
+          $cmd = Get-Command blender.exe -ErrorAction SilentlyContinue
+          if ($cmd) { $exe=$cmd.Source }
+          if (-not $exe) {
+            $found = Get-ChildItem "${env:ProgramFiles}\Blender Foundation" -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($found) { $exe=$found.FullName }
+          }
+          if (-not $exe) {
+            $zip = Join-Path $env:RUNNER_TEMP 'blender-4.3.2-windows-x64.zip'
+            $dir = Join-Path $env:RUNNER_TEMP 'blender-4.3.2-windows-x64'
+            if (-not (Test-Path (Join-Path $dir 'blender.exe'))) {
+              Invoke-WebRequest -Uri 'https://download.blender.org/release/Blender4.3/blender-4.3.2-windows-x64.zip' -OutFile $zip
+              if (Test-Path $dir) { Remove-Item $dir -Recurse -Force }
+              Expand-Archive -Path $zip -DestinationPath $env:RUNNER_TEMP -Force
+            }
+            $exe=Join-Path $dir 'blender.exe'
+          }
+          if (-not (Test-Path $exe)) { throw "Blender executable unavailable" }
+          & $exe --version
+          "exe=$exe" >> $env:GITHUB_OUTPUT
+
+      - name: Author Golden Surface V2 persistent maps
+        shell: powershell
+        run: |
+          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-surface-maps.py
+          if ($LASTEXITCODE -ne 0) { throw "Blender surface authoring failed: $LASTEXITCODE" }
+          $required=@(
+            'docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2/texture-manifest.json',
+            'Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png',
+            'Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_normal.png',
+            'Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_ao.png',
+            'Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_smoothness.png'
+          )
+          foreach($p in $required){ if(-not (Test-Path $p)){ throw "Missing authored map: $p" } }
+
+      - name: Persist Golden Surface V2
+        shell: powershell
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add art-source/valoria/lookdev/golden-slice-v1/surface-v2
+          git add Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures
+          git add docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2
+          if (-not (git diff --cached --quiet)) {
+            git commit -m "Persist Blender-authored Golden Surface V2 maps"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-golden-surface-v2-windows-source
+          path: |
+            art-source/valoria/lookdev/golden-slice-v1/surface-v2/*
+            Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2/*
+          if-no-files-found: error
+          retention-days: 30

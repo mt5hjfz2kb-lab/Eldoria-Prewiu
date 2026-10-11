@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "status": "locked",
+  "brief_id": "VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1",
+  "base_capture": {
+    "source_block": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1",
+    "run_id": 37221732105,
+    "artifact_id": 11309549299,
+    "captured_head": "5231a9e208cf99d9cc5d6a350f8de17bbdb6ae62",
+    "filename": "AFTER-HORIZONTAL-16x9.png",
+    "width": 1600,
+    "height": 900,
+    "sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1"
+  },
+  "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "coordinate_space": "pixels_in_locked_1600x900_base",
+  "replacement_envelope": [
+    [
+      474,
+      514
+    ],
+    [
+      481,
+      419
+    ],
+    [
+      548,
+      388
+    ],
+    [
+      606,
+      359
+    ],
+    [
+      661,
+      391
+    ],
+    [
+      681,
+      446
+    ],
+    [
+      704,
+      420
+    ],
+    [
+      748,
+      404
+    ],
+    [
+      804,
+      404
+    ],
+    [
+      851,
+      423
+    ],
+    [
+      885,
+      447
+    ],
+    [
+      907,
+      392
+    ],
+    [
+      965,
+      358
+    ],
+    [
+      1024,
+      390
+    ],
+    [
+      1053,
+      419
+    ],
+    [
+      1066,
+      519
+    ],
+    [
+      1046,
+      584
+    ],
+    [
+      1014,
+      626
+    ],
+    [
+      956,
+      643
+    ],
+    [
+      906,
+      626
+    ],
+    [
+      866,
+      603
+    ],
+    [
+      838,
+      623
+    ],
+    [
+      705,
+      623
+    ],
+    [
+      676,
+      600
+    ],
+    [
+      629,
+      627
+    ],
+    [
+      566,
+      642
+    ],
+    [
+      514,
+      622
+    ],
+    [
+      480,
+      579
+    ]
+  ],
+  "protected_regions": {
+    "hero_bastion_approx_bbox": [
+      610,
+      35,
+      1165,
+      475
+    ],
+    "promoted_lower_city_approx_bbox": [
+      30,
+      520,
+      600,
+      865
+    ],
+    "central_stair_corridor_approx_bbox": [
+      652,
+      414,
+      903,
+      627
+    ]
+  },
+  "target_components": {
+    "west_shoulder": {
+      "reading": "lower_broader_inhabited_retaining_mass",
+      "required": [
+        "2_plus_visible_setbacks",
+        "deep_arcade_or_recess",
+        "thick_terrace_edge",
+        "broken_parapet_rhythm",
+        "irregular_rock_termination"
+      ]
+    },
+    "east_shoulder": {
+      "reading": "slightly_taller_civic_retaining_mass",
+      "required": [
+        "stronger_vertical_accent",
+        "fewer_deeper_openings",
+        "visible_side_return",
+        "restrained_slate_or_blue_accent",
+        "distinct_rock_termination"
+      ]
+    },
+    "central_receiving_terrace": {
+      "reading": "continuous_but_stepped_receiver_for_central_stair",
+      "required": [
+        "open_stair",
+        "dark_undercut",
+        "depth_steps",
+        "lower_city_handoff"
+      ],
+      "forbidden": [
+        "flat_bridge_slab",
+        "defensive_wall_read"
+      ]
+    },
+    "upper_contacts": {
+      "reading": "stepped_bastion_and_cliff_interlock",
+      "forbidden": [
+        "detached_giant_arch",
+        "decorative_cap_over_box_mass"
+      ]
+    }
+  },
+  "depth_rule": {
+    "minimum_screen_readable_layers": 3,
+    "layers": [
+      "foreground_edge_or_parapet",
+      "primary_wall_plane",
+      "genuine_recess_or_dark_return"
+    ],
+    "openings_require": [
+      "wall_thickness",
+      "side_returns",
+      "dark_internal_value",
+      "non_uniform_spacing"
+    ]
+  },
+  "material_value_rule": {
+    "primary_stone": "warm_mid_value",
+    "secondary_retaining_stone": "slightly_darker_weathered",
+    "trim": "limited_pale_warm",
+    "recess": "dark_neutral_brown_charcoal",
+    "caps": "restrained_slate",
+    "heraldry": "sparse_valoria_blue",
+    "rock": "darker_and_desaturated_than_architecture"
+  },
+  "hierarchy": [
+    "Hero Bastion",
+    "Bastion-to-city retaining frame",
+    "promoted lower city"
+  ],
+  "preserve": [
+    "Hero Bastion",
+    "promoted lower-city groups",
+    "central stair/circulation",
+    "Granero",
+    "Cuartel",
+    "camera",
+    "density",
+    "gameplay/routes/parcels/reserves"
+  ],
+  "forbidden_methods": [
+    "primitive_stack_primary_silhouette",
+    "formulaic_repeated_bays",
+    "mirrored_halves_without_design_reason",
+    "flat_placeholder_materials_as_final",
+    "detached_rock_wedges_as_seam_covers",
+    "quality_claim_from_polygon_object_modifier_count"
+  ],
+  "next_blender_gate": [
+    "match_locked_screen_space_silhouette",
+    "freeform_authored_volumes",
+    "real_thickness_and_returns",
+    "authored_stone_rock_interlock",
+    "material_value_plan",
+    "clay_preview",
+    "lit_three_quarter",
+    "official_camera_or_proxy",
+    "ART_SOURCE_PASS_before_Unity"
+  ]
+}

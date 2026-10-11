@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "updated_at": "2026-10-04",
+  "source_inventory": "pipeline/asset-library-canonicalization-audit.json",
+  "rules": "docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md",
+  "dispositions": [
+    {
+      "asset": "Valoria_HeroBastion_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+      "disposition": "KEEP_AS_PRODUCTION_LEGACY_SOURCE",
+      "role": "HERO",
+      "reason": "Certified Hero quality anchor; do not simplify to match secondary assets.",
+      "next": "Preserve; only reauthor bounded interfaces/material integration when evidence justifies."
+    },
+    {
+      "asset": "Valoria_Aserradero_AP2_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "sha256": "1932e36c7fdf972c2ffb209ed7b3679fd7f0243d0f8e713e0f4643146fa9ad0e",
+      "disposition": "KEEP_AS_PRODUCTION_LEGACY_SOURCE",
+      "role": "PRIMARY",
+      "reason": "Dedicated functional production asset with PBR and certified integrated use.",
+      "next": "Preserve geometry; converge materials/interfaces toward new stack."
+    },
+    {
+      "asset": "Valoria_Cuartel_AP2_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "sha256": "948a79e8f14be5ba4df1b98ddcb01d5312a3806f9fbdc4ecd8541960e0a5b980",
+      "disposition": "KEEP_AS_PRODUCTION_LEGACY_SOURCE",
+      "role": "PRIMARY",
+      "reason": "Dedicated functional production asset with PBR and certified integrated use.",
+      "next": "Preserve geometry unless new family proves a clear replacement win; add function-specific dressing."
+    },
+    {
+      "asset": "Valoria_Granero_BIII_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "sha256": "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67",
+      "disposition": "KEEP_AS_PRODUCTION_LEGACY_SOURCE",
+      "role": "PRIMARY",
+      "reason": "Dedicated Granero production asset TECH/VISUAL PASS.",
+      "next": "Preserve plot/function; material/interface convergence first, reauthor only if direct reference comparison proves it is the dominant gap."
+    },
+    {
+      "asset": "MidTierArchitectureKit_v1",
+      "paths": [
+        "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"
+      ],
+      "disposition": "KEEP_AS_SUPPORT_OR_TEMPORARY",
+      "role": "SECONDARY",
+      "reason": "Technically production-persisted, but later full-frame evidence still shows secondary architecture quality mismatch versus Hero/reference.",
+      "next": "Use only where it survives real camera; starter family is the preferred replacement route for visible civic/residential roles."
+    },
+    {
+      "asset": "StoneArchitectureKit_v1",
+      "paths": [
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+      ],
+      "disposition": "KEEP_AS_SUPPORT",
+      "role": "SUPPORT",
+      "reason": "Certified reusable masonry/transition vocabulary; not complete building art.",
+      "next": "Retain for foundations, seams, retaining/wall support around authored architecture."
+    },
+    {
+      "asset": "TerrainTerraceKit_v1",
+      "paths": [
+        "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb"
+      ],
+      "disposition": "KEEP_AS_SUPPORT",
+      "role": "SUPPORT",
+      "reason": "Rich PBR geometry suitable for terrain/terrace seating and transitions.",
+      "next": "Reuse selectively; do not force placement."
+    },
+    {
+      "asset": "RescuedSupport",
+      "paths": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb"
+      ],
+      "disposition": "KEEP_AS_SUPPORT",
+      "role": "SUPPORT",
+      "reason": "Useful certified/rescued transition and low-salience modules; no claim as new final-building family.",
+      "next": "Retain behind/around final authored assets when screen-space contribution is positive."
+    },
+    {
+      "asset": "GateStreetRiseRock_MV1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "disposition": "KEEP_AS_SUPPORT_LIMITED",
+      "role": "SUPPORT",
+      "reason": "Historical visual landmark only; traversal/interface failure remains authoritative.",
+      "next": "Never own circulation; use only as bounded visual fragment."
+    },
+    {
+      "asset": "StoneKit_six_piece",
+      "paths": [
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb"
+      ],
+      "disposition": "KEEP_AS_SUPPORT_CONDITIONAL",
+      "role": "SUPPORT",
+      "reason": "Construction-layer vocabulary, not automatic full production promotion.",
+      "next": "Use only after placement-level visual review."
+    },
+    {
+      "asset": "Nation1_procedural_family",
+      "source_branch": "production/valoria-nation1-authored-v1",
+      "disposition": "KEEP_COMPOSITION_BUT_CLASSIFY_GEOMETRY_GREYBOX_TEMPORARY",
+      "role": "SECONDARY",
+      "reason": "Real artifact improves composition but source remains primitive-heavy; later commit still adds braces/dormer/porch through box/gable helpers.",
+      "next": "Inherit positions/layout if final Nation1 closure accepts them; replace visible secondary architecture with starter high-fidelity family."
+    }
+  ],
+  "destructive_policy": "Do not delete legacy/support assets during reset. Replace only after matched real-camera visual acceptance.",
+  "summary": {
+    "production_anchors": [
+      "Hero Bastion",
+      "Aserradero",
+      "Cuartel",
+      "Granero"
+    ],
+    "support_families": [
+      "StoneArchitectureKit",
+      "TerrainTerraceKit",
+      "RescuedSupport",
+      "StoneKit conditional"
+    ],
+    "replacement_priority": [
+      "Nation1 visible secondary procedural architecture",
+      "other obvious primitive player-facing architecture"
+    ],
+    "unknowns": "Any asset not listed remains unchanged until evidence-based classification."
+  }
+}

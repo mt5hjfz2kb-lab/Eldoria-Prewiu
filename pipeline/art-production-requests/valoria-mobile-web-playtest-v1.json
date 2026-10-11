@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "valoria-mobile-web-playtest-v1",
+  "request_id": "valoria-mobile-web-playtest-v1",
+  "asset_or_sector": "Valoria WebGL mobile presentation and touch navigation correction",
+  "profile": "environment_composition",
+  "visual_gate_state": "failed",
+  "diagnosis": "responsive_framing_and_input_presentation_mismatch",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": false,
+    "existing_qualified_donor_assets": false,
+    "blender_material_consolidation": false
+  },
+  "validation": {
+    "source_gate": "Do not alter canonical Valoria art, gameplay, World Region 1 or game-state authority. WebGL-specific presentation/input only. Reuse certified Valoria runtime frames and canonical city camera semantics; zero paid credits.",
+    "final_gate": "Physical-iPhone-like WebGL must preserve HOME composition without excessive crop, support one-finger pan with bounded camera semantics and synchronized hotspots, transition Valoria→World, perform a Region 1 action, return World→Reino→Valoria, and preserve state. Automated playable probe must exercise these behaviors and capture HOME, pan and portrait evidence."
+  },
+  "escalation": {
+    "on_next_visual_fail": "If frame-based WebGL presentation cannot remain synchronized with canonical pan/hotspots, stop cosmetic iteration and implement a WebGL-specific camera-compatible presentation derived from the same certified visual authority. Do not duplicate gameplay or state."
+  },
+  "notes": "Reopened after owner physical iPhone test invalidated prior PLAYABLE PASS: HOME over-cropped and touch pan ineffective. Presentation/input correction only.",
+  "status": "ACTIVE",
+  "failure_class": "composition"
+}

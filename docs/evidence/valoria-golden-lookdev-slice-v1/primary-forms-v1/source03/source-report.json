@@ -1,0 +1,71 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "family": "GoldenPrimaryFormsV1",
+  "source_iteration": "source03",
+  "method_change_from_source02": [
+    "Gate rebuilt around a visible deep void; rectangular upper curtain removed; tower load hierarchy, buttresses, corbels, stepped wings added.",
+    "Bridge load arch rotated into correct longitudinal Y/Z span; rising deck and continuous side spandrels replace block-like support read.",
+    "Terrain method replaced: flat plateau + explicit multi-band cliff + connected wet shelf replaces broad sigmoid sheet.",
+    "Vegetation method replaced: one continuous asymmetrical tapered canopy mesh per tree replaces stacked icosphere masses."
+  ],
+  "source": "art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source03/GoldenPrimaryFormsV1_source03.blend",
+  "export": "art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source03/GoldenPrimaryFormsV1_source03.glb",
+  "source_sha": "11e3a6aa34b5b4765484f8888d1d98ead32e23f5b4851d610b24c37ed4171070",
+  "export_sha": "c422a506fd51eadc29e8ed74c20e36a26c27046ba46fbba48e20ede200685adb",
+  "geometry_metrics": {
+    "triangles": 4688,
+    "vertices": 2702,
+    "objects": 131,
+    "materials": [
+      "S03 Bark",
+      "S03 Canopy",
+      "S03 Cliff Rock",
+      "S03 Cut Limestone",
+      "S03 Heraldry",
+      "S03 Iron",
+      "S03 Plateau Earth",
+      "S03 Portal Shadow",
+      "S03 Warm Limestone",
+      "S03 Water",
+      "S03 Wet Shelf"
+    ],
+    "bounds_world_blender": [
+      [
+        -21.5,
+        -39.0,
+        0.07999999821186066
+      ],
+      [
+        30.0,
+        -18.399999618530273,
+        15.320000648498535
+      ]
+    ],
+    "uv": true,
+    "normals": true
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source03/source03-clay-silhouette.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source03/source03-lit-three-quarter.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source03/source03-official-proxy.png"
+  ],
+  "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "scope_guards": {
+    "canonical_camera_changed": false,
+    "macro_gate_position_changed": false,
+    "macro_bridge_position_changed": false,
+    "gameplay_changed": false,
+    "road_stair_bastion_changed": false,
+    "colliders": 0,
+    "tripo_credits": 0
+  },
+  "visual_gate": {
+    "required": 4.0,
+    "geometry_silhouette": "PENDING VISUAL REVIEW",
+    "material_response": "PENDING VISUAL REVIEW",
+    "contact_integration": "PENDING VISUAL REVIEW",
+    "environment_coherence": "PENDING VISUAL REVIEW",
+    "premium_perception": "PENDING VISUAL REVIEW"
+  },
+  "unity_integration": "PROHIBITED UNTIL EXPLICIT SOURCE VISUAL PASS"
+}

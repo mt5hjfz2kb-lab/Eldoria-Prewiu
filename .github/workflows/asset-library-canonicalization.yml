@@ -1,0 +1,25 @@
+name: Asset Library Canonicalization
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate request
+        run: node -e "const r=require('./pipeline/asset-library-canonicalization-request.json'); if(!r.enabled||r.schema_version!==1) process.exit(1)"
+      - name: Canonicalize library
+        run: bash tools/canonicalize-asset-library.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asset-library-canonicalization-${{ github.run_id }}
+          path: pipeline/asset-library-canonicalization-audit.json
+          if-no-files-found: warn
+          retention-days: 30

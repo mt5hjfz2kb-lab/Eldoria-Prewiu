@@ -1,0 +1,38 @@
+name: "[R&D] Valoria SCoPE GeometryCrafter Chain v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-scope-geometrycrafter-chain-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch successful SCoPE lateral artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/geometrycrafter-proof /tmp/scope-artifact
+          curl -L --fail -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json"             "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/11407620741/zip"             -o /tmp/scope.zip
+          unzip -q /tmp/scope.zip -d /tmp/scope-artifact
+          cp /tmp/scope-artifact/scope-0.mp4 /tmp/geometrycrafter-proof/scope-0.mp4
+          test -s /tmp/geometrycrafter-proof/scope-0.mp4
+      - name: Install client
+        run: python -m pip install --quiet "gradio_client>=1.4"
+      - name: Reconstruct SCoPE video with GeometryCrafter
+        env:
+          OUT_DIR: /tmp/geometrycrafter-proof
+        run: python tools/valoria-geometrycrafter-space-proof.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-scope-geometrycrafter-chain-v1
+          path: /tmp/geometrycrafter-proof
+          if-no-files-found: error
+          retention-days: 30

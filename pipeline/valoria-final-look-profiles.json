@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "status": "BOUNDED_CANDIDATE_ACCEPTED",
+  "evidence": {
+    "run": 37200169545,
+    "artifact": 11302104433
+  },
+  "accepted": [
+    "reversible warmer/contrast hierarchy",
+    "controlled atmospheric final-look layer"
+  ],
+  "rejected": [
+    "blanket runtime material normalization of authored Stone defense"
+  ],
+  "conditional": [
+    "SSAO",
+    "decals",
+    "soft shadows/cascades",
+    "reflection probes",
+    "baked/mixed indirect lighting",
+    "APV",
+    "advanced AA",
+    "render-scale/upscaling"
+  ],
+  "rule": "Promote each renderer feature only on visible full-frame gain plus measured viable cost; never by checklist."
+}

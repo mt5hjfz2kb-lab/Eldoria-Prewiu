@@ -1,0 +1,50 @@
+{
+  "asset_id": "Valoria_Workshop_v3",
+  "classification": "TEMPORARY",
+  "role": "SECONDARY",
+  "function": "workshop",
+  "source": {
+    "tool": "Blender",
+    "tool_version": "4.0.2",
+    "path": "art-source/valoria/production/starter-family-v3/Valoria_StarterFamily_v3.blend",
+    "sha256": "b8221fb369c31acc0aa6cf69d04cee0c71dd06516277f04d422c497606ab839d",
+    "reproducible": true,
+    "authoring_method": "coherent_family_source_reauthoring_v3",
+    "donor_source": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_03b.fbx"
+  },
+  "geometry": {
+    "triangles": 6719,
+    "materials": 1,
+    "uv0": true,
+    "normals": true
+  },
+  "materials": [
+    {
+      "slot": "preserved-source",
+      "family": "Eldoria_Stone",
+      "maps": [
+        "source-materials pending phase D harmonization"
+      ]
+    }
+  ],
+  "export": {
+    "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3.glb",
+    "sha256": "accf882ba4f75a73c3ecba6e4fbf5dc23f401f5950c7c9120ccd88a63a24e5df",
+    "scale": 1.0,
+    "forward_axis": "+Z",
+    "up_axis": "+Y"
+  },
+  "unity": {
+    "resource_path": "Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3",
+    "owns_gameplay_collider": false,
+    "owns_hotspot": false
+  },
+  "evidence": {
+    "isolated_preview": "pipeline/evidence/valoria-production-art-starter-v3/Valoria_Workshop_v3.png",
+    "zoom9": "",
+    "mobile": "",
+    "technical_verdict": "PENDING_UNITY",
+    "visual_verdict": "PENDING_VISUAL",
+    "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+  }
+}

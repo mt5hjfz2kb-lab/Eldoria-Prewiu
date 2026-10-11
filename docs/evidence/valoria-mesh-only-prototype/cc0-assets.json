@@ -1,0 +1,20 @@
+{
+  "license": "CC0-1.0",
+  "source": "https://kenney.nl/assets/castle-kit",
+  "mirror": "https://github.com/Hidencod/tge-assets",
+  "purpose": "SHARP-independent noncommercial test of freely commercializable geometry; keep attribution and source hash",
+  "assets": [
+    {
+      "path": "packs/castle-kit/tower-square.glb",
+      "sha": "9a1107d39ad3a0ec2a5c49df97f4f92e873bf36f"
+    },
+    {
+      "path": "packs/castle-kit/tree-large.glb",
+      "sha": "3a4b4defaba65f623e06be511c8d95e884b30e79"
+    },
+    {
+      "path": "packs/castle-kit/rocks-large.glb",
+      "sha": "c55e671c6c82f75d49eb7c2488bb23c514fbdee2"
+    }
+  ]
+}

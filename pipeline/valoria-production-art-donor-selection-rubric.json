@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "phase": "C4 donor-source selection",
+  "status": "pending donor visual proof",
+  "roles": [
+    "main_gate",
+    "wall_segment",
+    "tower",
+    "civic_house",
+    "workshop"
+  ],
+  "hard_reject": [
+    "reads as rock mass rather than reusable architecture for the intended role",
+    "single-purpose silhouette that cannot be re-authored without obvious collage",
+    "material/UV layout makes modular reuse destructive",
+    "official-camera readability is worse than current accepted composition",
+    "requires paid generation to become usable"
+  ],
+  "score_dimensions": [
+    {
+      "id": "architectural_depth",
+      "weight": 25,
+      "description": "real recesses, roof thickness, structural layers, trim and silhouette"
+    },
+    {
+      "id": "hero_compatibility",
+      "weight": 20,
+      "description": "can approach Hero Bastion richness without looking like a different game"
+    },
+    {
+      "id": "modular_reauthorability",
+      "weight": 20,
+      "description": "can be cut/recombined/cleaned in Blender into a reusable family"
+    },
+    {
+      "id": "surface_quality",
+      "weight": 15,
+      "description": "existing basecolor/RM/normal contain useful production detail"
+    },
+    {
+      "id": "mobile_readability",
+      "weight": 10,
+      "description": "macro form remains legible at zoom9/mobile"
+    },
+    {
+      "id": "functional_identity",
+      "weight": 10,
+      "description": "supports the intended role without relying on labels"
+    }
+  ],
+  "promotion_threshold": 72,
+  "decision_rules": [
+    "Do not select by triangle count alone.",
+    "Whole-asset reuse is allowed only as a temporary donor proof; final family source must be saved as authored Blender source.",
+    "Hero Bastion is a quality reference, not a donor to clone wholesale.",
+    "StoneArchitecture/TowerWallRock may donate defensive grammar; MidTier may donate residential/civic grammar.",
+    "Aserradero/Cuartel/Granero may donate surface/silhouette ideas but their thousands of loose fragments make automatic semantic extraction unsuitable."
+  ],
+  "c4_output": "One coherent Blender-authored starter family using selected donor grammar, not a collage of unrelated whole GLBs."
+}

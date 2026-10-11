@@ -1,0 +1,84 @@
+{
+  "triangles": 1944,
+  "vertices": 1008,
+  "materials": 3,
+  "semantic_modules": 4,
+  "source_glb": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+  "source_sha": "0b672be9f522438754df5167c7376a65477b193c5251e4be39bedc722b98bc66",
+  "export_sha": "683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67",
+  "bounds_world_blender": [
+    [
+      -6.454679489135742,
+      -46.59498596191406,
+      3.010000228881836
+    ],
+    [
+      8.746232986450195,
+      9.516475677490234,
+      11.09000015258789
+    ]
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "uv": true,
+  "normals": true,
+  "tangents_exported": true,
+  "nonmanifold_edges": 0,
+  "collider_state": "No source collider; isolated Unity capturer rejects all colliders.",
+  "import_settings": "GLB metric scale1; glTFast isolated ArtTests import; explicit Unity placement [3.5,7.08,-18], yaw180.",
+  "LOD_strategy": {
+    "LOD0": "1,944 triangles; under 3,000-triangle preproduction budget.",
+    "LOD1": "Future 40–60% only if matched-camera/mobile screen-space error warrants it.",
+    "LOD2": "Future 15–25% only after mobile validation; road surface may remain material-driven."
+  },
+  "mobile_suitability": "Integrated readability PASS in mobile landscape, portrait-home and portrait-entry; no device FPS certification.",
+  "tripo_credits_spent": 0,
+  "unity_import_actual": {
+    "engine": "6000.3.23f1",
+    "run": 37300556571,
+    "job": 111732031845,
+    "artifact": 11341876912,
+    "runner": "DESKTOP-R10PE55",
+    "triangles": 1944,
+    "vertices": 5556,
+    "renderers": 4,
+    "materials": 3,
+    "textures": 4,
+    "submesh_draws": 12,
+    "mesh_bytes": 587056,
+    "texture_bytes": 11188384,
+    "texture_sizes": [
+      "stone_grain_albedo:512x512",
+      "stone_grain_normal:512x512",
+      "paving_albedo:512x512",
+      "paving_normal:512x512"
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false,
+    "focused_playmode": "5/5 PASS"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "family": "GoldenLocalVisualShellV3",
+  "scope": "Source03 final bounded substrate uplift: source02 retained plus irregular Hero Ground Apron and two irregular sloped Cliff Aprons covering only screen-visible inherited substrate facets.",
+  "source": "art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.blend",
+  "export": "art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.glb",
+  "source_sha": "7a0c2468da85b6399a01689f87f1f7948687f8e01183b686d487c9508957b291",
+  "export_sha": "5e286bbd97db8013a46ad4b081a4cd768e383eee98c8ddf209e53381ce2954ae",
+  "geometry_metrics": {
+    "triangles": 9572,
+    "vertices": 5179,
+    "objects": 42,
+    "bounds_world_blender": [
+      [
+        -21.379335403442383,
+        -35.372283935546875,
+        -0.26694154739379883
+      ],
+      [
+        31.476648330688477,
+        -16.53533172607422,
+        14.776000022888184
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true
+  },
+  "unity_placement": {
+    "position": [
+      4.0,
+      7.0,
+      -22.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  },
+  "surface_basis": "Golden Surface V2 persisted maps on rock/ground/stone; source materials retained for local trees",
+  "source02_retained_and_extended": [
+    "removed broad rectangular cliff sheets",
+    "removed rectangular road/ground sheets",
+    "irregular tapered borders",
+    "conifer-compatible tree language"
+  ],
+  "preview_evidence": [
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/source-lit-three-quarter.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/source-official-proxy.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/source-clay.png"
+  ],
+  "gameplay_geometry": false,
+  "colliders": 0,
+  "macro_positions_changed": false,
+  "tripo_credits": 0,
+  "isolated_art_review": "PENDING"
+}

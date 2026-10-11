@@ -1,0 +1,14 @@
+{
+  "asset_name": "Valoria_Aserradero_Selective_v1",
+  "file_name": "9E1FFE10-9D14-4C0F-8698-5A2E311F136C.jpeg",
+  "sha256": "26634ed6eaaac629b4e21b0f1007368a8eb0bab8d27e7ff68c0cef55b8a5f611",
+  "size_bytes": 706818,
+  "parts": 8,
+  "source": "chat_exact_input_persisted_before_tripo",
+  "width": 1536,
+  "height": 1024,
+  "format": "JPEG",
+  "parts_dir": "pipeline/exact-inputs/Valoria_Aserradero_Selective_v1",
+  "expected_sha256": "26634ed6eaaac629b4e21b0f1007368a8eb0bab8d27e7ff68c0cef55b8a5f611",
+  "expected_size_bytes": 706818
+}

@@ -1,0 +1,145 @@
+name: "[LEGACY] Tripo Module 3 terrace-stair-rock pipeline"
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: eldoria-tripo-module3
+  cancel-in-progress: true
+
+jobs:
+  module3:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 18
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+
+      - name: Stage exact owner Module 3 source from Downloads
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          $download = Join-Path $downloads 'Eldoria_Module_TerraceStairRock_HQ.glb'
+          if (-not (Test-Path $download)) {
+            $cutoff = (Get-Date).AddHours(-4)
+            $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' -ErrorAction SilentlyContinue |
+              Where-Object { $_.LastWriteTime -ge $cutoff } |
+              Sort-Object LastWriteTime -Descending)
+            Write-Host "Recent GLB candidates in Downloads:"
+            $recent | ForEach-Object { Write-Host ("  {0} | {1} bytes | {2:o}" -f $_.Name,$_.Length,$_.LastWriteTime) }
+            if ($recent.Count -ne 1) {
+              throw "Exact Module 3 name missing and recent GLB candidate count is $($recent.Count); refusing ambiguous automatic selection."
+            }
+            $download = $recent[0].FullName
+            Write-Host "Using sole recent GLB candidate as Module 3: $download"
+          }
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_TerraceStairRock_HQ.glb'
+          Copy-Item $download $staged -Force
+          $sha = (Get-FileHash $download -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes = (Get-Item $download).Length
+          "source_sha256=$sha" | Set-Content "$env:RUNNER_TEMP\module3-source.txt"
+          "source_bytes=$bytes" | Add-Content "$env:RUNNER_TEMP\module3-source.txt"
+          Write-Host "Module 3 staged: $bytes bytes, sha256=$sha"
+
+      - name: Locate Blender
+        id: blender
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $candidate = (Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $candidate) {
+            $roots = @(
+              'C:\Program Files\Blender Foundation',
+              "$env:LOCALAPPDATA\Programs\Blender Foundation",
+              "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+            )
+            foreach ($root in $roots) {
+              if ($candidate) { break }
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Blender executable not found on Unity runner.' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Blender automatic reduction and UV preparation
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $input = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_TerraceStairRock_HQ.glb"
+          $output = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_TerraceStairRock_50K.glb"
+          $report = "$env:RUNNER_TEMP\module3-blender-report.json"
+          $log = "$env:RUNNER_TEMP\module3-blender.log"
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\tripo_module3_blender.py" -- --input $input --output $output --report $report *> $log
+          if ($LASTEXITCODE -ne 0) {
+            Get-Content $log -Tail 240
+            throw "Blender Module 3 pipeline failed with exit code $LASTEXITCODE"
+          }
+          if (-not (Test-Path $output)) { throw 'Optimized Module 3 GLB missing after Blender.' }
+          Get-Content $report
+
+      - name: Verify Unity 6.3.23f1
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Execute isolated Module 3 Unity gate
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE\Unity\TripoTerraceModuleReviewCaptures"
+          $log = "$env:RUNNER_TEMP\Eldoria-TripoModule3.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoTerraceModuleReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(540000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw 'Module 3 Unity gate timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw "Module 3 Unity gate failed: $($process.ExitCode)"
+          }
+          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Missing/empty Module 3 image evidence: $name" }
+          }
+          $metrics = Join-Path $folder 'metrics.json'
+          if (-not (Test-Path $metrics) -or (Get-Item $metrics).Length -lt 100) { throw 'Missing/empty Module 3 metrics.json' }
+          Get-Content $metrics
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-tripo-module3-${{ github.sha }}
+          path: |
+            Unity/TripoTerraceModuleReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TerraceStairRock_50K.glb
+            ${{ runner.temp }}/module3-source.txt
+            ${{ runner.temp }}/module3-blender-report.json
+            ${{ runner.temp }}/module3-blender.log
+            ${{ runner.temp }}/Eldoria-TripoModule3.log
+          if-no-files-found: warn

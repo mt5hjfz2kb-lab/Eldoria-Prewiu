@@ -1,0 +1,30 @@
+{
+  "verdict": "UNITY CUMULATIVE PASS",
+  "reviewed_at": "2026-10-05",
+  "family": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+  "subfamily": "SAWMILL STATE 2 — FIRST CUMULATIVE GATE",
+  "unity_run": 37338343351,
+  "artifact_id": 11357267300,
+  "views": [
+    "16:9",
+    "mobile-landscape",
+    "source-3x2",
+    "portrait-home",
+    "portrait-left",
+    "portrait-right",
+    "portrait-entry"
+  ],
+  "checks": {
+    "structural_families_unchanged": true,
+    "bastion_remains_hero": true,
+    "gate_road_stair_axis_dominant": true,
+    "timber_stone_separation": true,
+    "mobile_readability": true,
+    "clutter": false,
+    "frame_less_empty": true,
+    "functional_wood_cluster_read": true
+  },
+  "note": "At mobile distance the exact saw blade is tertiary, but the warm timber/open-work silhouette and projecting log-processing rig remain legible as a productive civil cluster. No camera move.",
+  "gameplay_regression": "PASS",
+  "tripo_credits": 0
+}

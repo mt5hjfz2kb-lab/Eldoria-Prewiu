@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "request_id": "valoria-first-hero-asset-v1-20261011",
+  "asset_or_sector": "Single reference-led fortified Valoria gate",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "blender_bake": true,
+    "blender_material_consolidation": true
+  },
+  "validation": {
+    "source_gate": "Editable original mesh, portable PBR, hashes, actual Blender multiangle",
+    "final_gate": "Actual director comparison, exact GLB Unity strategic and reload if runner is released"
+  },
+  "notes": "Reference opened. Historical V5 round roofs and V8 oversized modular crowns visually inspected and rejected as hero bases; reuse portable patterns; build one compact square-tower gate.",
+  "status": "ACTIVE"
+}

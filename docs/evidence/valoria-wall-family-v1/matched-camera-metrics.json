@@ -1,0 +1,45 @@
+{
+  "verdict": "MATCHED-CAMERA TECH PASS",
+  "reviewed_at": "2026-10-05",
+  "methodology": "Unity evidence.json BEFORE/AFTER projected renderer bounds at the same seven official cameras. Protected set excludes only the six Wall placeholders/replacement renderers.",
+  "protected_renderers_per_view": 62,
+  "max_protected_bbox_delta_px": 0,
+  "wall_union_metrics": {
+    "UNITY-source-3x2": {
+      "width_ratio": 0.9983057195,
+      "height_ratio": 0.9793438608,
+      "center_delta_px": 1.45733
+    },
+    "UNITY-16x9": {
+      "width_ratio": 0.9983057194,
+      "height_ratio": 0.9793438608,
+      "center_delta_px": 1.45733
+    },
+    "UNITY-mobile-landscape": {
+      "width_ratio": 0.9983056922,
+      "height_ratio": 0.9793439448,
+      "center_delta_px": 1.02472
+    },
+    "UNITY-portrait-home": {
+      "width_ratio": 0.9983058066,
+      "height_ratio": 0.979344492,
+      "center_delta_px": 1.20116
+    },
+    "UNITY-portrait-left": {
+      "width_ratio": 0.9983057569,
+      "height_ratio": 0.9793444052,
+      "center_delta_px": 1.60153
+    },
+    "UNITY-portrait-right": {
+      "width_ratio": 0.9983057661,
+      "height_ratio": 0.9793444052,
+      "center_delta_px": 1.60153
+    },
+    "UNITY-portrait-entry": {
+      "width_ratio": 0.9983057539,
+      "height_ratio": 0.9793444038,
+      "center_delta_px": 1.60153
+    }
+  },
+  "interpretation": "Wall remains inside the approved blockout envelope. The small ~2.1% height reduction is deliberate interior taper/crown articulation, not relocation or envelope expansion. All closed-family/protected renderers remain exactly stationary at 0 px delta."
+}

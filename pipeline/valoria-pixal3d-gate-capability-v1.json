@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-pixal3d-gate-capability-v1",
+  "input": "semantic Gate front+back alpha from canonical reference",
+  "service": "TencentARC/Pixal3D public Hugging Face Space",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}

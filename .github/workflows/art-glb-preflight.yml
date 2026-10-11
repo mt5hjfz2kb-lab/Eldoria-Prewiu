@@ -1,0 +1,48 @@
+name: Art GLB structural preflight
+
+on:
+  push:
+    branches:
+      - main
+      - prototype/valoria-bastion1-no-sharp-20261010
+    paths:
+      - 'tools/art-rd/audit_glb.py'
+      - 'art-source/**/*.glb'
+      - 'Unity/Assets/Eldoria/ProductionSlice/Experimental/**/*.glb'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  glb-structural:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan existing production/prototype GLBs without GPU or paid API
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          import subprocess
+          import sys
+          files = sorted(pathlib.Path('art-source').rglob('*.glb')) if pathlib.Path('art-source').exists() else []
+          experimental = pathlib.Path('Unity/Assets/Eldoria/ProductionSlice/Experimental')
+          if experimental.exists():
+              files += sorted(experimental.rglob('*.glb'))
+          if not files:
+              print('No matching GLBs present; no generated asset to certify.')
+              sys.exit(0)
+          failed = []
+          for file in files:
+              result = subprocess.run([sys.executable, 'tools/art-rd/audit_glb.py', str(file)],
+                                      capture_output=True, text=True)
+              print(result.stdout)
+              if result.returncode:
+                  failed.append(str(file))
+          if failed:
+              print('GLB STRUCTURAL FAIL: ' + ', '.join(failed), file=sys.stderr)
+              sys.exit(2)
+          print('GLB STRUCTURAL PASS (not a visual or mobile performance certification).')
+          PY

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "nonce": "camera-first-layered-v2-001",
+  "method": "depth_receiver_plus_far_exact_projection",
+  "fixed_camera_orientation": true,
+  "zero_spend": true,
+  "unity": false,
+  "requested_at": "2026-10-06T06:46:00Z"
+}

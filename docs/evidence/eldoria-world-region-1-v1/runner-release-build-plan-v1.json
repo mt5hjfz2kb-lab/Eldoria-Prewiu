@@ -1,0 +1,75 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "trigger": "Only after valoria-mobile-web-playtest-v1 releases windows-self-hosted-unity-6000-3-23f1.",
+  "status": "READY-TO-IMPLEMENT / NO RUNNER CLAIMED",
+  "order": [
+    {
+      "step": 1,
+      "name": "Fresh main + registry reread",
+      "pass": "WebGL owner released heavy runner; no scope conflict."
+    },
+    {
+      "step": 2,
+      "name": "Acquire runner resource in Region 1 claim",
+      "pass": "Registry updated atomically from latest main."
+    },
+    {
+      "step": 3,
+      "name": "Create dedicated World Region 1 scene/data adapter",
+      "pass": "No legacy Frontier final art copied; stable IDs/data-driven entities."
+    },
+    {
+      "step": 4,
+      "name": "Bind PlayerCity_v1 as Valoria strategic origin",
+      "pass": "Visual-only mesh, independent hotspot/state."
+    },
+    {
+      "step": 5,
+      "name": "Implement Mundo/Reino scene transitions",
+      "pass": "Shared PlayerState/FileStateStore survives both directions."
+    },
+    {
+      "step": 6,
+      "name": "Implement bounded 4X camera + touch arbitration",
+      "pass": "Pan/zoom clamps and drag-vs-tap reliable on mobile."
+    },
+    {
+      "step": 7,
+      "name": "Implement forest node + visible march",
+      "pass": "LocalGateway real gather phases/reward/depletion/idempotence."
+    },
+    {
+      "step": 8,
+      "name": "Implement neutral ruin Inspect",
+      "pass": "No economic/combat mutation."
+    },
+    {
+      "step": 9,
+      "name": "Implement corrupt scout encounter",
+      "pass": "Existing minimum Fight semantics; no fake full-combat claim."
+    },
+    {
+      "step": 10,
+      "name": "Visual geography pass",
+      "pass": "Authored terrain masses/routes/forest/relief continuity with Eldoria; not generic prototype board."
+    },
+    {
+      "step": 11,
+      "name": "Save/reload + return-to-city proof",
+      "pass": "Reload during march deterministic; wallet/progression reflected in Valoria."
+    },
+    {
+      "step": 12,
+      "name": "Capture all gates",
+      "pass": "TECH, VISUAL, CONTINUITY, NAVIGATION, INTERACTION, GAMEPLAY LOOP, SAVE/RELOAD, BOUNDED CAMERA, MOBILE READABILITY, 4X ARCHITECTURE."
+    }
+  ],
+  "forbiddenWhileWebGLActive": [
+    "push Unity/** changes that trigger heavy runner",
+    "edit Pages workflows",
+    "edit unity-publish-request",
+    "edit WebGL startup/build surfaces",
+    "claim Windows Unity runner",
+    "modify certified Valoria scene/art authority"
+  ]
+}

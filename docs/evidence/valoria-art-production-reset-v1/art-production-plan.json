@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "request_id": "valoria-art-production-reset-v1",
+  "asset_or_sector": "Valoria full-scene isolated PREPRODUCTION blockout",
+  "profile": "environment_composition",
+  "zero_spend_default": true,
+  "geometry_gap_proven": false,
+  "tripo_allowed": false,
+  "credit_authorized": false,
+  "authorized_credit_cost": 0,
+  "stop_before_credit_spend": false,
+  "stages": [
+    "unity_modular_assembly",
+    "unity_environment_art",
+    "official_camera_validation"
+  ],
+  "validation": {
+    "mobile": true,
+    "preserve_gameplay_signature": true
+  },
+  "capabilities_requested": {
+    "unity_modular_assembly": true,
+    "unity_shared_materials": true
+  },
+  "blender_authoring_standard": null,
+  "required_verdicts": [
+    "TECH_PASS",
+    "INTEGRATED_VISUAL_PASS"
+  ]
+}

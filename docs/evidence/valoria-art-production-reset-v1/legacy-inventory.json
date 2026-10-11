@@ -1,0 +1,509 @@
+{
+  "source_main": "6367f796171ab4a718936f39249eec27e29f49a7",
+  "method": "real tracked tree paths, not chat memory",
+  "paths": [
+    "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/LowerCityWorldRock.mat",
+    "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Granero_CFSv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_CivicHouse_CohV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_MainGate_CohV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_WallSegment_CohV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Workshop_CohV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_MainGate_DefV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_Tower_DefV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_WallSegment_DefV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_MainGate_SkinV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_Tower_SkinV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_WallSegment_SkinV1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Cuartel_FPDv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Granero_FPDv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_MainGate_FPDv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/Valoria_Granero_RCFv1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_MainGate_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Tower_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_WallSegment_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Workshop_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_CivicHouse_v2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_MainGate_v2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Tower_v2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_WallSegment_v2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Workshop_v2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_CivicHouse_v3.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_MainGate_v3.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Tower_v3.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_WallSegment_v3.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_MainGate_StoneDefV2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_Tower_StoneDefV2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_WallSegment_StoneDefV2.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CivicRetainingBay.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CuartelTerraceSupport.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/LowerArcadedFront.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+    "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+    "art-source/valoria/production/bastion-to-city-architectural-frame-v1/Valoria_BastionToCityArchitecturalFrame_v1.blend",
+    "art-source/valoria/production/bastion-to-city-architectural-frame-v1/Valoria_BastionToCityArchitecturalFrame_v1.glb",
+    "art-source/valoria/production/bastion-to-city-blender-authoring-v1/Valoria_BastionToCity_BlenderAuthoring_v1.blend",
+    "art-source/valoria/production/bastion-to-city-blender-authoring-v1/Valoria_BastionToCity_BlenderAuthoring_v1.glb",
+    "art-source/valoria/production/camera-first-functional-source-v1/Valoria_CameraFirst_Functional_Source_v1.blend",
+    "art-source/valoria/production/coherent-family-v1/Valoria_CoherentFamily_v1.blend",
+    "art-source/valoria/production/defensive-family-v1/Valoria_DefensiveFamily_v1.blend",
+    "art-source/valoria/production/defensive-skin-v1/Valoria_DefensiveSkin_v1.blend",
+    "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
+    "art-source/valoria/production/granero-cuartel-source-upgrade-v1/Valoria_Granero_Cuartel_SourceUpgrade_v1.blend",
+    "art-source/valoria/production/granero-rich-camera-first-v1/Valoria_Granero_RichCameraFirst_v1.blend",
+    "art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend",
+    "art-source/valoria/production/starter-family-v3/Valoria_StarterFamily_v3.blend",
+    "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+    "art-source/valoria/production/stone-defensive-family-v2/Valoria_StoneDefensiveFamily_v2.blend"
+  ],
+  "geometry_reused_this_session": 0,
+  "as_is_geometry_approved": 0,
+  "classification_basis": "source identity and recorded dedicated gates + target silhouette; B means unapproved candidate requiring new matched validation, C conservative reference only; no unseen mesh certified",
+  "classification": [
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "classification": "C",
+      "reason": "Different whole-asset silhouette; knowledge/reference only. No reuse of complete fused Bastion."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/LowerCityWorldRock.mat",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Granero_CFSv1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_CivicHouse_CohV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_MainGate_CohV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_WallSegment_CohV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Workshop_CohV1.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_MainGate_DefV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_Tower_DefV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_WallSegment_DefV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_MainGate_SkinV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_Tower_SkinV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_WallSegment_SkinV1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Cuartel_FPDv1.glb",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Granero_FPDv1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_MainGate_FPDv1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/Valoria_Granero_RCFv1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_MainGate_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Tower_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_WallSegment_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Workshop_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_CivicHouse_v2.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_MainGate_v2.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Tower_v2.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_WallSegment_v2.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Workshop_v2.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_CivicHouse_v3.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_MainGate_v3.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Tower_v3.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_WallSegment_v3.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_MainGate_StoneDefV2.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_Tower_StoneDefV2.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_WallSegment_StoneDefV2.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CivicRetainingBay.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CuartelTerraceSupport.glb",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/LowerArcadedFront.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/bastion-to-city-architectural-frame-v1/Valoria_BastionToCityArchitecturalFrame_v1.blend",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/bastion-to-city-architectural-frame-v1/Valoria_BastionToCityArchitecturalFrame_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/bastion-to-city-blender-authoring-v1/Valoria_BastionToCity_BlenderAuthoring_v1.blend",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/bastion-to-city-blender-authoring-v1/Valoria_BastionToCity_BlenderAuthoring_v1.glb",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/camera-first-functional-source-v1/Valoria_CameraFirst_Functional_Source_v1.blend",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/coherent-family-v1/Valoria_CoherentFamily_v1.blend",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/defensive-family-v1/Valoria_DefensiveFamily_v1.blend",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/defensive-skin-v1/Valoria_DefensiveSkin_v1.blend",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/granero-cuartel-source-upgrade-v1/Valoria_Granero_Cuartel_SourceUpgrade_v1.blend",
+      "classification": "C",
+      "reason": "Permanent barracks silhouette does not establish a light tent camp."
+    },
+    {
+      "path": "art-source/valoria/production/granero-rich-camera-first-v1/Valoria_Granero_RichCameraFirst_v1.blend",
+      "classification": "C",
+      "reason": "Recorded source retained as reference; as-is fit to new target not proven."
+    },
+    {
+      "path": "art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/starter-family-v3/Valoria_StarterFamily_v3.blend",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+      "classification": "D",
+      "reason": "Failed/temporary source or incompatible complete frame for this target; preserve historical bytes, do not import."
+    },
+    {
+      "path": "art-source/valoria/production/stone-defensive-family-v2/Valoria_StoneDefensiveFamily_v2.blend",
+      "classification": "B",
+      "reason": "Possible compatible fragment/material vocabulary; requires silhouette/dimension/interface modifications and matched validation. Not reused."
+    }
+  ]
+}

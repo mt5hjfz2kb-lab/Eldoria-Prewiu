@@ -1,0 +1,22 @@
+{
+  "family_id": "Valoria_PremiumSquareMetre_v1",
+  "source_method": "sculpt_detail_authored",
+  "credits": 0,
+  "unity_touched": false,
+  "source": "art-source/valoria/production/premium-square-metre-v1/Valoria_PremiumSquareMetre_v1.blend",
+  "export": "art-source/valoria/production/premium-square-metre-v1/Valoria_PremiumSquareMetre_v1.glb",
+  "preview_evidence": [
+    "docs/evidence/valoria-premium-square-metre-v1/source01/neutral-clay-close.png",
+    "docs/evidence/valoria-premium-square-metre-v1/source01/official-camera-proxy.png",
+    "docs/evidence/valoria-premium-square-metre-v1/source01/silhouette-three-quarter.png"
+  ],
+  "object_count": 34,
+  "approx_triangles_upper_bound": 104448,
+  "groups": [
+    "ButtressProfile",
+    "EdgeDamage",
+    "ReceiverInterface",
+    "StoneMass"
+  ],
+  "review_rule": "Visual gate remains human/agent review. Technical generation never implies ART SOURCE PASS."
+}

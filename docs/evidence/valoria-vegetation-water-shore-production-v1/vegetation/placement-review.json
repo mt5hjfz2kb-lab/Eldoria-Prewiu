@@ -1,0 +1,37 @@
+{
+  "verdict": "VEGETATION PLACEMENT PASS",
+  "source": "Source03 ART SOURCE PASS",
+  "run_id": 37346065773,
+  "artifact_id": 11359839610,
+  "official_views": [
+    "16:9",
+    "mobile-landscape",
+    "3:2",
+    "portrait-home",
+    "portrait-left",
+    "portrait-right",
+    "portrait-entry"
+  ],
+  "visual": {
+    "foreground_framing": "PASS",
+    "cliff_integration": "PASS",
+    "sawmill_framing": "PASS",
+    "camp_framing": "PASS",
+    "bastion_backdrop": "PASS",
+    "lower_gate_bridge_surroundings": "PASS",
+    "open_gameplay_zones": "PASS",
+    "negative_space": "PASS",
+    "hero_hierarchy": "PASS"
+  },
+  "performance": {
+    "instances": 14,
+    "unique_meshes": 3,
+    "unique_materials": 4,
+    "placed_triangles": 92720,
+    "alpha_overdraw": "NONE — opaque foliage",
+    "colliders": 0
+  },
+  "gameplay_regression": "PASS",
+  "remaining": "Water is still flat grey blockout and is now the dominant environmental gap.",
+  "tripo_credits": 0
+}

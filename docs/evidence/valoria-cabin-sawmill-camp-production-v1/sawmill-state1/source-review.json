@@ -1,0 +1,19 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "family": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+  "subfamily": "SAWMILL STATE 1 — CONSTRUCTION",
+  "source_run": 37336378787,
+  "artifact_id": 11357015594,
+  "source_sha": "bd997d5a8f6a24f8daa93816d47c100baa13f385180d0c5dd9cb939da815159b",
+  "export_sha": "4b67cdf984d5d8be7872e08572c3ba4fd4f6a95e971f013ab7eede60f5c04f95",
+  "gate": {
+    "construction_read": true,
+    "not_asset_incomplete": true,
+    "shared_foundation_dna": true,
+    "timber_depth": true,
+    "mobile_silhouette": true,
+    "note": "Erected frame, partial roof/infill, scaffold and work bench read as active construction while remaining visibly unfinished."
+  },
+  "tripo_credits": 0
+}

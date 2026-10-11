@@ -1,0 +1,508 @@
+# VALORIA VISUAL CONVERGENCE EXECUTION v1
+
+Status: ACTIVE PRODUCTION-METHOD CONVERGENCE
+Date: 2026-10-06
+Owner workstream: `valoria-visual-convergence-production-v1`
+
+## Owner decision
+Broad visual-method discovery is frozen. Existing research evidence is preserved in `docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md`, but no new generator/view-synthesis/depth/donor family may be opened unless this convergence workstream explicitly reopens one bounded dependency.
+
+## Goal
+Produce one repeatable Valoria visual-production recipe that can scale from the Lower Gate proof to the wider city while preserving:
+- canonical visual identity,
+- real interaction/clickability,
+- bounded camera motion,
+- real 3D depth/occlusion,
+- Unity 6 URP compatibility,
+- mobile/runtime feasibility,
+- editable production assets where gameplay requires them.
+
+## Locked convergence hypothesis
+1. Canonical target/reference.
+2. Semantic isolation where needed.
+3. High-fidelity visual representation only where it survives runtime gates.
+4. Real 3D interactive substrate.
+5. Human/professional geometry correction for architecture that generators deform.
+6. Target-conditioned appearance / PBR / depth alignment.
+7. Photogrammetry or other donors only for justified surface relief.
+8. Official-camera Unity integration.
+9. Runtime + interaction + mobile validation.
+10. Scale only after the isolated representative gate passes.
+
+## Gate 1 — SHARP → Unity
+**Current gate status: 300K TECH PASS / VISUAL PASS.**
+
+Current evidence:
+- SHARP full-frame proof is the strongest visual-fidelity result.
+- UnitySplats compiles and loads the sanitized SHARP PLY through decoding and Spark packing.
+- Full 1.18M-splat proof originally crashed after asset packing when driven without a bounded/runtime-safe lifecycle.
+- A bounded ~300k proof now renders successfully in Unity 6 URP after sanitation, RDF coordinate correction and explicit D3D11 CPU-sort initialization.
+- HOME + bounded pan preserve the canonical scene; behind-geometry probe is occluded, and a front probe renders in front.
+- 300k shows expected sparse/punctate quality loss; this is now a density/optimization question, not a basic compatibility question.
+
+Current bounded test — **PASSED at ~300k**:
+- original artifact bytes preserved;
+- sanitized working copy;
+- uniform ~300k splat sample;
+- Spark load;
+- explicit renderer + D3D11 CPU-sort lifecycle;
+- HOME, bounded pan/zoom and occlusion captures.
+
+Next bounded test:
+- raise proof density to ~600k splats using the identical lifecycle;
+- compare visual fidelity and stability against the 300k artifact;
+- only then consider full-density/runtime profiling.
+
+Decision:
+- PASS: scale density upward and measure performance/quality.
+- MEMORY/GPU FAIL: find largest stable density and treat Gaussian as bounded visual layer.
+- RENDER/PIPELINE FAIL independent of density: demote SHARP from runtime layer; retain as visual target/reference evidence and converge on real-mesh + appearance-transfer route.
+
+## Gate 2 — production geometry
+Do not reopen generator bake-off.
+Use only already-qualified evidence:
+- TRELLIS semantic: base 3D donor.
+- Hi3DGen seed 7: fixed-seed donor only; high variance prevents autonomous generation.
+- InstantMesh: fast blockout donor.
+- Human-authored modular/CC0 or professional mesh: preferred correction source where architectural identity matters.
+- Hunyuan/CraftsMan: donor only.
+- TripoSR: visual fail for hero art.
+
+A geometry candidate passes only if silhouette and architectural identity meet the isolated source gate before lookdev.
+
+## Gate 3 — appearance/depth
+Allowed components:
+- Human-Mesh / Geometry-Anchored appearance projection.
+- Target-derived PBR.
+- Marigold continuous depth for alignment/occlusion assistance.
+- Photogrammetry donor only with a visually compatible medieval-stone source.
+- SCoPE/SHARP only as representation layers after runtime proof.
+
+## Stop rule
+No new R&D family while Gates 1–3 can progress with existing evidence.
+A new method may be opened only when a named convergence gate is blocked and the new method addresses that exact blocker without duplicating a rejected route.
+
+## Promotion rule
+Production method is locked only after:
+- isolated Lower Gate visual comparison,
+- multi-angle/camera-envelope stability,
+- real Unity interaction substrate,
+- occlusion/depth proof,
+- runtime feasibility,
+- official-camera integrated evidence.
+
+Green CI, polygon count, single frontal beauty shot, or one lucky seed never count as production certification.
+
+
+## Gate 1 result — SHARP in Unity
+**Verdict: RUNTIME REPRESENTATION PASS / VISUAL PARTIAL / PRODUCTION CLEANUP REQUIRED**
+
+Evidence:
+- Run: `37455323684`
+- Artifact: `11409152206`
+- Bounded proof: ~294,912 splats sampled from 1,179,648 source splats.
+- UnitySplats runtime PLY load: PASS.
+- Renderer initialization / CPU-sort lifecycle in batchmode: PASS.
+- HOME capture: PASS — visible Valoria scene.
+- bounded pan-left / pan-right: PASS — scene remains visible and preserves nearby-view parallax.
+- zoom captures: produced.
+- front raster probe: appears in front of Gaussian layer.
+- behind probe: occluded by Gaussian scene in captured evidence.
+- paid credits: 0.
+
+What this proves:
+- SHARP is no longer only an offline visual-reference technique.
+- A SHARP Gaussian representation can be loaded and rendered in Unity 6 URP using the current project runtime.
+- Real raster/3D gameplay substrate can coexist with the Gaussian layer in the same camera/render pipeline.
+
+What this does **not** yet prove:
+- production-ready image cleanliness,
+- final mobile performance,
+- final full-density quality,
+- free camera movement outside the bounded nearby-view envelope,
+- per-building click/selection from Gaussian data itself.
+
+Visible production issues:
+- the current SHARP source was generated from a canonical screenshot containing UI/HUD regions, so those UI elements are baked into the Gaussian representation;
+- the 300k uniform proof sample visibly aliases/sparsifies detail compared with the offline SHARP synthesis;
+- the source/render still needs exposure/color calibration and a clean production framing.
+
+**Production consequence:** SHARP is approved as a candidate high-fidelity visual representation layer inside the hybrid Valoria pipeline. It is not approved as the sole gameplay geometry or as final art in its current source form.
+
+### Gate 1A — clean visual source
+Next production action:
+1. use a canonical Valoria target with UI/HUD removed before SHARP generation;
+2. preserve the current contaminated artifact only as technical evidence;
+3. regenerate SHARP from the clean target;
+4. repeat the bounded Unity capture at 300k, then progressively test 450k / 600k / highest stable density;
+5. choose the best quality/performance density before moving to integrated interactive geometry.
+
+No new visual-method R&D is authorized for this gate.
+
+
+## Gate 1B — 600k convergence density
+**Verdict: TECH PASS / VISUAL PASS / NEW PROVISIONAL BASELINE**
+
+Evidence:
+- Run: `37455916168`
+- Artifact: `11409767660`
+- Working density: ~600k splats via the same bounded/sanitized source path and UnitySplats lifecycle proven at ~300k.
+- HOME: PASS.
+- bounded pan-left / pan-right: PASS.
+- zoom captures: PASS.
+- occlusion-front / occlusion-behind: PASS.
+- paid credits: 0.
+
+Direct visual comparison versus ~300k:
+- 300k shows severe punctate/sparse breakup and loses architectural readability.
+- 600k materially restores the Lower Gate, walls, stair, road, vegetation and camp silhouettes into a coherent scene.
+- Bounded pan remains visually stable enough for the current camera envelope.
+- Occlusion proof remains functional.
+
+Decision:
+- **Adopt ~600k as the provisional SHARP Unity convergence baseline.**
+- Do not scale blindly beyond 600k until the clean-source gate is complete.
+- The current source still contains baked HUD/UI and is therefore evidence-only, not production-clean art.
+
+### Gate 1A — clean production source
+Next action:
+1. materialize/reuse the already-located canonical clean candidate if valid:
+   `art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png`
+   and compare against `semantic-base.png`;
+2. verify that the chosen source contains no baked gameplay HUD/UI and preserves the approved visual frame;
+3. regenerate SHARP from that clean source;
+4. repeat the ~600k Unity proof using the exact Gate 1B lifecycle;
+5. only after this PASS may SHARP be considered a production visual layer.
+
+Current tooling note:
+- GitHub text/blob connector cannot materialize these binary PNG/JPG blobs directly in the present session (`fetch_blob` UTF-8 decode limitation).
+- This is a tooling/materialization blocker for Gate 1A source inspection, not a visual-method blocker.
+
+
+## Gate 1A/1B lock — clean SHARP 600k
+**Verdict: PRODUCTION BASELINE PASS for bounded high-fidelity visual representation**
+
+Canonical evidence:
+- Clean SHARP source run: `37456084187`
+- Clean SHARP source artifact: `11408853949`
+- Unity clean 600k run: `37456541286`
+- Unity clean 600k artifact (pre-camera-fix technical baseline): `11409359136`
+- Canonical HOME camera restore run: `37457026065`
+- **Canonical visual HOME authority artifact: `11409079879`**
+- Source: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`
+- proof_splat_count: 589,824
+- source_splat_count: 1,179,648
+- paid credits: 0
+
+Visual/runtime result:
+- HOME: PASS — HUD-free Valoria identity is retained in Unity 6 URP.
+- bounded pan left/right: PASS — nearby-view parallax remains coherent enough for the locked camera envelope.
+- zoom in/out: PASS.
+- raster foreground probe: PASS — real Unity geometry can render in front of the Gaussian layer.
+- raster behind probe: PASS — behind-probe remains occluded by the Gaussian scene.
+- runtime load / Spark packing / D3D11 CPU sort: PASS.
+
+Known limitations:
+- top-of-frame has uncovered black area outside useful Gaussian coverage; production camera/background framing must avoid or cover it.
+- 600k is a visual baseline, not yet a mobile performance certification.
+- Gaussian scene is a visual representation layer, not gameplay geometry.
+- wider free-camera motion is not authorized by this evidence.
+
+**LOCK:** use clean approved-reference SHARP at 600k with the restored canonical identity HOME camera as the current high-fidelity visual-layer baseline. The visual framing authority is run `37457026065` / artifact `11409079879`; artifact `11409359136` remains only the pre-camera-fix technical baseline. Do not reopen visual-generator discovery while this convergence path can progress.
+
+## Gate 2 — interactive 3D substrate alignment
+Goal:
+- keep the locked SHARP visual layer;
+- add real Unity 3D proxy geometry/colliders for a representative architectural interaction region;
+- prove screen-space selection/raycast mapping, depth coexistence and bounded-camera stability;
+- keep gameplay interaction independent from Gaussian visual data.
+
+Gate 2 PASS requires:
+1. at least three named interactive proxy regions aligned to visible architecture;
+2. deterministic camera-ray hit evidence from representative screen points;
+3. no visual break of SHARP HOME/pan envelope;
+4. front/behind depth ordering remains valid;
+5. proxy geometry can be hidden from beauty render while remaining selectable/collidable;
+6. evidence JSON maps screen point → proxy ID → world hit position.
+
+
+## Gate 2 — interactive substrate HOME
+**Verdict: TECH PASS / INTERACTION PASS AT HOME / CAMERA-STABILITY UNPROVEN**
+
+Evidence:
+- Run: `37457903922`
+- Artifact: `11410576612`
+- Clean SHARP source: artifact `11408853949`
+- Unity visual layer: 589,824 splats
+- Invisible interaction proxies: WestTower, CentralKeep, EastTower, LowerGate
+- Deterministic HOME raycasts: **4/4 PASS**
+- beauty-home: PASS; proxies remain invisible in production beauty
+- paid credits: 0
+
+Raycast evidence:
+- WestTower → WestTower
+- CentralKeep → CentralKeep
+- EastTower → EastTower
+- LowerGate → LowerGate
+
+What this proves:
+- a clean SHARP Gaussian visual layer can coexist with standard Unity colliders/raycast interaction;
+- gameplay selection does not need to come from Gaussian data itself;
+- the high-fidelity representation can remain purely visual while Unity owns interaction/gameplay semantics.
+
+What this does **not** yet prove:
+- proxy-to-visible-architecture alignment across bounded camera movement;
+- stable selection through pan/zoom;
+- gameplay callbacks/state changes;
+- mobile/runtime budget.
+
+Important evidence caveat:
+- debug proxy solids are depth-occluded by the Gaussian layer, so `proxy-debug.png` is not sufficient visual alignment evidence by itself.
+- Gate 2 is therefore promoted only as a HOME interaction substrate pass.
+
+### Gate 2B — bounded camera interaction stability
+Next production gate:
+1. keep the same four world-space proxies;
+2. test HOME, bounded pan-left, pan-right, zoom-in and zoom-out;
+3. project each proxy into each camera view and raycast back through its projected screen point;
+4. require the same semantic ID on every visible view;
+5. record projected viewport coordinates, pass/fail and selection state;
+6. preserve a clean SHARP beauty capture for every camera state;
+7. no new visual method or generator is authorized.
+
+
+## Gate 2 FINAL — canonical bounded interactive substrate
+**Verdict: TECH PASS / VISUAL ALIGNMENT PASS / BOUNDED CAMERA INTERACTION PASS**
+
+Authoritative evidence:
+- Run: `37459082453`
+- Artifact: `11411280592`
+- Canonical visual HOME authority: run `37457026065` / artifact `11409079879`
+- Clean SHARP source: artifact `11408853949`
+- Visual layer: 589,824 splats
+- Named proxies: WestTower, CentralKeep, EastTower, LowerGate
+- Camera states: HOME, pan-left, pan-right, zoom-in, zoom-out
+- Required visible raycasts: 20
+- Raycast result: **20/20 PASS**
+- paid credits: 0
+
+Visual review:
+- restored canonical identity HOME framing matches the Gate 2 beauty frame;
+- WestTower, CentralKeep, EastTower and LowerGate proxy footprints align to their named visible architecture;
+- proxies remain hidden in production beauty while standard Unity colliders own interaction;
+- bounded camera re-projection retains the same semantic proxy ID across all five camera states.
+
+**Gate 2 is CLOSED / PASS.**
+
+## Gate 3 — approved Lower Gate visible-geometry coexistence
+Goal:
+- keep the locked clean SHARP 600k visual layer and canonical HOME camera;
+- reuse the already-approved production source `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`;
+- import that real production geometry into Unity using the existing glTFast package;
+- align its world/screen-space center to the validated `LowerGate` interaction region;
+- capture SHARP-only, visible-geometry debug overlay, original-material overlay and bounded pan evidence;
+- prove that approved editable production geometry can coexist with the high-fidelity SHARP layer without reopening generator discovery.
+
+Gate 3 PASS requires:
+1. LowerGateFamilyV1.glb imports synchronously and instantiates in Unity;
+2. renderer bounds are valid and align to the canonical LowerGate screen region;
+3. SHARP-only beauty remains unchanged;
+4. visible geometry is depth-stable at HOME and bounded pan;
+5. original material view is captured for direct comparison;
+6. no new generator, paid credit or commercial acquisition is used.
+
+
+## Gate 2B result — bounded camera interaction stability
+**Verdict: TECH PASS / INTERACTION PASS / BOUNDED CAMERA PASS**
+
+Evidence:
+- Run: `37459082453`
+- Artifact: `11411280592`
+- Clean SHARP layer: 589,824 splats
+- Proxies: WestTower, CentralKeep, EastTower, LowerGate
+- Camera states: HOME, pan-left, pan-right, zoom-in, zoom-out
+- Required deterministic semantic raycasts: 20
+- Passed: **20/20**
+- Beauty proxies visible: false
+
+This proves the interaction substrate remains semantically stable across the locked bounded camera envelope.
+
+## Gate 3 result — gameplay selection + visible feedback
+**Verdict: TECH PASS / GAMEPLAY CALLBACK PASS / VISUAL FEEDBACK PASS**
+
+Authoritative evidence:
+- Run: `37461034965`
+- Artifact: `11412317590`
+- Raycasts: **20/20 PASS**
+- Gameplay selection callbacks: **20/20 PASS**
+- Per-proxy callbacks: WestTower 5, CentralKeep 5, EastTower 5, LowerGate 5
+- Selected feedback proxy: LowerGate
+- Localized cyan feedback pixels: **1287 / 1287**
+- Full-frame takeover guard: PASS
+- SHARP beauty remains active and the hidden proxy substrate remains non-visible.
+
+What this proves:
+- a standard Unity interaction callback can be driven from the hidden semantic 3D substrate while SHARP remains the visual authority;
+- selection feedback can be rendered as ordinary raster content in front of the Gaussian representation;
+- the gameplay state layer does not need to be encoded inside Gaussian data.
+
+### Gate 4 — runtime density budget
+Next production gate:
+1. keep the clean canonical SHARP source and the proven Unity lifecycle;
+2. benchmark 300k / 450k / 600k splat densities;
+3. record load time, resident splat count, repeated sort/render wall time and managed-memory delta;
+4. preserve one beauty capture per density;
+5. choose the highest stable density with acceptable runtime cost and no visual collapse;
+6. no new visual method or generator is authorized.
+
+
+## Gate 3 FINAL — gameplay selection + localized feedback
+**Verdict: TECH PASS / GAMEPLAY CALLBACK PASS / LOCALIZED FEEDBACK PASS**
+
+Authoritative evidence:
+- Run: `37461034965`
+- Artifact: `11412317590`
+- Visual authority: run `37457026065` / artifact `11409079879`
+- Clean SHARP visual layer: 589,824 splats
+- Camera states: HOME, pan-left, pan-right, zoom-in, zoom-out
+- Semantic raycasts: **20/20 PASS**
+- Gameplay selection callbacks: **20/20 PASS**
+- Selection count: WestTower=5, CentralKeep=5, EastTower=5, LowerGate=5
+- Selected feedback target: LowerGate
+- Feedback cyan pixels: 1,287 total / 1,287 localized
+- full-frame takeover: NO
+- paid credits: 0
+
+Visual review:
+- selection feedback is now a bounded ~32px cyan raster marker centered on the selected LowerGate region;
+- SHARP beauty remains intact outside the localized marker;
+- feedback no longer disappears behind the Gaussian layer and no longer fills the frame;
+- the interaction substrate remains standard Unity world-space geometry/colliders reprojected per bounded camera state.
+
+**Gate 3 is CLOSED / PASS.**
+
+## Gate 4 — approved Lower Gate real-geometry substrate
+Goal:
+- keep the locked SHARP 600k visual authority and canonical HOME;
+- consume the already-approved editable source `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`;
+- use the existing glTFast Unity package to import it synchronously;
+- align its renderer bounds to the validated LowerGate interaction region;
+- prove real editable production geometry can occupy the same world/depth system without breaking SHARP beauty or bounded-camera selection.
+
+Gate 4 PASS requires:
+1. GLB import/instantiation succeeds with valid renderer bounds;
+2. projected renderer center aligns to LowerGate canonical viewport within a bounded tolerance;
+3. SHARP-only HOME remains unchanged;
+4. geometry-only debug evidence identifies actual imported mesh silhouette;
+5. coexistence HOME + bounded pan evidence is produced;
+6. interaction continues to resolve to LowerGate semantics;
+7. no new generator, paid credit or commercial acquisition is used.
+
+
+## Gate 4A FINAL — runtime density budget
+**Verdict: TECH PASS / RELATIVE RUNTIME PASS / 600K BASELINE RETAINED**
+
+Authoritative evidence:
+- Run: `37461644325`
+- Artifact: `11411669104`
+- Clean source artifact: `11408853949`
+- Visual authority artifact: `11409079879`
+- Scope: Windows Unity 6 batchmode relative benchmark; this is not mobile-device certification.
+
+Measured stable densities:
+- ~300k actual 294,912 splats: load 695.30 ms; repeated sort/render avg 0.469 ms; p95 0.693 ms.
+- ~450k actual 393,216 splats: load 934.44 ms; repeated sort/render avg 0.415 ms; p95 0.501 ms.
+- ~600k actual 589,824 splats: load 1349.67 ms; repeated sort/render avg 0.413 ms; p95 0.573 ms.
+- All three densities stable in this bounded runner proof.
+- Paid credits: 0.
+
+Decision:
+- retain 589,824 splats as the convergence visual baseline because it preserves materially more architectural readability and remains stable in the relative Windows proof;
+- do not call this mobile certification;
+- mobile/device profiling remains a later production/runtime gate.
+
+## Gate 4B FINAL — approved Lower Gate real-geometry substrate
+**Verdict: TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS**
+
+Authoritative evidence:
+- Run: `37462916737`
+- Artifact: `11413795807`
+- Approved geometry: `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`
+- Visual layer: clean SHARP 589,824 splats.
+- glTFast import: PASS.
+- Imported renderers: 6.
+- Bounds: PASS.
+- Canonical LowerGate viewport target: (0.748, 0.458).
+- Measured projected center: approximately (0.7480001, 0.4580000).
+- Viewport error: ~5.96e-8.
+- LowerGate semantic interaction: PASS.
+- Diagnostic coexistence changed pixels: HOME 1,176; pan-left 1,132; pan-right 1,139.
+- Paid credits: 0.
+
+Interpretation:
+- the already-approved editable Lower Gate geometry can occupy the same Unity world-space/interaction system as the locked SHARP visual representation;
+- the cyan diagnostic overlay proves the actual imported mesh silhouette remains aligned across the bounded camera;
+- original source materials remain evidence/reference only at this gate because the Gaussian layer depth-occludes them in the target region;
+- Gate 4B does **not** claim final material/appearance integration.
+
+**Gate 4A and Gate 4B are CLOSED / PASS.**
+
+## Gate 5 — real-geometry appearance/depth integration
+Goal:
+- keep the approved LowerGateFamilyV1 real geometry and semantic LowerGate interaction;
+- keep SHARP 589,824 as the full-scene visual authority;
+- consume only already-qualified appearance components: geometry-anchored target projection, target-derived PBR where useful, and Marigold depth only as alignment/occlusion assistance;
+- prove that the editable Lower Gate can carry a target-conditioned appearance without changing its geometry or reopening generator discovery.
+
+Gate 5 PASS requires:
+1. exact Gate 4B geometry/bounds/viewport alignment remains unchanged;
+2. target-conditioned appearance is applied to the real mesh, not to a card/shell substitute;
+3. HOME appearance materially approaches the canonical LowerGate region versus the raw source material;
+4. pan-left / pan-right do not collapse into a flat plate and retain real mesh silhouette/parallax;
+5. semantic LowerGate interaction remains PASS;
+6. SHARP outside the LowerGate treatment remains unchanged;
+7. no new generator, paid credit, commercial source or geometry regeneration is used.
+
+Stop rule:
+- if target projection produces duplicate architecture, severe stretching or side-view collapse, do not micro-tune projection indefinitely; keep the real geometry and fall back to authored/PBR material treatment already allowed by the decision register.
+
+
+## Gate 5 FINAL — Lower Gate real-geometry appearance/depth integration
+**Verdict: TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS**
+
+Authoritative evidence:
+- Run: `37464692130`
+- Artifact: `11414269587`
+- Approved geometry: `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`
+- Clean SHARP source artifact: `11408853949`
+- SHARP visual layer: 589,824 splats
+- Imported renderers: 6
+- Canonical LowerGate viewport target: (0.748, 0.458)
+- Viewport error: ~5.96e-8
+- Semantic LowerGate interaction: PASS
+- target-conditioned HOME projection: PASS
+- bounded pan-left projection: PASS
+- bounded pan-right projection: PASS
+- full-frame takeover guard: PASS
+- changed pixels: HOME 1,160 / pan-left 1,089 / pan-right 1,124
+- selected projector Y convention: flipY=1
+- local MAE: flip0 ~0.00616 / flip1 ~0.00580
+- paid credits: 0
+
+Visual review:
+- the approved real LowerGateFamilyV1 mesh remains the editable geometry authority;
+- projection changes only the localized Lower Gate appearance and does not replace the scene with a flat card/shell;
+- HOME and bounded pan retain real mesh silhouette/parallax;
+- SHARP remains the full-scene visual authority outside the treated Lower Gate region;
+- semantic interaction and Gate 4B alignment remain intact.
+
+Run-behavior classification:
+- run 37464692130 appeared stalled because the Unity capture step emitted no intermediate console output for ~6m28s;
+- live-log inspection later showed the process completed normally and uploaded a 13-file artifact;
+- this was **slow capture / low observability**, not a Unity deadlock;
+- no cancellation, timeout patch or rerun is warranted after successful completion.
+
+**Gate 5 is CLOSED / PASS.**
+
+### Next convergence action — lock the repeatable production recipe
+Do not reopen visual-method R&D. Consolidate Gates 1–5 into one production recipe with explicit inputs, transforms, validation thresholds, failure classes and fallback rules. Scale only to the next representative production family after that recipe is documented and mechanically repeatable.

@@ -1,0 +1,103 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "9cf706d254c1b4c58afd597acb43af48469dd69b641e40a6cbb63d154320e752",
+  "export_sha": "60e587d7878a3a7fe3d073437707ad14f827b2711330e7b3d96f8f8d886daae3",
+  "source": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.blend",
+  "export": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 2892,
+    "vertices": 1470,
+    "modules": 3,
+    "materials": 4,
+    "bounds_world_blender": [
+      [
+        -6.301183700561523,
+        -2.198918104171753,
+        0.0
+      ],
+      [
+        5.290748596191406,
+        2.198918104171753,
+        8.232000350952148
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "trunk",
+    "foliage_dark",
+    "foliage_mid",
+    "foliage_light"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "hero_masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "timber": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation/source01/clay-3q.png",
+    "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation/source01/lit-3q.png",
+    "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation/source01/mobile-silhouette.png",
+    "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation/source01/topology.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    0,
+    0,
+    0
+  ],
+  "unity_placement": {
+    "position": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}

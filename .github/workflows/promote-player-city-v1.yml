@@ -1,0 +1,95 @@
+name: Promote Player City v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/player-city-v1-promotion.json'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: eldoria-player-city-v1-promotion
+  cancel-in-progress: true
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read request
+        id: request
+        shell: bash
+        run: |
+          enabled=$(jq -r '.enabled // false' pipeline/player-city-v1-promotion.json)
+          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+          if [ "$enabled" != "true" ]; then
+            echo "PLAYER_CITY_PROMOTION_DISABLED"
+            exit 0
+          fi
+          artifact_id=$(jq -r '.certified_artifact.id' pipeline/player-city-v1-promotion.json)
+          echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+
+      - name: Download certified artifact
+        if: steps.request.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.request.outputs.artifact_id }}
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/player-city"
+          gh api -H "Accept: application/vnd.github+json"             "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip"             > "$RUNNER_TEMP/player-city/artifact.zip"
+          unzip -q "$RUNNER_TEMP/player-city/artifact.zip" -d "$RUNNER_TEMP/player-city/unpacked"
+
+      - name: Verify and promote universal Player City
+        if: steps.request.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          req="pipeline/player-city-v1-promotion.json"
+          root="$RUNNER_TEMP/player-city/unpacked"
+          piece=$(jq -r '.piece_file' "$req")
+          expected_sha=$(jq -r '.expected_sha256' "$req")
+          expected_bytes=$(jq -r '.expected_bytes' "$req")
+          dest=$(jq -r '.destination' "$req")
+          mapfile -t matches < <(find "$root" -type f -name "$piece")
+          if [ "${#matches[@]}" -ne 1 ]; then
+            echo "Expected exactly one match for $piece, got ${#matches[@]}" >&2
+            exit 1
+          fi
+          src="${matches[0]}"
+          actual_sha=$(sha256sum "$src" | awk '{print $1}')
+          actual_bytes=$(stat -c%s "$src")
+          test "$actual_sha" = "$expected_sha"
+          test "$actual_bytes" = "$expected_bytes"
+          case "$dest" in
+            Unity/Assets/Eldoria/Resources/WorldPlayerCity/*) ;;
+            *) echo "Unsafe destination $dest" >&2; exit 1 ;;
+          esac
+          mkdir -p "$(dirname "$dest")"
+          cp "$src" "$dest"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$dest"
+          if git diff --cached --quiet; then
+            echo "Player City v1 already present with identical bytes."
+            exit 0
+          fi
+          git commit -m 'art: promote universal Player City v1'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then exit 0; fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          exit 1
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: player-city-v1-promotion-${{ github.run_id }}
+          path: pipeline/player-city-v1-promotion.json

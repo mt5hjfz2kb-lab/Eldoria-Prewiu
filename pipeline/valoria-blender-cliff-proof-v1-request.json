@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-blender-cliff-proof-v1",
+  "objective": "Blender cliff proof v3: narrow the camera-facing toe, widen only into the fortress, reduce visible depth, keep hero-island rock material, remove the audited dangling military banner, and validate the integrated frame.",
+  "route": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "source": "procedural_blender",
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true,
+    "do_not_promote_binary_without_visual_pass": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ],
+  "triggered_at": "2026-10-03T12:08:00+02:00",
+  "retry_seq": 3,
+  "retry_reason": "v2 materially improved fit but still showed a pointed left toe and one dangling legacy banner. v3 reshapes the generated cliff as a buried wedge and removes the exact audited banner residue."
+}

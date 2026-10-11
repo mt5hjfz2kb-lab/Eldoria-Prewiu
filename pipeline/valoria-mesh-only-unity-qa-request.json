@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "diagnostic_only": true,
+  "attempt": 1,
+  "workstream": "valoria-mesh-only-worldspace-proof-20261010",
+  "owner": "chat-owner-authorized-two-track-takeover-20261010",
+  "source_glb_blob_sha": "c42b88fb55c6d075e759f172790927e5238728bf",
+  "reviewed_blender_source_sha": "683ff91bb188c39a06e3eb99c7221a6c52eef282",
+  "reviewed_blender_run_id": 38079353952,
+  "visual_approved": false,
+  "promotion_allowed": false,
+  "paid_generation_credits": 0
+}

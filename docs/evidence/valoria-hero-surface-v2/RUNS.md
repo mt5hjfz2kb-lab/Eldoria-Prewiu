@@ -11,4 +11,3 @@
 - GLB: 57,912 triangles and 14 materials; LOD1: 53,784 triangles, 14 materials. This modest reduction is no mobile performance claim. The destructive LOD2 candidate was rejected and is absent from the V2 output.
 
 Art verdict remains **REWORK**, approximately 6.5â€“7/10 by visual judgment; the workflow's success records reproducibility, not final visual acceptance. Unity 6000.3.23f1, saved-scene persistence and Android/iOS performance were not run because no local editor exists and the live main registry reserves the Windows runner under another workstream. To continue in a normal chat, follow `REPRODUCE.md` on this same branch, then make a focused sculpt/material pass on the current `.blend` before requesting Unity access from the current runner owner.
-Ón›Nµ_×½ZãÆ÷yçôÕ¿wM¹Ó·\ÛÖ÷

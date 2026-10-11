@@ -1,0 +1,35 @@
+name: Valoria Convergence Cancel Stale
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-convergence-cancel-stale-request.json'
+permissions:
+  actions: write
+  contents: read
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cancel stale heavy runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          runs=$(node -e "const x=require('./pipeline/valoria-convergence-cancel-stale-request.json'); console.log((x.runs||[]).join(' '))")
+          keep=$(node -e "const x=require('./pipeline/valoria-convergence-cancel-stale-request.json'); console.log((x.keep_runs||[]).join(' '))")
+          for run in $runs; do
+            case " $keep " in
+              *" $run "*)
+                echo "preserving requested run $run"
+                continue
+                ;;
+            esac
+            state=$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/$run --jq '.status' 2>/dev/null || echo missing)
+            if [ "$state" = "queued" ] || [ "$state" = "pending" ] || [ "$state" = "in_progress" ]; then
+              gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/$run/cancel || true
+              echo "cancel requested for $run"
+            fi
+          done

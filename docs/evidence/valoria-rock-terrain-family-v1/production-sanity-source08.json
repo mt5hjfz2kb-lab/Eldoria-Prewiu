@@ -1,0 +1,44 @@
+{
+  "verdict": "UNITY INTEGRATION PASS / VISUAL GATE PENDING",
+  "unity_run_id": 37309039558,
+  "unity_job_id": 111759642435,
+  "unity_artifact_id": 11344907445,
+  "engine": "6000.3.23f1",
+  "source_iteration": "source08",
+  "import": {
+    "triangles": 1909,
+    "vertices": 5298,
+    "renderers": 5,
+    "materials": 7,
+    "textures": 0,
+    "submesh_draws": 17,
+    "mesh_bytes": 563376,
+    "texture_bytes": 0,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "retained_family_invariance": {
+    "common_protected_elements_per_view": 63,
+    "max_projection_delta_px": 0,
+    "views": 7
+  },
+  "macro_union_preservation": {
+    "source_3x2": {
+      "width_ratio": 1.00000005,
+      "height_ratio": 1.0000000517,
+      "center_delta_px": 0.000055
+    },
+    "max_center_delta_px_all_views": 0.000096
+  },
+  "colliders": 0,
+  "production_scene_opened": false,
+  "production_scene_saved": false,
+  "gameplay": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "result": "Passed"
+  },
+  "tripo_credits": 0
+}

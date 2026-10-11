@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "classification": "VISUAL_AUTHORITY_MISMATCH_RESOLVED",
+  "authority_path": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "authority_size_bytes": 702827,
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "source": "Owner attachment 2026-10-06; exact original bytes",
+  "source_equals_preproduction_target": true,
+  "clean_input_path": "docs/evidence/valoria-visual-authority-reset-v1/sharp-clean-input.png",
+  "crop_box": [
+    210,
+    50,
+    1440,
+    895
+  ],
+  "clean_dimensions": [
+    1230,
+    845
+  ],
+  "cleaning_method": "exact-pixel border crop; no inpainting, generation, redesign or semantic layers",
+  "preserved": [
+    "Bridge",
+    "Lower Gate",
+    "Main Road",
+    "Central Stair",
+    "Upper Gate/Walls/Bastion",
+    "left cabin parcel",
+    "right camp parcel",
+    "open central esplanade"
+  ],
+  "superseded_source_artifact_id": 11408853949,
+  "superseded_home_artifact_id": 11409079879,
+  "production_promotion": true,
+  "paid_credits": 0,
+  "clean_input_sha256": "a94e7e35a9396f9aabc0ddfaf5802a0775929cbd708f35e6a9ed3adabdbf5a34",
+  "status": "CORRECT_AUTHORITY_PASS",
+  "source_run_id": 37472982237,
+  "source_artifact_id": 11418315301,
+  "home_authority_run_id": 37474695980,
+  "home_authority_artifact_id": 11418118004,
+  "review": "docs/evidence/valoria-visual-authority-reset-v1/review.json",
+  "promotion_scope": "correct reference + bounded hybrid slice only",
+  "source_kind": "parcel_ground_derivative",
+  "parcel_ground_input": {
+    "path": "docs/evidence/valoria-real-game-state-v1/empty-ground-source.png",
+    "sha256": "e8b85859da339d8dd0f71a245e623ff1f1a24fc0a093314751e70ec5888ada73",
+    "purpose": "empty terrain only; original canonical source remains built-state authority"
+  },
+  "submitted_input_sha256": "b1b854150c33aa047605e9ab830d59790e235f10a631b6acee9351fb30e59ae0",
+  "submitted_dimensions": [
+    1280,
+    879
+  ],
+  "inference_backend": "local",
+  "model": "Apple SHARP",
+  "checkpoint_url": "https://ml-site.cdn-apple.com/models/sharp/sharp_2572gikvuh.pt",
+  "checkpoint_sha256": "94211a75198c47f61fca7d739ba08a215418d8d398d48fddf023baccc24f073d",
+  "official_source_commit": "aed6527499ef91cba3b54c18d49a870f25947190",
+  "device": "cpu",
+  "torch_version": "2.8.0+cpu",
+  "python_version": "3.13.16",
+  "inference_seconds": 136.706,
+  "ply_sha256": "d540d0fe80b766969bcfdb05129d8e7d15d567816a45f9ad02f4859f8b1e312e",
+  "ply_file": "sharp-1.ply",
+  "render_video": false
+}

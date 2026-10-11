@@ -1,0 +1,70 @@
+name: "[EXPERIMENT] Valoria Material Residue Cleanup v2"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-material-residue-cleanup-v2-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-material-residue-cleanup-v2
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Stage Kiara 3 CC0 backplate
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\BackplateCandidates"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $dst=Join-Path $dir 'kiara3_1.jpg'
+          $url='https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kiara_3_morning.jpg'
+          if(-not (Test-Path $dst)){Invoke-WebRequest -Uri $url -OutFile $dst -UseBasicParsing}
+          if((Get-Item $dst).Length -lt 500000){throw 'Kiara 3 backplate unexpectedly small.'}
+      - name: Capture material residue cleanup
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaMaterialResidueCleanupV2Captures"
+          $log="$env:RUNNER_TEMP\ValoriaMaterialResidueCleanupV2.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaMaterialResidueCleanupGateV2.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(20)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 320};throw "Gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-material-residue-cleanup-v2-${{ github.run_id }}
+          path: |
+            Unity/ValoriaMaterialResidueCleanupV2Captures/*
+            ${{ runner.temp }}/ValoriaMaterialResidueCleanupV2.log
+          if-no-files-found: warn
+          retention-days: 30

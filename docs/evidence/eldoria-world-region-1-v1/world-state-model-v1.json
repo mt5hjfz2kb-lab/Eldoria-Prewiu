@@ -1,0 +1,134 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "purpose": "Define world entity/state families and their ownership before runtime coding.",
+  "entities": {
+    "playerCity": {
+      "id": "stable city/player reference",
+      "fields": [
+        "worldPosition",
+        "ownerId",
+        "allianceId?",
+        "power/level summary",
+        "protection state",
+        "visualSkinId optional"
+      ],
+      "presentation": "PlayerCity_v1 universal strategic mesh for v1",
+      "authority": "future server; local slice adapter for now"
+    },
+    "resourceNode": {
+      "fields": [
+        "id",
+        "resourceType",
+        "level",
+        "worldPosition",
+        "capacity",
+        "remaining",
+        "state",
+        "respawnAt?"
+      ],
+      "states": [
+        "available",
+        "occupied?",
+        "depleted",
+        "respawning?"
+      ],
+      "region1Mapping": {
+        "forest-valoria": "wood",
+        "quarry-valoria": "stone"
+      }
+    },
+    "pveTarget": {
+      "fields": [
+        "id",
+        "family",
+        "tier",
+        "worldPosition",
+        "availability",
+        "respawnAt?",
+        "combatProfileId"
+      ],
+      "families": [
+        "hunt",
+        "rift-common",
+        "rift-uncommon",
+        "elite",
+        "world-boss/event"
+      ],
+      "region1Mapping": {
+        "corrupt-scout": "rift-common"
+      }
+    },
+    "poi": {
+      "fields": [
+        "id",
+        "kind",
+        "worldPosition",
+        "discoveryState?",
+        "interactionState?"
+      ],
+      "families": [
+        "ruin",
+        "watchpost",
+        "breach",
+        "camp",
+        "shrine",
+        "resource-installation"
+      ],
+      "region1Mapping": {
+        "old-watch-ruin": "ruin/watchpost"
+      }
+    },
+    "march": {
+      "fields": [
+        "id",
+        "ownerId",
+        "originEntityId",
+        "targetEntityId",
+        "phase",
+        "departAt",
+        "arriveAt",
+        "returnAt",
+        "payload/reward pending",
+        "visualRelation"
+      ],
+      "phases": [
+        "idle/prepared",
+        "outbound",
+        "interacting/gathering/fighting",
+        "returning",
+        "complete"
+      ],
+      "rule": "reward credit and troop restoration remain authoritative gameplay events, not animation callbacks"
+    }
+  },
+  "ownership": {
+    "domainState": "owns persistent gameplay truth",
+    "presentation": "reads state and renders it",
+    "interactionAdapter": "turns taps into commands",
+    "saveStore": "serializes authoritative state",
+    "ui": "never becomes source of truth"
+  },
+  "region1Reuse": {
+    "existing": [
+      "LocalGateway Gather/Fight",
+      "PlayerState",
+      "MarchState",
+      "ForestRemaining",
+      "QuarryRemaining",
+      "ScoutDefeated",
+      "idempotent task/command completion"
+    ],
+    "extendOnlyIfNeeded": [
+      "generic world entity metadata",
+      "region/sector identifiers",
+      "world-screen transition metadata",
+      "narrative inspect state"
+    ],
+    "avoid": [
+      "duplicating reward logic",
+      "second PlayerState singleton",
+      "scene-owned inventory",
+      "visual prefab owned depletion"
+    ]
+  }
+}

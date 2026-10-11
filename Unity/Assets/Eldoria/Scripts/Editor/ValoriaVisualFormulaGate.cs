@@ -1,0 +1,779 @@
+using System.Collections.Generic;
+using System.IO;
+using Eldoria.Domain;
+using Eldoria.Presentation;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+// Surface Cell v5 validation retrigger: workflow restored after isolated CC0 staging YAML failure.
+namespace Eldoria.EditorTools
+{
+    // Stone Architecture v1 integration evidence is captured here with identical cameras and topology signatures.
+    // Canonical zero-credit visual formula gate. It renders the real runtime Valoria,
+    // never a replacement mockup, and records lightweight scene-complexity evidence.
+    public static class ValoriaVisualFormulaGate
+    {
+        public static void Capture()
+        {
+            // First far-zoom frame must not capture Unity's temporary blue compiling shader.
+            UnityEditor.ShaderUtil.allowAsyncCompilation=false;
+            PrepareExternalSurfaceCellTextures();
+            CaptureMatchedWedge();
+            CaptureStoneArchitectureWedge();
+            CaptureTerrainTerraceCitywideWedge();
+            CaptureSurfaceCellWedge();
+            CaptureCoherentCastleProofWedge();
+            CaptureSlavicDistrictProofWedge();
+            CaptureProductionCellWedge();
+            SceneSetup.SetupRenderPipeline();
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var state = new PlayerState
+            {
+                BastionLevel = 2,
+                SawmillLevel = 1,
+                BarracksLevel = 1,
+                CorruptionDiscovered = true
+            };
+            VisualWorld.Create(true, state);
+
+            var camera = Camera.main;
+            if (camera == null) throw new System.Exception("Valoria camera was not created");
+
+            const string folder = "VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+
+            var officialPosition = new Vector3(18.2f, 14.6f, -25.8f);
+            var officialTarget = new Vector3(0, 3.15f, 5.8f);
+            var sawmillShift = new Vector3(-7f, -1.55f, -8.6f);
+            var barracksShift = new Vector3(7f, -1.55f, -9.8f);
+            var bastionShift = new Vector3(0f, 1.5f, 3.2f);
+
+            Save(camera, folder + "/formula-overview-19.png", officialPosition, officialTarget, 19f, 1280, 720);
+            Save(camera, folder + "/formula-overview-12.png", officialPosition, officialTarget, 12f, 1280, 720);
+            Save(camera, folder + "/formula-overview-mobile.png", officialPosition, officialTarget, 12f, 390, 844);
+
+            Save(camera, folder + "/formula-sawmill-12.png", officialPosition + sawmillShift, officialTarget + sawmillShift, 12f, 1280, 720);
+            Save(camera, folder + "/formula-sawmill-9.png", officialPosition + sawmillShift, officialTarget + sawmillShift, 9f, 1280, 720);
+            Save(camera, folder + "/formula-barracks-12.png", officialPosition + barracksShift, officialTarget + barracksShift, 12f, 1280, 720);
+            Save(camera, folder + "/formula-barracks-9.png", officialPosition + barracksShift, officialTarget + barracksShift, 9f, 1280, 720);
+            Save(camera, folder + "/formula-bastion-12.png", officialPosition + bastionShift, officialTarget + bastionShift, 12f, 1280, 720);
+            Save(camera, folder + "/formula-bastion-9.png", officialPosition + bastionShift, officialTarget + bastionShift, 9f, 1280, 720);
+
+            // Bastion III-specific production evidence for the dedicated Granero.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var bastionThree = new PlayerState
+            {
+                BastionLevel = 3,
+                SawmillLevel = 1,
+                BarracksLevel = 1,
+                CorruptionDiscovered = true
+            };
+            VisualWorld.Create(true, bastionThree);
+            camera = Camera.main;
+            if (camera == null) throw new System.Exception("Valoria Bastion III camera was not created");
+            var granaryShift = new Vector3(-17.2f, -1.75f, -8.8f);
+            Save(camera, folder + "/formula-granero-biii-12.png", officialPosition + granaryShift, officialTarget + granaryShift, 12f, 1280, 720);
+            Save(camera, folder + "/formula-granero-biii-9.png", officialPosition + granaryShift, officialTarget + granaryShift, 9f, 1280, 720);
+            Save(camera, folder + "/formula-granero-biii-mobile.png", officialPosition + granaryShift, officialTarget + granaryShift, 12f, 390, 844);
+            var granary = GameObject.Find("Granero · dedicated granary");
+            if (granary == null) throw new System.Exception("Bastion III Granero production visual was not instantiated.");
+            foreach (var collider in granary.GetComponentsInChildren<Collider>(true))
+                if (collider.enabled) throw new System.Exception("Granero visual mesh must not own gameplay collision.");
+
+            WriteMetrics(folder + "/formula-metrics.json");
+            WriteMaterialEvidence(folder + "/formula-materials.json");
+            Debug.Log("Valoria Visual Formula gate saved to " + Path.GetFullPath(folder));
+            UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static void PrepareExternalSurfaceCellTextures()
+        {
+            const string folder="Assets/Resources/Valoria/SurfaceCellExternal";
+            if(!Directory.Exists(folder))return;
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{folder}))
+            {
+                var path=AssetDatabase.GUIDToAssetPath(guid);
+                var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+                if(importer==null)continue;
+                string lower=Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+                importer.wrapMode=TextureWrapMode.Repeat;
+                importer.filterMode=FilterMode.Trilinear;
+                importer.mipmapEnabled=true;
+                importer.maxTextureSize=1024;
+                if(lower.EndsWith("_normal"))
+                {
+                    importer.textureType=TextureImporterType.NormalMap;
+                    importer.sRGBTexture=false;
+                }
+                else
+                {
+                    importer.textureType=TextureImporterType.Default;
+                    importer.sRGBTexture=!lower.EndsWith("_ao");
+                }
+                importer.SaveAndReimport();
+            }
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        }
+
+        public static string CollisionSignature()
+        {
+            Physics.SyncTransforms();
+            var values=new List<string>();
+            foreach(var c in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+            {
+                if(!c.enabled||!c.gameObject.activeInHierarchy)continue;
+                var h=c.GetComponent<WorldHotspot>();
+                values.Add(c.gameObject.name+"|"+c.GetType().Name+"|"+c.transform.position.ToString("F4")+"|"+c.bounds.center.ToString("F4")+"|"+c.bounds.size.ToString("F4")+"|"+(h!=null?h.Id:""));
+            }
+            values.Sort(System.StringComparer.Ordinal);
+            return string.Join("\n",values);
+        }
+        static void CaptureMatchedWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);string baseline=null;
+            foreach(bool enabled in new[]{false,true})
+            {
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+                SceneSetup.SetupRenderPipeline();VisualWorld.VisualIntegrationEnabled=enabled;
+                VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
+                var signature=CollisionSignature();
+                if(!enabled)baseline=signature;
+                else if(signature!=baseline)throw new System.Exception("Valoria visual integration altered certified colliders/hotspots.");
+                var camera=Camera.main;string label=enabled?"after":"before";
+                var position=new Vector3(18.2f,14.6f,-25.8f);var target=new Vector3(0,3.15f,5.8f);
+                foreach(float zoom in new[]{19f,12f,9f})Save(camera,folder+"/valoria-"+label+"-"+zoom+".png",position,target,zoom,1280,720);
+                Save(camera,folder+"/valoria-"+label+"-mobile.png",position,target,12,390,844);
+                var west=new Vector3(-13,-1.25f,-4.4f);
+                Save(camera,folder+"/valoria-west-"+label+"-12.png",position+west,target+west,12,1280,720);
+                Save(camera,folder+"/valoria-west-"+label+"-mobile.png",position+west,target+west,12,390,844);
+                if(enabled)
+                {
+                    var root=GameObject.Find("Valoria · integrated construction visual layer");
+                    if(root==null)throw new System.Exception("Valoria construction layer missing.");
+                    foreach(var c in root.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("Valoria visual collider enabled.");
+                    File.WriteAllText(folder+"/valoria-wedge-evidence.json","{\"camera_matched\":true,\"state_bastion\":3,\"collider_hotspot_signature_equal\":true,\"stonekit_piece_count\":6,\"tripo_credits\":0}");
+                    WriteMetrics(folder+"/valoria-wedge-metrics.json");
+                }
+            }
+            VisualWorld.VisualIntegrationEnabled=true;
+        }
+
+        static void CaptureStoneArchitectureWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var cornerShift=new Vector3(-13.4f,-2.15f,-2.0f);
+            var wallShift=new Vector3(-15.2f,-2.25f,-5.1f);
+            var seamShift=new Vector3(-6.2f,-2.55f,-8.0f);
+
+            // Build the city exactly once. BEFORE and AFTER therefore share the same camera,
+            // lighting, materials and every non-Stone-Architecture GameObject.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.StoneArchitectureEnabled=false;
+            VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
+
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Stone Architecture gate.");
+            var baseline=CollisionSignature();
+
+            Save(camera,folder+"/stone-architecture-overview-before-19.png",position,target,19f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-before-12.png",position,target,12f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-before-9.png",position,target,9f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-before-mobile.png",position,target,12f,390,844);
+            Save(camera,folder+"/stone-corner-before.png",position+cornerShift,target+cornerShift,9f,1280,720);
+            Save(camera,folder+"/stone-high-wall-before.png",position+wallShift,target+wallShift,9f,1280,720);
+            Save(camera,folder+"/stone-rock-transition-before.png",position+seamShift,target+seamShift,9f,1280,720);
+
+            ProductionVisualIntegration.AddStoneArchitectureForGate();
+            var after=CollisionSignature();
+            if(after!=baseline)throw new System.Exception("Stone Architecture v1 altered certified colliders/hotspots.");
+
+            Save(camera,folder+"/stone-architecture-overview-after-19.png",position,target,19f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-after-12.png",position,target,12f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-after-9.png",position,target,9f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-after-mobile.png",position,target,12f,390,844);
+            Save(camera,folder+"/stone-corner-after.png",position+cornerShift,target+cornerShift,9f,1280,720);
+            Save(camera,folder+"/stone-high-wall-after.png",position+wallShift,target+wallShift,9f,1280,720);
+            Save(camera,folder+"/stone-rock-transition-after.png",position+seamShift,target+seamShift,9f,1280,720);
+
+            var expected=new[]{
+                "Valoria · StoneArch · corner · west work court",
+                "Valoria · StoneArch · corner · west lower court",
+                "Valoria · StoneArch · high wall · west terrace back",
+                "Valoria · StoneArch · rock wall seam · sawmill",
+                "Valoria · StoneArch · rock wall seam · barracks"
+            };
+            foreach(var name in expected)
+            {
+                var go=GameObject.Find(name);
+                if(go==null)throw new System.Exception("Stone Architecture production instance missing: "+name);
+                foreach(var collider in go.GetComponentsInChildren<Collider>(true))
+                    if(collider.enabled)throw new System.Exception("Stone Architecture visual instance owns enabled collision: "+name);
+            }
+            File.WriteAllText(folder+"/stone-architecture-evidence.json",
+                "{\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"same_scene_before_after\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"instances\": {\"CornerWallL\": 2, \"HighStraightWall\": 1, \"RockToWallTransition\": 2},\n"+
+                "  \"gameplay_topology_changed\": false,\n"+
+                "  \"tripo_credits\": 0\n"+
+                "}\n");
+
+            ProductionVisualIntegration.StoneArchitectureEnabled=true;
+        }
+
+        static void CaptureTerrainTerraceCitywideWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var westShift=new Vector3(-12.8f,-1.7f,-3.2f);
+            var eastShift=new Vector3(9.2f,-1.6f,-3.8f);
+            var upperShift=new Vector3(-5.2f,1.0f,5.0f);
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.TerrainTerraceEnabled=false;
+            VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
+            var camera=Camera.main;if(camera==null)throw new System.Exception("Valoria camera missing for Terrain Terrace citywide gate.");
+            var baseline=CollisionSignature();
+            foreach(var zoom in new[]{19f,12f,9f})Save(camera,folder+"/terrain-citywide-overview-before-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-before-12.png",position+westShift,target+westShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-before-9.png",position+westShift,target+westShift,9f,1280,720);
+            Save(camera,folder+"/terrain-citywide-east-before-12.png",position+eastShift,target+eastShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-upper-before-12.png",position+upperShift,target+upperShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-mobile-before.png",position,target,12f,390,844);
+            ProductionVisualIntegration.AddTerrainTerraceCitywideForGate();
+            if(CollisionSignature()!=baseline)throw new System.Exception("Terrain Terrace citywide composition altered certified colliders/hotspots.");
+            foreach(var zoom in new[]{19f,12f,9f})Save(camera,folder+"/terrain-citywide-overview-after-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-after-12.png",position+westShift,target+westShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-after-9.png",position+westShift,target+westShift,9f,1280,720);
+            Save(camera,folder+"/terrain-citywide-east-after-12.png",position+eastShift,target+eastShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-upper-after-12.png",position+upperShift,target+upperShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-mobile-after.png",position,target,12f,390,844);
+            var names=new[]{
+                "Valoria · TerrainTerrace · west lower housing shelf","Valoria · TerrainTerrace · west middle housing rise",
+                "Valoria · TerrainTerrace · west upper housing shelf","Valoria · TerrainTerrace · upper civil support",
+                "Valoria · TerrainTerrace · workshop edge support","Valoria · TerrainTerrace · east training edge support",
+                "Valoria · TerrainTerrace · east upper retaining shelf"};
+            foreach(var name in names){var go=GameObject.Find(name);if(go==null)throw new System.Exception("Terrain Terrace citywide instance missing: "+name);foreach(var c in go.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("Terrain Terrace collider enabled: "+name);}
+            File.WriteAllText(folder+"/terrain-citywide-evidence.json","{\n  \"camera_matched\": true,\n  \"same_scene_before_after\": true,\n  \"collider_hotspot_signature_equal\": true,\n  \"instances\": 7,\n  \"placement_rule\": \"top-aligned-buried-support\",\n  \"gameplay_topology_changed\": false,\n  \"tripo_credits_additional\": 0\n}\n");
+            ProductionVisualIntegration.TerrainTerraceEnabled=true;
+        }
+
+        static void CaptureSurfaceCellWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var focusShift=new Vector3(0f,-1.55f,-7.0f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Surface Cell gate.");
+            var baseline=CollisionSignature();
+
+            foreach(var zoom in new[]{19f,12f,9f})
+                Save(camera,folder+"/surface-cell-before-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/surface-cell-focus-before-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/surface-cell-focus-before-9.png",position+focusShift,target+focusShift,9f,1280,720);
+            Save(camera,folder+"/surface-cell-before-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+
+            ProductionVisualIntegration.AddSurfaceCellForGate();
+            if(CollisionSignature()!=baseline)throw new System.Exception("Surface Cell v1 altered certified colliders/hotspots.");
+
+            foreach(var zoom in new[]{19f,12f,9f})
+                Save(camera,folder+"/surface-cell-after-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/surface-cell-focus-after-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/surface-cell-focus-after-9.png",position+focusShift,target+focusShift,9f,1280,720);
+            Save(camera,folder+"/surface-cell-after-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+
+            File.WriteAllText(folder+"/surface-cell-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"same_scene_before_after\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"scope\": \"lower-civic-surface-cell\",\n"+
+                "  \"layers\": [\"procedural-albedo\",\"procedural-normal\",\"ground\",\"stone\",\"dedicated-building-PBR-response\",\"bounded-grazing-light\"],\n"+
+                "  \"new_geometry\": false,\n"+
+                "  \"tripo_credits\": 0,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            WriteMetrics(folder+"/surface-cell-metrics.json");
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+        }
+
+        static void CaptureCoherentCastleProofWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var bastionShift=new Vector3(0f,1.15f,2.7f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Coherent Castle proof.");
+            var baseline=CollisionSignature();
+            Save(camera,folder+"/coherent-castle-before-12.png",position+bastionShift,target+bastionShift,12f,1280,720);
+            Save(camera,folder+"/coherent-castle-before-9.png",position+bastionShift,target+bastionShift,9f,1280,720);
+            Save(camera,folder+"/coherent-castle-before-mobile.png",position+bastionShift,target+bastionShift,12f,390,844);
+
+            ProductionVisualIntegration.AddCoherentCastleProofForGate();
+            if(CollisionSignature()!=baseline)
+                throw new System.Exception("Coherent Castle proof altered certified colliders/hotspots.");
+
+            Save(camera,folder+"/coherent-castle-after-12.png",position+bastionShift,target+bastionShift,12f,1280,720);
+            Save(camera,folder+"/coherent-castle-after-9.png",position+bastionShift,target+bastionShift,9f,1280,720);
+            Save(camera,folder+"/coherent-castle-after-mobile.png",position+bastionShift,target+bastionShift,12f,390,844);
+
+            var proof=GameObject.Find("Valoria · CoherentProof · gate");
+            if(proof==null)throw new System.Exception("Coherent Castle proof was not instantiated.");
+            foreach(var collider in proof.GetComponentsInChildren<Collider>(true))
+                if(collider.enabled)throw new System.Exception("Coherent Castle proof owns enabled visual collision.");
+
+            File.WriteAllText(folder+"/coherent-castle-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"kit\": \"Kenney Castle Kit\",\n"+
+                "  \"license\": \"CC0-1.0\",\n"+
+                "  \"single_asset_language\": true,\n"+
+                "  \"production_enabled\": false,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+        }
+
+        static void CaptureSlavicDistrictProofWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var focusShift=new Vector3(0f,-1.55f,-7.0f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+            ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Slavic District proof.");
+            var baseline=CollisionSignature();
+
+            Save(camera,folder+"/slavic-district-before-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/slavic-district-before-9.png",position+focusShift,target+focusShift,9f,1280,720);
+            Save(camera,folder+"/slavic-district-before-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+
+            ProductionVisualIntegration.AddSlavicDistrictProofForGate();
+            if(CollisionSignature()!=baseline)
+                throw new System.Exception("Slavic District proof altered certified colliders/hotspots.");
+
+            Save(camera,folder+"/slavic-district-after-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/slavic-district-after-9.png",position+focusShift,target+focusShift,9f,1280,720);
+            Save(camera,folder+"/slavic-district-after-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+
+            if(GameObject.Find("Valoria · SlavicProof · civil house 0")==null)
+                throw new System.Exception("Slavic District proof did not instantiate.");
+
+            File.WriteAllText(folder+"/slavic-district-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"civil_asset_family\": \"EmaceArt Slavic World Free\",\n"+
+                "  \"production_enabled\": false,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
+        }
+
+        static void CaptureProductionCellWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var focusShift=new Vector3(0f,-1.55f,-7.0f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            // Same-scene comparison: all existing city geometry/material/light state is held constant.
+            // Only Production Cell v1 is added between BEFORE and AFTER.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Production Cell gate.");
+            var baseline=CollisionSignature();
+
+            foreach(var zoom in new[]{19f,12f,9f})
+                Save(camera,folder+"/production-cell-before-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/production-cell-before-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+            Save(camera,folder+"/production-cell-focus-before-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/production-cell-focus-before-9.png",position+focusShift,target+focusShift,9f,1280,720);
+
+            ProductionVisualIntegration.AddProductionCellForGate(state);
+            if(CollisionSignature()!=baseline)
+                throw new System.Exception("Production Cell v1 altered certified colliders/hotspots.");
+
+            foreach(var zoom in new[]{19f,12f,9f})
+                Save(camera,folder+"/production-cell-after-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/production-cell-after-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+            Save(camera,folder+"/production-cell-focus-after-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/production-cell-focus-after-9.png",position+focusShift,target+focusShift,9f,1280,720);
+
+            var productionCell=GameObject.Find("Valoria · ProductionCell · lower civic apron");
+            if(productionCell==null)throw new System.Exception("Production Cell v1 ground layer was not instantiated.");
+            var visualRoot=GameObject.Find("Valoria · integrated construction visual layer");
+            if(visualRoot==null)throw new System.Exception("Valoria visual root missing during Production Cell gate.");
+            foreach(var collider in visualRoot.GetComponentsInChildren<Collider>(true))
+                if(collider.enabled)throw new System.Exception("Production Cell v1 left an enabled visual collider.");
+
+            File.WriteAllText(folder+"/production-cell-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"same_scene_before_after\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"scope\": \"lower-civic-production-cell\",\n"+
+                "  \"layers\": [\"ground/circulation\",\"shared-stone\",\"set-dressing\",\"life/motion\",\"focal-light/heraldry\"],\n"+
+                "  \"new_generated_geometry\": false,\n"+
+                "  \"tripo_credits\": 0,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            WriteMetrics(folder+"/production-cell-metrics.json");
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+        }
+
+        public static void CaptureRescueDistrict()
+        {
+            SceneSetup.SetupRenderPipeline();
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var state = new PlayerState
+            {
+                BastionLevel = 2,
+                SawmillLevel = 1,
+                BarracksLevel = 1,
+                CorruptionDiscovered = true
+            };
+            VisualWorld.Create(true, state);
+            HideVisualFamilyForDistrictEvidence("Bastion");
+
+            // Rescued district assets are now production Resources instantiated by VisualWorld.
+            // Require those real instances instead of staging duplicate review copies.
+            if (GameObject.Find("VPD · rescued upper civil residence") == null ||
+                GameObject.Find("VPD · rescued seam west") == null ||
+                GameObject.Find("VPD · rescued seam residential") == null ||
+                GameObject.Find("VPD · rescued seam east") == null)
+                throw new System.Exception("Production VisualWorld is missing one or more promoted rescue assets.");
+
+            var camera = Camera.main;
+            if (camera == null) throw new System.Exception("Valoria camera was not created");
+
+            const string folder = "VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var districtShift = new Vector3(0f, -1.75f, -5.75f);
+            var officialPosition = new Vector3(18.2f, 14.6f, -25.8f) + districtShift;
+            var officialTarget = new Vector3(0, 3.15f, 5.8f) + districtShift;
+            Save(camera, folder + "/production-district-19.png", officialPosition, officialTarget, 19f, 1280, 720);
+            Save(camera, folder + "/production-district-12.png", officialPosition, officialTarget, 12f, 1280, 720);
+            Save(camera, folder + "/production-district-9.png", officialPosition, officialTarget, 9f, 1280, 720);
+            Save(camera, folder + "/production-district-mobile.png", officialPosition, officialTarget, 12f, 390, 844);
+            WriteMetrics(folder + "/production-district-metrics.json");
+            File.WriteAllText(folder + "/production-district-evidence.json",
+                "{\n" +
+                "  \"schema_version\": 1,\n" +
+                "  \"topology\": \"REAL_VISUALWORLD_PRODUCTION_DISTRICT\",\n" +
+                "  \"gameplay_mesh_dependency\": false,\n" +
+                "  \"rescued_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller\",\"TerraceStairRock\"],\n" +
+                "  \"composed_assets\": [\"ResidentialTerraceRock on certified upper civil plot\",\"RockTerrainSeamFiller x3\"],\n" +
+                "  \"deferred_after_fit_test\": [\"TerraceStairRock: rescued and Surface-v1-ready, but omitted after composition test because it was occluded/redundant with the certified 12-step route\"],\n" +
+                "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
+                "  \"official_zooms\": [19,12,9],\n" +
+                "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
+                "  \"district_focus_visual_suppression\": \"Only Bastion renderers/lights are hidden for district-focused evidence; all rescued assets are the real production instances created by VisualWorld\",\n" +
+                "  \"promotion\": \"PRODUCTION_RESOURCES_ACTIVE_IN_VISUALWORLD\"\n" +
+                "}\n");
+            Debug.Log("Valoria production rescue district evidence saved to " + Path.GetFullPath(folder));
+            UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static void HideVisualFamilyForDistrictEvidence(string token)
+        {
+            foreach (var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                if (renderer.gameObject.name.IndexOf(token, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    renderer.enabled = false;
+            foreach (var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if (light.gameObject.name.IndexOf(token, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    light.enabled = false;
+        }
+
+        static GameObject InstallRescueModule(string assetPath, string label, Vector3 groundAnchor, float yaw, float targetSpan)
+        {
+            if (!File.Exists(assetPath))
+                throw new FileNotFoundException("Rescue district asset missing", assetPath);
+
+            UnityEditor.AssetDatabase.ImportAsset(assetPath, UnityEditor.ImportAssetOptions.ForceSynchronousImport | UnityEditor.ImportAssetOptions.ForceUpdate);
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (prefab == null) throw new System.Exception("glTFast failed to import rescue asset " + assetPath);
+
+            var root = Object.Instantiate(prefab);
+            root.name = label;
+            root.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+            var bounds = BoundsOf(root);
+            var span = Mathf.Max(bounds.size.x, bounds.size.z);
+            if (span <= .001f) throw new System.Exception("Rescue asset has unusable bounds: " + assetPath);
+            root.transform.localScale *= targetSpan / span;
+            bounds = BoundsOf(root);
+            root.transform.position += groundAnchor - new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
+            NormalizeRescueMaterials(root);
+            return root;
+        }
+
+        static Bounds BoundsOf(GameObject root)
+        {
+            var renderers = root.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0) throw new System.Exception("Rescue asset contains no renderers: " + root.name);
+            var bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            return bounds;
+        }
+
+        static void NormalizeRescueMaterials(GameObject root)
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null) throw new System.Exception("URP/Lit unavailable for rescue district.");
+
+            var cache = new Dictionary<string, Material>();
+            bool residential = root.name.IndexOf("ResidentialTerraceRock", System.StringComparison.OrdinalIgnoreCase) >= 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>())
+            {
+                var slots = renderer.sharedMaterials;
+                for (int i = 0; i < slots.Length; i++)
+                {
+                    var source = slots[i];
+                    if (source == null) continue;
+
+                    // ResidentialTerraceRock is authored by the rescue step with stable semantic
+                    // material slot order: 0 Stone, 1 Rock, 2 Roof, 3 Timber. glTF import may
+                    // rename material assets, so production evidence must not depend on names.
+                    string semantic = residential
+                        ? (i == 0 ? "stone" : i == 1 ? "rock" : i == 2 ? "roof" : i == 3 ? "timber" : "neutral")
+                        : (source.name ?? "").ToLowerInvariant();
+                    string key = semantic + "|" + source.name;
+                    if (!cache.TryGetValue(key, out var normalized))
+                    {
+                        var color = semantic.Contains("stone")
+                            ? new Color(.43f, .36f, .27f, 1f)
+                            : semantic.Contains("rock")
+                                ? new Color(.15f, .16f, .15f, 1f)
+                                : semantic.Contains("timber")
+                                    ? new Color(.34f, .18f, .075f, 1f)
+                                    : semantic.Contains("roof")
+                                        ? new Color(.085f, .095f, .105f, 1f)
+                                        : new Color(.25f, .24f, .21f, 1f);
+                        normalized = new Material(shader) { name = "Valoria v1 · " + semantic + " · " + source.name };
+                        normalized.SetColor("_BaseColor", color);
+                        normalized.SetFloat("_Metallic", 0f);
+                        normalized.SetFloat("_Smoothness", semantic.Contains("rock") ? .03f : .08f);
+                        cache[key] = normalized;
+                    }
+                    slots[i] = normalized;
+                }
+                renderer.sharedMaterials = slots;
+            }
+        }
+
+        static string TextureName(Material material, string property)
+        {
+            if (material == null || !material.HasProperty(property)) return "";
+            var texture = material.GetTexture(property);
+            return texture != null ? texture.name : "";
+        }
+
+        static string FloatValue(Material material, string property)
+        {
+            if (material == null || !material.HasProperty(property)) return "null";
+            return material.GetFloat(property).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        static string TexturePropertiesJson(Material material)
+        {
+            if (material == null || material.shader == null) return "[]";
+            var shader = material.shader;
+            var rows = new List<string>();
+            for (int i = 0; i < shader.GetPropertyCount(); i++)
+            {
+                if (shader.GetPropertyType(i) != ShaderPropertyType.Texture) continue;
+                var property = shader.GetPropertyName(i);
+                if (!material.HasProperty(property)) continue;
+                var texture = material.GetTexture(property);
+                if (texture == null) continue;
+                rows.Add("{\"property\":\"" + Escape(property) +
+                         "\",\"texture\":\"" + Escape(texture.name) + "\"}");
+            }
+            return "[" + string.Join(",", rows) + "]";
+        }
+
+        static string Escape(string value)
+        {
+            return (value ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        static void WriteMaterialEvidence(string path)
+        {
+            var rows = new List<string>();
+            foreach (var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if (!renderer.gameObject.activeInHierarchy) continue;
+                var lower = renderer.gameObject.name.ToLowerInvariant();
+                string target = lower.Contains("aserradero") ? "sawmill" :
+                                lower.Contains("cuartel") ? "barracks" :
+                                lower.Contains("bastion") ? "bastion" : "";
+                if (string.IsNullOrEmpty(target)) continue;
+
+                foreach (var material in renderer.sharedMaterials)
+                {
+                    if (material == null) continue;
+                    var baseMap = TextureName(material, "_BaseMap");
+                    if (string.IsNullOrEmpty(baseMap)) baseMap = TextureName(material, "_MainTex");
+                    var normalMap = TextureName(material, "_BumpMap");
+                    var metallicMap = TextureName(material, "_MetallicGlossMap");
+                    var occlusionMap = TextureName(material, "_OcclusionMap");
+                    rows.Add(
+                        "    {\"target\":\"" + target +
+                        "\",\"renderer\":\"" + Escape(renderer.gameObject.name) +
+                        "\",\"material\":\"" + Escape(material.name) +
+                        "\",\"shader\":\"" + Escape(material.shader != null ? material.shader.name : "") +
+                        "\",\"base_map\":\"" + Escape(baseMap) +
+                        "\",\"normal_map\":\"" + Escape(normalMap) +
+                        "\",\"metallic_gloss_map\":\"" + Escape(metallicMap) +
+                        "\",\"occlusion_map\":\"" + Escape(occlusionMap) +
+                        "\",\"texture_properties\":" + TexturePropertiesJson(material) +
+                        ",\"metallic\":" + FloatValue(material, "_Metallic") +
+                        ",\"smoothness\":" + FloatValue(material, "_Smoothness") + "}"
+                    );
+                }
+            }
+
+            File.WriteAllText(path,
+                "{\n  \"schema_version\": 1,\n  \"materials\": [\n" +
+                string.Join(",\n", rows) +
+                "\n  ]\n}\n");
+        }
+
+        static void WriteMetrics(string path)
+        {
+            int renderers = 0;
+            long triangles = 0;
+            var materialNames = new HashSet<string>();
+            foreach (var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if (!r.enabled || !r.gameObject.activeInHierarchy) continue;
+                renderers++;
+                foreach (var m in r.sharedMaterials)
+                    if (m != null) materialNames.Add(m.name);
+            }
+
+            foreach (var mf in Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None))
+            {
+                var mesh = mf.sharedMesh;
+                if (mesh == null) continue;
+                for (int s = 0; s < mesh.subMeshCount; s++)
+                    triangles += (long)mesh.GetIndexCount(s) / 3L;
+            }
+
+            var lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+            var json =
+                "{\n" +
+                "  \"schema_version\": 1,\n" +
+                "  \"active_renderers\": " + renderers + ",\n" +
+                "  \"unique_materials\": " + materialNames.Count + ",\n" +
+                "  \"scene_triangles\": " + triangles + ",\n" +
+                "  \"lights\": " + lights.Length + ",\n" +
+                "  \"targets\": [\"overview\",\"sawmill\",\"barracks\",\"bastion\"],\n" +
+                "  \"official_zooms\": [19,12,9]\n" +
+                "}\n";
+            File.WriteAllText(path, json);
+        }
+
+        static void Save(Camera camera, string path, Vector3 position, Vector3 target, float size, int width, int height)
+        {
+            camera.transform.position = position;
+            camera.transform.LookAt(target);
+            camera.orthographic = true;
+            camera.orthographicSize = size;
+
+            var rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
+            var previous = RenderTexture.active;
+            try
+            {
+                camera.targetTexture=rt;
+                // Compile the actual scene material variants synchronously before readback.
+                // A first render may otherwise expose the editor's blue compiling shader.
+                UnityEditor.ShaderUtil.allowAsyncCompilation=false;
+                var warmed=new System.Collections.Generic.HashSet<Material>();
+                foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                    if(renderer.enabled)foreach(var material in renderer.sharedMaterials)
+                        if(material!=null&&warmed.Add(material))
+                            for(int pass=0;pass<material.passCount;pass++)
+                                UnityEditor.ShaderUtil.CompilePass(material,pass,true);
+                camera.Render();
+                camera.Render();
+                RenderTexture.active = rt;
+                var image = new Texture2D(width, height, TextureFormat.RGB24, false);
+                image.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                image.Apply();
+                File.WriteAllBytes(path, image.EncodeToPNG());
+                Object.DestroyImmediate(image);
+            }
+            finally
+            {
+                camera.targetTexture = null;
+                RenderTexture.active = previous;
+                rt.Release();
+                Object.DestroyImmediate(rt);
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+name: "[PREFLIGHT] Materialize Current Valoria Reset Target"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/materialize-current-valoria-target-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          sparse-checkout: |
+            docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg
+          sparse-checkout-cone-mode: false
+      - name: Verify current reset target
+        run: |
+          test -s docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg
+          sha256sum docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg
+          file docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-current-reset-target-exact
+          path: docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg
+          if-no-files-found: error
+          retention-days: 7

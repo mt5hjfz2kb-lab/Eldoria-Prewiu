@@ -1,0 +1,22 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "scope": "Bridge isolated source gate only; geometry correction accepted, Unity still blocked",
+  "source_run": 37296800850,
+  "artifact_id": 11340060969,
+  "source_sha": "a76e2dc28ae5af69da8cb6ef528ca0886b2e05534991e7862314935c5a12176b",
+  "export_sha": "e53b6495fa4457dcbe67210f67fad7f050a4d40712c6b951356c8c83865fa6e2",
+  "tech_pass": true,
+  "questions": {
+    "silhouette": "PASS: bridge deck/parapet envelope and diagonal crossing remain target-consistent.",
+    "deck_geometry": "PASS: source01 zipper/chevron defect removed.",
+    "support_arch": "PASS: segmented arch ring and masonry piers now read structurally.",
+    "lower_gate_language": "PASS in form/material family.",
+    "deck_surface": "FAIL: broad top reads as smooth neutral slab rather than the target's large stone paving.",
+    "screen_readability": "PARTIAL: silhouette survives, but the largest visible surface lacks the target-defining paving rhythm."
+  },
+  "defect_classification": "SURFACE, not composition or geometry",
+  "action": "Keep source02 geometry. Add one generic metric paving albedo+normal material aligned along the bridge; do not change approved envelope, support, parapets, camera, Lower Gate or gameplay.",
+  "unity_gate": "NOT RUN",
+  "tripo_credits": 0
+}

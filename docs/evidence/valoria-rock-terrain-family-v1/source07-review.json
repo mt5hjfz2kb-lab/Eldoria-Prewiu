@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source07",
+  "source_run": 37307611785,
+  "artifact_id": 11344547175,
+  "source_sha": "334bdecf14e0850040d39263eb0013beef97fcd3a12423248e6711052b019c65",
+  "export_sha": "773d03e2f3a9cf4b03fce358298390d497860adc392f6348f80ca975cbd8c980",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 2224,
+    "vertices": 3698,
+    "modules": 12,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "FAIL — shoulder wedges remain legible as discrete support pieces in front of the continuous cliff mass.",
+    "rock_rhythm": "PARTIAL — main wall rhythm is improved, but seven repeated shoulder accents create an artificial cadence.",
+    "silhouette": "PASS at macro plateau/terrace level; shoulder proxies are not required to remain one-to-one if absorbed into the family mass.",
+    "depth_without_noise": "PASS — broad main cliff recesses work.",
+    "authored_not_procedural": "FAIL — repeated shoulder pieces still reveal proxy-driven construction.",
+    "mobile_scale": "FAIL identity — the wedges remain visible as repeated supports at small scale.",
+    "architecture_integration": "PENDING UNITY — not authorized.",
+    "material_difference": "PASS.",
+    "real_quality_jump": "FAIL — plateau does not yet read as a continuous authored geological mass."
+  },
+  "decision": "SOURCE08: absorb CliffShoulder_0..6 into the MainPlatform cliff mass. Remove one-to-one shoulder replacement geometry entirely; preserve the locked MainPlatform/ground/upper-terrace macro silhouette and level anchors. The seven shoulder placeholders are suppressed as greybox proxies, not reproduced as separate rocks.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0
+}

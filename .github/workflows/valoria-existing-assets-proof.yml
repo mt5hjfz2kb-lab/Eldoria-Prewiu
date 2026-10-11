@@ -1,0 +1,36 @@
+name: Eldoria existing realistic medieval asset feasibility
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths: ['tools/art-rd/eldoria_fbx_candidate_probe.py','.github/workflows/valoria-existing-assets-proof.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1
+          if($git){Split-Path $git.FullName|Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append}
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Inspect candidate real FBX architecture and GLB segmentation
+        shell: powershell
+        run: |
+          $env:ELDORIA_ASSET_MAP="$env:RUNNER_TEMP/eldoria-real-assets.json"
+          $p=Start-Process -FilePath "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -ArgumentList @("-b","--python","tools/art-rd/eldoria_fbx_candidate_probe.py") -Wait -PassThru -RedirectStandardOutput "$env:RUNNER_TEMP/eldoria-assets-out.log" -RedirectStandardError "$env:RUNNER_TEMP/eldoria-assets-err.log"
+          if($p.ExitCode -ne 0){Get-Content "$env:RUNNER_TEMP/eldoria-assets-err.log" -Tail 40;throw "Cannot import candidate assets"}
+          if(-not (Test-Path $env:ELDORIA_ASSET_MAP)){throw "No real asset map output"}
+          Get-Content "$env:RUNNER_TEMP/eldoria-assets-out.log" -Tail 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-existing-fbx-architecture-map
+          path: |
+            ${{ runner.temp }}/eldoria-real-assets.json
+            ${{ runner.temp }}/eldoria-assets-out.log
+            ${{ runner.temp }}/eldoria-assets-err.log

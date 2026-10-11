@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-golden-generator-bakeoff-v1-preflight",
+  "enabled": true,
+  "nonce": "golden-generator-bakeoff-v1-zero-spend-preflight-001",
+  "mode": "ZERO_SPEND_PREFLIGHT_ONLY",
+  "execution_authorized": false,
+  "vendor_calls_allowed": false,
+  "requested_at": "2026-10-05T22:36:00Z"
+}

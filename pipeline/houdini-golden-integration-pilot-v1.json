@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "DESIGN_PREPARED_NOT_EXECUTED",
+  "pilot_id": "valoria-houdini-golden-integration-pilot-v1",
+  "prerequisite": "winner from valoria-golden-generator-bakeoff-v1",
+  "hda_target": "ValoriaGoldenEnvironment.hda",
+  "unity_runtime_dependency": false,
+  "inputs": [
+    "winning Gate hero mesh",
+    "winning Bridge mesh",
+    "Golden crop boundary",
+    "road/access axis",
+    "shoreline curve",
+    "water height",
+    "protected gameplay mask",
+    "official camera visibility mask"
+  ],
+  "promoted_parameters": [
+    "rock_large_scale",
+    "rock_mid_scale",
+    "erosion_strength",
+    "ledge_frequency",
+    "bridge_embed_depth",
+    "gate_rock_blend",
+    "abutment_width",
+    "shore_width",
+    "wetness_height",
+    "vegetation_density",
+    "seed"
+  ],
+  "clay_gate": {
+    "hero_identity_preservation": 4,
+    "contact_integration": 4,
+    "geological_coherence": 4,
+    "silhouette_environment_integration": 4,
+    "official_camera_readability": 4
+  },
+  "automation_boundary": {
+    "automation_owns": [
+      "input identity",
+      "parameter JSON",
+      "HDA version",
+      "batch cook",
+      "export",
+      "metrics",
+      "fixed preview renders",
+      "artifact persistence"
+    ],
+    "art_direction_owns": [
+      "initial HDA network design",
+      "mask semantics",
+      "parameter ranges",
+      "reference matching"
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "method": "depth receiver + exact far projection plate",
+  "camera_orientation": "fixed",
+  "camera_forward_world": "+Y",
+  "receiver_bounds_min": [
+    -8.017075538635254,
+    6.0,
+    -1.656965732574463
+  ],
+  "receiver_bounds_max": [
+    6.828738212585449,
+    18.000001907348633,
+    4.695135116577148
+  ],
+  "far_plate_distance": 24.0,
+  "fov_deg": 50.0,
+  "aspect": 1.7758620689655173,
+  "offsets": [
+    0.0,
+    -0.35,
+    0.35,
+    -0.75,
+    0.75
+  ],
+  "credits": 0,
+  "unity": false
+}

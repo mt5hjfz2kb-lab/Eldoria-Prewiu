@@ -1,0 +1,26 @@
+{
+  "verdict": "MATCHED-CAMERA VISUAL FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source08",
+  "unity_run_id": 37309039558,
+  "unity_artifact_id": 11344907445,
+  "quality_bar": {
+    "frame_leaves_greybox": "PASS — the dark vertical slab/shoulder proxy read is removed and terrain becomes a real authored mass.",
+    "target_rock_rhythm": "PARTIAL — continuous mass and large breaks improve, but visible triangulated facets are too explicit.",
+    "macro_silhouette": "PASS — union footprint and screen occupancy are effectively identical to approved blockout across all views.",
+    "depth_without_noise": "PARTIAL — depth improves, but high-contrast pale facets create visual chatter.",
+    "authored_not_procedural": "PARTIAL/FAIL — geometry is authored, yet the rendered result reads like obvious low-poly faceting.",
+    "mobile_detail_scale": "FAIL — mobile landscape still exposes the triangle pattern as the dominant terrain identity.",
+    "integration_closed_families": "PASS — Lower Gate, Bridge, Road and Stair remain at 0 px displacement; interfaces are geometrically aligned.",
+    "material_difference": "PASS category separation, FAIL finish — rock/ground/paving are distinct, but rock is too pale/washed and lacks credible surface richness.",
+    "real_quality_jump": "PARTIAL — a major structural jump over greybox, but not yet a premium-target jump because the low-poly/washout defect is frame-wide."
+  },
+  "target_vs_blockout_vs_structural_frame": {
+    "target": "Requires stylized-realistic premium terrain: large readable rock forms, depth/contrast, non-procedural identity, mobile-safe surface hierarchy.",
+    "approved_blockout": "Correct macro composition and levels but dark slab cliffs and proxy shoulders read unmistakably as greybox.",
+    "source08_structural_frame": "Correct macro composition plus real continuous cliffs and preserved architecture; however pale triangulated facets make the frame cleaner and more structural without yet reaching the target finish.",
+    "conclusion": "REAL STRUCTURAL IMPROVEMENT, NOT YET PRODUCTION VISUAL PASS."
+  },
+  "next": "SOURCE09: preserve Source08 macro geometry and exact interfaces; reduce low-poly read via darker warmer Eldoria Rock values, narrower facet contrast, and subtle coherent rock surface treatment. Keep ground distinct but less washed-out. No geometry/camera/composition changes.",
+  "tripo_credits": 0
+}

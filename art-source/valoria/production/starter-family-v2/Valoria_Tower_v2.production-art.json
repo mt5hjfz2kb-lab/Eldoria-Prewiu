@@ -1,0 +1,51 @@
+{
+  "asset_id": "Valoria_Tower_v2",
+  "classification": "TEMPORARY",
+  "role": "PRIMARY",
+  "function": "tower",
+  "source": {
+    "tool": "Blender",
+    "tool_version": "4.0.2",
+    "path": "art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend",
+    "sha256": "c63c6d2216148952a421c0a695dadb096c4a9b0a961d981d651ef67c7915c8d5",
+    "reproducible": true,
+    "authoring_method": "certified_source_reauthoring_hybrid_v2",
+    "donor_sources": [
+      "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb"
+    ]
+  },
+  "geometry": {
+    "triangles": 50000,
+    "materials": 2,
+    "uv0": true,
+    "normals": true
+  },
+  "materials": [
+    {
+      "slot": "source-preserved",
+      "family": "Eldoria_Stone",
+      "maps": [
+        "donor-source-materials"
+      ]
+    }
+  ],
+  "export": {
+    "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Tower_v2.glb",
+    "sha256": "83af84e917153ee9ca302db56acb3fa676c97b0775109f3991696664dcada229",
+    "scale": 1.0,
+    "forward_axis": "+Z",
+    "up_axis": "+Y"
+  },
+  "unity": {
+    "resource_path": "Valoria/ProductionArt/StarterFamilyV2/Valoria_Tower_v2",
+    "owns_gameplay_collider": false,
+    "owns_hotspot": false
+  },
+  "evidence": {
+    "zoom9": "",
+    "mobile": "",
+    "technical_verdict": "PENDING_UNITY",
+    "visual_verdict": "PENDING_VISUAL",
+    "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+  }
+}

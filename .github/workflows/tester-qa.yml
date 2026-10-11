@@ -1,0 +1,39 @@
+name: Validate Closed Tester Build
+
+on:
+  push:
+    branches: [work/testers-v0265]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tester-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Syntax contracts
+        run: |
+          node --check tester-v0265/tester-layer.js
+          node --check tester-v0265/tester-config.js
+      - name: Serve frozen tester snapshot
+        run: python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
+      - name: Closed tester layer E2E
+        run: node qa/e2e-tester-build.js
+      - name: Alias frozen snapshot for legacy QA paths
+        run: |
+          rm -rf playtest
+          cp -R tester-v0265 playtest
+      - name: Frozen runtime targeted regression
+        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:targeted
+      - name: Frozen runtime full regression
+        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:regression
+      - name: Frozen runtime uninterrupted fresh-save Arc I
+        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:arc1

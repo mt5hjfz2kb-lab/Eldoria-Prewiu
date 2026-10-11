@@ -1,0 +1,86 @@
+{
+  "review": "VALORIA STRUCTURAL QUALITY BAR REVIEW v1",
+  "evidence_policy": "Recovered authoritative captures; no recapture required because Bastion Source08 cumulative Unity artifact is the latest integrated structural frame and contains the complete official camera set. No closed family was modified.",
+  "canonical_target": {
+    "path": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "sha": "6409a860440cdc937818b18939dcba91ab2e6df8"
+  },
+  "target_blockout_comparison": "docs/evidence/valoria-art-production-reset-v1/target-blockout-comparison.json",
+  "approved_blockout": {
+    "run_id": 37275659322,
+    "artifact_id": 11329019907,
+    "views": {
+      "16:9": "Unity/ValoriaProductionArtResetV1Captures/UNITY-16x9.png",
+      "mobile-landscape": "Unity/ValoriaProductionArtResetV1Captures/UNITY-mobile-landscape.png",
+      "portrait-entry": "Unity/ValoriaProductionArtResetV1Captures/UNITY-portrait-entry.png",
+      "source-3x2": "Unity/ValoriaProductionArtResetV1Captures/UNITY-source-3x2.png",
+      "portrait-home": "Unity/ValoriaProductionArtResetV1Captures/UNITY-portrait-home.png",
+      "portrait-left": "Unity/ValoriaProductionArtResetV1Captures/UNITY-portrait-left.png",
+      "portrait-right": "Unity/ValoriaProductionArtResetV1Captures/UNITY-portrait-right.png"
+    }
+  },
+  "current_structural_production_frame": {
+    "run_id": 37328467482,
+    "artifact_id": 11352609605,
+    "artifact_name": "valoria-bastion-family-v1-source08-unity",
+    "views": {
+      "16:9": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-16x9.png",
+      "mobile-landscape": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-mobile-landscape.png",
+      "portrait-entry": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-portrait-entry.png",
+      "source-3x2": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-source-3x2.png",
+      "portrait-home": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-portrait-home.png",
+      "portrait-left": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-portrait-left.png",
+      "portrait-right": "Unity/ValoriaProductionArtResetV1Captures/AFTER-UNITY-portrait-right.png"
+    }
+  },
+  "structural_family_evidence": {
+    "lower_gate": {
+      "run": 37282357911,
+      "artifact": 11337479259,
+      "result": "PRODUCTION FAMILY PASS / CLOSED"
+    },
+    "bridge": {
+      "run": 37298002864,
+      "artifact": 11339213616,
+      "result": "PRODUCTION FAMILY PASS / CLOSED"
+    },
+    "road": {
+      "run": 37300556571,
+      "artifact": 11341876912,
+      "result": "PRODUCTION FAMILY PASS / CLOSED"
+    },
+    "stair": {
+      "run": 37302198301,
+      "artifact": 11340779541,
+      "result": "PRODUCTION FAMILY PASS / CLOSED"
+    },
+    "rock_terrain": {
+      "source": "Source09",
+      "run": 37310582556,
+      "artifact": 11345546113,
+      "result": "PRODUCTION FAMILY PASS / CLOSED"
+    },
+    "walls": {
+      "source": "Source03",
+      "run": 37315821080,
+      "artifact": 11347388530,
+      "result": "PRODUCTION FAMILY PASS / CLOSED"
+    },
+    "bastion": {
+      "source": "Source08",
+      "source_run": 37327905027,
+      "source_artifact": 11353460819,
+      "unity_run": 37328467482,
+      "unity_artifact": 11352609605,
+      "result": "PRODUCTION FAMILY PASS / CLOSED / HERO QUALITY BAR PASS"
+    }
+  },
+  "comparison": {
+    "16:9": "Target composition and blockout anchors are preserved. Production replaces the structural greybox with authored gates/walls/circulation/geology/Bastion; remaining large dead parcels and placeholder Cabin/Camp are secondary gaps. Localized dark terrain seam under Bastion is the only structural C.",
+    "mobile-landscape": "Production hierarchy remains legible: Lower Gate foreground, road/stair axis, Bastion hero. Sparse secondary occupancy remains the largest quality deficit; upper-shelf terrain seam remains visible.",
+    "portrait-entry": "Entry experience is materially beyond blockout: Lower Gate/bridge are authored and readable at close strategic crop. Full Bastion hierarchy is outside this crop by design, not a structural failure.",
+    "source-3x2": "Closest literal target comparison confirms macro convergence and exposes the same localized upper-shelf seam; no composition/target D gap is evidenced."
+  },
+  "verdict": "STRUCTURAL QUALITY BAR PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS",
+  "tripo_credits": 0
+}

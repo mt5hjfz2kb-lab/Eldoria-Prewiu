@@ -1,0 +1,93 @@
+name: "[EXPERIMENT] Valoria Panoramic Sky Candidate v2"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV2.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaPanoramicSkyCandidateGateV2.cs'
+      - 'pipeline/valoria-panoramic-sky-candidate-v2-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-panoramic-sky-candidate-v2
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Restore canonical Unity source while preserving Library cache
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          $dirty=git status --porcelain --untracked-files=all -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if($dirty){Write-Host $dirty;throw 'Unity source cleanup did not converge.'}
+      - name: Stage Alps Field CC0 panorama
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\SkyCandidates"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $dst=Join-Path $dir 'alps_field.jpg'
+          $direct='https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/alps_field.jpg'
+          try {
+            Invoke-WebRequest -Uri $direct -OutFile $dst -UseBasicParsing
+          } catch {
+            Write-Host "Direct Alps Field URL failed, resolving through Poly Haven public API."
+            $payload=Invoke-RestMethod -Uri 'https://api.polyhaven.com/files/alps_field' -Headers @{'User-Agent'='Eldoria-Valoria-Convergence/1.0'}
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+\.jpg[^"]*') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            $url=$urls | Where-Object { $_ -match 'Tonemapped|tonemapped|8k|4k' } | Select-Object -First 1
+            if(-not $url){$url=$urls|Select-Object -First 1}
+            if(-not $url){throw 'Could not resolve Alps Field JPG from Poly Haven.'}
+            Invoke-WebRequest -Uri $url -OutFile $dst -UseBasicParsing
+          }
+          $bytes=(Get-Item $dst).Length
+          Write-Host "Alps Field bytes=$bytes"
+          if($bytes -lt 1000000){throw 'Alps Field panorama download unexpectedly small.'}
+      - name: Capture Alps Field rotation sweep
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaPanoramicSkyCandidateV2Captures"
+          $log="$env:RUNNER_TEMP\ValoriaPanoramicSkyCandidateV2.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaPanoramicSkyCandidateGateV2.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(24)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 300};throw "Gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-panoramic-sky-candidate-v2-${{ github.run_id }}
+          path: |
+            Unity/ValoriaPanoramicSkyCandidateV2Captures/*
+            ${{ runner.temp }}/ValoriaPanoramicSkyCandidateV2.log
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-sharp-clean-source-v1",
+  "phase": "CONVERGENCE_GATE_1A_CLEAN_SOURCE_VERIFICATION",
+  "candidates": [
+    "art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-base.png",
+    "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
+  ],
+  "purpose": "Materialize existing canonical candidate images without modifying them, create a side-by-side audit sheet, and select the HUD/UI-clean source for SHARP regeneration.",
+  "mutation_policy": "read-only source comparison; no image editing; no new visual method; no paid credits",
+  "expected_artifact": "valoria-sharp-clean-source-v1",
+  "paid_credits": 0
+}

@@ -1,0 +1,24 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "scope": "Premium Hero contact source02 is accepted only as a bounded integrated-test candidate for the Golden Lookdev Slice. This is not GOLDEN LOOKDEV PASS and not a family promotion.",
+  "source_iteration": "source02",
+  "source_sha": "dad7e3a9dc8561b8aa3d43d580e944c6dd24c502c2ca7f6175d60a5690712b0e",
+  "export_sha": "61f95e3c24a67e3d2024a6db2a0450966d72da37e2d1ac98eb50563c3d3cfcff",
+  "run_id": 37356238184,
+  "artifact_id": 11363999559,
+  "visual_review": {
+    "strengths": [
+      "Non-planar triangulated ground relief materially breaks the source01 flat-sheet method.",
+      "Road verges are narrower and less overlay-like.",
+      "Asymmetric multi-ring boulders provide real silhouette/profile breakup.",
+      "Source remains bounded to the lower-entry contact role and preserves accepted family geometry."
+    ],
+    "risks": [
+      "Ground shell still reads continuous in isolated view; integrated official-camera judgement is mandatory.",
+      "Acceptance is conditional on Gate/Road/rock occlusion and contact blending eliminating the sheet read.",
+      "No broad rollout is authorized."
+    ]
+  },
+  "next_gate": "Integrate source02 only into the current Golden Slice cumulative official-camera capture and judge Reference vs Before vs After. Reject if shell edges or plate read remain visible.",
+  "tripo_credits": 0
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "source": {
+    "unity_run_id": 36493002127,
+    "artifact_id": 11002367555,
+    "commit": "694ff8336bad3dd42d1e2ee2f13edb6e15700a3a"
+  },
+  "note": "Global luminance metrics are a comparison baseline, not a standalone visual verdict. Local asset over-brightness can be visually severe while occupying a small image area.",
+  "images": {
+    "valoria-sawmill-9.png": {
+      "mean_luminance": 0.4034,
+      "luminance_stddev": 0.1758,
+      "clipped_high_pct": 0.5849,
+      "clipped_low_pct": 0,
+      "p05": 0.2033,
+      "p95": 0.6541
+    },
+    "valoria-barracks-9.png": {
+      "mean_luminance": 0.4025,
+      "luminance_stddev": 0.1701,
+      "clipped_high_pct": 0.0648,
+      "clipped_low_pct": 0,
+      "p05": 0.2033,
+      "p95": 0.6541
+    },
+    "valoria-gate.png": {
+      "mean_luminance": 0.4356,
+      "luminance_stddev": 0.1946,
+      "clipped_high_pct": 0.3494,
+      "clipped_low_pct": 0.0107,
+      "p05": 0.1786,
+      "p95": 0.6541
+    },
+    "valoria-mobile.png": {
+      "mean_luminance": 0.423,
+      "luminance_stddev": 0.1981,
+      "clipped_high_pct": 1.3507,
+      "clipped_low_pct": 0.0459,
+      "p05": 0.2033,
+      "p95": 0.6541
+    }
+  },
+  "comparison_rule": "Use the same camera/view and compare distribution changes alongside human visual review. Do not promote a LookDev profile from a single numeric score."
+}

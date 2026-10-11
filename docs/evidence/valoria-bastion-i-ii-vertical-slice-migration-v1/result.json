@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "workstream_id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
+  "status": "PASS",
+  "closed_at": "2026-10-07T19:05:57Z",
+  "implementation_commit": "400ea35d8a74b83b138c6e7cb2e146e5314c00af",
+  "publish_request_commit": "9c8477b5de7b8c67f23ac23e3297559d9e65cbf1",
+  "certification": {
+    "ui_progression": {
+      "run_id": 37667362780,
+      "conclusion": "success"
+    },
+    "source_editor": {
+      "run_id": 37667362728,
+      "conclusion": "success"
+    },
+    "architecture_guard": {
+      "run_id": 37667362876,
+      "conclusion": "success"
+    },
+    "visual_authority": {
+      "run_id": 37667362763,
+      "conclusion": "success"
+    },
+    "production": {
+      "run_id": 37667362790,
+      "artifact_id": 11503463174,
+      "parcel_source_artifact_id": 11502478603,
+      "conclusion": "success"
+    },
+    "publish": {
+      "run_id": 37668173503,
+      "conclusion": "success"
+    },
+    "published_probe": {
+      "run_id": 37670831297,
+      "artifact_id": 11505437542,
+      "conclusion": "success",
+      "playablePass": true
+    }
+  },
+  "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+  "macroloop": [
+    "HOME",
+    "horizontal touch pan",
+    "moderate vertical touch pan",
+    "MUNDO",
+    "Region 1 gather/reward",
+    "REINO/Valoria return",
+    "reload",
+    "persistence"
+  ],
+  "persistence_after_reload": {
+    "revision": 4,
+    "wood": 590,
+    "stone": 150,
+    "gatheredWood": 360,
+    "gatheredStone": 0,
+    "sawmill": 0,
+    "bastion": 1
+  },
+  "visual_checks": {
+    "landscape": true,
+    "portrait": true,
+    "white_screen": false
+  },
+  "fake_future_controls_migrated": false,
+  "paid_credits": 0
+}

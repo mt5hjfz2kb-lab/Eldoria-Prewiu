@@ -1,0 +1,323 @@
+{
+  "schema": 1,
+  "art_source_commit": "616d5f8e1e969e917f885c970562135e45fc2191",
+  "baseline_main": "f7dc22a2b7e52dba45cdcd296edea0a118dda80d",
+  "baseline_capture_commits": {
+    "world": "816dc351319931aa0a06ce728c3654c4f980cc7f",
+    "valoria": "b3d4eb3b8b49b77c5dd3def4418eaccf696f6a20"
+  },
+  "baseline_note": "Integration disabled; GroundKit/ValoriaKit unchanged from initial main in these baseline capture commits. No camera, fixture or lighting changes between compared shots. Later gate-generated BEFOREs include the global GroundKit winding fix, so are not used as initial-main baselines.",
+  "camera": {
+    "world": {
+      "position": [
+        20,
+        24,
+        -21
+      ],
+      "target": [
+        0,
+        0,
+        1
+      ],
+      "ortho": [
+        18,
+        14,
+        10,
+        7
+      ],
+      "mobile_ortho": 14,
+      "threat_pan": [
+        6,
+        0,
+        5
+      ]
+    },
+    "valoria": {
+      "position": [
+        18.2,
+        14.6,
+        -25.8
+      ],
+      "target": [
+        0,
+        3.15,
+        5.8
+      ],
+      "ortho": [
+        19,
+        12,
+        9
+      ],
+      "mobile_ortho": 12,
+      "west_pan": [
+        -13,
+        -1.25,
+        -4.4
+      ]
+    }
+  },
+  "fixture": "Bastion III, Sawmill I, Barracks I, corruption discovered; world march outbound forest-valoria with ArcherT1=8. B3 beast/food/ruin art is representative visual dressing, not newly implemented interaction.",
+  "mobile_note": "Editor capture at 390×844; not physical-device profiling.",
+  "reference_sha256": "43fcd6f845747b20ccca71c4a5ba43985c86f9e22042a3f24faedf680eab3835",
+  "records": [
+    {
+      "file": "capturas/mapa/world-before-18.png",
+      "sha256": "144022f536451d9d2cda1e3b27f11144cf7fea7bae047bb56860c993f2659246",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644924930,
+      "state": "before"
+    },
+    {
+      "file": "capturas/mapa/world-after-18.png",
+      "sha256": "f2c8d358c1cd84f5be4db8d6723e27e5f4a3091466cb88833a2f26c636de97da",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166099,
+      "state": "after"
+    },
+    {
+      "file": "capturas/mapa/world-before-14.png",
+      "sha256": "8692c43652c02b082f22955fd363614b28ab80e8b2841594c8c07fc50d40d286",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644924930,
+      "state": "before"
+    },
+    {
+      "file": "capturas/mapa/world-after-14.png",
+      "sha256": "7c7491ee6cb980ba616988251609fe663b9bc7cabf60bfbbba86c1819f2e4c61",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166099,
+      "state": "after"
+    },
+    {
+      "file": "capturas/mapa/world-before-10.png",
+      "sha256": "15600a54aa41687f5d2027ae39c064f0cf1da9aad898e749dcb5d7d84cee2d91",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644924930,
+      "state": "before"
+    },
+    {
+      "file": "capturas/mapa/world-after-10.png",
+      "sha256": "2200b36160155bba41378fab708fe8f3597bee79ae1973f68d9f2c5ca8225754",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166099,
+      "state": "after"
+    },
+    {
+      "file": "capturas/mapa/world-before-7.png",
+      "sha256": "10f1ea7150b3de9abba5833f9ad64d02f34ee23209c4a26e89cc8f3c6e009db8",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644924930,
+      "state": "before"
+    },
+    {
+      "file": "capturas/mapa/world-after-7.png",
+      "sha256": "8a9945dfa1e16317bf84d8eecf9232881276cf181a2da68e9eb593a9e0c5b5bd",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166099,
+      "state": "after"
+    },
+    {
+      "file": "capturas/mapa/world-before-mobile.png",
+      "sha256": "cebcd0e7474a42bcd3951b9abe77149b9c98ff411dea2d29629660fd7996b23e",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36644924930,
+      "state": "before"
+    },
+    {
+      "file": "capturas/mapa/world-after-mobile.png",
+      "sha256": "895f1301ebc1cc5539b298ea8c891024ffd9e997956ac8c768e1f8abc7a2144e",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36675166099,
+      "state": "after"
+    },
+    {
+      "file": "capturas/mapa/world-threat-before-mobile.png",
+      "sha256": "6f2b10e17422d92895219496d2203d4917e21619be9222b1c70b5c652737e5f3",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36644924930,
+      "state": "before"
+    },
+    {
+      "file": "capturas/mapa/world-threat-after-mobile.png",
+      "sha256": "b2cf52eeece6e9f6cf7026c2531c68a5fc29561a7b46fea7fefde8d05f61eb12",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36675166099,
+      "state": "after"
+    },
+    {
+      "file": "capturas/valoria/valoria-before-19.png",
+      "sha256": "ecd12ded3659a866388a8ea2d670a63150d94810895fc3265a28911424e3effe",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644045308,
+      "state": "before"
+    },
+    {
+      "file": "capturas/valoria/valoria-after-19.png",
+      "sha256": "5bf901a762b34e8e4b1558ac251e2d63656dc3106641cf1dfa77b754d57125d5",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166037,
+      "state": "after"
+    },
+    {
+      "file": "capturas/valoria/valoria-before-12.png",
+      "sha256": "7cd5b6455504bc4bcb061fcd5b7064e2ec8fcaa3db5c0be1f2df9d07fa871662",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644045308,
+      "state": "before"
+    },
+    {
+      "file": "capturas/valoria/valoria-after-12.png",
+      "sha256": "df2c86c090a107e774f5bf433196e9aef1d6859b19130f492764be8c534057cf",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166037,
+      "state": "after"
+    },
+    {
+      "file": "capturas/valoria/valoria-before-9.png",
+      "sha256": "892b1c830c16a856738f132ce538e7cd381cb879560c0cd9f753c7fb69628e9e",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644045308,
+      "state": "before"
+    },
+    {
+      "file": "capturas/valoria/valoria-after-9.png",
+      "sha256": "633f9faf2048641da258d8ea182ae8129aa174576eae6d0955511dee5fbbbf1b",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166037,
+      "state": "after"
+    },
+    {
+      "file": "capturas/valoria/valoria-before-mobile.png",
+      "sha256": "a537cacb122a31bb9604b5c073e66c51867cd1fe676a353c59881720ccb405a3",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36644045308,
+      "state": "before"
+    },
+    {
+      "file": "capturas/valoria/valoria-after-mobile.png",
+      "sha256": "c2e1d8b7d0b3196773fd6d1af2b31188312237c935db53089a6a617d3a96440a",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36675166037,
+      "state": "after"
+    },
+    {
+      "file": "capturas/valoria/valoria-west-before-12.png",
+      "sha256": "f7b2748a7b2c7b3dd5412edcff4b3bc9db9bc31bcf16c9e6cc4cd62635c462c4",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36644045308,
+      "state": "before"
+    },
+    {
+      "file": "capturas/valoria/valoria-west-after-12.png",
+      "sha256": "e78cb36a4fc0ad2614bc1b2b08b37cddd915ad9bc41748ce0426651810e20718",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_run": 36675166037,
+      "state": "after"
+    },
+    {
+      "file": "capturas/valoria/valoria-west-before-mobile.png",
+      "sha256": "89721a44e4b5b7eaba5379a6ea920a4a5c6456511ae38d3e40b212f2cbbfb762",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36644045308,
+      "state": "before"
+    },
+    {
+      "file": "capturas/valoria/valoria-west-after-mobile.png",
+      "sha256": "91fbbeb1bc5b1a423f26a280823777ca1b2539e1bbd148b76562dccb5cc7bd0e",
+      "dimensions": [
+        390,
+        844
+      ],
+      "source_run": 36675166037,
+      "state": "after"
+    }
+  ],
+  "raw_frame_location": "The records refer to paths in eldoria-evidencia-visual.zip and the cited CI artifacts; the repository stores six durable final/comparison panels.",
+  "final_artifacts": {
+    "world": {
+      "run": 36675166099,
+      "artifact": 11080505091
+    },
+    "valoria": {
+      "run": 36675166037,
+      "artifact": 11079389658
+    },
+    "unity_checks": {
+      "run": 36675166031,
+      "artifact": 11080426768
+    },
+    "benchmark": {
+      "run": 36675166031,
+      "artifact": 11080586086
+    }
+  }
+}

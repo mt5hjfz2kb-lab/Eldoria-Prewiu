@@ -1,0 +1,233 @@
+{
+  "method": "Blender headless deterministic authored masks + multiscale secondary breakup; persistent PNG; no geometry authoring",
+  "blender_version": "5.2.2 LTS",
+  "seed": 7105,
+  "families": {
+    "stone": 512,
+    "rock": 512,
+    "ground": 512,
+    "shore": 256,
+    "vegetation": 256
+  },
+  "textures": [
+    {
+      "family": "stone",
+      "channel": "albedo",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/stone_albedo.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png",
+      "bytes": 77002,
+      "sha256": "002d5ccff5c890f2690613621c953d27526a063138d9284549a08ed07815969f"
+    },
+    {
+      "family": "stone",
+      "channel": "normal",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/stone_normal.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_normal.png",
+      "bytes": 144709,
+      "sha256": "3c5eb5c2f480a49cd99cd957163380b65b408cc6f827d130188853341cae2fe5"
+    },
+    {
+      "family": "stone",
+      "channel": "ao",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/stone_ao.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_ao.png",
+      "bytes": 25488,
+      "sha256": "101afe267ecdaaeab93afdb7c32d9c49191af547694fe56483e9c3e48cab7361"
+    },
+    {
+      "family": "stone",
+      "channel": "smoothness",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/stone_smoothness.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_smoothness.png",
+      "bytes": 44564,
+      "sha256": "a35d424066a2c386637726f25dceb554cb4d733623f91288bf03c37858e59c19"
+    },
+    {
+      "family": "rock",
+      "channel": "albedo",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/rock_albedo.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_albedo.png",
+      "bytes": 151872,
+      "sha256": "200479803f78e99a47f1e2b8a48a415166556e2aa02831705eb4dc7e0799a00f"
+    },
+    {
+      "family": "rock",
+      "channel": "normal",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/rock_normal.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_normal.png",
+      "bytes": 307748,
+      "sha256": "dccb2354d5d6f5a3f175b9794b7832cbc3b6c8d07c0bf50a7c2344465761f11f"
+    },
+    {
+      "family": "rock",
+      "channel": "ao",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/rock_ao.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_ao.png",
+      "bytes": 106967,
+      "sha256": "070e34fffbcaf46e6c5160762440dbeca28414e84f2c5cfb37bb05ef2ea87836"
+    },
+    {
+      "family": "rock",
+      "channel": "smoothness",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/rock_smoothness.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_smoothness.png",
+      "bytes": 86553,
+      "sha256": "3c5b95993230e47d1124ced0ce7c620603df17633c4912c0142aed466849617d"
+    },
+    {
+      "family": "ground",
+      "channel": "albedo",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/ground_albedo.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_albedo.png",
+      "bytes": 79105,
+      "sha256": "9a55b6457702829115cc088882bb940f2782e63bd48cd7d6dd2454a846ebc6ef"
+    },
+    {
+      "family": "ground",
+      "channel": "normal",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/ground_normal.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_normal.png",
+      "bytes": 88362,
+      "sha256": "b35bce54d383dc5addb1487dacb89e772b7764b1d637d43fe8d94d5950fe4163"
+    },
+    {
+      "family": "ground",
+      "channel": "ao",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/ground_ao.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_ao.png",
+      "bytes": 40187,
+      "sha256": "ea1b7017a7ef4bdd56b34b1821fd03d18c36eba3ef42780b20fac7afab4393c8"
+    },
+    {
+      "family": "ground",
+      "channel": "smoothness",
+      "width": 512,
+      "height": 512,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/ground_smoothness.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_smoothness.png",
+      "bytes": 27961,
+      "sha256": "c032a11c230c86ee2d8ffe27a7d397ff2d8f874b97ead979a39fbd15dc9113b1"
+    },
+    {
+      "family": "shore",
+      "channel": "albedo",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/shore_albedo.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_albedo.png",
+      "bytes": 23548,
+      "sha256": "50c15cfa02cdef82fc1587e3acda2e57c8be33a252fb020cd8c94511568bae28"
+    },
+    {
+      "family": "shore",
+      "channel": "normal",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/shore_normal.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_normal.png",
+      "bytes": 22583,
+      "sha256": "6ff965927b346c3301c88c31a6d489d9161d80d2b6670eac95d0e178c06a1825"
+    },
+    {
+      "family": "shore",
+      "channel": "ao",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/shore_ao.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_ao.png",
+      "bytes": 14278,
+      "sha256": "4033baf9ddf8d62a5a95d5f089e5b86eea7dd55bedaebd5fea477ee7a8a4d7bd"
+    },
+    {
+      "family": "shore",
+      "channel": "smoothness",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/shore_smoothness.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_smoothness.png",
+      "bytes": 19142,
+      "sha256": "9418ed19a4077b59ef3b5ac2ea1fff03ad66e4d881b2ff351c3bc89f86d660be"
+    },
+    {
+      "family": "vegetation",
+      "channel": "albedo",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/vegetation_albedo.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_albedo.png",
+      "bytes": 27665,
+      "sha256": "42e2ecad2875813a6114905d40c33bb4f52a1887cd3df0599ff16638e77352d0"
+    },
+    {
+      "family": "vegetation",
+      "channel": "normal",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/vegetation_normal.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_normal.png",
+      "bytes": 28113,
+      "sha256": "377695e185d6980cb27faecc2d4cfdaedd8c2203667f0ca0130883d26aa7802a"
+    },
+    {
+      "family": "vegetation",
+      "channel": "ao",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/vegetation_ao.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_ao.png",
+      "bytes": 12380,
+      "sha256": "23598d2efa47cbef3d9be7dc5cc1ebc10bd0b628a55c9457c55bbc8573d7cfbb"
+    },
+    {
+      "family": "vegetation",
+      "channel": "smoothness",
+      "width": 256,
+      "height": 256,
+      "source": "art-source/valoria/lookdev/golden-slice-v1/surface-v2/vegetation_smoothness.png",
+      "unity": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_smoothness.png",
+      "bytes": 10138,
+      "sha256": "b1fd0bcf1e20404de1658d06d78cd8575b7d53798541bd8baffe1ec4ddf67761"
+    }
+  ],
+  "texture_count": 20,
+  "source_png_bytes": 1338365,
+  "estimated_mobile_gpu_bytes_bc_with_mips": 3058346,
+  "geometry_changed": false,
+  "tripo_credits": 0,
+  "channels": [
+    "albedo",
+    "tangent-space normal",
+    "AO",
+    "metallic0+smoothness alpha"
+  ],
+  "authoring_notes": {
+    "stone": "staggered limestone courses + irregular mortar + mineral/dirt/wear masks",
+    "rock": "warped directional strata + two fissure families + ridge roughness hierarchy",
+    "ground": "macro earth patches + compacted route mask + clumps + deterministic pebble field",
+    "shore": "wet contour/silt mask + ripple relief + lower roughness wet response",
+    "vegetation": "restrained canopy value/hue breakup; no density increase"
+  },
+  "next": "Import in Unity Golden Slice only and judge official close/16:9/mobile views."
+}

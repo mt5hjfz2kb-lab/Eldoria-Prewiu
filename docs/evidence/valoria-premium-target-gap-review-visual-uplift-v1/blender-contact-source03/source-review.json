@@ -1,0 +1,24 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "scope": "Premium Hero contact source03 is accepted only as a bounded integrated-test candidate for VALORIA GOLDEN LOOKDEV SLICE v1. It is not a standalone family promotion and not GOLDEN LOOKDEV PASS.",
+  "source_iteration": "source03",
+  "source_sha": "cac5637167a7a006b327f9121cc420012c6de9bfabcd2b78de57934f64b64ad4",
+  "export_sha": "54d9155d130ceafd0ec0338ceb92a4e794a11ae995d46a86031322bfa4eb6523",
+  "run_id": 37357563780,
+  "artifact_id": 11364842962,
+  "visual_review": {
+    "strengths": [
+      "Broad source01/source02 terrain plates are removed.",
+      "Geometry is now limited to narrow berms, verges, bridge shoulders, foundation contacts and asymmetric boulder clusters.",
+      "The pieces are intentionally authored as partially buried contact interfaces and must be judged integrated at the official camera.",
+      "Locked accepted families and macro positions remain untouched."
+    ],
+    "risks": [
+      "Isolated pieces are not intended to read as standalone assets.",
+      "Any visible island/patch boundary in the integrated frame is an automatic visual failure.",
+      "No scale-out is authorized."
+    ]
+  },
+  "next_gate": "Integrate source03 only in the Golden Slice cumulative scene, add explicit close crop, and judge canonical reference vs Vegetation+Water baseline vs AFTER.",
+  "tripo_credits": 0
+}

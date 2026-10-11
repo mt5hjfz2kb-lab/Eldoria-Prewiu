@@ -1,0 +1,56 @@
+{
+  "source": "https://api.polyhaven.com/files/{asset}",
+  "license": "https://polyhaven.com/license",
+  "assets": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_1k.fbx",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/modular_fort_01/modular_fort_01_1k.fbx",
+      "md5": "4f0429ef44265aa6789c7dffaa1f0cff"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_wall_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modular_fort_01/modular_fort_01_wall_diff_1k.jpg",
+      "md5": "c3958a33d456a5f2b776dde465024072"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_wall_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modular_fort_01/modular_fort_01_wall_nor_gl_1k.jpg",
+      "md5": "2164dad0582c2ec60e757e6565b1f257"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_trim_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modular_fort_01/modular_fort_01_trim_diff_1k.jpg",
+      "md5": "1e5e6e32e599ebaa6471c4c1ce3023fd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_trim_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modular_fort_01/modular_fort_01_trim_nor_gl_1k.jpg",
+      "md5": "4e87ba7c3ac854d64a6d0de56362f76a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_plaster_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modular_fort_01/modular_fort_01_plaster_diff_1k.jpg",
+      "md5": "c2b8f298926cb63a8d926cffcab863c8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_plaster_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modular_fort_01/modular_fort_01_plaster_nor_gl_1k.jpg",
+      "md5": "b76724f4bb1ec196728c1a4d704f322c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenRocks/rock_moss_set_01_1k.fbx",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/rock_moss_set_01/rock_moss_set_01_1k.fbx",
+      "md5": "3f82316eb266746b71ae287f5609bafb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenRocks/rock_moss_set_01_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_01/rock_moss_set_01_diff_1k.jpg",
+      "md5": "b8742301e6b4bc5683d2de712e83f772"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/PolyHavenRocks/rock_moss_set_01_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_01/rock_moss_set_01_nor_gl_1k.jpg",
+      "md5": "eb7ebd31ad08e78d0497900652ff1568"
+    }
+  ]
+}

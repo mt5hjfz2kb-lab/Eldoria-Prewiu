@@ -1,0 +1,13 @@
+{
+  "asset_name": "Eldoria_StoneArchitectureKit_v1",
+  "source": "ChatGPT approved exact image",
+  "expected_format": "png",
+  "expected_width": 1254,
+  "expected_height": 1254,
+  "expected_size_bytes": 2139894,
+  "expected_sha256": "5a7a5353e7a8b1a914cb968d856a738868ac548311aee0be4df69b4eeac76258",
+  "parts_dir": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1",
+  "parts_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
+  "status": "certified_exact_bytes",
+  "rule": "Zero-spend staging only unless separately authorized."
+}

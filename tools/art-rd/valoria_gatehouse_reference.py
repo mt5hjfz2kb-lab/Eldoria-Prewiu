@@ -1,0 +1,362 @@
+"""Focused gatehouse art pass; preserves existing six-piece family generator."""
+import bpy, math, random, os, json, sys
+from pathlib import Path
+from mathutils import Vector
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+import valoria_fortification_family as base
+# Prior v2 gate render has matching 960x640 camera, target and ortho scale.
+OUT=Path(os.environ.get("ELDORIA_GATE_REFERENCE_OUTPUT",str(Path(__file__).resolve().parents[2]/"artifacts-local/gate-reference")))
+OUT.mkdir(parents=True,exist_ok=True)
+from shutil import copyfile
+baseline=Path(os.environ.get('ELDORIA_FORTIFICATION_OUTPUT',''))/'gate.png'
+if baseline.is_file():copyfile(str(baseline),str(OUT/'gate_before_same_camera.png'))
+bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+random.seed(98)
+# Existing architecture is retained; this stage supplements its legibility, wear and identity.
+base.gate()
+# Reuse owned Eldoria production textures; no third-party download or license ambiguity.
+textures=Path(__file__).resolve().parents[2]/"Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures"
+stone_albedo=textures/"stone_albedo.png"
+stone_normal=textures/"stone_normal.png"
+if stone_albedo.exists():
+ image=bpy.data.images.load(str(stone_albedo),check_existing=True)
+ norm_image=bpy.data.images.load(str(stone_normal),check_existing=True) if stone_normal.exists() else None
+ if norm_image:norm_image.colorspace_settings.name="Non-Color"
+ for material in list(base.stone)+[base.trim,base.mortar]:
+  bs=material.node_tree.nodes.get("Principled BSDF")
+  tex=material.node_tree.nodes.new("ShaderNodeTexImage");tex.image=image
+  material.node_tree.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
+  if norm_image:
+   nt=material.node_tree.nodes.new("ShaderNodeTexImage");nt.image=norm_image
+   nm=material.node_tree.nodes.new("ShaderNodeNormalMap");nm.inputs["Strength"].default_value=.52
+   material.node_tree.links.new(nt.outputs["Color"],nm.inputs["Color"])
+   material.node_tree.links.new(nm.outputs["Normal"],bs.inputs["Normal"])
+# Artistic convergence V2: restrained weathered masonry instead of regular
+# curtain-wall grids; modify EXISTING facade stones rather than stacking cubes.
+masonry_rng=random.Random(2142)
+for ob in list(bpy.data.objects):
+ if ob.type!="MESH" or "_irregular_stone" not in ob.name:continue
+ if not ob.name.startswith("gate_pier_"):continue
+ # Different joint widths and recess depth without separating structural backing.
+ ob.location.x+=masonry_rng.uniform(-.045,.045)
+ ob.location.z+=masonry_rng.uniform(-.037,.037)
+ ob.location.y+=(-1 if ob.location.y<0 else 1)*masonry_rng.uniform(-.029,.032)
+ ob.scale.x*=masonry_rng.uniform(.91,1.07)
+ ob.scale.z*=masonry_rng.uniform(.91,1.06)
+ ob.rotation_euler[1]+=masonry_rng.uniform(-.021,.021)
+# Material differentiation and tiling adapted to existing UV coordinates.
+rough_file=textures/"stone_smoothness.png"
+if rough_file.exists():
+ rough_image=bpy.data.images.load(str(rough_file),check_existing=True)
+ rough_image.colorspace_settings.name="Non-Color"
+ for m in list(base.stone)+[base.trim]:
+  bs=m.node_tree.nodes.get("Principled BSDF")
+  tex=m.node_tree.nodes.new("ShaderNodeTexImage");tex.image=rough_image
+  inv=m.node_tree.nodes.new("ShaderNodeInvert")
+  m.node_tree.links.new(tex.outputs["Color"],inv.inputs["Color"])
+  m.node_tree.links.new(inv.outputs["Color"],bs.inputs["Roughness"])
+# Existing in-project wood surface provides actual grain in Blender and GLB.
+wood_path=Path(__file__).resolve().parents[2]/"Unity/Assets/Eldoria/ArtTests/OriginalHero/Textures/oak.png"
+if wood_path.exists():
+ wood_image=bpy.data.images.load(str(wood_path),check_existing=True)
+ for mat in base.wood:
+  bs=mat.node_tree.nodes.get("Principled BSDF")
+  tex=mat.node_tree.nodes.new("ShaderNodeTexImage");tex.image=wood_image
+  mat.node_tree.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
+# Dark Valoria slate provides a distinctive distant silhouette.
+slate=base.mat("valoria_roof_dark_slate",(.115,.15,.18),.81)
+slate_edge=base.mat("slate_ridge_edge",(.20,.24,.25),.86)
+banner=base.mat("valoria_faded_burgundy",(.30,.085,.105),.92)
+banner_gilt=base.mat("banner_worn_ochre",(.59,.36,.13),.74)
+for sx in (-1,1):
+ tx=sx*6.37
+ # Steep roof remains recessed inside crenellation, with readable silhouette.
+ roof=base.frustum("Valoria_pitched_watch_roof",(tx,0,8.16),1.86,.07,2.35,slate,12)
+ base.frustum("slate_roof_eave",(tx,0,7.02),1.95,1.85,.16,slate_edge,24)
+ boxp=base.cube("worn_roof_finial",(tx,0,9.42),(.16,.16,.46),base.iron,.04)
+  # Nonuniform slate tiles follow pitched roof slope; silhouettes remain intact.
+ for course in range(5):
+  z=7.17+course*.40
+  radius=1.81-(z-6.985)/2.35*1.79
+  for j in range(12):
+   angle=(j+.30*(course%2))*math.tau/12
+   a=tx+radius*math.cos(angle);bb=radius*math.sin(angle)
+   tile=base.cube("slate_lap_tile",(a,bb,z),(.235,.10,.065),slate_edge if (j+course)%5==0 else slate,.008)
+   tile.rotation_euler[2]=angle
+ # One unmistakable banner per defensive tower facing the camera.
+ pole=base.cube("heraldic_banner_mast",(tx,-2.23,7.36),(.065,.075,3.2),base.iron,.014)
+ cloth=base.cube("Valoria_long_pennant",(tx,-2.32,6.72),(.64,.06,1.41),banner,.025)
+ base.cube("pennant_ochre_chevron",(tx,-2.38,6.62),(.39,.04,.15),banner_gilt,.015)
+def box(n,p,s,m,b=.02):return base.cube(n,p,s,m,b)
+stone=base.stone;oak=base.wood;iron=base.iron;trim=base.trim
+patina=base.mat("soot_oxide",(.18,.18,.16))
+highlight=base.mat("warm_stone_chips",(.57,.49,.36))
+gold=base.mat("aged_brass",(.42,.28,.105),.47,.72)
+def ring(name,center,outer,inner,material):
+ x,y,z=center
+ for i in range(16):
+  a=math.tau*i/16
+  obj=box(name,(x+outer*math.cos(a),y,z+outer*math.sin(a)),(.21,.09,.13),material,.014)
+  obj.rotation_euler[1]=-a
+# Enhance central gateway without doubling entire masonry, architectural details favor camera-visible silhouette.
+for side in (-1,1):
+ x=side*3.3
+ # chamfered layered piers and engaged buttresses
+ for z in (1.05,3.08,5.06):
+  box("pier_buttress_staged",(x+side*1.08,-.99,z),(.56,.62,1.66),stone[5 if z<2 else 1],.09)
+  box("pier_buttress_cap",(x+side*1.08,-1.02,z+.87),(.73,.79,.16),trim,.05)
+ for zz in (2.0,4.1):
+  box("pier_recess",(x,-.68,zz),(.15,.065,.52),patina,.025)
+ # timber transverse braces and oversize forged rivets
+ for z in (.52,2.18):
+  box("oak_gate_brace",(side*.99,-.205,z),(1.83,.14,.15),oak[1],.03)
+  for i in range(5):
+   box("hand_forged_rivet",(side*(.25+i*.34),-.305,z),(.075,.055,.078),iron,.02)
+ # prominent transverse iron strap hinge plates, visible at hero camera
+ for zz in (.78,2.08):
+  box("hinge_plate",(side*1.48,-.26,zz),(.52,.095,.31),iron,.038)
+  for dz in (-.08,.08):
+   box("hinge_rivet",(side*1.48,-.33,zz+dz),(.09,.07,.09),gold,.022)
+# dark recessed portcullis teeth visible between open masonry and wooden leaves
+for i in range(-5,6):
+ xx=i*.28
+ box("portcullis_spike",(xx,.30,2.75),(.095,.13,.28),iron,.014)
+# vault transition: extra voussoirs establish nested load-bearing arch
+for i in range(17):
+ a=math.pi*i/17
+ base.arch_segment("inner_arch_rib",0,-.89,3.0,1.76,a,a+math.pi/17-.006,.15,stone[(i+2)%8],.14)
+# arch keystone on facade, intentional singular focal detail
+box("prominent_keystone",(0,-.91,5.16),(.35,.18,.60),highlight,.075)
+# two towers: silhouettes, machicolation corbels, weather caps, practical loopholes
+for sx in (-1,1):
+ xx=sx*6.37
+ for k in range(16):
+  a=math.tau*k/16
+  x=xx+2.22*math.cos(a);y=2.22*math.sin(a)
+  ob=box("projecting_parapet_corbel",(x,y,6.73),(.50,.47,.52),trim,.055)
+  ob.rotation_euler[2]=a
+ for a in (-math.pi*.35,-math.pi*.65):
+  x=xx+2.24*math.cos(a);y=2.24*math.sin(a)
+  ob=box("arrow_slit_depth",(x,y,3.07),(.16,.11,.84),patina,.025)
+  ob.rotation_euler[2]=a
+# shield / sigil: simple sculpted crest, centered on gate lintel
+box("heraldic_field",(0,-.81,5.87),(.69,.13,.74),iron,.075)
+box("heraldic_vertical",(0,-.91,5.89),(.12,.07,.53),gold,.025)
+box("heraldic_crossbar",(0,-.91,5.91),(.43,.07,.11),gold,.025)
+# controlled moss/soot clusters at base and lintel; sparse large readable patches
+for s in (-1,1):
+ for j in range(22):
+  rng=random.Random(1000+j+int(s*35))
+  x=s*(2.27+rng.random()*2.15);z=.08+rng.random()*1.28
+  obj=box("biological_patina",(x,-.668-rng.random()*.025,z),(.07+rng.random()*.18,.035,.06+rng.random()*.15),base.moss,.015)
+ for j in range(8):
+  rng=random.Random(900+j+int(s*35))
+  x=s*(2.2+rng.random()*2.1);z=4.55+rng.random()*1.54
+  box("smoke_stain",(x,-.655,z),(.12+rng.random()*.2,.025,.15+rng.random()*.15),patina,.014)
+def setup(scale=23,target=(0,0,3.4)):
+ base.scene(target,scale)
+def save(name,scale=23,target=(0,0,3.4)):
+ setup(scale,target)
+ bpy.context.scene.render.filepath=str(OUT/(name+".png"))
+ bpy.ops.render.render(write_still=True)
+# FULL ART BRAIN FOCUS V3: real render review rejected V1 and V2 smooth masses.
+# Restore the original authored masonry facade and tower silhouette.
+# High-impact edits: arc depth, flanking half-height tapered supports,
+# varied existing battlements and inset stone hood with no giant roof slab.
+def director_poly(name,v,faces,material,bevel=.04):
+ m=bpy.data.meshes.new(name+"_mesh");m.from_pydata(v,[],faces);m.update()
+ o=bpy.data.objects.new(name,m);bpy.context.collection.objects.link(o);m.materials.append(material)
+ if bevel:
+  mod=o.modifiers.new("handcut_edges","BEVEL");mod.width=bevel;mod.segments=2
+ o.modifiers.new("weighted_normals","WEIGHTED_NORMAL")
+ return o
+def buttress(side):
+ # Narrow engaged buttress outside the portal, preserving 80%+ of visible ashlar.
+ # Sculptural pitched crown and steep 2D battered rise.
+ x=side*4.38;wi=.36
+ profile=[(x-side*.24,-1.17,.06),(x+side*.32,-1.20,.06),
+          (x+side*.24,-1.21,2.95),(x+side*.12,-1.09,4.42),
+          (x-side*.20,-1.08,4.42)]
+ vertices=profile+[(xx,yy+1.15,zz) for xx,yy,zz in profile]
+ n=len(profile)
+ faces=[tuple(reversed(range(n))),tuple(range(n,n*2))]
+ for i in range(n):
+  j=(i+1)%n
+  faces.append((i,j,j+n,i+n))
+ director_poly("engaged_battered_support_"+str(side),vertices,faces,stone[4],.067)
+ # Recessed hinge/arrow pier receives volume from stone surround.
+ base.cube("stone_arrow_reveal_lintel",(side*4.34,-1.25,3.47),(.24,.14,.19),trim,.037)
+for s in (-1,1): buttress(s)
+# Deep load-bearing outer arch, two forward nested masonry layers.
+for j in range(18):
+ a0=math.pi*j/18;a1=math.pi*(j+1)/18-.008
+ base.arch_segment("ashlar_portal_outboard",0,-1.16,3.0,2.06,a0,a1,.31,stone[(j+3)%8],.09)
+ base.arch_segment("portal_recess_course",0,-.69,3.0,1.91,a0,a1,.23,stone[(j+1)%8],.08)
+# Keep original segmented stone crest; vary actual existing crenel widths/heights.
+for obj in bpy.data.objects:
+ if obj.type=="MESH" and obj.name.startswith("gate_crown_merlon"):
+  x=obj.location.x
+  salt=int(abs(x)*137)%7
+  obj.scale.z*=([1.0,.88,1.08,.93,1.12,.97,1.04][salt])
+  obj.scale.x*=([.98,1.04,.95,1.08,.92,1.0,1.06][salt])
+# A narrow sloped coping behind merlons, within their silhouette.
+director_poly("gate_parapet_recessed_stone_hip",
+ [(-4.12,.48,6.94),(4.12,.48,6.94),(4.12,1.28,6.94),(-4.12,1.28,6.94),
+  (-3.91,.58,7.42),(3.91,.58,7.42),(3.91,1.17,7.42),(-3.91,1.17,7.42)],
+ [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
+ slate,.07)
+# FULL ART BRAIN FOCUS V5 — reject roof-on-stilts silhouette from reviewed V4.
+# A purpose-built defensive observation chamber with real open portal slot.
+# Height and negative space reflect the approved Valoria stone gate language.
+for side in (-1,1):
+    # Leave central 0.75 m slit physically unfilled between structural walls.
+    x0,x1=(-2.22,-.39) if side<0 else (.39,2.22)
+    base.courses("gatehouse_upper_stone_chamber_"+str(side),x0,x1,.63,7.04,9.02,seed=419+int(side))
+    # Real return buttresses tie to existing lower parapet rather than float.
+    base.cube("upper_chamber_engaged_jamb",(side*2.17,-.22,7.97),(.31,1.67,2.16),trim,.057)
+# A deep lintel with band course crowns the elevated stone chamber.
+base.cube("gatehouse_upper_solid_lintel",(0,.63,9.13),(4.77,1.87,.39),stone[2],.085)
+# Recessed narrow observation hole, not a blue painted decal.
+base.cube("observation_slot_shadow",(0,-.33,8.08),(.57,.08,1.41),patina,.017)
+# Battlement merlons over the chamber make a unified defensive crown with changing profile.
+for idx,(xc,h,w) in enumerate(zip((-1.86,-.68,.62,1.81),(.82,1.08,.91,.76),(.72,.73,.67,.81))):
+    x0=xc-w/2;x1=xc+w/2;bottom=9.34;top=bottom+h
+    verts=[(x0,-.42,bottom),(x1,-.42,bottom),(x1,1.56,bottom),(x0,1.56,bottom),
+           (x0+.055,-.39,top),(x1-.055,-.39,top),(x1-.055,1.49,top),(x0+.055,1.49,top)]
+    director_poly("crown_authored_capped_merlon_"+str(idx),verts,
+      [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
+      stone[(idx+2)%len(stone)],.09)
+# The old tower roofs remain undisturbed; central chamber is flat stone, not a pitched timber shed.
+art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 slab, V3 insufficient, V4 barn roof on stilts","operations":["restore_historical_ashlar","structural_nested_gate_arch","narrow_organic_buttresses","elevated_stone_watch_chamber_with_negative_space","asymmetric_defensive_stone_crown"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+
+# Stone voussoirs and structural buttress meshes are the only additions.
+# V5 architecture stays frozen; calibration metadata follows at render time.
+
+# DESTINATION CALIBRATION V1: V5 architecture remains immutable.
+# Improve only existing mesh surface and material response; never add gate parts.
+# Scoped entirely to gate meshes and existing assigned materials.
+surface_rng=random.Random(5161)
+surface_changes=0
+for ob in list(bpy.data.objects):
+ if ob.type!="MESH":continue
+ name=ob.name.lower()
+ if "radial_ashlar" in name or "_irregular_stone" in name:
+  # Reduce machine-perfect co-planarity in existing stone faces.
+  if len(ob.data.vertices)<4:continue
+  for vert in ob.data.vertices:
+   vert.co.y+=surface_rng.uniform(-.011,.011)
+   vert.co.z+=surface_rng.uniform(-.006,.006)
+  surface_changes+=1
+# Keep the existing exact stone/wood/iron identities; adjust shader breakup.
+for material in list(base.stone)+[base.trim,base.mortar]:
+ bs=material.node_tree.nodes.get("Principled BSDF")
+ if not bs:continue
+ tex=material.node_tree.nodes.new("ShaderNodeTexNoise")
+ tex.inputs["Scale"].default_value=17.0
+ tex.inputs["Detail"].default_value=2.0
+ tex.inputs["Roughness"].default_value=.68
+ ramp=material.node_tree.nodes.new("ShaderNodeValToRGB")
+ ramp.color_ramp.elements[0].position=.22
+ ramp.color_ramp.elements[0].color=(.52,.52,.52,1)
+ ramp.color_ramp.elements[1].position=.78
+ ramp.color_ramp.elements[1].color=(.88,.88,.88,1)
+ material.node_tree.links.new(tex.outputs["Fac"],ramp.inputs["Fac"])
+ # Non-destructive roughness variation; no substitution of architecture or albedo maps.
+ material.node_tree.links.new(ramp.outputs["Color"],bs.inputs["Roughness"])
+for material in base.wood:
+ bs=material.node_tree.nodes.get("Principled BSDF")
+ if bs:bs.inputs["Roughness"].default_value=.77
+# Portable PBR color variation: bake three distinct variants of owned stone bitmap.
+# Unlike Noise/Ramp shading, image pixels travel inside exported GLB.
+portable_maps=[]
+if stone_albedo.exists():
+ original=bpy.data.images.load(str(stone_albedo),check_existing=True)
+ count=len(original.pixels)
+ source_pixels=list(original.pixels[:])
+ for slot,(tint,gain) in enumerate(((.96,1.01),(1.0,.96),(1.035,1.04))):
+  variant=original.copy()
+  variant.name="Valoria_stone_baked_variation_"+str(slot)
+  pixels=source_pixels[:]
+  for i in range(0,count,4):
+   # Artist-controlled warm/cool mineral differences, not noisy RGB static.
+   pixels[i]=min(1.0,max(0,pixels[i]*tint*gain))
+   pixels[i+1]=min(1.0,max(0,pixels[i+1]*tint))
+   pixels[i+2]=min(1.0,max(0,pixels[i+2]*gain))
+  variant.pixels[:]=pixels
+  variant.pack()
+  portable_maps.append(variant)
+ for index,material in enumerate(list(base.stone)+[base.trim,base.mortar]):
+  bs=material.node_tree.nodes.get("Principled BSDF")
+  if not bs:continue
+  for inp in list(bs.inputs["Base Color"].links):
+   material.node_tree.links.remove(inp)
+  node=material.node_tree.nodes.new("ShaderNodeTexImage")
+  node.image=portable_maps[index%len(portable_maps)]
+  material.node_tree.links.new(node.outputs["Color"],bs.inputs["Base Color"])
+# Metal and wood preserve owned source maps; architecture is unchanged.
+
+# CC0 real masonry material study (Poly Haven medieval_blocks_03 by Rob Tuytel).
+# Source: https://polyhaven.com/a/medieval_blocks_03 ; CC0, author retained for provenance.
+# Download once on free GitHub runner. Embed image maps in BLEND/GLB, never require paid API.
+import urllib.request,hashlib
+cc0dir=OUT/"cc0-stone";cc0dir.mkdir(exist_ok=True)
+cc0maps={}
+for map_name,suffix in (("albedo","diff"),("normal","nor_gl")):
+ url="https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/medieval_blocks_03/medieval_blocks_03_"+suffix+"_1k.png"
+ target=cc0dir/("medieval_blocks_03_"+suffix+"_1k.png")
+ try:
+  with urllib.request.urlopen(url,timeout=60) as response:
+   data=response.read()
+  if not data.startswith(b"\x89PNG\r\n\x1a\n"):raise RuntimeError("non-PNG asset")
+  target.write_bytes(data)
+  cc0maps[map_name]=str(target)
+  print("POLYHAVEN_CC0",map_name,hashlib.sha256(data).hexdigest(),len(data))
+ except Exception as e:
+  print("POLYHAVEN_DOWNLOAD_UNAVAILABLE",map_name,str(e))
+if len(cc0maps)==2:
+ cc_albedo=bpy.data.images.load(cc0maps["albedo"],check_existing=True)
+ cc_normal=bpy.data.images.load(cc0maps["normal"],check_existing=True)
+ cc_normal.colorspace_settings.name="Non-Color"
+ cc_albedo.pack();cc_normal.pack()
+ for material in list(base.stone)+[base.trim,base.mortar]:
+  bs=material.node_tree.nodes.get("Principled BSDF")
+  if not bs:continue
+  al=material.node_tree.nodes.new("ShaderNodeTexImage");al.image=cc_albedo
+  material.node_tree.links.new(al.outputs["Color"],bs.inputs["Base Color"])
+  no=material.node_tree.nodes.new("ShaderNodeTexImage");no.image=cc_normal
+  nm=material.node_tree.nodes.new("ShaderNodeNormalMap")
+  nm.inputs["Strength"].default_value=.63
+  material.node_tree.links.new(no.outputs["Color"],nm.inputs["Color"])
+  material.node_tree.links.new(nm.outputs["Normal"],bs.inputs["Normal"])
+
+# Fixed camera and same geometry enable before/after appearance inspection.
+art_director_geometry={"baseline":"V5_commit_64f5975960","intervention":"stone_microrelief_and_portable_variation_maps","existing_stone_meshes_refined":surface_changes,"architecture_changes":0,"portable_albedo_variants":len(portable_maps),"cc0_pbr_maps_loaded":list(cc0maps.keys()),"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+
+save("gate_reference_hero")
+save("gate_reference_mobile",37,(0,0,3.3))
+# Save editable source before packing geometry.
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/"valoria_gate_reference.blend"))
+# Blender GLB writer (without modifying the original six module pipeline)
+objects=[o for o in bpy.data.objects if o.type=="MESH"]
+for ob in objects:
+ bpy.ops.object.select_all(action='DESELECT');ob.select_set(True);bpy.context.view_layer.objects.active=ob
+ for mod in list(ob.modifiers):bpy.ops.object.modifier_apply(modifier=mod.name)
+batches={}
+for ob in objects:batches.setdefault(ob.data.materials[0].name,[]).append(ob)
+for grouping in batches.values():
+ if len(grouping)<2:continue
+ bpy.ops.object.select_all(action='DESELECT')
+ for ob in grouping:ob.select_set(True)
+ bpy.context.view_layer.objects.active=grouping[0];bpy.ops.object.join()
+objects=[o for o in bpy.data.objects if o.type=="MESH"]
+bpy.ops.object.select_all(action='DESELECT')
+for ob in objects:ob.select_set(True)
+bpy.context.view_layer.objects.active=objects[0]
+bpy.ops.export_scene.gltf(filepath=str(OUT/"valoria_gate_reference.glb"),export_format='GLB',use_selection=True)
+data={"art_director_geometry":art_director_geometry,"triangles":sum(len(p.vertices)-2 for o in objects for p in o.data.polygons),"mesh_count":len(objects),"materials":len({m.name for o in objects for m in o.data.materials}),"glb_bytes":(OUT/"valoria_gate_reference.glb").stat().st_size,"wall_to_tower_edge_contact_x":[-8.65,8.65],"visual_certification":"requires review","unity_mobile_tested":False}
+(OUT/"gate_reference_manifest.json").write_text(json.dumps(data,indent=2))
+# Render context after gate-only source/export has been written.
+base.wall("west_attach",-12.8,0,8.3)
+base.wall("east_attach",12.8,0,8.3)
+save("gate_reference_assembled",48,(0,0,4.5))
+print("ELDORIA_GATE_REFERENCE_PASS",data)

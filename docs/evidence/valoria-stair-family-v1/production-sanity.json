@@ -1,0 +1,38 @@
+{
+  "verdict": "UNITY INTEGRATION PASS",
+  "unity_run_id": 37302198301,
+  "unity_job_id": 111737317212,
+  "unity_artifact_id": 11340779541,
+  "runner": "DESKTOP-R10PE55",
+  "engine": "6000.3.23f1",
+  "imported_source": {
+    "triangles": 1360,
+    "vertices": 3756,
+    "renderers": 3,
+    "materials": 2,
+    "textures": 4,
+    "submesh_draws": 3,
+    "mesh_bytes": 397896,
+    "texture_bytes": 11188384,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "retained_families": [
+    "LOWER GATE",
+    "BRIDGE",
+    "ROAD"
+  ],
+  "replacement_only": "Stair_00..Stair_11 + StairCheekLeft + StairCheekRight -> StairSteps + StairCheekLeft + StairCheekRight",
+  "protected_projection_delta_px": 0,
+  "colliders": 0,
+  "production_scene_opened": false,
+  "production_scene_saved": false,
+  "focused_playmode": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "result": "Passed"
+  },
+  "tripo_credits": 0
+}

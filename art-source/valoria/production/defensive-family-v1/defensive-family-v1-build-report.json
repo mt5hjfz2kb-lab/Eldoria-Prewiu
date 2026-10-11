@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "classification": "TEMPORARY",
+  "authoring_method": "manual_high_fidelity_defensive_reauthoring",
+  "blend": "art-source/valoria/production/defensive-family-v1/Valoria_DefensiveFamily_v1.blend",
+  "blend_sha256": "7e719aedb18bb5a036cab8009dff81e6267ddaced80ca3fe317975f04b02fc59",
+  "assets": [
+    {
+      "asset_id": "Valoria_MainGate_DefV1",
+      "triangles": 6444,
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_MainGate_DefV1.glb",
+      "sha256": "06d5a923976ea5ec18f866fe0793cdea6c5e957049ff58178826c09215d36a30"
+    },
+    {
+      "asset_id": "Valoria_WallSegment_DefV1",
+      "triangles": 3996,
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_WallSegment_DefV1.glb",
+      "sha256": "cfadad1bba9ec342a3dc64ec069bc460bc58cfc912ce092954613c58be460447"
+    },
+    {
+      "asset_id": "Valoria_Tower_DefV1",
+      "triangles": 3288,
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_Tower_DefV1.glb",
+      "sha256": "efdcc3c7db139fdd03ec09d8adf0dc38a72fa4d047d8d16010c3c7246701b064"
+    }
+  ]
+}

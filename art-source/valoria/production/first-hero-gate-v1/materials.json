@@ -1,0 +1,401 @@
+{
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Valoria_Deep_Joints",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.15000000596046448,
+          0.1420000046491623,
+          0.13099999725818634,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.949999988079071
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Limestone_5",
+      "normalTexture": {
+        "index": 0,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Limestone_0",
+      "normalTexture": {
+        "index": 3,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 4
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 5
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Limestone_3",
+      "normalTexture": {
+        "index": 6,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 7
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 8
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Limestone_2",
+      "normalTexture": {
+        "index": 9,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 10
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 11
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Limestone_1",
+      "normalTexture": {
+        "index": 12,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 13
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 14
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Limestone_4",
+      "normalTexture": {
+        "index": 15,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 16
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 17
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Carved_Limestone",
+      "normalTexture": {
+        "index": 18,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 19
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 20
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Loophole_Interior",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.017999999225139618,
+          0.01899999938905239,
+          0.020999999716877937,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.949999988079071
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Royal_Blue_Cloth",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.017999999225139618,
+          0.06700000166893005,
+          0.20499999821186066,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.9599999785423279
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Tarnished_Brass",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.4300000071525574,
+          0.2800000011920929,
+          0.08500000089406967,
+          1
+        ],
+        "metallicFactor": 0.6700000166893005,
+        "roughnessFactor": 0.47999998927116394
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Forged_Iron",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.054999999701976776,
+          0.06300000101327896,
+          0.07500000298023224,
+          1
+        ],
+        "metallicFactor": 0.6800000071525574,
+        "roughnessFactor": 0.6299999952316284
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Valoria_Weathered_Oak",
+      "normalTexture": {
+        "index": 21,
+        "scale": 0.3799999952316284
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 22
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 23
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        1,
+        0.1899999976158142,
+        0.009999999776482582
+      ],
+      "extensions": {
+        "KHR_materials_emissive_strength": {
+          "emissiveStrength": 4
+        }
+      },
+      "name": "Brazier amber flame",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.949999988079071,
+          0.1899999976158142,
+          0.01600000075995922,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.6499999761581421
+      }
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 4
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 5
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 6
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 7
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 8
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 9
+    },
+    {
+      "sampler": 0,
+      "source": 10
+    },
+    {
+      "sampler": 0,
+      "source": 11
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987
+    }
+  ],
+  "images": [
+    {
+      "index": 0,
+      "path": "textures/embedded/00_stone_normal.png",
+      "sha256": "656e8a82b165853a4c113873b7716e8e874f783de8d2721f0e9c873b267dc097"
+    },
+    {
+      "index": 1,
+      "path": "textures/embedded/01_stone_basecolor.png",
+      "sha256": "40ff8c8f8b1781aed5c6636aa7ba560ead65cfcf426c40729051455e85648368"
+    },
+    {
+      "index": 2,
+      "path": "textures/embedded/02_stone_roughness.png",
+      "sha256": "46cf1481df6fc972de488dd559d7c9940c765f01b3806f0ba2f2318991b07d24"
+    },
+    {
+      "index": 3,
+      "path": "textures/embedded/03_stone_basecolor.png",
+      "sha256": "81146f462a6bcb5f037619c8322bd292f7fb1b74bc3b574eaf0250cc336f61d5"
+    },
+    {
+      "index": 4,
+      "path": "textures/embedded/04_stone_basecolor.png",
+      "sha256": "30cff4cfe3a17b20597f054911c705b5e072d502a59a72422e8f789689a701d2"
+    },
+    {
+      "index": 5,
+      "path": "textures/embedded/05_stone_basecolor.png",
+      "sha256": "57ed264be63d6ffad33b12d3fa1fc81a9fa79701ab5f013be3e59696c312c849"
+    },
+    {
+      "index": 6,
+      "path": "textures/embedded/06_stone_basecolor.png",
+      "sha256": "ad5cd97d94ac1fdf3c2862cba5a73f9d63d1dacb3c47c967e5def8e208498772"
+    },
+    {
+      "index": 7,
+      "path": "textures/embedded/07_stone_basecolor.png",
+      "sha256": "1b1276fb27fb52af322a13f37203bb031e4d712ff42c55ba181735950222279c"
+    },
+    {
+      "index": 8,
+      "path": "textures/embedded/08_stone_basecolor.png",
+      "sha256": "81928a3de9e5e24dc512a0a53046fee96f65410fb63edd661c9c013fddbcb37d"
+    },
+    {
+      "index": 9,
+      "path": "textures/embedded/09_oak_normal.png",
+      "sha256": "2a348fb6599100e431700b325174f806188d3ca736cddc3306175e2b2d79d7c1"
+    },
+    {
+      "index": 10,
+      "path": "textures/embedded/10_oak_basecolor.png",
+      "sha256": "219e60b3aa293893416a1138117493cfa38beb381d3395b62e3576ab719a852b"
+    },
+    {
+      "index": 11,
+      "path": "textures/embedded/11_oak_roughness.png",
+      "sha256": "b13a7b9896d8652e20764f8b15cb735537d64e5775212bf66ac7c549e5896b1b"
+    }
+  ],
+  "external_images_note": "Generated by this delivery helper; these same maps are already embedded in the GLB and editable BLEND."
+}

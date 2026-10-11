@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "status": "DECIDED",
+  "canonical": "ORTHOGRAPHIC",
+  "decision": "Retain orthographic. Promote portrait mobile (aspect <= 0.72) as an authored navigable HOME using the M2-equivalent pose plus bounded pan/recenter; 16:9 remains on the existing canonical framing. Full-city simultaneous visibility is no longer a requirement.",
+  "evidence": {
+    "run": 37200169545,
+    "artifact": 11302104433
+  },
+  "reasons": [
+    "stronger Bastion screen dominance",
+    "better city occupancy",
+    "less empty exterior exposure",
+    "preserves current gameplay readability"
+  ],
+  "perspective_state": "NOT_PROMOTED",
+  "screen_space_breakpoint_v1": {
+    "status": "CLOSED_NOT_PROMOTED",
+    "run": 37211095096,
+    "artifact": 11307155373,
+    "technical": "PASS",
+    "A": "SCREEN-SPACE VISUAL FAIL",
+    "B": "SCREEN-SPACE VISUAL PARTIAL",
+    "C": "SCREEN-SPACE VISUAL PARTIAL",
+    "decision": "Do not promote tighter B/C as one global framing. Retain orthographic/current global framing pending aspect-ratio-aware mobile home-pose proof.",
+    "key_finding": "16:9 benefits from tighter screen-space; portrait mobile is already crop-limited rather than scale-limited.",
+    "result_doc": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md"
+  },
+  "adaptive_mobile_home_pose_v1": {
+    "status": "CLOSED_NOT_PROMOTED",
+    "run": 37212276777,
+    "artifact": 11307147019,
+    "technical": "PASS",
+    "M0": "MOBILE COMPOSITION VISUAL FAIL",
+    "M1": "MOBILE COMPOSITION VISUAL FAIL",
+    "M2": "MOBILE COMPOSITION VISUAL PARTIAL",
+    "tested": {
+      "M0": {
+        "position": [
+          18.2,
+          14.6,
+          -25.8
+        ],
+        "target": [
+          0,
+          3.35,
+          5.6
+        ],
+        "orthographic_size": 9.1
+      },
+      "M1": {
+        "center_offset": [
+          1.2,
+          0,
+          -2.8
+        ],
+        "position": [
+          19.4,
+          14.6,
+          -28.6
+        ],
+        "target": [
+          1.2,
+          3.35,
+          2.8
+        ],
+        "orthographic_size": 9.1
+      },
+      "M2": {
+        "center_offset": [
+          1.2,
+          0,
+          -2.8
+        ],
+        "position": [
+          19.4,
+          14.6,
+          -28.6
+        ],
+        "target": [
+          1.2,
+          3.35,
+          2.8
+        ],
+        "orthographic_size": 12.2
+      }
+    },
+    "decision": "Aspect-ratio-specific home framing is validated as a useful principle, but no tested mobile pose is promoted. Current runtime home pose remains canonical pending functional-district anchor rebalancing.",
+    "key_finding": "M2 keeps Hero Bastion dominant and reveals Cuartel fully, but Granero remains mostly outside portrait due to horizontal projected anchor spread.",
+    "result_doc": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md"
+  },
+  "mobile_navigable_city_v1": {
+    "status": "PROMOTED",
+    "run": 37213794236,
+    "artifact": 11307920631,
+    "technical": "PASS",
+    "mobile_navigation_visual": "PASS",
+    "gameplay": "PASS",
+    "mobile_home": {
+      "aspect_threshold": 0.72,
+      "position": [
+        19.4,
+        14.6,
+        -28.6
+      ],
+      "target": [
+        1.2,
+        3.35,
+        2.8
+      ],
+      "orthographic_size": 12.2
+    },
+    "early_game_pan_half_extents_at_390x844": [
+      16,
+      7
+    ],
+    "horizontal": {
+      "preserved": true,
+      "position": [
+        18.2,
+        14.6,
+        -25.8
+      ],
+      "target": [
+        0,
+        3.35,
+        5.6
+      ],
+      "orthographic_size": 9.1
+    },
+    "decision": "Home pose is an entry composition into a city larger than the viewport. Do not move Granero/Cuartel or zoom out merely for simultaneous visibility. Camera investigation is closed; return to graphical production.",
+    "result_doc": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "workstream": "VALORIA BASTION-TO-CITY BLENDER AUTHORING v1",
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Single locked-design translation using irregular lofted primary masses, true boolean architectural voids, explicit wall thickness/returns, authored nonuniform parapet ribbons, stepped receivers and continuous displaced organic rock interlock. No mirrored half and no box-derived primary silhouette.",
+  "design_authority": [
+    "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
+    "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-spec.json",
+    "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-overlay.svg",
+    "owner-approved chat target visual"
+  ],
+  "base_capture_sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1",
+  "tool_families": [
+    "direct mesh authoring",
+    "multi-ring lofting",
+    "controlled exact booleans",
+    "manual parapet ribbons",
+    "selective bevel",
+    "weighted normals",
+    "procedural material-ready surfaces",
+    "organic displaced rock interlock"
+  ],
+  "primitive_role": "No Blender cube/cylinder primitive is used to define production primary silhouette. Review stair is isolated in REVIEW_PROXY_ONLY and is excluded from GLB export.",
+  "source_blend": {
+    "path": "art-source/valoria/production/bastion-to-city-blender-authoring-v1/Valoria_BastionToCity_BlenderAuthoring_v1.blend",
+    "sha256": "2b77f20a5b52afcda7f273ff45d10717595e36e8b5dcccc3e5f56550e3676d4e",
+    "bytes": 1274836
+  },
+  "export_glb": {
+    "path": "art-source/valoria/production/bastion-to-city-blender-authoring-v1/Valoria_BastionToCity_BlenderAuthoring_v1.glb",
+    "sha256": "935d66fb6cfb441e4829c2eb75e1ddb7754aa883ee875f8e4aaae423815675b4",
+    "bytes": 693112
+  },
+  "geometry_metrics": {
+    "production_mesh_objects": 32,
+    "evaluated_vertices": 6399,
+    "evaluated_triangles": 12662
+  },
+  "material_families": [
+    "Valoria Warm Primary Stone",
+    "Valoria Weathered Retaining Stone",
+    "Valoria Limited Pale Trim",
+    "Valoria Recess Interior",
+    "Valoria Dark Desaturated Rock",
+    "Valoria Restrained Slate",
+    "Valoria Sparse Heraldic Blue"
+  ],
+  "preview_evidence": [
+    "01-silhouette-clay.png",
+    "02-lit-three-quarter.png",
+    "03-matched-camera-proxy.png"
+  ],
+  "intended_camera_role": "Replacement envelope around existing central Bastion stair only. Hero Bastion and promoted lower city are contextual protected neighbors, not part of this source.",
+  "isolated_art_review": "PENDING_OWNER_AGENT_REVIEW",
+  "tripo_credits": 0,
+  "paid_credits": 0
+}

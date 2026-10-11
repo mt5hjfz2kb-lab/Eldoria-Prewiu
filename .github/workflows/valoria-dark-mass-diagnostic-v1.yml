@@ -1,0 +1,61 @@
+name: "[DIAGNOSTIC] Valoria Dark Mass v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaDarkMassDiagnosticGateV1.cs'
+      - 'pipeline/valoria-dark-mass-diagnostic-v1-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-dark-mass-diagnostic-v1
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source while preserving Library cache
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Capture dark-mass diagnostics
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaDarkMassDiagnosticV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaDarkMassDiagnosticV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaDarkMassDiagnosticGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(20)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 300};throw "Gate failed $($p.ExitCode)"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-dark-mass-diagnostic-v1-${{ github.run_id }}
+          path: |
+            Unity/ValoriaDarkMassDiagnosticV1Captures/*
+            ${{ runner.temp }}/ValoriaDarkMassDiagnosticV1.log
+          if-no-files-found: warn
+          retention-days: 30

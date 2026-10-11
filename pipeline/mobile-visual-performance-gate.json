@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "status": "baseline_before_target_device_profile",
+  "purpose": "Prevent visual formula decisions from being promoted without mobile evidence once device profiling starts.",
+  "required_evidence": [
+    "device_model_and_os",
+    "build_commit",
+    "scene_or_scenario",
+    "resolution",
+    "quality_profile",
+    "average_fps",
+    "frame_time_ms",
+    "peak_memory_mb",
+    "texture_memory_mb_when_available",
+    "draw_calls_or_batches_when_available",
+    "scene_triangles",
+    "notes_on_thermal_or_sustained_run"
+  ],
+  "scenarios": [
+    "Valoria formula overview at official zoom 12",
+    "Valoria dense district pan",
+    "Aserradero + Cuartel visible together",
+    "Bastion/hero view once available"
+  ],
+  "promotion_rules": [
+    "Do not lower visual quality pre-emptively without measured mobile evidence.",
+    "Do not raise texture or geometry budgets solely because desktop performance is acceptable.",
+    "Compare the same scenario and camera before/after any optimization.",
+    "Prefer fixing the measured bottleneck rather than applying broad optimizations blindly."
+  ],
+  "thresholds": {
+    "status": "TBD_FROM_TARGET_DEVICE_PROFILE",
+    "note": "No FPS, memory or triangle limit is canonical until measured on representative target hardware. Current physical profiling is blocked because Unity Android Build Support is not installed on the Windows runner."
+  },
+  "updated": "2026-09-29",
+  "desktop_editor_baseline": {
+    "status": "MEASURED_CURRENT_PRODUCTION_SCENE",
+    "commit": "d84b31811fe044dbc3901f3ecd6edde13a635cc6",
+    "workflow_run_id": 36546445386,
+    "artifact_id": 11022647974,
+    "scenario": "Valoria production overview with west rebuilders quarter + grounded Bastion crowns",
+    "official_zooms": [
+      19,
+      12,
+      9
+    ],
+    "active_renderers": 644,
+    "unique_materials": 80,
+    "scene_triangles": 567460,
+    "lights": 15,
+    "delta_from_first_production_district": {
+      "scene_triangles": 107224,
+      "active_renderers": 131,
+      "unique_materials": 8,
+      "lights": 7
+    },
+    "note": "Current real Unity editor/capture scene-complexity baseline. This is not a mobile FPS/memory threshold. Compare target-device profiling against this exact scenario before any quality reduction."
+  },
+  "next_device_measurement": {
+    "status": "REQUIRED_BEFORE_ANY_QUALITY_REDUCTION",
+    "sequence": [
+      "Build the same current production scenario for a representative target phone.",
+      "Measure official zoom 12 overview, west rebuilders district pan, Aserradero+Cuartel together, and Bastion/hero view.",
+      "Record FPS/frame time, peak memory, texture memory when available, batches/draw calls when available, resolution, quality profile and thermal/sustained-run notes.",
+      "Derive SUPPORT / PRIMARY / HERO budgets from the measured bottleneck and compare against the first-district 460,236-triangle baseline.",
+      "If the device result is healthy, preserve current visual quality and scale cautiously; if not, optimize only the measured bottleneck."
+    ]
+  },
+  "desktop_editor_baseline_history": [
+    {
+      "status": "MEASURED_CURRENT_PRODUCTION_SCENE",
+      "commit": "05141fff6ac88d6646e1b72e7188dcd5d5fc5731",
+      "workflow_run_id": 36541695034,
+      "artifact_id": 11021096851,
+      "scenario": "Valoria canonical production overview",
+      "official_zooms": [
+        19,
+        12,
+        9
+      ],
+      "active_renderers": 513,
+      "unique_materials": 72,
+      "scene_triangles": 460236,
+      "lights": 8,
+      "note": "This is a real Unity editor/capture scene-complexity baseline, not a target-device performance result. It must be used as the before-state for mobile profiling, not as an FPS or memory threshold."
+    }
+  ],
+  "mobile_runner_readiness": {
+    "status": "BLOCKED_ANDROID_BUILD_SUPPORT_NOT_INSTALLED",
+    "audited": "2026-09-29",
+    "workflow_run_id": 36549512711,
+    "job_id": 109344102250,
+    "runner": "DESKTOP-R10PE55",
+    "unity_editor": "6000.3.23f1",
+    "android_build_support": false,
+    "adb_path": null,
+    "physical_device_connected": false,
+    "evidence": "Audit mobile readiness step completed SUCCESS; log reports android_build_support=false and warns that Unity Android Build Support is not installed.",
+    "blocker": "Install Unity Android Build Support for 6000.3.23f1 on the Windows runner before Android build/device profiling can start.",
+    "after_install": [
+      "Re-run the existing Unity slice workflow; do not create a separate mobile pipeline just for prerequisite detection.",
+      "Confirm bundled SDK/NDK/JDK and adb are present.",
+      "Connect and authorize a representative Android phone via ADB.",
+      "Only then collect FPS/frame time, memory, batches/draw calls, resolution and sustained thermal notes for the canonical scenarios."
+    ]
+  }
+}

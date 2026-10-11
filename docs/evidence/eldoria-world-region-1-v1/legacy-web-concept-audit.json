@@ -1,0 +1,58 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "audit": "legacy-web-and-conceptual-world-review",
+  "status": "PASS — canonical inputs recovered and reconciled",
+  "reviewed": [
+    "docs/ELDORIA_WORLD_MAP_4X_FOUNDATIONAL_REQUIREMENTS.md",
+    "docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md",
+    "docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md",
+    "docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md",
+    "world4x.html",
+    "v0220/index.html",
+    "v0220/js/gameplay.js",
+    "historical world/frontier/march/player-city commits"
+  ],
+  "majorFindings": [
+    "World is explicitly a persistent mobile 4X board, not a decorative exterior/adventure strip.",
+    "The first implementation may be small but must use durable large-world spatial logic.",
+    "Canonical future starting region supports many player cities with randomized valid positions and spacing.",
+    "Web vertical slice is the functional seed for forest/quarry/hunts/Rift/Breach/ruins/marches/Valoria.",
+    "A real universal Player City v1 strategic mesh already exists and is the correct v1 city-representation contract.",
+    "World camera benchmark is fixed isometric/top-down with bounded zoom and mobile readability.",
+    "Terrain density alone is not a completion metric; 4X gameplay layers must dominate.",
+    "Old Frontier/web visuals are not current art authority and must not be copied literally."
+  ],
+  "preserveNow": [
+    "Valoria strategic city origin",
+    "visible outbound/returning march",
+    "wood node",
+    "first corrupt PvE threat",
+    "neutral narrative POI",
+    "persistent reward/save link to Valoria",
+    "bounded 4X camera",
+    "mobile touch/readability"
+  ],
+  "reserveForScale": [
+    "stone/food and L1/L2 resource bands",
+    "wolf/boar hunts",
+    "Rift threat ladder and bosses",
+    "Breach regional state",
+    "many/rival player cities",
+    "node respawn/distribution",
+    "randomized city spawn and spacing",
+    "alliances and territory",
+    "streaming/culling across regions/sectors/chunks"
+  ],
+  "rejectedAsAuthority": [
+    "old HTML/CSS layout",
+    "emoji placeholders",
+    "prototype timings/balance",
+    "legacy Frontier final visual quality",
+    "simulated rival data as real multiplayer"
+  ],
+  "playerCityAsset": {
+    "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+    "contract": "universal strategic visual mesh; gameplay/identity remain external"
+  },
+  "paidCredits": 0
+}

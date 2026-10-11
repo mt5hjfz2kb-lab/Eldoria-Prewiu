@@ -1,0 +1,21 @@
+name: Eldoria local art-agent source validation
+on:
+  push:
+    branches: [prototype/valoria-bastion1-no-sharp-20261010]
+    paths:
+      - 'tools/art-rd/eldoria_blender_vision_loop.py'
+      - '.github/workflows/valoria-local-art-agent-source.yml'
+permissions:
+  contents: read
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax, source and reference path checks
+        run: |
+          python3 -m py_compile tools/art-rd/eldoria_blender_vision_loop.py
+          test -s Unity/Assets/Eldoria/ProductionSlice/Experimental/ValoriaMeshOnlyWorld.glb
+          test -s references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          echo "ELDORIA_AI_ART_SOURCE_READY"

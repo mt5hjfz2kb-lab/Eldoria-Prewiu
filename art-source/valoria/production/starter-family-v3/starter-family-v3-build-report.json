@@ -1,0 +1,126 @@
+{
+  "blend_sha256": "b8221fb369c31acc0aa6cf69d04cee0c71dd06516277f04d422c497606ab839d",
+  "assets": [
+    {
+      "asset_id": "Valoria_MainGate_v3",
+      "role": "PRIMARY",
+      "function": "gate",
+      "donor": "Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Gate.fbx",
+      "geometry": {
+        "objects": 4,
+        "vertices": 1295,
+        "triangles": 2420,
+        "materials": [
+          "Gray_Gradient"
+        ],
+        "bounds": [
+          -1.62067,
+          -0.33877,
+          -0.0,
+          1.62067,
+          0.33877,
+          3.4984
+        ]
+      },
+      "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_MainGate_v3.glb",
+      "glb_sha256": "acb2224137418ced60f0cdaa9adff7e205faa6e17cecf167d739542189966127"
+    },
+    {
+      "asset_id": "Valoria_WallSegment_v3",
+      "role": "PRIMARY",
+      "function": "wall",
+      "donor": "Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Wall.fbx",
+      "geometry": {
+        "objects": 3,
+        "vertices": 2360,
+        "triangles": 4388,
+        "materials": [
+          "Gray_Gradient.001"
+        ],
+        "bounds": [
+          -1.15925,
+          -0.19082,
+          -0.0,
+          1.15925,
+          0.19082,
+          2.2
+        ]
+      },
+      "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_WallSegment_v3.glb",
+      "glb_sha256": "bc85e3620620817e7d109763c0f9e758e885bc2563e33a5910ab54755a12871e"
+    },
+    {
+      "asset_id": "Valoria_Tower_v3",
+      "role": "PRIMARY",
+      "function": "tower",
+      "donor": "Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Tower.fbx",
+      "geometry": {
+        "objects": 1,
+        "vertices": 2682,
+        "triangles": 4809,
+        "materials": [
+          "Color",
+          "Gray_Gradient.002"
+        ],
+        "bounds": [
+          -0.76687,
+          -1.4,
+          0.0,
+          0.76687,
+          1.4,
+          1.51691
+        ]
+      },
+      "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Tower_v3.glb",
+      "glb_sha256": "6927a1ec9a71345cd0297d2a3552679d23c5d2110a7c7f96a09621457f2a9be6"
+    },
+    {
+      "asset_id": "Valoria_CivicHouse_v3",
+      "role": "SECONDARY",
+      "function": "civic",
+      "donor": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Building_Administrative _01a.fbx",
+      "geometry": {
+        "objects": 3,
+        "vertices": 30666,
+        "triangles": 36858,
+        "materials": [
+          "EA02_LPNP-Slavika_Colorsheet_v1"
+        ],
+        "bounds": [
+          -1.75,
+          -1.00946,
+          0.0,
+          1.75,
+          1.00946,
+          1.9123
+        ]
+      },
+      "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_CivicHouse_v3.glb",
+      "glb_sha256": "0540ee3444bece92c61d724351f497bf52372a2ed02db62a4fda047359354463"
+    },
+    {
+      "asset_id": "Valoria_Workshop_v3",
+      "role": "SECONDARY",
+      "function": "workshop",
+      "donor": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_03b.fbx",
+      "geometry": {
+        "objects": 3,
+        "vertices": 5088,
+        "triangles": 6719,
+        "materials": [
+          "EA02_LPNP-Slavika_Colorsheet_v1.png.036"
+        ],
+        "bounds": [
+          -0.9782,
+          -1.55,
+          0.0,
+          0.9782,
+          1.55,
+          1.21468
+        ]
+      },
+      "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3.glb",
+      "glb_sha256": "accf882ba4f75a73c3ecba6e4fbf5dc23f401f5950c7c9120ccd88a63a24e5df"
+    }
+  ]
+}

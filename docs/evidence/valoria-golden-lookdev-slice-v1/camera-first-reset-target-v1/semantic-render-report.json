@@ -1,0 +1,20 @@
+{
+  "semantic_world_y": {
+    "environment-far": 9.829121589660645,
+    "environment-near": 6.834958344697952,
+    "gate": 7.719617486000061,
+    "bridge": 7.074779212474823
+  },
+  "gate_probe_screen_px": [
+    401.5,
+    211.5
+  ],
+  "probe_depths": {
+    "front": 5.0,
+    "mid": 9.0,
+    "back": 13.0
+  },
+  "camera": "orthographic fixed orientation",
+  "credits": 0,
+  "unity": false
+}

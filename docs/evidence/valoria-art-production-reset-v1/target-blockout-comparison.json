@@ -1,0 +1,177 @@
+{
+  "method": "Target manually annotated once; blockout measurements from projected mesh vertices, including hidden extents. Annotation uncertainty is explicit. No image similarity/final-art score.",
+  "source_resolution": [
+    1536,
+    1024
+  ],
+  "landmarks": {
+    "Bastion": {
+      "target_bbox_manual": [
+        608.0,
+        64.0,
+        1265.0,
+        270.0
+      ],
+      "blockout_bbox_projected": [
+        601.741,
+        58.006,
+        1271.46,
+        289.569
+      ],
+      "center_error_px": 6.789,
+      "center_error_percent_frame_diagonal": 0.368,
+      "width_ratio": 1.019,
+      "height_ratio": 1.124,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "Lower gate": {
+      "target_bbox_manual": [
+        565.0,
+        526.0,
+        838.0,
+        737.0
+      ],
+      "blockout_bbox_projected": [
+        566.249,
+        520.653,
+        826.761,
+        748.14
+      ],
+      "center_error_px": 5.774,
+      "center_error_percent_frame_diagonal": 0.313,
+      "width_ratio": 0.954,
+      "height_ratio": 1.078,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "Bridge": {
+      "target_bbox_manual": [
+        421.0,
+        688.0,
+        751.0,
+        885.0
+      ],
+      "blockout_bbox_projected": [
+        424.367,
+        671.764,
+        754.688,
+        879.233
+      ],
+      "center_error_px": 11.553,
+      "center_error_percent_frame_diagonal": 0.626,
+      "width_ratio": 1.001,
+      "height_ratio": 1.053,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "Stair": {
+      "target_bbox_manual": [
+        792.0,
+        272.0,
+        948.0,
+        381.0
+      ],
+      "blockout_bbox_projected": [
+        768.818,
+        260.456,
+        962.182,
+        382.476
+      ],
+      "center_error_px": 6.752,
+      "center_error_percent_frame_diagonal": 0.366,
+      "width_ratio": 1.24,
+      "height_ratio": 1.119,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "Cabin": {
+      "target_bbox_manual": [
+        383.0,
+        306.0,
+        527.0,
+        404.0
+      ],
+      "blockout_bbox_projected": [
+        387.837,
+        300.969,
+        518.163,
+        403.155
+      ],
+      "center_error_px": 3.554,
+      "center_error_percent_frame_diagonal": 0.193,
+      "width_ratio": 0.905,
+      "height_ratio": 1.043,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "Camp": {
+      "target_bbox_manual": [
+        1108.0,
+        392.0,
+        1380.0,
+        499.0
+      ],
+      "blockout_bbox_projected": [
+        1120.587,
+        392.719,
+        1361.414,
+        501.759
+      ],
+      "center_error_px": 3.468,
+      "center_error_percent_frame_diagonal": 0.188,
+      "width_ratio": 0.885,
+      "height_ratio": 1.019,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "West wall": {
+      "target_bbox_manual": [
+        327.0,
+        446.0,
+        495.0,
+        579.0
+      ],
+      "blockout_bbox_projected": [
+        326.391,
+        442.014,
+        492.875,
+        590.547
+      ],
+      "center_error_px": 4.02,
+      "center_error_percent_frame_diagonal": 0.218,
+      "width_ratio": 0.991,
+      "height_ratio": 1.117,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    },
+    "East wall": {
+      "target_bbox_manual": [
+        1237.0,
+        486.0,
+        1458.0,
+        653.0
+      ],
+      "blockout_bbox_projected": [
+        1237.758,
+        453.455,
+        1462.343,
+        655.331
+      ],
+      "center_error_px": 15.321,
+      "center_error_percent_frame_diagonal": 0.83,
+      "width_ratio": 1.016,
+      "height_ratio": 1.209,
+      "target_annotation_uncertainty_px": 12,
+      "macro_tolerance": "center <= 2.5% frame diagonal; width and height ratios 0.75..1.25; no route-blocking occlusion",
+      "numerical_macro_pass": true
+    }
+  }
+}
