@@ -99,8 +99,8 @@ namespace Eldoria.EditorTools
             // Visual vertical slice: isolated environment around the authored gateway.
             prior.SetActive(false); root.SetActive(true); wall.SetActive(true); wallRight.SetActive(true);
             var world = new GameObject("Valoria Bastion I - visual vertical slice");
-            var grass = TexturedMaterial("Highland meadow",new Color(.76f,.82f,.65f),"ground",9f);
-            var rock = TexturedMaterial("Stratified slate cliffs",new Color(.78f,.8f,.85f),"rock",8f);
+            var grass = TexturedMaterial("Highland meadow",new Color(.89f,.94f,.76f),"ground",2f);
+            var rock = TexturedMaterial("Stratified slate cliffs",new Color(.93f,.9f,.9f),"rock",2f);
             var pathMat = TexturedMaterial("Warm cobbled approach",new Color(.9f,.82f,.71f),"stone",4f);
             var pine = TexturedMaterial("Pine dark needles",new Color(.43f,.65f,.48f),"vegetation",2f);
             var wood = MaterialOf("Pine trunk",new Color(.23f,.16f,.11f));
@@ -108,6 +108,35 @@ namespace Eldoria.EditorTools
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
             BuildPlateau(world.transform,grass,rock);
             RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=85f; RenderSettings.fogEndDistance=180f;
+            // Reuse pre-existing authored rock GLB; do not invent geometry in place of valid assets.
+            var rockSource="Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb";
+            var rockRoot=new GameObject("Existing Eldoria rocky escarpment mesh");
+            var importedRock=new GltfImport(null,new UninterruptedDeferAgent());
+            if(await importedRock.LoadFile(Path.GetFullPath(rockSource)) &&
+                await importedRock.InstantiateMainSceneAsync(rockRoot.transform)){
+                var rockParts=rockRoot.GetComponentsInChildren<Renderer>(true);
+                if(rockParts.Length>0){
+                    var rb=rockParts[0].bounds;
+                    foreach(var rr in rockParts)rb.Encapsulate(rr.bounds);
+                    if(rb.size.x>0.001f){
+                        rockRoot.transform.localScale*=13f/rb.size.x;
+                        rockParts=rockRoot.GetComponentsInChildren<Renderer>(true);
+                        rb=rockParts[0].bounds;
+                        foreach(var rr in rockParts)rb.Encapsulate(rr.bounds);
+                        rockRoot.transform.position=new Vector3(0f,-2f,0f)-new Vector3(rb.center.x,rb.min.y,rb.center.z);
+                        rockRoot.transform.SetParent(world.transform,true);
+                        for(int k=0;k<6;k++){
+                            float theta=(k+.5f)*Mathf.PI*2f/6f;
+                            var feature=Object.Instantiate(rockRoot,world.transform);
+                            feature.name="Reused geological outcrop "+k;
+                            feature.transform.position=new Vector3(37.4f*Mathf.Cos(theta),-5.3f,37.4f*Mathf.Sin(theta));
+                            feature.transform.rotation=Quaternion.Euler(0f,k*57f,0f);
+                            feature.transform.localScale*=.85f+(k%3)*.12f;
+                        }
+                        rockRoot.SetActive(false);
+                    }
+                }
+            }else{Object.DestroyImmediate(rockRoot);}
             // Reuse authored fortification at the upper defensive terrace.
             var upper=Object.Instantiate(root);
             upper.name="Upper Valoria fortified gatehouse";
@@ -125,9 +154,9 @@ namespace Eldoria.EditorTools
             upperWallRight.transform.localScale*=.78f;
             upperWallRight.transform.position=new Vector3(9.1f,HeightAt(9f,27f),27f);
             // Cold dusk and warm entrance lighting retained by the strategic camera.
-            light.intensity=.87f;
-            light.color=new Color(.78f,.85f,1f);
-            RenderSettings.ambientLight=new Color(.31f,.36f,.43f);
+            light.intensity=1.45f;
+            light.color=new Color(.96f,.86f,.74f);
+            RenderSettings.ambientLight=new Color(.58f,.62f,.68f);
             foreach(var p in new[]{new Vector3(-5f,4.2f,-1f),new Vector3(5f,4.2f,-1f),new Vector3(-3f,8f,27f),new Vector3(3f,8f,27f)}){
                 var torch=new GameObject("Amber torch light").AddComponent<Light>();
                 torch.type=LightType.Point;
