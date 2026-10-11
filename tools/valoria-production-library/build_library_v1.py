@@ -28,7 +28,7 @@ def render(name):
  bpy.ops.object.light_add(type='AREA',location=(0,-4,9));bpy.context.object.data.energy=1250;bpy.context.object.data.shape='DISK';bpy.context.object.data.size=8
  world=bpy.data.worlds.new("Valoria neutral evidence") if not bpy.data.worlds else bpy.data.worlds[0]
  bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes["Background"].inputs["Color"].default_value=(.26,.30,.37,1)
- scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24
+ scene=bpy.context.scene;scene.render.engine='BLENDER_EEVEE';scene.eevee.taa_render_samples=48
  scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100
  scene.render.image_settings.file_format='PNG';scene.render.filepath=os.path.join(DEST,name+".png");bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
