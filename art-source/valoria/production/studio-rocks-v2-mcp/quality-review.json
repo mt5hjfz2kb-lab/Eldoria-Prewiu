@@ -1,0 +1,30 @@
+{
+  "status": "ARTIST_DIRECTOR_STUDY_RETAINED",
+  "reference_quality_met": false,
+  "art_source_pass": false,
+  "unity_tested": false,
+  "mobile_performance_tested": false,
+  "same_camera_lighting": true,
+  "same_initial_source_scene": true,
+  "before_v1_sha256": "c6aea8c4268ec67ae692e378374da7215b985315500391bb35f4f3c980e32f50",
+  "after_v2_sha256": "a9bb6ea813b1ce250617f86fb519bb0faf0e1670c8ec6044c954aaec3da045ca",
+  "new_donor": "CC0 Yughues Free Photogrammetric Rock - Cluster",
+  "new_donor_instances": 21,
+  "old_donor_retained": 31,
+  "mcp_response": "success",
+  "observable_improvement": "A second independent scanned cluster interrupts the repeated rounded rock courses; 21 contacts were widened once.",
+  "residual_failures": [
+    "Grass crown remains a flat jagged sheet against rock",
+    "Dark seams remain between some rock modules",
+    "Vertical geological strata and style remain below the owner reference",
+    "Current Unity integration terrain has moved; no Unity import of this candidate"
+  ],
+  "rejected_alternative": "Rocks 03 CC0 produced horizontal waffle-like repeated shelves in matched Blender views; director rejected it.",
+  "distinct_scanned_donors": 2,
+  "gltf_unique_mesh_triangles": 25159,
+  "gltf_instantiated_triangles": 185681,
+  "gltf_bytes": 9619008,
+  "gltf_sha256": "7c1a0be349d08c8b70ec6b30dd8567b1a75014964741056e572241714a941f92",
+  "services_cost_eur": 0,
+  "qwen_role": "Auxiliary advisory only; no automatic artistic acceptance"
+}

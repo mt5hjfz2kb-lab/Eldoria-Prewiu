@@ -1,0 +1,53 @@
+{
+  "method": "artist_selected_second_CC0_scan_in_existing_MCP_repaired_rock_course",
+  "source_scene_sha256": "822a65acfa7eead9e58ff1309a4bdf0a8886036bc0eee8261a44c53135309852",
+  "owner_reference_sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+  "cluster_source_url": "https://opengameart.org/content/free-photogrammetric-rock-cluster",
+  "cluster_source_archive_sha256": "10d97fbf68e004f827d7d7de9853722db21fda93ddba4fcb6f2bf5cb8fee560e",
+  "cluster_obj_sha256": "32e6aa78dcf6ad7435bd01e1a97e3ba3a6d33e892948b1408a154550b0b895c4",
+  "new_cluster_indices": [
+    1,
+    3,
+    6,
+    8,
+    11,
+    13,
+    16,
+    18,
+    21,
+    23,
+    26,
+    28,
+    31,
+    33,
+    36,
+    38,
+    41,
+    43,
+    46,
+    48,
+    51
+  ],
+  "cluster_instance_count": 21,
+  "retained_old_course_count": 31,
+  "new_cluster_triangles": 3732,
+  "cut_cap_faces": 1,
+  "old_donor_geometry_retained": true,
+  "grass_terrain_and_gates_retained": true,
+  "same_camera_and_lighting": true,
+  "paid_services_used": false,
+  "qwen_art_gate_used": false,
+  "blender_mcp_v1_input_retained": true,
+  "visual_pass": false,
+  "unity_tested": false,
+  "exports": {
+    "ValoriaEnvironmentV2.glb": {
+      "bytes": 9619004,
+      "sha256": "19e8d896b07abcbdc3802da557753c5a5c6923b707469d12a7fd76518a807730"
+    },
+    "ValoriaScannedCliffV2.glb": {
+      "bytes": 7789112,
+      "sha256": "112c3619164795d65647971bded53c54ec25244415c379f9ae7634a9d1437821"
+    }
+  }
+}

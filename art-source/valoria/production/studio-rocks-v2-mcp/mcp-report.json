@@ -1,0 +1,15 @@
+{
+  "transport": "real pinned BlenderMCP TCP main-thread command queue",
+  "addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5",
+  "decision": "director visual review of real V2 render: seat 21 gaps once",
+  "response_status": "success",
+  "geometry_changes": {
+    "rock_modules_seated": 21,
+    "tangential_scale": 1.16,
+    "radial_inset": 0.24
+  },
+  "same_camera_and_lighting": true,
+  "visual_pass": false,
+  "unity_tested": false,
+  "paid_services_used": false
+}

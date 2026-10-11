@@ -1,0 +1,20 @@
+{
+  "assets": [
+    {
+      "file": "art-source/valoria/production/studio-rocks-v2-mcp/ValoriaEnvironmentV2MCP.glb",
+      "bytes": 9619008,
+      "errors": [],
+      "warnings": [],
+      "meshes": 4,
+      "primitives": 15,
+      "triangles_estimated": 25159,
+      "materials": 14,
+      "textures": 9,
+      "images": 5,
+      "external_images": [],
+      "has_skins": false,
+      "has_animations": false
+    }
+  ],
+  "structural_pass": true
+}

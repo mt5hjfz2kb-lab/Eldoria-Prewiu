@@ -1,0 +1,26 @@
+{
+  "v1_donor": {
+    "name": "Free Photogrammetric Rock",
+    "author": "Yughues",
+    "license": "CC0",
+    "source": "https://opengameart.org/content/free-photogrammetric-rock",
+    "source_archive_sha256": "f33dbb5b2a2315a2fba5e5db09fabf799094fe8b5c437486ba52546e4486138d"
+  },
+  "v2_donor": {
+    "name": "Free Photogrammetric Rock - Cluster",
+    "author": "Yughues",
+    "license": "CC0",
+    "source": "https://opengameart.org/content/free-photogrammetric-rock-cluster",
+    "source_archive_sha256": "10d97fbf68e004f827d7d7de9853722db21fda93ddba4fcb6f2bf5cb8fee560e",
+    "source_obj_sha256": "32e6aa78dcf6ad7435bd01e1a97e3ba3a6d33e892948b1408a154550b0b895c4"
+  },
+  "rejected_comparison_donor": {
+    "name": "Rocks 03",
+    "author": "Yughues / Nobiax",
+    "license": "CC0",
+    "source": "https://opengameart.org/content/rocks-03",
+    "source_archive_sha256": "c5c108b6847403d87e662e219d79e82508d906b3f5658971fb2e4131bbbb2799",
+    "exported_in_candidate": false
+  },
+  "paid_calls": 0
+}

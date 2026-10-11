@@ -1,0 +1,15 @@
+{
+  "rock_change": "mixed",
+  "reference_quality_met": true,
+  "defects": [
+    "inconsistent cliff edge geometry",
+    "inaccurate grass contact",
+    "partial cliff edge occlusion"
+  ],
+  "suggested_action": "fix_contact",
+  "status": "auxiliary_only",
+  "visual_pass": false,
+  "unity_tested": false,
+  "model": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+  "source_board_sha256": "a4943130bc273d9f2ef0714e840f96d33f1efb28273ee16e2b6a18cc4f6fff02"
+}
