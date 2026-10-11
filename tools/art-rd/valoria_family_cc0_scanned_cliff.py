@@ -50,8 +50,9 @@ def dress_continuous_cliff_with_cc0():
   # teeth at regular angles. Lay the photogrammetry donor into the cliff wall
   # as broad, overlapping scree strata with short vertical exposure.
   a=math.tau*(i+.23*math.sin(i*1.91))/16
-  x=(4.05+.21*math.sin(3*a))*math.cos(a)
-  y=(3.50+.15*math.cos(5*a))*math.sin(a)
+  # Bury true scanned rock seams into the flared geological foot.
+  x=(4.65+.23*math.sin(3*a))*math.cos(a)
+  y=(4.02+.18*math.cos(5*a))*math.sin(a)
   p=rock.copy();p.data=rock.data;bpy.context.collection.objects.link(p)
   p.name='CC0 horizontal integrated bedrock strata '+str(i).zfill(2)
   p.location=(x,y,-4.10+.32*math.sin(i*1.4))

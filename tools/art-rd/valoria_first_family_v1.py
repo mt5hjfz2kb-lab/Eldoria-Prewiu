@@ -120,9 +120,14 @@ def rocks():
   for k,(x,y,top) in enumerate(perimeter):
    a=math.tau*k/n
    vertical=-4.8*u
-   geological=.19*math.sin(a*9+u*4)+.13*math.sin(a*21-u*7)
-   inset=.45*u+.12*math.sin(a*7+u*11)*math.sin(math.pi*u)
-   verts.append((x*(1-inset/6)+geological*math.cos(a),y*(1-inset/6)+geological*math.sin(a),top+vertical))
+   # An eroded concave cliff face resolves into an outward-flaring
+   # debris-foot instead of a narrow column supporting a level cake.
+   geological=(.24*math.sin(a*9+u*4)+.16*math.sin(a*21-u*7)
+               +.08*math.sin(a*41+u*10))
+   radial=(1-.13*u+.27*u*u
+           +.035*math.sin(a*7+u*11)*math.sin(math.pi*u))
+   verts.append((x*radial+geological*math.cos(a),
+                 y*radial+geological*math.sin(a),top+vertical))
  faces=[];materials=[]
  for j in range(rings):
   for k in range(n):
