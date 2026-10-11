@@ -13,11 +13,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install free Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
       - name: Render seven V3-derived models in close and strategic cameras
         env:
           ELDORIA_FAMILY_PHASE: before
         run: blender -b -t 4 --python tools/art-rd/valoria_first_family_v1.py
+      - name: Activate existing free local art brain
+        run: |
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          bash "$RUNNER_TEMP/start-qwen.sh"
+      - name: AI art direction from real Blender renders
+        run: |
+          python3 - <<'PY'
+          import base64,io,json,urllib.request
+          from PIL import Image
+          from pathlib import Path
+          folder=Path('art-source/valoria/production/first-asset-family-v1')
+          names=['wall_straight','watchtower','wall_corner','wall_connections','stone_path_platform','cliff_rocks','defensive_props','assembled_family']
+          decisions={}
+          for name in names:
+              img=[]
+              for view in ['before-hero.png','before-strategic.png']:
+                  with Image.open(folder/name/view) as pic:
+                      pic=pic.convert('RGB');pic.thumbnail((448,448));buff=io.BytesIO();pic.save(buff,'JPEG',quality=74);img.append(base64.b64encode(buff.getvalue()).decode())
+              payload={'model':'qwen2.5vl:3b','stream':False,'options':{'num_predict':170,'num_ctx':4096,'temperature':0.1},'messages':[{'role':'user','content':'Act as Valoria medieval environment artist. Analyze '+name+' in close and distant views. Output ONLY JSON with masonry_irregularity (float 0.008 to 0.07), observation and geometry_decision. Your number will physically alter stone geometry in Blender; name a specific issue you see.','images':img}]}
+              req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              with urllib.request.urlopen(req,timeout=420) as reply: answer=json.load(reply)['message']['content']
+              decision=json.loads(answer[answer.index('{'):answer.rindex('}')+1])
+              assert .008<=float(decision['masonry_irregularity'])<=.07
+              assert decision['observation'] and decision['geometry_decision']
+              decisions[name]=decision
+              print('ELDORIA_QWEN_ARTIST_DECISION',name,json.dumps(decision))
+          (folder/'agent-decisions.json').write_text(json.dumps(decisions,indent=2))
+          PY
       - name: Export editable sources GLB and paired second renders
         env:
           ELDORIA_FAMILY_PHASE: after
