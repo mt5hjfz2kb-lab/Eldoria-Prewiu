@@ -205,34 +205,29 @@ director_poly("gate_parapet_recessed_stone_hip",
   (-3.91,.58,7.42),(3.91,.58,7.42),(3.91,1.17,7.42),(-3.91,1.17,7.42)],
  [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
  slate,.07)
-# FULL ART BRAIN FOCUS V4 — monumental inset watch chamber replaces bare skyline.
-# Elevated crossing grows from the load-bearing portal, with open observation bays
-# and a steep fractured-slate roof. Geometry stays one gate building.
-chamber_stone=stone[3]
-# Four load bearing piers, not a box facade; open arches between them allow real depth.
-for sx in (-1,1):
- x=sx*2.19
- for y in (-.31,1.12):
-  base.cube("watch_chamber_loadbearing_pier",(x,y,7.53),(.48,.45,2.17),chamber_stone,.095)
-# A recessed sill and heavy top beam, with holes/open sky between piers.
-base.cube("watch_chamber_unified_sill",(0,.41,6.64),(4.84,2.03,.37),trim,.06)
-base.cube("watch_chamber_unified_header",(0,.41,8.66),(4.91,2.06,.42),stone[4],.095)
-# Light but tangible sculpted gothic relieving arch under the transverse beam.
-for j in range(12):
- a0=math.pi*j/12;a1=math.pi*(j+1)/12-.006
- base.arch_segment("watch_gallery_recessed_voussoir",0,-.53,7.62,1.36,a0,a1,.21,stone[(j+3)%8],.065)
-# Hand-authored asymmetric pitched roof: sloping envelope instead of layered boxes.
-v=[(-2.63,-.82,8.88),(2.63,-.82,8.88),(2.63,1.69,8.88),(-2.63,1.69,8.88),
-   (-2.58,.40,10.33),(2.58,.40,10.33)]
-faces=[(0,1,5,4),(3,4,5,2),(0,4,3),(1,2,5),(0,3,2,1)]
-director_poly("monumental_slate_watch_roof",v,faces,slate,.045)
-# Roofline accents mark real roof ridge and edge, not painted grooves.
-base.cube("watch_roof_ridge",(0,.40,10.35),(5.30,.16,.12),slate_edge,.045)
+# FULL ART BRAIN FOCUS V5 — reject roof-on-stilts silhouette from reviewed V4.
+# A purpose-built defensive observation chamber with real open portal slot.
+# Height and negative space reflect the approved Valoria stone gate language.
 for side in (-1,1):
- base.cube("roof_eaves_brace",(0,-.79 if side<0 else 1.66,8.78),(5.25,.22,.18),slate_edge,.045)
-# Distinct defensive transition: flank roofs remain visible; central gallery taller.
-# The camera sees interior shadow through both lookout openings.
-art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 mass slab and V3 insufficient creative distance","operations":["restore_historical_ashlar","structural_nested_portal","slim_engaged_buttresses","inset_open_machicolated_gallery","monumental_pitch_slate_roof","varied_merlons"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+    # Leave central 0.75 m slit physically unfilled between structural walls.
+    x0,x1=(-2.22,-.39) if side<0 else (.39,2.22)
+    base.courses("gatehouse_upper_stone_chamber_"+str(side),x0,x1,.63,7.04,9.02,seed=419+int(side))
+    # Real return buttresses tie to existing lower parapet rather than float.
+    base.cube("upper_chamber_engaged_jamb",(side*2.17,-.22,7.97),(.31,1.67,2.16),trim,.057)
+# A deep lintel with band course crowns the elevated stone chamber.
+base.cube("gatehouse_upper_solid_lintel",(0,.63,9.13),(4.77,1.87,.39),stone[2],.085)
+# Recessed narrow observation hole, not a blue painted decal.
+base.cube("observation_slot_shadow",(0,-.33,8.08),(.57,.08,1.41),patina,.017)
+# Battlement merlons over the chamber make a unified defensive crown with changing profile.
+for idx,(xc,h,w) in enumerate(zip((-1.86,-.68,.62,1.81),(.82,1.08,.91,.76),(.72,.73,.67,.81))):
+    x0=xc-w/2;x1=xc+w/2;bottom=9.34;top=bottom+h
+    verts=[(x0,-.42,bottom),(x1,-.42,bottom),(x1,1.56,bottom),(x0,1.56,bottom),
+           (x0+.055,-.39,top),(x1-.055,-.39,top),(x1-.055,1.49,top),(x0+.055,1.49,top)]
+    director_poly("crown_authored_capped_merlon_"+str(idx),verts,
+      [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
+      stone[(idx+2)%len(stone)],.09)
+# The old tower roofs remain undisturbed; central chamber is flat stone, not a pitched timber shed.
+art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 slab, V3 insufficient, V4 barn roof on stilts","operations":["restore_historical_ashlar","structural_nested_gate_arch","narrow_organic_buttresses","elevated_stone_watch_chamber_with_negative_space","asymmetric_defensive_stone_crown"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 # Stone voussoirs and structural buttress meshes are the only additions.
 art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 smooth facade and heavy crown","operations":["recover_visible_historic_ashlar","tapered_engaged_side_buttresses","deep_nested_load_bearing_arch","vary_existing_merlon_proportions","recessed_hip_coping"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
