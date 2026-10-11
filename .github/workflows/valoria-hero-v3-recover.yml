@@ -35,6 +35,8 @@ jobs:
           test -s "$target/quality-v3/after-hero-matched.png"
           test -s "$target/quality-v3/after-strategic.png"
           echo ELDORIA_V3_RESTORED_FROM_REAL_ARTIFACT
+      - name: Install free image tools for bounded Qwen requests
+        run: sudo apt-get update -qq && sudo apt-get install -y python3-pil
       - name: Local free Qwen real-image advisory
         continue-on-error: true
         run: |
@@ -49,6 +51,8 @@ jobs:
           git config user.email 'eldoria-art-ci@users.noreply.github.com'
           git add -f art-source/valoria/production/first-hero-gate-v1/quality-v3
           git commit -m 'art: preserve existing V3 GLB, source, comparisons and Qwen review [skip ci]' || exit 0
+          git restore .
+          git clean -fd
           for i in 1 2 3; do
             git fetch origin art/valoria-first-hero-asset-v1-20261011
             git rebase origin/art/valoria-first-hero-asset-v1-20261011
