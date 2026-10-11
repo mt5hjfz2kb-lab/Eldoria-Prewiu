@@ -1,0 +1,56 @@
+name: Valoria cliff AI authorship AB
+on:
+  push:
+    branches: [experiment/valoria-cliff-ai-authorship-ab-20261011]
+    paths: ['.github/workflows/valoria-cliff-ai-authorship-ab.yml', 'tools/art-rd/valoria_cliff_authorship_ab.py', 'tools/art-rd/valoria_cliff_ab_qwen.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ab-cliff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-pil python3-numpy libarchive13t64
+      - name: Restore verified CC0 geological donor
+        run: |
+          git fetch --no-tags origin refs/heads/art/studio-reuse-handoff-20261011:refs/remotes/origin/art/studio-reuse-handoff-20261011
+          git show origin/art/studio-reuse-handoff-20261011:tools/art-studio-recovery/extract_cc0.py > "$RUNNER_TEMP/extract_cc0.py"
+          curl -fL --retry 2 -A 'EldoriaResearch/1.0' 'https://opengameart.org/sites/default/files/Free%20-%20Photogrammetric%20Rock.7z' -o "$RUNNER_TEMP/eldoria-rock.7z"
+          echo "f33dbb5b2a2315a2fba5e5db09fabf799094fe8b5c437486ba52546e4486138d  $RUNNER_TEMP/eldoria-rock.7z" | sha256sum -c -
+          python3 "$RUNNER_TEMP/extract_cc0.py" "$RUNNER_TEMP/eldoria-rock.7z" /tmp/eldoria-rock-source
+      - name: Produce existing cliff A only
+        env:
+          ELDORIA_CLIFF_AB_MODE: A
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_cliff_authorship_ab.py
+      - name: Activate free local art brain
+        run: |
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          bash "$RUNNER_TEMP/start-qwen.sh"
+      - name: Real Qwen authored cliff diagnosis and geometry specification
+        run: python3 tools/art-rd/valoria_cliff_ab_qwen.py
+      - name: Restore verified BlenderMCP
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Build independent Qwen-directed B and sculpt by BlenderMCP
+        env:
+          ELDORIA_CLIFF_AB_MODE: B
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_cliff_authorship_ab.py
+      - name: Validate comparable assets
+        run: |
+          OUT=art-source/valoria/experiments/cliff-ai-authorship-ab
+          for f in A.blend A.glb A-hero.png A-strategic.png B.blend B.glb B-hero.png B-strategic.png B-before-correction-hero.png B-before-correction-strategic.png B-ai-art-direction.json B-mcp-evidence.json; do
+            test -s "$OUT/$f" || { echo "MISSING: $f"; exit 1; }
+          done
+          python3 tools/art-rd/audit_glb.py "$OUT/A.glb" "$OUT/B.glb" > "$OUT/geometry-audit.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-cliff-ab-renders-blend-glb-evidence
+          path: art-source/valoria/experiments/cliff-ai-authorship-ab/
+          retention-days: 30
