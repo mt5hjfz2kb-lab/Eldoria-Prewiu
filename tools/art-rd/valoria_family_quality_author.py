@@ -10,7 +10,10 @@ BASE=ROOT/'art-source/valoria/production/asset-family-v2'
 OUT=BASE/'quality-v3';OUT.mkdir(parents=True,exist_ok=True)
 GATE=ROOT/'art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.blend'
 GATE_HASH=hashlib.sha256(GATE.read_bytes()).hexdigest()
-PLANS=json.loads((BASE/'qwen-family-quality-directions.json').read_text())['plans']
+DESIGN_DOCUMENT=json.loads((BASE/'qwen-family-quality-directions.json').read_text())
+IS_TEST=bool(DESIGN_DOCUMENT.get('TEST_FIXTURE_NON_AUTHORITATIVE'))
+assert not IS_TEST or os.environ.get('ELDORIA_FAMILY_ALLOW_TEST_FIXTURE')=='1','Engineering fixture cannot become artistic production'
+PLANS=DESIGN_DOCUMENT['plans']
 assert len(PLANS)==7
 helper=ROOT/'tools/art-rd/valoria_family_v2_1_mcp_author.py'
 namespace={'__file__':str(helper)}
@@ -315,8 +318,13 @@ def props(plan):
    if isbanner:v.co.x-=sign*1.35;v.co.z-=2.1
    else:v.co.x-=sign*.90;v.co.y+=1.55
  for side in (-1,1):
-  box('Banner freestanding oak mount',(side*2.07,-1.72,2.8),(.15,.17,5.6),MATS['wood'],.014,0)
-  box('Forged mount foot plate',(side*2.07,-1.72,.08),(.56,.54,.16),MATS['iron'],.02,0)
+  bars=[o for o in chosen if 'Banner mounting bar' in o.name and (sum(v.co.x for v in o.data.vertices)>0)==(side>0)]
+  cloth=[o for o in chosen if 'Royal blue Valoria banner' in o.name and (sum(v.co.x for v in o.data.vertices)>0)==(side>0)]
+  top=max(v.co.z for o in bars for v in o.data.vertices)+.12
+  behind=max(v.co.y for o in cloth for v in o.data.vertices)+.13
+  box('Banner freestanding oak mount',(side*2.07,behind,top/2),(.15,.17,top),MATS['wood'],.014,0)
+  box('Forged mount foot plate',(side*2.07,behind,.08),(.56,.54,.16),MATS['iron'],.02,0)
+  box('Forged banner mounting collar',(side*2.07,behind,top-.19),(.20,.23,.13),MATS['iron'],.012,0)
  for i in range(5):
   box('Oak defensive stake',((i-2)*.54,1.65,.86),(.16,.20,1.72),MATS['wood'],.016,0)
  for z in (.58,1.23):box('Oak defensive crossbar',(0,1.57,z),(2.5,.14,.15),MATS['wood'],.018,0)
@@ -407,7 +415,7 @@ def export(asset,folder):
   bpy.ops.export_scene.gltf(filepath=str(folder/(asset+'-LOD'+str(level)+'.glb')),export_format='GLB',use_selection=True,export_materials='EXPORT',export_texcoords=True,export_normals=True,export_tangents=True)
   lods.append({'level':level,'triangles':count,'relative_to_lod0':round(count/triangles,3),'visual_distance_use':'requires engine-screen-size selection; not physical-device certified'})
   for ob,data in backups.items():ob.data=data
- result={'asset':asset,'triangles':triangles,'export_meshes':len(meshes),'effective_materials':len(canonical),'lods':lods,'bounds_m':bounds(),'glb_bytes':(folder/(asset+'.glb')).stat().st_size,'source_gate_sha256':GATE_HASH,'ai_plan':PLANS[asset],'executed_operations':LOG,'art_pass':False,'unity_pass':False}
+ result={'asset':asset,'triangles':triangles,'export_meshes':len(meshes),'effective_materials':len(canonical),'lods':lods,'bounds_m':bounds(),'glb_bytes':(folder/(asset+'.glb')).stat().st_size,'source_gate_sha256':GATE_HASH,'authoring_evidence':'TEST_FIXTURE_NON_AUTHORITATIVE' if IS_TEST else 'GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP','ai_plan':PLANS[asset],'executed_operations':LOG,'art_pass':False,'unity_pass':False}
  (folder/'evidence.json').write_text(json.dumps(result,indent=2))
  return result
 
@@ -427,6 +435,6 @@ for asset in selected:
  reset();LOG=[];CURRENT=asset
  EXECUTE(lambda:BUILD[asset](plan))
  setup();render(folder,'after');manifest[asset]=export(asset,folder)
- print('AI_DIRECTED_FAMILY_QUALITY_PRODUCED',asset,manifest[asset]['triangles'],flush=True)
+ print('WORKSHOP_TEST_ONLY' if IS_TEST else 'AI_DIRECTED_FAMILY_QUALITY_PRODUCED',asset,manifest[asset]['triangles'],flush=True)
 assert hashlib.sha256(GATE.read_bytes()).hexdigest()==GATE_HASH,'Immutable gate modified'
 (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2))
