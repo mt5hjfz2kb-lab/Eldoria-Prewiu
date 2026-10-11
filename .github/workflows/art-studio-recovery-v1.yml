@@ -1,0 +1,32 @@
+name: '[EXPERIMENT] Eldoria isolated art studio rock recovery V1'
+on:
+  push:
+    branches: [art/valoria-studio-recovery-rocks-v1-20261011]
+    paths: ['tools/art-studio-recovery/**', 'pipeline/art-studio-recovery-v1.json', '.github/workflows/art-studio-recovery-v1.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: isolated-art-studio-rocks-v1
+  cancel-in-progress: false
+jobs:
+  blender:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Existing canonical art planner and governance
+        run: |
+          node tools/check-art-production-governance.mjs
+          node tools/plan-art-production.mjs pipeline/art-production-requests/valoria-studio-recovery-rocks-v1-20261011.json art-source/valoria/production/studio-rocks-v1/plan.json
+      - name: Free Blender isolated from the shared Windows runner
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy
+      - name: Existing library audit and real donor renders
+        run: blender -b --threads 4 --python tools/art-studio-recovery/probe_donors.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-art-studio-rocks-v1
+          path: art-source/valoria/production/studio-rocks-v1/
+          retention-days: 30
+          if-no-files-found: error

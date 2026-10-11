@@ -20,7 +20,7 @@
     "blender_professional_authoring": true
   },
   "validation": {
-    "source_gate": "Use isolated branch and exact inspected GLB c42b88fb55c6d075e759f172790927e5238728bf. Reproduce authored source/camera evidence; keep reference ART FAIL until a coherent new scene passes. Zero new generation credits.",
+    "source_gate": "Use isolated cliff scene derived from exact integration baseline 65f28094. Render baseline and candidates with identical camera and lighting. Preserve user reference as exact bytes. Zero paid services; no changes to canonical Unity.",
     "final_gate": "Diagnostic import/render may establish TECH_PASS only. Production requires ART_SOURCE_PASS and INTEGRATED_VISUAL_PASS from actual reference-matched Unity captures, plus required runtime/performance checks. Never replace canonical SHARP main based on structural/render execution success."
   },
   "escalation": {
