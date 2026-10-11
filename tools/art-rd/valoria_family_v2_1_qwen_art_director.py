@@ -48,6 +48,8 @@ for field,values in CHOICES.items():schema['properties'][field]['enum']=values
 DIMENSION_RULES=('All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: '+json.dumps(CHOICES))
 OUT.mkdir(parents=True,exist_ok=True);plans={};traces={}
 for asset,brief in BRIEFS.items():
+ if 'wall_straight' in plans:
+  for field in ('stone_height','stone_length'):schema['properties'][field]['enum']=[plans['wall_straight'][field]]
  current=OUT/asset/'v2-1-hero.png'
  if asset=='watchtower' and (OUT/asset/'v2-2-hero.png').exists():current=OUT/asset/'v2-2-hero.png'
  inputs=[TARGET,GATE/'after-hero-matched.png',current]
@@ -56,7 +58,8 @@ for asset,brief in BRIEFS.items():
   'Plan a MAJOR coherent reconstruction, not small jitter. Brief: '+brief+' '
   'Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. '
   'Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. '+DIMENSION_RULES)
- payload={'model':'qwen3-vl:4b','stream':True,'think':False,'keep_alive':'10m','format':schema,'options':{'temperature':.15,'num_predict':800,'num_ctx':2048,'num_thread':2},'messages':[{'role':'user','content':prompt,'images':[]}]}
+ if 'wall_straight' in plans:prompt+=' Your accepted shared family masonry canon is '+json.dumps({k:plans['wall_straight'][k] for k in ('stone_height','stone_length')})+'. Retain those values.'
+ payload={'model':'qwen3-vl:4b-instruct','stream':True,'think':False,'keep_alive':'10m','format':schema,'options':{'temperature':.15,'num_predict':800,'num_ctx':3072,'num_thread':2},'messages':[{'role':'user','content':prompt,'images':[]}]}
  trace={'model':payload['model'],'prompt':prompt,'images':[{'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in inputs],'attempts':[]}
  for attempt in range(2):
   start=time.monotonic();raw='';events=0;print('EXTERNAL_ARTIST_START',asset,attempt,flush=True)
@@ -84,7 +87,7 @@ for asset,brief in BRIEFS.items():
    if attempt==1:raise
    # Cancel timed-out inference before a materially smaller board retry.
    import subprocess
-   subprocess.run(['ollama','stop','qwen3-vl:4b'],check=False)
+   subprocess.run(['ollama','stop','qwen3-vl:4b-instruct'],check=False)
   finally:
    traces[asset]=trace;(OUT/'qwen-family-quality-traces.json').write_text(json.dumps(traces,indent=2))
  (OUT/'qwen-family-quality-directions.json').write_text(json.dumps({'plans':plans,'self_approval':False},indent=2))

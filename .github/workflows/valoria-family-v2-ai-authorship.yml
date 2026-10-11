@@ -41,8 +41,8 @@ jobs:
           sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
           sudo apt-get update -qq
           sudo apt-get install -y python3-pil python3-numpy
-          sed -i 's/qwen2.5vl:3b/qwen3-vl:4b/g' "$RUNNER_TEMP/start-qwen.sh"
-          python3 -m py_compile tools/art-rd/valoria_family_v2_1_qwen_art_director.py
+          sed -i 's/qwen2.5vl:3b/qwen3-vl:4b-instruct/g' "$RUNNER_TEMP/start-qwen.sh"
+          python3 -m py_compile tools/art-rd/valoria_family_v2_1_qwen_art_director.py tools/art-rd/valoria_family_quality_author.py
           bash "$RUNNER_TEMP/start-qwen.sh"
       - name: External artist directs seven substantial designs before mesh construction
         if: env.ARTIST_RUN == '0'
@@ -92,12 +92,29 @@ jobs:
       - name: Preserve unreviewed real-source candidate on the isolated artistic branch
         run: |
           python3 - <<'PY'
-          import json, pathlib, subprocess
+          import json, pathlib, subprocess, hashlib
+          from PIL import Image
           base=pathlib.Path('art-source/valoria/production/asset-family-v2')
           p=json.load(open(base/'quality-v3/glb-preflight.json'))
           assert p['structural_pass'] and len(p['assets'])==21
           assert all(not a['errors'] and not a['warnings'] for a in p['assets'])
-          files=[f for f in (base/'quality-v3').rglob('*') if f.is_file() and not f.name.startswith('.') and f.suffix in ('.blend','.glb','.png','.json') and f.stat().st_size<95*1024*1024]
+          proof={'assets':{},'renders':{},'authority':'unreviewed real-source candidate; independent art review required'}
+          for folder in (base/'quality-v3').iterdir():
+            if folder.is_dir() and (folder/'evidence.json').exists():
+              name=folder.name
+              proof['assets'][name]={'blend_sha256':hashlib.sha256((folder/(name+'.blend')).read_bytes()).hexdigest(),'glb_sha256':hashlib.sha256((folder/(name+'.glb')).read_bytes()).hexdigest(),'evidence':json.load(open(folder/'evidence.json'))}
+          for png in list((base/'quality-v3').rglob('*.png'))+[pathlib.Path('art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png')]:
+            jpg=png.with_suffix('.jpg')
+            with Image.open(png) as im:
+              im=im.convert('RGB')
+              for quality in (94,90,86):
+                im.save(jpg,quality=quality)
+                if jpg.stat().st_size<650000:break
+              assert jpg.stat().st_size<750000,'Preview must remain retrievable through repository contents API'
+            proof['renders'][str(jpg)]={'png_sha256':hashlib.sha256(png.read_bytes()).hexdigest(),'jpeg_sha256':hashlib.sha256(jpg.read_bytes()).hexdigest(),'width':im.width,'height':im.height,'bytes':jpg.stat().st_size}
+          (base/'quality-v3/candidate-proof.json').write_text(json.dumps(proof,indent=2))
+          files=[f for f in (base/'quality-v3').rglob('*') if f.is_file() and not f.name.startswith('.') and f.suffix in ('.blend','.glb','.png','.jpg','.json') and f.stat().st_size<95*1024*1024]
+          files += [pathlib.Path('art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.jpg')]
           files += list(base.glob('qwen-family-quality-*.json'))+list(base.glob('*-artist-input-*.jpg'))+list((base/'quality-textures').glob('*.png'))
           subprocess.run(['git','add','-f',*[str(f) for f in files]],check=True)
           subprocess.run(['git','config','user.name','Codex Art Workshop'],check=True)

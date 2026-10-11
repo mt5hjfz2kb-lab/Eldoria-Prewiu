@@ -178,7 +178,8 @@ def corner(plan):
  wall_run(3.32,plan,x=-2.34,loops=False,buttresses=False,end_faces=False)
  wall_run(3.32,plan,y=2.34,angle=math.pi/2,loops=False,buttresses=False,end_faces=False)
  # Join dressed corner quoin pier overlaps structural core, not facades.
- for j in range(14):box('Alternating bonded corner quoin',(0,0,(j+.5)*.32),(1.36,1.36,.304),bevel=.023)
+ nrows=math.ceil(4.48/plan['stone_height']);rowh=4.48/nrows
+ for j in range(nrows):box('Alternating bonded corner quoin',(0,0,(j+.5)*rowh),(1.36,1.36,rowh-.016),bevel=.023)
  box('Corner walkway dressed coping',(0,0,4.52),(1.54,1.54,.22),MATS['trim'],.028)
  for q in [(-.52,-.52),(.52,-.52)]:
   box('Corner bonded parapet',(q[0],q[1],4.83),(.58,.47,.42),bevel=.023)
@@ -186,7 +187,8 @@ def corner(plan):
  LOG.append({'operation':'dressed_corner_bond','turn_degrees':90,'wall_walkway_height':4.52})
 def connections(plan):
  wall_run(2,plan,loops=False,buttresses=False)
- for j in range(13):box('Socket bonded retaining pier',(0,-.78,(j+.5)*.34),(.67,.63,.324),bevel=.023)
+ nrows=math.ceil(4.48/plan['stone_height']);rowh=4.48/nrows
+ for j in range(nrows):box('Socket bonded retaining pier',(0,-.78,(j+.5)*rowh),(.67,.63,rowh-.016),bevel=.023)
  LOG.append({'operation':'modular_socket','contact_width_m':2,'end_plane_tolerance_m':.012})
 
 def road(plan):
