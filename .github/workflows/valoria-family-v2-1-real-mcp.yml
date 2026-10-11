@@ -20,8 +20,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          qwen_run=$(gh api "repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/workflows/valoria-v2-1-qwen-decisions.yml/runs?branch=art%2Fvaloria-asset-family-v2-ai-authorship-20261011&per_page=10" --jq '.workflow_runs[0].id')
+          test -n "$qwen_run" && test "$qwen_run" != "null"
+          echo "QWEN_RUN_ID=$qwen_run" >> "$GITHUB_ENV"
+          echo "Waiting for actual latest Qwen run: $qwen_run"
           for i in $(seq 1 70); do
-            result=$(gh api repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38171510700 --jq '.status+" "+(.conclusion//"pending")')
+            result=$(gh api "repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/$qwen_run" --jq '.status+" "+(.conclusion//"pending")')
             echo "Qwen director: $result"
             if [[ "$result" == "completed success" ]]; then exit 0; fi
             if [[ "$result" == completed* ]]; then exit 1; fi
@@ -38,7 +42,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: valoria-v2-1-qwen-seven-new-art-decisions
-          run-id: 38171510700
+          run-id: ${{ env.QWEN_RUN_ID }}
           github-token: ${{ github.token }}
           path: art-source/valoria/production/asset-family-v2
       - name: Confirm seven real newly generated model decisions before Blender
