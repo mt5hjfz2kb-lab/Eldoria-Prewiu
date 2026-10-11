@@ -343,8 +343,11 @@ def assemble():
  # Use the FROZEN, existing Hero V3 GLB; never regenerate its architecture.
  hero=ROOT/"art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb"
  assert hero.exists(), "Frozen hero V3 GLB is required for real assembly"
+ prior=set(bpy.context.scene.objects)
  bpy.ops.import_scene.gltf(filepath=str(hero))
- for ob in bpy.context.selected_objects: ob.name="FROZEN_V3_"+ob.name
+ frozen=[ob for ob in bpy.context.scene.objects if ob not in prior]
+ assert len([ob for ob in frozen if ob.type=='MESH'])>=900,'Exact V3 gate assembly import incomplete'
+ for ob in frozen:ob.name="FROZEN_V3_"+ob.name
 # The agent must emit machine-readable changes. Never fabricate agent authorship.
 decision_file=OUT/"agent-decisions.json"
 if len(sys.argv)>sys.argv.index("--")+1 if "--" in sys.argv else False:
