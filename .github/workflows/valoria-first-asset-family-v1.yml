@@ -2,7 +2,7 @@ name: Valoria first asset family V1
 on:
   push:
     branches: [art/valoria-first-asset-family-v1-20261011]
-    paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml']
+    paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml', 'tools/art-rd/valoria_family_mcp_cliff.py']
   workflow_dispatch:
 permissions:
   contents: read
@@ -38,12 +38,13 @@ jobs:
               for view in ['before-hero.png','before-strategic.png']:
                   with Image.open(folder/name/view) as pic:
                       pic=pic.convert('RGB');pic.thumbnail((448,448));buff=io.BytesIO();pic.save(buff,'JPEG',quality=74);img.append(base64.b64encode(buff.getvalue()).decode())
-              payload={'model':'qwen2.5vl:3b','stream':False,'options':{'num_predict':170,'num_ctx':4096,'temperature':0.1},'messages':[{'role':'user','content':'Act as Valoria medieval environment artist. Analyze '+name+' in close and distant views. Output ONLY JSON with masonry_irregularity (float 0.008 to 0.07), observation and geometry_decision. Your number will physically alter stone geometry in Blender; name a specific issue you see.','images':img}]}
+              payload={'model':'qwen2.5vl:3b','stream':False,'options':{'num_predict':170,'num_ctx':4096,'temperature':0.1},'messages':[{'role':'user','content':'Act as Valoria medieval environment artist. Analyze '+name+' in close and distant views. Output ONLY JSON with masonry_irregularity (float 0.008 to 0.07), observation, geometry_decision and art_operation. For cliff_rocks, art_operation MUST be one of sculpt_geological_shelves, carve_erosion_channels, break_cliff_silhouette: choose the single intervention supported by visible defects, which will sculpt the genuine mesh through BlenderMCP. For every other asset set art_operation to none. Name a concrete actionable visible defect, not generic noise.','images':img}]}
               req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
               with urllib.request.urlopen(req,timeout=420) as reply: answer=json.load(reply)['message']['content']
               decision=json.loads(answer[answer.index('{'):answer.rindex('}')+1])
               assert .008<=float(decision['masonry_irregularity'])<=.07
               assert decision['observation'] and decision['geometry_decision']
+              assert decision.get('art_operation') in ((['sculpt_geological_shelves','carve_erosion_channels','break_cliff_silhouette']) if name=='cliff_rocks' else ['none'])
               decisions[name]=decision
               print('ELDORIA_QWEN_ARTIST_DECISION',name,json.dumps(decision))
           (folder/'agent-decisions.json').write_text(json.dumps(decisions,indent=2))
@@ -52,6 +53,15 @@ jobs:
         env:
           ELDORIA_FAMILY_PHASE: after
         run: blender -b -t 4 --python tools/art-rd/valoria_first_family_v1.py
+      - name: Use existing SHA-pinned free BlenderMCP addon
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Qwen-guided real BlenderMCP geological sculpt and matched renders
+        run: |
+          blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_mcp_cliff.py
+          test -s art-source/valoria/production/first-asset-family-v1/cliff_rocks/mcp-authoring-evidence.json
+          test -s art-source/valoria/production/first-asset-family-v1/cliff_rocks/mcp-after-hero.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
