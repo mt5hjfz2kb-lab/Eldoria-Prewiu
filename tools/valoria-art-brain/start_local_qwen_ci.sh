@@ -27,7 +27,7 @@ python3 - <<'PY'
 import base64,json,urllib.request
 # A local 1x1 white PNG: probe API/model capacity, not model quality.
 png=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/iFEAAAAASUVORK5CYII=")
-p={'model':'qwen3-vl:2b','stream':False,'think':False,'messages':[{'role':'user','content':'Describe the image in three words.', 'images':[base64.b64encode(png).decode()]}], 'options':{'num_predict':140,'num_ctx':2048}}
+p={'model':'qwen3-vl:2b','stream':False,'think':False,'messages':[{'role':'user','content':'Describe the image in three words.', 'images':[base64.b64encode(png).decode()]}], 'options':{'num_predict':600,'num_ctx':2048}}
 req=urllib.request.Request("http://127.0.0.1:11434/api/chat",data=json.dumps(p).encode(),headers={'Content-Type':'application/json'})
 with urllib.request.urlopen(req,timeout=360) as response: d=json.load(response)
 assert d.get('message',{}).get('content'),d
