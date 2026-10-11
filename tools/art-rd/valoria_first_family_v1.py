@@ -26,13 +26,74 @@ def objset():return [o for o in bpy.context.scene.objects if o.type=="MESH"]
 def reset():
  bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 def platform():
- ns["cube"]("platform_base",(0,0,-.32),(8,7,.64),ns["mortar"],.16)
+ # The earlier uniform checkerboard and rectangular bridge were rejected.
+ # Author irregular worn paving that follows a broken perimeter and curved route.
+ rng=random.Random(20261011)
+ def stone_mesh(name,x,y,z,rx,ry,seed,material):
+  local=random.Random(seed)
+  count=8
+  angles=[math.tau*k/count for k in range(count)]
+  radii=[.78+local.uniform(-.09,.12) for _ in range(count)]
+  points=[(rx*radii[k]*math.cos(t),ry*radii[k]*math.sin(t)) for k,t in enumerate(angles)]
+  # Organic eight-sided paving stone, with deliberate bevel and UV mapping.
+  h=.16+local.random()*.06
+  v=[(px,py,-h/2) for px,py in points]+[(px,py,h/2) for px,py in points]
+  faces=[tuple(reversed(range(count))),tuple(range(count,2*count))]
+  for k in range(count):
+   n=(k+1)%count;faces.append((k,n,n+count,k+count))
+  mesh=bpy.data.meshes.new(name+'_hand_dressed')
+  mesh.from_pydata(v,[],faces);mesh.update()
+  mesh.materials.append(material)
+  layer=mesh.uv_layers.new(name='UVMap')
+  for poly in mesh.polygons:
+   for li in poly.loop_indices:
+    p=mesh.vertices[mesh.loops[li].vertex_index].co
+    layer.data[li].uv=((p.x+x)*.3,(p.y+y)*.3)
+  ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
+  ob.location=(x,y,z)
+  ob.rotation_euler.z=local.uniform(-.15,.15)
+  mod=ob.modifiers.new('worn hand-cut paving arrises','BEVEL')
+  mod.width=.036;mod.segments=2
+  ob.modifiers.new('stone face weighted normals','WEIGHTED_NORMAL')
+  return ob
+ # An irregular tapering embankment replaces the square platform slab.
+ n=32;edge=[];verts=[]
+ for i in range(n):
+  a=math.tau*i/n
+  wobble=1+.04*math.sin(5*a)+.027*math.sin(11*a+.6)
+  edge.append((4.6*math.cos(a)*wobble,3.8*math.sin(a)*wobble))
+ for level,height,shrink in [(0,-.63,1.03),(1,-.08,1)]:
+  for x,y in edge:verts.append((x*shrink,y*shrink,height+.045*math.sin(x*.9+y*.5)))
+ faces=[];n=n
+ for i in range(n):
+  nxt=(i+1)%n;faces.append((i,nxt,n+nxt,n+i))
+ faces.append(tuple(range(n,2*n)))
+ mesh=bpy.data.meshes.new('irregular_embankment');mesh.from_pydata(verts,[],faces);mesh.update()
+ mesh.materials.append(ns['stone'][5])
+ foundation=bpy.data.objects.new('buried_stone_embankment',mesh)
+ bpy.context.collection.objects.link(foundation)
+ # Mismatched laid stones with staggered joints, no obvious tile grid.
+ count=0
  for j in range(7):
-  for i in range(8):
-   x=-3.5+i+.08*((i*11+j*7)%3-1);y=-3+j+.04*(i%3)
-   ns["cube"](f"flagstone_{i}_{j}",(x,y,.04),(.93,.91,.14),ns["stone"][(i*3+j)%8],.055)
- for j in range(10):
-  ns["cube"](f"path_ramp_{j}",(0,3.5+j*.6,-.1-j*.035),(4.1,.55,.23),ns["stone"][(j*3)%8],.06)
+  cy=-2.9+j*.91
+  for i in range(9):
+   cx=-3.7+i*.94+(.39 if j%2 else 0)+rng.uniform(-.17,.17)
+   yy=cy+rng.uniform(-.14,.14)
+   if (cx/4.1)**2+(yy/3.35)**2>1:continue
+   count+=1
+   stone_mesh(f'irregular_flagstone_{count}',cx,yy,.012+rng.uniform(-.022,.025),
+    .60+rng.uniform(-.06,.15),.56+rng.uniform(-.10,.12),
+    2000+count,ns['stone'][(i*3+j)%len(ns['stone'])])
+ # A winding stone trail follows the terrain without raised rectangular stairs.
+ for row in range(13):
+  cy=3.2+row*.58
+  center=.62*math.sin(row*.25)
+  for lane in range(5):
+   xx=center+(lane-2)*.67+rng.uniform(-.11,.11)
+   stone_mesh(f'curving_path_flagstone_{row}_{lane}',xx,cy,
+    -.045-row*.035,.42+rng.uniform(-.04,.09),.39+rng.uniform(-.05,.08),
+    10000+row*11+lane,ns['stone'][(row+lane*2)%len(ns['stone'])])
+
 def rocks():
  # A SINGLE CONTINUOUS, sculpted geological cliff shell; no floating slab,
  # repeated cones or detached stone pillars. Shared top rim and cut face vertices.
