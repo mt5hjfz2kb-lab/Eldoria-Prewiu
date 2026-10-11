@@ -1,0 +1,57 @@
+name: Valoria existing art evidence slim review
+on:
+  push:
+    branches: [art/valoria-first-asset-family-v1-20261011]
+    paths:
+      - '.github/workflows/valoria-family-evidence-slim.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve preserved existing BlenderMCP artwork, no 3D regeneration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/family" "$RUNNER_TEMP/review"
+          gh run download 38163291604 --repo "$GITHUB_REPOSITORY" --name valoria-first-asset-family-v1-production --dir "$RUNNER_TEMP/family"
+          python3 - "$RUNNER_TEMP/family" "$RUNNER_TEMP/review" <<'PY'
+          import pathlib,shutil,sys,json
+          src=pathlib.Path(sys.argv[1]);out=pathlib.Path(sys.argv[2])
+          evidence=list(src.rglob('mcp-authoring-evidence.json'))
+          assert len(evidence)==7,('Expected 7 genuine MCP authoring proofs',len(evidence))
+          allow={'before-hero.png','before-strategic.png','mcp-after-hero.png','mcp-after-strategic.png',
+                 'mcp-authoring-evidence.json','agent-decisions.json','qwen-inference-trace.json',
+                 'glb-audit.json','manifest-after.json','manifest-before.json',
+                 'mcp-family-authoring-index.json','family-visual-comparison-index.json',
+                 'v3-before-after-comparison.png'}
+          copied=[]
+          for file in src.rglob('*'):
+           if not file.is_file() or file.name not in allow:continue
+           segments=file.parts
+           marker='first-asset-family-v1'
+           if marker in segments:
+            rel=pathlib.Path(*segments[segments.index(marker)+1:])
+           else:
+            rel=pathlib.Path(file.parent.name)/file.name
+           dest=out/rel;dest.parent.mkdir(parents=True,exist_ok=True)
+           shutil.copy2(file,dest);copied.append(str(rel))
+          assert len([p for p in out.rglob('mcp-after-hero.png')])==7
+          assert (out/'agent-decisions.json').exists()
+          (out/'art-evidence-index.json').write_text(json.dumps({
+           'source_gitHub_actions_run':38163291604,
+           'source_artifact':11711602894,
+           'phase':'genuine BlenderMCP authoring, visual QA pending',
+           'art_pass':False,'unity_pass':False,
+           'copied_files':copied},indent=2))
+          print('ELDORIA_EXISTING_MCP_ART_EVIDENCE_REPACKAGED',len(copied))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-genuine-mcp-post-art-renders-only
+          path: ${{ runner.temp }}/review
+          retention-days: 30
