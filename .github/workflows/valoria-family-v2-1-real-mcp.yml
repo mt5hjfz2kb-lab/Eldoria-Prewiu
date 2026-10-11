@@ -1,0 +1,74 @@
+name: Valoria V2.1 real AI-directed BlenderMCP seven-asset second pass
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['.github/workflows/valoria-family-v2-1-real-mcp.yml', 'tools/art-rd/valoria_family_v2_1_mcp_author.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-family-v2-1-mcp-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  second-pass:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+      - name: Await actual Qwen art direction before allocating Blender resources
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 70); do
+            result=$(gh api repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38171127389 --jq '.status+" "+(.conclusion//"pending")')
+            echo "Qwen director: $result"
+            if [[ "$result" == "completed success" ]]; then exit 0; fi
+            if [[ "$result" == completed* ]]; then exit 1; fi
+            sleep 60
+          done
+          echo "Qwen time budget exhausted"
+          exit 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-v2-seven-sources-renders-evidence
+          run-id: 38170413822
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-v2-1-qwen-seven-new-art-decisions
+          run-id: 38171127389
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - name: Confirm seven real newly generated model decisions before Blender
+        run: |
+          python3 - <<'PY'
+          import json
+          p=json.load(open('art-source/valoria/production/asset-family-v2/qwen-v2-1-art-directions.json'))['plans']
+          assert len(p)==7
+          print('GENUINE_SEVEN_QWEN_DECISIONS',[(a,v['operation']) for a,v in p.items()])
+          PY
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Restore pinned verified BlenderMCP
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Seven actual AI-commanded geometry interventions and matched rerenders
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_v2_1_mcp_author.py
+      - name: Structural integrity preflight not artistic approval
+        run: |
+          OUT=art-source/valoria/production/asset-family-v2
+          for A in wall_straight watchtower wall_corner wall_connections stone_path_platform cliff_rocks defensive_props; do
+            for F in "$A-v2-1.blend" "$A-v2-1.glb" v2-1-hero.png v2-1-strategic.png v2-1-mcp-evidence.json; do
+              test -s "$OUT/$A/$F" || { echo "MISSING $A/$F"; exit 1; }
+            done
+          done
+          python3 tools/art-rd/audit_glb.py "$OUT"/*/*-v2-1.glb > "$OUT/v2-1-glb-audit.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-family-v2-1-real-qwen-mcp-second-art-pass
+          path: art-source/valoria/production/asset-family-v2/
+          retention-days: 30
