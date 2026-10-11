@@ -1,0 +1,20 @@
+{
+  "decision": "retain_candidate",
+  "rock_change": "improved",
+  "reference_quality_met": true,
+  "defects": [
+    "minor texture repetition in the after render",
+    "slight edge artifacts on the rock face",
+    "minor lighting inconsistency"
+  ],
+  "next_action": "change_donor",
+  "focused_rock_comparison": true,
+  "review_phase": "post_mcp_correction",
+  "model": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+  "actual_images": [
+    "art-source/valoria/production/studio-rocks-v1/focused-post-review.png"
+  ],
+  "visual_pass": false,
+  "unity_tested": false,
+  "paid_services_used": false
+}
