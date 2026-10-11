@@ -246,16 +246,55 @@ def source_hero_tower(x=0,y=0):
   part.matrix_world.translation.y+=y-centery
  return len(right)
 
+def dressed_wall(name,x=0,y=0,length=8,detail=True):
+ # The rejected straight-wall candidate has unarticulated columns and a bare
+ # face. Retain proper modular envelope, integrate genuinely sculpted defensive
+ # elements and V3 architectural material language.
+ before=set(bpy.context.scene.objects)
+ ns['wall'](name,x,y,length,detail)
+ authored=[o for o in bpy.context.scene.objects if o not in before and o.type=='MESH']
+ for o in authored:
+  if '_buttress' in o.name and '_cap' not in o.name:
+   if o.data.users>1:o.data=o.data.copy()
+   # Pitched structural buttress rather than full-height box.
+   for vertex in o.data.vertices:
+    if vertex.co.z>0:
+     vertex.co.x*=.92
+     vertex.co.y*=.85
+   o.data.update()
+ # Recessed defensive openings, flanked by dressed jambs. Integrated into
+ # the empty spaces between the existing buttresses rather than overlaid on them.
+ count=max(1,int(length/4))
+ for i in range(count):
+  offset=-length/2+(i+.5)*length/count+.10
+  px=x+offset
+  # The central dark void is set behind protruding jamb faces.
+  ns['cube'](name+'_embrasure_shadow',(px,y-.694,2.56),(.18,.025,1.30),ns['mortar'],.008)
+  for side in (-1,1):
+   ns['cube'](name+'_embrasure_dressed_jamb',
+     (px+side*.21,y-.752,2.56),(.21,.17,1.48),ns['stone'][3+i%3],.04)
+  ns['cube'](name+'_embrasure_carved_lintel',
+   (px,y-.76,3.32),(.59,.19,.19),ns['trim'],.035)
+  ns['cube'](name+'_embrasure_sill',
+   (px,y-.75,1.80),(.52,.19,.16),ns['stone'][4],.026)
+ # Small recessed supports under the crown create readable medieval joinery
+ # from a phone-sized isometric camera while preserving the modular contact.
+ n=max(3,int(length/1.30))
+ for k in range(n):
+  px=x-length/2+(k+.5)*length/n
+  ns['cube'](name+'_hand_dressed_corbel',(px,y-.85,3.68),
+    (.33,.38,.28),ns['stone'][(k*2)%8],.035)
+
 def connections():
- ns["wall"]("socket_short",0,0,4.2,False)
+ dressed_wall("socket_short",0,0,4.2,False)
  for s in (-1,1):
   ns["cube"]("socket_wedge",(s*2.18,0,2.1),(.55,1.55,4.25),ns["stone"][3],.06)
   ns["cube"]("socket_corbel",(s*2.18,0,4.26),(.76,1.77,.25),ns["trim"],.06)
 def corner():
- ns["wall"]("corner_A",-2.5,0,5,False)
+ dressed_wall("corner_A",-2.5,0,5,False)
  # Keep corner second wall perpendicular and connected at 90 degrees.
  existing=set(bpy.data.objects)
- ns["wall"]("corner_B",2.5,0,5,False)
+ dressed_wall("corner_B",2.5,0,5,False)
  for o in set(bpy.data.objects)-existing:
   o.location.x,o.location.y=0.0-o.location.y,o.location.x-2.5
   o.rotation_euler.z+=math.pi/2
@@ -287,7 +326,7 @@ def export(name,phase):
   bpy.context.view_layer.objects.active=meshes[0]
   bpy.ops.export_scene.gltf(filepath=str(folder/(name+".glb")),export_format="GLB",use_selection=True,export_materials="EXPORT")
  return {"objects":len(objset()),"phase":phase}
-kinds={"wall_straight":lambda:ns["wall"]("valoria_wall",length=8),
+kinds={"wall_straight":lambda:dressed_wall("valoria_wall",length=8),
 "watchtower":source_hero_tower,
 "wall_corner":corner,
 "wall_connections":connections,
@@ -300,7 +339,7 @@ def assemble():
  for item in objset():
   item.location.x*=2.9;item.location.y*=2.6
   item.scale.x*=2.9;item.scale.y*=2.6
- ns["wall"]("west",-9,0,7,False);ns["wall"]("east",9,0,7,False)
+ dressed_wall("west",-9,0,7,False);dressed_wall("east",9,0,7,False)
  source_hero_tower(-13,0);platform();fittings()
  # Use the FROZEN, existing Hero V3 GLB; never regenerate its architecture.
  hero=ROOT/"art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb"
