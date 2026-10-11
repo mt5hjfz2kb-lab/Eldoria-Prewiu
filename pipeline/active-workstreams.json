@@ -59,6 +59,28 @@
       },
       "branch": "prototype/valoria-bastion1-no-sharp-20261010",
       "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
+    },
+    {
+      "id": "valoria-asset-family-v2-ai-authorship-20261011",
+      "owner": "chat-work-valoria-family-quality-takeover-20261011",
+      "branch": "art/valoria-asset-family-v2-ai-authorship-20261011",
+      "status": "active",
+      "scope": [
+        "tools/art-rd/valoria*family*",
+        "tools/art-rd/valoria*director*",
+        ".github/workflows/valoria-family-v2-ai-authorship.yml",
+        "art-source/valoria/production/asset-family-v2/**",
+        "docs/evidence/valoria-asset-family-v2/**"
+      ],
+      "resources": [
+        "valoria-seven-asset-family",
+        "github-hosted-blender"
+      ],
+      "claimed_at": "2026-10-11",
+      "base_sha": "df23416e7c25a9235781c0c6d32d57e500c3c21c",
+      "phase": "Owner-authorized takeover: genuine AI-led comprehensive reauthoring to frozen Hero V3 minimum; not art approved.",
+      "paid_credits": 0,
+      "art_production_routing": "required"
     }
   ],
   "history": [
