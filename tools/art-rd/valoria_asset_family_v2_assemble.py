@@ -14,7 +14,7 @@ def imported(path,name,xyz,scale=1):
  new=[o for o in bpy.data.objects if o not in prior]
  assert sum(o.type=='MESH' for o in new)>0
  pivot=bpy.data.objects.new('assembly '+name,None);bpy.context.scene.collection.objects.link(pivot)
- pivot.location=xyz;pivot.scale=(scale,scale,scale)
+ pivot.location=xyz;pivot.scale=scale if isinstance(scale,tuple) else (scale,scale,scale)
  for ob in new:
   if ob.parent is None:ob.parent=pivot
   ob.name=name+' / '+ob.name
@@ -26,13 +26,13 @@ pieces={
  'watchtower':[(-15,0,0),(15,0,0)],
  'wall_corner':[(-18,7,0),(18,7,0)],
  'wall_connections':[(-6,0,0),(6,0,0)],
- 'stone_path_platform':[(0,-12,-.45)],
- 'cliff_rocks':[(0,0,-4.6)],
+ 'stone_path_platform':[(0,-11,.15)],
+ 'cliff_rocks':[(0,0,-.25)],
  'defensive_props':[(0,-4,0)]}
 for asset,locs in pieces.items():
  file=OUT/asset/(asset+'-v2.glb')
  assert file.is_file(),file
- meshes[asset]=sum(imported(file,asset,xyz,1.0 if asset!='cliff_rocks' else 3.0) for xyz in locs)
+ meshes[asset]=sum(imported(file,asset,xyz,1.0 if asset!='cliff_rocks' else (4.0,4.0,1.35)) for xyz in locs)
 sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=24;sc.cycles.use_denoising=False
 sc.view_layers[0].cycles.use_denoising=False
 sc.render.resolution_x=1280;sc.render.resolution_y=800;sc.render.resolution_percentage=100
