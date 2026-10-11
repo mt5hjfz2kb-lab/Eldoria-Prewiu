@@ -26,9 +26,12 @@ dirt=mat("Disturbed earth",(.36,.32,.23))
 bushes=[mat("Heather %d"%i,c) for i,c in enumerate([(.19,.25,.16),(.23,.29,.19),(.27,.31,.17)])]
 V=[];F=[];M=[]
 def vertex(p):
-    V.append(p);return len(V)-1
+    # Blender Y axis becomes negative Unity Z in glTF Y-up export.
+    # Mirror authored ground plane here to retain Unity's canonical south/north.
+    V.append((p[0],-p[1],p[2]));return len(V)-1
 def face(verts,m):
-    F.append(verts);M.append(m)
+    # Mirroring the ground plane changes handedness: reverse winding.
+    F.append(tuple(reversed(verts)));M.append(m)
 def height(x,z):
     rise=max(0,min(1,(z-8)/18))
     rise=(rise*rise*(3-2*rise))*5.2
