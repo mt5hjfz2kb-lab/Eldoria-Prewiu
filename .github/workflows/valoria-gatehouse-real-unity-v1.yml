@@ -62,6 +62,16 @@ jobs:
           if(Test-Path $log){Get-Content $log -Tail 120}
           if($p.ExitCode -ne 0){throw "Unity gatehouse capture failed $($p.ExitCode)"}
           if(-not (Test-Path "$env:GITHUB_WORKSPACE\\Unity\\ValoriaGatehouseRealUnityV1Captures\\unity-strategic-1280x720.png")){throw 'Real Unity strategic screenshot missing'}
+      - name: Reopen saved scene in new Unity process and verify all geometry
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP\ValoriaSceneReloadV2.log"
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaGatehouseRealUnityV1.VerifySavedScene','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1200000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity scene re-open timed out'}
+          if(Test-Path $log){Get-Content $log -Tail 90}
+          if($p.ExitCode -ne 0){throw "Scene reload failed $($p.ExitCode)"}
+          if(-not (Test-Path "$env:GITHUB_WORKSPACE\Unity\ValoriaGatehouseRealUnityV1Captures\unity-reloaded-scene-1280x720.png")){throw 'Reload proof screenshot missing'}
       - name: Preserve generated Unity scene in isolated branch
         shell: powershell
         continue-on-error: true
