@@ -1,4 +1,4 @@
-name: Valoria AI art director geometry proof
+name: Valoria AI art director gate focus V2
 on:
   push:
     branches: [art/valoria-ai-director-breakthrough-v1-20261011]
