@@ -1,0 +1,8 @@
+{
+  "GLB_reimported": true,
+  "grass_materials": 4,
+  "same_camera_render_mean_absolute_RGB_error_0_to_255": 1.516,
+  "visual_pass": false,
+  "unity_tested": false,
+  "director_observation": "Less flat grass and real scanned rock; repeated boulders and visible cliff seam remain. Retain study, not final art acceptance."
+}

@@ -1,0 +1,32 @@
+{
+  "method": "CC0 photographed leafy ground baked to four Eldoria PBR grass families",
+  "source_scene_sha256": "5bb465a5b5422cb030b13ec753d1ea857bdaebeaa9da05a063afc019ec336f66",
+  "diffuse_sha256": "cfa40bc9d9417d1852db8753a8d5917f110c40101179f63543c382e39bc05e4a",
+  "normal_sha256": "832328216adc0a7e1f70a31d5ee48c9ab7f2152d83816122736cf42ac4b2ebd6",
+  "source_url": "https://polyhaven.com/a/leafy_grass",
+  "license": "CC0",
+  "replaced_materials": [
+    "Grass lichen moss 0",
+    "Grass lichen moss 1",
+    "Grass lichen moss 2",
+    "Grass lichen moss 3"
+  ],
+  "source_geology_and_terrain_meshes_unchanged": true,
+  "fixed_cameras_and_lights": true,
+  "direct_exportable_albedo_and_normal_maps": true,
+  "glb_grass_materials_with_albedo_and_normal": 4,
+  "glb_images": 10,
+  "visual_pass": false,
+  "unity_tested": false,
+  "paid_services_used": false,
+  "exports": {
+    "ValoriaRockAndGroundV3-ENV.glb": {
+      "bytes": 19360768,
+      "sha256": "3a9b83380baa7606158231e40a940c02b7ff8817379c7e11d94858e291105a74"
+    },
+    "ValoriaRockAndGroundV3-CLIFF.glb": {
+      "bytes": 7789116,
+      "sha256": "bdddab4ceb9ab25cc93d5d0d02945e96b130b1966fda2941b7920c54af9cf27b"
+    }
+  }
+}
