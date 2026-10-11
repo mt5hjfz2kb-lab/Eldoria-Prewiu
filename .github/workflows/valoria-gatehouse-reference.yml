@@ -4,7 +4,7 @@ on:
     branches: [art/valoria-ai-director-breakthrough-v1-20261011]
     paths:
       - 'tools/art-rd/valoria_gatehouse_reference.py'
-      - '.github/workflows/valoria-ai-director-gatehouse-v1.yml'
+      - '.github/workflows/valoria-gatehouse-reference.yml'
   workflow_dispatch:
 permissions:
   contents: write
