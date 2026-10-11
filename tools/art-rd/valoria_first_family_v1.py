@@ -32,11 +32,13 @@ def platform():
  def stone_mesh(name,x,y,z,rx,ry,seed,material):
   local=random.Random(seed)
   count=8
-  angles=[math.tau*k/count for k in range(count)]
-  radii=[.78+local.uniform(-.09,.12) for _ in range(count)]
-  points=[(rx*radii[k]*math.cos(t),ry*radii[k]*math.sin(t)) for k,t in enumerate(angles)]
-  # Organic eight-sided paving stone, with deliberate bevel and UV mapping.
-  h=.16+local.random()*.06
+  # Deliberately hand-quarried irregular near-rectangular flagstones,
+  # not perfectly smooth circular stepping-stone discs.
+  nominal=[(-1,-.45),(-.66,-1),(.34,-1),(1,-.55),
+           (1,.37),(.58,1),(-.28,1),(-1,.45)]
+  points=[(rx*(px+local.uniform(-.13,.13)),
+           ry*(py+local.uniform(-.13,.13))) for px,py in nominal]
+  h=.085+local.random()*.045
   v=[(px,py,-h/2) for px,py in points]+[(px,py,h/2) for px,py in points]
   faces=[tuple(reversed(range(count))),tuple(range(count,2*count))]
   for k in range(count):
@@ -53,7 +55,7 @@ def platform():
   ob.location=(x,y,z)
   ob.rotation_euler.z=local.uniform(-.15,.15)
   mod=ob.modifiers.new('worn hand-cut paving arrises','BEVEL')
-  mod.width=.036;mod.segments=2
+  mod.width=.018;mod.segments=2
   ob.modifiers.new('stone face weighted normals','WEIGHTED_NORMAL')
   return ob
  # An irregular tapering embankment replaces the square platform slab.
@@ -82,7 +84,7 @@ def platform():
    if (cx/4.1)**2+(yy/3.35)**2>1:continue
    count+=1
    stone_mesh(f'irregular_flagstone_{count}',cx,yy,.012+rng.uniform(-.022,.025),
-    .60+rng.uniform(-.06,.15),.56+rng.uniform(-.10,.12),
+    .50+rng.uniform(-.06,.08),.42+rng.uniform(-.06,.08),
     2000+count,ns['stone'][(i*3+j)%len(ns['stone'])])
  # A winding stone trail follows the terrain without raised rectangular stairs.
  for row in range(13):
@@ -91,7 +93,7 @@ def platform():
   for lane in range(5):
    xx=center+(lane-2)*.67+rng.uniform(-.11,.11)
    stone_mesh(f'curving_path_flagstone_{row}_{lane}',xx,cy,
-    -.045-row*.035,.42+rng.uniform(-.04,.09),.39+rng.uniform(-.05,.08),
+    -.045-row*.035,.38+rng.uniform(-.04,.08),.34+rng.uniform(-.04,.06),
     10000+row*11+lane,ns['stone'][(row+lane*2)%len(ns['stone'])])
 
 def rocks():

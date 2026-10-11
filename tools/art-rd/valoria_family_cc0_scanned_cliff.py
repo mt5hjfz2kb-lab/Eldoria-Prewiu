@@ -45,14 +45,18 @@ def dress_continuous_cliff_with_cc0():
  # overlapping faces and no independent spikes or flat slabs.
  rng=random.Random(20261011)
  instances=[]
- for i in range(22):
-  a=math.tau*(i+.12*math.sin(i*1.7))/22
-  x=4.15*math.cos(a);y=3.52*math.sin(a)
+ for i in range(16):
+  # Compositional geological clusters rather than 22 identical stalactite
+  # teeth at regular angles. Lay the photogrammetry donor into the cliff wall
+  # as broad, overlapping scree strata with short vertical exposure.
+  a=math.tau*(i+.23*math.sin(i*1.91))/16
+  x=(4.05+.21*math.sin(3*a))*math.cos(a)
+  y=(3.50+.15*math.cos(5*a))*math.sin(a)
   p=rock.copy();p.data=rock.data;bpy.context.collection.objects.link(p)
-  p.name='CC0 integrated cliff geology '+str(i).zfill(2)
-  p.location=(x,y,-3.75+.14*math.sin(i*2.1))
-  p.rotation_euler=(.08*math.sin(i),.13*math.cos(i),a+.52*math.sin(i*.67))
-  p.scale=(1.1+.25*rng.random(),.85+.22*rng.random(),2.0+.4*rng.random())
+  p.name='CC0 horizontal integrated bedrock strata '+str(i).zfill(2)
+  p.location=(x,y,-4.10+.32*math.sin(i*1.4))
+  p.rotation_euler=(.36*math.cos(a),1.05+.18*math.sin(i*2.1),a+.42)
+  p.scale=(1.36+.25*rng.random(),1.16+.30*rng.random(),.74+.18*rng.random())
   instances.append(p)
  bpy.data.objects.remove(rock,do_unlink=True)
  return {'cc0_scan_origin':'https://opengameart.org/content/free-photogrammetric-rock',
