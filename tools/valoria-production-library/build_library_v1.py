@@ -42,6 +42,19 @@ def process(label,source,kind):
  moss=mat("Valoria muted moss",(.13,.19,.105))
  iron=mat("Valoria oxidized iron",(.14,.12,.10),.6,.3)
  bpy.ops.import_scene.gltf(filepath=os.path.join(SOURCE,source+".glb"))
+ # Give both existing and newly authored masonry the same textured stone vocabulary.
+ base=mat("Valoria aged stone surface",(.64,.59,.49))
+ stone_texture(base,"valoria_stone_grain",(.83,.76,.66))
+ stone_texture(limestone,"valoria_limestone_face",(.92,.86,.75))
+ stone_texture(dark,"valoria_joint_shadow",(.39,.36,.32))
+ stone_texture(moss,"valoria_moss_surface",(.31,.48,.27))
+ for ob in bpy.context.scene.objects:
+  if ob.type!='MESH': continue
+  for slot in ob.material_slots:
+   if slot.material is None: continue
+   n=slot.material.name.lower()
+   if "stone" in n and "dark" not in n: slot.material=base
+   elif "stone dark" in n:slot.material=dark
  imported=[o for o in bpy.context.scene.objects if o.type=='MESH']
  if not imported:raise RuntimeError("Missing imported mesh: "+source)
  # Existing historical meshes remain intact; add separate authored detailing objects.
