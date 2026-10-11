@@ -2,7 +2,7 @@ name: Valoria first asset family V1
 on:
   push:
     branches: [art/valoria-first-asset-family-v1-20261011]
-    paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml', 'tools/art-rd/valoria_family_mcp_cliff.py', 'tools/art-rd/valoria_family_mcp_secondary.py', 'tools/art-rd/valoria_family_cc0_scanned_cliff.py']
+    paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml', 'tools/art-rd/valoria_family_mcp_cliff.py', 'tools/art-rd/valoria_family_mcp_secondary.py', 'tools/art-rd/valoria_family_cc0_scanned_cliff.py', 'tools/art-rd/valoria_family_qwen_decisions.py']
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,41 +32,8 @@ jobs:
           git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
           sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
           bash "$RUNNER_TEMP/start-qwen.sh"
-      - name: AI art direction from real Blender renders
-        run: |
-          python3 - <<'PY'
-          import base64,io,json,urllib.request
-          from PIL import Image
-          from pathlib import Path
-          folder=Path('art-source/valoria/production/first-asset-family-v1')
-          names=['wall_straight','watchtower','wall_corner','wall_connections','stone_path_platform','cliff_rocks','defensive_props','assembled_family']
-          decisions={}
-          for name in names:
-              img=[]
-              for view in ['before-hero.png','before-strategic.png']:
-                  with Image.open(folder/name/view) as pic:
-                      pic=pic.convert('RGB');pic.thumbnail((448,448));buff=io.BytesIO();pic.save(buff,'JPEG',quality=74);img.append(base64.b64encode(buff.getvalue()).decode())
-              payload={'model':'qwen2.5vl:3b','stream':False,'options':{'num_predict':170,'num_ctx':4096,'temperature':0.1},'messages':[{'role':'user','content':'Act as Valoria medieval environment artist. Analyze '+name+' in close and distant views. Output ONLY JSON with masonry_irregularity (float 0.008 to 0.07), observation, geometry_decision and art_operation. For cliff_rocks, art_operation MUST be one of sculpt_geological_shelves, carve_erosion_channels, break_cliff_silhouette: choose the single intervention supported by visible defects, which will sculpt the genuine mesh through BlenderMCP. For wall_straight choose art_operation break_ashlar_cadence or soften_buttress_arrises; for watchtower choose taper_crown_silhouette or weather_radial_ashlar; wall_corner choose dress_miter_join or soften_corner_coping; wall_connections choose taper_socket_contacts or chip_dressed_edges; stone_path_platform choose sculpt_stone_treads or disrupt_paving_repetition; defensive_props choose relax_banner_silhouette or weather_defensive_stakes; assembled_family choose none. One operation only, based on visible defect. Operation will actually modify editable Blender meshes through pinned BlenderMCP. Name a concrete actionable visible defect, not generic noise.','images':img}]}
-              req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
-              with urllib.request.urlopen(req,timeout=420) as reply: answer=json.load(reply)['message']['content']
-              decision=json.loads(answer[answer.index('{'):answer.rindex('}')+1])
-              assert .008<=float(decision['masonry_irregularity'])<=.07
-              assert decision['observation'] and decision['geometry_decision']
-              permitted={
-                'cliff_rocks':['sculpt_geological_shelves','carve_erosion_channels','break_cliff_silhouette'],
-                'wall_straight':['break_ashlar_cadence','soften_buttress_arrises'],
-                'watchtower':['taper_crown_silhouette','weather_radial_ashlar'],
-                'wall_corner':['dress_miter_join','soften_corner_coping'],
-                'wall_connections':['taper_socket_contacts','chip_dressed_edges'],
-                'stone_path_platform':['sculpt_stone_treads','disrupt_paving_repetition'],
-                'defensive_props':['relax_banner_silhouette','weather_defensive_stakes'],
-                'assembled_family':['none']
-              }
-              assert decision.get('art_operation') in permitted[name],(name,decision)
-              decisions[name]=decision
-              print('ELDORIA_QWEN_ARTIST_DECISION',name,json.dumps(decision))
-          (folder/'agent-decisions.json').write_text(json.dumps(decisions,indent=2))
-          PY
+      - name: Qwen art direction, structured visual comparisons against V3
+        run: python3 tools/art-rd/valoria_family_qwen_decisions.py
       - name: Export editable sources GLB and paired second renders
         env:
           ELDORIA_FAMILY_PHASE: after
