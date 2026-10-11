@@ -15,7 +15,7 @@ save('stone_basecolor.png',stone)
 save('stone_roughness.png',205+12*grain+8*mineral)
 dy,dx=np.gradient(grain*.5+mineral*.9)
 save('stone_normal.png',np.stack([128-9*dx,128-9*dy,np.full((n,n),254)],axis=-1))
-y,x=np.mgrid[0:n,0:n]; veins=np.sin(x*.26+np.sin(y*.016)*1.7+noise(12)*.25)+np.sin(x*.69+np.sin(y*.008)*2)*.3
+y,x=np.mgrid[0:n,0:n]; veins=np.sin(x*.26+np.sin(y*.002)*1.7+noise(12)*.25)+np.sin(x*.69+np.sin(y*.001)*2)*.3
 wood=np.stack([69+14*veins+3*grain,43+9*veins+2*grain,25+5*veins+grain],axis=-1)
 save('oak_basecolor.png',wood)
 save('oak_roughness.png',193+12*veins)

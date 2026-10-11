@@ -122,10 +122,10 @@ def tower(cx):
     # Stylized heraldic lily, silhouette made of curves rather than a square logo.
     def leaf(dx,dz,angle=0):
         shape=[(0,.18),(.07,.08),(.055,-.09),(0,-.19),(-.055,-.09),(-.07,.08)]
-        vv=[(cx+dx+x*math.cos(angle)-z*math.sin(angle),-1.625,5.47+dz+x*math.sin(angle)+z*math.cos(angle)) for x,z in shape]
+        vv=[(cx+dx+x*math.cos(angle)-z*math.sin(angle),-1.685,5.47+dz+x*math.sin(angle)+z*math.cos(angle)) for x,z in shape]
         mesh('Valoria lily embroidery',vv,[tuple(range(6))],gold)
     leaf(0,.12);leaf(-.14,.01,-.7);leaf(.14,.01,.7)
-    box('Heraldic lily band',(cx,-1.638,5.31),(.31,.013,.065),gold,.012)
+    box('Heraldic lily band',(cx,-1.695,5.31),(.31,.013,.065),gold,.012)
     box('Banner mounting bar',(cx,-1.53,6.60),(1.04,.07,.07),iron,.015)
 for cx in (-3.42,3.42):tower(cx)
 # Gateway: actual opening through a vaulted wall and deep radial stone arch.
@@ -245,7 +245,7 @@ if PHASE=='refine':
             if o.name.startswith('Tower crenel') or o.name.startswith('Tower return crenel'):
                 o.location.z-=.07;changed['crenels_seated']=changed.get('crenels_seated',0)+1
             if o.name.startswith('Corner quoin'):
-                o.scale.y*=.83;changed['quoin_relief_reduced']=changed.get('quoin_relief_reduced',0)+1
+                o.scale.y*=.83;o.location.y+=.045;changed['quoin_relief_reduced']=changed.get('quoin_relief_reduced',0)+1
         bpy.context.view_layer.update()
     bpy.app.driver_namespace['eldoria_hero_directed_refinement']=correct
     server=module.BlenderMCPServer(host='127.0.0.1',port=0);server.socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM);server.socket.bind(('127.0.0.1',0));port=server.socket.getsockname()[1];server.socket.listen(1);server.running=True

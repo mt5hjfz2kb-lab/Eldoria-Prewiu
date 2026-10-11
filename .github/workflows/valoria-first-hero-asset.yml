@@ -19,7 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install free Blender and bitmap dependencies
-        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-numpy python3-pil libxrender1 libxfixes3 libxi6 libxkbcommon0 libsm6 libgl1 libglu1-mesa
+          curl -L --fail -o "$RUNNER_TEMP/blender.tar.xz" https://download.blender.org/release/Blender4.2/blender-4.2.5-linux-x64.tar.xz
+          echo "cd28ab8164d88237c0c45a188ef7e4974bcb8c651de15fcbc3635166e584e4b3  $RUNNER_TEMP/blender.tar.xz" | sha256sum -c -
+          tar -xf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/blender-4.2.5-linux-x64" >> "$GITHUB_PATH"
       - name: Verify and stage existing art brain
         run: |
           git fetch --no-tags origin refs/heads/art/studio-reuse-handoff-20261011:refs/remotes/origin/art/studio-reuse-handoff-20261011
@@ -33,6 +39,8 @@ jobs:
           export ELDORIA_BLENDER_MCP_ADDON="$RUNNER_TEMP/blender-mcp.py"
           blender -b -t 8 --python tools/art-rd/valoria_first_hero_asset.py > "$RUNNER_TEMP/hero-blender.log" 2>&1 || { tail -80 "$RUNNER_TEMP/hero-blender.log"; exit 1; }
           grep -q ELDORIA_HERO_ASSET_EXPORTED "$RUNNER_TEMP/hero-blender.log"
+          blender -b -t 8 --python tools/art-rd/first-hero-support/verify_export.py > "$RUNNER_TEMP/hero-verify.log" 2>&1 || { tail -80 "$RUNNER_TEMP/hero-verify.log"; exit 1; }
+          grep -q ELDORIA_HERO_GLTF_ROUNDTRIP_PASS "$RUNNER_TEMP/hero-verify.log"
       - name: Preserve editable source on task branch
         run: |
           git config user.name 'eldoria-art-ci'
@@ -47,4 +55,5 @@ jobs:
           path: |
             art-source/valoria/production/first-hero-gate-v1/
             ${{ runner.temp }}/hero-blender.log
+            ${{ runner.temp }}/hero-verify.log
           retention-days: 30
