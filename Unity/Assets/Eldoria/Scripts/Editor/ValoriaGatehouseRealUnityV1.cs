@@ -202,9 +202,9 @@ namespace Eldoria.EditorTools
             camera.transform.position=new Vector3(49f,42f,-65f);
             camera.transform.LookAt(new Vector3(0f,1f,0f));
             Save(camera,Output+"/unity-valoria-slice-overview-1280x720.png",1280,720);
-            camera.transform.position=new Vector3(42f,38f,-56f);
-            camera.transform.LookAt(new Vector3(0f,0f,-3f));
-            camera.orthographicSize=28f;
+            camera.transform.position=new Vector3(37f,42f,-49f);
+            camera.transform.LookAt(new Vector3(0f,3f,11f));
+            camera.orthographicSize=37f;
             Save(camera,Output+"/unity-valoria-slice-portrait-390x844.png",390,844);
             var scenePath="Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaVisualSliceV1.unity";
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),scenePath);
