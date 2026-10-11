@@ -30,28 +30,30 @@ jobs:
         if: success()
         shell: bash
         run: |
+          # Use an isolated clean worktree: Blender may mutate tracked sources or index filters.
+          branch="art/valoria-gate-quality-calibration-v1-20261011"
+          git fetch origin "$branch"
+          publish="$RUNNER_TEMP/valoria-gate-publish"
+          git worktree add --detach "$publish" FETCH_HEAD
+          cd "$publish"
           destination="art-source/valoria/production/gatehouse-v5-quality-calibration/runs/${{ github.run_id }}"
           mkdir -p "$destination"
           cp "$RUNNER_TEMP/valoria-gate-v5-quality-calibration/"{valoria_gate_reference.glb,valoria_gate_reference.blend,gate_reference_hero.png,gate_reference_mobile.png,gate_reference_assembled.png,gate_reference_manifest.json} "$destination/"
-          # Preserve the unchanged historical real-camera image for independent comparison.
           cp "art-source/valoria/production/gatehouse-reference/gate_reference_hero.png" "$destination/historical_gate_reference_hero.png"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f "$destination"
-          if ! git diff --cached --quiet; then
-            git commit -m "art: preserve Valoria gatehouse source and review renders"
-            # Blender's imported source may dirty tracked files. Preserve only committed run evidence.
-            git restore --worktree .
-            for attempt in 1 2 3 4 5; do
-              git fetch origin art/valoria-gate-quality-calibration-v1-20261011
-              git rebase origin/art/valoria-gate-quality-calibration-v1-20261011
-              if git push origin "HEAD:art/valoria-gate-quality-calibration-v1-20261011"; then
-                break
-              fi
-              if [ "$attempt" -eq 5 ]; then exit 1; fi
-              sleep 3
-            done
-          fi
+          git commit -m "art: preserve Valoria gatehouse source and review renders"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin "$branch"
+            # A separate clean worktree prevents unrelated Blender changes from blocking rebase.
+            git rebase FETCH_HEAD
+            if git push origin "HEAD:$branch"; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep 3
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
