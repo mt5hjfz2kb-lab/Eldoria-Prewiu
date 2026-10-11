@@ -2,6 +2,10 @@
 import hashlib, json, sys, zipfile
 from pathlib import Path
 
+def digest(path):
+    with path.open('rb') as f:
+        return hashlib.file_digest(f,'sha256').hexdigest()
+
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'art-source/valoria/production/asset-family-v2'
 BASE = SOURCE / 'quality-v3'
@@ -25,7 +29,7 @@ for asset in ASSETS:
     assert review['assets'][asset]['source_art_pass']
     for key, suffix in [('blend_sha256', '.blend'), ('glb_sha256', '.glb')]:
         path = BASE / asset / (asset + suffix)
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == review['assets'][asset][key]
+        assert digest(path) == review['assets'][asset][key]
 
 destination = Path(sys.argv[1]).resolve()
 destination.mkdir(parents=True, exist_ok=True)
@@ -42,7 +46,9 @@ for asset, use in zip(ASSETS, uses):
     lines.append(f"| {asset} | {use} | {evidence['triangles']} | {evidence['lods'][0]['triangles']} | {evidence['lods'][1]['triangles']} |")
 lines += ['', '## Uso', '',
           'Blender usa Z vertical y unidades en metros. GLB convierte al sistema glTF estándar con Y vertical. No deformar módulos para encajarlos: usar traslación y rotación. Los muros mantienen la cota común de adarve; el camino se apoya a nivel del terreno y el acantilado baja desde su coronación.', '',
+          'Los ficheros están en quality-v3/nombre-del-asset/. Cada carpeta contiene su .blend, GLB principal, -LOD1.glb, -LOD2.glb y capturas exactas. visual-review.json contiene el dictamen independiente final; evidence.json y candidate-proof.json son registros previos de construcción y no sustituyen ese dictamen.', '',
           'Los .blend conservan las piedras y detalles editables. Los GLB agrupan geometría por material equivalente y llevan las texturas integradas. Los emblemas, paños, metal fino y llamas están protegidos frente a la simplificación de LOD. Los umbrales de cambio de LOD deben establecerse por tamaño en pantalla dentro del motor.', '',
+          'Los extremos planos del acantilado son interfaces de unión: repetir módulos o enterrarlos en el terreno. Usar sus rocas de talud para componer transiciones visibles.', '',
           'La escena family-assembly.blend demuestra encuentros y repetición mediante reimportación de los GLB exactos. Su suelo de apoyo es contexto de comprobación. La puerta V3 queda incluida en la escena como referencia congelada; no es un nuevo miembro de esta familia.', '',
           '## Autoría y comprobación', '',
           'Qwen aporta diagnósticos, operaciones y proporciones antes de construir en BlenderMCP. Se incluyen sus respuestas originales y los hashes de las imágenes que vio. La revisión independiente compara las piezas con la puerta V3 y con la imagen exacta adjunta por el propietario. Las pruebas provisionales no forman parte de esta entrega.', '',
@@ -58,6 +64,7 @@ files = [p for p in BASE.rglob('*') if p.is_file() and not p.name.startswith('.'
 files += list((SOURCE / 'quality-textures').glob('*.png'))
 files += list(SOURCE.glob('*-artist-input-*.jpg'))
 files += [SOURCE / 'qwen-family-quality-directions.json', SOURCE / 'qwen-family-quality-traces.json']
+manifest={str(p.relative_to(SOURCE)):{'bytes':p.stat().st_size,'sha256':digest(p)} for p in files}
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as z:
     for path in files:
         z.write(path, str(path.relative_to(SOURCE)))
@@ -65,6 +72,15 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as z:
     z.write(ROOT / 'docs/evidence/valoria-asset-family-v2/QUALITY_TAKEOVER.md', 'AUTHORING/QUALITY_TAKEOVER.md')
     for path in (ROOT / 'tools/art-rd').glob('valoria_family_quality_*.py'):
         z.write(path, 'AUTHORING/' + path.name)
+    for name in ('valoria_family_v2_1_qwen_art_director.py','valoria_family_v2_1_mcp_author.py','audit_glb.py'):
+        z.write(ROOT/'tools/art-rd'/name,'AUTHORING/'+name)
+    z.write(ROOT/'pipeline/valoria-family-quality-request.json','AUTHORING/valoria-family-quality-request.json')
+    z.write(ROOT/'.github/workflows/valoria-family-v2-ai-authorship.yml','AUTHORING/valoria-family-v2-ai-authorship.yml')
+    z.write(ROOT/'references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg','REFERENCE/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg')
+    z.write(ROOT/'art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png','REFERENCE/Puerta-V3-Minimo.png')
+    z.writestr('MANIFEST-SHA256.json',json.dumps(manifest,indent=2))
+with zipfile.ZipFile(archive) as z:
+    assert z.testzip() is None
 print(json.dumps({'archive': str(archive), 'bytes': archive.stat().st_size,
-                  'sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+                  'sha256': digest(archive),
                   'readme': str(readme), 'files': len(files)}))

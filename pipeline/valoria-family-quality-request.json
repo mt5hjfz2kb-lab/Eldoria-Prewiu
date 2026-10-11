@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "iteration": 12,
+  "iteration": 13,
   "owner": "chat-work-valoria-family-quality-takeover-20261011",
   "source_run": 38174276796,
   "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
   "minimum_reference": "art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.blend",
   "target_reference": "references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
   "paid_credits": 0,
-  "art_pass": false,
+  "art_pass": true,
   "unity_pass": false,
   "reuse_artist_run": 38183538588,
   "initial_artist_reference": "references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
@@ -29,5 +29,8 @@
     "stone_path_platform",
     "cliff_rocks"
   ],
-  "technical_art_direction": "Independent actual GLB review retains five V3-comparable assets. Reconstruct cliffs with dominant angular planes, recessed faults, closed matching end profiles; embed paving to actual <=25mm relief; repair rigid assembly rotations. Same seven genuine external designs."
+  "technical_art_direction": "Independent actual GLB review retains five V3-comparable assets. Reconstruct cliffs with dominant angular planes, recessed faults, closed matching end profiles; embed paving to actual <=25mm relief; repair rigid assembly rotations. Same seven genuine external designs.",
+  "mode": "delivery",
+  "approved_source_commit": "8fa28681dcd6c4bd62f71713ba02d2a14d981016",
+  "visual_review": "art-source/valoria/production/asset-family-v2/quality-v3/visual-review.json"
 }

@@ -1,37 +1,33 @@
-# Valoria seven-asset family — owner-authorized quality takeover
+# Familia modular de Valoria — cierre de fuentes al mínimo Puerta V3
 
-Branch: `art/valoria-asset-family-v2-ai-authorship-20261011`.
-Owner: `chat-work-valoria-family-quality-takeover-20261011`.
-Scope: complete the existing seven-member family against the unchanged Hero Gate V3 minimum. The owner's newly attached Valoria image is the aspirational 9.5/10 target; family source acceptance is distinct from an integrated Unity game's full-frame acceptance.
+La revisión independiente aprueba las siete fuentes de esta familia al mínimo visual de la Puerta V3 congelada. El dictamen autoritativo es `art-source/valoria/production/asset-family-v2/quality-v3/visual-review.json`, ligado a los SHA-256 de cada .blend, GLB y captura exacta. El candidato revisado es `8fa28681dcd6c4bd62f71713ba02d2a14d981016`; producción final: run 38184974032. Esta aprobación corresponde a fuentes reutilizables; integración en Unity y composición del mundo objetivo 9,5/10 son fases posteriores.
 
-## Authoring circuit
+## Entrega y uso
 
-Reuse the existing local Qwen/Ollama runtime and pinned BlenderMCP. Genuine vision produces diagnosis, design intent, multiple workshop operations, proportions and composition notes BEFORE construction. Raw prompts, input SHA-256 values and replies are preserved. The workshop uses those proportions and restores complete V3 components or reconstructs bonded masonry, real openings, fitted road support and geological masses. The supervising art director diagnoses defects, expands workshop techniques and independently inspects actual renders and GLB reimports. The model does not approve itself.
+Siete .blend editables, veintiún GLB autosuficientes en LOD0/1/2, texturas PBR, catorce reimportaciones individuales, antes/después y una escena de contactos/repetición. La guía `Valoria-Familia-V3-LEEME.md` y el paquete `Valoria-Familia-V3.zip` se generan únicamente cuando la revisión, autoría genuina y hashes pasan el guard de entrega.
 
-Engineering fixtures are explicitly non-authoritative. They test transport, topology and export while inference runs. They cannot become an approved asset and are rejected by the production entry point unless a dedicated test-only environment flag is set. Final deliverables must carry genuine inference traces and `GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP` evidence.
+Los módulos usan metros y Z vertical en Blender; GLB usa el eje Y vertical estándar. Encajar con traslaciones y rotaciones. El cuerpo del acantilado tiene extremos coincidentes y cerrados: las caras planas laterales son cortes de unión destinados a repetición o a enterrarse en terreno. La cota superior real del pavimento no supera 25 mm. La heráldica, paños, metal fino y llamas están protegidos en la reducción de LOD. Elegir distancias y colisiones durante la integración en motor.
 
-## Why prior deformation work was rejected
+## Autoría y decisiones
 
-V2.1 offered two operations per asset and a scalar strength; global-coordinate scaling distorted individually positioned stones. V2.2's tower rescue omitted structural components and still operated on baked global coordinates. Exact evaluated V3 source extraction restores the footing, cores, openings, cornice, crenels, banner AND embroidery. Global architectural sine/taper edits are eliminated. The road's floating circular plinth is replaced with closely fitted stone over continuous buried support. Cliff production changes from concentric mesa rings to a continuous escarpment and actual sculptural CC0 scan reuse; abstract prism-only tests were rejected.
+El artista externo Qwen3-VL 4B Instruct produjo siete diagnósticos/diseños, operaciones y proporciones antes de la construcción por BlenderMCP. Los primeros tres diseños válidos se conservaron del run 38181988592; los cuatro restantes se completaron en 38183538588. Se verificó que las siete respuestas originales coinciden con los planes usados y que las siete entradas incluyen la imagen exacta del propietario, SHA-256 `de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f`.
 
-## Portable outputs and gates
+La reconstrucción sustituyó la deformación global de piezas por mampostería trabada con huecos reales, restauración íntegra de la torre/heráldica V3 y pavimento rectangular apoyado. La primera reimportación del escarpe seguía leyendo blanda: la dirección independiente cambió a planos angulares dominantes, fisuras hundidas y escaneo como relieve secundario, conservando las proporciones del artista. El montaje corrige el giro izquierdo y comprueba el camino apoyado. Cinco fuentes ya revisadas permanecieron idénticas en esta pasada final.
 
-Each asset retains an individually editable `.blend`; exported GLB geometry is evaluated, triangulated for normal-map tangents and batched only by equivalent effective material. PBR maps are embedded. LOD0/1/2 are exported; distance thresholds and physical-device performance remain engine-integration work, not source certification.
+El artista no se aprueba a sí mismo. `evidence.json`, `candidate-proof.json` y registros de elaboración conservan su estado previo a revisión; `visual-review.json` es la aprobación final independiente. Las pruebas técnicas provisionales marcadas como fixture no están en la entrega.
 
-Required technical evidence: 7 sources, 21 self-contained GLBs, audit with no errors/warnings, immutable gate hashes, old/new fixed cameras, exact reimport captures, contact/repetition assembly. Required artistic evidence: independent inspection of every piece against V3, with a per-piece decision. CI SUCCESS, a generated fixture or Qwen praise never establishes ART PASS. Do not promote this branch to main or alter canonical Unity gameplay/publication.
+## Verificación
 
-## References and provenance
+- Siete fuentes revisadas contra la Puerta V3 y la referencia exacta del propietario.
+- Veintiún GLB sin errores ni advertencias en la comprobación estructural.
+- Catorce reimportaciones exactas: LOD0 y LOD2 de cada pieza; heráldica, formas y materiales conservados.
+- Núcleo rocoso cerrado y perfiles extremos idénticos comprobados durante la construcción.
+- Relieve superior real del pavimento: 22,62 mm; contrato máximo: 25 mm.
+- Tres vistas de montaje revisadas, con siete tipos de asset, repeticiones y Puerta V3 intacta. El suelo de apoyo es contexto de comprobación.
+- Blender 4.3.2 y BlenderMCP fijado al commit `7a0373ec9199183cb460068c4f96aed9c579fb4f`. Cero créditos de generación pagada.
 
-- Frozen V3 source: `art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.blend` and `.glb`.
-- Failed initial run 38178403301 saw the established HUD/building variant and produced no valid decision (three HTTP timeouts). It cannot establish authorship. The repaired bounded single-board streaming inference consumes the exact newly attached owner target, frozen V3 minimum and rejected asset, with original and board hashes recorded.
-- Independent final comparison uses the owner's exact newly attached image: `references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg`, SHA-256 `de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f`. Do not relabel initial inference as having consumed this different file.
-- CC0 scan: https://opengameart.org/content/free-photogrammetric-rock ; reuse the recovered verified 1017-vertex donor from the preserved V2.1 source. Original source hash is retained in each cliff authoring record.
-- Blender export guidance: https://docs.blender.org/manual/en/4.3/addons/import_export/scene_gltf2.html ; normal maps require portable image/Principled material nodes and correct tangents.
+## Procedencia y continuidad
 
-## Current state
+Materiales, torre, heráldica y braseros proceden de las fuentes V3 existentes de Eldoria. Las nuevas superficies de roca/tierra son PBR portátiles generadas para esta familia. El relieve secundario conserva el donante CC0 verificado de https://opengameart.org/content/free-photogrammetric-rock ; su SHA-256 de fuente queda registrado en la evidencia del acantilado. Los .blend y exportaciones definitivos están conservados en la rama `art/valoria-asset-family-v2-ai-authorship-20261011`.
 
-Run 38178403301 failed before its first valid decision. Blind multi-image retries are discontinued. Bounded-board streaming restored actual responses, then exposed a numerical-unit contract defect: schema minimum/maximum did not constrain the generated stone height (8m). Explicit metre meanings and finite numeric enums replace that ineffective contract. Qwen3-VL 4B default selected a thinking variant and exhausted the startup probe; production now pins the explicit qwen3-vl:4b-instruct tag. The artist's first accepted stone measures establish a shared family canon, including bonded corner and socket courses. Raw responses are never silently clamped or synthesized. Workshop corrections and 21 structurally valid GLBs are smoke-tested but remain non-authoritative until all seven genuine plans drive final production. Thin heraldry, cloth, metal and flame geometry is protected in LODs after the strategic reimport exposed emblem loss. Source-only work does not claim Unity, phone performance or public-game quality.
-
-## Remote continuity and inspection
-
-The local executor disconnected after the workshop smoke checks. Authorship, BlenderMCP production, structural audit, exact GLB reimports and source preservation continue on the established GitHub-hosted workshop. JPEG derivatives retain actual PNG hashes and permit independent inspection without local execution. Every unreviewed source candidate is preserved on this isolated artistic branch; it is not promoted to the game or main.
+La producción continúa en el workflow canónico existente. El modo `delivery` empaqueta los archivos revisados sin volver a inferir ni regenerar geometría. El ZIP incorpora manifiesto de hashes y pruebas de integridad. No se ha modificado el juego publicado ni promovido esta rama a main.

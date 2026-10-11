@@ -2,7 +2,7 @@ name: Valoria family canonical AI artist and Blender workshop
 on:
   push:
     branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
-    paths: ['pipeline/valoria-family-quality-request.json']
+    paths: ['pipeline/valoria-family-quality-request.json', 'art-source/valoria/production/asset-family-v2/quality-v3/visual-review.json']
   workflow_dispatch:
 permissions:
   contents: write
@@ -11,7 +11,29 @@ concurrency:
   group: valoria-family-art-${{ github.ref }}
   cancel-in-progress: false
 jobs:
+  request-route:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      mode: ${{ steps.request.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: pipeline
+      - id: request
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p=json.load(open('pipeline/valoria-family-quality-request.json'))
+          mode=p.get('mode','production')
+          assert mode in ('production','delivery') and p['paid_credits']==0
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('mode='+mode+'\n')
+          PY
   artist-workshop:
+    needs: request-route
+    if: needs.request-route.outputs.mode == 'production'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -171,3 +193,38 @@ jobs:
             art-source/valoria/production/asset-family-v2/*-artist-input-*.jpg
           retention-days: 30
 
+
+  reviewed-delivery:
+    needs: request-route
+    if: needs.request-route.outputs.mode == 'delivery'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package only exact independently approved genuine sources
+        run: |
+          python3 tools/art-rd/valoria_family_quality_package.py "$RUNNER_TEMP/valoria-family-v3-delivery" > "$RUNNER_TEMP/valoria-family-v3-delivery-result.json"
+          python3 - <<'PY'
+          import hashlib,json,pathlib,os,shutil
+          dest=pathlib.Path(os.environ['RUNNER_TEMP'])/'valoria-family-v3-delivery'
+          src=pathlib.Path('art-source/valoria/production/asset-family-v2/quality-v3/family-board.png')
+          shutil.copy2(src,dest/'Valoria-Familia-V3.png')
+          result=json.load(open(pathlib.Path(os.environ['RUNNER_TEMP'])/'valoria-family-v3-delivery-result.json'))
+          result['source_commit']=os.environ['GITHUB_SHA']
+          result['delivered_files']={}
+          for p in dest.iterdir():
+            with p.open('rb') as f:sha=hashlib.file_digest(f,'sha256').hexdigest()
+            result['delivered_files'][p.name]={'bytes':p.stat().st_size,'sha256':sha}
+          (dest/'delivery-result.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result,indent=2))
+          PY
+      - name: Deliver editable family, usage notes and exact export evidence board
+        uses: actions/upload-artifact@v4
+        with:
+          name: Valoria-Familia-V3-entrega-final
+          path: ${{ runner.temp }}/valoria-family-v3-delivery/
+          compression-level: 0
+          retention-days: 90
+          if-no-files-found: error

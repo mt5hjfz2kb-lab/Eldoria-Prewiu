@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "verdict": "FAMILY_SOURCE_ART_PASS_AT_FROZEN_HERO_V3_MINIMUM",
+  "family_source_art_pass": true,
+  "reviewed_at": "2026-10-11T23:53:09.076Z",
+  "reviewer": "chat-work-valoria-family-quality-takeover-20261011 — supervising art director; independent of external Qwen's self-evaluation",
+  "candidate_source_commit": "8fa28681dcd6c4bd62f71713ba02d2a14d981016",
+  "source_run_id": 38184974032,
+  "artist_lineage_run_ids": [
+    38181988592,
+    38183538588
+  ],
+  "paid_generation_credits": 0,
+  "unity_pass": false,
+  "physical_device_tested": false,
+  "integrated_world_9_5_certified": false,
+  "minimum_reference": {
+    "blend_path": "art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.blend",
+    "blend_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+    "glb_sha256": "81e63b7269bef3180648b636ad7341a4373e800afd05527e8e8aa95d88d35e2f",
+    "image_sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+  },
+  "owner_target": {
+    "path": "references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+    "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "role": "aspirational integrated 9.5/10 world; minimum source family acceptance uses frozen V3"
+  },
+  "criteria": [
+    "Coherent role-specific silhouette, construction, stone weathering and palette at V3 minimum",
+    "Complete architecture/heraldry; portable textures verified in real exports",
+    "Exact GLB hero and LOD2 strategic reimports inspected for each asset",
+    "Rigid contacts, repeated modules and ground support inspected in exact export assembly"
+  ],
+  "technical_evidence": {
+    "editable_asset_sources": 7,
+    "glb_exports": 21,
+    "structural_errors": 0,
+    "structural_warnings": 0,
+    "individual_export_reimport_captures": 14,
+    "closed_cliff_core": true,
+    "cliff_matching_end_profiles": true,
+    "paving_actual_maximum_relief_m": 0.022617550566792488,
+    "all_seven_raw_artist_responses_equal_authored_plans": true,
+    "all_seven_artist_inputs_include_exact_owner_image": true
+  },
+  "assembly": {
+    "captures": [
+      "assembly-hero.png",
+      "assembly-strategic.png",
+      "assembly-gate-contact.png"
+    ],
+    "no_anisotropic_scaling": true,
+    "ground_support": "explicit QA-only context, not a delivered family member",
+    "exact_exports": 17
+  },
+  "assets": {
+    "cliff_rocks": {
+      "source_art_pass": true,
+      "blend_sha256": "f58431288a7eebfdcefb871d12193fcd1a2f0a9cf61f51832ff9516b7ccb8dfa",
+      "glb_sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
+      "observations": "Escarpe lineal con planos angulares, fracturas hundidas, detalle del escaneo y jerarquía de talud. Núcleo cerrado y extremos compatibles verificados. Frente y coronación mantienen la lectura en LOD2; las caras planas de corte son interfaces para repetición/enterramiento.",
+      "captures": {
+        "LOD0": {
+          "capture": "cliff_rocks/roundtrip-hero.png",
+          "glb_sha256": "f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed",
+          "png_sha256": "bfaf7af647b7497b4b769474484a348f4c46cf208a732d6293db30ebe03748d5"
+        },
+        "LOD2": {
+          "capture": "cliff_rocks/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "4589f062082a855118a84c52cd854d35dd760a3d9d78427e649509123d4aa226",
+          "png_sha256": "0916f1d52c3c4d688fd5dfb9af5e0dd5dc0ec0a4e1c7b0a9a51672fc4c3c57d3"
+        }
+      }
+    },
+    "wall_connections": {
+      "source_art_pass": true,
+      "blend_sha256": "07f8e2b5d86b5189511146877d04e9ec505a41ee842a65f7b43fa6627d80e369",
+      "glb_sha256": "88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858",
+      "observations": "Unión de 2 m con extremo vestido y machón trabado. Comparte cota y material de muro; los contactos con V3 y módulos rectos son continuos.",
+      "captures": {
+        "LOD0": {
+          "capture": "wall_connections/roundtrip-hero.png",
+          "glb_sha256": "88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858",
+          "png_sha256": "20e5676dcb6ba46ac3c37a8cf71f26ac03d64df320650283b73f6d7c0a365101"
+        },
+        "LOD2": {
+          "capture": "wall_connections/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "a23b2dfdc9693af3a6ff3b5d05b7e03994ca18bc58b45291fb8044476147df80",
+          "png_sha256": "3508819867f7db06237fb862bea5ba6e5442629005a56f6f9b30b66e519b9e0e"
+        }
+      }
+    },
+    "wall_straight": {
+      "source_art_pass": true,
+      "blend_sha256": "0bcc74bf3e3eb7bc0630c0113bec81692170555f1c4c9c2620e9ce2857f77fa0",
+      "glb_sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+      "observations": "Mampostería trabada y contrafuertes coherentes con V3; huecos de aspillera reales, coronación y juntas legibles en LOD2. Desaparecen las deformaciones y remates verdes del anterior.",
+      "captures": {
+        "LOD0": {
+          "capture": "wall_straight/roundtrip-hero.png",
+          "glb_sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+          "png_sha256": "f74b3b059e233c2cb6ed037fbae4001b69f3b668bc63954279cd452289238bf9"
+        },
+        "LOD2": {
+          "capture": "wall_straight/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "1b077d349a56ba8ff3c6217ec50ece2fadfac9a86e32e0f27ff7635a0b377de1",
+          "png_sha256": "abb731f3b6e4c6fb550669f1232357146d68ec6b3947d9f21b129eb05031f2a2"
+        }
+      }
+    },
+    "watchtower": {
+      "source_art_pass": true,
+      "blend_sha256": "e93a8a624aea8ca9d7ec5701ed0de38ca2363d657e12bb60acb4806fbc87222e",
+      "glb_sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+      "observations": "Conserva la torre derecha completa de V3: basamento, núcleo, matacanes, cornisa, almenas, paño y emblema. Silueta y heráldica permanecen en LOD2.",
+      "captures": {
+        "LOD0": {
+          "capture": "watchtower/roundtrip-hero.png",
+          "glb_sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+          "png_sha256": "2c079ddc02c993f2839fe8266a5077095c2080e6531fc181f1f81e413cb84e90"
+        },
+        "LOD2": {
+          "capture": "watchtower/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "54bcdaa38e761ae8f56915b20440de8ee66ca5e81336a966ec9ef3116eb15351",
+          "png_sha256": "3ae637924b0f7cf75b180520070dad403588a71f534115745864aa3bedff29ca"
+        }
+      }
+    },
+    "stone_path_platform": {
+      "source_art_pass": true,
+      "blend_sha256": "8642f6d93cc869c6cd9cf8043391384811f7dc7babce84b9c7e2ebfe7ad53c66",
+      "glb_sha256": "26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1",
+      "observations": "Losas rectangulares próximas, variación de juntas y soporte enterrado continuo. Elevación real máxima 22,62 mm. La reimportación conserva pavimento y el montaje demuestra apoyo al terreno.",
+      "captures": {
+        "LOD0": {
+          "capture": "stone_path_platform/roundtrip-hero.png",
+          "glb_sha256": "26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1",
+          "png_sha256": "cc57eb6cbeaabfe255c5e78e2b40720c291feadc66ca1f546a76e938d7ae94d3"
+        },
+        "LOD2": {
+          "capture": "stone_path_platform/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "fd18f6fc57e3beb71ff8567f75460a3c90876abfb892c13ef1b95c2773212f0a",
+          "png_sha256": "df1da2aceed70f2a19044a34741bc2ddcaec8fd5f5fa841b0d03663f2b3f1803"
+        }
+      }
+    },
+    "defensive_props": {
+      "source_art_pass": true,
+      "blend_sha256": "5d6175d562a8813ad6963fc4ddc1b8c62784070356e750d9191057f584f8479a",
+      "glb_sha256": "5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c",
+      "observations": "Paños azules, emblemas dorados, barras, cuencos, pedestales y llamas V3 completos. Montajes de madera/hierro y defensa modular; el LOD2 conserva la identidad fina.",
+      "captures": {
+        "LOD0": {
+          "capture": "defensive_props/roundtrip-hero.png",
+          "glb_sha256": "5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c",
+          "png_sha256": "6f86c7901acf54cf455e23f3781dbbd3166b00707b417efa943628a4de78d936"
+        },
+        "LOD2": {
+          "capture": "defensive_props/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "ed7cc694e20a536f68e5a1673887c70f881a5a2a59ba04fc5083b893827c7682",
+          "png_sha256": "e1316539c95c9cddba725479c4b31a948d11654ebda292418ce1f8392fae5f02"
+        }
+      }
+    },
+    "wall_corner": {
+      "source_art_pass": true,
+      "blend_sha256": "cca28cbe7b44d8026fbe4810b5e2b519f60a109f2c970ce0ffcb0a1285d66437",
+      "glb_sha256": "f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f",
+      "observations": "Giro de 90 grados con aparejo, quoin y adarve continuo. La escala de piedra y la coronación coinciden con el muro; la escena corregida comprueba ambos giros.",
+      "captures": {
+        "LOD0": {
+          "capture": "wall_corner/roundtrip-hero.png",
+          "glb_sha256": "f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f",
+          "png_sha256": "c032a91ed9c4afa3fc1630078a82c52411b26a2843148229a5814c8e8a1b4e44"
+        },
+        "LOD2": {
+          "capture": "wall_corner/roundtrip-LOD2-strategic.png",
+          "glb_sha256": "938d51fa2d6b558843cabf34a0d2efcf9aab6f1f24253479d917693b1e13bbf4",
+          "png_sha256": "8e6bc562a1a8762a2403441dacda5b8d9671f41d261f78b1d1c90c9600987565"
+        }
+      }
+    }
+  }
+}

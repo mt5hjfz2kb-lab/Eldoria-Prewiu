@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-10",
+  "updated_at": "2026-10-11",
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
@@ -70,7 +70,8 @@
         "tools/art-rd/valoria*director*",
         ".github/workflows/valoria-family-v2-ai-authorship.yml",
         "art-source/valoria/production/asset-family-v2/**",
-        "docs/evidence/valoria-asset-family-v2/**"
+        "docs/evidence/valoria-asset-family-v2/**",
+        "pipeline/valoria-family-quality-request.json"
       ],
       "resources": [
         "valoria-seven-asset-family",
@@ -78,9 +79,13 @@
       ],
       "claimed_at": "2026-10-11",
       "base_sha": "df23416e7c25a9235781c0c6d32d57e500c3c21c",
-      "phase": "Owner-authorized takeover: genuine AI-led comprehensive reauthoring to frozen Hero V3 minimum; not art approved.",
+      "phase": "Seven source assets independently ART PASS at frozen V3 minimum; exact delivery packaging in progress",
       "paid_credits": 0,
-      "art_production_routing": "required"
+      "art_production_routing": "required",
+      "source_art_pass": true,
+      "unity_tested": false,
+      "current_source_run": 38184974032,
+      "approved_source_commit": "8fa28681dcd6c4bd62f71713ba02d2a14d981016"
     }
   ],
   "history": [
