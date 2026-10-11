@@ -140,6 +140,40 @@ for j in range(115):
     y=top_height(x,z)+.22
     rad=.27+.45*rng.random()
     transformed_ico(x,z,y,(rad,rad,.25),bushes[j%3])
+
+# Main approach descends from the southern escarpment toward the valley.
+# It is a continuous sloped stone causeway, not disconnected floating blocks.
+bridge_rows=[]
+for i in range(35):
+    t=i/34
+    z=-37-26*t
+    cx=1.8*math.sin(z*.075)
+    y=height(cx,-37)-8.3*(t*t*(3-2*t))
+    w=2.55+.18*math.sin(i*.4)
+    l=vertex((cx-w,z,y));r=vertex((cx+w,z,y))
+    ll=vertex((cx-w,z,y-.45));rr=vertex((cx+w,z,y-.45))
+    bridge_rows.append((l,r,ll,rr))
+for i in range(34):
+    l,r,ll,rr=bridge_rows[i];ln,rn,lln,rrn=bridge_rows[i+1]
+    face((l,ln,r),path);face((r,ln,rn),path)
+    face((ll,lln,l),stone[1]);face((l,lln,ln),stone[1])
+    face((r,rn,rr),stone[2]);face((rr,rn,rrn),stone[2])
+# Low stone parapets provide a continuous legible bridge silhouette from the camera.
+for side in [-1,1]:
+    rows=[]
+    for i in range(35):
+        t=i/34;z=-37-26*t;cx=1.8*math.sin(z*.075)
+        base=height(cx,-37)-8.3*t*t*(3-2*t)
+        x=cx+side*(2.6+.18*math.sin(i*.4))
+        a0=vertex((x,z,base));a1=vertex((x+side*.45,z,base))
+        a2=vertex((x,z,base+.75));a3=vertex((x+side*.45,z,base+.75))
+        rows.append((a0,a1,a2,a3))
+    for i in range(34):
+        a0,a1,a2,a3=rows[i];b0,b1,b2,b3=rows[i+1]
+        face((a0,b0,a2),stone[1]);face((a2,b0,b2),stone[1])
+        face((a1,a3,b1),stone[2]);face((a3,b3,b1),stone[2])
+        face((a2,b2,a3),stone[0]);face((a3,b2,b3),stone[0])
+
 # polygons in their own material slot, GLB embeds original colors
 mesh=bpy.data.meshes.new("Valoria authored geological mesh and forest")
 mesh.from_pydata(V,[],F)
