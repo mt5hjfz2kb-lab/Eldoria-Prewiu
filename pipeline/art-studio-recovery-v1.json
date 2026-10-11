@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "reference": "art-source/valoria/production/studio-rocks-v1/owner-reference.jpeg",
+  "reference_sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+  "budget_eur": 0,
+  "paid_generation_allowed": false,
+  "existing_planner": "tools/plan-art-production.mjs",
+  "existing_donor_preflight": "tools/art-rd/audit_glb.py",
+  "existing_vision_transport": "Ollama local /api/chat",
+  "model": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+  "allowed_techniques": [
+    "existing_cc0_photogrammetry_donor_directed_assembly",
+    "existing_library_donor",
+    "retain_baseline",
+    "reject_all"
+  ],
+  "review_criteria": [
+    "geological_macro_planes",
+    "triangle_artifacts",
+    "ground_contact",
+    "repetition",
+    "reference_style",
+    "phone_scale"
+  ],
+  "auto_promote": false,
+  "unity_runtime_protected": true,
+  "donor_provenance": {
+    "author": "Yughues",
+    "license": "CC0",
+    "source": "https://opengameart.org/content/free-photogrammetric-rock",
+    "historical_run": 37445549161,
+    "historical_artifact": 11403535192
+  },
+  "mcp_addon_commit": "7a0373ec9199183cb460068c4f96aed9c579fb4f",
+  "mcp_addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5"
+}
