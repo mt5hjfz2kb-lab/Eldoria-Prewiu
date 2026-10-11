@@ -1,0 +1,33 @@
+{
+  "method": "existing_cc0_photogrammetry_donor_directed_assembly",
+  "baseline_sha256": "98366806ef12197e9c77b51edf9b02cb58cf340900ef167e1e7b8e4a58881595",
+  "donor_obj_sha256": "b926631a47338bb0c63512d00762b1acd1a4f2b3cc142e856be3388cdf46b390",
+  "donor_archive_sha256": "f33dbb5b2a2315a2fba5e5db09fabf799094fe8b5c437486ba52546e4486138d",
+  "donor_triangles": 1758,
+  "cliff_instances": 52,
+  "talus_instances": 16,
+  "removed_facets": 3154,
+  "fixed_camera_lighting_samples": true,
+  "geometry_modified": true,
+  "pbr_albedo_and_normal_exportable": true,
+  "model_used": "assistant visual review; Ollama runtime connection pending",
+  "mcp_used": false,
+  "visual_pass": false,
+  "unity_tested": false,
+  "credits_spent": 0,
+  "exports": {
+    "ValoriaScannedCliffCandidate.glb": {
+      "bytes": 4000288,
+      "sha256": "4d8f8b0c760a1e29ef66b9e38cda66b047e1f7b5dded6d18fec2bceb9758ed5e"
+    },
+    "ValoriaEnvironmentCandidate.glb": {
+      "bytes": 5830168,
+      "sha256": "becc37ac64102d3ce61c6390e09485884476f169c39224addc88589263a0928e"
+    }
+  },
+  "limitations": [
+    "No Unity certification; isolated Blender context differs from full Unity scene",
+    "Artist acceptance requires actual before/after inspection",
+    "Draw calls/LOD/device performance not certified"
+  ]
+}

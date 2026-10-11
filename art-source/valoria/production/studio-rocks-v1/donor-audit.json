@@ -1,0 +1,197 @@
+[
+  {
+    "path": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+    "meshes": [
+      {
+        "name": "ForegroundBank",
+        "triangles": 611,
+        "materials": [
+          "Eldoria_rock_base",
+          "Eldoria_rock_warm",
+          "Eldoria_rock_light",
+          "Eldoria_rock_shadow",
+          "Eldoria_rock_top"
+        ]
+      },
+      {
+        "name": "MainPlatform",
+        "triangles": 715,
+        "materials": [
+          "Eldoria_rock_base",
+          "Eldoria_rock_warm",
+          "Eldoria_rock_light",
+          "Eldoria_rock_shadow",
+          "Eldoria_rock_top"
+        ]
+      },
+      {
+        "name": "PlayableGround",
+        "triangles": 76,
+        "materials": [
+          "Eldoria_earth_main"
+        ]
+      },
+      {
+        "name": "UpperTerraceCliff",
+        "triangles": 455,
+        "materials": [
+          "Eldoria_rock_base",
+          "Eldoria_rock_warm",
+          "Eldoria_rock_light",
+          "Eldoria_rock_top"
+        ]
+      },
+      {
+        "name": "UpperTerraceGround",
+        "triangles": 52,
+        "materials": [
+          "Eldoria_earth_upper"
+        ]
+      }
+    ],
+    "bounds": [
+      [
+        -45.32315444946289,
+        -69.82352447509766,
+        -7.699999809265137
+      ],
+      [
+        34.2631721496582,
+        22.54239273071289,
+        4.039999961853027
+      ]
+    ],
+    "images": [
+      "Render Result"
+    ]
+  },
+  {
+    "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+    "meshes": [
+      {
+        "name": "Eldoria_MultiPiece_Group_01",
+        "triangles": 6379,
+        "materials": [
+          "tripo_material_952f3031-6771-4b6c-8dd2-0ed5f65050db"
+        ]
+      }
+    ],
+    "bounds": [
+      [
+        -0.1507875919342041,
+        -0.13677020370960236,
+        0.0
+      ],
+      [
+        0.1507875919342041,
+        0.13677018880844116,
+        0.13947293162345886
+      ]
+    ],
+    "images": [
+      "Render Result",
+      "TerrainTerraceKit_v1_basecolor",
+      "TerrainTerraceKit_v1_normal",
+      "TerrainTerraceKit_v1_rm"
+    ]
+  },
+  {
+    "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+    "meshes": [
+      {
+        "name": "Eldoria_MultiPiece_Group_07",
+        "triangles": 8650,
+        "materials": [
+          "tripo_material_952f3031-6771-4b6c-8dd2-0ed5f65050db"
+        ]
+      }
+    ],
+    "bounds": [
+      [
+        -0.19721870124340057,
+        -0.14039745926856995,
+        0.0
+      ],
+      [
+        0.19721870124340057,
+        0.14039747416973114,
+        0.11602321267127991
+      ]
+    ],
+    "images": [
+      "Render Result",
+      "TerrainTerraceKit_v1_basecolor",
+      "TerrainTerraceKit_v1_normal",
+      "TerrainTerraceKit_v1_rm"
+    ]
+  },
+  {
+    "path": "Unity/Assets/Holotna/Mountain/Models/Rock01.fbx",
+    "meshes": [
+      {
+        "name": "Rock01_LOD0",
+        "triangles": 480,
+        "materials": [
+          "Material"
+        ]
+      },
+      {
+        "name": "Rock01_LOD1",
+        "triangles": 240,
+        "materials": [
+          "Material"
+        ]
+      },
+      {
+        "name": "Rock01_LOD2",
+        "triangles": 96,
+        "materials": [
+          "Material"
+        ]
+      }
+    ],
+    "bounds": [
+      [
+        -3.1154658794403076,
+        -3.4318337440490723,
+        -2.862823724746704
+      ],
+      [
+        3.0779500007629395,
+        2.998502492904663,
+        2.6644387245178223
+      ]
+    ],
+    "images": [
+      "Render Result"
+    ]
+  },
+  {
+    "path": "Unity/Assets/PolyOne/Free Modular Terrain/Model/SM_Cliffs_01.fbx",
+    "meshes": [
+      {
+        "name": "SM_Cliffs_01",
+        "triangles": 828,
+        "materials": [
+          "Modular_Map_M"
+        ]
+      }
+    ],
+    "bounds": [
+      [
+        -50.04237365722656,
+        -50.04199981689453,
+        -3.768505621337681e-06
+      ],
+      [
+        50.04237747192383,
+        50.04199981689453,
+        18.958024978637695
+      ]
+    ],
+    "images": [
+      "Render Result",
+      "T_BaseColor_Stone_1"
+    ]
+  }
+]
