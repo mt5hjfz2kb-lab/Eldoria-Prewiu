@@ -44,6 +44,7 @@ namespace Eldoria.EditorTools
                 if (meshes.Length == 0) throw new Exception("V3 contains no meshes");
                 Save(camera, Output + "/after.png");
                 PersistRuntimeAssets();
+                StabilizeConiferMaterials();
                 Save(camera, Output + "/after-persistence.png");
                 EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), ProofScene);
                 var triangles = meshes.Sum(x => x.sharedMesh.triangles.Length / 3L);
@@ -143,6 +144,42 @@ namespace Eldoria.EditorTools
             }
             AssetDatabase.SaveAssets();
             Debug.Log("V3_PERSISTENCE meshes=" + next + " materials=" + materials.Count + " textures=" + textures.Count);
+        }
+        static void StabilizeConiferMaterials()
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Unlit");
+            if (shader == null) throw new Exception("URP Unlit missing");
+            const string folder = "Assets/Eldoria/ArtTests/ValoriaGatehouseV1/V3PersistentAssets";
+            var world = GameObject.Find("Valoria Bastion I - visual vertical slice");
+            int count = 0;
+            foreach (Transform child in world.transform)
+            {
+                if (!child.name.StartsWith("Existing FBX conifer variant")) continue;
+                foreach (var renderer in child.GetComponentsInChildren<Renderer>(true))
+                {
+                    var original = renderer.sharedMaterials;
+                    var replacement = new Material[original.Length];
+                    for (int i = 0; i < original.Length; i++)
+                    {
+                        var mat = original[i];
+                        if (mat == null) continue;
+                        var source = mat.HasProperty("_BaseMap") ? mat.GetTexture("_BaseMap") : mat.mainTexture;
+                        var stable = new Material(shader);
+                        stable.name = "Valoria conifer stable unlit " + count;
+                        stable.SetColor("_BaseColor", Color.white);
+                        if (source != null) stable.SetTexture("_BaseMap", source);
+                        stable.SetFloat("_AlphaClip", 1f);
+                        stable.SetFloat("_Cutoff", 0.4f);
+                        stable.SetFloat("_Cull", 0f);
+                        stable.renderQueue = 2450;
+                        AssetDatabase.CreateAsset(stable, folder + "/stable-tree-" + count++ + ".mat");
+                        replacement[i] = stable;
+                    }
+                    renderer.sharedMaterials = replacement;
+                }
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log("VALORIA_STABLE_CONIFER_MATERIALS=" + count);
         }
         static Texture PersistTexture(Texture source, string folder, int index, string property)
         {
