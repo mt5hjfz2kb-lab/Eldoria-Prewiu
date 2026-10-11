@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "workstream_id": "valoria-first-hero-asset-v1-20261011",
+  "enabled": true,
+  "request_id": "valoria-first-hero-asset-v1-20261011",
+  "visual_gate_state": null,
+  "diagnosis": null,
+  "asset_or_sector": "Single reference-led fortified Valoria gate",
+  "profile": "environment_new_geometry",
+  "zero_spend_default": true,
+  "geometry_gap_proven": true,
+  "tripo_allowed": false,
+  "credit_authorized": false,
+  "authorized_credit_cost": 0,
+  "stop_before_credit_spend": false,
+  "stages": [
+    "geometry_gap_evidence",
+    "screen_space_art_brief",
+    "blender_professional_authoring",
+    "blender_isolated_art_source_review",
+    "unity_environment_art",
+    "official_camera_validation"
+  ],
+  "validation": {
+    "source_gate": "Editable original mesh, portable PBR, hashes, actual Blender multiangle",
+    "final_gate": "Actual director comparison, exact GLB Unity strategic and reload if runner is released"
+  },
+  "capabilities_requested": {
+    "blender_bake": true,
+    "blender_material_consolidation": true
+  },
+  "blender_authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "required_verdicts": [
+    "TECH_PASS",
+    "ART_SOURCE_PASS",
+    "INTEGRATED_VISUAL_PASS"
+  ],
+  "fallback": null
+}

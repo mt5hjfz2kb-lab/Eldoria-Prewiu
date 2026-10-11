@@ -1,0 +1,50 @@
+name: Valoria first hero gate reproducible Blender source
+on:
+  push:
+    branches: [art/valoria-first-hero-asset-v1-20261011]
+    paths:
+      - 'tools/art-rd/valoria_first_hero_asset.py'
+      - 'tools/art-rd/first-hero-support/**'
+      - '.github/workflows/valoria-first-hero-asset.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: valoria-first-hero-isolated-blender
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender and bitmap dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Verify and stage existing art brain
+        run: |
+          git fetch --no-tags origin refs/heads/art/studio-reuse-handoff-20261011:refs/remotes/origin/art/studio-reuse-handoff-20261011
+          python3 tools/valoria-art-brain/bridge.py --stage "$RUNNER_TEMP/art-brain"
+          curl -Ls --fail -o "$RUNNER_TEMP/blender-mcp.py" https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py
+          echo "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  $RUNNER_TEMP/blender-mcp.py" | sha256sum -c -
+      - name: Reproduce exact selected asset and actual renders
+        run: |
+          python3 tools/art-rd/first-hero-support/make_surfaces.py
+          export ELDORIA_HERO_PHASE=refine
+          export ELDORIA_BLENDER_MCP_ADDON="$RUNNER_TEMP/blender-mcp.py"
+          blender -b -t 8 --python tools/art-rd/valoria_first_hero_asset.py > "$RUNNER_TEMP/hero-blender.log" 2>&1 || { tail -80 "$RUNNER_TEMP/hero-blender.log"; exit 1; }
+          grep -q ELDORIA_HERO_ASSET_EXPORTED "$RUNNER_TEMP/hero-blender.log"
+      - name: Preserve editable source on task branch
+        run: |
+          git config user.name 'eldoria-art-ci'
+          git config user.email 'eldoria-art-ci@users.noreply.github.com'
+          git add -f art-source/valoria/production/first-hero-gate-v1
+          git commit -m 'art: preserve first hero gate editable source and actual renders [skip ci]' || exit 0
+          git push origin HEAD:art/valoria-first-hero-asset-v1-20261011
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-first-hero-gate-v1
+          path: |
+            art-source/valoria/production/first-hero-gate-v1/
+            ${{ runner.temp }}/hero-blender.log
+          retention-days: 30
