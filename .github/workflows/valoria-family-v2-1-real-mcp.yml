@@ -21,7 +21,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           for i in $(seq 1 70); do
-            result=$(gh api repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38171127389 --jq '.status+" "+(.conclusion//"pending")')
+            result=$(gh api repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38171510700 --jq '.status+" "+(.conclusion//"pending")')
             echo "Qwen director: $result"
             if [[ "$result" == "completed success" ]]; then exit 0; fi
             if [[ "$result" == completed* ]]; then exit 1; fi
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: valoria-v2-1-qwen-seven-new-art-decisions
-          run-id: 38171127389
+          run-id: 38171510700
           github-token: ${{ github.token }}
           path: art-source/valoria/production/asset-family-v2
       - name: Confirm seven real newly generated model decisions before Blender
