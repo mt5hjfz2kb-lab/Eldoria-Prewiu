@@ -1,0 +1,48 @@
+name: Valoria cliff AB resume from actual Qwen plan
+on:
+  push:
+    branches: [experiment/valoria-cliff-ai-authorship-ab-20261011]
+    paths: ['.github/workflows/valoria-cliff-ab-resume.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  finish-b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cliff-ab-renders-blend-glb-evidence
+          run-id: 38166650382
+          github-token: ${{ github.token }}
+          path: art-source/valoria/experiments/cliff-ai-authorship-ab
+      - name: Confirm actual previously generated A and actual Qwen art plan
+        run: |
+          test -s art-source/valoria/experiments/cliff-ai-authorship-ab/A.glb
+          test -s art-source/valoria/experiments/cliff-ai-authorship-ab/B-ai-art-direction.json
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-pil python3-numpy
+      - name: Restore pinned BlenderMCP addon
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Resume genuine AI guided Blender authoring and final comparative renders
+        env:
+          ELDORIA_CLIFF_AB_MODE: B
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_cliff_authorship_ab.py
+      - name: Verify all requested cliff assets
+        run: |
+          OUT=art-source/valoria/experiments/cliff-ai-authorship-ab
+          for f in A.blend A.glb A-hero.png A-strategic.png B.blend B.glb B-hero.png B-strategic.png B-before-correction-hero.png B-before-correction-strategic.png B-ai-art-direction.json B-mcp-evidence.json; do
+            test -s "$OUT/$f" || { echo "MISSING: $f"; exit 1; }
+          done
+          python3 tools/art-rd/audit_glb.py "$OUT/A.glb" "$OUT/B.glb" > "$OUT/geometry-audit.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-cliff-ab-complete-evidence
+          path: art-source/valoria/experiments/cliff-ai-authorship-ab/
+          retention-days: 30
