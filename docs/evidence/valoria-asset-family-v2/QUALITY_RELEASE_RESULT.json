@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "workstream": "valoria-asset-family-v2-ai-authorship-20261011",
+  "status": "COMPLETED_SOURCE_FAMILY_DELIVERED",
+  "verdict": "FAMILY_SOURCE_ART_PASS_AT_FROZEN_HERO_V3_MINIMUM",
+  "completed_at": "2026-10-11T23:59:17.114Z",
+  "editable_asset_sources": 7,
+  "glb_exports": 21,
+  "lod_levels": [
+    0,
+    1,
+    2
+  ],
+  "structural_errors": 0,
+  "structural_warnings": 0,
+  "exact_individual_glb_reimports_reviewed": 14,
+  "rigid_contact_assembly_views_reviewed": 3,
+  "external_artist": {
+    "model": "qwen3-vl:4b-instruct",
+    "genuine_designs": 7,
+    "partial_accepted_run": 38181988592,
+    "complete_artist_run": 38183538588,
+    "raw_responses_match_plans": true,
+    "exact_owner_reference_input_sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+  },
+  "final_source_run": 38184974032,
+  "reviewed_source_commit": "8fa28681dcd6c4bd62f71713ba02d2a14d981016",
+  "approval_and_package_source_commit": "0abf13870d21725c30acf3f3e3a8c86385470073",
+  "independent_review": "art-source/valoria/production/asset-family-v2/quality-v3/visual-review.json",
+  "delivery_run": 38185976261,
+  "delivery_artifact_id": 11719219312,
+  "delivery_artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38185976261/artifacts/11719219312",
+  "archive": {
+    "name": "Valoria-Familia-V3.zip",
+    "bytes": 387455188,
+    "sha256": "dd8091be5f97878263d29d0b13dbd9a2e7be289468536d756067a61340fef037",
+    "members": 119,
+    "download_identity_verified": true
+  },
+  "persisted_user_deliverables": [
+    "Valoria-Familia-V3.zip",
+    "Valoria-Familia-V3-LEEME.md",
+    "Valoria-Familia-V3.png"
+  ],
+  "all_delivery_saves_succeeded": true,
+  "paid_generation_credits": 0,
+  "unity_pass": false,
+  "physical_device_tested": false,
+  "integrated_world_9_5_certified": false,
+  "main_unmodified_by_this_workstream": true,
+  "resources_released": true,
+  "next": "Reuse these approved editable sources and exact GLBs in the subsequent engine/world construction phase; source generation and delivery are complete."
+}
