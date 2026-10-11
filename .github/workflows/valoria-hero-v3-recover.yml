@@ -1,0 +1,66 @@
+name: Recover Valoria hero V3 artifact and AI art review
+on:
+  push:
+    branches: [art/valoria-first-hero-asset-v1-20261011]
+    paths:
+      - '.github/workflows/valoria-hero-v3-recover.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-hero-v3-recover
+  cancel-in-progress: false
+jobs:
+  preserve-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download existing successful Blender V3 output, do not regenerate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/recovered"
+          gh run download 38151456584 --repo "$GITHUB_REPOSITORY" --name valoria-hero-gate-quality-v2 --dir "$RUNNER_TEMP/recovered"
+          source_dir="$(find "$RUNNER_TEMP/recovered" -name ValoriaHeroGate.blend -path '*/quality-v3/*' -printf '%h\n' | head -1)"
+          test -n "$source_dir"
+          target="art-source/valoria/production/first-hero-gate-v1"
+          mkdir -p "$target/quality-v3" "$target/quality-v2"
+          cp -a "$source_dir/." "$target/quality-v3/"
+          from_v2="$(find "$RUNNER_TEMP/recovered" -name ValoriaHeroGate.blend -path '*/quality-v2/*' -printf '%h\n' | head -1)"
+          test -n "$from_v2"
+          cp -a "$from_v2/." "$target/quality-v2/"
+          test -s "$target/quality-v3/ValoriaHeroGate.glb"
+          test -s "$target/quality-v3/after-hero-matched.png"
+          test -s "$target/quality-v3/after-strategic.png"
+          echo ELDORIA_V3_RESTORED_FROM_REAL_ARTIFACT
+      - name: Local free Qwen real-image advisory
+        continue-on-error: true
+        run: |
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          bash "$RUNNER_TEMP/start-qwen.sh"
+          python3 tools/art-rd/first-hero-support/review_v3_qwen.py
+      - name: Commit V3 without rewriting concurrent work
+        run: |
+          git config user.name 'eldoria-art-ci'
+          git config user.email 'eldoria-art-ci@users.noreply.github.com'
+          git add -f art-source/valoria/production/first-hero-gate-v1/quality-v3
+          git commit -m 'art: preserve existing V3 GLB, source, comparisons and Qwen review [skip ci]' || exit 0
+          for i in 1 2 3; do
+            git fetch origin art/valoria-first-hero-asset-v1-20261011
+            git rebase origin/art/valoria-first-hero-asset-v1-20261011
+            if git push origin HEAD:art/valoria-first-hero-asset-v1-20261011; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-v3-recovered-ai-review
+          path: |
+            art-source/valoria/production/first-hero-gate-v1/quality-v3/
+            ${{ runner.temp }}/ollama-server.log
+          retention-days: 30
