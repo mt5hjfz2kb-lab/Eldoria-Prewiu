@@ -1,0 +1,154 @@
+{
+  "plans": {
+    "wall_straight": {
+      "diagnosis": "Rejected model lacks parapet, buttresses, and arrow loops; lacks geological realism and heraldic detail.",
+      "design_intent": "V3 limestone wall with bonded courses, parapet, tapered buttresses, and arrow loops for authentic medieval siege architecture.",
+      "operations": [
+        "bonded_masonry",
+        "parapet_walkway",
+        "tapered_buttresses",
+        "embedded_talus",
+        "modular_socket",
+        "fitted_flagstone_road"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 2,
+      "road_slab_length": 0.65,
+      "fault_lean": 0.65,
+      "fracture_depth": 0.35,
+      "talus_clusters": 5,
+      "crest_soil_depth": 0.25,
+      "material_intent": "V3 limestone with blue/gold heraldry, natural earth tones, angular geology for historical authenticity and visual weight.",
+      "composition_notes": "8m wall with 26 courses, 2 arrow loops, 5 talus clusters, 0.45m buttresses, 0.65m road slab, 0.65\u00b0 lean."
+    },
+    "watchtower": {
+      "diagnosis": "V3 tower lacks structural integrity, machicolations, and coherent heraldry. Reconstruct with precise proportions.",
+      "design_intent": "Restore V3 tower with authentic limestone, blue/gold heraldry, and natural geology.",
+      "operations": [
+        "recessed_arrow_loops",
+        "modular_socket",
+        "buried_earth_support",
+        "tapered_buttresses",
+        "fitted_flagstone_road"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 2,
+      "road_slab_length": 0.65,
+      "fault_lean": 0.5,
+      "fracture_depth": 0.35,
+      "talus_clusters": 4,
+      "crest_soil_depth": 0.25,
+      "material_intent": "V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 reference.",
+      "composition_notes": "Symmetrical, grounded, with crenels and machicolations, 1:1 scale with target."
+    },
+    "wall_corner": {
+      "diagnosis": "Rejected design lacks continuous walkway, overlapping ends, and proper stone bonding around corner.",
+      "design_intent": "Reconstructed arms with bonded stones, continuous path, and consistent V3 limestone geometry.",
+      "operations": [
+        "bonded_masonry",
+        "segmented_coping",
+        "tapered_buttresses",
+        "recessed_arrow_loops"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 2,
+      "road_slab_length": 0.65,
+      "fault_lean": 0.5,
+      "fracture_depth": 0.35,
+      "talus_clusters": 4,
+      "crest_soil_depth": 0.25,
+      "material_intent": "V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 standard.",
+      "composition_notes": "True 90-degree arms, continuous walkway, no overlapping ends, stone crown and size match target."
+    },
+    "wall_connections": {
+      "diagnosis": "Rejected model lacks dressed masonry and tapered pier; geometry inconsistent with V3 limestone standards.",
+      "design_intent": "V3 stone wall: dressed ashlar blocks, tapering pier, heraldry flags, natural geology texture, earthy color palette.",
+      "operations": [
+        "modular_socket",
+        "dressed_corner_bond",
+        "tapered_buttresses",
+        "fitted_flagstone_road"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 1,
+      "road_slab_length": 0.65,
+      "fault_lean": 0.5,
+      "fracture_depth": 0.25,
+      "talus_clusters": 3,
+      "crest_soil_depth": 0.25,
+      "material_intent": "V3 limestone: grey angular blocks, blue/gold heraldry flags; natural earth tones and geologic texture dominance.",
+      "composition_notes": "Symmetrical wall socket with tapered pier, consistent stone height/length, minimal loop count for structural clarity."
+    },
+    "stone_path_platform": {
+      "diagnosis": "Rejected design lacks coherent stone geometry and fails to meet V3 limestone standard with no visible heraldry or earth support.",
+      "design_intent": "V3 canonical masonry: varied flagstones, buried soil base, blue/gold banners, natural geology under strict engineering limits.",
+      "operations": [
+        "modular_socket",
+        "earth_grass_crest",
+        "buried_earth_support",
+        "fitted_flagstone_road"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 1,
+      "road_slab_length": 0.75,
+      "fault_lean": 0.65,
+      "fracture_depth": 0.35,
+      "talus_clusters": 5,
+      "crest_soil_depth": 0.25,
+      "material_intent": "V3 limestone, blue/gold heraldry on flagstones; natural earth and grey angular geology under z=0 with <0.025m relief.",
+      "composition_notes": "Continuous road: varied slab lengths, buttress projection for stability, talus clusters as erosion markers."
+    },
+    "cliff_rocks": {
+      "diagnosis": "Rejects round mesa; demands angular fault planes and talus clusters for escarpment realism.",
+      "design_intent": "V3 limestone with heraldry: blue/gold banners, earthy grey geology, modular construction.",
+      "operations": [
+        "modular_socket",
+        "fault_plane_escarpment",
+        "tapered_buttresses",
+        "earth_grass_crest"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 3,
+      "road_slab_length": 0.65,
+      "fault_lean": 0.65,
+      "fracture_depth": 0.25,
+      "talus_clusters": 7,
+      "crest_soil_depth": 0.25,
+      "material_intent": "V3 limestone: blue/gold heraldry, natural earth and grey angular geology.",
+      "composition_notes": "12m linear escarpment; crown z=0, exposed face 3.5m, closed base."
+    },
+    "defensive_props": {
+      "diagnosis": "V3 banner requires modular attachment with real physical fastenings and brazier geometry.",
+      "design_intent": "Blueprint: blue/gold heraldry on V3 limestone; natural earth geology, angular stone blocks.",
+      "operations": [
+        "buried_earth_support",
+        "modular_socket",
+        "buried_earth_support"
+      ],
+      "stone_height": 0.32,
+      "stone_length": 0.85,
+      "buttress_projection": 0.45,
+      "loop_count": 1,
+      "road_slab_length": 0.65,
+      "fault_lean": 0.5,
+      "fracture_depth": 0.25,
+      "talus_clusters": 3,
+      "crest_soil_depth": 0.16,
+      "material_intent": "V3 limestone, blue/gold heraldry; natural earth and grey angular geology.",
+      "composition_notes": "Brazier bowl on pedestal with cap/flames visible; wooden braces/iron fastenings."
+    }
+  },
+  "self_approval": false
+}

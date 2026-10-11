@@ -1,0 +1,76 @@
+{
+  "asset": "cliff_rocks",
+  "triangles": 25666,
+  "export_meshes": 2,
+  "effective_materials": 2,
+  "lods": [
+    {
+      "level": 1,
+      "triangles": 15399,
+      "relative_to_lod0": 0.6,
+      "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+    },
+    {
+      "level": 2,
+      "triangles": 9239,
+      "relative_to_lod0": 0.36,
+      "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+    }
+  ],
+  "bounds_m": [
+    [
+      -6.3428521156311035,
+      6.23118257522583
+    ],
+    [
+      -3.559711217880249,
+      2.0
+    ],
+    [
+      -3.659507989883423,
+      0.06500039249658585
+    ]
+  ],
+  "glb_bytes": 8646584,
+  "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+  "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+  "ai_plan": {
+    "diagnosis": "Rejects round mesa; demands angular fault planes and talus clusters for escarpment realism.",
+    "design_intent": "V3 limestone with heraldry: blue/gold banners, earthy grey geology, modular construction.",
+    "operations": [
+      "modular_socket",
+      "fault_plane_escarpment",
+      "tapered_buttresses",
+      "earth_grass_crest"
+    ],
+    "stone_height": 0.32,
+    "stone_length": 0.85,
+    "buttress_projection": 0.45,
+    "loop_count": 3,
+    "road_slab_length": 0.65,
+    "fault_lean": 0.65,
+    "fracture_depth": 0.25,
+    "talus_clusters": 7,
+    "crest_soil_depth": 0.25,
+    "material_intent": "V3 limestone: blue/gold heraldry, natural earth and grey angular geology.",
+    "composition_notes": "12m linear escarpment; crown z=0, exposed face 3.5m, closed base."
+  },
+  "executed_operations": [
+    {
+      "operation": "fault_plane_escarpment",
+      "continuous_vertices": 2817,
+      "primary_fault_slabs": 4,
+      "scan_to_connected_surface_transfer": true,
+      "real_cc0_scanned_masses": 4,
+      "cc0_source": "https://opengameart.org/content/free-photogrammetric-rock",
+      "donor_blend_sha256": "924ca5676a60d2fe3487ba98b66ec0ff4befb96c0954d0f95beff83227f598d4",
+      "fault_lean_m": 0.65,
+      "fracture_depth_m": 0.25,
+      "embedded_talus_clusters": 7,
+      "soil_depth_m": 0.25,
+      "footing_plane_z": 0.065
+    }
+  ],
+  "art_pass": false,
+  "unity_pass": false
+}

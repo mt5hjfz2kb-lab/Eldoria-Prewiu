@@ -1,0 +1,89 @@
+{
+  "asset": "wall_corner",
+  "triangles": 35232,
+  "export_meshes": 8,
+  "effective_materials": 8,
+  "lods": [
+    {
+      "level": 1,
+      "triangles": 21134,
+      "relative_to_lod0": 0.6,
+      "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+    },
+    {
+      "level": 2,
+      "triangles": 12678,
+      "relative_to_lod0": 0.36,
+      "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+    }
+  ],
+  "bounds_m": [
+    [
+      -3.997545003890991,
+      0.9375009536743164
+    ],
+    [
+      -0.9346786737442017,
+      3.9975666999816895
+    ],
+    [
+      -0.007518040481954813,
+      5.443306922912598
+    ]
+  ],
+  "glb_bytes": 16746336,
+  "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+  "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+  "ai_plan": {
+    "diagnosis": "Rejected design lacks continuous walkway, overlapping ends, and proper stone bonding around corner.",
+    "design_intent": "Reconstructed arms with bonded stones, continuous path, and consistent V3 limestone geometry.",
+    "operations": [
+      "bonded_masonry",
+      "segmented_coping",
+      "tapered_buttresses",
+      "recessed_arrow_loops"
+    ],
+    "stone_height": 0.32,
+    "stone_length": 0.85,
+    "buttress_projection": 0.45,
+    "loop_count": 2,
+    "road_slab_length": 0.65,
+    "fault_lean": 0.5,
+    "fracture_depth": 0.35,
+    "talus_clusters": 4,
+    "crest_soil_depth": 0.25,
+    "material_intent": "V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 standard.",
+    "composition_notes": "True 90-degree arms, continuous walkway, no overlapping ends, stone crown and size match target."
+  },
+  "executed_operations": [
+    {
+      "operation": "bonded_masonry",
+      "parts": 153,
+      "length_m": 3.32,
+      "stone_course_height_m": 0.2986666666666667,
+      "true_arrow_loops": 0,
+      "contact_planes": [
+        -1.66,
+        1.66
+      ]
+    },
+    {
+      "operation": "bonded_masonry",
+      "parts": 155,
+      "length_m": 3.32,
+      "stone_course_height_m": 0.2986666666666667,
+      "true_arrow_loops": 0,
+      "contact_planes": [
+        -1.66,
+        1.66
+      ]
+    },
+    {
+      "operation": "dressed_corner_bond",
+      "turn_degrees": 90,
+      "wall_walkway_height": 4.52
+    }
+  ],
+  "art_pass": false,
+  "unity_pass": false
+}

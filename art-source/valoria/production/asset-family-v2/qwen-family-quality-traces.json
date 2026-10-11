@@ -1,0 +1,289 @@
+{
+  "wall_straight": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected wall_straight. Plan a MAJOR coherent reconstruction, not small jitter. Brief: 8m wall. Real bonded courses, segmented coping, parapet walkway, tapered buttresses. Arrow loops cut into masonry, not painted over it. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]}",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/wall_straight/v2-1-hero.png",
+        "sha256": "50861e313da0aa691cc5e1dba9df3200731f4a6df7c9affc5b28be8523ce8ddc"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"Rejected model lacks parapet, buttresses, and arrow loops; lacks geological realism and heraldic detail.\",\n  \"design_intent\": \"V3 limestone wall with bonded courses, parapet, tapered buttresses, and arrow loops for authentic medieval siege architecture.\",\n  \"operations\": [\n    \"bonded_masonry\",\n    \"parapet_walkway\",\n    \"tapered_buttresses\",\n    \"embedded_talus\",\n    \"modular_socket\",\n    \"fitted_flagstone_road\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 2,\n  \"road_slab_length\": 0.65,\n  \"fault_lean\": 0.65,\n  \"fracture_depth\": 0.35,\n  \"talus_clusters\": 5,\n  \"crest_soil_depth\": 0.25,\n  \"material_intent\": \"V3 limestone with blue/gold heraldry, natural earth tones, angular geology for historical authenticity and visual weight.\",\n  \"composition_notes\": \"8m wall with 26 courses, 2 arrow loops, 5 talus clusters, 0.45m buttresses, 0.65m road slab, 0.65\u00b0 lean.\"\n}",
+        "elapsed_seconds": 156.30074170799998,
+        "valid": true,
+        "stream_events": 268,
+        "completion_metrics": {
+          "eval_count": 304,
+          "eval_duration": 45863396000,
+          "prompt_eval_count": 1589,
+          "prompt_eval_duration": 106864111000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/wall_straight-artist-input-0.jpg",
+      "sha256": "908e9ea933c96ae3730e9be2780356fc627873c3395789ea14e7be1ff2335ed2",
+      "size": [
+        504,
+        224
+      ]
+    }
+  },
+  "watchtower": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected watchtower. Plan a MAJOR coherent reconstruction, not small jitter. Brief: Restore EXACT right V3 tower .blend with structural core, foot, machicolations, coping and crenels. Add coherent secondary detail. No global deformation or baked-coordinate sinusoid. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]} Your accepted shared family masonry canon is {\"stone_height\": 0.32, \"stone_length\": 0.85}. Retain those values.",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/watchtower/v2-1-hero.png",
+        "sha256": "574f32a2751309f0f7f7a759dfeb27af7e671f6845375e6181935631655b9c6f"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"V3 tower lacks structural integrity, machicolations, and coherent heraldry. Reconstruct with precise proportions.\",\n  \"design_intent\": \"Restore V3 tower with authentic limestone, blue/gold heraldry, and natural geology.\",\n  \"operations\": [\n    \"recessed_arrow_loops\",\n    \"modular_socket\",\n    \"buried_earth_support\",\n    \"tapered_buttresses\",\n    \"fitted_flagstone_road\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 2,\n  \"road_slab_length\": 0.65,\n  \"fault_lean\": 0.5,\n  \"fracture_depth\": 0.35,\n  \"talus_clusters\": 4,\n  \"crest_soil_depth\": 0.25,\n  \"material_intent\": \"V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 reference.\",\n  \"composition_notes\": \"Symmetrical, grounded, with crenels and machicolations, 1:1 scale with target.\"\n}",
+        "elapsed_seconds": 150.29424160500002,
+        "valid": true,
+        "stream_events": 252,
+        "completion_metrics": {
+          "eval_count": 283,
+          "eval_duration": 40782915000,
+          "prompt_eval_count": 1626,
+          "prompt_eval_duration": 109275488000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/watchtower-artist-input-0.jpg",
+      "sha256": "d5a7f58077d4b1038939186ef1b429d47037c789a37a1f73c6753a210ffb577b",
+      "size": [
+        504,
+        224
+      ]
+    }
+  },
+  "wall_corner": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected wall_corner. Plan a MAJOR coherent reconstruction, not small jitter. Brief: Two 4m arms at true 90 degrees. Bond stones around corner, continuous walkway, no overlapping ends. Same stone size/crown as wall. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]} Your accepted shared family masonry canon is {\"stone_height\": 0.32, \"stone_length\": 0.85}. Retain those values.",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/wall_corner/v2-1-hero.png",
+        "sha256": "fb079e1eb66c4c38f10323c7169932b04edb2436041ef51e51777b38ceabf784"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"Rejected design lacks continuous walkway, overlapping ends, and proper stone bonding around corner.\",\n  \"design_intent\": \"Reconstructed arms with bonded stones, continuous path, and consistent V3 limestone geometry.\",\n  \"operations\": [\n    \"bonded_masonry\",\n    \"segmented_coping\",\n    \"tapered_buttresses\",\n    \"recessed_arrow_loops\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 2,\n  \"road_slab_length\": 0.65,\n  \"fault_lean\": 0.5,\n  \"fracture_depth\": 0.35,\n  \"talus_clusters\": 4,\n  \"crest_soil_depth\": 0.25,\n  \"material_intent\": \"V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 standard.\",\n  \"composition_notes\": \"True 90-degree arms, continuous walkway, no overlapping ends, stone crown and size match target.\"\n}",
+        "elapsed_seconds": 146.24617799200007,
+        "valid": true,
+        "stream_events": 232,
+        "completion_metrics": {
+          "eval_count": 262,
+          "eval_duration": 37382544000,
+          "prompt_eval_count": 1620,
+          "prompt_eval_duration": 108653993000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/wall_corner-artist-input-0.jpg",
+      "sha256": "56c622cd6a7e302aec6f675666e0514c6fdc7eaef5849a15a18b15370b8d4f70",
+      "size": [
+        504,
+        224
+      ]
+    }
+  },
+  "wall_connections": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected wall_connections. Plan a MAJOR coherent reconstruction, not small jitter. Brief: 2m wall socket with dressed end masonry and tapered pier. Contacts x=+-1m, same wall heights/stone sizes. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]} Your accepted shared family masonry canon is {\"stone_height\": 0.32, \"stone_length\": 0.85}. Retain those values.",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/wall_connections/v2-1-hero.png",
+        "sha256": "a83f99dfb880e37baf85063fb3bb4ede3b8991dda608b3211acc91fbcae7bfad"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"Rejected model lacks dressed masonry and tapered pier; geometry inconsistent with V3 limestone standards.\",\n  \"design_intent\": \"V3 stone wall: dressed ashlar blocks, tapering pier, heraldry flags, natural geology texture, earthy color palette.\",\n  \"operations\": [\n    \"modular_socket\",\n    \"dressed_corner_bond\",\n    \"tapered_buttresses\",\n    \"fitted_flagstone_road\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 1,\n  \"road_slab_length\": 0.65,\n  \"fault_lean\": 0.5,\n  \"fracture_depth\": 0.25,\n  \"talus_clusters\": 3,\n  \"crest_soil_depth\": 0.25,\n  \"material_intent\": \"V3 limestone: grey angular blocks, blue/gold heraldry flags; natural earth tones and geologic texture dominance.\",\n  \"composition_notes\": \"Symmetrical wall socket with tapered pier, consistent stone height/length, minimal loop count for structural clarity.\"\n}",
+        "elapsed_seconds": 64.90388530600003,
+        "valid": true,
+        "stream_events": 245,
+        "completion_metrics": {
+          "eval_count": 273,
+          "eval_duration": 23844631000,
+          "prompt_eval_count": 1615,
+          "prompt_eval_duration": 38573917000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/wall_connections-artist-input-0.jpg",
+      "sha256": "165101dffed366bfde995d981df03c580d2ab47ccb4b66b2101957f56d23c7bd",
+      "size": [
+        504,
+        224
+      ]
+    }
+  },
+  "stone_path_platform": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected stone_path_platform. Plan a MAJOR coherent reconstruction, not small jitter. Brief: 4m x 8m continuous road: closely fitted varied rectangular flagstones, buried earth support. No circular plinth, stepping-stone islands or floating paving. Road z=0; relief under 0.025m. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]} Your accepted shared family masonry canon is {\"stone_height\": 0.32, \"stone_length\": 0.85}. Retain those values.",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/stone_path_platform/v2-1-hero.png",
+        "sha256": "f6e163396380150f10605e69577fc891dc1fb2fec63331e20e08b0bf3684bd19"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"Rejected design lacks coherent stone geometry and fails to meet V3 limestone standard with no visible heraldry or earth support.\",\n  \"design_intent\": \"V3 canonical masonry: varied flagstones, buried soil base, blue/gold banners, natural geology under strict engineering limits.\",\n  \"operations\": [\n    \"modular_socket\",\n    \"earth_grass_crest\",\n    \"buried_earth_support\",\n    \"fitted_flagstone_road\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 1,\n  \"road_slab_length\": 0.75,\n  \"fault_lean\": 0.65,\n  \"fracture_depth\": 0.35,\n  \"talus_clusters\": 5,\n  \"crest_soil_depth\": 0.25,\n  \"material_intent\": \"V3 limestone, blue/gold heraldry on flagstones; natural earth and grey angular geology under z=0 with <0.025m relief.\",\n  \"composition_notes\": \"Continuous road: varied slab lengths, buttress projection for stability, talus clusters as erosion markers.\"\n}",
+        "elapsed_seconds": 64.20029414300001,
+        "valid": true,
+        "stream_events": 254,
+        "completion_metrics": {
+          "eval_count": 283,
+          "eval_duration": 24968885000,
+          "prompt_eval_count": 1637,
+          "prompt_eval_duration": 39080985000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/stone_path_platform-artist-input-0.jpg",
+      "sha256": "e57441bc4006c4c0fa002d0997d751388642315fd5634647133d6302353412ff",
+      "size": [
+        504,
+        224
+      ]
+    }
+  },
+  "cliff_rocks": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected cliff_rocks. Plan a MAJOR coherent reconstruction, not small jitter. Brief: 12m linear modular escarpment, not round mesa. Broad leaning angular fault planes, vertical fissures, large/medium/small hierarchy, rock talus and earth/grass crest. Crown z=0, exposed face 3.5m, closed base. Geometry and portable UV/textures carry geology. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]} Your accepted shared family masonry canon is {\"stone_height\": 0.32, \"stone_length\": 0.85}. Retain those values.",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/cliff_rocks/v2-1-hero.png",
+        "sha256": "c7f2e02fd5f8d5f9ca9d84b0afca3ca67dc3f54e168cf985ce41395521e4c447"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"Rejects round mesa; demands angular fault planes and talus clusters for escarpment realism.\",\n  \"design_intent\": \"V3 limestone with heraldry: blue/gold banners, earthy grey geology, modular construction.\",\n  \"operations\": [\n    \"modular_socket\",\n    \"fault_plane_escarpment\",\n    \"tapered_buttresses\",\n    \"earth_grass_crest\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 3,\n  \"road_slab_length\": 0.65,\n  \"fault_lean\": 0.65,\n  \"fracture_depth\": 0.25,\n  \"talus_clusters\": 7,\n  \"crest_soil_depth\": 0.25,\n  \"material_intent\": \"V3 limestone: blue/gold heraldry, natural earth and grey angular geology.\",\n  \"composition_notes\": \"12m linear escarpment; crown z=0, exposed face 3.5m, closed base.\"\n}",
+        "elapsed_seconds": 63.486678934999986,
+        "valid": true,
+        "stream_events": 232,
+        "completion_metrics": {
+          "eval_count": 261,
+          "eval_duration": 23981234000,
+          "prompt_eval_count": 1653,
+          "prompt_eval_duration": 39358224000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/cliff_rocks-artist-input-0.jpg",
+      "sha256": "0d673ff0d9245f56743ad434d943022d7cfaed14582fa67976697707d942b915",
+      "size": [
+        504,
+        224
+      ]
+    }
+  },
+  "defensive_props": {
+    "model": "qwen3-vl:4b-instruct",
+    "prompt": "You are external 3D ARTIST of Eldoria commanding actual Blender mesh construction. Single comparison board, left target Valoria 9.5/10; middle immutable Hero V3 MINIMUM; right rejected defensive_props. Plan a MAJOR coherent reconstruction, not small jitter. Brief: Complete V3 blue banner WITH gold embroidery/bar and brazier WITH bowl, pedestal, cap/flames. Separate modular mounts, wooden braces/iron fastenings. Real physical attachments. Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: {\"stone_height\": [0.27, 0.3, 0.32, 0.35, 0.38], \"stone_length\": [0.65, 0.75, 0.85, 0.95, 1.05, 1.1], \"buttress_projection\": [0.25, 0.35, 0.45, 0.55, 0.65], \"loop_count\": [1, 2, 3], \"road_slab_length\": [0.45, 0.55, 0.65, 0.75, 0.8], \"fault_lean\": [0.35, 0.5, 0.65, 0.8, 0.9], \"fracture_depth\": [0.18, 0.25, 0.35, 0.45, 0.55], \"talus_clusters\": [3, 4, 5, 6, 7], \"crest_soil_depth\": [0.12, 0.16, 0.2, 0.25, 0.3]} Your accepted shared family masonry canon is {\"stone_height\": 0.32, \"stone_length\": 0.85}. Retain those values.",
+    "images": [
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+        "sha256": "de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.png",
+        "sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a"
+      },
+      {
+        "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/defensive_props/v2-1-hero.png",
+        "sha256": "0dccb111a84a889aba8bb3b32a96ffecd5e75915d5780cff1a8ab385fb27176b"
+      }
+    ],
+    "attempts": [
+      {
+        "raw_response": "{\n  \"diagnosis\": \"V3 banner requires modular attachment with real physical fastenings and brazier geometry.\",\n  \"design_intent\": \"Blueprint: blue/gold heraldry on V3 limestone; natural earth geology, angular stone blocks.\",\n  \"operations\": [\n    \"buried_earth_support\",\n    \"modular_socket\",\n    \"buried_earth_support\"\n  ],\n  \"stone_height\": 0.32,\n  \"stone_length\": 0.85,\n  \"buttress_projection\": 0.45,\n  \"loop_count\": 1,\n  \"road_slab_length\": 0.65,\n  \"fault_lean\": 0.5,\n  \"fracture_depth\": 0.25,\n  \"talus_clusters\": 3,\n  \"crest_soil_depth\": 0.16,\n  \"material_intent\": \"V3 limestone, blue/gold heraldry; natural earth and grey angular geology.\",\n  \"composition_notes\": \"Brazier bowl on pedestal with cap/flames visible; wooden braces/iron fastenings.\"\n}",
+        "elapsed_seconds": 60.52830440700001,
+        "valid": true,
+        "stream_events": 211,
+        "completion_metrics": {
+          "eval_count": 238,
+          "eval_duration": 20967467000,
+          "prompt_eval_count": 1624,
+          "prompt_eval_duration": 39423009000,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "vision_board": {
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/art-source/valoria/production/asset-family-v2/defensive_props-artist-input-0.jpg",
+      "sha256": "dc2c3aa07bc7fa849d969d1b85a79114c3cfaf2550d5fddfda6080cbd3a40eec",
+      "size": [
+        504,
+        224
+      ]
+    }
+  }
+}

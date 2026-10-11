@@ -1,0 +1,314 @@
+{
+  "exports": [
+    {
+      "asset": "watchtower",
+      "lod": 0,
+      "file_sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+      "meshes": 13,
+      "triangles": 42532,
+      "bounds_m": [
+        [
+          -1.61813485622406,
+          1.6316992044448853
+        ],
+        [
+          -1.9515000581741333,
+          1.8450000286102295
+        ],
+        [
+          -0.01564439944922924,
+          7.620354175567627
+        ]
+      ],
+      "capture": "watchtower/roundtrip-hero.png"
+    },
+    {
+      "asset": "watchtower",
+      "lod": 2,
+      "file_sha256": "54bcdaa38e761ae8f56915b20440de8ee66ca5e81336a966ec9ef3116eb15351",
+      "meshes": 13,
+      "triangles": 15980,
+      "bounds_m": [
+        [
+          -1.61813485622406,
+          1.6221833229064941
+        ],
+        [
+          -1.9515000581741333,
+          1.8450000286102295
+        ],
+        [
+          -0.011981403455138206,
+          7.61620569229126
+        ]
+      ],
+      "capture": "watchtower/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "wall_straight",
+      "lod": 0,
+      "file_sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+      "meshes": 8,
+      "triangles": 48900,
+      "bounds_m": [
+        [
+          -4.001867771148682,
+          4.00211238861084
+        ],
+        [
+          -1.1853115558624268,
+          0.7676175832748413
+        ],
+        [
+          -0.007546716835349798,
+          5.440356731414795
+        ]
+      ],
+      "capture": "wall_straight/roundtrip-hero.png"
+    },
+    {
+      "asset": "wall_straight",
+      "lod": 2,
+      "file_sha256": "1b077d349a56ba8ff3c6217ec50ece2fadfac9a86e32e0f27ff7635a0b377de1",
+      "meshes": 8,
+      "triangles": 17594,
+      "bounds_m": [
+        [
+          -4.001640319824219,
+          3.9990718364715576
+        ],
+        [
+          -1.1853115558624268,
+          0.7669601440429688
+        ],
+        [
+          -0.007546716835349798,
+          5.437053203582764
+        ]
+      ],
+      "capture": "wall_straight/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "wall_corner",
+      "lod": 0,
+      "file_sha256": "f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f",
+      "meshes": 8,
+      "triangles": 35232,
+      "bounds_m": [
+        [
+          -4.000481605529785,
+          0.9427464604377747
+        ],
+        [
+          -0.9398937225341797,
+          3.9992337226867676
+        ],
+        [
+          -0.007969195954501629,
+          5.443306922912598
+        ]
+      ],
+      "capture": "wall_corner/roundtrip-hero.png"
+    },
+    {
+      "asset": "wall_corner",
+      "lod": 2,
+      "file_sha256": "938d51fa2d6b558843cabf34a0d2efcf9aab6f1f24253479d917693b1e13bbf4",
+      "meshes": 8,
+      "triangles": 12678,
+      "bounds_m": [
+        [
+          -3.997545003890991,
+          0.9375009536743164
+        ],
+        [
+          -0.9346786737442017,
+          3.9975666999816895
+        ],
+        [
+          -0.007518040481954813,
+          5.443306922912598
+        ]
+      ],
+      "capture": "wall_corner/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "wall_connections",
+      "lod": 0,
+      "file_sha256": "88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858",
+      "meshes": 8,
+      "triangles": 18804,
+      "bounds_m": [
+        [
+          -1.0027611255645752,
+          1.0016944408416748
+        ],
+        [
+          -1.103880763053894,
+          0.7673128843307495
+        ],
+        [
+          -0.007561057806015015,
+          5.442399024963379
+        ]
+      ],
+      "capture": "wall_connections/roundtrip-hero.png"
+    },
+    {
+      "asset": "wall_connections",
+      "lod": 2,
+      "file_sha256": "a23b2dfdc9693af3a6ff3b5d05b7e03994ca18bc58b45291fb8044476147df80",
+      "meshes": 8,
+      "triangles": 6762,
+      "bounds_m": [
+        [
+          -1.0027611255645752,
+          0.9997249245643616
+        ],
+        [
+          -1.103880763053894,
+          0.7617464661598206
+        ],
+        [
+          -0.004856989253312349,
+          5.4390950202941895
+        ]
+      ],
+      "capture": "wall_connections/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "stone_path_platform",
+      "lod": 0,
+      "file_sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "meshes": 7,
+      "triangles": 7980,
+      "bounds_m": [
+        [
+          -2.359464645385742,
+          2.359464645385742
+        ],
+        [
+          -4.0,
+          4.0
+        ],
+        [
+          -0.25999999046325684,
+          0.06176890805363655
+        ]
+      ],
+      "capture": "stone_path_platform/roundtrip-hero.png"
+    },
+    {
+      "asset": "stone_path_platform",
+      "lod": 2,
+      "file_sha256": "dd98fb0c983c2d7b5595dd30fc83f96c6cb382029193b2d515927f9523400374",
+      "meshes": 7,
+      "triangles": 2867,
+      "bounds_m": [
+        [
+          -2.359464645385742,
+          2.359464645385742
+        ],
+        [
+          -4.0,
+          4.0
+        ],
+        [
+          -0.25177741050720215,
+          0.06176890805363655
+        ]
+      ],
+      "capture": "stone_path_platform/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "cliff_rocks",
+      "lod": 0,
+      "file_sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "meshes": 2,
+      "triangles": 25666,
+      "bounds_m": [
+        [
+          -6.3436994552612305,
+          6.23118257522583
+        ],
+        [
+          -3.5602569580078125,
+          2.0
+        ],
+        [
+          -3.66115140914917,
+          0.06499999761581421
+        ]
+      ],
+      "capture": "cliff_rocks/roundtrip-hero.png"
+    },
+    {
+      "asset": "cliff_rocks",
+      "lod": 2,
+      "file_sha256": "948a18bc32b41b2cf79b9e97125da7493fc3b435947f8d2602fe157ffb71f424",
+      "meshes": 2,
+      "triangles": 9239,
+      "bounds_m": [
+        [
+          -6.3428521156311035,
+          6.23118257522583
+        ],
+        [
+          -3.559711217880249,
+          2.0
+        ],
+        [
+          -3.659507989883423,
+          0.06500039249658585
+        ]
+      ],
+      "capture": "cliff_rocks/roundtrip-LOD2-strategic.png"
+    },
+    {
+      "asset": "defensive_props",
+      "lod": 0,
+      "file_sha256": "5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c",
+      "meshes": 7,
+      "triangles": 4464,
+      "bounds_m": [
+        [
+          -2.5900001525878906,
+          2.5900001525878906
+        ],
+        [
+          -1.7015000581741333,
+          1.75
+        ],
+        [
+          0.0,
+          4.654999732971191
+        ]
+      ],
+      "capture": "defensive_props/roundtrip-hero.png"
+    },
+    {
+      "asset": "defensive_props",
+      "lod": 2,
+      "file_sha256": "ed7cc694e20a536f68e5a1673887c70f881a5a2a59ba04fc5083b893827c7682",
+      "meshes": 7,
+      "triangles": 3560,
+      "bounds_m": [
+        [
+          -2.5900001525878906,
+          2.5900001525878906
+        ],
+        [
+          -1.7015000581741333,
+          1.75
+        ],
+        [
+          0.0,
+          4.652604579925537
+        ]
+      ],
+      "capture": "defensive_props/roundtrip-LOD2-strategic.png"
+    }
+  ],
+  "art_pass": false,
+  "unity_pass": false
+}

@@ -1,0 +1,198 @@
+{
+  "frozen_gate_sha256": "81e63b7269bef3180648b636ad7341a4373e800afd05527e8e8aa95d88d35e2f",
+  "exact_glb_reimports": [
+    {
+      "asset": "Frozen Hero V3",
+      "sha256": "81e63b7269bef3180648b636ad7341a4373e800afd05527e8e8aa95d88d35e2f",
+      "meshes": 1037,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "wall_connections",
+      "sha256": "88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858",
+      "meshes": 8,
+      "position": [
+        -6.639999961853027,
+        0,
+        0
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "asset": "wall_straight",
+      "sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+      "meshes": 8,
+      "position": [
+        -11.589999961853028,
+        0,
+        0
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "asset": "wall_corner",
+      "sha256": "f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f",
+      "meshes": 8,
+      "position": [
+        -19.589999961853028,
+        0,
+        0
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "asset": "watchtower",
+      "sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+      "meshes": 13,
+      "position": [
+        -19.589999961853028,
+        4.9,
+        0
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "wall_connections",
+      "sha256": "88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858",
+      "meshes": 8,
+      "position": [
+        6.639999961853027,
+        0,
+        0
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "wall_straight",
+      "sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+      "meshes": 8,
+      "position": [
+        11.589999961853028,
+        0,
+        0
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "wall_corner",
+      "sha256": "f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f",
+      "meshes": 8,
+      "position": [
+        19.589999961853028,
+        0,
+        0
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "watchtower",
+      "sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+      "meshes": 13,
+      "position": [
+        19.589999961853028,
+        4.9,
+        0
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "cliff_rocks",
+      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "meshes": 2,
+      "position": [
+        -24,
+        -6,
+        -0.06
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "cliff_rocks",
+      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "meshes": 2,
+      "position": [
+        -12,
+        -6,
+        -0.06
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "cliff_rocks",
+      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "meshes": 2,
+      "position": [
+        0,
+        -6,
+        -0.06
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "cliff_rocks",
+      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "meshes": 2,
+      "position": [
+        12,
+        -6,
+        -0.06
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "cliff_rocks",
+      "sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "meshes": 2,
+      "position": [
+        24,
+        -6,
+        -0.06
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "stone_path_platform",
+      "sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "meshes": 7,
+      "position": [
+        0,
+        -4,
+        0.005
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "stone_path_platform",
+      "sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "meshes": 7,
+      "position": [
+        0,
+        4,
+        0.005
+      ],
+      "angle": 0
+    },
+    {
+      "asset": "defensive_props",
+      "sha256": "5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c",
+      "meshes": 7,
+      "position": [
+        0,
+        7.5,
+        0
+      ],
+      "angle": 0
+    }
+  ],
+  "no_anisotropic_scaling": true,
+  "identical_packed_image_references_deduplicated": 382,
+  "ground_support": "explicit QA-only context, not a delivered family member",
+  "art_pass": false,
+  "unity_pass": false,
+  "scope": "offline modular family QA, not game integration"
+}

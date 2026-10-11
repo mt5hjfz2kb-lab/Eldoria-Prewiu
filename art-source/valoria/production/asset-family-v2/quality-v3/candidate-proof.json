@@ -1,0 +1,887 @@
+{
+  "assets": {
+    "cliff_rocks": {
+      "blend_sha256": "764caa520eba1a744e919e06ab0637de3687ecc6012f9004d8de04b594cc3e0c",
+      "glb_sha256": "a6f38424ac01dc3b394a1aa1fd6fc02f0f2a058c4080a12059a2d021cb1c5188",
+      "evidence": {
+        "asset": "cliff_rocks",
+        "triangles": 25666,
+        "export_meshes": 2,
+        "effective_materials": 2,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 15399,
+            "relative_to_lod0": 0.6,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 9239,
+            "relative_to_lod0": 0.36,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -6.3428521156311035,
+            6.23118257522583
+          ],
+          [
+            -3.559711217880249,
+            2.0
+          ],
+          [
+            -3.659507989883423,
+            0.06500039249658585
+          ]
+        ],
+        "glb_bytes": 8646584,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "Rejects round mesa; demands angular fault planes and talus clusters for escarpment realism.",
+          "design_intent": "V3 limestone with heraldry: blue/gold banners, earthy grey geology, modular construction.",
+          "operations": [
+            "modular_socket",
+            "fault_plane_escarpment",
+            "tapered_buttresses",
+            "earth_grass_crest"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 3,
+          "road_slab_length": 0.65,
+          "fault_lean": 0.65,
+          "fracture_depth": 0.25,
+          "talus_clusters": 7,
+          "crest_soil_depth": 0.25,
+          "material_intent": "V3 limestone: blue/gold heraldry, natural earth and grey angular geology.",
+          "composition_notes": "12m linear escarpment; crown z=0, exposed face 3.5m, closed base."
+        },
+        "executed_operations": [
+          {
+            "operation": "fault_plane_escarpment",
+            "continuous_vertices": 2817,
+            "primary_fault_slabs": 4,
+            "scan_to_connected_surface_transfer": true,
+            "real_cc0_scanned_masses": 4,
+            "cc0_source": "https://opengameart.org/content/free-photogrammetric-rock",
+            "donor_blend_sha256": "924ca5676a60d2fe3487ba98b66ec0ff4befb96c0954d0f95beff83227f598d4",
+            "fault_lean_m": 0.65,
+            "fracture_depth_m": 0.25,
+            "embedded_talus_clusters": 7,
+            "soil_depth_m": 0.25,
+            "footing_plane_z": 0.065
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    },
+    "wall_connections": {
+      "blend_sha256": "07f8e2b5d86b5189511146877d04e9ec505a41ee842a65f7b43fa6627d80e369",
+      "glb_sha256": "88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858",
+      "evidence": {
+        "asset": "wall_connections",
+        "triangles": 18804,
+        "export_meshes": 8,
+        "effective_materials": 8,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 11276,
+            "relative_to_lod0": 0.6,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 6762,
+            "relative_to_lod0": 0.36,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -1.0027611255645752,
+            0.9997249245643616
+          ],
+          [
+            -1.103880763053894,
+            0.7617464661598206
+          ],
+          [
+            -0.004856989253312349,
+            5.4390950202941895
+          ]
+        ],
+        "glb_bytes": 14306416,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "Rejected model lacks dressed masonry and tapered pier; geometry inconsistent with V3 limestone standards.",
+          "design_intent": "V3 stone wall: dressed ashlar blocks, tapering pier, heraldry flags, natural geology texture, earthy color palette.",
+          "operations": [
+            "modular_socket",
+            "dressed_corner_bond",
+            "tapered_buttresses",
+            "fitted_flagstone_road"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 1,
+          "road_slab_length": 0.65,
+          "fault_lean": 0.5,
+          "fracture_depth": 0.25,
+          "talus_clusters": 3,
+          "crest_soil_depth": 0.25,
+          "material_intent": "V3 limestone: grey angular blocks, blue/gold heraldry flags; natural earth tones and geologic texture dominance.",
+          "composition_notes": "Symmetrical wall socket with tapered pier, consistent stone height/length, minimal loop count for structural clarity."
+        },
+        "executed_operations": [
+          {
+            "operation": "bonded_masonry",
+            "parts": 160,
+            "length_m": 2,
+            "stone_course_height_m": 0.2986666666666667,
+            "true_arrow_loops": 0,
+            "contact_planes": [
+              -1.0,
+              1.0
+            ]
+          },
+          {
+            "operation": "modular_socket",
+            "contact_width_m": 2,
+            "end_plane_tolerance_m": 0.012
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    },
+    "wall_straight": {
+      "blend_sha256": "0bcc74bf3e3eb7bc0630c0113bec81692170555f1c4c9c2620e9ce2857f77fa0",
+      "glb_sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+      "evidence": {
+        "asset": "wall_straight",
+        "triangles": 48900,
+        "export_meshes": 8,
+        "effective_materials": 8,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 29334,
+            "relative_to_lod0": 0.6,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 17596,
+            "relative_to_lod0": 0.36,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -4.001640319824219,
+            3.9990718364715576
+          ],
+          [
+            -1.1853115558624268,
+            0.7669601440429688
+          ],
+          [
+            -0.007546716835349798,
+            5.437053203582764
+          ]
+        ],
+        "glb_bytes": 18745476,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "Rejected model lacks parapet, buttresses, and arrow loops; lacks geological realism and heraldic detail.",
+          "design_intent": "V3 limestone wall with bonded courses, parapet, tapered buttresses, and arrow loops for authentic medieval siege architecture.",
+          "operations": [
+            "bonded_masonry",
+            "parapet_walkway",
+            "tapered_buttresses",
+            "embedded_talus",
+            "modular_socket",
+            "fitted_flagstone_road"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 2,
+          "road_slab_length": 0.65,
+          "fault_lean": 0.65,
+          "fracture_depth": 0.35,
+          "talus_clusters": 5,
+          "crest_soil_depth": 0.25,
+          "material_intent": "V3 limestone with blue/gold heraldry, natural earth tones, angular geology for historical authenticity and visual weight.",
+          "composition_notes": "8m wall with 26 courses, 2 arrow loops, 5 talus clusters, 0.45m buttresses, 0.65m road slab, 0.65\u00b0 lean."
+        },
+        "executed_operations": [
+          {
+            "operation": "bonded_masonry",
+            "parts": 459,
+            "length_m": 8,
+            "stone_course_height_m": 0.2986666666666667,
+            "true_arrow_loops": 2,
+            "contact_planes": [
+              -4.0,
+              4.0
+            ]
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    },
+    "watchtower": {
+      "blend_sha256": "e93a8a624aea8ca9d7ec5701ed0de38ca2363d657e12bb60acb4806fbc87222e",
+      "glb_sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+      "evidence": {
+        "asset": "watchtower",
+        "triangles": 42532,
+        "export_meshes": 13,
+        "effective_materials": 13,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 25934,
+            "relative_to_lod0": 0.61,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 15980,
+            "relative_to_lod0": 0.376,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -1.61813485622406,
+            1.6221833229064941
+          ],
+          [
+            -1.9515000581741333,
+            1.8450000286102295
+          ],
+          [
+            -0.011981403455138206,
+            7.61620569229126
+          ]
+        ],
+        "glb_bytes": 21550804,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "V3 tower lacks structural integrity, machicolations, and coherent heraldry. Reconstruct with precise proportions.",
+          "design_intent": "Restore V3 tower with authentic limestone, blue/gold heraldry, and natural geology.",
+          "operations": [
+            "recessed_arrow_loops",
+            "modular_socket",
+            "buried_earth_support",
+            "tapered_buttresses",
+            "fitted_flagstone_road"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 2,
+          "road_slab_length": 0.65,
+          "fault_lean": 0.5,
+          "fracture_depth": 0.35,
+          "talus_clusters": 4,
+          "crest_soil_depth": 0.25,
+          "material_intent": "V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 reference.",
+          "composition_notes": "Symmetrical, grounded, with crenels and machicolations, 1:1 scale with target."
+        },
+        "executed_operations": [
+          {
+            "operation": "v3_complete_tower",
+            "parts": 374,
+            "source_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+            "whole_component_affine_translation_only": true
+          },
+          {
+            "operation": "oak_iron_bracing",
+            "ladder_rungs": 13
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    },
+    "stone_path_platform": {
+      "blend_sha256": "913a4e642e29b6b236692876073d71f689009d64c668baef9d90db4b23190bf3",
+      "glb_sha256": "2b833f25cc304e2408c6ea3586b34c7789266ab6ccaeb16d625d12fa4b44c774",
+      "evidence": {
+        "asset": "stone_path_platform",
+        "triangles": 7980,
+        "export_meshes": 7,
+        "effective_materials": 7,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 4782,
+            "relative_to_lod0": 0.599,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 2867,
+            "relative_to_lod0": 0.359,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -2.359464645385742,
+            2.359464645385742
+          ],
+          [
+            -4.0,
+            4.0
+          ],
+          [
+            -0.25177741050720215,
+            0.06176890805363655
+          ]
+        ],
+        "glb_bytes": 13762960,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "Rejected design lacks coherent stone geometry and fails to meet V3 limestone standard with no visible heraldry or earth support.",
+          "design_intent": "V3 canonical masonry: varied flagstones, buried soil base, blue/gold banners, natural geology under strict engineering limits.",
+          "operations": [
+            "modular_socket",
+            "earth_grass_crest",
+            "buried_earth_support",
+            "fitted_flagstone_road"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 1,
+          "road_slab_length": 0.75,
+          "fault_lean": 0.65,
+          "fracture_depth": 0.35,
+          "talus_clusters": 5,
+          "crest_soil_depth": 0.25,
+          "material_intent": "V3 limestone, blue/gold heraldry on flagstones; natural earth and grey angular geology under z=0 with <0.025m relief.",
+          "composition_notes": "Continuous road: varied slab lengths, buttress projection for stability, talus clusters as erosion markers."
+        },
+        "executed_operations": [
+          {
+            "operation": "fitted_flagstone_road",
+            "rows": 11,
+            "supported": true,
+            "module_m": [
+              4,
+              8
+            ],
+            "maximum_relief_m": 0.025
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    },
+    "defensive_props": {
+      "blend_sha256": "5d6175d562a8813ad6963fc4ddc1b8c62784070356e750d9191057f584f8479a",
+      "glb_sha256": "5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c",
+      "evidence": {
+        "asset": "defensive_props",
+        "triangles": 4464,
+        "export_meshes": 7,
+        "effective_materials": 7,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 3898,
+            "relative_to_lod0": 0.873,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 3560,
+            "relative_to_lod0": 0.797,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -2.5900001525878906,
+            2.5900001525878906
+          ],
+          [
+            -1.7015000581741333,
+            1.75
+          ],
+          [
+            0.0,
+            4.652604579925537
+          ]
+        ],
+        "glb_bytes": 9220200,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "V3 banner requires modular attachment with real physical fastenings and brazier geometry.",
+          "design_intent": "Blueprint: blue/gold heraldry on V3 limestone; natural earth geology, angular stone blocks.",
+          "operations": [
+            "buried_earth_support",
+            "modular_socket",
+            "buried_earth_support"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 1,
+          "road_slab_length": 0.65,
+          "fault_lean": 0.5,
+          "fracture_depth": 0.25,
+          "talus_clusters": 3,
+          "crest_soil_depth": 0.16,
+          "material_intent": "V3 limestone, blue/gold heraldry; natural earth and grey angular geology.",
+          "composition_notes": "Brazier bowl on pedestal with cap/flames visible; wooden braces/iron fastenings."
+        },
+        "executed_operations": [
+          {
+            "operation": "v3_complete_heraldry_and_braziers",
+            "original_meshes": 24,
+            "gold_embroideries_preserved": true,
+            "brazier_bowls_preserved": true
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    },
+    "wall_corner": {
+      "blend_sha256": "cca28cbe7b44d8026fbe4810b5e2b519f60a109f2c970ce0ffcb0a1285d66437",
+      "glb_sha256": "f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f",
+      "evidence": {
+        "asset": "wall_corner",
+        "triangles": 35232,
+        "export_meshes": 8,
+        "effective_materials": 8,
+        "lods": [
+          {
+            "level": 1,
+            "triangles": 21134,
+            "relative_to_lod0": 0.6,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          },
+          {
+            "level": 2,
+            "triangles": 12678,
+            "relative_to_lod0": 0.36,
+            "visual_distance_use": "requires engine-screen-size selection; not physical-device certified"
+          }
+        ],
+        "bounds_m": [
+          [
+            -3.997545003890991,
+            0.9375009536743164
+          ],
+          [
+            -0.9346786737442017,
+            3.9975666999816895
+          ],
+          [
+            -0.007518040481954813,
+            5.443306922912598
+          ]
+        ],
+        "glb_bytes": 16746336,
+        "source_gate_sha256": "ec3d554441b8116feb97105a60ee6f30fcea790be4ed68dd55d36dd87c7add6c",
+        "authoring_evidence": "GENUINE_EXTERNAL_QWEN_PLAN_BEFORE_BLENDER_MCP",
+        "ai_plan": {
+          "diagnosis": "Rejected design lacks continuous walkway, overlapping ends, and proper stone bonding around corner.",
+          "design_intent": "Reconstructed arms with bonded stones, continuous path, and consistent V3 limestone geometry.",
+          "operations": [
+            "bonded_masonry",
+            "segmented_coping",
+            "tapered_buttresses",
+            "recessed_arrow_loops"
+          ],
+          "stone_height": 0.32,
+          "stone_length": 0.85,
+          "buttress_projection": 0.45,
+          "loop_count": 2,
+          "road_slab_length": 0.65,
+          "fault_lean": 0.5,
+          "fracture_depth": 0.35,
+          "talus_clusters": 4,
+          "crest_soil_depth": 0.25,
+          "material_intent": "V3 limestone, blue/gold heraldry, natural earth and grey angular geology, consistent with Valoria 9.5/10 standard.",
+          "composition_notes": "True 90-degree arms, continuous walkway, no overlapping ends, stone crown and size match target."
+        },
+        "executed_operations": [
+          {
+            "operation": "bonded_masonry",
+            "parts": 153,
+            "length_m": 3.32,
+            "stone_course_height_m": 0.2986666666666667,
+            "true_arrow_loops": 0,
+            "contact_planes": [
+              -1.66,
+              1.66
+            ]
+          },
+          {
+            "operation": "bonded_masonry",
+            "parts": 155,
+            "length_m": 3.32,
+            "stone_course_height_m": 0.2986666666666667,
+            "true_arrow_loops": 0,
+            "contact_planes": [
+              -1.66,
+              1.66
+            ]
+          },
+          {
+            "operation": "dressed_corner_bond",
+            "turn_degrees": 90,
+            "wall_walkway_height": 4.52
+          }
+        ],
+        "art_pass": false,
+        "unity_pass": false
+      }
+    }
+  },
+  "renders": {
+    "art-source/valoria/production/asset-family-v2/quality-v3/assembly-gate-contact.jpg": {
+      "png_sha256": "de57bff4c94d1d72a0f89340f7b41009474c5d37d68c1787f210b259c07ccc6c",
+      "jpeg_sha256": "e517e933c750841693a1119ac3999a69c9852c8459b3934f02d72527f69e5f3b",
+      "width": 1600,
+      "height": 1000,
+      "bytes": 406944
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/assembly-hero.jpg": {
+      "png_sha256": "54872862a8533dadcb6cdf90fb36fddaec60bbb322fb4d0062cecd24b78e03de",
+      "jpeg_sha256": "a49c4513feeaec2a1b12c9125a0161714fe7cf16a603891387e4de37cfcc7d47",
+      "width": 1600,
+      "height": 1000,
+      "bytes": 235610
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/assembly-strategic.jpg": {
+      "png_sha256": "4b2011847d8ac8249e1ac3377d7573a421a2c9357298c33d81a1ad4c28d56a26",
+      "jpeg_sha256": "9749afac792dd09585527c147b14172688f3b6627517becad2eba4deefb68f84",
+      "width": 1600,
+      "height": 1000,
+      "bytes": 205541
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/after-strategic.jpg": {
+      "png_sha256": "2cc4e3dcc80ab1ec69f2cca89c756166f7f1753053d2d8240720fcc32b55439c",
+      "jpeg_sha256": "ad853ddf30facc2265ace16f0c233b5a05d43f42d1376a2dad173609e7755238",
+      "width": 1100,
+      "height": 850,
+      "bytes": 68285
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/after-hero.jpg": {
+      "png_sha256": "38b34f74051fc08b8c63559b315faa963f628aa93ff0fbd0645dbbaa572503d6",
+      "jpeg_sha256": "64424aec0a36c1ec46f4bb149ec791ef671609325f77cad8c686df3ac0677dd3",
+      "width": 1100,
+      "height": 850,
+      "bytes": 91755
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "08f1e3da261d01af7921f2d94127213aaf5b77c4b7ed581bf5cb498b5b0c4b7a",
+      "jpeg_sha256": "fefa8fa8476fa23f6fb4e1cf9bb9838f73453ea87e01fc653354e9b09e3a6c33",
+      "width": 1100,
+      "height": 850,
+      "bytes": 68423
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/roundtrip-hero.jpg": {
+      "png_sha256": "da5a20bbe598d68d4a7de1ef665eb8966f8c326b5086561dd395420a9e143c5a",
+      "jpeg_sha256": "db0419d487e0e6bdffe33a87963294384714c815612a3dac2f84b7a3259fd863",
+      "width": 1100,
+      "height": 850,
+      "bytes": 92047
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/before-hero.jpg": {
+      "png_sha256": "c6c5f3e39e4425f05ec915f37e54ae15dbf59e5ce9fe20110338a6de0db875ae",
+      "jpeg_sha256": "541fed59a7cf2a7fd92579884bac2ec3284400ecfd81cf0bb02010eb0046e360",
+      "width": 1100,
+      "height": 850,
+      "bytes": 105161
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/before-strategic.jpg": {
+      "png_sha256": "35a0f145aef69040edebd40feecfa8e024446ef107528c9b4a7e0a530617c994",
+      "jpeg_sha256": "6b619b70bc938cb6d310563e09953edcc8dc87aea80430bc8c3d383d07e697c2",
+      "width": 1100,
+      "height": 850,
+      "bytes": 77148
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_connections/after-strategic.jpg": {
+      "png_sha256": "27eb7c8244cce1ff26af6707122c1db436a60f93c0ad80f0ca675640e500fa96",
+      "jpeg_sha256": "b2ac2fe4220fd1ccd963fd6b9f0ea9678953c4acfeb2a58439ba6b8d35519963",
+      "width": 1100,
+      "height": 850,
+      "bytes": 68777
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_connections/after-hero.jpg": {
+      "png_sha256": "ff91a81eccd1f950a2154f4b064eb122c2419fcafdd211ad889a5666e8217557",
+      "jpeg_sha256": "cad4024ce54fccb04251351afaf355c850bc06a775140182376dcb4570535861",
+      "width": 1100,
+      "height": 850,
+      "bytes": 92135
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_connections/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "3508819867f7db06237fb862bea5ba6e5442629005a56f6f9b30b66e519b9e0e",
+      "jpeg_sha256": "b430b13bbae5e575b7c2004d2e2b333bf64b733614406fd6c1bff551275065e9",
+      "width": 1100,
+      "height": 850,
+      "bytes": 68686
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_connections/roundtrip-hero.jpg": {
+      "png_sha256": "20e5676dcb6ba46ac3c37a8cf71f26ac03d64df320650283b73f6d7c0a365101",
+      "jpeg_sha256": "f4e42b5d1c9b7eafe3311d05eca99ef625cc88ab0c77c08cd0bc75ccd51a1da7",
+      "width": 1100,
+      "height": 850,
+      "bytes": 92457
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_connections/before-hero.jpg": {
+      "png_sha256": "19899df698310071bc0f505a00867a0d8fbe04663cd321d4d89d8394c5bec690",
+      "jpeg_sha256": "b10ba48a9e9fece11d4c8da107623d1ad05aaa38f4f9c297d2ad681727413081",
+      "width": 1100,
+      "height": 850,
+      "bytes": 158964
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_connections/before-strategic.jpg": {
+      "png_sha256": "065a215efbccde5100a03188330f7baf33e2166ba1fe44452dbd8ece875e3449",
+      "jpeg_sha256": "536e8a869bf3941e2060bd896dd21610006a7ec0153794ade2d37562953b3bc5",
+      "width": 1100,
+      "height": 850,
+      "bytes": 108003
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/after-strategic.jpg": {
+      "png_sha256": "c11063fe3420b0854a5591125427d67d34e22ff1ed246181394401236f3d2d00",
+      "jpeg_sha256": "af0f8b77c2956f3fde4a2addcc0e8a30e642a1d08b3a831d21305a9d8da5c01b",
+      "width": 1100,
+      "height": 850,
+      "bytes": 90957
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/after-hero.jpg": {
+      "png_sha256": "8f4b2033c3a6912734ab349760d200a66d631a87bd5d51d8a3f8b3b70206c68e",
+      "jpeg_sha256": "48dcd088688d66f11e29fb0a2d3a6d659462dbda72cfc7617be87023e2da5623",
+      "width": 1100,
+      "height": 850,
+      "bytes": 130071
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "abb731f3b6e4c6fb550669f1232357146d68ec6b3947d9f21b129eb05031f2a2",
+      "jpeg_sha256": "35de931165ae01e507d4510761b718283d31f639f5d9893166e19c3eedf48e00",
+      "width": 1100,
+      "height": 850,
+      "bytes": 90106
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/roundtrip-hero.jpg": {
+      "png_sha256": "f74b3b059e233c2cb6ed037fbae4001b69f3b668bc63954279cd452289238bf9",
+      "jpeg_sha256": "c0de499b299f5d9ccecc8332d53be2dbfe60e91e5ceadb86f8cf05c5480d9deb",
+      "width": 1100,
+      "height": 850,
+      "bytes": 130391
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/before-hero.jpg": {
+      "png_sha256": "8be9bb81f9228afafab898e10b88bfb0765460f1f1b9b1756760361c2c511608",
+      "jpeg_sha256": "7aa78914d2fabd8fa9e8a1a0507655b19483ee466fc5f79dd785a91e6e219715",
+      "width": 1100,
+      "height": 850,
+      "bytes": 145053
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/before-strategic.jpg": {
+      "png_sha256": "7e3f42afadb82451951d12bcb89d41f356354e418f9f723a98ad321b39ffecd8",
+      "jpeg_sha256": "9beabb10c6985d1ca23548363a04741e77b8e869c03fac71941f063bbba39b5d",
+      "width": 1100,
+      "height": 850,
+      "bytes": 98813
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/after-strategic.jpg": {
+      "png_sha256": "00629f6df202a9d24a762787f12731af97fb3a1da811594a9f8db7c5f42c63a2",
+      "jpeg_sha256": "f479d238e4ec6a99debdbb6f4d79fcc6fc571dbf3ebd7ef043606048754ec073",
+      "width": 1100,
+      "height": 850,
+      "bytes": 75387
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/after-hero.jpg": {
+      "png_sha256": "18f2fd20c755762313da101dedc23287156ff01e5ffa653c7e315c625b194756",
+      "jpeg_sha256": "36992f016024ae4de3a58693b8851f141a8efd6014cffa7530d108b4ef08dcda",
+      "width": 1100,
+      "height": 850,
+      "bytes": 105491
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "3ae637924b0f7cf75b180520070dad403588a71f534115745864aa3bedff29ca",
+      "jpeg_sha256": "494ad5cfa57c33f053b774885e402321c7f59bafb5871317b234f814f13d4b2b",
+      "width": 1100,
+      "height": 850,
+      "bytes": 74561
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/roundtrip-hero.jpg": {
+      "png_sha256": "2c079ddc02c993f2839fe8266a5077095c2080e6531fc181f1f81e413cb84e90",
+      "jpeg_sha256": "5e8d864e96c96afdc5322f602e488217f17528cfdc7e29985b1c808b16aa5935",
+      "width": 1100,
+      "height": 850,
+      "bytes": 105789
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/before-hero.jpg": {
+      "png_sha256": "bb29e8060cc91f291694e47f9ed7da8a70acba4b44108a519e3a7799a05c75ac",
+      "jpeg_sha256": "deeebdbc02c880ccba90b85f7e96ffdc6e20823bcfd3f9d677ad2572171231f6",
+      "width": 1100,
+      "height": 850,
+      "bytes": 120513
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/before-strategic.jpg": {
+      "png_sha256": "7f8f2072f40cfeb52d6766ba7811fda2c05b9379204f5a7c54829f6cc9f55e4f",
+      "jpeg_sha256": "7a6ccbf19ad675a989aad12a95089fa433972fdb669398aa7b3038a883dd8a12",
+      "width": 1100,
+      "height": 850,
+      "bytes": 83767
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/after-strategic.jpg": {
+      "png_sha256": "959ea60642fdb37303e5ec98f2a0eb7c880ca8f757b3192aecb99c4840fe55f3",
+      "jpeg_sha256": "a51ea34cbb24dc7cb075d8b4559db82afe26513ac1ff497868288ec7b37f82d5",
+      "width": 1100,
+      "height": 850,
+      "bytes": 64561
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/after-hero.jpg": {
+      "png_sha256": "78b08954ed828387b530d5f284a76d9c54b1c49e68396c568849f49535b4e116",
+      "jpeg_sha256": "3148818e506b590b91a788826578840f3bdbb946aecf3209a9ee1e87330881ce",
+      "width": 1100,
+      "height": 850,
+      "bytes": 80212
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "1342fcfb16f199fdd3dfe89ed30d37b9b8852dbe4cefca628cbec93ee2044b12",
+      "jpeg_sha256": "2e61accddf5c462d5f07c8c3ab3a380af9cc657713b07b648a18cb9859e8f2c1",
+      "width": 1100,
+      "height": 850,
+      "bytes": 65639
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/roundtrip-hero.jpg": {
+      "png_sha256": "5edee0c7a2525ddf6c4dfdd7cfd49b1ae4fcfbadd4520fa9dd83b49988814512",
+      "jpeg_sha256": "609d565de4af129885d88d20c4d0742ddfdcb7007a3475f25d27d338627816fd",
+      "width": 1100,
+      "height": 850,
+      "bytes": 80442
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/before-hero.jpg": {
+      "png_sha256": "17d384b298822dc6d9126240d06124100c38ac27867f86840fe3bbca06446410",
+      "jpeg_sha256": "4f19c5f6addacb0deed8b4767120d7f0a35ef8b54631f05efd3c8e217a28dde0",
+      "width": 1100,
+      "height": 850,
+      "bytes": 132513
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/stone_path_platform/before-strategic.jpg": {
+      "png_sha256": "4ea6bfb714921f8bd3de69871622c713b4202e8532fe572a08398eac79523905",
+      "jpeg_sha256": "5aff738f2a8b1bfd2a3bfefa59657b7861d4e1f5a455d8bc7e0413abda387c36",
+      "width": 1100,
+      "height": 850,
+      "bytes": 99807
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/after-strategic.jpg": {
+      "png_sha256": "a364c3228a41d4d687b0774fea991ba680e6fada523d9f633e1f0635a1c6e49f",
+      "jpeg_sha256": "9863b41385f15aa99e7e5652409b827199b9a2854b9d4924744a081c2418fe00",
+      "width": 1100,
+      "height": 850,
+      "bytes": 49043
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/after-hero.jpg": {
+      "png_sha256": "17b48f24a53df4755ffa279e696de3d21ceb2634c0bb9f6dda25d24893db5752",
+      "jpeg_sha256": "5c1e5eb878464838a15eb14c3823b488e2ad12ca02709459ac5e9e5d830b7f13",
+      "width": 1100,
+      "height": 850,
+      "bytes": 58943
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "e1316539c95c9cddba725479c4b31a948d11654ebda292418ce1f8392fae5f02",
+      "jpeg_sha256": "e196500372befb46f0798e64127fe0d3370a8be8d9a82b7d76319191f4d20574",
+      "width": 1100,
+      "height": 850,
+      "bytes": 49243
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/roundtrip-hero.jpg": {
+      "png_sha256": "6f86c7901acf54cf455e23f3781dbbd3166b00707b417efa943628a4de78d936",
+      "jpeg_sha256": "6355881f13ea4bc00e8e8b62dce1051d335ed97deff5b47fd76a164bf98f5db5",
+      "width": 1100,
+      "height": 850,
+      "bytes": 59033
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/before-hero.jpg": {
+      "png_sha256": "0d8bbd3a19b7f84feabd7c45a609037f6b23d8d81e7ed6551fa0cf4d1ef4266a",
+      "jpeg_sha256": "c00218e6ec83ef54c84fbc6b42aa4bf37de7364a5e3092881740f313206628f2",
+      "width": 1100,
+      "height": 850,
+      "bytes": 57494
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/defensive_props/before-strategic.jpg": {
+      "png_sha256": "4ce5a8474b4b643ea9da24b8b1aae27d6d98f686be79d68819d018eecb23ee39",
+      "jpeg_sha256": "6a8e93562585c8732f0374c7ad22404ad94717261f40185c3ef3240066f354d7",
+      "width": 1100,
+      "height": 850,
+      "bytes": 48977
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_corner/after-strategic.jpg": {
+      "png_sha256": "1480a4cff3a82da457c0a7098477a6a3dacb5743d9cf90ab342c3ae02b360548",
+      "jpeg_sha256": "c732637863bc37d39bfe4c7af15c6a16950ae08576be924507b77d4a17705fd2",
+      "width": 1100,
+      "height": 850,
+      "bytes": 85675
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_corner/after-hero.jpg": {
+      "png_sha256": "cd1b4a3fec24b500ba2be95930820378dc78c5ae96b3cc120f4bfe7e7262faec",
+      "jpeg_sha256": "6a9a78cd30fcc0c928a7ae20f2d97cfb07f861d8a78c8e5b7ce6cad9dab7670f",
+      "width": 1100,
+      "height": 850,
+      "bytes": 121981
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_corner/roundtrip-LOD2-strategic.jpg": {
+      "png_sha256": "8e6bc562a1a8762a2403441dacda5b8d9671f41d261f78b1d1c90c9600987565",
+      "jpeg_sha256": "8f3a6a743c2f71707c0e982784a4e2147daa029a444bc2c2920877bf580ed7cf",
+      "width": 1100,
+      "height": 850,
+      "bytes": 84928
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_corner/roundtrip-hero.jpg": {
+      "png_sha256": "c032a91ed9c4afa3fc1630078a82c52411b26a2843148229a5814c8e8a1b4e44",
+      "jpeg_sha256": "968e2934ada5a5d32dc38eb1d23810cf4641f95c52f98634c8c64ea6b053320f",
+      "width": 1100,
+      "height": 850,
+      "bytes": 122765
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_corner/before-hero.jpg": {
+      "png_sha256": "cc18d5c28277be22fb544b87c75cbf535c017e42813d3479fef68ff413d57538",
+      "jpeg_sha256": "44d702c041d44c36f2e5fbfc81cea12041afe8018f6523b25485a8cdb52c6552",
+      "width": 1100,
+      "height": 850,
+      "bytes": 133066
+    },
+    "art-source/valoria/production/asset-family-v2/quality-v3/wall_corner/before-strategic.jpg": {
+      "png_sha256": "7a336b5005254a0ed5930f2e7eee581a1307ef24e08d0d11b17a37cf24640539",
+      "jpeg_sha256": "33cabaaa6fc6c8c7c53c37c4485ba2d83e0020b5f8b189b5d4ed1212c60ed57d",
+      "width": 1100,
+      "height": 850,
+      "bytes": 92603
+    },
+    "art-source/valoria/production/first-hero-gate-v1/quality-v3/after-hero-matched.jpg": {
+      "png_sha256": "a678d9de7630d6cf7cad42c7ecac91ab3f5b933eaa5d28c816cce18a569fba1a",
+      "jpeg_sha256": "5c9097213020ee75ce886ba12689718f6f995afd34de83dfca84ac388afe6da9",
+      "width": 1280,
+      "height": 960,
+      "bytes": 210201
+    }
+  },
+  "authority": "unreviewed real-source candidate; independent art review required"
+}
