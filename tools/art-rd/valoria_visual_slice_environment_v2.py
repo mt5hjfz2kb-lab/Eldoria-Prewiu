@@ -97,7 +97,7 @@ for j in range(125):
     size=.35+rng.random()*1.35
     transformed_ico(x,z,y,(size*1.4,size*.95,size*.65),stone[rng.randrange(len(stone))])
 # low-detail tree silhouette with clustered irregular bough masses, no cylindrical cone assets
-for j in range(105):
+for j in range(0):
     theta=rng.random()*math.tau
     r=(14+rng.random()*23)
     x=r*math.cos(theta);z=r*math.sin(theta)
