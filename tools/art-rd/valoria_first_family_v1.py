@@ -65,7 +65,7 @@ def corner():
   o.location.x,o.location.y=0.0-o.location.y,o.location.x-2.5
   o.rotation_euler.z+=math.pi/2
 def setup_camera(target=(0,0,2),scale=17,strategic=False):
- sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=20
+ sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=20;sc.cycles.use_denoising=False;sc.view_layers[0].cycles.use_denoising=False
  sc.render.resolution_x=960;sc.render.resolution_y=640
  sc.render.resolution_percentage=100
  sc.render.image_settings.file_format="PNG"
