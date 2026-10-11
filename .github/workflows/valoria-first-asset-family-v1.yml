@@ -2,7 +2,7 @@ name: Valoria first asset family V1
 on:
   push:
     branches: [art/valoria-first-asset-family-v1-20261011]
-    paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml', 'tools/art-rd/valoria_family_mcp_cliff.py', 'tools/art-rd/valoria_family_mcp_secondary.py', 'tools/art-rd/valoria_family_cc0_scanned_cliff.py', 'tools/art-rd/valoria_family_qwen_decisions.py']
+    paths: ['tools/art-rd/valoria_first_family_v1.py', '.github/workflows/valoria-first-asset-family-v1.yml', 'tools/art-rd/valoria_family_mcp_cliff.py', 'tools/art-rd/valoria_family_mcp_secondary.py', 'tools/art-rd/valoria_family_cc0_scanned_cliff.py', 'tools/art-rd/valoria_family_qwen_decisions.py', 'tools/art-rd/valoria_family_comparisons.py']
   workflow_dispatch:
 permissions:
   contents: read
@@ -60,6 +60,8 @@ jobs:
         run: |
           blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_mcp_secondary.py
           test -s art-source/valoria/production/first-asset-family-v1/mcp-family-authoring-index.json
+      - name: Create exact real V3 vs before vs edited BlenderMCP visual boards
+        run: python3 tools/art-rd/valoria_family_comparisons.py
       - name: Native GLB structural preflight, not artistic approval
         run: |
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/first-asset-family-v1/*/*.glb > art-source/valoria/production/first-asset-family-v1/glb-audit.json
