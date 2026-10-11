@@ -1,0 +1,51 @@
+name: Valoria isolated production library V1
+on:
+  push:
+    branches:
+      - art/valoria-production-library-v1-20261011
+    paths:
+      - tools/valoria-production-library/**
+      - .github/workflows/valoria-production-library-v1.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: valoria-production-library-v1
+  cancel-in-progress: false
+jobs:
+  blender-library:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Install free Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender libegl1 libgl1-mesa-dri
+      - name: Produce editable Blender scenes, GLBs and evidence
+        run: |
+          blender -b --python tools/valoria-production-library/build_library_v1.py
+          for a in Valoria_Wall_LibraryV1 Valoria_Tower_LibraryV1 Valoria_Gate_LibraryV1; do
+            test -s "art-source/valoria/production/library-v1/$a.blend"
+            test -s "art-source/valoria/production/library-v1/$a.png"
+            test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/LibraryV1/$a.glb"
+          done
+      - name: Save production sources exclusively to owned branch
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add art-source/valoria/production/library-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/LibraryV1
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Valoria production architecture library V1"
+            git push origin HEAD:art/valoria-production-library-v1-20261011
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-library-v1-blender-evidence
+          path: |
+            art-source/valoria/production/library-v1/
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/LibraryV1/
+          if-no-files-found: error
+          retention-days: 30
