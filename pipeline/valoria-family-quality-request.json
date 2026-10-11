@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "iteration": 3,
+  "owner": "chat-work-valoria-family-quality-takeover-20261011",
+  "source_run": 38174276796,
+  "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
+  "minimum_reference": "art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.blend",
+  "target_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "paid_credits": 0,
+  "art_pass": false,
+  "unity_pass": false
+}

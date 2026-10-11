@@ -1,8 +1,5 @@
 name: Valoria V2.1 Qwen vision art decisions for 7 assets
 on:
-  push:
-    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
-    paths: ['.github/workflows/valoria-v2-1-qwen-decisions.yml','tools/art-rd/valoria_family_v2_1_qwen_art_director.py']
   workflow_dispatch:
 permissions:
   contents: read

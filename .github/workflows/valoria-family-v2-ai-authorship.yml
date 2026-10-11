@@ -1,56 +1,73 @@
-name: Valoria asset family V2 active IA BlenderMCP production
+name: Valoria family canonical AI artist and Blender workshop
 on:
   push:
     branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
-    paths: ['.github/workflows/valoria-family-v2-ai-authorship.yml', 'tools/art-rd/valoria_asset_family_v2_author.py']
+    paths: ['pipeline/valoria-family-quality-request.json']
   workflow_dispatch:
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: valoria-family-v2-art-${{ github.ref }}
-  cancel-in-progress: true
+  group: valoria-family-art-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  make-v2:
+  artist-workshop:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-      - name: Restore actual V1 Blender sources and model decisions; no rebuild
-        uses: actions/download-artifact@v4
+      - name: Read exact source lineage request
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p=json.load(open('pipeline/valoria-family-quality-request.json'))
+          assert p['enabled'] and p['paid_credits']==0
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+            f.write('SOURCE_RUN='+str(p['source_run'])+'\nSOURCE_ARTIFACT='+p['source_artifact']+'\n')
+          PY
+      - uses: actions/download-artifact@v4
         with:
-          name: valoria-first-asset-family-v1-production
-          run-id: 38164428109
+          name: ${{ env.SOURCE_ARTIFACT }}
+          run-id: ${{ env.SOURCE_RUN }}
           github-token: ${{ github.token }}
-          path: art-source/valoria/production/first-asset-family-v1
-      - name: Check editable sources and recorded Qwen choices before edits
+          path: art-source/valoria/production/asset-family-v2
+      - name: Recover established free Qwen runtime
         run: |
-          ROOT=art-source/valoria/production/first-asset-family-v1
-          test -s "$ROOT/agent-decisions.json"
-          for A in wall_straight watchtower wall_corner wall_connections stone_path_platform cliff_rocks defensive_props; do
-            test -s "$ROOT/$A/$A.blend" || { echo "MISSING $A"; exit 1; }
-          done
-      - name: Install free Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
-      - name: Fetch proven immutable BlenderMCP addon
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-pil python3-numpy
+          bash "$RUNNER_TEMP/start-qwen.sh"
+      - name: External artist directs seven substantial designs before mesh construction
+        run: python3 tools/art-rd/valoria_family_v2_1_qwen_art_director.py
+      - name: Preserve real artistic inference separately before production
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-family-quality-genuine-artist-directions
+          path: art-source/valoria/production/asset-family-v2/qwen-family-quality-*.json
+      - name: Install exact Blender workshop
         run: |
+          curl -fL --retry 2 https://download.blender.org/release/Blender4.3/blender-4.3.2-linux-x64.tar.xz -o "$RUNNER_TEMP/blender.tar.xz"
+          tar -xf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/blender-4.3.2-linux-x64" >> "$GITHUB_PATH"
           curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
           echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
-      - name: Perform seven real substantial BlenderMCP edits and matched renders
-        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_asset_family_v2_author.py
-      - name: Validate all seven V2 exports and real MCP evidence
+      - name: Portable image PBR surfaces
+        run: python3 tools/art-rd/valoria_family_quality_surfaces.py
+      - name: Real AI-designed architecture and geology through BlenderMCP
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_quality_author.py
+      - name: Exact reimport assembly and structural preflight
         run: |
-          OUT=art-source/valoria/production/asset-family-v2
-          for A in wall_straight watchtower wall_corner wall_connections stone_path_platform cliff_rocks defensive_props; do
-            for F in "$A-v2.blend" "$A-v2.glb" v2-after-hero.png v2-after-strategic.png v2-ai-mcp-authoring.json; do
-              test -s "$OUT/$A/$F" || { echo "MISSING $A/$F"; exit 1; }
-            done
-          done
-          python3 tools/art-rd/audit_glb.py "$OUT"/*/*-v2.glb > "$OUT/glb-audit.json"
-      - name: Preserve all deliverables even on failure
+          blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_quality_assemble.py
+          python3 tools/art-rd/audit_glb.py art-source/valoria/production/asset-family-v2/quality-v3/*/*.glb > art-source/valoria/production/asset-family-v2/quality-v3/glb-preflight.json
+      - name: Preserve editable family, actual renders and inference
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: valoria-family-v2-seven-sources-renders-evidence
-          path: art-source/valoria/production/asset-family-v2/
+          name: valoria-family-quality-v3-editable-sources-renders
+          path: |
+            art-source/valoria/production/asset-family-v2/quality-v3/
+            art-source/valoria/production/asset-family-v2/quality-textures/
+            art-source/valoria/production/asset-family-v2/qwen-family-quality-*.json
           retention-days: 30
