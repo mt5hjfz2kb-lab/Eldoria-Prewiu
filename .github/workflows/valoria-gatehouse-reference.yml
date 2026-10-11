@@ -44,16 +44,11 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f "$destination"
           git commit -m "art: preserve Valoria gatehouse source and review renders"
-          for attempt in 1 2 3 4 5; do
-            git fetch origin "$branch"
-            # A separate clean worktree prevents unrelated Blender changes from blocking rebase.
-            git rebase FETCH_HEAD
-            if git push origin "HEAD:$branch"; then
-              exit 0
-            fi
-            if [ "$attempt" -eq 5 ]; then exit 1; fi
-            sleep 3
-          done
+          # Commit was created from freshly fetched remote head in a disposable worktree.
+          # Avoid rebase: LFS-filtered Blender files can mark this checkout dirty.
+          # Non-fast-forward push rejects competing changes without overwriting them.
+          git status --short
+          git push origin "HEAD:$branch"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
