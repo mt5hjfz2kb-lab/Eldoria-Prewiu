@@ -1,16 +1,17 @@
 {
   "art_director_geometry": {
     "baseline": "V5_commit_64f5975960",
-    "intervention": "existing_stone_surface_microrelief_and_material_roughness",
+    "intervention": "stone_microrelief_and_portable_variation_maps",
     "existing_stone_meshes_refined": 864,
     "architecture_changes": 0,
+    "portable_albedo_variants": 3,
     "artistic_status": "REVIEW_REQUIRED",
     "no_additional_asset_families": true
   },
   "triangles": 34700,
   "mesh_count": 22,
   "materials": 22,
-  "glb_bytes": 3149424,
+  "glb_bytes": 3303852,
   "wall_to_tower_edge_contact_x": [
     -8.65,
     8.65
