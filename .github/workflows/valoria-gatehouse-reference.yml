@@ -40,9 +40,17 @@ jobs:
           git add -f "$destination"
           if ! git diff --cached --quiet; then
             git commit -m "art: preserve Valoria gatehouse source and review renders"
-            git fetch origin art/valoria-gate-quality-calibration-v1-20261011
-            git rebase origin/art/valoria-gate-quality-calibration-v1-20261011
-            git push origin "HEAD:art/valoria-gate-quality-calibration-v1-20261011"
+            # Blender's imported source may dirty tracked files. Preserve only committed run evidence.
+            git restore --worktree .
+            for attempt in 1 2 3 4 5; do
+              git fetch origin art/valoria-gate-quality-calibration-v1-20261011
+              git rebase origin/art/valoria-gate-quality-calibration-v1-20261011
+              if git push origin "HEAD:art/valoria-gate-quality-calibration-v1-20261011"; then
+                break
+              fi
+              if [ "$attempt" -eq 5 ]; then exit 1; fi
+              sleep 3
+            done
           fi
       - uses: actions/upload-artifact@v4
         if: always()
