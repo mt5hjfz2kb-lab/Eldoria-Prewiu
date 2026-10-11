@@ -37,11 +37,11 @@ jobs:
            if marker in segments:
             rel=pathlib.Path(*segments[segments.index(marker)+1:])
            else:
-            rel=pathlib.Path(file.parent.name)/file.name
+            rel=file.relative_to(src)
            dest=out/rel;dest.parent.mkdir(parents=True,exist_ok=True)
            shutil.copy2(file,dest);copied.append(str(rel))
           assert len([p for p in out.rglob('mcp-after-hero.png')])==7
-          assert (out/'agent-decisions.json').exists()
+          assert list(out.rglob('agent-decisions.json')),('Missing Qwen decisions',list(out.rglob('*.json')))
           (out/'art-evidence-index.json').write_text(json.dumps({
            'source_gitHub_actions_run':38163291604,
            'source_artifact':11711602894,
