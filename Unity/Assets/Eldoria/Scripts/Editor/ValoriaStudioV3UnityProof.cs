@@ -98,6 +98,27 @@ namespace Eldoria.EditorTools
                     if (!materials.TryGetValue(mat, out var copy))
                     {
                         copy = UnityEngine.Object.Instantiate(mat);
+                        if (mat.HasProperty("baseColorTexture") && mat.HasProperty("baseColorFactor"))
+                        {
+                            var standard = Shader.Find("Universal Render Pipeline/Lit");
+                            if (standard == null) throw new Exception("URP Lit shader missing");
+                            copy = new Material(standard);
+                            copy.name = "Valoria persistent PBR " + materials.Count;
+                            copy.SetColor("_BaseColor", mat.GetColor("baseColorFactor"));
+                            copy.SetTexture("_BaseMap", mat.GetTexture("baseColorTexture"));
+                            if (mat.HasProperty("normalTexture") && mat.GetTexture("normalTexture") != null)
+                            {
+                                copy.SetTexture("_BumpMap", mat.GetTexture("normalTexture"));
+                                copy.EnableKeyword("_NORMALMAP");
+                            }
+                            if (mat.HasProperty("alphaCutoff") && mat.GetFloat("alphaCutoff") > 0.001f)
+                            {
+                                copy.SetFloat("_AlphaClip", 1f);
+                                copy.SetFloat("_Cutoff", mat.GetFloat("alphaCutoff"));
+                                copy.EnableKeyword("_ALPHATEST_ON");
+                                copy.renderQueue = 2450;
+                            }
+                        }
                         if (copy.shader != null)
                             for (int p = 0; p < copy.shader.GetPropertyCount(); p++)
                             {
