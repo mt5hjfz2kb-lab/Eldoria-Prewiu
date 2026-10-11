@@ -261,9 +261,27 @@ for ob in list(bpy.data.objects):
   or ob.name.startswith("slate_lap_tile")
   or ob.name.startswith("worn_roof_finial")):
   bpy.data.objects.remove(ob,do_unlink=True)
+# V8 hand-cut battlement geometry: taper and nick stone blocks, not cosmetic decals.
+# This edits vertices of the same existing tower and gatehouse meshes.
+crown_mesh_edited=0
+for ob in list(bpy.data.objects):
+ if ob.type!="MESH" or not ("crown_merlon" in ob.name or "capped_merlon" in ob.name):continue
+ verts=ob.data.vertices
+ if not verts:continue
+ xs=[p.co.x for p in verts];ys=[p.co.y for p in verts];zs=[p.co.z for p in verts]
+ zmid=(min(zs)+max(zs))/2
+ mx=(min(xs)+max(xs))/2;my=(min(ys)+max(ys))/2
+ uid=sum(ord(ch) for ch in ob.name)%11
+ amount=.73+.025*(uid%5)
+ for i,p in enumerate(verts):
+  if p.co.z>zmid:
+   p.co.x=mx+(p.co.x-mx)*amount
+   p.co.y=my+(p.co.y-my)*(.80+.02*(uid%5))
+   p.co.z-=(.035*(uid%4)) if i%3==0 else 0
+ crown_mesh_edited+=1
 # Towers now end as fortified stone walkways; avoid floating ornaments.
 # Overwrite the art history AFTER all authored operations, just before rendering.
-art_director_geometry={"baseline":"run_38136991434","rejected_predecessors":["V2_smooth_piers","V3_minor_delta","V4_roof_on_stilts","V5_oversized_merlons","V6_insufficient_tower_quality"],"operations":["historical_ashlar_preserved","deep_portal_arch","engaged_buttresses","stone_chamber","reduced_crown_merlons","arched_observation_slot","square_tower_mesh_reshape_and_stretch","remove_conical_roof_geometry"],"tower_meshes_modified":tower_mesh_edited,"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+art_director_geometry={"baseline":"run_38136991434","rejected_predecessors":["V2_smooth_piers","V3_minor_delta","V4_roof_on_stilts","V5_oversized_merlons","V6_insufficient_tower_quality"],"operations":["historical_ashlar_preserved","deep_portal_arch","engaged_buttresses","stone_chamber","reduced_crown_merlons","arched_observation_slot","square_tower_mesh_reshape_and_stretch","remove_conical_roof_geometry","taper_existing_crown_merlon_vertices"],"tower_meshes_modified":tower_mesh_edited,"crenel_meshes_sculpted":crown_mesh_edited,"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 # Final V6 provenance recorded above. Do not overwrite with predecessor metadata.
 
