@@ -45,9 +45,23 @@ schema={'type':'object','properties':{
 schema['required']=list(schema['properties'])
 CHOICES={"stone_height":[0.27,0.3,0.32,0.35,0.38],"stone_length":[0.65,0.75,0.85,0.95,1.05,1.1],"buttress_projection":[0.25,0.35,0.45,0.55,0.65],"loop_count":[1,2,3],"road_slab_length":[0.45,0.55,0.65,0.75,0.8],"fault_lean":[0.35,0.5,0.65,0.8,0.9],"fracture_depth":[0.18,0.25,0.35,0.45,0.55],"talus_clusters":[3,4,5,6,7],"crest_soil_depth":[0.12,0.16,0.2,0.25,0.3]}
 for field,values in CHOICES.items():schema['properties'][field]['enum']=values
+for field in ('diagnosis','design_intent','material_intent','composition_notes'):
+ schema['properties'][field].update({'minLength':30,'maxLength':180,'pattern':'^[^\\n]{30,180}$'})
 DIMENSION_RULES=('All lengths are metres. stone_height is ONE masonry course, NOT wall height. stone_length is ONE ashlar block. buttress_projection is outward depth. road_slab_length is ONE road slab. fault_lean/fracture_depth/crest_soil_depth are relief dimensions. loop_count and talus_clusters are integer counts. Select only these explicit workshop choices: '+json.dumps(CHOICES))
 OUT.mkdir(parents=True,exist_ok=True);plans={};traces={}
+if os.environ.get('RESUME_ARTIST_RUN','0')!='0':
+ saved=json.loads((OUT/'qwen-family-quality-directions.json').read_text())
+ assert not saved.get('TEST_FIXTURE_NON_AUTHORITATIVE') and saved['self_approval'] is False
+ traces=json.loads((OUT/'qwen-family-quality-traces.json').read_text())
+ for asset,plan in saved['plans'].items():
+  assert asset in BRIEFS and set(schema['required'])<=set(plan)
+  assert any(a.get('valid') and json.loads(a['raw_response'])==plan for a in traces[asset]['attempts'])
+  assert traces[asset]['images'][0]['sha256']==hashlib.sha256(TARGET.read_bytes()).hexdigest()
+  for field,values in CHOICES.items():assert plan[field] in values
+  plans[asset]=plan
+ print('EXTERNAL_ARTIST_RESUME_VALIDATED',list(plans),flush=True)
 for asset,brief in BRIEFS.items():
+ if asset in plans:continue
  if 'wall_straight' in plans:
   for field in ('stone_height','stone_length'):schema['properties'][field]['enum']=[plans['wall_straight'][field]]
  current=OUT/asset/'v2-1-hero.png'
@@ -59,7 +73,7 @@ for asset,brief in BRIEFS.items():
   'Give specific visible diagnosis, your authored design, MULTIPLE relevant workshop operations, numerical proportions and composition notes. Bound values are engineering limits; YOU choose values. '
   'Each text field must be one concise sentence, max 25 words. Material intent: explain belonging to V3 limestone, blue/gold heraldry, natural earth and grey angular geology. Never approve yourself. Required JSON only. '+DIMENSION_RULES)
  if 'wall_straight' in plans:prompt+=' Your accepted shared family masonry canon is '+json.dumps({k:plans['wall_straight'][k] for k in ('stone_height','stone_length')})+'. Retain those values.'
- payload={'model':'qwen3-vl:4b-instruct','stream':True,'think':False,'keep_alive':'10m','format':schema,'options':{'temperature':.15,'num_predict':800,'num_ctx':3072,'num_thread':2},'messages':[{'role':'user','content':prompt,'images':[]}]}
+ payload={'model':'qwen3-vl:4b-instruct','stream':True,'think':False,'keep_alive':'10m','format':schema,'options':{'temperature':.15,'repeat_penalty':1.2,'num_predict':1100,'num_ctx':4096,'num_thread':2},'messages':[{'role':'user','content':prompt,'images':[]}]}
  trace={'model':payload['model'],'prompt':prompt,'images':[{'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in inputs],'attempts':[]}
  for attempt in range(2):
   start=time.monotonic();raw='';events=0;print('EXTERNAL_ARTIST_START',asset,attempt,flush=True)
@@ -78,6 +92,7 @@ for asset,brief in BRIEFS.items():
    plan=json.JSONDecoder().raw_decode(raw[raw.index('{'):])[0]
    assert set(schema['required'])<=set(plan)
    assert len(plan['diagnosis'])>25 and len(plan['design_intent'])>25
+   assert all(30<=len(plan[k])<=180 for k in ('diagnosis','design_intent','material_intent','composition_notes'))
    assert len(plan['operations'])>=2 and all(x in OPS for x in plan['operations'])
    for field,spec in schema['properties'].items():
     if spec['type'] in ('number','integer'):assert spec['minimum']<=plan[field]<=spec['maximum'] and plan[field] in CHOICES[field],(field,plan[field])
@@ -93,3 +108,4 @@ for asset,brief in BRIEFS.items():
  (OUT/'qwen-family-quality-directions.json').write_text(json.dumps({'plans':plans,'self_approval':False},indent=2))
  print('EXTERNAL_ARTIST_DESIGN',asset,plan['operations'],flush=True)
 assert len(plans)==7
+

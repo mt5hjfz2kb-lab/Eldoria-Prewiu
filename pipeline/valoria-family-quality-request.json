@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "iteration": 10,
+  "iteration": 11,
   "owner": "chat-work-valoria-family-quality-takeover-20261011",
   "source_run": 38174276796,
   "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
@@ -16,9 +16,12 @@
   "failed_artist_runs": [
     38178403301,
     38180415035,
-    38181512440
+    38181512440,
+    38181988592
   ],
   "artist_model": "qwen3-vl:4b-instruct",
   "measurement_contract": "Explicit per-stone/per-slab metre values and grammar-enforced finite numerical choices; no synthetic clamping",
-  "family_canon": "Artist's first accepted stone course/block measures bind every subsequent masonry module"
+  "family_canon": "Artist's first accepted stone course/block measures bind every subsequent masonry module",
+  "resume_artist_run": 38181988592,
+  "response_contract": "Bounded 30-180 character authored fields enforced by grammar, repeat penalty, 4096 context; resume raw-response-validated accepted decisions"
 }
