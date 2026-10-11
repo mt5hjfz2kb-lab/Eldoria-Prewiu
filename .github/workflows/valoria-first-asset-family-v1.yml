@@ -26,6 +26,11 @@ jobs:
         env:
           ELDORIA_FAMILY_PHASE: before
         run: blender -b -t 4 --python tools/art-rd/valoria_first_family_v1.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-family-pre-ai-actual-blender-renders
+          path: art-source/valoria/production/first-asset-family-v1/**/before-*.png
+          retention-days: 14
       - name: Activate existing free local art brain
         run: |
           git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
@@ -51,6 +56,10 @@ jobs:
         run: |
           blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_family_mcp_secondary.py
           test -s art-source/valoria/production/first-asset-family-v1/mcp-family-authoring-index.json
+      - name: Native GLB structural preflight, not artistic approval
+        run: |
+          python3 tools/art-rd/audit_glb.py art-source/valoria/production/first-asset-family-v1/*/*.glb > art-source/valoria/production/first-asset-family-v1/glb-audit.json
+          test "$(find art-source/valoria/production/first-asset-family-v1 -name mcp-authoring-evidence.json | wc -l)" -eq 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
