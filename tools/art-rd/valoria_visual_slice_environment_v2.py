@@ -149,10 +149,51 @@ mesh.update()
 for poly,index in zip(mesh.polygons,M):poly.material_index=index;poly.use_smooth=False
 obj=bpy.data.objects.new("Valoria Highlands - Blender sculpted environment",mesh)
 bpy.context.collection.objects.link(obj)
+
+# Apply the project's EXISTING PBR texture families instead of flat palette polygons.
+texture_dir=os.path.abspath("Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures")
+uvmap=mesh.uv_layers.new(name="ValoriaTiledUV")
+for poly in mesh.polygons:
+    mi=poly.material_index
+    for li in poly.loop_indices:
+        vert=mesh.vertices[mesh.loops[li].vertex_index].co
+        if mi in grass:
+            uv=(vert.x/8,vert.y/8)
+        elif mi in stone:
+            ang=math.atan2(vert.y,vert.x)
+            uv=(ang*2.5,vert.z/7)
+        else:
+            uv=(vert.x/3,vert.y/3)
+        uvmap.data[li].uv=uv
+families=[(grass,"ground"),(stone,"rock"),(needle,"vegetation"),([path],"stone"),(bushes,"vegetation")]
+texture_count=0
+for ids,family in families:
+    png=os.path.join(texture_dir,family+"_albedo.png")
+    if not os.path.isfile(png):
+        print("PBR_FAMILY_UNAVAILABLE "+png)
+        continue
+    img=bpy.data.images.load(png,check_existing=True)
+    for index in ids:
+        material=materials[index]
+        nodes=material.node_tree.nodes
+        links=material.node_tree.links
+        bs=nodes.get("Principled BSDF")
+        if bs is None:continue
+        base=bs.inputs["Base Color"].default_value[:]
+        tex=nodes.new("ShaderNodeTexImage")
+        tex.image=img;tex.interpolation='Linear';tex.extension='REPEAT'
+        mix=nodes.new("ShaderNodeMixRGB")
+        mix.blend_type='MULTIPLY'
+        mix.inputs[0].default_value=.38
+        mix.inputs[2].default_value=base
+        links.new(tex.outputs["Color"],mix.inputs[1])
+        links.new(mix.outputs["Color"],bs.inputs["Base Color"])
+        texture_count+=1
+
 # Export Y-up through Blender glTF conversion to Unity coordinates.
 os.makedirs(os.path.dirname(a.output),exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=a.output,export_format="GLB",export_apply=True)
 mesh.calc_loop_triangles()
-report={"original_blender_geometry":True,"triangles":len(mesh.loop_triangles),"vertices":len(mesh.vertices),"materials":len(materials),"meshes":1,"credits_used":0,"output_bytes":os.path.getsize(a.output)}
+report={"original_blender_geometry":True,"triangles":len(mesh.loop_triangles),"vertices":len(mesh.vertices),"materials":len(materials),"meshes":1,"pbr_textured_materials":texture_count,"credits_used":0,"output_bytes":os.path.getsize(a.output)}
 with open(a.report,"w") as f:json.dump(report,f,indent=2)
 print("ELDORIA_VALORIA_ENVIRONMENT_GLTF_PASS "+json.dumps(report))
