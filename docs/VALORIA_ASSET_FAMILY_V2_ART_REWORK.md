@@ -28,3 +28,11 @@ Date: 2026-10-11. This is NOT an ART PASS, not a release, and not a substitute f
 3. Correct crown geometry, geological transitions, tower geometry, paved path/terrain seam, and structural wall contacts. Repeat render.
 4. Only after ART PASS on all seven, reserve Windows Unity runner to import exact tested GLBs into 6000.3.23f1; enforce scale, PBR, pivots, LOD, mobile performance, and preserve original artist-source files.
 5. No edits to main or frozen V3. No paid model/credits. Never claim success from PASS CI alone.
+
+## 2026-10-11 V2.1 evidence — exact current continuation
+- Run 38171510700: SUCCESS, Qwen2.5VL:3b seven real image-guided directions saved as JSON and raw inference.
+- Run 38174276796: SUCCESS, seven V2.1 BlenderMCP sculpt operations, editable BLEND, exported GLB, two matched renders, per-asset v2-1-mcp-evidence.json. Artifact 11715052498.
+- Run 38174622498: SUCCESS, exact V2.1 seven assets and frozen real Hero V3 assembled; both hero and strategic renders, editable scene. Artifact 11714743470.
+- Full V2 vs V2.1 hero inspection: NO ART PASS. Tower stone bands and crown remain severely warped; path/platform still reads as disconnected round artificial apron with piled treads; cliff face is more articulated but upper silhouette remains a raised flat stone island; wall straight/corner/connections edits marginal and modular; defensive props remain detached. All seven pieces remain REWORK; tower V2.1 must be rejected relative to original V1 geometry, pending exact comparison and source restoration.
+- Unity: NOT TESTED and not authorized for art pass; no Windows runner used.
+- No additional heavy workflows should be started just to get a SUCCESS. Next artwork should first restore the V1 watchtower geometry and require a genuinely new visually significant sculpt/architectural art direction rather than another local sinusoidal vertex offset. Then solve natural rock/terrain continuous mesh and real castle-path physical intersections.
