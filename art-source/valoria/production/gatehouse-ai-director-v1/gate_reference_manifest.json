@@ -16,9 +16,11 @@
       "reduced_crown_merlons",
       "arched_observation_slot",
       "square_tower_mesh_reshape_and_stretch",
-      "remove_conical_roof_geometry"
+      "remove_conical_roof_geometry",
+      "taper_existing_crown_merlon_vertices"
     ],
     "tower_meshes_modified": 700,
+    "crenel_meshes_sculpted": 23,
     "artistic_status": "REVIEW_REQUIRED",
     "no_additional_asset_families": true
   },
