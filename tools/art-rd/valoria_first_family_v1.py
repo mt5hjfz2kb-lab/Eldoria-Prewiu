@@ -225,8 +225,11 @@ def source_hero_tower(x=0,y=0):
   dst.collections=['VALORIA_HERO_GATE']
  coll=dst.collections[0]
  # Different V3 cohorts use Tower front/return/crown/merlon naming.
- right=[o for o in coll.objects if o.type=='MESH' and
-        o.name.startswith(('Tower ','Tower_')) and o.matrix_world.translation.x>0.5]
+ def tower_on_right(o):
+  if o.type!='MESH' or not o.name.startswith(('Tower ','Tower_')):return False
+  xs=[(o.matrix_world@Vector(c)).x for c in o.bound_box]
+  return (min(xs)+max(xs))/2>0.5
+ right=[o for o in coll.objects if tower_on_right(o)]
  assert len(right)>=30,'Frozen V3 has too few right-tower meshes; stop, never substitute primitive'
  verts=[o.matrix_world@v.co for o in right for v in o.data.vertices]
  assert verts,'Hero V3 tower extraction returned no vertices'

@@ -25,7 +25,11 @@ jobs:
       - name: Render seven V3-derived models in close and strategic cameras
         env:
           ELDORIA_FAMILY_PHASE: before
-        run: blender -b -t 4 --python tools/art-rd/valoria_first_family_v1.py
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_first_family_v1.py
+      - name: Assert every asset rendered before requesting the paid-resource-free model
+        run: |
+          test "$(find art-source/valoria/production/first-asset-family-v1 -name before-hero.png | wc -l)" -eq 8
+          test "$(find art-source/valoria/production/first-asset-family-v1 -name before-strategic.png | wc -l)" -eq 8
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-family-pre-ai-actual-blender-renders
@@ -42,7 +46,7 @@ jobs:
       - name: Export editable sources GLB and paired second renders
         env:
           ELDORIA_FAMILY_PHASE: after
-        run: blender -b -t 4 --python tools/art-rd/valoria_first_family_v1.py
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_first_family_v1.py
       - name: Use existing SHA-pinned free BlenderMCP addon
         run: |
           curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
