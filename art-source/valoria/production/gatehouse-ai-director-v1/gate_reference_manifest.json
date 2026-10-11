@@ -1,20 +1,21 @@
 {
   "art_director_geometry": {
     "baseline": "run_38136991434",
+    "rejected_predecessor": "V2 smooth facade and heavy crown",
     "operations": [
-      "contiguous_battered_piers",
-      "deep_nested_arched_entry",
-      "authored_nonuniform_parapet",
-      "continuous_roof_mass",
-      "tower_transitional_hips"
+      "recover_visible_historic_ashlar",
+      "tapered_engaged_side_buttresses",
+      "deep_nested_load_bearing_arch",
+      "vary_existing_merlon_proportions",
+      "recessed_hip_coping"
     ],
     "artistic_status": "REVIEW_REQUIRED",
     "no_additional_asset_families": true
   },
-  "triangles": 33336,
+  "triangles": 32220,
   "mesh_count": 22,
   "materials": 22,
-  "glb_bytes": 3046960,
+  "glb_bytes": 2969316,
   "wall_to_tower_edge_contact_x": [
     -8.65,
     8.65
