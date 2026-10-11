@@ -132,13 +132,8 @@ namespace Eldoria.EditorTools
             upperWallRight.transform.localScale*=.78f;
             upperWallRight.transform.position=new Vector3(9.1f,HeightAt(9f,27f),27f);
             // Real pre-existing FBX tree prefabs: no generated cones, no new paid assets.
-            string treeFolder="Assets/EmaceArt/Slavic World Free/Prefabs/Nature/Tree/";
-            string[] names={
-                "EA03_Nature_Tree_01b_PRE.prefab","EA03_Nature_Tree_02b_PRE.prefab",
-                "EA03_Nature_Tree_02c_PRE.prefab","EA03_Nature_Tree_03b_PRE.prefab",
-                "EA03_Nature_Tree_03c_PRE.prefab","EA03_Nature_Tree_05a_PRE.prefab",
-                "EA03_Nature_Tree_06b_PRE.prefab"
-            };
+            string treeFolder="Assets/Eldoria/Resources/WorldInventory/";
+            string[] names={"Tree01A.prefab","Tree01B.prefab"};
             var sourceTrees=new GameObject[names.Length];
             for(int i=0;i<names.Length;i++){
                 sourceTrees[i]=AssetDatabase.LoadAssetAtPath<GameObject>(treeFolder+names[i]);
@@ -146,7 +141,7 @@ namespace Eldoria.EditorTools
             }
             var seed=new System.Random(331027);
             int placedTrees=0;
-            for(int i=0;i<93;i++){
+            for(int i=0;i<70;i++){
                 float angle=(float)seed.NextDouble()*Mathf.PI*2f;
                 float radial=13f+(float)seed.NextDouble()*24f;
                 float x=radial*Mathf.Cos(angle),z=radial*Mathf.Sin(angle);
