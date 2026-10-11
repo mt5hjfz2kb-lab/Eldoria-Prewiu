@@ -201,8 +201,8 @@ def road(plan):
   while start<2-.05:
    w=min(lengths[(col+2*j)%len(lengths)]*RNG.uniform(.91,1.06),2-start)
    if w<.06:break
-   xx=start+w/2;z=.016+RNG.uniform(-.006,.006)
-   box('Closely fitted hand dressed flagstone',(xx,yy,z),(w-.021,h-.021,.065),bevel=.018,wear=.009)
+   xx=start+w/2;z=.016-.065/2+RNG.uniform(-.003,.003)
+   box('Closely fitted hand dressed flagstone',(xx,yy,z),(w-.021,h-.021,.065),bevel=.018,wear=.004)
    start+=w;col+=1
  # Irregular earthen verge staying below road plane, no raised curb.
  for side in (-1,1):
@@ -212,7 +212,9 @@ def road(plan):
    verts.extend([(side*1.94,yy,-.009),(side*outer,yy,-.07)])
   faces=[(2*j,2*j+1,2*j+3,2*j+2) for j in range(24)]
   mesh('Exposed continuous soil verge',verts,faces,MATS['soil'])
- LOG.append({'operation':'fitted_flagstone_road','rows':rows,'supported':True,'module_m':[4,8],'maximum_relief_m':.025})
+ maximum=max(v.co.z for ob in bpy.context.scene.objects if ob.name.startswith('Closely fitted hand dressed flagstone') for v in ob.data.vertices)
+ assert maximum<=.025,'Actual paving upper surface must respect 25mm relief contract'
+ LOG.append({'operation':'fitted_flagstone_road','rows':rows,'supported':True,'module_m':[4,8],'maximum_relief_m':maximum,'maximum_relief_contract_m':.025})
 
 def rock_mass(name,center,size,seed,material=None):
  r=random.Random(seed);n=7;verts=[]
@@ -230,18 +232,20 @@ def cliff(plan):
  verts=[]
  # Angular primary mass, longitudinal faults. Continuous topology without
  # concentric rings or sinusoidal cake shelves. Shared top and base edges.
- anchors=[0,.31,-.27,.12,-.16,0]
+ anchors=[0,lean,-lean*.8,lean*.65,-lean*.55,0]
  def front(x,u):
-  v=min(5,max(0,(x+6+.58*(1-u))/12*5));i=min(4,int(v));f=v-i
+  edge_fade=min(1,max(0,min(x+6,6-x)/.5))
+  shift=lean*1.1*(1-u)*math.sin(math.pi*(x+6)/12)
+  v=min(5,max(0,(x+6+shift)/12*5));i=min(4,int(v));f=v-i
   shoulder=anchors[i]*(1-f)+anchors[i+1]*f
-  groove=-depth*max(0,1-abs((v+.17)%1-.5)*7)
+  groove=depth*max(0,1-abs((v+.17)%1-.5)*7)*edge_fade
   # Slope continuous rock backward near crown; fractures change over depth.
   return -1.8-lean*(1-u)+shoulder+groove*(.65+.35*u)
  for k in range(levels+1):
   u=k/levels
   for i in range(N+1):
    x=-6+12*i/N;z=-3.5+3.5*u
-   z+=.035*math.sin(x*1.3)*(1-u)
+   z+=.035*math.sin(x*1.3)*(1-u)*min(1,max(0,min(x+6,6-x)/.5))
    verts.append((x,front(x,u),z))
  faces=[]
  for k in range(levels):
@@ -251,7 +255,8 @@ def cliff(plan):
  rear0=len(verts);verts.extend([(-6,2,0),(6,2,0),(-6,2,-3.5),(6,2,-3.5)])
  top=levels*(N+1)
  faces.append(tuple([top+i for i in range(N+1)]+[rear0+1,rear0]))
- faces.append((0,top,rear0,rear0+2));faces.append((N,rear0+3,rear0+1,top+N))
+ faces.append(tuple([k*(N+1) for k in range(levels+1)]+[rear0,rear0+2]))
+ faces.append(tuple([k*(N+1)+N for k in range(levels,-1,-1)]+[rear0+3,rear0+1]))
  faces.append(tuple([i for i in range(N,-1,-1)]+[rear0+2,rear0+3]))
  faces.append((rear0,rear0+1,rear0+3,rear0+2))
  bed=mesh('Continuous angular escarpment bedrock',verts,faces,MATS['rock'],.018)
@@ -293,12 +298,21 @@ def cliff(plan):
  for vertex in list(bed.data.vertices)[:(N+1)*(levels+1)]:
   x,y,z=vertex.co
   hits=[b.ray_cast(Vector((x,-12,z)),Vector((0,1,0)),16)[0] for b in bvhs]
-  vertex.co.y=min([y]+[hit.y for hit in hits if hit is not None])
+  # Broad authored fault planes carry the shape; scanned relief is secondary.
+  sampled=min([y]+[hit.y for hit in hits if hit is not None])
+  fade=min(1,max(0,min(x+6,6-x)/.5))
+  vertex.co.y=y+.22*(sampled-y)*fade
  for ob in masses:bpy.data.objects.remove(ob,do_unlink=True)
  bed.data.update();uv_project(bed,.3)
+ check=bmesh.new();check.from_mesh(bed.data)
+ assert all(edge.is_manifold for edge in check.edges),'Escarpment bedrock must be topologically closed'
+ check.free()
+ for k in range(levels+1):
+  left_v=bed.data.vertices[k*(N+1)].co;right_v=bed.data.vertices[k*(N+1)+N].co
+  assert abs(left_v.y-right_v.y)<1e-6 and abs(left_v.z-right_v.z)<1e-6,'Repeated cliffs require exact matching end profiles'
  soil=plan['crest_soil_depth'];v=[]
  for i in range(N+1):
-  x=-6+12*i/N;f=front(x,1)-.012
+  x=-6+12*i/N;f=bed.data.vertices[top+i].co.y-.012
   # Positive crown offset avoids coplanar soil/bedrock surfaces after export.
   v.extend([(x,f,.065),(x,2,.065),(x,f-.03,-soil),(x,2,-soil)])
  f=[]
@@ -312,7 +326,7 @@ def cliff(plan):
   for k in range(6):
    s=1.0 if k==0 else RNG.uniform(.25,.60)
    rock_mass('Embedded angular talus cluster',(x+RNG.uniform(-.7,.7),-2.65+RNG.uniform(-.25,.35),-3.34+s*.15),(s*.86,s*.72,s*.86),3310+j*31+k)
- LOG.append({'operation':'fault_plane_escarpment','continuous_vertices':len(verts),'primary_fault_slabs':len(widths),'scan_to_connected_surface_transfer':True,'real_cc0_scanned_masses':len(widths),'cc0_source':'https://opengameart.org/content/free-photogrammetric-rock','donor_blend_sha256':hashlib.sha256(donor_source.read_bytes()).hexdigest(),'fault_lean_m':lean,'fracture_depth_m':depth,'embedded_talus_clusters':clusters,'soil_depth_m':soil,'footing_plane_z':.065})
+ LOG.append({'operation':'fault_plane_escarpment','continuous_vertices':len(verts),'closed_bedrock_edge_manifold_verified':True,'primary_fault_slabs':len(widths),'scan_to_connected_surface_transfer':True,'angular_fault_planes_with_scanned_secondary_relief':True,'recessed_fissures_positive_depth':True,'matched_end_profiles_verified':True,'real_cc0_scanned_masses':len(widths),'cc0_source':'https://opengameart.org/content/free-photogrammetric-rock','donor_blend_sha256':hashlib.sha256(donor_source.read_bytes()).hexdigest(),'fault_lean_m':lean,'fracture_depth_m':depth,'embedded_talus_clusters':clusters,'soil_depth_m':soil,'footing_plane_z':.065})
 
 def props(plan):
  labels=('Royal blue Valoria banner','Valoria lily embroidery','Heraldic lily band','Banner mounting bar','Torch pedestal','Torch stone cap','Carved ember flame','Iron brazier bowl')
@@ -434,7 +448,7 @@ def export(asset,folder):
  (folder/'evidence.json').write_text(json.dumps(result,indent=2))
  return result
 
-manifest={}
+manifest=json.loads((OUT/'manifest.json').read_text()) if os.environ.get('ELDORIA_FAMILY_ASSETS') and (OUT/'manifest.json').exists() else {}
 selected=os.environ.get('ELDORIA_FAMILY_ASSETS','').split(',') if os.environ.get('ELDORIA_FAMILY_ASSETS') else list(BUILD)
 for asset in selected:
  CURRENT=asset

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "iteration": 11,
+  "iteration": 12,
   "owner": "chat-work-valoria-family-quality-takeover-20261011",
   "source_run": 38174276796,
   "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
@@ -10,7 +10,7 @@
   "paid_credits": 0,
   "art_pass": false,
   "unity_pass": false,
-  "reuse_artist_run": 0,
+  "reuse_artist_run": 38183538588,
   "initial_artist_reference": "references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
   "failed_artist_run": 38178403301,
   "failed_artist_runs": [
@@ -22,6 +22,12 @@
   "artist_model": "qwen3-vl:4b-instruct",
   "measurement_contract": "Explicit per-stone/per-slab metre values and grammar-enforced finite numerical choices; no synthetic clamping",
   "family_canon": "Artist's first accepted stone course/block measures bind every subsequent masonry module",
-  "resume_artist_run": 38181988592,
-  "response_contract": "Bounded 30-180 character authored fields enforced by grammar, repeat penalty, 4096 context; resume raw-response-validated accepted decisions"
+  "resume_artist_run": 0,
+  "response_contract": "Bounded 30-180 character authored fields enforced by grammar, repeat penalty, 4096 context; resume raw-response-validated accepted decisions",
+  "reuse_source_run": 38183538588,
+  "rebuild_assets": [
+    "stone_path_platform",
+    "cliff_rocks"
+  ],
+  "technical_art_direction": "Independent actual GLB review retains five V3-comparable assets. Reconstruct cliffs with dominant angular planes, recessed faults, closed matching end profiles; embed paving to actual <=25mm relief; repair rigid assembly rotations. Same seven genuine external designs."
 }

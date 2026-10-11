@@ -13,8 +13,10 @@ PRESETS = {'watchtower': (13.3, 3.5), 'wall_straight': (11.7, 2.5),
            'wall_corner': (11.7, 2.5), 'wall_connections': (8, 2.5),
            'stone_path_platform': (12.4, .3), 'cliff_rocks': (18, -1.4),
            'defensive_props': (10.4, 2.5)}
-reports = []
+selected = set(os.environ['ELDORIA_FAMILY_ASSETS'].split(',')) if os.environ.get('ELDORIA_FAMILY_ASSETS') else set(PRESETS)
+reports = [r for r in json.loads((BASE/'roundtrip-evidence.json').read_text())['exports'] if r['asset'] not in selected] if selected != set(PRESETS) and (BASE/'roundtrip-evidence.json').exists() else []
 for asset, (scale, target_z) in PRESETS.items():
+    if asset not in selected: continue
     for level in (0, 2):
         bpy.ops.wm.read_factory_settings(use_empty=True)
         path = BASE / asset / (asset + (f'-LOD{level}' if level else '') + '.glb')

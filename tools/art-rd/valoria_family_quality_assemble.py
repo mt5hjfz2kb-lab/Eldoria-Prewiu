@@ -26,15 +26,14 @@ gate_edge=max((ob.matrix_world@Vector(c)).x for ob in gate_mesh for c in ob.boun
 def part(name,loc,angle=0):return imported(BASE/name/(name+'.glb'),name,loc,angle)
 # Connect sockets to the actual frozen gate extent, then full walls.
 for side in (-1,1):
- angle=0 if side==1 else math.pi
- part('wall_connections',(side*(gate_edge+.85),0,0),angle)
- part('wall_straight',(side*(gate_edge+5.8),0,0),angle)
+ part('wall_connections',(side*(gate_edge+.85),0,0))
+ part('wall_straight',(side*(gate_edge+5.8),0,0))
  # Corner arm extends from x=-4 to 0, joins outer wall end without overlap.
- part('wall_corner',(side*(gate_edge+13.8),0,0),0 if side==1 else math.pi)
+ part('wall_corner',(side*(gate_edge+13.8),0,0),0 if side==1 else -math.pi/2)
  part('watchtower',(side*(gate_edge+13.8),4.9,0))
 # Repeat original-width modules without anisotropic geometry scaling.
 for i in range(5):part('cliff_rocks',(-24+i*12,-6,-.06))
-for i in range(2):part('stone_path_platform',(0,-4+i*8,.005))
+for i in range(2):part('stone_path_platform',(0,-3.5+i*8,.005))
 part('defensive_props',(0,7.5,0))
 # QA-only backing ground supports the path and fortifications behind the cliff.
 # It is explicitly context, not an eighth family asset or a game terrain claim.
