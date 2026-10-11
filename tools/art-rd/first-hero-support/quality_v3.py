@@ -13,6 +13,7 @@ asset=bpy.data.collections['VALORIA_HERO_GATE']
 rng=random.Random(301103)
 before_objects=len(asset.objects)
 affected=0
+material_variants={}
 # Restrained, deterministic, local wear applied to the SAME mesh topology.
 for ob in asset.objects:
     if ob.type!='MESH': continue
@@ -40,6 +41,27 @@ for ob in asset.objects:
         bevel.segments=2
     if n.startswith(('Tower front ashlar','Portal jamb')):
         ob.location.y+=rng.uniform(-.009,.013)
+    if ob.data.materials:
+        original=ob.data.materials[0]
+        if original and original.use_nodes:
+            tone=rng.choice((-3,-2,-1,0,0,0,1,1,2,3))
+            if tone:
+                key=(original.name,tone)
+                if key not in material_variants:
+                    mat=original.copy()
+                    mat.name=f'{original.name}_V3_patina_{tone:+d}'
+                    factor=1.0+tone*.035
+                    for node in mat.node_tree.nodes:
+                        if node.type=='BSDF_PRINCIPLED':
+                            color=node.inputs.get('Base Color')
+                            if color and not color.is_linked:
+                                rgba=color.default_value
+                                color.default_value=tuple(max(0.0,min(1.0,rgba[i]*factor)) for i in range(3))+(rgba[3],)
+                            rough=node.inputs.get('Roughness')
+                            if rough and not rough.is_linked:
+                                rough.default_value=max(.35,min(1.0,rough.default_value+tone*.018))
+                    material_variants[key]=mat
+                ob.data.materials[0]=material_variants[key]
     affected+=1
 # V2 cameras and lighting are restored exactly for like-for-like proof.
 cam=scene.camera
@@ -75,7 +97,7 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in meshes: ob.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(OUT/'ValoriaHeroGate.glb'),export_format='GLB',use_selection=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 report={'origin':'quality-v2 saved .blend','baseline_v2_sha256':hashlib.sha256((V2/'ValoriaHeroGate.blend').read_bytes()).hexdigest(),
-'objects_before':before_objects,'objects_after':len(asset.objects),'stones_selectively_edited':affected,
+'objects_before':before_objects,'objects_after':len(asset.objects),'stones_selectively_edited':affected,'patina_material_variants':len(material_variants),
 'hero_camera':'matched to quality-v2 after-hero','strategic_camera':'matched to quality-v2 after-strategic',
 'blend_bytes':(OUT/'ValoriaHeroGate.blend').stat().st_size,'glb_bytes':(OUT/'ValoriaHeroGate.glb').stat().st_size,
 'art_acceptance':'pending genuine side by side','unity_tested':False}
