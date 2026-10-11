@@ -1,0 +1,28 @@
+name: Valoria first asset family V1
+on:
+  push:
+    branches: [art/valoria-first-asset-family-v1-20261011]
+    paths:
+      - 'tools/art-rd/valoria_first_family_v1.py'
+      - '.github/workflows/valoria-first-asset-family-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+      - name: Build isolated V3-compatible family
+        env:
+          ELDORIA_FAMILY_PHASE: before
+        run: blender -b -t 4 --python tools/art-rd/valoria_first_family_v1.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-first-asset-family-v1-candidate
+          path: art-source/valoria/production/first-asset-family-v1/
+          retention-days: 30
