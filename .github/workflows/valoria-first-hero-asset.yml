@@ -6,6 +6,7 @@ on:
       - 'tools/art-rd/first-hero-support/quality_surfaces.py'
       - 'tools/art-rd/first-hero-support/quality_v2.py'
       - 'tools/art-rd/first-hero-support/quality_v3.py'
+      - 'tools/art-rd/first-hero-support/review_v3_qwen.py'
       - 'tools/art-rd/first-hero-support/quality_board.py'
       - 'tools/art-rd/first-hero-support/verify_export.py'
       - '.github/workflows/valoria-first-hero-asset.yml'
@@ -46,6 +47,14 @@ jobs:
         run: |
           blender -b -t 8 --python tools/art-rd/first-hero-support/quality_v3.py > "$RUNNER_TEMP/hero-v3.log" 2>&1 || { tail -100 "$RUNNER_TEMP/hero-v3.log"; exit 1; }
           grep -q ELDORIA_HERO_V3_EXPORTED "$RUNNER_TEMP/hero-v3.log"
+      - name: Start verified free Qwen vision and review real V2-V3 renders
+        continue-on-error: true
+        run: |
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          bash "$RUNNER_TEMP/start-qwen.sh"
+          python3 tools/art-rd/first-hero-support/review_v3_qwen.py
       - name: Preserve editable source on task branch
         run: |
           git config user.name 'eldoria-art-ci'
