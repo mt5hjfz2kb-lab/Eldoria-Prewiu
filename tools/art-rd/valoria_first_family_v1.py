@@ -34,23 +34,67 @@ def platform():
  for j in range(10):
   ns["cube"](f"path_ramp_{j}",(0,3.5+j*.6,-.1-j*.035),(4.1,.55,.23),ns["stone"][(j*3)%8],.06)
 def rocks():
+ # A SINGLE CONTINUOUS, sculpted geological cliff shell; no floating slab,
+ # repeated cones or detached stone pillars. Shared top rim and cut face vertices.
  rng=random.Random(441)
- for i in range(34):
-  x=rng.uniform(-4.4,4.4);y=rng.uniform(-3.6,3.6)
-  height=rng.uniform(.4,2.0)
-  ob=ns["frustum"](f"cliff_stratum_{i}",(x,y,-1.4-height/2),rng.uniform(.48,.94),rng.uniform(.15,.55),height,ns["stone"][i%8],7)
-  ob.rotation_euler=(rng.uniform(-.2,.2),rng.uniform(-.15,.15),rng.random()*6.28)
- # Sculpt a broken ridge instead of a floating flat rectangular lid.
- rng=random.Random(1221)
- for i in range(13):
-  for j in range(10):
-   x=-4+i*.67;y=-3+j*.68
-   z=-.22+.17*math.sin(i*.65)+.11*math.cos(j*.8)+rng.uniform(-.09,.09)
-   ns["frustum"](f"weathered_cliff_crown_{i}_{j}",(x,y,z-.22),.57,.44,.55,ns["stone"][(i*3+j)%8],7)
- for k in range(15):
-  a=k*math.tau/15
-  ob=ns["frustum"](f"cliff_erosion_spur_{k}",(3.6*math.cos(a),2.9*math.sin(a),-1.4),.42,.21,rng.uniform(1.1,2.8),ns["stone"][k%8],6)
-  ob.rotation_euler.z=a
+ nx,ny=31,27
+ verts=[]
+ def crown(x,y):
+  return .22*math.sin(x*.59)+.15*math.cos(y*.66)+.09*math.sin(1.2*x+.73*y)
+ # Irregular exposed cliff perimeter, following the same undulating plateau.
+ perimeter=[]
+ n=112
+ for k in range(n):
+  a=math.tau*k/n
+  # ellipse radial outline with multi-octave geological variation
+  t=1+.07*math.sin(5*a+.9)+.04*math.cos(11*a)+.017*math.sin(23*a)
+  x=4.6*math.cos(a)*t;y=3.9*math.sin(a)*t
+  perimeter.append((x,y,crown(x,y)))
+ rings=8
+ # Stratified cliff face: shared boundaries are watertight and slant inwards.
+ for j in range(rings+1):
+  u=j/rings
+  for k,(x,y,top) in enumerate(perimeter):
+   a=math.tau*k/n
+   vertical=-4.8*u
+   geological=.19*math.sin(a*9+u*4)+.13*math.sin(a*21-u*7)
+   inset=.45*u+.12*math.sin(a*7+u*11)*math.sin(math.pi*u)
+   verts.append((x*(1-inset/6)+geological*math.cos(a),y*(1-inset/6)+geological*math.sin(a),top+vertical))
+ faces=[];materials=[]
+ for j in range(rings):
+  for k in range(n):
+   nxt=(k+1)%n
+   v0=j*n+k;v1=j*n+nxt;v2=(j+1)*n+nxt;v3=(j+1)*n+k
+   faces.append((v0,v1,v2,v3));materials.append((j//2+k//11)%8)
+ # Crown is triangulated to a structured *sculpted* interior, not a flat lid.
+ start=len(verts)
+ for yi in range(ny):
+  y=-3.9+7.8*yi/(ny-1)
+  for xi in range(nx):
+   x=-4.6+9.2*xi/(nx-1)
+   z=crown(x,y)
+   verts.append((x,y,z))
+ for yi in range(ny-1):
+  for xi in range(nx-1):
+   aa=start+yi*nx+xi;bb=aa+1;cc=aa+nx+1;dd=aa+nx
+   # Keep top continuous and avoid block-panel artifacts.
+   faces.append((aa,bb,cc,dd));materials.append((xi//6+yi//5)%8)
+ mesh=bpy.data.meshes.new('sculpted_geological_continuum')
+ mesh.from_pydata(verts,[],faces);mesh.update()
+ ob=bpy.data.objects.new('Sculpted continuous bedrock face and irregular crown',mesh)
+ bpy.context.collection.objects.link(ob)
+ for material in ns['stone']:mesh.materials.append(material)
+ for poly,index in zip(mesh.polygons,materials):poly.material_index=index;poly.use_smooth=True
+ bevel=ob.modifiers.new('Subtle cliff facet weathering','BEVEL');bevel.width=.035;bevel.segments=2
+ ob.modifiers.new('Weighted geological shading','WEIGHTED_NORMAL')
+ # Integrated talus at the foot, only partially visible and buried into cliff.
+ for i in range(19):
+  a=math.tau*i/19+.06*math.sin(i*2)
+  x=4.18*math.cos(a);y=3.55*math.sin(a)
+  size=.48+(i*7%9)*.075
+  o=ns['frustum'](f'embedded_talus_{i}',(x,y,-4.35),size*1.2,size*.57,size,ns['stone'][i%8],7)
+  o.rotation_euler=(.10*math.sin(i),.15*math.cos(i),a)
+
 def fittings():
  for j in range(2):
   x=(-2.5,2.5)[j]
