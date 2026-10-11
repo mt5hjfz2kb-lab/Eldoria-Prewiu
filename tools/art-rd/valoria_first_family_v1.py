@@ -117,6 +117,32 @@ def fittings():
   ns["cube"]("banner_cloth",(x+s*.43,-.06,3.35),(.85,.08,1.65),ns["mat"]("faded_oxblood_%s"%s,(.32,.055,.045)),.025)
  for i in range(6):
   ns["cube"]("defense_stake",(i*.82-2.1,1.1,1.0),(.18,.18,2),ns["wood"][i%3],.06)
+def source_hero_tower(x=0,y=0):
+ # Preserve the artistic quality of the frozen V3 masonry: extract the
+ # architecture's existing right tower as a standalone compatible module.
+ with bpy.data.libraries.load(str(GATE),link=False) as (src,dst):
+  assert 'VALORIA_HERO_GATE' in src.collections
+  dst.collections=['VALORIA_HERO_GATE']
+ coll=dst.collections[0]
+ # Different V3 cohorts use Tower front/return/crown/merlon naming.
+ right=[o for o in coll.objects if o.type=='MESH' and
+        o.name.startswith(('Tower ','Tower_')) and o.matrix_world.translation.x>0.5]
+ assert len(right)>=30,'Frozen V3 has too few right-tower meshes; stop, never substitute primitive'
+ verts=[o.matrix_world@v.co for o in right for v in o.data.vertices]
+ assert verts,'Hero V3 tower extraction returned no vertices'
+ xmin=min(v.x for v in verts);xmax=max(v.x for v in verts)
+ ymin=min(v.y for v in verts);ymax=max(v.y for v in verts)
+ centerx=(xmin+xmax)*.5;centery=(ymin+ymax)*.5
+ for original in right:
+  part=original.copy()
+  part.data=original.data.copy()
+  bpy.context.scene.collection.objects.link(part)
+  part.name='Hero V3 extracted watchtower - '+original.name
+  part.matrix_world=original.matrix_world.copy()
+  part.matrix_world.translation.x+=x-centerx
+  part.matrix_world.translation.y+=y-centery
+ return len(right)
+
 def connections():
  ns["wall"]("socket_short",0,0,4.2,False)
  for s in (-1,1):
@@ -159,7 +185,7 @@ def export(name,phase):
   bpy.ops.export_scene.gltf(filepath=str(folder/(name+".glb")),export_format="GLB",use_selection=True,export_materials="EXPORT")
  return {"objects":len(objset()),"phase":phase}
 kinds={"wall_straight":lambda:ns["wall"]("valoria_wall",length=8),
-"watchtower":lambda:ns["tower"]("valoria_watchtower"),
+"watchtower":source_hero_tower,
 "wall_corner":corner,
 "wall_connections":connections,
 "stone_path_platform":platform,
@@ -172,7 +198,7 @@ def assemble():
   item.location.x*=2.9;item.location.y*=2.6
   item.scale.x*=2.9;item.scale.y*=2.6
  ns["wall"]("west",-9,0,7,False);ns["wall"]("east",9,0,7,False)
- ns["tower"]("watch",-14,0);platform();fittings()
+ source_hero_tower(-13,0);platform();fittings()
  # Use the FROZEN, existing Hero V3 GLB; never regenerate its architecture.
  hero=ROOT/"art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb"
  assert hero.exists(), "Frozen hero V3 GLB is required for real assembly"
