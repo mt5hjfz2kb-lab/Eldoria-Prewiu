@@ -47,6 +47,7 @@ jobs:
           $out="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ValoriaGatehouseV1\valoria_visual_slice_environment_v2.glb"
           $report="$env:RUNNER_TEMP\ValoriaEnvironmentBlenderV2.json"
           $log="$env:RUNNER_TEMP\ValoriaEnvironmentBlenderV2.log"
+          $ErrorActionPreference='Continue'
           & $candidate -b --python "$env:GITHUB_WORKSPACE\tools\art-rd\valoria_visual_slice_environment_v2.py" -- --output $out --report $report *> $log
           if($LASTEXITCODE -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Blender failed $LASTEXITCODE"}
           if(-not (Test-Path $out)){throw 'Blender GLB missing'}
