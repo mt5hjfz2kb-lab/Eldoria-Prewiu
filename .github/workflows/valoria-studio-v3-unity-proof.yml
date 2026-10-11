@@ -55,6 +55,7 @@ jobs:
           name: valoria-v3-unity-before-after
           path: |
             Unity/ValoriaStudioV3Proof/*
+            Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/V3PersistentAssets/*
             Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaStudioV3Proof.unity
           retention-days: 30
           if-no-files-found: warn
