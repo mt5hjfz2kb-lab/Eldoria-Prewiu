@@ -131,6 +131,45 @@ namespace Eldoria.EditorTools
             upperWallRight.transform.SetParent(world.transform,true);
             upperWallRight.transform.localScale*=.78f;
             upperWallRight.transform.position=new Vector3(9.1f,HeightAt(9f,27f),27f);
+            // Real pre-existing FBX tree prefabs: no generated cones, no new paid assets.
+            string treeFolder="Assets/EmaceArt/Slavic World Free/Prefabs/Nature/Tree/";
+            string[] names={
+                "EA03_Nature_Tree_01b_PRE.prefab","EA03_Nature_Tree_02b_PRE.prefab",
+                "EA03_Nature_Tree_02c_PRE.prefab","EA03_Nature_Tree_03b_PRE.prefab",
+                "EA03_Nature_Tree_03c_PRE.prefab","EA03_Nature_Tree_05a_PRE.prefab",
+                "EA03_Nature_Tree_06b_PRE.prefab"
+            };
+            var sourceTrees=new GameObject[names.Length];
+            for(int i=0;i<names.Length;i++){
+                sourceTrees[i]=AssetDatabase.LoadAssetAtPath<GameObject>(treeFolder+names[i]);
+                if(sourceTrees[i]==null)throw new Exception("Existing tree prefab not found: "+names[i]);
+            }
+            var seed=new System.Random(331027);
+            int placedTrees=0;
+            for(int i=0;i<93;i++){
+                float angle=(float)seed.NextDouble()*Mathf.PI*2f;
+                float radial=13f+(float)seed.NextDouble()*24f;
+                float x=radial*Mathf.Cos(angle),z=radial*Mathf.Sin(angle);
+                if(Mathf.Abs(x)<6f&&z>-40f&&z<34f)continue;
+                if(z>15f&&Mathf.Abs(x)<13f)continue;
+                int variant=seed.Next(names.Length);
+                var tree=(GameObject)PrefabUtility.InstantiatePrefab(sourceTrees[variant]);
+                tree.name="Existing FBX conifer variant "+variant+" #"+i;
+                tree.transform.SetParent(world.transform,true);
+                var tr=tree.GetComponentsInChildren<Renderer>(true);
+                if(tr.Length==0){Object.DestroyImmediate(tree);continue;}
+                var tb=tr[0].bounds;foreach(var rr in tr)tb.Encapsulate(rr.bounds);
+                if(tb.size.y<.001f){Object.DestroyImmediate(tree);continue;}
+                float target=3.5f+(float)seed.NextDouble()*5.2f;
+                tree.transform.localScale*=target/tb.size.y;
+                tree.transform.rotation=Quaternion.Euler(0f,(float)seed.NextDouble()*360f,0f);
+                tr=tree.GetComponentsInChildren<Renderer>(true);
+                tb=tr[0].bounds;foreach(var rr in tr)tb.Encapsulate(rr.bounds);
+                tree.transform.position+=new Vector3(x-tb.center.x,HeightAt(x,z)-tb.min.y,z-tb.center.z);
+                foreach(var collider in tree.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(collider);
+                placedTrees++;
+            }
+            Debug.Log("ELDORIA_TREE_PREFABS_PLACED "+placedTrees);
             // Cold dusk and warm entrance lighting retained by the strategic camera.
             light.intensity=1.05f;
             light.color=new Color(.96f,.86f,.74f);
