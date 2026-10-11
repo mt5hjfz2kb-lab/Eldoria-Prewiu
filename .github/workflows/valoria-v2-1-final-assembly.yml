@@ -17,7 +17,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          blender_run=$(gh api "repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/workflows/valoria-family-v2-1-real-mcp.yml/runs?branch=art%2Fvaloria-asset-family-v2-ai-authorship-20261011&per_page=10" --jq '.workflow_runs[0].id')
+          blender_run=38174276796
           test -n "$blender_run" && test "$blender_run" != "null"
           echo "BLENDER_RUN_ID=$blender_run" >> "$GITHUB_ENV"
           echo "Waiting for latest Blender second pass: $blender_run"
