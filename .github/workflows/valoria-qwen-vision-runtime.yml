@@ -1,0 +1,25 @@
+name: Eldoria Qwen vision runtime real inference
+on:
+  push:
+    branches: [ops/valoria-art-brain-runtime-recovery-20261011]
+    paths:
+      - tools/valoria-art-brain/start_local_qwen_ci.sh
+      - .github/workflows/valoria-qwen-vision-runtime.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qwen-vision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start free local Ollama and verify Qwen3-VL image inference
+        run: bash tools/valoria-art-brain/start_local_qwen_ci.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-qwen-vision-runtime-proof
+          path: |
+            ${{ runner.temp }}/ollama-server.log
+          retention-days: 7
