@@ -32,7 +32,9 @@ jobs:
         run: |
           destination="art-source/valoria/production/gatehouse-ai-director-v1"
           mkdir -p "$destination"
-          cp "$RUNNER_TEMP/valoria-ai-director-gatehouse-v1/"{valoria_gate_reference.glb,valoria_gate_reference.blend,gate_reference_hero.png,gate_reference_mobile.png,gate_reference_assembled.png,gate_before_same_camera.png,gate_reference_manifest.json} "$destination/"
+          cp "$RUNNER_TEMP/valoria-ai-director-gatehouse-v1/"{valoria_gate_reference.glb,valoria_gate_reference.blend,gate_reference_hero.png,gate_reference_mobile.png,gate_reference_assembled.png,gate_reference_manifest.json} "$destination/"
+          # Preserve the unchanged historical real-camera image for independent comparison.
+          cp "art-source/valoria/production/gatehouse-reference/gate_reference_hero.png" "$destination/historical_gate_reference_hero.png"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f "$destination"
