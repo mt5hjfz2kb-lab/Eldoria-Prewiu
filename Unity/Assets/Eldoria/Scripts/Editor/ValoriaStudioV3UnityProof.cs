@@ -44,6 +44,7 @@ namespace Eldoria.EditorTools
                 if (meshes.Length == 0) throw new Exception("V3 contains no meshes");
                 Save(camera, Output + "/after.png");
                 PersistRuntimeAssets();
+                Save(camera, Output + "/after-persistence.png");
                 EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), ProofScene);
                 var triangles = meshes.Sum(x => x.sharedMesh.triangles.Length / 3L);
                 File.WriteAllText(Output + "/metrics.txt", "v3_triangles=" + triangles +
