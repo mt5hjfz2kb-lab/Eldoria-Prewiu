@@ -105,6 +105,8 @@ namespace Eldoria.EditorTools
                             copy = new Material(standard);
                             copy.name = "Valoria persistent PBR " + materials.Count;
                             copy.SetColor("_BaseColor", mat.GetColor("baseColorFactor"));
+                            copy.SetFloat("_Cull", 0f);
+                            copy.doubleSidedGI = true;
                             copy.SetTexture("_BaseMap", mat.GetTexture("baseColorTexture"));
                             if (mat.HasProperty("normalTexture") && mat.GetTexture("normalTexture") != null)
                             {
