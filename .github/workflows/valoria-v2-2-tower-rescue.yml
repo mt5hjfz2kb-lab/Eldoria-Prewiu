@@ -1,0 +1,48 @@
+name: Valoria V2.2 tower source rescue Qwen BlenderMCP
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['tools/art-rd/valoria_tower_v2_2_recover_original_and_sculpt.py','.github/workflows/valoria-v2-2-tower-rescue.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  tower:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover exact V1 original tower source
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-first-asset-family-v1-production
+          run-id: 38164428109
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/first-asset-family-v1
+      - name: Recover verified V2.1 Qwen decision and rest of V2 family sources
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-v2-1-real-qwen-mcp-second-art-pass
+          run-id: 38174276796
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Verified free BlenderMCP
+        run: |
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Recover genuine V1 architecture and execute Qwen crown surgery in BlenderMCP
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_tower_v2_2_recover_original_and_sculpt.py
+      - name: Check real revised editable outputs, not visual approval
+        run: |
+          ROOT=art-source/valoria/production/asset-family-v2/watchtower
+          for F in watchtower-v2-2.blend watchtower-v2-2.glb v2-2-hero.png v2-2-strategic.png watchtower-v2-2-evidence.json; do test -s "$ROOT/$F"; done
+          python3 tools/art-rd/audit_glb.py "$ROOT/watchtower-v2-2.glb" > "$ROOT/v2-2-preflight.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-v2-2-original-tower-recovery
+          path: art-source/valoria/production/asset-family-v2/watchtower/
+          retention-days: 30
