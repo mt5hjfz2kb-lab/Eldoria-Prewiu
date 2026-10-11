@@ -28,6 +28,7 @@ namespace Eldoria.EditorTools
                 var camera = UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsSortMode.None).FirstOrDefault();
                 if (camera == null) throw new Exception("Canonical comparison camera missing");
                 var scene = SceneManager.GetActiveScene();
+                Capture(camera, "ValoriaLibraryV1Proof/before.png");
                 var group = new GameObject("Valoria Library V1 isolated composition");
                 var originals = new System.Collections.Generic.List<GameObject>();
                 for (int i=0;i<Models.Length;i++)
@@ -80,6 +81,7 @@ namespace Eldoria.EditorTools
                     PrefabUtility.SaveAsPrefabAsset(item,Stage+"/"+item.name+".prefab");
                 }
                 AssetDatabase.SaveAssets();
+                Capture(camera, "ValoriaLibraryV1Proof/after.png");
                 EditorSceneManager.SaveScene(scene,Stage+"/ValoriaLibraryV1Stage.unity");
                 File.WriteAllText("ValoriaLibraryV1Proof/metrics.json",
                     "{\"models\":3,\"persisted_asset_count\":"+assetNumber+",\"art_pass\":false,\"mobile_tested\":false}");
@@ -88,11 +90,33 @@ namespace Eldoria.EditorTools
             catch(Exception ex){ Debug.LogException(ex); EditorApplication.Exit(1);}
         }
 
+        static void Capture(Camera camera, string path)
+        {
+            const int width=1024, height=768;
+            var rt=new RenderTexture(width,height,24);
+            var previous=camera.targetTexture;
+            var active=RenderTexture.active;
+            var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
+            try
+            {
+                camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;
+                tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();
+                File.WriteAllBytes(path,tex.EncodeToPNG());
+            }
+            finally
+            {
+                camera.targetTexture=previous;RenderTexture.active=active;
+                UnityEngine.Object.DestroyImmediate(tex);UnityEngine.Object.DestroyImmediate(rt);
+            }
+        }
         public static void Reopen()
         {
             try
             {
                 EditorSceneManager.OpenScene(Stage+"/ValoriaLibraryV1Stage.unity",OpenSceneMode.Single);
+                var camera=UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsSortMode.None).FirstOrDefault();
+                if(camera==null)throw new Exception("Reloaded scene missing camera");
+                Capture(camera,"ValoriaLibraryV1Proof/reopened.png");
                 foreach(var name in Models)
                     if(GameObject.Find(name)==null)throw new Exception("Missing staged asset "+name);
                 foreach(var mf in UnityEngine.Object.FindObjectsByType<MeshFilter>(FindObjectsInactive.Include,FindObjectsSortMode.None))
