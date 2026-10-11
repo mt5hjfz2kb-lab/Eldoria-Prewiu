@@ -26,7 +26,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           clean: false
+      - name: Detect persisted scene on clean checkout
+        id: persisted
+        shell: powershell
+        run: |
+          $scene="Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/ValoriaStudioV3Proof.unity"
+          $exists=(Test-Path $scene).ToString().ToLowerInvariant()
+          Add-Content $env:GITHUB_OUTPUT "present=$exists"
       - name: Capture before and after on the existing Unity scene
+        if: steps.persisted.outputs.present != 'true'
         shell: powershell
         run: |
           $log="$env:RUNNER_TEMP\ValoriaStudioV3Capture.log"
@@ -49,6 +57,7 @@ jobs:
           if($p.ExitCode -ne 0){throw "Unity scene reload failed $($p.ExitCode)"}
           if(-not (Test-Path "$env:GITHUB_WORKSPACE\Unity\ValoriaStudioV3Proof\reloaded.png")){throw 'Reload screenshot missing'}
       - name: Persist proven scene and Unity asset dependencies in isolated branch
+        if: steps.persisted.outputs.present != 'true'
         shell: powershell
         run: |
           git config user.name "eldoria-valoria-v3-ci"
