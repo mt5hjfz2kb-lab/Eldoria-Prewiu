@@ -29,7 +29,7 @@ jobs:
           p=pathlib.Path('art-source/valoria/production/studio-rocks-v1/ValoriaRockStudy.blend')
           reuse=p.is_file() and subprocess.check_output(['git','hash-object',str(p)],text=True).strip()=='ff6cd8c28916c5cc455ab11acfdc5f59a8dfed95' and hashlib.sha256(pathlib.Path('tools/art-studio-recovery/produce_rock_study.py').read_bytes()).hexdigest()=='046a7aed0b2f02ff15c173e61fe34c0c5e7aa235033c3c72cd2d051eeb76906a'
           with open(os.environ['GITHUB_ENV'],'a') as f:f.write('STUDIO_REUSE='+str(reuse).lower()+'\n')
-          print('Exact source from successful production stage in run 38127107174 reused:',reuse)
+          print('Exact source from Qwen-directed corrected source in run 38127483365 reused:',reuse)
           PYCODE
       - name: Existing library audit and real donor renders
         if: env.STUDIO_REUSE != 'true' 
@@ -60,12 +60,12 @@ jobs:
           sleep 3
           /tmp/eldoria-ollama/bin/ollama pull hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M
           if [ "$STUDIO_REUSE" != 'true' ]; then
-            python3 tools/art-studio-recovery/review_with_local_vision.py
+            python3 tools/art-studio-recovery/review_with_local_vision.py --focused
             curl -L --fail https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
             blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/mcp_repair_contacts.py
           fi
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb > art-source/valoria/production/studio-rocks-v1/glb-audit.json
-          python3 tools/art-studio-recovery/review_with_local_vision.py --post-mcp
+          python3 tools/art-studio-recovery/review_with_local_vision.py --post-mcp --focused
       - name: Preserve real source and evidence on THIS branch only
         if: always()
         run: |
