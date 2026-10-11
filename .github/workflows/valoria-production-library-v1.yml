@@ -39,6 +39,8 @@ jobs:
           git add art-source/valoria/production/library-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/LibraryV1
           if ! git diff --cached --quiet; then
             git commit -m "Persist Valoria production architecture library V1"
+            git fetch origin art/valoria-production-library-v1-20261011
+            git rebase origin/art/valoria-production-library-v1-20261011
             git push origin HEAD:art/valoria-production-library-v1-20261011
           fi
       - uses: actions/upload-artifact@v4
