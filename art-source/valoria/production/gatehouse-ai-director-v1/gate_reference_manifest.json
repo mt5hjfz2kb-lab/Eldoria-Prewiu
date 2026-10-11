@@ -1,0 +1,18 @@
+{
+  "art_director_geometry": {
+    "baseline": "gate_reference_hero",
+    "operation": "two_integrated_tapered_buttresses_plus_full_arch_and_crown",
+    "chosen_for": "stronger depth silhouette and structural continuity",
+    "artistic_status": "REVIEW_REQUIRED"
+  },
+  "triangles": 32560,
+  "mesh_count": 22,
+  "materials": 22,
+  "glb_bytes": 2997048,
+  "wall_to_tower_edge_contact_x": [
+    -8.65,
+    8.65
+  ],
+  "visual_certification": "requires review",
+  "unity_mobile_tested": false
+}
