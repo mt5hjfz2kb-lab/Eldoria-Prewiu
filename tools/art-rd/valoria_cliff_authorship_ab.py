@@ -9,7 +9,7 @@ MODE=os.environ["ELDORIA_CLIFF_AB_MODE"]
 def scene_reset():
     bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 def setup():
-    s=bpy.context.scene;s.render.engine="CYCLES";s.cycles.samples=24
+    s=bpy.context.scene;s.render.engine="CYCLES";s.cycles.samples=24;s.cycles.use_denoising=False;s.view_layers[0].cycles.use_denoising=False
     s.render.resolution_x=960;s.render.resolution_y=640;s.render.resolution_percentage=100
     s.render.film_transparent=True
     w=bpy.data.worlds.new("Matched studio world");w.use_nodes=True
