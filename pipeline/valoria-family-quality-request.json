@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "iteration": 7,
+  "iteration": 8,
   "owner": "chat-work-valoria-family-quality-takeover-20261011",
   "source_run": 38174276796,
   "source_artifact": "valoria-family-v2-1-real-qwen-mcp-second-art-pass",
@@ -10,6 +10,7 @@
   "paid_credits": 0,
   "art_pass": false,
   "unity_pass": false,
-  "reuse_artist_run": 38178403301,
-  "initial_artist_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
+  "reuse_artist_run": 0,
+  "initial_artist_reference": "references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg",
+  "failed_artist_run": 38178403301
 }

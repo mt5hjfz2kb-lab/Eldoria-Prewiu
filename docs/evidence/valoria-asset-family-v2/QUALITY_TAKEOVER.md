@@ -23,11 +23,11 @@ Required technical evidence: 7 sources, 21 self-contained GLBs, audit with no er
 ## References and provenance
 
 - Frozen V3 source: `art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.blend` and `.glb`.
-- Initial Qwen inference sees the repository's established approved Valoria reference (HUD/building variant). Its exact bytes are recorded in the inference traces.
+- Failed initial run 38178403301 saw the established HUD/building variant and produced no valid decision (three HTTP timeouts). It cannot establish authorship. The repaired bounded single-board streaming inference consumes the exact newly attached owner target, frozen V3 minimum and rejected asset, with original and board hashes recorded.
 - Independent final comparison uses the owner's exact newly attached image: `references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg`, SHA-256 `de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f`. Do not relabel initial inference as having consumed this different file.
 - CC0 scan: https://opengameart.org/content/free-photogrammetric-rock ; reuse the recovered verified 1017-vertex donor from the preserved V2.1 source. Original source hash is retained in each cliff authoring record.
 - Blender export guidance: https://docs.blender.org/manual/en/4.3/addons/import_export/scene_gltf2.html ; normal maps require portable image/Principled material nodes and correct tangents.
 
 ## Current state
 
-New artist inference: Actions `38178403301`. Workshop corrections are independently smoke-tested, not artistically certified. Production repair reuses that run's exact successful seven-plan artifact without repeating solved inference. Source-only work does not claim Unity, phone performance or public-game quality.
+Run 38178403301 failed before its first valid decision. Blind multi-image retries are discontinued. Repaired inference uses one bounded comparison board, a 2048-token context, two CPU threads, streaming progress and a smaller-board fallback. Workshop corrections and 21 structurally valid GLBs are smoke-tested but remain non-authoritative until all seven genuine plans drive final production. Thin heraldry, cloth, metal and flame geometry is protected in LODs after the strategic reimport exposed emblem loss. Source-only work does not claim Unity, phone performance or public-game quality.
