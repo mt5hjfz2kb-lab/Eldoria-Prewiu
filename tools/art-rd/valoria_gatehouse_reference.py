@@ -219,15 +219,22 @@ base.cube("gatehouse_upper_solid_lintel",(0,.63,9.13),(4.77,1.87,.39),stone[2],.
 # Recessed narrow observation hole, not a blue painted decal.
 base.cube("observation_slot_shadow",(0,-.33,8.08),(.57,.08,1.41),patina,.017)
 # Battlement merlons over the chamber make a unified defensive crown with changing profile.
-for idx,(xc,h,w) in enumerate(zip((-1.86,-.68,.62,1.81),(.82,1.08,.91,.76),(.72,.73,.67,.81))):
+for idx,(xc,h,w) in enumerate(zip((-1.86,-.68,.62,1.81),(.57,.70,.62,.55),(.65,.69,.65,.71))):
     x0=xc-w/2;x1=xc+w/2;bottom=9.34;top=bottom+h
-    verts=[(x0,-.42,bottom),(x1,-.42,bottom),(x1,1.56,bottom),(x0,1.56,bottom),
-           (x0+.055,-.39,top),(x1-.055,-.39,top),(x1-.055,1.49,top),(x0+.055,1.49,top)]
+    verts=[(x0,-.52,bottom),(x1,-.52,bottom),(x1,.52,bottom),(x0,.52,bottom),
+           (x0+.055,-.49,top),(x1-.055,-.49,top),(x1-.055,.46,top),(x0+.055,.46,top)]
     director_poly("crown_authored_capped_merlon_"+str(idx),verts,
       [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],
       stone[(idx+2)%len(stone)],.09)
 # The old tower roofs remain undisturbed; central chamber is flat stone, not a pitched timber shed.
 art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 slab, V3 insufficient, V4 barn roof on stilts","operations":["restore_historical_ashlar","structural_nested_gate_arch","narrow_organic_buttresses","elevated_stone_watch_chamber_with_negative_space","asymmetric_defensive_stone_crown"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+
+# V6: shallow hood arch gives the narrow observation slot a genuine stone frame.
+for j in range(10):
+ a0=math.pi*j/10;a1=math.pi*(j+1)/10-.005
+ base.arch_segment("observation_hood_voussoir",0,-.47,8.30,.45,a0,a1,.14,trim,.065)
+# Overwrite the art history AFTER all authored operations, just before rendering.
+art_director_geometry={"baseline":"run_38136991434","rejected_predecessors":["V2_smooth_piers","V3_minor_delta","V4_roof_on_stilts","V5_oversized_merlons"],"operations":["historical_ashlar_preserved","deep_portal_arch","engaged_buttresses","stone_chamber","reduced_profile_crown_merlons","arched_observation_slot"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 # Stone voussoirs and structural buttress meshes are the only additions.
 art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 smooth facade and heavy crown","operations":["recover_visible_historic_ashlar","tapered_engaged_side_buttresses","deep_nested_load_bearing_arch","vary_existing_merlon_proportions","recessed_hip_coping"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
