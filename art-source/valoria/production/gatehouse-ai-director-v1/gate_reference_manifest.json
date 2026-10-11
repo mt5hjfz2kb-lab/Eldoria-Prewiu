@@ -1,14 +1,20 @@
 {
   "art_director_geometry": {
-    "baseline": "gate_reference_hero",
-    "operation": "two_integrated_tapered_buttresses_plus_full_arch_and_crown",
-    "chosen_for": "stronger depth silhouette and structural continuity",
-    "artistic_status": "REVIEW_REQUIRED"
+    "baseline": "run_38136991434",
+    "operations": [
+      "contiguous_battered_piers",
+      "deep_nested_arched_entry",
+      "authored_nonuniform_parapet",
+      "continuous_roof_mass",
+      "tower_transitional_hips"
+    ],
+    "artistic_status": "REVIEW_REQUIRED",
+    "no_additional_asset_families": true
   },
-  "triangles": 32560,
+  "triangles": 33336,
   "mesh_count": 22,
   "materials": 22,
-  "glb_bytes": 2997048,
+  "glb_bytes": 3046960,
   "wall_to_tower_edge_contact_x": [
     -8.65,
     8.65
