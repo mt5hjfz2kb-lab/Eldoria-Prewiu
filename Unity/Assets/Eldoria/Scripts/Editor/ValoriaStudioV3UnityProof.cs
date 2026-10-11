@@ -43,6 +43,7 @@ namespace Eldoria.EditorTools
                 var meshes = candidate.GetComponentsInChildren<MeshFilter>(true).Where(x => x.sharedMesh != null).ToArray();
                 if (meshes.Length == 0) throw new Exception("V3 contains no meshes");
                 Save(camera, Output + "/after.png");
+                PersistRuntimeAssets();
                 EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), ProofScene);
                 var triangles = meshes.Sum(x => x.sharedMesh.triangles.Length / 3L);
                 File.WriteAllText(Output + "/metrics.txt", "v3_triangles=" + triangles +
@@ -65,6 +66,61 @@ namespace Eldoria.EditorTools
                 EditorApplication.Exit(0);
             }
             catch (Exception ex) { Debug.LogException(ex); EditorApplication.Exit(1); }
+        }
+        static void PersistRuntimeAssets()
+        {
+            const string folder = "Assets/Eldoria/ArtTests/ValoriaGatehouseV1/V3PersistentAssets";
+            if (!AssetDatabase.IsValidFolder(folder)) AssetDatabase.CreateFolder("Assets/Eldoria/ArtTests/ValoriaGatehouseV1", "V3PersistentAssets");
+            var meshes = UnityEngine.Object.FindObjectsByType<MeshFilter>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            int next = 0;
+            foreach (var mf in meshes)
+            {
+                var mesh = mf.sharedMesh;
+                if (mesh != null && !AssetDatabase.Contains(mesh))
+                {
+                    var clone = UnityEngine.Object.Instantiate(mesh);
+                    clone.name = "Persisted mesh " + next;
+                    AssetDatabase.CreateAsset(clone, folder + "/mesh-" + next++ + ".asset");
+                    mf.sharedMesh = clone;
+                }
+            }
+            var materials = new System.Collections.Generic.Dictionary<Material,Material>();
+            var textures = new System.Collections.Generic.Dictionary<Texture,Texture>();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                var source = renderer.sharedMaterials;
+                var persisted = new Material[source.Length];
+                for (int i = 0; i < source.Length; i++)
+                {
+                    var mat = source[i];
+                    if (mat == null || AssetDatabase.Contains(mat)) { persisted[i] = mat; continue; }
+                    if (!materials.TryGetValue(mat, out var copy))
+                    {
+                        copy = UnityEngine.Object.Instantiate(mat);
+                        if (copy.shader != null)
+                            for (int p = 0; p < copy.shader.GetPropertyCount(); p++)
+                            {
+                                if (copy.shader.GetPropertyType(p) != UnityEngine.Rendering.ShaderPropertyType.Texture) continue;
+                                var prop = copy.shader.GetPropertyName(p);
+                                var tex = copy.GetTexture(prop);
+                                if (tex == null || AssetDatabase.Contains(tex)) continue;
+                                if (!textures.TryGetValue(tex, out var stored))
+                                {
+                                    stored = UnityEngine.Object.Instantiate(tex);
+                                    AssetDatabase.CreateAsset(stored, folder + "/tex-" + textures.Count + ".asset");
+                                    textures[tex] = stored;
+                                }
+                                copy.SetTexture(prop, stored);
+                            }
+                        AssetDatabase.CreateAsset(copy, folder + "/material-" + materials.Count + ".mat");
+                        materials[mat] = copy;
+                    }
+                    persisted[i] = copy;
+                }
+                renderer.sharedMaterials = persisted;
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log("V3_PERSISTENCE meshes=" + next + " materials=" + materials.Count + " textures=" + textures.Count);
         }
         static void Save(Camera camera, string path)
         {
