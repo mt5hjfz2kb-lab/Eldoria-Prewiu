@@ -59,6 +59,26 @@
       },
       "branch": "prototype/valoria-bastion1-no-sharp-20261010",
       "art_production_routing_reason": "Owner-authorized diagnostic engine import/capture of exact prior Blender evidence, retaining existing reference visual FAIL."
+    },
+    {
+      "id": "valoria-first-hero-asset-v1-20261011",
+      "owner": "chat-first-hero-asset-work",
+      "branch": "art/valoria-first-hero-asset-v1-20261011",
+      "scope": [
+        "tools/art-rd/valoria_first_hero_asset.py",
+        "art-source/valoria/production/first-hero-gate-v1/**",
+        "docs/evidence/valoria-first-hero-asset-v1/**",
+        ".github/workflows/valoria-first-hero-asset.yml"
+      ],
+      "resources": [
+        "isolated-linux-blender"
+      ],
+      "status": "active",
+      "paid_credits": 0,
+      "phase": "Observe exact reference and historical gates; isolated authored candidate. Does not mutate active V5 calibration or shared Unity runner.",
+      "art_production_routing": "required",
+      "claimed_at": "2026-10-11",
+      "base_main_sha": "852ea7c1fad9f3151fd6d0fd45b285153cb76d10"
     }
   ],
   "history": [
