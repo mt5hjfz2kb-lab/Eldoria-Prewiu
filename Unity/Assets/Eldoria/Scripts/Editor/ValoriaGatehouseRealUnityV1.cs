@@ -143,7 +143,7 @@ namespace Eldoria.EditorTools
                 torch.transform.position=p;
             }
             // Route winds in from the south; individually placed pavers avoid flat decal geometry.
-            for(int i=0;i<70;i++){
+            for(int i=0;i<83;i++){
                 float z=-40f+i*.83f;
                 float x=1.8f*Mathf.Sin(z*.075f);
                 var paving=GameObject.CreatePrimitive(PrimitiveType.Cube);
