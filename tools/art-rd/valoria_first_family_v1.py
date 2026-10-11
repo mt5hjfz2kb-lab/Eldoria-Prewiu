@@ -182,68 +182,63 @@ def rocks():
  cc0=importlib.util.module_from_spec(spec);spec.loader.exec_module(cc0)
  cc0.dress_continuous_cliff_with_cc0()
 
+def import_frozen_v3_subset(predicate,prefix):
+ # The V3 GLB was actually inspected: 1037 mesh nodes with coordinates baked
+ # inside vertices rather than their parent object origin. Import through the
+ # existing proven Blender glTF importer, never reconstruct a castle tower.
+ source=ROOT/'art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb'
+ assert source.is_file(),'frozen V3 GLB not available'
+ existing=set(bpy.context.scene.objects)
+ bpy.ops.import_scene.gltf(filepath=str(source))
+ imported=[o for o in bpy.context.scene.objects if o not in existing]
+ mesh=[o for o in imported if o.type=='MESH']
+ accepted=[o for o in mesh if predicate(o)]
+ assert accepted,('No authentic V3 components identified',prefix)
+ for item in imported:
+  if item not in accepted:bpy.data.objects.remove(item,do_unlink=True)
+ for item in accepted:
+  # Evaluated world coordinates are materialized into editable mesh object
+  # coords so the full asset can be moved as one modular unit.
+  transform=item.matrix_world.copy()
+  for v in item.data.vertices:v.co=transform@v.co
+  item.matrix_world.identity()
+  item.name=prefix+item.name
+ return accepted
+
+def world_center_x(o):
+ xs=[(o.matrix_world@Vector(c)).x for c in o.bound_box]
+ return (min(xs)+max(xs))/2
+
 def fittings():
- # REUSE the genuine V3 banners and torch pedestals/flames, not paper
- # rectangles or orange conical fire. Original V3 remains unchanged.
- with bpy.data.libraries.load(str(GATE),link=False) as (src,dst):
-  assert 'VALORIA_HERO_GATE' in src.collections
-  dst.collections=['VALORIA_HERO_GATE']
- coll=dst.collections[0]
- tags=('Royal blue Valoria banner','Banner mounting bar','Torch pedestal',
-       'Torch stone cap','Carved ember flame')
- originals=[o for o in coll.objects if o.type=='MESH' and o.name.startswith(tags)]
- assert len(originals)>=12,'V3 authored banner and flame detail missing'
- copied=0
- for source in originals:
-  world_verts=[source.matrix_world@v.co for v in source.data.vertices]
-  centroid_x=sum(p.x for p in world_verts)/len(world_verts)
-  sign=-1 if centroid_x<0 else 1
-  is_banner=source.name.startswith(('Royal blue','Banner'))
-  part=source.copy();part.data=source.data.copy()
-  bpy.context.scene.collection.objects.link(part)
-  part.name='Hero V3 extracted defensive prop '+source.name
-  part.matrix_world=source.matrix_world.copy()
-  if is_banner:
-   part.matrix_world.translation.x+=sign*(2.65-3.42)
-   part.matrix_world.translation.z-=2.75
+ labels=('Royal blue Valoria banner','Banner mounting bar','Torch pedestal',
+         'Torch stone cap','Carved ember flame')
+ originals=import_frozen_v3_subset(
+  lambda ob:ob.name.startswith(labels),'V3 defensive prop - ')
+ assert len(originals)>=12,'Original V3 banners and torches missing'
+ for ob in originals:
+  sign=1 if world_center_x(ob)>=0 else -1
+  if ('banner' in ob.name.lower() or 'mounting bar' in ob.name.lower()):
+   ob.location.x+=sign*(2.65-3.42)
+   ob.location.z-=2.75
   else:
-   part.matrix_world.translation.x+=sign*(1.55-2.24)
-   part.matrix_world.translation.y-=1
-  copied+=1
- # Tapered, soil-set wooden palisade stakes; avoid cubic Lego ends.
+   ob.location.x+=sign*(1.55-2.24)
+   ob.location.y-=1.0
  for i in range(5):
   x=(i-2)*.74
   ns['frustum'](f'defensive_stake_tapered_{i}',(x,2.35,.9),.14,.045,1.8,
                 ns['wood'][i%3],7)
  ns['cube']('palisade_rear_crossbrace',(0,2.48,1.08),(3.5,.12,.15),ns['wood'][0],.025)
- assert copied>=12
+
 def source_hero_tower(x=0,y=0):
- # Preserve the artistic quality of the frozen V3 masonry: extract the
- # architecture's existing right tower as a standalone compatible module.
- with bpy.data.libraries.load(str(GATE),link=False) as (src,dst):
-  assert 'VALORIA_HERO_GATE' in src.collections
-  dst.collections=['VALORIA_HERO_GATE']
- coll=dst.collections[0]
- # Different V3 cohorts use Tower front/return/crown/merlon naming.
- def tower_on_right(o):
-  if o.type!='MESH' or not o.name.startswith(('Tower ','Tower_')):return False
-  xs=[(o.matrix_world@Vector(c)).x for c in o.bound_box]
-  return (min(xs)+max(xs))/2>0.5
- right=[o for o in coll.objects if tower_on_right(o)]
- assert len(right)>=30,'Frozen V3 has too few right-tower meshes; stop, never substitute primitive'
- verts=[o.matrix_world@v.co for o in right for v in o.data.vertices]
- assert verts,'Hero V3 tower extraction returned no vertices'
- xmin=min(v.x for v in verts);xmax=max(v.x for v in verts)
- ymin=min(v.y for v in verts);ymax=max(v.y for v in verts)
- centerx=(xmin+xmax)*.5;centery=(ymin+ymax)*.5
- for original in right:
-  part=original.copy()
-  part.data=original.data.copy()
-  bpy.context.scene.collection.objects.link(part)
-  part.name='Hero V3 extracted watchtower - '+original.name
-  part.matrix_world=original.matrix_world.copy()
-  part.matrix_world.translation.x+=x-centerx
-  part.matrix_world.translation.y+=y-centery
+ # Right V3 tower meshes have 358 individually authored parts (GLB).
+ right=import_frozen_v3_subset(lambda o:
+  o.name.startswith(('Tower ','Tower_')) and world_center_x(o)>0.5,
+  'V3 watchtower - ')
+ assert len(right)>=100,('V3 watchtower extraction incomplete',len(right))
+ verts=[v.co for o in right for v in o.data.vertices]
+ center_x=(min(v.x for v in verts)+max(v.x for v in verts))/2
+ center_y=(min(v.y for v in verts)+max(v.y for v in verts))/2
+ for o in right:o.location.x+=x-center_x;o.location.y+=y-center_y
  return len(right)
 
 def dressed_wall(name,x=0,y=0,length=8,detail=True):
