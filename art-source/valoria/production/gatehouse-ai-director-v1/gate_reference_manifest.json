@@ -12,10 +12,10 @@
     "artistic_status": "REVIEW_REQUIRED",
     "no_additional_asset_families": true
   },
-  "triangles": 32220,
+  "triangles": 32840,
   "mesh_count": 22,
   "materials": 22,
-  "glb_bytes": 2969316,
+  "glb_bytes": 3015084,
   "wall_to_tower_edge_contact_x": [
     -8.65,
     8.65
