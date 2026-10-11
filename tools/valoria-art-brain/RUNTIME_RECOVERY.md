@@ -28,3 +28,9 @@ Evidence: GitHub Actions run **38149304572** on this isolated ops branch. This i
 There is no demonstrated always-on, shared Ollama+Qwen inference service reachable from arbitrary Work or normal chat sessions. Making one available requires an owned accessible machine / per-job model setup and available storage/RAM; **source recovery alone cannot supply that compute**. A reproducible no-inference pipeline already exists for Blender and MCP changes inside job runtimes. Do not imply all tools are simultaneously live.
 
 The current requested first hero asset visual quality work is independent and should continue while runtime tooling is resolved.
+
+## Live vision recovery result (11 October 2026)
+
+- GitHub Actions run **38150397153**: real ephemeral Ollama installed, model **qwen2.5vl:3b** (Qwen2.5-VL) downloaded, vision image transmitted, valid final text received: `White background.` The step **succeeded**. No paid inference API.
+- The originally attempted **qwen3-vl:2b** did process image prompts but repeatedly exhausted token budgets in internal reasoning without a usable final answer; runs 38149726904, 38149944785 and 38150160868 failed their real output gate. It must not be considered operational for art review in this configuration.
+- For new art jobs, execute `bash tools/valoria-art-brain/start_local_qwen_ci.sh` **inside the same GitHub job** before the actual art-review adapter. Do not expect Ollama to remain alive across jobs. To evaluate real before/after art, add image review inside the job with the model still running; the current smoke only proves simple image inference, not production art judgment.
