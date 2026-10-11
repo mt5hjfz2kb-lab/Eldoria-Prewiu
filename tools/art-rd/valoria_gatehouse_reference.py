@@ -230,7 +230,44 @@ for idx,(xc,h,w) in enumerate(zip((-1.86,-.68,.62,1.81),(.82,1.08,.91,.76),(.72,
 art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 slab, V3 insufficient, V4 barn roof on stilts","operations":["restore_historical_ashlar","structural_nested_gate_arch","narrow_organic_buttresses","elevated_stone_watch_chamber_with_negative_space","asymmetric_defensive_stone_crown"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 # Stone voussoirs and structural buttress meshes are the only additions.
-art_director_geometry={"baseline":"run_38136991434","rejected_predecessor":"V2 smooth facade and heavy crown","operations":["recover_visible_historic_ashlar","tapered_engaged_side_buttresses","deep_nested_load_bearing_arch","vary_existing_merlon_proportions","recessed_hip_coping"],"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
+# V5 architecture stays frozen; calibration metadata follows at render time.
+
+# DESTINATION CALIBRATION V1: V5 architecture remains immutable.
+# Improve only existing mesh surface and material response; never add gate parts.
+# Scoped entirely to gate meshes and existing assigned materials.
+surface_rng=random.Random(5161)
+surface_changes=0
+for ob in list(bpy.data.objects):
+ if ob.type!="MESH":continue
+ name=ob.name.lower()
+ if "radial_ashlar" in name or "_irregular_stone" in name:
+  # Reduce machine-perfect co-planarity in existing stone faces.
+  if len(ob.data.vertices)<4:continue
+  for vert in ob.data.vertices:
+   vert.co.y+=surface_rng.uniform(-.011,.011)
+   vert.co.z+=surface_rng.uniform(-.006,.006)
+  surface_changes+=1
+# Keep the existing exact stone/wood/iron identities; adjust shader breakup.
+for material in list(base.stone)+[base.trim,base.mortar]:
+ bs=material.node_tree.nodes.get("Principled BSDF")
+ if not bs:continue
+ tex=material.node_tree.nodes.new("ShaderNodeTexNoise")
+ tex.inputs["Scale"].default_value=17.0
+ tex.inputs["Detail"].default_value=2.0
+ tex.inputs["Roughness"].default_value=.68
+ ramp=material.node_tree.nodes.new("ShaderNodeValToRGB")
+ ramp.color_ramp.elements[0].position=.22
+ ramp.color_ramp.elements[0].color=(.52,.52,.52,1)
+ ramp.color_ramp.elements[1].position=.78
+ ramp.color_ramp.elements[1].color=(.88,.88,.88,1)
+ material.node_tree.links.new(tex.outputs["Fac"],ramp.inputs["Fac"])
+ # Non-destructive roughness variation; no substitution of architecture or albedo maps.
+ material.node_tree.links.new(ramp.outputs["Color"],bs.inputs["Roughness"])
+for material in base.wood:
+ bs=material.node_tree.nodes.get("Principled BSDF")
+ if bs:bs.inputs["Roughness"].default_value=.77
+# Fixed camera and same geometry enable before/after appearance inspection.
+art_director_geometry={"baseline":"V5_commit_64f5975960","intervention":"existing_stone_surface_microrelief_and_material_roughness","existing_stone_meshes_refined":surface_changes,"architecture_changes":0,"artistic_status":"REVIEW_REQUIRED","no_additional_asset_families":True}
 
 save("gate_reference_hero")
 save("gate_reference_mobile",37,(0,0,3.3))
