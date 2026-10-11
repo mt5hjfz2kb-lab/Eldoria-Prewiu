@@ -21,15 +21,27 @@ jobs:
           node tools/check-art-production-governance.mjs
           node tools/plan-art-production.mjs pipeline/art-production-requests/valoria-studio-recovery-rocks-v1-20261011.json art-source/valoria/production/studio-rocks-v1/plan.json
       - name: Free Blender isolated from the shared Windows runner
-        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy libarchive13 zstd curl
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy libarchive13 zstd curl python3-pil
+      - name: Resume exact already-validated Blender production when unchanged
+        run: |
+          python3 - <<'PYCODE'
+          import os,hashlib,subprocess,pathlib
+          p=pathlib.Path('art-source/valoria/production/studio-rocks-v1/ValoriaRockStudy.blend')
+          reuse=p.is_file() and subprocess.check_output(['git','hash-object',str(p)],text=True).strip()=='3e93a24cfb2f26dd05f60dc0b405accdc4a09ebf' and hashlib.sha256(pathlib.Path('tools/art-studio-recovery/produce_rock_study.py').read_bytes()).hexdigest()=='046a7aed0b2f02ff15c173e61fe34c0c5e7aa235033c3c72cd2d051eeb76906a'
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('STUDIO_REUSE='+str(reuse).lower()+'\n')
+          print('Exact source from successful production stage in run 38127107174 reused:',reuse)
+          PYCODE
       - name: Existing library audit and real donor renders
+        if: env.STUDIO_REUSE != 'true' 
         run: blender -b --threads 4 --python tools/art-studio-recovery/probe_donors.py
       - name: Reuse the proven CC0 scanned donor; verify exact historical source
+        if: env.STUDIO_REUSE != 'true'
         run: |
           curl -L --fail --retry 2 -A "EldoriaResearch/1.0" 'https://opengameart.org/sites/default/files/Free%20-%20Photogrammetric%20Rock.7z' -o /tmp/eldoria-rock.7z
           echo 'f33dbb5b2a2315a2fba5e5db09fabf799094fe8b5c437486ba52546e4486138d  /tmp/eldoria-rock.7z' | sha256sum -c -
           python3 tools/art-studio-recovery/extract_cc0.py /tmp/eldoria-rock.7z /tmp/eldoria-rock-source
       - name: Real donor production; identical Blender cameras and lighting
+        if: env.STUDIO_REUSE != 'true'
         run: |
           blender -b --python-exit-code 1 --threads 4 --python tools/art-studio-recovery/produce_rock_study.py
           python3 tools/art-rd/audit_glb.py art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb > art-source/valoria/production/studio-rocks-v1/glb-audit.json

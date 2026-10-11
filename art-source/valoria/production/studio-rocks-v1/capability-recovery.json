@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "mission_complete": false,
+  "main_modified": false,
+  "external_services_eur": 0,
+  "capabilities": [
+    {"component":"Canonical art planner + governance","actual_use":"request validated and plan generated before production","state":"executed"},
+    {"component":"Asset Deep Uplift","evidence":"docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md; workflow is parked/manual explanatory job","state":"useful preserved candidates, not active producer"},
+    {"component":"Asset Visual Uplift","evidence":"docs/ASSET_VISUAL_UPLIFT_PASS_V1_RESULT.md; bound to visual-proof/asset-visual-uplift-v1, Windows Unity","state":"prior selective surface improvement, not terrain authoring"},
+    {"component":"Donor Audit / Donor Visual","actual_use":"reused source inspection/Blender camera strategy for five existing donors","state":"executed adapted inspection; cannot choose/promote art by itself"},
+    {"component":"Production Art","evidence":"source classification and professional authoring policy applied; existing rock family rendered and rejected as source","state":"contracts reused; legacy family not reference-quality"},
+    {"component":"Photogrammetry donor","actual_use":"recovered historical run 37445549161, artifact11403535192; CC0 source SHA verified; mobile LOD4 1998 triangles, PBR 1024px","state":"real production"},
+    {"component":"BlenderMCP","actual_use":"real TCP queue execute_code, cap repair, 52 rock objects, buried receiver; paid integrations disabled","state":"executed local; not persistent GUI agent"},
+    {"component":"Ollama/Qwen3-VL","actual_use":"prior successful runs verified; local free Ollama started; HF redirect blocked in this environment; GitHub Linux test pending","state":"historically operative; new cross-system production inference pending"},
+    {"component":"Tripo pipelines","actual_use":"reused existing GLBs for donor comparison without any vendor operation","state":"generation/paid transforms not executed under zero budget"},
+    {"component":"GLB export/preflight","actual_use":"real source, embedded albedo/normal textures, structural audit no errors/warnings","state":"executed; triangle count is not artistic/performance approval"},
+    {"component":"Unity integration","actual_use":"latest real Unity baseline artifact11696877248 inspected; separate candidate environment exported","state":"new candidate not engine-certified; shared Windows ownership respected"}
+  ],
+  "proven_causes": [
+    {"hypothesis":"A insufficient brain use","evidence":"current Unity terrain script calls no planner, local vision or MCP; agent scripts reside in separate art branch"},
+    {"hypothesis":"B wrong production technique","evidence":"five radial height levels, flat-shaded triangles and icosahedral rubble; old agents only add brightness or displacement; imported donors include masonry unsuitable for natural cliffs"},
+    {"hypothesis":"C missing consistent direction","evidence":"generation parameters hardcoded and artist-like output names; prior geometric agent cannot select geological strata/reference-driven silhouette"},
+    {"hypothesis":"D weak visual evaluation","evidence":"pixel delta and nonzero edits are technical proof; scripts explicitly visual_pass=false; no downstream executor uses artistic rejection to select a different technique"},
+    {"hypothesis":"E disconnected systems","evidence":"known successful local vision/MCP workflows do not participate in integration terrain workflow; legacy Deep Uplift is parked; planner emits stage names without executing them"}
+  ],
+  "quality_verdict":"Partial genuine rock-surface and macroform improvement; substantial full-reference convergence not established. Visible repetition and ground contact defects persist; no ART PASS or Unity PASS."
+}

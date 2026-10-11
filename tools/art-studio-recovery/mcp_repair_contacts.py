@@ -11,10 +11,12 @@ plan=json.loads(plan_path.read_text()) if plan_path.exists() else {}
 if plan.get('status')=='unavailable_or_invalid' or not plan.get('next_action'):
  plan={'next_action':'bury_seams','decision':'reject_candidate','source':'assistant_direct_visual_review','reason':'v2: summit cut opens cavities and grass-to-rock contacts still require continuous buried support.'}
  (OUT/'director-contact-decision.json').write_text(json.dumps(plan,indent=2))
-if plan['next_action'] in ('change_donor','retain_baseline'):
- (OUT/'mcp-contact-report.json').write_text(json.dumps({'status':'candidate_rejected','decision':plan,'mcp_used':False,'visual_pass':False},indent=2));print('Candidate rejected; no forced correction');raise SystemExit(0)
+if plan['next_action'] in ('change_donor','retain_baseline','keep_for_unity_test'):
+ (OUT/'mcp-contact-report.json').write_text(json.dumps({'status':'no_geometry_correction_selected','decision':plan,'mcp_used':False,'visual_pass':False},indent=2));print('Candidate rejected; no forced correction');raise SystemExit(0)
 addon=Path(os.environ.get('ELDORIA_BLENDER_MCP_ADDON','/tmp/eldoria-blender-mcp.py'))
 assert addon.is_file()
+config=json.loads((ROOT/'pipeline/art-studio-recovery-v1.json').read_text())
+assert hashlib.sha256(addon.read_bytes()).hexdigest()==config['mcp_addon_sha256']
 # Blender ships requests; no addon registration or integrations are enabled.
 spec=importlib.util.spec_from_file_location('blender_mcp',addon);module=importlib.util.module_from_spec(spec);sys.modules['blender_mcp']=module;spec.loader.exec_module(module)
 for feature in ('polyhaven','hyper3d','sketchfab','polypizza','hunyuan3d','tripo'):
