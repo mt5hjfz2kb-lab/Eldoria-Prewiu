@@ -108,35 +108,6 @@ namespace Eldoria.EditorTools
             // Terrain is continuous under the courtyard, with a descending outer escarpment.
             BuildPlateau(world.transform,grass,rock);
             RenderSettings.fog=true; RenderSettings.fogColor=new Color(.34f,.39f,.45f); RenderSettings.fogMode=FogMode.Linear; RenderSettings.fogStartDistance=85f; RenderSettings.fogEndDistance=180f;
-            // Reuse pre-existing authored rock GLB; do not invent geometry in place of valid assets.
-            var rockSource="Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb";
-            var rockRoot=new GameObject("Existing Eldoria rocky escarpment mesh");
-            var importedRock=new GltfImport(null,new UninterruptedDeferAgent());
-            if(await importedRock.LoadFile(Path.GetFullPath(rockSource)) &&
-                await importedRock.InstantiateMainSceneAsync(rockRoot.transform)){
-                var rockParts=rockRoot.GetComponentsInChildren<Renderer>(true);
-                if(rockParts.Length>0){
-                    var rb=rockParts[0].bounds;
-                    foreach(var rr in rockParts)rb.Encapsulate(rr.bounds);
-                    if(rb.size.x>0.001f){
-                        rockRoot.transform.localScale*=13f/rb.size.x;
-                        rockParts=rockRoot.GetComponentsInChildren<Renderer>(true);
-                        rb=rockParts[0].bounds;
-                        foreach(var rr in rockParts)rb.Encapsulate(rr.bounds);
-                        rockRoot.transform.position=new Vector3(0f,-2f,0f)-new Vector3(rb.center.x,rb.min.y,rb.center.z);
-                        rockRoot.transform.SetParent(world.transform,true);
-                        for(int k=0;k<6;k++){
-                            float theta=(k+.5f)*Mathf.PI*2f/6f;
-                            var feature=Object.Instantiate(rockRoot,world.transform);
-                            feature.name="Reused geological outcrop "+k;
-                            feature.transform.position=new Vector3(37.4f*Mathf.Cos(theta),-5.3f,37.4f*Mathf.Sin(theta));
-                            feature.transform.rotation=Quaternion.Euler(0f,k*57f,0f);
-                            feature.transform.localScale*=.85f+(k%3)*.12f;
-                        }
-                        rockRoot.SetActive(false);
-                    }
-                }
-            }else{Object.DestroyImmediate(rockRoot);}
             // Reuse authored fortification at the upper defensive terrace.
             var upper=Object.Instantiate(root);
             upper.name="Upper Valoria fortified gatehouse";
