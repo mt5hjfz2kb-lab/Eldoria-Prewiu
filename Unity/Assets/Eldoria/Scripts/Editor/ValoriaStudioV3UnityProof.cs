@@ -45,6 +45,7 @@ namespace Eldoria.EditorTools
                 Save(camera, Output + "/after.png");
                 PersistRuntimeAssets();
                 StabilizeConiferMaterials();
+                StabilizeCurtainWallMaterials();
                 Save(camera, Output + "/after-persistence.png");
                 EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), ProofScene);
                 var triangles = meshes.Sum(x => x.sharedMesh.triangles.Length / 3L);
@@ -166,7 +167,7 @@ namespace Eldoria.EditorTools
                         var source = mat.HasProperty("_BaseMap") ? mat.GetTexture("_BaseMap") : mat.mainTexture;
                         var stable = new Material(shader);
                         stable.name = "Valoria conifer stable unlit " + count;
-                        stable.SetColor("_BaseColor", Color.white);
+                        stable.SetColor("_BaseColor", new Color(.16f, .34f, .22f, 1f));
                         if (source != null) stable.SetTexture("_BaseMap", source);
                         stable.SetFloat("_AlphaClip", 1f);
                         stable.SetFloat("_Cutoff", 0.4f);
@@ -180,6 +181,28 @@ namespace Eldoria.EditorTools
             }
             AssetDatabase.SaveAssets();
             Debug.Log("VALORIA_STABLE_CONIFER_MATERIALS=" + count);
+        }
+        static void StabilizeCurtainWallMaterials()
+        {
+            const string folder = "Assets/Eldoria/ArtTests/ValoriaGatehouseV1/V3PersistentAssets";
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null) throw new Exception("URP Lit missing");
+            var material = new Material(shader);
+            material.name = "Valoria restored wall stone";
+            material.SetColor("_BaseColor", new Color(.59f, .55f, .49f, 1f));
+            AssetDatabase.CreateAsset(material, folder + "/stable-stone-wall.mat");
+            foreach (string name in new [] { "Original wall segment left", "Original wall segment right", "Upper western curtain wall", "Upper eastern curtain wall" })
+            {
+                var root = GameObject.Find(name);
+                if (root == null) continue;
+                foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+                {
+                    var arr = renderer.sharedMaterials;
+                    for (int i=0; i<arr.Length; i++) arr[i] = material;
+                    renderer.sharedMaterials = arr;
+                }
+            }
+            AssetDatabase.SaveAssets();
         }
         static Texture PersistTexture(Texture source, string folder, int index, string property)
         {
