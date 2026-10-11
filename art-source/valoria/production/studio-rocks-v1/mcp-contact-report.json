@@ -1,0 +1,37 @@
+{
+  "mcp_tcp_execution": true,
+  "addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5",
+  "decision": {
+    "decision": "reject_candidate",
+    "reference_gap": "the reference image is missing the lower portion of the cliff face, which is visible in the before/after images",
+    "defects": [
+      "the cliff face in the before/after images is not a continuous, natural rock formation but appears to be composed of multiple, disconnected, and poorly defined rock blocks",
+      "there are visible gaps and seams in the cliff face that do not align with the natural geological structure",
+      "the rock terrain in the before/after images shows a lack of natural contact with grass, with the grass appearing to be on top of the rock rather than in contact with it",
+      "the texture of the rock is inconsistent, with some areas appearing to be made of multiple, poorly defined blocks and others appearing to be a single, smooth surface",
+      "the overall appearance of the rock terrain is not consistent with the natural geology of the area"
+    ],
+    "next_action": "bury_seams",
+    "model": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+    "actual_images": [
+      "art-source/valoria/production/studio-rocks-v1/before-overview.png",
+      "art-source/valoria/production/studio-rocks-v1/after-overview.png",
+      "art-source/valoria/production/studio-rocks-v1/owner-reference.jpeg",
+      "art-source/valoria/production/studio-rocks-v1/before-cliff.png",
+      "art-source/valoria/production/studio-rocks-v1/after-cliff.png"
+    ],
+    "visual_pass": false,
+    "unity_tested": false,
+    "paid_services_used": false
+  },
+  "response_status": "success",
+  "geometry_changes": {
+    "rock_instances_adjusted": 52,
+    "cut_caps_filled": 2,
+    "receiver_triangles": 3154
+  },
+  "same_render_conditions": true,
+  "visual_pass": false,
+  "unity_tested": false,
+  "services_cost_eur": 0
+}

@@ -2,12 +2,12 @@
   "assets": [
     {
       "file": "art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb",
-      "bytes": 5830168,
+      "bytes": 6151464,
       "errors": [],
       "warnings": [],
-      "meshes": 2,
-      "primitives": 13,
-      "triangles_estimated": 18164,
+      "meshes": 3,
+      "primitives": 14,
+      "triangles_estimated": 21427,
       "materials": 13,
       "textures": 7,
       "images": 3,
