@@ -1,0 +1,45 @@
+name: Valoria V2.2 assembly tower recovered and frozen V3
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['tools/art-rd/valoria_asset_family_v2_2_assemble.py','.github/workflows/valoria-v2-2-assembly.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-v2-1-real-qwen-mcp-second-art-pass
+          run-id: 38174276796
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-v2-2-original-tower-recovery
+          run-id: 38175016637
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2/watchtower
+      - name: Install free Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Render true V3 with corrected tower V2.2 and six V2.1 source GLBs
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-rd/valoria_asset_family_v2_2_assemble.py
+      - name: Check exact new assembly
+        run: |
+          ROOT=art-source/valoria/production/asset-family-v2
+          for F in assembled-v2-2.blend assembled-v2-2-hero.png assembled-v2-2-strategic.png assembled-v2-2-report.json; do test -s "$ROOT/$F"; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-v2-2-composition-frozen-v3-corrected-tower
+          path: |
+            art-source/valoria/production/asset-family-v2/assembled-v2-2.blend
+            art-source/valoria/production/asset-family-v2/assembled-v2-2-hero.png
+            art-source/valoria/production/asset-family-v2/assembled-v2-2-strategic.png
+            art-source/valoria/production/asset-family-v2/assembled-v2-2-report.json
+          retention-days: 30
