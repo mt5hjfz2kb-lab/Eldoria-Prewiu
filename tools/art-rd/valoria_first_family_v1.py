@@ -66,19 +66,22 @@ def rocks():
    nxt=(k+1)%n
    v0=j*n+k;v1=j*n+nxt;v2=(j+1)*n+nxt;v3=(j+1)*n+k
    faces.append((v0,v1,v2,v3));materials.append((j//2+k//11)%8)
- # Crown is triangulated to a structured *sculpted* interior, not a flat lid.
- start=len(verts)
- for yi in range(ny):
-  y=-3.9+7.8*yi/(ny-1)
-  for xi in range(nx):
-   x=-4.6+9.2*xi/(nx-1)
-   z=crown(x,y)
-   verts.append((x,y,z))
- for yi in range(ny-1):
-  for xi in range(nx-1):
-   aa=start+yi*nx+xi;bb=aa+1;cc=aa+nx+1;dd=aa+nx
-   # Keep top continuous and avoid block-panel artifacts.
-   faces.append((aa,bb,cc,dd));materials.append((xi//6+yi//5)%8)
+ # Closed sculpted crown and cliff share the SAME perimeter vertices.
+ # Concentric radial rings ensure every face meets the exposed cliff edge.
+ prior=0
+ for layer,ratio in enumerate((.78,.55,.32,.12)):
+  offset=len(verts)
+  for k,(x,y,top) in enumerate(perimeter):
+   x2=x*ratio;y2=y*ratio
+   z=crown(x2,y2)+.09*math.sin(k*.39+layer*.72)
+   verts.append((x2,y2,z))
+   faces.append((prior+k,prior+(k+1)%n,offset+(k+1)%n,offset+k))
+   materials.append((k//11+layer//2)%8)
+  prior=offset
+ center_index=len(verts);verts.append((0,0,crown(0,0)))
+ for k in range(n):
+  faces.append((prior+k,prior+(k+1)%n,center_index))
+  materials.append((k//14)%8)
  mesh=bpy.data.meshes.new('sculpted_geological_continuum')
  mesh.from_pydata(verts,[],faces);mesh.update()
  ob=bpy.data.objects.new('Sculpted continuous bedrock face and irregular crown',mesh)
