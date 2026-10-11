@@ -1,0 +1,35 @@
+name: Valoria V2.1 Qwen vision art decisions for 7 assets
+on:
+  push:
+    branches: [art/valoria-asset-family-v2-ai-authorship-20261011]
+    paths: ['.github/workflows/valoria-v2-1-qwen-decisions.yml','tools/art-rd/valoria_family_v2_1_qwen_art_director.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  seven-qwen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-family-v2-seven-sources-renders-evidence
+          run-id: 38170413822
+          github-token: ${{ github.token }}
+          path: art-source/valoria/production/asset-family-v2
+      - name: Start already established free Qwen Ollama brain
+        run: |
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          bash "$RUNNER_TEMP/start-qwen.sh"
+      - name: Seven new independent visual decisions before changes
+        run: python3 tools/art-rd/valoria_family_v2_1_qwen_art_director.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-v2-1-qwen-seven-new-art-decisions
+          path: art-source/valoria/production/asset-family-v2/qwen-v2-1-*.json
+          retention-days: 30
