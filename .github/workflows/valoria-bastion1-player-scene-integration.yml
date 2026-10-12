@@ -139,6 +139,31 @@ jobs:
           [System.IO.File]::WriteAllText($quality,$q,(New-Object System.Text.UTF8Encoding($false)))
           if(([regex]::Matches([System.IO.File]::ReadAllText($quality),[regex]::Escape($correct))).Count -ne $count){throw 'URP Quality verification failed'}
           Write-Host "WEBGL_URP_QUALITY_FIX_PASS quality_levels=$count pipeline_guid=$guid"
+      - name: Prune superseded Valoria Resources GLBs only in isolated WebGL build
+        shell: powershell
+        run: |
+          # Generated meshes are already baked into the candidate scene. Earlier
+          # Resources/Valoria GLBs must not be serialized into this playable test;
+          # they introduce glTFast materials and large, unrelated shaders.
+          $assets=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Resources/Valoria'
+          $quarantine=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedLegacyGLBs'
+          $sourceAssets=@(Get-ChildItem -LiteralPath $assets -Filter '*.glb' -File -Recurse)
+          if($sourceAssets.Count -lt 20){throw "Unexpected Valoria legacy GLB count: $($sourceAssets.Count)"}
+          $bytes=0L
+          foreach($file in $sourceAssets){
+            $bytes+=$file.Length
+            $relative=$file.FullName.Substring($assets.Length).TrimStart([char]92,[char]47)
+            $dst=Join-Path $quarantine $relative
+            New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
+            Move-Item -LiteralPath $file.FullName -Destination $dst -Force
+            if(Test-Path -LiteralPath "$($file.FullName).meta"){
+              Move-Item -LiteralPath "$($file.FullName).meta" -Destination "$dst.meta" -Force
+            }
+          }
+          Write-Host "BASTION1_WEBGL_LEGACY_GLB_QUARANTINED count=$($sourceAssets.Count) bytes=$bytes"
+          if((Get-ChildItem -LiteralPath $assets -Filter '*.glb' -File -Recurse | Measure-Object).Count -ne 0){
+            throw 'Legacy GLB exclusion incomplete'
+          }
       - name: Build isolated playable WebGL candidate
         shell: powershell
         run: |
