@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using GLTFast;
@@ -42,6 +43,31 @@ namespace Eldoria.EditorTools {
                 cliff.SetActive(false);
                 Render(cam,Path.Combine(output,"talus-only.png"));
                 cliff.SetActive(true);
+                // Geometry-only control: both renders use exactly the same
+                // neutral material. This isolates silhouette/occlusion from
+                // GLB texture packing or imported material differences.
+                var neutralShader=Shader.Find("Universal Render Pipeline/Lit");
+                if(neutralShader==null)throw new Exception("Neutral URP shader unavailable");
+                var clay=new Material(neutralShader);
+                clay.name="Independent A-B neutral clay";
+                clay.SetColor("_BaseColor",new Color(.56f,.53f,.48f));
+                clay.SetFloat("_Smoothness",.12f);
+                clay.SetFloat("_Metallic",0f);
+                var originalMaterials=new Dictionary<Renderer,Material[]>();
+                foreach(var group in new[]{cliff,talus})
+                foreach(var renderer in group.GetComponentsInChildren<Renderer>(true))
+                {
+                    originalMaterials[renderer]=renderer.sharedMaterials;
+                    var assigned=new Material[renderer.sharedMaterials.Length];
+                    for(int i=0;i<assigned.Length;i++)assigned[i]=clay;
+                    renderer.sharedMaterials=assigned;
+                }
+                talus.SetActive(false);
+                Render(cam,Path.Combine(output,"before-neutral-clay.png"));
+                talus.SetActive(true);
+                Render(cam,Path.Combine(output,"after-neutral-clay.png"));
+                foreach(var item in originalMaterials)item.Key.sharedMaterials=item.Value;
+                UnityEngine.Object.DestroyImmediate(clay);
                 File.WriteAllText(Path.Combine(output,"capture-manifest.json"),
                   "{\"engine\":\"Unity 6000.3.23f1\",\"capture\":\"camera.Render matched perspective\",\"artist\":\"qwen3-vl:4b-instruct\",\"source\":\"frozen cliff V3\",\"asset\":\"cliff_talus_transition_v1\",\"visual_pass\":false,\"mobile_pass\":false}");
                 Debug.Log("VALORIA_LOCAL_TALUS_UNITY_CAPTURE_COMPLETED "+output);
