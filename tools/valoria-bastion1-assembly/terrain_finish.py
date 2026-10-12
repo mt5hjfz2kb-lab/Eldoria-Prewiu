@@ -81,7 +81,16 @@ def terrain_level(x,y):
     # Architectural gameplay anchors remain at their exact authored heights.
     low=terrace_blend(x,y,0,-4,22.5,14,13.5)
     high=terrace_blend(x,y,0,23.5,21.5,9.5,13.2)
-    return ground*(1-max(low,high))+3.44*high
+    # Preserve the entire existing stone route above the terrain. The first
+    # sculpted hill overlaid its road meshes at z=0 (and occluded the staircase).
+    height=ground*(1-max(low,high))-.18*low+3.44*high
+    if -18.0<=y<=16.5:
+        # A smooth, shallow axial corridor follows the author's stair rise;
+        # no new road mesh, proxy town, or collider is constructed here.
+        route=(-.24 if y<=8.0 else -.24+min(1.0,(y-8.0)/5.5)*3.63)
+        edge=1-smoothstep01((abs(x)-3.5)/3.5)
+        height=height*(1-edge)+min(height,route)*edge
+    return height
 
 terrain_mesh=bpy.data.meshes.new('Valoria continuous cliff plateau and ramps')
 nx=104;ny=112
