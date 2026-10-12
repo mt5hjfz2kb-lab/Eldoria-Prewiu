@@ -17,6 +17,8 @@ namespace Eldoria.EditorTools
     {
         static Material stageMaterial;
         static Texture2D stageAlbedo;
+        static Material stageRockMaterial;
+        static Texture2D stageRockAlbedo;
 
         static readonly Dictionary<Material,Material> Finished = new Dictionary<Material,Material>();
         const string Study = "Assets/Eldoria/Experimental/ValoriaFinishV1";
