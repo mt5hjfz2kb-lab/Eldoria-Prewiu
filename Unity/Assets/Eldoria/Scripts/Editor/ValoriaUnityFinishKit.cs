@@ -113,10 +113,11 @@ namespace Eldoria.EditorTools
             {
                 var c=m.GetColor("_BaseColor");
                 var rock=piece=="cliff_rocks" && id.Contains("rock");
-                var warmth=rock?.66f:stone?1.015f:1f;
+                var masonry=stone && piece!="cliff_rocks";
+                var warmth=rock?.66f:masonry?.82f:1f;
                 m.SetColor("_BaseColor",new Color(
-                    Mathf.Clamp01(c.r*warmth),Mathf.Clamp01(c.g*(rock?.69f:.99f)),
-                    Mathf.Clamp01(c.b*(rock?.74f:stone?.95f:1f)),c.a));
+                    Mathf.Clamp01(c.r*warmth),Mathf.Clamp01(c.g*(rock?.69f:masonry?.79f:.99f)),
+                    Mathf.Clamp01(c.b*(rock?.74f:masonry?.74f:stone?.95f:1f)),c.a));
             }
         }
 
@@ -154,7 +155,11 @@ namespace Eldoria.EditorTools
                     float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(wx)-28f)/9f));
                     slope-=4.15f*Mathf.Max(front,side*.65f);
                     slope+=Mathf.PerlinNoise(wx*.14f+12f,wz*.16f+9f)*.18f;
-                    if(Mathf.Abs(wx)<5f && wz<2f && wz>-24f)slope=0f;
+                    // Carry a tapered earthen causeway under the stone approach.
+                    // The former hard x/z cutoff left the last platform in mid-air.
+                    float roadAcross=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(wx)-3f)/5f));
+                    float roadEnd=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((-wz-28f)/7f));
+                    if(wz<2f)slope=Mathf.Lerp(slope,0f,roadAcross*roadEnd);
                 }
                 v[ix]=new Vector3(px,level+slope,pz);
                 uv[ix]=new Vector2(u*width*.07f,w*depth*.07f);
@@ -220,6 +225,24 @@ namespace Eldoria.EditorTools
             l.color=new Color(1f,.72f,.46f);
             go.transform.position=b.center+new Vector3(-b.extents.x-3f,b.extents.y+1.5f,-b.extents.z-2f);
             return l;
+        }
+
+        public static GameObject MakeGateWarmth(Bounds gate)
+        {
+            var root=new GameObject("Valoria gate warm practical lights — study quality");
+            foreach(float x in new[]{gate.min.x+2.2f,gate.max.x-2.2f})
+            {
+                var go=new GameObject("Brazier bounce");
+                go.transform.SetParent(root.transform,false);
+                go.transform.position=new Vector3(x,gate.min.y+2.1f,gate.min.z-1.25f);
+                var light=go.AddComponent<Light>();
+                light.type=LightType.Point;
+                light.color=new Color(1f,.49f,.23f);
+                light.intensity=2.0f;
+                light.range=6.5f;
+                light.shadows=LightShadows.None;
+            }
+            return root;
         }
     }
 }

@@ -286,6 +286,7 @@ namespace Eldoria.EditorTools
             var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
             var trees=ValoriaNatureDresser.DressAssembly(bounds);
             var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
+            var torches=ValoriaUnityFinishKit.MakeGateWarmth(BoundsFor(gate));
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
             Render(cam,Path.Combine(outDir,"lookdev-assembled-mobile.png"),780,520);
             if(Environment.GetEnvironmentVariable("VALORIA_SAVE_STUDY_SCENE")=="1")
@@ -293,6 +294,7 @@ namespace Eldoria.EditorTools
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
             if(trees!=null)UnityEngine.Object.DestroyImmediate(trees);
             if(bounce!=null)UnityEngine.Object.DestroyImmediate(bounce.gameObject);
+            if(torches!=null)UnityEngine.Object.DestroyImmediate(torches);
             Debug.Log("VALORIA_V3_ASSEMBLED bounds="+bounds+" meshes="+assembled.Count);
         }
 
