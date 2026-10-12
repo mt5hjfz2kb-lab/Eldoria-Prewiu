@@ -125,6 +125,10 @@ jobs:
           assert proof['plan_sha256']==hashlib.sha256((root/'artist-plan.json').read_bytes()).hexdigest()
           assert proof['source_sha256']==hashlib.sha256(pathlib.Path(os.environ['SOURCE_BLEND']).read_bytes()).hexdigest()
           assert proof['executed_actions'] and len(proof['executed_actions'])==len(plan)
+          structural={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh'}
+          assert any(op['type'] in structural for op in plan), 'AI plan contains no independently designed structural mesh edits'
+          assert any(op['type'] in structural and (op.get('changed_vertices',0)>0 or op.get('changed_faces',0)>0)
+                     for op in proof['executed_actions']), 'Real Blender execution lacks structural vertex/face changes'
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256'],'Purely material changes cannot claim sculpting'
           print('REAL_QWEN_AUTHORSHIP_BLENDER_PASS',len(plan),'planned/executed actions')
           PY
