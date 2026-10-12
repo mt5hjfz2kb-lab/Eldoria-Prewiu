@@ -46,6 +46,14 @@ jobs:
           run-id: 38236296539
           github-token: ${{ github.token }}
           path: input-unity
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free Pillow into isolated Python environment
+        shell: powershell
+        run: |
+          python -m pip install --disable-pip-version-check Pillow
+          if($LASTEXITCODE -ne 0){throw 'PINNED_PYTHON_PILLOW_SETUP_FAILED'}
       - name: Validate local toolchain and real screenshot
         shell: powershell
         run: |
