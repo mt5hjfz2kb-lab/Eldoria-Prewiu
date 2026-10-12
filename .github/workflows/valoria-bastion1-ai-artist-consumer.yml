@@ -1,0 +1,146 @@
+name: Bastion I AI artistic authoring (consume PR 36 core)
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-ai-artist-consumer.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion1-art-artist-consumer
+  cancel-in-progress: false
+jobs:
+  qwen-directed-geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ART_CORE_SHA: c267836661883a4f3003868d37f94785d245aaea
+      SOURCE_RUN: '38320867773'
+      SOURCE_SHA: '2f4b1a372c987594e92b15c899e5c86b16069b2b'
+      TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
+      ART: /tmp/bastion1-author
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reuse exact existing PR 36 scripts without editing its branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tools/art-direction/ai-authoring
+          git fetch --no-tags --depth=1 origin "$ART_CORE_SHA"
+          for n in author_brief.py execute_artist_plan.py render_artist_ab.py ARTIST_SYSTEM.md verify-artist-cycle.mjs; do
+            git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
+          done
+          python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
+          echo "PR36_PROVEN_CORE_READONLY $ART_CORE_SHA"
+      - name: Recover immutable scene assembly and real Unity player frame
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ART/inputs"
+          gh run download "$SOURCE_RUN" --repo "${{ github.repository }}" --name "bastion1-player-integration-$SOURCE_RUN" --dir "$ART/inputs"
+          python3 - <<'PY'
+          import os,hashlib,json,pathlib
+          root=pathlib.Path(os.environ['ART'])
+          src=list((root/'inputs').rglob('Bastion1ReferenceAssembly.glb'))
+          image=list((root/'inputs').rglob('bastion1-player-initial.png'))
+          assert len(src)==len(image)==1,(src,image)
+          ref=pathlib.Path('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg')
+          assert ref.is_file()
+          (root/'source.glb').write_bytes(src[0].read_bytes())
+          (root/'unity-before.png').write_bytes(image[0].read_bytes())
+          proof={'source_run':int(os.environ['SOURCE_RUN']),'source_sha':os.environ['SOURCE_SHA'],'artist_core_sha':os.environ['ART_CORE_SHA']}
+          for k,p in [('glb',root/'source.glb'),('unity',root/'unity-before.png'),('reference',ref)]:
+            proof[k+'_sha256']=hashlib.sha256(p.read_bytes()).hexdigest()
+          (root/'input-provenance.json').write_text(json.dumps(proof,indent=2))
+          print('BASTION1_VERIFIED_SOURCE_AND_REAL_UNITY_FRAME',json.dumps(proof))
+          PY
+      - name: Install open-source Blender locally (no Windows runner)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+      - name: Import real frozen GLB, isolate owned mesh, preserve editable Blender source
+        shell: bash
+        run: |
+          cat > "$ART/extract.py" <<'PY'
+          import os,pathlib,bpy,hashlib
+          root=pathlib.Path(os.environ['ART'])
+          bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+          bpy.ops.import_scene.gltf(filepath=str(root/'source.glb'))
+          obj=bpy.data.objects.get(os.environ['TARGET_MESH'])
+          if not obj or obj.type!='MESH':
+            raise RuntimeError('Authored terrain not found: '+str([x.name for x in bpy.data.objects if 'terrain' in x.name.lower()]))
+          if not 100<len(obj.data.vertices)<50000:raise ValueError('Unexpected terrain mesh complexity')
+          print('BASTION1_AUTHORED_MESH',obj.name,'vertices',len(obj.data.vertices),'faces',len(obj.data.polygons))
+          world=obj.matrix_world.copy()
+          obj.parent=None;obj.matrix_world=world
+          for other in list(bpy.data.objects):
+            if other!=obj:bpy.data.objects.remove(other,do_unlink=True)
+          out=root/'terrain-source.blend'
+          bpy.ops.wm.save_as_mainfile(filepath=str(out))
+          print('FROZEN_DERIVED_BLEND_SHA',hashlib.sha256(out.read_bytes()).hexdigest())
+          PY
+          blender -b --python-exit-code 1 --python "$ART/extract.py"
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$ART/terrain-source.blend" --inspect --inspect-target-object "$TARGET_MESH" --out "$ART/inspect"
+      - name: Start free local Ollama Qwen vision model
+        timeout-minutes: 12
+        run: |
+          docker run -d --rm --name bastion1-qwen-vision -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > "$ART/ollama-version.json"; then break; fi; sleep 2; done
+          test -s "$ART/ollama-version.json"
+          docker exec bastion1-qwen-vision ollama pull qwen3-vl:2b-instruct
+      - name: Derive bounded image copies from REAL Unity/reference, retaining hashes
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import os,pathlib,hashlib,json
+          from PIL import Image
+          root=pathlib.Path(os.environ['ART']);out={}
+          for k,p in [('reference',pathlib.Path('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg')),('unity_before',root/'unity-before.png')]:
+            im=Image.open(p).convert('RGB');original_size=im.size;im.thumbnail((640,640),Image.Resampling.LANCZOS)
+            dst=root/(k+'.jpg');im.save(dst,'JPEG',quality=85)
+            out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'derived_pixels':im.size}
+          (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
+          PY
+      - name: REAL Qwen original-reference-driven authoring (not scripted presets)
+        timeout-minutes: 15
+        run: |
+          python3 tools/art-direction/ai-authoring/author_brief.py --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" --target-object "$TARGET_MESH" --target-mode existing --mesh-context "$ART/inspect/mesh-context.json" --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1500 --max-actions 2 --cpu-compact --out "$ART/model"
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
+      - name: Actual typed Blender sculpt on Qwen-selected target
+        timeout-minutes: 8
+        run: |
+          SHA=$(sha256sum "$ART/terrain-source.blend" | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$ART/terrain-source.blend" --plan "$ART/model/artist-plan.json" --out "$ART/result" --transport direct --expected-source-sha256 "$SHA"
+          python3 - <<'PY'
+          import os,pathlib,json,hashlib
+          root=pathlib.Path(os.environ['ART'])
+          plan=json.loads((root/'model/artist-plan.json').read_text())
+          inference=json.loads((root/'model/artist-inference.json').read_text())
+          proof=json.loads((root/'result/artist-execution.json').read_text())
+          assert inference['model']=='qwen3-vl:2b-instruct' and inference['system_role']=='system'
+          assert inference['direction']['planned_actions']==plan
+          assert len(plan)==len(proof['executed_actions'])
+          assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
+          print('BASTION1_GENUINE_MODEL_CHOSEN_GEOMETRY_EDIT',[(a['type'],a['changed_vertices'],a['changed_faces']) for a in proof['executed_actions']])
+          PY
+      - name: Generate authentic Blender before and after clay proof
+        timeout-minutes: 5
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- --before "$ART/terrain-source.blend" --after "$ART/result/artist-output.blend" --target "$TARGET_MESH" --out "$ART/ab"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-genuine-qwen-artist-${{ github.run_id }}
+          path: |
+            /tmp/bastion1-author/input-provenance.json
+            /tmp/bastion1-author/image-derivatives.json
+            /tmp/bastion1-author/ollama-version.json
+            /tmp/bastion1-author/inspect/mesh-context.json
+            /tmp/bastion1-author/model/**
+            /tmp/bastion1-author/terrain-source.blend
+            /tmp/bastion1-author/result/**
+            /tmp/bastion1-author/ab/**
+          retention-days: 14
+          if-no-files-found: warn
