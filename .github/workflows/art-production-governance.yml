@@ -86,5 +86,7 @@ jobs:
         run: node --test tools/art-direction/ai-authoring/approval-boundary.test.mjs
       - name: Verify real AI sculpting evidence contract
         run: node --test tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs
+      - name: Test constrained but autonomous Qwen spatial-plan schema
+        run: python3 tools/art-direction/ai-authoring/test_cpu_artist_schema.py
       - name: Validate zero-cost Qwen and Blender automation scripts
         run: python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
