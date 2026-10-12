@@ -34,6 +34,20 @@ namespace Eldoria.EditorTools
                 var mat=AssetDatabase.LoadAssetAtPath<Material>(matPath);
                 if(mat==null)continue;
                 bool changed=false;
+                // Preview-only deglare: prevent overexposed near-white architectural surfaces.
+                // Preserve material textures and color differences for the real art review.
+                foreach(var colorProperty in new[]{"_BaseColor","_Color"})
+                {
+                    if(!mat.HasProperty(colorProperty))continue;
+                    var c=mat.GetColor(colorProperty);
+                    float peak=Math.Max(c.r,Math.Max(c.g,c.b));
+                    if(peak>.78f)
+                    {
+                        float factor=.78f/peak;
+                        mat.SetColor(colorProperty,new Color(c.r*factor*.95f,c.g*factor*.94f,c.b*factor*.90f,c.a));
+                        changed=true;
+                    }
+                }
                 foreach(string property in mat.GetTexturePropertyNames())
                 {
                     var source=mat.GetTexture(property) as Texture2D;
