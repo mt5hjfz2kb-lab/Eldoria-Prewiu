@@ -180,6 +180,30 @@ jobs:
               if(!pans.length)throw new Error('Camera drag not proven');
               if(!zooms.length)throw new Error('Zoom not proven');
               if(errors.length)throw new Error('Browser runtime error');
+              // Execute real Chrome touch dispatch, not DOM synthetic touch events.
+              const client=await page.context().newCDPSession(page);
+              const panBefore=messages.filter(x=>x.includes('VALORIA_CAMERA_PAN_VERIFIED')).length;
+              const cx=Math.floor(b.x+b.width*.45), cy=Math.floor(b.y+b.height*.5);
+              await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx,y:cy,id:1}]});
+              for(let i=1;i<=12;i++){
+                await client.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx+i*9,y:cy+i*2,id:1}]});
+                await page.waitForTimeout(80);
+              }
+              await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+              await page.waitForTimeout(900);
+              const touchPan=messages.filter(x=>x.includes('VALORIA_CAMERA_PAN_VERIFIED')).length>panBefore;
+              if(!touchPan)throw new Error('TOUCH_DRAG_NOT_VERIFIED');
+              const zoomBefore=messages.filter(x=>x.includes('VALORIA_CAMERA_ZOOM_VERIFIED')).length;
+              await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx-40,y:cy,id:1},{x:cx+40,y:cy,id:2}]});
+              for(let i=1;i<=9;i++){
+                await client.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx-40-i*7,y:cy,id:1},{x:cx+40+i*7,y:cy,id:2}]});
+                await page.waitForTimeout(80);
+              }
+              await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+              await page.waitForTimeout(900);
+              if(messages.filter(x=>x.includes('VALORIA_CAMERA_ZOOM_VERIFIED')).length<=zoomBefore)
+                throw new Error('TOUCH_PINCH_ZOOM_NOT_VERIFIED');
+              console.log('VALORIA_MOUSE_AND_TOUCH_GESTURES_PASS');
               await page.screenshot({path:'valoria-prepublish.png',timeout:20000,animations:'disabled'});
               console.log('VALORIA_BROWSER_CAMERA_SCREENSHOT_QA_PASS');
             }finally{await browser.close();}
