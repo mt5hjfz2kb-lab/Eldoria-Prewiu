@@ -1,0 +1,77 @@
+{
+  "source_commit": "0abf13870d21725c30acf3f3e3a8c86385470073",
+  "implementation_commit": "bdb481e3d19caa619e3a5d568a6bc71033cdd412",
+  "composition_verdict": "REFERENCE ARCHITECTURAL HIERARCHY CORRECTED; PROVISIONAL ENVIRONMENT",
+  "eight_sources_verified": true,
+  "existing_supplements": [
+    "BridgeFamilyV1",
+    "StairFamilyV1",
+    "Holotna Mountain pine",
+    "Emace bush mesh"
+  ],
+  "source_geometry_modified": false,
+  "instances": 38,
+  "shared_meshes": 254,
+  "glb_bytes": 51903572,
+  "visible_triangles": 1032952,
+  "artistic_defects": [
+    "Terrace perimeter remains too rectangular versus reference.",
+    "Cliff modules still repeat visibly; geological contact and corner continuity need artist reauthoring.",
+    "Large uninterrupted grass patches need terrain material and spatial variation.",
+    "No distant mountains or atmospheric valley backdrop."
+  ],
+  "main_cutover": "Construction tools introduced inactive on main; current player remains SHARP; active replacement requires presentation integration and gameplay gates",
+  "mobile_device_profile": "NOT_RUN",
+  "external_artist_inference_this_task": "NOT_RUN; existing authored family reused",
+  "unity_run": 38289244341,
+  "unity_status": "IMPORT AND ACTUAL THREE-FRAME CAPTURE PASS; ARCHITECTURAL REFERENCE CORRECTION DELIVERED; FULL ART AND GAMEPLAY NOT CERTIFIED",
+  "rejected_unity_run": 38284402710,
+  "rejected_unity_artifact": 11762916835,
+  "rejected_unity_reason": "Engine import, camera bounds and scene saving completed, but direct screenshots show wrong material bindings on grass, water and cliffs. Workflow post-check also used incorrect PowerShell Select-String argument positions.",
+  "second_rejected_unity_run": 38285712056,
+  "second_rejected_unity_artifact": 11763421805,
+  "second_rejected_unity_reason": "Explicit binding exposed JsonUtility omitted nested fields becoming texture index zero, and absent roughness factors becoming zero. Corrected by a full glTF-default table with -1 for missing maps; neither of the prior engine frames certifies art.",
+  "third_rejected_unity_run": 38287194015,
+  "third_rejected_unity_reason": "Actual capture remains red/magenta/white despite correct normalized material factors. Architecture also rejected by owner.",
+  "architecture_corrections": [
+    "Single dominant upper tower left of main arch",
+    "Smaller secondary arch further left",
+    "Short unequal upper wings; no flank towers",
+    "Only right wing connected to lower gate",
+    "Detached lower terrace remnants and open central yard"
+  ],
+  "main_tools_commit": "f71d20e59b47726de5ec299a451866253b2559d4",
+  "main_tools_location": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly",
+  "main_tools_checks": [
+    "Repository architecture PASS",
+    "Workflow governance PASS",
+    "Workflow quarantine PASS",
+    "Unity source/editor gate PASS (ArtTests-only changes skipped for heavy certification)"
+  ],
+  "reference_fidelity_limit": "Existing authored stock pieces approximate the asymmetric masses; no scaffold, organic cliff authoring or mountain backdrop fabricated",
+  "prior_revision4_run": 38288516982,
+  "prior_revision4_artifact": 11764790366,
+  "unity_artifact": 11765245348,
+  "actual_frames_inspected": [
+    "landscape 1440x1000",
+    "mobile landscape 780x520",
+    "portrait 390x844"
+  ],
+  "unity_metrics": {
+    "engine": "Unity 6000.3.23f1",
+    "renderers": 685,
+    "shared_meshes": 254,
+    "shared_materials": 36,
+    "shared_textures": 58,
+    "visible_triangles": 1032952,
+    "art_pass": false,
+    "mobile_performance_pass": false,
+    "gameplay_pass": false,
+    "main_promotion_allowed": false
+  },
+  "main_active_presentation": "SHARP unchanged",
+  "bounded_delivery": "Existing-asset architectural assembly corrected and inactive authoring tools introduced on main",
+  "paid_credits": 0,
+  "future_integration": "World-camera/picking adapter and state presentation remain necessary before replacing the active initial player scene.",
+  "overall_initial_playable_scene_complete": false
+}

@@ -4,15 +4,18 @@
   "diagnosis": [
     "Previous eight-asset gallery has one defensive line instead of an inhabited two-level settlement.",
     "Sharp imagery uses image-plane camera and parcel projections; a world-unit mesh scene requires explicit camera/selection migration.",
-    "Over-bright limestone must be corrected without destroying glTF texture/channel conventions."
+    "Over-bright limestone must be corrected without destroying glTF texture/channel conventions.",
+    "Owner rejected repeated upper double-tower gate, distant flank towers, mirrored lower connected wings and long uniform defensive line."
   ],
   "composition": [
     "Lower double-tower gate on terrace lip, stone bridge over visible water.",
     "Broad empty playable middle terrace with reserved construction areas; no built Sawmill/Barracks in Bastion I.",
     "Continuous 4m paving axis to 3.5m stair climb, upper gate on rear terrace.",
-    "Wall remnants frame sides, continuous geological perimeter hides no floating slabs.",
+    "Upper main arch on route axis, one dominant tower immediately left, smaller secondary arch further left; authored portal subset reused without cutting source meshes.",
+    "Short uneven upper wings; only right wing connected to lower gate; detached lower terrace remnants frame an open central yard.",
     "Warm muted limestone, slate rock, olive grass, blue/gold accents and restrained amber practical lights."
   ],
-  "source_policy": "Immutable eight assets, scene-instance placement and material variants only. Terrain support geometry is prototype pending genuine external artist pass.",
-  "promotion": "Authorize eventual staged main integration after exact Unity art and gameplay regression gates; do not remove SHARP wholesale."
+  "source_policy": "Immutable eight source assets; linked scene instances, selected authored portal objects and documented material variants. Support terrain remains provisional; no new external artist inference is claimed.",
+  "promotion": "Authorize eventual staged main integration after exact Unity art and gameplay regression gates; do not remove SHARP wholesale.",
+  "owner_correction": "Do not invent a continuous symmetrical facade; use only available assets where they match the reference architectural composition."
 }
