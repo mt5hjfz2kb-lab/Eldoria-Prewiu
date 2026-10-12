@@ -62,8 +62,12 @@ def main():
         return 0
     source = ensure_pinned_file(SOURCE_PATH)
     target = ensure_pinned_file(TARGET_PATH)
+    # On the owner's Windows runner a persistent 'eldoria-artist' model
+    # has been installed and verified. Keep an explicit environment override.
+    artist_model=os.environ.get("ELDORIA_QWEN_MODEL", "eldoria-artist")
     env = dict(os.environ, VALORIA_UNITY_CLIFF_SCREENSHOT=str(args.capture.resolve()),
-               ELDORIA_BLENDER_MCP_ADDON=str(args.addon.resolve()))
+               ELDORIA_BLENDER_MCP_ADDON=str(args.addon.resolve()),
+               ELDORIA_QWEN_MODEL=artist_model)
     print(f"PINNED_INPUTS source={source} target={target}", flush=True)
     subprocess.run([sys.executable, str(AUTHOR), "--infer"], cwd=ROOT, env=env, check=True)
     subprocess.run([binary, "-b", "--python-exit-code", "1", "-t", "4",
