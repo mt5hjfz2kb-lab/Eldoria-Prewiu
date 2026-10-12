@@ -1,0 +1,129 @@
+name: Eldoria compact experimental WebGL
+on:
+  push:
+    branches: [integration/valoria-v3-unity-lookdev-20261012]
+    paths:
+      - .github/workflows/valoria-compact-experimental-webgl.yml
+      - Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstZoneCandidateWebGL.cs
+      - Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZoneAnchor.cs.meta
+      - Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZonePreviewControls.cs.meta
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-compact-experimental-webgl
+  cancel-in-progress: false
+jobs:
+  candidate:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Expose Git before checkout
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA\GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'GIT_NOT_FOUND'}
+            Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38255367175
+          name: valoria-v3-unity-compile-38255367175
+          github-token: ${{ github.token }}
+          path: scene-evidence
+      - name: Restore editable zone and generated meshes
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $scenes=@(Get-ChildItem scene-evidence -Recurse -File -Filter 'ValoriaFortification.unity')
+          if($scenes.Count -ne 1){throw "EXPECTED_ONE_EDITABLE_SCENE; found $($scenes.Count)"}
+          $from=$scenes[0].Directory.FullName
+          $to=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1'
+          New-Item -ItemType Directory -Path $to -Force | Out-Null
+          Copy-Item (Join-Path $from '*') $to -Recurse -Force
+          $deps=@(Get-ChildItem (Join-Path $to 'Generated') -Filter '*.asset' -File)
+          if($deps.Count -lt 8){throw 'MISSING_GENERATED_DEPENDENCIES'}
+          if((Get-Item (Join-Path $to 'ValoriaFortification.unity')).Length -lt 2000){throw 'EMPTY_FIRST_ZONE_SCENE'}
+          Write-Host "FIRST_ZONE_SOURCE_STAGED deps=$($deps.Count)"
+      - name: Isolate only scene-essential content for browser preview
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $assets=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets'
+          $stash=Join-Path $env:RUNNER_TEMP 'valoria-browser-excluded'
+          New-Item -ItemType Directory -Path $stash -Force | Out-Null
+          $targets=@(
+            'Eldoria/Resources',
+            'StreamingAssets',
+            'Mega Fantasy Props Pack/Textures',
+            'NatureStarterKit2/Textures',
+            'EmaceArt/Slavic World Free/Scene',
+            'NatureStarterKit2/Scene'
+          )
+          $original=0L
+          foreach($rel in $targets){
+            $source=Join-Path $assets ($rel -replace '/','\')
+            if(-not (Test-Path $source)){continue}
+            $size=(Get-ChildItem $source -File -Recurse | Measure-Object Length -Sum).Sum
+            $original+=[long]$size
+            $dest=Join-Path $stash ($rel -replace '/','\')
+            New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
+            Move-Item $source $dest -Force
+            Write-Host "ISOLATED_FROM_WEBGL $rel $size"
+          }
+          # Unity's persisted sector contains generated meshes and materials.
+          $scene=Join-Path $assets 'Eldoria/Experimental/ValoriaFinishV1/ValoriaFortification.unity'
+          $generated=Join-Path $assets 'Eldoria/Experimental/ValoriaFinishV1/Generated'
+          if(-not (Test-Path $scene) -or
+             @(Get-ChildItem $generated -Filter '*.asset' -File).Count -lt 8){
+            throw 'ESSENTIAL_EDITABLE_FIRST_ZONE_SCENE_MISSING_AFTER_PRUNE'
+          }
+          Write-Host "FIRST_ZONE_RESOURCE_ISOLATION_PASS bytes_excluded=$original"
+      - name: Build nonshipping WebGL viewer
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'UNITY_EDITOR_NOT_FOUND'}
+          $log=Join-Path $env:RUNNER_TEMP 'ValoriaFirstZoneWebGL.log'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $args=@('-batchmode','-quit','-projectPath',$project,'-executeMethod','Eldoria.EditorTools.ValoriaFirstZoneCandidateWebGL.Build','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(55)
+          $success=$false
+          while((Get-Date)-lt $deadline){
+            if((Test-Path $log) -and (Select-String -Path $log -Pattern 'ELDORIA_VALORIA_FIRST_ZONE_WEBGL_CANDIDATE_PASS' -Quiet)){$success=$true;break}
+            if($p.HasExited){break}
+            Start-Sleep -Seconds 5
+            $p.Refresh()
+          }
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null}
+          if(-not $success){
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw 'FIRST_ZONE_WEBGL_BUILD_NOT_VERIFIED'
+          }
+          $output=Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/ValoriaFirstZoneWebGL'
+          if(-not (Test-Path (Join-Path $output 'index.html'))){throw 'FIRST_ZONE_WEBGL_INDEX_MISSING'}
+          Write-Host 'ELDORIA_FIRST_ZONE_WEBGL_BUILD_VALIDATED'
+      - name: Require browser-sized playable output
+        shell: powershell
+        run: |
+          $folder=Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/ValoriaFirstZoneWebGL'
+          $files=@(Get-ChildItem $folder -Recurse -File)
+          $total=($files|Measure-Object Length -Sum).Sum
+          $data=@($files|Where-Object {$_.Name -like '*.data.unityweb'})
+          if($data.Count -ne 1){throw 'MISSING_REAL_WEBGL_DATA'}
+          if($total -gt 650000000){throw "UNPUBLISHABLE_OVERSIZED_WEBGL_PAYLOAD bytes=$total"}
+          if(-not (Test-Path (Join-Path $folder 'index.html'))){throw 'MISSING_WEBGL_INDEX'}
+          Write-Host "ELDORIA_EXPERIMENTAL_WEBGL_COMPACT_PASS bytes=$total"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-compact-experimental-webgl-${{ github.run_id }}
+          path: Unity/Builds/ValoriaFirstZoneWebGL/**
+          if-no-files-found: warn
+          retention-days: 7
