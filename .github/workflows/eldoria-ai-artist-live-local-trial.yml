@@ -1,4 +1,4 @@
-name: Eldoria live local Qwen to Blender authoring trial
+name: Eldoria live local Qwen 2B fallback to Blender authoring trial
 on:
   push:
     branches: ['promotion/eldoria-ai-authoring-core-20261012']
@@ -70,10 +70,10 @@ jobs:
           docker run --rm -d --name eldoria-qwen-local -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/eldoria-ai-real/ollama-version.json; then break; fi; sleep 2; done
           test -s /tmp/eldoria-ai-real/ollama-version.json
-          docker exec eldoria-qwen-local ollama pull qwen3-vl:4b-instruct
-          docker exec eldoria-qwen-local ollama show qwen3-vl:4b-instruct | head -30
+          docker exec eldoria-qwen-local ollama pull qwen3-vl:2b-instruct
+          docker exec eldoria-qwen-local ollama show qwen3-vl:2b-instruct | head -30
           curl -fsS http://127.0.0.1:11434/api/version
-      - name: Real Qwen 16K context and two-image system-role AUTHORING inference
+      - name: Real Qwen2B 16K context and two-image system-role AUTHORING inference
         timeout-minutes: 14
         run: |
           python3 tools/art-direction/ai-authoring/author_brief.py \
@@ -81,7 +81,7 @@ jobs:
             --unity-before "$GENUINE_UNITY_BEFORE" \
             --target-object "$TARGET_MESH" --target-mode existing \
             --mesh-context /tmp/eldoria-ai-real/context/mesh-context.json \
-            --model qwen3-vl:4b-instruct \
+            --model qwen3-vl:2b-instruct \
             --out /tmp/eldoria-ai-real/result
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/eldoria-ai-real/result/artist-plan.json "$TARGET_MESH" existing
       - name: Execute model-selected REAL Blender structural edits
@@ -98,7 +98,7 @@ jobs:
           inference=json.loads((root/'artist-inference.json').read_text())
           plan=json.loads((root/'artist-plan.json').read_text())
           proof=json.loads((root/'blender/artist-execution.json').read_text())
-          assert inference['system_role']=='system' and inference['model']=='qwen3-vl:4b-instruct'
+          assert inference['system_role']=='system' and inference['model']=='qwen3-vl:2b-instruct'
           assert inference['direction']['planned_actions']==plan
           assert proof['plan_sha256']==hashlib.sha256((root/'artist-plan.json').read_bytes()).hexdigest()
           assert proof['source_sha256']==hashlib.sha256(pathlib.Path(os.environ['SOURCE_BLEND']).read_bytes()).hexdigest()
