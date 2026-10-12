@@ -41,15 +41,19 @@
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs",
         ".github/workflows/valoria-v3-unity-lookdev-probe.yml",
         "docs/evidence/valoria-v3-unity-lookdev/**",
-        "docs/UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md"
+        "docs/UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md",
+        "tools/art-rd/valoria_cliff_unity_variant.py",
+        ".github/workflows/valoria-cliff-unity-artist-variant.yml",
+        "art-source/valoria/variants/unity-cliff-v1/**"
       ],
       "resources": [
-        "windows-runner-heavy"
+        "windows-runner-heavy",
+        "github-hosted-blender"
       ],
       "claimed_at": "2026-10-12T08:42:00Z",
       "base_main_sha": "e6d27bd91d1bd2943feae8144f7e46653e622685",
       "paid_credits": 0,
-      "phase": "Recover matched captures; eight-asset finishing and environmental composition",
+      "phase": "BlenderMCP controlled cliff variant from frozen V3, Qwen image-directed; concurrent independent Ubuntu workshop",
       "note": "Owner expressly protects main: isolated branch claim only. Main active registry read, no Windows lease there; no running Actions at claim."
     }
   ],
