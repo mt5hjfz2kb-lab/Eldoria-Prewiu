@@ -39,14 +39,21 @@ namespace Eldoria.EditorTools
                 if(!await importer.Load(new Uri(source).AbsoluteUri))throw new Exception("glTFast source import failed");
                 var root=new GameObject("BastionI_ReferenceAssembly_CANDIDATE");
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
+                Bastion1MaterialBindings.Apply(root,importer,source);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
                 sun.shadows=LightShadows.Soft;sun.transform.rotation=Quaternion.Euler(38f,-38f,0f);
                 RenderSettings.ambientMode=AmbientMode.Trilight;
                 RenderSettings.ambientSkyColor=new Color(.37f,.46f,.61f);
-                RenderSettings.ambientEquatorColor=new Color(.24f,.29f,.32f);
-                RenderSettings.ambientGroundColor=new Color(.15f,.13f,.10f);
+                RenderSettings.ambientEquatorColor=new Color(.38f,.40f,.38f);
+                RenderSettings.ambientGroundColor=new Color(.24f,.21f,.17f);
                 RenderSettings.fog=false;
+                foreach(var p in new[]{new Vector3(-4,2,20),new Vector3(4,2,20),new Vector3(-4,5.5f,-21),new Vector3(4,5.5f,-21)})
+                {
+                    var warm=new GameObject("Bastion I amber practical").AddComponent<Light>();
+                    warm.type=LightType.Point;warm.color=new Color(1,.42f,.13f);warm.intensity=2.4f;warm.range=7f;
+                    warm.shadows=LightShadows.None;warm.transform.position=p;
+                }
                 var camera=new GameObject("Bastion I strategic camera").AddComponent<Camera>();
                 camera.orthographic=true;camera.orthographicSize=38.5f;
                 camera.nearClipPlane=.1f;camera.farClipPlane=350f;

@@ -67,7 +67,7 @@ jobs:
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 130;throw "Unity failed $($process.ExitCode)"}
-          if(-not (Select-String $log 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
           if(@(Get-ChildItem $out -Filter '*.png').Count -ne 3){throw 'Expected three genuine engine frames'}
       - uses: actions/upload-artifact@v4
         if: always()
@@ -77,6 +77,7 @@ jobs:
             Bastion1ReferenceSource/**
             Unity/Bastion1ReferenceCaptures/**
             Unity/Assets/Eldoria/Experimental/Bastion1Assembly/Generated/**
+            Unity/Assets/Eldoria/Experimental/Bastion1Assembly/GeneratedNormals/**
             Unity/Assets/Eldoria/Experimental/Bastion1Assembly/Bastion1ReferenceAssembly.unity*
             ${{ runner.temp }}/Bastion1-Blender.*
             ${{ runner.temp }}/Bastion1-Unity.log
