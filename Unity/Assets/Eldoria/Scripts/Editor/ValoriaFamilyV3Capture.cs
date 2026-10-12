@@ -81,10 +81,11 @@ namespace Eldoria.EditorTools
         static void SetLookdev(bool lookdev,List<GameObject> objects,Light sun)
         {
             sun.color=lookdev ? new Color(1f,.87f,.72f) : Color.white;
-            sun.intensity=lookdev ? 1.48f : 1f;
-            sun.transform.rotation=Quaternion.Euler(lookdev? 46f:55f,-38f,0f);
+            sun.intensity=lookdev ? 1.60f : 1f;
+            sun.shadowStrength=lookdev ? .72f : .5f;
+            sun.transform.rotation=Quaternion.Euler(lookdev? 42f:55f,-43f,0f);
             RenderSettings.ambientMode=AmbientMode.Flat;
-            RenderSettings.ambientLight=lookdev ? new Color(.53f,.56f,.60f):new Color(.70f,.70f,.70f);
+            RenderSettings.ambientLight=lookdev ? new Color(.48f,.51f,.53f):new Color(.70f,.70f,.70f);
             RenderSettings.fog=lookdev;
             RenderSettings.fogColor=new Color(.48f,.54f,.59f);
             RenderSettings.fogMode=FogMode.Linear;
@@ -101,7 +102,7 @@ namespace Eldoria.EditorTools
                 {
                     if(src[i]==null) continue;
                     var m=new Material(src[i]);
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness", Mathf.Clamp01(m.GetFloat("_Smoothness")*.82f));
+                    ValoriaUnityFinishKit.ApplyArchitecturalMaterial(m,obj.name);
                     if(m.HasProperty("_BaseColor"))
                     {
                         var c=m.GetColor("_BaseColor");
@@ -120,6 +121,10 @@ namespace Eldoria.EditorTools
             {
                 var obj=objects[i];
                 var bounds=BoundsFor(obj);
+                var lookdev=mode=="lookdev";
+                var terrain=lookdev?ValoriaUnityFinishKit.MakeContextFloor(bounds,obj.name):null;
+                var bounce=lookdev?ValoriaUnityFinishKit.MakeBounce(bounds):null;
+                cam.backgroundColor=lookdev?new Color(.43f,.52f,.60f):new Color(.20f,.31f,.47f);
                 Vector3 focus=bounds.center;
                 var radius=Mathf.Max(bounds.extents.x,Mathf.Max(bounds.extents.y,bounds.extents.z));
                 var direction=new Vector3(1.15f,.85f,-1.4f).normalized;
@@ -131,6 +136,8 @@ namespace Eldoria.EditorTools
                 foreach(var other in objects)other.SetActive(other==obj);
                 Render(cam,Path.Combine(dir,mode+"-"+obj.name+(hero?"-hero":"-strategic")+".png"));
                 obj.SetActive(true);
+                if(terrain!=null) UnityEngine.Object.DestroyImmediate(terrain);
+                if(bounce!=null) UnityEngine.Object.DestroyImmediate(bounce.gameObject);
             }
         }
 
