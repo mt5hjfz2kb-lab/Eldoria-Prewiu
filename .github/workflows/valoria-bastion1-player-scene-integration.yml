@@ -11,6 +11,7 @@ on:
       - '.github/workflows/valoria-bastion1-player-scene-integration.yml'
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: eldoria-bastion1-player-integration
   cancel-in-progress: true
@@ -102,6 +103,36 @@ jobs:
           Copy-Item "$out/Bastion1ReferenceAssembly.glb" "$dest/Bastion1ReferenceAssembly.glb" -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Bastion1ReferenceAssembly.glb"
           if($LASTEXITCODE -ne 0){throw 'Explicit glTF defaults staging failed'}
+      - name: Obtain exact Qwen-authored complete city (no artist regeneration in Unity)
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-qwen-full-city-38323975022
+          run-id: 38323975022
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1VerifiedQwen
+      - name: Replace only candidate source GLB and editable Blender provenance
+        shell: powershell
+        run: |
+          $root=Join-Path $env:RUNNER_TEMP 'Bastion1VerifiedQwen'
+          $src=Join-Path $root 'merged/Bastion1QwenScene.glb'
+          $blend=Join-Path $root 'merged/Bastion1QwenScene.blend'
+          $proof=Join-Path $root 'merged/integration-proof.json'
+          if(-not (Test-Path $src) -or -not (Test-Path $blend) -or -not (Test-Path $proof)){throw 'Verified full-scene authored artifacts missing'}
+          $p=Get-Content -Raw $proof | ConvertFrom-Json
+          $sourceHash=(Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant()
+          $blendHash=(Get-FileHash $blend -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($sourceHash -ne $p.edited_glb_sha256 -or $blendHash -ne $p.edited_blend_sha256){throw 'Qwen authored source hashes mismatch'}
+          if($p.changed_vertices -lt 20 -or $p.protected_cell_changes -ne 0 -or $p.visual_art_approved -ne $false){throw 'Model authorship safety gate failed'}
+          $sourceOut=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
+          $unityOut=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
+          New-Item -ItemType Directory -Force $sourceOut,$unityOut | Out-Null
+          Copy-Item $src (Join-Path $sourceOut 'Bastion1ReferenceAssembly.glb') -Force
+          Copy-Item $blend (Join-Path $sourceOut 'Bastion1ReferenceAssembly.blend') -Force
+          Copy-Item $src (Join-Path $unityOut 'Bastion1ReferenceAssembly.glb') -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py (Join-Path $unityOut 'Bastion1ReferenceAssembly.glb')
+          if($LASTEXITCODE -ne 0){throw 'Recomputed authored GLB material binding failed'}
+          Copy-Item $proof (Join-Path $sourceOut 'qwen-integration-proof.json')
+          Write-Host "BASTION1_GENUINE_QWEN_SOURCE_STAGED run=38323975022 vertices=$($p.changed_vertices) sha=$sourceHash"
       - name: Stage existing authored construction states and barracks
         shell: powershell
         run: |
