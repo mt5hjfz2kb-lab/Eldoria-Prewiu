@@ -1,0 +1,102 @@
+name: Eldoria coherent cliff V4 Unity replacement review
+on:
+  push:
+    branches: [art/local-ai-professional-artist-role-20261012]
+    paths:
+      - Unity/Assets/Eldoria/Scripts/Editor/ValoriaCoherentCliffV4Review.cs
+      - .github/workflows/eldoria-coherent-cliff-v4-unity-review.yml
+      - Unity/Assets/Eldoria/Scripts/Editor/ValoriaCoherentCliffV4Review.cs
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-coherent-cliff-v4-unity-review
+  cancel-in-progress: true
+jobs:
+  genuine-unity:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate=Get-ChildItem "${env:LOCALAPPDATA}\GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) {throw 'Git missing'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Stage frozen cliff V3
+        shell: powershell
+        run: |
+          git fetch --no-tags --depth=1 origin 0abf13870d21725c30acf3f3e3a8c86385470073
+          if($LASTEXITCODE -ne 0){throw 'Cannot fetch frozen source'}
+          $src='art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/cliff_rocks.glb'
+          git restore --source FETCH_HEAD --worktree -- $src
+          if($LASTEXITCODE -ne 0){throw 'Frozen cliff source missing'}
+          $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaCoherentCliffV4'
+          New-Item -ItemType Directory -Force $target | Out-Null
+          Copy-Item (Join-Path $env:GITHUB_WORKSPACE ($src -replace '/','\')) (Join-Path $target 'cliff_rocks.glb') -Force
+          $sha=(Get-FileHash (Join-Path $target 'cliff_rocks.glb') -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($sha -ne 'f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed'){throw 'Frozen cliff checksum mismatch'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-coherent-cliff-v4-38256707677
+          run-id: 38256707677
+          github-token: ${{ github.token }}
+          path: talus-candidate
+      - name: Verify separately authored module
+        shell: powershell
+        run: |
+          $files=@(Get-ChildItem talus-candidate -Filter 'cliff_coherent_v4.glb' -File -Recurse)
+          if($files.Count -ne 1){throw 'Expected exactly one authored replacement GLB'}
+          $sha=(Get-FileHash $files[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          $proofFiles=@(Get-ChildItem talus-candidate -Filter 'proof.json' -File -Recurse)
+          if($proofFiles.Count -ne 1){throw 'Structural authorship proof missing'}
+          $proof=Get-Content $proofFiles[0].FullName -Raw | ConvertFrom-Json
+          if($sha -ne $proof.candidate_sha256){throw "Structural replacement SHA mismatch $sha"}
+          if($proof.art_pass -or $proof.mobile_pass){throw 'Candidate must remain explicitly unapproved'}
+          $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaCoherentCliffV4'
+          Copy-Item $files[0].FullName (Join-Path $target 'cliff_coherent_v4.glb') -Force
+      - name: Real Unity import and paired camera render
+        shell: powershell
+        run: |
+          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
+          $log=Join-Path $env:RUNNER_TEMP 'Valoria-CoherentCliffV4-Unity.log'
+          $args=@('-batchmode','-quit','-projectPath',"${env:GITHUB_WORKSPACE}\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaCoherentCliffV4Review.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $out=Join-Path $env:GITHUB_WORKSPACE 'Unity/ValoriaCoherentCliffV4Captures'
+          $complete=$false
+          for($i=0;$i -lt 180;$i++){
+            if($p.WaitForExit(4000)){break}
+            if((Test-Path (Join-Path $out 'before-textured.png')) -and
+              (Test-Path (Join-Path $out 'after-textured.png')) -and
+              (Test-Path (Join-Path $out 'manifest.json')) -and
+              (Test-Path $log) -and
+              (Select-String -Path $log -Pattern 'ELDORIA_COHERENT_CLIFF_V4_UNITY_COMPLETED' -Quiet)){
+              $complete=$true
+              & taskkill.exe /PID $p.Id /T /F | Out-Null
+              [void]$p.WaitForExit(10000)
+              break
+            }
+          }
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity timeout'}
+          if(-not $complete -and $p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 120};throw "Unity failure $($p.ExitCode)"}
+          foreach($n in @('before-textured.png','after-textured.png','before-neutral.png','after-neutral.png')){
+            $file=Join-Path $out $n
+            if(-not (Test-Path $file) -or (Get-Item $file).Length -lt 20000){throw "Invalid real Unity capture $n"}
+          }
+          if(-not (Test-Path (Join-Path $out 'manifest.json'))){throw 'Capture manifest missing'}
+          Get-Content $log -Tail 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-coherent-cliff-v4-unity-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/Valoria-CoherentCliffV4-Unity.log
+            Unity/ValoriaCoherentCliffV4Captures/*
+          if-no-files-found: warn
+          retention-days: 7
