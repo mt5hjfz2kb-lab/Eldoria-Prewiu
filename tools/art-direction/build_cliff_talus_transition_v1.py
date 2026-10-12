@@ -7,7 +7,7 @@ OUT=ROOT/'art-source/valoria/variants/cliff_talus_transition_v1'
 OUT.mkdir(parents=True,exist_ok=True)
 SOURCE=ROOT/'art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/cliff_rocks.blend'
 if '--infer' in sys.argv:
- import base64, urllib.request
+ import base64, urllib.request, urllib.error
  from PIL import Image, ImageOps, ImageDraw
  target=ROOT/'references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg'
  current=pathlib.Path(os.environ['VALORIA_UNITY_CLIFF_SCREENSHOT'])
@@ -28,11 +28,15 @@ if '--infer' in sys.argv:
  assert role_path.exists(),'Mandatory professional artist system prompt missing'
  role_text=role_path.read_text(encoding='utf-8')
  role_sha=hashlib.sha256(role_text.encode()).hexdigest()
+ compact_role='You are VALORIA ARTIST, the professional AI 3D environment artist of Eldoria. Own the medieval environment artistic direction. Read both reference images, identify specific silhouette and terrain contact failures, and choose visible Blender sculptural corrections with coherent strata and reusable modular joins. Do not self-approve, overwrite approved assets, invent visual evidence, or substitute a shader for faulty geometry. Use BlenderMCP for authorship, genuine Blender and Unity before/after comparisons and mobile-conscious constraints. Output only requested JSON.'
  payload={'model':'qwen3-vl:4b-instruct','stream':False,'think':False,'format':'json',
-          'options':{'temperature':.18,'num_predict':600,'num_ctx':2048},
-          'messages':[{'role':'system','content':role_text},{'role':'user','content':prompt,'images':[base64.b64encode((OUT/'art-direction-input.jpg').read_bytes()).decode()]}]}
+          'options':{'temperature':.18,'num_predict':600,'num_ctx':4096},
+          'messages':[{'role':'system','content':compact_role},{'role':'user','content':prompt,'images':[base64.b64encode((OUT/'art-direction-input.jpg').read_bytes()).decode()]}]}
  req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
- with urllib.request.urlopen(req,timeout=600) as r:reply=json.load(r)
+ try:
+  with urllib.request.urlopen(req,timeout=600) as r:reply=json.load(r)
+ except urllib.error.HTTPError as e:
+  raise RuntimeError('Ollama HTTP '+str(e.code)+': '+e.read().decode(errors='replace')[:1500]) from e
  raw=reply['message']['content'];plan=json.loads(raw)
  for k,lo,hi in [('fault_amplitude_m',.4,1.3),('large_facets',4,9),('crest_recede_m',.2,.9),('talus_clusters',3,8)]:
   assert lo<=float(plan[k])<=hi,(k,plan[k])
