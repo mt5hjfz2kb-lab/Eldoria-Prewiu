@@ -33,6 +33,32 @@ jobs:
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
           python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
+          # Qwen 2B's first REAL answer in run 38322113569 contained zero deltas
+          # and a single-knot path. Feed the actual rejection back as a bounded
+          # prompt constraint. NEVER fill in/fabricate its proposed coordinates.
+          python3 - <<'PY'
+          import pathlib,hashlib
+          f=pathlib.Path('tools/art-direction/ai-authoring/author_brief.py')
+          s=f.read_text()
+          marker=" payload={'model':a.model,'stream':False,'think':False,'format':'json',"
+          assert marker in s
+          feedback=""" prompt+=(' BASTION I REJECTION FEEDBACK: previous Qwen plan was INVALID. It used '
+            'sculpt_region delta=[0,0,0] and sculpt_path with only one knot. '
+            'This is forbidden. Choose exactly ONE action of type sculpt_region; '
+            'you as artist must choose its center and nonzero 3D displacement '
+            '(delta magnitude between 0.5 and 2.0 meters) and radius 10..24 meters. '
+            'Target ONLY the outer side of a recognizable cliff, NOT the path, '
+            'entrance or building parcels. Mesh bounds x[-50.5,50.5], '
+            'y[-49,57], z[-21.62,3.44]. Use x near -40 or +40, '
+            'position around the OUTER cliff face in those real coordinates. '
+            'asset_decision MUST equal MODIFY because source mesh is reused. '
+            'Return ONE precise, meaningful original operation with rationale; '
+            'never copy a fabricated default displacement. Preserve gameplay. ')
+          """
+          s=s.replace(marker,feedback+marker)
+          f.write_text(s)
+          print('BASTION1_QWEN_FEEDBACK_APPLIED',hashlib.sha256(s.encode()).hexdigest())
+          PY
           echo "PR36_PROVEN_CORE_READONLY $ART_CORE_SHA"
       - name: Recover immutable scene assembly and real Unity player frame
         shell: bash
@@ -106,7 +132,7 @@ jobs:
       - name: REAL Qwen original-reference-driven authoring (not scripted presets)
         timeout-minutes: 15
         run: |
-          python3 tools/art-direction/ai-authoring/author_brief.py --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" --target-object "$TARGET_MESH" --target-mode existing --mesh-context "$ART/inspect/mesh-context.json" --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1500 --max-actions 2 --cpu-compact --out "$ART/model"
+          python3 tools/art-direction/ai-authoring/author_brief.py --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" --target-object "$TARGET_MESH" --target-mode existing --mesh-context "$ART/inspect/mesh-context.json" --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1100 --max-actions 1 --cpu-compact --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
       - name: Actual typed Blender sculpt on Qwen-selected target
         timeout-minutes: 8
