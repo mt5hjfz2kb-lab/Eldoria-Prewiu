@@ -7,8 +7,21 @@ const report={exactBuildRun:38314377442,sourceSha:'8758911e81f12b147391a07d7d5cd
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let browser;
 function state(m){const a=m.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+).*sawmill=(\d+) bastion=(\d+) barracks=(\d+)/);return a?{tag:a[1],scene:a[2],revision:+a[3],wood:+a[4],stone:+a[5],sawmill:+a[6],bastion:+a[7],barracks:+a[8]}:null;}
-function findId(id){for(let i=report.events.length-1;i>=0;i--){let s=report.events[i];if(!s.includes('ELDORIA_PLAYABLE_UI id='+id+' '))continue;let m=s.match(/x=([-0-9.]+) y=([-0-9.]+)/);if(m)return {x:+m[1],y:390-(+m[2])};}return null;}
+function findId(id){for(let i=report.events.length-1;i>=0;i--){let s=report.events[i];if(!s.includes('ELDORIA_PLAYABLE_UI id='+id+' '))continue;let m=s.match(/x=([-0-9.]+) y=([-0-9.]+)/);if(m)return {x:+m[1],unityY:+m[2]};}return null;}
 function hotspot(id){for(let i=report.events.length-1;i>=0;i--){let s=report.events[i];if(!s.includes('ELDORIA_PLAYABLE_HOTSPOT id='+id+' '))continue;let m=s.match(/x=([-0-9.]+) y=([-0-9.]+)/);if(m)return {x:+m[1],y:+m[2]};}return null;}
+let canvasBox=null,canvasInfo=null;
+function mapUi(id){
+ const u=findId(id);
+ if(!u||!canvasBox||!canvasInfo)return null;
+ return {x:canvasBox.x+(u.x/canvasInfo.width)*canvasBox.width,
+ y:canvasBox.y+((canvasInfo.height-u.unityY)/canvasInfo.height)*canvasBox.height};
+}
+function mapHotspot(id){
+ const u=hotspot(id);
+ if(!u||!canvasBox||!canvasInfo)return null;
+ return {x:canvasBox.x+(u.x/canvasInfo.width)*canvasBox.width,
+ y:canvasBox.y+(u.y/canvasInfo.height)*canvasBox.height};
+}
 async function waitUntil(fn,timeout=80000){const end=Date.now()+timeout;while(Date.now()<end){if(fn())return true;await sleep(450);}return false;}
 async function snapshot(page,name){const file=path.join(dir,name+'.png');await page.screenshot({path:file,timeout:30000});report.shots.push(file);const png=PNG.sync.read(fs.readFileSync(file));let hot=0;for(let i=0;i<png.data.length;i+=4){const a=png.data[i],b=png.data[i+1],c=png.data[i+2];if(a>210&&b<90&&c>210)hot++;}const ratio=hot/(png.width*png.height);report.checks.push({shot:name,pinkRatio:ratio,width:png.width,height:png.height});return ratio;}
 async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});for(let i=1;i<=9;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx*i/9,y:y+dy*i/9,id:1}]});await sleep(40);}await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await sleep(450);}
@@ -25,24 +38,27 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   report.checks.push({startup:report.browserStartupPass,state:report.state[0]||null});
   if(!report.browserStartupPass)throw Error('No ValoriaWebGL playable state emitted after 115 seconds');
   await waitUntil(()=>!!findId('home'),25000);
+  canvasBox=await page.locator('canvas').first.boundingBox();
+  canvasInfo=await page.evaluate(()=>{const c=document.querySelector('canvas');return {width:c.width,height:c.height};});
+  report.checks.push({canvasBox,canvasInfo});
   await sleep(4300); // Unity state event precedes the first actually rendered 3D frame.
   const pink=await snapshot(page,'01-initial-landscape');
   const pans0=report.events.filter(s=>s.includes('ELDORIA_PLAYABLE_TOUCH_PAN')).length;
   for(const [dx,dy] of [[110,0],[-110,0],[0,80],[0,-80]])await gesture(cdp,420,205,dx,dy);
   const pans=report.events.filter(s=>s.includes('ELDORIA_PLAYABLE_TOUCH_PAN')).length-pans0;
   report.cameraPanPass=pans>=2;report.checks.push({panLogCount:pans});
-  const home=findId('home');if(home){await page.touchscreen.tap(home.x,home.y);await sleep(700);}
+  const home=mapUi('home');if(home){await page.touchscreen.tap(home.x,home.y);await sleep(700);}
   await snapshot(page,'02-pan-home');
-  const target=hotspot('sawmill');report.checks.push({sawmillTarget:target});
+  const target=mapHotspot('sawmill');report.checks.push({sawmillTarget:target});
   if(target&&target.x>=0&&target.x<844&&target.y>=0&&target.y<390){
     await page.touchscreen.tap(target.x,target.y);await sleep(1200);
     report.sawmillSelectionPass=await waitUntil(()=>!!findId('buildingAction'),4500);
-    report.checks.push({buildingAction:findId('buildingAction')});
+    report.checks.push({buildingAction:mapUi('buildingAction')});
     await snapshot(page,'03-sawmill-selection');
-    const action=findId('buildingAction');
+    const action=mapUi('buildingAction');
     if(action){const initialRev=report.state.at(-1)?.revision;await page.touchscreen.tap(action.x,action.y);await sleep(1500);report.checks.push({sawmillRevisionBefore:initialRev,after:report.state.at(-1)?.revision});}
   }
-  const world=findId('worldNav');report.checks.push({worldNav:world});
+  const world=mapUi('worldNav');report.checks.push({worldNav:world});
   if(world){
     const visitedBefore=report.state.filter(s=>s.scene==='Frontier').length;
     await page.touchscreen.tap(world.x,world.y);
@@ -50,7 +66,7 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
     await sleep(3500);
     await snapshot(page,'04-world');
     if(report.worldEnteredPass){
-      const city=findId('cityNav');report.checks.push({cityNav:city});
+      const city=mapUi('cityNav');report.checks.push({cityNav:city});
       if(city){
         const homesBefore=report.state.filter(s=>s.scene==='ValoriaWebGL').length;
         await page.touchscreen.tap(city.x,city.y);
