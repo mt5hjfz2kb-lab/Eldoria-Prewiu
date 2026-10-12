@@ -32,6 +32,16 @@ jobs:
         run: |
           rm -rf playtest
           cp -R v0220 playtest
+          # The frozen build intentionally has no QA-only fixture boot. The disposable
+          # test alias must restore named preset scenarios BEFORE its main game scripts.
+          python3 - <<'PY'
+          from pathlib import Path
+          page=Path('playtest/index.html')
+          data=page.read_text('utf8')
+          assert '<head>' in data
+          boot='<head><script src="js/qa-fixtures.js"></script><script src="../qa/closed-tester-preset-boot.js"></script>'
+          page.write_text(data.replace('<head>',boot,1),'utf8')
+          PY
       - name: Fast coherent-state behavior preflight before the expensive full suite
         run: timeout 60s node qa/e2e-behavior-regression.js
       - name: Fast Codex and Relicario game-state preflight
