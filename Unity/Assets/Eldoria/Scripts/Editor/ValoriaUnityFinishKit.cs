@@ -119,7 +119,7 @@ namespace Eldoria.EditorTools
             }
         }
 
-        public static GameObject MakeContextFloor(Bounds b,string piece)
+        public static GameObject MakeContextFloor(Bounds b,string piece,Material exposedRock=null)
         {
             var isCliff=piece=="cliff_rocks";
             var isPath=piece=="stone_path_platform";
@@ -168,9 +168,25 @@ namespace Eldoria.EditorTools
             }
             var mesh=new Mesh();
             mesh.name="Valoria editorial staging terrain 32";
-            mesh.vertices=v;mesh.uv=uv;mesh.triangles=triangles;mesh.RecalculateNormals();
+            mesh.vertices=v;mesh.uv=uv;
+            if(assembly&&exposedRock!=null)
+            {
+                var earthFaces=new List<int>();var rockFaces=new List<int>();
+                for(int z=0;z<n;z++)for(int x=0;x<n;x++)
+                {
+                    int a=z*(n+1)+x,d=a+n+1;
+                    float delta=Mathf.Max(Mathf.Abs(v[a].y-v[d].y),Mathf.Abs(v[a+1].y-v[d+1].y));
+                    var faces=delta>.42f?rockFaces:earthFaces;
+                    faces.Add(a);faces.Add(d);faces.Add(a+1);
+                    faces.Add(a+1);faces.Add(d);faces.Add(d+1);
+                }
+                mesh.subMeshCount=2;
+                mesh.SetTriangles(earthFaces,0);mesh.SetTriangles(rockFaces,1);
+                mr.sharedMaterials=new[]{GetStageMaterial(),exposedRock};
+            }
+            else {mesh.triangles=triangles;mr.sharedMaterial=GetStageMaterial();}
+            mesh.RecalculateNormals();
             mf.sharedMesh=mesh;
-            mr.sharedMaterial=GetStageMaterial();
             stage.transform.position=new Vector3(b.center.x,0f,b.center.z);
             return stage;
         }

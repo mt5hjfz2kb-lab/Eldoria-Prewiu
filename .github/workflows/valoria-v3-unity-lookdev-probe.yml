@@ -85,6 +85,5 @@ jobs:
           path: |
             ${{ runner.temp }}/ValoriaV3-Unity-compile.log
             Unity/ValoriaV3UnityCaptures/*
-            Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/**
           if-no-files-found: warn
           retention-days: 7

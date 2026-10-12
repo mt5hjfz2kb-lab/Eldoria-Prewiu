@@ -233,7 +233,9 @@ namespace Eldoria.EditorTools
             float viewDistance=Vector3.Distance(cam.transform.position,center);
             RenderSettings.fogStartDistance=viewDistance*.93f;
             RenderSettings.fogEndDistance=viewDistance*2.85f;
-            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
+            var rockRenderer=pieces[5].GetComponentInChildren<Renderer>(true);
+            var rockMaterial=rockRenderer!=null?rockRenderer.sharedMaterial:null;
+            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family",rockMaterial);
             var trees=ValoriaNatureDresser.DressAssembly(bounds);
             var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
