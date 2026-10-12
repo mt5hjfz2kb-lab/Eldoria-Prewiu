@@ -11,6 +11,7 @@ def main():
  p.add_argument('--reference',type=pathlib.Path,required=True)
  p.add_argument('--unity-before',type=pathlib.Path,required=True)
  p.add_argument('--target-object',required=True)
+ p.add_argument('--target-mode',choices=['existing','new'],default='existing',help='new allows the artist to create a previously absent mesh')
  p.add_argument('--inventory',type=pathlib.Path)
  p.add_argument('--out',required=True,type=pathlib.Path)
  p.add_argument('--model',default='qwen3-vl:4b-instruct')
@@ -49,7 +50,7 @@ def main():
   'construct_mesh vertices [[x,y,z]...], faces [[indices]...], material_color [r,g,b]; '
   'assign_material rgb [r,g,b], roughness; '
   'place_existing_asset source_object, location [x,y,z], rotation [x,y,z], scale [x,y,z]. '
-  f'Only target these actual objects: {a.target_object}. Current inventory: {inventory}. '\n  f'Previously verified art failures and learnings (avoid repeating): {memory}. '
+  f'Use exactly target name {a.target_object}, with target mode {a.target_mode}: for existing, edit the existing Blender object and never construct a duplicate; for new, construct_mesh must be the first operation, followed by edits of that new object. Current inventory: {inventory}. '\n  f'Previously verified art failures and learnings (avoid repeating): {memory}. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  payload={'model':a.model,'stream':False,'think':False,'format':'json',
   'options':{'temperature':0.25,'num_predict':1800,'num_ctx':4096},
@@ -62,6 +63,8 @@ def main():
  if design.get('asset_decision') not in ['REUSE','MODIFY','NEW']:raise ValueError('Reuse-vs-new decision missing')
  ops=design.get('planned_actions')
  if not isinstance(ops,list) or not 1<=len(ops)<=8:raise ValueError('1-8 authoring operations required')
+ if a.target_mode=='new' and ops[0].get('type')!='construct_mesh':raise ValueError('NEW asset must begin with actual mesh creation')
+ if a.target_mode=='existing' and any(op.get('type')=='construct_mesh' for op in ops):raise ValueError('Cannot construct new mesh with an existing source object')
  ids=set()
  for op in ops:
   if op.get('type') not in ALLOWED or not op.get('id') or op['id'] in ids:raise ValueError('Invalid/duplicate artist action')
@@ -70,7 +73,7 @@ def main():
   ids.add(op['id'])
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
-  'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,\n  'asset_inventory_sha256':digest(inventory.encode('utf8')),'target_object':a.target_object,'direction':design,'self_approval':False}
+  'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,\n  'asset_inventory_sha256':digest(inventory.encode('utf8')),'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
