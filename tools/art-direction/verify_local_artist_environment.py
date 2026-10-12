@@ -14,7 +14,7 @@ from urllib.request import urlopen
 from urllib.error import URLError
 
 ROOT = Path(__file__).resolve().parents[2]
-MODEL = os.environ.get("ELDORIA_QWEN_MODEL", "qwen3-vl:4b-instruct")
+MODEL = os.environ.get("ELDORIA_QWEN_MODEL", "eldoria-artist")
 OLLAMA_URL = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 PROMPT = ROOT / "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md"
 GENERATOR = ROOT / "tools/art-direction/build_cliff_talus_transition_v1.py"
@@ -41,6 +41,31 @@ def ollama_models():
         return {"ok": False, "error": str(exc)}
 
 
+def detect_blender():
+    configured = os.environ.get("ELDORIA_BLENDER_PATH")
+    candidates = ([Path(configured)] if configured else [])
+    on_path = shutil.which("blender")
+    if on_path:
+        candidates.append(Path(on_path))
+    if sys.platform == "win32":
+        for base in (os.environ.get("PROGRAMFILES", ""),
+                     os.environ.get("LOCALAPPDATA", "")):
+            if not base:
+                continue
+            root = Path(base) / "Blender Foundation"
+            if not root.is_dir():
+                root = Path(base) / "Programs" / "Blender Foundation"
+            if root.is_dir():
+                candidates.extend(root.glob("**/blender.exe"))
+    for candidate in candidates:
+        if candidate.is_file():
+            output = probe([str(candidate), "--version"], timeout=15)
+            output["path"] = str(candidate)
+            if output["ok"]:
+                return output
+    return {"ok": False, "note": "Blender missing or not on PATH; set ELDORIA_BLENDER_PATH"}
+
+
 def main():
     result = {
         "platform": sys.platform,
@@ -49,7 +74,7 @@ def main():
         "prompt": {"present": PROMPT.is_file()},
         "generator": {"present": GENERATOR.is_file()},
         "git": probe(["git", "--version"]) if shutil.which("git") else {"ok": False},
-        "blender": probe(["blender", "--version"]) if shutil.which("blender") else {"ok": False, "note": "Not on PATH; Windows installation may still exist"},
+        "blender": detect_blender(),
         "ollama_cli": probe(["ollama", "--version"]) if shutil.which("ollama") else {"ok": False},
         "ollama_api": ollama_models(),
         "blender_mcp": {"verified": False, "note": "MCP connection and live Blender edit need a separate explicit, non-destructive integration test"},
