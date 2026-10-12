@@ -57,12 +57,22 @@ jobs:
       - name: Enforce universal art-production routing
         run: node tools/check-art-production-governance.mjs
       - name: Reject unclaimed 3D assets and Unity art scenes
-        if: github.event_name == 'pull_request'
         env:
-          ART_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          ART_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          ART_EVENT: ${{ github.event_name }}
+          ART_PR_BASE: ${{ github.event.pull_request.base.sha }}
+          ART_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          ART_PUSH_BEFORE: ${{ github.event.before }}
+          ART_PUSH_AFTER: ${{ github.sha }}
         run: |
-          git diff --name-only "$ART_BASE_SHA" "$ART_HEAD_SHA" > /tmp/eldoria-art-changed-files.txt
+          if [ "$ART_EVENT" = "pull_request" ]; then
+            base="$ART_PR_BASE"; head="$ART_PR_HEAD"
+          else
+            base="$ART_PUSH_BEFORE"; head="$ART_PUSH_AFTER"
+          fi
+          if [ -z "$base" ] || [ -z "$head" ]; then
+            echo "ART_SCOPE_FAIL: missing base/head SHAs"; exit 1
+          fi
+          git diff --name-only "$base" "$head" > /tmp/eldoria-art-changed-files.txt
           node tools/check-art-changed-scope.mjs --changed-files /tmp/eldoria-art-changed-files.txt
       - name: Regression test permanent art change ownership
         run: node --test tools/check-art-changed-scope.test.mjs
