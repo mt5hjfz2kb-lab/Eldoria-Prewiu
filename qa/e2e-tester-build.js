@@ -10,7 +10,7 @@ const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v
  await p.locator('[data-testid="tester-intro"]').waitFor({state:'detached'});
  await p.locator('[data-testid="tester-feedback"]').waitFor({state:'visible'});
  const core=await p.evaluate(()=>({game:!!window.ELDORIA_V023,tester:!!window.ELDORIA_TESTER,screen:window.ELDORIA_V023?.state?.().view,ctx:window.ELDORIA_TESTER?.context?.()}));
- if(!core.game||!core.tester||!core.ctx||core.ctx.testerVersion!=='0.26.5-test.1')throw Error('Tester/game runtime contract failed');
+ if(!core.game||!core.tester||!core.ctx||core.ctx.testerVersion!=='0.26.5-test.2')throw Error('Tester/game runtime contract failed');
  await p.locator('[data-testid="tester-feedback"]').click();
  await p.locator('[data-testid="tester-blocked"]').waitFor({state:'visible'});
  await p.locator('[data-testid="tester-blocked"] [data-h="0"]').click();
