@@ -13,7 +13,7 @@ permissions:
   contents: read
 concurrency:
   group: eldoria-valoria-v3-unity-probe
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   unity-compile:
     if: vars.UNITY_RUNNER_READY == 'true'
