@@ -103,7 +103,7 @@ jobs:
             --unity-before /tmp/eldoria-ai-real/unity_before-cpu640.jpg \
             --target-object "$TARGET_MESH" --target-mode existing \
             --mesh-context /tmp/eldoria-ai-real/context/mesh-context.json \
-            --model qwen3-vl:2b-instruct --num-ctx 8192 --num-predict 1200 \
+            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1100 \
             --out /tmp/eldoria-ai-real/result
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/eldoria-ai-real/result/artist-plan.json "$TARGET_MESH" existing
       - name: Execute model-selected REAL Blender structural edits
