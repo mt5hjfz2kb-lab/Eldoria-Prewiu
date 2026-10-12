@@ -1,0 +1,68 @@
+name: Valoria publish previously verified WebGL
+on:
+  push:
+    branches: [integration/valoria-v3-unity-lookdev-20261012]
+    paths: [.github/workflows/valoria-publish-verified-artifact.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+jobs:
+  validate-and-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38266957384
+          name: eldoria-compact-experimental-webgl-38266957384
+          github-token: ${{ github.token }}
+          path: experimental-preview
+      - name: Validate preserved playable build
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          r=Path('experimental-preview')
+          files=[p for p in r.rglob('*') if p.is_file()]
+          assert (r/'index.html').is_file(), 'WebGL index missing'
+          assert len(list(r.rglob('*.data.unityweb')))==1, 'Unity data missing'
+          assert len(list(r.rglob('*.wasm.unityweb')))==1, 'Unity WASM missing'
+          total=sum(p.stat().st_size for p in files)
+          assert 0<total<650_000_000, f'Invalid payload size {total}'
+          print(f'VALORIA_VERIFIED_ARTIFACT_REUSED count={len(files)} bytes={total}')
+          PY
+      - name: Inspect existing Pages configuration without changing it
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          status=$(curl -sS -o pages-config.json -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/pages")
+          echo "PAGES_CONFIGURATION_HTTP_STATUS=$status"
+          python3 - <<'PY'
+          import json
+          p=json.load(open('pages-config.json'))
+          print('PAGES_SOURCE=',p.get('source'))
+          print('PAGES_BUILD_TYPE=',p.get('build_type'))
+          print('PAGES_URL=',p.get('html_url'))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-verified-webgl-ready-to-publish
+          path: experimental-preview/
+          retention-days: 7
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: experimental-preview/
+  publish-preview:
+    needs: validate-and-stage
+    if: ${{ vars.VALORIA_EXPERIMENTAL_PAGES_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
