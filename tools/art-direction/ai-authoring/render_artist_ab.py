@@ -3,6 +3,9 @@ Not a Unity capture; cannot establish ART_APPROVED. Uses the exact same camera a
 blender -b --python-exit-code 1 --python render_artist_ab.py -- --before frozen.blend --after artist-output.blend --target "Existing mesh" --out screenshots
 """
 import argparse,hashlib,json,math,pathlib,sys
+from array import array
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
+from visibility_metrics import visible_change
 import bpy
 from mathutils import Vector
 p=argparse.ArgumentParser()
@@ -68,12 +71,28 @@ def render(path,name):
  return hashlib.sha256((a.out/name).read_bytes()).hexdigest()
 before_hash=render(a.before,'before-blender-clay.png')
 after_hash=render(a.after,'after-blender-clay.png')
-if before_hash==after_hash:raise ValueError('A/B Blender frames are identical; no visible geometric proof')
+def image_pixels(name):
+ img=bpy.data.images.load(str((a.out/name).resolve()),check_existing=False)
+ try:
+  width,height=img.size
+  pixels=array('f',[0.0])*(width*height*4)
+  img.pixels.foreach_get(pixels)
+  return width,height,pixels
+ finally:
+  bpy.data.images.remove(img)
+bw,bh,before_pixels=image_pixels('before-blender-clay.png')
+aw,ah,after_pixels=image_pixels('after-blender-clay.png')
+if (bw,bh)!=(aw,ah):raise ValueError('Cannot compare Blender frames of differing dimensions')
+visibility=visible_change(before_pixels,after_pixels,bw,bh)
 manifest={'scope':'Blender clay A/B only, NOT Unity, NOT ART_APPROVED',
           'target':a.target,'camera':'orthographic camera and clay/light anchored to combined source/edited target bounds',
           'source_file_sha256':hashlib.sha256(a.before.read_bytes()).hexdigest(),
           'result_file_sha256':hashlib.sha256(a.after.read_bytes()).hexdigest(),
           'before_image_sha256':before_hash,'after_image_sha256':after_hash,
-          'source_geometry':source,'edited_geometry':dest}
+          'source_geometry':source,'edited_geometry':dest,
+          'camera_visibility':visibility}
 (a.out/'comparison.json').write_text(json.dumps(manifest,indent=2)+'\n','utf8')
 print('BLENDER_AB_RENDERED',json.dumps(manifest))
+if visibility['camera_visibility_gate']!='REVIEW_REQUIRED':
+ raise ValueError('BLENDER_ART_VISIBILITY_REJECTED: only '+str(visibility['changed_pixels'])+
+                  '/'+str(visibility['total_pixels'])+' camera pixels change materially. Qwen must reconsider the actual camera-visible region. Source preserved, Unity/ART_APPROVED forbidden.')
