@@ -6,6 +6,7 @@ on:
       - '.github/workflows/eldoria-ai-artist-blender-smoke.yml'
       - 'tools/art-direction/ai-authoring/execute_artist_plan.py'
       - 'tools/art-direction/ai-authoring/render_artist_ab.py'
+      - 'tools/art-direction/ai-authoring/visibility_metrics.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -95,6 +96,8 @@ jobs:
           manifest=json.loads((root/'comparison.json').read_text())
           assert manifest['target']=='Terrain'
           assert manifest['before_image_sha256']!=manifest['after_image_sha256']
+          assert manifest['camera_visibility']['camera_visibility_gate']=='REVIEW_REQUIRED'
+          assert manifest['camera_visibility']['changed_fraction']>=0.001
           assert (root/'before-blender-clay.png').stat().st_size>2500
           assert (root/'after-blender-clay.png').stat().st_size>2500
           print('CAMERA_LOCKED_AB_SMOKE_PASS')
