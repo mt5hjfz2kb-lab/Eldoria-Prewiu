@@ -1,5 +1,6 @@
 name: Bastion I reference assembly candidate
 on:
+  workflow_dispatch:
   push:
     branches: [art/valoria-bastion1-reference-assembly-20261012]
     paths:

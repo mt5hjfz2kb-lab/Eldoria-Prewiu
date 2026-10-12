@@ -131,9 +131,13 @@ namespace Eldoria.EditorTools
         {
             var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32){antiAliasing=4};
             var prior=RenderTexture.active;Texture2D pixels=null;
+            bool priorAsync=ShaderUtil.allowAsyncCompilation;
+            ShaderUtil.allowAsyncCompilation=false;
             try
             {
-                camera.aspect=(float)width/height;camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;
+                camera.aspect=(float)width/height;camera.targetTexture=rt;
+                // Compile exact variants synchronously; discard GPU setup frames.
+                camera.Render();camera.Render();camera.Render();RenderTexture.active=rt;
                 pixels=new Texture2D(width,height,TextureFormat.RGB24,false);
                 pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();
                 var corner=pixels.GetPixel(0,0);bool nonempty=false;
@@ -144,6 +148,7 @@ namespace Eldoria.EditorTools
             }
             finally
             {
+                ShaderUtil.allowAsyncCompilation=priorAsync;
                 camera.targetTexture=null;RenderTexture.active=prior;
                 if(pixels!=null)UnityEngine.Object.DestroyImmediate(pixels);rt.Release();UnityEngine.Object.DestroyImmediate(rt);
             }
