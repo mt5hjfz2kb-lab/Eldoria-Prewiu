@@ -1,0 +1,53 @@
+name: Eldoria tester scoped regression diagnosis
+on:
+  push:
+    branches: ['fix/tester-qa-frozen-version-20261012']
+    paths:
+      - '.github/workflows/eldoria-testers-diagnostic-matrix.yml'
+      - 'qa/**'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-testers-diag-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [legacy, middle, recent, endgame]
+        include:
+          - group: legacy
+            specs: 'e2e-codex-chest e2e-v029-codex-relicario e2e-v030-depth e2e-v0263-owner-feedback'
+          - group: middle
+            specs: 'e2e-v0264-ui-parity e2e-v0265-owner-block e2e-v0266-pve-combat e2e-v027-chapters e2e-v027-owner-feedback'
+          - group: recent
+            specs: 'e2e-v027-barracks-recruitment e2e-v027-hero-army e2e-v027-military-circuit e2e-v0301-ux-clarity e2e-v0302-arc1-stability'
+          - group: endgame
+            specs: 'e2e-v0304-owner-ux e2e-v031-relicario e2e-v032-hospital'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Local current snapshot
+        run: |
+          cp -R v0220 playtest
+          python3 -m http.server 4173 >/tmp/eldoria-qa-http.log 2>&1 &
+      - name: Individually bounded checks with exact failure matrix
+        shell: bash
+        run: |
+          set +e
+          export ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off'
+          for spec in ${{ matrix.specs }}; do
+            echo "::group::$spec"
+            timeout --signal=TERM --kill-after=3s 45s node "qa/$spec.js" >/tmp/"$spec".txt 2>&1
+            rc=$?
+            tail -c 2400 /tmp/"$spec".txt
+            echo "DIAGNOSTIC_RESULT name=$spec exit=$rc"
+            echo "::endgroup::"
+          done
+          exit 0
