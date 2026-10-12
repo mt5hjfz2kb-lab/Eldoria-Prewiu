@@ -5,6 +5,7 @@ on:
     paths:
       - Unity/Assets/Eldoria/Scripts/Editor/ValoriaLocalTalusUnityCapture.cs
       - .github/workflows/eldoria-windows-authored-talus-unity-review.yml
+      - Unity/Assets/Eldoria/Scripts/Editor/ValoriaLocalTalusUnityCapture.cs
 permissions:
   contents: read
   actions: read
@@ -80,7 +81,7 @@ jobs:
           }
           if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity timeout'}
           if(-not $complete -and $p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 120};throw "Unity failure $($p.ExitCode)"}
-          foreach($n in @('before-frozen-cliff.png','after-with-talusedge.png')){
+          foreach($n in @('before-frozen-cliff.png','after-with-talusedge.png','before-neutral-clay.png','after-neutral-clay.png')){
             $file=Join-Path $out $n
             if(-not (Test-Path $file) -or (Get-Item $file).Length -lt 20000){throw "Invalid real Unity capture $n"}
           }
