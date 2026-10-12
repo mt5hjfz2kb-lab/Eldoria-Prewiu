@@ -4,12 +4,12 @@ on:
     branches: ['fix/tester-qa-frozen-version-20261012']
     paths:
       - '.github/workflows/eldoria-testers-diagnostic-matrix.yml'
-      - 'qa/**'
+      # Explicit diagnostic workflow revisions only; concurrent QA owners may edit tests.
 permissions:
   contents: read
 concurrency:
   group: eldoria-testers-diag-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   diagnose:
     runs-on: ubuntu-latest
