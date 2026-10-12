@@ -47,3 +47,22 @@ test('scene and model edits are considered artistic changes',()=>{
  assert.equal(isArtChange('Unity/Assets/Eldoria/Families/Watchtower.prefab'),true);
  assert.equal(isArtChange('tools/valoria-bastion1-assembly/terrain_finish.py'),true);
 });
+
+test('new remote asset folders cannot hide artistic 3D textures or terrain',()=>{
+ for(const p of [
+  'Unity/Assets/Eldoria/NextRegion/Cliff/rocks.png',
+  'Unity/Assets/Eldoria/NextRegion/Cliff/rock_normal.tga',
+  'Unity/Assets/Eldoria/NextRegion/Cliff/Landscape.terrainlayer',
+  'Unity/Assets/Eldoria/NextRegion/Scene/NewScene.unity',
+  'Unity/Assets/Eldoria/NextRegion/Props/stone.shadergraph',
+  'Unity/Assets/Eldoria/NextRegion/Meshes/terrain.asset',
+  'Unity/Assets/Eldoria/NextRegion/Models/cliff.fbx'
+ ]) {
+  assert.ok(isArtChange(p),'missed future art asset: '+p);
+  assert.match(assess([p],registry())[0],/without matching ACTIVE/);
+ }
+});
+test('C# presentation behavior and QA tests stay outside art changed-file guard',()=>{
+ for(const p of ['Unity/Assets/Eldoria/Scripts/UI/SomeBehavior.cs','Unity/Assets/Eldoria/Tests/PlayMode/PlayerMovement.cs'])
+  assert.equal(isArtChange(p),false);
+});
