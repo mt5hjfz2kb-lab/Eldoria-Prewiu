@@ -92,6 +92,15 @@ jobs:
           if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
           if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}
+      - name: Build isolated playable WebGL candidate
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-WebGL.log'
+          $unityArguments=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.ValoriaBastion1MeshCandidateBuild.BuildWebGL','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          if(-not $process.WaitForExit(1200000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own WebGL process timed out'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 150;throw "WebGL build failed $($process.ExitCode)"}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_MESH_WEBGL_CANDIDATE_PASS' -Quiet)){throw 'Playable candidate completion missing'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -103,7 +112,9 @@ jobs:
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedNormals/**
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1ReferenceAssembly.unity*
             Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity*
+            Unity/Builds/Bastion1MeshCandidateWebGL/**
             ${{ runner.temp }}/Bastion1-Blender.*
             ${{ runner.temp }}/Bastion1-Unity.log
+            ${{ runner.temp }}/Bastion1-WebGL.log
           retention-days: 14
           if-no-files-found: warn
