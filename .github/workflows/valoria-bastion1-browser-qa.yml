@@ -1,0 +1,76 @@
+name: Bastion I exact WebGL browser acceptance
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths:
+      - '.github/workflows/valoria-bastion1-browser-qa.yml'
+      - 'tests/valoria-bastion1-browser-qa.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  browser-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tests/valoria-bastion1-browser-qa.js
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: bastion1-player-integration-38314377442
+          run-id: 38314377442
+          github-token: ${{ github.token }}
+          path: candidate
+      - name: Confirm exact successful Windows build and file identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob,json,os,urllib.request
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38314377442'
+          request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          obj=json.load(urllib.request.urlopen(request))
+          assert obj['conclusion']=='success',(obj['status'],obj['conclusion'])
+          assert obj['head_sha']=='8758911e81f12b147391a07d7d5cd5d79eb9f4c3',obj['head_sha']
+          paths=glob.glob('candidate/**/Bastion1MeshCandidateWebGL/index.html',recursive=True)
+          assert len(paths)==1,paths
+          root=os.path.dirname(paths[0])
+          sizes={}
+          for dirpath,_,files in os.walk(root):
+            for file in files:
+              name=os.path.join(dirpath,file);sizes[os.path.relpath(name,root)]=os.path.getsize(name)
+          total=sum(sizes.values())
+          assert total>10000000,(total,sizes)
+          print('EXACT_BASTION1_WEBGL_BUILD_PASS',total,'bytes',len(sizes),'files')
+          with open('/tmp/bastion1-root','w') as f:f.write(root)
+          with open('/tmp/bastion1-build-sizes.json','w') as f:json.dump({'source_sha':obj['head_sha'],'run_id':38314377442,'total_bytes':total,'files':sizes},f,indent=2)
+          PY
+      - name: Install browser and serve exact build locally
+        shell: bash
+        run: |
+          npm install --no-save playwright@1.55.0 pngjs@7.0.0
+          npx playwright install --with-deps chromium
+          mkdir -p bastion1-browser-evidence
+          cp /tmp/bastion1-build-sizes.json bastion1-browser-evidence/build-sizes.json
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$(cat /tmp/bastion1-root)" >/tmp/bastion1-http.log 2>&1 &
+          echo $! >/tmp/bastion1-http.pid
+          sleep 2
+          curl -fLsS http://127.0.0.1:8765/ >/dev/null
+      - name: Real mobile Chromium startup, pan, parcels, world and reload
+        shell: bash
+        run: node tests/valoria-bastion1-browser-qa.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-exact-webgl-browser-qa
+          path: |
+            bastion1-browser-evidence/**
+            /tmp/bastion1-http.log
+          if-no-files-found: warn
+          retention-days: 30
