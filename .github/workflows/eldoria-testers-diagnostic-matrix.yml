@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          export ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off'
+          unset ELDORIA_URL # Individual tests supply their own preset URLs under the aliased playtest snapshot
           for spec in ${{ matrix.specs }}; do
             echo "::group::$spec"
             timeout --signal=TERM --kill-after=3s 45s node "qa/$spec.js" >/tmp/"$spec".txt 2>&1
