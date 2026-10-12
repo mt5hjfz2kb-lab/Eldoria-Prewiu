@@ -13,6 +13,13 @@
 7. **Memoria artística:** reutilizar `tools/art-direction/ARTIST_LEARNING_JOURNAL.md` cuando se pueda conciliar su rama: defecto→hipótesis→edición→captura Unity→veredicto; no fingir reentrenamiento del modelo.
 8. **Sin regresiones:** mantener runner Windows, escenas, `main`, Pages y otros archivos fuera de esta rama. Aceptación exige pruebas de sintaxis, tests positivos/negativos de evidencias, una inferencia real Ollama+Qwen, acción Blender/BlenderMCP real, GLB importado a Unity y mejora artística independiente. No hay autorización para gastos ni publicación prematura.
 
+## Integración efectiva de la memoria y del inventario
+
+- `tools/art-direction/ARTIST_LEARNING_JOURNAL.md` está preservado en esta promoción y **se inyecta automáticamente** como contexto de errores y aciertos recientes en el encargo Qwen; cada inferencia registra su SHA256. No equivale a reentrenar pesos.
+- Si se omite `--inventory`, `author_brief.py` consulta rutas GLB reales del repositorio y prioriza recursos V3/Hero/terreno para decidir REUSE/MODIFY/NEW. Las licencias y fuentes deben verificarse antes de reutilizar o incorporar un recurso.
+- `--target-mode existing` (predeterminado) prohíbe `construct_mesh` sobre mallas existentes; `--target-mode new` obliga a iniciar con `construct_mesh` para crear la nueva malla. Ambas rutas preservan originales congelados.
+- La batería de evidencia incluye **14 pruebas positivas/negativas**, rechazo de artefactos falsos por firma de formato, symlinks externos y discordancia entre la decisión artística y la operación realmente ejecutada. Las pruebas de sintaxis/contrato no sustituyen el ejercicio genuino Qwen + Blender + Unity.
+
 ## Ejecución cuando se libere el runner y el propietario de escena
 
 ```bash
