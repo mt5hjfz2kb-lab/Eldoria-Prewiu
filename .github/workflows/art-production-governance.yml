@@ -80,6 +80,8 @@ jobs:
           node tools/check-art-changed-scope.mjs --changed-files /tmp/eldoria-art-changed-files.txt
       - name: Regression test permanent art change ownership
         run: node --test tools/check-art-changed-scope.test.mjs
+      - name: Reject false approval from WIP or foreign-workstream art cycles
+        run: node --test tools/art-direction/ai-authoring/approval-boundary.test.mjs
       - name: Verify real AI sculpting evidence contract
         run: node --test tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs
       - name: Validate zero-cost Qwen and Blender automation scripts
