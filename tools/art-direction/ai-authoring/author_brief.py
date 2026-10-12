@@ -41,6 +41,7 @@ def main():
  p.add_argument('--target-mode',choices=['existing','new'],default='existing',help='new allows the artist to create a previously absent mesh')
  p.add_argument('--inventory',type=pathlib.Path)
  p.add_argument('--mesh-context',type=pathlib.Path,help='Optional existing Blender mesh vertex indices, border loops and anchoring coordinates')
+ p.add_argument('--prior-visual-review',type=pathlib.Path,help='Optional real previous Blender matched-camera comparison JSON for Qwen-directed visual correction')
  p.add_argument('--out',required=True,type=pathlib.Path)
  p.add_argument('--model',default='qwen3-vl:4b-instruct')
  p.add_argument('--num-ctx',type=int,default=16384,help='Bound the actual local Ollama context budget')
@@ -111,6 +112,24 @@ def main():
   mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
  else:
   mesh_context_for_artist=mesh_context
+ prior_review_hash=None;prior_review_feedback=''
+ if a.prior_visual_review:
+  if not a.prior_visual_review.is_file() or a.prior_visual_review.stat().st_size>15000:raise ValueError('Prior visual review missing/too large')
+  raw_review=a.prior_visual_review.read_bytes();prior_review_hash=digest(raw_review)
+  review=json.loads(raw_review)
+  scope=str(review.get('scope',''))
+  if 'Blender clay A/B' not in scope:raise ValueError('Only real matched-camera Blender A/B manifest accepted as prior sculpt feedback')
+  visibility=review.get('camera_visibility')
+  if not isinstance(visibility,dict):raise ValueError('Prior review missing measured pixel visibility; cannot claim any visible progress')
+  fraction=visibility.get('changed_fraction')
+  if not isinstance(fraction,(int,float)) or not 0<=fraction<=1:raise ValueError('Invalid prior pixel visibility metric')
+  if visibility.get('camera_visibility_gate')!='REJECT_NOT_VISIBLE':raise ValueError('Prior visual review is not a rejected visibility cycle')
+  if not isinstance(review.get('target'),str) or review['target']!=a.target_object:raise ValueError('Prior rejected visual target must match current Blender object')
+  prior_review_feedback=(f'PREVIOUS CAMERA-LOCKED ART REJECTION: only {fraction:.6%} of camera pixels changed, '
+   f'below {visibility.get("required_changed_fraction",0.001):.4%} minimal measurable coverage. '
+   'The previous model did edit mesh, but this was INVISIBLE in strategic view. '
+   'Choose a DIFFERENT, more camera-visible cliff slope, crest or land-contact region from genuine current Unity capture. '
+   'Do not hide terrain with noise/fog; retain buildable plateau and measured source bounds. ')
  prompt=('Compare left REFERENCE and right GENUINE UNITY screenshot. Diagnose and DIRECT NEW 3D geometry, '
   'not just noise parameters. Valid action parameter formats: '
   'sculpt_region center [x,y,z], radius, delta [x,y,z]; '
@@ -124,6 +143,7 @@ def main():
   f'Previously verified art failures and learnings (avoid repeating): {memory}. '
   f'Verified mesh topology/anchors: {mesh_context_for_artist[:11000]}. '
   f'Use no more than {a.max_actions} planned_actions; prioritize ONE high-impact geometry operation with precise coordinates. '
+  f'{prior_review_feedback} '
   'Keep valid JSON output concise (ideally under 950 output tokens), with short string fields and no repeated explanations. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  if a.cpu_compact and a.target_mode=='existing':
@@ -139,6 +159,7 @@ def main():
    f'EXACT existing mesh target: {a.target_object}. Never create another mesh in this run. '
    f'Available real sources: {inventory[:1000]}. Failed attempts learned: {memory[-650:]}. '
    f'Actual mesh geometry: {mesh_context_for_artist[:3700]}. '
+   f'{prior_review_feedback} '
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
    'and no repeated data. Respond only well-formed JSON matching supplied schema.')
@@ -202,7 +223,7 @@ def main():
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
-   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
