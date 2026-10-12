@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "enabled": true,
+  "enabled": false,
   "workstream_id": "valoria-bastion1-reference-assembly-20261012",
   "request_id": "valoria-bastion1-reference-assembly-20261012",
   "asset_or_sector": "Bastion I two-level initial Valoria scene assembled from frozen eight-asset family and existing bridge/stairs",
   "profile": "environment_composition",
-  "visual_gate_state": "verification",
+  "visual_gate_state": "partial",
   "diagnosis": "Existing lookdev is a one-line asset gallery rather than the reference's lower gate, construction terrace, stair ascent and upper fortification. Assemble a bounded candidate before any main renderer cutover.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -22,6 +22,6 @@
     "source_gate": "Verify exact eight SHA-256, preserve frozen Hero V3 geometry, scene-instance assembly only; provisional terrain remains explicitly unapproved.",
     "final_gate": "Exact Unity import and real frames, source portability, relative pan/Home, independent artistic review and subsequent canonical I-II gameplay regression before SHARP cutover."
   },
-  "status": "ACTIVE",
-  "notes": "Current owner authorizes eventual staged main integration. No whole integration-branch merge, paid credits, Pages publication, gameplay mutation or interruption of current WebGL/APK."
+  "status": "COMPLETED",
+  "notes": "Current owner authorizes eventual staged main integration. No whole integration-branch merge, paid credits, Pages publication, gameplay mutation or interruption of current WebGL/APK. Bounded architecture correction and inactive main construction tooling delivered; full environmental ART PASS and active gameplay cutover remain unfulfilled and are explicitly not certified."
 }

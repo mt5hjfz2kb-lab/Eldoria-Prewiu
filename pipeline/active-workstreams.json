@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-12T18:07:26.710Z",
+  "updated_at": "2026-10-12T18:17:55.510Z",
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
@@ -29,32 +29,6 @@
       "phase": "Corrected WebGL candidate built; exact QA completed; Windows lease handed to same-owner isolated prototype diagnostic.",
       "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
       "resumed_at": "2026-10-10T18:50:00Z"
-    },
-    {
-      "id": "valoria-bastion1-reference-assembly-20261012",
-      "title": "Bastion I assembly from eight authored assets and staged main migration",
-      "owner": "chat-bastion1-reference-assembly-20261012",
-      "scope": [
-        "Unity/Assets/Eldoria/Experimental/Bastion1Assembly/**",
-        "tools/valoria-bastion1-assembly/**",
-        "docs/evidence/valoria-bastion1-reference-assembly/**",
-        "pipeline/valoria-bastion1-assembly-request.json",
-        ".github/workflows/valoria-bastion1-reference-assembly.yml",
-        "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json",
-        "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**"
-      ],
-      "resources": [
-        "valoria-bastion1-reference-assembly",
-        "windows-runner-heavy"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-12T17:00:18.068Z",
-      "base_main_sha": "e6d27bd91d1bd2943feae8144f7e46653e622685",
-      "branch": "art/valoria-bastion1-reference-assembly-20261012",
-      "dependency": "Existing Windows jobs complete before this single candidate job; no cancellation, publication or active delivery branch mutation.",
-      "art_production_routing": "required",
-      "phase": "Owner reference correction: asymmetric upper bastion and detached lower remnants rendered in Blender; exact Unity/D3D11 verification in progress",
-      "art_production_request": "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json"
     }
   ],
   "history": [
@@ -4582,6 +4556,46 @@
       "blocker": "Cannot install Android modules or execute Unity without taking the active Region 1 runner/installation lease; no transfer capability between these separate chats is available here.",
       "toolchain_run_id": 38058101010,
       "toolchain_artifact_id": 11672875414
+    },
+    {
+      "id": "valoria-bastion1-reference-assembly-20261012",
+      "title": "Bastion I assembly from eight authored assets and staged main migration",
+      "owner": "chat-bastion1-reference-assembly-20261012",
+      "scope": [
+        "Unity/Assets/Eldoria/Experimental/Bastion1Assembly/**",
+        "tools/valoria-bastion1-assembly/**",
+        "docs/evidence/valoria-bastion1-reference-assembly/**",
+        "pipeline/valoria-bastion1-assembly-request.json",
+        ".github/workflows/valoria-bastion1-reference-assembly.yml",
+        "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json",
+        "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**"
+      ],
+      "resources": [],
+      "status": "completed",
+      "claimed_at": "2026-10-12T17:00:18.068Z",
+      "base_main_sha": "e6d27bd91d1bd2943feae8144f7e46653e622685",
+      "branch": "art/valoria-bastion1-reference-assembly-20261012",
+      "dependency": "Existing Windows jobs complete before this single candidate job; no cancellation, publication or active delivery branch mutation.",
+      "art_production_routing": "required",
+      "phase": "BOUNDED ARCHITECTURAL CORRECTION AND INACTIVE MAIN CONSTRUCTION TOOLS DELIVERED",
+      "art_production_request": "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json",
+      "completed_at": "2026-10-12T18:17:55.510Z",
+      "runner_released": true,
+      "result": {
+        "source_branch_sha": "bdb481e3d19caa619e3a5d568a6bc71033cdd412",
+        "main_tools_sha": "f71d20e59b47726de5ec299a451866253b2559d4",
+        "unity_run": 38289244341,
+        "unity_artifact": 11765245348,
+        "actual_three_frames_inspected": true,
+        "reference_architectural_hierarchy_corrected": true,
+        "full_art_pass": false,
+        "gameplay_cutover": false,
+        "overall_initial_playable_scene_complete": false,
+        "current_player": "SHARP",
+        "paid_credits": 0,
+        "evidence": "docs/evidence/valoria-bastion1-reference-assembly/RESULT.json"
+      },
+      "next": "Remaining original goal: authored environmental finishing and integrated mesh camera/picking/progression, followed by exact I–II gates before active initial-scene replacement. No background execution is running."
     }
   ]
 }
