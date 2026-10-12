@@ -74,7 +74,8 @@ def main():
   ids.add(op['id'])
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
-  'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,\n  'asset_inventory_sha256':digest(inventory.encode('utf8')),'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+  'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
