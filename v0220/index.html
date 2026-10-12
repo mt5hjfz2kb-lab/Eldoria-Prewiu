@@ -1215,6 +1215,14 @@ body.v022-core-active{margin:0;overflow:hidden;background:#050809}body.v022-core
 @media(max-width:620px){#eldoria-core-loop .hospitalWrap{left:76%;top:61%}.hospitalStatus032{grid-template-columns:1fr}.armyHealth032{grid-template-columns:1fr 1fr}.armyHealth032 button{grid-column:1/-1}.troopAftermath032{grid-template-columns:1fr 1fr}.hospitalScene032{padding-left:8px!important;padding-right:8px!important}}
 </style>
 <div id="eldoria-core-loop" data-testid="v022-core-loop"></div>
+<!-- Real QA dev harness, loaded synchronously BEFORE game localStorage initialization.
+     No production QA state or save isolation is injected without explicit ?qa=1. -->
+<script>
+if(new URLSearchParams(location.search).get('qa')==='1'){
+  document.write('<script src="../qa/qa-storage-isolation.js"><\\/script>');
+  document.write('<script src="js/qa-fixtures.js"><\\/script>');
+}
+</script>
 <script src="js/state-economy.js"></script>
 <script src="js/tasks-offline.js"></script>
 <script src="js/dialogue-tutorial.js"></script>
@@ -1909,6 +1917,13 @@ if(new URLSearchParams(location.search).get('qa')==='1'){
  fixture.src='js/qa-fixtures.js';
  fixture.onload=()=>{const launcher=document.createElement('script');launcher.src='js/qa-launcher.js';document.body.appendChild(launcher)};
  document.body.appendChild(fixture);
+}
+</script>
+<script>
+if(new URLSearchParams(location.search).get('qa')==='1'){
+  const devLauncher=document.createElement('script');
+  devLauncher.src='../qa/qa-launcher.js';
+  document.body.appendChild(devLauncher);
 }
 </script>
 </body>
