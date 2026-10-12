@@ -48,8 +48,33 @@ export function verifyCycle(c,root=process.cwd()){
   artist_system_prompt:c?.artist?.system_prompt,artist_inference:c?.artist?.inference_log,
   owner_reference:c?.reference,unity_before:c?.unity?.before,source_blend:c?.authorship?.source_blend,
   output_blend:c?.authorship?.result_blend,output_glb:c?.authorship?.result_glb,
+  artist_plan:c?.authorship?.plan_file,
   blender_execution:c?.authorship?.execution_log,unity_after:c?.unity?.after,unity_import:c?.unity?.import_log
  }))file(item,name);
+ const parseProof=(entry,label)=>{
+  if(!entry?.path||!SHA.test(entry.sha256||''))return null;
+  const full=path.resolve(root,entry.path),base=fs.realpathSync(root)+path.sep;
+  if(!full.startsWith(path.resolve(root)+path.sep)||!fs.existsSync(full)||!fs.realpathSync(full).startsWith(base))return null;
+  try {return JSON.parse(fs.readFileSync(full,'utf8'));}
+  catch {need(false,label+': structured JSON evidence required');return null;}
+ };
+ const inference=parseProof(c?.artist?.inference_log,'artist_inference');
+ const plan=parseProof(c?.authorship?.plan_file,'artist_plan');
+ const execution=parseProof(c?.authorship?.execution_log,'blender_execution');
+ if(inference){
+  need(inference.system_role==='system'&&inference.model===c?.artist?.model,'artist inference role/model mismatch');
+  need(inference.system_prompt_sha256===c?.artist?.system_prompt?.sha256,'artist inference profile hash mismatch');
+  need(inference.reference_sha256===c?.reference?.sha256&&inference.unity_before_sha256===c?.unity?.before?.sha256,'artist inference input images mismatch');
+  need(JSON.stringify(inference.direction?.planned_actions)===JSON.stringify(c?.authorship?.planned_actions),'recorded Qwen decisions mismatch planned actions');
+ }
+ if(plan)need(JSON.stringify(plan)===JSON.stringify(c?.authorship?.planned_actions),'saved pre-execution plan mismatch');
+ if(execution){
+  need(execution.plan_sha256===c?.authorship?.plan_file?.sha256,'Blender did not execute exact pinned pre-edit plan');
+  need(execution.source_sha256===c?.authorship?.source_blend?.sha256,'Blender source bytes mismatch');
+  need(execution.result_blend_sha256===c?.authorship?.result_blend?.sha256&&execution.result_glb_sha256===c?.authorship?.result_glb?.sha256,'Blender outputs differ from executor manifest');
+  need(execution.source_mesh_sha256===c?.authorship?.source_mesh_sha256&&execution.result_mesh_sha256===c?.authorship?.result_mesh_sha256,'mesh provenance mismatches Blender execution');
+  need(JSON.stringify(execution.executed_actions)===JSON.stringify(c?.authorship?.executed_actions),'artist operations mismatch actual Blender execution');
+ }
  const planned=c?.authorship?.planned_actions, executed=c?.authorship?.executed_actions;
  need(Array.isArray(planned)&&planned.length>0,'prior artist actions required');
  need(Array.isArray(executed)&&executed.length>0,'real executed actions required');
