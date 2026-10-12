@@ -1,0 +1,113 @@
+name: Bastion I reuse genuine Qwen sculpt
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-ai-geometry-recovery.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion1-ai-real-sculpt
+  cancel-in-progress: false
+jobs:
+  qwen-geometry-and-full-scene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      WORK: /tmp/bastion1-real-artist
+      TARGET: Valoria natural playable hilltop and rock scarps
+      PR36: c267836661883a4f3003868d37f94785d245aaea
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38323028866
+          name: bastion1-genuine-qwen-artist-38323028866
+          github-token: \${{ github.token }}
+          path: /tmp/bastion1-real-artist/qwen
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38321874637
+          name: bastion1-player-integration-38321874637
+          github-token: \${{ github.token }}
+          path: /tmp/bastion1-real-artist/scene
+      - name: Use precisely pinned PR36 Blender tools, not modify PR
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin "$PR36"
+          mkdir -p tools/art-direction/ai-authoring
+          for n in execute_artist_plan.py verify-artist-cycle.mjs render_artist_ab.py; do
+            git show "$PR36:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
+          done
+          python3 -m py_compile tools/art-direction/ai-authoring/execute_artist_plan.py tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py
+      - name: Preserve and losslessly normalize Qwen's real single sculpt
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$WORK/normalized"
+          python3 - <<'PY'
+          import json,os,pathlib,hashlib
+          root=pathlib.Path(os.environ['WORK'])
+          raw=root/'qwen/model/artist-response-raw.txt'
+          original=json.loads(raw.read_text())
+          keyed=original.get('planned_actions')
+          if not isinstance(keyed,dict) or list(keyed)!=['sculpt_region']:raise ValueError('Unexpected Qwen output. No invented actions allowed.')
+          op=keyed['sculpt_region']
+          if op['type']!='sculpt_region' or op['target']!=os.environ['TARGET']:raise ValueError('Qwen target mismatch')
+          p=op['parameters']
+          if p['center']!=[-40.0,57.0,-21.62428855895996] or p['radius']!=10.24 or p['delta']!=[.5,.5,.5]:raise ValueError('Qwen-authored numbers altered')
+          (root/'normalized/artist-plan.json').write_text(json.dumps([op],indent=2)+'\n')
+          proof={'source_run':38323028866,'source_raw_sha256':hashlib.sha256(raw.read_bytes()).hexdigest(),
+            'normalization':'single keyed action -> array of unchanged values','action_unmodified':True,
+            'artist_invented_coordinates':False,'blender_executed':False,'art_approved':False}
+          (root/'normalized/provenance.json').write_text(json.dumps(proof,indent=2)+'\n')
+          print('EXACT_QWEN_AUTHORED_PARAMETERS',json.dumps(p))
+          PY
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$WORK/normalized/artist-plan.json" "$TARGET" existing
+      - name: Install free Blender on disposable Linux runner
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          blender --version | head -2
+      - name: Perform exact Qwen-specified Blender mesh edit
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$WORK/qwen/terrain-source.blend"
+          SUM=$(sha256sum "$SRC" | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$SRC" --plan "$WORK/normalized/artist-plan.json" --out "$WORK/sculpt" --expected-source-sha256 "$SUM"
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['WORK'])/'sculpt/artist-execution.json'
+          proof=json.loads(p.read_text())
+          acts=proof['executed_actions']
+          assert len(acts)==1 and acts[0]['type']=='sculpt_region' and acts[0]['changed_vertices']>=20
+          assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
+          print('REAL_QWEN_BLENDER_GEOMETRY_CHANGED',acts)
+          PY
+      - name: Protect live terrain, preserve PBR, export FULL Bastion I GLB
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE=$(find "$WORK/scene" -name Bastion1ReferenceAssembly.blend -type f | head -1)
+          test -s "$SOURCE"
+          A="$WORK/sculpt/artist-output.blend"
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py -- --source "$SOURCE" --artist "$A" --plan "$WORK/normalized/artist-plan.json" --out "$WORK/integrated" --source-sha256 "$(sha256sum "$SOURCE" | cut -d' ' -f1)" --artist-sha256 "$(sha256sum "$A" | cut -d' ' -f1)"
+      - name: Real Blender clay before-after verification
+        shell: bash
+        timeout-minutes: 5
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- --before "$WORK/qwen/terrain-source.blend" --after "$WORK/sculpt/artist-output.blend" --target "$TARGET" --out "$WORK/ab"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-verified-qwen-geometry
+          path: |
+            /tmp/bastion1-real-artist/normalized/**
+            /tmp/bastion1-real-artist/sculpt/**
+            /tmp/bastion1-real-artist/integrated/**
+            /tmp/bastion1-real-artist/ab/**
+          if-no-files-found: warn
+          retention-days: 20
