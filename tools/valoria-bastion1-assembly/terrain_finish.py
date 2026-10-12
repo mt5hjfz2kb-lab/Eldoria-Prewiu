@@ -1,9 +1,26 @@
 # Authored scenery envelope; preserve every original source asset and gameplay parcel.
 # Replace only the previous rectangular, temporary ground support geometry.
-rockside=mat('Valoria schist dark fractured cliff',(.205,.195,.20),.96)
+rockside=mat('Valoria schist dark fractured cliff',(.27,.25,.24),.95)
 rockdust=mat('Valoria cliff talus earth',(.255,.225,.19),.97)
-valleygrass=mat('Valoria forested valley ground',(.115,.16,.11),.96)
-mountainrock=mat('Valoria misted distant mountain rock',(.16,.19,.21),1)
+
+# Portable, deterministic layered PBR albedo. No new paid assets or generated images.
+# Baked into the GLB so Unity/URP uses it without a procedural Blender shader.
+rock_image=bpy.data.images.new('Valoria stratified native stone albedo',width=256,height=256)
+rock_pixels=[]
+for yy in range(256):
+    for xx in range(256):
+        r=fractal(Vector((xx*.039,yy*.031,9.42)),.8,2.1,5)
+        veins=math.sin(yy*.19+r*8.0+math.sin(xx*.021)*2.2)
+        n=max(-.11,min(.11,r*.18))+veins*.024
+        rock_pixels.extend((max(.09,.37+n),max(.09,.34+n*.92),max(.09,.31+n*.83),1.0))
+rock_image.pixels=rock_pixels
+rock_image.pack()
+rock_tex=rockside.node_tree.nodes.new('ShaderNodeTexImage')
+rock_tex.image=rock_image
+rockside.node_tree.links.new(rock_tex.outputs['Color'],rockside.node_tree.nodes['Principled BSDF'].inputs['Base Color'])
+
+valleygrass=mat('Valoria forested valley ground',(.18,.23,.15),.96)
+mountainrock=mat('Valoria misted distant mountain rock',(.24,.29,.34),1)
 
 def organic_outline(corners,divisions,seed):
     rng=random.Random(seed);output=[]
@@ -14,7 +31,7 @@ def organic_outline(corners,divisions,seed):
         for j in range(divisions):
             t=j/divisions
             x=a0[0]*(1-t)+b0[0]*t;y=a0[1]*(1-t)+b0[1]*t
-            ripple=(math.sin(math.pi*t)**2)*(rng.uniform(-.9,.9)+math.sin((i*divisions+j)*.81)*.23)
+            ripple=(math.sin(math.pi*t)**2)*(rng.uniform(-2.9,2.9)+math.sin((i*divisions+j)*.81)*.8)
             d=Vector((x-cx,y-cy));d.normalize()
             output.append((x+ripple*d.x,y+ripple*d.y))
     return output
@@ -56,6 +73,12 @@ polygon('Valoria surrounding valley floor',
     [(-230,-210,-24),(230,-210,-24),(230,240,-24),(-230,240,-24)],valleygrass)
 polygon('Valoria distant lake western channel',
     [(-170,-150,-23.85),(-56,-150,-23.85),(-58,10,-23.85),(-107,35,-23.85),(-175,-20,-23.85)],water)
+# Exposed below the entry bridge in the owner's three-quarter camera, not a
+# flat blue ground layer underneath the reconstruction yard.
+polygon('Valoria lower western stream',
+    [(-105,-145,-15.8),(-7,-145,-15.8),(-10,-33,-15.8),
+     (-39,-19,-15.8),(-96,-32,-15.8)],water)
+
 
 def valley_height(x,y):
     peaks=((-109,114,58,49),(-70,96,43,42),(-26,146,72,48),

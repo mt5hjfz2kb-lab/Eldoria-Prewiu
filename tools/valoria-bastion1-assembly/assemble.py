@@ -143,7 +143,7 @@ for side in [-1,1]:
 
 def mat(name,color,rough=1):
  m=bpy.data.materials.new(name);m.use_nodes=True;n=m.node_tree.nodes.get('Principled BSDF');n.inputs['Base Color'].default_value=(*color,1);n.inputs['Roughness'].default_value=rough;return m
-grass=mat('PROTOTYPE terrace earth olive grass',(.20,.24,.085));water=mat('PROTOTYPE blue valley water',(.025,.15,.22),.28)
+grass=mat('PROTOTYPE terrace earth olive grass',(.235,.265,.11));water=mat('PROTOTYPE blue valley water',(.025,.15,.22),.28)
 nt=grass.node_tree;bs=nt.nodes.get('Principled BSDF');noise=nt.nodes.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=2.1
 ramp=nt.nodes.new('ShaderNodeValToRGB');ramp.color_ramp.elements[0].color=(.12,.16,.05,1);ramp.color_ramp.elements[1].color=(.34,.29,.12,1);nt.links.new(noise.outputs['Fac'],ramp.inputs['Fac']);nt.links.new(ramp.outputs['Color'],bs.inputs['Base Color'])
 # Make portable albedo: avoid procedural shader loss in GLB export.
@@ -152,7 +152,7 @@ pixels=[]
 for v in range(256):
  for u in range(256):
   f=fractal(Vector((u*.045,v*.045,7.13)),.8,2.1,5)*.13
-  pixels.extend((.26+f,.28+f,.11+f*.5,1))
+  pixels.extend((.30+f,.32+f,.15+f*.5,1))
 im.pixels=pixels;im.pack();tex=nt.nodes.new('ShaderNodeTexImage');tex.image=im;nt.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 def polygon(name,verts,material):
  mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],[list(range(len(verts)))]);mesh.materials.append(material);mesh.update()
@@ -171,7 +171,7 @@ for m in list(materials.values()):
  if not n:continue
  name=m.name.lower();c=n.inputs['Base Color'].default_value
  if any(w in name for w in ['stone','mortar','limestone','ashlar','masonry']):
-  old=[*c];n.inputs['Base Color'].default_value=(c[0]*.76,c[1]*.72,c[2]*.67,c[3]);n.inputs['Roughness'].default_value=.88
+  old=[*c];n.inputs['Base Color'].default_value=(c[0]*.91,c[1]*.82,c[2]*.72,c[3]);n.inputs['Roughness'].default_value=.88
   material_changes.append({'material':m.name,'old_factor':old,'new_factor':[*n.inputs['Base Color'].default_value]})
 
 # Existing authored vegetation meshes; local preview palette only. No new tree art.

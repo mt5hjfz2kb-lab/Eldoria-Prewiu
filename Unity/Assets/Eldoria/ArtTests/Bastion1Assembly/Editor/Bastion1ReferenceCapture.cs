@@ -47,8 +47,9 @@ namespace Eldoria.EditorTools
                 RenderSettings.ambientMode=AmbientMode.Trilight;
                 RenderSettings.ambientSkyColor=new Color(.37f,.46f,.61f);
                 RenderSettings.ambientEquatorColor=new Color(.38f,.40f,.38f);
-                RenderSettings.ambientGroundColor=new Color(.24f,.21f,.17f);
-                RenderSettings.fog=false;
+                RenderSettings.ambientGroundColor=new Color(.31f,.27f,.22f);
+                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0065f;
+                RenderSettings.fogColor=new Color(.30f,.38f,.45f);
                 foreach(var p in new[]{new Vector3(-4,2,20),new Vector3(4,2,20),new Vector3(-4,5.5f,-21),new Vector3(4,5.5f,-21)})
                 {
                     var warm=new GameObject("Bastion I amber practical").AddComponent<Light>();
@@ -58,7 +59,7 @@ namespace Eldoria.EditorTools
                 var camera=new GameObject("Bastion I strategic camera").AddComponent<Camera>();
                 camera.orthographic=true;camera.orthographicSize=26f;
                 camera.nearClipPlane=.1f;camera.farClipPlane=350f;
-                camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.15f,.23f,.31f);
+                camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.25f,.34f,.42f);
                 // glTF exporter: Blender (x,y,z)->(x,z,-y); glTFast mirrors x.
                 camera.transform.position=new Vector3(-32f,49f,76f);camera.transform.LookAt(Vector3.zero);
                 var controls=camera.gameObject.AddComponent<Eldoria.Art.Bastion1AssemblyCamera>();
