@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "valoria-bastion1-player-scene-integration-20261012",
+  "request_id": "valoria-bastion1-player-scene-integration-20261012",
+  "asset_or_sector": "Initial player-facing Bastion I authored 3D environment, terrain finish and state-driven first reconstruction",
+  "profile": "environment_composition",
+  "visual_gate_state": "verification",
+  "diagnosis": "Existing eight-asset 3D candidate is an isolated ArtTests scene; canonical Valoria player scene still uses SHARP imagery and image-plane camera.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": true,
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true
+  },
+  "validation": {
+    "source_gate": "Keep frozen Hero V3/eight source hashes, artist-directed terrain/ruins with before/after evidence; maintain open yard and progression visual contract.",
+    "final_gate": "Exact Unity capture and artistic review, real startup/pan/picking/state-save regressions, mobile performance and compact player artifact before visual authority cutover."
+  },
+  "status": "ACTIVE",
+  "notes": "Owner explicitly authorized continuation and main as construction source; zero paid credits. Region 1 active owner retains WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication."
+}

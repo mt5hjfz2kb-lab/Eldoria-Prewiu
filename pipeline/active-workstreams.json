@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-12T18:17:55.510Z",
+  "updated_at": "2026-10-12T19:16:58.288Z",
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
@@ -29,6 +29,39 @@
       "phase": "Corrected WebGL candidate built; exact QA completed; Windows lease handed to same-owner isolated prototype diagnostic.",
       "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
       "resumed_at": "2026-10-10T18:50:00Z"
+    },
+    {
+      "id": "valoria-bastion1-player-scene-integration-20261012",
+      "title": "Valoria Bastion I authored mesh scene player integration",
+      "owner": "chat-bastion1-player-integration-20261012",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMeshPresentationV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMeshPresentationV1.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+        "Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ValoriaMeshPresentationTests.cs",
+        "pipeline/visual-authority-routing-v1.json",
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
+        "docs/evidence/valoria-bastion1-player-scene-integration-20261012/**",
+        "tools/valoria-bastion1-assembly/**",
+        ".github/workflows/valoria-bastion1-player-scene-integration.yml"
+      ],
+      "resources": [
+        "valoria-player-scene",
+        "windows-runner-heavy"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-12T19:16:58.288Z",
+      "base_main_sha": "58f6845e85b7d336ce2c8871fbc3517718328f5c",
+      "branch": "integration/valoria-bastion1-player-scene-20261012",
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
+      "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
+      "phase": "Inspect canonical scene and introduce mesh presentation mode; art authoring and engine/gameplay gates pending"
     }
   ],
   "history": [
