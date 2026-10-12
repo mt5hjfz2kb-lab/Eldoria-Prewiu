@@ -34,7 +34,7 @@ namespace Eldoria.EditorTools
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 var root = new GameObject("Approved_Valoria_Family_V3");
                 var objects = new List<GameObject>();
-                var baseDir = Path.Combine(Application.streamingAssetsPath, "ValoriaFamilyV3");
+                var baseDir = Path.Combine(UnityEngine.Application.streamingAssetsPath, "ValoriaFamilyV3");
                 foreach (var name in Names)
                 {
                     var path = Path.Combine(baseDir, name + ".glb");
@@ -57,7 +57,7 @@ namespace Eldoria.EditorTools
                 camera.orthographic = true;
                 camera.nearClipPlane = 0.05f;
                 camera.farClipPlane = 300f;
-                var folder = Path.Combine(Application.dataPath, "../ValoriaV3UnityCaptures");
+                var folder = Path.Combine(UnityEngine.Application.dataPath, "../ValoriaV3UnityCaptures");
                 Directory.CreateDirectory(folder);
                 foreach (var hero in new[]{false,true})
                 {
