@@ -7,6 +7,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFamilyLookdev.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnityFinishKit.cs'
+      - 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/ValoriaTerrainCliffBlend.shader'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs'
       - '.github/workflows/valoria-first-zone-structural-candidate.yml'
 permissions:
