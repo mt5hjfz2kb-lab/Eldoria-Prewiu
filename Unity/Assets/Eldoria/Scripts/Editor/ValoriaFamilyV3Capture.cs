@@ -74,8 +74,8 @@ namespace Eldoria.EditorTools
                 File.WriteAllText(Path.Combine(folder,"capture-manifest.json"),
                     "{\"source\":\"approved family v3\",\"engine\":\"Unity 6000.3.23f1\",\"capture\":\"real Unity camera.Render\",\"art_pass\":false}");
                 Debug.Log("VALORIA_V3_CAPTURE_COMPLETED " + folder);
-                if(Directory.GetFiles(folder,"*.png").Length!=38)
-                    throw new Exception("Complete output must contain 38 actual Unity PNGs");
+                if(Directory.GetFiles(folder,"*.png").Length!=40)
+                    throw new Exception("Complete output must contain 40 actual Unity PNGs");
                 // Unity 6000.3 on this Windows runner intermittently access-violates
                 // during native editor shutdown after all captures. Terminate only
                 // after every real render, manifest and image-content check passed.
@@ -290,6 +290,34 @@ namespace Eldoria.EditorTools
             var torches=ValoriaUnityFinishKit.MakeGateWarmth(BoundsFor(gate));
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
             Render(cam,Path.Combine(outDir,"lookdev-assembled-mobile.png"),780,520);
+            // Show the first playable-sized architectural sector independently
+            // of experimental cliffs that have not passed the artistic gate.
+            var gatewayBounds=BoundsFor(gate);
+            var gatewayFocus=gatewayBounds.center+new Vector3(0f,-.8f,-5.6f);
+            var viewDirection=cam.transform.forward;
+            float cameraDistance=Vector3.Distance(cam.transform.position,center);
+            cam.transform.position=gatewayFocus-viewDirection*cameraDistance;
+            cam.transform.LookAt(gatewayFocus);
+            cam.orthographicSize=Mathf.Max(8.5f,gatewayBounds.extents.x*1.65f);
+            Render(cam,Path.Combine(outDir,"lookdev-first-zone-gate-hero.png"));
+            Render(cam,Path.Combine(outDir,"lookdev-first-zone-gate-mobile.png"),780,520);
+            // Export stable selection identifiers and one coarse collision proxy
+            // per authored module. No gameplay state is changed or fabricated.
+            for(int i=0;i<assembled.Count;i++)
+            {
+                var item=assembled[i];
+                var anchor=item.GetComponent<Eldoria.ValoriaFirstZoneAnchor>();
+                if(anchor==null)anchor=item.AddComponent<Eldoria.ValoriaFirstZoneAnchor>();
+                anchor.ConfigureForIsolatedScene("valoria.first-zone." + i.ToString("D2"),
+                    item.name);
+                if(item.GetComponent<BoxCollider>()==null)
+                {
+                    var boundsForSelection=BoundsFor(item);
+                    var collider=item.AddComponent<BoxCollider>();
+                    collider.center=item.transform.InverseTransformPoint(boundsForSelection.center);
+                    collider.size=boundsForSelection.size;
+                }
+            }
             if(Environment.GetEnvironmentVariable("VALORIA_SAVE_STUDY_SCENE")=="1")
                 ValoriaUnityFinishKit.SaveStudyScene();
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
