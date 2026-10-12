@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/eldoria-ai-artist-blender-smoke.yml'
       - 'tools/art-direction/ai-authoring/execute_artist_plan.py'
+      - 'tools/art-direction/ai-authoring/render_artist_ab.py'
   workflow_dispatch:
 permissions:
   contents: read
