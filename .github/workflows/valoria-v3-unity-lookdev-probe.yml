@@ -10,7 +10,6 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs'
 permissions:
   contents: read
-  actions: read
 concurrency:
   group: eldoria-valoria-v3-unity-probe
   cancel-in-progress: true
@@ -67,20 +66,15 @@ jobs:
             $hash=(Get-FileHash (Join-Path $target "$name.glb") -Algorithm SHA256).Hash.ToLowerInvariant()
             if ($hash -ne $expected[$name]) {throw "Approved GLB checksum mismatch ${name}: $hash"}
           }
-      - uses: actions/download-artifact@v4
-        with:
-          name: valoria-cliff-unity-artist-variant-38229040442
-          run-id: 38229040442
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/ValoriaCliffVariant
       - name: Stage controlled artist variant while preserving frozen source
         shell: powershell
         run: |
           $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
           Copy-Item (Join-Path $target 'cliff_rocks.glb') (Join-Path $target 'cliff_rocks_original.glb') -Force
-          $variant=Join-Path $env:RUNNER_TEMP 'ValoriaCliffVariant/cliff_rocks-unity-v1.glb'
-          $proof=Get-Content (Join-Path $env:RUNNER_TEMP 'ValoriaCliffVariant/edit-proof.json') -Raw | ConvertFrom-Json
-          $direction=Get-Content (Join-Path $env:RUNNER_TEMP 'ValoriaCliffVariant/direction.json') -Raw | ConvertFrom-Json
+          $source=Join-Path $env:GITHUB_WORKSPACE 'art-source/valoria/variants/cliff-unity-v1'
+          $variant=Join-Path $source 'cliff_rocks-unity-v1.glb'
+          $proof=Get-Content (Join-Path $source 'edit-proof.json') -Raw | ConvertFrom-Json
+          $direction=Get-Content (Join-Path $source 'direction.json') -Raw | ConvertFrom-Json
           if (-not $proof.blender_mcp_executed -or $direction.self_approval) {throw 'Artist proof invalid'}
           $actual=(Get-FileHash $variant -Algorithm SHA256).Hash.ToLowerInvariant()
           if ($actual -ne '33d27f58c4999078e41f23e7ca550b50c6710d13c92ccd7b0f31e2150cdded32') {throw "Variant hash mismatch $actual"}
