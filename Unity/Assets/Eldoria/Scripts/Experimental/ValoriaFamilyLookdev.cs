@@ -56,7 +56,7 @@ namespace Eldoria.Art
                     Debug.LogError("Invalid GLB filename; refusing to load candidate.");
                     continue;
                 }
-                string full = Path.Combine(Application.streamingAssetsPath, inputDirectory, piece.fileName);
+                string full = Path.Combine(UnityEngine.Application.streamingAssetsPath, inputDirectory, piece.fileName);
                 var importer = new GltfImport();
                 var task = importer.Load("file://" + full.Replace('\\', '/'));
                 while (!task.IsCompleted) yield return null;
