@@ -76,7 +76,7 @@ def main():
   f'Verified mesh topology/anchors: {mesh_context[:11000]}. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  payload={'model':a.model,'stream':False,'think':False,'format':'json',
-  'options':{'temperature':0.25,'num_predict':2600,'num_ctx':8192},
+  'options':{'temperature':0.25,'num_predict':2000,'num_ctx':16384},
   'messages':[{'role':'system','content':role.decode('utf8')},
               {'role':'user','content':prompt,'images':inputs}]}
  request=urllib.request.Request(a.endpoint,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
