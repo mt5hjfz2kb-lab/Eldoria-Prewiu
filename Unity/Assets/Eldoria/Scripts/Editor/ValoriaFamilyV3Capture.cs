@@ -48,6 +48,7 @@ namespace Eldoria.EditorTools
                     holder.transform.localPosition = Positions[objects.Count];
                     bool instantiated = await importer.InstantiateMainSceneAsync(holder.transform);
                     if (!instantiated) throw new Exception("GLB instantiate failure: " + name);
+                    if(name=="cliff_rocks")holder.transform.rotation=Quaternion.Euler(0f,180f,0f);
                     objects.Add(holder);
                 }
                 var sunlight = new GameObject("Sun").AddComponent<Light>();
@@ -169,6 +170,8 @@ namespace Eldoria.EditorTools
             var original=new GameObject("original_frozen_cliff_rocks");
             original.transform.position=Positions[5];
             if(!await importer.InstantiateMainSceneAsync(original.transform))throw new Exception("Original cliff scene missing");
+            original.transform.rotation=Quaternion.Euler(0f,180f,0f);
+            original.transform.position+=BoundsFor(objects[5]).center-BoundsFor(original).center;
             // Match the same finished materials for a geometry-only source/variant A/B.
             SetLookdev(true,new List<GameObject>{original},sun);
             var bounds=BoundsFor(objects[5]);
@@ -252,7 +255,15 @@ namespace Eldoria.EditorTools
             Place(cliffMiddle,-9f,-15.8f);
             Place(cliffRight,9f,-15.1f);
             foreach(var cliff in new[]{pieces[5],cliffMiddle,cliffRight})
+            {
+                // The authored rock face points along local +Z. Our strategic camera
+                // approaches from -Z; show the sculpted escarpment, not its rear wall.
+                var centerBefore=BoundsFor(cliff).center;
+                cliff.transform.rotation=Quaternion.Euler(0f,180f,0f);
+                var centerAfter=BoundsFor(cliff).center;
+                cliff.transform.position+=new Vector3(centerBefore.x-centerAfter.x,0f,centerBefore.z-centerAfter.z);
                 cliff.transform.position+=Vector3.up*(-.12f-BoundsFor(cliff).max.y);
+            }
             var rightProps=UnityEngine.Object.Instantiate(pieces[6]);
             rightProps.name="defensive_props_right";
             Place(rightProps,4f,roadEnd-1f);

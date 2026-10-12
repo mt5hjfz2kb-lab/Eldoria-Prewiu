@@ -112,7 +112,7 @@ jobs:
           $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
           if($images.Count -ne 38){throw "Expected 38 genuine Unity comparison frames, got $($images.Count)"}
           foreach($file in $images){
-            $bitmap=New-Object System.Drawing.Bitmap($file.FullName)
+            $bitmap=New-Object System.Drawing.Bitmap -ArgumentList $file.FullName
             try {if($bitmap.Width -lt 700 -or $bitmap.Height -lt 500){throw "Invalid capture $($file.Name)"}}
             finally {$bitmap.Dispose()}
           }
