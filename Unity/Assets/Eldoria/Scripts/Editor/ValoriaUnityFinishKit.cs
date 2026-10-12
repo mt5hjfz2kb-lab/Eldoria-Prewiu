@@ -102,8 +102,8 @@ namespace Eldoria.EditorTools
                 float a=Mathf.PerlinNoise(x*.035f+27f,y*.035f+34f);
                 float b=Mathf.PerlinNoise(x*.14f+18f,y*.14f+76f);
                 float c=Mathf.Clamp01(.64f*a+.36f*b);
-                var dark=new Color(.28f,.29f,.22f);
-                var light=new Color(.49f,.45f,.33f);
+                var dark=new Color(.17f,.21f,.15f);
+                var light=new Color(.36f,.36f,.26f);
                 pixels[y*256+x]=Color.Lerp(dark,light,c);
             }
             stageAlbedo.SetPixels(pixels);
@@ -119,7 +119,7 @@ namespace Eldoria.EditorTools
             l.type=LightType.Point;
             l.shadows=LightShadows.None;
             l.range=Mathf.Max(8f,b.extents.magnitude*3f);
-            l.intensity=.52f;
+            l.intensity=.68f;
             l.color=new Color(1f,.72f,.46f);
             go.transform.position=b.center+new Vector3(-b.extents.x-3f,b.extents.y+1.5f,-b.extents.z-2f);
             return l;
