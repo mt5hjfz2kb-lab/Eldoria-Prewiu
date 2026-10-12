@@ -238,14 +238,6 @@ namespace Eldoria.EditorTools
 
             SetLookdev(false,assembled,sun);
             Render(cam,Path.Combine(outDir,"previous-assembled-hero.png"));
-            // A second defensive line gives the compound depth without duplicating
-            // the 1,037-renderer Hero Gate. All components remain original V3 meshes.
-            var innerWallLeft=UnityEngine.Object.Instantiate(pieces[0]);
-            innerWallLeft.name="wall_straight_inner_left";assembled.Add(innerWallLeft);
-            var innerWallRight=UnityEngine.Object.Instantiate(pieces[0]);
-            innerWallRight.name="wall_straight_inner_right";assembled.Add(innerWallRight);
-            var innerTower=UnityEngine.Object.Instantiate(pieces[1]);
-            innerTower.name="watchtower_inner_keep";assembled.Add(innerTower);
             // Assemble sockets from real world bounds, preserving approved source geometry.
             var gb=BoundsFor(gate);
             float left=gb.min.x, right=gb.max.x;
@@ -261,12 +253,6 @@ namespace Eldoria.EditorTools
             Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
             Place(approachPath,0f,roadEnd-pathDepth*2.5f+.30f);
             Place(pieces[6],-4f,roadEnd-1f);
-            Place(innerTower,0f,18f);
-            float innerHalf=BoundsFor(innerTower).extents.x;
-            Place(innerWallLeft,-innerHalf-BoundsFor(innerWallLeft).extents.x+.15f,18f);
-            Place(innerWallRight,innerHalf+BoundsFor(innerWallRight).extents.x-.15f,18f);
-            foreach(var inner in new[]{innerWallLeft,innerWallRight,innerTower})
-                inner.transform.position+=Vector3.up*1.8f;
             // Cliff top supports the terrace; never put the cliff bottom at wall feet.
             // The crest reaches the terrace around z=-18, while the face projects
             // into the lowered foreground. At z=-15 it was entirely under terrain.

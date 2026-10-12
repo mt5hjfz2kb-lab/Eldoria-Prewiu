@@ -160,8 +160,6 @@ namespace Eldoria.EditorTools
                     float roadAcross=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(wx)-3f)/5f));
                     float roadEnd=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((-wz-28f)/7f));
                     if(wz<2f)slope=Mathf.Lerp(slope,0f,roadAcross*roadEnd);
-                    float innerRise=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wz-6f)/13f));
-                    slope+=1.8f*innerRise;
                 }
                 v[ix]=new Vector3(px,level+slope,pz);
                 uv[ix]=new Vector2(u*width*.07f,w*depth*.07f);
