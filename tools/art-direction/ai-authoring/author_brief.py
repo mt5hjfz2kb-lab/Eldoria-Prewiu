@@ -2,7 +2,7 @@
 """Create REAL scene-aware Qwen artistic direction using local Ollama and versioned system role.
 Requires two genuine images; it does not execute Blender or certify art by itself.
 """
-import argparse,base64,hashlib,json,pathlib,urllib.request
+import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
@@ -16,7 +16,9 @@ def main():
  p.add_argument('--model',default='qwen3-vl:4b-instruct')
  p.add_argument('--endpoint',default='http://127.0.0.1:11434/api/chat')
  a=p.parse_args()
- if not (a.endpoint.startswith('http://localhost:') or a.endpoint.startswith('http://127.0.0.1:')):raise ValueError('Only free local Ollama is permitted')
+ uri=urllib.parse.urlsplit(a.endpoint)
+ if uri.scheme!='http' or uri.hostname not in ('localhost','127.0.0.1') or uri.username or uri.password or uri.path!='/api/chat':
+  raise ValueError('Only loopback Ollama /api/chat is permitted')
  inputs=[];hashes={}
  for key,image in [('reference',a.reference),('unity_before',a.unity_before)]:
   if not image.is_file() or image.suffix.lower() not in ('.png','.jpg','.jpeg'):raise ValueError('Genuine image missing: '+str(image))
@@ -24,7 +26,22 @@ def main():
   if len(raw)>10_000_000:raise ValueError('Input image too large')
   hashes[key]=digest(raw);inputs.append(base64.b64encode(raw).decode())
  role=(HERE/'ARTIST_SYSTEM.md').read_bytes()
- inventory=a.inventory.read_text('utf8')[:6000] if a.inventory else 'Inspect original eight sources, Hero V3 and existing licensed vegetation.'
+ # The artist must see actual source candidates, not a fictional generic inventory.
+ repo=HERE.parents[2]
+ if a.inventory:
+  if not a.inventory.is_file():raise ValueError('Explicit asset inventory does not exist')
+  inventory=a.inventory.read_text('utf8')[:4000]
+ else:
+  candidates=list((repo/'art-source/valoria/production').rglob('*.glb')) if (repo/'art-source/valoria/production').is_dir() else []
+  candidates+=list((repo/'Unity/Assets/Eldoria').rglob('*.glb')) if (repo/'Unity/Assets/Eldoria').is_dir() else []
+  def priority(p):
+   name=p.name.lower()
+   return (0 if any(x in name for x in ['v3','hero','cliff','gate','wall','tower','path']) else 1,p.as_posix())
+  candidates=sorted(set(candidates),key=priority)[:35]
+  inventory='Source candidates (licenses and frozen SHA must be verified before use): '+(', '.join(str(x.relative_to(repo)) for x in candidates) if candidates else 'NO LOCAL GLB SOURCES FOUND')
+ journal=HERE.parent/'ARTIST_LEARNING_JOURNAL.md'
+ memory=journal.read_text('utf8')[-2600:] if journal.is_file() else 'NO PREVIOUS LEARNING JOURNAL AVAILABLE; record this limitation.'
+ memory_hash=digest(journal.read_bytes()) if journal.is_file() else None
  prompt=('Compare left REFERENCE and right GENUINE UNITY screenshot. Diagnose and DIRECT NEW 3D geometry, '
   'not just noise parameters. Valid action parameter formats: '
   'sculpt_region center [x,y,z], radius, delta [x,y,z]; '
@@ -32,7 +49,7 @@ def main():
   'construct_mesh vertices [[x,y,z]...], faces [[indices]...], material_color [r,g,b]; '
   'assign_material rgb [r,g,b], roughness; '
   'place_existing_asset source_object, location [x,y,z], rotation [x,y,z], scale [x,y,z]. '
-  f'Only target these actual objects: {a.target_object}. Current inventory: {inventory}. '
+  f'Only target these actual objects: {a.target_object}. Current inventory: {inventory}. '\n  f'Previously verified art failures and learnings (avoid repeating): {memory}. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  payload={'model':a.model,'stream':False,'think':False,'format':'json',
   'options':{'temperature':0.25,'num_predict':1800,'num_ctx':4096},
@@ -53,7 +70,7 @@ def main():
   ids.add(op['id'])
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
-  'unity_before_sha256':hashes['unity_before'],'target_object':a.target_object,'direction':design,'self_approval':False}
+  'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,\n  'asset_inventory_sha256':digest(inventory.encode('utf8')),'target_object':a.target_object,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
