@@ -54,7 +54,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
     return {button:{x:Math.round(x),y:Math.round(y),width:r.width,height:r.height},
       topHit:hit?.outerHTML.slice(0,350),isTarget:hit===el||el.contains(hit)};
   }));
-  await p.locator('[data-testid="building-action-sawmill"]').tap({force:true});await p.waitForTimeout(120);
+  // This is a real touch assertion: do NOT bypass Playwright stability/hit testing.
+  // Forced taps on a replaced DOM node were delivered to the wrong element.
+  await p.locator('[data-testid="building-action-sawmill"]').tap({timeout:10000});await p.waitForTimeout(120);
  s=await state();if((s.tasks||[]).filter(t=>/^(build-|upgrade-building-|upgrade-barracks-|upgrade-bastion-)/.test(t.key||'')).length!==1)throw Error('construction queue allowed more than one active construction');if(!(await p.locator('.e22-dialog').filter({hasText:'COLA DE CONSTRUCCIÓN OCUPADA'}).count())){
    const context=await p.evaluate(()=>({overlays:[...document.querySelectorAll('.e22-dialog,.tutorialDialogue,.aldric-cinematic')].map(x=>x.innerText.slice(0,250)),
     sawmillAction:document.querySelector('[data-testid="building-action-sawmill"]')?.outerHTML.slice(0,450),
