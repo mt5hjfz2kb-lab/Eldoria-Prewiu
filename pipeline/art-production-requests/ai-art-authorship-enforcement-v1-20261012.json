@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "ai-art-authorship-enforcement-v1-20261012",
+  "request_id": "ai-art-authorship-enforcement-v1-20261012",
+  "asset_or_sector": "Mandatory verified AI-directed Blender/Unity authoring pipeline for all future Eldoria 3D art production",
+  "profile": "environment_new_geometry",
+  "visual_gate_state": "verification",
+  "diagnosis": "Existing planner checks routing but not model-directed authoring, actual Blender operations, or same-camera Unity ART approval.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "blender_material_consolidation": true,
+    "existing_qualified_donor_assets": true
+  },
+  "validation": {
+    "source_gate": "Safe schema and negative tests; no claim of real Qwen/Blender executed yet.",
+    "final_gate": "Demonstrate Qwen/system role, executed artistic geometry modifications via Blender/BlenderMCP, genuine same-camera Unity captures and independent review before ART_APPROVED."
+  },
+  "status": "ACTIVE",
+  "notes": "Isolated branch; no Windows runner, Unity gameplay or active file modifications. Promoting requires reconciling main registry and claims."
+}
