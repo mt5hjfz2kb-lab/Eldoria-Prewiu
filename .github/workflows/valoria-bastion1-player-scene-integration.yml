@@ -32,6 +32,32 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+      - name: Restore glTFast package shaders required for native Unity imports
+        shell: powershell
+        run: |
+          # A prior candidate build quarantined glTFast's ShaderGraphs in runner
+          # temp, and this self-hosted runner preserves Library between checkouts.
+          # Restore original files BEFORE the native editor imports any GLB.
+          $packageRoot=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          $stash=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
+          $pkgs=@(Get-ChildItem -LiteralPath $packageRoot -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)
+          if($pkgs.Count -lt 1){throw 'glTFast PackageCache is not yet installed'}
+          foreach($pkg in $pkgs){
+            $shaderFolder=Join-Path $pkg.FullName 'Runtime/Shader'
+            New-Item -ItemType Directory -Force $shaderFolder | Out-Null
+            if(Test-Path $stash){
+              foreach($f in @(Get-ChildItem -LiteralPath $stash -Filter 'glTF-*.shadergraph' -File)){
+                $destination=Join-Path $shaderFolder $f.Name
+                if(-not (Test-Path $destination)){Copy-Item -LiteralPath $f.FullName -Destination $destination -Force}
+                if((Test-Path "$($f.FullName).meta") -and -not (Test-Path "$destination.meta")){
+                  Copy-Item -LiteralPath "$($f.FullName).meta" -Destination "$destination.meta" -Force
+                }
+              }
+            }
+            $matching=@(Get-ChildItem -LiteralPath $shaderFolder -Filter 'glTF-pbrMetallicRoughness*.shadergraph' -File)
+            if($matching.Count -lt 1){throw 'glTFast PBR ShaderGraph still missing before native Unity import'}
+            Write-Host "BASTION1_NATIVE_GLTF_MATERIALS_RESTORED $($pkg.Name) graph_count=$($matching.Count)"
+          }
       - name: Locate existing Blender and stage exact committed modules
         shell: powershell
         run: |
@@ -88,7 +114,7 @@ jobs:
           $unityArguments=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
-          if($process.ExitCode -ne 0){Copy-Item $log "$out/Bastion1-Unity-Failure.log" -Force;Get-Content $log | Select-String -Pattern "BASTION1_REFERENCE_CAPTURE_FAILED|BASTION1_PLAYER_SCENE|Exception:|Exception |error CS|glTFast|^Error" | Select-Object -Last 35;Get-Content $log -Tail 55;throw "Unity failed $($process.ExitCode)"}
+          if($process.ExitCode -ne 0){New-Item -ItemType Directory -Force $out | Out-Null;Copy-Item $log "$out/Bastion1-Unity-Failure.log" -Force;Get-Content $log | Select-String -Pattern "BASTION1_REFERENCE_CAPTURE_FAILED|BASTION1_PLAYER_SCENE|Exception:|Exception |error CS|glTFast|^Error" | Select-Object -Last 35;Get-Content $log -Tail 55;throw "Unity failed $($process.ExitCode)"}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
           if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}
@@ -202,6 +228,26 @@ jobs:
           if(-not $process.WaitForExit(1200000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own WebGL process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 150;throw "WebGL build failed $($process.ExitCode)"}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_MESH_WEBGL_CANDIDATE_PASS' -Quiet)){throw 'Playable candidate completion missing'}
+      - name: Restore quarantined glTFast graphs for subsequent native Unity sessions
+        if: always()
+        shell: powershell
+        run: |
+          $stash=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          if(Test-Path $stash){
+            foreach($pkg in @(Get-ChildItem -LiteralPath $root -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)){
+              $folder=Join-Path $pkg.FullName 'Runtime/Shader'
+              New-Item -ItemType Directory -Force $folder | Out-Null
+              foreach($f in @(Get-ChildItem -LiteralPath $stash -File -Filter 'glTF-*.shadergraph')){
+                $dest=Join-Path $folder $f.Name
+                if(-not (Test-Path $dest)){Copy-Item -LiteralPath $f.FullName $dest -Force}
+                if((Test-Path "$($f.FullName).meta") -and -not (Test-Path "$dest.meta")){
+                  Copy-Item -LiteralPath "$($f.FullName).meta" "$dest.meta" -Force
+                }
+              }
+              Write-Host "BASTION1_GLTF_CACHE_RESTORED $($pkg.Name)"
+            }
+          }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
