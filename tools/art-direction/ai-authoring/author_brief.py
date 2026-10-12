@@ -4,7 +4,7 @@ Requires two genuine images; it does not execute Blender or certify art by itsel
 """
 import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse
 HERE=pathlib.Path(__file__).resolve().parent
-ALLOWED={'sculpt_region','reprofile_crest','construct_mesh','assign_material','place_existing_asset'}
+ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
 def main():
  p=argparse.ArgumentParser()
@@ -13,6 +13,7 @@ def main():
  p.add_argument('--target-object',required=True)
  p.add_argument('--target-mode',choices=['existing','new'],default='existing',help='new allows the artist to create a previously absent mesh')
  p.add_argument('--inventory',type=pathlib.Path)
+ p.add_argument('--mesh-context',type=pathlib.Path,help='Optional existing Blender mesh vertex indices, border loops and anchoring coordinates')
  p.add_argument('--out',required=True,type=pathlib.Path)
  p.add_argument('--model',default='qwen3-vl:4b-instruct')
  p.add_argument('--endpoint',default='http://127.0.0.1:11434/api/chat')
@@ -43,18 +44,27 @@ def main():
  journal=HERE.parent/'ARTIST_LEARNING_JOURNAL.md'
  memory=journal.read_text('utf8')[-2600:] if journal.is_file() else 'NO PREVIOUS LEARNING JOURNAL AVAILABLE; record this limitation.'
  memory_hash=digest(journal.read_bytes()) if journal.is_file() else None
+ mesh_context='NO MESH TOPOLOGY MANIFEST; DO NOT GUESS VERTEX IDS FOR BRIDGE OPERATIONS.'
+ mesh_context_sha=None
+ if a.mesh_context:
+  if not a.mesh_context.is_file() or a.mesh_context.stat().st_size>25000:raise ValueError('Invalid mesh context manifest')
+  mesh_context=a.mesh_context.read_text('utf8')
+  mesh_context_sha=digest(mesh_context.encode('utf8'))
  prompt=('Compare left REFERENCE and right GENUINE UNITY screenshot. Diagnose and DIRECT NEW 3D geometry, '
   'not just noise parameters. Valid action parameter formats: '
   'sculpt_region center [x,y,z], radius, delta [x,y,z]; '
   'reprofile_crest axis x|y, height_axis y|z, control_points [[pos,height],...], band_min, band_max; '
+  'sculpt_path knots [{center:[x,y,z],delta:[x,y,z],radius:meters}, ...] for coherent spatial changes along curved cliff/road edges; '
+  'bridge_boundary_loops loop_a:[vertex_indices...], loop_b:[same_count_indices...] only using VERIFIED open boundary loops from mesh manifest; '
   'construct_mesh vertices [[x,y,z]...], faces [[indices]...], material_color [r,g,b]; '
   'assign_material rgb [r,g,b], roughness; '
   'place_existing_asset source_object, location [x,y,z], rotation [x,y,z], scale [x,y,z]. '
   f'Use exactly target name {a.target_object}, with target mode {a.target_mode}: for existing, edit the existing Blender object and never construct a duplicate; for new, construct_mesh must be the first operation, followed by edits of that new object. Current inventory: {inventory}. '
   f'Previously verified art failures and learnings (avoid repeating): {memory}. '
+  f'Verified mesh topology/anchors: {mesh_context[:11000]}. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  payload={'model':a.model,'stream':False,'think':False,'format':'json',
-  'options':{'temperature':0.25,'num_predict':1800,'num_ctx':4096},
+  'options':{'temperature':0.25,'num_predict':2600,'num_ctx':8192},
   'messages':[{'role':'system','content':role.decode('utf8')},
               {'role':'user','content':prompt,'images':inputs}]}
  request=urllib.request.Request(a.endpoint,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
@@ -75,7 +85,7 @@ def main():
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
-   'asset_inventory_sha256':digest(inventory.encode('utf8')),'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
