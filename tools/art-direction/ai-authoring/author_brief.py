@@ -2,7 +2,7 @@
 """Create REAL scene-aware Qwen artistic direction using local Ollama and versioned system role.
 Requires two genuine images; it does not execute Blender or certify art by itself.
 """
-import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,time
+import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
@@ -81,7 +81,12 @@ def main():
               {'role':'user','content':prompt,'images':inputs}]}
  request=urllib.request.Request(a.endpoint,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
  started=time.monotonic()
- with urllib.request.urlopen(request,timeout=540) as response:reply=json.load(response)
+ try:
+  with urllib.request.urlopen(request,timeout=540) as response:reply=json.load(response)
+ except urllib.error.HTTPError as exc:
+  # Loopback-only Ollama endpoint: preserve its bounded error text for root-cause diagnosis.
+  details=exc.read(2048).decode('utf8','replace')
+  raise RuntimeError(f'Local Ollama HTTP {exc.code}: {details}') from exc
  inference_seconds=round(time.monotonic()-started,3)
  design=json.loads(reply['message']['content'])
  if len(design.get('observed_defect',''))<35 or len(design.get('design_intent',''))<35:raise ValueError('Insufficient artist diagnosis')
