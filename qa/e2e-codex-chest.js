@@ -12,7 +12,7 @@ const {chromium}=require('playwright');
  const preset={...fullBastion7,introSeen:true,view:'kingdom',chestUnlocked:true,inventory:[{id:'test-material',name:'Fragmento de prueba',type:'material',copy:'Material QA'}],codexUnlocked:true,relicarioUnlocked:true,codex:[{id:'estandarte-valoria',name:'Estandarte de Valoria',rarity:'rare',quality:'Indestructible',values:{N:6,S:5,E:3,O:6},effect:'Velocidad de marcha +20% durante 2 horas.'}],relicDiscovered:['estandarte-valoria'],relicIndestructibles:{'estandarte-valoria':true},relicEffects:{},cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicTutorial:{started:true,firstReveal:true,rarities:true,decision:true,indestructible:true,sides:false,completed:true},relicTutorialComplete:true,relicTutorialSeen:true,relicSidesRevealed:false,relicarioTab:'collection',bastionLevel:7};
  await p.evaluate(v=>localStorage.setItem('eldoria-v022-consistent-loop',JSON.stringify(v)),preset);
  await p.reload({waitUntil:'domcontentloaded'});
- await p.waitForFunction(()=>window.ELDORIA_V023?.state?.().bastionLevel===7,{timeout:5000});
+ await p.waitForFunction(()=>window.ELDORIA_V023?.state?.().bastionLevel===7,null,{timeout:5000});
  if((await state()).bastionLevel!==7)throw Error('Codex test canonical save did not load');
  await p.locator('[data-testid="valoria-chest"]').tap({force:true});
  await p.locator('.archiveScene.chestScene').waitFor({state:'visible',timeout:4000});
