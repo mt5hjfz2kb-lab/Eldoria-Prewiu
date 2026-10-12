@@ -40,6 +40,7 @@ jobs:
           Add-Content $env:GITHUB_ENV "BASTION_INPUTS=$sourceInputDirectory"
           $blenderPython=Get-ChildItem (Split-Path $candidate) -Recurse -Filter python.exe | Select-Object -First 1 -ExpandProperty FullName
           if(-not $blenderPython){throw 'Bundled Blender Python missing'}
+          Add-Content $env:GITHUB_ENV "BASTION_PYTHON=$blenderPython"
           & $blenderPython tools/valoria-bastion1-assembly/stage.py $sourceInputDirectory
           if($LASTEXITCODE -ne 0){throw 'Frozen input staging failed'}
       - name: Compose the two-level settlement with authored source assets
@@ -56,6 +57,8 @@ jobs:
           $dest="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/Experimental/Bastion1Assembly/GeneratedSource"
           New-Item -ItemType Directory -Force $dest | Out-Null
           Copy-Item "$out/Bastion1ReferenceAssembly.glb" "$dest/Bastion1ReferenceAssembly.glb" -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Bastion1ReferenceAssembly.glb"
+          if($LASTEXITCODE -ne 0){throw 'Explicit glTF defaults staging failed'}
       - name: Capture the exact source in Unity and save the candidate scene
         shell: powershell
         run: |

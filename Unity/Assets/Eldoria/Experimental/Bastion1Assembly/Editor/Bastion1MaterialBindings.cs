@@ -31,8 +31,9 @@ namespace Eldoria.EditorTools
         }
         public static void Apply(GameObject root,GltfImport importer,string glbPath)
         {
-            byte[] bytes=File.ReadAllBytes(glbPath);int length=BitConverter.ToInt32(bytes,12);
-            var source=JsonUtility.FromJson<Root>(Encoding.UTF8.GetString(bytes,20,length));
+            string normalized=Path.Combine(Path.GetDirectoryName(glbPath),"material-bindings.json");
+            if(!File.Exists(normalized))throw new Exception("Explicit glTF material defaults missing");
+            var source=JsonUtility.FromJson<Root>(File.ReadAllText(normalized));
             if(source.materials==null)throw new Exception("glTF source material table missing");
             var replacements=new Dictionary<Material,Material>();
             string folder="Assets/Eldoria/Experimental/Bastion1Assembly/GeneratedNormals";
@@ -43,11 +44,14 @@ namespace Eldoria.EditorTools
                 if(old==null)throw new Exception("glTF material unavailable: "+i);
                 var p=src.pbrMetallicRoughness;
                 var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="BastionI_URP_"+src.name};
+                m.SetTexture("_BaseMap",Texture2D.whiteTexture);
+                m.SetTexture("_BumpMap",null);m.SetTexture("_MetallicGlossMap",null);
+                m.DisableKeyword("_NORMALMAP");m.DisableKeyword("_METALLICSPECGLOSSMAP");
                 Color color=Color.white;
                 if(p!=null&&p.baseColorFactor!=null&&p.baseColorFactor.Length==4)
                     color=new Color(p.baseColorFactor[0],p.baseColorFactor[1],p.baseColorFactor[2],p.baseColorFactor[3]);
                 m.SetColor("_BaseColor",color);
-                if(p!=null&&p.baseColorTexture!=null)
+                if(p!=null&&p.baseColorTexture!=null&&p.baseColorTexture.index>=0)
                 {
                     var texture=importer.GetTexture(p.baseColorTexture.index);
                     if(texture==null)throw new Exception("glTF albedo texture unavailable: "+src.name);
@@ -55,7 +59,7 @@ namespace Eldoria.EditorTools
                 }
                 m.SetFloat("_Metallic",p!=null?p.metallicFactor:1f);
                 m.SetFloat("_Smoothness",p!=null?1f-p.roughnessFactor:0f);
-                if(p!=null&&p.metallicRoughnessTexture!=null)
+                if(p!=null&&p.metallicRoughnessTexture!=null&&p.metallicRoughnessTexture.index>=0)
                 {
                     var pixels=ReadLinear(importer.GetTexture(p.metallicRoughnessTexture.index));
                     var values=pixels.GetPixels();
@@ -64,7 +68,7 @@ namespace Eldoria.EditorTools
                     pixels.SetPixels(values);pixels.Apply(true,false);pixels.name="Repacked glTF B metallic G roughness: "+src.name;
                     m.SetTexture("_MetallicGlossMap",pixels);m.SetFloat("_Smoothness",1f);m.EnableKeyword("_METALLICSPECGLOSSMAP");
                 }
-                if(src.normalTexture!=null)
+                if(src.normalTexture!=null&&src.normalTexture.index>=0)
                 {
                     var pixels=ReadLinear(importer.GetTexture(src.normalTexture.index));
                     // Use Unity's normal importer instead of treating glTF RGB as DXT5nm.
@@ -91,7 +95,8 @@ namespace Eldoria.EditorTools
                 }
                 replacements.Add(old,m);
                 Debug.Log("BASTION1_MATERIAL_BINDING "+i+" "+src.name+" originalShader="+old.shader.name+
-                    " albedo="+(m.GetTexture("_BaseMap")!=null?m.GetTexture("_BaseMap").name:"factor only")+" color="+color);
+                    " albedo="+(m.GetTexture("_BaseMap")!=null?m.GetTexture("_BaseMap").name:"factor only")+" color="+color+
+                    " metallic="+p.metallicFactor+" roughness="+p.roughnessFactor);
             }
             foreach(var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
