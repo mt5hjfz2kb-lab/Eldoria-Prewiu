@@ -97,7 +97,14 @@ def act(identifier):
   mesh=bpy.data.meshes.new(t+'_authored');mesh.from_pydata(verts,[],faces);mesh.update()
   obj=bpy.data.objects.new(t,mesh);bpy.context.scene.collection.objects.link(obj);n=len(verts)
   color=vec(pr.get('material_color',[.4,.38,.34]))
-  mat=bpy.data.materials.new(t+'_artist');mat.diffuse_color=(*color,1);obj.data.materials.append(mat)
+  if any(not 0<=v<=1 for v in color):raise ValueError('Artist material RGB must be PBR [0,1]')
+  mat=bpy.data.materials.new(t+'_artist');mat.use_nodes=True
+  mat.diffuse_color=(*color,1)
+  bsdf=mat.node_tree.nodes.get('Principled BSDF')
+  if not bsdf:raise ValueError('Blender Principled PBR node missing')
+  bsdf.inputs['Base Color'].default_value=(*color,1)
+  bsdf.inputs['Roughness'].default_value=.85
+  obj.data.materials.append(mat)
  else:
   if not obj:raise ValueError('Source object missing: '+t)
   if kind in ['sculpt_region','reprofile_crest']:
