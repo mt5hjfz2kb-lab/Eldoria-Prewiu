@@ -39,6 +39,9 @@ namespace Eldoria.EditorTools {
                 Render(cam,Path.Combine(output,"before-frozen-cliff.png"));
                 talus.SetActive(true);
                 Render(cam,Path.Combine(output,"after-with-talusedge.png"));
+                cliff.SetActive(false);
+                Render(cam,Path.Combine(output,"talus-only.png"));
+                cliff.SetActive(true);
                 File.WriteAllText(Path.Combine(output,"capture-manifest.json"),
                   "{\"engine\":\"Unity 6000.3.23f1\",\"capture\":\"camera.Render matched perspective\",\"artist\":\"qwen3-vl:4b-instruct\",\"source\":\"frozen cliff V3\",\"asset\":\"cliff_talus_transition_v1\",\"visual_pass\":false,\"mobile_pass\":false}");
                 Debug.Log("VALORIA_LOCAL_TALUS_UNITY_CAPTURE_COMPLETED "+output);
