@@ -92,6 +92,29 @@ jobs:
           if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
           if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}
+      - name: Quarantine unrelated shader graphs for isolated WebGL
+        shell: powershell
+        run: |
+          # Only the temporary runner checkout. No source is deleted or committed.
+          # Unity otherwise prepares 36+ billion VegetationMultiColor variants
+          # although this authored mesh scene uses explicit URP/Lit materials.
+          $quarantine=Join-Path $env:RUNNER_TEMP 'Bastion1-WebGL-UnusedShaderGraphs'
+          New-Item -ItemType Directory -Force $quarantine | Out-Null
+          $graphs=@(Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph')
+          if($graphs.Count -lt 3){throw "Expected unused supplier shadergraphs, found $($graphs.Count)"}
+          foreach($graph in $graphs){
+            $relative=$graph.FullName.Substring("$env:GITHUB_WORKSPACE/Unity/Assets".Length).TrimStart('\\','/')
+            $dest=Join-Path $quarantine $relative
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            Move-Item -LiteralPath $graph.FullName -Destination $dest -Force
+            if(Test-Path -LiteralPath "$($graph.FullName).meta"){
+              Move-Item -LiteralPath "$($graph.FullName).meta" -Destination "$dest.meta" -Force
+            }
+            Write-Host "WEBGL_QUARANTINED_SHADERGRAPH $relative"
+          }
+          if((Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph' | Measure-Object).Count -ne 0){
+            throw 'Source shadergraph quarantine incomplete'
+          }
       - name: Build isolated playable WebGL candidate
         shell: powershell
         run: |
