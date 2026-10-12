@@ -22,6 +22,13 @@ namespace Eldoria.Presentation
         public GameObject LeftConstruction, RightConstruction, LeftAvailable, RightAvailable;
         public Collider LeftTarget, RightTarget;
         public Camera ProductionCamera;
+        // Authorable world-space route. The serialized SHARP route stays available
+        // until the replacement passes the player-scene and device gates.
+        public bool MeshMode;
+        public Vector3 MeshHomePosition;
+        public Quaternion MeshHomeRotation=Quaternion.identity;
+        public float MeshHomeOrthographicSize=38.5f;
+        public Vector2 MeshPanHalfExtents=new Vector2(12f,12f);
         public GsplatRenderer SceneSplats;
         public GsplatAsset[] StateAssets; // 0 empty, 1 left built, 2 right built, 3 both built
         public int ActiveVariant { get; private set; }
@@ -47,7 +54,10 @@ namespace Eldoria.Presentation
                 var phase=ParcelBuildingStates.For(state,parcel.BuildingId);
                 if(phase==ParcelBuildingState.BUILT)ActiveVariant|=parcel.VariantBit;
                 ApplyParcel(phase,parcel.Built,parcel.Ground,parcel.Construction,parcel.Available,parcel.Target);
+                if(MeshMode&&phase==ParcelBuildingState.UNDER_CONSTRUCTION&&parcel.Ground!=null)
+                    parcel.Ground.SetActive(false);
             }
+            if(MeshMode)return;
             #if UNITY_WEBGL && !UNITY_EDITOR
             var frameLoader=GetComponent<ValoriaWebGLSplatStateLoader>();
             if(frameLoader!=null)frameLoader.RequestVariant(ActiveVariant);
@@ -82,6 +92,19 @@ namespace Eldoria.Presentation
         public const float VerticalPanHalfExtent=1.10f;
         public void Pan(Vector2 delta)
         {
+            if(MeshMode)
+            {
+                float perPixel=2f*ProductionCamera.orthographicSize/Mathf.Max(1f,ProductionCamera.pixelHeight);
+                var right=Vector3.ProjectOnPlane(ProductionCamera.transform.right,Vector3.up).normalized;
+                var forward=Vector3.ProjectOnPlane(ProductionCamera.transform.up,Vector3.up).normalized;
+                var change=-(right*delta.x+forward*delta.y)*perPixel;
+                var meshPosition=ProductionCamera.transform.position+change;
+                meshPosition.x=Mathf.Clamp(meshPosition.x,MeshHomePosition.x-MeshPanHalfExtents.x,MeshHomePosition.x+MeshPanHalfExtents.x);
+                meshPosition.z=Mathf.Clamp(meshPosition.z,MeshHomePosition.z-MeshPanHalfExtents.y,MeshHomePosition.z+MeshPanHalfExtents.y);
+                meshPosition.y=MeshHomePosition.y;
+                ProductionCamera.transform.position=meshPosition;
+                return;
+            }
             var p=ProductionCamera.transform.position;
             float horizontalLimit=HorizontalPanHalfExtent;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -97,13 +120,37 @@ namespace Eldoria.Presentation
         }
         public void Zoom(float delta)
         {
+            if(MeshMode)
+            {
+                float home=Mathf.Max(MeshHomeOrthographicSize,36f/Mathf.Max(.1f,ProductionCamera.aspect));
+                ProductionCamera.orthographicSize=Mathf.Clamp(ProductionCamera.orthographicSize+delta,home*.55f,home*1.15f);
+                return;
+            }
             float home=PresentationHomeFov;
             ProductionCamera.fieldOfView=Mathf.Clamp(ProductionCamera.fieldOfView+delta,home*.92f,home*1.08f);
         }
         public void Home()
         {
+            if(MeshMode)
+            {
+                ProductionCamera.transform.SetPositionAndRotation(MeshHomePosition,MeshHomeRotation);
+                ProductionCamera.orthographicSize=Mathf.Max(MeshHomeOrthographicSize,36f/Mathf.Max(.1f,ProductionCamera.aspect));
+                return;
+            }
             ProductionCamera.transform.SetPositionAndRotation(Vector3.zero,Quaternion.identity);
             ProductionCamera.fieldOfView=PresentationHomeFov;
+        }
+        public void Focus(Vector3 point)
+        {
+            if(!MeshMode)return;
+            var ray=ProductionCamera.ViewportPointToRay(new Vector3(.5f,.5f,0));
+            var plane=new Plane(Vector3.up,new Vector3(0,point.y,0));
+            if(!plane.Raycast(ray,out var distance))return;
+            var desired=ProductionCamera.transform.position+(point-ray.GetPoint(distance));
+            desired.x=Mathf.Clamp(desired.x,MeshHomePosition.x-MeshPanHalfExtents.x,MeshHomePosition.x+MeshPanHalfExtents.x);
+            desired.z=Mathf.Clamp(desired.z,MeshHomePosition.z-MeshPanHalfExtents.y,MeshHomePosition.z+MeshPanHalfExtents.y);
+            desired.y=MeshHomePosition.y;
+            ProductionCamera.transform.position=desired;
         }
     }
 }

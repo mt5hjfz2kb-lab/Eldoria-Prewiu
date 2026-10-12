@@ -1,0 +1,109 @@
+name: Bastion I player scene integration candidate
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths:
+      - 'tools/valoria-bastion1-assembly/**'
+      - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/**'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs'
+      - '.github/workflows/valoria-bastion1-player-scene-integration.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-bastion1-player-integration
+  cancel-in-progress: false
+jobs:
+  assemble-and-capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Expose installed Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate=Get-ChildItem "${env:LOCALAPPDATA}\GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git missing'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Locate existing Blender and stage exact committed modules
+        shell: powershell
+        run: |
+          $installedBlenders=@(Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe)
+          $candidate=$installedBlenders | Where-Object {$_.FullName -match 'Blender 4\.0'} | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $candidate){$candidate=$installedBlenders | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $candidate){throw 'Existing Blender not found'}
+          Add-Content $env:GITHUB_ENV "BASTION_BLENDER=$candidate"
+          $sourceInputDirectory=Join-Path $env:RUNNER_TEMP 'Bastion1ReferenceInputs'
+          Add-Content $env:GITHUB_ENV "BASTION_INPUTS=$sourceInputDirectory"
+          $blenderPython=Get-ChildItem (Split-Path $candidate) -Recurse -Filter python.exe | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blenderPython){throw 'Bundled Blender Python missing'}
+          Add-Content $env:GITHUB_ENV "BASTION_PYTHON=$blenderPython"
+          & $blenderPython tools/valoria-bastion1-assembly/stage.py $sourceInputDirectory
+          if($LASTEXITCODE -ne 0){throw 'Frozen input staging failed'}
+      - name: Compose the two-level settlement with authored source assets
+        shell: powershell
+        run: |
+          $out=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
+          if(Test-Path $out){Remove-Item $out -Recurse -Force}
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Blender.log'
+          $err=Join-Path $env:RUNNER_TEMP 'Bastion1-Blender.err'
+          $blenderArguments=@('-b','--threads','6','--python-exit-code','1','--python',"$env:GITHUB_WORKSPACE/tools/valoria-bastion1-assembly/assemble.py",'--','--inputs',$env:BASTION_INPUTS,'--output',$out,'--samples','24')
+          $process=Start-Process $env:BASTION_BLENDER -ArgumentList $blenderArguments -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 100;Get-Content $err -Tail 30;throw 'Blender assembly failed'}
+          if(-not (Test-Path "$out/manifest.json")){throw 'Assembly manifest missing'}
+          $dest="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource"
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item "$out/Bastion1ReferenceAssembly.glb" "$dest/Bastion1ReferenceAssembly.glb" -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Bastion1ReferenceAssembly.glb"
+          if($LASTEXITCODE -ne 0){throw 'Explicit glTF defaults staging failed'}
+      - name: Stage existing authored construction states and barracks
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource"
+          $sawmill="$env:GITHUB_WORKSPACE/art-source/valoria/production/sawmill-family-v1"
+          foreach($state in 0..2){
+            $name="SawmillState${state}V1"
+            Copy-Item "$sawmill/state${state}/$name.glb" "$dest/$name.glb" -Force
+            & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/$name.glb"
+            if($LASTEXITCODE -ne 0){throw "Sawmill state ${state} material staging failed"}
+          }
+          $barracks="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb"
+          Copy-Item $barracks "$dest/Valoria_Cuartel_AP2_v1.glb" -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Valoria_Cuartel_AP2_v1.glb"
+          if($LASTEXITCODE -ne 0){throw 'Barracks material staging failed'}
+      - name: Capture the exact source in Unity and save the candidate scene
+        shell: powershell
+        run: |
+          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity not found'}
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity.log'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'Unity/Bastion1ReferenceCaptures'
+          if(Test-Path $out){Remove-Item $out -Recurse -Force}
+          $unityArguments=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 130;throw "Unity failed $($process.ExitCode)"}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
+          if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-player-integration-${{ github.run_id }}
+          path: |
+            Bastion1ReferenceSource/**
+            Unity/Bastion1ReferenceCaptures/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Generated/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedNormals/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1ReferenceAssembly.unity*
+            Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity*
+            ${{ runner.temp }}/Bastion1-Blender.*
+            ${{ runner.temp }}/Bastion1-Unity.log
+          retention-days: 14
+          if-no-files-found: warn

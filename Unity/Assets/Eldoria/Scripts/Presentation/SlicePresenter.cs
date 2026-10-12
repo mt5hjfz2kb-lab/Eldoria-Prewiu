@@ -374,6 +374,12 @@ namespace Eldoria.Presentation
             if(!city||camera==null||target==null)return;
             if(productionParcels!=null)
             {
+                if(productionParcels.MeshMode)
+                {
+                    var targetCollider=target.GetComponent<Collider>();
+                    productionParcels.Focus(targetCollider!=null?targetCollider.bounds.center:target.transform.position);
+                    return;
+                }
                 productionParcels.Home();
 #if UNITY_WEBGL && !UNITY_EDITOR
                 var frameLoader=productionParcels.GetComponent<ValoriaWebGLSplatStateLoader>();

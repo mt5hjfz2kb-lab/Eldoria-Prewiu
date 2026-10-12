@@ -72,7 +72,7 @@ namespace Eldoria.EditorTools
                 {
                     var pixels=ReadLinear(importer.GetTexture(src.normalTexture.index));
                     // Use Unity's normal importer instead of treating glTF RGB as DXT5nm.
-                    string path=folder+"/normal-"+src.normalTexture.index+".png";
+                    string path=folder+"/"+Path.GetFileNameWithoutExtension(glbPath)+"-normal-"+src.normalTexture.index+".png";
                     File.WriteAllBytes(path,pixels.EncodeToPNG());UnityEngine.Object.DestroyImmediate(pixels);
                     AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
                     var settings=(TextureImporter)AssetImporter.GetAtPath(path);
@@ -96,7 +96,7 @@ namespace Eldoria.EditorTools
                 replacements.Add(old,m);
                 Debug.Log("BASTION1_MATERIAL_BINDING "+i+" "+src.name+" originalShader="+old.shader.name+
                     " albedo="+(m.GetTexture("_BaseMap")!=null?m.GetTexture("_BaseMap").name:"factor only")+" color="+color+
-                    " metallic="+p.metallicFactor+" roughness="+p.roughnessFactor);
+                    " metallic="+(p!=null?p.metallicFactor:1f)+" roughness="+(p!=null?p.roughnessFactor:1f));
             }
             foreach(var renderer in root.GetComponentsInChildren<Renderer>(true))
             {

@@ -104,6 +104,7 @@ namespace Eldoria.EditorTools
                 }
                 AssetDatabase.SaveAssets();
                 EditorSceneManager.SaveScene(active,Study+"/Bastion1ReferenceAssembly.unity");
+                await ValoriaBastion1MeshPlayerScene.Build(active,root,camera);
                 string evidence="{\"engine\":\"Unity 6000.3.23f1\",\"renderers\":"+renderers.Length+
                     ",\"shared_meshes\":"+uniqueMeshes.Count+",\"shared_materials\":"+uniqueMaterials.Count+
                     ",\"shared_textures\":"+uniqueTextures.Count+",\"visible_triangles\":"+triangles+
@@ -121,13 +122,13 @@ namespace Eldoria.EditorTools
         }
         static Transform Find(Transform root,string name)
         {foreach(var item in root.GetComponentsInChildren<Transform>(true))if(item.name==name)return item;return null;}
-        static void Persist(UnityEngine.Object obj)
+        internal static void Persist(UnityEngine.Object obj)
         {
             if(obj==null||AssetDatabase.Contains(obj)||Saved.ContainsKey(obj))return;
             string path=Study+"/Generated/"+Saved.Count.ToString("D4")+".asset";
             AssetDatabase.DeleteAsset(path);AssetDatabase.CreateAsset(obj,path);Saved.Add(obj,path);
         }
-        static void Render(Camera camera,string path,int width,int height)
+        internal static void Render(Camera camera,string path,int width,int height)
         {
             var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32){antiAliasing=4};
             var prior=RenderTexture.active;Texture2D pixels=null;
