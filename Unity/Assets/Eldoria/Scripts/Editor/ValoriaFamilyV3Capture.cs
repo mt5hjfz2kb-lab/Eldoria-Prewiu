@@ -205,13 +205,14 @@ namespace Eldoria.EditorTools
             styled.Remove(gate);
             SetLookdev(true,styled,sun);
             cam.backgroundColor=new Color(.43f,.52f,.60f);
-            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
-            var trees=ValoriaNatureDresser.Dress(bounds,"cliff_rocks");
-            var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
+            // First validate full family against the exact same composition without large staging meshes.
+            GameObject ground=null;
+            GameObject trees=null;
+            Light bounce=null;
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
-            UnityEngine.Object.DestroyImmediate(ground);
-            UnityEngine.Object.DestroyImmediate(trees);
-            UnityEngine.Object.DestroyImmediate(bounce.gameObject);
+            if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
+            if(trees!=null)UnityEngine.Object.DestroyImmediate(trees);
+            if(bounce!=null)UnityEngine.Object.DestroyImmediate(bounce.gameObject);
             Debug.Log("VALORIA_V3_ASSEMBLED bounds="+bounds+" meshes="+assembled.Count);
         }
 
