@@ -29,10 +29,10 @@ if '--infer' in sys.argv:
  role_text=role_path.read_text(encoding='utf-8')
  role_sha=hashlib.sha256(role_text.encode()).hexdigest()
  compact_role=role_text.split('ARTISTIC METHOD:')[0].strip()+'\n'+role_text.split('CREATIVE IDENTITY:')[-1].strip()+'\nObserve, diagnose, design, execute and verify; never self-approve.'
- payload={'model':'qwen3-vl:4b-instruct','stream':False,'think':False,'format':'json',
+ payload={'model':os.environ.get('ELDORIA_QWEN_MODEL','qwen3-vl:4b-instruct'),'stream':False,'think':False,'format':'json',
           'options':{'temperature':.18,'num_predict':600,'num_ctx':4096},
           'messages':[{'role':'system','content':compact_role},{'role':'user','content':prompt,'images':[base64.b64encode((OUT/'art-direction-input.jpg').read_bytes()).decode()]}]}
- req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+ req=urllib.request.Request(os.environ.get('OLLAMA_HOST','http://127.0.0.1:11434').rstrip('/')+'/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
  try:
   with urllib.request.urlopen(req,timeout=600) as r:reply=json.load(r)
  except urllib.error.HTTPError as e:
@@ -52,8 +52,9 @@ import bpy, math, socket, threading, importlib.util
 from mathutils import Vector
 plan=json.loads((OUT/'direction.json').read_text())['plan']
 amp=float(plan['fault_amplitude_m']);facets=int(plan['large_facets']);recede=float(plan['crest_recede_m']);clusters=int(plan['talus_clusters'])
-addon=pathlib.Path('/tmp/eldoria-blender-mcp.py')
-assert hashlib.sha256(addon.read_bytes()).hexdigest()=='eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5'
+addon=pathlib.Path(os.environ.get('ELDORIA_BLENDER_MCP_ADDON','/tmp/eldoria-blender-mcp.py'))
+assert addon.is_file(), 'BlenderMCP addon missing: '+str(addon)
+assert hashlib.sha256(addon.read_bytes()).hexdigest()=='eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5', 'BlenderMCP addon hash mismatch'
 spec=importlib.util.spec_from_file_location('valoria_cliff_mcp',str(addon));mcp=importlib.util.module_from_spec(spec);sys.modules['valoria_cliff_mcp']=mcp;spec.loader.exec_module(mcp)
 for name in ('polyhaven','hyper3d','sketchfab','polypizza','hunyuan3d','tripo'):
  setattr(bpy.types.Scene,'blendermcp_use_'+name,bpy.props.BoolProperty(default=False))
