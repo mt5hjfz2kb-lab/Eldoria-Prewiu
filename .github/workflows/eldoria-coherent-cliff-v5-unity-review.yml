@@ -54,9 +54,11 @@ jobs:
           $files=@(Get-ChildItem talus-candidate -Filter 'cliff_coherent_v5.glb' -File -Recurse)
           if($files.Count -ne 1){throw 'Expected exactly one authored replacement GLB'}
           $sha=(Get-FileHash $files[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-          $proofFiles=@(Get-ChildItem talus-candidate -Filter 'proof.json' -File -Recurse)
-          if($proofFiles.Count -ne 1){throw 'Structural authorship proof missing'}
-          $proof=Get-Content $proofFiles[0].FullName -Raw | ConvertFrom-Json
+          # Previous artifacts may survive on self-hosted checkout (clean:false).
+          # Never select a proof from a different model: bind it to the GLB folder.
+          $proofPath=Join-Path $files[0].DirectoryName 'proof.json'
+          if(-not (Test-Path $proofPath)){throw "V5 proof missing alongside selected GLB $proofPath"}
+          $proof=Get-Content $proofPath -Raw | ConvertFrom-Json
           if($sha -ne $proof.candidate_sha256){throw "Structural replacement SHA mismatch $sha"}
           if($proof.art_pass -or $proof.mobile_pass){throw 'Candidate must remain explicitly unapproved'}
           $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaCoherentCliffV5'
@@ -65,7 +67,7 @@ jobs:
         shell: powershell
         run: |
           if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
-          $log=Join-Path $env:RUNNER_TEMP 'Valoria-CoherentCliffV4-Unity.log'
+          $log=Join-Path $env:RUNNER_TEMP 'Valoria-CoherentCliffV5-Unity.log'
           $args=@('-batchmode','-quit','-projectPath',"${env:GITHUB_WORKSPACE}\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaCoherentCliffV5Review.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $out=Join-Path $env:GITHUB_WORKSPACE 'Unity/ValoriaCoherentCliffV5Captures'
@@ -96,7 +98,7 @@ jobs:
         with:
           name: eldoria-coherent-cliff-v5-unity-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/Valoria-CoherentCliffV4-Unity.log
+            ${{ runner.temp }}/Valoria-CoherentCliffV5-Unity.log
             Unity/ValoriaCoherentCliffV5Captures/*
           if-no-files-found: warn
           retention-days: 7
