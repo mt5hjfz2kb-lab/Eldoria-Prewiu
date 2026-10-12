@@ -125,7 +125,7 @@ jobs:
           $quality="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/QualitySettings.asset"
           $g=[System.IO.File]::ReadAllText($graphics)
           $q=[System.IO.File]::ReadAllText($quality)
-          $match=[regex]::Match($g,'m_CustomRenderPipeline: \\{fileID: 11400000, guid: ([a-fA-F0-9]{32}), type: 2\\}')
+          $match=[regex]::Match($g,'m_CustomRenderPipeline: .+guid: ([a-fA-F0-9]{32}), type: 2')
           if(-not $match.Success){throw 'Canonical URP default asset missing'}
           $guid=$match.Groups[1].Value
           $nullBinding='customRenderPipeline: {fileID: 0}'
