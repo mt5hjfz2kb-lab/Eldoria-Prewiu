@@ -1,6 +1,6 @@
 const {chromium}=require('playwright');
 const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
-(async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await p.goto(URL,{waitUntil:'domcontentloaded'});
+(async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await p.goto(URL,{waitUntil:'domcontentloaded'});await p.addScriptTag({path:require('node:path').resolve(__dirname,'../v0220/js/qa-fixtures.js')});
 const result=await p.evaluate(()=>{
  const E=window.ELDORIA,api=window.ELDORIA_V023,fail=[],ok=(x,m)=>{if(!x)fail.push(m)};
  ok(!!E?.economy&&!!E?.tasks&&!!E?.dialogue&&!!E?.tutorial&&!!E?.ui&&!!E?.gameplay,'module-boundaries');
@@ -19,7 +19,16 @@ const result=await p.evaluate(()=>{
   await p.reload({waitUntil:'domcontentloaded'});
   console.log('BEHAVIOR QA: checking stoneworks economy after isolated reload');
 // Economy/world invariants: the stone-producing quarry must not consume stone to build; depleted nodes and hunted wildlife cycle off-map before respawning.
-  await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'kingdom',bastionLevel:5,graniteQuarry:false,wood:600,stone:0,food:250,selectedAction:'stoneworks'}));await p.waitForTimeout(100);const quarryCost=await p.locator('[data-testid="building-action-stoneworks"]').locator('..').innerText();if(/180 piedra/i.test(quarryCost))throw Error('Stoneworks paradoxically requires stone');
+  // Stable chapter-6 fixture prevents a fictional Chapter-1 -> Bastion-VI jump from
+  // triggering a nonterminating chapter sync. Still assert the actual unbuilt quarry price.
+  const stoneworksState=await p.evaluate(()=>{
+    const fixture=window.ELDORIA_QA_FIXTURES.get('b6-forge');
+    const state={...fixture,view:'kingdom',graniteQuarry:false,wood:600,stone:0,food:250,
+      selectedAction:'stoneworks',buildingLevels:{...fixture.buildingLevels,stoneworks:0}};
+    window.ELDORIA_V023.setQA(state);
+    return {bastion:window.ELDORIA_V023.state().bastionLevel,quarry:window.ELDORIA_V023.state().graniteQuarry};
+  });
+  if(stoneworksState.bastion!==6||stoneworksState.quarry!==false)throw Error('Stoneworks regression fixture failed to install');await p.waitForTimeout(100);const quarryCost=await p.locator('[data-testid="building-action-stoneworks"]').locator('..').innerText();if(/180 piedra/i.test(quarryCost))throw Error('Stoneworks paradoxically requires stone');
   await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'world',bastion3:true,bastionLevel:3,boarRespawnAt:Date.now()+45000}));await p.waitForTimeout(100);if(await p.locator('[data-testid="world-node-boar"]').count())throw Error('Hunted boar remains on map during respawn cooldown');
 // Inventory and hero surfaces: dismiss any story overlay before real-touch interaction, then verify the full-screen Arcón view and Hero Hall close affordance.
   await p.evaluate(()=>{window.ELDORIA_V023.setQA({view:'kingdom',chestUnlocked:true,inventory:[{id:'breach-manuscript',name:'Manuscrito de la Fisura',type:'lore'}],lyra:false,maelis:false,tutorialSeen:{start:true,world:true,worldMap:true,barracks:true,breach:true,afterBreach:true,granary:true}})});await p.waitForTimeout(100);for(let dialogueStep=0;await p.locator('[data-scene="story-dialogue"]').count();dialogueStep++){if(dialogueStep>=40)throw Error('Story-dialogue dismissal did not converge within 40 interactions');const b=p.locator('[data-scene="story-dialogue"] [data-story-next], [data-scene="story-dialogue"] button').last();if(await b.count())await b.click({force:true});else{await p.evaluate(()=>document.querySelector('[data-scene="story-dialogue"]')?.remove());break}await p.waitForTimeout(40)}await p.locator('[data-testid="valoria-chest"]').tap();await p.locator('.archiveScene.chestScene').waitFor({state:'visible',timeout:3000});if(!await p.getByText('Manuscrito de la Fisura').count())throw Error('Manuscript missing from Valoria chest');if(await p.locator('.inventoryCard:visible').count())throw Error('Arcón regressed to overlay modal');await p.locator('[data-testid="nav-kingdom"]').tap({force:true});await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'heroes',lyra:true,maelis:true}));await p.waitForTimeout(100);if(!await p.locator('.heroArchiveScene').count())throw Error('Hero Hall full-screen view missing');if(await p.locator('.heroHallCard:visible').count())throw Error('Hero Hall regressed to modal overlay');
