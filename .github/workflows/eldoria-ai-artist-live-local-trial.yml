@@ -73,7 +73,7 @@ jobs:
           docker exec eldoria-qwen-local ollama pull qwen3-vl:4b-instruct
           docker exec eldoria-qwen-local ollama show qwen3-vl:4b-instruct | head -30
           curl -fsS http://127.0.0.1:11434/api/version
-      - name: Real Qwen system role and two-image AUTHORING inference
+      - name: Real Qwen 16K context and two-image system-role AUTHORING inference
         timeout-minutes: 14
         run: |
           python3 tools/art-direction/ai-authoring/author_brief.py \
