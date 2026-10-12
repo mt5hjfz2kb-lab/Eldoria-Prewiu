@@ -96,7 +96,7 @@ jobs:
             if($p.WaitForExit(5000)) {break}
             $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
             $manifest=Join-Path $folder 'capture-manifest.json'
-            if($images.Count -eq 38 -and (Test-Path $manifest) -and
+            if($images.Count -eq 40 -and (Test-Path $manifest) -and
                (Test-Path $log) -and (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
               $complete=$true
               & taskkill.exe /PID $p.Id /T /F | Out-Null
@@ -107,7 +107,7 @@ jobs:
           if(-not $p.HasExited){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity capture timed out before completion' }
           if(-not $complete -and $p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity failed $($p.ExitCode)"}
           $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
-          if($images.Count -ne 38){throw "Expected 38 genuine Unity comparison frames, got $($images.Count)"}
+          if($images.Count -ne 40){throw "Expected 40 genuine Unity comparison frames, got $($images.Count)"}
           foreach($file in $images){
             $png=[System.IO.File]::ReadAllBytes($file.FullName)
             if($png.Length -lt 64 -or $png[0] -ne 137 -or $png[1] -ne 80 -or $png[2] -ne 78 -or $png[3] -ne 71){throw "Invalid PNG $($file.Name)"}
