@@ -29,9 +29,13 @@ jobs:
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$ART_CORE_SHA"
-          for n in author_brief.py execute_artist_plan.py render_artist_ab.py ARTIST_SYSTEM.md verify-artist-cycle.mjs; do
+          for n in author_brief.py execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs; do
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
+          # PR #36 moved the canonical system prompt out of the old local
+          # ARTIST_SYSTEM.md; load its precise pinned canonical location.
+          git show "$ART_CORE_SHA:tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md" > tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+          test -s tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
           python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
           # Controlled second cycle: the first authentic sculpt moved 181
           # vertices at the BACK corner but changed only 0.001% of pixels in
