@@ -8,14 +8,54 @@ import bmesh
 from mathutils import Vector
 p=argparse.ArgumentParser()
 p.add_argument('--source',required=True,type=pathlib.Path)
-p.add_argument('--plan',required=True,type=pathlib.Path)
+p.add_argument('--plan',type=pathlib.Path)
+p.add_argument('--inspect',action='store_true',help='Read-only bounded topology manifest for Qwen art direction')
+p.add_argument('--inspect-target-object',help='Blender mesh name for topology inspection')
 p.add_argument('--out',required=True,type=pathlib.Path)
 p.add_argument('--transport',choices=['direct','blendermcp'],default='direct')
 p.add_argument('--mcp-addon',type=pathlib.Path)
 p.add_argument('--mcp-sha256')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 if not a.source.is_file() or a.source.suffix.lower()!='.blend':raise ValueError('Original .blend required')
-if not a.plan.is_file():raise ValueError('Real Qwen plan missing')
+if a.inspect:
+ if not a.inspect_target_object:raise ValueError('Topology inspection requires --inspect-target-object')
+ bpy.ops.wm.open_mainfile(filepath=str(a.source.resolve()))
+ obj=bpy.data.objects.get(a.inspect_target_object)
+ if not obj or obj.type!='MESH':raise ValueError('Requested source mesh not found')
+ mesh=obj.data;bm=bmesh.new()
+ try:
+  bm.from_mesh(mesh);bm.verts.ensure_lookup_table()
+  boundary={}
+  for edge in bm.edges:
+   if edge.is_boundary:
+    u,v=(x.index for x in edge.verts)
+    boundary.setdefault(u,[]).append(v);boundary.setdefault(v,[]).append(u)
+  loops=[];seen=set()
+  for seed in sorted(boundary):
+   if seed in seen or len(boundary[seed])!=2:continue
+   loop=[seed];previous=None;cur=seed
+   for _ in range(len(boundary)+1):
+    nexts=[i for i in boundary[cur] if i!=previous]
+    if not nexts:break
+    nxt=nexts[0]
+    if nxt==seed:break
+    if nxt in loop or len(boundary.get(nxt,[]))!=2:break
+    loop.append(nxt);previous,cur=cur,nxt
+   if len(loop)>=3 and seed in boundary.get(cur,[]) and len(loop)<=48:
+    seen.update(loop)
+    loops.append({'indices':loop,'first_positions':[list(mesh.vertices[i].co) for i in loop[:8]]})
+   if len(loops)>=12:break
+  result={'schema_version':1,'source_sha256':hashlib.sha256(a.source.read_bytes()).hexdigest(),
+   'target':obj.name,'vertices':len(mesh.vertices),'faces':len(mesh.polygons),
+   'location':list(obj.location),'dimensions':list(obj.dimensions),
+   'boundary_loops':loops,
+   'note':'Only these indexed open loops may be bridged. Coordinates are Blender object-local. No manifest means no safe vertex-index operations.'}
+  a.out.mkdir(parents=True,exist_ok=True)
+  dest=a.out/'mesh-context.json';dest.write_text(json.dumps(result,indent=2)+'\\n','utf8')
+  print('BLENDER_MESH_CONTEXT',dest,'boundary_loops',len(loops))
+ finally:bm.free()
+ sys.exit(0)
+if not a.plan or not a.plan.is_file():raise ValueError('Real Qwen plan missing')
 if a.out.resolve()==a.source.parent.resolve():raise ValueError('Never overwrite source directory')
 operations=json.loads(a.plan.read_text('utf8'))
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
@@ -118,9 +158,7 @@ def act(identifier):
     bm.from_mesh(obj.data);bm.verts.ensure_lookup_table();bm.edges.ensure_lookup_table()
     for ring in (loop_a,loop_b):
      for j in range(len(ring)):
-      edge=bm.edges.get((bm.verts[ring[j]],bm.verts[ring[(j+1)%len(ring)]])) if hasattr(bm.edges,'get') else None
-      if edge is None:
-       edge=next((e for e in bm.verts[ring[j]].link_edges if bm.verts[ring[(j+1)%len(ring)]] in e.verts),None)
+      edge=next((e for e in bm.verts[ring[j]].link_edges if bm.verts[ring[(j+1)%len(ring)]] in e.verts),None)
       if edge is None or len(edge.link_faces)!=1:raise ValueError('Loops must follow existing open mesh boundary edges')
     for j in range(len(loop_a)):
      a0=loop_a[j];a1=loop_a[(j+1)%len(loop_a)]
