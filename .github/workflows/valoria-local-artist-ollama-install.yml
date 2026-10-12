@@ -1,0 +1,45 @@
+name: Install permanent Eldoria artist in local Ollama
+on:
+  push:
+    branches: [art/local-ai-professional-artist-role-20261012]
+    paths:
+      - tools/art-direction/Modelfile.eldoria-artist
+      - .github/workflows/valoria-local-artist-ollama-install.yml
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-local-artist-ollama-install
+  cancel-in-progress: true
+jobs:
+  persistent-pc-identity:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Locate installed local Ollama and create reversible artist alias
+        shell: powershell
+        run: |
+          $cmd=Get-Command ollama.exe -ErrorAction SilentlyContinue
+          $candidates=@(
+             (Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'),
+             (Join-Path $env:PROGRAMFILES 'Ollama\ollama.exe')
+          )
+          if($cmd){$exe=$cmd.Source}else{$exe=$candidates | Where-Object {Test-Path $_} | Select-Object -First 1}
+          if(-not $exe){throw 'OLLAMA_NOT_INSTALLED_OR_UNAVAILABLE_ON_WINDOWS_RUNNER'}
+          Write-Output "OLLAMA_BINARY_FOUND"
+          $models=(& $exe list 2>&1 | Out-String)
+          if($LASTEXITCODE -ne 0){throw "OLLAMA_LOCAL_SERVER_UNAVAILABLE: $models"}
+          if($models -notmatch 'qwen3-vl:4b-instruct'){
+            throw "QWEN3_VL_4B_NOT_INSTALLED_ON_WINDOWS_PC; no automatic paid service, no changes made"
+          }
+          $file=Join-Path $env:GITHUB_WORKSPACE 'tools/art-direction/Modelfile.eldoria-artist'
+          & $exe create eldoria-artist -f $file
+          if($LASTEXITCODE -ne 0){throw 'OLLAMA_CREATE_ELDORIA_ARTIST_FAILED'}
+          $show=(& $exe show eldoria-artist --modelfile 2>&1 | Out-String)
+          if($LASTEXITCODE -ne 0 -or $show -notmatch 'VALORIA ARTIST'){throw 'ARTIST_IDENTITY_NOT_PERSISTENT'}
+          Write-Output 'ELDORIA_ARTIST_PERSISTENT_MODEL_PASS'
+          $installed=(& $exe list | Out-String)
+          $installed -split '\r?\n' | Where-Object {$_ -match 'eldoria-artist'} | Write-Output
