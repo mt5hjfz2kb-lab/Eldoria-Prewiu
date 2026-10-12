@@ -205,10 +205,13 @@ namespace Eldoria.EditorTools
             styled.Remove(gate);
             SetLookdev(true,styled,sun);
             cam.backgroundColor=new Color(.43f,.52f,.60f);
-            // First validate full family against the exact same composition without large staging meshes.
-            GameObject ground=null;
-            GameObject trees=null;
-            Light bounce=null;
+            // Scene-relative fog: fixed short-range fog erased every distant structure.
+            float viewDistance=Vector3.Distance(cam.transform.position,center);
+            RenderSettings.fogStartDistance=viewDistance*.72f;
+            RenderSettings.fogEndDistance=viewDistance*1.65f;
+            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
+            var trees=ValoriaNatureDresser.Dress(bounds,"cliff_rocks");
+            var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
             if(trees!=null)UnityEngine.Object.DestroyImmediate(trees);
