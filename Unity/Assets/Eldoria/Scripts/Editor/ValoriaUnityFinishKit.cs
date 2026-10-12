@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Eldoria.EditorTools
 {
@@ -12,6 +16,81 @@ namespace Eldoria.EditorTools
     {
         static Material stageMaterial;
         static Texture2D stageAlbedo;
+
+        static readonly Dictionary<Material,Material> Finished = new Dictionary<Material,Material>();
+        const string Study = "Assets/Eldoria/Experimental/ValoriaFinishV1";
+
+        public static void ConfigureIsolatedPipeline()
+        {
+            Directory.CreateDirectory(Study);
+            var original=GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;
+            if(original==null)throw new Exception("Actual URP asset required");
+            var pipeline=UnityEngine.Object.Instantiate(original);
+            pipeline.name="Valoria isolated art URP (desktop evidence, not mobile certification)";
+            pipeline.shadowDistance=260f;
+            pipeline.shadowCascadeCount=4;
+            pipeline.msaaSampleCount=4;
+            pipeline.supportsHDR=true;
+            pipeline.useSRPBatcher=true;
+            var serialized=new SerializedObject(pipeline);
+            var resolution=serialized.FindProperty("m_MainLightShadowmapResolution");
+            if(resolution!=null)resolution.intValue=4096;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            string path=Study+"/ValoriaStudyURP.asset";
+            AssetDatabase.DeleteAsset(path);
+            AssetDatabase.CreateAsset(pipeline,path);
+            GraphicsSettings.defaultRenderPipeline=pipeline;
+            QualitySettings.renderPipeline=pipeline;
+        }
+
+        // Cache by original source material, not by renderer: the gate has >1000 parts.
+        public static Material FinishMaterial(Material source,string piece)
+        {
+            if(Finished.TryGetValue(source,out var cached))return cached;
+            var m=new Material(source){name="ValoriaFinish_"+source.name};
+            ApplyArchitecturalMaterial(m,piece);
+            // glTFast shaders already implement glTF channel conventions. Preserve their
+            // authored maps rather than copying packed roughness into URP smoothness.
+            foreach(string slot in new[]{"_BaseMap","_BaseColorTexture","_MainTex"})
+            {
+                if(!m.HasProperty(slot))continue;
+                var texture=m.GetTexture(slot);
+                if(texture==null)continue;
+                texture.filterMode=FilterMode.Trilinear;
+                texture.anisoLevel=4;
+            }
+            Finished[source]=m;
+            return m;
+        }
+
+        public static void SaveStudyScene()
+        {
+            Directory.CreateDirectory(Study+"/Generated");
+            var saved=new Dictionary<UnityEngine.Object,string>();
+            int index=0;
+            Action<UnityEngine.Object> save=null;
+            save=obj=>{
+                if(obj==null||AssetDatabase.Contains(obj)||saved.ContainsKey(obj))return;
+                if(!(obj is Mesh)&&!(obj is Material)&&!(obj is Texture))return;
+                string path=Study+"/Generated/"+(index++).ToString("D5")+".asset";
+                AssetDatabase.DeleteAsset(path);
+                AssetDatabase.CreateAsset(obj,path); saved[obj]=path;
+            };
+            foreach(var go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                foreach(var filter in go.GetComponentsInChildren<MeshFilter>(true))save(filter.sharedMesh);
+                foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+                foreach(var material in renderer.sharedMaterials)
+                {
+                    if(material==null)continue;
+                    foreach(string property in material.GetTexturePropertyNames())save(material.GetTexture(property));
+                    save(material);
+                }
+            }
+            EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),Study+"/ValoriaFortification.unity");
+            AssetDatabase.SaveAssets();
+            Debug.Log("VALORIA_REPRODUCIBLE_SCENE_SAVED assets="+saved.Count);
+        }
 
         public static void ApplyArchitecturalMaterial(Material m, string piece)
         {
@@ -26,7 +105,7 @@ namespace Eldoria.EditorTools
             if (m.HasProperty("_Smoothness"))
                 m.SetFloat("_Smoothness", metal?.40f:cloth?.10f:wood?.16f:.11f);
             if (m.HasProperty("_BumpScale"))
-                m.SetFloat("_BumpScale",stone?1.24f:wood?1.12f:1f);
+                m.SetFloat("_BumpScale",stone?.72f:wood?.9f:1f);
             if (m.HasProperty("_OcclusionStrength"))
                 m.SetFloat("_OcclusionStrength",stone?1f:.85f);
             if (m.HasProperty("_BaseColor"))
@@ -48,11 +127,13 @@ namespace Eldoria.EditorTools
             var stage=new GameObject("STUDIO_CONTEXT_NOT_SOURCE_"+piece);
             var mf=stage.AddComponent<MeshFilter>();
             var mr=stage.AddComponent<MeshRenderer>();
-            int n=32;
+            int n=96;
             var v=new Vector3[(n+1)*(n+1)];
             var uv=new Vector2[v.Length];
             var triangles=new int[n*n*6];
             float level=b.min.y-.065f;
+            bool assembly=piece=="assembled_family";
+            if(assembly)level=-.08f;
             int ix=0;
             for(int z=0;z<=n;z++)for(int x=0;x<=n;x++)
             {
@@ -62,8 +143,16 @@ namespace Eldoria.EditorTools
                 float erode=Mathf.PerlinNoise(u*16.51f+1.1f,w*17.23f+5.4f)-.5f;
                 // Near the asset, keep ground support accurate and avoid intersecting its mesh.
                 float slope=(isCliff?.23f:.075f)*(jitter+erode*.24f);
+                if(assembly) {
+                    float wx=px+b.center.x, wz=pz+b.center.z;
+                    float terrace=Mathf.Max(Mathf.Abs(wx)/33f,Mathf.Abs(wz-2f)/26f);
+                    float drop=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((terrace-.75f)/.28f))*4.8f;
+                    slope-=drop;
+                    slope+=Mathf.PerlinNoise(wx*.14f+12f,wz*.16f+9f)*.22f;
+                    if(Mathf.Abs(wx)<5f && wz<2f && wz>-24f)slope=0f;
+                }
                 v[ix]=new Vector3(px,level+slope,pz);
-                uv[ix]=new Vector2(u*width*.32f,w*depth*.32f);
+                uv[ix]=new Vector2(u*width*.07f,w*depth*.07f);
                 ix++;
             }
             int ti=0;
@@ -102,8 +191,8 @@ namespace Eldoria.EditorTools
                 float a=Mathf.PerlinNoise(x*.035f+27f,y*.035f+34f);
                 float b=Mathf.PerlinNoise(x*.14f+18f,y*.14f+76f);
                 float c=Mathf.Clamp01(.64f*a+.36f*b);
-                var dark=new Color(.17f,.21f,.15f);
-                var light=new Color(.36f,.36f,.26f);
+                var dark=new Color(.22f,.25f,.105f);
+                var light=new Color(.46f,.43f,.235f);
                 pixels[y*256+x]=Color.Lerp(dark,light,c);
             }
             stageAlbedo.SetPixels(pixels);

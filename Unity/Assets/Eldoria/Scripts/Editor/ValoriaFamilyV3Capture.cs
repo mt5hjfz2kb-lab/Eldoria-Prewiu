@@ -16,12 +16,12 @@ namespace Eldoria.EditorTools
     {
         static readonly string[] Names = {
             "wall_straight", "watchtower", "wall_corner", "wall_connections",
-            "stone_path_platform", "cliff_rocks", "defensive_props"
+            "stone_path_platform", "cliff_rocks", "defensive_props", "hero_gate_v3"
         };
         static readonly Vector3[] Positions = {
             new Vector3(-14,0,0), new Vector3(-7,0,0), new Vector3(0,0,0),
             new Vector3(7,0,0), new Vector3(14,0,0), new Vector3(-5,0,16),
-            new Vector3(6,0,16)
+            new Vector3(6,0,16), new Vector3(28,0,0)
         };
         static readonly Dictionary<Renderer, Material[]> Originals = new Dictionary<Renderer, Material[]>();
         static readonly List<Material> Materials = new List<Material>();
@@ -31,6 +31,7 @@ namespace Eldoria.EditorTools
             try
             {
                 SceneSetup.SetupRenderPipeline();
+                ValoriaUnityFinishKit.ConfigureIsolatedPipeline();
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 var root = new GameObject("Approved_Valoria_Family_V3");
                 var objects = new List<GameObject>();
@@ -59,6 +60,7 @@ namespace Eldoria.EditorTools
                 camera.farClipPlane = 300f;
                 var folder = Path.Combine(UnityEngine.Application.dataPath, "../ValoriaV3UnityCaptures");
                 Directory.CreateDirectory(folder);
+                foreach(var stale in Directory.GetFiles(folder,"*.png")) File.Delete(stale);
                 foreach (var hero in new[]{false,true})
                 {
                     SetLookdev(false, objects, sunlight);
@@ -82,10 +84,13 @@ namespace Eldoria.EditorTools
         static void SetLookdev(bool lookdev,List<GameObject> objects,Light sun)
         {
             sun.color=lookdev ? new Color(1f,.87f,.72f) : Color.white;
-            sun.intensity=lookdev ? 1.15f : 1f;
+            sun.intensity=lookdev ? 1.45f : 1f;
             sun.shadowStrength=lookdev ? .87f : .5f;
-            sun.transform.rotation=Quaternion.Euler(lookdev? 42f:55f,-43f,0f);
-            RenderSettings.ambientMode=AmbientMode.Flat;
+            sun.transform.rotation=Quaternion.Euler(lookdev? 36f:55f,-43f,0f);
+            RenderSettings.ambientMode=lookdev?AmbientMode.Trilight:AmbientMode.Flat;
+            RenderSettings.ambientSkyColor=new Color(.37f,.46f,.61f);
+            RenderSettings.ambientEquatorColor=new Color(.28f,.32f,.35f);
+            RenderSettings.ambientGroundColor=new Color(.17f,.14f,.10f);
             RenderSettings.ambientLight=lookdev ? new Color(.35f,.39f,.41f):new Color(.70f,.70f,.70f);
             RenderSettings.fog=lookdev;
             RenderSettings.fogColor=new Color(.48f,.54f,.59f);
@@ -102,13 +107,7 @@ namespace Eldoria.EditorTools
                 for(int i=0;i<src.Length;i++)
                 {
                     if(src[i]==null) continue;
-                    var m=new Material(src[i]);
-                    ValoriaUnityFinishKit.ApplyArchitecturalMaterial(m,obj.name);
-                    if(m.HasProperty("_BaseColor"))
-                    {
-                        var c=m.GetColor("_BaseColor");
-                        m.SetColor("_BaseColor",Color.Lerp(c,new Color(c.r*.95f,c.g*.91f,c.b*.85f,c.a),.28f));
-                    }
+                    var m=ValoriaUnityFinishKit.FinishMaterial(src[i],obj.name);
                     Materials.Add(m);
                     dst[i]=m;
                 }
@@ -171,15 +170,8 @@ namespace Eldoria.EditorTools
             var extraPath=UnityEngine.Object.Instantiate(pieces[4]);
             extraPath.name="stone_path_platform_second_segment"; assembled.Add(extraPath);
 
-            var gltf=new GltfImport(null,new UninterruptedDeferAgent());
-            var path=Path.Combine(sourceDir,"hero_gate_v3.glb");
-            if(!File.Exists(path))throw new FileNotFoundException("Frozen Hero V3 missing",path);
-            bool loaded=await gltf.Load(new Uri(path).AbsoluteUri);
-            if(!loaded)throw new Exception("Frozen Hero V3 GLB loader failed");
-            var gate=new GameObject("frozen_hero_gate_v3");
-            if(!await gltf.InstantiateMainSceneAsync(gate.transform))
-                throw new Exception("Frozen Hero V3 instantiation failed");
-            assembled.Add(gate);
+            var gate=pieces[7];
+            await Task.CompletedTask;
 
             // Snap architectural module feet and align a readable independent study scene.
             Place(pieces[0],-10f,0f);      Place(wallRight,10f,0f);
@@ -202,10 +194,28 @@ namespace Eldoria.EditorTools
             Debug.Log("VALORIA_V3_ASSEMBLY_CAMERA="+cam.transform.position+" size="+cam.orthographicSize);
 
             SetLookdev(false,assembled,sun);
+            Render(cam,Path.Combine(outDir,"previous-assembled-hero.png"));
+            // Assemble sockets from real world bounds, preserving approved source geometry.
+            var gb=BoundsFor(gate);
+            float left=gb.min.x, right=gb.max.x;
+            Place(pieces[3],left-.30f,0f); Place(connectionRight,right+.30f,0f);
+            Place(pieces[0],left-BoundsFor(pieces[0]).extents.x+.12f,0f);
+            Place(wallRight,right+BoundsFor(wallRight).extents.x-.12f,0f);
+            float lx=BoundsFor(pieces[0]).min.x, rx=BoundsFor(wallRight).max.x;
+            Place(pieces[1],lx,0f); Place(towerRight,rx,0f);
+            Place(pieces[2],lx-2.2f,1f); Place(cornerRight,rx+2.2f,1f);
+            float roadEnd=BoundsFor(gate).min.z+.35f;
+            float pathDepth=BoundsFor(pieces[4]).size.z;
+            Place(pieces[4],0f,roadEnd-pathDepth*.5f);
+            Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
+            Place(pieces[6],-4f,roadEnd-1f);
+            // Cliff top supports the terrace; never put the cliff bottom at wall feet.
+            Place(pieces[5],lx-1f,5f);
+            pieces[5].transform.position+=Vector3.up*(-.15f-BoundsFor(pieces[5]).max.y);
             Render(cam,Path.Combine(outDir,"baseline-assembled-hero.png"));
             // Frozen Hero V3 retains its original material collection; avoid cloning >1000 source parts.
             var styled=new List<GameObject>(assembled);
-            styled.Remove(gate);
+            // Hero V3 shares the same cached material finishing as the seven family modules.
             SetLookdev(true,styled,sun);
             cam.backgroundColor=new Color(.43f,.52f,.60f);
             // Scene-relative fog: fixed short-range fog erased every distant structure.
@@ -216,6 +226,8 @@ namespace Eldoria.EditorTools
             var trees=ValoriaNatureDresser.DressAssembly(bounds);
             var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
+            Render(cam,Path.Combine(outDir,"lookdev-assembled-mobile.png"),780,520);
+            ValoriaUnityFinishKit.SaveStudyScene();
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
             if(trees!=null)UnityEngine.Object.DestroyImmediate(trees);
             if(bounce!=null)UnityEngine.Object.DestroyImmediate(bounce.gameObject);
@@ -228,16 +240,17 @@ namespace Eldoria.EditorTools
             obj.transform.position+=new Vector3(x-b.center.x,-b.min.y,z-b.center.z);
         }
 
-        static void Render(Camera cam,string path)
+        static void Render(Camera cam,string path,int width=1440,int height=960)
         {
-            var rt=new RenderTexture(960,640,24,RenderTextureFormat.ARGB32);
+            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
+            rt.antiAliasing=4;
             var prev=RenderTexture.active;
             try {
                 cam.targetTexture=rt;
                 cam.Render();
                 RenderTexture.active=rt;
-                var tex=new Texture2D(960,640,TextureFormat.RGB24,false);
-                tex.ReadPixels(new Rect(0,0,960,640),0,0);
+                var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
+                tex.ReadPixels(new Rect(0,0,width,height),0,0);
                 tex.Apply();
                 var center=tex.GetPixel(tex.width/2,tex.height/2);
                 var corner=tex.GetPixel(0,0);

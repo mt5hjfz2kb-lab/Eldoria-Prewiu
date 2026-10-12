@@ -8,7 +8,6 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnityFinishKit.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs'
-      - '.github/workflows/valoria-v3-unity-lookdev-probe.yml'
 permissions:
   contents: read
 concurrency:
@@ -78,7 +77,7 @@ jobs:
           if ($p.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 180}; throw "Unity failed $($p.ExitCode)" }
           if(Test-Path $log){Get-Content $log -Tail 60}
           $images=@(Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/ValoriaV3UnityCaptures" -Filter '*.png' -File -ErrorAction SilentlyContinue)
-          if($images.Count -ne 30){ throw "Expected 30 genuine Unity comparison frames (including assembly), got $($images.Count)" }
+          if($images.Count -ne 36){ throw "Expected 36 genuine Unity comparison frames (including assembly), got $($images.Count)" }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -86,5 +85,6 @@ jobs:
           path: |
             ${{ runner.temp }}/ValoriaV3-Unity-compile.log
             Unity/ValoriaV3UnityCaptures/*
+            Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/**
           if-no-files-found: warn
           retention-days: 7
