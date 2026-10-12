@@ -168,6 +168,8 @@ namespace Eldoria.EditorTools
             cornerRight.name="wall_corner_right"; assembled.Add(cornerRight);
             var connectionRight=UnityEngine.Object.Instantiate(pieces[3]);
             connectionRight.name="wall_connection_right"; assembled.Add(connectionRight);
+            var extraPath=UnityEngine.Object.Instantiate(pieces[4]);
+            extraPath.name="stone_path_platform_second_segment"; assembled.Add(extraPath);
 
             var gltf=new GltfImport(null,new UninterruptedDeferAgent());
             var path=Path.Combine(sourceDir,"hero_gate_v3.glb");
@@ -184,7 +186,8 @@ namespace Eldoria.EditorTools
             Place(pieces[1],-16f,0f);      Place(towerRight,16f,0f);
             Place(pieces[2],-21f,0f);      Place(cornerRight,21f,0f);
             Place(pieces[3],-6f,0f);       Place(connectionRight,6f,0f);
-            Place(pieces[4],0f,-11f);      Place(pieces[5],0f,13f);
+            Place(pieces[4],0f,-11f);      Place(extraPath,0f,-17f);
+            Place(pieces[5],-21f,8f);
             Place(pieces[6],0f,-7f);       Place(gate,0f,0f);
             Bounds bounds=BoundsFor(assembled[0]);
             foreach(var o in assembled)bounds.Encapsulate(BoundsFor(o));
@@ -193,7 +196,7 @@ namespace Eldoria.EditorTools
             cam.transform.position=center+new Vector3(1.08f,.84f,-1.40f).normalized*
                 (Mathf.Max(bounds.size.x,bounds.size.z)*2.9f+35f);
             cam.transform.LookAt(center);
-            cam.orthographicSize=Mathf.Max(bounds.extents.x*.92f,bounds.extents.z*1.15f)+4f;
+            cam.orthographicSize=Mathf.Max(bounds.extents.x*.92f,bounds.extents.z*1.15f)+1.6f;
             cam.farClipPlane=1000f;
             cam.backgroundColor=new Color(.20f,.31f,.47f);
             Debug.Log("VALORIA_V3_ASSEMBLY_CAMERA="+cam.transform.position+" size="+cam.orthographicSize);
@@ -207,10 +210,10 @@ namespace Eldoria.EditorTools
             cam.backgroundColor=new Color(.43f,.52f,.60f);
             // Scene-relative fog: fixed short-range fog erased every distant structure.
             float viewDistance=Vector3.Distance(cam.transform.position,center);
-            RenderSettings.fogStartDistance=viewDistance*.72f;
-            RenderSettings.fogEndDistance=viewDistance*1.65f;
+            RenderSettings.fogStartDistance=viewDistance*.93f;
+            RenderSettings.fogEndDistance=viewDistance*2.85f;
             var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
-            var trees=ValoriaNatureDresser.Dress(bounds,"cliff_rocks");
+            var trees=ValoriaNatureDresser.DressAssembly(bounds);
             var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
