@@ -38,7 +38,7 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   report.checks.push({startup:report.browserStartupPass,state:report.state[0]||null});
   if(!report.browserStartupPass)throw Error('No ValoriaWebGL playable state emitted after 115 seconds');
   await waitUntil(()=>!!findId('home'),25000);
-  canvasBox=await page.locator('canvas').first.boundingBox();
+  canvasBox=await page.locator('canvas').first().boundingBox();
   canvasInfo=await page.evaluate(()=>{const c=document.querySelector('canvas');return {width:c.width,height:c.height};});
   report.checks.push({canvasBox,canvasInfo});
   await sleep(4300); // Unity state event precedes the first actually rendered 3D frame.
