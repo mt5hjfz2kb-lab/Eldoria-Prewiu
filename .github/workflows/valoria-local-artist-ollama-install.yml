@@ -38,6 +38,26 @@ jobs:
           if($cmd){$exe=$cmd.Source}else{$exe=$candidates | Where-Object {Test-Path $_} | Select-Object -First 1}
           if(-not $exe){throw 'OLLAMA_NOT_INSTALLED_OR_UNAVAILABLE_ON_WINDOWS_RUNNER'}
           Write-Output "OLLAMA_BINARY_FOUND"
+          # The self-hosted runner may run without the desktop Ollama tray process.
+          # Start an isolated loopback server only when none is responding; no downloads.
+          $healthy=$false
+          try {
+            $response=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3
+            $healthy=$null -ne $response.models
+          } catch {}
+          if(-not $healthy){
+            Write-Output 'OLLAMA_LOCAL_SERVER_START_ATTEMPT'
+            $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden
+            for($i=0;$i -lt 25;$i++){
+              Start-Sleep -Seconds 1
+              try {
+                $response=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 2
+                if($null -ne $response.models){$healthy=$true;break}
+              } catch {}
+              if($server.HasExited){break}
+            }
+          }
+          if(-not $healthy){throw 'OLLAMA_LOCAL_SERVER_UNAVAILABLE_AFTER_START_ATTEMPT'}
           $models=(& $exe list 2>&1 | Out-String)
           if($LASTEXITCODE -ne 0){throw "OLLAMA_LOCAL_SERVER_UNAVAILABLE: $models"}
           if($models -notmatch 'qwen3-vl:4b-instruct'){
