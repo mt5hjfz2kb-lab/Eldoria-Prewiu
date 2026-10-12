@@ -125,7 +125,7 @@ topfaces=[]
 for ix in range(NX):
     for iy in range(NY):
         a=ix*(NY+1)+iy;b=a+NY+1
-        topfaces.extend(((a,a+1,b),(a+1,b+1,b)))
+        topfaces.extend(((a,b,a+1),(a+1,b,b+1)))
 grass=meshobj("Continuous organic plateau with shared cliff lip",grassverts,topfaces,grassuv,soil,True)
 
 # Thin rock-colored underlying soil/stone skirt at end seams; seam geometry
@@ -159,8 +159,7 @@ for cluster_index,cx in enumerate(cluster_centers):
             v.co*=f
 
 # Strong topology assertions: unlike V3, zero holes or exposed plain-white cap.
-lipgap=max(Vector(rockverts[ix*(NZ+1)+NZ])-Vector(grassverts[ix*(NY+1)])
-           for ix in range(NX+1)) if False else max(
+lipgap=max(
     (Vector(rockverts[ix*(NZ+1)+NZ])-Vector(grassverts[ix*(NY+1)])).length
     for ix in range(NX+1))
 assert lipgap < 0.00001, "Rock/soil cap seam disconnected"
@@ -177,6 +176,9 @@ bpy.ops.object.light_add(type="SUN",location=(2,-2,9))
 sun=bpy.context.object;sun.name="Warm directional daylight"
 sun.data.energy=1.8;sun.rotation_euler=(.65,-.38,-.35)
 world=bpy.context.scene.world
+if world is None:
+    world=bpy.data.worlds.new("Valoria overcast daylight")
+    bpy.context.scene.world=world
 world.color=(.35,.38,.42)
 scene=bpy.context.scene
 scene.render.resolution_x=1200;scene.render.resolution_y=800
