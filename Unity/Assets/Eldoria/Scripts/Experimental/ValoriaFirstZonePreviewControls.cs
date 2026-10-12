@@ -22,6 +22,7 @@ namespace Eldoria
         string selectedInstanceId=string.Empty;
         Vector2 pressPosition;
         bool dragging;
+        float lastTelemetryTime=-10f;
         public string SelectedInstanceId => selectedInstanceId;
 
         void Awake()
@@ -88,12 +89,22 @@ namespace Eldoria
             p.x=Mathf.Clamp(p.x,xLimits.x,xLimits.y);
             p.z=Mathf.Clamp(p.z,zLimits.x,zLimits.y);
             transform.position=p;
+            if(Time.unscaledTime-lastTelemetryTime>.45f)
+            {
+                lastTelemetryTime=Time.unscaledTime;
+                Debug.Log("VALORIA_CAMERA_PAN_VERIFIED x="+p.x.ToString("F2")+" z="+p.z.ToString("F2"));
+            }
         }
         void Zoom(float increment)
         {
             if(view.orthographic)
-                view.orthographicSize=Mathf.Clamp(view.orthographicSize+increment,
+                {
+                float previous=view.orthographicSize;
+                view.orthographicSize=Mathf.Clamp(previous+increment,
                     minimumOrthographicSize,maximumOrthographicSize);
+                if(Mathf.Abs(previous-view.orthographicSize)>.005f)
+                    Debug.Log("VALORIA_CAMERA_ZOOM_VERIFIED size="+view.orthographicSize.ToString("F2"));
+            }
         }
         void Select(Vector2 screenPosition)
         {
