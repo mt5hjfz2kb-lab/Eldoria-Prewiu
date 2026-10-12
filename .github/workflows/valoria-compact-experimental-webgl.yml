@@ -6,6 +6,7 @@ on:
       - .github/workflows/valoria-compact-experimental-webgl.yml
       - Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstZoneCandidateWebGL.cs
       - Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZonePreviewControls.cs
+      - Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstZoneWebGLBudget.cs
       - Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZoneAnchor.cs.meta
       - Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZonePreviewControls.cs.meta
 permissions:
