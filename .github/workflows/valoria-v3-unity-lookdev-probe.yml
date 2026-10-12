@@ -82,6 +82,8 @@ jobs:
           Copy-Item $variant (Join-Path $target 'cliff_rocks.glb') -Force
       - name: Run Unity import and compile
         shell: powershell
+        env:
+          VALORIA_SAVE_STUDY_SCENE: '1'
         run: |
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "Unity missing at UNITY_EDITOR_PATH" }
           $log=Join-Path $env:RUNNER_TEMP 'ValoriaV3-Unity-compile.log'
@@ -116,6 +118,11 @@ jobs:
              -not (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
             throw 'Unity capture completion markers missing'
           }
+          $study=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/ValoriaFortification.unity'
+          if(-not (Test-Path $study) -or (Get-Item $study).Length -lt 2000) {throw 'Persistent production-slice study scene not saved'}
+          $generated=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/Generated'
+          if(-not (Test-Path $generated) -or @(Get-ChildItem $generated -Filter '*.asset').Count -lt 8) {throw 'Scene missing generated dependency assets'}
+          Write-Host 'VALORIA_PRODUCTION_SLICE_SCENE_SAVED'
           Get-Content $log -Tail 25
       - uses: actions/upload-artifact@v4
         if: always()
@@ -124,5 +131,6 @@ jobs:
           path: |
             ${{ runner.temp }}/ValoriaV3-Unity-compile.log
             Unity/ValoriaV3UnityCaptures/*
+            Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/**
           if-no-files-found: warn
           retention-days: 7
