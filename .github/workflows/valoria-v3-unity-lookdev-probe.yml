@@ -35,8 +35,18 @@ jobs:
         shell: powershell
         run: |
           $branch='art/valoria-asset-family-v2-ai-authorship-20261011'
-          git fetch --no-tags --depth=1 origin $branch
+          $approvedCommit='0abf13870d21725c30acf3f3e3a8c86385470073'
+          git fetch --no-tags --depth=1 origin $approvedCommit
           if ($LASTEXITCODE -ne 0) { throw 'Approved source fetch failed' }
+          $expected=@{
+            'cliff_rocks'='f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed'
+            'wall_connections'='88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858'
+            'wall_straight'='99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c'
+            'watchtower'='534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d'
+            'stone_path_platform'='26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1'
+            'defensive_props'='5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c'
+            'wall_corner'='f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f'
+          }
           $names=@('wall_straight','watchtower','wall_corner','wall_connections','stone_path_platform','cliff_rocks','defensive_props')
           $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
           New-Item -ItemType Directory -Force $target | Out-Null
@@ -45,6 +55,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) {throw 'Frozen Hero V3 GLB missing'}
           $heroPath=Join-Path $env:GITHUB_WORKSPACE ($hero -replace '/', '\')
           Copy-Item $heroPath (Join-Path $target 'hero_gate_v3.glb') -Force
+          $heroHash=(Get-FileHash (Join-Path $target 'hero_gate_v3.glb') -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($heroHash -ne '81e63b7269bef3180648b636ad7341a4373e800afd05527e8e8aa95d88d35e2f') {throw 'Hero V3 source hash mismatch'}
           foreach($name in $names){
             $source="art-source/valoria/production/asset-family-v2/quality-v3/$name/$name.glb"
             git restore --source FETCH_HEAD --worktree -- $source
@@ -52,6 +64,8 @@ jobs:
             $file=Join-Path $env:GITHUB_WORKSPACE ($source -replace '/', '\')
             Copy-Item $file (Join-Path $target "$name.glb") -Force
             if ((Get-Item (Join-Path $target "$name.glb")).Length -lt 1000) {throw "Empty GLB $name"}
+            $hash=(Get-FileHash (Join-Path $target "$name.glb") -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($hash -ne $expected[$name]) {throw "Approved GLB checksum mismatch $name: $hash"}
           }
       - name: Run Unity import and compile
         shell: powershell
