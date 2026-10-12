@@ -41,7 +41,7 @@ namespace Eldoria.EditorTools
                 var x=i<placements.Count?placements[i]:new Vector3(
                     Mathf.Sin(i*2.13f)*spreadX,0,Mathf.Cos(i*2.78f)*spreadZ);
                 float h=(piece=="cliff_rocks"?1.1f:piece=="stone_path_platform"?.60f:.8f);
-                Spawn(pref,result.transform,bounds.center+new Vector3(x.x,bounds.min.y-.06f,x.z),h,30f*i);
+                Spawn(pref,result.transform,new Vector3(bounds.center.x+x.x,bounds.min.y-.06f,bounds.center.z+x.z),h,30f*i);
             }
             if(piece=="cliff_rocks"||piece=="stone_path_platform")
             {
@@ -49,8 +49,8 @@ namespace Eldoria.EditorTools
                 {
                     float height=piece=="cliff_rocks"?3.8f:3.0f;
                     Spawn(Trees[i%Trees.Length],result.transform,
-                        bounds.center+new Vector3((i==0?-1:1)*spreadX*1.55f,
-                        bounds.min.y-.08f,spreadZ*(i==0?.35f:.70f)),height,23f+i*52f);
+                        new Vector3(bounds.center.x+(i==0?-1:1)*spreadX*1.55f,
+                        bounds.min.y-.08f,bounds.center.z+spreadZ*(i==0?.35f:.70f)),height,23f+i*52f);
                 }
             }
             return result;
@@ -72,6 +72,10 @@ namespace Eldoria.EditorTools
             foreach(var r in renderers)all.Encapsulate(r.bounds);
             float ratio=Mathf.Clamp(targetHeight/Mathf.Max(.01f,all.size.y),.05f,20f);
             instance.transform.localScale*=ratio;
+            // Ground the actual visible foliage mesh, not its prefab pivot.
+            Bounds grounded=renderers[0].bounds;
+            foreach(var r in renderers)grounded.Encapsulate(r.bounds);
+            instance.transform.position+=Vector3.up*(position.y-grounded.min.y);
             // Material conversion preserves each authored prefab's existing diffuse texture.
             foreach(var r in renderers)
             {
