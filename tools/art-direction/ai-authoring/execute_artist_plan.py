@@ -53,7 +53,7 @@ if a.inspect:
    'boundary_loops':loops,
    'note':'Only these indexed open loops may be bridged. Coordinates are Blender object-local. No manifest means no safe vertex-index operations.'}
   a.out.mkdir(parents=True,exist_ok=True)
-  dest=a.out/'mesh-context.json';dest.write_text(json.dumps(result,indent=2)+'\\n','utf8')
+  dest=a.out/'mesh-context.json';dest.write_text(json.dumps(result,indent=2)+'\n','utf8')
   print('BLENDER_MESH_CONTEXT',dest,'boundary_loops',len(loops))
  finally:bm.free()
  sys.exit(0)
