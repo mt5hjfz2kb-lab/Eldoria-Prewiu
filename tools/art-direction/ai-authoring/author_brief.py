@@ -50,7 +50,8 @@ def main():
   'construct_mesh vertices [[x,y,z]...], faces [[indices]...], material_color [r,g,b]; '
   'assign_material rgb [r,g,b], roughness; '
   'place_existing_asset source_object, location [x,y,z], rotation [x,y,z], scale [x,y,z]. '
-  f'Use exactly target name {a.target_object}, with target mode {a.target_mode}: for existing, edit the existing Blender object and never construct a duplicate; for new, construct_mesh must be the first operation, followed by edits of that new object. Current inventory: {inventory}. '\n  f'Previously verified art failures and learnings (avoid repeating): {memory}. '
+  f'Use exactly target name {a.target_object}, with target mode {a.target_mode}: for existing, edit the existing Blender object and never construct a duplicate; for new, construct_mesh must be the first operation, followed by edits of that new object. Current inventory: {inventory}. '
+  f'Previously verified art failures and learnings (avoid repeating): {memory}. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  payload={'model':a.model,'stream':False,'think':False,'format':'json',
   'options':{'temperature':0.25,'num_predict':1800,'num_ctx':4096},
