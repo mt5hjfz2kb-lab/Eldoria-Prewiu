@@ -40,6 +40,11 @@ jobs:
           $names=@('wall_straight','watchtower','wall_corner','wall_connections','stone_path_platform','cliff_rocks','defensive_props')
           $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
           New-Item -ItemType Directory -Force $target | Out-Null
+          $hero='art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb'
+          git restore --source FETCH_HEAD --worktree -- $hero
+          if ($LASTEXITCODE -ne 0) {throw 'Frozen Hero V3 GLB missing'}
+          $heroPath=Join-Path $env:GITHUB_WORKSPACE ($hero -replace '/', '\')
+          Copy-Item $heroPath (Join-Path $target 'hero_gate_v3.glb') -Force
           foreach($name in $names){
             $source="art-source/valoria/production/asset-family-v2/quality-v3/$name/$name.glb"
             git restore --source FETCH_HEAD --worktree -- $source
@@ -59,7 +64,7 @@ jobs:
           if ($p.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 180}; throw "Unity failed $($p.ExitCode)" }
           if(Test-Path $log){Get-Content $log -Tail 60}
           $images=@(Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/ValoriaV3UnityCaptures" -Filter '*.png' -File -ErrorAction SilentlyContinue)
-          if($images.Count -ne 28){ throw "Expected 28 genuine Unity comparison frames, got $($images.Count)" }
+          if($images.Count -ne 30){ throw "Expected 30 genuine Unity comparison frames (including assembly), got $($images.Count)" }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
