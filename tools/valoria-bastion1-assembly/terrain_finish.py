@@ -31,13 +31,13 @@ def organic_outline(corners,divisions,seed):
         for j in range(divisions):
             t=j/divisions
             x=a0[0]*(1-t)+b0[0]*t;y=a0[1]*(1-t)+b0[1]*t
-            ripple=(math.sin(math.pi*t)**2)*(rng.uniform(-2.9,2.9)+math.sin((i*divisions+j)*.81)*.8)
+            ripple=(math.sin(math.pi*t)**2)*(rng.uniform(-3.8,3.8)+math.sin((i*divisions+j)*.81)*1.05)
             d=Vector((x-cx,y-cy));d.normalize()
             output.append((x+ripple*d.x,y+ripple*d.y))
     return output
 
 def cliff_plateau(name,corners,z,base_z,seed):
-    outline=organic_outline(corners,6,seed)
+    outline=organic_outline(corners,11,seed)
     polygon(name+'_walkable_cap',[(x,y,z) for x,y in outline],grass)
     cx=sum(x for x,y in outline)/len(outline);cy=sum(y for x,y in outline)/len(outline)
     ring_levels=((0,z),(.028,z-1.1),(.075,z-3.3),(.16,z-6.0),(.25,base_z))
@@ -65,7 +65,7 @@ def cliff_plateau(name,corners,z,base_z,seed):
 cliff_plateau('LowerFortressIsland',
     [(-27,-18),(23,-18),(29,-12),(30,5),(26,11),(-26,11),(-30,3),(-29,-10)],-.04,-15,412)
 cliff_plateau('UpperAsymmetricTerrace',
-    [(-26,12),(26,12),(29,19),(24,32),(-23,32),(-29,22)],3.44,-12,818)
+    [(-25.5,12),(24.5,12),(29,20),(23,33),(-24,32),(-30,22)],3.44,-2.5,818)
 
 # Basin reaches outside the entire strategic frame; no floating island or flat
 # blue rectangle posing as a distant landscape.
@@ -79,6 +79,34 @@ polygon('Valoria lower western stream',
     [(-105,-145,-15.8),(-7,-145,-15.8),(-10,-33,-15.8),
      (-39,-19,-15.8),(-96,-32,-15.8)],water)
 
+
+# Existing fortress geometry remains immutable. Add a continuous valley
+# below the causeway so the castle no longer looks like an isolated slab.
+front_width=73
+front_depth=27
+front_vertices=[]
+for iy in range(front_depth+1):
+    yy=-160+130*iy/front_depth
+    for ix in range(front_width+1):
+        xx=-180+360*ix/front_width
+        shoulder=11.5*math.exp(-((abs(xx)-88)/50)**2)
+        noise=fractal(Vector((xx*.025,yy*.033,15.1)),.78,2.0,4)*2.6
+        front_vertices.append((xx,yy,-23.2+shoulder+noise))
+front_faces=[]
+for iy in range(front_depth):
+    for ix in range(front_width):
+        i=iy*(front_width+1)+ix;j=i+front_width+1
+        front_faces.extend(((i,i+1,j),(i+1,j+1,j)))
+front_mesh=bpy.data.meshes.new('Valoria approach valley rolling terrain')
+front_mesh.from_pydata(front_vertices,[],front_faces)
+front_mesh.materials.append(valleygrass)
+front_mesh.update();front_mesh.validate()
+uv=front_mesh.uv_layers.new(name='UVMap')
+for loop in front_mesh.loops:
+    co=front_mesh.vertices[loop.vertex_index].co
+    uv.data[loop.index].uv=(co.x*.018,co.y*.018)
+front_obj=bpy.data.objects.new('Valoria lower valley continuous terrain',front_mesh)
+scene.collection.objects.link(front_obj)
 
 def valley_height(x,y):
     peaks=((-109,114,58,49),(-70,96,43,42),(-26,146,72,48),

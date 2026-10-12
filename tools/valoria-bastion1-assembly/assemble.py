@@ -222,6 +222,21 @@ def foliage(name,color):
    height=(6.0+(i%3)*1.4) if is_tree else .75+(i%3)*.18
    for old in obs:
     ob=old.copy();ob.data=old.data;scene.collection.objects.link(ob);ob.scale*=height/h;ob.location*=height/h;ob.location+=Vector((x,y,3.5 if y>11 else 0))
+ # Forested background assembled exclusively from the existing licensed
+ # pine source mesh; protect all player build parcels and the axial road.
+ if is_tree:
+  ridge_rng=random.Random(7409)
+  for side in (-1,1):
+   for i in range(33):
+    yy=35+(i//7)*12+ridge_rng.uniform(-3.5,4.5)
+    xx=side*(34+(i%7)*11+ridge_rng.uniform(-4,4))
+    zz=valley_height(xx,yy)+.4
+    height=7.5+(i%5)*1.4+ridge_rng.uniform(-1.2,1.8)
+    for old in obs:
+     ob=old.copy();ob.data=old.data;scene.collection.objects.link(ob)
+     ob.scale*=height/h
+     ob.location*=height/h
+     ob.location+=Vector((xx,yy,zz))
  for o in obs:bpy.data.objects.remove(o,do_unlink=True)
 foliage('pine' if (a.inputs/'pine.fbx').exists() else 'tree',(.075,.16,.12));foliage('bush',(.17,.23,.08))
 sun=bpy.data.lights.new('Late afternoon sun','SUN');sun.energy=2.2;sun.color=(1,.86,.69);sun.angle=.12
