@@ -6,6 +6,32 @@ import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.e
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
+
+def cpu_artist_schema(target,mode,max_actions):
+ """Constrain output *shape*, never prescribe artistic coordinates or geometry."""
+ kinds=['sculpt_region','sculpt_path','reprofile_crest','bridge_boundary_loops','assign_material','place_existing_asset'] if mode=='existing' else ['construct_mesh','sculpt_region','sculpt_path','reprofile_crest','assign_material']
+ if mode=='existing' and max_actions<=2:
+  # For an existing cliff, avoid repeating enormous invented mesh face lists.
+  kinds=['sculpt_region','sculpt_path','reprofile_crest']
+ fields={
+  'observed_defect':{'type':'string','minLength':35,'maxLength':250},
+  'design_intent':{'type':'string','minLength':35,'maxLength':260},
+  'asset_decision':{'type':'string','enum':['REUSE','MODIFY'] if mode=='existing' else ['NEW']},
+  'reason_for_new_geometry':{'type':'string','minLength':12,'maxLength':190},
+  'planned_actions':{'type':'array','minItems':1,'maxItems':max_actions,'items':{
+   'type':'object','additionalProperties':False,
+   'properties':{
+    'id':{'type':'string','maxLength':32},
+    'type':{'type':'string','enum':kinds},
+    'target':{'type':'string','const':target},
+    'rationale':{'type':'string','minLength':15,'maxLength':190},
+    'parameters':{'type':'object','minProperties':2,'maxProperties':5}
+   },'required':['id','type','target','rationale','parameters']}},
+  'expected_visual_difference':{'type':'string','maxLength':200},
+  'mobile_risks':{'type':'string','maxLength':180}
+ }
+ return {'type':'object','additionalProperties':False,'properties':fields,'required':list(fields)}
+
 def main():
  p=argparse.ArgumentParser()
  p.add_argument('--reference',type=pathlib.Path,required=True)
@@ -96,7 +122,24 @@ def main():
   f'Use no more than {a.max_actions} planned_actions; prioritize ONE high-impact geometry operation with precise coordinates. '
   'Keep valid JSON output concise (ideally under 950 output tokens), with short string fields and no repeated explanations. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
- payload={'model':a.model,'stream':False,'think':False,'format':'json',
+ if a.cpu_compact and a.target_mode=='existing':
+  # Context and images remain genuine; the model still chooses all spatial edits.
+  # Existing-mesh pilot cannot accept model-fabricated NEW mesh faces.
+  prompt=('Compare owner reference (first image) with genuine Unity V5 cliff (second). '
+   'Inspect the actual EXISTING cliff rock face; identify its visible geometry defect and independently select one concrete 3D sculpting operation. '
+   'Return planned_actions as a JSON ARRAY, not a dictionary; no faces list, construct_mesh or invented vertex indices. '
+   'Choose sculpt_region {center:[x,y,z],radius:meters,delta:[x,y,z]}, '
+   'sculpt_path {knots:[{center:[x,y,z],radius:meters,delta:[x,y,z]},...]}, '
+   'or reprofile_crest {axis:x|y,height_axis:y|z,control_points:[[pos,height],...],band_min,band_max}. '
+   'The topological anchors are OBJECT-LOCAL coordinates. Do not infer shape purely from words: compare both IMAGES. '
+   f'EXACT existing mesh target: {a.target_object}. Never create another mesh in this run. '
+   f'Available real sources: {inventory[:1000]}. Failed attempts learned: {memory[-650:]}. '
+   f'Actual mesh geometry: {mesh_context_for_artist[:3700]}. '
+   'Choose a specific deformation within these bounds with measurable camera-visible effect, '
+   'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
+   'and no repeated data. Respond only well-formed JSON matching supplied schema.')
+ format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions) if a.cpu_compact else 'json'
+ payload={'model':a.model,'stream':False,'think':False,'format':format_spec,
   'options':{'temperature':0.25,'num_predict':a.num_predict,'num_ctx':a.num_ctx},
   'messages':[{'role':'system','content':role.decode('utf8')},
               {'role':'user','content':prompt,'images':inputs}]}
