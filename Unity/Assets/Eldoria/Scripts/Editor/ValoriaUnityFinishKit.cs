@@ -17,8 +17,6 @@ namespace Eldoria.EditorTools
     {
         static Material stageMaterial;
         static Texture2D stageAlbedo;
-        static Material stageRockMaterial;
-        static Texture2D stageRockAlbedo;
 
         static readonly Dictionary<Material,Material> Finished = new Dictionary<Material,Material>();
         const string Study = "Assets/Eldoria/Experimental/ValoriaFinishV1";
@@ -183,60 +181,11 @@ namespace Eldoria.EditorTools
             mesh.vertices=v;mesh.uv=uv;
             // Lithology comes from the authored cliff GLBs. Per-cell rock selection
             // made a bright sawtooth stripe at the terrace lip in actual Unity PNGs.
-            // Split steep exposed ground into geological surface and gentle
-            // terrain into soil. The steepness is derived from real height
-            // differences, not arbitrary per-cell noise or painted lip bands.
-            if(assembly)
-            {
-                var earth=new List<int>();
-                var rock=new List<int>();
-                float cellX=width/n,cellZ=depth/n;
-                for(int tz=0;tz<n;tz++)for(int tx=0;tx<n;tx++)
-                {
-                    int v0=tz*(n+1)+tx, v1=v0+1, v2=v0+n+1, v3=v2+1;
-                    float dz=Mathf.Max(Mathf.Abs(v[v0].y-v[v2].y),Mathf.Abs(v[v1].y-v[v3].y))/cellZ;
-                    float dx=Mathf.Max(Mathf.Abs(v[v0].y-v[v1].y),Mathf.Abs(v[v2].y-v[v3].y))/cellX;
-                    bool geological=Mathf.Max(dx,dz)>.42f;
-                    var indices=geological?rock:earth;
-                    indices.Add(v0);indices.Add(v2);indices.Add(v1);
-                    indices.Add(v1);indices.Add(v2);indices.Add(v3);
-                }
-                mesh.subMeshCount=2;
-                mesh.SetTriangles(earth,0);
-                mesh.SetTriangles(rock,1);
-                mr.sharedMaterials=new[]{GetStageMaterial(),GetStageRockMaterial()};
-            }
-            else {mesh.triangles=triangles;mr.sharedMaterial=GetStageMaterial();}
+            mesh.triangles=triangles;mr.sharedMaterial=GetStageMaterial();
             mesh.RecalculateNormals();
             mf.sharedMesh=mesh;
             stage.transform.position=new Vector3(b.center.x,0f,b.center.z);
             return stage;
-        }
-
-        static Material GetStageRockMaterial()
-        {
-            if(stageRockMaterial!=null)return stageRockMaterial;
-            var shader=Shader.Find("Universal Render Pipeline/Lit");
-            if(shader==null)throw new Exception("URP Lit shader missing for escarpment");
-            stageRockMaterial=new Material(shader);
-            stageRockMaterial.name="Valoria weathered limestone on exposed steep earth";
-            stageRockMaterial.SetFloat("_Smoothness",.06f);
-            stageRockMaterial.SetFloat("_Metallic",0f);
-            stageRockAlbedo=new Texture2D(256,256,TextureFormat.RGB24,true,false);
-            stageRockAlbedo.wrapMode=TextureWrapMode.Repeat;
-            stageRockAlbedo.filterMode=FilterMode.Trilinear;
-            var pixels=new Color[256*256];
-            for(int yy=0;yy<256;yy++)for(int xx=0;xx<256;xx++)
-            {
-                float strata=Mathf.PerlinNoise(xx*.021f+19f,yy*.074f+83f);
-                float grain=Mathf.PerlinNoise(xx*.19f+31f,yy*.19f+11f);
-                float tone=Mathf.Clamp01(.68f*strata+.32f*grain);
-                pixels[yy*256+xx]=Color.Lerp(new Color(.22f,.20f,.165f),
-                    new Color(.49f,.45f,.35f),tone);
-            }
-            stageRockAlbedo.SetPixels(pixels);stageRockAlbedo.Apply(true,false);
-            stageRockMaterial.SetTexture("_BaseMap",stageRockAlbedo);
-            return stageRockMaterial;
         }
 
         static Material GetStageMaterial()
