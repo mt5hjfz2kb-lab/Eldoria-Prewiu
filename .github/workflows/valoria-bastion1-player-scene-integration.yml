@@ -55,7 +55,15 @@ jobs:
               }
             }
             $matching=@(Get-ChildItem -LiteralPath $shaderFolder -Filter 'glTF-pbrMetallicRoughness*.shadergraph' -File)
-            if($matching.Count -lt 1){throw 'glTFast PBR ShaderGraph still missing before native Unity import'}
+            if($matching.Count -lt 1){
+              # RUNNER_TEMP is cleared between jobs. A previous run may have left
+              # a damaged UPM cache with no restorable stash. Delete only this
+              # *generated* PackageCache entry so Unity Package Manager rehydrates
+              # the locked com.unity.cloud.gltfast 6.14.1 package on next start.
+              Write-Host "BASTION1_REHYDRATE_BROKEN_GLTF_UPM_CACHE $($pkg.FullName)"
+              Remove-Item -LiteralPath $pkg.FullName -Recurse -Force
+              continue
+            }
             Write-Host "BASTION1_NATIVE_GLTF_MATERIALS_RESTORED $($pkg.Name) graph_count=$($matching.Count)"
           }
       - name: Locate existing Blender and stage exact committed modules
