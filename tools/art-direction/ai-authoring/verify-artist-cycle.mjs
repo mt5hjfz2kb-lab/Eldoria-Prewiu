@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 export const APPROVED=new Set(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED']);
-const GEOMETRY=new Set(['sculpt_region','reprofile_crest','construct_mesh','remesh','mesh_cut','deform_curve','combine_meshes']);
-const ACTIONS=new Set([...GEOMETRY,'assign_material','place_existing_asset','terrain_scatter','light_scene']);
+const GEOMETRY=new Set(['sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh']);
+const ACTIONS=new Set([...GEOMETRY,'assign_material','place_existing_asset']);
 const SHA=/^[a-f0-9]{64}$/i, nonempty=x=>typeof x==='string'&&x.trim().length>0;
 export function verifyCycle(c,root=process.cwd()){
  const errors=[],need=(ok,msg)=>{if(!ok)errors.push(msg)};
@@ -34,6 +34,8 @@ export function verifyCycle(c,root=process.cwd()){
  need(c?.schema_version===1,'schema_version=1 required');
  need(nonempty(c?.asset_id)&&nonempty(c?.workstream_id),'asset/workstream identity required');
  need(nonempty(c?.state),'cycle state required');
+ const NON_APPROVED=new Set(['REQUESTED','AUTHORING','TECH_VALIDATED','VISUAL_REJECTED','PROTOTYPE_NO_AI_AUTHORSHIP']);
+ need(APPROVED.has(c?.state)||NON_APPROVED.has(c?.state),'unknown artist cycle state');
  if(!APPROVED.has(c?.state))return errors; // WIP and prototype explicitly are NOT artistic approvals.
  need(c?.authorship?.mode==='AI_DIRECTED_BLENDER','AI_DIRECTED_BLENDER required');
  need(c?.artist?.system_role==='system','Ollama artist profile must be actual system role');
@@ -64,8 +66,8 @@ export function verifyCycle(c,root=process.cwd()){
   need(ids.has(op.id)&&!done.has(op.id),'executed action not in prior decision/duplicate');done.add(op.id);
   const selected=plannedById.get(op.id);
   need(!selected||(op.target===selected.target&&op.type===selected.type),'executed action type/target must match prior artist decision');
-  need(op.applied===true&&nonempty(op.target)&&(Number(op.changed_vertices||0)>0||Number(op.changed_objects||0)>0),'measurable executed change required');
-  if(selected&&GEOMETRY.has(selected.type))need(Number(op.changed_vertices||0)>0,'structural artist action must change vertices');
+  need(op.applied===true&&nonempty(op.target)&&(Number(op.changed_vertices||0)>0||Number(op.changed_faces||0)>0||Number(op.changed_objects||0)>0),'measurable executed change required');
+  if(selected&&GEOMETRY.has(selected.type))need(Number(op.changed_vertices||0)>0||Number(op.changed_faces||0)>0,'structural artist action must change vertices/faces');
  }
  need(ids.size===done.size&&[...ids].every(x=>done.has(x)),'all approved actions must execute');
  const sourceHash=c?.authorship?.source_mesh_sha256,resultHash=c?.authorship?.result_mesh_sha256;
