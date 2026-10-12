@@ -1,0 +1,37 @@
+name: Valoria scene script binding diagnostic
+on:
+  push:
+    branches: [integration/valoria-v3-unity-lookdev-20261012]
+    paths: [.github/workflows/valoria-scene-binding-diagnostic.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38261014419
+          name: valoria-first-zone-v5-38261014419
+          github-token: ${{ github.token }}
+          path: scene
+      - name: Diagnose exact camera / anchor serialized GUIDs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          scenes=list(Path('scene').rglob('ValoriaFortification.unity'))
+          assert len(scenes)==1
+          t=scenes[0].read_text(errors='replace')
+          for key,filename in [('anchor','Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZoneAnchor.cs.meta'),('camera','Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZonePreviewControls.cs.meta')]:
+            meta=Path(filename).read_text()
+            guid=re.search(r'guid: ([0-9a-f]{32})',meta).group(1)
+            print('SCRIPT_BINDING',key,'guid',guid,'references',t.count(guid))
+          refs=re.findall(r'm_Script: \{fileID: 11500000, guid: ([0-9a-f]{32})',t)
+          from collections import Counter
+          print('SCRIPT_REFERENCES_TOP',Counter(refs).most_common(16))
+          print('SCENE_BYTES',len(t),'OBJECT_BLOCKS',t.count('--- !u!'))
+          PY
