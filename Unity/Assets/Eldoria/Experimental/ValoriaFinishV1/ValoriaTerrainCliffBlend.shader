@@ -5,8 +5,8 @@ Shader "Eldoria/ValoriaTerrainCliffBlend"
         _GrassHigh("Grass highlights", Color) = (0.43,0.42,0.23,1)
         _RockLow("Weathered limestone shadows", Color) = (0.24,0.22,0.19,1)
         _RockHigh("Weathered limestone highlights", Color) = (0.53,0.49,0.40,1)
-        _CliffThreshold("Cliff slope threshold", Range(0.3,0.98)) = 0.80
-        _CliffFeather("Cliff slope feather", Range(0.05,0.7)) = 0.35
+        _CliffThreshold("Cliff slope threshold", Range(0.3,0.98)) = 0.47
+        _CliffFeather("Cliff slope feather", Range(0.05,0.7)) = 0.31
     }
     SubShader {
         Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
@@ -69,7 +69,7 @@ Shader "Eldoria/ValoriaTerrainCliffBlend"
                 float3 albedo=lerp(grass,rock,cliff);
                 Light sun=GetMainLight(i.shadowCoord);
                 float ndl=saturate(dot(n,sun.direction));
-                float diffuse=(0.57+0.43*ndl*sun.shadowAttenuation);
+                float diffuse=(0.80+0.20*ndl*sun.shadowAttenuation);
                 return half4(albedo*diffuse,1);
             }
             ENDHLSL
