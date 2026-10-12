@@ -12,5 +12,5 @@ for name,path in paths.items():
  (target/(name+'.glb')).write_bytes(data);print('FROZEN_SOURCE_OK',name,len(data),flush=True)
 extras={'stairs.glb':'art-source/valoria/production/stair-family-v1/StairFamilyV1.glb','bridge.glb':'art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb','pine.fbx':'Unity/Assets/Holotna/Mountain/Models/Tree01.fbx','pine-leaf.png':'Unity/Assets/Holotna/Mountain/Textures/Leaf01_ALB.png','pine-trunk.png':'Unity/Assets/Holotna/Mountain/Textures/Trunk01_ALB.png','bush.fbx':'Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_01a.fbx'}
 for name,path in extras.items():
- data=subprocess.check_output(['git','show','39cc8b9ce60ae7b5a765e8ae1de670809a8d6e2f:'+path]);(target/name).write_bytes(data)
+ data=subprocess.check_output(['git','show',source+':'+path]);(target/name).write_bytes(data)
  print('EXISTING_SUPPLEMENT',name,hashlib.sha256(data).hexdigest(),flush=True)

@@ -175,7 +175,15 @@ def foliage(name,color):
    tex.image.pack()
    bs=m.node_tree.nodes.get('Principled BSDF');m.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
    if isleaf:
-    m.node_tree.links.new(tex.outputs['Alpha'],bs.inputs['Alpha']);m.blend_method='CLIP';m.alpha_threshold=.35;m.use_backface_culling=False
+    m.node_tree.links.new(tex.outputs['Alpha'],bs.inputs['Alpha'])
+    if hasattr(m,'blend_method'):m.blend_method='CLIP';m.alpha_threshold=.35
+    else:
+     # New Blender versions removed blend_method. Export thresholded alpha
+     # instead of silently rendering the rectangular leaf cards opaque.
+     threshold=m.node_tree.nodes.new('ShaderNodeMath');threshold.operation='GREATER_THAN';threshold.inputs[1].default_value=.35
+     m.node_tree.links.new(tex.outputs['Alpha'],threshold.inputs[0]);m.node_tree.links.new(threshold.outputs[0],bs.inputs['Alpha'])
+     if hasattr(m,'surface_render_method'):m.surface_render_method='DITHERED'
+    m.use_backface_culling=False
   vegetation_materials[key]=m;return m
  for o in obs:
   o.location-=(lo+hi)/2;o.location.z+=h/2
