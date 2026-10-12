@@ -100,12 +100,19 @@ namespace Eldoria
         void Zoom(float increment)
         {
             if(view.orthographic)
-                {
+            {
                 float previous=view.orthographicSize;
                 view.orthographicSize=Mathf.Clamp(previous+increment,
                     minimumOrthographicSize,maximumOrthographicSize);
                 if(Mathf.Abs(previous-view.orthographicSize)>.005f)
                     Debug.Log("VALORIA_CAMERA_ZOOM_VERIFIED size="+view.orthographicSize.ToString("F2"));
+            }
+            else
+            {
+                float previous=view.fieldOfView;
+                view.fieldOfView=Mathf.Clamp(previous+increment*8f,48f,78f);
+                if(Mathf.Abs(previous-view.fieldOfView)>.005f)
+                    Debug.Log("VALORIA_CAMERA_ZOOM_VERIFIED fov="+view.fieldOfView.ToString("F2"));
             }
         }
         void Select(Vector2 screenPosition)
