@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-11",
+  "updated_at": "2026-10-12T18:07:26.710Z",
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
@@ -40,7 +40,8 @@
         "docs/evidence/valoria-bastion1-reference-assembly/**",
         "pipeline/valoria-bastion1-assembly-request.json",
         ".github/workflows/valoria-bastion1-reference-assembly.yml",
-        "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json"
+        "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json",
+        "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**"
       ],
       "resources": [
         "valoria-bastion1-reference-assembly",
@@ -52,7 +53,7 @@
       "branch": "art/valoria-bastion1-reference-assembly-20261012",
       "dependency": "Existing Windows jobs complete before this single candidate job; no cancellation, publication or active delivery branch mutation.",
       "art_production_routing": "required",
-      "phase": "Two-level source assembly rendered; exact Unity candidate scheduled sequentially behind existing jobs",
+      "phase": "Owner reference correction: asymmetric upper bastion and detached lower remnants rendered in Blender; exact Unity/D3D11 verification in progress",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json"
     }
   ],
