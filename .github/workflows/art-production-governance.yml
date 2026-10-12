@@ -12,6 +12,7 @@ on:
       - 'tools/check-art-production-governance.mjs'
       - 'tools/art-direction/ai-authoring/**'
       - 'art-source/**'
+      - 'Unity/Assets/Eldoria/**' # Include every location where art assets/prefabs/materials may be introduced
       - 'Unity/Assets/Eldoria/ArtTests/**'
       - 'Unity/Assets/Eldoria/Resources/Valoria/**'
       - 'Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity'
@@ -30,6 +31,7 @@ on:
       - 'tools/check-art-production-governance.mjs'
       - 'tools/art-direction/ai-authoring/**'
       - 'art-source/**'
+      - 'Unity/Assets/Eldoria/**' # Include every location where art assets/prefabs/materials may be introduced
       - 'Unity/Assets/Eldoria/ArtTests/**'
       - 'Unity/Assets/Eldoria/Resources/Valoria/**'
       - 'Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity'
