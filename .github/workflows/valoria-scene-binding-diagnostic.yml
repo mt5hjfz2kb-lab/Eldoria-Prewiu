@@ -12,6 +12,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZoneAnchor.cs.meta
+            Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZonePreviewControls.cs.meta
       - uses: actions/download-artifact@v4
         with:
           run-id: 38261014419
