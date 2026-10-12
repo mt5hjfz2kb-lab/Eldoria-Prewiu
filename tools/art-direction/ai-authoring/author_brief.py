@@ -34,13 +34,23 @@ def main():
   if not a.inventory.is_file():raise ValueError('Explicit asset inventory does not exist')
   inventory=a.inventory.read_text('utf8')[:4000]
  else:
-  candidates=list((repo/'art-source/valoria/production').rglob('*.glb')) if (repo/'art-source/valoria/production').is_dir() else []
-  candidates+=list((repo/'Unity/Assets/Eldoria').rglob('*.glb')) if (repo/'Unity/Assets/Eldoria').is_dir() else []
+  candidates=[]
+  for directory in [repo/'art-source/valoria/production',repo/'Unity/Assets/Eldoria']:
+   if directory.is_dir():
+    for suffix in ('*.glb','*.blend','*.fbx','*.prefab','*.mat'):
+     candidates.extend(directory.rglob(suffix))
+  candidates=[x for x in candidates if x.is_file() and not x.name.endswith('.blend1')]
   def priority(p):
-   name=p.name.lower()
-   return (0 if any(x in name for x in ['v3','hero','cliff','gate','wall','tower','path']) else 1,p.as_posix())
-  candidates=sorted(set(candidates),key=priority)[:35]
-  inventory='Source candidates (licenses and frozen SHA must be verified before use): '+(', '.join(str(x.relative_to(repo)) for x in candidates) if candidates else 'NO LOCAL GLB SOURCES FOUND')
+   name=p.name.lower();location=p.as_posix().lower()
+   if 'hero' in name and ('v3' in name or 'gate' in name):return (0,location)
+   if 'starter-family-v3' in location:return (1,location)
+   if any(x in name for x in ['cliff','rock','terrain','gate','tower','wall','path','stair','bridge']):return (2,location)
+   if 'vegetation' in location or 'foliage' in location:return (3,location)
+   return (4,location)
+  candidates=sorted(set(candidates),key=priority)[:50]
+  inventory=('Existing candidate 3D sources (frozen source SHA, quality and license MUST be checked): '+
+   ('; '.join(f'{x.relative_to(repo)} ({x.stat().st_size} bytes)' for x in candidates) if candidates else
+    'NO LOCAL SOURCE FILES FOUND; inspect active art branches before assuming NEW required'))[:5500]
  journal=HERE.parent/'ARTIST_LEARNING_JOURNAL.md'
  memory=journal.read_text('utf8')[-2600:] if journal.is_file() else 'NO PREVIOUS LEARNING JOURNAL AVAILABLE; record this limitation.'
  memory_hash=digest(journal.read_bytes()) if journal.is_file() else None
