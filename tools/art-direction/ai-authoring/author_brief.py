@@ -106,7 +106,7 @@ def main():
   compact={'schema_version':topology['schema_version'],'source_sha256':topology.get('source_sha256'),
    'target':topology['target'],'vertices':topology.get('vertices'),'faces':topology.get('faces'),
    'local_aabb':topology.get('local_aabb'),'dimensions':topology.get('dimensions'),
-   'sample_vertices':topology.get('sample_vertices',[])[:8],
+   'sample_vertices':topology.get('sample_vertices',[])[:16],
    'boundary_loops':topology['boundary_loops'][:4]}
   # Verification still uses the FULL on-disk topology; no unproven loop may be used.
   mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
@@ -158,7 +158,7 @@ def main():
    'The topological anchors are OBJECT-LOCAL coordinates. Do not infer shape purely from words: compare both IMAGES. '
    f'EXACT existing mesh target: {a.target_object}. Never create another mesh in this run. '
    f'Available real sources: {inventory[:1000]}. Failed attempts learned: {memory[-650:]}. '
-   f'Actual mesh geometry: {mesh_context_for_artist[:3700]}. '
+   f'Actual mesh geometry: {mesh_context_for_artist[:5000]}. '
    f'{prior_review_feedback} '
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
