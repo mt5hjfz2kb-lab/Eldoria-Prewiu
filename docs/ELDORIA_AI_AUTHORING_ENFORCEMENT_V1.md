@@ -46,3 +46,30 @@ node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
 **Primera prueba artística obligatoria:** conservar Bastión I funcional, diseñar con Qwen una geometría de acantilados/terrazas orgánicos y continuos, editarla con BlenderMCP, integrar en Unity y comparar las capturas reales. Un render técnicamente correcto sin mejora visible NO es entrega. Registro de resultados en la Issue #34 y el diario artístico, nunca como falsa afirmación de ART PASS.
 
 **Limitación técnica honesta:** el validador prueba trazabilidad y falta de señales obvias de aprobación ficticia; no puede demostrar por sí solo si las imágenes o logs son honestos, ni sustituir el juicio visual. La verificación cruzada con el workflow real y el motor Unity sigue siendo imprescindible.
+
+## Ensayo estructural avanzado y preflight barato (Issue #34)
+
+El diseño **no** depende ya solamente de amplitud/ruido. `sculpt_path` permite al artista escoger una sucesión de anclajes 3D y desplazamientos con interpolación continua para romper una silueta rígida; `bridge_boundary_loops` añade caras reales entre dos anillos de aristas abiertos de la MISMA malla, conservando la fuente mediante una variante .blend. La segunda operación exige índices de frontera auténticos: si no hay topología compatible, Qwen no debe inventarla; replantear la malla o crear una conexión diseñada explícitamente como geometría nueva.
+
+Antes de ejecutar Qwen, inspeccionar el origen congelado, **sin alterar su contenido**, por ejemplo:
+
+```bash
+blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+  --source /sources/valoria-frozen.blend --out /proof/bastion-1 \
+  --inspect --inspect-target-object Terrain
+python3 tools/art-direction/ai-authoring/author_brief.py \
+  --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+  --unity-before /proof/unity-before.png \
+  --mesh-context /proof/bastion-1/mesh-context.json \
+  --target-object Terrain --target-mode existing --out /proof/bastion-1
+node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
+  --preflight-plan /proof/bastion-1/artist-plan.json Terrain existing
+```
+
+Solo tras `ART_PLAN_PREFLIGHT_PASS` iniciar Blender de edición y Unity. Añadir `--expected-source-sha256 SHA256_DEL_BLEND_CONGELADO` al ejecutor para impedir trabajar sobre una fuente que haya cambiado. El manifiesto incluye nombre exacto, magnitudes e índices reales de anillos abiertos; la inferencia incluye su hash. **Un preflight PASS no sustituye Blender real:** los bordes se verifican una segunda vez dentro de Blender y se rechazan caras inválidas o aristas no abiertas.
+
+Para permitir `ART_APPROVED`, el `artist-cycle.json` debe contener una referencia `authorship.plan_file` con ruta y SHA256 del `artist-plan.json` producido ANTES del modelado. El verificador coteja ese plan con las decisiones registradas en `artist-inference.json`, las acciones de `artist-execution.json`, los hashes de fuente y productos .blend/.glb, la referencia, las capturas Unity y el perfil `system`. Una diferencia se rechaza, incluso si un archivo aislado tiene un SHA256 formalmente válido. **Estos cruces aumentan la resistencia a pruebas simuladas, pero un registro manipulado intencionadamente aún requiere contrastarse con logs reales del runner y revisión independiente.**
+
+Las fases registran `inference_seconds`, `elapsed_seconds` por operación y duración de ciclo; documentar después causas raíz, correcciones, mérito visual y costes de móvil en el diario existente. No rellenar A/B, importación, gameplay ni veredicto de dispositivo con evidencias inventadas. Las pruebas de simulación solo verifican contratos.
+
+**Ejecución pendiente y propiedad protegida:** no lanzar la prueba real del terreno de Bastión I mientras otro workstream conserve `valoria-player-scene` y `windows-runner-heavy`; no tocar esa rama ni `main` hasta reconciliar claims y checks. El núcleo puede pasar Linux CI mientras el resultado visual se mantiene `VISUAL_REJECTED` o `AUTHORING`, nunca `ART_APPROVED`.
