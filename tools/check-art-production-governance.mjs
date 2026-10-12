@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { requireMatchingApprovedCycle } from './art-direction/ai-authoring/approval-boundary.mjs';
 
 const registryPath='pipeline/active-workstreams.json';
 const requestDir='pipeline/art-production-requests';
@@ -40,8 +41,7 @@ for(const workstream of registry.active || []){
       const cyclePath=path.resolve(process.cwd(),req.artist_cycle_path);
       if(!cyclePath.startsWith(process.cwd()+path.sep)) throw new Error('Artist cycle must reside inside the repository');
       const cycle=JSON.parse(fs.readFileSync(cyclePath,'utf8'));
-      if(cycle.state!==gateState) throw new Error('Approved request '+gateState+' requires matching approved artist cycle, got '+String(cycle.state));
-      if(cycle.workstream_id!==workstream.id) throw new Error('Artist cycle belongs to a different workstream');
+      requireMatchingApprovedCycle(cycle,req,workstream.id);
       execFileSync(process.execPath,['tools/art-direction/ai-authoring/verify-artist-cycle.mjs',cyclePath,process.cwd()],{stdio:'pipe'});
     }catch(err){failures.push(workstream.id+': artist cycle proof FAIL: '+String(err.stderr||err.message).trim());}
   }
