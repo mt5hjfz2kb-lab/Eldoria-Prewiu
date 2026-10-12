@@ -82,6 +82,22 @@ jobs:
           assert hashlib.sha256(glb).hexdigest()==evidence['result_glb_sha256']
           print('REAL_BLENDER_SMOKE_PASS',json.dumps(evidence,indent=2))
           PY
+      - name: Prove reproducible paired clay captures on unchanged source camera
+        timeout-minutes: 5
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before /tmp/eldoria-smoke/source.blend --after /tmp/eldoria-smoke/result/artist-output.blend \
+            --target Terrain --out /tmp/eldoria-smoke/ab
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('/tmp/eldoria-smoke/ab')
+          manifest=json.loads((root/'comparison.json').read_text())
+          assert manifest['target']=='Terrain'
+          assert manifest['before_image_sha256']!=manifest['after_image_sha256']
+          assert (root/'before-blender-clay.png').stat().st_size>2500
+          assert (root/'after-blender-clay.png').stat().st_size>2500
+          print('CAMERA_LOCKED_AB_SMOKE_PASS')
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -92,5 +108,6 @@ jobs:
             /tmp/eldoria-smoke/result/artist-execution.json
             /tmp/eldoria-smoke/result/artist-output.blend
             /tmp/eldoria-smoke/result/artist-output.glb
+            /tmp/eldoria-smoke/ab/*
           retention-days: 7
           if-no-files-found: warn
