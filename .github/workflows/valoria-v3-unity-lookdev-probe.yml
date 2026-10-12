@@ -5,6 +5,7 @@ on:
       - integration/valoria-v3-unity-lookdev-20261012
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFamilyLookdev.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs'
       - '.github/workflows/valoria-v3-unity-lookdev-probe.yml'
 permissions:
   contents: read
