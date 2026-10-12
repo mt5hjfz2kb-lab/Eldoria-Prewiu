@@ -39,7 +39,7 @@ namespace Eldoria.EditorTools
                 {
                     var path = Path.Combine(baseDir, name + ".glb");
                     if (!File.Exists(path)) throw new FileNotFoundException(name, path);
-                    var importer = new GltfImport();
+                    var importer = new GltfImport(null, new UninterruptedDeferAgent());
                     bool loaded = await importer.Load(new Uri(path).AbsoluteUri);
                     if (!loaded) throw new Exception("glTFast load failure: " + name);
                     var holder = new GameObject(name);
