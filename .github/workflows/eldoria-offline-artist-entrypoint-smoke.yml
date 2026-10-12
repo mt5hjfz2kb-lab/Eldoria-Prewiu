@@ -1,0 +1,30 @@
+name: Eldoria offline artist entrypoint smoke
+on:
+  push:
+    branches: [art/local-ai-professional-artist-role-20261012]
+    paths:
+      - tools/art-direction/run_local_artist_trial.py
+      - tools/art-direction/verify_local_artist_environment.py
+      - tools/art-direction/build_cliff_talus_transition_v1.py
+      - .github/workflows/eldoria-offline-artist-entrypoint-smoke.yml
+permissions:
+  contents: read
+jobs:
+  static-and-passive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile scripts without running Qwen or Blender
+        run: |
+          python3 -m py_compile tools/art-direction/run_local_artist_trial.py tools/art-direction/verify_local_artist_environment.py tools/art-direction/build_cliff_talus_transition_v1.py
+      - name: Passive environment detector should report missing runtime without crashing
+        run: |
+          set +e
+          python3 tools/art-direction/verify_local_artist_environment.py > /tmp/eldoria-preflight.json
+          result=$?
+          set -e
+          python3 -m json.tool /tmp/eldoria-preflight.json >/dev/null
+          test "$result" -eq 0 -o "$result" -eq 2
+      - name: Command line contract
+        run: python3 tools/art-direction/run_local_artist_trial.py --help >/dev/null
