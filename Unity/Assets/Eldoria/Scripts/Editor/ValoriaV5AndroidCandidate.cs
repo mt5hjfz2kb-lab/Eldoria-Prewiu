@@ -99,6 +99,8 @@ namespace Eldoria.EditorTools
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel29;
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
             PlayerSettings.Android.useCustomKeystore = false;
+            PlayerSettings.stripEngineCode = true;
+            PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android, ManagedStrippingLevel.Medium);
             EditorUserBuildSettings.buildAppBundle = false;
             EditorUserBuildSettings.exportAsGoogleAndroidProject = false;
             Directory.CreateDirectory("Builds/Android");
@@ -106,7 +108,7 @@ namespace Eldoria.EditorTools
                 scenes = new[] { TempScene },
                 locationPathName = "Builds/Android/Eldoria-Valoria-V5-Test.apk",
                 target = BuildTarget.Android,
-                options = BuildOptions.Development
+                options = BuildOptions.None
             });
             if (result.summary.result != BuildResult.Succeeded) throw new Exception("APK_BUILD_FAILED: " + result.summary.result);
             if (!File.Exists("Builds/Android/Eldoria-Valoria-V5-Test.apk")) throw new Exception("APK_MISSING");
