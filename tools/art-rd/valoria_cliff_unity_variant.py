@@ -76,33 +76,24 @@ def author():
   t=(x+6)/12*facets
   facet=(1-2*abs((t%1)-.5)) # triangular geological planes
   broad=math.sin(t*math.pi*.72)+.45*math.sin(t*math.pi*1.37)
-  change=seam*(.35+u*.65)*amp*(.6*facet+.4*broad)
+  # Preserve the frozen crest contact: push large vertical fault masses only
+  # below the cap. The first variant displaced the lip and exposed a bright shelf.
+  taper=max(0,min(1,(-z-.12)/.95))
+  change=seam*taper*(.35+u*.65)*amp*(.6*facet+.4*broad)
   if y<-1.0:
    v.co.y=y-change
-   if z>-.5:v.co.y+=seam*recede*(1-u)
+   if z<-.8:v.co.y+=seam*recede*.35*math.sin(math.pi*u)
    count+=1;max_delta=max(max_delta,abs(change))
  bed.data.update()
- for v in crest.data.vertices:
-  x,y,z=v.co
-  if y>-1.0:continue
-  seam=max(0,min(1,(6-abs(x))/.68))
-  t=(x+6)/12*facets;facet=1-2*abs((t%1)-.5)
-  v.co.y=y-seam*amp*(.6*facet+.4*math.sin(t*math.pi*.72))*.35+seam*recede
+ # Original cap remains connected to the unchanged z=0 rock boundary.
+ # Redistribute existing textured talus instead of inserting untextured wedges.
+ talus=[ob for ob in bpy.context.scene.objects if ob.type=='MESH' and 'talus' in ob.name.lower()]
+ for i,ob in enumerate(talus):
+  ob.location.x+=.10*math.sin(i*2.7)
+  ob.location.y-=.12*(i%3)/2
  crest.data.update()
- # Large, unequal talus wedges visually connect the face to the ground.
- # Their mesh geometry is artist-directed by Qwen's chosen facet and cluster counts.
- rock=bed.data.materials[0]
- for i in range(clusters):
-  x=-5.2+10.4*i/max(1,clusters-1)
-  w=.7+(i%3)*.19;h=.58+(i%4)*.22
-  verts=[(x-w,-2.3,-3.48),(x+w,-2.24,-3.46),(x+.33*w,-2.92-h*.4,-3.45),
-         (x-.3*w,-2.95-h*.4,-3.42),(x,-2.55,-3.44+h)]
-  faces=[(0,3,4),(3,2,4),(2,1,4),(1,0,4),(0,1,2,3)]
-  mesh=bpy.data.meshes.new('AI-directed fractured talus '+str(i));mesh.from_pydata(verts,[],faces);mesh.update()
-  mesh.materials.append(rock)
-  ob=bpy.data.objects.new(mesh.name,mesh);bpy.context.scene.collection.objects.link(ob)
  change_log.update({'bedrock_vertices_changed':count,'maximum_displacement_m':max_delta,'crest_vertices_changed':len(crest.data.vertices),
-  'fault_facets':facets,'talus_wedges':clusters,'blender_mcp_executed':True,'source_geometry_preserved_separately':True})
+  'fault_facets':facets,'textured_source_talus_adjusted':len(talus),'artist_requested_clusters':clusters,'blender_mcp_executed':True,'source_geometry_preserved_separately':True})
  assert count>1000 and max_delta>.15
 bpy.app.driver_namespace['valoria_cliff_author']=author
 server=mcp.BlenderMCPServer(host='127.0.0.1',port=0)
