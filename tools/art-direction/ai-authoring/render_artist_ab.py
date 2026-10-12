@@ -58,6 +58,8 @@ def render(path,name):
  light.location=center+Vector((-size*0.8,-size*0.65,size*1.3))
  light_data.energy=1800;light_data.shape='DISK';light_data.size=size*1.25
  scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=12
+ for layer in scene.view_layers:
+  if hasattr(layer,'cycles'):layer.cycles.use_denoising=False # System Blender does not ship OpenImageDenoiser
  scene.render.resolution_x=640;scene.render.resolution_y=480;scene.render.resolution_percentage=100
  scene.render.image_settings.file_format='PNG';scene.render.film_transparent=False
  scene.world.color=(0.09,0.09,0.09)
