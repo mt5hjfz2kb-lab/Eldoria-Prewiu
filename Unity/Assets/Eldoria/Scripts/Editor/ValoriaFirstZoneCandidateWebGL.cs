@@ -20,8 +20,7 @@ namespace Eldoria.EditorTools
         const string Output="Builds/ValoriaFirstZoneWebGL";
         public static void Build()
         {
-            if(!File.Exists("Assets/../Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/ValoriaFortification.unity") &&
-               !File.Exists(Path.Combine(Application.dataPath,
+            if(!File.Exists(Path.Combine(UnityEngine.Application.dataPath,
                     "Eldoria/Experimental/ValoriaFinishV1/ValoriaFortification.unity")))
                 throw new Exception("Persisted ValoriaFortification scene unavailable");
             var scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
