@@ -1,0 +1,30 @@
+name: Valoria local AI artist role contract
+on:
+  push:
+    branches:
+      - art/local-ai-professional-artist-role-20261012
+    paths:
+      - tools/art-direction/**
+      - .github/workflows/valoria-local-artist-contract.yml
+permissions:
+  contents: read
+jobs:
+  verify-role-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Python and persistent artist system role wiring
+        run: |
+          python3 - <<'PY'
+          import ast, pathlib
+          root=pathlib.Path('tools/art-direction')
+          role=(root/'VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md').read_text()
+          script=(root/'valoria_cliff_role_integrated_candidate.py').read_text()
+          ast.parse(script)
+          assert 'professional 3D environment artist' in role
+          assert "role_path=ROOT/'tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md'" in script
+          assert "{'role':'system','content':role_text}" in script
+          assert "'artist_system_prompt_sha256':role_sha" in script
+          assert 'self_approval' in script and 'BlenderMCP' in role
+          print('PASS: persistent artist system message, provenance, and Python syntax')
+          PY
