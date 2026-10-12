@@ -13,7 +13,7 @@ permissions:
   contents: read
 concurrency:
   group: eldoria-bastion1-player-integration
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   assemble-and-capture:
     if: vars.UNITY_RUNNER_READY == 'true'
@@ -164,6 +164,35 @@ jobs:
           if((Get-ChildItem -LiteralPath $assets -Filter '*.glb' -File -Recurse | Measure-Object).Count -ne 0){
             throw 'Legacy GLB exclusion incomplete'
           }
+      - name: Disable unused glTFast Graph compilers in temporary WebGL PackageCache
+        shell: powershell
+        run: |
+          # The authored player meshes have URP/Lit materials, and the historic
+          # Resources/Valoria GLBs were quarantined above. Keep the package C#
+          # loader installed. Only in this disposable runner's PackageCache,
+          # quarantine its trillion-variant material ShaderGraph assets.
+          # Browser QA must still verify World/Valoria navigation and material rendering.
+          $pkgRoot=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          $packages=@(Get-ChildItem -LiteralPath $pkgRoot -Directory -Filter 'com.unity.cloud.gltfast@*')
+          if($packages.Count -lt 1){throw 'glTFast 6 package cache missing'}
+          $destRoot=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
+          $selected=@()
+          foreach($pkg in $packages){
+            $shaders=@(Get-ChildItem -LiteralPath (Join-Path $pkg.FullName 'Runtime/Shader') -Filter 'glTF-*.shadergraph' -File)
+            foreach($shader in $shaders){
+              $destination=Join-Path $destRoot $shader.Name
+              New-Item -ItemType Directory -Force (Split-Path $destination) | Out-Null
+              Move-Item -LiteralPath $shader.FullName -Destination $destination -Force
+              if(Test-Path -LiteralPath "$($shader.FullName).meta"){
+                Move-Item -LiteralPath "$($shader.FullName).meta" -Destination "$destination.meta" -Force
+              }
+              $selected+= $shader.Name
+            }
+          }
+          if(($selected | Where-Object { $_ -match '^glTF-pbrMetallicRoughness' } | Measure-Object).Count -lt 1){
+            throw 'Problematic glTFast metallic-roughness graph not found'
+          }
+          Write-Host "BASTION1_CANDIDATE_GLTF_SHADERGRAPH_GATE_PASS count=$($selected.Count) graphs=$($selected -join ',')"
       - name: Build isolated playable WebGL candidate
         shell: powershell
         run: |
