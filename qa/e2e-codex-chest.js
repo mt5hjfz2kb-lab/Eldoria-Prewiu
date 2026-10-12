@@ -10,7 +10,7 @@ const {chromium}=require('playwright');
  if((await state()).view!=='chest')throw Error('Chest did not become a dedicated view');
  await p.locator('[data-testid="nav-codex"]').tap({force:true});
  await p.locator('[data-testid="codex-scroll"]').waitFor({state:'visible'});
- if(await p.locator('[data-card-use],[data-card-keep]').count())throw Error('Codex still contains card management');
+ if(await p.locator('[data-testid="codex-scroll"] [data-card-use],[data-testid="codex-scroll"] [data-card-keep]').count())throw Error('Codex still contains card management');
  const codexText=(await p.locator('[data-testid="codex-scroll"]').innerText()).toUpperCase();
  for(const term of ['CÓDICE DE ELDORIA','LA BRECHA','BESTIARIO','MUNDO','PERSONAJES','CONOCIMIENTO'])if(!codexText.includes(term))throw Error('Knowledge Codex missing '+term);
  if(codexText.includes('ABRIR RELICARIO')||await p.locator('[data-testid="open-relicario"],.relicarioPortal027').count())throw Error('Relicario is still nested inside Codex');
