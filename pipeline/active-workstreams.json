@@ -66,6 +66,27 @@
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
       "phase": "Existing SawmillState0/1/2 V1 sources confirmed in full main tree; state-driven mesh adapter and native scene builder in progress"
+    },
+    {
+      "id": "ai-art-authorship-enforcement-v1-20261012",
+      "title": "Real AI-driven Blender authoring proofs and mandatory visual-approval gate",
+      "owner": "chat-eldoria-art-authoring-enforcement-20261012",
+      "scope": [
+        "tools/art-direction/ai-authoring/**",
+        "tools/check-art-production-governance.mjs",
+        "tools/plan-art-production.mjs",
+        "docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md",
+        ".github/workflows/art-production-governance.yml",
+        "pipeline/art-production-requests/ai-art-authorship-enforcement-v1-20261012.json"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-12",
+      "base_main_sha": "a565bac9fb4dbf7b66682e5ff3a0d6a32d79f4ed",
+      "branch": "art/eldoria-ai-authoring-enforcement-v1-20261012",
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/ai-art-authorship-enforcement-v1-20261012.json",
+      "phase": "Isolated branch, no runner, implementation and unit tests only; reconcile add-only claim to live main before merging"
     }
   ],
   "history": [
