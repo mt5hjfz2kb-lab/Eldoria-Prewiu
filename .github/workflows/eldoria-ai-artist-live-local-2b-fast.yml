@@ -150,6 +150,8 @@ jobs:
             /tmp/eldoria-ai-real/context/mesh-context.json
             /tmp/eldoria-ai-real/result/artist-inference.json
             /tmp/eldoria-ai-real/result/artist-response-raw.txt
+            /tmp/eldoria-ai-real/result/artist-response-attempt-*.txt
+            /tmp/eldoria-ai-real/result/artist-attempt-history.json
             /tmp/eldoria-ai-real/result/artist-plan.json
             /tmp/eldoria-ai-real/result/blender/artist-execution.json
             /tmp/eldoria-ai-real/result/blender/artist-output.blend
