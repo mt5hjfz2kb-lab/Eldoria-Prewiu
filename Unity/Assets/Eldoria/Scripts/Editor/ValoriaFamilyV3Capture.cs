@@ -214,9 +214,9 @@ namespace Eldoria.EditorTools
             Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
             Place(pieces[6],-4f,roadEnd-1f);
             // Cliff top supports the terrace; never put the cliff bottom at wall feet.
-            Place(pieces[5],-18f,-18.5f);
-            Place(cliffMiddle,-4.5f,-19.2f);
-            Place(cliffRight,9f,-17.8f);
+            Place(pieces[5],-18f,-15.5f);
+            Place(cliffMiddle,-9f,-15.8f);
+            Place(cliffRight,9f,-15.1f);
             foreach(var cliff in new[]{pieces[5],cliffMiddle,cliffRight})
                 cliff.transform.position+=Vector3.up*(-.12f-BoundsFor(cliff).max.y);
             var rightProps=UnityEngine.Object.Instantiate(pieces[6]);
@@ -238,7 +238,8 @@ namespace Eldoria.EditorTools
             var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
             Render(cam,Path.Combine(outDir,"lookdev-assembled-mobile.png"),780,520);
-            ValoriaUnityFinishKit.SaveStudyScene();
+            if(Environment.GetEnvironmentVariable("VALORIA_SAVE_STUDY_SCENE")=="1")
+                ValoriaUnityFinishKit.SaveStudyScene();
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
             if(trees!=null)UnityEngine.Object.DestroyImmediate(trees);
             if(bounce!=null)UnityEngine.Object.DestroyImmediate(bounce.gameObject);
