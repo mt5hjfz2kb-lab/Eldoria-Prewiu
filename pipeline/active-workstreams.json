@@ -29,6 +29,28 @@
       "phase": "Corrected WebGL candidate built; exact QA completed; Windows lease handed to same-owner isolated prototype diagnostic.",
       "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
       "resumed_at": "2026-10-10T18:50:00Z"
+    },
+    {
+      "id": "valoria-unity-artistic-breakthrough-v1-20261012",
+      "owner": "codex-valoria-unity-artistic-breakthrough",
+      "status": "active",
+      "branch": "integration/valoria-v3-unity-lookdev-20261012",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnityFinishKit.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs",
+        ".github/workflows/valoria-v3-unity-lookdev-probe.yml",
+        "docs/evidence/valoria-v3-unity-lookdev/**",
+        "docs/UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-10-12T08:42:00Z",
+      "base_main_sha": "e6d27bd91d1bd2943feae8144f7e46653e622685",
+      "paid_credits": 0,
+      "phase": "Recover matched captures; eight-asset finishing and environmental composition",
+      "note": "Owner expressly protects main: isolated branch claim only. Main active registry read, no Windows lease there; no running Actions at claim."
     }
   ],
   "history": [
