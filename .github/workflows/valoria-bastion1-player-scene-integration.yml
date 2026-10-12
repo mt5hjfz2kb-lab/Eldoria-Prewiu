@@ -41,7 +41,7 @@ jobs:
           $packageRoot=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
           $stash=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
           $pkgs=@(Get-ChildItem -LiteralPath $packageRoot -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)
-          if($pkgs.Count -lt 1){throw 'glTFast PackageCache is not yet installed'}
+          if($pkgs.Count -lt 1){Write-Host 'BASTION1_PACKAGE_CACHE_COLD Unity Package Manager will resolve the declared glTFast dependency'}
           # The previous action moved package-owned ShaderGraphs into an
           # ephemeral temp directory, now cleaned. Invalidate only the extracted
           # glTFast cache if incomplete, so Unity 6000.3 re-resolves 6.14.1
