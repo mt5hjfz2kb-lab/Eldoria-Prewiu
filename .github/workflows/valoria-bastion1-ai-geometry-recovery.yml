@@ -24,13 +24,13 @@ jobs:
         with:
           run-id: 38323028866
           name: bastion1-genuine-qwen-artist-38323028866
-          github-token: \${{ github.token }}
+          github-token: ${{ github.token }}
           path: /tmp/bastion1-real-artist/qwen
       - uses: actions/download-artifact@v4
         with:
           run-id: 38321874637
           name: bastion1-player-integration-38321874637
-          github-token: \${{ github.token }}
+          github-token: ${{ github.token }}
           path: /tmp/bastion1-real-artist/scene
       - name: Use precisely pinned PR36 Blender tools, not modify PR
         shell: bash
