@@ -1,0 +1,117 @@
+name: Valoria QA-gated candidate publication
+on:
+  workflow_run:
+    workflows: ["Eldoria compact experimental WebGL"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: eldoria-pages-main
+  cancel-in-progress: false
+jobs:
+  full-qa-and-publish:
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'integration/valoria-v3-unity-lookdev-20261012' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: valoria-experimental
+      url: ${{ steps.deployment.outputs.page_url }}valoria-experimental/
+    steps:
+      - name: Require exact current candidate commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          current=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/$GITHUB_REPOSITORY/branches/integration%2Fvaloria-v3-unity-lookdev-20261012" | python3 -c 'import json,sys;print(json.load(sys.stdin)["commit"]["sha"])')
+          test "$current" = "$CANDIDATE_SHA" || { echo "Superseded candidate; not publishing"; exit 1; }
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: publication
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          name: eldoria-compact-experimental-webgl-${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          path: publication/valoria-experimental
+      - name: Preflight build and stable files
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          r=Path('publication')
+          e=r/'valoria-experimental'
+          assert (e/'index.html').is_file()
+          assert len(list(e.rglob('*.data.unityweb')))==1
+          assert len(list(e.rglob('*.wasm.unityweb')))==1
+          assert (r/'index.html').is_file()
+          assert (r/'tester-v0265'/'index.html').is_file()
+          diff=subprocess.check_output(['git','-C',str(r),'diff','--name-only','--','index.html','tester-v0265/','v0220/','tools/']).decode()
+          assert not diff,diff
+          print('VALORIA_EXACT_NEW_CANDIDATE_PREFLIGHT_PASS')
+          PY
+      - name: Install Chromium and Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Browser gesture validation before public release
+        run: |
+          cat > qa.cjs <<'JS'
+          const {chromium}=require('playwright');
+          const {spawn}=require('child_process');
+          (async()=>{
+            const server=spawn('python3',['-m','http.server','8765','--directory','publication'],{stdio:'ignore'});
+            let browser;
+            try{
+              await new Promise(r=>setTimeout(r,1200));
+              browser=await chromium.launch({headless:true,args:['--enable-webgl','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+              const page=await browser.newPage({viewport:{width:1280,height:720},deviceScaleFactor:1});
+              const logs=[],errors=[];
+              page.on('console',msg=>logs.push(msg.text()));
+              page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://127.0.0.1:8765/valoria-experimental/',{waitUntil:'domcontentloaded',timeout:40000});
+              await page.waitForTimeout(45000);
+              const canvas=page.locator('canvas').first();
+              if(await canvas.count()!==1)throw new Error('Canvas not available');
+              const b=await canvas.boundingBox();
+              if(!b)throw new Error('Canvas not visible');
+              await page.mouse.move(b.x+b.width*.5,b.y+b.height*.5);
+              await page.mouse.down();
+              for(let i=0;i<14;i++)await page.mouse.move(b.x+b.width*(.5+i*.015),b.y+b.height*.5,{steps:2});
+              await page.mouse.up();
+              await page.mouse.wheel(0,350);
+              await page.waitForTimeout(2000);
+              console.log('GESTURE_LOGS',JSON.stringify(logs.filter(l=>/VALORIA_CAMERA_/.test(l))));
+              console.log('JS_ERRORS',JSON.stringify(errors));
+              if(!logs.some(l=>l.includes('VALORIA_CAMERA_PAN_VERIFIED')))throw new Error('REAL_MOUSE_DRAG_NOT_VERIFIED');
+              if(!logs.some(l=>l.includes('VALORIA_CAMERA_ZOOM_VERIFIED')))throw new Error('REAL_MOUSE_ZOOM_NOT_VERIFIED');
+              if(errors.length)throw new Error('BROWSER_RUNTIME_ERRORS');
+              console.log('VALORIA_RUNTIME_DRAG_ZOOM_VERIFIED');
+            }finally{if(browser)await browser.close();server.kill()}
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node qa.cjs
+      - name: Remove Git internals and stage protected site
+        run: rm -rf publication/.git
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: publication/
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Confirm published preview and stable tester
+        env:
+          URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python3 - <<'PY'
+          import os,urllib.request
+          b=os.environ['URL'].rstrip('/')+'/'
+          for p in ('valoria-experimental/index.html','index.html','tester-v0265/index.html'):
+            with urllib.request.urlopen(b+p,timeout=30) as r:
+              assert r.status==200
+              print('VERIFIED_URL',b+p)
+          PY
