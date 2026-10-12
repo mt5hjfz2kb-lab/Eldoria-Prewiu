@@ -1,0 +1,120 @@
+name: Eldoria coherent cliff V4 local artist production
+on:
+  push:
+    branches: [art/local-ai-professional-artist-role-20261012]
+    paths: ['.github/workflows/eldoria-coherent-cliff-v4-production.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-coherent-cliff-v4-production
+  cancel-in-progress: false
+jobs:
+  blender-local-proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Expose installed Git before checkout
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA\GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate){throw 'GIT_NOT_INSTALLED_ON_WINDOWS'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Stage immutable Blender source and aspirational reference
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $p=Get-ChildItem "$env:LOCALAPPDATA\GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | Select-Object -First 1
+            $exe=Join-Path $p.FullName 'resources\app\git\cmd\git.exe'
+          }else{$exe=$git.Source}
+          & $exe fetch --no-tags --depth=1 origin 0abf13870d21725c30acf3f3e3a8c86385470073
+          if($LASTEXITCODE -ne 0){throw 'FROZEN_INPUT_FETCH_FAILED'}
+          & $exe restore --source FETCH_HEAD --worktree -- 'art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/cliff_rocks.blend' 'references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg'
+          if($LASTEXITCODE -ne 0){throw 'FROZEN_INPUT_RESTORE_FAILED'}
+          & $exe show '0abf13870d21725c30acf3f3e3a8c86385470073:references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg' > $null
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-v3-unity-compile-38236296539
+          run-id: 38236296539
+          github-token: ${{ github.token }}
+          path: input-unity
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free Pillow into isolated Python environment
+        shell: powershell
+        run: |
+          python -m pip install --disable-pip-version-check Pillow
+          if($LASTEXITCODE -ne 0){throw 'PINNED_PYTHON_PILLOW_SETUP_FAILED'}
+      - name: Validate local toolchain and real screenshot
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $images=@(Get-ChildItem input-unity -Filter 'lookdev-assembled-hero.png' -Recurse -File)
+          if($images.Count -ne 1){throw "EXPECTED_ONE_REAL_UNITY_CAPTURE, got $($images.Count)"}
+          "VALORIA_UNITY_CLIFF_SCREENSHOT=$($images[0].FullName)" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $blender='C:\Program Files\Blender Foundation\Blender 5.2\blender.exe'
+          if(-not (Test-Path $blender)){throw 'BLENDER_5_2_NOT_PRESENT_ON_WINDOWS'}
+          "ELDORIA_BLENDER_EXE=$blender" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $py=Get-Command python.exe -ErrorAction SilentlyContinue
+          if(-not $py){throw 'PYTHON_NOT_AVAILABLE_FOR_LOCAL_ARTIST_INFERENCE'}
+          & $py.Source -c 'from PIL import Image; print("PIL_AVAILABLE")'
+          if($LASTEXITCODE -ne 0){
+            & $py.Source -m pip install --user Pillow
+            if($LASTEXITCODE -ne 0){throw 'FREE_PILLOW_INSTALL_FAILED'}
+          }
+          $dir=Join-Path $env:RUNNER_TEMP 'eldoria-blender-mcp-pinned'
+          New-Item -ItemType Directory -Path $dir -Force | Out-Null
+          $addon=Join-Path $dir 'addon.py'
+          Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py' -OutFile $addon
+          $sha=(Get-FileHash $addon -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($sha -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5'){throw 'BLENDER_MCP_ADDON_CHECKSUM_MISMATCH'}
+          "ELDORIA_BLENDER_MCP_ADDON=$addon" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Start existing Ollama model and produce actual local asset
+        shell: powershell
+        env:
+          ELDORIA_QWEN_MODEL: eldoria-artist
+        run: |
+          $ErrorActionPreference='Stop'
+          $ollama=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if(-not (Test-Path $ollama)){throw 'OLLAMA_NOT_INSTALLED'}
+          try{$response=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3}
+          catch {
+            $server=Start-Process -FilePath $ollama -ArgumentList serve -PassThru -WindowStyle Hidden
+            $response=$null
+            for($i=0;$i -lt 20;$i++){Start-Sleep -Seconds 1;try{$response=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 2;break}catch{}}
+          }
+          if(-not $response){throw 'LOCAL_OLLAMA_SERVER_NOT_RESPONDING'}
+          $model=@($response.models | Where-Object {$_.name -like 'eldoria-artist*'})
+          if($model.Count -ne 1){throw 'PERSISTENT_ARTIST_MODEL_MISSING'}
+          $python=(Get-Command python.exe).Source
+          & $python tools/art-direction/build_cliff_talus_transition_v1.py --infer
+          if($LASTEXITCODE -ne 0){throw 'QWEN_LOCAL_INFERENCE_FAILED'}
+          $direction='art-source/valoria/variants/cliff_talus_transition_v1/direction.json'
+          if(-not (Test-Path $direction) -or (Get-Item $direction).Length -lt 100){throw 'LOCAL_QWEN_ART_DIRECTION_MISSING'}
+          Write-Host 'LOCAL_QWEN_ART_DIRECTION_READY'
+          & $env:ELDORIA_BLENDER_EXE -b --python-exit-code 1 -t 4 --python tools/art-direction/build_cliff_coherent_v4.py
+          if($LASTEXITCODE -ne 0){throw 'COHERENT_CLIFF_V4_AUTHORING_FAILED'}
+          $structural='art-source/valoria/variants/cliff_coherent_v4'
+          foreach($name in @('proof.json','blender-game-camera.png','cliff_coherent_v4.blend','cliff_coherent_v4.glb')){
+            $p=Join-Path $structural $name
+            if(-not (Test-Path $p) -or (Get-Item $p).Length -lt 100){throw "MISSING_STRUCTURAL_OUTPUT_$name"}
+          }
+          Write-Host 'ELDORIA_COHERENT_CLIFF_V4_CANDIDATE_PRODUCED'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-coherent-cliff-v4-${{ github.run_id }}
+          path: |
+            art-source/valoria/variants/cliff_talus_transition_v1/direction.json
+            art-source/valoria/variants/cliff_coherent_v4/*
+          if-no-files-found: warn
+          retention-days: 7
