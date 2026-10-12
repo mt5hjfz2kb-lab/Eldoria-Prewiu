@@ -10,6 +10,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs'
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: eldoria-valoria-v3-unity-probe
   cancel-in-progress: true
@@ -66,6 +67,25 @@ jobs:
             $hash=(Get-FileHash (Join-Path $target "$name.glb") -Algorithm SHA256).Hash.ToLowerInvariant()
             if ($hash -ne $expected[$name]) {throw "Approved GLB checksum mismatch ${name}: $hash"}
           }
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cliff-unity-artist-variant-38229040442
+          run-id: 38229040442
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/ValoriaCliffVariant
+      - name: Stage controlled artist variant while preserving frozen source
+        shell: powershell
+        run: |
+          $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
+          Copy-Item (Join-Path $target 'cliff_rocks.glb') (Join-Path $target 'cliff_rocks_original.glb') -Force
+          $variant=Join-Path $env:RUNNER_TEMP 'ValoriaCliffVariant/cliff_rocks-unity-v1.glb'
+          $proof=Get-Content (Join-Path $env:RUNNER_TEMP 'ValoriaCliffVariant/edit-proof.json') -Raw | ConvertFrom-Json
+          $direction=Get-Content (Join-Path $env:RUNNER_TEMP 'ValoriaCliffVariant/direction.json') -Raw | ConvertFrom-Json
+          if (-not $proof.blender_mcp_executed -or $direction.self_approval) {throw 'Artist proof invalid'}
+          $actual=(Get-FileHash $variant -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne '33d27f58c4999078e41f23e7ca550b50c6710d13c92ccd7b0f31e2150cdded32') {throw "Variant hash mismatch $actual"}
+          if ($actual -ne $proof.variant_glb_sha256) {throw 'Artist proof does not match GLB'}
+          Copy-Item $variant (Join-Path $target 'cliff_rocks.glb') -Force
       - name: Run Unity import and compile
         shell: powershell
         run: |
@@ -73,11 +93,34 @@ jobs:
           $log=Join-Path $env:RUNNER_TEMP 'ValoriaV3-Unity-compile.log'
           $args=@('-batchmode','-quit','-projectPath',"${env:GITHUB_WORKSPACE}\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFamilyV3Capture.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if (-not $p.WaitForExit(600000)) { & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity compile timed out' }
-          if ($p.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 180}; throw "Unity failed $($p.ExitCode)" }
-          if(Test-Path $log){Get-Content $log -Tail 60}
-          $images=@(Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/ValoriaV3UnityCaptures" -Filter '*.png' -File -ErrorAction SilentlyContinue)
-          if($images.Count -ne 36){ throw "Expected 36 genuine Unity comparison frames (including assembly), got $($images.Count)" }
+          $folder="$env:GITHUB_WORKSPACE/Unity/ValoriaV3UnityCaptures"
+          $complete=$false
+          for($tick=0;$tick -lt 120;$tick++) {
+            if($p.WaitForExit(5000)) {break}
+            $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
+            $manifest=Join-Path $folder 'capture-manifest.json'
+            if($images.Count -eq 38 -and (Test-Path $manifest) -and
+               (Test-Path $log) -and (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
+              $complete=$true
+              & taskkill.exe /PID $p.Id /T /F | Out-Null
+              [void]$p.WaitForExit(10000)
+              break
+            }
+          }
+          if(-not $p.HasExited){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity capture timed out before completion' }
+          if(-not $complete -and $p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity failed $($p.ExitCode)"}
+          $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
+          if($images.Count -ne 38){throw "Expected 38 genuine Unity comparison frames, got $($images.Count)"}
+          foreach($file in $images){
+            $bitmap=New-Object System.Drawing.Bitmap($file.FullName)
+            try {if($bitmap.Width -lt 700 -or $bitmap.Height -lt 500){throw "Invalid capture $($file.Name)"}}
+            finally {$bitmap.Dispose()}
+          }
+          if(-not (Test-Path (Join-Path $folder 'capture-manifest.json')) -or
+             -not (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
+            throw 'Unity capture completion markers missing'
+          }
+          Get-Content $log -Tail 25
       - uses: actions/upload-artifact@v4
         if: always()
         with:

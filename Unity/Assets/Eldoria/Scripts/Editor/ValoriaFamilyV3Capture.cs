@@ -68,12 +68,13 @@ namespace Eldoria.EditorTools
                     SetLookdev(true, objects, sunlight);
                     CaptureSet(folder, "lookdev", camera, objects, hero);
                 }
+                await CaptureSourceCliffComparison(objects,sunlight,camera,baseDir,folder);
                 await CaptureAssembly(objects,sunlight,camera,baseDir,folder);
                 File.WriteAllText(Path.Combine(folder,"capture-manifest.json"),
                     "{\"source\":\"approved family v3\",\"engine\":\"Unity 6000.3.23f1\",\"capture\":\"real Unity camera.Render\",\"art_pass\":false}");
                 Debug.Log("VALORIA_V3_CAPTURE_COMPLETED " + folder);
-                if(Directory.GetFiles(folder,"*.png").Length!=36)
-                    throw new Exception("Complete output must contain 36 actual Unity PNGs");
+                if(Directory.GetFiles(folder,"*.png").Length!=38)
+                    throw new Exception("Complete output must contain 38 actual Unity PNGs");
                 // Unity 6000.3 on this Windows runner intermittently access-violates
                 // during native editor shutdown after all captures. Terminate only
                 // after every real render, manifest and image-content check passed.
@@ -157,6 +158,34 @@ namespace Eldoria.EditorTools
             return b;
         }
 
+
+        // Same camera/light/orientation: frozen source against Qwen-directed Blender variant.
+        static async Task CaptureSourceCliffComparison(List<GameObject> objects,Light sun,Camera cam,string sourceDir,string outDir)
+        {
+            string path=Path.Combine(sourceDir,"cliff_rocks_original.glb");
+            if(!File.Exists(path))throw new FileNotFoundException("Frozen cliff comparison missing",path);
+            var importer=new GltfImport(null,new UninterruptedDeferAgent());
+            if(!await importer.Load(new Uri(path).AbsoluteUri))throw new Exception("Original cliff GLB import failure");
+            var original=new GameObject("original_frozen_cliff_rocks");
+            original.transform.position=Positions[5];
+            if(!await importer.InstantiateMainSceneAsync(original.transform))throw new Exception("Original cliff scene missing");
+            // Match the same finished materials for a geometry-only source/variant A/B.
+            SetLookdev(true,new List<GameObject>{original},sun);
+            var bounds=BoundsFor(objects[5]);
+            var radius=Mathf.Max(bounds.extents.x,Mathf.Max(bounds.extents.y,bounds.extents.z));
+            var focus=bounds.center;
+            var direction=new Vector3(1.15f,.85f,-1.4f).normalized;
+            cam.transform.position=focus+direction*(radius*5+9);
+            cam.transform.LookAt(focus);cam.orthographicSize=Mathf.Max(2f,radius*1.6f);
+            cam.farClipPlane=Mathf.Max(500f,radius*18f);
+            cam.backgroundColor=new Color(.20f,.31f,.47f);
+            SetLookdev(false,objects,sun);
+            foreach(var obj in objects)obj.SetActive(false);
+            Render(cam,Path.Combine(outDir,"source-original-cliff_rocks-hero.png"));
+            original.SetActive(false);objects[5].SetActive(true);
+            Render(cam,Path.Combine(outDir,"source-variant-cliff_rocks-hero.png"));
+            UnityEngine.Object.DestroyImmediate(original);
+        }
 
         // Full-family validation scene uses real authored GLB meshes, not stand-in boxes.
         static async Task CaptureAssembly(List<GameObject> pieces,Light sun,Camera cam,string sourceDir,string outDir)
