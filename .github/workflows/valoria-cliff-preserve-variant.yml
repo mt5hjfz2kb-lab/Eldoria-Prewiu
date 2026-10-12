@@ -1,0 +1,53 @@
+name: Preserve reviewed Valoria cliff artist variant
+on:
+  push:
+    branches: [integration/valoria-v3-unity-lookdev-20261012]
+    paths: [.github/workflows/valoria-cliff-preserve-variant.yml]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-cliff-variant-preserve
+  cancel-in-progress: false
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cliff-unity-artist-variant-38229040442
+          run-id: 38229040442
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/cliff-artist
+      - name: Verify artist-authored variant and preserve beside approved originals
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/cliff-artist"
+          echo '33d27f58c4999078e41f23e7ca550b50c6710d13c92ccd7b0f31e2150cdded32  cliff_rocks-unity-v1.glb' | sha256sum -c -
+          echo '9b393796fc7eaed130f59e9a0bd22e039978897bbff3430a48c9d00077fbb82d  cliff_rocks-unity-v1.blend' | sha256sum -c -
+          python - <<'PY'
+          import json
+          with open('edit-proof.json') as f: p=json.load(f)
+          with open('direction.json') as f: d=json.load(f)
+          assert p['blender_mcp_executed'] and p['bedrock_vertices_changed']>0
+          assert p['variant_glb_sha256']=='33d27f58c4999078e41f23e7ca550b50c6710d13c92ccd7b0f31e2150cdded32'
+          assert not d['self_approval']
+          PY
+          target="$GITHUB_WORKSPACE/art-source/valoria/variants/cliff-unity-v1"
+          mkdir -p "$target"
+          cp cliff_rocks-unity-v1.glb cliff_rocks-unity-v1.blend direction.json edit-proof.json "$target/"
+      - name: Commit controlled copy only to the integration branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = integration/valoria-v3-unity-lookdev-20261012
+          git config user.name 'eldoria-art-bot'
+          git config user.email 'eldoria-art-bot@users.noreply.github.com'
+          git add art-source/valoria/variants/cliff-unity-v1
+          git diff --cached --quiet && exit 0
+          git commit -m 'art: preserve Qwen and BlenderMCP cliff variant for Unity review'
+          git push origin HEAD:refs/heads/integration/valoria-v3-unity-lookdev-20261012
