@@ -326,7 +326,13 @@ namespace Eldoria.EditorTools
                 }
             }
             if(Environment.GetEnvironmentVariable("VALORIA_SAVE_STUDY_SCENE")=="1")
+            {
+                // Only the saved experimental first-zone scene receives
+                // interactive camera controls. Existing Bastion I-II stays intact.
+                if(cam.GetComponent<Eldoria.ValoriaFirstZonePreviewControls>()==null)
+                    cam.gameObject.AddComponent<Eldoria.ValoriaFirstZonePreviewControls>();
                 ValoriaUnityFinishKit.SaveStudyScene();
+            }
             if(ground!=null)UnityEngine.Object.DestroyImmediate(ground);
             if(trees!=null)UnityEngine.Object.DestroyImmediate(trees);
             if(bounce!=null)UnityEngine.Object.DestroyImmediate(bounce.gameObject);
