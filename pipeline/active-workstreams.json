@@ -42,15 +42,16 @@
         ".github/workflows/valoria-bastion1-reference-assembly.yml"
       ],
       "resources": [
-        "valoria-bastion1-reference-assembly"
+        "valoria-bastion1-reference-assembly",
+        "windows-runner-heavy"
       ],
       "status": "active",
       "claimed_at": "2026-10-12T17:00:18.068Z",
       "base_main_sha": "e6d27bd91d1bd2943feae8144f7e46653e622685",
       "branch": "art/valoria-bastion1-reference-assembly-20261012",
-      "dependency": "Read-only reuse of committed eight assets from integration branch. No mutation of active WebGL/APK branches, Pages, Region1, shared handoff or Windows lease.",
+      "dependency": "Existing Windows jobs complete before this single candidate job; no cancellation, publication or active delivery branch mutation.",
       "art_production_routing": "required",
-      "phase": "Recover sources and compose reference-matched Bastion I; main promotion only after exact Unity and gameplay gates"
+      "phase": "Two-level source assembly rendered; exact Unity candidate scheduled sequentially behind existing jobs"
     }
   ],
   "history": [
