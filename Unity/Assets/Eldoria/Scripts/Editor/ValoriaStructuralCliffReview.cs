@@ -18,7 +18,7 @@ namespace Eldoria.EditorTools
             try {
                 SceneSetup.SetupRenderPipeline();
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-                string dir=Path.Combine(Application.streamingAssetsPath,"ValoriaStructuralCliff");
+                string dir=Path.Combine(UnityEngine.Application.streamingAssetsPath,"ValoriaStructuralCliff");
                 GameObject frozen=await Load(Path.Combine(dir,"cliff_rocks.glb"),"frozen_cliff");
                 GameObject candidate=await Load(Path.Combine(dir,"cliff_structural_v2.glb"),"structural_candidate");
                 frozen.transform.rotation=Quaternion.Euler(0,180,0);
@@ -43,7 +43,7 @@ namespace Eldoria.EditorTools
                 camera.transform.position=source.center+direction*(radius*5+9);
                 camera.transform.LookAt(source.center);
                 camera.orthographicSize=Mathf.Max(2,radius*1.9f);
-                string outDir=Path.Combine(Application.dataPath,"../ValoriaStructuralCliffCaptures");
+                string outDir=Path.Combine(UnityEngine.Application.dataPath,"../ValoriaStructuralCliffCaptures");
                 Directory.CreateDirectory(outDir);
                 candidate.SetActive(false);
                 Render(camera,Path.Combine(outDir,"before-textured.png"));
