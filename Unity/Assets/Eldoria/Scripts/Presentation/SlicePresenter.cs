@@ -889,9 +889,13 @@ namespace Eldoria.Presentation
 
             // Port the canonical v0.26.4 reference grammar into Unity:
             // compact kingdom header, separate quest card, floating objective dock, fixed bottom navigation.
-            var top=HorizontalPanel("Reference topbar",safe,new Color(.04f,.065f,.085f,.96f),68,true);
+            bool compactMeshHud=city&&productionParcels!=null&&productionParcels.MeshMode;
+            // The mesh city must not become an asset gallery hidden by the
+            // prototype's oversized landscape HUD. Keep SHARP/Frontier untouched.
+            var top=HorizontalPanel("Reference topbar",safe,new Color(.04f,.065f,.085f,.96f),compactMeshHud?54:68,true);
             var topLayout=top.GetComponent<HorizontalLayoutGroup>();
             topLayout.childForceExpandWidth=false;topLayout.childAlignment=TextAnchor.MiddleLeft;
+            if(compactMeshHud)topLayout.padding=new RectOffset(8,8,3,3);
 
             var crest=ChipLabel("Realm crest",top,20,new Color(.78f,.68f,.45f),
                 new Color(.025f,.04f,.055f,.96f),42);
@@ -914,7 +918,8 @@ namespace Eldoria.Presentation
             resetButton.gameObject.name="Owner reset";
             var resetRt=resetButton.GetComponent<RectTransform>();
             resetRt.anchorMin=resetRt.anchorMax=new Vector2(1,1);resetRt.pivot=new Vector2(1,1);
-            resetRt.sizeDelta=new Vector2(78,34);resetRt.anchoredPosition=new Vector2(-10,-78);
+            resetRt.sizeDelta=compactMeshHud?new Vector2(72,30):new Vector2(78,34);
+            resetRt.anchoredPosition=compactMeshHud?new Vector2(-8,-60):new Vector2(-10,-78);
             resetButton.GetComponent<LayoutElement>().ignoreLayout=true;
             resetButtonText=resetButton.GetComponentInChildren<Text>();
             if(resetButtonText!=null)resetButtonText.fontSize=11;
@@ -922,15 +927,17 @@ namespace Eldoria.Presentation
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
             qrt.anchorMin=qrt.anchorMax=new Vector2(0,1);qrt.pivot=new Vector2(0,1);
-            qrt.sizeDelta=new Vector2(300,66);qrt.anchoredPosition=new Vector2(10,-78);
+            qrt.sizeDelta=compactMeshHud?new Vector2(298,46):new Vector2(300,66);
+            qrt.anchoredPosition=compactMeshHud?new Vector2(8,-60):new Vector2(10,-78);
             quest.GetComponent<Image>().color=new Color(.035f,.055f,.075f,.90f);
-            var qLayout=quest.GetComponent<VerticalLayoutGroup>();qLayout.padding=new RectOffset(11,11,7,7);
+            var qLayout=quest.GetComponent<VerticalLayoutGroup>();qLayout.padding=compactMeshHud?new RectOffset(9,9,3,3):new RectOffset(11,11,7,7);
             qLayout.spacing=1;qLayout.childControlHeight=true;qLayout.childForceExpandHeight=false;
-            var kicker=Label("Quest kicker",quest.transform,7,new Color(.78f,.68f,.45f),12);
+            var kicker=Label("Quest kicker",quest.transform,7,new Color(.78f,.68f,.45f),compactMeshHud?10:12);
             kicker.text="OBJETIVO ACTUAL";kicker.alignment=TextAnchor.MiddleLeft;
-            objective=Label("Objective",quest.transform,10,new Color(.88f,.90f,.90f),40);
+            objective=Label("Objective",quest.transform,compactMeshHud?9:10,new Color(.88f,.90f,.90f),compactMeshHud?27:40);
 
-            var nav=HorizontalPanel("Bottom navigation",safe,new Color(.035f,.055f,.075f,.97f),68,false);
+            var nav=HorizontalPanel("Bottom navigation",safe,new Color(.035f,.055f,.075f,.97f),compactMeshHud?52:68,false);
+            if(compactMeshHud)nav.GetComponent<HorizontalLayoutGroup>().padding=new RectOffset(6,6,4,4);
             cityNavButton=NavButton(nav,"⌂","CIUDAD",()=>{
 #if UNITY_WEBGL && !UNITY_EDITOR
                 Debug.Log("ELDORIA_PLAYABLE_NAV target=Valoria city="+city);
@@ -946,20 +953,24 @@ namespace Eldoria.Presentation
             // Do not expose prototype/future buttons without real gameplay behind them.
             // The migrated vertical-slice hierarchy keeps only the two live navigation surfaces.
             StyleNavButton(cityNavButton,city);StyleNavButton(worldNavButton,!city);
+            if(compactMeshHud)foreach(var button in new[]{cityNavButton,worldNavButton})
+            {var element=button.GetComponent<LayoutElement>();element.minHeight=42;element.preferredHeight=42;}
 
             var dock=new GameObject("World objective dock",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             objectiveDock=dock;
             var drt=dock.GetComponent<RectTransform>();drt.SetParent(safe,false);
             drt.anchorMin=drt.anchorMax=new Vector2(.5f,0);drt.pivot=new Vector2(.5f,0);
-            drt.sizeDelta=new Vector2(360,94);drt.anchoredPosition=new Vector2(0,78);
+            drt.sizeDelta=compactMeshHud?new Vector2(340,66):new Vector2(360,94);
+            drt.anchoredPosition=compactMeshHud?new Vector2(0,56):new Vector2(0,78);
             dock.GetComponent<Image>().color=new Color(.035f,.055f,.075f,.95f);
-            var dLayout=dock.GetComponent<VerticalLayoutGroup>();dLayout.padding=new RectOffset(10,10,7,7);
+            var dLayout=dock.GetComponent<VerticalLayoutGroup>();dLayout.padding=compactMeshHud?new RectOffset(6,6,4,4):new RectOffset(10,10,7,7);
             dLayout.spacing=3;dLayout.childControlHeight=true;dLayout.childForceExpandHeight=false;
             description=Label("Story and world",dock.transform,8,new Color(.86f,.88f,.88f),22);
+            if(compactMeshHud)description.gameObject.SetActive(false);
             var row1=Row("Primary objective action",dock.transform);
-            row1.GetComponent<LayoutElement>().preferredHeight=46;
+            row1.GetComponent<LayoutElement>().preferredHeight=compactMeshHud?39:46;
             primaryAction=Button(row1,"CONTINUAR",InvokePrimaryObjective);
-            primaryAction.GetComponent<LayoutElement>().minHeight=46;
+            primaryAction.GetComponent<LayoutElement>().minHeight=compactMeshHud?39:46;
             primaryAction.GetComponent<Image>().color=new Color(.73f,.61f,.36f,.98f);
             primaryActionText=primaryAction.GetComponentInChildren<Text>();
             if(primaryActionText!=null)primaryActionText.color=new Color(.07f,.09f,.11f);

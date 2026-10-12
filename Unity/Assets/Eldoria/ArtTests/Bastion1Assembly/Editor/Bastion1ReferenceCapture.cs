@@ -48,7 +48,7 @@ namespace Eldoria.EditorTools
                 RenderSettings.ambientSkyColor=new Color(.37f,.46f,.61f);
                 RenderSettings.ambientEquatorColor=new Color(.38f,.40f,.38f);
                 RenderSettings.ambientGroundColor=new Color(.31f,.27f,.22f);
-                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0065f;
+                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0028f;
                 RenderSettings.fogColor=new Color(.30f,.38f,.45f);
                 foreach(var p in new[]{new Vector3(-4,2,20),new Vector3(4,2,20),new Vector3(-4,5.5f,-21),new Vector3(4,5.5f,-21)})
                 {
