@@ -27,13 +27,13 @@ jobs:
         run: python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
       - name: Closed tester layer E2E
         run: node qa/e2e-tester-build.js
-      - name: Alias frozen snapshot for legacy QA paths
+      - name: Alias current v0.32 game for legacy QA paths
         run: |
           rm -rf playtest
-          cp -R tester-v0265 playtest
-      - name: Frozen runtime targeted regression
-        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:targeted
-      - name: Frozen runtime full regression
-        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:regression
-      - name: Frozen runtime uninterrupted fresh-save Arc I
-        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:arc1
+          cp -R v0220 playtest
+      - name: Current v0.32 targeted regression
+        run: ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' npm run qa:targeted
+      - name: Current v0.32 full regression
+        run: ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' npm run qa:regression
+      - name: Current v0.32 uninterrupted fresh-save Arc I
+        run: ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' npm run qa:arc1
