@@ -42,10 +42,15 @@ jobs:
           $stash=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
           $pkgs=@(Get-ChildItem -LiteralPath $packageRoot -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)
           if($pkgs.Count -lt 1){throw 'glTFast PackageCache is not yet installed'}
+          # The previous action moved package-owned ShaderGraphs into an
+          # ephemeral temp directory, now cleaned. Invalidate only the extracted
+          # glTFast cache if incomplete, so Unity 6000.3 re-resolves 6.14.1
+          # from the unchanged manifest on its next native editor run.
+          $refreshed=0
           foreach($pkg in $pkgs){
             $shaderFolder=Join-Path $pkg.FullName 'Runtime/Shader'
-            New-Item -ItemType Directory -Force $shaderFolder | Out-Null
             if(Test-Path $stash){
+              New-Item -ItemType Directory -Force $shaderFolder | Out-Null
               foreach($f in @(Get-ChildItem -LiteralPath $stash -Filter 'glTF-*.shadergraph' -File)){
                 $destination=Join-Path $shaderFolder $f.Name
                 if(-not (Test-Path $destination)){Copy-Item -LiteralPath $f.FullName -Destination $destination -Force}
@@ -54,17 +59,17 @@ jobs:
                 }
               }
             }
-            $matching=@(Get-ChildItem -LiteralPath $shaderFolder -Filter 'glTF-pbrMetallicRoughness*.shadergraph' -File)
+            $matching=@(Get-ChildItem -LiteralPath $shaderFolder -Filter 'glTF-pbrMetallicRoughness*.shadergraph' -File -ErrorAction SilentlyContinue)
             if($matching.Count -lt 1){
-              # RUNNER_TEMP is cleared between jobs. A previous run may have left
-              # a damaged UPM cache with no restorable stash. Delete only this
-              # *generated* PackageCache entry so Unity Package Manager rehydrates
-              # the locked com.unity.cloud.gltfast 6.14.1 package on next start.
-              Write-Host "BASTION1_REHYDRATE_BROKEN_GLTF_UPM_CACHE $($pkg.FullName)"
+              Write-Warning "Cached $($pkg.Name) incomplete, forcing Unity Package Manager re-resolution"
               Remove-Item -LiteralPath $pkg.FullName -Recurse -Force
-              continue
+              $refreshed++
+            }else{
+              Write-Host "BASTION1_NATIVE_GLTF_MATERIALS_RESTORED $($pkg.Name) graph_count=$($matching.Count)"
             }
-            Write-Host "BASTION1_NATIVE_GLTF_MATERIALS_RESTORED $($pkg.Name) graph_count=$($matching.Count)"
+          }
+          if($refreshed -gt 0){
+            Write-Host "BASTION1_PACKAGE_CACHE_REPAIR_REQUESTED count=$refreshed package=com.unity.cloud.gltfast"
           }
       - name: Locate existing Blender and stage exact committed modules
         shell: powershell
