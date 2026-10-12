@@ -50,6 +50,28 @@ namespace Eldoria.EditorTools
             var barracks=await Import("Valoria_Cuartel_AP2_v1",new Vector3(16f,0f,3f),8.5f);
             barracks.transform.SetParent(visual.transform,true);
             barracks.SetActive(false);
+            // Defer all native asset registration until glTFast has finished loading every
+            // model. Thousands of incremental AssetDatabase refreshes inside async
+            // import continuations can invalidate native Unity handles (editor crash).
+            AssetDatabase.StartAssetEditing();
+            try
+            {
+                foreach(var model in new[]{sawmill0,sawmill1,sawmill2,barracks})
+                {
+                    foreach(var filter in model.GetComponentsInChildren<MeshFilter>(true))
+                        Bastion1ReferenceCapture.Persist(filter.sharedMesh);
+                    foreach(var renderer in model.GetComponentsInChildren<Renderer>(true))
+                        foreach(var material in renderer.sharedMaterials)
+                        {
+                            if(material==null)continue;
+                            foreach(var property in material.GetTexturePropertyNames())
+                                Bastion1ReferenceCapture.Persist(material.GetTexture(property));
+                            Bastion1ReferenceCapture.Persist(material);
+                        }
+                }
+            }
+            finally { AssetDatabase.StopAssetEditing(); }
+            Debug.Log("BASTION1_PARCEL_ASSETS_PERSISTED");
             var sawmillTarget=Target("InteractiveProxy_LeftCabinParcel","sawmill",
                 new Vector3(-16f,1.1f,3f),new Vector3(10f,2.2f,9f),visual.transform);
             var barracksTarget=Target("InteractiveProxy_RightCampParcel","barracks",
@@ -114,16 +136,6 @@ namespace Eldoria.EditorTools
             root.transform.localScale=Vector3.one*scale;
             bounds=Bounds(root);
             root.transform.position=floorCentre-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
-            foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))
-                Bastion1ReferenceCapture.Persist(filter.sharedMesh);
-            foreach(var renderer in root.GetComponentsInChildren<Renderer>(true))
-                foreach(var material in renderer.sharedMaterials)
-                {
-                    if(material==null)continue;
-                    foreach(var property in material.GetTexturePropertyNames())
-                        Bastion1ReferenceCapture.Persist(material.GetTexture(property));
-                    Bastion1ReferenceCapture.Persist(material);
-                }
             Debug.Log("BASTION1_AUTHORED_MODEL "+name+" bounds="+Bounds(root));
             return root;
         }

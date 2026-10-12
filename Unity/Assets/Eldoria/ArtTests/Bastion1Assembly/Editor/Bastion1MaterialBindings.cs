@@ -44,7 +44,7 @@ namespace Eldoria.EditorTools
                 if(old==null)throw new Exception("glTF material unavailable: "+i);
                 var p=src.pbrMetallicRoughness;
                 var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="BastionI_URP_"+src.name};
-                m.SetTexture("_BaseMap",Texture2D.whiteTexture);
+                m.SetTexture("_BaseMap",null); // URP Lit uses its default white for factor-only materials.
                 m.SetTexture("_BumpMap",null);m.SetTexture("_MetallicGlossMap",null);
                 m.DisableKeyword("_NORMALMAP");m.DisableKeyword("_METALLICSPECGLOSSMAP");
                 Color color=Color.white;

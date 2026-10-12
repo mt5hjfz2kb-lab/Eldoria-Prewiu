@@ -83,6 +83,9 @@ namespace Eldoria.EditorTools
                     throw new Exception("Candidate Home pose was not restored");
                 var renderers=root.GetComponentsInChildren<Renderer>(true);
                 var uniqueMeshes=new HashSet<Mesh>();var uniqueMaterials=new HashSet<Material>();var uniqueTextures=new HashSet<Texture>();long triangles=0;
+                AssetDatabase.StartAssetEditing();
+                try
+                {
                 foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))
                 {
                     if(filter.sharedMesh==null)continue;
@@ -95,6 +98,8 @@ namespace Eldoria.EditorTools
                     {var texture=material.GetTexture(property);if(texture!=null){uniqueTextures.Add(texture);Persist(texture);}}
                     Persist(material);
                 }
+                }
+                finally { AssetDatabase.StopAssetEditing(); }
                 // Only selection anchors; neither coarse gate blockers nor invented buildings.
                 var upper=Find(root.transform,"UpperBastion");
                 if(upper!=null)
