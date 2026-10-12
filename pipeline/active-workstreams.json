@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-12T19:16:58.288Z",
+  "updated_at": "2026-10-12T19:18:22.579Z",
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
@@ -48,7 +48,11 @@
         "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
         "docs/evidence/valoria-bastion1-player-scene-integration-20261012/**",
         "tools/valoria-bastion1-assembly/**",
-        ".github/workflows/valoria-bastion1-player-scene-integration.yml"
+        ".github/workflows/valoria-bastion1-player-scene-integration.yml",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBastion1MeshPlayerScene.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBastion1MeshPlayerScene.cs.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ValoriaMeshPresentationTests.cs.meta"
       ],
       "resources": [
         "valoria-player-scene",
@@ -61,7 +65,7 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Inspect canonical scene and introduce mesh presentation mode; art authoring and engine/gameplay gates pending"
+      "phase": "Existing SawmillState0/1/2 V1 sources confirmed in full main tree; state-driven mesh adapter and native scene builder in progress"
     }
   ],
   "history": [
