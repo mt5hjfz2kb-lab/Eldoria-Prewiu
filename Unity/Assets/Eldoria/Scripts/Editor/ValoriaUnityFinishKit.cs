@@ -43,8 +43,8 @@ namespace Eldoria.EditorTools
         {
             var isCliff=piece=="cliff_rocks";
             var isPath=piece=="stone_path_platform";
-            float width=Mathf.Max(14f,b.size.x*(isPath?1.8f:2.15f));
-            float depth=Mathf.Max(14f,b.size.z*(isPath?2.2f:2f));
+            float width=Mathf.Max(48f,b.size.x*(isPath?6f:7f));
+            float depth=Mathf.Max(48f,b.size.z*(isPath?6f:7f));
             var stage=new GameObject("STUDIO_CONTEXT_NOT_SOURCE_"+piece);
             var mf=stage.AddComponent<MeshFilter>();
             var mr=stage.AddComponent<MeshRenderer>();
