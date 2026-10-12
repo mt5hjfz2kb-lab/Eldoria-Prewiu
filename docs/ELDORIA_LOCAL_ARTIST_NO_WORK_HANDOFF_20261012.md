@@ -30,3 +30,17 @@ Hay evidencia técnica de un ciclo Qwen/Blender/Unity, pero no se acredita aún 
 - Comparar directamente registros/artifacts CI existentes antes de lanzar cualquier CI nueva.
 - Hacer una sola variante pequeña con input congelado solo cuando sea necesario y no haya otro runner ocupando recurso.
 - Medir un cambio visible usando captura equivalente en Unity, no solo exit code = 0.
+
+## Ejecutar el mismo pipeline sin Work
+El entrypoint versionado es `tools/art-direction/run_local_artist_trial.py`, con preflight **sin efectos**, y modo de ejecución explícito. Desde un clon con la rama artística activa, instalar por medios gratuitos Blender 4.3.2, Ollama, Qwen3-VL 4B y Pillow; disponer de una captura PNG real de Unity y el fichero de addon BlenderMCP cuya suma SHA256 coincida con el pin del generador. Luego:
+
+```powershell
+python tools/art-direction/verify_local_artist_environment.py
+python tools/art-direction/run_local_artist_trial.py --capture "C:\\Eldoria\\cliff.png" --addon "C:\\Eldoria\\blender-mcp\\addon.py" --blender "C:\\Program Files\\Blender Foundation\\Blender 4.3\\blender.exe"
+# Solo si el preflight pasó y se quiere gastar cómputo local:
+python tools/art-direction/run_local_artist_trial.py --capture "C:\\Eldoria\\cliff.png" --addon "C:\\Eldoria\\blender-mcp\\addon.py" --blender "C:\\Program Files\\Blender Foundation\\Blender 4.3\\blender.exe" --run
+```
+
+El script recupera SOLO los dos insumos congelados desde el commit autorizado y jamás reemplaza inputs distintos; produce `direction.json`, `before-blender.png`, `after-blender.png`, `.blend`, `.glb` y `edit-proof.json` en `art-source/valoria/variants/cliff_talus_transition_v1/`. No promueve resultados ni ejecuta Unity automáticamente; la revisión visual y la integración son gates independientes. Variables de entorno opcionales: `OLLAMA_HOST`, `ELDORIA_QWEN_MODEL`, `ELDORIA_BLENDER_MCP_ADDON`. La nueva compatibilidad multiplataforma está guardada en la rama artística, **todavía no probada en el Windows del propietario**.
+
+Veredicto de las evidencias recuperadas: `ValoriaLocalTalusCaptures/capture-manifest.json` declara `visual_pass: false` y `mobile_pass: false`; la escena ocho-assets declara `art_pass: false`. La misión visual original permanece ABIERTA. No interpretar el éxito de CI como aprobación.
