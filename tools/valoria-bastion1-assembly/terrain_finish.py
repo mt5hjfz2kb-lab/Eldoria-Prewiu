@@ -1,0 +1,112 @@
+# Authored scenery envelope; preserve every original source asset and gameplay parcel.
+# Replace only the previous rectangular, temporary ground support geometry.
+rockside=mat('Valoria schist dark fractured cliff',(.205,.195,.20),.96)
+rockdust=mat('Valoria cliff talus earth',(.255,.225,.19),.97)
+valleygrass=mat('Valoria forested valley ground',(.115,.16,.11),.96)
+mountainrock=mat('Valoria misted distant mountain rock',(.16,.19,.21),1)
+
+def organic_outline(corners,divisions,seed):
+    rng=random.Random(seed);output=[]
+    cx=sum(pt[0] for pt in corners)/len(corners)
+    cy=sum(pt[1] for pt in corners)/len(corners)
+    for i,a0 in enumerate(corners):
+        b0=corners[(i+1)%len(corners)]
+        for j in range(divisions):
+            t=j/divisions
+            x=a0[0]*(1-t)+b0[0]*t;y=a0[1]*(1-t)+b0[1]*t
+            ripple=(math.sin(math.pi*t)**2)*(rng.uniform(-.9,.9)+math.sin((i*divisions+j)*.81)*.23)
+            d=Vector((x-cx,y-cy));d.normalize()
+            output.append((x+ripple*d.x,y+ripple*d.y))
+    return output
+
+def cliff_plateau(name,corners,z,base_z,seed):
+    outline=organic_outline(corners,6,seed)
+    polygon(name+'_walkable_cap',[(x,y,z) for x,y in outline],grass)
+    cx=sum(x for x,y in outline)/len(outline);cy=sum(y for x,y in outline)/len(outline)
+    ring_levels=((0,z),(.028,z-1.1),(.075,z-3.3),(.16,z-6.0),(.25,base_z))
+    vertices=[];rng=random.Random(seed+900)
+    for ring,(spread,z0) in enumerate(ring_levels):
+        for x,y in outline:
+            v=Vector((x-cx,y-cy))
+            x2=x+v.x*spread;y2=y+v.y*spread
+            jag=(rng.random()-.5)*(.11 if ring==0 else .9)
+            vertices.append((x2+jag,y2+jag,z0+(.1 if ring==0 else (rng.random()-.5)*.45)))
+    n=len(outline);faces=[]
+    for k in range(len(ring_levels)-1):
+        for i in range(n):
+            p=k*n+i;q=k*n+(i+1)%n
+            faces.append((p,p+n,q+n,q))
+    mesh=bpy.data.meshes.new(name+'_weathered_bedrock_mesh')
+    mesh.from_pydata(vertices,[],faces);mesh.materials.append(rockside)
+    mesh.update();mesh.validate();uv=mesh.uv_layers.new(name='UVMap')
+    for loop in mesh.loops:
+        co=mesh.vertices[loop.vertex_index].co
+        uv.data[loop.index].uv=(co.x*.055+co.z*.014,co.y*.06)
+    obj=bpy.data.objects.new(name+'_irregular_cliff',mesh);scene.collection.objects.link(obj)
+    return obj
+
+cliff_plateau('LowerFortressIsland',
+    [(-27,-18),(23,-18),(29,-12),(30,5),(26,11),(-26,11),(-30,3),(-29,-10)],-.04,-15,412)
+cliff_plateau('UpperAsymmetricTerrace',
+    [(-26,12),(26,12),(29,19),(24,32),(-23,32),(-29,22)],3.44,-12,818)
+
+# Basin reaches outside the entire strategic frame; no floating island or flat
+# blue rectangle posing as a distant landscape.
+polygon('Valoria surrounding valley floor',
+    [(-230,-210,-24),(230,-210,-24),(230,240,-24),(-230,240,-24)],valleygrass)
+polygon('Valoria distant lake western channel',
+    [(-170,-150,-23.85),(-56,-150,-23.85),(-58,10,-23.85),(-107,35,-23.85),(-175,-20,-23.85)],water)
+
+def valley_height(x,y):
+    peaks=((-109,114,58,49),(-70,96,43,42),(-26,146,72,48),
+           (18,104,53,38),(64,136,68,50),(128,105,55,58))
+    uplift=0
+    for px,py,height,radius in peaks:
+        d=((x-px)/radius)**2+((y-py)/(radius*.72))**2
+        uplift+=height*math.exp(-d*1.1)
+    uneven=fractal(Vector((x*.025,y*.031,5.7)),.85,2.0,4)*5
+    return -25+uplift+uneven
+
+nx=55;ny=30;x0=-175;x1=175;y0=40;y1=195
+coords=[]
+for iy in range(ny+1):
+    y=y0+(y1-y0)*iy/ny
+    for ix in range(nx+1):
+        x=x0+(x1-x0)*ix/nx;z=valley_height(x,y)
+        if y<46:z=min(z,-10)
+        coords.append((x,y,z))
+tris=[]
+for iy in range(ny):
+    for ix in range(nx):
+        i=iy*(nx+1)+ix;b=i+1;c=i+nx+1;d=c+1
+        tris.extend(((i,b,c),(b,d,c)))
+mount=bpy.data.meshes.new('Misted distant valley terrain')
+mount.from_pydata(coords,[],tris)
+mount.materials.append(mountainrock);mount.update();mount.validate()
+uv=mount.uv_layers.new(name='UVMap')
+for loop in mount.loops:
+    co=mount.vertices[loop.vertex_index].co;uv.data[loop.index].uv=(co.x*.01,co.y*.01)
+obj=bpy.data.objects.new('Valoria true mountain backdrop',mount);scene.collection.objects.link(obj)
+
+# Asymmetric side slopes integrate the cliffs into the valley.
+for side in (-1,1):
+    edge=[]
+    for i in range(19):
+        y=-80+i*10
+        for j in range(9):
+            x=side*(47+j*14)
+            ridge=j*3.8+fractal(Vector((x*.026,y*.021,2)),.9,2.0,4)*5-23
+            edge.append((x,y,ridge))
+    tri=[]
+    for i in range(18):
+        for j in range(8):
+            u=i*9+j;v=u+9
+            tri.extend(((u,u+1,v),(u+1,v+1,v)))
+    sl=bpy.data.meshes.new('Valoria side valley slope mesh')
+    sl.from_pydata(edge,[],tri);sl.materials.append(mountainrock)
+    sl.update();sl.validate();uvs=sl.uv_layers.new(name='UVMap')
+    for loop in sl.loops:
+        v=sl.vertices[loop.vertex_index].co
+        uvs.data[loop.index].uv=(v.x*.015,v.y*.014)
+    obj=bpy.data.objects.new('Valoria '+str(side)+' valley rock slope',sl)
+    scene.collection.objects.link(obj)

@@ -160,9 +160,9 @@ def polygon(name,verts,material):
  for loop in mesh.loops:
   co=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=(co.x*.08,co.y*.08)
  o=bpy.data.objects.new(name,mesh);scene.collection.objects.link(o);return o
-polygon('PROTOTYPE_MainTerrace',[(-27,-18,-.04),(23,-18,-.04),(29,-12,-.04),(30,5,-.04),(26,11,-.04),(-26,11,-.04),(-30,3,-.04),(-29,-10,-.04)],grass)
-polygon('PROTOTYPE_UpperTerrace',[(-26,12,3.44),(26,12,3.44),(29,19,3.44),(24,32,3.44),(-23,32,3.44),(-29,22,3.44)],grass)
-polygon('PROTOTYPE_ValleyWater',[(-90,-65,-3.7),(90,-65,-3.7),(90,70,-3.7),(-90,70,-3.7)],water)
+
+# Maintain the exact authored assets; finish only the environment support.
+exec((pathlib.Path(__file__).parent/'terrain_finish.py').read_text(encoding='utf-8'))
 
 # Non-destructive shared variants, restricted to known architectural materials.
 material_changes=[]

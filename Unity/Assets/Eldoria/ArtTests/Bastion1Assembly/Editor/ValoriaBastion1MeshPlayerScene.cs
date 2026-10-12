@@ -23,7 +23,7 @@ namespace Eldoria.EditorTools
             if(oldControls!=null)UnityEngine.Object.DestroyImmediate(oldControls);
             camera.tag="MainCamera";
             camera.gameObject.name="Valoria strategic player camera";
-            camera.orthographicSize=38.5f;
+            camera.orthographicSize=26f;
 
             var visual=new GameObject("Valoria authored mesh presentation");
             var presentation=visual.AddComponent<ValoriaParcelPresentation>();

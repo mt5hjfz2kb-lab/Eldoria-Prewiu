@@ -56,7 +56,7 @@ namespace Eldoria.EditorTools
                     warm.shadows=LightShadows.None;warm.transform.position=p;
                 }
                 var camera=new GameObject("Bastion I strategic camera").AddComponent<Camera>();
-                camera.orthographic=true;camera.orthographicSize=38.5f;
+                camera.orthographic=true;camera.orthographicSize=26f;
                 camera.nearClipPlane=.1f;camera.farClipPlane=350f;
                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.15f,.23f,.31f);
                 // glTF exporter: Blender (x,y,z)->(x,z,-y); glTFast mirrors x.
@@ -70,7 +70,7 @@ namespace Eldoria.EditorTools
                 // Portrait shows complete construction envelope, without artificial close zoom.
                 camera.orthographicSize=76f;
                 Render(camera,Path.Combine(directory,"bastion1-unity-portrait.png"),390,844);
-                camera.orthographicSize=38.5f;
+                camera.orthographicSize=26f;
                 // Focalized source check: relative clamps cannot teleport this camera
                 // to the old image-plane origin on the first player drag.
                 var home=camera.transform.position;
