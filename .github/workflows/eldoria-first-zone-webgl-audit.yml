@@ -1,0 +1,41 @@
+name: Eldoria first-zone WebGL payload audit
+on:
+  push:
+    branches: [integration/valoria-v3-unity-lookdev-20261012]
+    paths:
+      - .github/workflows/eldoria-first-zone-webgl-audit.yml
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38262682807
+          name: eldoria-first-zone-webgl-38262682807
+          github-token: ${{ github.token }}
+          path: first-zone-build
+      - name: Analyze source build without changing shipping game
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('first-zone-build')
+          entries=[(str(p.relative_to(root)),p.stat().st_size) for p in root.rglob('*') if p.is_file()]
+          entries.sort(key=lambda x:x[1],reverse=True)
+          total=sum(s for _,s in entries)
+          result={'source_run':38262682807,'file_count':len(entries),'total_bytes':total,'largest_files':[{'path':p,'size_bytes':s} for p,s in entries[:100]],'unverified_art':True,'mobile_approved':False,'source_branch':'integration/valoria-v3-unity-lookdev-20261012'}
+          Path('first-zone-size-audit.json').write_text(json.dumps(result,indent=2))
+          print('ELDORIA_FIRST_ZONE_WEBGL_SIZE_BYTES',total)
+          for p,s in entries[:20]: print(f'{s/1048576:.1f} MB {p}')
+          if not any(p.endswith('index.html') for p,_ in entries):raise SystemExit('MISSING_REAL_WEBGL_INDEX')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-first-zone-webgl-size-audit-${{ github.run_id }}
+          path: first-zone-size-audit.json
+          retention-days: 7
