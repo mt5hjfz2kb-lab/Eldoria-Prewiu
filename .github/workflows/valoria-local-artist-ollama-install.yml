@@ -14,7 +14,7 @@ jobs:
   persistent-pc-identity:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 15
+    timeout-minutes: 55
     steps:
       - name: Expose Git
         shell: powershell
@@ -61,7 +61,16 @@ jobs:
           $models=(& $exe list 2>&1 | Out-String)
           if($LASTEXITCODE -ne 0){throw "OLLAMA_LOCAL_SERVER_UNAVAILABLE: $models"}
           if($models -notmatch 'qwen3-vl:4b-instruct'){
-            throw "QWEN3_VL_4B_NOT_INSTALLED_ON_WINDOWS_PC; no automatic paid service, no changes made"
+            # First installation only. Ollama model registry is free; guard disk space
+            # and do not substitute another non-visual text model.
+            $drive=(Get-Item $env:LOCALAPPDATA).PSDrive
+            $free=(Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$($env:SystemDrive)'").FreeSpace
+            if($free -lt 12000000000){throw 'INSUFFICIENT_DISK_FOR_FREE_QWEN3_VL_INSTALL_12GB_REQUIRED'}
+            Write-Output 'QWEN3_VL_FREE_LOCAL_DOWNLOAD_START'
+            & $exe pull qwen3-vl:4b-instruct
+            if($LASTEXITCODE -ne 0){throw 'QWEN3_VL_FREE_LOCAL_DOWNLOAD_FAILED'}
+            $models=(& $exe list 2>&1 | Out-String)
+            if($models -notmatch 'qwen3-vl:4b-instruct'){throw 'QWEN3_VL_MODEL_NOT_REGISTERED_AFTER_DOWNLOAD'}
           }
           $file=Join-Path $env:GITHUB_WORKSPACE 'tools/art-direction/Modelfile.eldoria-artist'
           & $exe create eldoria-artist -f $file
