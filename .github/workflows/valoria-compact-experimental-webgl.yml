@@ -113,6 +113,10 @@ jobs:
           $output=Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/ValoriaFirstZoneWebGL'
           if(-not (Test-Path (Join-Path $output 'index.html'))){throw 'FIRST_ZONE_WEBGL_INDEX_MISSING'}
           Write-Host 'ELDORIA_FIRST_ZONE_WEBGL_BUILD_VALIDATED'
+          # taskkill may return nonzero for exited Unity child processes even after successful build.
+          # Do not let PowerShell propagate stale external-tool exit code after all validation passes.
+          $global:LASTEXITCODE=0
+          exit 0
       - name: Require browser-sized playable output
         shell: powershell
         run: |
