@@ -38,6 +38,16 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  // Construction queue is intentionally limited to one simultaneous building construction/upgrade.
  const qnow=Date.now();s=await state();await set({...s,view:'kingdom',bastionLevel:4,bastion3:true,developmentChoices:{4:{id:'defense',at:qnow,qa:true}},sawmill:true,barracks:true,granary:true,wood:5000,stone:5000,food:5000,buildingLevels:{sawmill:1,barracks:1,granary:1,stoneworks:0,forge:0},tasks:[{key:'upgrade-building-granary-2',title:'MEJORANDO GRANERO',target:'granary',start:qnow,end:qnow+30000,costPaid:true,cost:{wood:120,stone:78}}]});
  await p.locator('[data-testid="building-sawmill"]').tap({force:true});await p.locator('[data-testid="building-action-sawmill"]').waitFor({state:'visible'});
+  await p.evaluate(()=>{
+    window.__qaBuildingTouch=[];
+    for(const type of ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','click']){
+      document.addEventListener(type,e=>{
+        const el=e.target?.closest?.('[data-building-action]');
+        window.__qaBuildingTouch.push({type,building:el?.dataset?.buildingAction||null,pointer:e.pointerType||null,connected:el?.isConnected??null});
+        if(window.__qaBuildingTouch.length>35)window.__qaBuildingTouch.shift();
+      },{capture:true,passive:true});
+    }
+  });
   console.log('CHAPTER_QUEUE_TOUCH_HITTEST',await p.evaluate(()=>{
     const el=document.querySelector('[data-testid="building-action-sawmill"]'),r=el.getBoundingClientRect(),
       x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y);
@@ -48,6 +58,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  s=await state();if((s.tasks||[]).filter(t=>/^(build-|upgrade-building-|upgrade-barracks-|upgrade-bastion-)/.test(t.key||'')).length!==1)throw Error('construction queue allowed more than one active construction');if(!(await p.locator('.e22-dialog').filter({hasText:'COLA DE CONSTRUCCIÓN OCUPADA'}).count())){
    const context=await p.evaluate(()=>({overlays:[...document.querySelectorAll('.e22-dialog,.tutorialDialogue,.aldric-cinematic')].map(x=>x.innerText.slice(0,250)),
     sawmillAction:document.querySelector('[data-testid="building-action-sawmill"]')?.outerHTML.slice(0,450),
+    touchEvents:window.__qaBuildingTouch||[],
     state:({bastion:window.ELDORIA_V023.state().bastionLevel,selected:window.ELDORIA_V023.state().selectedAction,
       tasks:window.ELDORIA_V023.state().tasks,wood:window.ELDORIA_V023.state().wood,stone:window.ELDORIA_V023.state().stone})}));
    throw Error('construction queue limit did not explain the block '+JSON.stringify(context));
