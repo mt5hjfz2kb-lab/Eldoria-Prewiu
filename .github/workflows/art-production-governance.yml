@@ -64,15 +64,19 @@ jobs:
           ART_PUSH_BEFORE: ${{ github.event.before }}
           ART_PUSH_AFTER: ${{ github.sha }}
         run: |
-          if [ "$ART_EVENT" = "pull_request" ]; then
-            base="$ART_PR_BASE"; head="$ART_PR_HEAD"
+          if [ "$ART_EVENT" = "workflow_dispatch" ]; then
+            : > /tmp/eldoria-art-changed-files.txt
           else
-            base="$ART_PUSH_BEFORE"; head="$ART_PUSH_AFTER"
+            if [ "$ART_EVENT" = "pull_request" ]; then
+              base="$ART_PR_BASE"; head="$ART_PR_HEAD"
+            else
+              base="$ART_PUSH_BEFORE"; head="$ART_PUSH_AFTER"
+            fi
+            if [ -z "$base" ] || [ -z "$head" ]; then
+              echo "ART_SCOPE_FAIL: missing base/head SHAs"; exit 1
+            fi
+            git diff --name-only "$base" "$head" > /tmp/eldoria-art-changed-files.txt
           fi
-          if [ -z "$base" ] || [ -z "$head" ]; then
-            echo "ART_SCOPE_FAIL: missing base/head SHAs"; exit 1
-          fi
-          git diff --name-only "$base" "$head" > /tmp/eldoria-art-changed-files.txt
           node tools/check-art-changed-scope.mjs --changed-files /tmp/eldoria-art-changed-files.txt
       - name: Regression test permanent art change ownership
         run: node --test tools/check-art-changed-scope.test.mjs
