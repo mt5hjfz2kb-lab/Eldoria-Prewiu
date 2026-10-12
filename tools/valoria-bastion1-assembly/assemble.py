@@ -58,6 +58,20 @@ def load(name):
     else:materials[key]=m
  lo,hi=bounds(objs);center=(lo+hi)/2;center.z=0
  for o in objs:o.location-=center
+ # Reuse only the authored portal pieces for the asymmetric upper bastion.
+ # No mesh is cut or synthesized; the complete hero remains the lower gate.
+ if name=='hero_gate_v3':
+  prefixes=('Portal ', 'Continuous vaulted portal', 'Load-bearing carved voussoir',
+            'Recessed vault stone', 'Arch ', 'Iron portcullis',
+            'Forged pointed portcullis', 'Portcullis crossbar', 'Open oak gate leaf',
+            'Forged oak hinge strap')
+  parts=[]
+  for old in objs:
+   if old.name.startswith(prefixes):
+    ob=old.copy();ob.data=old.data.copy();scene.collection.objects.link(ob);parts.append(ob)
+  low,high=bounds(parts);blueprints['hero_portal_subset']=(parts,low,high)
+  for ob in parts:
+   for collection in list(ob.users_collection):collection.objects.unlink(ob)
  # Collapse same-material parts in each immutable source copy. Gate goes from
  # 1,037 renderers to material groups; keep the untouched source SHA recorded.
  groups={}
@@ -94,18 +108,29 @@ def put(name,label,x,y,z=0,angle=0,scale=(1,1,1),anchor='foot',target_size=None)
 # Coordinate contract: Blender +Y goes inward; Unity +Z goes inward.
 # Two elevations, broad playable negative space, an uninterrupted axial route.
 put('hero_gate_v3','LowerGate',0,-17,0)
-put('hero_gate_v3','UpperBastion',0,24,3.5,scale=(.88,.88,.88))
+# Reference hierarchy: one dominant tower left of the main arch, a smaller
+# secondary arch further left, and short imperfect wings. No flank towers.
+put('hero_portal_subset','UpperBastion',0,24,3.5,scale=(1,1,.78))
+put('watchtower','UpperDominantTower',-4,24,3.5,scale=(1.12,1.12,1.24))
+put('hero_portal_subset','UpperSecondaryArch',-8.5,24.6,3.5,scale=(.64,.8,.62))
+put('wall_straight','UpperLeftWing',-14.3,24.8,3.5,scale=(.72,1,.61))
+put('wall_connections','UpperLeftBrokenEnd',-18.2,24.8,3.5,scale=(1,1,.44))
+put('wall_straight','UpperRightWing',6.2,24.2,3.5,scale=(.93,1,.66))
+put('wall_straight','UpperRightLowRemnant',12.2,24.2,3.5,scale=(.57,1,.36))
+put('wall_connections','UpperRightBrokenEnd',15.3,24.2,3.5,scale=(1,1,.58))
 gatewidth=blueprints['hero_gate_v3'][2].x-blueprints['hero_gate_v3'][1].x
 half=gatewidth/2
-for side in [-1,1]:
- for i in range(2):put('wall_straight',f'UpperWall_{side}_{i}',side*(half*.88+4+i*7.85),24,3.5)
- put('watchtower',f'UpperFlankTower_{side}',side*(half*.88+15.8),24,3.5)
- put('wall_connections',f'LowerSocket_{side}',side*(half+.8),-17,0)
- put('wall_straight',f'LowerGateWall_{side}',side*(half+4.9),-17,0,scale=(1,.9,.68))
- put('wall_corner',f'OuterCorner_{side}',side*25,-10,0,angle=0 if side<0 else 90,scale=(1,1,.72))
- put('wall_straight',f'RemnantWall_{side}',side*23,-4,0,angle=90,scale=(.9,1,.72))
- put('defensive_props',f'GatePracticalSet_{side}',side*(half-1.25),-19,0,scale=(.65,.65,.65))
- put('defensive_props',f'UpperPracticalSet_{side}',side*4.5,21,3.5,scale=(.6,.6,.6))
+# Only the right wing joins the lower gate. Isolated remnants sit farther out
+# on the left/right terrace, preserving the large open reconstruction yard.
+put('wall_straight','LowerGateRightWing',half+3.1,-17,0,scale=(.78,.9,.62))
+put('wall_straight','LeftDetachedRemnant',-21,-8,0,scale=(.8,1,.57))
+put('wall_connections','LeftDetachedPier',-24.4,-8,0,scale=(1,1,.72))
+put('wall_straight','RightDetachedRemnant',23,1,0,scale=(.88,1,.5))
+put('wall_connections','RightDetachedPier',26.6,1,0,scale=(1,1,.62))
+put('wall_corner','UpperRightReturn',17.2,25,3.5,angle=90,scale=(.65,.65,.46))
+# Props remain compact at the two gates, not spread into the empty yard.
+put('defensive_props','LowerGatePracticalSet',0,-19,0,scale=(1.55,.65,.65))
+put('defensive_props','UpperPracticalSet',0,21,3.5,scale=(1.25,.6,.6))
 put('bridge','StoneApproachBridge',0,-28,-3.5,target_size=(6.0,19.0,3.5))
 put('stairs','TerraceStair',0,9,0,target_size=(6.0,7.0,3.5))
 for y in [-12,-4,3]:put('stone_path_platform','CentralRoad_'+str(y),0,y,.02)
@@ -135,8 +160,8 @@ def polygon(name,verts,material):
  for loop in mesh.loops:
   co=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=(co.x*.08,co.y*.08)
  o=bpy.data.objects.new(name,mesh);scene.collection.objects.link(o);return o
-polygon('PROTOTYPE_MainTerrace',[(-29,-18,-.04),(29,-18,-.04),(30,10,-.04),(-29,10,-.04)],grass)
-polygon('PROTOTYPE_UpperTerrace',[(-29,12,3.44),(29,12,3.44),(28,31,3.44),(-28,31,3.44)],grass)
+polygon('PROTOTYPE_MainTerrace',[(-27,-18,-.04),(23,-18,-.04),(29,-12,-.04),(30,5,-.04),(26,11,-.04),(-26,11,-.04),(-30,3,-.04),(-29,-10,-.04)],grass)
+polygon('PROTOTYPE_UpperTerrace',[(-26,12,3.44),(26,12,3.44),(29,19,3.44),(24,32,3.44),(-23,32,3.44),(-29,22,3.44)],grass)
 polygon('PROTOTYPE_ValleyWater',[(-90,-65,-3.7),(90,-65,-3.7),(90,70,-3.7),(-90,70,-3.7)],water)
 
 # Non-destructive shared variants, restricted to known architectural materials.
@@ -205,7 +230,7 @@ for x,y,z in [(-4,-20,2),(4,-20,2),(-4,21,5.5),(4,21,5.5)]:
  light=bpy.data.lights.new('Amber practical','POINT');light.energy=220;light.color=(1,.3,.055);light.shadow_soft_size=.7
  ob=bpy.data.objects.new('Amber practical',light);scene.collection.objects.link(ob);ob.location=(x,y,z)
 camera=bpy.data.objects.new('Bastion I reference camera',bpy.data.cameras.new('Bastion I reference camera'));scene.collection.objects.link(camera);scene.camera=camera
-camera.location=(48,-70,54);target=Vector((0,0,0));camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=77
+camera.location=(32,-76,49);target=Vector((0,0,0));camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=77
 scene.render.resolution_x=1440;scene.render.resolution_y=1000;scene.render.filepath=str(a.output/'bastion1-blender-composition.png')
 scene.render.image_settings.file_format='PNG';bpy.ops.render.render(write_still=True)
 scene.render.resolution_x=780;scene.render.resolution_y=520;scene.render.filepath=str(a.output/'bastion1-blender-mobile.png');bpy.ops.render.render(write_still=True)

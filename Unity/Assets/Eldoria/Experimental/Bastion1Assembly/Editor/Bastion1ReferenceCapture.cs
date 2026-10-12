@@ -32,6 +32,7 @@ namespace Eldoria.EditorTools
                 AssetDatabase.DeleteAsset(Study+"/Generated/StudyURP.asset");
                 AssetDatabase.CreateAsset(pipeline,Study+"/Generated/StudyURP.asset");
                 GraphicsSettings.defaultRenderPipeline=pipeline;QualitySettings.renderPipeline=pipeline;
+                DebugManager.instance.Reset();
                 var active=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
                 var source=Path.GetFullPath(Study+"/GeneratedSource/Bastion1ReferenceAssembly.glb");
                 if(!File.Exists(source))throw new FileNotFoundException("Run the exact source assembler first",source);
@@ -59,7 +60,7 @@ namespace Eldoria.EditorTools
                 camera.nearClipPlane=.1f;camera.farClipPlane=350f;
                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.15f,.23f,.31f);
                 // glTF exporter: Blender (x,y,z)->(x,z,-y); glTFast mirrors x.
-                camera.transform.position=new Vector3(-48f,54f,70f);camera.transform.LookAt(Vector3.zero);
+                camera.transform.position=new Vector3(-32f,49f,76f);camera.transform.LookAt(Vector3.zero);
                 var controls=camera.gameObject.AddComponent<Eldoria.Art.Bastion1AssemblyCamera>();
                 controls.ConfigureHome();
                 var directory=Path.GetFullPath("Bastion1ReferenceCaptures");Directory.CreateDirectory(directory);
