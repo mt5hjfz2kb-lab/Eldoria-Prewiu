@@ -11,10 +11,10 @@ namespace Eldoria
     [RequireComponent(typeof(Camera))]
     public sealed class ValoriaFirstZonePreviewControls : MonoBehaviour
     {
-        [SerializeField] float panUnitsPerPixel=.018f;
+        [SerializeField] float panUnitsPerPixel=.065f;
         [SerializeField] float zoomSensitivity=.0025f;
-        [SerializeField] float minimumOrthographicSize=5f;
-        [SerializeField] float maximumOrthographicSize=60f;
+        [SerializeField] float minimumOrthographicSize=18f;
+        [SerializeField] float maximumOrthographicSize=75f;
         [SerializeField] Vector2 xLimits=new Vector2(-38f,38f);
         [SerializeField] Vector2 zLimits=new Vector2(-44f,28f);
 
@@ -24,7 +24,15 @@ namespace Eldoria
         bool dragging;
         public string SelectedInstanceId => selectedInstanceId;
 
-        void Awake() {view=GetComponent<Camera>();}
+        void Awake()
+        {
+            view=GetComponent<Camera>();
+            if(view.orthographic) view.orthographicSize=36f;
+            view.backgroundColor=new Color(.48f,.58f,.63f);
+            RenderSettings.ambientIntensity=Mathf.Min(RenderSettings.ambientIntensity,.75f);
+            foreach(var light in FindObjectsByType<Light>(FindObjectsInactive.Include,FindObjectsSortMode.None))
+                if(light.type==LightType.Directional) light.intensity=Mathf.Min(light.intensity,.85f);
+        }
         void Update()
         {
             if(view==null)return;
@@ -43,6 +51,8 @@ namespace Eldoria
                 if(mouse.leftButton.isPressed &&
                    (mouse.position.ReadValue()-pressPosition).sqrMagnitude>64f)
                     dragging=true;
+                if(mouse.leftButton.isPressed && dragging)
+                    Pan(mouse.delta.ReadValue());
                 if(mouse.leftButton.wasReleasedThisFrame&&!dragging)
                     Select(mouse.position.ReadValue());
             }
@@ -59,7 +69,7 @@ namespace Eldoria
                     float previousDistance=Vector2.Distance(
                         first.position.ReadValue()-first.delta.ReadValue(),
                         second.position.ReadValue()-second.delta.ReadValue());
-                    Zoom(-(distance-previousDistance)*.025f);
+                    Zoom(-(distance-previousDistance)*.09f);
                 }
                 else Pan(first.delta.ReadValue());
             }
@@ -100,7 +110,8 @@ namespace Eldoria
         {
             if(view==null||!view.enabled)return;
             GUI.Label(new Rect(15,15,690,28),
-                "VALORIA · first 3D zone prototype · no gameplay changes");
+                "VALORIA · drag to move · pinch / wheel to zoom · 3D prototype");
+            GUI.Label(new Rect(15,70,690,28),"Camera zoom: "+view.orthographicSize.ToString("F1"));
             if(!string.IsNullOrEmpty(selectedInstanceId))
                 GUI.Label(new Rect(15,42,690,28),"Selected: "+selectedInstanceId);
         }
