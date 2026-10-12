@@ -39,6 +39,12 @@ namespace Eldoria
         void Update()
         {
             if(view==null)return;
+            var keys=Keyboard.current;
+            if(keys!=null)
+            {
+                if(keys.upArrowKey.isPressed)Zoom(-Time.unscaledDeltaTime*.9f);
+                if(keys.downArrowKey.isPressed)Zoom(Time.unscaledDeltaTime*.9f);
+            }
             var mouse=Mouse.current;
             if(mouse!=null)
             {
@@ -131,7 +137,9 @@ namespace Eldoria
             if(view==null||!view.enabled)return;
             GUI.Label(new Rect(15,15,690,28),
                 "VALORIA · drag to move · pinch / wheel to zoom · 3D prototype");
-            GUI.Label(new Rect(15,70,690,28),"Camera zoom: "+view.orthographicSize.ToString("F1"));
+            GUI.Label(new Rect(15,70,690,28), "Zoom: "+(view.orthographic ? view.orthographicSize : view.fieldOfView).ToString("F1"));
+            if(GUI.Button(new Rect(15,108,115,52),"ZOOM +"))Zoom(-1f);
+            if(GUI.Button(new Rect(144,108,115,52),"ZOOM -"))Zoom(1f);
             if(!string.IsNullOrEmpty(selectedInstanceId))
                 GUI.Label(new Rect(15,42,690,28),"Selected: "+selectedInstanceId);
         }
