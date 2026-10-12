@@ -11,6 +11,12 @@ on:
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
       - 'tools/art-direction/ai-authoring/**'
+      - 'art-source/**'
+      - 'Unity/Assets/Eldoria/ArtTests/**'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+      - 'Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity'
+      - 'tools/valoria-bastion1-assembly/**'
+      - 'tools/check-art-changed-scope*'
       - 'pipeline/visual-fallback-policy.json'
       - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
       - 'AGENTS.md'
@@ -23,6 +29,12 @@ on:
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
       - 'tools/art-direction/ai-authoring/**'
+      - 'art-source/**'
+      - 'Unity/Assets/Eldoria/ArtTests/**'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+      - 'Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity'
+      - 'tools/valoria-bastion1-assembly/**'
+      - 'tools/check-art-changed-scope*'
 
 permissions:
   contents: read
@@ -37,11 +49,23 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Enforce universal art-production routing
         run: node tools/check-art-production-governance.mjs
+      - name: Reject unclaimed 3D assets and Unity art scenes
+        if: github.event_name == 'pull_request'
+        env:
+          ART_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          ART_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only "$ART_BASE_SHA" "$ART_HEAD_SHA" > /tmp/eldoria-art-changed-files.txt
+          node tools/check-art-changed-scope.mjs --changed-files /tmp/eldoria-art-changed-files.txt
+      - name: Regression test permanent art change ownership
+        run: node --test tools/check-art-changed-scope.test.mjs
       - name: Verify real AI sculpting evidence contract
         run: node --test tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs
       - name: Validate zero-cost Qwen and Blender automation scripts
