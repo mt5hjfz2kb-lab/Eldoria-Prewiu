@@ -135,7 +135,7 @@ jobs:
           path: Unity/Builds/ValoriaFirstZoneWebGL
   publish-preview:
     needs: candidate
-    if: ${{ needs.candidate.result == 'success' }}
+    if: ${{ needs.candidate.result == 'success' && vars.VALORIA_EXPERIMENTAL_PAGES_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
