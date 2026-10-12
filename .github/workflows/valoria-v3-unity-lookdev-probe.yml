@@ -8,6 +8,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnityFinishKit.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs'
+      - '.github/workflows/valoria-v3-unity-lookdev-probe.yml'
 permissions:
   contents: read
 concurrency:
