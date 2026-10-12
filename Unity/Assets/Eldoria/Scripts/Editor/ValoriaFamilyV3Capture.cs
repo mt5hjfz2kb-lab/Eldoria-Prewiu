@@ -81,11 +81,11 @@ namespace Eldoria.EditorTools
         static void SetLookdev(bool lookdev,List<GameObject> objects,Light sun)
         {
             sun.color=lookdev ? new Color(1f,.87f,.72f) : Color.white;
-            sun.intensity=lookdev ? 1.60f : 1f;
-            sun.shadowStrength=lookdev ? .72f : .5f;
+            sun.intensity=lookdev ? 1.15f : 1f;
+            sun.shadowStrength=lookdev ? .87f : .5f;
             sun.transform.rotation=Quaternion.Euler(lookdev? 42f:55f,-43f,0f);
             RenderSettings.ambientMode=AmbientMode.Flat;
-            RenderSettings.ambientLight=lookdev ? new Color(.48f,.51f,.53f):new Color(.70f,.70f,.70f);
+            RenderSettings.ambientLight=lookdev ? new Color(.35f,.39f,.41f):new Color(.70f,.70f,.70f);
             RenderSettings.fog=lookdev;
             RenderSettings.fogColor=new Color(.48f,.54f,.59f);
             RenderSettings.fogMode=FogMode.Linear;
