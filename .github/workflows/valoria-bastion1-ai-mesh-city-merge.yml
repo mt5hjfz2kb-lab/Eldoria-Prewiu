@@ -70,6 +70,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Technical rejection of the prior merge: mesh.materials.clear()
+          # collapsed face material indexes, dropping the stone PBR cliff
+          # material despite preserving object names. Patch only this isolated
+          # run's execution copy; the source gets updated after verified QA.
+          python3 - <<'PY'
+          import pathlib
+          f=pathlib.Path('tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py')
+          s=f.read_text()
+          old='mesh.materials.clear()\nfor material in old_mats:mesh.materials.append(material)\noriginal.data=mesh'
+          new='saved_material_indices=[poly.material_index for poly in mesh.polygons]\nmesh.materials.clear()\nfor material in old_mats:mesh.materials.append(material)\nfor poly,slot in zip(mesh.polygons,saved_material_indices):poly.material_index=slot\noriginal.data=mesh'
+          if old not in s:raise ValueError('Base mesh material logic changed, refuse unverified fix')
+          f.write_text(s.replace(old,new))
+          print('RESTORE_PER_FACE_PBR_SLOTS_IN_GENUINE_QWEN_MERGE')
+          PY
           SOURCE_SHA=$(sha256sum "$ROOT/verified/full-city.blend" | cut -d' ' -f1)
           ARTIST_SHA=$(sha256sum "$ROOT/artist/result/artist-output.blend" | cut -d' ' -f1)
           blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py -- \
@@ -86,6 +100,18 @@ jobs:
           data=(root/'merged/Bastion1QwenScene.glb').read_bytes()
           assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
           assert hashlib.sha256(data).hexdigest()==p['edited_glb_sha256']
+          import struct
+          chunk=struct.unpack_from('<I',data,12)[0]
+          gltf=json.loads(data[20:20+chunk])
+          terrain_nodes=[n for n in gltf['nodes'] if n.get('name')=='Valoria natural playable hilltop and rock scarps']
+          assert len(terrain_nodes)==1,terrain_nodes
+          mesh=gltf['meshes'][terrain_nodes[0]['mesh']]
+          names={gltf['materials'][x['material']]['name'] for x in mesh['primitives']}
+          required={'PROTOTYPE terrace earth olive grass','Valoria schist dark fractured cliff','Valoria forested valley ground'}
+          assert required.issubset(names),('Missing actual PBR terrain surface',required-names)
+          assert len(mesh['primitives'])>=3,('Sculpt collapsed PBR face slots',len(mesh['primitives']))
+          assert any(im.get('name')=='Valoria stratified native stone albedo' for im in gltf.get('images',[])),'Textured cliff was dropped'
+          print('QWEN_AUTHORED_FULL_CITY_PBR_TERRAIN_PASS',len(mesh['primitives']),names)
           print('QWEN_EDIT_APPLIED_TO_FULL_CITY_NOT_PROMOTED',json.dumps(p))
           PY
       - uses: actions/upload-artifact@v4
