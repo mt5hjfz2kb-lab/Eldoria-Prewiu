@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     environment:
-      name: github-pages
+      name: valoria-experimental
       url: ${{ steps.deploy.outputs.page_url }}valoria-experimental/
     steps:
       - name: Checkout EXACT unmodified stable main contents
