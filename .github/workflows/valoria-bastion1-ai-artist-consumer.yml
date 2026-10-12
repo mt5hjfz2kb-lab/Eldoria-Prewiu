@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: c267836661883a4f3003868d37f94785d245aaea
+      ART_CORE_SHA: a3982461d2fd5fc012139965ce4b42af7d570758
       SOURCE_RUN: '38320867773'
       SOURCE_SHA: '2f4b1a372c987594e92b15c899e5c86b16069b2b'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
@@ -33,31 +33,35 @@ jobs:
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
           python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
-          # Qwen 2B's first REAL answer in run 38322113569 contained zero deltas
-          # and a single-knot path. Feed the actual rejection back as a bounded
-          # prompt constraint. NEVER fill in/fabricate its proposed coordinates.
+          # Controlled second cycle: the first authentic sculpt moved 181
+          # vertices at the BACK corner but changed only 0.001% of pixels in
+          # matched camera Blender clay frames. That is VISUAL REJECTED.
+          # Request a model-directed edit of the CAMERA-VISIBLE FOREGROUND
+          # scarp, not a deterministic procedural geometry preset.
           python3 - <<'PY'
-          import pathlib,hashlib
+          import hashlib,pathlib
           f=pathlib.Path('tools/art-direction/ai-authoring/author_brief.py')
-          s=f.read_text()
-          marker=" payload={'model':a.model,'stream':False,'think':False,'format':'json',"
-          assert marker in s
-          feedback=""" prompt+=(' BASTION I REJECTION FEEDBACK: previous Qwen plan was INVALID. It used '
-            'sculpt_region delta=[0,0,0] and sculpt_path with only one knot. '
-            'This is forbidden. Choose exactly ONE action of type sculpt_region; '
-            'you as artist must choose its center and nonzero 3D displacement '
-            '(delta magnitude between 0.5 and 2.0 meters) and radius 10..24 meters. '
-            'Target ONLY the outer side of a recognizable cliff, NOT the path, '
-            'entrance or building parcels. Mesh bounds x[-50.5,50.5], '
-            'y[-49,57], z[-21.62,3.44]. Use x near -40 or +40, '
-            'position around the OUTER cliff face in those real coordinates. '
-            'asset_decision MUST equal MODIFY because source mesh is reused. '
-            'Return ONE precise, meaningful original operation with rationale; '
-            'never copy a fabricated default displacement. Preserve gameplay. ')
+          src=f.read_text()
+          marker=" payload={'model':a.model,'stream':False,'think':False,'format':format_spec,"
+          if marker not in src:raise ValueError('New PR36 prompt insertion point changed')
+          detail=""" prompt+=(' BASTION I PHOTOGRAPHIC CORRECTION FEEDBACK: Prior genuine Qwen sculpt at '
+           'center [-40,57,-21.624] edited 181 vertices but affected only 0.001 percent of '
+           'camera-matched pixels, so this is REJECTED as visually imperceptible. '
+           'The HERO GAME CAMERA looks from the SOUTH / entrance side. '
+           'Inspect the real Unity image and choose a meaningful artist-driven '
+           'sculpt_region on the VISIBLE outer SOUTH rock face, not the hidden rear corner. '
+           'Your original design must choose center x in [-47,-28] or [28,47], '
+           'y in [-44,-22], and z in [-21,-8], using the verified existing terrain. '
+           'Choose spatial radius between 18 and 24 meters and a precise nonzero '
+           'delta vector with Euclidean length 1.2 to 2.0 meters. '
+           'Do not move central playable grounds (abs(x)<22 and plateau z>-1), '
+           'stairs, doors, pathways, buildings or parcels. '
+           'Use asset_decision MODIFY, choose original explicit numbers and artistic rationale. '
+           'Do not imitate any fixed canned geometry values; plan exactly ONE genuine sculpt_region. '
+           'The first model failure was an invisible deformation, NOT a runtime bug. ')
           """
-          s=s.replace(marker,feedback+marker)
-          f.write_text(s)
-          print('BASTION1_QWEN_FEEDBACK_APPLIED',hashlib.sha256(s.encode()).hexdigest())
+          f.write_text(src.replace(marker,detail+marker))
+          print('CAMERA_VISIBLE_ARTIST_REJECTION_FEEDBACK',hashlib.sha256(f.read_bytes()).hexdigest())
           PY
           echo "PR36_PROVEN_CORE_READONLY $ART_CORE_SHA"
       - name: Recover immutable scene assembly and real Unity player frame
@@ -129,53 +133,30 @@ jobs:
             out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'derived_pixels':im.size}
           (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
           PY
-      - name: Recover authentic Qwen decision from failed typed-output validation (no re-inference)
-        timeout-minutes: 5
+      - name: Real Qwen second artistic design of visible foreground cliff (fresh two-image inference)
+        timeout-minutes: 18
         shell: bash
         run: |
           set -euo pipefail
-          # A genuine two-image, system-role Qwen response already exists in 38323028866.
-          # It failed ONLY because planned_actions was keyed by action instead of a list.
-          # Reuse its literal action unchanged; do NOT fabricate or replace an AI decision.
-          mkdir -p "$ART/recovery" "$ART/model"
-          gh run download 38323028866 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-artist-38323028866 --dir "$ART/recovery"
+          python3 tools/art-direction/ai-authoring/author_brief.py \
+            --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" \
+            --target-object "$TARGET_MESH" --target-mode existing \
+            --mesh-context "$ART/inspect/mesh-context.json" \
+            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1400 \
+            --max-actions 1 --cpu-compact --out "$ART/model"
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
+            --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
-          import os,json,hashlib,pathlib
-          root=pathlib.Path(os.environ['ART'])
-          source=json.loads((root/'recovery/input-provenance.json').read_text())
-          local=json.loads((root/'input-provenance.json').read_text())
-          for key in ('source_run','source_sha','artist_core_sha','glb_sha256','unity_sha256','reference_sha256'):
-              assert source[key]==local[key],(key,source[key],local[key])
-          raw_file=root/'recovery/model/artist-response-raw.txt'
-          raw_bytes=raw_file.read_bytes()
-          direction=json.loads(raw_bytes)
-          operations=direction.get('planned_actions')
-          assert isinstance(operations,dict) and len(operations)==1, 'Expected single actual model action dictionary'
-          key,action=next(iter(operations.items()))
-          assert key==action.get('type')=='sculpt_region',action
-          assert action.get('target')==os.environ['TARGET_MESH']
-          assert direction.get('asset_decision')=='MODIFY'
-          p=action['parameters']
-          assert len(p['center'])==3 and len(p['delta'])==3
-          assert 0.005<sum(x*x for x in p['delta'])<400
-          plan=[action]  # Structural type conversion only; zero artistic changes.
-          normalized={**direction,'planned_actions':plan}
-          model_dir=root/'model'
-          (model_dir/'artist-response-raw.txt').write_bytes(raw_bytes)
-          (model_dir/'artist-plan.json').write_text(json.dumps(plan,indent=2)+'\n')
-          prompt=pathlib.Path('tools/art-direction/ai-authoring/ARTIST_SYSTEM.md')
-          proof={'model':'qwen3-vl:2b-instruct','system_role':'system',
-            'system_prompt_sha256':hashlib.sha256(prompt.read_bytes()).hexdigest(),
-            'reference_sha256':local['reference_sha256'],'unity_before_sha256':local['unity_sha256'],
-            'direction':normalized,'original_direction':direction,'recovery_from_run':38323028866,
-            'raw_qwen_response_sha256':hashlib.sha256(raw_bytes).hexdigest(),
-            'normalization':'one-key dictionary to one-element action array; coordinates/rationale unchanged',
-            'self_approval':False}
-          (model_dir/'artist-inference.json').write_text(json.dumps(proof,indent=2)+'\n')
-          assert json.loads((model_dir/'artist-plan.json').read_text())[0]==direction['planned_actions'][key]
-          print('AUTHENTIC_QWEN_ARTIST_DECISION_RECOVERED',proof['raw_qwen_response_sha256'],key,p)
+          import os,json,pathlib,math
+          f=pathlib.Path(os.environ['ART'])/'model/artist-plan.json'
+          plan=json.loads(f.read_text())
+          assert len(plan)==1 and plan[0]['type']=='sculpt_region',plan
+          p=plan[0]['parameters'];x,y,z=p['center']
+          magnitude=math.sqrt(sum(v*v for v in p['delta']))
+          if not (28<=abs(x)<=47 and -44<=y<=-22 and -21<=z<=-8 and 18<=p['radius']<=24 and 1.2<=magnitude<=2.0):
+            raise ValueError('Qwen original sculpt outside camera-visible safe envelope; VISUAL_REJECTED, no fabricated coordinates')
+          print('REAL_MODEL_DESIGNED_VISIBLE_CLIFF',plan)
           PY
-          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
       - name: Actual typed Blender sculpt on Qwen-selected target
         timeout-minutes: 8
         run: |
@@ -197,6 +178,22 @@ jobs:
         timeout-minutes: 5
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- --before "$ART/terrain-source.blend" --after "$ART/result/artist-output.blend" --target "$TARGET_MESH" --out "$ART/ab"
+      - name: Independently measure CAMERA-LOCKED artistic impact (still not ART APPROVED)
+        shell: bash
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import os,pathlib,numpy as np
+          from PIL import Image
+          root=pathlib.Path(os.environ['ART'])/'ab'
+          before=np.asarray(Image.open(root/'before-blender-clay.png').convert('RGB')).astype(np.int16)
+          after=np.asarray(Image.open(root/'after-blender-clay.png').convert('RGB')).astype(np.int16)
+          assert before.shape==after.shape
+          pixels=(np.max(np.abs(before-after),axis=2)>=8)
+          fraction=float(pixels.mean())
+          print('REAL_QWEN_CAMERA_MATCHED_VISIBLE_PIXEL_FRACTION',fraction)
+          (root/'visual-impact.txt').write_text(f'changed_pixel_fraction={fraction:.9f}\nthreshold_for_study=0.0005\nnot_unity_or_visual_approval=true\n')
+          if fraction<.0005:raise ValueError('Qwen sculpt is not visibly meaningful in camera-matched proof; must redesign, not cosmetically accept')
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
