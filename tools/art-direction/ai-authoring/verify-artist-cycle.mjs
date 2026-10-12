@@ -7,6 +7,57 @@ export const APPROVED=new Set(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALID
 const GEOMETRY=new Set(['sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh']);
 const ACTIONS=new Set([...GEOMETRY,'assign_material','place_existing_asset']);
 const SHA=/^[a-f0-9]{64}$/i, nonempty=x=>typeof x==='string'&&x.trim().length>0;
+// Low-cost Linux preflight: reject malformed Qwen spatial plans BEFORE using Blender/Unity.
+export function preflightArtistPlan(ops,target,mode='existing'){
+ const errors=[],bad=x=>errors.push(x);
+ const number=(v,min,max)=>typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;
+ const vec=(v,size=3,min=-10000,max=10000)=>Array.isArray(v)&&v.length===size&&v.every(x=>number(x,min,max));
+ if(!['existing','new'].includes(mode))bad('Unknown target mode');
+ if(!nonempty(target))bad('Blender target name required');
+ if(!Array.isArray(ops)||ops.length<1||ops.length>8)return ['Plan must have 1..8 actions',...errors];
+ const ids=new Set();
+ for(const [index,op] of ops.entries()){
+  if(!op||typeof op!=='object'||Array.isArray(op)){bad('Action must be object');continue;}
+  const p=op.parameters;
+  if(!nonempty(op.id)||ids.has(op.id))bad('Duplicate/blank action id');
+  ids.add(op.id);
+  if(op.target!==target)bad('Action targets a different Blender object');
+  if(!ACTIONS.has(op.type))bad('Unsupported action '+op.type);
+  if(!nonempty(op.rationale)||op.rationale.length<15)bad('Missing artist rationale');
+  if(!p||typeof p!=='object'||Array.isArray(p)){bad('Missing action parameters');continue;}
+  if(op.type==='construct_mesh'){
+   if(mode!=='new'||index!==0)bad('New mesh must be first action in NEW mode');
+   const vertices=p.vertices,faces=p.faces;
+   if(!Array.isArray(vertices)||vertices.length<4||vertices.length>256||!vertices.every(v=>vec(v)))bad('Invalid mesh vertices');
+   if(!Array.isArray(faces)||faces.length<3||faces.length>512||
+     !faces.every(face=>Array.isArray(face)&&face.length>=3&&face.length<=12&&face.every(i=>Number.isInteger(i)&&i>=0&&i<(vertices?.length||0))))bad('Invalid mesh faces');
+  }
+  if(op.type==='sculpt_region'&&(!vec(p.center)||!vec(p.delta)||!number(p.radius,.01,100)||
+    p.delta.every(x=>x===0)))bad('Invalid sculpt region');
+  if(op.type==='sculpt_path'){
+   if(!Array.isArray(p.knots)||p.knots.length<2||p.knots.length>24||
+    !p.knots.every(k=>k&&vec(k.center)&&vec(k.delta)&&number(k.radius,.05,60) &&
+      Math.hypot(...k.delta)>=.005&&Math.hypot(...k.delta)<=20))bad('Invalid artist sculpt path');
+  }
+  if(op.type==='bridge_boundary_loops'){
+   const a=p.loop_a,b=p.loop_b;
+   if(!Array.isArray(a)||!Array.isArray(b)||a.length<3||a.length>48||a.length!==b.length||
+      ![...a,...b].every(i=>Number.isInteger(i)&&i>=0)||new Set([...a,...b]).size!==a.length+b.length)
+      bad('Invalid artist boundary loops');
+  }
+  if(op.type==='reprofile_crest'){
+   if(!['x','y'].includes(p.axis)||!['y','z'].includes(p.height_axis)||p.axis===p.height_axis||
+    !Array.isArray(p.control_points)||p.control_points.length<3||p.control_points.length>24||
+    !p.control_points.every(x=>vec(x,2)))bad('Invalid artist crest reprofiling');
+  }
+  if(op.type==='assign_material'&&(!vec(p.rgb,3,0,1)||!number(p.roughness??.85,0,1)))bad('Invalid material settings');
+  if(op.type==='place_existing_asset'&&(!nonempty(p.source_object)||!vec(p.location)||!vec(p.rotation)||!vec(p.scale)||
+    p.scale.some(x=>Math.abs(x)<.0001)))bad('Invalid existing asset placement');
+ }
+ if(mode==='new'&&ops[0]?.type!=='construct_mesh')bad('NEW mode requires authored mesh construction');
+ if(mode==='existing'&&ops.some(op=>op?.type==='construct_mesh'))bad('Existing source cannot be replaced by new mesh');
+ return errors;
+}
 export function verifyCycle(c,root=process.cwd()){
  const errors=[],need=(ok,msg)=>{if(!ok)errors.push(msg)};
  const file=(entry,label)=>{
@@ -117,6 +168,14 @@ export function verifyCycle(c,root=process.cwd()){
  return errors;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){
+ if(process.argv[2]==='--preflight-plan'){
+  try{
+   const ops=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+   const errors=preflightArtistPlan(ops,process.argv[4],process.argv[5]||'existing');
+   if(errors.length){errors.forEach(e=>console.error('ART_PLAN_PREFLIGHT_FAIL: '+e));process.exit(1);}
+   console.log('ART_PLAN_PREFLIGHT_PASS');process.exit(0);
+  }catch(e){console.error('ART_PLAN_PREFLIGHT_FAIL: '+e.message);process.exit(2);}
+ }
  const file=process.argv[2];
  if(!file){console.error('Usage: node verify-artist-cycle.mjs artist-cycle.json [repo-root]');process.exit(2)}
  try{
