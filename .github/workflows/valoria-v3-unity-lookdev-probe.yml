@@ -65,7 +65,7 @@ jobs:
             Copy-Item $file (Join-Path $target "$name.glb") -Force
             if ((Get-Item (Join-Path $target "$name.glb")).Length -lt 1000) {throw "Empty GLB $name"}
             $hash=(Get-FileHash (Join-Path $target "$name.glb") -Algorithm SHA256).Hash.ToLowerInvariant()
-            if ($hash -ne $expected[$name]) {throw "Approved GLB checksum mismatch $name: $hash"}
+            if ($hash -ne $expected[$name]) {throw "Approved GLB checksum mismatch ${name}: $hash"}
           }
       - name: Run Unity import and compile
         shell: powershell
