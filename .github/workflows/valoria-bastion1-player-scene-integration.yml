@@ -103,7 +103,7 @@ jobs:
           $graphs=@(Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph')
           if($graphs.Count -lt 3){throw "Expected unused supplier shadergraphs, found $($graphs.Count)"}
           foreach($graph in $graphs){
-            $relative=$graph.FullName.Substring("$env:GITHUB_WORKSPACE/Unity/Assets".Length).TrimStart('\\','/')
+            $relative=$graph.FullName.Substring("$env:GITHUB_WORKSPACE/Unity/Assets".Length).TrimStart([char]92,[char]47)
             $dest=Join-Path $quarantine $relative
             New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
             Move-Item -LiteralPath $graph.FullName -Destination $dest -Force
