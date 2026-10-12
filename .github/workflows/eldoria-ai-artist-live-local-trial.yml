@@ -27,17 +27,32 @@ jobs:
           mkdir -p /tmp/eldoria-ai-real/source /tmp/eldoria-ai-real/unity /tmp/eldoria-ai-real/result
           gh run download 38260070066 --repo "${{ github.repository }}" --name eldoria-coherent-cliff-v5-38260070066 --dir /tmp/eldoria-ai-real/source
           gh run download 38260643740 --repo "${{ github.repository }}" --name eldoria-coherent-cliff-v5-unity-38260643740 --dir /tmp/eldoria-ai-real/unity
-          SRC=$(find /tmp/eldoria-ai-real/source -type f -name 'cliff_coherent_v5.blend' -print -quit)
+          FROZEN_BLEND=$(find /tmp/eldoria-ai-real/source -type f -name 'cliff_coherent_v5.blend' -print -quit)
+          FROZEN_GLB=$(find /tmp/eldoria-ai-real/source -type f -name 'cliff_coherent_v5.glb' -print -quit)
           IMG=$(find /tmp/eldoria-ai-real/unity -type f -name 'before-neutral.png' -print -quit)
-          test -n "$SRC" && test -s "$SRC" && test -n "$IMG" && test -s "$IMG"
-          echo "SOURCE_BLEND=$SRC" >> "$GITHUB_ENV"
+          test -n "$FROZEN_BLEND" && test -s "$FROZEN_BLEND" && test -n "$FROZEN_GLB" && test -s "$FROZEN_GLB" && test -n "$IMG" && test -s "$IMG"
+          echo "FROZEN_GLTF=$FROZEN_GLB" >> "$GITHUB_ENV"
+          echo "SOURCE_BLEND=/tmp/eldoria-ai-real/source/derived-imported-v5.blend" >> "$GITHUB_ENV"
           echo "GENUINE_UNITY_BEFORE=$IMG" >> "$GITHUB_ENV"
-          sha256sum "$SRC" "$IMG" references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sha256sum "$FROZEN_BLEND" "$FROZEN_GLB" "$IMG" references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          python3 - <<'PY'
+          import os,pathlib
+          b=pathlib.Path(os.environ.get('FROZEN_BLEND','/tmp/eldoria-ai-real/source/cliff_coherent_v5/cliff_coherent_v5.blend')).read_bytes()
+          assert b[:4]==bytes.fromhex('28b52ffd'),'Archived V5 .blend is expected Blender5 zstd; never overwrite it'
+          print('FROZEN_SOURCE_ARCHIVE_PROTECTED',len(b),'bytes zstd Blender5 original')
+          PY
       - name: Inspect real V5 Blender source and choose existing terrain object
         run: |
           cat > /tmp/eldoria-ai-real/select-target.py <<'PY'
-          import bpy,os,pathlib
-          bpy.ops.wm.open_mainfile(filepath=os.environ['SOURCE_BLEND'])
+          import bpy,os,pathlib,hashlib
+          frozen=pathlib.Path(os.environ['FROZEN_GLTF'])
+          assert frozen.is_file() and frozen.read_bytes()[:4]==b'glTF','Frozen V5 GLB source signature required'
+          print('V5_IMPORT_FROZEN_GLB_SHA256',hashlib.sha256(frozen.read_bytes()).hexdigest())
+          bpy.ops.object.select_all(action='SELECT')
+          bpy.ops.object.delete(use_global=False)
+          bpy.ops.import_scene.gltf(filepath=str(frozen))
+          bpy.ops.wm.save_as_mainfile(filepath=os.environ['SOURCE_BLEND'])
+          print('DERIVED_BLENDER_SOURCE_SAVED',os.environ['SOURCE_BLEND'])
           objs=[o for o in bpy.data.objects if o.type=='MESH' and len(o.data.vertices)>=10]
           if not objs:raise ValueError('Frozen original has no mesh with sculptable topology')
           objs=sorted(objs,key=lambda o:(any(k in o.name.lower() for k in ['cliff','rock','terrain','bedrock']),len(o.data.vertices)),reverse=True)
