@@ -20,7 +20,7 @@ jobs:
           import os,json,urllib.request,urllib.error
           repo=os.environ['GITHUB_REPOSITORY']
           token=os.environ['GH_TOKEN']
-          runs=[38282330483]
+          runs=[38282923150]
           for run in runs:
             url=f'https://api.github.com/repos/{repo}/actions/runs/{run}'
             headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}
