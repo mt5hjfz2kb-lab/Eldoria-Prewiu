@@ -47,13 +47,39 @@ if a.inspect:
     seen.update(loop)
     loops.append({'indices':loop,'first_positions':[list(mesh.vertices[i].co) for i in loop[:8]]})
    if len(loops)>=12:break
+  # Representative source anchors, not just the extreme corners. Qwen can now
+  # choose crest, playable plateau, slope and joins from genuine mesh vertices.
+  # Deterministic selection retains vertex indices for independent inspection.
+  vertices=list(mesh.vertices)
+  bounds=[(min(v.co[k] for v in vertices),max(v.co[k] for v in vertices)) for k in range(3)]
+  centroid=[sum(v.co[k] for v in vertices)/len(vertices) for k in range(3)]
+  chosen=set();anchors=[]
+  def pick(role,candidates,score):
+   if not candidates:return
+   v=min(candidates,key=lambda w:(score(w),w.index))
+   if v.index not in chosen:
+    chosen.add(v.index);anchors.append({'index':v.index,'position':list(v.co),'role':role})
+  pick('center_mass',vertices,lambda v:sum((v.co[k]-centroid[k])**2 for k in range(3)))
+  elevated=[v for v in vertices if v.co.z>=bounds[2][0]+.83*(bounds[2][1]-bounds[2][0])]
+  pick('playable_crest_center',elevated,lambda v:(v.co.x-centroid[0])**2+(v.co.y-centroid[1])**2)
+  pick('highest_crest',vertices,lambda v:-v.co.z)
+  pick('mid_slope_center',vertices,lambda v:(v.co.x-centroid[0])**2+(v.co.y-centroid[1])**2+2*(v.co.z-centroid[2])**2)
+  pick('deep_slope',vertices,lambda v:v.co.z)
+  pick('west_join',vertices,lambda v:v.co.x)
+  pick('east_join',vertices,lambda v:-v.co.x)
+  pick('southern_join',vertices,lambda v:v.co.y)
+  pick('northern_join',vertices,lambda v:-v.co.y)
+  stride=max(1,len(vertices)//12)
+  for v in vertices[::stride]:
+   if len(anchors)>=18:break
+   if v.index not in chosen:
+    chosen.add(v.index);anchors.append({'index':v.index,'position':list(v.co),'role':'distributed_source'})
   result={'schema_version':1,'source_sha256':hashlib.sha256(a.source.read_bytes()).hexdigest(),
    'target':obj.name,'vertices':len(mesh.vertices),'faces':len(mesh.polygons),
    'location':list(obj.location),'dimensions':list(obj.dimensions),
    'local_aabb':{'min':[min(v.co[k] for v in mesh.vertices) for k in range(3)],
                  'max':[max(v.co[k] for v in mesh.vertices) for k in range(3)]} if len(mesh.vertices) else None,
-   'sample_vertices': [{'index':v.index,'position':list(v.co)} for v in
-     sorted(mesh.vertices,key=lambda v:(-(abs(v.co.x)+abs(v.co.y)+abs(v.co.z)),v.index))[:16]],
+   'sample_vertices':anchors,
    'boundary_loops':loops,
    'note':'Only these indexed open loops may be bridged. Coordinates are Blender object-local. No manifest means no safe vertex-index operations.'}
   a.out.mkdir(parents=True,exist_ok=True)
