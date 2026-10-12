@@ -15,7 +15,21 @@ export function verifyCycle(c,root=process.cwd()){
   const resolved=path.resolve(root,entry.path),prefix=path.resolve(root)+path.sep;
   if(!resolved.startsWith(prefix)){errors.push(label+': file outside repository');return;}
   if(!fs.existsSync(resolved)){errors.push(label+': missing file '+entry.path);return;}
-  need(crypto.createHash('sha256').update(fs.readFileSync(resolved)).digest('hex')===entry.sha256.toLowerCase(),label+': hash mismatch');
+  const realRoot=fs.realpathSync(root),realFile=fs.realpathSync(resolved);
+  if(!realFile.startsWith(realRoot+path.sep)){errors.push(label+': symlink escapes repository');return;}
+  if(!fs.statSync(realFile).isFile()){errors.push(label+': not a regular evidence file');return;}
+  const bytes=fs.readFileSync(realFile);
+  // Hashes alone cannot reject text files masquerading as Unity frames or 3D models.
+  if(['owner_reference','unity_before','unity_after'].includes(label)){
+    const png=bytes.length>=24&&bytes.subarray(0,8).equals(Buffer.from('89504e470d0a1a0a','hex'));
+    const jpeg=bytes.length>=10&&bytes[0]===255&&bytes[1]===216&&bytes[bytes.length-2]===255&&bytes[bytes.length-1]===217;
+    need(png||jpeg,label+': PNG/JPEG image signature required');
+  }
+  if(['source_blend','output_blend'].includes(label))
+    need(bytes.length>=12&&bytes.subarray(0,7).toString()==='BLENDER',label+': Blender file signature required');
+  if(label==='output_glb')
+    need(bytes.length>=20&&bytes.subarray(0,4).toString()==='glTF'&&bytes.readUInt32LE(4)===2&&bytes.readUInt32LE(8)===bytes.length,label+': GLB v2 header/length required');
+  need(crypto.createHash('sha256').update(bytes).digest('hex')===entry.sha256.toLowerCase(),label+': hash mismatch');
  };
  need(c?.schema_version===1,'schema_version=1 required');
  need(nonempty(c?.asset_id)&&nonempty(c?.workstream_id),'asset/workstream identity required');
@@ -44,10 +58,14 @@ export function verifyCycle(c,root=process.cwd()){
   need(nonempty(op.target)&&(op.rationale||'').length>=15,'object and artistic rationale required');
   need(op.parameters&&Object.keys(op.parameters).length>0,'action parameters required');
  }
+ const plannedById=new Map((planned||[]).filter(x=>nonempty(x.id)).map(x=>[x.id,x]));
  const done=new Set();
  for(const op of executed||[]){
   need(ids.has(op.id)&&!done.has(op.id),'executed action not in prior decision/duplicate');done.add(op.id);
+  const selected=plannedById.get(op.id);
+  need(!selected||(op.target===selected.target&&op.type===selected.type),'executed action type/target must match prior artist decision');
   need(op.applied===true&&nonempty(op.target)&&(Number(op.changed_vertices||0)>0||Number(op.changed_objects||0)>0),'measurable executed change required');
+  if(selected&&GEOMETRY.has(selected.type))need(Number(op.changed_vertices||0)>0,'structural artist action must change vertices');
  }
  need(ids.size===done.size&&[...ids].every(x=>done.has(x)),'all approved actions must execute');
  const sourceHash=c?.authorship?.source_mesh_sha256,resultHash=c?.authorship?.result_mesh_sha256;
