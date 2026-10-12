@@ -2,7 +2,7 @@
 """Create REAL scene-aware Qwen artistic direction using local Ollama and versioned system role.
 Requires two genuine images; it does not execute Blender or certify art by itself.
 """
-import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse
+import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,time
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
@@ -68,7 +68,9 @@ def main():
   'messages':[{'role':'system','content':role.decode('utf8')},
               {'role':'user','content':prompt,'images':inputs}]}
  request=urllib.request.Request(a.endpoint,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+ started=time.monotonic()
  with urllib.request.urlopen(request,timeout=540) as response:reply=json.load(response)
+ inference_seconds=round(time.monotonic()-started,3)
  design=json.loads(reply['message']['content'])
  if len(design.get('observed_defect',''))<35 or len(design.get('design_intent',''))<35:raise ValueError('Insufficient artist diagnosis')
  if design.get('asset_decision') not in ['REUSE','MODIFY','NEW']:raise ValueError('Reuse-vs-new decision missing')
@@ -85,7 +87,7 @@ def main():
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
-   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'inference_seconds':inference_seconds,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
