@@ -21,8 +21,8 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
-          name: bastion1-player-integration-38318905826
-          run-id: 38318905826
+          name: bastion1-player-integration-38319888274
+          run-id: 38319888274
           github-token: ${{ github.token }}
           path: candidate
       - name: Confirm exact successful Windows build and file identity
@@ -33,11 +33,11 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import glob,json,os,urllib.request
-          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38318905826'
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38319888274'
           request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
           obj=json.load(urllib.request.urlopen(request))
           assert obj['conclusion']=='success',(obj['status'],obj['conclusion'])
-          assert obj['head_sha']=='4d3704230e2c0e5c42df143a21c0a4c1b44796ec',obj['head_sha']
+          assert obj['head_sha']=='0de8c1a0d67d654be0ab71bb1eddd0c13de7f4f7',obj['head_sha']
           paths=glob.glob('candidate/**/Bastion1MeshCandidateWebGL/index.html',recursive=True)
           assert len(paths)==1,paths
           root=os.path.dirname(paths[0])
@@ -49,7 +49,7 @@ jobs:
           assert total>10000000,(total,sizes)
           print('EXACT_BASTION1_WEBGL_BUILD_PASS',total,'bytes',len(sizes),'files')
           with open('/tmp/bastion1-root','w') as f:f.write(root)
-          with open('/tmp/bastion1-build-sizes.json','w') as f:json.dump({'source_sha':obj['head_sha'],'run_id':38318905826,'total_bytes':total,'files':sizes},f,indent=2)
+          with open('/tmp/bastion1-build-sizes.json','w') as f:json.dump({'source_sha':obj['head_sha'],'run_id':38319888274,'total_bytes':total,'files':sizes},f,indent=2)
           PY
       - name: Install browser and serve exact build locally
         shell: bash

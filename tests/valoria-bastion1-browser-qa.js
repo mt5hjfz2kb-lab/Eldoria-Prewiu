@@ -3,7 +3,7 @@ const { PNG }=require('pngjs');
 const fs=require('fs'), path=require('path');
 const dir='bastion1-browser-evidence';
 fs.mkdirSync(dir,{recursive:true});
-const report={exactBuildRun:38318905826,sourceSha:'4d3704230e2c0e5c42df143a21c0a4c1b44796ec',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
+const report={exactBuildRun:38319888274,sourceSha:'0de8c1a0d67d654be0ab71bb1eddd0c13de7f4f7',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let browser;
 function state(m){const a=m.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+).*sawmill=(\d+) bastion=(\d+) barracks=(\d+)/);return a?{tag:a[1],scene:a[2],revision:+a[3],wood:+a[4],stone:+a[5],sawmill:+a[6],bastion:+a[7],barracks:+a[8]}:null;}
@@ -60,7 +60,12 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
     report.checks.push({buildingAction:mapUi('buildingAction')});
     await snapshot(page,'03-sawmill-selection');
     const action=mapUi('buildingAction');
-    if(action){const initialRev=report.state.at(-1)?.revision;await page.touchscreen.tap(action.x,action.y);await sleep(1500);report.checks.push({sawmillRevisionBefore:initialRev,after:report.state.at(-1)?.revision});}
+    if(action){
+      const initialRev=report.state.at(-1)?.revision??0;
+      await page.touchscreen.tap(action.x,action.y);
+      report.sawmillBuildPass=await waitUntil(()=>report.state.some(s=>s.scene==='ValoriaWebGL'&&s.revision>initialRev&&s.wood<230),18000);
+      report.checks.push({sawmillRevisionBefore:initialRev,after:report.state.at(-1)?.revision,sawmillBuildPass:report.sawmillBuildPass});
+    }
   }
   const world=mapUi('worldNav');report.checks.push({worldNav:world});
   if(world){
@@ -83,9 +88,21 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   report.reloadPass=await waitUntil(()=>report.state.length>count&&report.state.at(-1).scene==='ValoriaWebGL'&&report.state.at(-1).revision>=2,110000);
   await sleep(4400);
   await snapshot(page,'05-reload');
+  const reset=mapUi('reset');
+  if(reset){
+    const eventsBefore=report.events.length;
+    await page.touchscreen.tap(reset.x,reset.y);
+    const armed=await waitUntil(()=>report.events.slice(eventsBefore).some(s=>s.includes('ELDORIA_PLAYABLE_RESET armed=True')),7000);
+    if(armed){
+      await page.touchscreen.tap(reset.x,reset.y);
+      const executed=await waitUntil(()=>report.events.slice(eventsBefore).some(s=>s.includes('ELDORIA_PLAYABLE_RESET execute=True')),7000);
+      report.resetPass=executed&&await waitUntil(()=>report.state.some((s,i)=>i>count&&s.scene==='ValoriaWebGL'&&s.revision===0&&s.wood===230),28000);
+      report.checks.push({resetButton:reset,armed,executed,resetPass:report.resetPass});
+    }
+  }
   report.zeroFatalErrors=report.errors.length===0;
   report.visualPass=false; // Requires human inspection against owner reference; never assert art PASS from a screenshot.
-  report.accepted=report.browserStartupPass&&report.cameraPanPass&&report.sawmillSelectionPass&&report.worldEnteredPass&&report.worldReturnPass&&report.reloadPass&&report.zeroFatalErrors&&pink<.055;
+  report.accepted=report.browserStartupPass&&report.cameraPanPass&&report.sawmillSelectionPass&&report.sawmillBuildPass&&report.worldEnteredPass&&report.worldReturnPass&&report.reloadPass&&report.resetPass&&report.zeroFatalErrors&&pink<.055;
  }catch(e){report.errors.push('PROBE: '+String(e).slice(0,1000));}
- finally{if(browser)await browser.close().catch(()=>{});fs.writeFileSync(path.join(dir,'browser-qa-result.json'),JSON.stringify(report,null,2));console.log('BASTION1_BROWSER_QA',JSON.stringify({accepted:report.accepted,startup:report.browserStartupPass,pan:report.cameraPanPass,selection:report.sawmillSelectionPass,worldReturn:report.worldReturnPass,reload:report.reloadPass,errors:report.errors.slice(0,5),shots:report.shots}));if(!report.accepted)process.exitCode=1;}
+ finally{if(browser)await browser.close().catch(()=>{});fs.writeFileSync(path.join(dir,'browser-qa-result.json'),JSON.stringify(report,null,2));console.log('BASTION1_BROWSER_QA',JSON.stringify({accepted:report.accepted,startup:report.browserStartupPass,pan:report.cameraPanPass,selection:report.sawmillSelectionPass,build:report.sawmillBuildPass,worldReturn:report.worldReturnPass,reload:report.reloadPass,reset:report.resetPass,errors:report.errors.slice(0,5),shots:report.shots}));if(!report.accepted)process.exitCode=1;}
 })();
