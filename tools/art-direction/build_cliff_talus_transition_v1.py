@@ -28,7 +28,7 @@ if '--infer' in sys.argv:
  assert role_path.exists(),'Mandatory professional artist system prompt missing'
  role_text=role_path.read_text(encoding='utf-8')
  role_sha=hashlib.sha256(role_text.encode()).hexdigest()
- compact_role='You are VALORIA ARTIST, the professional AI 3D environment artist of Eldoria. Own the medieval environment artistic direction. Read both reference images, identify specific silhouette and terrain contact failures, and choose visible Blender sculptural corrections with coherent strata and reusable modular joins. Do not self-approve, overwrite approved assets, invent visual evidence, or substitute a shader for faulty geometry. Use BlenderMCP for authorship, genuine Blender and Unity before/after comparisons and mobile-conscious constraints. Output only requested JSON.'
+ compact_role=role_text.split('ARTISTIC METHOD:')[0].strip()+'\n'+role_text.split('CREATIVE IDENTITY:')[-1].strip()+'\nObserve, diagnose, design, execute and verify; never self-approve.'
  payload={'model':'qwen3-vl:4b-instruct','stream':False,'think':False,'format':'json',
           'options':{'temperature':.18,'num_predict':600,'num_ctx':4096},
           'messages':[{'role':'system','content':compact_role},{'role':'user','content':prompt,'images':[base64.b64encode((OUT/'art-direction-input.jpg').read_bytes()).decode()]}]}
@@ -121,15 +121,57 @@ thread=threading.Thread(target=client,daemon=True);thread.start();deadline=time.
 while thread.is_alive() and time.monotonic()<deadline:server._drain_command_queue();time.sleep(.04)
 thread.join(timeout=1);server.stop()
 assert responses and responses[0].get('status')=='success',responses
+
+# A genuinely standalone reusable talus-contact module, separated from the frozen cliff.
+# Qwen chooses relief, facet frequency and boulder cluster count from real reference images.
+apron_mesh=bpy.data.meshes.new('Qwen directed talus transition geology')
+apron_obj=bpy.data.objects.new('cliff_talus_transition_v1__geological_apron',apron_mesh)
+bpy.context.scene.collection.objects.link(apron_obj)
+verts=[];faces=[];uv_points=[]
+nx=25;ny=7
+for j in range(ny):
+ t=j/(ny-1)
+ for i in range(nx):
+  x=-6+12*i/(nx-1)
+  edge=max(0,min(1,(6-abs(x))/.7))
+  y=-2.1-t*3.2+edge*.12*math.sin((i+2*j)*2.1)
+  z=-3.42-t*(.58+.30*amp)+edge*(.13*math.sin(i*1.63+j*.82)+.11*math.cos(i*.61-j*1.9))
+  z+=edge*amp*.26*math.sin(i*facets*.19+j*.67)*math.sin(math.pi*t)
+  verts.append((x,y,z))
+for j in range(ny-1):
+ for i in range(nx-1):
+  n=j*nx+i
+  faces.append((n,n+1,n+nx+1,n+nx))
+apron_mesh.from_pydata(verts,[],faces)
+apron_mesh.update()
+if bed.data.materials:apron_mesh.materials.append(bed.data.materials[0])
+uv=apron_mesh.uv_layers.new(name='TalusUV')
+for poly in apron_mesh.polygons:
+ for loop_index in poly.loop_indices:
+  co=apron_mesh.vertices[apron_mesh.loops[loop_index].vertex_index].co
+  uv.data[loop_index].uv=(co.x/5,co.y/3)
+standalone=[apron_obj]
+mat=bed.data.materials[0] if bed.data.materials else None
+for k in range(clusters):
+ xx=-5+10*(k+.5)/clusters+(.21*math.sin(k*2.9))
+ yy=-3.1-(k%3)*.56
+ zz=-3.6-.09*(k%2)
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(xx,yy,zz))
+ rock=bpy.context.object
+ rock.name='cliff_talus_transition_v1__boulder_'+str(k+1)
+ rock.scale=(.65+.18*(k%3),.40+.15*((k+2)%3),.38+.13*(k%2))
+ if mat:rock.data.materials.append(mat)
+ standalone.append(rock)
+change_log.update({'standalone_new_mesh_objects':len(standalone),'export_scope':'new talus apron and authored boulders only','standalone_reusable_candidate':True})
+
 snapshot(OUT/'after-blender.png')
 bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'cliff_talus_transition_v1.blend'))
 bpy.ops.object.select_all(action='DESELECT')
-for obj in bpy.context.scene.objects:
- if obj.type=='MESH' and ('talus' in obj.name.lower() or obj==bed):obj.select_set(True)
-bpy.context.view_layer.objects.active=bed
+for obj in standalone:obj.select_set(True)
+bpy.context.view_layer.objects.active=standalone[0]
 bpy.ops.export_scene.gltf(filepath=str(OUT/'cliff_talus_transition_v1.glb'),export_format='GLB',use_selection=True,export_materials='EXPORT')
 change_log.update({'variant_glb_sha256':hashlib.sha256((OUT/'cliff_talus_transition_v1.glb').read_bytes()).hexdigest(),
- 'asset_scope':'new candidate transition derived from approved cliff bedrock and talus, not approved or standalone certified',
+ 'asset_scope':'independent talus apron and sculptural rocks based on Qwen parameters; still visually unapproved',
  'variant_blend_sha256':hashlib.sha256((OUT/'cliff_talus_transition_v1.blend').read_bytes()).hexdigest(),
  'visual_gate':'UNREVIEWED', 'unity_import_gate':'UNRUN'})
 (OUT/'edit-proof.json').write_text(json.dumps(change_log,indent=2))
