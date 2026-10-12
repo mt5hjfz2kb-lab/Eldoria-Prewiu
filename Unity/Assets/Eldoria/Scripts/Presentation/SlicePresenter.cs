@@ -376,8 +376,8 @@ namespace Eldoria.Presentation
             {
                 if(productionParcels.MeshMode)
                 {
-                    var targetCollider=target.GetComponent<Collider>();
-                    productionParcels.Focus(targetCollider!=null?targetCollider.bounds.center:target.transform.position);
+                    var meshTargetCollider=target.GetComponent<Collider>();
+                    productionParcels.Focus(meshTargetCollider!=null?meshTargetCollider.bounds.center:target.transform.position);
                     return;
                 }
                 productionParcels.Home();
