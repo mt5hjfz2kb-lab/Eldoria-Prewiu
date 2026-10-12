@@ -13,12 +13,13 @@ namespace Eldoria
     {
         [SerializeField] float panUnitsPerPixel=.065f;
         [SerializeField] float zoomSensitivity=.0025f;
-        [SerializeField] float minimumOrthographicSize=18f;
-        [SerializeField] float maximumOrthographicSize=75f;
+        [SerializeField] float minimumOrthographicSize=6f;
+        [SerializeField] float maximumOrthographicSize=45f;
         [SerializeField] Vector2 xLimits=new Vector2(-38f,38f);
         [SerializeField] Vector2 zLimits=new Vector2(-44f,28f);
 
         Camera view;
+        Vector3 homePosition;
         string selectedInstanceId=string.Empty;
         Vector2 pressPosition;
         bool dragging;
@@ -28,7 +29,8 @@ namespace Eldoria
         void Awake()
         {
             view=GetComponent<Camera>();
-            if(view.orthographic) view.orthographicSize=36f;
+            homePosition=transform.position;
+            if(view.orthographic) view.orthographicSize=Mathf.Clamp(view.orthographicSize,minimumOrthographicSize,maximumOrthographicSize);
             view.backgroundColor=new Color(.48f,.58f,.63f);
             RenderSettings.ambientIntensity=Mathf.Min(RenderSettings.ambientIntensity,.75f);
             foreach(var light in FindObjectsByType<Light>(FindObjectsInactive.Include,FindObjectsSortMode.None))
@@ -86,8 +88,8 @@ namespace Eldoria
             Vector3 forward=transform.up;forward.y=0f;forward.Normalize();
             Vector3 p=transform.position-
                 (right*screenDelta.x+forward*screenDelta.y)*panUnitsPerPixel;
-            p.x=Mathf.Clamp(p.x,xLimits.x,xLimits.y);
-            p.z=Mathf.Clamp(p.z,zLimits.x,zLimits.y);
+            p.x=Mathf.Clamp(p.x,homePosition.x+xLimits.x,homePosition.x+xLimits.y);
+            p.z=Mathf.Clamp(p.z,homePosition.z+zLimits.x,homePosition.z+zLimits.y);
             transform.position=p;
             if(Time.unscaledTime-lastTelemetryTime>.45f)
             {
