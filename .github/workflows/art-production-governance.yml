@@ -10,9 +10,12 @@ on:
       - 'pipeline/art-production-requests/**'
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
+      - 'tools/art-direction/ai-authoring/**'
       - 'pipeline/visual-fallback-policy.json'
       - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
       - 'AGENTS.md'
+      - 'tools/art-direction/ai-authoring/**'
+      - 'docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md'
   pull_request:
     branches: [main]
     paths:
@@ -20,6 +23,7 @@ on:
       - 'pipeline/art-production-requests/**'
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
+      - 'tools/art-direction/ai-authoring/**'
 
 permissions:
   contents: read
@@ -39,3 +43,7 @@ jobs:
           node-version: '24'
       - name: Enforce universal art-production routing
         run: node tools/check-art-production-governance.mjs
+      - name: Verify real AI sculpting evidence contract
+        run: node --test tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs
+      - name: Validate zero-cost Qwen and Blender automation scripts
+        run: python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
