@@ -59,6 +59,8 @@ def main():
  if a.mesh_context:
   if not a.mesh_context.is_file() or a.mesh_context.stat().st_size>25000:raise ValueError('Invalid mesh context manifest')
   mesh_context=a.mesh_context.read_text('utf8')
+  topology=json.loads(mesh_context)
+  if topology.get('schema_version')!=1 or topology.get('target')!=a.target_object or not isinstance(topology.get('boundary_loops'),list):raise ValueError('Mesh topology manifest target/schema mismatch')
   mesh_context_sha=digest(mesh_context.encode('utf8'))
  prompt=('Compare left REFERENCE and right GENUINE UNITY screenshot. Diagnose and DIRECT NEW 3D geometry, '
   'not just noise parameters. Valid action parameter formats: '
@@ -92,6 +94,13 @@ def main():
  for op in ops:
   if op.get('type') not in ALLOWED or not op.get('id') or op['id'] in ids:raise ValueError('Invalid/duplicate artist action')
   if op.get('target')!=a.target_object:raise ValueError('Unauthorized Blender target')
+  if op.get('type')=='bridge_boundary_loops':
+   if not a.mesh_context:raise ValueError('Boundary bridge forbidden without verified source mesh context')
+   verified=[x.get('indices') for x in topology['boundary_loops'] if isinstance(x,dict)]
+   pr=op.get('parameters') or {}
+   if pr.get('loop_a') not in verified or pr.get('loop_b') not in verified or pr.get('loop_a')==pr.get('loop_b'):
+    raise ValueError('Qwen must select two DISTINCT actual Blender boundary loops')
+
   if not isinstance(op.get('parameters'),dict) or len(op.get('rationale',''))<15:raise ValueError('Unspecified modelling intent')
   ids.add(op['id'])
  a.out.mkdir(parents=True,exist_ok=True)
