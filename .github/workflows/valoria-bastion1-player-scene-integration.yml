@@ -123,11 +123,14 @@ jobs:
           # Patch only this disposable CI working tree, never main or native sources.
           $graphics="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/GraphicsSettings.asset"
           $quality="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/QualitySettings.asset"
-          $g=[System.IO.File]::ReadAllText($graphics)
+          # Commit is authoritative; the Unity editor may have changed GraphicsSettings
+          # in this *disposable* checkout during the earlier native screenshot pass.
+          $canonical=(& git.exe show HEAD:Unity/ProjectSettings/GraphicsSettings.asset | Out-String)
+          $guid='48e3a09b57f028a4bb2e693d044ea6ca'
+          if($canonical -notlike "*$guid*"){throw "Expected canonical URP asset GUID not in Git HEAD"}
+          [System.IO.File]::WriteAllText($graphics,$canonical,(New-Object System.Text.UTF8Encoding($false)))
           $q=[System.IO.File]::ReadAllText($quality)
-          $match=[regex]::Match($g,'m_CustomRenderPipeline: .+guid: ([a-fA-F0-9]{32}), type: 2')
-          if(-not $match.Success){throw 'Canonical URP default asset missing'}
-          $guid=$match.Groups[1].Value
+          Write-Host "WEBGL_GRAPHICS_CANONICAL_FROM_GIT pipeline_guid=$guid"
           $nullBinding='customRenderPipeline: {fileID: 0}'
           $count=([regex]::Matches($q,[regex]::Escape($nullBinding))).Count
           if($count -lt 1){throw 'No missing URP Quality bindings found; inspect live Quality settings'}
