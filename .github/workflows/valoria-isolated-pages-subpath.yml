@@ -49,7 +49,7 @@ jobs:
           assert 0<size<650000000, f'Unexpected preview size {size}'
           changed=subprocess.run(['git','-C',str(root),'diff','--name-only','--','playtest/','tester-v0265/','v0220/','qa/','tools/','package.json','package-lock.json'],capture_output=True,text=True,check=True).stdout
           assert not changed, 'Stable tracked source changed: '+changed
-          assert (root/'playtest'/'index.html').is_file(), 'Stable playtest missing'
+          assert (root/'index.html').is_file(), 'Stable homepage missing'
           assert (root/'tester-v0265'/'index.html').is_file(), 'Frozen tester missing'
           assert (root/'unity-owner').exists() or (root/'pipeline'/'unity-publish-request.json').is_file(), 'Stable publication source missing'
           print('VALORIA_STABLE_SOURCE_UNMODIFIED')
@@ -73,7 +73,7 @@ jobs:
           python3 - <<'PY'
           import os,urllib.request,time
           base=os.environ['PAGES_URL'].rstrip('/')+'/'
-          for path,expected in [('valoria-experimental/index.html',b'unity'),('playtest/index.html',b'html'),('tester-v0265/index.html',b'html')]:
+          for path,expected in [('valoria-experimental/index.html',b'unity'),('index.html',b'html'),('tester-v0265/index.html',b'html')]:
             for attempt in range(5):
               try:
                 with urllib.request.urlopen(urllib.request.Request(base+path,headers={'Cache-Control':'no-cache'}),timeout=25) as r:
