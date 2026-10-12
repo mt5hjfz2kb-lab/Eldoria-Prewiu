@@ -33,12 +33,12 @@ jobs:
           rm -rf playtest
           cp -R v0220 playtest
       - name: Fast coherent-state behavior preflight before the expensive full suite
-        run: timeout 60s env ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' node qa/e2e-behavior-regression.js
+        run: timeout 60s node qa/e2e-behavior-regression.js
       - name: Fast Codex and Relicario game-state preflight
-        run: timeout 35s env ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' node qa/e2e-codex-chest.js
+        run: timeout 35s node qa/e2e-codex-chest.js
       - name: Current v0.32 targeted regression
-        run: timeout 300s env ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' npm run qa:targeted
+        run: timeout 300s npm run qa:targeted
       - name: Current v0.32 full regression
-        run: timeout 480s env ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' npm run qa:regression
+        run: timeout 480s npm run qa:regression
       - name: Current v0.32 uninterrupted fresh-save Arc I
-        run: timeout 300s env ELDORIA_URL='http://127.0.0.1:4173/v0220/?qa=1&testerlayer=off' npm run qa:arc1
+        run: timeout 300s npm run qa:arc1
