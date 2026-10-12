@@ -36,7 +36,7 @@ namespace Eldoria.Art
 
         private readonly List<GameObject> spawned = new List<GameObject>();
         private Light sun;
-        private readonly Dictionary<Material, Material> originals = new Dictionary<Material, Material>();
+        private readonly Dictionary<Renderer, Material[]> originalRenderers = new Dictionary<Renderer, Material[]>();
         private readonly List<Material> temporary = new List<Material>();
 
         private IEnumerator Start()
@@ -103,13 +103,14 @@ namespace Eldoria.Art
             {
                 foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
                 {
-                    var shared = renderer.sharedMaterials;
+                    if (!originalRenderers.ContainsKey(renderer)) originalRenderers[renderer] = renderer.sharedMaterials;
+                    var shared = (Material[])originalRenderers[renderer].Clone();
                     var changed = false;
                     for (var i = 0; i < shared.Length; i++)
                     {
                         var material = shared[i];
                         if (material == null) continue;
-                        if (!originals.ContainsKey(material)) originals[material] = material;
+
                         if (!lookdev) continue;
                         // Non-destructive material instance; preserves source albedo and normal textures.
                         var copy = new Material(material);
@@ -125,13 +126,15 @@ namespace Eldoria.Art
                         temporary.Add(copy);
                         changed = true;
                     }
-                    if (changed) renderer.sharedMaterials = shared;
+                    renderer.sharedMaterials = changed ? shared : originalRenderers[renderer];
                 }
             }
         }
 
         private void OnDestroy()
         {
+            foreach (var pair in originalRenderers)
+                if (pair.Key != null) pair.Key.sharedMaterials = pair.Value;
             foreach (var material in temporary)
                 if (material != null) Destroy(material);
         }
