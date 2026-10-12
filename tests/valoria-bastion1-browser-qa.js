@@ -28,7 +28,7 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
 (async()=>{
  try{
   browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
-  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1});
+  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'});
   const page=await context.newPage(),cdp=await context.newCDPSession(page);
   page.on('console',m=>{const s=m.text();if(s.includes('ELDORIA_PLAYABLE_')){report.events.push(s);const st=state(s);if(st)report.state.push(st);}if(m.type()==='error'&&!s.includes('WebGL: INVALID_ENUM'))report.errors.push('console: '+s.slice(0,700));});
   page.on('pageerror',e=>report.errors.push('page: '+String(e).slice(0,700)));
@@ -41,6 +41,10 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   canvasBox=await page.locator('canvas').first().boundingBox();
   canvasInfo=await page.evaluate(()=>{const c=document.querySelector('canvas');return {width:c.width,height:c.height};});
   report.checks.push({canvasBox,canvasInfo});
+  const allVisible=canvasBox&&canvasBox.x>=-1&&canvasBox.y>=-1&&canvasBox.x+canvasBox.width<=845&&canvasBox.y+canvasBox.height<=391;
+  report.checks.push({canvasFullyVisible:allVisible});
+  if(!allVisible)throw Error('Mobile unity-canvas clipped outside viewport: '+JSON.stringify(canvasBox));
+
   await sleep(4300); // Unity state event precedes the first actually rendered 3D frame.
   const pink=await snapshot(page,'01-initial-landscape');
   const pans0=report.events.filter(s=>s.includes('ELDORIA_PLAYABLE_TOUCH_PAN')).length;
