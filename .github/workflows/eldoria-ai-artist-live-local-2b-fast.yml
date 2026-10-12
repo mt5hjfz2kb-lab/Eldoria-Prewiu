@@ -128,6 +128,12 @@ jobs:
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256'],'Purely material changes cannot claim sculpting'
           print('REAL_QWEN_AUTHORSHIP_BLENDER_PASS',len(plan),'planned/executed actions')
           PY
+      - name: Camera-locked Blender A/B proof of actual Qwen-modified geometry
+        timeout-minutes: 6
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before "$SOURCE_BLEND" --after /tmp/eldoria-ai-real/result/blender/artist-output.blend \
+            --target "$TARGET_MESH" --out /tmp/eldoria-ai-real/result/camera-locked-ab
       - name: Conserve bounded real evidence, never ART_APPROVED
         if: always()
         uses: actions/upload-artifact@v4
@@ -143,5 +149,6 @@ jobs:
             /tmp/eldoria-ai-real/result/blender/artist-execution.json
             /tmp/eldoria-ai-real/result/blender/artist-output.blend
             /tmp/eldoria-ai-real/result/blender/artist-output.glb
+            /tmp/eldoria-ai-real/result/camera-locked-ab/*
           retention-days: 7
           if-no-files-found: warn
