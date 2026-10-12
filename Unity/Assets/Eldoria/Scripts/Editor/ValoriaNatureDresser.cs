@@ -56,6 +56,35 @@ namespace Eldoria.EditorTools
             return result;
         }
 
+
+        public static GameObject DressAssembly(Bounds bounds)
+        {
+            var root=new GameObject("Reusable Valoria authored forest-edge set dressing");
+            // Deliberately protect the front gate sightline and its approach road.
+            var trees=new [] {
+                new Vector2(-29f,8f),new Vector2(-26f,-7f),new Vector2(-20f,14f),
+                new Vector2(-13f,17f),new Vector2(17f,16f),new Vector2(25f,11f),
+                new Vector2(29f,-7f),new Vector2(23f,-13f)
+            };
+            for(int i=0;i<trees.Length;i++)
+            {
+                float h=5.6f+(i%3)*1.1f;
+                Spawn(Trees[i%Trees.Length],root.transform,
+                    new Vector3(bounds.center.x+trees[i].x,bounds.min.y-.045f,
+                    bounds.center.z+trees[i].y),h,i*41f);
+            }
+            for(int i=0;i<26;i++)
+            {
+                float x=-25f+i*1.97f;
+                float z=(i%4)*2.1f+2.1f;
+                if(Mathf.Abs(x)<5f && z<8f)continue;
+                Spawn(Bushes[i%Bushes.Length],root.transform,
+                    new Vector3(bounds.center.x+x,bounds.min.y-.045f,
+                    bounds.center.z+z),.78f+(i%4)*.19f,i*39f);
+            }
+            return root;
+        }
+
         static void Spawn(string path,Transform root,Vector3 position,float targetHeight,float angle)
         {
             var source=AssetDatabase.LoadAssetAtPath<GameObject>(path);
