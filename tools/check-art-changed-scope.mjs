@@ -12,7 +12,7 @@ const globs = [
   /^Unity\/Assets\/Eldoria\/ArtTests\//,
   /^Unity\/Assets\/Eldoria\/Resources\/Valoria\//,
   /^Unity\/Assets\/Eldoria\/ProductionSlice\/Runtime\/Valoria\.unity$/,
-  /^Unity\/Assets\/Eldoria\/.*\.(?:blend|glb|gltf|fbx|obj|prefab|mat|shader)$/i,
+  /^Unity\/Assets\/Eldoria\/.*\.(?:blend|glb|gltf|fbx|obj|prefab|mat|shader|shadergraph|terrainlayer|terrain|mesh|unity|png|jpe?g|tga|psd|exr|hdr|tiff?|asset)$/i,
   /^tools\/valoria-bastion1-assembly\//
 ];
 export const isArtChange = file => globs.some(re => re.test(file));
