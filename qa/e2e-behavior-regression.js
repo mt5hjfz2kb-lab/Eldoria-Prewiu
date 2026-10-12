@@ -17,6 +17,8 @@ const result=await p.evaluate(()=>{
 // Isolate the next regression from World tutorial overlays, click handlers and pending effects.
 // This preserves both assertions but prevents an unrelated prior touch state from hanging setQA.
   await p.reload({waitUntil:'domcontentloaded'});
+  // A full reload destroys page-injected QA fixtures: load the deterministic fixture again.
+  await p.addScriptTag({path:require('node:path').resolve(__dirname,'../v0220/js/qa-fixtures.js')});
   console.log('BEHAVIOR QA: checking stoneworks economy after isolated reload');
 // Economy/world invariants: the stone-producing quarry must not consume stone to build; depleted nodes and hunted wildlife cycle off-map before respawning.
   // Stable chapter-6 fixture prevents a fictional Chapter-1 -> Bastion-VI jump from
