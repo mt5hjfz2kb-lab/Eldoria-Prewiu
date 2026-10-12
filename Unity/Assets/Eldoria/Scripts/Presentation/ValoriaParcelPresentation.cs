@@ -122,8 +122,8 @@ namespace Eldoria.Presentation
         {
             if(MeshMode)
             {
-                float home=Mathf.Max(MeshHomeOrthographicSize,36f/Mathf.Max(.1f,ProductionCamera.aspect));
-                ProductionCamera.orthographicSize=Mathf.Clamp(ProductionCamera.orthographicSize+delta,home*.55f,home*1.15f);
+                float meshHome=Mathf.Max(MeshHomeOrthographicSize,36f/Mathf.Max(.1f,ProductionCamera.aspect));
+                ProductionCamera.orthographicSize=Mathf.Clamp(ProductionCamera.orthographicSize+delta,meshHome*.55f,meshHome*1.15f);
                 return;
             }
             float home=PresentationHomeFov;
