@@ -38,14 +38,21 @@ namespace Eldoria.EditorTools
             PlayerSettings.WebGL.decompressionFallback=true;
             Directory.CreateDirectory("Builds");
             if(Directory.Exists(Output))Directory.Delete(Output,true);
-            var result=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
-                scenes=new[]{ScenePath},
-                locationPathName=Output,
-                target=BuildTarget.WebGL,
-                options=BuildOptions.StrictMode
-            });
-            if(result.summary.result!=BuildResult.Succeeded)
-                throw new Exception("First-zone candidate build failed: "+result.summary.result);
+            // This isolated preview must not embed every 1024px experimental
+            // lookdev texture and GLB trial in a browser/mobile payload.
+            ValoriaFirstZoneWebGLBudget.PrepareGeneratedMaterials(256);
+            using(ValoriaFirstZoneWebGLBudget.HideUnusedArtTrialStreamingAssets())
+            {
+                var result=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
+                    scenes=new[]{ScenePath},
+                    locationPathName=Output,
+                    target=BuildTarget.WebGL,
+                    options=BuildOptions.StrictMode
+                });
+                if(result.summary.result!=BuildResult.Succeeded)
+                    throw new Exception("First-zone candidate build failed: "+result.summary.result);
+                Debug.Log("ELDORIA_FIRST_ZONE_OPTIMIZED_BUILD_BYTES "+result.summary.totalSize);
+            }
             if(!File.Exists(Path.Combine(Output,"index.html")))
                 throw new Exception("No candidate WebGL index.html");
             Debug.Log("ELDORIA_VALORIA_FIRST_ZONE_WEBGL_CANDIDATE_PASS anchors="+anchors.Length+
