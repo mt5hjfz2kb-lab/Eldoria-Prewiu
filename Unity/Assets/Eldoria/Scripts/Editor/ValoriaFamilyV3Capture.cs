@@ -315,7 +315,14 @@ namespace Eldoria.EditorTools
                     var boundsForSelection=BoundsFor(item);
                     var collider=item.AddComponent<BoxCollider>();
                     collider.center=item.transform.InverseTransformPoint(boundsForSelection.center);
-                    collider.size=boundsForSelection.size;
+                    var scale=item.transform.lossyScale;
+                    collider.size=new Vector3(boundsForSelection.size.x/Mathf.Max(.001f,Mathf.Abs(scale.x)),
+                        boundsForSelection.size.y/Mathf.Max(.001f,Mathf.Abs(scale.y)),
+                        boundsForSelection.size.z/Mathf.Max(.001f,Mathf.Abs(scale.z)));
+                    // Temporary coarse boxes are selection handles, not solid
+                    // gameplay obstacles: a physical full-gate box would block
+                    // the open arch and make the approach path impassable.
+                    collider.isTrigger=true;
                 }
             }
             if(Environment.GetEnvironmentVariable("VALORIA_SAVE_STUDY_SCENE")=="1")
