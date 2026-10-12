@@ -30,7 +30,7 @@ jobs:
             try{
               await page.goto(url,{waitUntil:'domcontentloaded',timeout:50000});
               await page.waitForTimeout(35000);
-              await page.screenshot({path:'valoria-live-browser.png',fullPage:true,timeout:30000});
+              try { await page.screenshot({path:'valoria-live-browser.png',fullPage:false,animations:'disabled',timeout:10000}); } catch(e) { console.log('OPTIONAL_SCREENSHOT_TIMEOUT',e.message); }
               const result=await page.evaluate(()=>({
                 title:document.title,
                 canvasCount:document.querySelectorAll('canvas').length,
