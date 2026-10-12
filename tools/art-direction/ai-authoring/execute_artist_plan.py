@@ -4,6 +4,7 @@ Preferred BlenderMCP transport: --transport blendermcp --mcp-addon verified-addo
 """
 import argparse,hashlib,importlib.util,json,math,pathlib,socket,sys,threading,time
 import bpy
+import bmesh
 from mathutils import Vector
 p=argparse.ArgumentParser()
 p.add_argument('--source',required=True,type=pathlib.Path)
@@ -17,7 +18,7 @@ if not a.source.is_file() or a.source.suffix.lower()!='.blend':raise ValueError(
 if not a.plan.is_file():raise ValueError('Real Qwen plan missing')
 if a.out.resolve()==a.source.parent.resolve():raise ValueError('Never overwrite source directory')
 operations=json.loads(a.plan.read_text('utf8'))
-ALLOWED={'sculpt_region','reprofile_crest','construct_mesh','assign_material','place_existing_asset'}
+ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 if not isinstance(operations,list) or not 1<=len(operations)<=8:raise ValueError('Invalid plan length')
 if len(set(x.get('id') for x in operations))!=len(operations):raise ValueError('Duplicate ids')
 for op in operations:
@@ -25,7 +26,7 @@ for op in operations:
 bpy.ops.wm.open_mainfile(filepath=str(a.source.resolve()))
 def sha(b):return hashlib.sha256(b).hexdigest()
 def state():
- return sha(json.dumps({o.name:[tuple(round(v,6) for v in vert.co) for vert in o.data.vertices] for o in bpy.data.objects if o.type=='MESH'},sort_keys=True).encode())
+ return sha(json.dumps({o.name:{'verts':[tuple(round(v,6) for v in vert.co) for vert in o.data.vertices],'faces':[tuple(poly.vertices) for poly in o.data.polygons]} for o in bpy.data.objects if o.type=='MESH'},sort_keys=True).encode())
 source_mesh=state()
 def vec(v,n=3):
  if not isinstance(v,list) or len(v)!=n:raise ValueError('Invalid spatial vector')
@@ -37,7 +38,7 @@ def act(identifier):
  op=next(x for x in operations if x['id']==identifier)
  kind=op['type'];t=op['target'];pr=op['parameters']
  obj=bpy.data.objects.get(t)
- n=0;objects=1
+ n=0;objects=1;faces_changed=0
  if kind=='construct_mesh':
   if obj:raise ValueError('New target mesh must not exist')
   verts=pr.get('vertices');faces=pr.get('faces')
@@ -78,6 +79,57 @@ def act(identifier):
      setattr(v.co,ha,desired);n+=1
    if not n:raise ValueError('Zero vertices sculpted')
    obj.data.update()
+  elif kind=='sculpt_path':
+   if obj.type!='MESH':raise ValueError('Path sculpt requires a mesh')
+   knots=pr.get('knots')
+   if not isinstance(knots,list) or not 2<=len(knots)<=24:raise ValueError('2..24 sculpt knots required')
+   controls=[]
+   for knot in knots:
+    if not isinstance(knot,dict):raise ValueError('Invalid sculpt knot')
+    center=Vector(vec(knot.get('center')));delta=Vector(vec(knot.get('delta')))
+    radius=float(knot.get('radius',0))
+    if not .05<=radius<=60 or not .005<=delta.length<=20:raise ValueError('Unsafe sculpt knot radius/displacement')
+    controls.append((center,delta,radius))
+   for vertex in obj.data.vertices:
+    nearest=None
+    for (c0,d0,r0),(c1,d1,r1) in zip(controls,controls[1:]):
+     segment=c1-c0;length_squared=segment.length_squared
+     if length_squared<.0001:raise ValueError('Coincident sculpt knots')
+     t=max(0.,min(1.,(vertex.co-c0).dot(segment)/length_squared))
+     center=c0+segment*t;radius=r0+(r1-r0)*t;distance=(vertex.co-center).length
+     if distance>=radius:continue
+     score=distance/radius
+     if nearest is None or score<nearest[0]:nearest=(score,d0.lerp(d1,t))
+    if nearest:
+     score,delta=nearest;offset=delta*(1-score*score)**2
+     if offset.length>.0001:vertex.co+=offset;n+=1
+   if not n:raise ValueError('Path sculpt changed no actual vertices')
+   obj.data.update()
+  elif kind=='bridge_boundary_loops':
+   if obj.type!='MESH':raise ValueError('Boundary connection requires a mesh')
+   loop_a=pr.get('loop_a');loop_b=pr.get('loop_b')
+   if not isinstance(loop_a,list) or not isinstance(loop_b,list) or not 3<=len(loop_a)<=48 or len(loop_a)!=len(loop_b):
+    raise ValueError('Two equally sampled boundary loops (3..48) required')
+   if any(type(i)!=int or i<0 or i>=len(obj.data.vertices) for i in loop_a+loop_b):
+    raise ValueError('Invalid boundary vertex index')
+   if len(set(loop_a+loop_b))!=len(loop_a+loop_b):raise ValueError('Boundary vertices must be unique')
+   bm=bmesh.new()
+   try:
+    bm.from_mesh(obj.data);bm.verts.ensure_lookup_table();bm.edges.ensure_lookup_table()
+    for ring in (loop_a,loop_b):
+     for j in range(len(ring)):
+      edge=bm.edges.get((bm.verts[ring[j]],bm.verts[ring[(j+1)%len(ring)]])) if hasattr(bm.edges,'get') else None
+      if edge is None:
+       edge=next((e for e in bm.verts[ring[j]].link_edges if bm.verts[ring[(j+1)%len(ring)]] in e.verts),None)
+      if edge is None or len(edge.link_faces)!=1:raise ValueError('Loops must follow existing open mesh boundary edges')
+    for j in range(len(loop_a)):
+     a0=loop_a[j];a1=loop_a[(j+1)%len(loop_a)]
+     b0=loop_b[j];b1=loop_b[(j+1)%len(loop_b)]
+     if (bm.verts[a0].co-bm.verts[b0].co).length>100:raise ValueError('Boundary bridge span too wide')
+     bm.faces.new((bm.verts[a0],bm.verts[a1],bm.verts[b1],bm.verts[b0]))
+     faces_changed+=1
+    bm.to_mesh(obj.data);obj.data.update();n=0
+   finally:bm.free()
   elif kind=='assign_material':
    rgb=vec(pr.get('rgb'));rough=float(pr.get('roughness',.85))
    if not 0<=rough<=1:raise ValueError('Roughness 0..1')
@@ -94,7 +146,7 @@ def act(identifier):
    if source.data:ob.data=source.data.copy()
    ob.name=t+'_artist';ob.location=vec(pr.get('location'));ob.rotation_euler=vec(pr.get('rotation',[0,0,0]));ob.scale=vec(pr.get('scale',[1,1,1]))
    bpy.context.scene.collection.objects.link(ob);n=len(ob.data.vertices) if ob.type=='MESH' else 0
- completed.append({'id':identifier,'type':kind,'target':t,'changed_vertices':n,'changed_objects':objects,'applied':True})
+ completed.append({'id':identifier,'type':kind,'target':t,'changed_vertices':n,'changed_faces':faces_changed,'changed_objects':objects,'applied':True})
 if a.transport=='direct':
  for op in operations:act(op['id'])
 else:
