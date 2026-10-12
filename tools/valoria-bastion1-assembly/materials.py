@@ -11,5 +11,5 @@ for item in source['materials']:
  m['pbrMetallicRoughness']=p;m.setdefault('normalTexture',{'index':-1,'scale':1})
  m['normalTexture'].setdefault('scale',1);m.setdefault('alphaMode','OPAQUE');m.setdefault('alphaCutoff',.5)
  m.setdefault('emissiveFactor',[0,0,0]);m.setdefault('doubleSided',False);result['materials'].append(m)
-out=glb.with_name('material-bindings.json');out.write_text(json.dumps(result,indent=2)+'\n')
+out=glb.with_name(glb.stem+'-material-bindings.json');out.write_text(json.dumps(result,indent=2)+'\n')
 print('EXPLICIT_GLTF_DEFAULTS',len(result['materials']),out)

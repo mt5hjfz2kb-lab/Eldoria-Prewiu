@@ -88,7 +88,7 @@ jobs:
           $unityArguments=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
-          if($process.ExitCode -ne 0){Get-Content $log -Tail 130;throw "Unity failed $($process.ExitCode)"}
+          if($process.ExitCode -ne 0){Copy-Item $log "$out/Bastion1-Unity-Failure.log" -Force;Get-Content $log | Select-String -Pattern "BASTION1_REFERENCE_CAPTURE_FAILED|BASTION1_PLAYER_SCENE|Exception:|Exception |error CS|glTFast|^Error" | Select-Object -Last 35;Get-Content $log -Tail 55;throw "Unity failed $($process.ExitCode)"}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
           if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}

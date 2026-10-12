@@ -31,7 +31,7 @@ namespace Eldoria.EditorTools
         }
         public static void Apply(GameObject root,GltfImport importer,string glbPath)
         {
-            string normalized=Path.Combine(Path.GetDirectoryName(glbPath),"material-bindings.json");
+            string normalized=Path.Combine(Path.GetDirectoryName(glbPath),Path.GetFileNameWithoutExtension(glbPath)+"-material-bindings.json");
             if(!File.Exists(normalized))throw new Exception("Explicit glTF material defaults missing");
             var source=JsonUtility.FromJson<Root>(File.ReadAllText(normalized));
             if(source.materials==null)throw new Exception("glTF source material table missing");
