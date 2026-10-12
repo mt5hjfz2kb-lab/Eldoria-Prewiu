@@ -210,6 +210,8 @@ namespace Eldoria.EditorTools
             cliffRight.name="cliff_rocks_right"; assembled.Add(cliffRight);
             var extraPath=UnityEngine.Object.Instantiate(pieces[4]);
             extraPath.name="stone_path_platform_second_segment"; assembled.Add(extraPath);
+            var approachPath=UnityEngine.Object.Instantiate(pieces[4]);
+            approachPath.name="stone_path_platform_cliff_approach"; assembled.Add(approachPath);
 
             var gate=pieces[7];
             await Task.CompletedTask;
@@ -229,7 +231,7 @@ namespace Eldoria.EditorTools
             cam.transform.position=center+new Vector3(1.08f,.84f,-1.40f).normalized*
                 (Mathf.Max(bounds.size.x,bounds.size.z)*2.9f+35f);
             cam.transform.LookAt(center);
-            cam.orthographicSize=Mathf.Max(bounds.extents.x*.92f,bounds.extents.z*1.15f)+1.6f;
+            cam.orthographicSize=(Mathf.Max(bounds.extents.x*.92f,bounds.extents.z*1.15f)+1.6f)*.87f;
             cam.farClipPlane=1000f;
             cam.backgroundColor=new Color(.20f,.31f,.47f);
             Debug.Log("VALORIA_V3_ASSEMBLY_CAMERA="+cam.transform.position+" size="+cam.orthographicSize);
@@ -249,6 +251,7 @@ namespace Eldoria.EditorTools
             float pathDepth=BoundsFor(pieces[4]).size.z;
             Place(pieces[4],0f,roadEnd-pathDepth*.5f);
             Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
+            Place(approachPath,0f,roadEnd-pathDepth*2.5f+.30f);
             Place(pieces[6],-4f,roadEnd-1f);
             // Cliff top supports the terrace; never put the cliff bottom at wall feet.
             // The crest reaches the terrace around z=-18, while the face projects
@@ -280,9 +283,7 @@ namespace Eldoria.EditorTools
             float viewDistance=Vector3.Distance(cam.transform.position,center);
             RenderSettings.fogStartDistance=viewDistance*.93f;
             RenderSettings.fogEndDistance=viewDistance*2.85f;
-            var rockRenderer=pieces[5].GetComponentInChildren<Renderer>(true);
-            var rockMaterial=rockRenderer!=null?rockRenderer.sharedMaterial:null;
-            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family",rockMaterial);
+            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
             var trees=ValoriaNatureDresser.DressAssembly(bounds);
             var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
             Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
