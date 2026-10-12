@@ -115,6 +115,27 @@ jobs:
           if((Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph' | Measure-Object).Count -ne 0){
             throw 'Source shadergraph quarantine incomplete'
           }
+      - name: Bind the actual URP asset in every WebGL quality level (Unity 6000.3 shader fix)
+        shell: powershell
+        run: |
+          # Unity 6000.3 can enumerate billions of URP/Lit permutations when
+          # all Quality levels use None even if Graphics has a default URP asset.
+          # Patch only this disposable CI working tree, never main or native sources.
+          $graphics="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/GraphicsSettings.asset"
+          $quality="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/QualitySettings.asset"
+          $g=[System.IO.File]::ReadAllText($graphics)
+          $q=[System.IO.File]::ReadAllText($quality)
+          $match=[regex]::Match($g,'m_CustomRenderPipeline: \\{fileID: 11400000, guid: ([a-fA-F0-9]{32}), type: 2\\}')
+          if(-not $match.Success){throw 'Canonical URP default asset missing'}
+          $guid=$match.Groups[1].Value
+          $nullBinding='customRenderPipeline: {fileID: 0}'
+          $count=([regex]::Matches($q,[regex]::Escape($nullBinding))).Count
+          if($count -lt 1){throw 'No missing URP Quality bindings found; inspect live Quality settings'}
+          $correct="customRenderPipeline: {fileID: 11400000, guid: $guid, type: 2}"
+          $q=$q.Replace($nullBinding,$correct)
+          [System.IO.File]::WriteAllText($quality,$q,(New-Object System.Text.UTF8Encoding($false)))
+          if(([regex]::Matches([System.IO.File]::ReadAllText($quality),[regex]::Escape($correct))).Count -ne $count){throw 'URP Quality verification failed'}
+          Write-Host "WEBGL_URP_QUALITY_FIX_PASS quality_levels=$count pipeline_guid=$guid"
       - name: Build isolated playable WebGL candidate
         shell: powershell
         run: |
