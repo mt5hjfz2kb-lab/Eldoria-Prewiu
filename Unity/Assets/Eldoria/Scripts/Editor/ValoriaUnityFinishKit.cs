@@ -16,6 +16,7 @@ namespace Eldoria.EditorTools
     public static class ValoriaUnityFinishKit
     {
         static Material stageMaterial;
+        static Material assemblyStageMaterial;
         static Texture2D stageAlbedo;
 
         static readonly Dictionary<Material,Material> Finished = new Dictionary<Material,Material>();
@@ -181,11 +182,21 @@ namespace Eldoria.EditorTools
             mesh.vertices=v;mesh.uv=uv;
             // Lithology comes from the authored cliff GLBs. Per-cell rock selection
             // made a bright sawtooth stripe at the terrace lip in actual Unity PNGs.
-            mesh.triangles=triangles;mr.sharedMaterial=GetStageMaterial();
+            mesh.triangles=triangles;mr.sharedMaterial=assembly?GetAssemblyStageMaterial():GetStageMaterial();
             mesh.RecalculateNormals();
             mf.sharedMesh=mesh;
             stage.transform.position=new Vector3(b.center.x,0f,b.center.z);
             return stage;
+        }
+
+        static Material GetAssemblyStageMaterial()
+        {
+            if(assemblyStageMaterial!=null)return assemblyStageMaterial;
+            var shader=Shader.Find("Eldoria/ValoriaTerrainCliffBlend");
+            if(shader==null)throw new Exception("Valoria slope-blended cliff shader not imported");
+            assemblyStageMaterial=new Material(shader);
+            assemblyStageMaterial.name="Valoria authored cliff contact: slope-blended geological terrain";
+            return assemblyStageMaterial;
         }
 
         static Material GetStageMaterial()
