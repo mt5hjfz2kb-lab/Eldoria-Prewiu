@@ -164,7 +164,15 @@ def foliage(name,color):
   m=mat('Existing vegetation '+key,color if isleaf else (.16,.105,.058))
   file=a.inputs/('pine-leaf.png' if isleaf else 'pine-trunk.png')
   if name=='pine' and file.exists():
-   tex=m.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(file),check_existing=True);tex.image.pack()
+   tex=m.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(file),check_existing=True)
+   if isleaf:
+    # This package's leaf atlas is deliberately red: its Unity shader applies
+    # a species color. Bake a portable green palette, preserving atlas alpha.
+    src=list(tex.image.pixels);dst=[]
+    for j in range(0,len(src),4):
+     lum=max(src[j],src[j+1],src[j+2]);dst.extend((lum*.18,lum*.37,lum*.20,src[j+3]))
+    tex.image.pixels=dst
+   tex.image.pack()
    bs=m.node_tree.nodes.get('Principled BSDF');m.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
    if isleaf:
     m.node_tree.links.new(tex.outputs['Alpha'],bs.inputs['Alpha']);m.blend_method='CLIP';m.alpha_threshold=.35;m.use_backface_culling=False

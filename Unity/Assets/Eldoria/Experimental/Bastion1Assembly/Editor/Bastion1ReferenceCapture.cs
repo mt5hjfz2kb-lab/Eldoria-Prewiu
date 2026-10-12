@@ -53,6 +53,8 @@ namespace Eldoria.EditorTools
                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.15f,.23f,.31f);
                 // glTF exporter: Blender (x,y,z)->(x,z,-y); glTFast mirrors x.
                 camera.transform.position=new Vector3(-48f,54f,70f);camera.transform.LookAt(Vector3.zero);
+                var controls=camera.gameObject.AddComponent<Eldoria.Art.Bastion1AssemblyCamera>();
+                controls.ConfigureHome();
                 var directory=Path.GetFullPath("Bastion1ReferenceCaptures");Directory.CreateDirectory(directory);
                 foreach(var stale in Directory.GetFiles(directory,"*.png"))File.Delete(stale);
                 Render(camera,Path.Combine(directory,"bastion1-unity-landscape.png"),1440,1000);
@@ -61,6 +63,16 @@ namespace Eldoria.EditorTools
                 camera.orthographicSize=76f;
                 Render(camera,Path.Combine(directory,"bastion1-unity-portrait.png"),390,844);
                 camera.orthographicSize=38.5f;
+                // Focalized source check: relative clamps cannot teleport this camera
+                // to the old image-plane origin on the first player drag.
+                var home=camera.transform.position;
+                controls.PanByScreenDelta(new Vector2(100000f,-100000f));
+                var moved=camera.transform.position-home;
+                if(Mathf.Abs(moved.x)>12.001f||Mathf.Abs(moved.z)>12.001f||moved.sqrMagnitude<.01f)
+                    throw new Exception("Candidate camera pan bounds invalid");
+                controls.ZoomBy(-10000f);controls.Home();
+                if(Vector3.Distance(camera.transform.position,home)>.001f)
+                    throw new Exception("Candidate Home pose was not restored");
                 var renderers=root.GetComponentsInChildren<Renderer>(true);
                 var uniqueMeshes=new HashSet<Mesh>();var uniqueMaterials=new HashSet<Material>();var uniqueTextures=new HashSet<Texture>();long triangles=0;
                 foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))

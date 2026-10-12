@@ -31,13 +31,16 @@ jobs:
       - name: Locate existing Blender and stage exact committed modules
         shell: powershell
         run: |
-          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
-          if(-not $candidate){$candidate=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          $installedBlenders=@(Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe)
+          $candidate=$installedBlenders | Where-Object {$_.FullName -match 'Blender 4\.0'} | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $candidate){$candidate=$installedBlenders | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
           if(-not $candidate){throw 'Existing Blender not found'}
           Add-Content $env:GITHUB_ENV "BASTION_BLENDER=$candidate"
-          $input=Join-Path $env:RUNNER_TEMP 'Bastion1ReferenceInputs'
-          Add-Content $env:GITHUB_ENV "BASTION_INPUTS=$input"
-          python tools/valoria-bastion1-assembly/stage.py $input
+          $sourceInputDirectory=Join-Path $env:RUNNER_TEMP 'Bastion1ReferenceInputs'
+          Add-Content $env:GITHUB_ENV "BASTION_INPUTS=$sourceInputDirectory"
+          $blenderPython=Get-ChildItem (Split-Path $candidate) -Recurse -Filter python.exe | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blenderPython){throw 'Bundled Blender Python missing'}
+          & $blenderPython tools/valoria-bastion1-assembly/stage.py $sourceInputDirectory
           if($LASTEXITCODE -ne 0){throw 'Frozen input staging failed'}
       - name: Compose the two-level settlement with authored source assets
         shell: powershell
@@ -46,8 +49,8 @@ jobs:
           if(Test-Path $out){Remove-Item $out -Recurse -Force}
           $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Blender.log'
           $err=Join-Path $env:RUNNER_TEMP 'Bastion1-Blender.err'
-          $args=@('-b','--threads','6','--python-exit-code','1','--python',"$env:GITHUB_WORKSPACE/tools/valoria-bastion1-assembly/assemble.py",'--','--inputs',$env:BASTION_INPUTS,'--output',$out,'--samples','24')
-          $process=Start-Process $env:BASTION_BLENDER -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          $blenderArguments=@('-b','--threads','6','--python-exit-code','1','--python',"$env:GITHUB_WORKSPACE/tools/valoria-bastion1-assembly/assemble.py",'--','--inputs',$env:BASTION_INPUTS,'--output',$out,'--samples','24')
+          $process=Start-Process $env:BASTION_BLENDER -ArgumentList $blenderArguments -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
           if($process.ExitCode -ne 0){Get-Content $log -Tail 100;Get-Content $err -Tail 30;throw 'Blender assembly failed'}
           if(-not (Test-Path "$out/manifest.json")){throw 'Assembly manifest missing'}
           $dest="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/Experimental/Bastion1Assembly/GeneratedSource"
@@ -60,8 +63,8 @@ jobs:
           $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity.log'
           $out=Join-Path $env:GITHUB_WORKSPACE 'Unity/Bastion1ReferenceCaptures'
           if(Test-Path $out){Remove-Item $out -Recurse -Force}
-          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $unityArguments=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 130;throw "Unity failed $($process.ExitCode)"}
           if(-not (Select-String $log 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
