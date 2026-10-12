@@ -39,7 +39,8 @@
         "tools/valoria-bastion1-assembly/**",
         "docs/evidence/valoria-bastion1-reference-assembly/**",
         "pipeline/valoria-bastion1-assembly-request.json",
-        ".github/workflows/valoria-bastion1-reference-assembly.yml"
+        ".github/workflows/valoria-bastion1-reference-assembly.yml",
+        "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json"
       ],
       "resources": [
         "valoria-bastion1-reference-assembly",
@@ -51,7 +52,8 @@
       "branch": "art/valoria-bastion1-reference-assembly-20261012",
       "dependency": "Existing Windows jobs complete before this single candidate job; no cancellation, publication or active delivery branch mutation.",
       "art_production_routing": "required",
-      "phase": "Two-level source assembly rendered; exact Unity candidate scheduled sequentially behind existing jobs"
+      "phase": "Two-level source assembly rendered; exact Unity candidate scheduled sequentially behind existing jobs",
+      "art_production_request": "pipeline/art-production-requests/valoria-bastion1-reference-assembly-20261012.json"
     }
   ],
   "history": [
