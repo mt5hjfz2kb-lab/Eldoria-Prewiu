@@ -55,8 +55,13 @@ namespace Eldoria.EditorTools
             }
             if(!File.Exists(Path.Combine(Output,"index.html")))
                 throw new Exception("No candidate WebGL index.html");
+            var dataFiles=Directory.GetFiles(Path.Combine(Output,"Build"),"*.data.unityweb");
+            if(dataFiles.Length!=1)throw new Exception("Missing exactly one WebGL data payload");
+            var total=new DirectoryInfo(Output).GetFiles("*",SearchOption.AllDirectories);
+            long bytes=0;
+            foreach(var file in total)bytes+=file.Length;
             Debug.Log("ELDORIA_VALORIA_FIRST_ZONE_WEBGL_CANDIDATE_PASS anchors="+anchors.Length+
-                " size="+result.summary.totalSize);
+                " payload_bytes="+bytes);
         }
     }
 }
