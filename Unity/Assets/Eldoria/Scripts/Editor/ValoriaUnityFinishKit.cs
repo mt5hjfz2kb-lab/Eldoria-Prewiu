@@ -123,8 +123,8 @@ namespace Eldoria.EditorTools
         {
             var isCliff=piece=="cliff_rocks";
             var isPath=piece=="stone_path_platform";
-            float width=Mathf.Max(48f,b.size.x*(isPath?6f:7f));
-            float depth=Mathf.Max(48f,b.size.z*(isPath?6f:7f));
+            float width=Mathf.Max(48f,b.size.x*(isPath?6f:piece=="assembled_family"?1.75f:7f));
+            float depth=Mathf.Max(48f,b.size.z*(isPath?6f:piece=="assembled_family"?2.3f:7f));
             var stage=new GameObject("STUDIO_CONTEXT_NOT_SOURCE_"+piece);
             var mf=stage.AddComponent<MeshFilter>();
             var mr=stage.AddComponent<MeshRenderer>();
@@ -146,10 +146,13 @@ namespace Eldoria.EditorTools
                 float slope=(isCliff?.23f:.075f)*(jitter+erode*.24f);
                 if(assembly) {
                     float wx=px+b.center.x, wz=pz+b.center.z;
-                    float terrace=Mathf.Max(Mathf.Abs(wx)/33f,Mathf.Abs(wz-2f)/26f);
-                    float drop=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((terrace-.75f)/.28f))*4.8f;
-                    slope-=drop;
-                    slope+=Mathf.PerlinNoise(wx*.14f+12f,wz*.16f+9f)*.22f;
+                    // Irregular escarpment follows the foreground cliff assets; soften
+                    // the back into the neighboring world instead of a raised rectangle.
+                    float edge=-18f + 1.5f*Mathf.Sin(wx*.22f) + .7f*Mathf.Sin(wx*.53f);
+                    float front=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((edge-wz)/6.8f));
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(wx)-28f)/9f));
+                    slope-=4.15f*Mathf.Max(front,side*.65f);
+                    slope+=Mathf.PerlinNoise(wx*.14f+12f,wz*.16f+9f)*.18f;
                     if(Mathf.Abs(wx)<5f && wz<2f && wz>-24f)slope=0f;
                 }
                 v[ix]=new Vector3(px,level+slope,pz);

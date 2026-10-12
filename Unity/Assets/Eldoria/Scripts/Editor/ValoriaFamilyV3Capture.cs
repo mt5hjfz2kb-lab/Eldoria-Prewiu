@@ -167,6 +167,10 @@ namespace Eldoria.EditorTools
             cornerRight.name="wall_corner_right"; assembled.Add(cornerRight);
             var connectionRight=UnityEngine.Object.Instantiate(pieces[3]);
             connectionRight.name="wall_connection_right"; assembled.Add(connectionRight);
+            var cliffMiddle=UnityEngine.Object.Instantiate(pieces[5]);
+            cliffMiddle.name="cliff_rocks_middle"; assembled.Add(cliffMiddle);
+            var cliffRight=UnityEngine.Object.Instantiate(pieces[5]);
+            cliffRight.name="cliff_rocks_right"; assembled.Add(cliffRight);
             var extraPath=UnityEngine.Object.Instantiate(pieces[4]);
             extraPath.name="stone_path_platform_second_segment"; assembled.Add(extraPath);
 
@@ -179,7 +183,7 @@ namespace Eldoria.EditorTools
             Place(pieces[2],-21f,0f);      Place(cornerRight,21f,0f);
             Place(pieces[3],-6f,0f);       Place(connectionRight,6f,0f);
             Place(pieces[4],0f,-11f);      Place(extraPath,0f,-17f);
-            Place(pieces[5],-21f,8f);
+            Place(pieces[5],-21f,8f); Place(cliffMiddle,-6f,8f); Place(cliffRight,9f,8f);
             Place(pieces[6],0f,-7f);       Place(gate,0f,0f);
             Bounds bounds=BoundsFor(assembled[0]);
             foreach(var o in assembled)bounds.Encapsulate(BoundsFor(o));
@@ -210,8 +214,15 @@ namespace Eldoria.EditorTools
             Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
             Place(pieces[6],-4f,roadEnd-1f);
             // Cliff top supports the terrace; never put the cliff bottom at wall feet.
-            Place(pieces[5],lx-1f,5f);
-            pieces[5].transform.position+=Vector3.up*(-.15f-BoundsFor(pieces[5]).max.y);
+            Place(pieces[5],-18f,-18.5f);
+            Place(cliffMiddle,-4.5f,-19.2f);
+            Place(cliffRight,9f,-17.8f);
+            foreach(var cliff in new[]{pieces[5],cliffMiddle,cliffRight})
+                cliff.transform.position+=Vector3.up*(-.12f-BoundsFor(cliff).max.y);
+            var rightProps=UnityEngine.Object.Instantiate(pieces[6]);
+            rightProps.name="defensive_props_right";
+            Place(rightProps,4f,roadEnd-1f);
+            assembled.Add(rightProps);
             Render(cam,Path.Combine(outDir,"baseline-assembled-hero.png"));
             // Frozen Hero V3 retains its original material collection; avoid cloning >1000 source parts.
             var styled=new List<GameObject>(assembled);
