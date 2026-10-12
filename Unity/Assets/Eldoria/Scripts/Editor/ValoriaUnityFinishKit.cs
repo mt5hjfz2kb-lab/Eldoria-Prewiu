@@ -164,40 +164,37 @@ namespace Eldoria.EditorTools
                     float roadAcross=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(wx)-3f)/5f));
                     float roadEnd=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((-wz-28f)/7f));
                     if(wz<2f)slope=Mathf.Lerp(slope,0f,roadAcross*roadEnd);
+                    // A hard cutout exposed the blue camera clear color.
+                    // Instead sink the support terrain beneath the authored
+                    // 4m cliff face while keeping a continuous closed mesh.
+                    // Feather across x and z to prevent a rectangular trench.
+                    float leftMask=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wx+24.5f)/1.4f))*
+                        (1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wx+3.0f)/1.4f)));
+                    float rightMask=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wx-3.0f)/1.4f))*
+                        (1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wx-16.0f)/1.4f)));
+                    float strip=Mathf.Max(leftMask,rightMask);
+                    float enter=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((-wz-20.8f)/1.5f));
+                    float exit=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((-wz-26.4f)/2.0f));
+                    float clearance=strip*enter*exit;
+                    slope=Mathf.Lerp(slope,Mathf.Min(slope,-4.65f),clearance);
                 }
                 v[ix]=new Vector3(px,level+slope,pz);
                 uv[ix]=new Vector2(u*width*.07f,w*depth*.07f);
                 ix++;
             }
-            // A steep synthetic grass wall concealed the authored GLB cliff.
-            // Cut only the front-facing escarpment band in the assembly staging
-            // surface; the actual stone meshes must own this visible area.
-            var surfaceTriangles=new List<int>(triangles.Length);
-            int cutCells=0;
+            int ti=0;
             for(int z=0;z<n;z++)for(int x=0;x<n;x++)
             {
                 int a=z*(n+1)+x, d=a+n+1;
-                float wx=(v[a].x+v[d+1].x)*.5f+b.center.x;
-                float wz=(v[a].z+v[d+1].z)*.5f+b.center.z;
-                bool insideStoneSpan=(wx>-24.5f && wx<-3.0f) ||
-                                     (wx>3.0f && wx<16.0f);
-                // The cut affects only visible face, not the gateway approach
-                // or the rear earthen plateau. Never alter canonical terrain.
-                if(assembly && insideStoneSpan && wz<-21.1f && wz>-27.0f)
-                {
-                    cutCells++;
-                    continue;
-                }
-                surfaceTriangles.Add(a);surfaceTriangles.Add(d);surfaceTriangles.Add(a+1);
-                surfaceTriangles.Add(a+1);surfaceTriangles.Add(d);surfaceTriangles.Add(d+1);
+                triangles[ti++]=a;triangles[ti++]=d;triangles[ti++]=a+1;
+                triangles[ti++]=a+1;triangles[ti++]=d;triangles[ti++]=d+1;
             }
-            Debug.Log("VALORIA_AUTHORED_STONE_CLIFF_EXPOSURE cells="+cutCells);
             var mesh=new Mesh();
             mesh.name="Valoria editorial staging terrain 32";
             mesh.vertices=v;mesh.uv=uv;
             // Lithology comes from the authored cliff GLBs. Per-cell rock selection
             // made a bright sawtooth stripe at the terrace lip in actual Unity PNGs.
-            mesh.triangles=surfaceTriangles.ToArray();mr.sharedMaterial=GetStageMaterial();
+            mesh.triangles=triangles;mr.sharedMaterial=GetStageMaterial();
             mesh.RecalculateNormals();
             mf.sharedMesh=mesh;
             stage.transform.position=new Vector3(b.center.x,0f,b.center.z);
