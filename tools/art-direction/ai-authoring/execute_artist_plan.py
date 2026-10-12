@@ -15,8 +15,10 @@ p.add_argument('--out',required=True,type=pathlib.Path)
 p.add_argument('--transport',choices=['direct','blendermcp'],default='direct')
 p.add_argument('--mcp-addon',type=pathlib.Path)
 p.add_argument('--mcp-sha256')
+p.add_argument('--expected-source-sha256',help='Protect exact frozen Blender source')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 if not a.source.is_file() or a.source.suffix.lower()!='.blend':raise ValueError('Original .blend required')
+if a.expected_source_sha256 and hashlib.sha256(a.source.read_bytes()).hexdigest()!=a.expected_source_sha256:raise ValueError('Frozen .blend source hash changed')
 if a.inspect:
  if not a.inspect_target_object:raise ValueError('Topology inspection requires --inspect-target-object')
  bpy.ops.wm.open_mainfile(filepath=str(a.source.resolve()))
@@ -57,6 +59,7 @@ if a.inspect:
  sys.exit(0)
 if not a.plan or not a.plan.is_file():raise ValueError('Real Qwen plan missing')
 if a.out.resolve()==a.source.parent.resolve():raise ValueError('Never overwrite source directory')
+cycle_started=time.monotonic()
 operations=json.loads(a.plan.read_text('utf8'))
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 if not isinstance(operations,list) or not 1<=len(operations)<=8:raise ValueError('Invalid plan length')
@@ -75,6 +78,7 @@ def vec(v,n=3):
  return v
 completed=[]
 def act(identifier):
+ action_started=time.monotonic()
  op=next(x for x in operations if x['id']==identifier)
  kind=op['type'];t=op['target'];pr=op['parameters']
  obj=bpy.data.objects.get(t)
@@ -184,7 +188,7 @@ def act(identifier):
    if source.data:ob.data=source.data.copy()
    ob.name=t+'_artist';ob.location=vec(pr.get('location'));ob.rotation_euler=vec(pr.get('rotation',[0,0,0]));ob.scale=vec(pr.get('scale',[1,1,1]))
    bpy.context.scene.collection.objects.link(ob);n=len(ob.data.vertices) if ob.type=='MESH' else 0
- completed.append({'id':identifier,'type':kind,'target':t,'changed_vertices':n,'changed_faces':faces_changed,'changed_objects':objects,'applied':True})
+ completed.append({'id':identifier,'type':kind,'target':t,'changed_vertices':n,'changed_faces':faces_changed,'changed_objects':objects,'elapsed_seconds':round(time.monotonic()-action_started,3),'applied':True})
 if a.transport=='direct':
  for op in operations:act(op['id'])
 else:
@@ -229,6 +233,6 @@ bpy.ops.wm.save_as_mainfile(filepath=str(blend.resolve()))
 bpy.ops.export_scene.gltf(filepath=str(glb.resolve()),export_format='GLB',use_selection=False)
 proof={'transport':a.transport,'source_sha256':sha(a.source.read_bytes()),'plan_sha256':sha(a.plan.read_bytes()),
  'source_mesh_sha256':source_mesh,'result_mesh_sha256':result_mesh,'result_blend_sha256':sha(blend.read_bytes()),
- 'result_glb_sha256':sha(glb.read_bytes()),'executed_actions':completed,'self_approval':False}
+ 'result_glb_sha256':sha(glb.read_bytes()),'elapsed_seconds':round(time.monotonic()-cycle_started,3),'executed_actions':completed,'self_approval':False}
 (a.out/'artist-execution.json').write_text(json.dumps(proof,indent=2)+'\n','utf8')
 print('REAL_ARTIST_BLENDER_EXECUTION',len(completed),'actions','mesh_change',source_mesh!=result_mesh)
