@@ -200,7 +200,10 @@ namespace Eldoria.EditorTools
 
             SetLookdev(false,assembled,sun);
             Render(cam,Path.Combine(outDir,"baseline-assembled-hero.png"));
-            SetLookdev(true,assembled,sun);
+            // Frozen Hero V3 retains its original material collection; avoid cloning >1000 source parts.
+            var styled=new List<GameObject>(assembled);
+            styled.Remove(gate);
+            SetLookdev(true,styled,sun);
             cam.backgroundColor=new Color(.43f,.52f,.60f);
             var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
             var trees=ValoriaNatureDresser.Dress(bounds,"cliff_rocks");
