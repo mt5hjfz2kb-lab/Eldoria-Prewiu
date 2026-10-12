@@ -124,6 +124,7 @@ namespace Eldoria.EditorTools
                 var lookdev=mode=="lookdev";
                 var terrain=lookdev?ValoriaUnityFinishKit.MakeContextFloor(bounds,obj.name):null;
                 var bounce=lookdev?ValoriaUnityFinishKit.MakeBounce(bounds):null;
+                var nature=lookdev?ValoriaNatureDresser.Dress(bounds,obj.name):null;
                 cam.backgroundColor=lookdev?new Color(.43f,.52f,.60f):new Color(.20f,.31f,.47f);
                 Vector3 focus=bounds.center;
                 var radius=Mathf.Max(bounds.extents.x,Mathf.Max(bounds.extents.y,bounds.extents.z));
@@ -138,6 +139,7 @@ namespace Eldoria.EditorTools
                 obj.SetActive(true);
                 if(terrain!=null) UnityEngine.Object.DestroyImmediate(terrain);
                 if(bounce!=null) UnityEngine.Object.DestroyImmediate(bounce.gameObject);
+                if(nature!=null) UnityEngine.Object.DestroyImmediate(nature);
             }
         }
 
