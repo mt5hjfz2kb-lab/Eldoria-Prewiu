@@ -114,6 +114,25 @@ jobs:
           }
           $lines | Set-Content $report
           $lines | ForEach-Object { Write-Host $_ }
+          # Resources/Valoria holds legacy source GLBs (over 500 MB in Git), which
+          # Unity includes in EVERY APK solely because they are under Resources.
+          # The isolated V5 scene is built from pre-generated .asset meshes.
+          # Move ONLY *.glb and their .meta companions for this nonshipping build.
+          $resourceRoot=Join-Path $root 'Eldoria/Resources/Valoria'
+          $resourceStash=Join-Path $env:RUNNER_TEMP 'ValoriaResourceGLBs-Android-stash'
+          if(Test-Path $resourceStash){throw 'ANDROID_RESOURCE_STASH_ALREADY_EXISTS'}
+          $moved=0
+          if(Test-Path $resourceRoot){
+            foreach($glb in @(Get-ChildItem $resourceRoot -Recurse -File -Filter '*.glb')){
+              $relative=$glb.FullName.Substring($resourceRoot.Length).TrimStart([char]92)
+              $target=Join-Path $resourceStash $relative
+              New-Item (Split-Path $target) -ItemType Directory -Force | Out-Null
+              Move-Item $glb.FullName $target
+              if(Test-Path ($glb.FullName+'.meta')){Move-Item ($glb.FullName+'.meta') ($target+'.meta')}
+              $moved++
+            }
+          }
+          Write-Host "LEGACY_RESOURCE_GLB_SOURCES_EXCLUDED_FOR_ISOLATED_V5_APK count=$moved"
           # Original V3 GLBs are source-only: the V5 scene contains generated .asset meshes.
           # Temporarily move only the verified known art-trial source family away
           # from StreamingAssets. The workflow restores it in a finalizer after Unity.
@@ -137,6 +156,21 @@ jobs:
             $p.Refresh()
             if($p.ExitCode -ne 0){if(Test-Path $log){Select-String -Path $log -Pattern 'error','Error','exception','Exception','fail','FAIL','Gradle','shader' | Select-Object -Last 180 | ForEach-Object { Write-Host $_.Line }; Get-Content $log -Tail 45}; throw "ANDROID_BUILD_FAILED $($p.ExitCode)"}
           } finally {
+            $resourceStash=Join-Path $env:RUNNER_TEMP 'ValoriaResourceGLBs-Android-stash'
+            $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Resources/Valoria'
+            if(Test-Path $resourceStash){
+              $restored=0
+              foreach($item in @(Get-ChildItem $resourceStash -Recurse -File)){
+                $relative=$item.FullName.Substring($resourceStash.Length).TrimStart([char]92)
+                $target=Join-Path $resourceRoot $relative
+                New-Item (Split-Path $target) -ItemType Directory -Force | Out-Null
+                if(Test-Path $target){throw "RESTORE_REFUSED_FILE_EXISTS $relative"}
+                Move-Item $item.FullName $target
+                $restored++
+              }
+              Remove-Item $resourceStash -Force -Recurse
+              Write-Host "LEGACY_RESOURCE_SOURCE_FILES_RESTORED count=$restored"
+            }
             $stash=Join-Path $env:RUNNER_TEMP 'ValoriaFamilyV3-Android-stash'
             $restore=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
             if(Test-Path $stash){
