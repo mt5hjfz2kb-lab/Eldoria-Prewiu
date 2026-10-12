@@ -1,0 +1,55 @@
+name: Eldoria Windows persistent artist runtime smoke
+on:
+  push:
+    branches: [art/local-ai-professional-artist-role-20261012]
+    paths: ['.github/workflows/eldoria-windows-artist-runtime-smoke.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-windows-artist-runtime-smoke
+  cancel-in-progress: true
+jobs:
+  windows-local-artist:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify local model and one real response
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $cmd=Get-Command ollama.exe -ErrorAction SilentlyContinue
+          if($cmd){$exe=$cmd.Source}else{$exe=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'}
+          if(-not (Test-Path $exe)){throw 'OLLAMA_EXE_MISSING'}
+          try{$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3}
+          catch{
+            $p=Start-Process -FilePath $exe -ArgumentList 'serve' -WindowStyle Hidden -PassThru
+            $tags=$null
+            for($i=0;$i -lt 20;$i++){Start-Sleep -Seconds 1;try{$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3;break}catch{}}
+          }
+          if(-not $tags){throw 'OLLAMA_SERVER_UNAVAILABLE'}
+          $present=@($tags.models | Where-Object {$_.name -like 'eldoria-artist*'})
+          if($present.Count -ne 1){throw 'ELDORIA_ARTIST_PERSISTENT_ALIAS_NOT_PRESENT'}
+          $body=@{model='eldoria-artist';stream=$false;think=$false;format='json';options=@{num_ctx=2048;num_predict=140};messages=@(@{role='user';content='As VALORIA ARTIST, reply ONLY JSON with fields role, target, method, self_approval. State your job in fewer than 35 words. self_approval must be false.'})} | ConvertTo-Json -Depth 10
+          $reply=Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:11434/api/chat' -ContentType 'application/json' -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 600
+          $answer=$reply.message.content | ConvertFrom-Json
+          if(-not $answer.role -or -not $answer.target){throw 'LOCAL_ARTIST_FAILED_TO_RETURN_STRUCTURED_DIRECTIVE'}
+          if($answer.self_approval -ne $false){throw 'LOCAL_ARTIST_SELF_APPROVED'}
+          $blenderRoots=@(
+            (Join-Path $env:PROGRAMFILES 'Blender Foundation'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\Blender Foundation')
+          )
+          $found=@(foreach($folder in $blenderRoots){if(Test-Path $folder){Get-ChildItem $folder -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName}})
+          $result=[ordered]@{model='eldoria-artist';local_model_pass=$true;json_directive_pass=$true;blender_present=($found.Count -gt 0);blender_paths=$found;self_approval=$answer.self_approval;checked_on='windows-self-hosted'}
+          $out=Join-Path $env:GITHUB_WORKSPACE 'eldoria-local-artist-runtime-result.json'
+          $result | ConvertTo-Json -Depth 5 | Set-Content $out -Encoding UTF8
+          Write-Host 'ELDORIA_WINDOWS_ARTIST_REAL_INFERENCE_PASS'
+          if($found.Count -eq 0){Write-Warning 'BLENDER_WINDOWS_EXE_NOT_FOUND; source-only local authoring remains not validated'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-windows-artist-runtime-${{ github.run_id }}
+          path: eldoria-local-artist-runtime-result.json
+          if-no-files-found: warn
+          retention-days: 7
