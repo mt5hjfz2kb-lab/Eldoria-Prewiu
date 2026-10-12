@@ -53,8 +53,9 @@
       "claimed_at": "2026-10-12T08:42:00Z",
       "base_main_sha": "e6d27bd91d1bd2943feae8144f7e46653e622685",
       "paid_credits": 0,
-      "phase": "BlenderMCP controlled cliff variant from frozen V3, Qwen image-directed; concurrent independent Ubuntu workshop",
-      "note": "Owner expressly protects main: isolated branch claim only. Main active registry read, no Windows lease there; no running Actions at claim."
+      "phase": "Resumed exact run 38232780856 and later 38233169307; inspect 38 real frames; correct contacts and matched source comparison",
+      "note": "Owner expressly protects main: isolated branch claim only. Main active registry read, no Windows lease there; no running Actions at claim.",
+      "resumed_from": "8f4791683636f73b5a4cea4b292d35cf434d4c91"
     }
   ],
   "history": [
