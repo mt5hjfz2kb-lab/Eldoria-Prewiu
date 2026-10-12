@@ -90,5 +90,7 @@ jobs:
         run: python3 tools/art-direction/ai-authoring/test_cpu_artist_schema.py
       - name: Reject non-sculpting Qwen plans and test real-model repair feedback
         run: python3 tools/art-direction/ai-authoring/test_artist_plan_validation.py
+      - name: Reject invisible camera-space artistic edits
+        run: python3 tools/art-direction/ai-authoring/visibility_metrics.test.py
       - name: Validate zero-cost Qwen and Blender automation scripts
-        run: python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
+        run: python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py tools/art-direction/ai-authoring/visibility_metrics.py
