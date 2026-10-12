@@ -51,7 +51,7 @@ jobs:
         run: |
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "Unity missing at UNITY_EDITOR_PATH" }
           $log=Join-Path $env:RUNNER_TEMP 'ValoriaV3-Unity-compile.log'
-          $args=@('-batchmode','-nographics','-quit','-projectPath',"${env:GITHUB_WORKSPACE}\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFamilyV3Capture.Capture','-logFile',$log)
+          $args=@('-batchmode','-quit','-projectPath',"${env:GITHUB_WORKSPACE}\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFamilyV3Capture.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if (-not $p.WaitForExit(600000)) { & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity compile timed out' }
           if ($p.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 180}; throw "Unity failed $($p.ExitCode)" }
