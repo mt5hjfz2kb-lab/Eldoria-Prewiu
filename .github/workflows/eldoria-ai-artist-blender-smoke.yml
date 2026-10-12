@@ -1,0 +1,96 @@
+name: AI artist typed Blender execution (isolated smoke)
+on:
+  push:
+    branches: ['promotion/eldoria-ai-authoring-core-20261012']
+    paths:
+      - '.github/workflows/eldoria-ai-artist-blender-smoke.yml'
+      - 'tools/art-direction/ai-authoring/execute_artist_plan.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-art-blender-smoke-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  genuine-blender-execution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install open-source Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          blender --version | head -2
+      - name: Construct TEMPORARY source and inspect actual open boundaries
+        run: |
+          mkdir -p /tmp/eldoria-smoke
+          cat > /tmp/eldoria-smoke/create_source.py <<'PY'
+          import bpy
+          bpy.ops.object.select_all(action='SELECT')
+          bpy.ops.object.delete(use_global=False)
+          # Two separate 4-vertex caps with open perimeter loops: a geometric seam.
+          verts=[[-2,-1,0],[-2,1,0],[-2,1,2],[-2,-1,2],
+                 [2,-1,0],[2,1,0],[2,1,2],[2,-1,2]]
+          mesh=bpy.data.meshes.new('open_terrain');mesh.from_pydata(verts,[],[(0,1,2,3),(4,5,6,7)]);mesh.update()
+          obj=bpy.data.objects.new('Terrain',mesh);bpy.context.collection.objects.link(obj)
+          bpy.ops.wm.save_as_mainfile(filepath='/tmp/eldoria-smoke/source.blend')
+          PY
+          blender -b --python-exit-code 1 --python /tmp/eldoria-smoke/create_source.py
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/eldoria-smoke/source.blend --out /tmp/eldoria-smoke/inspect --inspect --inspect-target-object Terrain
+          python3 - <<'PY'
+          import json, pathlib, hashlib
+          root=pathlib.Path('/tmp/eldoria-smoke')
+          context=json.loads((root/'inspect/mesh-context.json').read_text())
+          assert context['target']=='Terrain' and len(context['boundary_loops'])==2,context
+          rings=[x['indices'] for x in context['boundary_loops']]
+          assert all(len(r)==4 for r in rings),rings
+          actions=[
+           {'id':'ai-join-1','type':'bridge_boundary_loops','target':'Terrain',
+            'rationale':'Connect two separated plateau faces with genuine manifold geometry and preserve open outer source',
+            'parameters':{'loop_a':rings[0],'loop_b':rings[1]}},
+           {'id':'ai-sculpt-1','type':'sculpt_path','target':'Terrain',
+            'rationale':'Reshape the joined seam along a real curving 3D trajectory to remove the unnatural straight cliff',
+            'parameters':{'knots':[{'center':[-2,0,1],'delta':[0,.1,.4],'radius':4},
+                                    {'center':[2,0,1],'delta':[0,.3,-.2],'radius':4}]}}
+          ]
+          (root/'artist-plan.json').write_text(json.dumps(actions))
+          (root/'source.sha256').write_text(hashlib.sha256((root/'source.blend').read_bytes()).hexdigest())
+          PY
+      - name: Fast artist-plan preflight without Blender
+        run: node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/eldoria-smoke/artist-plan.json Terrain existing
+      - name: Execute REAL BMesh topological change and continuous path sculpt
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/eldoria-smoke/source.blend --plan /tmp/eldoria-smoke/artist-plan.json --out /tmp/eldoria-smoke/result --transport direct --expected-source-sha256 "$(cat /tmp/eldoria-smoke/source.sha256)"
+      - name: Verify actual Blender geometry and valid GLB file
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib,struct
+          root=pathlib.Path('/tmp/eldoria-smoke')
+          evidence=json.loads((root/'result/artist-execution.json').read_text())
+          assert evidence['source_sha256']==(root/'source.sha256').read_text()
+          assert evidence['source_mesh_sha256']!=evidence['result_mesh_sha256']
+          assert evidence['executed_actions'][0]['changed_faces']==4
+          assert evidence['executed_actions'][1]['changed_vertices']>0
+          assert len(evidence['executed_actions'])==2
+          assert hashlib.sha256((root/'source.blend').read_bytes()).hexdigest()==evidence['source_sha256']
+          blend=(root/'result/artist-output.blend').read_bytes()
+          glb=(root/'result/artist-output.glb').read_bytes()
+          assert blend.startswith(b'BLENDER')
+          assert glb[:4]==b'glTF' and struct.unpack('<I',glb[4:8])[0]==2
+          assert struct.unpack('<I',glb[8:12])[0]==len(glb)
+          assert hashlib.sha256(glb).hexdigest()==evidence['result_glb_sha256']
+          print('REAL_BLENDER_SMOKE_PASS',json.dumps(evidence,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-real-blender-typed-smoke-${{ github.run_id }}
+          path: |
+            /tmp/eldoria-smoke/inspect/mesh-context.json
+            /tmp/eldoria-smoke/artist-plan.json
+            /tmp/eldoria-smoke/result/artist-execution.json
+            /tmp/eldoria-smoke/result/artist-output.blend
+            /tmp/eldoria-smoke/result/artist-output.glb
+          retention-days: 7
+          if-no-files-found: warn
