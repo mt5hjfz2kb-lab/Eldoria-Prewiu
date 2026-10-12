@@ -66,6 +66,7 @@ namespace Eldoria.EditorTools
                     SetLookdev(true, objects, sunlight);
                     CaptureSet(folder, "lookdev", camera, objects, hero);
                 }
+                await CaptureAssembly(objects,sunlight,camera,baseDir,folder);
                 File.WriteAllText(Path.Combine(folder,"capture-manifest.json"),
                     "{\"source\":\"approved family v3\",\"engine\":\"Unity 6000.3.23f1\",\"capture\":\"real Unity camera.Render\",\"art_pass\":false}");
                 Debug.Log("VALORIA_V3_CAPTURE_COMPLETED " + folder);
@@ -150,6 +151,68 @@ namespace Eldoria.EditorTools
             var b=renderers[0].bounds;
             for(int i=1;i<renderers.Length;i++) b.Encapsulate(renderers[i].bounds);
             return b;
+        }
+
+
+        // Full-family validation scene uses real authored GLB meshes, not stand-in boxes.
+        static async Task CaptureAssembly(List<GameObject> pieces,Light sun,Camera cam,string sourceDir,string outDir)
+        {
+            SetLookdev(false,pieces,sun);
+            var assembled=new List<GameObject>(pieces);
+            var wallRight=UnityEngine.Object.Instantiate(pieces[0]);
+            wallRight.name="wall_straight_right"; assembled.Add(wallRight);
+            var towerRight=UnityEngine.Object.Instantiate(pieces[1]);
+            towerRight.name="watchtower_right"; assembled.Add(towerRight);
+            var cornerRight=UnityEngine.Object.Instantiate(pieces[2]);
+            cornerRight.name="wall_corner_right"; assembled.Add(cornerRight);
+            var connectionRight=UnityEngine.Object.Instantiate(pieces[3]);
+            connectionRight.name="wall_connection_right"; assembled.Add(connectionRight);
+
+            var gltf=new GltfImport(null,new UninterruptedDeferAgent());
+            var path=Path.Combine(sourceDir,"hero_gate_v3.glb");
+            if(!File.Exists(path))throw new FileNotFoundException("Frozen Hero V3 missing",path);
+            bool loaded=await gltf.Load(new Uri(path).AbsoluteUri);
+            if(!loaded)throw new Exception("Frozen Hero V3 GLB loader failed");
+            var gate=new GameObject("frozen_hero_gate_v3");
+            if(!await gltf.InstantiateMainSceneAsync(gate.transform))
+                throw new Exception("Frozen Hero V3 instantiation failed");
+            assembled.Add(gate);
+
+            // Snap architectural module feet and align a readable independent study scene.
+            Place(pieces[0],-10f,0f);      Place(wallRight,10f,0f);
+            Place(pieces[1],-16f,0f);      Place(towerRight,16f,0f);
+            Place(pieces[2],-21f,0f);      Place(cornerRight,21f,0f);
+            Place(pieces[3],-6f,0f);       Place(connectionRight,6f,0f);
+            Place(pieces[4],0f,-11f);      Place(pieces[5],0f,13f);
+            Place(pieces[6],0f,-7f);       Place(gate,0f,0f);
+            Bounds bounds=BoundsFor(assembled[0]);
+            foreach(var o in assembled)bounds.Encapsulate(BoundsFor(o));
+            var center=bounds.center;
+            cam.transform.position=center+new Vector3(1.08f,.84f,-1.40f).normalized*
+                (Mathf.Max(bounds.size.x,bounds.size.z)*2.9f+35f);
+            cam.transform.LookAt(center);
+            cam.orthographicSize=Mathf.Max(bounds.extents.x*.92f,bounds.extents.z*1.15f)+4f;
+            cam.farClipPlane=1000f;
+            cam.backgroundColor=new Color(.20f,.31f,.47f);
+
+            SetLookdev(false,assembled,sun);
+            Render(cam,Path.Combine(outDir,"baseline-assembled-hero.png"));
+            SetLookdev(true,assembled,sun);
+            cam.backgroundColor=new Color(.43f,.52f,.60f);
+            var ground=ValoriaUnityFinishKit.MakeContextFloor(bounds,"assembled_family");
+            var trees=ValoriaNatureDresser.Dress(bounds,"cliff_rocks");
+            var bounce=ValoriaUnityFinishKit.MakeBounce(bounds);
+            Render(cam,Path.Combine(outDir,"lookdev-assembled-hero.png"));
+            UnityEngine.Object.DestroyImmediate(ground);
+            UnityEngine.Object.DestroyImmediate(trees);
+            UnityEngine.Object.DestroyImmediate(bounce.gameObject);
+            Debug.Log("VALORIA_V3_ASSEMBLED bounds="+bounds+" meshes="+assembled.Count);
+        }
+
+        static void Place(GameObject obj,float x,float z)
+        {
+            Bounds b=BoundsFor(obj);
+            obj.transform.position+=new Vector3(x-b.center.x,-b.min.y,z-b.center.z);
         }
 
         static void Render(Camera cam,string path)
