@@ -157,6 +157,7 @@ namespace Eldoria.EditorTools
         // Full-family validation scene uses real authored GLB meshes, not stand-in boxes.
         static async Task CaptureAssembly(List<GameObject> pieces,Light sun,Camera cam,string sourceDir,string outDir)
         {
+            foreach(var piece in pieces)piece.SetActive(true);
             SetLookdev(false,pieces,sun);
             var assembled=new List<GameObject>(pieces);
             var wallRight=UnityEngine.Object.Instantiate(pieces[0]);
@@ -188,12 +189,14 @@ namespace Eldoria.EditorTools
             Bounds bounds=BoundsFor(assembled[0]);
             foreach(var o in assembled)bounds.Encapsulate(BoundsFor(o));
             var center=bounds.center;
+            Debug.Log("VALORIA_V3_ASSEMBLY_BOUNDS="+bounds+" active="+assembled.Count);
             cam.transform.position=center+new Vector3(1.08f,.84f,-1.40f).normalized*
                 (Mathf.Max(bounds.size.x,bounds.size.z)*2.9f+35f);
             cam.transform.LookAt(center);
             cam.orthographicSize=Mathf.Max(bounds.extents.x*.92f,bounds.extents.z*1.15f)+4f;
             cam.farClipPlane=1000f;
             cam.backgroundColor=new Color(.20f,.31f,.47f);
+            Debug.Log("VALORIA_V3_ASSEMBLY_CAMERA="+cam.transform.position+" size="+cam.orthographicSize);
 
             SetLookdev(false,assembled,sun);
             Render(cam,Path.Combine(outDir,"baseline-assembled-hero.png"));
