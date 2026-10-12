@@ -1,0 +1,56 @@
+name: Valoria experimental live WebGL browser QA
+on:
+  push:
+    branches: [integration/valoria-v3-unity-lookdev-20261012]
+    paths: [.github/workflows/valoria-live-browser-qa.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install Chromium smoke-test tools
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Test actual published Unity loader and capture screenshot
+        shell: bash
+        run: |
+          cat > test-valoria.cjs <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/valoria-experimental/';
+            const browser=await chromium.launch({headless:true,args:['--enable-webgl','--use-gl=angle','--use-angle=swiftshader','--disable-web-security','--enable-unsafe-swiftshader']});
+            const page=await browser.newPage({viewport:{width:1280,height:720},deviceScaleFactor:1});
+            const errors=[],responses=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            page.on('response',r=>{if(/\.wasm|\.data|\.framework|\.loader/i.test(r.url()))responses.push({url:r.url().split('/').pop(),status:r.status()})});
+            try{
+              await page.goto(url,{waitUntil:'domcontentloaded',timeout:50000});
+              await page.waitForTimeout(35000);
+              await page.screenshot({path:'valoria-live-browser.png',fullPage:true,timeout:30000});
+              const result=await page.evaluate(()=>({
+                title:document.title,
+                canvasCount:document.querySelectorAll('canvas').length,
+                loadingText:document.body.innerText.slice(0,250),
+                unityInstance:!!window.unityInstance,
+                images:document.images.length
+              }));
+              console.log(JSON.stringify({url,result,responses,errors},null,2));
+              if(result.canvasCount<1)throw new Error('Unity canvas not mounted');
+              if(responses.some(r=>r.status>=400))throw new Error('Unity runtime asset HTTP failure');
+              if(errors.length)throw new Error('Browser Javascript exception(s)');
+              console.log('VALORIA_LIVE_BROWSER_SMOKE_PASS');
+            }finally{await browser.close()}
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node test-valoria.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-live-webgl-browser-screenshot
+          path: valoria-live-browser.png
+          if-no-files-found: warn
+          retention-days: 7
