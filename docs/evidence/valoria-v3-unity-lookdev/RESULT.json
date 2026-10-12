@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "mission": "Valoria V3 Unity 6 URP isolated finishing and scalable pipeline",
+  "source_approval": "FAMILY_SOURCE_ART_PASS_AT_FROZEN_HERO_V3_MINIMUM",
+  "source_commit": "0abf13870d21725c30acf3f3e3a8c86385470073",
+  "input_integrity": "7 exact approved GLB SHA-256 verified plus unchanged Hero V3",
+  "latest_verified_run_id": 38188882212,
+  "latest_verified_sha": "c01867fb0b33932aa6369674d1b66c99726f7300",
+  "latest_artifact_id": 11720770593,
+  "unity": "6000.3.23f1",
+  "urp": "17.3.0",
+  "gltfast": "6.14.1",
+  "actual_unity_renders": 30,
+  "individual_assets": 7,
+  "assembled_family": true,
+  "paid_credits": 0,
+  "source_geometry_changed": false,
+  "canonical_scene_changed": false,
+  "engine_technical_pass": true,
+  "visual_quality_destination_pass": false,
+  "android_ios_performance_pass": false,
+  "conclusion": "Engine import/render/lookdev proof successful and repeatable with source SHA validation. Grounding, natural vegetation, shadow and contrast create visible scene-level improvement. Standalone mesh silhouettes and surface artistry do not reach owner's integrated 9.5 target. No promotion to production.",
+  "lessons": [
+    "Do not render with -nographics; the captures were blank despite a green pipeline",
+    "Use glTFast UninterruptedDeferAgent in editor batch mode to prevent DontDestroyOnLoad exception",
+    "Test actual PNG content, not just file count or CI success",
+    "Full-scene fog start/end must be scaled by camera distance rather than fixed close-up settings",
+    "Re-enable all seven sources after isolated captures before constructing composite scenes",
+    "Source SHA-256 allowlist prevents wrong branch asset promotion",
+    "Visual assessment of screenshots is separate from technical engine import success"
+  ],
+  "code": [
+    "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs",
+    "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnityFinishKit.cs",
+    "Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs",
+    ".github/workflows/valoria-v3-unity-lookdev-probe.yml"
+  ],
+  "remaining": [
+    "Strengthen source geometry/details where still below destination goal, using actual Blender artist IA",
+    "Build authored URP material variants and visually controlled terrain/edge decals rather than relying on test ground",
+    "Save genuine prefab/scene/material assets for promotion after artistic review",
+    "Run GPU/CPU/thermal testing on Android/iOS devices",
+    "Integrate approved setup to live Valoria only with visual/gameplay QA"
+  ]
+}
