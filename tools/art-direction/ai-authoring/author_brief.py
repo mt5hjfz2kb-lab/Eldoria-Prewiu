@@ -33,7 +33,7 @@ def main():
   raw=image.read_bytes()
   if len(raw)>10_000_000:raise ValueError('Input image too large')
   hashes[key]=digest(raw);inputs.append(base64.b64encode(raw).decode())
- role=(HERE/'ARTIST_SYSTEM.md').read_bytes()
+ role=(HERE.parent/'VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md').read_bytes()
  # The artist must see actual source candidates, not a fictional generic inventory.
  repo=HERE.parents[2]
  if a.inventory:
