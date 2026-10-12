@@ -5,7 +5,7 @@
   "request_id": "ai-art-authorship-enforcement-v1-20261012",
   "asset_or_sector": "Mandatory verified AI-directed Blender/Unity authoring pipeline for all future Eldoria 3D art production",
   "profile": "environment_new_geometry",
-  "visual_gate_state": "verification",
+  "visual_gate_state": "AUTHORING",
   "diagnosis": "Existing planner checks routing but not model-directed authoring, actual Blender operations, or same-camera Unity ART approval.",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -22,5 +22,6 @@
     "final_gate": "Demonstrate Qwen/system role, executed artistic geometry modifications via Blender/BlenderMCP, genuine same-camera Unity captures and independent review before ART_APPROVED."
   },
   "status": "ACTIVE",
-  "notes": "Isolated branch; no Windows runner, Unity gameplay or active file modifications. Promoting requires reconciling main registry and claims."
+  "notes": "Isolated branch; no Windows runner, Unity gameplay or active file modifications. Promoting requires reconciling main registry and claims.",
+  "ai_authorship_policy": "required"
 }
