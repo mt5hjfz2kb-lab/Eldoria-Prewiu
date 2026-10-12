@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import {verifyCycle} from './verify-artist-cycle.mjs';
+import {verifyCycle,preflightArtistPlan} from './verify-artist-cycle.mjs';
 function fixture(){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'eldoria-authoring-')),proof=p=>{
   const rel='proof/'+p+'.txt',full=path.join(root,rel);
@@ -70,3 +70,8 @@ test('Topology bridge with no changed faces or vertices fails',()=>{const {root,
 test('Replaced Qwen inference plan fails even with internally consistent cycle metadata',()=>{const {root,c}=fixture();c.authorship.planned_actions[0].rationale='A different later script decision, not from the actual model';assert.ok(verifyCycle(c,root).some(e=>e.includes('recorded Qwen decisions mismatch')))});
 test('A purported Blender export inconsistent with execution log fails',()=>{const {root,c}=fixture();c.authorship.result_mesh_sha256='c'.repeat(64);assert.ok(verifyCycle(c,root).some(e=>e.includes('mesh provenance mismatches')))});
 test('Executable action not selected by approved allowlist fails',()=>{const {root,c,syncLogs}=fixture();c.authorship.planned_actions[0].type='mesh_cut';c.authorship.executed_actions[0].type='mesh_cut';syncLogs();assert.ok(verifyCycle(c,root).some(e=>e.includes('unsupported/preset-only')))});
+
+test('Preflight accepts a model-authored organic terrain path',()=>{const ops=[{id:'arc1',type:'sculpt_path',target:'Terrain',rationale:'Replace squared cliff shape with long curving geometry',parameters:{knots:[{center:[0,1,1],delta:[.3,0,1],radius:5},{center:[3,2,1],delta:[.6,0,2],radius:6}]}}];assert.deepEqual(preflightArtistPlan(ops,'Terrain','existing'),[])});
+test('Preflight rejects unsafe generated geometry at no Blender cost',()=>{const ops=[{id:'bad',type:'sculpt_path',target:'Terrain',rationale:'Move the entire cliff using infinite displacement',parameters:{knots:[{center:[0,0,0],delta:[Infinity,0,0],radius:9},{center:[1,0,0],delta:[0,1,0],radius:9}]}}];assert.ok(preflightArtistPlan(ops,'Terrain','existing').some(s=>s.includes('Invalid artist sculpt path')))});
+test('Preflight requires validated distinct boundary indices',()=>{const ops=[{id:'bad-seam',type:'bridge_boundary_loops',target:'Terrain',rationale:'Bridge two distinct cliff segments without their actual borders',parameters:{loop_a:[1,2,3],loop_b:[2,9,10]}}];assert.ok(preflightArtistPlan(ops,'Terrain','existing').some(s=>s.includes('boundary loops')))});
+test('Preflight prohibits duplicate meshes in existing-object mode',()=>{const ops=[{id:'dup',type:'construct_mesh',target:'Terrain',rationale:'Duplicate the mountain instead of modifying the original',parameters:{vertices:[[0,0,0],[1,0,0],[0,1,0],[0,0,1]],faces:[[0,1,2],[0,1,3],[0,2,3]]}}];assert.ok(preflightArtistPlan(ops,'Terrain','existing').some(s=>s.includes('Existing source cannot')))});
