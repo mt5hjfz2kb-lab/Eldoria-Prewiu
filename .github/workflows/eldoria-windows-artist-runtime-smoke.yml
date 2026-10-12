@@ -14,7 +14,7 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      # No checkout required: the probe only calls already installed local Ollama.
       - name: Verify local model and one real response
         shell: powershell
         run: |
