@@ -103,7 +103,7 @@ jobs:
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(4200000)){& taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'ANDROID_BUILD_TIMEOUT'}
           $p.Refresh()
-          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 130}; throw "ANDROID_BUILD_FAILED $($p.ExitCode)"}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Select-String -Path $log -Pattern 'error','Error','exception','Exception','fail','FAIL','Gradle','shader' | Select-Object -Last 180 | ForEach-Object { Write-Host $_.Line }; Get-Content $log -Tail 45}; throw "ANDROID_BUILD_FAILED $($p.ExitCode)"}
           $apk=Join-Path $project 'Builds/Android/Eldoria-Valoria-V5-Test.apk'
           if(-not (Test-Path $apk)){throw 'APK_OUTPUT_MISSING'}
           $identity=@{source_sha=$env:GITHUB_SHA;v5_unity_source_run=38261014419;apk_sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;device_qa='PENDING';paid_credits=0}
