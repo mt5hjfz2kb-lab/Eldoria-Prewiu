@@ -32,9 +32,17 @@ for(const workstream of registry.active || []){
   }
   const gateState=String(req.visual_gate_state||'').toUpperCase();
   if(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED'].includes(gateState)){
-    if(!req.artist_cycle_path)failures.push(workstream.id+': ART approval requires artist_cycle_path.');
-    else try{
-      execFileSync(process.execPath,['tools/art-direction/ai-authoring/verify-artist-cycle.mjs',req.artist_cycle_path,process.cwd()],{stdio:'pipe'});
+    if(!req.artist_cycle_path) failures.push(workstream.id+': ART approval requires artist_cycle_path.');
+    else try {
+      // WIP evidence is allowed for an open cycle, NEVER for an approved
+      // request. The evidence verifier intentionally returns PASS for WIP
+      // structure: require exact approved STATE at the production boundary.
+      const cyclePath=path.resolve(process.cwd(),req.artist_cycle_path);
+      if(!cyclePath.startsWith(process.cwd()+path.sep)) throw new Error('Artist cycle must reside inside the repository');
+      const cycle=JSON.parse(fs.readFileSync(cyclePath,'utf8'));
+      if(cycle.state!==gateState) throw new Error('Approved request '+gateState+' requires matching approved artist cycle, got '+String(cycle.state));
+      if(cycle.workstream_id!==workstream.id) throw new Error('Artist cycle belongs to a different workstream');
+      execFileSync(process.execPath,['tools/art-direction/ai-authoring/verify-artist-cycle.mjs',cyclePath,process.cwd()],{stdio:'pipe'});
     }catch(err){failures.push(workstream.id+': artist cycle proof FAIL: '+String(err.stderr||err.message).trim());}
   }
   try { execFileSync(process.execPath,['tools/plan-art-production.mjs',expected],{stdio:'pipe'}); }
