@@ -1,0 +1,62 @@
+name: Eldoria local AI artist standalone trial
+on:
+  push:
+    branches: [art/local-ai-professional-artist-role-20261012]
+    paths: ['tools/art-direction/build_cliff_talus_transition_v1.py', '.github/workflows/valoria-local-artist-production-trial.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-local-artist-production-trial
+  cancel-in-progress: true
+jobs:
+  artist-blender:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage immutable V3 artist source
+        run: |
+          git fetch --no-tags --depth=1 origin 0abf13870d21725c30acf3f3e3a8c86385470073
+          git restore --source FETCH_HEAD --worktree -- art-source/valoria/production/asset-family-v2/quality-v3/cliff_rocks/cliff_rocks.blend references/VALORIA_FAMILY_OWNER_TARGET_20261011.jpg
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-v3-unity-compile-38227085782
+          run-id: 38227085782
+          github-token: ${{ github.token }}
+          path: input-capture
+      - name: Select exact real Unity frame
+        run: |
+          python3 - <<'PY'
+          import os,pathlib
+          images=list(pathlib.Path('input-capture').rglob('lookdev-assembled-hero.png'))
+          assert len(images)==1,images
+          with open(os.environ['GITHUB_ENV'],'a') as out:out.write('VALORIA_UNITY_CLIFF_SCREENSHOT='+str(images[0].resolve())+'\n')
+          PY
+      - name: Recover existing free Qwen visual artist
+        run: |
+          git fetch --no-tags origin refs/heads/ops/valoria-art-brain-runtime-recovery-20261011:refs/remotes/origin/ops/valoria-art-brain-runtime-recovery-20261011
+          git show origin/ops/valoria-art-brain-runtime-recovery-20261011:tools/valoria-art-brain/start_local_qwen_ci.sh > "$RUNNER_TEMP/start-qwen.sh"
+          sed -i 's/qwen2.5vl:3b/qwen3-vl:4b-instruct/g' "$RUNNER_TEMP/start-qwen.sh"
+          sed -i '/^trap /d' "$RUNNER_TEMP/start-qwen.sh"
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-pil python3-numpy
+          bash "$RUNNER_TEMP/start-qwen.sh"
+      - name: Qwen chooses corrective geometry from reference and Unity capture
+        run: python3 tools/art-direction/build_cliff_talus_transition_v1.py --infer
+      - name: Install existing pinned BlenderMCP workshop
+        run: |
+          curl -fL --retry 2 https://download.blender.org/release/Blender4.3/blender-4.3.2-linux-x64.tar.xz -o "$RUNNER_TEMP/blender.tar.xz"
+          tar -xf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/blender-4.3.2-linux-x64" >> "$GITHUB_PATH"
+          curl -fL --retry 2 https://raw.githubusercontent.com/ahujasid/blender-mcp/7a0373ec9199183cb460068c4f96aed9c579fb4f/addon.py -o /tmp/eldoria-blender-mcp.py
+          echo 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5  /tmp/eldoria-blender-mcp.py' | sha256sum -c -
+      - name: Execute Qwen-directed structural variant through BlenderMCP
+        run: blender -b --python-exit-code 1 -t 4 --python tools/art-direction/build_cliff_talus_transition_v1.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-talus-artisan-${{ github.run_id }}
+          path: art-source/valoria/variants/cliff_talus_transition_v1/*
+          if-no-files-found: warn
+          retention-days: 7
