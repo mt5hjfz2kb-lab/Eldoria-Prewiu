@@ -71,6 +71,8 @@ jobs:
           for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/eldoria-ai-real/ollama-version.json; then break; fi; sleep 2; done
           test -s /tmp/eldoria-ai-real/ollama-version.json
           docker exec eldoria-qwen-local ollama pull qwen3-vl:4b-instruct
+          docker exec eldoria-qwen-local ollama show qwen3-vl:4b-instruct | head -30
+          curl -fsS http://127.0.0.1:11434/api/version
       - name: Real Qwen system role and two-image AUTHORING inference
         timeout-minutes: 14
         run: |
