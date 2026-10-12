@@ -1,0 +1,104 @@
+name: Bastion I verified Qwen sculpt into full playable city
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-ai-mesh-city-merge.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  merge-verified-qwen-cliff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ROOT: /tmp/valoria-real-ai-merge
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify two immutable inputs and actual model decision
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/source" "$ROOT/artist" "$ROOT/verified"
+          gh run download 38320867773 --repo "${{ github.repository }}" --name "bastion1-player-integration-38320867773" --dir "$ROOT/source"
+          gh run download 38323534537 --repo "${{ github.repository }}" --name "bastion1-genuine-qwen-artist-38323534537" --dir "$ROOT/artist"
+          python3 - <<'PY'
+          import json,hashlib,pathlib,os,struct
+          root=pathlib.Path(os.environ['ROOT'])
+          originals=list((root/'source').rglob('Bastion1ReferenceAssembly.glb'))
+          assert len(originals)==1,originals
+          data=originals[0].read_bytes()
+          provenance=json.loads((root/'artist/input-provenance.json').read_text())
+          assert provenance['source_run']==38320867773 and provenance['source_sha']=='2f4b1a372c987594e92b15c899e5c86b16069b2b'
+          assert hashlib.sha256(data).hexdigest()==provenance['glb_sha256']
+          assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
+          evidence=json.loads((root/'artist/result/artist-execution.json').read_text())
+          assert evidence['executed_actions'][0]['changed_vertices']==181
+          assert evidence['source_mesh_sha256']!=evidence['result_mesh_sha256']
+          assert hashlib.sha256((root/'artist/result/artist-output.blend').read_bytes()).hexdigest()==evidence['result_blend_sha256']
+          art=json.loads((root/'artist/model/artist-inference.json').read_text())
+          plan=json.loads((root/'artist/model/artist-plan.json').read_text())
+          assert art['model']=='qwen3-vl:2b-instruct' and art['system_role']=='system'
+          assert art['recovery_from_run']==38323028866 and art['direction']['planned_actions']==plan
+          assert hashlib.sha256((root/'artist/model/artist-response-raw.txt').read_bytes()).hexdigest()==art['raw_qwen_response_sha256']
+          (root/'verified/source.glb').write_bytes(data)
+          print('GENUINE_QWEN_SOURCES_VERIFIED',len(data),evidence['executed_actions'])
+          PY
+      - name: Install free open-source Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          blender --version | head -2
+      - name: Reconstruct immutable full scene from exact source GLB
+        shell: bash
+        run: |
+          cat > "$ROOT/import.py" <<'PY'
+          import bpy,os,pathlib
+          root=pathlib.Path(os.environ['ROOT'])
+          bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+          bpy.ops.import_scene.gltf(filepath=str(root/'verified/source.glb'))
+          o=bpy.data.objects.get('Valoria natural playable hilltop and rock scarps')
+          if not o or o.type!='MESH' or len(o.data.vertices)!=12579:
+           raise ValueError('Unexpected source geometry, do not replace scene')
+          if len(bpy.data.objects)<40:raise ValueError('Architecture missing')
+          bpy.ops.wm.save_as_mainfile(filepath=str(root/'verified/full-city.blend'))
+          print('WHOLE_VALORIA_CITY_IMMUTABLE_SOURCE',len(bpy.data.objects))
+          PY
+          blender -b --python-exit-code 1 --python "$ROOT/import.py"
+      - name: Apply Qwen-selected sculpt while protecting player parcels, materials and UVs
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_SHA=$(sha256sum "$ROOT/verified/full-city.blend" | cut -d' ' -f1)
+          ARTIST_SHA=$(sha256sum "$ROOT/artist/result/artist-output.blend" | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py -- \
+            --source "$ROOT/verified/full-city.blend" \
+            --artist "$ROOT/artist/result/artist-output.blend" \
+            --plan "$ROOT/artist/model/artist-plan.json" \
+            --source-sha256 "$SOURCE_SHA" --artist-sha256 "$ARTIST_SHA" --out "$ROOT/merged"
+          python3 - <<'PY'
+          import json,os,pathlib,hashlib,struct
+          root=pathlib.Path(os.environ['ROOT'])
+          p=json.loads((root/'merged/integration-proof.json').read_text())
+          assert p['changed_vertices']>=20 and p['protected_cell_changes']==0
+          assert p['visual_art_approved'] is False and p['gameplay_qa'] is False
+          data=(root/'merged/Bastion1QwenScene.glb').read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
+          assert hashlib.sha256(data).hexdigest()==p['edited_glb_sha256']
+          print('QWEN_EDIT_APPLIED_TO_FULL_CITY_NOT_PROMOTED',json.dumps(p))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-qwen-full-city-${{ github.run_id }}
+          path: |
+            /tmp/valoria-real-ai-merge/merged/Bastion1QwenScene.blend
+            /tmp/valoria-real-ai-merge/merged/Bastion1QwenScene.glb
+            /tmp/valoria-real-ai-merge/merged/integration-proof.json
+            /tmp/valoria-real-ai-merge/artist/model/artist-plan.json
+            /tmp/valoria-real-ai-merge/artist/model/artist-inference.json
+            /tmp/valoria-real-ai-merge/artist/result/artist-execution.json
+            /tmp/valoria-real-ai-merge/artist/input-provenance.json
+          if-no-files-found: warn
+          retention-days: 30
