@@ -69,6 +69,24 @@ if a.inspect:
   pick('east_join',vertices,lambda v:-v.co.x)
   pick('southern_join',vertices,lambda v:v.co.y)
   pick('northern_join',vertices,lambda v:-v.co.y)
+  # Camera-near cliff candidates sampled FROM EXISTING MESH, not an invented
+  # displacement: include three x positions on each side at mid-slope height.
+  # This corrects the previous Qwen bias toward the far y=+57 volume corner.
+  def qcoord(axis,fraction):
+   values=sorted(v.co[axis] for v in vertices)
+   return values[min(len(values)-1,int((len(values)-1)*fraction))]
+  xwidth=max(.01,bounds[0][1]-bounds[0][0])
+  ywidth=max(.01,bounds[1][1]-bounds[1][0])
+  zheight=max(.01,bounds[2][1]-bounds[2][0])
+  for side,ypart in [('negative_y',.25),('positive_y',.75)]:
+   ytarget=qcoord(1,ypart)
+   ztarget=qcoord(2,.46)
+   for horizontal,xpart in [('left',.23),('center',.50),('right',.77)]:
+    xtarget=qcoord(0,xpart)
+    pick(side+'_cliff_'+horizontal,vertices,
+      lambda v:(v.co.x-xtarget)**2/xwidth**2+
+               3*(v.co.y-ytarget)**2/ywidth**2+
+               2*(v.co.z-ztarget)**2/zheight**2)
   stride=max(1,len(vertices)//12)
   for v in vertices[::stride]:
    if len(anchors)>=18:break
