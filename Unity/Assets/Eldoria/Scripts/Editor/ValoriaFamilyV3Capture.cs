@@ -261,8 +261,10 @@ namespace Eldoria.EditorTools
             Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
             Place(approachPath,0f,roadEnd-pathDepth*2.5f+.30f);
             Place(pieces[6],-4f,roadEnd-1f);
-            Place(innerWallLeft,-9f,18f);Place(innerWallRight,9f,18f);
-            Place(innerTower,0f,19f);
+            Place(innerTower,0f,18f);
+            float innerHalf=BoundsFor(innerTower).extents.x;
+            Place(innerWallLeft,-innerHalf-BoundsFor(innerWallLeft).extents.x+.15f,18f);
+            Place(innerWallRight,innerHalf+BoundsFor(innerWallRight).extents.x-.15f,18f);
             foreach(var inner in new[]{innerWallLeft,innerWallRight,innerTower})
                 inner.transform.position+=Vector3.up*1.8f;
             // Cliff top supports the terrace; never put the cliff bottom at wall feet.
