@@ -1,0 +1,146 @@
+name: Valoria first zone coherent V5 cliff integration candidate
+on:
+  push:
+    branches:
+      - integration/valoria-v3-unity-lookdev-20261012
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFamilyLookdev.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFamilyV3Capture.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnityFinishKit.cs'
+      - 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/ValoriaTerrainCliffBlend.shader'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaNatureDresser.cs'
+      - '.github/workflows/valoria-first-zone-coherent-v5.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-first-zone-coherent-v5
+  cancel-in-progress: false
+jobs:
+  unity-compile:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate=Get-ChildItem "${env:LOCALAPPDATA}\GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git missing' }
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Stage seven approved V3 models from frozen art branch
+        shell: powershell
+        run: |
+          $branch='art/valoria-asset-family-v2-ai-authorship-20261011'
+          $approvedCommit='0abf13870d21725c30acf3f3e3a8c86385470073'
+          git fetch --no-tags --depth=1 origin $approvedCommit
+          if ($LASTEXITCODE -ne 0) { throw 'Approved source fetch failed' }
+          $expected=@{
+            'cliff_rocks'='f681c978680f24b68e019cb79912214e64085bb14daceac456b29557910410ed'
+            'wall_connections'='88a1d0902cebeed82645b72f50cac6ba7f97e2feb77ea27172c9ca96015b1858'
+            'wall_straight'='99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c'
+            'watchtower'='534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d'
+            'stone_path_platform'='26f159c66ddb54d890a1eaba1a3626b14aa3d6beb38b759d00ce3cd02de0ddd1'
+            'defensive_props'='5da2ae8e1a45ca6df3a0b8a12e15c34ba58201f6aafa8db2f986f89fd726930c'
+            'wall_corner'='f104f071fe1cd03da8189a5a6fed909e63186593bcbf77c26886835288e4d73f'
+          }
+          $names=@('wall_straight','watchtower','wall_corner','wall_connections','stone_path_platform','cliff_rocks','defensive_props')
+          $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
+          New-Item -ItemType Directory -Force $target | Out-Null
+          $hero='art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb'
+          git restore --source FETCH_HEAD --worktree -- $hero
+          if ($LASTEXITCODE -ne 0) {throw 'Frozen Hero V3 GLB missing'}
+          $heroPath=Join-Path $env:GITHUB_WORKSPACE ($hero -replace '/', '\')
+          Copy-Item $heroPath (Join-Path $target 'hero_gate_v3.glb') -Force
+          $heroHash=(Get-FileHash (Join-Path $target 'hero_gate_v3.glb') -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($heroHash -ne '81e63b7269bef3180648b636ad7341a4373e800afd05527e8e8aa95d88d35e2f') {throw 'Hero V3 source hash mismatch'}
+          foreach($name in $names){
+            $source="art-source/valoria/production/asset-family-v2/quality-v3/$name/$name.glb"
+            git restore --source FETCH_HEAD --worktree -- $source
+            if ($LASTEXITCODE -ne 0) {throw "Missing approved source: $source"}
+            $file=Join-Path $env:GITHUB_WORKSPACE ($source -replace '/', '\')
+            Copy-Item $file (Join-Path $target "$name.glb") -Force
+            if ((Get-Item (Join-Path $target "$name.glb")).Length -lt 1000) {throw "Empty GLB $name"}
+            $hash=(Get-FileHash (Join-Path $target "$name.glb") -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($hash -ne $expected[$name]) {throw "Approved GLB checksum mismatch ${name}: $hash"}
+          }
+      - name: Stage structural Qwen Blender candidate from separate art branch proof
+        shell: powershell
+        run: |
+          $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3'
+          Copy-Item (Join-Path $target 'cliff_rocks.glb') (Join-Path $target 'cliff_rocks_original.glb') -Force
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-coherent-cliff-v5-38260070066
+          run-id: 38260070066
+          github-token: ${{ github.token }}
+          path: structural-candidate
+      - name: Verify structural candidate authorship and stage exact GLB
+        shell: powershell
+        run: |
+          $candidate=@(Get-ChildItem structural-candidate -Filter 'cliff_coherent_v5.glb' -File -Recurse)
+          $proofs=@(Get-ChildItem structural-candidate -Filter 'proof.json' -File -Recurse)
+          if($candidate.Count -ne 1 -or $proofs.Count -ne 1){throw 'Structural GLB/proof missing'}
+          $proof=Get-Content $proofs[0].FullName -Raw | ConvertFrom-Json
+          $sha=(Get-FileHash $candidate[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($sha -ne $proof.candidate_sha256 -or $proof.candidate_sha256 -ne $sha){throw 'Structural candidate SHA mismatch'}
+          if($proof.art_pass -or $proof.mobile_pass){throw 'Do not promote unreviewed art'}
+          Copy-Item $candidate[0].FullName (Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/StreamingAssets/ValoriaFamilyV3/cliff_rocks.glb') -Force
+      - name: Run Unity import and compile
+        shell: powershell
+        env:
+          VALORIA_SAVE_STUDY_SCENE: '1'
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "Unity missing at UNITY_EDITOR_PATH" }
+          $log=Join-Path $env:RUNNER_TEMP 'ValoriaV3-Unity-compile.log'
+          $args=@('-batchmode','-quit','-projectPath',"${env:GITHUB_WORKSPACE}\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFamilyV3Capture.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $folder="$env:GITHUB_WORKSPACE/Unity/ValoriaV3UnityCaptures"
+          $complete=$false
+          for($tick=0;$tick -lt 120;$tick++) {
+            if($p.WaitForExit(5000)) {break}
+            $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
+            $manifest=Join-Path $folder 'capture-manifest.json'
+            if($images.Count -eq 40 -and (Test-Path $manifest) -and
+               (Test-Path $log) -and (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
+              $complete=$true
+              & taskkill.exe /PID $p.Id /T /F | Out-Null
+              [void]$p.WaitForExit(10000)
+              break
+            }
+          }
+          if(-not $p.HasExited){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity capture timed out before completion' }
+          if(-not $complete -and $p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity failed $($p.ExitCode)"}
+          $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
+          if($images.Count -ne 40){throw "Expected 40 genuine Unity comparison frames, got $($images.Count)"}
+          foreach($file in $images){
+            $png=[System.IO.File]::ReadAllBytes($file.FullName)
+            if($png.Length -lt 64 -or $png[0] -ne 137 -or $png[1] -ne 80 -or $png[2] -ne 78 -or $png[3] -ne 71){throw "Invalid PNG $($file.Name)"}
+            $width=[System.Net.IPAddress]::NetworkToHostOrder([System.BitConverter]::ToInt32($png,16))
+            $height=[System.Net.IPAddress]::NetworkToHostOrder([System.BitConverter]::ToInt32($png,20))
+            if($width -lt 700 -or $height -lt 500){throw "Invalid capture dimensions $($file.Name): ${width}x${height}"}
+          }
+          if(-not (Test-Path (Join-Path $folder 'capture-manifest.json')) -or
+             -not (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
+            throw 'Unity capture completion markers missing'
+          }
+          $study=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/ValoriaFortification.unity'
+          if(-not (Test-Path $study) -or (Get-Item $study).Length -lt 2000) {throw 'Persistent production-slice study scene not saved'}
+          $generated=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/Generated'
+          if(-not (Test-Path $generated) -or @(Get-ChildItem $generated -Filter '*.asset').Count -lt 8) {throw 'Scene missing generated dependency assets'}
+          Write-Host 'VALORIA_PRODUCTION_SLICE_SCENE_SAVED'
+          Get-Content $log -Tail 25
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-first-zone-v5-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/ValoriaV3-Unity-compile.log
+            Unity/ValoriaV3UnityCaptures/*
+            Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/**
+          if-no-files-found: warn
+          retention-days: 7
