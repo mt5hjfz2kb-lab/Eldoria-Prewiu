@@ -1,0 +1,14 @@
+{
+  "bedrock_vertices_changed": 2813,
+  "maximum_displacement_m": 0.8899009168261571,
+  "crest_vertices_changed": 388,
+  "fault_facets": 6,
+  "textured_source_talus_adjusted": 42,
+  "artist_requested_clusters": 5,
+  "blender_mcp_executed": true,
+  "source_geometry_preserved_separately": true,
+  "variant_glb_sha256": "33d27f58c4999078e41f23e7ca550b50c6710d13c92ccd7b0f31e2150cdded32",
+  "variant_blend_sha256": "9b393796fc7eaed130f59e9a0bd22e039978897bbff3430a48c9d00077fbb82d",
+  "visual_gate": "UNREVIEWED",
+  "unity_import_gate": "UNRUN"
+}
