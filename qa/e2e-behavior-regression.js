@@ -21,6 +21,7 @@ const result=await p.evaluate(()=>{
 // Economy/world invariants: the stone-producing quarry must not consume stone to build; depleted nodes and hunted wildlife cycle off-map before respawning.
   // Stable chapter-6 fixture prevents a fictional Chapter-1 -> Bastion-VI jump from
   // triggering a nonterminating chapter sync. Still assert the actual unbuilt quarry price.
+  await p.addScriptTag({path:'v0220/js/qa-fixtures.js'}); // Explicitly load QA-only fixtures; the frozen runtime does not import this helper by itself.
   const stoneworksState=await p.evaluate(()=>{
     const fixture=window.ELDORIA_QA_FIXTURES.get('b6-forge');
     const state={...fixture,view:'kingdom',graniteQuarry:false,wood:600,stone:0,food:250,
