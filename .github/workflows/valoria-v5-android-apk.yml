@@ -47,6 +47,30 @@ jobs:
           Copy-Item (Join-Path $from '*') $to -Recurse -Force
           if(@(Get-ChildItem (Join-Path $to 'Generated') -Filter '*.asset').Count -lt 8){throw 'V5_DEPENDENCIES_MISSING'}
           Write-Host 'EXACT_V5_SCENE_STAGED'
+      - name: Repair serialized preview-script GUIDs in staged V5 scene only
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $scene='Unity/Assets/Eldoria/Experimental/ValoriaFinishV1/ValoriaFortification.unity'
+          $anchorMeta='Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZoneAnchor.cs.meta'
+          $controlsMeta='Unity/Assets/Eldoria/Scripts/Experimental/ValoriaFirstZonePreviewControls.cs.meta'
+          $anchorGuid=[regex]::Match((Get-Content $anchorMeta -Raw),'(?m)^guid:\\s*([a-f0-9]{32})').Groups[1].Value
+          $controlsGuid=[regex]::Match((Get-Content $controlsMeta -Raw),'(?m)^guid:\\s*([a-f0-9]{32})').Groups[1].Value
+          if($anchorGuid.Length -ne 32 -or $controlsGuid.Length -ne 32){throw 'SCRIPT_META_GUIDS_INVALID'}
+          $text=[IO.File]::ReadAllText((Resolve-Path $scene))
+          $docs=[regex]::Split($text,'(?=--- !u!)')
+          $anchors=0;$cameras=0
+          for($i=0;$i -lt $docs.Length;$i++){
+            $target=''
+            if($docs[$i] -match '(?m)^\\s*instanceId:'){ $target=$anchorGuid; $anchors++ }
+            elseif($docs[$i] -match '(?m)^\\s*panUnitsPerPixel:'){ $target=$controlsGuid; $cameras++ }
+            if($target -ne ''){
+              $docs[$i]=[regex]::Replace($docs[$i],'(m_Script: \\{fileID: 11500000, guid: )[0-9a-f]{32}',('$1'+$target))
+            }
+          }
+          if($anchors -lt 8 -or $cameras -ne 1){throw "SERIALIZED_ANCHORS_OR_TOUCH_CAMERA_MISSING anchors=$anchors cameras=$cameras"}
+          [IO.File]::WriteAllText((Resolve-Path $scene),[string]::Concat($docs))
+          Write-Host "STAGED_V5_SCRIPT_GUIDS_REPAIRED anchors=$anchors cameras=$cameras"
       - name: Check or install official Unity Android support
         shell: powershell
         run: |
