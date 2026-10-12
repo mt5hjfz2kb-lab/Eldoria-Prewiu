@@ -62,10 +62,62 @@ def cliff_plateau(name,corners,z,base_z,seed):
     obj=bpy.data.objects.new(name+'_irregular_cliff',mesh);scene.collection.objects.link(obj)
     return obj
 
-cliff_plateau('LowerFortressIsland',
-    [(-27,-18),(23,-18),(29,-12),(30,5),(26,11),(-26,11),(-30,3),(-29,-10)],-.04,-15,412)
-cliff_plateau('UpperAsymmetricTerrace',
-    [(-25.5,12),(24.5,12),(29,20),(23,33),(-24,32),(-30,22)],3.44,-2.5,818)
+
+# Continuous sculpted terrain replaces ONLY the two rectangular provisional
+# fortress platforms. The separately authored approach valley, pines,
+# stream, distant mountain range and source meshes are retained unchanged.
+def smoothstep01(t):
+    t=max(0,min(1,t));return t*t*(3-2*t)
+
+def terrace_blend(x,y,cx,cy,hx,hy,shoulder):
+    # Offset the geometric boundary to avoid straight square escarpments.
+    wx=x+math.sin(y*.21)*1.5
+    wy=y+math.cos(x*.23)*1.3
+    ox=max(0,abs(wx-cx)-hx);oy=max(0,abs(wy-cy)-hy)
+    return 1-smoothstep01(math.hypot(ox,oy)/shoulder)
+
+def terrain_level(x,y):
+    ground=-19.8+fractal(Vector((x*.042,y*.037,16.1)),.78,2.0,4)*1.8
+    # Architectural gameplay anchors remain at their exact authored heights.
+    low=terrace_blend(x,y,0,-4,22.5,14,13.5)
+    high=terrace_blend(x,y,0,23.5,21.5,9.5,13.2)
+    return ground*(1-max(low,high))+3.44*high
+
+terrain_mesh=bpy.data.meshes.new('Valoria continuous cliff plateau and ramps')
+nx=104;ny=112
+x0=-50.5;x1=50.5;y0=-49.0;y1=57.0
+dx=(x1-x0)/nx;dy=(y1-y0)/ny
+terrain_verts=[]
+for iy in range(ny+1):
+    y=y0+iy*dy
+    for ix in range(nx+1):
+        x=x0+ix*dx
+        terrain_verts.append((x,y,terrain_level(x,y)))
+terrain_faces=[];terrain_material_indices=[]
+for iy in range(ny):
+    for ix in range(nx):
+        u=iy*(nx+1)+ix;v=u+nx+1
+        h0=terrain_verts[u][2];hx=terrain_verts[u+1][2]
+        hy=terrain_verts[v][2];hxy=terrain_verts[v+1][2]
+        steep=max(abs(hx-h0)/dx,abs(hy-h0)/dy,
+                  abs(hxy-hx)/dy,abs(hxy-hy)/dx)
+        cx=x0+(ix+.5)*dx;cy=y0+(iy+.5)*dy
+        habitat=max(terrace_blend(cx,cy,0,-4,22.5,14,13.5),
+                    terrace_blend(cx,cy,0,23.5,21.5,9.5,13.2))
+        choice=1 if steep>.59 else (0 if habitat>.50 else 2)
+        terrain_faces.extend(((u,u+1,v),(u+1,v+1,v)))
+        terrain_material_indices.extend((choice,choice))
+terrain_mesh.from_pydata(terrain_verts,[],terrain_faces)
+for material in (grass,rockside,valleygrass):terrain_mesh.materials.append(material)
+terrain_mesh.update();terrain_mesh.validate()
+uv=terrain_mesh.uv_layers.new(name='UVMap')
+for poly,index in zip(terrain_mesh.polygons,terrain_material_indices):
+    poly.material_index=index;poly.use_smooth=True
+for loop in terrain_mesh.loops:
+    p=terrain_mesh.vertices[loop.vertex_index].co
+    uv.data[loop.index].uv=(p.x*.07,p.y*.07+p.z*.012)
+terra=bpy.data.objects.new('Valoria natural playable hilltop and rock scarps',terrain_mesh)
+scene.collection.objects.link(terra)
 
 # Basin reaches outside the entire strategic frame; no floating island or flat
 # blue rectangle posing as a distant landscape.
