@@ -251,9 +251,11 @@ namespace Eldoria.EditorTools
             Place(extraPath,0f,roadEnd-pathDepth*1.5f+.15f);
             Place(pieces[6],-4f,roadEnd-1f);
             // Cliff top supports the terrace; never put the cliff bottom at wall feet.
-            Place(pieces[5],-18f,-15.5f);
-            Place(cliffMiddle,-9f,-15.8f);
-            Place(cliffRight,9f,-15.1f);
+            // The crest reaches the terrace around z=-18, while the face projects
+            // into the lowered foreground. At z=-15 it was entirely under terrain.
+            Place(pieces[5],-18f,-20.0f);
+            Place(cliffMiddle,-9f,-20.3f);
+            Place(cliffRight,9f,-19.8f);
             foreach(var cliff in new[]{pieces[5],cliffMiddle,cliffRight})
             {
                 // The authored rock face points along local +Z. Our strategic camera

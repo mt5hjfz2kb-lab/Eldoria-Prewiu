@@ -112,10 +112,11 @@ namespace Eldoria.EditorTools
             if (m.HasProperty("_BaseColor"))
             {
                 var c=m.GetColor("_BaseColor");
-                var warmth=piece=="cliff_rocks"?.985f:stone?1.015f:1f;
+                var rock=piece=="cliff_rocks" && id.Contains("rock");
+                var warmth=rock?.66f:stone?1.015f:1f;
                 m.SetColor("_BaseColor",new Color(
-                    Mathf.Clamp01(c.r*warmth),Mathf.Clamp01(c.g*.99f),
-                    Mathf.Clamp01(c.b*(stone?.95f:1f)),c.a));
+                    Mathf.Clamp01(c.r*warmth),Mathf.Clamp01(c.g*(rock?.69f:.99f)),
+                    Mathf.Clamp01(c.b*(rock?.74f:stone?.95f:1f)),c.a));
             }
         }
 

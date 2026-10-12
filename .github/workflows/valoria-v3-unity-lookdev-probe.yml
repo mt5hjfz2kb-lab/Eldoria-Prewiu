@@ -112,9 +112,11 @@ jobs:
           $images=@(Get-ChildItem $folder -Filter '*.png' -File -ErrorAction SilentlyContinue)
           if($images.Count -ne 38){throw "Expected 38 genuine Unity comparison frames, got $($images.Count)"}
           foreach($file in $images){
-            $bitmap=New-Object System.Drawing.Bitmap -ArgumentList $file.FullName
-            try {if($bitmap.Width -lt 700 -or $bitmap.Height -lt 500){throw "Invalid capture $($file.Name)"}}
-            finally {$bitmap.Dispose()}
+            $png=[System.IO.File]::ReadAllBytes($file.FullName)
+            if($png.Length -lt 64 -or $png[0] -ne 137 -or $png[1] -ne 80 -or $png[2] -ne 78 -or $png[3] -ne 71){throw "Invalid PNG $($file.Name)"}
+            $width=[System.Net.IPAddress]::NetworkToHostOrder([System.BitConverter]::ToInt32($png,16))
+            $height=[System.Net.IPAddress]::NetworkToHostOrder([System.BitConverter]::ToInt32($png,20))
+            if($width -lt 700 -or $height -lt 500){throw "Invalid capture dimensions $($file.Name): ${width}x${height}"}
           }
           if(-not (Test-Path (Join-Path $folder 'capture-manifest.json')) -or
              -not (Select-String -Path $log -Pattern 'VALORIA_V3_CAPTURE_COMPLETED' -Quiet)) {
