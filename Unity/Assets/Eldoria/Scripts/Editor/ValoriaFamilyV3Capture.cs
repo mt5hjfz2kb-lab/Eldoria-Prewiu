@@ -173,7 +173,7 @@ namespace Eldoria.EditorTools
             original.transform.rotation=Quaternion.Euler(0f,180f,0f);
             original.transform.position+=BoundsFor(objects[5]).center-BoundsFor(original).center;
             // Match the same finished materials for a geometry-only source/variant A/B.
-            SetLookdev(true,new List<GameObject>{original},sun);
+            var comparison=new List<GameObject>{original,objects[5]};
             var bounds=BoundsFor(objects[5]);
             var radius=Mathf.Max(bounds.extents.x,Mathf.Max(bounds.extents.y,bounds.extents.z));
             var focus=bounds.center;
@@ -183,6 +183,7 @@ namespace Eldoria.EditorTools
             cam.farClipPlane=Mathf.Max(500f,radius*18f);
             cam.backgroundColor=new Color(.20f,.31f,.47f);
             SetLookdev(false,objects,sun);
+            SetLookdev(false,comparison,sun);
             foreach(var obj in objects)obj.SetActive(false);
             Render(cam,Path.Combine(outDir,"source-original-cliff_rocks-hero.png"));
             original.SetActive(false);objects[5].SetActive(true);

@@ -150,10 +150,14 @@ namespace Eldoria.EditorTools
                     float wx=px+b.center.x, wz=pz+b.center.z;
                     // Irregular escarpment follows the foreground cliff assets; soften
                     // the back into the neighboring world instead of a raised rectangle.
-                    float edge=-18f + 1.5f*Mathf.Sin(wx*.22f) + .7f*Mathf.Sin(wx*.53f);
-                    float front=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((edge-wz)/6.8f));
+                    // The rock face is at the front of a four-unit-deep crest,
+                    // not at the rear edge. The broad previous slope cut through
+                    // its foot and exposed the grass cap as three detached slabs.
+                    bool authoredBank=(wx>-24.2f && wx<-3.0f)||(wx>3.0f && wx<15.2f);
+                    float edge=authoredBank?-21.5f:-21.5f+.65f*Mathf.Sin(wx*.22f);
+                    float front=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((edge-wz)/(authoredBank?.70f:5.5f)));
                     float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(wx)-28f)/9f));
-                    slope-=4.15f*Mathf.Max(front,side*.65f);
+                    slope-=3.65f*Mathf.Max(front,side*.65f);
                     slope+=Mathf.PerlinNoise(wx*.14f+12f,wz*.16f+9f)*.18f;
                     // Carry a tapered earthen causeway under the stone approach.
                     // The former hard x/z cutoff left the last platform in mid-air.
