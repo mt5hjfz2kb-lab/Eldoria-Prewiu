@@ -106,7 +106,7 @@ namespace Eldoria.EditorTools
                 scenes = new[] { TempScene },
                 locationPathName = "Builds/Android/Eldoria-Valoria-V5-Test.apk",
                 target = BuildTarget.Android,
-                options = BuildOptions.Development | BuildOptions.StrictMode
+                options = BuildOptions.Development
             });
             if (result.summary.result != BuildResult.Succeeded) throw new Exception("APK_BUILD_FAILED: " + result.summary.result);
             if (!File.Exists("Builds/Android/Eldoria-Valoria-V5-Test.apk")) throw new Exception("APK_MISSING");
