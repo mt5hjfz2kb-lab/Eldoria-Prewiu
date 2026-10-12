@@ -4,6 +4,7 @@ on:
     branches: [experiment/valoria-v5-android-apk-20261012]
     paths:
       - .github/workflows/valoria-v5-android-apk.yml
+      - Unity/Assets/Eldoria/Scripts/Editor/ValoriaV5AndroidCandidate.cs
   workflow_dispatch:
 permissions:
   contents: read
