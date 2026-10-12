@@ -126,6 +126,8 @@ namespace Eldoria.EditorTools
                 cam.transform.position=focus+direction*(radius*5+9);
                 cam.transform.LookAt(focus);
                 cam.orthographicSize=Mathf.Max(2f,radius*(hero?1.6f:2.75f));
+                cam.farClipPlane=Mathf.Max(500f,radius*18f);
+                Debug.Log($"VALORIA_V3_CAMERA {obj.name} center={focus} radius={radius} pos={cam.transform.position} ortho={cam.orthographicSize} far={cam.farClipPlane} renderers={obj.GetComponentsInChildren<Renderer>(true).Length}");
                 foreach(var other in objects)other.SetActive(other==obj);
                 Render(cam,Path.Combine(dir,mode+"-"+obj.name+(hero?"-hero":"-strategic")+".png"));
                 obj.SetActive(true);
@@ -152,6 +154,17 @@ namespace Eldoria.EditorTools
                 var tex=new Texture2D(960,640,TextureFormat.RGB24,false);
                 tex.ReadPixels(new Rect(0,0,960,640),0,0);
                 tex.Apply();
+                var center=tex.GetPixel(tex.width/2,tex.height/2);
+                var corner=tex.GetPixel(0,0);
+                var unique=false;
+                for(int y=8;y<tex.height;y+=24)
+                for(int x=8;x<tex.width;x+=24)
+                {
+                    var color=tex.GetPixel(x,y);
+                    if(color!=corner) { unique=true; break; }
+                }
+                Debug.Log($"VALORIA_V3_IMAGE {Path.GetFileName(path)} center={center} corner={corner} populated={unique}");
+                if(!unique) throw new Exception("Empty Unity render: "+path);
                 File.WriteAllBytes(path,tex.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(tex);
             } finally {
