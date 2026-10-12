@@ -50,6 +50,10 @@ if a.inspect:
   result={'schema_version':1,'source_sha256':hashlib.sha256(a.source.read_bytes()).hexdigest(),
    'target':obj.name,'vertices':len(mesh.vertices),'faces':len(mesh.polygons),
    'location':list(obj.location),'dimensions':list(obj.dimensions),
+   'local_aabb':{'min':[min(v.co[k] for v in mesh.vertices) for k in range(3)],
+                 'max':[max(v.co[k] for v in mesh.vertices) for k in range(3)]} if len(mesh.vertices) else None,
+   'sample_vertices': [{'index':v.index,'position':list(v.co)} for v in
+     sorted(mesh.vertices,key=lambda v:(-(abs(v.co.x)+abs(v.co.y)+abs(v.co.z)),v.index))[:16]],
    'boundary_loops':loops,
    'note':'Only these indexed open loops may be bridged. Coordinates are Blender object-local. No manifest means no safe vertex-index operations.'}
   a.out.mkdir(parents=True,exist_ok=True)
