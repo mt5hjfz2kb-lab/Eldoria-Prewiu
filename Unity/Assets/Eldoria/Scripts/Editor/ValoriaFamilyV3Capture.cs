@@ -72,7 +72,12 @@ namespace Eldoria.EditorTools
                 File.WriteAllText(Path.Combine(folder,"capture-manifest.json"),
                     "{\"source\":\"approved family v3\",\"engine\":\"Unity 6000.3.23f1\",\"capture\":\"real Unity camera.Render\",\"art_pass\":false}");
                 Debug.Log("VALORIA_V3_CAPTURE_COMPLETED " + folder);
-                EditorApplication.Exit(0);
+                if(Directory.GetFiles(folder,"*.png").Length!=36)
+                    throw new Exception("Complete output must contain 36 actual Unity PNGs");
+                // Unity 6000.3 on this Windows runner intermittently access-violates
+                // during native editor shutdown after all captures. Terminate only
+                // after every real render, manifest and image-content check passed.
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {

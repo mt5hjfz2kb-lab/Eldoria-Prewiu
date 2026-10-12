@@ -128,7 +128,7 @@ namespace Eldoria.EditorTools
             var stage=new GameObject("STUDIO_CONTEXT_NOT_SOURCE_"+piece);
             var mf=stage.AddComponent<MeshFilter>();
             var mr=stage.AddComponent<MeshRenderer>();
-            int n=96;
+            int n=192;
             var v=new Vector3[(n+1)*(n+1)];
             var uv=new Vector2[v.Length];
             var triangles=new int[n*n*6];
@@ -176,13 +176,20 @@ namespace Eldoria.EditorTools
                 {
                     int a=z*(n+1)+x,d=a+n+1;
                     float delta=Mathf.Max(Mathf.Abs(v[a].y-v[d].y),Mathf.Abs(v[a+1].y-v[d+1].y));
-                    var faces=delta>.42f?rockFaces:earthFaces;
+                    var faces=delta>.72f?rockFaces:earthFaces;
                     faces.Add(a);faces.Add(d);faces.Add(a+1);
                     faces.Add(a+1);faces.Add(d);faces.Add(d+1);
                 }
                 mesh.subMeshCount=2;
                 mesh.SetTriangles(earthFaces,0);mesh.SetTriangles(rockFaces,1);
-                mr.sharedMaterials=new[]{GetStageMaterial(),exposedRock};
+                var stone=new Material(exposedRock){name="Valoria exposed bedrock on steep terrain"};
+                if(stone.HasProperty("_BaseColor"))
+                {
+                    var c=stone.GetColor("_BaseColor");
+                    stone.SetColor("_BaseColor",new Color(c.r*.53f,c.g*.57f,c.b*.63f,c.a));
+                }
+                if(stone.HasProperty("_Smoothness"))stone.SetFloat("_Smoothness",.05f);
+                mr.sharedMaterials=new[]{GetStageMaterial(),stone};
             }
             else {mesh.triangles=triangles;mr.sharedMaterial=GetStageMaterial();}
             mesh.RecalculateNormals();
