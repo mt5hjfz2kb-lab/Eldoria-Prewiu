@@ -1,0 +1,108 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+namespace Eldoria
+{
+    /// <summary>
+    /// Isolated first-zone camera explorer. It does NOT run domain commands,
+    /// spend resources or replace the certified Bastion I-II gameplay.
+    /// Generated only in the editable Valoria prototype scene.
+    /// </summary>
+    [RequireComponent(typeof(Camera))]
+    public sealed class ValoriaFirstZonePreviewControls : MonoBehaviour
+    {
+        [SerializeField] float panUnitsPerPixel=.018f;
+        [SerializeField] float zoomSensitivity=.0025f;
+        [SerializeField] float minimumOrthographicSize=5f;
+        [SerializeField] float maximumOrthographicSize=60f;
+        [SerializeField] Vector2 xLimits=new Vector2(-38f,38f);
+        [SerializeField] Vector2 zLimits=new Vector2(-44f,28f);
+
+        Camera view;
+        string selectedInstanceId=string.Empty;
+        Vector2 pressPosition;
+        bool dragging;
+        public string SelectedInstanceId => selectedInstanceId;
+
+        void Awake() {view=GetComponent<Camera>();}
+        void Update()
+        {
+            if(view==null)return;
+            var mouse=Mouse.current;
+            if(mouse!=null)
+            {
+                if(mouse.middleButton.isPressed||mouse.rightButton.isPressed)
+                    Pan(mouse.delta.ReadValue());
+                float wheel=mouse.scroll.ReadValue().y;
+                if(Mathf.Abs(wheel)>.001f)Zoom(-wheel*zoomSensitivity);
+                if(mouse.leftButton.wasPressedThisFrame)
+                {
+                    pressPosition=mouse.position.ReadValue();
+                    dragging=false;
+                }
+                if(mouse.leftButton.isPressed &&
+                   (mouse.position.ReadValue()-pressPosition).sqrMagnitude>64f)
+                    dragging=true;
+                if(mouse.leftButton.wasReleasedThisFrame&&!dragging)
+                    Select(mouse.position.ReadValue());
+            }
+            var touch=Touchscreen.current;
+            if(touch==null)return;
+            var first=touch.primaryTouch;
+            var second=touch.touches.Count>1?touch.touches[1]:null;
+            if(first.press.isPressed)
+            {
+                if(second!=null&&second.press.isPressed)
+                {
+                    float distance=Vector2.Distance(first.position.ReadValue(),
+                        second.position.ReadValue());
+                    float previousDistance=Vector2.Distance(
+                        first.position.ReadValue()-first.delta.ReadValue(),
+                        second.position.ReadValue()-second.delta.ReadValue());
+                    Zoom(-(distance-previousDistance)*.025f);
+                }
+                else Pan(first.delta.ReadValue());
+            }
+            if(first.press.wasReleasedThisFrame &&
+               first.delta.ReadValue().sqrMagnitude<64f &&
+               (second==null||!second.press.isPressed))
+                Select(first.position.ReadValue());
+        }
+        void Pan(Vector2 screenDelta)
+        {
+            if(screenDelta.sqrMagnitude<.001f)return;
+            Vector3 right=transform.right;right.y=0f;right.Normalize();
+            Vector3 forward=transform.up;forward.y=0f;forward.Normalize();
+            Vector3 p=transform.position-
+                (right*screenDelta.x+forward*screenDelta.y)*panUnitsPerPixel;
+            p.x=Mathf.Clamp(p.x,xLimits.x,xLimits.y);
+            p.z=Mathf.Clamp(p.z,zLimits.x,zLimits.y);
+            transform.position=p;
+        }
+        void Zoom(float increment)
+        {
+            if(view.orthographic)
+                view.orthographicSize=Mathf.Clamp(view.orthographicSize+increment,
+                    minimumOrthographicSize,maximumOrthographicSize);
+        }
+        void Select(Vector2 screenPosition)
+        {
+            var ray=view.ScreenPointToRay(screenPosition);
+            if(!Physics.Raycast(ray,out var hit,600f,~0,QueryTriggerInteraction.Collide))
+                return;
+            var anchor=hit.collider.GetComponentInParent<ValoriaFirstZoneAnchor>();
+            if(anchor==null)return;
+            selectedInstanceId=anchor.InstanceId;
+            Debug.Log("VALORIA_FIRST_ZONE_PREVIEW_SELECTED "+selectedInstanceId+
+                " asset="+anchor.SourceAssetId+" domain_wired="+anchor.GameplayWired);
+        }
+        void OnGUI()
+        {
+            if(view==null||!view.enabled)return;
+            GUI.Label(new Rect(15,15,690,28),
+                "VALORIA · first 3D zone prototype · no gameplay changes");
+            if(!string.IsNullOrEmpty(selectedInstanceId))
+                GUI.Label(new Rect(15,42,690,28),"Selected: "+selectedInstanceId);
+        }
+    }
+}
