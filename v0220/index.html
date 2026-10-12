@@ -1902,5 +1902,14 @@ window.dialogue = function(name, copy, done) {
 .combatParticipants0302{margin:8px 0;padding:9px;border:1px solid #ffffff1c;background:#0d1419}.combatParticipants0302 small{font:700 7px Arial;color:#d5b869}.combatParticipants0302 b{margin-top:3px;font:10px Arial}.combatParticipants0302 span{margin-top:4px;font:8px Arial;color:#c7ced0}
 @media(max-width:620px){#eldoria-core-loop .buildingWrap:has(.buildingAction){z-index:760!important}#eldoria-core-loop .buildingWrap>.buildingAction{max-width:min(180px,46vw)!important}}
 </style>
+<script>
+/* Existing QA fixtures are loaded only in explicit developer QA mode. */
+if(new URLSearchParams(location.search).get('qa')==='1'){
+ const fixture=document.createElement('script');
+ fixture.src='js/qa-fixtures.js';
+ fixture.onload=()=>{const launcher=document.createElement('script');launcher.src='js/qa-launcher.js';document.body.appendChild(launcher)};
+ document.body.appendChild(fixture);
+}
+</script>
 </body>
 </html>
