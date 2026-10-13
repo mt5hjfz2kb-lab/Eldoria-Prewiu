@@ -33,7 +33,7 @@
     {
       "id": "valoria-bastion1-player-scene-integration-20261012",
       "title": "Valoria Bastion I authored mesh scene player integration",
-      "owner": "chat-normal-bastion1-visual-continuation-20261013",
+      "owner": "chat-normal-bastion1-fullframe-convergence-20261013",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
@@ -80,9 +80,9 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "NORMAL CHAT TAKEOVER: existing native/WebGL and full gameplay QA PASS; visual scene and frame composition remain ART FAIL. Continue same branch; no repeat successful jobs.",
+      "phase": "Recover last genuine Unity A/B and unused Qwen execution; prioritise full-frame cliff, landscape and depth over micro-assets; stage existing evidence safely before any new heavy run.",
       "resumed_at": "2026-10-13T16:13:00Z",
-      "takeover_reason": "Explicit owner request to resume after Work credits exhausted; 38422576301 and native/WebGL jobs completed, no active bastion heavy job in latest workflow runs. Preserve exact QA PASS and outstanding ART FAIL.",
+      "takeover_reason": "Explicit owner continuation order 2026-10-13 for existing Bastion I: retain same branch and claims. Latest inspected Actions jobs are all completed; prior Unity technical PASS and ART FAIL preserved.",
       "last_verified": {
         "unity_build_run": 38420574701,
         "unity_build_source_sha": "7f6d708d57bd27e04c0375e79221d3fa9c932da3",
@@ -117,7 +117,7 @@
         "branch": "integration/valoria-bastion1-player-scene-20261012",
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
-      "next": "Use matched real WebGL reference screenshots; first resolve severe landscape/sky/terrain composition plus HUD viewport constraints on existing mesh scene, then run exact NEW native/build/QA. PR51 stays DRAFT pending distinct authorized Unity review.",
+      "next": "Reject tiny rock-prop experiments; preserve Qwen run 38443638059 sources and clay A/B; fix its learning-stage .blend size check safely, and pursue actual 6/10 scene convergence with matched Unity captures. No WebGL if ART FAIL.",
       "resource_state": {
         "windows_job": 115376480422,
         "windows_status": "completed",
