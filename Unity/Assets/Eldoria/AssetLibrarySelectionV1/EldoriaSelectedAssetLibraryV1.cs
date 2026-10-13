@@ -65,6 +65,10 @@ namespace Eldoria.AssetLibrary
             if (source == null) source = Resources.Load<GameObject>(e.resource_key);
             if (source == null) throw new InvalidOperationException("Selected Unity GLB source missing: " + e.resource_key);
 
+            // Refuse any source carrying scripts BEFORE Instantiate/Awake can execute.
+            if (source.GetComponentsInChildren<MonoBehaviour>(true).Length != 0)
+                throw new InvalidOperationException("Selected source contains runtime scripts; not safe as visual-only: " + id);
+
             // Imported GLBs can resolve to model subobjects typed Component.
             Object instance = Object.Instantiate((Object)source);
             var go = instance as GameObject;
