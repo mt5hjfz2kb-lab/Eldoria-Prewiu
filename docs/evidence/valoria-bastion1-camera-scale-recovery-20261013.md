@@ -24,3 +24,12 @@ Status: **ART REVIEW REQUIRED, not ART APPROVED**. Keep original player scene an
 - **Next executable action**: retrieve run 38465720395 result and `bastion1-unity-review-frames-38465720395`, compare actual before/after visually (especially the front cliff), verify color/materials, roads and mobile frames. Accept only if composition genuinely improves. If rejected, keep baseline, target dark near-field cliff/terrain continuity and foreground composition instead of another distant-only or tiny Qwen sculpt. No paid credits.
 
 Visual score remains approximately **4.5/10 pending independent artistic acceptance**, target 6/10. No artificial score inflation.
+
+## Completed second Unity A/B — foreground rock readability
+
+- **Native Unity run 38465720395: SUCCESS**, artifact `bastion1-unity-review-frames-38465720395` id **11848088015**. Exactly same engine capture method/camera for before and after, resolution 1440x1000. Also produced landscape, portrait and mobile-framing frames in both captures.
+- Existing Qwen mountain preserved and deterministic Blender finishing applied. The only new material edit is existing foreground schist multiplier **0.25/0.25/0.25 → 0.53/0.51/0.48**, retaining all textures and original meshes.
+- Real independent Unity pixel A/B: **470,669 / 1,440,000 = 32.685347%** changed pixels (threshold >5/255), gate `INDEPENDENT_REVIEW_REQUIRED`. The run and before/after native capture completed without Unity compile errors.
+- Human visual comparison of both exact engine screenshots: rock escarpment at front and side is more legible, and distant background has changed silhouette. Main composition remains flat and underpopulated. **Accept this as a verified incremental improvement, NOT 6/10 and NOT art-release approval.** Subjective estimate: around **4.8–5.0/10**, reference 10/10. Pixel change magnitude is NOT equivalent to artistic quality.
+- Keep these results in the integration branch, not in main. Next visual priorities: lighten and stratify near cliff in a controlled way; foreground-to-background atmospheric separation; intentional world detail outside playable parcels. Validate mobile performance independently.
+- Genuine source: [GitHub Actions 38465720395](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38465720395), native frames artifact 11848088015, integration artifact 11849125132.
