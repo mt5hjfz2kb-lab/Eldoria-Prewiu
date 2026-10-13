@@ -286,7 +286,7 @@ async function fullPublishedFlow(page,logs,orientation){
 (async()=>{
  const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
  try {
- const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1});
+ const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'});
  const page=await context.newPage();
  const logs=report.logs;
  page.on('console',m=>logs.push({type:m.type(),text:m.text()}));
@@ -300,6 +300,9 @@ async function fullPublishedFlow(page,logs,orientation){
  await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
  await waitState(logs,s=>s.scene==='ValoriaWebGL',90000,'candidate startup');
  await sleep(3000);
+ const visible=await page.locator('canvas').boundingBox();
+ if(!visible||visible.x < -1||visible.y < -1||visible.x+visible.width>845||visible.y+visible.height>391)throw new Error('Mobile canvas is clipped: '+JSON.stringify(visible));
+ report.checks.initialCanvasFullyVisible=true;
  await fullPublishedFlow(page,logs,'landscape');
  await fullPublishedFlow(page,logs,'portrait');
  const fatal=fatalRuntimeLogs(logs);

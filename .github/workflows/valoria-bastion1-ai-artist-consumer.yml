@@ -126,7 +126,7 @@ jobs:
           root=pathlib.Path(os.environ['ART'])
           previous=json.loads((root/'prior/ab/comparison.json').read_text())
           provenance=json.loads((root/'prior/input-provenance.json').read_text())
-          assert provenance['source_run']==int(os.environ['SOURCE_RUN'])
+          assert provenance['source_run']==38356683511, 'prior rejection must stay linked to its ORIGINAL exact build, not the new material-only input'
           assert previous['target']==os.environ['TARGET_MESH']
           assert 'Blender clay A/B' in previous['scope']
           assert previous['camera_visibility']['camera_visibility_gate']=='REJECT_NOT_VISIBLE'
