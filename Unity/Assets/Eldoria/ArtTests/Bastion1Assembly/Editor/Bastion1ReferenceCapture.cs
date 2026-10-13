@@ -51,11 +51,9 @@ namespace Eldoria.EditorTools
                 var root=new GameObject("BastionI_ReferenceAssembly_CANDIDATE");
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
                 Bastion1MaterialBindings.Apply(root,importer,source);
-                // Keep the genuine Qwen-edited mesh, but correct its oversized
-                // near-camera horizon placement without editing other scene meshes.
-                ReframeExistingDistantMountain(root);
                 Bastion1RoadClearance.Apply(root);
                 await Bastion1ExistingRoadIntegration.Apply(root);
+                StageExistingGroundedEnvironmentalDetails(root);
                 InspectRoadContacts(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
@@ -64,7 +62,7 @@ namespace Eldoria.EditorTools
                 RenderSettings.ambientSkyColor=new Color(.37f,.46f,.61f);
                 RenderSettings.ambientEquatorColor=new Color(.38f,.40f,.38f);
                 RenderSettings.ambientGroundColor=new Color(.31f,.27f,.22f);
-                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0052f;
+                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0028f;
                 RenderSettings.fogColor=new Color(.30f,.38f,.45f);
                 foreach(var p in new[]{new Vector3(-4,2,20),new Vector3(4,2,20),new Vector3(-4,5.5f,-21),new Vector3(4,5.5f,-21)})
                 {
@@ -143,26 +141,148 @@ namespace Eldoria.EditorTools
                 Debug.LogError("BASTION1_REFERENCE_CAPTURE_FAILED "+ex);EditorApplication.Exit(1);
             }
         }
-        static void ReframeExistingDistantMountain(GameObject assembly)
+        static void StageExistingGroundedEnvironmentalDetails(GameObject scene)
         {
-            var mountain=Find(assembly.transform,"Valoria true mountain backdrop");
-            if(mountain==null)throw new Exception("Exact authored distant mountain missing from source");
-            int meshCount=0;
-            foreach(var renderer in mountain.GetComponentsInChildren<MeshRenderer>(true))
+            // Reuse already installed commercial-safe NatureStarterKit foliage and
+            // existing Eldoria rock prefabs. These are visuals only, NOT new asset families.
+            // Ground each instance by raycasting against the actual existing terrain
+            // geometry. No artificial floor heights, no floating decorations.
+            var terrain=Find(scene.transform,"Valoria natural playable hilltop and rock scarps");
+            if(terrain==null)throw new Exception("Valoria editable plateau missing for genuine ground contacts");
+            var temporary=new List<MeshCollider>();
+            var legitimate=new HashSet<Collider>();
+            var materials=new Dictionary<Material,Material>();
+            var visualRoot=new GameObject("Bastion I reused grounded environmental detail");
+            visualRoot.transform.SetParent(scene.transform,false);
+            int placements=0,misses=0;
+            try
+            {
+                foreach(var f in terrain.GetComponentsInChildren<MeshFilter>(true))
+                {
+                    if(f.sharedMesh==null)continue;
+                    var col=f.gameObject.AddComponent<MeshCollider>();
+                    col.sharedMesh=f.sharedMesh;temporary.Add(col);legitimate.Add(col);
+                }
+                if(temporary.Count<1)throw new Exception("Authored terrain has no raycastable mesh");
+                Physics.SyncTransforms();
+                // Only back/side margins, clear of the central road and the
+                // reserved parcel centres at (+16,3) and (-16,3).
+                var bushes=new[]{
+                    new Vector2(-22f,-25f),new Vector2(-17f,-28f),
+                    new Vector2(-20f,-12f),new Vector2(-23f,-5f),
+                    new Vector2(-21f,11f),new Vector2(-16f,16f),
+                    new Vector2(-12f,12f),new Vector2(-24f,17f),
+                    new Vector2(22f,-26f),new Vector2(17f,-29f),
+                    new Vector2(20f,-12f),new Vector2(23f,-6f),
+                    new Vector2(20f,11f),new Vector2(15f,15f),
+                    new Vector2(11f,12f),new Vector2(24f,16f)
+                };
+                var rocks=new[]{
+                    new Vector2(-24f,-17f),new Vector2(-23f,8f),
+                    new Vector2(-18f,18f),new Vector2(-11f,-29f),
+                    new Vector2(24f,-18f),new Vector2(22f,8f),
+                    new Vector2(18f,18f),new Vector2(12f,-29f)
+                };
+                for(int i=0;i<bushes.Length;i++)
+                {
+                    var path="Assets/NatureStarterKit2/Nature/bush0"+(1+i%6)+".prefab";
+                    if(SpawnGroundedSource(path,visualRoot.transform,bushes[i],.70f+.16f*(i%4),
+                        i*53f,legitimate,materials))placements++;else misses++;
+                }
+                for(int i=0;i<rocks.Length;i++)
+                {
+                    var path="Assets/Eldoria/Resources/WorldInventory/Rock0"+(1+i%2)+".prefab";
+                    if(SpawnGroundedSource(path,visualRoot.transform,rocks[i],.68f+.20f*(i%3),
+                        i*41f,legitimate,materials))placements++;else misses++;
+                }
+            }
+            finally
+            {
+                foreach(var col in temporary)UnityEngine.Object.DestroyImmediate(col);
+                Physics.SyncTransforms();
+            }
+            if(placements<14)throw new Exception("Insufficient genuine grounded scenic pieces: "+
+                placements+"/24 placed, "+misses+" terrain misses");
+            Debug.Log("BASTION1_GROUNDED_EXISTING_ASSETS placed="+placements+
+                " missed="+misses+" source_prefabs=NatureStarterKit2_and_WorldInventory"+
+                " new_mesh_families=0 gameplay_colliders_added=0");
+        }
+
+        static bool SpawnGroundedSource(string path,Transform parent,Vector2 position,
+            float targetHeight,float rotation,HashSet<Collider> terrain,
+            Dictionary<Material,Material> converted)
+        {
+            var source=AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if(source==null)throw new Exception("Existing staged scenic asset missing "+path);
+            var hits=Physics.RaycastAll(new Vector3(position.x,90f,position.y),
+                Vector3.down,130f,~0,QueryTriggerInteraction.Ignore);
+            var found=false;Vector3 ground=Vector3.zero;
+            foreach(var hit in hits)
+            {
+                if(!terrain.Contains(hit.collider)||hit.normal.y<.70f)continue;
+                if(!found||hit.point.y>ground.y){found=true;ground=hit.point;}
+            }
+            if(!found)return false;
+            // Discard collision, scripts and unused real-world gameplay behaviour
+            // from these *visual-only* copies, never from original source prefabs.
+            var go=PrefabUtility.InstantiatePrefab(source) as GameObject;
+            if(go==null)throw new Exception("Existing prefab instance unavailable "+path);
+            go.name="Grounded existing scenic "+source.name;
+            go.transform.SetParent(parent,true);
+            go.transform.position=Vector3.zero;
+            go.transform.rotation=Quaternion.Euler(0f,rotation,0f);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))
+                UnityEngine.Object.DestroyImmediate(collider);
+            foreach(var behavior in go.GetComponentsInChildren<MonoBehaviour>(true))
+                UnityEngine.Object.DestroyImmediate(behavior);
+            var renderers=go.GetComponentsInChildren<MeshRenderer>(true);
+            if(renderers.Length==0)throw new Exception("Existing prefab has no MeshRenderer "+path);
+            var bounds=renderers[0].bounds;
+            foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            if(bounds.size.y<.001f)throw new Exception("Existing prefab height is invalid "+path);
+            go.transform.localScale*=targetHeight/bounds.size.y;
+            bounds=renderers[0].bounds;
+            foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            go.transform.position+=new Vector3(ground.x-bounds.center.x,
+                ground.y-bounds.min.y-.045f,ground.z-bounds.center.z);
+            foreach(var renderer in renderers)
             {
                 renderer.shadowCastingMode=ShadowCastingMode.Off;
-                meshCount++;
+                var original=renderer.sharedMaterials;
+                var adapted=new Material[original.Length];
+                for(int i=0;i<original.Length;i++)
+                {
+                    var old=original[i];if(old==null)continue;
+                    if(!converted.TryGetValue(old,out var mat))
+                    {
+                        var shader=Shader.Find("Universal Render Pipeline/Lit");
+                        if(shader==null)throw new Exception("Unity URP/Lit missing for scenery conversion");
+                        mat=new Material(shader){name="BastionI_reused_"+old.name};
+                        var tex=old.HasProperty("_BaseMap")?old.GetTexture("_BaseMap"):
+                            old.HasProperty("_MainTex")?old.GetTexture("_MainTex"):null;
+                        if(tex!=null)mat.SetTexture("_BaseMap",tex);
+                        var tint=old.HasProperty("_BaseColor")?old.GetColor("_BaseColor"):
+                            old.HasProperty("_Color")?old.GetColor("_Color"):Color.white;
+                        mat.SetColor("_BaseColor",tint);
+                        mat.SetFloat("_Smoothness",.06f);
+                        var label=old.name.ToLowerInvariant();
+                        if(label.Contains("leaf")||label.Contains("foliage")||
+                            label.Contains("bush")||label.Contains("branch"))
+                        {
+                            mat.SetFloat("_AlphaClip",1f);
+                            mat.SetFloat("_Cutoff",.35f);
+                            mat.EnableKeyword("_ALPHATEST_ON");
+                            mat.SetFloat("_Cull",0f);
+                        }
+                        Persist(mat);converted.Add(old,mat);
+                    }
+                    adapted[i]=mat;
+                }
+                renderer.sharedMaterials=adapted;
             }
-            if(meshCount<1)throw new Exception("Authored mountain visual renderer missing");
-            // Composition-only adjustment of the EXISTING 3D horizon, never
-            // an additional model, procedural replacement, or interactive object.
-            // The earlier Unity matched frame placed the textured mountain as
-            // an unnaturally close vertical wall behind the upper fortress.
-            var previous=mountain.localPosition;
-            mountain.localPosition=previous+new Vector3(0f,-2f,-14f);
-            Debug.Log("BASTION1_AUTHORED_MOUNTAIN_DEPTH_FINISH before="+previous+
-                " after="+mountain.localPosition+" renderers="+meshCount+
-                " geometry_rebuilt=false fog_density=.0052");
+            Debug.Log("BASTION1_EXISTING_PROP_GROUND_CONTACT prefab="+source.name+
+                " pos="+go.transform.position+" height="+targetHeight);
+            return true;
         }
 
         static Transform Find(Transform root,string name)
