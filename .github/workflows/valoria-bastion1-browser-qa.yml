@@ -23,8 +23,8 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
-          name: bastion1-exact-candidate-webgl-38416315485
-          run-id: 38416315485
+          name: bastion1-exact-candidate-webgl-38420574701
+          run-id: 38420574701
           github-token: ${{ github.token }}
           path: candidate
       - name: Confirm exact successful Windows build and file identity
@@ -35,11 +35,11 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import glob,json,os,urllib.request
-          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38416315485'
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38420574701'
           request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
           obj=json.load(urllib.request.urlopen(request))
           assert obj['conclusion']=='success',(obj['status'],obj['conclusion'])
-          assert obj['head_sha']=='dbfce12c50b2e95b249057a3fe8eee95ada82c65',obj['head_sha']
+          assert obj['head_sha']=='7f6d708d57bd27e04c0375e79221d3fa9c932da3',obj['head_sha']
           paths=glob.glob('candidate/**/Bastion1MeshCandidateWebGL/index.html',recursive=True)
           assert len(paths)==1,paths
           root=os.path.dirname(paths[0])
@@ -51,7 +51,7 @@ jobs:
           assert total>10000000,(total,sizes)
           print('EXACT_BASTION1_WEBGL_BUILD_PASS',total,'bytes',len(sizes),'files')
           with open('/tmp/bastion1-root','w') as f:f.write(root)
-          with open('/tmp/bastion1-build-sizes.json','w') as f:json.dump({'source_sha':obj['head_sha'],'run_id':38416315485,'total_bytes':total,'files':sizes},f,indent=2)
+          with open('/tmp/bastion1-build-sizes.json','w') as f:json.dump({'source_sha':obj['head_sha'],'run_id':38420574701,'total_bytes':total,'files':sizes},f,indent=2)
           PY
       - name: Install browser and serve exact build locally
         shell: bash
@@ -66,9 +66,18 @@ jobs:
           curl -fLsS http://127.0.0.1:8765/ >/dev/null
       - name: Actual current candidate startup, touch, construction and save acceptance
         env:
-          ELDORIA_PROBE_SOURCE_SHA: dbfce12c50b2e95b249057a3fe8eee95ada82c65
-          ELDORIA_PROBE_BUILD_RUN: '38416315485'
+          ELDORIA_PROBE_SOURCE_SHA: 7f6d708d57bd27e04c0375e79221d3fa9c932da3
+          ELDORIA_PROBE_BUILD_RUN: '38420574701'
         run: node tests/valoria-bastion1-browser-qa.js
+      - name: Full uninterrupted player progression following actual visible actions and mobile identity
+        env:
+          ELDORIA_PROBE_URL: http://127.0.0.1:8765/
+          ELDORIA_PROBE_KIND: candidate
+          ELDORIA_PROBE_SOURCE_SHA: 7f6d708d57bd27e04c0375e79221d3fa9c932da3
+          ELDORIA_PROBE_BUILD_RUN: '38420574701'
+        run: |
+          mkdir -p webgl-startup-evidence
+          node tests/valoria-bastion1-full-player-qa.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
