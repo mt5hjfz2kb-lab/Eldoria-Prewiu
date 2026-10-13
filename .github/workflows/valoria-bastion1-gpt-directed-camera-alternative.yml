@@ -1,0 +1,92 @@
+name: Bastion I independent camera-silhouette artistic alternative
+on:
+  push:
+    branches: [prototype/bastion1-camera-silhouette-alternative-20261013]
+    paths:
+      - 'tools/valoria-bastion1-assembly/gpt_directed_environment_sculpt.py'
+      - '.github/workflows/valoria-bastion1-gpt-directed-camera-alternative.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion1-isolated-camera-silhouette-alternative
+  cancel-in-progress: false
+jobs:
+  real-silhouette-ab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ART: /tmp/valoria-ai-directed-alternative
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify bounded, isolated artistic script syntax
+        run: python3 -m py_compile tools/valoria-bastion1-assembly/gpt_directed_environment_sculpt.py
+      - name: Recover exact Unity candidate source, never regenerate a proxy city
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ART/source" "$ART/candidate"
+          gh run download 38356683511 --repo "${{ github.repository }}" \
+            --name bastion1-player-integration-38356683511 --dir "$ART/source"
+          python3 - <<'PY'
+          import os,pathlib,hashlib,struct
+          root=pathlib.Path(os.environ['ART'])
+          found=list((root/'source').rglob('Bastion1ReferenceAssembly.glb'))
+          assert len(found)==1, found
+          data=found[0].read_bytes()
+          assert hashlib.sha256(data).hexdigest()=='3052ed2cc91e0dde177ec7bcca94254c3d3d2aacecb0e60101daa8f97e09f9bb'
+          assert data[:4]==b'glTF' and len(data)==struct.unpack('<I',data[8:12])[0]
+          (root/'candidate/input.glb').write_bytes(data)
+          print('IMMUTABLE_UNITY_FULL_CITY_GLB_ACCEPTED', len(data))
+          PY
+      - name: Install no-cost Blender and pixel comparison tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil
+          blender --version | head -2
+      - name: Apply GPT-directed environmental geometry to authentic scene and render A/B
+        timeout-minutes: 17
+        shell: bash
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/gpt_directed_environment_sculpt.py -- \
+            --source "$ART/candidate/input.glb" --out "$ART/candidate"
+      - name: Check genuine paired-camera material visibility, NOT final artistic approval
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          from PIL import Image,ImageChops
+          root=pathlib.Path(os.environ['ART'])/'candidate'
+          p=json.loads((root/'independent-art-proof.json').read_text())
+          assert p['status']=='EXPERIMENTAL_DIRECTOR_AUTHORED_NOT_ART_APPROVED'
+          assert p['protected_parcel_changes']==0 and p['changed_vertices']>=400
+          assert p['unity_art_pass'] is False and p['main_promotion_allowed'] is False
+          a=root/'before-player-camera.png';b=root/'after-player-camera.png'
+          assert hashlib.sha256(a.read_bytes()).hexdigest()==p['before_png_sha256']
+          assert hashlib.sha256(b.read_bytes()).hexdigest()==p['after_png_sha256']
+          x=Image.open(a).convert('RGB');y=Image.open(b).convert('RGB')
+          assert x.size==y.size==(960,640)
+          diff=ImageChops.difference(x,y)
+          changed=sum(1 for px in diff.getdata() if max(px)>7)
+          total=x.size[0]*x.size[1]
+          visibility={'total_pixels':total,'changed_pixels':changed,
+            'changed_fraction':changed/total,'threshold_fraction':.001,
+            'art_approved':False,'camera':'same immutable Blender player-equivalent camera'}
+          (root/'independent-a-b-review.json').write_text(json.dumps(visibility,indent=2)+'\n')
+          print('AUTHENTIC_INDEPENDENT_BASTION_CAMERA_SCULPT',json.dumps(visibility))
+          assert changed/total>=.001,'VISIBLE_ART_REJECTED; keep source intact'
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-camera-silhouette-alternative-${{ github.run_id }}
+          path: |
+            /tmp/valoria-ai-directed-alternative/candidate/Bastion1GPTDirectorAlternative.glb
+            /tmp/valoria-ai-directed-alternative/candidate/Bastion1GPTDirectorAlternative.blend
+            /tmp/valoria-ai-directed-alternative/candidate/before-player-camera.png
+            /tmp/valoria-ai-directed-alternative/candidate/after-player-camera.png
+            /tmp/valoria-ai-directed-alternative/candidate/independent-art-proof.json
+            /tmp/valoria-ai-directed-alternative/candidate/independent-a-b-review.json
+          retention-days: 14
+          if-no-files-found: warn
