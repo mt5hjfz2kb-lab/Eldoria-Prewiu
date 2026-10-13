@@ -12,7 +12,7 @@ def vec(v,n=3):
  return isinstance(v,(list,tuple)) and len(v)==n and all(
   isinstance(x,(int,float)) and not isinstance(x,bool) and math.isfinite(x) for x in v)
 def length(v):return math.sqrt(sum(x*x for x in v))
-def inspect_artist_plan(design,target,mode,max_actions=2,topology=None,require_geometry=True):
+def inspect_artist_plan(design,target,mode,max_actions=2,topology=None,require_geometry=True,require_camera_effect=False):
  errors=[]
  if not isinstance(design,dict):return ['Artist response must be a JSON object']
  if len(str(design.get('observed_defect') or ''))<35:errors.append('observed_defect must diagnose REAL visual defect in at least 35 chars')
@@ -44,13 +44,23 @@ def inspect_artist_plan(design,target,mode,max_actions=2,topology=None,require_g
   if len(str(op.get('rationale') or ''))<15:errors.append(f'Action {i}: artistic rationale too short')
   if typ=='sculpt_region':
    if not vec(pr.get('center')) or not inside(pr['center']):errors.append('sculpt_region center MUST be within real LOCAL mesh AABB')
-   if not vec(pr.get('delta')) or not .005<=length(pr['delta'])<=20:errors.append('sculpt_region delta MUST BE NONZERO, valid 3D displacement (0.005..20)')
+   if not vec(pr.get('delta')) or not .0051<=length(pr['delta'])<=20:errors.append('sculpt_region delta MUST BE NONZERO, executable 3D displacement (>0.005, <=20)')
    if not isinstance(pr.get('radius'),(int,float)) or not .05<=pr['radius']<=60:errors.append('sculpt_region radius must be 0.05..60')
+   if require_camera_effect:
+    # Non-approval screen-space preflight: 5mm movements on a 12m cliff are
+    # quantization noise; Blender A/B still independently measures visibility.
+    if not vec(pr.get('delta')) or length(pr['delta'])<.2:
+     errors.append('SCULPT_CAMERA_IMPACT_FAIL: Qwen must design >=0.2m nontrivial displacement for this wide strategy-camera rock face, not millimeter jitter')
+    if not isinstance(pr.get('radius'),(int,float)) or pr['radius']<1.0:
+     errors.append('SCULPT_CAMERA_IMPACT_FAIL: Qwen must affect >=1.0m radius of this rock face; tiny invisible patches cannot qualify as artistic improvement')
   if typ=='sculpt_path':
    knots=pr.get('knots')
    if not isinstance(knots,list) or not 2<=len(knots)<=24:errors.append('sculpt_path must contain TWO OR MORE authored 3D knots')
    else:
     seen=[]
+    if require_camera_effect and (not any(vec(k.get('delta')) and length(k['delta'])>=.2 for k in knots if isinstance(k,dict)) or
+                                  not any(isinstance(k,dict) and isinstance(k.get('radius'),(int,float)) and k['radius']>=1.0 for k in knots)):
+     errors.append('SCULPT_CAMERA_IMPACT_FAIL: 3D path must include substantial nontrivial displacement and spatial radius')
     for j,k in enumerate(knots):
      if not isinstance(k,dict):errors.append(f'Knot {j}: invalid object');continue
      if not vec(k.get('center')) or not inside(k['center']):errors.append(f'Knot {j}: center outside source local mesh bounds')
