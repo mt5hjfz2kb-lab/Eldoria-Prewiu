@@ -111,7 +111,10 @@ namespace Eldoria.AssetLibrary.Editor
         {
             Build();
             // Deliberately make an unsaved scratch scene to avoid touching any playable Scene.
-            Eldoria.EditorTools.SceneSetup.SetupRenderPipeline();
+            // Do not call SceneSetup.SetupRenderPipeline: it can write shared renderer assets.
+            // This isolated test consumes the already configured project pipeline only.
+            if (GraphicsSettings.defaultRenderPipeline == null && QualitySettings.renderPipeline == null)
+                throw new InvalidOperationException("No configured URP; refusing to modify canonical render settings.");
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var catalog=EldoriaSelectedAssetLibraryV1.LoadCatalog();
             int i=0;
