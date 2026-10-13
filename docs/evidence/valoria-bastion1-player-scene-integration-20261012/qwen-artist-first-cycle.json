@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "asset_id": "Valoria natural playable hilltop and rock scarps",
+  "workstream_id": "valoria-bastion1-player-scene-integration-20261012",
+  "state": "VISUAL_REJECTED",
+  "description": "Genuine Qwen-authored Blender edit; successful geometric execution but imperceptible in matched camera; not approved or published",
+  "source": {
+    "unity_run": 38320867773,
+    "unity_source_sha": "2f4b1a372c987594e92b15c899e5c86b16069b2b",
+    "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+    "unity_before_sha256": "262c7c9eddc68292cf2b14ba0c04eb1a3971ec76dec606a3d5fde2e1b7be641f"
+  },
+  "artist": {
+    "qwen_model": "qwen3-vl:2b-instruct",
+    "original_inference_run": 38323028866,
+    "normalized_recovery_run": 38323534537,
+    "normalized_artifact": 11779922676,
+    "original_raw_action_shape": "one-key JSON dictionary, converted to one-element list without changing coordinates",
+    "core_source": "PR36 pinned c267836661883a4f3003868d37f94785d245aaea",
+    "source_blend_sha256": "3c257dd0ed18ded40c1f3dec7c071d6ec552e3b6b969754cdb525153e0a5ad3e",
+    "result_blend_sha256": "92fc7d98c79a43644d4d046d23d889c8297e6f3e73aa7c5f77ef50a5cd338ddc"
+  },
+  "plan": [
+    {
+      "id": "sculpt_region",
+      "type": "sculpt_region",
+      "target": "Valoria natural playable hilltop and rock scarps",
+      "rationale": "To improve the natural, organic appearance of the Valoria hilltop by sculpting the outer cliff face to create a more realistic, textured rock formation, while maintaining the existing structure and gameplay integrity.",
+      "parameters": {
+        "center": [
+          -40,
+          57,
+          -21.62428855895996
+        ],
+        "radius": 10.24,
+        "delta": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      }
+    }
+  ],
+  "execution": {
+    "changed_vertices": 181,
+    "source_mesh_sha256": "90e90eb8062a41b75f06b0cd9528ed318587a1e2b2e40400ecf32ced3d5b6486",
+    "edited_mesh_sha256": "ba4e221c00a55d1127ca9fa13ca257bc9c26ac2ef48a4b95125c280f7729afd3",
+    "transport": "direct",
+    "full_city_merge_run": 38324751573,
+    "full_city_merge_artifact": 11779962608,
+    "full_city_changed_vertices": 176,
+    "full_city_max_displacement_m": 0.80367,
+    "protected_cell_changes": 0,
+    "full_city_glb_sha256": "eff186eac2f6b1f4e7c8b8dfd5eb85998cc51620f8ad4c59ff9d1eb4e8e8f2d6068e9f5"
+  },
+  "visual": {
+    "comparison": "camera-locked Blender clay only",
+    "before_image_sha256": "dba2ac99080025d1d9310f545bc6f2356c66299555fbd26df79441495894f490",
+    "after_image_sha256": "945fb59a3f40ebbcf97d8d85fec2dd5456dc4d771c16ad4ecca7b67ebe67ff3a",
+    "pixel_change_threshold_8bit": 8,
+    "changed_pixels": 2,
+    "total_pixels": 307200,
+    "fraction_changed": 0.000006510416666666667,
+    "approved": false,
+    "reason": "Change was confined to a rear corner with no perceptible improvement in player's relevant vista"
+  },
+  "mobile_and_gameplay": {
+    "latest_independent_browser_qa": "Not yet run against corrected Qwen scene",
+    "no_claim_of_unity_visual_pass": true,
+    "no_approval_to_promote": true
+  },
+  "next": "Use genuine two-image Qwen plan targeting foreground visible rock face; require nonzero matched-camera difference and exact Unity candidate QA before any promotion."
+}
