@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "benchmark": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "provenance_note": "These six observations were transcribed from GitHub Actions job logs, not from direct re-hashing of all original PNG files. Art is not approved and these observations are not training weights.",
+  "cases": [
+    {
+      "id": "eldoria-bastion1-38358105789",
+      "target": "bastion1",
+      "source": {
+        "run_id": 38358105789,
+        "git_sha": "b541968bf8787f458ca1f361e0c4d42060fa15cc",
+        "evidence_level": "run_log_reviewed",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38358105789"
+      },
+      "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+      "view_id": "early-clay-640x480",
+      "render_pass": "blender_clay",
+      "measurement": {
+        "kind": "camera_pixels",
+        "width": 640,
+        "height": 480,
+        "changed_pixels": 0,
+        "threshold_rgb": 10
+      },
+      "visibility_gate": "REJECT_NOT_VISIBLE",
+      "art_verdict": "ART_REJECTED",
+      "art_approved": false,
+      "lesson_id": "small-sculpt-repeated",
+      "diagnosis": "El cambio original no produjo variación detectable en el encuadre fijo.",
+      "lesson": "No repetir detalles pequeños en el borde; diseñar una masa de acantilado visible y verificar la imagen entera.",
+      "next_action": "Comparar render Unity y referencia con cámara fija, y archivar veredicto artístico independiente."
+    },
+    {
+      "id": "eldoria-bastion1-38360450981",
+      "target": "bastion1",
+      "source": {
+        "run_id": 38360450981,
+        "git_sha": "295ef4b42b8ea2c9622e80a8d4ffa5d41ad0c5f2",
+        "evidence_level": "run_log_reviewed",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38360450981"
+      },
+      "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+      "view_id": "early-clay-640x480",
+      "render_pass": "blender_clay",
+      "measurement": {
+        "kind": "camera_pixels",
+        "width": 640,
+        "height": 480,
+        "changed_pixels": 12,
+        "threshold_rgb": 10
+      },
+      "visibility_gate": "REJECT_NOT_VISIBLE",
+      "art_verdict": "ART_REJECTED",
+      "art_approved": false,
+      "lesson_id": "small-sculpt-repeated",
+      "diagnosis": "La segunda iteración alteró tan solo 12 de 307200 píxeles.",
+      "lesson": "Tras dos rechazos documentados de una operación, revisar la familia estructural propuesta por Qwen.",
+      "next_action": "Comparar render Unity y referencia con cámara fija, y archivar veredicto artístico independiente."
+    },
+    {
+      "id": "eldoria-bastion1-38370740511",
+      "target": "bastion1",
+      "source": {
+        "run_id": 38370740511,
+        "git_sha": "ac3972cb50d4f8772d3eff6c7f346160f33385fc",
+        "evidence_level": "run_log_reviewed",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38370740511"
+      },
+      "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+      "view_id": "early-clay-640x480",
+      "render_pass": "blender_clay",
+      "measurement": {
+        "kind": "camera_pixels",
+        "width": 640,
+        "height": 480,
+        "changed_pixels": 100,
+        "threshold_rgb": 10
+      },
+      "visibility_gate": "REJECT_NOT_VISIBLE",
+      "art_verdict": "ART_REJECTED",
+      "art_approved": false,
+      "lesson_id": "tiny-sculpt-path",
+      "diagnosis": "El esculpido original alteró 100 de 307200 píxeles y el sistema rechazó su visibilidad.",
+      "lesson": "Proporcionar información geométrica del encuadre y exigir acciones de escala suficiente para la cámara.",
+      "next_action": "Comparar render Unity y referencia con cámara fija, y archivar veredicto artístico independiente."
+    },
+    {
+      "id": "eldoria-bastion1-38401480696",
+      "target": "bastion1",
+      "source": {
+        "run_id": 38401480696,
+        "git_sha": "9e17a6edd4be8bedf48bc5cde347626d4d708efd",
+        "evidence_level": "run_log_reviewed",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38401480696"
+      },
+      "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+      "view_id": "player-matched-clay-720x500",
+      "render_pass": "blender_clay",
+      "measurement": {
+        "kind": "camera_pixels",
+        "width": 720,
+        "height": 500,
+        "changed_pixels": 1227,
+        "threshold_rgb": 10
+      },
+      "visibility_gate": "REVIEW_REQUIRED",
+      "art_verdict": "ART_UNREVIEWED",
+      "art_approved": false,
+      "lesson_id": "frustum-parity",
+      "diagnosis": "Qwen 8B modificó la geometría; el encuadre verificado de la cámara alcanzó el umbral técnico de revisión.",
+      "lesson": "Fijar el frustum auténtico antes de juzgar. REVIEW_REQUIRED solo obliga a inspeccionar, nunca certifica belleza.",
+      "next_action": "Comparar render Unity y referencia con cámara fija, y archivar veredicto artístico independiente."
+    },
+    {
+      "id": "eldoria-bastion1-38405267853",
+      "target": "bastion1",
+      "source": {
+        "run_id": 38405267853,
+        "git_sha": "f27b7b94755acfa62511c260c0dac30eb54e5667",
+        "evidence_level": "run_log_reviewed",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38405267853"
+      },
+      "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+      "view_id": "unity-player-pbr-1440x1000",
+      "render_pass": "unity_pbr",
+      "measurement": {
+        "kind": "camera_pixels",
+        "width": 1440,
+        "height": 1000,
+        "changed_pixels": 86330,
+        "threshold_rgb": 10
+      },
+      "visibility_gate": "REVIEW_REQUIRED",
+      "art_verdict": "ART_UNREVIEWED",
+      "art_approved": false,
+      "lesson_id": "unity-a-b-independent",
+      "diagnosis": "Unity generó comparativa nativa con la misma cámara y 86330 píxeles cambiados, aún sin aprobación artística.",
+      "lesson": "Juzgar la calidad compositiva, materiales y silueta con referencia estable; no confundir cambios visuales con calidad.",
+      "next_action": "Comparar render Unity y referencia con cámara fija, y archivar veredicto artístico independiente."
+    },
+    {
+      "id": "eldoria-bastion1-38406612333",
+      "target": "bastion1",
+      "source": {
+        "run_id": 38406612333,
+        "git_sha": "2bfcd5593393328c854d1647e3eedc3a99db5b0f",
+        "evidence_level": "run_log_reviewed",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38406612333"
+      },
+      "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+      "view_id": "blender-geometric-finish",
+      "render_pass": "blender_geometry_only",
+      "measurement": {
+        "kind": "mesh_vertices",
+        "changed_vertices": 2718,
+        "protected_changes": 0
+      },
+      "visibility_gate": "NOT_MEASURED",
+      "art_verdict": "ART_UNREVIEWED",
+      "art_approved": false,
+      "lesson_id": "preserve-playable-protected-terrain",
+      "diagnosis": "Acabado real Qwen 8B modificó 2718 vértices sin tocar la meseta protegida; el ensayo no certificó Unity.",
+      "lesson": "Proteger parcelas y anclajes; después del acabado Blender exigir captura real y revisión independiente en Unity.",
+      "next_action": "Usar el GLB original y acabado en una comparación Unity del candidato exacto con auditoría de materiales y rendimiento."
+    }
+  ]
+}

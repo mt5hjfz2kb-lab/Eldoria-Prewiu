@@ -98,6 +98,12 @@
       "note": "Dirección global de arte y fuentes; no aprobación visual de escena"
     },
     {
+      "path": "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Supplemental evidence archive and safe handoff adapter; active Qwen integration remains Bastion-owned"
+    },
+    {
       "path": "docs/ELDORIA_ART_PIPELINE_INDEX.md",
       "domain": "art",
       "status": "historical",
