@@ -28,3 +28,7 @@ jobs:
         run: node tools/check-documentation-governance.mjs
       - name: Test documentation governance (positive and negative cases)
         run: node --test tools/check-documentation-governance.test.mjs
+      - name: Enforce persistent art learning evidence and regression tests
+        run: |
+          node tools/art-direction/learning-evidence/learning.mjs audit
+          node --test tools/art-direction/learning-evidence/learning.test.mjs
