@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using GLTFast;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -55,7 +53,6 @@ namespace Eldoria.EditorTools
                 Bastion1MaterialBindings.Apply(root,importer,source);
                 Bastion1RoadClearance.Apply(root);
                 await Bastion1ExistingRoadIntegration.Apply(root);
-                await StageSelectedLegacyRockContacts(root);
                 InspectRoadContacts(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
@@ -143,88 +140,6 @@ namespace Eldoria.EditorTools
                 Debug.LogError("BASTION1_REFERENCE_CAPTURE_FAILED "+ex);EditorApplication.Exit(1);
             }
         }
-        // Exact existing PR51 models; preserve source meshes and all gameplay objects.
-        static async Task StageSelectedLegacyRockContacts(GameObject assembly)
-        {
-            var terrain=Find(assembly.transform,"Valoria natural playable hilltop and rock scarps");
-            if(terrain==null)throw new Exception("Original playable terrain missing");
-            var colliders=new List<MeshCollider>();
-            var allowed=new HashSet<Collider>();
-            var target=new GameObject("Bastion I two recovered rock details");
-            target.transform.SetParent(assembly.transform,false);
-            try
-            {
-                foreach(var mf in terrain.GetComponentsInChildren<MeshFilter>(true))
-                {
-                    if(mf.sharedMesh==null)continue;
-                    var c=mf.gameObject.AddComponent<MeshCollider>();
-                    c.sharedMesh=mf.sharedMesh;colliders.Add(c);allowed.Add(c);
-                }
-                if(colliders.Count==0)throw new Exception("Grounding mesh missing");
-                Physics.SyncTransforms();
-                await ImportSelectedGrounded(target.transform,"RockToWallTransition",
-                    "116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0",
-                    new Vector2(-23f,14f),4.8f,112f,allowed);
-                await ImportSelectedGrounded(target.transform,"BroadRockPlatform",
-                    "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
-                    new Vector2(22f,8f),2.1f,198f,allowed);
-            }
-            finally
-            {
-                foreach(var c in colliders)UnityEngine.Object.DestroyImmediate(c);
-                Physics.SyncTransforms();
-            }
-            Debug.Log("BASTION1_EXISTING_SELECTED_DETAIL_COMPLETE pieces=2 gameplay_colliders=0 new_geometry=0");
-        }
-        static async Task ImportSelectedGrounded(Transform parent,string id,string sha256,
-            Vector2 site,float height,float rotation,HashSet<Collider> groundColliders)
-        {
-            var file=Path.GetFullPath(Study+"/GeneratedSource/"+id+".glb");
-            if(!File.Exists(file))throw new FileNotFoundException("Selected existing GLB not staged",file);
-            using(var hash=SHA256.Create())
-            using(var stream=File.OpenRead(file))
-            {
-                var real=BitConverter.ToString(hash.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
-                if(real!=sha256)throw new Exception("Frozen source SHA mismatch "+id);
-            }
-            var importer=new GltfImport(null,new UninterruptedDeferAgent());
-            if(!await importer.Load(new Uri(file).AbsoluteUri,new ImportSettings
-                {GenerateMipMaps=true,AnisotropicFilterLevel=2}))
-                throw new Exception("Original selected GLB import failed "+id);
-            var visual=new GameObject("Selected authored environmental piece "+id);
-            visual.transform.SetParent(parent,false);
-            if(!await importer.InstantiateMainSceneAsync(visual.transform))
-                throw new Exception("Original selected mesh instantiate failed "+id);
-            Bastion1MaterialBindings.Apply(visual,importer,file);
-            foreach(var collider in visual.GetComponentsInChildren<Collider>(true))
-                UnityEngine.Object.DestroyImmediate(collider);
-            foreach(var script in visual.GetComponentsInChildren<MonoBehaviour>(true))
-                UnityEngine.Object.DestroyImmediate(script);
-            var renderers=visual.GetComponentsInChildren<Renderer>(true);
-            if(renderers.Length==0)throw new Exception("Selected mesh has no renderer "+id);
-            var bounds=renderers[0].bounds;
-            foreach(var r in renderers)bounds.Encapsulate(r.bounds);
-            if(bounds.size.y<=.001f)throw new Exception("Selected mesh dimension invalid "+id);
-            visual.transform.localScale*=height/bounds.size.y;
-            visual.transform.rotation=Quaternion.Euler(0f,rotation,0f);
-            bounds=renderers[0].bounds;
-            foreach(var r in renderers)bounds.Encapsulate(r.bounds);
-            var hits=Physics.RaycastAll(new Vector3(site.x,90f,site.y),Vector3.down,
-                145f,~0,QueryTriggerInteraction.Ignore);
-            bool found=false;Vector3 contact=Vector3.zero;
-            foreach(var hit in hits)
-            {
-                if(!groundColliders.Contains(hit.collider)||hit.normal.y<.68f)continue;
-                if(!found||hit.point.y>contact.y){contact=hit.point;found=true;}
-            }
-            if(!found)throw new Exception("No real terrain at selected model socket "+id);
-            visual.transform.position+=new Vector3(contact.x-bounds.center.x,
-                contact.y-bounds.min.y-.06f,contact.z-bounds.center.z);
-            foreach(var r in renderers)r.shadowCastingMode=ShadowCastingMode.Off;
-            Debug.Log("BASTION1_SELECTED_REAL_CONTACT id="+id+" xyz="+visual.transform.position+
-                " source="+sha256+" height="+height+" renderers="+renderers.Length);
-        }
-
         static Transform Find(Transform root,string name)
         {foreach(var item in root.GetComponentsInChildren<Transform>(true))if(item.name==name)return item;return null;}
         internal static void Persist(UnityEngine.Object obj)
