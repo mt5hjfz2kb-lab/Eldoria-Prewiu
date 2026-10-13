@@ -57,7 +57,7 @@ low=Vector(tuple(min(v[k] for v in coords) for k in range(3)))
 high=Vector(tuple(max(v[k] for v in coords) for k in range(3)))
 size=high-low
 if size.x<=0 or size.y<=0 or size.z<=0:raise RuntimeError('Invalid existing prop bounds')
-scale=min(4.3/size.x,2.5/size.y,2.5/size.z,1.6)
+scale=min(5.15/size.x,3.20/size.y,3.00/size.z,1.80)
 anchor=Matrix.Translation(Vector((cx,cy,cz+.10))) @ Matrix.Scale(scale,4) @ Matrix.Translation(Vector((-(low.x+high.x)/2,-(low.y+high.y)/2,-low.z)))
 instances=0
 for old in kit:
@@ -71,7 +71,7 @@ corners=[o.matrix_world @ Vector(c) for o in platform for c in o.bound_box]
 plo=Vector(tuple(min(v[k] for v in corners) for k in range(3)))
 phi=Vector(tuple(max(v[k] for v in corners) for k in range(3)))
 ps=phi-plo
-sx=min(1,4.7/max(.01,ps.x));sy=min(1,3.1/max(.01,ps.y));sz=min(1,.28/max(.01,ps.z))
+sx=min(1,5.9/max(.01,ps.x));sy=min(1,4.5/max(.01,ps.y));sz=min(1,.28/max(.01,ps.z))
 # Existing road slabs may be multi-part; same materials and geometry retained.
 trans=Matrix.Translation(Vector((cx,cy,cz-.025))) @ Matrix.Diagonal(Vector((sx,sy,sz,1))) @ Matrix.Translation(Vector((-(plo.x+phi.x)/2,-(plo.y+phi.y)/2,-plo.z)))
 for old in platform:
@@ -83,22 +83,60 @@ for old in platform:
 wood=next((m for o in kit for m in o.data.materials if m and ('wood' in m.name.lower() or 'oak' in m.name.lower())),None)
 if wood is None:
  wood=bpy.data.materials.new('Bastion I unpainted timber');wood.diffuse_color=(.30,.23,.15,1)
-def beam(label,position,dimensions):
+
+# A genuine roofed wall-side guard bay, rather than the visually rejected tiny
+# freestanding sign. The Qwen plan selected a western guard + supply anchor.
+# These specific meshes are deterministic Blender implementation, NOT AI sculpt.
+new_parts=[]
+def beam(label,position,dimensions,tilt=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=position)
  o=bpy.context.object;o.name=label;o.dimensions=dimensions
+ if tilt:o.rotation_euler.x=tilt
  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
  o.data.materials.append(wood)
+ new_parts.append(o)
  return o
-for dx in (-1.7,1.7):
- beam('Bastion I small timber guard frame post',(cx+dx,cy+1.0,cz+1.25),(.16,.16,2.5))
-beam('Bastion I small timber guard frame lintel',(cx,cy+1.0,cz+2.5),(3.55,.20,.22))
+# Front edge faces the camera/bridge. Rear eave nearly meets the pre-existing
+# detached wall at y=-8; no additional wall/gate/buildable parcel is inserted.
+for dx in (-2.45,2.45):
+ for dy in (-1.8,1.8):
+  beam('Bastion I timber guard bay upright',(cx+dx,cy+dy,cz+1.4),(.22,.22,2.8))
+for dy in (-1.8,1.8):
+ beam('Bastion I guard bay horizontal wall plate',(cx,cy+dy,cz+2.80),(5.20,.23,.21))
+beam('Bastion I guard bay roof ridge',(cx,cy,cz+3.54),(5.9,.20,.18))
+# Two pitched planes; roof materials are copied from existing selected wooden
+# props, not injected screen-aligned decals or a newly sourced paid asset.
+roof=wood.copy();roof.name='Bastion I weathered timber guard shelter roof'
+if roof.use_nodes and roof.node_tree.nodes.get('Principled BSDF'):
+ bs=roof.node_tree.nodes.get('Principled BSDF')
+ color=bs.inputs['Base Color'].default_value
+ bs.inputs['Base Color'].default_value=(min(1,color[0]*.82),min(1,color[1]*.76),min(1,color[2]*.68),1)
+ bs.inputs['Roughness'].default_value=.90
+else:roof.diffuse_color=(.23,.17,.11,1)
+for side in (-1,1):
+ panel=beam('Bastion I pitched guard shelter roof',(cx,cy+side*.95,cz+3.16),(5.85,2.13,.13),tilt=-side*.385)
+ panel.data.materials.clear();panel.data.materials.append(roof)
+# Visible structural knee braces, deliberately grouped with roof/posts.
+from mathutils import Vector as BVec
+def diagonal(label,a,b,thick=.13):
+ start,end=BVec(a),BVec(b)
+ direction=end-start
+ obj=beam(label,(start+end)/2,(thick,thick,direction.length))
+ obj.rotation_euler=direction.to_track_quat('Z','Y').to_euler()
+ return obj
+for dx in (-2.45,2.45):
+ for dy in (-1.8,1.8):
+  diagonal('Bastion I guard post timber knee brace',
+   (cx+dx,cy+dy,cz+2.15),(cx+dx*.67,cy+dy,cz+2.80))
+# Keeping the central road, playable court and state-driven lots empty is
+# explicit. No colliders or resource nodes are included in the exported GLB.
 dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'ai_proposal_sha256':hashlib.sha256(proposal_path.read_bytes()).hexdigest(),
  'ai_authorship':('owner-directed deterministic fallback, NOT Qwen' if proposal.get('_provenance')=='owner_directed_fallback' else 'concept and site from verified local Qwen inference; geometry implementation deterministic Blender'),
  'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
  'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),
- 'new_timber_meshes':3,'road_clearance_m':abs(cx)-7,'existing_source_meshes_modified':False,
+ 'new_timber_meshes':len(new_parts),'roof_panels':2,'road_clearance_m':abs(cx)-3.1-7,'existing_source_meshes_modified':False,
  'new_resource_nodes':0,'art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_AI_PROPOSED_GUARD_STATION',json.dumps(proof))
