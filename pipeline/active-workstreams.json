@@ -98,6 +98,27 @@
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
       "next": "Repair repeated native capture URP binding; recover actual Unity A/B. Recover genuine artist finishing 38404956232, verify raw plan and execute unchanged; exact Unity native/gameplay gates still open."
+    },
+    {
+      "id": "valoria-selected-asset-library-v1-hardening-20261013",
+      "title": "Harden selected Valoria Unity asset library with real source geometry budgets and safer placement",
+      "owner": "chat-user-reopened-selected-library-hardening-20261013",
+      "scope": [
+        "Unity/Assets/Eldoria/AssetLibrarySelectionV1/**",
+        "tools/valoria-selected-asset-library-v1/**",
+        "docs/evidence/valoria-selected-asset-library-v1/**",
+        ".github/workflows/valoria-selected-asset-library-v1.yml"
+      ],
+      "resources": [
+        "github-hosted-ubuntu-readonly"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-13",
+      "base_main_sha": "269984a9e110107778b97431086e29481691a161",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Non-art-authoring catalog, immutable GLB geometry inspection, technical Unity staging only; no shader/mesh changes.",
+      "dependency": "Bastion I owns Windows runner and canonical scene. This task uses static CI and existing evidence only.",
+      "phase": "Verify geometry/cost per selected source, add Unity prefab budget and safety checks without Windows/scene access."
     }
   ],
   "history": [
