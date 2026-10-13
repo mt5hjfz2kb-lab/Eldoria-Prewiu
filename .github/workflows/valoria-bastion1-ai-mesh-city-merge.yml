@@ -7,6 +7,9 @@ on:
 permissions:
   contents: read
   actions: read
+concurrency:
+  group: bastion1-verified-qwen-full-city
+  cancel-in-progress: true
 jobs:
   merge-verified-qwen-cliff:
     runs-on: ubuntu-latest
@@ -16,6 +19,10 @@ jobs:
       ROOT: /tmp/valoria-real-ai-merge
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py
+          sparse-checkout-cone-mode: false
       - name: Verify two immutable inputs and actual model decision
         shell: bash
         run: |
