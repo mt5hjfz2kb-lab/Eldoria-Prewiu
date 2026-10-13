@@ -55,52 +55,36 @@ wear=material('Bastion I mottled muted earthen secondary foot traffic',(.355,.35
 edge=material('Bastion I moss olive grass transition',(.29,.33,.19))
 stone=material('Bastion I reused weathered grey limestone scree',(.29,.28,.255))
 shade=material('Bastion I worn green-brown loam',(.30,.315,.205))
-# Two asymmetrical pedestrian arcs, set outside the protected axial 7m road.
-# Secondary paths are strictly surface overlays (no gameplay terrain changes).
-def ribbon(name,control,width,mat):
- vertices=[];faces=[];segments=56
- for i in range(segments+1):
-  t=i/segments
-  p0,p1,p2=control
-  x=(1-t)**2*p0[0]+2*(1-t)*t*p1[0]+t*t*p2[0]
-  y=(1-t)**2*p0[1]+2*(1-t)*t*p1[1]+t*t*p2[1]
-  tx=2*((1-t)*(p1[0]-p0[0])+t*(p2[0]-p1[0]))
-  ty=2*((1-t)*(p1[1]-p0[1])+t*(p2[1]-p1[1]))
-  d=max(.001,math.hypot(tx,ty));nx=-ty/d;ny=tx/d
-  taper=.30+.70*min(1,t*7,(1-t)*7)
-  for s in (-1,1):
-   xx=x+s*nx*width*taper*.5;yy=y+s*ny*width*taper*.5
-   if abs(xx)<7:raise RuntimeError('Protected central route touched')
-   vertices.append((xx,yy,surface(xx,yy)+.085))
-  if i<segments:faces.append((2*i,2*i+1,2*i+3,2*i+2))
- mesh=bpy.data.meshes.new(name);mesh.from_pydata(vertices,[],faces);mesh.materials.append(mat)
- mesh.update();world_uv(mesh);ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
- return len(faces)
-ribbon('Bastion I west secondary worn-earth approach',[(-10,-13),(-18,-5),(-12,6)],1.45,wear)
-ribbon('Bastion I east secondary worn-earth approach',[(10,-11),(17,-4),(11,6)],1.4,wear)
-# The central yard stays open. Irregular worn-earth and grass islands are
-# concentrated at the lateral perimeter, not at build plots or road.
-def island(name,cx,cy,rx,ry,mat,seed):
- rng=random.Random(seed);v=[];count=18
- for i in range(count):
-  theta=2*math.pi*i/count
-  rr=.82+rng.uniform(-.13,.15)
-  x=cx+rx*rr*math.cos(theta);y=cy+ry*rr*math.sin(theta)
-  if abs(x)<7:raise RuntimeError('Island infringes protected axial corridor')
-  v.append((x,y,surface(x,y)+.065))
- mesh=bpy.data.meshes.new(name);mesh.from_pydata(v,[],[tuple(range(count))]);mesh.materials.append(mat)
- mesh.update();world_uv(mesh);ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
- return ob
-# Small, irregular material transitions rather than six conspicuous flat plates.
-patches=[
- (-13,-10,1.1,.75,edge),(-17,-8,.8,1.1,shade),(-15,-3,1.0,.8,edge),
- (-19,1,.8,1.0,edge),(-13,4,1.15,.8,shade),(-17,8,.8,.9,edge),
- (-10,1,.8,.65,edge),
- (13,-10,1.2,.85,edge),(17,-7,.8,1.0,shade),(15,-3,1.1,.7,edge),
- (19,1,.85,.8,edge),(13,4,1.2,.9,shade),(17,8,.85,.8,edge),
- (10,1,.8,.65,edge)]
-for i,(x,y,rx,ry,m) in enumerate(patches):
- island('Bastion I small mottled earth breakup '+str(i),x,y,rx,ry,m,610+i)
+# Previous surface ribbons and islands were ART REJECTED by authentic Unity A/B:
+# their color remained dark and geometry read as pasted-on decals. Remove them
+# completely. Improve the existing terrain albedo IN PLACE, without new planes.
+grass_mats=[m for m in ground.data.materials if m and 'terrace earth olive grass' in m.name.lower()]
+if len(grass_mats)!=1:raise RuntimeError('Original terrain grass material not uniquely found')
+grass_mat=grass_mats[0]
+tex_nodes=[n for n in grass_mat.node_tree.nodes if n.type=='TEX_IMAGE' and n.image]
+if not tex_nodes:raise RuntimeError('Original grass material has no editable albedo image')
+original=tex_nodes[0].image
+# Duplicate image so the canonical source texture remains untouched in memory.
+newimg=original.copy();newimg.name='Bastion I varied native meadow albedo'
+w,h=newimg.size
+source=list(original.pixels);updated=[]
+for yy in range(h):
+ for xx in range(w):
+  k=(yy*w+xx)*4
+  # Irregular broad grass/dirt tone variations, with a low-amplitude grain.
+  n=(math.sin(xx*.071+math.sin(yy*.032)*2.1)*math.cos(yy*.057)
+    +.48*math.sin(xx*.15-yy*.09))*0.5
+  grit=math.sin(xx*.73+yy*.51)*math.sin(yy*.64-xx*.41)
+  delta=n*.18+grit*.025
+  # More olive earth, less flat saturated green; preserve alpha and texture.
+  r=max(.03,min(.9,source[k]*(1+delta)+max(0,n)*.035))
+  g=max(.03,min(.9,source[k+1]*(1+delta*.8)))
+  b=max(.03,min(.9,source[k+2]*(1+delta*.55)))
+  updated.extend((r,g,b,source[k+3]))
+newimg.pixels=updated;newimg.pack()
+tex_nodes[0].image=newimg
+print('BASTION1_EXISTING_GRASS_ALBEDO_REBALANCED',w,h)
+# No overlays or new resource nodes. Reuse only modest contact stones.
 # Modest reused scree geometry at the lateral wall contacts only. Max 20 cm
 # height: no new nodes, no obstacle in walking area and mobile-friendly.
 rng=random.Random(9826);count=0
@@ -123,8 +107,8 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'intervention':'courtyard-perimeter-secondary-paths-and-contact-scree',
- 'secondary_paths':2,'ground_islands':14,'contact_scree':count,
+ 'intervention':'native-courtyard-ground-albedo-and-contact-scree',
+ 'secondary_paths':0,'ground_islands':0,'contact_scree':count,
  'protected_axial_corridor_m':7,'existing_mesh_coordinates_modified':False,
  'new_resource_nodes':0,'new_buildings':0,'art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
