@@ -42,11 +42,14 @@ const stages = [];
 let stopBeforeSpend = false;
 
 if (req.profile === 'environment_composition') {
+  stages.push('qwen_artist_reference_vs_unity_diagnosis');
+  if (gap) stages.push('blender_mcp_ai_directed_terrain_geometry');
   stages.push('unity_modular_assembly');
   stages.push('unity_environment_art');
   stages.push('official_camera_validation');
 }
 if (req.profile === 'environment_surface') {
+  stages.push('qwen_artist_material_and_scene_direction');
   stages.push('unity_surface_diagnosis');
   if (cap.blender_bake || cap.blender_material_consolidation) {
     stages.push('blender_surface_processing');
@@ -55,6 +58,8 @@ if (req.profile === 'environment_surface') {
   stages.push('official_camera_validation');
 }
 if (req.profile === 'environment_new_geometry') {
+  stages.push('qwen_authored_mesh_design_and_reuse_decision');
+  stages.push('blender_mcp_safe_action_plan');
   stages.push('geometry_gap_evidence');
   stages.push('screen_space_art_brief');
   if (!allowTripo) {
@@ -124,10 +129,15 @@ const plan = {
   validation: req.validation || {},
   capabilities_requested: cap,
   blender_authoring_standard: req.profile === 'environment_new_geometry' ? 'BLENDER_PROFESSIONAL_V1' : null,
-  required_verdicts: req.profile === 'environment_new_geometry' ? ['TECH_PASS','ART_SOURCE_PASS','INTEGRATED_VISUAL_PASS'] : ['TECH_PASS','INTEGRATED_VISUAL_PASS'],
+  ai_authorship_policy: req.ai_authorship_policy || 'legacy-active-request',
+  artist_cycle_path: req.artist_cycle_path || null,
+  required_verdicts: req.profile === 'environment_new_geometry' ? ['TECH_PASS','ART_SOURCE_PASS','INTEGRATED_VISUAL_PASS','AI_AUTHORING_PROOF'] : ['TECH_PASS','INTEGRATED_VISUAL_PASS','AI_AUTHORING_PROOF'],
   fallback
 };
 
+if (req.geometry_gap_proven === true && ['environment_composition','environment_surface'].includes(req.profile)) {
+  stages.push('artist_cycle_evidence_gate');
+}
 const json = JSON.stringify(plan, null, 2);
 console.log('ART_PRODUCTION_PLAN=PASS');
 console.log(json);

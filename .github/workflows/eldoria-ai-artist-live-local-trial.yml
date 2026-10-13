@@ -1,0 +1,124 @@
+name: Eldoria live local Qwen 2B fallback to Blender authoring trial
+on:
+  push:
+    branches: ['promotion/eldoria-ai-authoring-core-20261012']
+    paths: ['.github/workflows/eldoria-ai-artist-live-local-trial.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-ai-real-authoring-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  authentic-ai-authoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and its glTF requirements
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+      - name: Recover frozen model and GENUINE Unity frame (not synthetic screenshots)
+        run: |
+          mkdir -p /tmp/eldoria-ai-real/source /tmp/eldoria-ai-real/unity /tmp/eldoria-ai-real/result
+          gh run download 38260070066 --repo "${{ github.repository }}" --name eldoria-coherent-cliff-v5-38260070066 --dir /tmp/eldoria-ai-real/source
+          gh run download 38260643740 --repo "${{ github.repository }}" --name eldoria-coherent-cliff-v5-unity-38260643740 --dir /tmp/eldoria-ai-real/unity
+          FROZEN_BLEND=$(find /tmp/eldoria-ai-real/source -type f -name 'cliff_coherent_v5.blend' -print -quit)
+          FROZEN_GLB=$(find /tmp/eldoria-ai-real/source -type f -name 'cliff_coherent_v5.glb' -print -quit)
+          IMG=$(find /tmp/eldoria-ai-real/unity -type f -name 'before-neutral.png' -print -quit)
+          test -n "$FROZEN_BLEND" && test -s "$FROZEN_BLEND" && test -n "$FROZEN_GLB" && test -s "$FROZEN_GLB" && test -n "$IMG" && test -s "$IMG"
+          echo "FROZEN_GLTF=$FROZEN_GLB" >> "$GITHUB_ENV"
+          echo "SOURCE_BLEND=/tmp/eldoria-ai-real/source/derived-imported-v5.blend" >> "$GITHUB_ENV"
+          echo "GENUINE_UNITY_BEFORE=$IMG" >> "$GITHUB_ENV"
+          sha256sum "$FROZEN_BLEND" "$FROZEN_GLB" "$IMG" references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          python3 - <<'PY'
+          import os,pathlib
+          b=pathlib.Path(os.environ.get('FROZEN_BLEND','/tmp/eldoria-ai-real/source/cliff_coherent_v5/cliff_coherent_v5.blend')).read_bytes()
+          assert b[:4]==bytes.fromhex('28b52ffd'),'Archived V5 .blend is expected Blender5 zstd; never overwrite it'
+          print('FROZEN_SOURCE_ARCHIVE_PROTECTED',len(b),'bytes zstd Blender5 original')
+          PY
+      - name: Inspect real V5 Blender source and choose existing terrain object
+        run: |
+          cat > /tmp/eldoria-ai-real/select-target.py <<'PY'
+          import bpy,os,pathlib,hashlib
+          frozen=pathlib.Path(os.environ['FROZEN_GLTF'])
+          assert frozen.is_file() and frozen.read_bytes()[:4]==b'glTF','Frozen V5 GLB source signature required'
+          print('V5_IMPORT_FROZEN_GLB_SHA256',hashlib.sha256(frozen.read_bytes()).hexdigest())
+          bpy.ops.object.select_all(action='SELECT')
+          bpy.ops.object.delete(use_global=False)
+          bpy.ops.import_scene.gltf(filepath=str(frozen))
+          bpy.ops.wm.save_as_mainfile(filepath=os.environ['SOURCE_BLEND'])
+          print('DERIVED_BLENDER_SOURCE_SAVED',os.environ['SOURCE_BLEND'])
+          objs=[o for o in bpy.data.objects if o.type=='MESH' and len(o.data.vertices)>=10]
+          if not objs:raise ValueError('Frozen original has no mesh with sculptable topology')
+          objs=sorted(objs,key=lambda o:(any(k in o.name.lower() for k in ['cliff','rock','terrain','bedrock']),len(o.data.vertices)),reverse=True)
+          target=objs[0]
+          print('VERIFIED_FROZEN_MESH',target.name,'vertices',len(target.data.vertices),'dimensions',list(target.dimensions))
+          if len(target.data.vertices)>250000:raise ValueError('Target exceeds safe trial vertex budget')
+          pathlib.Path('/tmp/eldoria-ai-real/target.txt').write_text(target.name)
+          PY
+          blender -b --python-exit-code 1 --python /tmp/eldoria-ai-real/select-target.py
+          TARGET="$(cat /tmp/eldoria-ai-real/target.txt)"
+          echo "TARGET_MESH=$TARGET" >> "$GITHUB_ENV"
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$SOURCE_BLEND" --inspect --inspect-target-object "$TARGET" --out /tmp/eldoria-ai-real/context
+      - name: Start isolated local Ollama (CPU only, no paid cloud)
+        run: |
+          docker run --rm -d --name eldoria-qwen-local -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/eldoria-ai-real/ollama-version.json; then break; fi; sleep 2; done
+          test -s /tmp/eldoria-ai-real/ollama-version.json
+          docker exec eldoria-qwen-local ollama pull qwen3-vl:2b-instruct
+          docker exec eldoria-qwen-local ollama show qwen3-vl:2b-instruct | head -30
+          curl -fsS http://127.0.0.1:11434/api/version
+      - name: Real Qwen2B 16K context and two-image system-role AUTHORING inference
+        timeout-minutes: 14
+        run: |
+          python3 tools/art-direction/ai-authoring/author_brief.py \
+            --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+            --unity-before "$GENUINE_UNITY_BEFORE" \
+            --target-object "$TARGET_MESH" --target-mode existing \
+            --mesh-context /tmp/eldoria-ai-real/context/mesh-context.json \
+            --model qwen3-vl:2b-instruct \
+            --out /tmp/eldoria-ai-real/result
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/eldoria-ai-real/result/artist-plan.json "$TARGET_MESH" existing
+      - name: Execute model-selected REAL Blender structural edits
+        timeout-minutes: 8
+        run: |
+          SOURCE_SHA=$(sha256sum "$SOURCE_BLEND" | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$SOURCE_BLEND" --plan /tmp/eldoria-ai-real/result/artist-plan.json \
+            --out /tmp/eldoria-ai-real/result/blender --transport direct \
+            --expected-source-sha256 "$SOURCE_SHA"
+          python3 - <<'PY'
+          import json,pathlib,hashlib,os
+          root=pathlib.Path('/tmp/eldoria-ai-real/result')
+          inference=json.loads((root/'artist-inference.json').read_text())
+          plan=json.loads((root/'artist-plan.json').read_text())
+          proof=json.loads((root/'blender/artist-execution.json').read_text())
+          assert inference['system_role']=='system' and inference['model']=='qwen3-vl:2b-instruct'
+          assert inference['direction']['planned_actions']==plan
+          assert proof['plan_sha256']==hashlib.sha256((root/'artist-plan.json').read_bytes()).hexdigest()
+          assert proof['source_sha256']==hashlib.sha256(pathlib.Path(os.environ['SOURCE_BLEND']).read_bytes()).hexdigest()
+          assert proof['executed_actions'] and len(proof['executed_actions'])==len(plan)
+          assert proof['source_mesh_sha256']!=proof['result_mesh_sha256'],'Purely material changes cannot claim sculpting'
+          print('REAL_QWEN_AUTHORSHIP_BLENDER_PASS',len(plan),'planned/executed actions')
+          PY
+      - name: Conserve bounded real evidence, never ART_APPROVED
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-qwen-blender-real-trial-${{ github.run_id }}
+          path: |
+            /tmp/eldoria-ai-real/target.txt
+            /tmp/eldoria-ai-real/ollama-version.json
+            /tmp/eldoria-ai-real/context/mesh-context.json
+            /tmp/eldoria-ai-real/result/artist-inference.json
+            /tmp/eldoria-ai-real/result/artist-plan.json
+            /tmp/eldoria-ai-real/result/blender/artist-execution.json
+            /tmp/eldoria-ai-real/result/blender/artist-output.blend
+            /tmp/eldoria-ai-real/result/blender/artist-output.glb
+          retention-days: 7
+          if-no-files-found: warn

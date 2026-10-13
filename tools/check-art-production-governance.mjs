@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { requireMatchingApprovedCycle } from './art-direction/ai-authoring/approval-boundary.mjs';
 
 const registryPath='pipeline/active-workstreams.json';
 const requestDir='pipeline/art-production-requests';
@@ -24,6 +25,26 @@ for(const workstream of registry.active || []){
   if(req.request_id!==workstream.id) failures.push(workstream.id+': request_id must exactly match active id.');
   if(req.enabled!==true) failures.push(workstream.id+': required request must have enabled=true.');
   if(String(req.status||'').toUpperCase()!=='ACTIVE') failures.push(workstream.id+': required request status must be ACTIVE.');
+  // Permanent owner mandate: future art workstreams must use the versioned AI artist.
+  // Explicitly grandfather ONLY the two already-active owners: never rewrite their claims.
+  const grandfathered=new Set(['world-region-1-visual-convergence-v3-20261010','valoria-bastion1-player-scene-integration-20261012']);
+  if(!grandfathered.has(workstream.id)&&req.ai_authorship_policy!=='required'){
+    failures.push(workstream.id+': every new art request requires ai_authorship_policy=required.');
+  }
+  const gateState=String(req.visual_gate_state||'').toUpperCase();
+  if(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED'].includes(gateState)){
+    if(!req.artist_cycle_path) failures.push(workstream.id+': ART approval requires artist_cycle_path.');
+    else try {
+      // WIP evidence is allowed for an open cycle, NEVER for an approved
+      // request. The evidence verifier intentionally returns PASS for WIP
+      // structure: require exact approved STATE at the production boundary.
+      const cyclePath=path.resolve(process.cwd(),req.artist_cycle_path);
+      if(!cyclePath.startsWith(process.cwd()+path.sep)) throw new Error('Artist cycle must reside inside the repository');
+      const cycle=JSON.parse(fs.readFileSync(cyclePath,'utf8'));
+      requireMatchingApprovedCycle(cycle,req,workstream.id);
+      execFileSync(process.execPath,['tools/art-direction/ai-authoring/verify-artist-cycle.mjs',cyclePath,process.cwd()],{stdio:'pipe'});
+    }catch(err){failures.push(workstream.id+': artist cycle proof FAIL: '+String(err.stderr||err.message).trim());}
+  }
   try { execFileSync(process.execPath,['tools/plan-art-production.mjs',expected],{stdio:'pipe'}); }
   catch(err){ failures.push(workstream.id+': planner FAIL for '+expected+': '+String(err.stderr||err.message).trim()); }
 }

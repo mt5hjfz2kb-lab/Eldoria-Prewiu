@@ -10,9 +10,18 @@ on:
       - 'pipeline/art-production-requests/**'
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
+      - 'tools/art-direction/ai-authoring/**'
+      - 'art-source/**'
+      - 'Unity/Assets/Eldoria/**' # Include every location where art assets/prefabs/materials may be introduced
+      - 'Unity/Assets/Eldoria/ArtTests/**'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+      - 'Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity'
+      - 'tools/valoria-bastion1-assembly/**'
+      - 'tools/check-art-changed-scope*'
       - 'pipeline/visual-fallback-policy.json'
       - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
       - 'AGENTS.md'
+      - 'docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md'
   pull_request:
     branches: [main]
     paths:
@@ -20,6 +29,14 @@ on:
       - 'pipeline/art-production-requests/**'
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
+      - 'tools/art-direction/ai-authoring/**'
+      - 'art-source/**'
+      - 'Unity/Assets/Eldoria/**' # Include every location where art assets/prefabs/materials may be introduced
+      - 'Unity/Assets/Eldoria/ArtTests/**'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+      - 'Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity'
+      - 'tools/valoria-bastion1-assembly/**'
+      - 'tools/check-art-changed-scope*'
 
 permissions:
   contents: read
@@ -34,8 +51,46 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Enforce universal art-production routing
         run: node tools/check-art-production-governance.mjs
+      - name: Reject unclaimed 3D assets and Unity art scenes
+        env:
+          ART_EVENT: ${{ github.event_name }}
+          ART_PR_BASE: ${{ github.event.pull_request.base.sha }}
+          ART_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          ART_PUSH_BEFORE: ${{ github.event.before }}
+          ART_PUSH_AFTER: ${{ github.sha }}
+        run: |
+          if [ "$ART_EVENT" = "workflow_dispatch" ]; then
+            : > /tmp/eldoria-art-changed-files.txt
+          else
+            if [ "$ART_EVENT" = "pull_request" ]; then
+              base="$ART_PR_BASE"; head="$ART_PR_HEAD"
+            else
+              base="$ART_PUSH_BEFORE"; head="$ART_PUSH_AFTER"
+            fi
+            if [ -z "$base" ] || [ -z "$head" ]; then
+              echo "ART_SCOPE_FAIL: missing base/head SHAs"; exit 1
+            fi
+            git diff --name-only "$base" "$head" > /tmp/eldoria-art-changed-files.txt
+          fi
+          node tools/check-art-changed-scope.mjs --changed-files /tmp/eldoria-art-changed-files.txt
+      - name: Regression test permanent art change ownership
+        run: node --test tools/check-art-changed-scope.test.mjs
+      - name: Reject false approval from WIP or foreign-workstream art cycles
+        run: node --test tools/art-direction/ai-authoring/approval-boundary.test.mjs
+      - name: Verify real AI sculpting evidence contract
+        run: node --test tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs
+      - name: Test constrained but autonomous Qwen spatial-plan schema
+        run: python3 tools/art-direction/ai-authoring/test_cpu_artist_schema.py
+      - name: Reject non-sculpting Qwen plans and test real-model repair feedback
+        run: python3 tools/art-direction/ai-authoring/test_artist_plan_validation.py
+      - name: Reject invisible camera-space artistic edits
+        run: python3 tools/art-direction/ai-authoring/visibility_metrics.test.py
+      - name: Validate zero-cost Qwen and Blender automation scripts
+        run: python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py tools/art-direction/ai-authoring/visibility_metrics.py
