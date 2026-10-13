@@ -303,9 +303,9 @@ jobs:
             --failed-plan "$ART/prior/model/artist-plan.json" --failed-review "$ART/prior/ab/comparison.json" \
             --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
-            --model qwen3-vl:8b-instruct --num-ctx 8192 --num-predict 900 --max-actions 1 \
+            --model qwen3-vl:8b-instruct --num-ctx 8192 --num-predict 750 --max-actions 1 \
             --camera-min-radius 12 --camera-min-displacement 1.5 \
-            --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
+            --cpu-compact --repair-attempts 1 --request-timeout 960 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
           import json,os,pathlib
