@@ -56,3 +56,9 @@ Visual score remains approximately **4.5/10 pending independent artistic accepta
 - Genuine images show **no pasted-on dark paths**, and a more variegated original grass/earth material. The empty yard is still underpopulated; this is an incremental tonal improvement, **not 6/10**. No architectural or terrain-vertex edits.
 - Based on direct inspection, retain the native-ground-material strategy as a candidate, but require spatial composition work for further advancement. Score remains ~5/10, art approval pending broader scene quality.
 - Next test reuses the actual already-selected `EA03_Nature_Bush_01a_LOD0` geometry, 12 instances along the courtyard perimeter, to soften wall/soil contacts while leaving the central axial route free. No resource nodes. Run [38470564008](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38470564008) pending; do not claim accepted until native frames are inspected.
+
+## Selected vegetation — actual scale gate
+
+- Native Unity run **38470545151 SUCCESS**: 57,037 / 1,440,000 = **3.960903%** changed pixels, artifact **11851368370**.
+- 12 instances of the existing `EA03_Nature_Bush_01a_LOD0` mesh were placed at courtyard lateral edges without touching the road, and original materials retained. **Art assessment: too small to be readable at native camera scale**, only ~534 additional pixels compared with the native-soil candidate. Do not claim significant visual advance or 6/10.
+- Next camera-scale test multiplies their inherited original source scale by **2.35**, keeping identical positions, original selected meshes, mobile-friendly shared geometry and same Unity A/B. Workflow [38471224337](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38471224337). Reject if bushes appear oversized or overlap structures; never promote automatically.
