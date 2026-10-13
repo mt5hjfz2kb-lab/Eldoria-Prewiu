@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Zero-cost regression: original rejection evidence must change next decisions."""
 import json
+import base64
+import hashlib
 import pathlib
 import tempfile
 import unittest
@@ -27,9 +29,17 @@ class LearningEvidenceTests(unittest.TestCase):
     self.addCleanup(self.temp.cleanup)
     self.root=pathlib.Path(self.temp.name)
  def cycle(self, i, typ='sculpt_region', changed=0, forged=None):
-    p=self.root/f'{i}-plan.json';r=self.root/f'{i}-review.json'
+    folder=self.root/str(i);folder.mkdir(exist_ok=True)
+    p=folder/'artist-plan.json';r=folder/'comparison.json'
     p.write_text(json.dumps([action(typ)]),'utf8')
-    r.write_text(json.dumps(forged if forged is not None else review(changed)),'utf8')
+    png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/iFsAAAAASUVORK5CYII=')
+    for name in ('before','after'):
+        (folder/f'{name}-blender-clay.png').write_bytes(png)
+    v=forged if forged is not None else review(changed)
+    for name in ('before','after'):
+        if f'{name}_image_sha256' in v:
+            v[f'{name}_image_sha256']=hashlib.sha256(png).hexdigest()
+    r.write_text(json.dumps(v),'utf8')
     return p,r
  def load(self, pairs):
     return load_failed_cycles([p for p,_ in pairs],[r for _,r in pairs],TARGET)
@@ -56,6 +66,16 @@ class LearningEvidenceTests(unittest.TestCase):
     with self.assertRaises(ValueError):self.load([self.cycle(1,forged=v)])
     v=review();del v['before_image_sha256']
     with self.assertRaises(ValueError):self.load([self.cycle(2,forged=v)])
+ def test_missing_or_tampered_original_png_fails_closed(self):
+    p,r=self.cycle(1)
+    (r.parent/'before-blender-clay.png').unlink()
+    with self.assertRaises(ValueError):self.load([(p,r)])
+    p,r=self.cycle(2)
+    (r.parent/'after-blender-clay.png').write_bytes(b'not a PNG')
+    with self.assertRaises(ValueError):self.load([(p,r)])
+    p,r=self.cycle(3)
+    (r.parent/'after-blender-clay.png').write_bytes((r.parent/'after-blender-clay.png').read_bytes()+b'changed')
+    with self.assertRaises(ValueError):self.load([(p,r)])
  def test_no_plan_or_different_target_rejected(self):
     p,r=self.cycle(1);p.write_text(json.dumps([{'type':'sculpt_region','target':'another'}]),'utf8')
     with self.assertRaises(ValueError):self.load([(p,r)])
