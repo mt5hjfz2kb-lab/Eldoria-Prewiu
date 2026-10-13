@@ -27,6 +27,9 @@ namespace Eldoria.AssetLibrary
             public string id, origin, source_relative, resource_key, sha256, role, tier;
             public string source_commit, render_verification, comment;
             public float score;
+            // Blender audit metrics are immutable source data, never measured mobile FPS.
+            public int source_triangles, source_blender_mesh_objects, source_materials, source_texture_images;
+            public bool asset_budget_review_required, mobile_performance_verified;
             public bool unity_verified;
         }
 
