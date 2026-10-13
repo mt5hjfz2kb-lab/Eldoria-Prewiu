@@ -13,12 +13,12 @@ concurrency:
 jobs:
   qwen-directed-geometry:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 65
     env:
       GH_TOKEN: ${{ github.token }}
       ART_CORE_SHA: 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745
-      SOURCE_RUN: '38356683511'
-      SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
+      SOURCE_RUN: '38395469618'
+      SOURCE_SHA: 'c53108d7160160d55743b460526a03a2443031bc'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
       ART: /tmp/bastion1-author
     steps:
@@ -49,7 +49,7 @@ jobs:
           import os,hashlib,json,pathlib
           root=pathlib.Path(os.environ['ART'])
           src=list((root/'inputs').rglob('Bastion1ReferenceAssembly.glb'))
-          image=list((root/'inputs').rglob('bastion1-player-initial.png'))
+          image=[p for p in (root/'inputs').rglob('bastion1-player-initial.png') if 'Bastion1MaterialAB/after' in p.as_posix()]
           assert len(src)==len(image)==1,(src,image)
           ref=pathlib.Path('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg')
           assert ref.is_file()
@@ -95,7 +95,7 @@ jobs:
           docker run -d --rm --name bastion1-qwen-vision -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > "$ART/ollama-version.json"; then break; fi; sleep 2; done
           test -s "$ART/ollama-version.json"
-          docker exec bastion1-qwen-vision ollama pull qwen3-vl:4b-instruct
+          docker exec bastion1-qwen-vision ollama pull qwen3-vl:8b-instruct
       - name: Derive bounded image copies from REAL Unity/reference, retaining hashes
         run: |
           /usr/bin/python3 - <<'PY'
@@ -214,7 +214,7 @@ jobs:
           manifest['sample_vertices']=samples+manifest['sample_vertices'][:3]
           f.write_text(json.dumps(manifest,indent=2))
           (root/'inventory.txt').write_text(
-            'PREVIOUS ACTUAL BLENDER ARTIST CAMERA A/B VISIBILITY FAIL: Qwen chose '
+            'NEW OBSERVATION: CC0 materials were imported and captured in real Unity run 38395469618. The soil is visually rejected as too brown, not approved. Preserve its current slots/UVs during geometry authorship; palette will be corrected separately in Unity. Qwen4B repeatedly chose insufficient edits; this is a genuinely stronger Qwen8B reauthoring from the new integrated full scene and measured source, not a replay. PREVIOUS ACTUAL BLENDER ARTIST CAMERA A/B VISIBILITY FAIL: Qwen chose '
             'radius 1.0 m and delta 0.2 m; 0/307200 pixels changed materially. '
             'Previous Unity scene sculpt (828 vertices) changed only 125/1440000 '
             'pixels at >10 RGB (0.00868%). Both are ART_REJECTED. An environment '
@@ -246,7 +246,7 @@ jobs:
           PY
           blender -b --python-exit-code 1 --python "$ART/visible-anchors.py"
       - name: NEW local Qwen visual decision for visible player-camera cliff
-        timeout-minutes: 27
+        timeout-minutes: 45
         shell: bash
         run: |
           python3 tools/art-direction/ai-authoring/author_brief.py \
@@ -257,16 +257,16 @@ jobs:
             --failed-plan "$ART/prior/model/artist-plan.json" --failed-review "$ART/prior/ab/comparison.json" \
             --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
-            --model qwen3-vl:4b-instruct --num-ctx 8192 --num-predict 1000 --max-actions 2 \
+            --model qwen3-vl:8b-instruct --num-ctx 8192 --num-predict 1500 --max-actions 2 \
             --camera-min-radius 12 --camera-min-displacement 1.5 \
-            --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
+            --cpu-compact --repair-attempts 1 --request-timeout 1200 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
           import json,os,pathlib
           r=pathlib.Path(os.environ['ART'])
           inference=json.loads((r/'model/artist-inference.json').read_text())
           ops=json.loads((r/'model/artist-plan.json').read_text())
-          assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
+          assert inference['model']=='qwen3-vl:8b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==ops
           assert len(inference.get('rejected_visual_cycle_evidence',[]))==2, 'must use two real rejected cycles'
           assert any(op['type']!='sculpt_region' for op in ops), 'do not repeat two invisible sculpt_region strategies'
@@ -303,7 +303,7 @@ jobs:
           plan=json.loads((root/'model/artist-plan.json').read_text())
           inference=json.loads((root/'model/artist-inference.json').read_text())
           proof=json.loads((root/'result/artist-execution.json').read_text())
-          assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
+          assert inference['model']=='qwen3-vl:8b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==plan
           assert len(plan)==len(proof['executed_actions'])
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
