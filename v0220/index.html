@@ -1912,7 +1912,7 @@ window.dialogue = function(name, copy, done) {
 </style>
 <script>
 /* Existing QA fixtures are loaded only in explicit developer QA mode. */
-if(new URLSearchParams(location.search).get('qa')==='1'){
+if(new URLSearchParams(location.search).get('qa')==='1'&&new URLSearchParams(location.search).get('qaLauncher')==='1'){
  const fixture=document.createElement('script');
  fixture.src='js/qa-fixtures.js';
  fixture.onload=()=>{const launcher=document.createElement('script');launcher.src='js/qa-launcher.js';document.body.appendChild(launcher)};
