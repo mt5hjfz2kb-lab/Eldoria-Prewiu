@@ -180,19 +180,6 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Edited mountain GLB material check failed'}
           Copy-Item ([System.IO.Path]::ChangeExtension($out,'.proof.json')) "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/distant-mountain-proof.json" -Force
           Write-Host 'BASTION1_DISTANT_MOUNTAIN_ONLY_EDITED_UNITY_NEXT'
-      - name: Capture exact native Unity BEFORE from current verified source
-        shell: powershell
-        run: |
-          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-SameCamera-Before.log'
-          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(900000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'BEFORE Unity timed out'}
-          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'BEFORE native Unity failed'}
-          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
-          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
-          if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Real before camera frame missing'}
-          Write-Host 'BASTION1_NATIVE_SAME_CAMERA_BEFORE_CAPTURED'
-      # ART V4: native soil albedo plus visibly scaled reused selected bush meshes.
       - name: Compose courtyard perimeter and secondary paths on verified baseline
         shell: powershell
         run: |
@@ -207,6 +194,62 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Courtyard material bindings failed'}
           Copy-Item ([System.IO.Path]::ChangeExtension($out,'.proof.json')) "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/courtyard-composition-proof.json" -Force
           Write-Host 'BASTION1_COURTYARD_COMPOSED_NATIVE_UNITY_NEXT'
+
+      - name: Recover actual Qwen 4B medieval architectural proposal
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-qwen-architecture-proposal-38475192811
+          run-id: 38475192811
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1QwenGuardProposal
+      - name: Verify original AI composition and evidence before building
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'Bastion1QwenGuardProposal'
+          $plan=Join-Path $base 'qwen-architecture-proposal.json'
+          $inf=Join-Path $base 'inference-proof.json'
+          if(-not (Test-Path $plan) -or -not (Test-Path $inf)){throw 'Missing original local Qwen inference'}
+          $digest=(Get-FileHash $plan -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($digest -ne '96feeed43029b41ecb82db196c4fdd6ec7e937ad9ec7d884d2d7f0f8dbac87bb'){throw 'Qwen proposal content mismatch'}
+          $p=Get-Content $plan -Raw | ConvertFrom-Json
+          $i=Get-Content $inf -Raw | ConvertFrom-Json
+          if($i.model -ne 'qwen3-vl:4b-instruct' -or $i.done -ne $true -or $i.duration_s -le 0){throw 'Qwen not genuinely executed'}
+          if(-not $p.concept -or -not $p.site -or -not $p.why_player_camera -or -not $p.composition -or @($p.functional_risks).Count -lt 1){throw 'Invalid composition decision'}
+          if(-not (@($p.existing_assets) -contains 'defensive_props') -or -not (@($p.existing_assets) -contains 'stone_path_platform')){throw 'AI selected unverified props'}
+          if($p.site -notmatch 'x[~= ]*-20' -or $p.site -notmatch 'y[~= ]*-12'){throw 'AI site differs from documented west-wall option'}
+          New-Item -ItemType Directory -Force "$env:GITHUB_WORKSPACE/Bastion1MaterialAB" | Out-Null
+          Copy-Item $plan "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-guard-plan.json"
+          Copy-Item $inf "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-guard-inference.json"
+          Add-Content $env:GITHUB_ENV "BASTION_GUARD_PLAN=$plan"
+          Write-Host "QWEN_REAL_ART_PROPOSAL_CONFIRMED run=38475192811 sha=$digest"
+      - name: Capture exact native Unity BEFORE from current verified source
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-SameCamera-Before.log'
+          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(900000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'BEFORE Unity timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'BEFORE native Unity failed'}
+          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
+          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
+          if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Real before camera frame missing'}
+          Write-Host 'BASTION1_NATIVE_SAME_CAMERA_BEFORE_CAPTURED'
+      # ART V4: native soil albedo plus visibly scaled reused selected bush meshes.
+
+      - name: Build AI-selected medieval west-wall focal group in Blender
+        shell: powershell
+        run: |
+          $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'Bastion1GuardProposalCandidate.glb'
+          & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/compose_bastion_guard_station.py -- $src $env:BASTION_GUARD_PLAN $out
+          if($LASTEXITCODE -ne 0){throw 'AI-directed Blender composition failed'}
+          $proof=Get-Content ([System.IO.Path]::ChangeExtension($out,'.proof.json')) -Raw | ConvertFrom-Json
+          if($proof.ai_proposal_sha256 -ne '96feeed43029b41ecb82db196c4fdd6ec7e937ad9ec7d884d2d7f0f8dbac87bb' -or $proof.existing_source_meshes_modified -ne $false -or $proof.road_clearance_m -lt 9 -or $proof.new_resource_nodes -ne 0 -or $proof.reused_prop_meshes -lt 1 -or $proof.reused_paving_meshes -lt 1){throw 'AI-directed candidate violates no-obstruction/reuse contract'}
+          Copy-Item $out $src -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $src
+          if($LASTEXITCODE -ne 0){throw 'Architectural materials invalid'}
+          Copy-Item ([System.IO.Path]::ChangeExtension($out,'.proof.json')) "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-guard-blender-proof.json"
+          Write-Host "QWEN_COMPOSITION_BLENDER_EXECUTED deterministic_geometry=true qwen_decided_concept=true"
       - name: Capture real Unity AFTER and preserve playable candidate
         shell: powershell
         run: |
