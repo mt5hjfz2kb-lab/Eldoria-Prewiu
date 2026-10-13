@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 
 const ROOT=path.dirname(fileURLToPath(import.meta.url));
 const HEX=/^[0-9a-f]{64}$/;
+const GIT_SHA=/^[0-9a-f]{40}$/;
 const STATES=new Set(['REJECT_NOT_VISIBLE','REVIEW_REQUIRED','NOT_MEASURED']);
 const ART=new Set(['ART_REJECTED','ART_UNREVIEWED']);
 const TRUST=new Set(['run_log_reviewed','pending_verification']);
@@ -21,7 +22,7 @@ export function validate(db) {
     const fail=t=>errors.push(id+': '+t);
     if(!/^eldoria-[a-z0-9-]+$/.test(id)) fail('invalid ID');
     if(ids.has(id))fail('duplicate case');ids.add(id);
-    if(!positive(c.source?.run_id)||!HEX.test(c.source?.git_sha||'')||!TRUST.has(c.source?.evidence_level))
+    if(!positive(c.source?.run_id)||!GIT_SHA.test(c.source?.git_sha||'')||!TRUST.has(c.source?.evidence_level))
       fail('invalid run provenance');
     if(c.source?.url!=='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/'+c.source?.run_id)
       fail('run URL/id mismatch');
