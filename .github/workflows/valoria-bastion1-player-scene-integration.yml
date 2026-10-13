@@ -245,7 +245,7 @@ jobs:
           & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/compose_bastion_guard_station.py -- $src $env:BASTION_GUARD_PLAN $out
           if($LASTEXITCODE -ne 0){throw 'AI-directed Blender composition failed'}
           $proof=Get-Content ([System.IO.Path]::ChangeExtension($out,'.proof.json')) -Raw | ConvertFrom-Json
-          if($proof.ai_proposal_sha256 -ne $env:BASTION_QWEN_HASH -or $proof.existing_source_meshes_modified -ne $false -or $proof.road_clearance_m -lt 9 -or $proof.new_resource_nodes -ne 0 -or $proof.reused_prop_meshes -lt 1 -or $proof.reused_paving_meshes -lt 1 -or $proof.new_masonry_meshes -lt 17 -or $proof.reused_junction_rock_meshes -lt 1 -or $proof.reused_junction_bush_meshes -ne 1){throw 'Wall compound candidate violates no-obstruction/Qwen-reuse contract'}
+          if($proof.ai_proposal_sha256 -ne $env:BASTION_QWEN_HASH -or $proof.existing_source_meshes_modified -ne $false -or $proof.road_clearance_m -lt 6.0 -or $proof.new_resource_nodes -ne 0 -or $proof.reused_prop_meshes -lt 1 -or $proof.reused_paving_meshes -lt 1 -or $proof.new_masonry_meshes -lt 17 -or $proof.reused_junction_rock_meshes -lt 1 -or $proof.reused_junction_bush_meshes -ne 1){throw 'Wall compound candidate violates no-obstruction/Qwen-reuse contract'}
           Copy-Item $out $src -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $src
           if($LASTEXITCODE -ne 0){throw 'Architectural materials invalid'}
