@@ -1,6 +1,6 @@
 # Eldoria — desarrollo canónico Unity
 
-> **Entrada operativa:** leer [AGENTS.md](AGENTS.md), el estado actual en [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [PROJECT_STATE.md](PROJECT_STATE.md) y la propiedad activa en [pipeline/active-workstreams.json](pipeline/active-workstreams.json). El repositorio `main` y los resultados verificables prevalecen sobre la memoria del chat y los registros históricos.
+> **Índice documental único:** [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md). **Entrada operativa:** leer [AGENTS.md](AGENTS.md), el estado actual en [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [PROJECT_STATE.md](PROJECT_STATE.md) y la propiedad activa en [pipeline/active-workstreams.json](pipeline/active-workstreams.json). El repositorio `main` y los resultados verificables prevalecen sobre la memoria del chat y los registros históricos.
 
 ## Juego principal
 

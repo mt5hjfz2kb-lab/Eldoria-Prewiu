@@ -24,3 +24,7 @@ jobs:
           fetch-depth: 1
       - name: Enforce repository architecture invariants
         run: node tools/check-repository-architecture.mjs
+      - name: Validate documentation catalogue and local links
+        run: node tools/check-documentation-governance.mjs
+      - name: Test documentation governance (positive and negative cases)
+        run: node --test tools/check-documentation-governance.test.mjs
