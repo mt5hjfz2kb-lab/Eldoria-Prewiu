@@ -1,0 +1,44 @@
+name: Bastion I original player-camera visible surface probe
+on:
+  push:
+    branches: [art/bastion1-gpt6-directed-scarp-lookdev-20261013]
+    paths:
+      - 'tools/valoria-bastion1-assembly/visible_camera_surface_probe.py'
+      - '.github/workflows/bastion1-original-camera-surface-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-camera-raycast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ROOT: /tmp/bastion1-camera-probe
+      TARGET: Valoria natural playable hilltop and rock scarps
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original never-overwritten Qwen diagnostic terrain
+        run: |
+          mkdir -p "$ROOT/source" "$ROOT/diagnosis"
+          gh run download 38384261910 --repo "${{ github.repository }}" \
+            --name bastion1-genuine-qwen-artist-38384261910 --dir "$ROOT/source"
+          sha256sum "$ROOT/source/terrain-source.blend"
+          test "$(sha256sum "$ROOT/source/terrain-source.blend" | cut -d' ' -f1)" = 4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880
+      - name: Install free Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+      - name: Ray-cast real frozen strategic camera against original terrain
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/visible_camera_surface_probe.py -- \
+            --source "$ROOT/source/terrain-source.blend" \
+            --source-sha256 4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880 \
+            --target "$TARGET" --out "$ROOT/diagnosis"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-camera-visible-surface-${{ github.run_id }}
+          path: /tmp/bastion1-camera-probe/diagnosis/source-camera-surface-map.json
+          retention-days: 14
