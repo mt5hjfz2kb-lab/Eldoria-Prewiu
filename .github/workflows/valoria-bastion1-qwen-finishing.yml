@@ -19,81 +19,23 @@ jobs:
       FINISH: /tmp/bastion1-qwen-finish
     steps:
       - uses: actions/checkout@v4
-      - name: Recover existing genuine artist reply and unchanged source; no re-inference
+      - name: Recover completed genuine finishing without repeating inference or geometry
         run: |
-          mkdir -p "$FINISH/input" "$FINISH/original-reply"
-          gh run download 38403329338 --repo "${{ github.repository }}" --name bastion1-qwen8b-current-grass-city-38403329338 --dir "$FINISH/input"
-          gh run download 38404956232 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-finishing-38404956232 --dir "$FINISH/original-reply"
-          python3 - <<'PYVERIFY'
-          import pathlib,os,hashlib,json,shutil
-          r=pathlib.Path(os.environ['FINISH']);s=r/'input/merged/Bastion1QwenScene.glb'
-          assert hashlib.sha256(s.read_bytes()).hexdigest()=='4a69ad6cbc12cb5391ce4f290a80a5641a3ed65c4adf86bf88c2ba89f347654f'
-          old=r/'original-reply';proof=json.loads((old/'inference-proof.json').read_text())
-          plan=old/'artist-plan.json';raw=old/f"raw-attempt-{proof['attempt']}.json"
-          assert proof['model']=='qwen3-vl:8b-instruct' and proof['parameters_modified'] is False
-          assert hashlib.sha256(plan.read_bytes()).hexdigest()==proof['plan_sha256']
-          assert hashlib.sha256(raw.read_bytes()).hexdigest()==proof['raw_sha256']
-          assert json.loads(json.loads(raw.read_text())['message']['content'])==json.loads(plan.read_text())
-          shutil.copyfile(s,r/'source.glb')
-          for f in old.iterdir():
-            if f.is_file():shutil.copyfile(f,r/f.name)
-          print('ORIGINAL_GENUINE_ARTIST_REPLY_RECOVERED_UNCHANGED',proof['plan_sha256'])
-          PYVERIFY
-      - name: Install missing free Blender import dependency; do not repeat AI decision
-        run: |
-          sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
-      - name: Execute unchanged authored brush and palette in Blender
-        run: |
-          blender -b --python-exit-code 1 --python tools/valoria-bastion1-finishing/execute.py -- --root "$FINISH"
+          mkdir -p "$FINISH"
+          gh run download 38406612333 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-finishing-38406612333 --dir "$FINISH"
+      - name: Transfer original artist RGB factors lost by the exporter
+        run: python3 tools/valoria-bastion1-finishing/fix_exported_factors.py --root "$FINISH"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: bastion1-genuine-qwen-finishing-${{ github.run_id }}
           path: |
-            /tmp/bastion1-qwen-finish/edited/**
+            /tmp/bastion1-qwen-finish/factor-corrected/**
+            /tmp/bastion1-qwen-finish/edited/*.blend
             /tmp/bastion1-qwen-finish/*proof.json
             /tmp/bastion1-qwen-finish/source-provenance.json
             /tmp/bastion1-qwen-finish/artist-plan.json
             /tmp/bastion1-qwen-finish/raw-attempt-*.json
             /tmp/bastion1-qwen-finish/reject-attempt-*.txt
             /tmp/bastion1-qwen-finish/*-vision.jpg
-          retention-days: 14
-  recover-real-unity-review:
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
-    env:
-      GH_TOKEN: ${{ github.token }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Recover successful exact native frames without another Unity execution
-        run: |
-          mkdir -p /tmp/unity-ab-input /tmp/unity-ab-review
-          gh run download 38405267853 --repo "${{ github.repository }}" --name bastion1-player-integration-38405267853 --dir /tmp/unity-ab-input
-          pip install --quiet pillow numpy
-          python3 - <<'PYDIFF'
-          import pathlib,json,hashlib,shutil,numpy as np
-          from PIL import Image
-          r=pathlib.Path('/tmp/unity-ab-input');out=pathlib.Path('/tmp/unity-ab-review');found={}
-          for phase in ('before','after'):
-            files=[p for p in r.rglob('bastion1-player-initial.png') if f'Bastion1MaterialAB/{phase}' in p.as_posix()];assert len(files)==1
-            f=files[0];found[phase]=f
-            d=out/phase;d.mkdir()
-            for p in f.parent.iterdir():
-              if p.is_file():shutil.copyfile(p,d/p.name)
-          c=[json.loads(pathlib.Path(str(found[p])+'.camera.json').read_text()) for p in ('before','after')]
-          assert c[0]==c[1], 'Native camera metadata differs'
-          a,b=[np.asarray(Image.open(found[p]).convert('RGB')).astype(np.int16) for p in ('before','after')]
-          assert a.shape==b.shape==(1000,1440,3)
-          delta=np.abs(a-b);changed=int(np.count_nonzero(delta.max(axis=2)>10));fraction=changed/(1440*1000)
-          proof={'scope':'real Unity same-frustum A/B, independent quality review still required','source_run':38405267853,'source_sha':'f27b7b94755acfa62511c260c0dac30eb54e5667','camera_identical':True,'threshold_rgb':10,'changed_pixels':changed,'changed_fraction':fraction,'mae':float(delta.mean()),'visibility_gate':'REVIEW_REQUIRED' if fraction>=.001 else 'REJECT_NOT_VISIBLE','art_approved':False}
-          for phase in ('before','after'):proof[phase+'_sha256']=hashlib.sha256(found[phase].read_bytes()).hexdigest()
-          (out/'real-unity-comparison.json').write_text(json.dumps(proof,indent=2));print('REAL_UNITY_AB_RECOVERED',json.dumps(proof))
-          for p in r.rglob('Bastion1-Unity-*.log'):shutil.copyfile(p,out/p.name)
-          PYDIFF
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: bastion1-real-unity-frames-38405267853-${{ github.run_id }}
-          path: /tmp/unity-ab-review/**
           retention-days: 14
