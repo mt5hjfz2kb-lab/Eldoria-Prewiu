@@ -114,12 +114,86 @@ jobs:
       - name: Stage matched existing before-frame without rerunning passed Unity work
         shell: powershell
         run: |
-          $previous=Join-Path $env:RUNNER_TEMP 'Bastion1PreviousUnity/Bastion1MaterialAB/after'
-          if(-not (Test-Path (Join-Path $previous 'bastion1-player-initial.png'))){throw 'Previously verified native baseline frame absent'}
+          # Artifact ZIP layout includes the original Windows upload root, which
+          # may differ across runs. Resolve the actual earlier AFTER frame by name.
+          $root=Join-Path $env:RUNNER_TEMP 'Bastion1PreviousUnity'
+          $candidates=@(Get-ChildItem -LiteralPath $root -Recurse -File -Filter 'bastion1-player-initial.png')
+          $after=@($candidates | Where-Object {$_.DirectoryName -match '(?i)[\\/]after
+      - name: Recover completed genuine Qwen8B fracture and palette finishing
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-genuine-qwen-finishing-38409277470
+          run-id: 38409277470
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1Qwen8B
+      - name: Stage exact merged Qwen geometry without re-inference or sculpting
+        shell: powershell
+        run: |
+          $root=Join-Path $env:RUNNER_TEMP 'Bastion1Qwen8B'
+          $src=Join-Path $root 'factor-corrected/Bastion1QwenFinish.glb'
+          $expected='9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Scope-masked Qwen city hash changed'}
+          $proof=Get-Content (Join-Path $root 'factor-corrected/execution-proof.json') -Raw | ConvertFrom-Json
+          if($proof.protected_plateau_changes -ne 0 -or $proof.changed_vertices -ne 2718){throw 'Qwen geometry ownership proof invalid'}
+          if($proof.parameters_modified -ne $false -or $proof.plan_sha256 -ne '714f34adc57ee8f7d1705dc59d7b8dd16a3ed97a16317e1f7b3c8af44e97fc0a'){throw 'Original artist plan changed'}
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
+          Copy-Item $src $dest -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dest
+          if($LASTEXITCODE -ne 0){throw 'Qwen texture binding staging failed'}
+          Copy-Item (Join-Path $root 'factor-corrected/execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
+      - name: Capture real Unity AFTER and preserve playable candidate
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-After.log'
+          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own AFTER process timed out'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw 'Unity CC0 AFTER failed'}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'AFTER capture missing'}
+          $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
+          New-Item -ItemType Directory -Force $after | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-unity-review-frames-${{ github.run_id }}
+          path: |
+            Bastion1MaterialAB/**
+            ${{ runner.temp }}/Bastion1-Unity-Before.log
+            ${{ runner.temp }}/Bastion1-Unity-After.log
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-player-integration-${{ github.run_id }}
+          path: |
+            Bastion1ReferenceSource/**
+            Bastion1MaterialAB/**
+            ${{ runner.temp }}/Bastion1-Unity-After.log
+            ${{ runner.temp }}/Bastion1-MaterialMerge.log
+            Unity/Bastion1ReferenceCaptures/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Generated/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedNormals/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1ReferenceAssembly.unity*
+            Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity*
+            ${{ runner.temp }}/Bastion1-Unity-Before.log
+            ${{ runner.temp }}/Bastion1-Blender.*
+            ${{ runner.temp }}/Bastion1-Unity.log
+            ${{ runner.temp }}/Bastion1-WebGL.log
+          retention-days: 14
+          if-no-files-found: warn
+})
+          if($after.Count -ne 1){
+            Write-Host "BASTION1_PRIOR_FRAMES_FOUND $($candidates.Count)"
+            $candidates | ForEach-Object {Write-Host $_.FullName}
+            throw "Exactly one prior Unity AFTER frame required: found $($after.Count)"
+          }
+          $previous=$after[0].DirectoryName
           $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
           New-Item -ItemType Directory -Force $before | Out-Null
           Copy-Item (Join-Path $previous '*') $before -Force
-          Write-Host 'BASTION1_REUSED_REAL_UNITY_BASELINE run=38419031491'
+          if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Prior matched Unity frame copy failed'}
+          Write-Host "BASTION1_REUSED_REAL_UNITY_BASELINE run=38419031491 source=$previous"
       - name: Recover completed genuine Qwen8B fracture and palette finishing
         uses: actions/download-artifact@v4
         with:
