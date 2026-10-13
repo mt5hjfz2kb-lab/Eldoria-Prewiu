@@ -3,7 +3,7 @@ const { PNG }=require('pngjs');
 const fs=require('fs'), path=require('path');
 const dir='bastion1-browser-evidence';
 fs.mkdirSync(dir,{recursive:true});
-const report={exactBuildRun:38321874637,sourceSha:'5f800d6c16bb6dd29b8db830c382d81d525bd38e',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
+const report={exactBuildRun:38356683511,sourceSha:'245a963f7c7eb9ee30e4de9e9cffd13f632eb82d',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let browser;
 function state(m){const a=m.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+).*sawmill=(\d+) bastion=(\d+) barracks=(\d+)/);return a?{tag:a[1],scene:a[2],revision:+a[3],wood:+a[4],stone:+a[5],sawmill:+a[6],bastion:+a[7],barracks:+a[8]}:null;}
