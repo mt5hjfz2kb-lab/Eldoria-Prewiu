@@ -51,7 +51,13 @@
     "full_city_changed_vertices": 176,
     "full_city_max_displacement_m": 0.80367,
     "protected_cell_changes": 0,
-    "full_city_glb_sha256": "eff186eac2f6b1f4e7c8b8dfd5eb85998cc51620f8ad4c59ff9d1eb4e8e8f2d6068e9f5"
+    "full_city_glb_sha256": "eff186eac2f6b1f4e7c8b8dfd5eb85998cc51620f8ad4c59f1e9502649537573",
+    "pbr_materials_verified": [
+      "PROTOTYPE terrace earth olive grass",
+      "Valoria schist dark fractured cliff",
+      "Valoria forested valley ground"
+    ],
+    "pbr_preservation_run": 38324751573
   },
   "visual": {
     "comparison": "camera-locked Blender clay only",
