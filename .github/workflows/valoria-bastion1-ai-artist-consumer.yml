@@ -275,10 +275,16 @@ jobs:
           old=(root/'inventory.txt').read_text('utf8')
           # The existing Qwen 8B --cpu-compact prompt limits the inventory to
           # its FIRST 1000 chars; put historical lessons FIRST or Qwen never sees them.
-          text=lesson+'\nEXISTING VERIFIED ASSET CONTEXT: '+old
+          # Keep all five historic lesson IDs within the actual 1000-character
+          # Qwen compact inventory window; add the latest genuinely rejected
+          # artist cycle before the model reasons about another 3D edit.
+          fresh=('LATEST REAL ART FAIL #38443638059: Qwen moved 1138 cliff vertices in Y only; '
+                 'Blender shape looked nearly identical. Change SOUTH CLIFF in Z; protect crown. ')
+          text=lesson[:858]+'\n'+fresh+'\nEXISTING VERIFIED ASSET CONTEXT: '+old
           expected=('small-sculpt-repeated','tiny-sculpt-path','frustum-parity',
                     'unity-a-b-independent','preserve-playable-protected-terrain')
           for k in expected:assert k in text[:1000],('MEMORY TRUNCATED BEFORE QWEN',k)
+          assert 'LATEST REAL ART FAIL #38443638059' in text[:1000], 'Recent invisible artist failure was not fed to Qwen'
           (root/'inventory.txt').write_text(text,'utf8')
           print('ART_MEMORY_ACTUAL_QWEN_INPUT_READY',json.dumps({
             'lessons':len(expected),'source_sha256':evidence['catalog_sha256'],
@@ -357,6 +363,31 @@ jobs:
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
           print('BASTION1_GENUINE_MODEL_CHOSEN_GEOMETRY_EDIT',[(a['type'],a['changed_vertices'],a['changed_faces']) for a in proof['executed_actions']])
           PY
+      - name: Verify Qwen did not damage the playable crown
+        timeout-minutes: 4
+        run: |
+          # This is an independent safety gate, not scripted artistic authoring.
+          cat > "$ART/verify-protected-cliff.py" <<'PY'
+          import bpy,os,pathlib,math
+          root=pathlib.Path(os.environ['ART'])
+          name=os.environ['TARGET_MESH']
+          bpy.ops.wm.open_mainfile(filepath=str(root/'terrain-source.blend'))
+          obj=bpy.data.objects[name]
+          original=[tuple(v.co) for v in obj.data.vertices]
+          faces=[tuple(f.vertices) for f in obj.data.polygons]
+          bpy.ops.wm.open_mainfile(filepath=str(root/'result/artist-output.blend'))
+          altered=bpy.data.objects[name]
+          assert len(original)==len(altered.data.vertices), 'Qwen cannot remove the terrain topology'
+          assert faces==[tuple(f.vertices) for f in altered.data.polygons], 'Qwen cannot rewrite terrain faces'
+          protected=sum(math.dist(v,tuple(altered.data.vertices[i].co))>.025
+                        for i,v in enumerate(original) if v[2]>=-5.)
+          assert protected==0, f'Qwen changed {protected} protected upper-terrain vertices'
+          changed=sum(math.dist(v,tuple(altered.data.vertices[i].co))>.02
+                      for i,v in enumerate(original))
+          assert changed>250, f'Qwen intervention too local: {changed}'
+          print('BASTION1_CROWN_PROTECTED_AI_SCULPT_PASS changed_vertices',changed)
+          PY
+          blender -b --python-exit-code 1 --python "$ART/verify-protected-cliff.py" | tail -12
       - name: Generate authentic Blender before and after clay proof
         timeout-minutes: 5
         run: |
@@ -375,7 +406,9 @@ jobs:
           fraction=float(pixels.mean())
           print('REAL_QWEN_CAMERA_MATCHED_VISIBLE_PIXEL_FRACTION',fraction)
           (root/'visual-impact.txt').write_text(f'changed_pixel_fraction={fraction:.9f}\nthreshold_for_study=0.0005\nnot_unity_or_visual_approval=true\n')
-          if fraction<.001:raise ValueError('Qwen sculpt changes under 0.1% of matched camera pixels; ART REJECTED, must redesign')
+          # This cycle targets a large compositional cliff defect, not a tiny
+          # variation. 2% is a preliminary VISIBILITY filter, NEVER aesthetic PASS.
+          if fraction<.02:raise ValueError('Qwen silhouette edit changes under 2% of matched clay-camera pixels; reject before costly Unity and redesign')
           PY
       - name: Record real Blender A/B outcome as pending historical learning
         if: always()
