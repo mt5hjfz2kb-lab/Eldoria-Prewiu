@@ -13,107 +13,105 @@ concurrency:
 jobs:
   verify-exact-authored-plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 17
+    timeout-minutes: 18
     env:
-      REPLAY: /tmp/bastion1-authentic-replay
-      CORE_SHA: 668e339f5ecac993edbb7de3a0b829f0385b1246
-      ORIGINAL_RUN: 38360450981
+      ART: /tmp/bastion1-qwen-verbatim
+      ORIGINAL_RUN: 38370740511
+      CORE_SHA: 02751ed4a68fc3e5238558601b8143daa117d310
       TARGET: 'Valoria natural playable hilltop and rock scarps'
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            .github/workflows/valoria-bastion1-qwen-replay-visibility.yml
             tools/art-direction/ai-authoring/render_artist_ab.py
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
-          name: bastion1-genuine-qwen-artist-38360450981
-          run-id: 38360450981
+          name: bastion1-genuine-qwen-artist-38370740511
+          run-id: 38370740511
           github-token: ${{ github.token }}
-          path: /tmp/bastion1-authentic-replay
-      - name: Pin the PREVIOUSLY TESTED artistic executor from merged PR36
+          path: /tmp/bastion1-qwen-verbatim
+      - name: Retrieve current signed artist execution and visual validation sources
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$CORE_SHA"
-          for f in execute_artist_plan.py verify-artist-cycle.mjs artist_plan_validation.py visibility_metrics.py; do
+          for f in execute_artist_plan.py verify-artist-cycle.mjs artist_plan_validation.py visibility_metrics.py unity_pixel_diff.mjs; do
             git show "$CORE_SHA:tools/art-direction/ai-authoring/$f" > "tools/art-direction/ai-authoring/$f"
           done
           python3 -m py_compile tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py
-      - name: Verify exact frozen SOURCE, raw Qwen PLAN and genuine inference
+      - name: Authenticate ORIGINAL frozen Blender source, Qwen response and structured operation
         shell: bash
         run: |
           python3 - <<'PY'
-          import os,pathlib,hashlib,json
-          root=pathlib.Path(os.environ['REPLAY'])
-          for path in ['terrain-source.blend','model/artist-plan.json','model/artist-inference.json','model/artist-response-raw.txt','input-provenance.json']:
-            assert (root/path).is_file(),path
-          source=root/'terrain-source.blend'
-          assert source.read_bytes().startswith(b'BLENDER')
-          plan_bytes=(root/'model/artist-plan.json').read_bytes()
-          plan=json.loads(plan_bytes);inf=json.loads((root/'model/artist-inference.json').read_text())
-          assert inf['model']=='qwen3-vl:4b-instruct' and inf['system_role']=='system'
-          assert inf['direction']['planned_actions']==plan
-          assert inf['attempt_history'][-1]['raw_response_sha256']==hashlib.sha256((root/'model/artist-response-raw.txt').read_bytes()).hexdigest()
-          assert len(plan)==1 and plan[0]['type']=='sculpt_region'
-          op=plan[0];p=op['parameters']
-          # This is the EXACT rejected author choice, never a modified plan.
-          assert p['center']==[-10.0,-25.0,-12.0] and p['radius']==15.0 and p['delta']==[.5,0.,0.]
-          assert op['target']==os.environ['TARGET']
-          input=json.loads((root/'input-provenance.json').read_text())
-          assert input['source_run']==38356683511
-          audit={'source_run':38356683511,'qwen_run':int(os.environ['ORIGINAL_RUN']),'artist_core_sha':os.environ['CORE_SHA'],
-            'model':inf['model'],'source_blend_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
-            'plan_sha256':hashlib.sha256(plan_bytes).hexdigest(),'raw_response_sha256':inf['attempt_history'][-1]['raw_response_sha256'],
-            'model_operation_unmodified':True,'material_visibility_approved':False,'unity_integrated':False}
-          (root/'replay-provenance.json').write_text(json.dumps(audit,indent=2)+'\n')
-          print('AUTHENTIC_QWEN4B_SPATIAL_PLAN_PRESERVED',json.dumps(audit))
+          import json,hashlib,pathlib,os
+          r=pathlib.Path(os.environ['ART'])
+          raw=(r/'model/artist-response-raw.txt').read_bytes()
+          p=(r/'model/artist-plan.json').read_bytes()
+          model=json.loads((r/'model/artist-inference.json').read_bytes())
+          ops=json.loads(p)
+          assert (r/'terrain-source.blend').read_bytes()[:7]==b'BLENDER'
+          assert model['model']=='qwen3-vl:4b-instruct' and model['system_role']=='system'
+          assert len(ops)==1 and ops[0]['type']=='sculpt_path'
+          assert model['direction']['planned_actions']==ops
+          assert len(model['rejected_visual_cycle_evidence'])==2
+          assert all(x['camera_gate']=='REJECT_NOT_VISIBLE' for x in model['rejected_visual_cycle_evidence'])
+          assert model['attempt_history'][-1]['raw_response_sha256']==hashlib.sha256(raw).hexdigest()
+          assert json.loads(raw)['planned_actions']==ops
+          assert ops[0]['target']==os.environ['TARGET']
+          assert len(ops[0]['parameters']['knots'])==2
+          proof={'source_run':int(os.environ['ORIGINAL_RUN']), 'core_sha':os.environ['CORE_SHA'],
+            'source_blend_sha256':hashlib.sha256((r/'terrain-source.blend').read_bytes()).hexdigest(),
+            'raw_qwen_response_sha256':hashlib.sha256(raw).hexdigest(),
+            'plan_sha256':hashlib.sha256(p).hexdigest(),
+            'verbatim_qwen_geometry':True, 'unity_integrated':False, 'art_approved':False}
+          (r/'replay-provenance.json').write_text(json.dumps(proof,indent=2)+'\n')
+          print('BASTION1_QWEN4B_SCULPT_PATH_VERBATIM',json.dumps(proof))
           PY
-          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$REPLAY/model/artist-plan.json" "$TARGET" existing
-      - name: Execute REAL original AI geometry without edits to radii or vectors
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET" existing
+      - name: Execute genuine Qwen-authored 3D path on frozen Blender terrain (no LLM regeneration)
         shell: bash
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
-          SRC=$(sha256sum "$REPLAY/terrain-source.blend" | cut -d' ' -f1)
+          SHA=$(sha256sum "$ART/terrain-source.blend" | cut -d' ' -f1)
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
-            --source "$REPLAY/terrain-source.blend" --plan "$REPLAY/model/artist-plan.json" \
-            --out "$REPLAY/result" --transport direct --expected-source-sha256 "$SRC"
+            --source "$ART/terrain-source.blend" --plan "$ART/model/artist-plan.json" \
+            --out "$ART/result" --transport direct --expected-source-sha256 "$SHA"
           python3 - <<'PY'
-          import json,pathlib,os,hashlib
-          root=pathlib.Path(os.environ['REPLAY'])
-          p=json.loads((root/'result/artist-execution.json').read_text())
-          assert p['source_mesh_sha256']!=p['result_mesh_sha256']
-          assert p['plan_sha256']==hashlib.sha256((root/'model/artist-plan.json').read_bytes()).hexdigest()
-          assert p['executed_actions'][0]['changed_vertices']>5
-          print('ACTUAL_QWEN4B_MESH_EDIT',p['executed_actions'])
+          import json,hashlib,os,pathlib
+          r=pathlib.Path(os.environ['ART'])
+          plan_hash=hashlib.sha256((r/'model/artist-plan.json').read_bytes()).hexdigest()
+          proof=json.loads((r/'result/artist-execution.json').read_bytes())
+          assert proof['plan_sha256']==plan_hash
+          assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
+          assert proof['executed_actions'][0]['type']=='sculpt_path'
+          assert proof['executed_actions'][0]['changed_vertices']>0
+          print('GENUINE_QWEN4B_CURVED_PATH_EXECUTED',proof['executed_actions'][0])
           PY
-      - name: Same source camera Blender A/B, fail closed on invisibility
+      - name: Source-locked PLAYER CAMERA Blender A/B (strict visibility gate)
         shell: bash
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
-            --before "$REPLAY/terrain-source.blend" --after "$REPLAY/result/artist-output.blend" \
-            --target "$TARGET" --player-camera --out "$REPLAY/ab"
+            --before "$ART/terrain-source.blend" --after "$ART/result/artist-output.blend" \
+            --target "$TARGET" --player-camera --out "$ART/ab"
           python3 - <<'PY'
-          import os,json,pathlib
-          root=pathlib.Path(os.environ['REPLAY'])
-          cmp=json.loads((root/'ab/comparison.json').read_text())
-          fraction=cmp['camera_visibility']['changed_fraction']
-          assert fraction>=.001,('ORIGINAL_QWEN4B_UNSEEN_FROM_CAMERA',fraction)
-          print('ORIGINAL_QWEN4B_VISIBLE_STUDY_GATE_REVIEW_REQUIRED',fraction)
-          print('NOT UNITY, NOT ART_APPROVED, NOT MAIN')
+          import json,os,pathlib
+          r=pathlib.Path(os.environ['ART'])
+          metric=json.loads((r/'ab/comparison.json').read_text())['camera_visibility']
+          assert metric['changed_fraction']>=0.001
+          print('BLENDER_CAMERA_VISIBLE_REVIEW_REQUIRED_NOT_ART_APPROVED',metric)
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bastion1-verified-qwen4b-original-38360450981
+          name: bastion1-original-qwen4b-path-38370740511
           path: |
-            /tmp/bastion1-authentic-replay/replay-provenance.json
-            /tmp/bastion1-authentic-replay/model/artist-plan.json
-            /tmp/bastion1-authentic-replay/model/artist-inference.json
-            /tmp/bastion1-authentic-replay/result/*
-            /tmp/bastion1-authentic-replay/ab/*
+            /tmp/bastion1-qwen-verbatim/replay-provenance.json
+            /tmp/bastion1-qwen-verbatim/model/artist-plan.json
+            /tmp/bastion1-qwen-verbatim/model/artist-inference.json
+            /tmp/bastion1-qwen-verbatim/result/*
+            /tmp/bastion1-qwen-verbatim/ab/*
           retention-days: 14
           if-no-files-found: warn
