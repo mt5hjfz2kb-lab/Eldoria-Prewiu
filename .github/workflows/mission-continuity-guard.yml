@@ -41,7 +41,7 @@ jobs:
         run: node tools/check-workflow-governance.mjs
       - name: Dry-run live GitHub observation without writing issues
         env:
-          GITHUB_TOKEN: ${'{'}{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MISSION_GUARD_WRITE_ISSUES: 'false'
           MISSION_GUARD_OUTPUT: mission-continuity-report.json
         run: node tools/mission-continuity/watch.mjs
