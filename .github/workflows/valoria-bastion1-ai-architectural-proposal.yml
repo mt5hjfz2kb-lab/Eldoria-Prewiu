@@ -71,7 +71,7 @@ jobs:
            'learning':{'type':'string'}
           },'required':['concept','site','why_player_camera','existing_assets','composition','functional_risks','learning']}
           payload={'model':'qwen3-vl:4b-instruct','stream':False,'format':schema,
-            'options':{'num_ctx':4096,'num_predict':480,'temperature':0.3},
+            'options':{'num_ctx':4096,'num_predict':1100,'temperature':0.3},
             'messages':[{'role':'system','content':'You are the existing Eldoria art director AI. Produce a concrete constrained medieval composition decision; do not claim you modeled or tested it.'},
                         {'role':'user','content':brief+'\nActual prior learning:\n'+memory}]}
           pathlib.Path('evidence/request.json').write_text(json.dumps(payload,indent=2))
@@ -79,6 +79,7 @@ jobs:
           start=time.time()
           with urllib.request.urlopen(req,timeout=540) as res: result=json.load(res)
           raw=result.get('message',{}).get('content','')
+          pathlib.Path('evidence/qwen-raw-response.txt').write_text(raw)
           plan=json.loads(raw)
           assert all(k in plan for k in schema['required'])
           pathlib.Path('evidence/qwen-architecture-proposal.json').write_text(json.dumps(plan,indent=2,ensure_ascii=False))
