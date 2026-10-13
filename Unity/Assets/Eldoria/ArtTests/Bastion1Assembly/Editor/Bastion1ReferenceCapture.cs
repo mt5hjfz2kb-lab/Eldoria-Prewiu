@@ -37,7 +37,7 @@ namespace Eldoria.EditorTools
                 var source=Path.GetFullPath(Study+"/GeneratedSource/Bastion1ReferenceAssembly.glb");
                 if(!File.Exists(source))throw new FileNotFoundException("Run the exact source assembler first",source);
                 var importer=new GltfImport(null,new UninterruptedDeferAgent());
-                if(!await importer.Load(new Uri(source).AbsoluteUri))throw new Exception("glTFast source import failed");
+                if(!await importer.Load(new Uri(source).AbsoluteUri,new ImportSettings { GenerateMipMaps=true,AnisotropicFilterLevel=2 }))throw new Exception("glTFast source import failed");
                 var root=new GameObject("BastionI_ReferenceAssembly_CANDIDATE");
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
                 Bastion1MaterialBindings.Apply(root,importer,source);

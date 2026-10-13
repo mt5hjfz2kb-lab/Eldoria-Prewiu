@@ -60,7 +60,11 @@ namespace Eldoria.EditorTools
                 {
                     var texture=importer.GetTexture(p.baseColorTexture.index);
                     if(texture==null)throw new Exception("glTF albedo texture unavailable: "+src.name);
+                    texture.filterMode=FilterMode.Trilinear;
+                    texture.anisoLevel=2;
+                    if((texture.width>1||texture.height>1)&&texture.mipmapCount<2)throw new Exception("Candidate albedo mipmaps missing: "+src.name);
                     m.SetTexture("_BaseMap",texture);
+                    Debug.Log("BASTION1_ALBEDO_MIPMAPS "+src.name+" count="+texture.mipmapCount);
                     ApplyTransform(m,"_BaseMap",p.baseColorTexture);
                 }
                 m.SetFloat("_Metallic",p!=null?p.metallicFactor:1f);

@@ -123,7 +123,7 @@ namespace Eldoria.EditorTools
             var file=Path.GetFullPath(Input+"/"+name+".glb");
             if(!File.Exists(file))throw new FileNotFoundException("Authored state missing",file);
             var importer=new GltfImport(null,new UninterruptedDeferAgent());
-            if(!await importer.Load(new Uri(file).AbsoluteUri))
+            if(!await importer.Load(new Uri(file).AbsoluteUri,new ImportSettings { GenerateMipMaps=true,AnisotropicFilterLevel=2 }))
                 throw new Exception("glTFast could not load "+name);
             var root=new GameObject(name);
             if(!await importer.InstantiateMainSceneAsync(root.transform))
