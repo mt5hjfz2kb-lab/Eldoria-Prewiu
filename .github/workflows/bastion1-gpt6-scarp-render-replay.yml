@@ -1,0 +1,85 @@
+name: Bastion I replay original GPT-6 scarp camera proof
+on:
+  push:
+    branches: [art/bastion1-gpt6-directed-scarp-lookdev-20261013]
+    paths:
+      - '.github/workflows/bastion1-gpt6-scarp-render-replay.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  prove-original-scarp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ROOT: /tmp/gpt6-render-replay
+      GH_TOKEN: ${{ github.token }}
+      TARGET: Valoria natural playable hilltop and rock scarps
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify frozen original authored .blend, original Qwen diagnostic source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/source" "$ROOT/edited" "$ROOT/ab"
+          gh run download 38384261910 --repo "${{ github.repository }}" \
+            --name bastion1-genuine-qwen-artist-38384261910 --dir "$ROOT/source"
+          gh run download 38386377764 --repo "${{ github.repository }}" \
+            --name bastion1-gpt6-art-directed-scarp-38386377764 --dir "$ROOT/edited"
+          python3 - <<'PY'
+          import pathlib,os,json,hashlib
+          root=pathlib.Path(os.environ['ROOT'])
+          source=root/'source/terrain-source.blend'
+          art=root/'edited/edited/artist-output.blend'
+          proof=json.loads((root/'edited/edited/gpt6-art-direction.json').read_text())
+          assert proof['art_direction_author']=='GPT-6 AI art direction'
+          assert proof['source_blend_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+          assert proof['result_blend_sha256']==hashlib.sha256(art.read_bytes()).hexdigest()
+          assert proof['source_blend_sha256']=='4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880'
+          assert proof['changed_vertices']>=350 and proof['protected_cell_changes']==0
+          assert proof['original_material_slots_preserved'] and proof['original_uv_preserved']
+          assert proof['art_approved'] is False and proof['unity_verified'] is False
+          print('ORIGINAL_AI_ARTIST_SOURCE_AND_PROOF_HASHES_VERIFIED',proof['result_blend_sha256'])
+          PY
+      - name: Restore exact canonical visibility helper without rebuilding artist
+        run: |
+          git fetch --no-tags --depth=1 origin 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745
+          git show 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745:tools/art-direction/ai-authoring/visibility_metrics.py > tools/art-direction/ai-authoring/visibility_metrics.py
+          python3 -m py_compile tools/art-direction/ai-authoring/visibility_metrics.py
+      - name: Install open-source Blender and image metrics
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Render original BEFORE and original GPT-6 directed AFTER from same strategic camera
+        run: |
+          export PYTHONPATH="$GITHUB_WORKSPACE/tools/art-direction/ai-authoring"
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before "$ROOT/source/terrain-source.blend" --after "$ROOT/edited/edited/artist-output.blend" \
+            --target "$TARGET" --player-camera --out "$ROOT/ab"
+      - name: Independently reject invisible scene in original PNG pixel space
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import pathlib,os,json,hashlib,numpy as np
+          from PIL import Image
+          root=pathlib.Path(os.environ['ROOT'])/'ab'
+          images=[root/'before-blender-clay.png',root/'after-blender-clay.png']
+          b,a=[np.array(Image.open(x).convert('RGB'),dtype=np.int16) for x in images]
+          assert b.shape==a.shape
+          pixels=np.max(np.abs(a-b),axis=2)>=8
+          result={'changed_pixels':int(pixels.sum()),'total_pixels':int(pixels.size),
+            'changed_fraction':float(pixels.mean()),'required_fraction':0.001,
+            'camera':'Blender source-locked player camera, NOT Unity or ART_APPROVED',
+            'image_sha256':[hashlib.sha256(p.read_bytes()).hexdigest() for p in images]}
+          (root/'independent-impact.json').write_text(json.dumps(result,indent=2))
+          print('AUTHENTIC_GPT6_BLENDER_CAMERA_AB',json.dumps(result))
+          if result['changed_fraction']<0.001:raise ValueError('ART_VISIBILITY_REJECTED, do not integrate')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-gpt6-original-scarp-camera-${{ github.run_id }}
+          path: |
+            /tmp/gpt6-render-replay/ab/**
+            /tmp/gpt6-render-replay/edited/edited/gpt6-art-direction.json
+          retention-days: 14
