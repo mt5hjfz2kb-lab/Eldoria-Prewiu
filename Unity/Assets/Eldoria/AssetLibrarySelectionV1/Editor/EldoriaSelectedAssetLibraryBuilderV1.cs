@@ -16,7 +16,8 @@ namespace Eldoria.AssetLibrary.Editor
     // Creates visual-only prefabs by referencing unchanged, hash-verified historical GLB imports.
     public static class EldoriaSelectedAssetLibraryBuilderV1
     {
-        const string PrefabFolder = "Assets/Eldoria/AssetLibrarySelectionV1/Resources/EldoriaSelectedAssetsV1";
+        // Staging prefabs live outside Resources and therefore are not auto-packed into player builds.
+        const string PrefabFolder = "Assets/Eldoria/AssetLibrarySelectionV1/GeneratedPrefabsV1";
         const string AuditOutput = "SelectedAssetLibraryV1Captures";
 
         [Serializable] sealed class EntryAudit
@@ -45,7 +46,7 @@ namespace Eldoria.AssetLibrary.Editor
         {
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             var catalog = EldoriaSelectedAssetLibraryV1.LoadCatalog();
-            Directory.CreateDirectory(PrefabFolder);
+            Directory.CreateDirectory(Path.GetFullPath(Path.Combine(Application.dataPath,"..",PrefabFolder)));
             Directory.CreateDirectory(AuditOutput);
             var reports = new List<EntryAudit>();
             foreach (var e in catalog.entries.Where(x => x.tier == "SELECTED" && x.origin == "legacy_canonical"))
@@ -159,7 +160,11 @@ namespace Eldoria.AssetLibrary.Editor
             int i=0;
             foreach(var e in catalog.entries.Where(x => x.tier == "SELECTED" && x.origin == "legacy_canonical"))
             {
-                var go = EldoriaSelectedAssetLibraryV1.SpawnSelectedVisual(e.id, null, Vector3.zero,Quaternion.identity,Vector3.one);
+                var prefabPath=PrefabFolder+"/"+e.id+".prefab";
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                if(prefab==null)throw new InvalidOperationException("Staged prefab not found: "+prefabPath);
+                var go=Object.Instantiate(prefab);
+                go.name="Selected prefab gallery · "+e.id;
                 var rs=go.GetComponentsInChildren<Renderer>(true);
                 if(rs.Length==0)throw new InvalidOperationException("Prefab appears empty: "+e.id);
                 var b=rs[0].bounds;
