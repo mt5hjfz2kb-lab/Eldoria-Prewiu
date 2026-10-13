@@ -22,8 +22,13 @@ namespace Eldoria.EditorTools
             var previousQuality=QualitySettings.renderPipeline;
             try
             {
-                var original=previousGraphics as UniversalRenderPipelineAsset;
-                if(original==null)throw new Exception("A configured URP project is required");
+                // The preceding batch capture can serialize its temporary StudyURP
+                // into GraphicsSettings. Deleting that generated asset on the next
+                // capture otherwise leaves a null pipeline. Resolve the immutable
+                // project URP asset by its committed GUID for every matched frame.
+                var original=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(
+                    AssetDatabase.GUIDToAssetPath("48e3a09b57f028a4bb2e693d044ea6ca"));
+                if(original==null)throw new Exception("Canonical committed URP asset unavailable");
                 var pipeline=UnityEngine.Object.Instantiate(original);
                 pipeline.name="Bastion I comparative URP, unprofiled";
                 pipeline.shadowDistance=180f;pipeline.shadowCascadeCount=4;
