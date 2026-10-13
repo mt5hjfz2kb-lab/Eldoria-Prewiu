@@ -1,0 +1,72 @@
+name: Bastion I isolated PR51 selected asset gallery
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-selected-asset-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-bastion1-player-integration
+  cancel-in-progress: false
+jobs:
+  selected-library-unity:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    env:
+      LIBRARY_SOURCE_SHA: 4ac7202b630bb49578fbe1de1a711b35438115b1
+    steps:
+      - name: Expose installed Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $git=Get-ChildItem "${env:LOCALAPPDATA}\GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(!$git){throw 'Git not found'}
+            Add-Content $env:GITHUB_PATH (Split-Path $git)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Stage existing PR51 library unchanged in disposable runner working tree
+        shell: powershell
+        run: |
+          & git.exe fetch --no-tags --depth=1 origin $env:LIBRARY_SOURCE_SHA
+          if($LASTEXITCODE -ne 0){throw 'Pinned PR51 commit missing'}
+          & git.exe checkout $env:LIBRARY_SOURCE_SHA -- Unity/Assets/Eldoria/AssetLibrarySelectionV1 Unity/Assets/Eldoria/AssetLibrarySelectionV1.meta
+          if($LASTEXITCODE -ne 0){throw 'Exact library staging failed'}
+          if(!(Test-Path 'Unity/Assets/Eldoria/AssetLibrarySelectionV1/Editor/EldoriaSelectedAssetLibraryBuilderV1.cs')){throw 'Canonical builder missing'}
+          Write-Host "PR51_EXACT_PINNED_SOURCE $env:LIBRARY_SOURCE_SHA"
+      - name: Re-resolve invalidated glTFast shaders from installed package cache only
+        shell: powershell
+        run: |
+          $root=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          foreach($p in @(Get-ChildItem $root -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)){
+            $shaders=@(Get-ChildItem (Join-Path $p.FullName 'Runtime/Shader') -Filter 'glTF-pbrMetallicRoughness*.shadergraph' -File -ErrorAction SilentlyContinue)
+            if($shaders.Count -lt 1){Remove-Item -LiteralPath $p.FullName -Recurse -Force;Write-Host 'RESTORE_GLTFAST_PACKAGE_ON_NEXT_IMPORT'}
+          }
+      - name: Build verified prefabs and capture gallery in isolated unsaved Unity scene
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion-Pr51-Unity-Gallery.log'
+          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $process.WaitForExit(1500000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Isolated Unity reviewer timeout'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 150;throw 'Unity importer or gallery failed'}
+          $output="$env:GITHUB_WORKSPACE/Unity/SelectedAssetLibraryV1Captures"
+          if(!(Test-Path "$output/import-evidence.json")){throw 'Per-asset Unity evidence missing'}
+          if(!(Test-Path "$output/selected-prefabs-unity.png")){throw 'Actual Unity contact sheet missing'}
+          $frames=@(Get-ChildItem $output -File -Filter 'selected-*-unity.png')
+          if($frames.Count -ne 11){throw "Expected gallery and 10 individual prefab frames, got $($frames.Count)"}
+          Write-Host 'BASTION1_PR51_UNITY_GALLERY_CAPTURED without_modifying_playable_scene'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-pr51-isolated-gallery-${{ github.run_id }}
+          path: |
+            Unity/SelectedAssetLibraryV1Captures/**
+            ${{ runner.temp }}/Bastion-Pr51-Unity-Gallery.log
+          retention-days: 14
+          if-no-files-found: warn
