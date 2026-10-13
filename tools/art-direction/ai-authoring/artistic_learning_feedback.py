@@ -90,51 +90,56 @@ def feedback_for_failed_cycles(failures):
             f"Cycle {i}: Blender operations={','.join(failed['methods'])}; "
             f"camera pixels changed={failed['changed_pixels']}/{failed['total_pixels']}; "
             f"result=REJECT_NOT_VISIBLE; plan_sha256={failed['plan_sha256']}.")
-    if len(failures) >= 2:
-        previous = failures[-2:]
-        methods = [x['methods'] for x in previous]
-        if len(methods[0]) == len(methods[1]) == 1 and methods[0] == methods[1]:
-            lines.append('TWO failed cycles used the SAME operation type: ' + methods[0][0] +
-                         '. You MUST select a DIFFERENT geometry operation family and '
-                         'a justified structural/camera-visible treatment, not a new tiny radius/delta.')
+    if len(failures)>=2:
+        forbidden=forbidden_methods_from_rejected_cycles(failures)
+        if forbidden:
+            lines.append('TWO or more verified invisible attempts of the same method(s) '
+                         'within the last four original cycles: '+', '.join(sorted(forbidden))+
+                         '. You MUST choose a different structural family with a '
+                         'camera-visible shape, NOT an old failed method or tiny radius/delta.')
         else:
-            lines.append('TWO independent revisions failed: reconsider the root cause and select '
-                         'a meaningfully different silhouette, contact or composition treatment.')
+            lines.append('Independent revisions failed: reconsider the composition, '
+                         'silhouette and contact strategy instead of changing tiny parameters.')
     return ' '.join(lines)
 
 
 
 def forbidden_methods_from_rejected_cycles(failures):
-    """Remove only an operation family rejected twice in verified camera A/B.
+    """Exclude any method failing twice among up to FOUR genuine A/B cycles.
 
-    This constrains available *types*, not Qwen-authored geometry or values.
+    Failed methods do not silently become allowed merely because the latest
+    attempt used another unsuccessful structural operation. The caller limits
+    the evidence to 4 original SHA/PNG-verified same-target comparisons.
     """
-    if not isinstance(failures, list) or len(failures)<2:
+    if not isinstance(failures,list) or len(failures)<2 or len(failures)>MAX_CASES:
         return set()
-    prev=failures[-2:]
-    a,b=(x.get('methods') for x in prev)
-    if isinstance(a,list) and len(a)==1 and a==b and a[0] in STRUCTURAL:
-        return {a[0]}
-    return set()
+    count={}
+    for x in failures:
+        methods=x.get('methods') if isinstance(x,dict) else None
+        # A mixed multi-operation attempt cannot prove WHICH specific operation
+        # caused a poor image, so exclude nothing on its strength.
+        if isinstance(methods,list) and len(methods)==1 and methods[0] in STRUCTURAL:
+            name=methods[0]
+            count[name]=count.get(name,0)+1
+    return {name for name,total in count.items() if total>=2}
 
 
 def distinct_strategy_errors(design, failures):
-    """Block a third identical, camera-invisible method, never create a fake plan."""
-    if not isinstance(design, dict):
+    """Do not permit a model to reintroduce ANY method rejected twice."""
+    if not isinstance(design,dict):
         return []
-    forbidden = forbidden_methods_from_rejected_cycles(failures)
-    if not forbidden:
+    forbidden=forbidden_methods_from_rejected_cycles(failures)
+    actions=design.get('planned_actions')
+    if not forbidden or not isinstance(actions,list):
         return []
-    repeated = next(iter(forbidden))
-    actions = design.get('planned_actions')
-    if not isinstance(actions, list):
-        return []
-    structural = {op.get('type') for op in actions if isinstance(op, dict)
-                  and op.get('type') in STRUCTURAL}
-    if structural == {repeated}:
-        return ['REPEATED_INVISIBLE_STRATEGY: two camera-locked failures of ' + repeated +
-                ' require the model to author a DISTINCT structural method. '
-                'Change topology/silhouette/contact strategy, not only radius/delta.']
+    attempted={x.get('type') for x in actions if isinstance(x,dict)
+               and x.get('type') in STRUCTURAL}
+    repeated=sorted(forbidden.intersection(attempted))
+    if repeated:
+        return ['REPEATED_INVISIBLE_STRATEGY: two authenticated camera-space '
+                'failures forbid these structural methods: '+', '.join(repeated)+
+                '. Qwen must author alternative geometry and its own coordinates, '
+                'not recycle a failed operation alongside a new one.']
     return []
 
 
