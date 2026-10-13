@@ -23,6 +23,9 @@ namespace Eldoria.AssetLibrary.Editor
         {
             public string id, source_relative, sha256, prefab_path;
             public int renderers, colliders, enabled_behaviours, materials, mesh_filters;
+            public long imported_triangles, imported_vertices;
+            public int authored_source_triangles;
+            public bool mobile_review_required, mobile_profile_pass;
             public bool prefab_ok;
         }
 
@@ -58,6 +61,8 @@ namespace Eldoria.AssetLibrary.Editor
                 if (model == null) throw new InvalidOperationException("glTF imported GameObject missing: " + e.id);
                 if (model.GetComponentsInChildren<MonoBehaviour>(true).Length != 0)
                     throw new InvalidOperationException("Source has gameplay scripts and cannot enter a visual-only prefab: " + e.id);
+                if(e.source_triangles <= 0 || e.mobile_performance_verified)
+                    throw new InvalidOperationException("Incorrect source cost or invented mobile approval: " + e.id);
 
                 var wrapper = new GameObject("Eldoria selected visual · " + e.id);
                 try
@@ -79,6 +84,21 @@ namespace Eldoria.AssetLibrary.Editor
                     var renderers = wrapper.GetComponentsInChildren<Renderer>(true);
                     if (renderers.Length == 0 || renderers.Any(r => r.sharedMaterials.Any(m => m == null || m.shader == null)))
                         throw new InvalidOperationException("No renders or invalid material: " + e.id);
+                    long triangles = 0, vertices = 0;
+                    foreach(var mf in wrapper.GetComponentsInChildren<MeshFilter>(true))
+                    {
+                        var mesh = mf.sharedMesh;
+                        if(mesh==null)continue;
+                        vertices += mesh.vertexCount;
+                        for(int sub=0;sub<mesh.subMeshCount;sub++)
+                        {
+                            if(mesh.GetTopology(sub)!=MeshTopology.Triangles)
+                                throw new InvalidOperationException("Unexpected non-triangle mesh: " + e.id);
+                            triangles += (long)mesh.GetIndexCount(sub)/3;
+                        }
+                    }
+                    if(triangles < 1 || Math.Abs(triangles - e.source_triangles) > Math.Max(250L, e.source_triangles / 100))
+                        throw new InvalidOperationException("Unity imported mesh topology differs from Blender reference: " + e.id + " Unity=" + triangles + " source=" + e.source_triangles);
 
                     var path = PrefabFolder + "/" + e.id + ".prefab";
                     bool success;
@@ -93,6 +113,10 @@ namespace Eldoria.AssetLibrary.Editor
                         enabled_behaviours=wrapper.GetComponentsInChildren<MonoBehaviour>(true).Count(b=>b.enabled),
                         materials=renderers.Sum(r=>r.sharedMaterials.Length),
                         mesh_filters=wrapper.GetComponentsInChildren<MeshFilter>(true).Length,
+                        imported_triangles=triangles, imported_vertices=vertices,
+                        authored_source_triangles=e.source_triangles,
+                        mobile_review_required=e.asset_budget_review_required,
+                        mobile_profile_pass=false,
                         prefab_ok=true
                     });
                 }
