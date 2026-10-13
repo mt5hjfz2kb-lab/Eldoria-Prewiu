@@ -1,4 +1,4 @@
-name: Bastion I local AI medieval courtyard composition proposal
+name: Bastion I local AI wall-integrated guard compound proposal
 on:
   push:
     branches: [integration/valoria-bastion1-player-scene-20261012]
@@ -28,7 +28,7 @@ jobs:
           PY
           cat > evidence/brief.txt <<'TXT'
           Eldoria Bastion I, Valoria, approved hero gate and fortifications must remain untouched.
-          REAL current native Unity baseline: run 38471224337, judged ~5.2/10.
+          REAL current native Unity guard candidate: run 38477299159, judged ~5.3/10; shelter roof visible but detached and yard empty. This is a rejected standalone shelter, not an approved architectural compound.
           Player camera strategic three-quarter view; main road center x=-3.5..3.5;
           protected full axial corridor x=-7..7; y=-18..22.
           Main gate (0,-17), upper fortification (0,24), stairs (0,9).
@@ -38,9 +38,9 @@ jobs:
           defensive_props, wall_straight, wall_connections, stone_path_platform,
           cliff_rocks, watchtower, hero_gate_v3, EA03_Nature_Bush_01a_LOD0.
           Do not rebuild gate, wall, tower, or create a new building. Do not add resource nodes.
-          Need ONE medieval guard/supply landmark of moderate scale adjacent to left detached wall,
+          Need ONE coherent wall-integrated guard compound, NOT another shelter variation or prop collection. Connect existing pitched-roof shelter structurally to detached left fortification using credible masonry transition, retaining clear courtyard. Prior candidate at x=-20.4,y=-12.0 has 13 timber meshes, 2 roof panels, 7 reused props and 7 reused paving meshes; from player camera it affects only 0.99% of pixels. The next composition must be materially more visible, without consuming future build lots. Preserve and adapt the existing roof, never build a second shelter. Existing detached west wall centered x=-21,y=-8; barracks future plot x=-16,y=3; sawmill x=16,y=3. Explicitly distinguish AI decisions from deterministic Blender execution.
           preferably at x~-20, y~-12; maintain clearance and visible camera silhouette.
-          Past failures: tiny props invisible, pasted flat-colored roads unnatural,
+          Past failures: detached pitched-roof shelter (run 38477299159), tiny props invisible, pasted flat-colored roads unnatural,
           untextured patches ugly. Choose deliberate, readable focal hierarchy and reuse.
           Budget zero euros, mobile efficient. No claims of engine approval.
           TXT
@@ -82,13 +82,13 @@ jobs:
           pathlib.Path('evidence/qwen-raw-response.txt').write_text(raw)
           plan=json.loads(raw)
           assert all(k in plan for k in schema['required'])
-          pathlib.Path('evidence/qwen-architecture-proposal.json').write_text(json.dumps(plan,indent=2,ensure_ascii=False))
+          pathlib.Path('evidence/qwen-wall-integration-proposal.json').write_text(json.dumps(plan,indent=2,ensure_ascii=False))
           pathlib.Path('evidence/inference-proof.json').write_text(json.dumps({'model':result.get('model'),'duration_s':round(time.time()-start,2),'done':result.get('done'),'authored_by':'local Ollama model, not deterministic script'},indent=2))
-          print('BASTION1_QWEN_REAL_ARCHITECTURE_PROPOSAL',json.dumps(plan,ensure_ascii=False))
+          print('BASTION1_QWEN_REAL_WALL_INTEGRATION_PROPOSAL',json.dumps(plan,ensure_ascii=False))
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bastion1-qwen-architecture-proposal-${{ github.run_id }}
+          name: bastion1-qwen-wall-integration-proposal-${{ github.run_id }}
           path: evidence/
           retention-days: 14
