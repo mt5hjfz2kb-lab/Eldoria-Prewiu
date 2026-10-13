@@ -223,7 +223,11 @@ jobs:
             'between 1.0 and 5.0 meters. Smaller sculpt choices fail the '
             'already-verified visual gate; the MODEL must choose actual exact '
             'values within these bounds, scripts must not enlarge its output. '
-            'Previous Qwen4B also chose radius 1.5 m and delta [0.3,0.2,0], '
+            'Latest genuine Qwen4B run 38382913852 authored radius 12m but delta [0,0.5,0]; ' 
+             'it failed camera-scale PREFLIGHT before Blender (0.5m < required 1.5m). ' 
+             'Do NOT copy that conservative amplitude; Qwen must author a new >=1.5m ' 
+             'nonzero 3D deformation and justify how it affects a broad front cliff. ' 
+             'Previous Qwen4B also chose radius 1.5 m and delta [0.3,0.2,0], '
             'rejected BEFORE Blender. Prioritize broad SOUTH front visible cliffs, '
             'front-facing slope. Owner priority: organic cliff/terrace transition, '
             'not a tiny local bump, not a new tower or modified parcel. '
@@ -255,7 +259,7 @@ jobs:
             --target-object "$TARGET_MESH" --target-mode existing \
             --model qwen3-vl:4b-instruct --num-ctx 8192 --num-predict 1000 --max-actions 2 \
             --camera-min-radius 12 --camera-min-displacement 1.5 \
-            --cpu-compact --repair-attempts 0 --request-timeout 540 --out "$ART/model"
+            --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
           import json,os,pathlib
