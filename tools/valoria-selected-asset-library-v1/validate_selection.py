@@ -99,14 +99,14 @@ assert all(s["tier"]=="HOLD_EXTERNAL" and not s["resource_key"] for s in supplem
 runtime=runtime_file.read_text()
 editor=editor_file.read_text()
 checks=[
- ("inert runtime", "SpawnSelectedVisual" in runtime and "GeneratedPrefabsResource" in runtime),
+ ("inert runtime", "SpawnSelectedVisual" in runtime and "Resources.Load<GameObject>(e.resource_key)" in runtime),
  ("not active in game", "OnEnable(" not in runtime and "Awake(" not in runtime),
  ("no scene mutation", "ProductionSlice" not in runtime and "Valoria.unity" not in editor),
  ("collider disable", "collider.enabled = false" in runtime),
  ("editor hash gate", "SHA256.Create()" in editor and "SHA mismatch" in editor),
  ("source scene isolated", "EditorSceneManager.NewScene" in editor),
- ("editor prefab generator", "PrefabUtility.SaveAsPrefabAsset" in editor),
- ("deterministic captures", "selected-prefabs-unity.png" in editor),
+ ("editor prefab generator", "PrefabUtility.SaveAsPrefabAsset" in editor and "AssetLibrarySelectionV1/GeneratedPrefabsV1" in editor and "AssetLibrarySelectionV1/Resources/EldoriaSelectedAssetsV1" not in editor),
+ ("deterministic captures", "selected-prefabs-unity.png" in editor and "AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath)" in editor),
  ("editor neutral namespace", "Eldoria.AssetLibrary.Editor" in editor)
 ]
 assert all(ok for _,ok in checks),[name for name,ok in checks if not ok]
