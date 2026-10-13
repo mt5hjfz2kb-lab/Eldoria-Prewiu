@@ -3,7 +3,8 @@ const { PNG }=require('pngjs');
 const fs=require('fs'), path=require('path');
 const dir='bastion1-browser-evidence';
 fs.mkdirSync(dir,{recursive:true});
-const report={exactBuildRun:38395469618,sourceSha:'c53108d7160160d55743b460526a03a2443031bc',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,barracksLockedPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
+const report={exactBuildRun:Number(process.env.ELDORIA_PROBE_BUILD_RUN),sourceSha:process.env.ELDORIA_PROBE_SOURCE_SHA,webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,barracksLockedPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
+if(!report.exactBuildRun||!report.sourceSha)throw new Error('Exact candidate provenance required');
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let browser;
 function state(m){const a=m.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+).*sawmill=(\d+) bastion=(\d+) barracks=(\d+)/);return a?{tag:a[1],scene:a[2],revision:+a[3],wood:+a[4],stone:+a[5],sawmill:+a[6],bastion:+a[7],barracks:+a[8]}:null;}
