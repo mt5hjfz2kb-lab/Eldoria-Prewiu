@@ -2,10 +2,23 @@ const {chromium}=require('playwright');
 (async()=>{
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
- const url=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=relicario-v029';
+ // Legacy ?preset=relicario-v029 is not installed by frozen v0.32. The
+ // ELDORIA_URL override also omits this parameter, so the old boot check
+ // waited forever. Reuse a real Chapter-I save and isolate ONLY the UI flags;
+ // gameplay progression itself remains covered by the dedicated Arc-I suite.
+ const url=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&testerlayer=off';
  await p.goto(url,{waitUntil:'domcontentloaded'});
- await p.waitForFunction(()=>sessionStorage.getItem('eldoria-qa-active-preset')==='relicario-v029'&&window.ELDORIA_V023?.state().view==='relicario');
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
+ const initial=await state();
+ const seeded={...initial,introSeen:true,view:'relicario',
+    chestUnlocked:true,codexUnlocked:true,relicarioUnlocked:true,
+    codex:[{id:'bosque-valoria',name:'Bosque de Valoria',rarity:'common',values:{N:6,S:3,E:4,O:2}}],
+    relicDiscovered:['bosque-valoria'],relicarioTab:'collection',
+    relicTutorialComplete:true,relicTutorialSeen:true,relicSidesRevealed:false};
+ await p.evaluate(s=>localStorage.setItem('eldoria-v022-consistent-loop',JSON.stringify(s)),seeded);
+ await p.reload({waitUntil:'domcontentloaded'});
+ await p.locator('[data-testid="relicario"]').waitFor({state:'visible',timeout:5000});
+ if((await state()).bastionLevel!==initial.bastionLevel)throw Error('Isolated Relicario UI test unexpectedly changed progression');
 
  // Códice and Relicario remain independent peer systems.
  await p.locator('[data-testid="relicario"]').waitFor({state:'visible'});

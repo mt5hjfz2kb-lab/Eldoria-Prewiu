@@ -172,15 +172,21 @@ function maybeChoice(){
 /* ---------- Bastion IV visible priority consequence ---------- */
 function renderBastion4PriorityCue(){
  const root=ROOT(),scene=root?.querySelector('.scene.kingdom');if(!scene)return;
- scene.querySelector('[data-testid="bastion4-priority-visual"]')?.remove();
- const s=state(),raw=s.developmentChoices?.[4]?.id;if(!raw||Number(s.bastionLevel||0)<4)return;
+ // Avoid a self-triggering MutationObserver cycle: unchanged gameplay state must
+ // never destroy/recreate this DOM node on every observer callback.
+ const existing=scene.querySelector('[data-testid="bastion4-priority-visual"]');
+ const s=state(),raw=s.developmentChoices?.[4]?.id;
+ if(!raw||Number(s.bastionLevel||0)<4){existing?.remove();return;}
  const alias={works:'production',supply:'civil',army:'defense',balanced:'civil'},id=alias[raw]||raw;
  const defs={
   production:{label:tr('OBRAS ACTIVAS','ACTIVE WORKS'),props:['🛒','🪵','⚒️']},
   defense:{label:tr('ENTRADA REFORZADA','FORTIFIED ENTRY'),props:['🛡️','⚑','🧱']},
   civil:{label:tr('BARRIO HABITADO','INHABITED QUARTER'),props:['🔥','⌂','👥']}
- },d=defs[id];if(!d)return;
+ },d=defs[id];if(!d){existing?.remove();return;}
+ if(existing?.dataset.choice===id&&existing?.dataset.locale===cfg.locale)return;
+ existing?.remove();
  const el=document.createElement('div');el.className='priorityWorld030 priority-'+id;el.dataset.testid='bastion4-priority-visual';
+ el.dataset.choice=id;el.dataset.locale=cfg.locale;
  el.innerHTML='<small>'+d.label+'</small><div>'+d.props.map(x=>'<span>'+x+'</span>').join('')+'</div>';
  scene.appendChild(el);
 }
