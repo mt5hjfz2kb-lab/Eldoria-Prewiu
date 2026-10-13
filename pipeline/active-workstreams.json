@@ -126,6 +126,23 @@
         "own_active_jobs": 0,
         "reservations_retained_for_bastion_integration": true
       }
+    },
+    {
+      "id": "world4x-zone1-isolated-reference-prototype-20261013",
+      "title": "Zone 1 4X map zoom and streaming isolated prototype",
+      "owner": "chat-world4x-zone1-20261013",
+      "scope": [
+        "docs/world4x-zone1/**",
+        "tools/world4x-zone1/**",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-13",
+      "branch": "prototype/world4x-zone1-zoom-reference-20261013",
+      "dependency": "Existing Region 1 owner retains WorldRegion1Runtime and Pages; Bastion I retains Windows runner and Valoria scene. No mutation to those surfaces.",
+      "phase": "Isolated reference specification and prototype preparation",
+      "art_production_routing": "required"
     }
   ],
   "history": [
