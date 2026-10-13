@@ -218,6 +218,8 @@ async function fullPublishedFlow(page,logs,orientation){
     const before=logs.length;
     const tapped=await tapLoggedUi(page,logs,'primary',flowStart);
     await sleep(750);
+    const opensBuilding=['b1.build-sawmill','b1.ascend','b2.build-barracks','b2.train-archers'].includes(state.objective);
+    if(opensBuilding)await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction ')&&t.includes('visible=True'),20000,'objective building panel '+state.objective,before);
     const action=detailedUi(logs,'buildingAction',before);
     let buildingTap=null;
     if(action&&action.visible){

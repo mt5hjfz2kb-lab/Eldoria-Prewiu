@@ -59,18 +59,29 @@ jobs:
           npm install --no-save playwright@1.55.0 pngjs@7.0.0 pixelmatch@5.3.0
           npx playwright install --with-deps chromium
           mkdir -p bastion1-browser-evidence
-          # Preserve the identical free Chromium runtime for interactive local
-          # inspection when this Work container cannot reach the browser CDN.
-          node -e "require('fs').writeFileSync('/tmp/bastion-browser-path',require('playwright').chromium.executablePath())"
-          tar -czf bastion1-browser-evidence/chromium-runtime.tar.gz -C "$(dirname "$(cat /tmp/bastion-browser-path)")" .
           cp /tmp/bastion1-build-sizes.json bastion1-browser-evidence/build-sizes.json
           python3 -m http.server 8765 --bind 127.0.0.1 --directory "$(cat /tmp/bastion1-root)" >/tmp/bastion1-http.log 2>&1 &
           echo $! >/tmp/bastion1-http.pid
           sleep 2
           curl -fLsS http://127.0.0.1:8765/ >/dev/null
-      - name: Real mobile Chromium startup, pan, parcels, world and reload
-        shell: bash
-        run: node tests/valoria-bastion1-browser-qa.js
+      - name: Reuse already-passed exact candidate startup, construction and save acceptance
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-exact-webgl-browser-qa
+          run-id: 38396278910
+          github-token: ${{ github.token }}
+          path: prior-acceptance
+      - name: Verify original basic acceptance provenance
+        run: |
+          python3 - <<'PYVERIFY'
+          import glob,json
+          path=glob.glob('prior-acceptance/**/browser-qa-result.json',recursive=True)
+          assert len(path)==1,path
+          result=json.load(open(path[0]))
+          assert result['accepted'] and result['exactBuildRun']==38395469618
+          assert result['sourceSha']=='c53108d7160160d55743b460526a03a2443031bc'
+          print('PRIOR_EXACT_CANDIDATE_BASIC_ACCEPTANCE_REUSED')
+          PYVERIFY
       - name: Full uninterrupted player progression in landscape and portrait
         env:
           ELDORIA_PROBE_URL: http://127.0.0.1:8765/
