@@ -204,6 +204,27 @@ jobs:
           $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
           New-Item -ItemType Directory -Force $after | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
+      - name: Independently measure identical Unity camera A/B without declaring artistic approval
+        shell: powershell
+        run: |
+          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before/bastion1-player-initial.png'
+          $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after/bastion1-player-initial.png'
+          $decoder=Join-Path $env:RUNNER_TEMP 'bastion1-unity-pixel-diff.mjs'
+          & git.exe fetch --no-tags --depth=1 origin 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745
+          & git.exe show '3deec3b03c3aa23ed6b091fb3a9eddc7518fe745:tools/art-direction/ai-authoring/unity_pixel_diff.mjs' | Set-Content -LiteralPath $decoder -Encoding utf8
+          if($LASTEXITCODE -ne 0){throw 'Pinned independent Unity diff unavailable'}
+          $script=Join-Path $env:RUNNER_TEMP 'bastion1-compare.mjs'
+          @'
+          import fs from 'node:fs';
+          import {measureUnityVisualChange} from './bastion1-unity-pixel-diff.mjs';
+          const [before,after,out]=process.argv.slice(2);
+          const proof=measureUnityVisualChange(fs.readFileSync(before),fs.readFileSync(after));
+          fs.writeFileSync(out,JSON.stringify(proof,null,2));
+          console.log('BASTION1_NATIVE_UNITY_MATCHED_AB',JSON.stringify(proof));
+          if(proof.gate!=='INDEPENDENT_REVIEW_REQUIRED')process.exitCode=2;
+          '@ | Set-Content -LiteralPath $script -Encoding utf8
+          & node $script $before $after "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/native-unity-ab.json"
+          if($LASTEXITCODE -ne 0){throw 'Authentic Unity matched-camera change not visible enough; reject candidate'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
