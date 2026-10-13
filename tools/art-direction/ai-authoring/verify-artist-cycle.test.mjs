@@ -4,13 +4,40 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import zlib from 'node:zlib';
+import {measureUnityVisualChange,certifyUnityAB} from './unity_pixel_diff.mjs';
+// Real, checksummed 8-bit PNG fixtures. A signature-only imitation MUST NOT pass.
+function crc32(bytes){
+ let n=0xffffffff;
+ for(const b of bytes){n^=b;for(let k=0;k<8;k++)n=(n>>>1)^((n&1)?0xedb88320:0);}
+ return(n^0xffffffff)>>>0;
+}
+function pngChunk(type,data){
+ const name=Buffer.from(type,'ascii'),b=Buffer.alloc(12+data.length);
+ b.writeUInt32BE(data.length,0);name.copy(b,4);data.copy(b,8);
+ b.writeUInt32BE(crc32(b.subarray(4,8+data.length)),8+data.length);
+ return b;
+}
+function validPng(mode='baseline',width=40,height=30){
+ const header=Buffer.alloc(13);header.writeUInt32BE(width,0);header.writeUInt32BE(height,4);
+ header[8]=8;header[9]=2; // PNG 8-bit RGB with filter=0, no interlace
+ const scan=Buffer.alloc((width*3+1)*height);
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+  const pos=y*(width*3+1)+1+x*3;
+  const changed=mode==='visible'?(x<9&&y<9):mode==='tiny'?(x===0&&y===0):false;
+  scan.fill(changed?220:80,pos,pos+3);
+ }
+ return Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),
+  pngChunk('IHDR',header),pngChunk('IDAT',zlib.deflateSync(scan)),pngChunk('IEND',Buffer.alloc(0))]);
+}
+
 import {verifyCycle,preflightArtistPlan} from './verify-artist-cycle.mjs';
 function fixture(){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'eldoria-authoring-')),proof=p=>{
   const rel='proof/'+p+'.txt',full=path.join(root,rel);
   fs.mkdirSync(path.dirname(full),{recursive:true});
   let bytes=Buffer.from('synthetic fixture for '+p);
-  if(['target','before','after'].includes(p))bytes=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(24,0)]);
+  if(['target','before','after'].includes(p))bytes=validPng(p==='after'?'visible':'baseline');
   if(['source','blend'].includes(p))bytes=Buffer.concat([Buffer.from('BLENDER-v300'),Buffer.alloc(20)]);
   if(p==='glb'){bytes=Buffer.alloc(20);bytes.write('glTF',0);bytes.writeUInt32LE(2,4);bytes.writeUInt32LE(20,8);bytes.writeUInt32LE(4,12);bytes.write('JSON',16);}
   fs.writeFileSync(full,bytes);
@@ -48,7 +75,35 @@ function fixture(){
  };
  syncLogs();return{root,c,syncLogs};
 }
-test('Complete traceable artist-driven cycle passes evidence gate',()=>{const {root,c}=fixture();assert.deepEqual(verifyCycle(c,root),[])});
+test('Complete traceable artist-driven cycle passes evidence gate',()=>{const {root,c}=fixture();assert.deepEqual(verifyCycle(c,root),[])})
+test('Unity screenshot original and Qwen candidate with imperceptible difference are rejected even with matching SHA256s and review PASS',()=>{
+ const {root,c}=fixture();
+ const newBytes=validPng('tiny'),full=path.join(root,c.unity.after.path);
+ fs.writeFileSync(full,newBytes);c.unity.after.sha256=crypto.createHash('sha256').update(newBytes).digest('hex');
+ assert.ok(verifyCycle(c,root).some(e=>e.includes('UNITY_AB_VISUAL_REJECTED')));
+});
+test('Identical but differently named real Unity frames cannot justify ART_APPROVED',()=>{
+ const {root,c}=fixture();
+ const original=fs.readFileSync(path.join(root,c.unity.before.path));
+ fs.writeFileSync(path.join(root,c.unity.after.path),original);
+ c.unity.after.sha256=crypto.createHash('sha256').update(original).digest('hex');
+ assert.ok(verifyCycle(c,root).some(e=>e.includes('UNITY_AB_VISUAL_REJECTED')));
+});
+test('Unity A/B pixel classifier rejects material differences below the camera threshold',()=>{
+ const a=validPng('baseline'),b=validPng('tiny');
+ assert.equal(measureUnityVisualChange(a,b).changed_pixels,1);
+ assert.equal(measureUnityVisualChange(a,b).gate,'VISUAL_REJECTED');
+ assert.throws(()=>certifyUnityAB(a,b),/UNITY_AB_VISUAL_REJECTED/);
+ assert.equal(certifyUnityAB(a,validPng('visible')).gate,'INDEPENDENT_REVIEW_REQUIRED');
+});
+test('Forged image headers, size differences and damaged CRCs cannot bypass Unity visual gate',()=>{
+ const a=validPng('baseline');
+ assert.throws(()=>measureUnityVisualChange(a,Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(24)])),/genuine PNG/);
+ assert.throws(()=>measureUnityVisualChange(a,validPng('visible',41,30)),/identical image dimensions/);
+ const b=validPng('visible');b[b.length-16]^=1;
+ assert.throws(()=>measureUnityVisualChange(a,b),/checksum invalid/);
+});
+;
 test('A procedural candidate is not visually approved',()=>{const {root,c}=fixture();c.state='PROTOTYPE_NO_AI_AUTHORSHIP';c.artist=null;assert.deepEqual(verifyCycle(c,root),[])});
 test('Qwen parameter-only changes cannot certify modelling',()=>{const {root,c}=fixture();c.authorship.planned_actions[0].type='noise_amplitude';assert.ok(verifyCycle(c,root).some(x=>x.includes('preset-only')))});
 test('MCP execution missing does not count as actual authoring',()=>{const {root,c}=fixture();c.authorship.executed_actions=[];assert.ok(verifyCycle(c,root).some(x=>x.includes('executed actions')))});
