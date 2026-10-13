@@ -24,6 +24,7 @@ jobs:
         with:
           sparse-checkout: |
             .github/workflows/valoria-bastion1-qwen-replay-visibility.yml
+            tools/art-direction/ai-authoring/render_artist_ab.py
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
@@ -37,7 +38,7 @@ jobs:
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$CORE_SHA"
-          for f in execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs artist_plan_validation.py visibility_metrics.py; do
+          for f in execute_artist_plan.py verify-artist-cycle.mjs artist_plan_validation.py visibility_metrics.py; do
             git show "$CORE_SHA:tools/art-direction/ai-authoring/$f" > "tools/art-direction/ai-authoring/$f"
           done
           python3 -m py_compile tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py
@@ -94,7 +95,7 @@ jobs:
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
             --before "$REPLAY/terrain-source.blend" --after "$REPLAY/result/artist-output.blend" \
-            --target "$TARGET" --out "$REPLAY/ab"
+            --target "$TARGET" --player-camera --out "$REPLAY/ab"
           python3 - <<'PY'
           import os,json,pathlib
           root=pathlib.Path(os.environ['REPLAY'])
