@@ -75,20 +75,28 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   if(priorClose){await page.touchscreen.tap(priorClose.x,priorClose.y);await sleep(350);}
   const barracks=mapHotspot('barracks');
   const barracksState=report.state.at(-1);
-  if(barracks&&barracks.x>=0&&barracks.x<844&&barracks.y>=0&&barracks.y<390&&barracksState?.bastion===1){
-    const previousEventCount=report.events.length;
+  const lockExpected=barracksState?.bastion===1&&barracksState?.barracks===0;
+  let blockedBy='UNKNOWN',disabledAction=true,deniedCommand=true;
+  if(lockExpected&&!barracks){
+    // ParcelBuildingStates.For(barracks) is NOT_BUILT at Bastion I.
+    // ValoriaParcelPresentation intentionally disables the collider,
+    // so the UI must NOT expose a selectable Cuartel hotspot.
+    blockedBy='COLLIDER_DISABLED';
+  }else if(lockExpected&&barracks&&barracks.x>=0&&barracks.x<844&&barracks.y>=0&&barracks.y<390){
+    const from=report.events.length;
     await page.touchscreen.tap(barracks.x,barracks.y);
-    const sawBarracksPanel=await waitUntil(()=>report.events.slice(previousEventCount).some(
-      e=>e.includes('ELDORIA_PLAYABLE_UI id=buildingAction')&&e.includes('CONSTRUIR CUARTEL')),6500);
-    const panelLog=report.events.slice(previousEventCount).findLast(e=>
-      e.includes('ELDORIA_PLAYABLE_UI id=buildingAction')&&e.includes('CONSTRUIR CUARTEL'));
-    const deniedCommand=!report.events.slice(previousEventCount).some(e=>e.includes('ELDORIA_PLAYABLE_COMMAND kind=Build target=barracks ok=True'));
-    report.barracksLockedPass=!!sawBarracksPanel&&!!panelLog?.includes('enabled=False')&&deniedCommand;
-    report.checks.push({barracksTarget:barracks,bastionLevel:barracksState.bastion,panelLog,barracksLockedPass:report.barracksLockedPass});
+    await sleep(1600);
+    const events=report.events.slice(from);
+    const panelLogs=events.filter(e=>e.includes('ELDORIA_PLAYABLE_UI id=buildingAction')&&e.includes('CONSTRUIR CUARTEL'));
+    disabledAction=panelLogs.every(e=>e.includes('enabled=False'));
+    deniedCommand=!events.some(e=>e.includes('ELDORIA_PLAYABLE_COMMAND kind=Build target=barracks ok=True'));
+    blockedBy=panelLogs.length?'DISABLED_BUILD_ACTION':'NO_SELECTABLE_PANEL';
     const close=mapUi('buildingClose');
     if(close)await page.touchscreen.tap(close.x,close.y);
-    await sleep(450);
-  } else report.checks.push({barracksTarget:barracks,bastionLevel:barracksState?.bastion,warning:'Barracks lock could not be checked'});
+    await sleep(300);
+  }
+  report.barracksLockedPass=lockExpected&&blockedBy!=='UNKNOWN'&&disabledAction&&deniedCommand;
+  report.checks.push({barracksTarget:barracks,bastionLevel:barracksState?.bastion,barracksLevel:barracksState?.barracks,blockedBy,disabledAction,deniedCommand,barracksLockedPass:report.barracksLockedPass});
   const world=mapUi('worldNav');report.checks.push({worldNav:world});
   if(world){
     const visitedBefore=report.state.filter(s=>s.scene==='Frontier').length;
