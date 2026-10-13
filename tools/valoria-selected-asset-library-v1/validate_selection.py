@@ -96,6 +96,11 @@ for row in frozen:
     assert re.fullmatch("[a-f0-9]{64}",row["sha256"]) and not row["resource_key"]
     assert row["tier"] in {"REAUTHOR","FROZEN_REFERENCE"}
 assert all(s["tier"]=="HOLD_EXTERNAL" and not s["resource_key"] for s in supplement)
+assert {s["id"]:s["sha256"] for s in supplement}=={
+ "bridge_old":"92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c",
+ "stairs_old":"442fe2d2796c0db01760bd8b13bcdf28b3e5aa214108b0095e484309f6950c88"
+}
+assert all(s["original_bytes"]>0 and s["source_commit"]=="0abf13870d21725c30acf3f3e3a8c86385470073" for s in supplement)
 runtime=runtime_file.read_text()
 editor=editor_file.read_text()
 checks=[
