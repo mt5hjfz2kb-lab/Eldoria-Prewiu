@@ -37,36 +37,6 @@ jobs:
           git show "$ART_CORE_SHA:tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md" > tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
           test -s tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
           python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
-          # Controlled second cycle: the first authentic sculpt moved 181
-          # vertices at the BACK corner but changed only 0.001% of pixels in
-          # matched camera Blender clay frames. That is VISUAL REJECTED.
-          # Request a model-directed edit of the CAMERA-VISIBLE FOREGROUND
-          # scarp, not a deterministic procedural geometry preset.
-          python3 - <<'PY'
-          import hashlib,pathlib
-          f=pathlib.Path('tools/art-direction/ai-authoring/author_brief.py')
-          src=f.read_text()
-          marker=" payload={'model':a.model,'stream':False,'think':False,'format':format_spec,"
-          if marker not in src:raise ValueError('New PR36 prompt insertion point changed')
-          detail=""" prompt+=(' BASTION I PHOTOGRAPHIC CORRECTION FEEDBACK: Prior genuine Qwen sculpt at '
-           'center [-40,57,-21.624] edited 181 vertices but affected only 0.001 percent of '
-           'camera-matched pixels, so this is REJECTED as visually imperceptible. '
-           'The HERO GAME CAMERA looks from the SOUTH / entrance side. '
-           'Inspect the real Unity image and choose a meaningful artist-driven '
-           'sculpt_region on the VISIBLE outer SOUTH rock face, not the hidden rear corner. '
-           'Your original design must choose center x in [-47,-28] or [28,47], '
-           'y in [-44,-22], and z in [-21,-8], using the verified existing terrain. '
-           'Choose spatial radius between 18 and 24 meters and a precise nonzero '
-           'delta vector with Euclidean length 1.2 to 2.0 meters. '
-           'Do not move central playable grounds (abs(x)<22 and plateau z>-1), '
-           'stairs, doors, pathways, buildings or parcels. '
-           'Use asset_decision MODIFY, choose original explicit numbers and artistic rationale. '
-           'Do not imitate any fixed canned geometry values; plan exactly ONE genuine sculpt_region. '
-           'The first model failure was an invisible deformation, NOT a runtime bug. ')
-          """
-          f.write_text(src.replace(marker,detail+marker))
-          print('CAMERA_VISIBLE_ARTIST_REJECTION_FEEDBACK',hashlib.sha256(f.read_bytes()).hexdigest())
-          PY
           echo "PR36_PROVEN_CORE_READONLY $ART_CORE_SHA"
       - name: Recover immutable scene assembly and real Unity player frame
         shell: bash
@@ -137,30 +107,40 @@ jobs:
             out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'derived_pixels':im.size}
           (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
           PY
-      - name: Real Qwen second artistic design of visible foreground cliff (fresh two-image inference)
-        timeout-minutes: 18
+      - name: Resume original Qwen foreground sculpt rejected by too-tight z bound
         shell: bash
+        timeout-minutes: 5
         run: |
           set -euo pipefail
-          python3 tools/art-direction/ai-authoring/author_brief.py \
-            --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" \
-            --target-object "$TARGET_MESH" --target-mode existing \
-            --mesh-context "$ART/inspect/mesh-context.json" \
-            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1400 \
-            --max-actions 1 --cpu-compact --out "$ART/model"
-          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
-            --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
+          mkdir -p "$ART/model" "$ART/recovery"
+          gh run download 38324528317 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-artist-38324528317 --dir "$ART/recovery"
           python3 - <<'PY'
-          import os,json,pathlib,math
-          f=pathlib.Path(os.environ['ART'])/'model/artist-plan.json'
-          plan=json.loads(f.read_text())
-          assert len(plan)==1 and plan[0]['type']=='sculpt_region',plan
-          p=plan[0]['parameters'];x,y,z=p['center']
-          magnitude=math.sqrt(sum(v*v for v in p['delta']))
-          if not (28<=abs(x)<=47 and -44<=y<=-22 and -21<=z<=-8 and 18<=p['radius']<=24 and 1.2<=magnitude<=2.0):
-            raise ValueError('Qwen original sculpt outside camera-visible safe envelope; VISUAL_REJECTED, no fabricated coordinates')
-          print('REAL_MODEL_DESIGNED_VISIBLE_CLIFF',plan)
+          import json,os,hashlib,pathlib,shutil,math
+          root=pathlib.Path(os.environ['ART'])
+          original=json.loads((root/'recovery/input-provenance.json').read_text())
+          current=json.loads((root/'input-provenance.json').read_text())
+          for key in ('source_run','source_sha','artist_core_sha','glb_sha256','unity_sha256','reference_sha256'):
+              assert original[key]==current[key],(key,original.get(key),current.get(key))
+          inference=json.loads((root/'recovery/model/artist-inference.json').read_text())
+          plan=json.loads((root/'recovery/model/artist-plan.json').read_text())
+          assert inference['model']=='qwen3-vl:2b-instruct' and inference['system_role']=='system'
+          assert inference['direction']['planned_actions']==plan and len(plan)==1
+          action=plan[0]
+          assert action['type']=='sculpt_region' and action['target']==os.environ['TARGET_MESH']
+          x,y,z=action['parameters']['center'];delta=action['parameters']['delta']
+          magnitude=math.sqrt(sum(v*v for v in delta))
+          topology=json.loads((root/'inspect/mesh-context.json').read_text())
+          ground_min=topology['local_aabb']['min'][2]
+          assert -22<ground_min< -21.0
+          assert 28<=abs(x)<=47 and -44<=y<=-22 and ground_min-.01<=z<=-8
+          assert 18<=action['parameters']['radius']<=24 and 1.2<=magnitude<=2
+          assert not inference.get('self_approval',True)
+          for name in ('artist-plan.json','artist-inference.json','artist-response-raw.txt'):
+              shutil.copyfile(root/'recovery/model'/name,root/'model'/name)
+          raw=(root/'model/artist-response-raw.txt').read_bytes()
+          print('ACTUAL_QWEN_FOREGROUND_ARTIST_PLAN_RESUMED_UNMODIFIED',hashlib.sha256(raw).hexdigest(),action)
           PY
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
       - name: Actual typed Blender sculpt on Qwen-selected target
         timeout-minutes: 8
         run: |
