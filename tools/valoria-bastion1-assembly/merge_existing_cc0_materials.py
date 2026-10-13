@@ -26,10 +26,10 @@ def main():
     geometry=hashlib.sha256(str([(o.name,[tuple(v.co) for v in o.data.vertices]) for o in bpy.data.objects if o.type=='MESH']).encode()).hexdigest()
     slots={m.name:i for i,m in enumerate(target.data.materials)}
     with bpy.data.libraries.load(str(a.materials.resolve()),link=False) as (src,dst):
-        names=list(proof['material_variants'])
+        names=tuple(proof['material_variants'])
         if any(n not in src.materials for n in names):
             raise ValueError('Packed PBR materials unavailable')
-        dst.materials=names
+        dst.materials=list(names)
     for name,material in zip(names,dst.materials):
         if name not in slots:raise ValueError('Terrain slot not found: '+name)
         target.data.materials[slots[name]]=material

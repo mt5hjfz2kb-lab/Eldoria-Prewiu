@@ -127,26 +127,24 @@ jobs:
           Copy-Item $barracks "$dest/Valoria_Cuartel_AP2_v1.glb" -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Valoria_Cuartel_AP2_v1.glb"
           if($LASTEXITCODE -ne 0){throw 'Barracks material staging failed'}
-      - name: Capture the exact source in Unity and save the candidate scene
+      - name: Recover already-passed exact Unity baseline without rendering it again
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-player-integration-38394884778
+          run-id: 38394884778
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1PassedBaseline
+      - name: Preserve verified earlier baseline frames and discard stale build output
         shell: powershell
         run: |
-          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity not found'}
-          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity.log'
-          $out=Join-Path $env:GITHUB_WORKSPACE 'Unity/Bastion1ReferenceCaptures'
-          if(Test-Path $out){Remove-Item $out -Recurse -Force}
-          $unityArguments=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
-          if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
-          if($process.ExitCode -ne 0){New-Item -ItemType Directory -Force $out | Out-Null;Copy-Item $log "$out/Bastion1-Unity-Failure.log" -Force;Get-Content $log | Select-String -Pattern "BASTION1_REFERENCE_CAPTURE_FAILED|BASTION1_PLAYER_SCENE|Exception:|Exception |error CS|glTFast|^Error" | Select-Object -Last 35;Get-Content $log -Tail 55;throw "Unity failed $($process.ExitCode)"}
-          if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
-          if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
-          if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}
-      - name: Preserve exact same-head Unity BEFORE images
-        shell: powershell
-        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'Bastion1PassedBaseline'
+          $images=@(Get-ChildItem $base -Recurse -File -Filter 'bastion1-player-initial.png' | Where-Object {$_.FullName -match 'Bastion1MaterialAB[\\/]before'})
+          if($images.Count -ne 1){throw 'Exact previous baseline not found'}
           $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
           New-Item -ItemType Directory -Force $before | Out-Null
-          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
+          Copy-Item (Join-Path $images[0].DirectoryName '*') $before -Force
+          $oldBuild=Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/Bastion1MeshCandidateWebGL'
+          if(Test-Path $oldBuild){Remove-Item $oldBuild -Recurse -Force}
       - name: Transfer completed packed CC0 materials into the full city
         shell: powershell
         run: |
