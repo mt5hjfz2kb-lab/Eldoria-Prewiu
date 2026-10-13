@@ -85,6 +85,32 @@ newimg.pixels=updated;newimg.pack()
 tex_nodes[0].image=newimg
 print('BASTION1_EXISTING_GRASS_ALBEDO_REBALANCED',w,h)
 # No overlays or new resource nodes. Reuse only modest contact stones.
+# Reuse actual previously selected bush asset, not synthetic decoration.
+# Source exists in the immutable scene as EA03_Nature_Bush_01a_LOD0.
+from mathutils import Matrix
+bush_sources=[o for o in meshes if o.name.startswith('EA03_Nature_Bush_01a_LOD0')]
+if not bush_sources:raise RuntimeError('Selected original bush mesh missing; no substitute')
+source_bush=bush_sources[0]
+world_corners=[source_bush.matrix_world @ Vector(p) for p in source_bush.bound_box]
+bx=sum(v.x for v in world_corners)/8;by=sum(v.y for v in world_corners)/8
+bz=min(v.z for v in world_corners)
+bush_positions=[
+ (-17,-12,.95),(-20,-6,.82),(-16,-2,.72),(-20,5,1.1),(-17,10,.85),
+ (-12,10,.72),(17,-12,.88),(20,-7,1.0),(16,-1,.7),(20,5,1.08),
+ (17,10,.82),(12,10,.72)]
+bush_count=0
+for x,y,scale in bush_positions:
+ if abs(x)<8:raise RuntimeError('Vegetation overlaps axial road')
+ obj=source_bush.copy();obj.data=source_bush.data;obj.parent=None
+ obj.name='Bastion I reused original courtyard bush %02d'%bush_count
+ # Preserve source orientation and materials; rescale around its source base.
+ obj.matrix_world=(Matrix.Translation(Vector((x,y,surface(x,y)+.02)))
+                   @ Matrix.Scale(scale,4)
+                   @ Matrix.Translation(Vector((-bx,-by,-bz)))
+                   @ source_bush.matrix_world)
+ bpy.context.collection.objects.link(obj)
+ bush_count+=1
+print('BASTION1_REUSED_ORIGINAL_BUSHES',bush_count,source_bush.name)
 # Modest reused scree geometry at the lateral wall contacts only. Max 20 cm
 # height: no new nodes, no obstacle in walking area and mobile-friendly.
 rng=random.Random(9826);count=0
@@ -110,6 +136,6 @@ proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'intervention':'native-courtyard-ground-albedo-and-contact-scree',
  'secondary_paths':0,'ground_islands':0,'contact_scree':count,
  'protected_axial_corridor_m':7,'existing_mesh_coordinates_modified':False,
- 'new_resource_nodes':0,'new_buildings':0,'art_approved':False}
+ 'new_resource_nodes':0,'new_buildings':0,'reused_bushes':bush_count,'art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_COURTYARD_COMPOSITION',json.dumps(proof))
