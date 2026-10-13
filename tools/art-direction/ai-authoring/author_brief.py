@@ -4,6 +4,7 @@ Requires two genuine images; it does not execute Blender or certify art by itsel
 """
 import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time
 from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback
+from artistic_learning_feedback import load_failed_cycles,feedback_for_failed_cycles,distinct_strategy_errors,select_journal_lessons
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
