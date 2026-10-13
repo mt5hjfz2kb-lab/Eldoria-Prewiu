@@ -95,7 +95,7 @@ jobs:
           (root/'source-image-provenance.json').write_text(json.dumps(info,indent=2))
           print('CPU_DERIVED_GENUINE_IMAGES',json.dumps(info))
           PY
-      - name: Real Qwen 2B bounded context and two-image system-role AUTHORING inference
+      - name: Real Qwen 2B with measured camera-visible cliff plan (two-image and typed repair)
         timeout-minutes: 14
         run: |
           python3 tools/art-direction/ai-authoring/author_brief.py \
