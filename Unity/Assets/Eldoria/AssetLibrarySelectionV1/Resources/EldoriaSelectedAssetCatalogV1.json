@@ -20,7 +20,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 13257704,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "gate_street_rise",
@@ -34,7 +40,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 2101016,
-      "comment": "No collision/path authority; scenery only"
+      "comment": "No collision/path authority; scenery only",
+      "source_triangles": 49799,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 0,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "midtier_01",
@@ -48,7 +60,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11415216,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 11997,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "midtier_02",
@@ -62,7 +80,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11477736,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 13201,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "midtier_03",
@@ -76,7 +100,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11588700,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 16650,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "midtier_04",
@@ -90,7 +120,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11208916,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 6324,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "residential_terrace_rock",
@@ -104,7 +140,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 3084800,
-      "comment": "Legacy import appears dark or missing texture; not promoted"
+      "comment": "Legacy import appears dark or missing texture; not promoted",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 4,
+      "source_texture_images": 12,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "rock_seam_filler",
@@ -118,7 +160,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 2109728,
-      "comment": "Legacy import appears dark or missing texture; not promoted"
+      "comment": "Legacy import appears dark or missing texture; not promoted",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "street_landing",
@@ -132,7 +180,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 2390048,
-      "comment": "No collision/path authority; scenery only"
+      "comment": "No collision/path authority; scenery only",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 0,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "terrace_stair_rock",
@@ -146,7 +200,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 2062012,
-      "comment": "Legacy import appears dark or missing texture; not promoted"
+      "comment": "Legacy import appears dark or missing texture; not promoted",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 0,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "tower_wall_rock",
@@ -160,7 +220,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 2695720,
-      "comment": "Legacy import appears dark or missing texture; not promoted"
+      "comment": "Legacy import appears dark or missing texture; not promoted",
+      "source_triangles": 50000,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 2,
+      "source_texture_images": 6,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "stone_corner_l",
@@ -174,7 +240,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 12436120,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 7335,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stone_wall_high",
@@ -188,7 +260,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 12405180,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 6440,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stone_rock_transition",
@@ -202,7 +280,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 12414676,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 7270,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stonekit_01",
@@ -216,7 +300,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 14228020,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 10364,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stonekit_02",
@@ -230,7 +320,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 14303504,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 12602,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stonekit_03",
@@ -244,7 +340,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 14092856,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 6433,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stonekit_04",
@@ -258,7 +360,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 14144300,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 7824,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stonekit_05",
@@ -272,7 +380,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 14066928,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 4966,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stonekit_06",
@@ -286,7 +400,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 14128696,
-      "comment": "May be reused selectively after actual camera/material/cost validation"
+      "comment": "May be reused selectively after actual camera/material/cost validation",
+      "source_triangles": 7602,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "rock_platform",
@@ -300,7 +420,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 13852688,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 8650,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stepped_rock_terrace",
@@ -314,7 +440,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 13767544,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 6379,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "sawmill_ap2",
@@ -328,7 +460,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11134796,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "barracks_ap2",
@@ -342,7 +480,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11603580,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "granary_biii",
@@ -356,7 +500,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 12951524,
-      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate"
+      "comment": "Candidate reusable original; pending isolated Unity prefab/camera gate",
+      "source_triangles": 49800,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "player_city_world",
@@ -370,7 +520,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 11177448,
-      "comment": "Do not place in Valoria game scene"
+      "comment": "Do not place in Valoria game scene",
+      "source_triangles": 22797,
+      "source_blender_mesh_objects": 1,
+      "source_materials": 1,
+      "source_texture_images": 3,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "hero_gate_v3_frozen",
@@ -385,7 +541,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 108844,
+      "source_blender_mesh_objects": 1037,
+      "source_materials": 55,
+      "source_texture_images": 12,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "wall_straight_frozen",
@@ -400,7 +562,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 48900,
+      "source_blender_mesh_objects": 8,
+      "source_materials": 8,
+      "source_texture_images": 9,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "watchtower_frozen",
@@ -415,7 +583,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 42532,
+      "source_blender_mesh_objects": 13,
+      "source_materials": 13,
+      "source_texture_images": 12,
+      "asset_budget_review_required": true,
+      "mobile_performance_verified": false
     },
     {
       "id": "wall_corner_frozen",
@@ -430,7 +604,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 35232,
+      "source_blender_mesh_objects": 8,
+      "source_materials": 8,
+      "source_texture_images": 9,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "wall_connections_frozen",
@@ -445,7 +625,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 18804,
+      "source_blender_mesh_objects": 8,
+      "source_materials": 8,
+      "source_texture_images": 9,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stone_path_platform_frozen",
@@ -460,7 +646,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 8088,
+      "source_blender_mesh_objects": 7,
+      "source_materials": 7,
+      "source_texture_images": 11,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "cliff_rocks_frozen",
@@ -475,7 +667,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 24298,
+      "source_blender_mesh_objects": 2,
+      "source_materials": 2,
+      "source_texture_images": 6,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "defensive_props_frozen",
@@ -490,7 +688,13 @@
       "render_verification": "BLENDER_AND_HISTORIC_UNITY_FAMILY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library."
+      "comment": "Immutable externally pinned source; Bastion I owns current staging. Not auto-imported into this independent library.",
+      "source_triangles": 4464,
+      "source_blender_mesh_objects": 7,
+      "source_materials": 7,
+      "source_texture_images": 7,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "bridge_old",
@@ -505,7 +709,13 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Do not duplicate existing staging; supplement until validated independently."
+      "comment": "Do not duplicate existing staging; supplement until validated independently.",
+      "source_triangles": 2592,
+      "source_blender_mesh_objects": 4,
+      "source_materials": 3,
+      "source_texture_images": 6,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     },
     {
       "id": "stairs_old",
@@ -520,7 +730,20 @@
       "render_verification": "BLENDER_36_RENDER_ONLY",
       "unity_verified": false,
       "original_bytes": 0,
-      "comment": "Do not duplicate existing staging; supplement until validated independently."
+      "comment": "Do not duplicate existing staging; supplement until validated independently.",
+      "source_triangles": 1360,
+      "source_blender_mesh_objects": 3,
+      "source_materials": 2,
+      "source_texture_images": 4,
+      "asset_budget_review_required": false,
+      "mobile_performance_verified": false
     }
-  ]
+  ],
+  "provenance_geometry": {
+    "source_run_id": 38393822753,
+    "source_artifact_id": 11809609192,
+    "engine": "Blender Cycles; imported exact SHA-verified GLBs",
+    "metric_type": "SOURCE_GLTF_GEOMETRY_ONLY_NOT_ENGINE_PERFORMANCE",
+    "performance_status": "NOT_PROFILED_ON_ANDROID_OR_IOS"
+  }
 }
