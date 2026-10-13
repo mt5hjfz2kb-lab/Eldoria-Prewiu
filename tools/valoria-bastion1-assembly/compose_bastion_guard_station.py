@@ -95,7 +95,7 @@ beam('Bastion I small timber guard frame lintel',(cx,cy+1.0,cz+2.5),(3.55,.20,.2
 dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'ai_proposal_sha256':hashlib.sha256(proposal_path.read_bytes()).hexdigest(),
- 'ai_authorship':'concept and site from actual Qwen inference; geometry implementation deterministic Blender',
+ 'ai_authorship':('owner-directed deterministic fallback, NOT Qwen' if proposal.get('_provenance')=='owner_directed_fallback' else 'concept and site from verified local Qwen inference; geometry implementation deterministic Blender'),
  'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
  'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),
  'new_timber_meshes':3,'road_clearance_m':abs(cx)-7,'existing_source_meshes_modified':False,
