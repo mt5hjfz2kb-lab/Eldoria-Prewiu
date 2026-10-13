@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 """Safety contracts for Qwen structured artist output; zero inference/cloud credits."""
 import unittest
-from author_brief import cpu_artist_schema
+from author_brief import cpu_artist_schema, prioritize_foreground_anchors
 
 class ArtistSchemaTests(unittest.TestCase):
+ def test_real_foreground_scarp_anchors_are_not_hidden_by_aabb_corners(self):
+  anchors=[{'role':'deep_slope','index':1,'position':[-50,57,-21.6]},
+           {'role':'highest_crest','index':2,'position':[0,0,3.4]},
+           {'role':'negative_y_cliff_left','index':3,'position':[-36,-32,-7.0]},
+           {'role':'negative_y_cliff_right','index':4,'position':[35,-30,-8.0]},
+           {'role':'southern_join','index':5,'position':[0,-45,-10]}]
+  result=prioritize_foreground_anchors(anchors,3)
+  self.assertEqual([r['index'] for r in result],[3,4,5])
+  self.assertNotIn('delta',str(result))
  def test_existing_mesh_can_design_deformations_but_cannot_fabricate_new_mesh(self):
   s=cpu_artist_schema('Continuous eroded cliff rock face','existing',2)
   p=s['properties']
