@@ -280,13 +280,13 @@ jobs:
           # artist cycle before the model reasons about another 3D edit.
           fresh=('LATEST REAL ART FAIL #38443638059: Qwen moved 1138 cliff vertices in Y only; '
                  'Blender shape looked nearly identical. Change SOUTH CLIFF in Z; protect crown. ')
-          schema=('REAL QWEN4B FAILS #38455676872 and #38457504299: twice generated INVALID '
-                  'reprofile_crest with knots. For THIS cycle select type sculpt_path, '
-                  'NOT reprofile_crest. Valid sculpt_path parameters: '
+          schema=('NEW STRATEGY after real #38458664914 Blender A/B: 0.0233% visible RGB pixels; '
+                  'the prior 2-knot 12m/1.5m path at x=+-22.3365,y=-26.2857,z=-12.2 was ART REJECTED. '
+                  'Do NOT repeat those anchors. Recompose the foreground cliff SILHOUETTE with '
                   '{"knots":[{"center":[x,y,z],"delta":[dx,dy,dz],"radius":R}, '
                   '{"center":[x2,y2,z2],"delta":[dx2,dy2,dz2],"radius":R2}]}. '
-                  'TWO DISTINCT source-local cliff positions; at least one radius>=12 '
-                  'and displacement>=1.5m; choose OWN coordinates; do not touch crown. ')
+                  'THREE OR MORE DISTINCT source-local cliff knots; at least one radius>=20 '
+                  'and displacement>=3m, directed toward camera-visible vertical cliff; choose OWN coordinates; protect crown. ')
           ids=('small-sculpt-repeated','tiny-sculpt-path','frustum-parity',
                'unity-a-b-independent','preserve-playable-protected-terrain')
           for k in ids:assert k in lesson,('LESSON MISSING',k)
@@ -315,7 +315,7 @@ jobs:
             --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
             --model qwen3-vl:4b-instruct --num-ctx 8192 --num-predict 600 --max-actions 1 \
-            --camera-min-radius 12 --camera-min-displacement 1.5 \
+            --camera-min-radius 20 --camera-min-displacement 3 \
             --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
