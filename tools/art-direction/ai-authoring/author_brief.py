@@ -7,6 +7,23 @@ from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
+def prioritize_foreground_anchors(anchors,limit=14):
+ """Favor source-verified SOUTH scarp nodes over misleading AABB extrema.
+
+ This orders observations only; the actual 3D sculpt intent/coordinates/radius
+ must still come from the local Qwen model and be validated before Blender.
+ """
+ def priority(item):
+  role=item.get('role','') if isinstance(item,dict) else ''
+  if role.startswith('negative_y_cliff_'):return 0
+  if role=='southern_join':return 1
+  if role in ('mid_slope_center','center_mass'):return 2
+  if role=='playable_crest_center':return 3
+  if role.startswith('positive_y_cliff_'):return 5
+  return 4
+ return sorted(anchors,key=priority)[:limit]
+
+
 
 def cpu_artist_schema(target,mode,max_actions):
  """Constrain output *shape*, never prescribe artistic coordinates or geometry."""
@@ -108,16 +125,7 @@ def main():
   # selection spent its whole context on AABB extremes and far-away vertices.
   # Prefer VERIFIED source vertices on the front-facing slope, but NEVER
   # fabricate center/radius/delta or replace model-authored coordinates.
-  anchors=topology.get('sample_vertices',[])
-  def front_priority(anchor):
-   role=anchor.get('role','') if isinstance(anchor,dict) else ''
-   if role.startswith('negative_y_cliff_'):return 0
-   if role=='southern_join':return 1
-   if role in ('mid_slope_center','center_mass'):return 2
-   if role=='playable_crest_center':return 3
-   if role.startswith('positive_y_cliff_'):return 5
-   return 4
-  highlighted=sorted(anchors,key=front_priority)[:14]
+  highlighted=prioritize_foreground_anchors(topology.get('sample_vertices',[]),14)
   compact={'schema_version':topology['schema_version'],'source_sha256':topology.get('source_sha256'),
    'target':topology['target'],'vertices':topology.get('vertices'),'faces':topology.get('faces'),
    'local_aabb':topology.get('local_aabb'),'dimensions':topology.get('dimensions'),
