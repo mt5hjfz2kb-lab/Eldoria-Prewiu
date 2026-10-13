@@ -33,7 +33,7 @@
     {
       "id": "valoria-bastion1-player-scene-integration-20261012",
       "title": "Valoria Bastion I authored mesh scene player integration",
-      "owner": "chat-bastion1-player-integration-20261012",
+      "owner": "chat-owner-authorized-bastion1-and-artist-takeover-20261013",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
@@ -52,7 +52,15 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBastion1MeshPlayerScene.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBastion1MeshPlayerScene.cs.meta",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ValoriaMeshPresentationTests.cs.meta"
+        "Unity/Assets/Eldoria/Tests/PlayMode/ValoriaMeshPresentationTests.cs.meta",
+        "tools/art-direction/ai-authoring/**",
+        "tools/art-direction/ARTIST_LEARNING_JOURNAL.md",
+        "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
+        "tools/check-art-production-governance.mjs",
+        "tools/check-art-changed-scope.mjs",
+        "docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md",
+        ".github/workflows/valoria-bastion1-ai-artist-consumer.yml",
+        ".github/workflows/valoria-bastion1-qwen-replay-visibility.yml"
       ],
       "resources": [
         "valoria-player-scene",
@@ -65,7 +73,8 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Existing SawmillState0/1/2 V1 sources confirmed in full main tree; state-driven mesh adapter and native scene builder in progress"
+      "phase": "Owner-authorized takeover of interrupted Bastion I and Issue 34; recover live evidence, consume permanent learning core, correct invisible authoring, verify real Unity A/B.",
+      "resumed_at": "2026-10-13T08:02:06.752Z"
     }
   ],
   "history": [
