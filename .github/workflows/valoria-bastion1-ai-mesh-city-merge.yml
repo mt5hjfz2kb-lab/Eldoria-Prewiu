@@ -22,7 +22,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$ROOT/source" "$ROOT/artist" "$ROOT/verified"
           gh run download 38320867773 --repo "${{ github.repository }}" --name "bastion1-player-integration-38320867773" --dir "$ROOT/source"
-          gh run download 38323534537 --repo "${{ github.repository }}" --name "bastion1-genuine-qwen-artist-38323534537" --dir "$ROOT/artist"
+          gh run download 38325368142 --repo "${{ github.repository }}" --name "bastion1-genuine-qwen-artist-38325368142" --dir "$ROOT/artist"
           python3 - <<'PY'
           import json,hashlib,pathlib,os,struct
           root=pathlib.Path(os.environ['ROOT'])
@@ -34,13 +34,13 @@ jobs:
           assert hashlib.sha256(data).hexdigest()==provenance['glb_sha256']
           assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
           evidence=json.loads((root/'artist/result/artist-execution.json').read_text())
-          assert evidence['executed_actions'][0]['changed_vertices']==181
+          assert evidence['executed_actions'][0]['changed_vertices']==847
           assert evidence['source_mesh_sha256']!=evidence['result_mesh_sha256']
           assert hashlib.sha256((root/'artist/result/artist-output.blend').read_bytes()).hexdigest()==evidence['result_blend_sha256']
           art=json.loads((root/'artist/model/artist-inference.json').read_text())
           plan=json.loads((root/'artist/model/artist-plan.json').read_text())
           assert art['model']=='qwen3-vl:2b-instruct' and art['system_role']=='system'
-          assert art['recovery_from_run']==38323028866 and art['direction']['planned_actions']==plan
+          assert art['direction']['planned_actions']==plan and art['self_approval'] is False
           assert hashlib.sha256((root/'artist/model/artist-response-raw.txt').read_bytes()).hexdigest()==art['raw_qwen_response_sha256']
           (root/'verified/source.glb').write_bytes(data)
           print('GENUINE_QWEN_SOURCES_VERIFIED',len(data),evidence['executed_actions'])
