@@ -16,9 +16,9 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: a3982461d2fd5fc012139965ce4b42af7d570758
-      SOURCE_RUN: '38320867773'
-      SOURCE_SHA: '2f4b1a372c987594e92b15c899e5c86b16069b2b'
+      ART_CORE_SHA: 668e339f5ecac993edbb7de3a0b829f0385b1246
+      SOURCE_RUN: '38356683511'
+      SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
       ART: /tmp/bastion1-author
     steps:
@@ -29,7 +29,7 @@ jobs:
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$ART_CORE_SHA"
-          for n in author_brief.py execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs; do
+          for n in author_brief.py artist_plan_validation.py execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs visibility_metrics.py; do
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
           # PR #36 moved the canonical system prompt out of the old local
@@ -107,40 +107,79 @@ jobs:
             out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'derived_pixels':im.size}
           (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
           PY
-      - name: Resume original Qwen foreground sculpt rejected by too-tight z bound
+      - name: Build VERIFIED south-cliff mesh anchors and real prior Unity failure context
         shell: bash
-        timeout-minutes: 5
         run: |
-          set -euo pipefail
-          mkdir -p "$ART/model" "$ART/recovery"
-          gh run download 38324528317 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-artist-38324528317 --dir "$ART/recovery"
-          python3 - <<'PY'
-          import json,os,hashlib,pathlib,shutil,math
+          mkdir -p "$ART/model"
+          cat > "$ART/visible-anchors.py" <<'PY'
+          import bpy,json,os,pathlib,math
           root=pathlib.Path(os.environ['ART'])
-          original=json.loads((root/'recovery/input-provenance.json').read_text())
-          current=json.loads((root/'input-provenance.json').read_text())
-          for key in ('source_run','source_sha','artist_core_sha','glb_sha256','unity_sha256','reference_sha256'):
-              assert original[key]==current[key],(key,original.get(key),current.get(key))
-          inference=json.loads((root/'recovery/model/artist-inference.json').read_text())
-          plan=json.loads((root/'recovery/model/artist-plan.json').read_text())
-          assert inference['model']=='qwen3-vl:2b-instruct' and inference['system_role']=='system'
-          assert inference['direction']['planned_actions']==plan and len(plan)==1
-          action=plan[0]
-          assert action['type']=='sculpt_region' and action['target']==os.environ['TARGET_MESH']
-          x,y,z=action['parameters']['center'];delta=action['parameters']['delta']
-          magnitude=math.sqrt(sum(v*v for v in delta))
-          topology=json.loads((root/'inspect/mesh-context.json').read_text())
-          ground_min=topology['local_aabb']['min'][2]
-          assert -22<ground_min< -21.0
-          assert 28<=abs(x)<=47 and -44<=y<=-22 and ground_min-.01<=z<=-8
-          assert 18<=action['parameters']['radius']<=24 and 1.2<=magnitude<=2
-          assert not inference.get('self_approval',True)
-          for name in ('artist-plan.json','artist-inference.json','artist-response-raw.txt'):
-              shutil.copyfile(root/'recovery/model'/name,root/'model'/name)
-          raw=(root/'model/artist-response-raw.txt').read_bytes()
-          print('ACTUAL_QWEN_FOREGROUND_ARTIST_PLAN_RESUMED_UNMODIFIED',hashlib.sha256(raw).hexdigest(),action)
+          bpy.ops.wm.open_mainfile(filepath=str(root/'terrain-source.blend'))
+          mesh=bpy.data.objects[os.environ['TARGET_MESH']].data
+          points=[(-22,-25,-12),(-11,-25,-13),(0,-25,-13),(11,-25,-13),(22,-25,-12),
+                  (-20,-30,-18),(-8,-30,-18),(8,-30,-18),(20,-30,-18)]
+          verts=list(mesh.vertices)
+          assert len(verts)>10000
+          samples=[];used=set()
+          for i,(x,y,z) in enumerate(points):
+            v=min((v for v in verts if v.index not in used),key=lambda v:(v.co.x-x)**2+(v.co.y-y)**2+(v.co.z-z)**2)
+            distance=math.dist([x,y,z],list(v.co))
+            assert distance<24,(i,distance,list(v.co))
+            assert v.co.y<0 and abs(v.co.x)<45,('wrong camera face',i,list(v.co))
+            used.add(v.index)
+            samples.append({'role':f'negative_y_cliff_{i}','index':v.index,'position':[round(float(t),4) for t in v.co]})
+          f=root/'inspect/mesh-context.json'
+          manifest=json.loads(f.read_text())
+          assert manifest['target']==os.environ['TARGET_MESH']
+          manifest['sample_vertices']=samples+manifest['sample_vertices'][:3]
+          f.write_text(json.dumps(manifest,indent=2))
+          (root/'inventory.txt').write_text(
+            'Authentic existing 3D terrain with PBR already integrated. '
+            'SOUTH foreground cliff visible to player uses verified source vertices: '+
+            json.dumps(samples,separators=(',',':'))+
+            '. Previous Qwen-authored operation displaced 828 vertices, but genuine Unity '
+            'camera comparison changed only 125 of 1440000 pixels (>10 RGB), 0.00868%. '
+            'That is a demonstrated ART REJECTION: correcting a far-left or bottom corner '
+            'again is ineffective. Design a conspicuous curved FRONT slope/cliff profile '
+            'and contact with the buildable terrace, preserving all build parcels, roads, '
+            'architecture, existing Hero Gate V3 and PBR face slots. '
+            'Select spatial operation and displacement YOURSELF based on real images '
+            'and verified foreground coordinates; no fabricated preset or fake approval.')
+          print('AUTHENTIC_FOREGROUND_MESH_ANCHORS',json.dumps(samples))
           PY
+          blender -b --python-exit-code 1 --python "$ART/visible-anchors.py"
+      - name: NEW local Qwen visual decision for visible player-camera cliff
+        timeout-minutes: 17
+        shell: bash
+        run: |
+          python3 tools/art-direction/ai-authoring/author_brief.py \
+            --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" \
+            --inventory "$ART/inventory.txt" \
+            --mesh-context "$ART/inspect/mesh-context.json" \
+            --target-object "$TARGET_MESH" --target-mode existing \
+            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1400 --max-actions 2 \
+            --cpu-compact --repair-attempts 1 --request-timeout 420 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
+          python3 - <<'PY'
+          import json,os,pathlib
+          r=pathlib.Path(os.environ['ART'])
+          inference=json.loads((r/'model/artist-inference.json').read_text())
+          ops=json.loads((r/'model/artist-plan.json').read_text())
+          assert inference['model']=='qwen3-vl:2b-instruct' and inference['system_role']=='system'
+          assert inference['direction']['planned_actions']==ops
+          anchors=json.loads((r/'inspect/mesh-context.json').read_text())['sample_vertices']
+          assert len(anchors)>=9 and all(a['role'].startswith('negative_y_cliff_') for a in anchors[:9])
+          # Fail closed when Qwen AGAIN designs an invisible far-away edit.
+          focus=[]
+          for op in ops:
+            p=op['parameters']
+            if op['type']=='sculpt_region':focus.append(p['center'])
+            elif op['type']=='sculpt_path':focus.extend(k['center'] for k in p['knots'])
+          if focus:
+            assert any(-36<=v[0]<=36 and -45<=v[1]<=-7 for v in focus),('Qwen edit outside genuine player-facing cliff',focus)
+          assert all(op['target']==os.environ['TARGET_MESH'] for op in ops)
+          print('NEW_QWEN_ARTISTIC_DECISION_UNMODIFIED',json.dumps(ops))
+          PY
       - name: Actual typed Blender sculpt on Qwen-selected target
         timeout-minutes: 8
         run: |
@@ -176,7 +215,7 @@ jobs:
           fraction=float(pixels.mean())
           print('REAL_QWEN_CAMERA_MATCHED_VISIBLE_PIXEL_FRACTION',fraction)
           (root/'visual-impact.txt').write_text(f'changed_pixel_fraction={fraction:.9f}\nthreshold_for_study=0.0005\nnot_unity_or_visual_approval=true\n')
-          if fraction<.0005:raise ValueError('Qwen sculpt is not visibly meaningful in camera-matched proof; must redesign, not cosmetically accept')
+          if fraction<.001:raise ValueError('Qwen sculpt changes under 0.1% of matched camera pixels; ART REJECTED, must redesign')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
