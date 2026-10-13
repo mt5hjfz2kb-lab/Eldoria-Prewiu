@@ -62,6 +62,28 @@ class LearningEvidenceTests(unittest.TestCase):
     self.assertEqual(forbidden_methods_from_rejected_cycles(only_one),set())
     different=self.load([self.cycle(4),self.cycle(5,typ='sculpt_path')])
     self.assertEqual(forbidden_methods_from_rejected_cycles(different),set())
+ def test_two_failed_sculpts_stay_banned_after_a_different_failed_path(self):
+    f=self.load([self.cycle(1),self.cycle(2),self.cycle(3,'sculpt_path')])
+    self.assertEqual(forbidden_methods_from_rejected_cycles(f),{'sculpt_region'})
+    self.assertIn('sculpt_region',feedback_for_failed_cycles(f))
+    self.assertTrue(distinct_strategy_errors({'planned_actions':[action('sculpt_region'),
+      action('sculpt_path')]},f))
+    self.assertEqual(distinct_strategy_errors({'planned_actions':[action('reprofile_crest')]},f),[])
+ def test_more_than_four_cycles_invalid_and_two_distinct_bad_methods_banned(self):
+    f=self.load([self.cycle(1),self.cycle(2,'sculpt_path'),
+                 self.cycle(3,'sculpt_region'),self.cycle(4,'sculpt_path')])
+    self.assertEqual(forbidden_methods_from_rejected_cycles(f),
+                     {'sculpt_region','sculpt_path'})
+    from author_brief import cpu_artist_schema
+    allowed=cpu_artist_schema(TARGET,'existing',2,
+      forbidden_methods_from_rejected_cycles(f))['properties']['planned_actions']['items']['properties']['type']['enum']
+    self.assertEqual(allowed,['reprofile_crest'])
+    with self.assertRaises(ValueError):
+      self.load([self.cycle(5),self.cycle(6),self.cycle(7),self.cycle(8),self.cycle(9)])
+ def test_mixed_type_plan_does_not_attribute_visual_failure_to_both(self):
+    f=self.load([self.cycle(1),self.cycle(2,'sculpt_path')])
+    f.append(dict(f[0],methods=['sculpt_region','sculpt_path']))
+    self.assertEqual(forbidden_methods_from_rejected_cycles(f),set())
  def test_one_failure_does_not_force_a_strategic_switch(self):
     f=self.load([self.cycle(1)])
     self.assertEqual(distinct_strategy_errors({'planned_actions':[action()]},f),[])
