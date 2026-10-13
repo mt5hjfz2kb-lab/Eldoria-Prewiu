@@ -47,6 +47,7 @@ namespace Eldoria.EditorTools
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
                 Bastion1MaterialBindings.Apply(root,importer,source);
                 Bastion1RoadClearance.Apply(root);
+                await Bastion1ExistingRoadIntegration.Apply(root);
                 InspectRoadContacts(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
@@ -191,7 +192,7 @@ namespace Eldoria.EditorTools
                 foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))
                 {
                     string name=filter.name.ToLowerInvariant();
-                    if(!name.Contains("stone_path")&&!name.Contains("playable hilltop")&&
+                    if(!name.Contains("stone_path")&&!name.Contains("mainroad")&&!name.Contains("playable hilltop")&&
                        !name.Contains("cliff plateau"))continue;
                     if(filter.sharedMesh==null)continue;
                     var collider=filter.gameObject.AddComponent<MeshCollider>();

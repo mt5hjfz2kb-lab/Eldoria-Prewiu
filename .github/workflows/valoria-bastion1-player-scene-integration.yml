@@ -118,6 +118,9 @@ jobs:
           Copy-Item $barracks "$dest/Valoria_Cuartel_AP2_v1.glb" -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Valoria_Cuartel_AP2_v1.glb"
           if($LASTEXITCODE -ne 0){throw 'Barracks material staging failed'}
+          Copy-Item "$env:GITHUB_WORKSPACE/art-source/valoria/production/road-family-v1/RoadFamilyV1.glb" "$dest/RoadFamilyV1.glb" -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/RoadFamilyV1.glb"
+          if($LASTEXITCODE -ne 0){throw 'Existing authored road bindings failed'}
       - name: Capture matched current-grass BEFORE with the same importer and camera
         shell: powershell
         run: |
@@ -133,25 +136,25 @@ jobs:
       - name: Recover completed genuine Qwen8B fracture and palette finishing
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-genuine-qwen-finishing-38406612333
-          run-id: 38406612333
+          name: bastion1-genuine-qwen-finishing-38409277470
+          run-id: 38409277470
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1Qwen8B
       - name: Stage exact merged Qwen geometry without re-inference or sculpting
         shell: powershell
         run: |
           $root=Join-Path $env:RUNNER_TEMP 'Bastion1Qwen8B'
-          $src=Join-Path $root 'edited/Bastion1QwenFinish.glb'
-          $expected='731799f563ce1cf731d2226767585eaaebd1c094712f26d45a1c95653f08bbc9'
+          $src=Join-Path $root 'factor-corrected/Bastion1QwenFinish.glb'
+          $expected='9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'
           if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Scope-masked Qwen city hash changed'}
-          $proof=Get-Content (Join-Path $root 'edited/execution-proof.json') -Raw | ConvertFrom-Json
+          $proof=Get-Content (Join-Path $root 'factor-corrected/execution-proof.json') -Raw | ConvertFrom-Json
           if($proof.protected_plateau_changes -ne 0 -or $proof.changed_vertices -ne 2718){throw 'Qwen geometry ownership proof invalid'}
           if($proof.parameters_modified -ne $false -or $proof.plan_sha256 -ne '714f34adc57ee8f7d1705dc59d7b8dd16a3ed97a16317e1f7b3c8af44e97fc0a'){throw 'Original artist plan changed'}
           $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
           Copy-Item $src $dest -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dest
           if($LASTEXITCODE -ne 0){throw 'Qwen texture binding staging failed'}
-          Copy-Item (Join-Path $root 'edited/execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
+          Copy-Item (Join-Path $root 'factor-corrected/execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
       - name: Capture real Unity AFTER and preserve playable candidate
         shell: powershell
         run: |

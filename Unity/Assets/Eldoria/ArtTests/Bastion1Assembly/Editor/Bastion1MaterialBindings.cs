@@ -56,6 +56,8 @@ namespace Eldoria.EditorTools
                 // sRGB factors, otherwise royal blue, water and untextured
                 // foliage become markedly darker than their authored colors.
                 m.SetColor("_BaseColor",QualitySettings.activeColorSpace==ColorSpace.Gamma?color.gamma:color);
+                if(src.name.Contains("terrace earth olive")||src.name.Contains("schist dark"))
+                    Debug.Log("BASTION1_AUTHORED_RGB_FACTOR "+src.name+" gltf_linear="+color+" shader="+m.GetColor("_BaseColor"));
                 if(p!=null&&p.baseColorTexture!=null&&p.baseColorTexture.index>=0)
                 {
                     var texture=importer.GetTexture(p.baseColorTexture.index);
