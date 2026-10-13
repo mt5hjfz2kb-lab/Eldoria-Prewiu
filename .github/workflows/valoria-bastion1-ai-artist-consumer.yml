@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: 4d928620cb83dde9dad0d4e62a34c3d37a982a8c
+      ART_CORE_SHA: 2bec82605603b56f173e3b210c710ba24e6d81ea
       SOURCE_RUN: '38356683511'
       SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
@@ -29,7 +29,7 @@ jobs:
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$ART_CORE_SHA"
-          for n in author_brief.py artist_plan_validation.py artistic_learning_feedback.py execute_artist_plan.py verify-artist-cycle.mjs visibility_metrics.py; do
+          for n in author_brief.py artist_plan_validation.py artistic_learning_feedback.py execute_artist_plan.py verify-artist-cycle.mjs visibility_metrics.py unity_pixel_diff.mjs; do
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
           # PR #36 moved the canonical system prompt out of the old local
@@ -160,6 +160,25 @@ jobs:
             print('REJECTED_QWEN_ORIGINAL_ART_BEFORE_NEXT_INFERENCE',folder,
                   review['camera_visibility']['changed_pixels'])
           PY
+      - name: Load newest REAL rejected 2.5m Qwen path evidence to prevent scale regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ART/third-reject"
+          gh run download 38372409936 --repo "${{ github.repository }}" \
+            --name bastion1-original-qwen-alternate-38370740511 --dir "$ART/third-reject"
+          python3 - <<'PY'
+          import os,pathlib,json,hashlib
+          root=pathlib.Path(os.environ['ART'])
+          manifests=list((root/'third-reject').rglob('comparison.json'))
+          assert len(manifests)==1,manifests
+          c=json.loads(manifests[0].read_text())
+          assert c['target']==os.environ['TARGET_MESH']
+          assert c['camera_visibility']['camera_visibility_gate']=='REJECT_NOT_VISIBLE'
+          assert c['camera_visibility']['changed_pixels']==100
+          (root/'prior-clay-review.json').write_bytes(manifests[0].read_bytes())
+          print('ACTUAL_PLAYER_CAMERA_QWEN_PATH_INVISIBLE_100_PIXELS',c['camera_visibility'])
+          PY
       - name: Build VERIFIED south-cliff mesh anchors and real prior Unity failure context
         shell: bash
         run: |
@@ -227,7 +246,8 @@ jobs:
             --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
             --model qwen3-vl:4b-instruct --num-ctx 16384 --num-predict 1700 --max-actions 2 \
-            --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
+            --cpu-compact --camera-min-radius 10 --camera-min-displacement 1 \
+            --repair-attempts 1 --request-timeout 540 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
           import json,os,pathlib
@@ -237,6 +257,7 @@ jobs:
           assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==ops
           assert len(inference.get('rejected_visual_cycle_evidence',[]))==2, 'must use two real rejected cycles'
+          assert inference.get('camera_footprint_contract')=={'min_radius_m':10.0,'min_displacement_m':1.0}, 'Qwen must receive validated mobile camera footprint'
           assert any(op['type']!='sculpt_region' for op in ops), 'do not repeat two invisible sculpt_region strategies'
           anchors=json.loads((r/'inspect/mesh-context.json').read_text())['sample_vertices']
           assert len(anchors)>=9 and all(a['role'].startswith('negative_y_cliff_') for a in anchors[:9])
