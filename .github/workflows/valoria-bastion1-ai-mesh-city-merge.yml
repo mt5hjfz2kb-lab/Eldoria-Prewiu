@@ -1,4 +1,4 @@
-name: Bastion I verified Qwen sculpt into full playable city
+name: Bastion I verified broad Qwen sculpt into full playable city
 on:
   push:
     branches: [integration/valoria-bastion1-player-scene-20261012]
@@ -28,8 +28,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$ROOT/source" "$ROOT/artist" "$ROOT/verified"
-          gh run download 38320867773 --repo "${{ github.repository }}" --name "bastion1-player-integration-38320867773" --dir "$ROOT/source"
-          gh run download 38325368142 --repo "${{ github.repository }}" --name "bastion1-genuine-qwen-artist-38325368142" --dir "$ROOT/artist"
+          gh run download 38356683511 --repo "${{ github.repository }}" --name "bastion1-player-integration-38356683511" --dir "$ROOT/source"
+          gh run download 38384261910 --repo "${{ github.repository }}" --name "bastion1-genuine-qwen-artist-38384261910" --dir "$ROOT/artist"
           python3 - <<'PY'
           import json,hashlib,pathlib,os,struct
           root=pathlib.Path(os.environ['ROOT'])
@@ -37,47 +37,33 @@ jobs:
           assert len(originals)==1,originals
           data=originals[0].read_bytes()
           provenance=json.loads((root/'artist/input-provenance.json').read_text())
-          assert provenance['source_run']==38320867773 and provenance['source_sha']=='2f4b1a372c987594e92b15c899e5c86b16069b2b'
+          assert provenance['source_run']==38356683511 and provenance['source_sha']=='245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
           assert hashlib.sha256(data).hexdigest()==provenance['glb_sha256']
           assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
           evidence=json.loads((root/'artist/result/artist-execution.json').read_text())
-          assert evidence['executed_actions'][0]['changed_vertices']==847
+          assert len(evidence['executed_actions'])==len(json.loads((root/'artist/model/artist-plan.json').read_text()))
+          assert sum(a['changed_vertices'] for a in evidence['executed_actions'])>=20
           assert evidence['source_mesh_sha256']!=evidence['result_mesh_sha256']
           assert hashlib.sha256((root/'artist/result/artist-output.blend').read_bytes()).hexdigest()==evidence['result_blend_sha256']
           art=json.loads((root/'artist/model/artist-inference.json').read_text())
           plan=json.loads((root/'artist/model/artist-plan.json').read_text())
-          assert art['model']=='qwen3-vl:2b-instruct' and art['system_role']=='system'
+          assert art['model']=='qwen3-vl:4b-instruct' and art['system_role']=='system'
           assert art['direction']['planned_actions']==plan and art['self_approval'] is False
-          # Earlier genuine Qwen versions stored the final raw response digest
-          # as raw_qwen_response_sha256; the new PR36 core uses attempt_history.
-          # Both are signed by the exact response bytes, never fabricated.
+          # Require original Qwen raw response and SHA256 provenance, no fabricated parameters.
           raw=(root/'artist/model/artist-response-raw.txt').read_bytes()
           attempts=art.get('attempt_history') or []
-          raw_sha=(art.get('raw_qwen_response_sha256')
-                   or (attempts[-1].get('raw_response_sha256') if attempts else None)
-                   or art.get('raw_response_sha256'))
-          actual_sha=hashlib.sha256(raw).hexdigest()
-          if raw_sha is not None:
-           assert isinstance(raw_sha,str) and len(raw_sha)==64 and actual_sha==raw_sha,'Qwen original raw SHA mismatch'
-          else:
-           # The archived genuine Qwen version predates an explicit digest field.
-           # Never fabricate one: verify original JSON carries the exact authored
-           # spatial vectors and radius that the normalizer preserved for Blender.
-           original_decision=json.loads(raw.decode('utf8'))
-           intended=plan[0]['parameters']
-           found=[]
-           def visit(value):
-            if isinstance(value,dict):
-             if all(k in value for k in ('center','delta','radius')):found.append(value)
-             for v in value.values():visit(v)
-            elif isinstance(value,list):
-             for v in value:visit(v)
-           visit(original_decision)
-           def same_vector(a,b):
-            return isinstance(a,list) and len(a)==len(b)==3 and all(isinstance(x,(float,int)) and abs(float(x)-float(y))<1e-6 for x,y in zip(a,b))
-           assert any(same_vector(v['center'],intended['center']) and same_vector(v['delta'],intended['delta']) and abs(float(v['radius'])-float(intended['radius']))<1e-6 for v in found),'Raw Qwen spatial design differs from Blender plan'
-           print('QWEN_ARCHIVED_RAW_SEMANTIC_PROOF',actual_sha,'no claim that a missing historical hash existed')
-          print('GENUINE_QWEN_RAW_SHA256_MEASURED',actual_sha)
+          assert attempts and attempts[-1].get('raw_response_sha256')==hashlib.sha256(raw).hexdigest()
+          assert len(plan) in (1,2) and all(op['type'] in ('sculpt_region','sculpt_path','reprofile_crest') for op in plan)
+          assert art['rejected_visual_cycle_evidence'] and art['camera_footprint_contract']['min_radius_m']>=12
+          assert all(op['target']=='Valoria natural playable hilltop and rock scarps' for op in plan)
+          review=json.loads((root/'artist/ab/comparison.json').read_text())
+          impact=review['camera_visibility']
+          assert impact['camera_visibility_gate']!='REJECT_NOT_VISIBLE' and impact['changed_fraction']>=.001
+          assert review['target']=='Valoria natural playable hilltop and rock scarps'
+          for phase in ('before','after'):
+           path=root/'artist/ab'/f'{phase}-blender-clay.png'
+           assert path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==review[f'{phase}_image_sha256']
+          print('REAL_QWEN4B_RAW_AND_VISIBLE_CAMERA_PROVENANCE',hashlib.sha256(raw).hexdigest(),impact)
           (root/'verified/source.glb').write_bytes(data)
           print('GENUINE_QWEN_SOURCES_VERIFIED',len(data),evidence['executed_actions'])
           PY
@@ -95,7 +81,7 @@ jobs:
           bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
           bpy.ops.import_scene.gltf(filepath=str(root/'verified/source.glb'))
           o=bpy.data.objects.get('Valoria natural playable hilltop and rock scarps')
-          if not o or o.type!='MESH' or len(o.data.vertices)!=12579:
+          if not o or o.type!='MESH' or len(o.data.vertices)!=12601:
            raise ValueError('Unexpected source geometry, do not replace scene')
           if len(bpy.data.objects)<40:raise ValueError('Architecture missing')
           bpy.ops.wm.save_as_mainfile(filepath=str(root/'verified/full-city.blend'))
@@ -106,24 +92,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Technical rejection of the prior merge: mesh.materials.clear()
-          # collapsed face material indexes, dropping the stone PBR cliff
-          # material despite preserving object names. Patch only this isolated
-          # run's execution copy; the source gets updated after verified QA.
-          python3 - <<'PY'
-          import pathlib
-          f=pathlib.Path('tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py')
-          s=f.read_text()
-          old='mesh.materials.clear()\nfor material in old_mats:mesh.materials.append(material)\noriginal.data=mesh'
-          new='saved_material_indices=[poly.material_index for poly in mesh.polygons]\nmesh.materials.clear()\nfor material in old_mats:mesh.materials.append(material)\nfor poly,slot in zip(mesh.polygons,saved_material_indices):poly.material_index=slot\noriginal.data=mesh'
-          if old in s:
-           f.write_text(s.replace(old,new))
-           print('RESTORE_PER_FACE_PBR_SLOTS_IN_GENUINE_QWEN_MERGE')
-          elif new in s:
-           print('PBR_PER_FACE_SLOTS_ALREADY_PRESERVED_IN_AUTHORING_SOURCE')
-          else:
-           raise ValueError('Unknown terrain material preservation logic; refuse silent unsafe merge')
-          PY
+          # The versioned merge script already preserves original per-face PBR slots.
+          # Do not patch scripts at runtime or replace genuine model geometry.
+          grep -q 'poly.material_index=slot' tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py
           SOURCE_SHA=$(sha256sum "$ROOT/verified/full-city.blend" | cut -d' ' -f1)
           ARTIST_SHA=$(sha256sum "$ROOT/artist/result/artist-output.blend" | cut -d' ' -f1)
           blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py -- \
@@ -136,6 +107,7 @@ jobs:
           root=pathlib.Path(os.environ['ROOT'])
           p=json.loads((root/'merged/integration-proof.json').read_text())
           assert p['changed_vertices']>=20 and p['protected_cell_changes']==0
+          assert p.get('original_qwen_operation_types')==[x['type'] for x in json.loads((root/'artist/model/artist-plan.json').read_text())]
           assert p['visual_art_approved'] is False and p['gameplay_qa'] is False
           data=(root/'merged/Bastion1QwenScene.glb').read_bytes()
           assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
