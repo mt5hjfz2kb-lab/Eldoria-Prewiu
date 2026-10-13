@@ -172,15 +172,56 @@ for dx in (-3.1,-1.55,0,1.55,3.1):
 # replacing terrain or inserting a new navigable raised building parcel.
 masonry('Bastion I guard compound embedded foundation',
  (cx,-11.08,cz-.08),(8.35,5.8,.27))
+# Real Qwen decision excerpts (runs 38479509741 and 38480277880):
+# stepped buttressed masonry transition + cliff-rock footing + existing bush.
+# Meshes, proportions and placements remain deterministic Blender work.
+for bx,by in ((cx-3.76,-10.25),(cx+3.76,-10.25)):
+ masonry('Bastion I stepped masonry wall connection buttress lower',
+         (bx,by,cz+.57),(.95,1.35,1.16))
+ masonry('Bastion I stepped masonry wall connection buttress upper',
+         (bx,by+.30,cz+1.55),(.68,.86,.90))
+# Reuse only an authored rock module; rescale as a small, planted wall-footing
+# rock, not as a pasted decal or an independent new playable obstruction.
+rockkit=group('FrontEscarpment_-23')
+rockcorners=[o.matrix_world @ Vector(c) for o in rockkit for c in o.bound_box]
+rocklo=Vector(tuple(min(v[k] for v in rockcorners) for k in range(3)))
+rockhi=Vector(tuple(max(v[k] for v in rockcorners) for k in range(3)))
+rocksize=rockhi-rocklo
+if min(rocksize.x,rocksize.y,rocksize.z)<.01:raise RuntimeError('Rock module missing real geometry')
+rockscale=min(1.7/rocksize.x,1.3/rocksize.y,.82/rocksize.z)
+rx,ry=-24.8,-11.45
+rock_anchor=(Matrix.Translation(Vector((rx,ry,z_at(rx,ry)-.05)))
+ @ Matrix.Scale(rockscale,4)
+ @ Matrix.Translation(Vector((-(rocklo.x+rockhi.x)/2,-(rocklo.y+rockhi.y)/2,-rocklo.z))))
+reused_rock_meshes=0
+for old in rockkit:
+ obj=old.copy();obj.data=old.data;obj.parent=None
+ obj.matrix_world=rock_anchor @ old.matrix_world
+ obj.name='Bastion I Qwen-selected original masonry junction rock %02d'%reused_rock_meshes
+ bpy.context.collection.objects.link(obj);reused_rock_meshes+=1
+# Exactly one duplicated original bush; no synthetic flora or resource nodes.
+bush_sources=[o for o in meshes if o.name.startswith('EA03_Nature_Bush_01a_LOD0')]
+if not bush_sources:raise RuntimeError('Qwen-specified original EA03 bush missing')
+bush=bush_sources[0]
+bush_corners=[bush.matrix_world @ Vector(v) for v in bush.bound_box]
+bush_base=Vector((sum(v.x for v in bush_corners)/8,
+                  sum(v.y for v in bush_corners)/8,
+                  min(v.z for v in bush_corners)))
+bush_x,bush_y=-24.95,-10.85
+bush_clone=bush.copy();bush_clone.data=bush.data;bush_clone.parent=None
+bush_clone.matrix_world=(Matrix.Translation(Vector((bush_x,bush_y,z_at(bush_x,bush_y)+.01)))
+ @ Matrix.Scale(1.62,4) @ Matrix.Translation(-bush_base) @ bush.matrix_world)
+bush_clone.name='Bastion I Qwen-selected reused wall-junction bush'
+bpy.context.collection.objects.link(bush_clone)
 # Keeping the central road, playable court and state-driven lots empty is
 # explicit. No colliders or resource nodes are included in the exported GLB.
 dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'ai_proposal_sha256':hashlib.sha256(proposal_path.read_bytes()).hexdigest(),
- 'ai_authorship':('owner-directed deterministic fallback, NOT Qwen' if proposal.get('_provenance')=='owner_directed_fallback' else 'concept and site from verified local Qwen inference; geometry implementation deterministic Blender'),
+ 'ai_authorship':('curated excerpts from two genuine but incomplete local Qwen responses; every mesh implementation deterministic Blender' if proposal.get('_provenance',{}).get('mode')=='curated_excerpts_from_two_incomplete_real_qwen_inferences' else 'concept/site from original Qwen inference; geometry implementation deterministic Blender'),
  'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
  'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),
- 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'roof_panels':2,'road_clearance_m':abs(cx)-4.25-7,'existing_source_meshes_modified':False,
- 'new_resource_nodes':0,'architectural_integration':'west-wall return + two masonry wings + embedded foundation, deterministic pending Qwen integration review','art_approved':False}
+ 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'reused_junction_rock_meshes':reused_rock_meshes,'reused_junction_bush_meshes':1,'roof_panels':2,'road_clearance_m':abs(cx)-4.25-7,'existing_source_meshes_modified':False,
+ 'new_resource_nodes':0,'architectural_integration':'western masonry return and wing walls plus stepped buttress, original cliff rock and bush selected by Qwen excerpts; deterministic execution','art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_AI_PROPOSED_GUARD_STATION',json.dumps(proof))
