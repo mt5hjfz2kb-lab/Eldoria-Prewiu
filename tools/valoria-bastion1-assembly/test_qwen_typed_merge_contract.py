@@ -64,7 +64,7 @@ class TypedMergeContractTests(unittest.TestCase):
   for invariant in (
    'protected_cell_changes', 'Artist edit too small or too strong',
    'Sculpt unexpectedly changed mesh faces','Terrain geometry cardinality unexpectedly changed',
-   'PBR', 'poly.material_index=slot','Source SHA mismatch'):
+   'saved_material_indices', 'poly.material_index=slot','Source SHA mismatch'):
    self.assertIn(invariant,SOURCE,invariant)
 
 if __name__=='__main__':
