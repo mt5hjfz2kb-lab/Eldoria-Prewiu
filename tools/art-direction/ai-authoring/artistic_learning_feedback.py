@@ -60,10 +60,17 @@ def load_failed_cycles(plan_paths, review_paths, target):
         for name in ('before_image_sha256', 'after_image_sha256', 'source_file_sha256', 'result_file_sha256'):
             if not re.fullmatch('[0-9a-f]{64}', str(review.get(name, ''))):
                 raise ValueError('Rejected-cycle original image/source SHA missing: ' + name)
-        if review['before_image_sha256'] == review['after_image_sha256']:
-            # Even identical pixels can be a legitimate rejection; original image
-            # SHA equality is fine and must NOT turn this into a passing cycle.
-            pass
+        # Verify genuine archived PNG bytes; a JSON manifest with hash-shaped
+        # strings alone is insufficient evidence of a measured visual failure.
+        for label in ('before', 'after'):
+            png = pathlib.Path(review_path).parent / f'{label}-blender-clay.png'
+            if not png.is_file() or png.stat().st_size > 10_000_000:
+                raise ValueError('Original rejected Blender PNG missing or too large: ' + str(png))
+            raw = png.read_bytes()
+            if not raw.startswith(b'\\x89PNG\\r\\n\\x1a\\n'):
+                raise ValueError('Rejected-cycle image is not a genuine PNG file: ' + str(png))
+            if hashlib.sha256(raw).hexdigest() != review[f'{label}_image_sha256']:
+                raise ValueError('Rejected-cycle PNG does not match manifest hash: ' + str(png))
         methods = sorted({op['type'] for op in plan if op['type'] in STRUCTURAL})
         failures.append({
             'methods': methods, 'changed_pixels': count, 'total_pixels': total,
