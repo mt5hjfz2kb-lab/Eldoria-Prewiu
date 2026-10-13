@@ -1,0 +1,64 @@
+name: Eldoria Mission Continuity Guard
+
+on:
+  schedule:
+    - cron: '17,47 * * * *'
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/mission-continuity-guard.yml'
+      - 'tools/mission-continuity/**'
+      - 'pipeline/mission-continuity-policy-v1.json'
+      - 'docs/ELDORIA_MISSION_CONTINUITY_GUARD_V1.md'
+
+concurrency:
+  group: eldoria-mission-continuity-guard
+  cancel-in-progress: false
+
+jobs:
+  test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate mission continuity decisions
+        run: node --test tools/mission-continuity/core.test.mjs
+      - name: Validate existing workflow governance
+        run: node tools/check-workflow-governance.mjs
+
+  observe:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test decisions before live issue updates
+        run: node --test tools/mission-continuity/core.test.mjs
+      - name: Inspect existing owners and recoverable runs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MISSION_GUARD_WRITE_ISSUES: 'true'
+          MISSION_GUARD_OUTPUT: mission-continuity-report.json
+        run: node tools/mission-continuity/watch.mjs
+      - name: Preserve verifiable watchdog report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mission-continuity-report-${{ github.run_id }}
+          path: mission-continuity-report.json
+          retention-days: 30
+          if-no-files-found: warn
