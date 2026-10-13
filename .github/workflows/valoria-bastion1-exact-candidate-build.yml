@@ -86,7 +86,8 @@ jobs:
           Write-Host "BASTION1_ARTIST_PROOF_COUNT $($proofs.Count)"
           if($proofs.Count -ne 1){throw 'Artist source proof missing'}
           $proof=Get-Content $proofs[0].FullName -Raw | ConvertFrom-Json
-          if($proof.output_glb_sha256 -ne '9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'){throw 'Authored factor-corrected source mismatch'}
+          $request=Get-Content pipeline/valoria-bastion1-candidate-build-request.json -Raw | ConvertFrom-Json
+          if($proof.output_glb_sha256 -ne $request.factor_corrected_artist_glb_sha256){throw 'Exact artist GLB does not match candidate provenance'}
           Write-Host "BASTION1_EXACT_NATIVE_SCENE_RESTORED source_run=$env:BASTION_NATIVE_RUN source_sha=$env:BASTION_NATIVE_SHA"
       - name: Quarantine unrelated shader graphs for isolated WebGL
         shell: powershell

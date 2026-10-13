@@ -128,28 +128,31 @@ jobs:
           Copy-Item (Join-Path $source '*') $before -Force
           if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Engine frame missing after copy'}
           Write-Host 'BASTION1_REUSED_PREVIOUS_UNITY_FRAME run=38419031491'
-      - name: Recover completed genuine Qwen8B fracture and palette finishing
+      - name: Recover immutable genuinely authored mountain from completed Blender replay
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-genuine-qwen-finishing-38409277470
-          run-id: 38409277470
+          name: bastion1-qwen-mountain-replay-38438668388
+          run-id: 38438668388
           github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/Bastion1Qwen8B
-      - name: Stage exact merged Qwen geometry without re-inference or sculpting
+          path: ${{ runner.temp }}/Bastion1QwenMountain
+      - name: Stage exact Qwen-authored mountain while preserving all player structures
         shell: powershell
         run: |
-          $root=Join-Path $env:RUNNER_TEMP 'Bastion1Qwen8B'
-          $src=Join-Path $root 'factor-corrected/Bastion1QwenFinish.glb'
-          $expected='9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'
-          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Scope-masked Qwen city hash changed'}
-          $proof=Get-Content (Join-Path $root 'factor-corrected/execution-proof.json') -Raw | ConvertFrom-Json
-          if($proof.protected_plateau_changes -ne 0 -or $proof.changed_vertices -ne 2718){throw 'Qwen geometry ownership proof invalid'}
-          if($proof.parameters_modified -ne $false -or $proof.plan_sha256 -ne '714f34adc57ee8f7d1705dc59d7b8dd16a3ed97a16317e1f7b3c8af44e97fc0a'){throw 'Original artist plan changed'}
+          $root=Join-Path $env:RUNNER_TEMP 'Bastion1QwenMountain'
+          $src=Join-Path $root 'edited-mountain/Bastion1MountainQwen.glb'
+          $expected='8d85a68cff7b3bf4584afc832741f3a14b01266c27e8f87542fbcf84f3faeb80'
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Actual Qwen mountain geometry hash changed'}
+          $proof=Get-Content (Join-Path $root 'edited-mountain/mountain-execution-proof.json') -Raw | ConvertFrom-Json
+          if($proof.source_glb_sha256 -ne '9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'){throw 'Frozen artist source identity changed'}
+          if($proof.output_glb_sha256 -ne $expected -or $proof.edited_mountain_vertices -ne 5432){throw 'Edited mountain does not match Blender run 38438668388'}
+          if($proof.plan_sha256 -ne '7e2a5478c8b77000db078d3f12793f00061bbd391f150fb4a8e3b98900fe142d'){throw 'Qwen visual decision changed'}
+          if($proof.other_mesh_coordinates_preserved -ne $true -or $proof.architecture_and_ground_unchanged -ne $true -or $proof.source_water_meshes_unchanged -ne $true -or $proof.ai_parameters_modified -ne $false){throw 'Artist invariants violated'}
           $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
           Copy-Item $src $dest -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dest
-          if($LASTEXITCODE -ne 0){throw 'Qwen texture binding staging failed'}
-          Copy-Item (Join-Path $root 'factor-corrected/execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
+          if($LASTEXITCODE -ne 0){throw 'Qwen mountain material binding staging failed'}
+          Copy-Item (Join-Path $root 'edited-mountain/mountain-execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
+          Write-Host "BASTION1_QWEN_MOUNTAIN_NATIVE_INPUT artist_run=38438668388 sha=$expected"
       - name: Capture real Unity AFTER and preserve playable candidate
         shell: powershell
         run: |
