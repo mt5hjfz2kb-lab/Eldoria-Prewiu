@@ -116,9 +116,13 @@ jobs:
           s=f.read_text()
           old='mesh.materials.clear()\nfor material in old_mats:mesh.materials.append(material)\noriginal.data=mesh'
           new='saved_material_indices=[poly.material_index for poly in mesh.polygons]\nmesh.materials.clear()\nfor material in old_mats:mesh.materials.append(material)\nfor poly,slot in zip(mesh.polygons,saved_material_indices):poly.material_index=slot\noriginal.data=mesh'
-          if old not in s:raise ValueError('Base mesh material logic changed, refuse unverified fix')
-          f.write_text(s.replace(old,new))
-          print('RESTORE_PER_FACE_PBR_SLOTS_IN_GENUINE_QWEN_MERGE')
+          if old in s:
+           f.write_text(s.replace(old,new))
+           print('RESTORE_PER_FACE_PBR_SLOTS_IN_GENUINE_QWEN_MERGE')
+          elif new in s:
+           print('PBR_PER_FACE_SLOTS_ALREADY_PRESERVED_IN_AUTHORING_SOURCE')
+          else:
+           raise ValueError('Unknown terrain material preservation logic; refuse silent unsafe merge')
           PY
           SOURCE_SHA=$(sha256sum "$ROOT/verified/full-city.blend" | cut -d' ' -f1)
           ARTIST_SHA=$(sha256sum "$ROOT/artist/result/artist-output.blend" | cut -d' ' -f1)
