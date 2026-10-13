@@ -9,6 +9,6 @@
   "purpose": "Isolated playable candidate from exact successful native scene; no repeated inference, assembly or native rendering",
   "art_promotion_allowed": false,
   "paid_credits": 0,
-  "build_attempt": 2,
-  "recovery": "Read artist proof from exact frame artifact; retain captured URP shadow/MSAA profile to match native image"
+  "build_attempt": 3,
+  "recovery": "Normalize verified successful robocopy exit 1..7; native source and artist proof unchanged"
 }
