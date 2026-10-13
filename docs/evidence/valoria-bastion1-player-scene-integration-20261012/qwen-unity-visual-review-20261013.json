@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "scene": "Bastion I / Valoria",
+  "state": "VISUAL_REJECTED",
+  "owner_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "exact_build": {
+    "run_id": 38356683511,
+    "source_sha": "245a963f7c7eb9ee30e4de9e9cffd13f632eb82d",
+    "conclusion": "success"
+  },
+  "exact_browser_qa": {
+    "run_id": 38357394066,
+    "conclusion": "success",
+    "physical_device_tested": false
+  },
+  "original_capture": {
+    "run_id": 38320867773,
+    "relative_file": "Unity/Bastion1ReferenceCaptures/bastion1-player-initial.png",
+    "sha256": "262c7c9eddc68292cf2b14ba0c04eb1a3971ec76dec606a3d5fde2e1b7be641f"
+  },
+  "after_capture": {
+    "run_id": 38356683511,
+    "relative_file": "Unity/Bastion1ReferenceCaptures/bastion1-player-initial.png",
+    "sha256": "2a0a27d483e9eb317b4ac32cae5a00120303a0ebcc0be73f340aae00fe832a96"
+  },
+  "true_model_authorship": {
+    "model": "qwen3-vl:2b-instruct",
+    "scene_merge_run": 38356460099,
+    "scene_merge_artifact_id": 11792269250,
+    "operation": "sculpt_region",
+    "changed_vertices": 828,
+    "max_delta_m": 1.47804,
+    "protected_cell_changes": 0,
+    "editor_source_blend": true,
+    "output_glb": true
+  },
+  "method": "Decode two genuine 1440x1000 Unity player-camera PNG frames as RGB; for each pixel take maximum absolute difference over R,G,B. Count pixels whose maximum difference exceeds threshold. Frames equal size; no rescaling or camera movement. Strictly measures visibly changed coverage, not artistic quality.",
+  "width": 1440,
+  "height": 1000,
+  "total_pixels": 1440000,
+  "thresholds": [
+    {
+      "threshold": 2,
+      "changed_pixels": 402,
+      "fraction": 0.00027916666666666666
+    },
+    {
+      "threshold": 5,
+      "changed_pixels": 255,
+      "fraction": 0.00017708333333333335
+    },
+    {
+      "threshold": 10,
+      "changed_pixels": 125,
+      "fraction": 0.00008680555555555556
+    },
+    {
+      "threshold": 20,
+      "changed_pixels": 9,
+      "fraction": 0.00000625
+    }
+  ],
+  "measured_rgb_mean_absolute_error": 0.002215972222222222,
+  "visual_review": "No meaningful improvement to large cliff silhouette, plateau-to-architecture contact or distant landscape. Previous scene still visibly differs substantially from owner-approved reference. Material/scene unchanged except tiny marginal sculpt.",
+  "next_authoring": "Ask the existing PR36 Qwen artist for a NEW model-authored Blender operation focused on verified south-facing camera-visible terrain vertices, supply previous rejection and both genuine images; require matched-camera A/B visible change, actual Unity import, exact WebGL QA. Do not script substitute for Qwen decisions.",
+  "art_approved": false,
+  "mobile_performance_approved": false,
+  "main_promotion_allowed": false
+}
