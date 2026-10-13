@@ -280,11 +280,13 @@ jobs:
           # artist cycle before the model reasons about another 3D edit.
           fresh=('LATEST REAL ART FAIL #38443638059: Qwen moved 1138 cliff vertices in Y only; '
                  'Blender shape looked nearly identical. Change SOUTH CLIFF in Z; protect crown. ')
-          schema=('QWEN4B REPAIR FROM REAL FAILED RUN #38455676872: reprofile_crest MUST use '
-                  'parameters {axis:"x",height_axis:"z",control_points:[[position,height],...]}; '
-                  '3 DISTINCT 2-number points spanning >=24m in position and >=1.5m height. '
-                  'Do NOT use knots for reprofile_crest; knots belong to sculpt_path. '
-                  'Choose your OWN coordinates from mesh-context; protect upper terrain. ')
+          schema=('REAL QWEN4B FAILS #38455676872 and #38457504299: twice generated INVALID '
+                  'reprofile_crest with knots. For THIS cycle select type sculpt_path, '
+                  'NOT reprofile_crest. Valid sculpt_path parameters: '
+                  '{"knots":[{"center":[x,y,z],"delta":[dx,dy,dz],"radius":R}, '
+                  '{"center":[x2,y2,z2],"delta":[dx2,dy2,dz2],"radius":R2}]}. '
+                  'TWO DISTINCT source-local cliff positions; at least one radius>=12 '
+                  'and displacement>=1.5m; choose OWN coordinates; do not touch crown. ')
           ids=('small-sculpt-repeated','tiny-sculpt-path','frustum-parity',
                'unity-a-b-independent','preserve-playable-protected-terrain')
           for k in ids:assert k in lesson,('LESSON MISSING',k)
