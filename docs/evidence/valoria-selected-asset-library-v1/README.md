@@ -48,3 +48,8 @@ Selección prudente: la valoración visual 6.5–7.5/10 indica **candidatos**, n
 - El constructor de prefabs derivados ya **no los escribe bajo `Resources`**. Se guardan en `Assets/Eldoria/AssetLibrarySelectionV1/GeneratedPrefabsV1/` (Editor staging). El cargador de runtime usa únicamente los GLB originales que ya estaban en `Resources`; no introduce una nueva dependencia a los prefabs de pruebas.
 - La galería de Unity, cuando se ejecute, **instanciará los prefabs derivados reales** desde AssetDatabase en su escena temporal, no solamente el GLB original. Sus resultados siguen sin poder considerarse PASS hasta inspección visual.
 - Reducir lo que el juego ya incluye en `Resources` requiere una **migración de dependencias separada**, evaluación de impacto en APK/Android e integración con el propietario actual. No forma parte de esta entrega ni se ha ejecutado.
+
+### Preparación de evidencia de calidad individual en Unity
+- La operación explícita `Capture` ahora produce **una vista de conjunto y diez imágenes por prefab**, todas procedentes de los modelos importados en el mismo contexto de cámara, iluminación y URP (768×768 por pieza), bajo `SelectedAssetLibraryV1Captures/`.
+- Las vistas individuales quedan aisladas por activación/desactivación de instancias en una **escena temporal no guardada**; no tocan escena principal, gameplay, materiales compartidos ni el perfil URP.
+- Esta ampliación del código **no significa que se hayan ejecutado esas once capturas en Unity**. Siguen supeditadas a la liberación del runner, compilación, importación y revisión de capturas reales. La prueba estática independiente verifica que el flujo exigido exista, sin inventar imágenes.
