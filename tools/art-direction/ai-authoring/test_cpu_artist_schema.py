@@ -24,6 +24,12 @@ class ArtistSchemaTests(unittest.TestCase):
   self.assertEqual(set(a['type']['enum']),{'sculpt_region','sculpt_path','reprofile_crest'})
   self.assertNotIn('construct_mesh',a['type']['enum'])
   self.assertIn('parameters',p['planned_actions']['items']['required'])
+ def test_measured_repeated_method_is_removed_from_future_schema_not_all_art(self):
+  s=cpu_artist_schema('authored existing cliff','existing',2,{'sculpt_region'})
+  allowed=s['properties']['planned_actions']['items']['properties']['type']['enum']
+  self.assertEqual(set(allowed),{'sculpt_path','reprofile_crest'})
+  with self.assertRaises(ValueError):
+   cpu_artist_schema('authored existing cliff','existing',2,{'sculpt_region','sculpt_path','reprofile_crest'})
  def test_new_asset_can_be_designed_from_scratch(self):
   s=cpu_artist_schema('new authored tower','new',2)
   self.assertIn('construct_mesh',s['properties']['planned_actions']['items']['properties']['type']['enum'])

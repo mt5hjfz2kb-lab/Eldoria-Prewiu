@@ -7,7 +7,8 @@ import pathlib
 import tempfile
 import unittest
 from artistic_learning_feedback import (load_failed_cycles, feedback_for_failed_cycles,
-                                       distinct_strategy_errors, select_journal_lessons)
+                                       distinct_strategy_errors, select_journal_lessons,
+                                       forbidden_methods_from_rejected_cycles)
 
 TARGET = 'Original terrain'
 SHA = 'a' * 64
@@ -50,6 +51,17 @@ class LearningEvidenceTests(unittest.TestCase):
       '|'.join(distinct_strategy_errors({'planned_actions':[action()]},f)))
     self.assertFalse(distinct_strategy_errors({'planned_actions':[action('reprofile_crest')]},f))
     self.assertFalse(distinct_strategy_errors({'planned_actions':[action('sculpt_path')]},f))
+ def test_schema_bans_only_twice_rejected_original_method(self):
+    f=self.load([self.cycle(1,changed=0),self.cycle(2,changed=12)])
+    self.assertEqual(forbidden_methods_from_rejected_cycles(f),{'sculpt_region'})
+    from author_brief import cpu_artist_schema
+    allowed=cpu_artist_schema(TARGET,'existing',2,forbidden_methods_from_rejected_cycles(f))['properties']['planned_actions']['items']['properties']['type']['enum']
+    self.assertEqual(set(allowed),{'sculpt_path','reprofile_crest'})
+    self.assertNotIn('sculpt_region',allowed)
+    only_one=self.load([self.cycle(3)])
+    self.assertEqual(forbidden_methods_from_rejected_cycles(only_one),set())
+    different=self.load([self.cycle(4),self.cycle(5,typ='sculpt_path')])
+    self.assertEqual(forbidden_methods_from_rejected_cycles(different),set())
  def test_one_failure_does_not_force_a_strategic_switch(self):
     f=self.load([self.cycle(1)])
     self.assertEqual(distinct_strategy_errors({'planned_actions':[action()]},f),[])
