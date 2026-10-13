@@ -33,7 +33,7 @@
     {
       "id": "valoria-bastion1-player-scene-integration-20261012",
       "title": "Valoria Bastion I authored mesh scene player integration",
-      "owner": "chat-owner-authorized-bastion1-and-artist-takeover-20261013",
+      "owner": "work-owner-authorized-bastion1-continuation-20261013",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/**",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
@@ -73,8 +73,9 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Owner-authorized takeover of interrupted Bastion I and Issue 34; recover live evidence, consume permanent learning core, correct invisible authoring, verify real Unity A/B.",
-      "resumed_at": "2026-10-13T08:02:06.752Z"
+      "phase": "Explicit owner takeover from stalled normal chat; consume existing PBR/art evidence, resume Unity integration and player QA without repeating rejected inference.",
+      "resumed_at": "2026-10-13T12:02:09.263Z",
+      "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job."
     },
     {
       "id": "valoria-legacy-glb-visual-audit-20261013",
