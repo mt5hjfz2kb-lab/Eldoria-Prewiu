@@ -91,7 +91,14 @@ jobs:
         run: |
           & git.exe reset --hard HEAD
           if($LASTEXITCODE -ne 0){throw 'Temporary runner checkout reset failed'}
-          if(Test-Path 'Unity/Assets/Eldoria/AssetLibrarySelectionV1'){throw 'Temporary gallery code unexpectedly remains in player checkout'}
+          $path='Unity/Assets/Eldoria/AssetLibrarySelectionV1'
+          $tracked=@(& git.exe ls-tree -r --name-only HEAD -- $path)
+          if($LASTEXITCODE -ne 0 -or $tracked.Count -gt 0){throw 'Selected library belongs to committed source; refuse cleanup'}
+          $absolute=Join-Path $env:GITHUB_WORKSPACE $path
+          if(Test-Path $absolute){Remove-Item -LiteralPath $absolute -Recurse -Force}
+          if(Test-Path ($absolute+'.meta')){Remove-Item -LiteralPath ($absolute+'.meta') -Force}
+          if(Test-Path $absolute){throw 'Disposable selected library code remains'}
+          Write-Host 'BASTION1_RESTORED_ISOLATED_UNITY_WORKSPACE PR51_sources_unchanged=true'
       - name: Stage existing authored construction states and barracks
         shell: powershell
         run: |
