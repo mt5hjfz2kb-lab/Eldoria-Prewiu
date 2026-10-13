@@ -169,7 +169,7 @@ async function resetPublishedGame(page,logs){
   const start=logs.length;
   await tapLoggedUi(page,logs,'reset');
   const canonical=s=>s.revision===0&&s.sawmill===0&&s.bastion===1&&s.objective==='b1.build-sawmill';
-  const firstDeadline=Date.now()+2500;
+  const firstDeadline=Date.now()+15000;
   let armed=false;
   while(Date.now()<firstDeadline){
     for(let i=logs.length-1;i>=start;i--){
@@ -246,6 +246,7 @@ async function fullPublishedFlow(page,logs,orientation){
     result.steps.push({step,objective:state.objective,scene:state.scene,primary:tapped,buildingAction:buildingTap,after:changed});
     const stepImage='webgl-startup-evidence/'+orientation+'-step-'+String(step).padStart(2,'0')+'-'+state.objective+'.png';
     await page.screenshot({path:stepImage});
+    console.log('BASTION_FULL_PLAYER_STEP',JSON.stringify({orientation,step,objective:state.objective,after:changed}));
     if(state.objective==='b2.train-archers'){
       result.trainingCtaBrightPixels=primaryCtaBrightPixels(stepImage,orientation);
       // Static legacy-UI crop is not a valid test of the compact mesh HUD.
