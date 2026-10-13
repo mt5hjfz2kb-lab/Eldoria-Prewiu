@@ -13,6 +13,33 @@
 7. **Memoria artística:** reutilizar `tools/art-direction/ARTIST_LEARNING_JOURNAL.md` cuando se pueda conciliar su rama: defecto→hipótesis→edición→captura Unity→veredicto; no fingir reentrenamiento del modelo.
 8. **Sin regresiones:** mantener runner Windows, escenas, `main`, Pages y otros archivos fuera de esta rama. Aceptación exige pruebas de sintaxis, tests positivos/negativos de evidencias, una inferencia real Ollama+Qwen, acción Blender/BlenderMCP real, GLB importado a Unity y mejora artística independiente. No hay autorización para gastos ni publicación prematura.
 
+## Memoria de rechazos medidos y bloqueo de una tercera estrategia invisible (13-10-2026)
+
+Este refuerzo modifica la única ruta canónica `tools/art-direction/ai-authoring/author_brief.py` y se prueba en el workflow existente de **Art production governance**. No crea un segundo artista, una cola paralela ni modifica la escena jugable.
+
+- La memoria siempre extrae lecciones empíricas relevantes de `ARTIST_LEARNING_JOURNAL.md` (no los últimos caracteres aleatorios del archivo), incluso en `--cpu-compact`; se mantiene el hash SHA256 del diario original.
+- Cada **par** `--failed-plan artist-plan.json --failed-review comparison.json` tiene que venir de una inferencia Qwen real anterior y de una comparación Blender clay A/B de la **misma malla**, con hashes SHA256 de fuente, resultado e imágenes y métricas coherentes; admite hasta cuatro pares. Se exige que los **PNG originales** `before-blender-clay.png` y `after-blender-clay.png` estén junto a su `comparison.json`; el preflight verifica su firma PNG y su SHA256 real. Sin imágenes originales verificables, el supuesto fallo no se incorpora al aprendizaje. Ni un PASS sintético ni una revisión de otro objeto pueden enseñar un rechazo.
+- Las revisiones se envían a Qwen como contexto **antes** de escoger geometría. Tras **dos rechazos auténticos** consecutivos con un único mismo tipo de operación estructural (por ejemplo `sculpt_region`), el preflight **rechaza una tercera propuesta que solo repita esa operación**. El modelo debe escoger por sí mismo otro tipo (por ejemplo `sculpt_path` o `reprofile_crest`) y volver a presentar una decisión completa. Python nunca inventa nuevos anclajes ni mueve vértices como sustituto de la IA.
+- Los hashes y el historial de revisiones rechazadas quedan incorporados en `artist-inference.json`, para auditabilidad. Una aceptación de esquema **no prueba** que la geometría sea visible ni bonita: sigue siendo obligatorio medir el A/B real de Blender, después importar en Unity y hacer la comparación visual profesional.
+- Si no se proporcionan pares verificados se sigue trabajando con las lecciones reales del diario y el rechazo de impacto del preflight existente. **No inventar pares ni afirmar que existe entrenamiento automático de pesos.**
+
+**Reanudación de un trabajo después de dos A/B invisibles**, sin cambiar de rama ni tocar los assets originales:
+
+```bash
+python3 tools/art-direction/ai-authoring/author_brief.py \
+  --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+  --unity-before /ruta/captura-real-unity.png \
+  --target-object 'Nombre exacto de la malla' \
+  --mesh-context /ruta/mesh-context.json \
+  --failed-plan /ruta/ciclo-1/artist-plan.json \
+  --failed-review /ruta/ciclo-1/comparison.json \
+  --failed-plan /ruta/ciclo-2/artist-plan.json \
+  --failed-review /ruta/ciclo-2/comparison.json \
+  --cpu-compact --max-actions 2 --out /ruta/ciclo-3
+```
+
+Conservar los planes originales, los `comparison.json` y sus PNGs como artefactos del propietario del ensayo. **No** usar el rechazo de Blender como demostración de un fallo artístico definitivo en Unity sin su propia prueba, ni promocionar `ART_APPROVED` sin A/B de Unity realmente visible y QA separado. La gobernanza CI ejecuta `test_artistic_learning_feedback.py`; las pruebas son de seguridad y continuidad, **no** un ensayo real de Qwen/Blender/Unity ni aprobación artística.
+
 ## Integración efectiva de la memoria y del inventario
 
 - `tools/art-direction/ARTIST_LEARNING_JOURNAL.md` está preservado en esta promoción y **se inyecta automáticamente** como contexto de errores y aciertos recientes en el encargo Qwen; cada inferencia registra su SHA256. No equivale a reentrenar pesos.
@@ -85,29 +112,3 @@ If local Qwen outputs an invalid edit, `artist_plan_validation.py` checks the ac
 Physical Android/iOS gameplay validation and the matched Unity player camera remain mandatory to progress beyond artistic approval. Existing Windows runner lease owned by Bastión I remains protected.
 
 
-## Memoria de rechazos medidos y bloqueo de una tercera estrategia invisible (13-10-2026)
-
-Este refuerzo modifica la única ruta canónica `tools/art-direction/ai-authoring/author_brief.py` y se prueba en el workflow existente de **Art production governance**. No crea un segundo artista, una cola paralela ni modifica la escena jugable.
-
-- La memoria siempre extrae lecciones empíricas relevantes de `ARTIST_LEARNING_JOURNAL.md` (no los últimos caracteres aleatorios del archivo), incluso en `--cpu-compact`; se mantiene el hash SHA256 del diario original.
-- Cada **par** `--failed-plan artist-plan.json --failed-review comparison.json` tiene que venir de una inferencia Qwen real anterior y de una comparación Blender clay A/B de la **misma malla**, con hashes SHA256 de fuente, resultado e imágenes y métricas coherentes; admite hasta cuatro pares. Se exige que los **PNG originales** `before-blender-clay.png` y `after-blender-clay.png` estén junto a su `comparison.json`; el preflight verifica su firma PNG y su SHA256 real. Sin imágenes originales verificables, el supuesto fallo no se incorpora al aprendizaje. Ni un PASS sintético ni una revisión de otro objeto pueden enseñar un rechazo.
-- Las revisiones se envían a Qwen como contexto **antes** de escoger geometría. Tras **dos rechazos auténticos** consecutivos con un único mismo tipo de operación estructural (por ejemplo `sculpt_region`), el preflight **rechaza una tercera propuesta que solo repita esa operación**. El modelo debe escoger por sí mismo otro tipo (por ejemplo `sculpt_path` o `reprofile_crest`) y volver a presentar una decisión completa. Python nunca inventa nuevos anclajes ni mueve vértices como sustituto de la IA.
-- Los hashes y el historial de revisiones rechazadas quedan incorporados en `artist-inference.json`, para auditabilidad. Una aceptación de esquema **no prueba** que la geometría sea visible ni bonita: sigue siendo obligatorio medir el A/B real de Blender, después importar en Unity y hacer la comparación visual profesional.
-- Si no se proporcionan pares verificados se sigue trabajando con las lecciones reales del diario y el rechazo de impacto del preflight existente. **No inventar pares ni afirmar que existe entrenamiento automático de pesos.**
-
-**Reanudación de un trabajo después de dos A/B invisibles**, sin cambiar de rama ni tocar los assets originales:
-
-```bash
-python3 tools/art-direction/ai-authoring/author_brief.py \
-  --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
-  --unity-before /ruta/captura-real-unity.png \
-  --target-object 'Nombre exacto de la malla' \
-  --mesh-context /ruta/mesh-context.json \
-  --failed-plan /ruta/ciclo-1/artist-plan.json \
-  --failed-review /ruta/ciclo-1/comparison.json \
-  --failed-plan /ruta/ciclo-2/artist-plan.json \
-  --failed-review /ruta/ciclo-2/comparison.json \
-  --cpu-compact --max-actions 2 --out /ruta/ciclo-3
-```
-
-Conservar los planes originales, los `comparison.json` y sus PNGs como artefactos del propietario del ensayo. **No** usar el rechazo de Blender como demostración de un fallo artístico definitivo en Unity sin su propia prueba, ni promocionar `ART_APPROVED` sin A/B de Unity realmente visible y QA separado. La gobernanza CI ejecuta `test_artistic_learning_feedback.py`; las pruebas son de seguridad y continuidad, **no** un ensayo real de Qwen/Blender/Unity ni aprobación artística.
