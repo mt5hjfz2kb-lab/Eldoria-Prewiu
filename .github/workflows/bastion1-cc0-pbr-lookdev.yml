@@ -1,0 +1,77 @@
+name: Bastion I CC0 PBR camera material prototype
+on:
+  push:
+    branches: [art/bastion1-gpt6-directed-scarp-lookdev-20261013]
+    paths:
+      - '.github/workflows/bastion1-cc0-pbr-lookdev.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-pbr-material-prototype:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      ROOT: /tmp/bastion1-cc0-textured
+      GH_TOKEN: ${{ github.token }}
+      TARGET: Valoria natural playable hilltop and rock scarps
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use exact original terrain and verify source hash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/source" "$ROOT/maps" "$ROOT/edited" "$ROOT/preview"
+          gh run download 38384261910 --repo "${{ github.repository }}" \
+            --name bastion1-genuine-qwen-artist-38384261910 --dir "$ROOT/source"
+          test "$(sha256sum "$ROOT/source/terrain-source.blend" | cut -d' ' -f1)" = 4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880
+      - name: Download only verified public 1K CC0 Poly Haven PBR maps
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,urllib.request,urllib.parse
+          root=pathlib.Path(os.environ['ROOT'])/'maps'
+          manifest=[]
+          for asset in ('forest_ground_04','mossy_rock','aerial_grass_rock'):
+            req=urllib.request.Request('https://api.polyhaven.com/files/'+asset,
+               headers={'User-Agent':'EldoriaArtSourceAuditor/1.0'})
+            with urllib.request.urlopen(req,timeout=45) as response:files=json.load(response)
+            folder=root/asset;folder.mkdir(parents=True,exist_ok=True)
+            for key,suffix in (('Diffuse','diff'),('Rough','rough'),('nor_gl','normal')):
+              value=files[key]['1k']['jpg']['url']
+              parts=urllib.parse.urlsplit(value)
+              if parts.scheme!='https' or not parts.hostname.endswith('polyhaven.org'):
+                raise ValueError('Refuse unlicensed/nonofficial texture source')
+              request=urllib.request.Request(value,headers={'User-Agent':'EldoriaArtSourceAuditor/1.0'})
+              with urllib.request.urlopen(request,timeout=90) as data:
+                body=data.read(8_000_001)
+              if not 5000<len(body)<8_000_000 or not body[:3]==b'\xff\xd8\xff':
+                raise ValueError('Invalid original 1K JPG texture bytes '+asset+' '+suffix)
+              dest=folder/(suffix+'.jpg');dest.write_bytes(body)
+              manifest.append({'asset':asset,'map':key,'source':value,'sha256':hashlib.sha256(body).hexdigest(),'bytes':len(body),'license':'CC0','credit':'Powered by Poly Haven'})
+          (root/'cc0-provenance.json').write_text(json.dumps(manifest,indent=2))
+          print('NINE_ORIGINAL_POLYHAVEN_CC0_1K_MAPS',len(manifest))
+          PY
+      - name: Install free Blender (no Unity runner)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+      - name: Apply authored PBR palette without moving a single gameplay vertex
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/gpt6_cc0_terrain_pbr.py -- \
+            --source "$ROOT/source/terrain-source.blend" \
+            --source-sha256 4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880 \
+            --texture-dir "$ROOT/maps" --target "$TARGET" --out "$ROOT/edited"
+      - name: Render REAL textured before and after on exact same camera
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/render_cc0_material_ab.py -- \
+            --before "$ROOT/source/terrain-source.blend" --after "$ROOT/edited/artist-output.blend" \
+            --target "$TARGET" --out "$ROOT/preview"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-original-cc0-pbr-${{ github.run_id }}
+          path: |
+            /tmp/bastion1-cc0-textured/maps/cc0-provenance.json
+            /tmp/bastion1-cc0-textured/edited/**
+            /tmp/bastion1-cc0-textured/preview/**
+          retention-days: 14
