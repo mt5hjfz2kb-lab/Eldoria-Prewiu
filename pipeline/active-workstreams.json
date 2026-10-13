@@ -98,6 +98,27 @@
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
       "next": "Repair repeated native capture URP binding; recover actual Unity A/B. Recover genuine artist finishing 38404956232, verify raw plan and execute unchanged; exact Unity native/gameplay gates still open."
+    },
+    {
+      "id": "eldoria-art-learning-evidence-retention-20261013",
+      "title": "Persistent, evidence-grounded art learning and comparison helpers",
+      "owner": "chat-owner-authorized-art-learning-retention-20261013",
+      "scope": [
+        "tools/art-direction/learning-evidence/**",
+        "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md",
+        ".github/workflows/repository-architecture-guard.yml",
+        "docs/documentation-catalog.json"
+      ],
+      "resources": [
+        "github-hosted-ubuntu-lightweight"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-13",
+      "base_main_sha": "96c2bd2d721acd2d4d9784c0744732bfd2358953",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Evidence retention and quality-drift guard only: no 3D authoring, Unity, Qwen, assets, or gameplay.",
+      "phase": "Additive independent evidence retention and CI; reserved Bastion Qwen and journal are read-only",
+      "dependency": "Only Bastion owner may wire saved lessons into tools/art-direction/ai-authoring/** or update ARTIST_LEARNING_JOURNAL.md"
     }
   ],
   "history": [
