@@ -35,7 +35,14 @@ if abs(cx)<12 or not -16<cy<-9:raise RuntimeError('Invalid site')
 cz=z_at(cx,cy)
 # Source groups exist as named empties from the immutable authored assembly.
 def descendants(root):
- return [o for o in meshes if any(p==root for p in o.parent_recursive)]
+ result=[]
+ for o in meshes:
+  p=o.parent
+  while p is not None:
+   if p==root:
+    result.append(o);break
+   p=p.parent
+ return result
 def group(label):
  roots=[o for o in objects if o.name.split('.')[0]==label]
  if len(roots)!=1:raise RuntimeError('Authored asset group missing '+label+': '+str(len(roots)))
