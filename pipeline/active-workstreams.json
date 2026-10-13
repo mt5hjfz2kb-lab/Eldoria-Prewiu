@@ -121,13 +121,17 @@
       "art_production_routing_reason": "Non-art-authoring catalog, immutable GLB geometry inspection, technical Unity staging only; no shader/mesh changes.",
       "dependency": "Bastion I owns Windows runner and canonical scene. This task uses static CI and existing evidence only.",
       "phase": "Verify geometry/cost per selected source, add Unity prefab budget and safety checks without Windows/scene access.",
-      "handoff_reason": "Independent GLB source/geometry preflight and Unity staging code PASS; native Unity editor/camera and mobile profiling still pending Bastion runner ownership.",
+      "handoff_reason": "All permitted independent work done: 26 GLBs SHA+glTF geometry reverified, exact 36-asset source costs attached, prefab importer safety/shader/material and asset-cost verification, prefabs staged outside Resources, source camera gallery prepared. Unity 6000.3.23f1 Windows actual editor and mobile gates remain dependent on Bastion I legitimate runner lease.",
+      "handoff_to": "existing PR #51 once Windows runner is legitimately released",
       "final_branch": "integration/valoria-selected-asset-library-v1-20261013",
+      "head_before_closeout": "9b967517d4c2b190b78b6571ae075812e8d318ed",
+      "static_qa_sha": "b7ad9a41001a7769ef0f5b804ff058c401519179",
       "static_qa_run_id": 38407171089,
       "pending_unity_methods": [
         "Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Build",
         "Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Capture"
       ],
+      "never_claimed": "UNITY_VISUAL_PASS_OR_MOBILE_PASS",
       "finished_available_work_at": "2026-10-13"
     },
     {
