@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     env:
-      GH_TOKEN: \${{ github.token }}
+      GH_TOKEN: ${{ github.token }}
       ART_ROOT: /tmp/bastion1-mountain-artist
     steps:
       - uses: actions/checkout@v4
@@ -29,8 +29,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$ART_ROOT/source-art" "$ART_ROOT/source-images"
-          gh run download 38409277470 --repo "\${{ github.repository }}" --name bastion1-genuine-qwen-finishing-38409277470 --dir "$ART_ROOT/source-art"
-          gh run download 38419031491 --repo "\${{ github.repository }}" --name bastion1-unity-review-frames-38419031491 --dir "$ART_ROOT/source-images"
+          gh run download 38409277470 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-finishing-38409277470 --dir "$ART_ROOT/source-art"
+          gh run download 38419031491 --repo "${{ github.repository }}" --name bastion1-unity-review-frames-38419031491 --dir "$ART_ROOT/source-images"
           python3 - <<'PY'
           import os,pathlib,hashlib,json
           root=pathlib.Path(os.environ["ART_ROOT"])
@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bastion1-genuine-qwen-mountain-\${{ github.run_id }}
+          name: bastion1-genuine-qwen-mountain-${{ github.run_id }}
           path: |
             /tmp/bastion1-mountain-artist/mountain-plan.json
             /tmp/bastion1-mountain-artist/mountain-inference-proof.json
