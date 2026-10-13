@@ -170,14 +170,24 @@ front_obj=bpy.data.objects.new('Valoria lower valley continuous terrain',front_m
 scene.collection.objects.link(front_obj)
 
 def valley_height(x,y):
-    peaks=((-109,114,58,49),(-70,96,43,42),(-26,146,72,48),
-           (18,104,53,38),(64,136,68,50),(128,105,55,58))
+    # CAMERA-SCALE ENVIRONMENT PASS: replace the evenly rounded, repetitive
+    # distant hills with three overlapping mountain silhouettes. This changes
+    # ONLY the existing far-field mesh, never the fortress, routes or parcels.
+    # Back ridge peaks are deliberately asymmetric, giving the castle a
+    # readable high-land horizon and atmospheric depth in the player camera.
+    peaks=((-145,150,67,42),(-110,121,82,34),(-79,164,99,39),
+           (-32,123,68,38),(9,176,112,46),(45,134,77,37),
+           (91,159,104,42),(140,116,76,40))
     uplift=0
     for px,py,height,radius in peaks:
         d=((x-px)/radius)**2+((y-py)/(radius*.72))**2
         uplift+=height*math.exp(-d*1.1)
+    # Large-scale erosion breaks the old soft Gaussian dome outline.
+    # Keep bounded detail to avoid high-frequency silhouette noise on mobile.
+    erosion=(math.sin(x*.072+y*.018)*3.5
+             +math.sin(x*.031-y*.055)*4.2)
     uneven=fractal(Vector((x*.025,y*.031,5.7)),.85,2.0,4)*5
-    return -25+uplift+uneven
+    return -25+uplift+uneven+erosion
 
 nx=55;ny=30;x0=-175;x1=175;y0=40;y1=195
 coords=[]
