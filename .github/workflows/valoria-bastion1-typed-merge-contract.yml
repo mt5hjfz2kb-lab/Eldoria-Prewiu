@@ -1,0 +1,21 @@
+name: Bastion I typed AI merge contract
+on:
+  push:
+    branches: [fix/bastion1-typed-editor-integration-20261013, integration/valoria-bastion1-player-scene-20261012]
+    paths:
+      - 'tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py'
+      - 'tools/valoria-bastion1-assembly/test_qwen_typed_merge_contract.py'
+      - '.github/workflows/valoria-bastion1-typed-merge-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-typed-artist-merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate model-authored typed merge contract without Unity/Blender runner
+        run: |
+          python3 -m py_compile tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py tools/valoria-bastion1-assembly/test_qwen_typed_merge_contract.py
+          python3 -m unittest discover -s tools/valoria-bastion1-assembly -p test_qwen_typed_merge_contract.py -v
