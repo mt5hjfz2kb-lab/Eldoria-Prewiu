@@ -80,22 +80,22 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Mobile-profile native and exact WebGL succeeded; basic actual touch QA PASS saved with screenshots in branch. Complete I-II QA resumed after observed reset acknowledgement exceeded harness 2.5s deadline; waiting15s without altering game.",
+      "phase": "Exact mobile-profile native/WebGL and real touch basic plus uninterrupted I-II progression PASS in both orientations. All38 full-flow PNGs and basic5 PNGs/report saved in branch. Artistic target and HUD/camera framing remain open; no new experiments or promotion.",
       "resumed_at": "2026-10-13T12:02:09.263Z",
       "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job.",
       "last_verified": {
-        "unity_build_run": 38395469618,
-        "unity_build_source_sha": "c53108d7160160d55743b460526a03a2443031bc",
-        "artifact_id": 11811847205,
-        "basic_browser_qa_run": 38396278910,
+        "unity_build_run": 38420574701,
+        "unity_build_source_sha": "7f6d708d57bd27e04c0375e79221d3fa9c932da3",
+        "artifact_id": 11826517753,
+        "basic_browser_qa_run": 38421408687,
         "basic_browser_qa_pass": true,
         "art_approved": false,
-        "full_player_qa_run": 38399110721,
+        "full_player_qa_run": 38422576301,
         "full_player_qa_pass": true,
         "masked_qwen_merge_run": 38403329338,
         "masked_qwen_artifact": 11816670641,
-        "native_finishing_run": 38409530725,
-        "native_finishing_source_sha": "136ec0fcd70de9ed5a8d9bf6a630803ea3b518b4",
+        "native_finishing_run": 38419031491,
+        "native_finishing_source_sha": "cf1f7bc69ff832f917fa9e41285ba6c809c320ac",
         "artist_rgb_confirmed_in_unity": true,
         "road_contact_pass": true,
         "latest_native_run": 38419031491,
@@ -106,15 +106,26 @@
         "latest_webgl_source_sha": "7f6d708d57bd27e04c0375e79221d3fa9c932da3",
         "latest_webgl_artifact": 11826517753,
         "latest_exact_qa_run": 38422576301,
-        "latest_exact_qa_status": "full_only_in_progress",
+        "latest_exact_qa_status": "success",
         "latest_exact_basic_qa_run": 38421408687,
-        "latest_exact_basic_qa_pass": true
+        "latest_exact_basic_qa_pass": true,
+        "full_player_qa_artifact": 11827588127,
+        "physical_phone_pass": false,
+        "continuation_head": "fe61c2eb0861e00547fcdbe395adb012422d5296"
       },
       "continuation_document": {
         "branch": "integration/valoria-bastion1-player-scene-20261012",
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
-      "next": "Recover full-only exact QA38422576301/job115383507296 on WebGL38420574701, resolve actual gate failure, preserve final report/screenshots and continuation. Do not repeat passed basic/native/build or start new experiments."
+      "next": "Read current continuation top and actual final landscape/portrait images. Correct existing HUD/camera composition minimally within integration scope; finish remaining artistic gates before promotion. Do not repeat successful native/build/QA without a source change, open branches or new experiments, or use runner for historical assets.",
+      "resource_state": {
+        "windows_job": 115376480422,
+        "windows_status": "completed",
+        "ubuntu_qa_job": 115383507296,
+        "ubuntu_qa_status": "completed",
+        "own_active_jobs": 0,
+        "reservations_retained_for_bastion_integration": true
+      }
     }
   ],
   "history": [
