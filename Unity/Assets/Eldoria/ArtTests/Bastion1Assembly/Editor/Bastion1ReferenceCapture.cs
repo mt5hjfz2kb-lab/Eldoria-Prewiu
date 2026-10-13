@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using GLTFast;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -53,7 +55,7 @@ namespace Eldoria.EditorTools
                 Bastion1MaterialBindings.Apply(root,importer,source);
                 Bastion1RoadClearance.Apply(root);
                 await Bastion1ExistingRoadIntegration.Apply(root);
-                StageExistingGroundedEnvironmentalDetails(root);
+                await StageSelectedLegacyRockContacts(root);
                 InspectRoadContacts(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
@@ -141,148 +143,86 @@ namespace Eldoria.EditorTools
                 Debug.LogError("BASTION1_REFERENCE_CAPTURE_FAILED "+ex);EditorApplication.Exit(1);
             }
         }
-        static void StageExistingGroundedEnvironmentalDetails(GameObject scene)
+        // Exact existing PR51 models; preserve source meshes and all gameplay objects.
+        static async Task StageSelectedLegacyRockContacts(GameObject assembly)
         {
-            // Reuse already installed commercial-safe NatureStarterKit foliage and
-            // existing Eldoria rock prefabs. These are visuals only, NOT new asset families.
-            // Ground each instance by raycasting against the actual existing terrain
-            // geometry. No artificial floor heights, no floating decorations.
-            var terrain=Find(scene.transform,"Valoria natural playable hilltop and rock scarps");
-            if(terrain==null)throw new Exception("Valoria editable plateau missing for genuine ground contacts");
-            var temporary=new List<MeshCollider>();
-            var legitimate=new HashSet<Collider>();
-            var materials=new Dictionary<Material,Material>();
-            var visualRoot=new GameObject("Bastion I reused grounded environmental detail");
-            visualRoot.transform.SetParent(scene.transform,false);
-            int placements=0,misses=0;
+            var terrain=Find(assembly.transform,"Valoria natural playable hilltop and rock scarps");
+            if(terrain==null)throw new Exception("Original playable terrain missing");
+            var colliders=new List<MeshCollider>();
+            var allowed=new HashSet<Collider>();
+            var target=new GameObject("Bastion I two recovered rock details");
+            target.transform.SetParent(assembly.transform,false);
             try
             {
-                foreach(var f in terrain.GetComponentsInChildren<MeshFilter>(true))
+                foreach(var mf in terrain.GetComponentsInChildren<MeshFilter>(true))
                 {
-                    if(f.sharedMesh==null)continue;
-                    var col=f.gameObject.AddComponent<MeshCollider>();
-                    col.sharedMesh=f.sharedMesh;temporary.Add(col);legitimate.Add(col);
+                    if(mf.sharedMesh==null)continue;
+                    var c=mf.gameObject.AddComponent<MeshCollider>();
+                    c.sharedMesh=mf.sharedMesh;colliders.Add(c);allowed.Add(c);
                 }
-                if(temporary.Count<1)throw new Exception("Authored terrain has no raycastable mesh");
+                if(colliders.Count==0)throw new Exception("Grounding mesh missing");
                 Physics.SyncTransforms();
-                // Only back/side margins, clear of the central road and the
-                // reserved parcel centres at (+16,3) and (-16,3).
-                var bushes=new[]{
-                    new Vector2(-22f,-25f),new Vector2(-17f,-28f),
-                    new Vector2(-20f,-12f),new Vector2(-23f,-5f),
-                    new Vector2(-21f,11f),new Vector2(-16f,16f),
-                    new Vector2(-12f,12f),new Vector2(-24f,17f),
-                    new Vector2(22f,-26f),new Vector2(17f,-29f),
-                    new Vector2(20f,-12f),new Vector2(23f,-6f),
-                    new Vector2(20f,11f),new Vector2(15f,15f),
-                    new Vector2(11f,12f),new Vector2(24f,16f)
-                };
-                var rocks=new[]{
-                    new Vector2(-24f,-17f),new Vector2(-23f,8f),
-                    new Vector2(-18f,18f),new Vector2(-11f,-29f),
-                    new Vector2(24f,-18f),new Vector2(22f,8f),
-                    new Vector2(18f,18f),new Vector2(12f,-29f)
-                };
-                for(int i=0;i<bushes.Length;i++)
-                {
-                    var path="Assets/NatureStarterKit2/Nature/bush0"+(1+i%6)+".prefab";
-                    if(SpawnGroundedSource(path,visualRoot.transform,bushes[i],.70f+.16f*(i%4),
-                        i*53f,legitimate,materials))placements++;else misses++;
-                }
-                for(int i=0;i<rocks.Length;i++)
-                {
-                    var path="Assets/Eldoria/Resources/WorldInventory/Rock0"+(1+i%2)+".prefab";
-                    if(SpawnGroundedSource(path,visualRoot.transform,rocks[i],.68f+.20f*(i%3),
-                        i*41f,legitimate,materials))placements++;else misses++;
-                }
+                await ImportSelectedGrounded(target.transform,"RockToWallTransition",
+                    "116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0",
+                    new Vector2(-23f,14f),4.8f,112f,allowed);
+                await ImportSelectedGrounded(target.transform,"BroadRockPlatform",
+                    "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
+                    new Vector2(24f,12f),2.1f,198f,allowed);
             }
             finally
             {
-                foreach(var col in temporary)UnityEngine.Object.DestroyImmediate(col);
+                foreach(var c in colliders)UnityEngine.Object.DestroyImmediate(c);
                 Physics.SyncTransforms();
             }
-            if(placements<14)throw new Exception("Insufficient genuine grounded scenic pieces: "+
-                placements+"/24 placed, "+misses+" terrain misses");
-            Debug.Log("BASTION1_GROUNDED_EXISTING_ASSETS placed="+placements+
-                " missed="+misses+" source_prefabs=NatureStarterKit2_and_WorldInventory"+
-                " new_mesh_families=0 gameplay_colliders_added=0");
+            Debug.Log("BASTION1_EXISTING_SELECTED_DETAIL_COMPLETE pieces=2 gameplay_colliders=0 new_geometry=0");
         }
-
-        static bool SpawnGroundedSource(string path,Transform parent,Vector2 position,
-            float targetHeight,float rotation,HashSet<Collider> terrain,
-            Dictionary<Material,Material> converted)
+        static async Task ImportSelectedGrounded(Transform parent,string id,string sha256,
+            Vector2 site,float height,float rotation,HashSet<Collider> groundColliders)
         {
-            var source=AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            if(source==null)throw new Exception("Existing staged scenic asset missing "+path);
-            var hits=Physics.RaycastAll(new Vector3(position.x,90f,position.y),
-                Vector3.down,130f,~0,QueryTriggerInteraction.Ignore);
-            var found=false;Vector3 ground=Vector3.zero;
+            var file=Path.GetFullPath(Study+"/GeneratedSource/"+id+".glb");
+            if(!File.Exists(file))throw new FileNotFoundException("Selected existing GLB not staged",file);
+            using(var hash=SHA256.Create())
+            using(var stream=File.OpenRead(file))
+            {
+                var real=BitConverter.ToString(hash.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
+                if(real!=sha256)throw new Exception("Frozen source SHA mismatch "+id);
+            }
+            var importer=new GltfImport(null,new UninterruptedDeferAgent());
+            if(!await importer.Load(new Uri(file).AbsoluteUri,new ImportSettings
+                {GenerateMipMaps=true,AnisotropicFilterLevel=2}))
+                throw new Exception("Original selected GLB import failed "+id);
+            var visual=new GameObject("Selected authored environmental piece "+id);
+            visual.transform.SetParent(parent,false);
+            if(!await importer.InstantiateMainSceneAsync(visual.transform))
+                throw new Exception("Original selected mesh instantiate failed "+id);
+            Bastion1MaterialBindings.Apply(visual,importer,file);
+            foreach(var collider in visual.GetComponentsInChildren<Collider>(true))
+                UnityEngine.Object.DestroyImmediate(collider);
+            foreach(var script in visual.GetComponentsInChildren<MonoBehaviour>(true))
+                UnityEngine.Object.DestroyImmediate(script);
+            var renderers=visual.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length==0)throw new Exception("Selected mesh has no renderer "+id);
+            var bounds=renderers[0].bounds;
+            foreach(var r in renderers)bounds.Encapsulate(r.bounds);
+            if(bounds.size.y<=.001f)throw new Exception("Selected mesh dimension invalid "+id);
+            visual.transform.localScale*=height/bounds.size.y;
+            visual.transform.rotation=Quaternion.Euler(0f,rotation,0f);
+            bounds=renderers[0].bounds;
+            foreach(var r in renderers)bounds.Encapsulate(r.bounds);
+            var hits=Physics.RaycastAll(new Vector3(site.x,90f,site.y),Vector3.down,
+                145f,~0,QueryTriggerInteraction.Ignore);
+            bool found=false;Vector3 contact=Vector3.zero;
             foreach(var hit in hits)
             {
-                if(!terrain.Contains(hit.collider)||hit.normal.y<.70f)continue;
-                if(!found||hit.point.y>ground.y){found=true;ground=hit.point;}
+                if(!groundColliders.Contains(hit.collider)||hit.normal.y<.68f)continue;
+                if(!found||hit.point.y>contact.y){contact=hit.point;found=true;}
             }
-            if(!found)return false;
-            // Discard collision, scripts and unused real-world gameplay behaviour
-            // from these *visual-only* copies, never from original source prefabs.
-            var go=PrefabUtility.InstantiatePrefab(source) as GameObject;
-            if(go==null)throw new Exception("Existing prefab instance unavailable "+path);
-            go.name="Grounded existing scenic "+source.name;
-            go.transform.SetParent(parent,true);
-            go.transform.position=Vector3.zero;
-            go.transform.rotation=Quaternion.Euler(0f,rotation,0f);
-            foreach(var collider in go.GetComponentsInChildren<Collider>(true))
-                UnityEngine.Object.DestroyImmediate(collider);
-            foreach(var behavior in go.GetComponentsInChildren<MonoBehaviour>(true))
-                UnityEngine.Object.DestroyImmediate(behavior);
-            var renderers=go.GetComponentsInChildren<MeshRenderer>(true);
-            if(renderers.Length==0)throw new Exception("Existing prefab has no MeshRenderer "+path);
-            var bounds=renderers[0].bounds;
-            foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
-            if(bounds.size.y<.001f)throw new Exception("Existing prefab height is invalid "+path);
-            go.transform.localScale*=targetHeight/bounds.size.y;
-            bounds=renderers[0].bounds;
-            foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
-            go.transform.position+=new Vector3(ground.x-bounds.center.x,
-                ground.y-bounds.min.y-.045f,ground.z-bounds.center.z);
-            foreach(var renderer in renderers)
-            {
-                renderer.shadowCastingMode=ShadowCastingMode.Off;
-                var original=renderer.sharedMaterials;
-                var adapted=new Material[original.Length];
-                for(int i=0;i<original.Length;i++)
-                {
-                    var old=original[i];if(old==null)continue;
-                    if(!converted.TryGetValue(old,out var mat))
-                    {
-                        var shader=Shader.Find("Universal Render Pipeline/Lit");
-                        if(shader==null)throw new Exception("Unity URP/Lit missing for scenery conversion");
-                        mat=new Material(shader){name="BastionI_reused_"+old.name};
-                        var tex=old.HasProperty("_BaseMap")?old.GetTexture("_BaseMap"):
-                            old.HasProperty("_MainTex")?old.GetTexture("_MainTex"):null;
-                        if(tex!=null)mat.SetTexture("_BaseMap",tex);
-                        var tint=old.HasProperty("_BaseColor")?old.GetColor("_BaseColor"):
-                            old.HasProperty("_Color")?old.GetColor("_Color"):Color.white;
-                        mat.SetColor("_BaseColor",tint);
-                        mat.SetFloat("_Smoothness",.06f);
-                        var label=old.name.ToLowerInvariant();
-                        if(label.Contains("leaf")||label.Contains("foliage")||
-                            label.Contains("bush")||label.Contains("branch"))
-                        {
-                            mat.SetFloat("_AlphaClip",1f);
-                            mat.SetFloat("_Cutoff",.35f);
-                            mat.EnableKeyword("_ALPHATEST_ON");
-                            mat.SetFloat("_Cull",0f);
-                        }
-                        Persist(mat);converted.Add(old,mat);
-                    }
-                    adapted[i]=mat;
-                }
-                renderer.sharedMaterials=adapted;
-            }
-            Debug.Log("BASTION1_EXISTING_PROP_GROUND_CONTACT prefab="+source.name+
-                " pos="+go.transform.position+" height="+targetHeight);
-            return true;
+            if(!found)throw new Exception("No real terrain at selected model socket "+id);
+            visual.transform.position+=new Vector3(contact.x-bounds.center.x,
+                contact.y-bounds.min.y-.06f,contact.z-bounds.center.z);
+            foreach(var r in renderers)r.shadowCastingMode=ShadowCastingMode.Off;
+            Debug.Log("BASTION1_SELECTED_REAL_CONTACT id="+id+" xyz="+visual.transform.position+
+                " source="+sha256+" height="+height+" renderers="+renderers.Length);
         }
 
         static Transform Find(Transform root,string name)

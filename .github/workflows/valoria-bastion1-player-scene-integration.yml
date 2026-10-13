@@ -86,6 +86,12 @@ jobs:
           if(-not $blenderPython){throw 'Bundled Blender Python missing'}
           Add-Content $env:GITHUB_ENV "BASTION_PYTHON=$blenderPython"
           # Consume completed sources; do not restage or reconstruct the city.
+      - name: Clean disposable PR51 gallery staging from this Windows checkout
+        shell: powershell
+        run: |
+          & git.exe reset --hard HEAD
+          if($LASTEXITCODE -ne 0){throw 'Temporary runner checkout reset failed'}
+          if(Test-Path 'Unity/Assets/Eldoria/AssetLibrarySelectionV1'){throw 'Temporary gallery code unexpectedly remains in player checkout'}
       - name: Stage existing authored construction states and barracks
         shell: powershell
         run: |
@@ -105,6 +111,24 @@ jobs:
           Copy-Item "$env:GITHUB_WORKSPACE/art-source/valoria/production/road-family-v1/RoadFamilyV1.glb" "$dest/RoadFamilyV1.glb" -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/RoadFamilyV1.glb"
           if($LASTEXITCODE -ne 0){throw 'Existing authored road bindings failed'}
+      - name: Reuse two original SHA-pinned PR51 rock sources for native artistic A/B
+        shell: powershell
+        run: |
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          $models=@(
+            @('Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb','RockToWallTransition.glb','116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0'),
+            @('Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb','BroadRockPlatform.glb','832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520')
+          )
+          foreach($model in $models){
+            $original=Join-Path $env:GITHUB_WORKSPACE $model[0]
+            if((Get-FileHash $original -Algorithm SHA256).Hash.ToLowerInvariant() -ne $model[2]){throw "Frozen selected source mismatch $($model[1])"}
+            $file=Join-Path $dest $model[1]
+            Copy-Item $original $file -Force
+            & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $file
+            if($LASTEXITCODE -ne 0){throw "Selected asset PBR normalization failed $($model[1])"}
+          }
+          Write-Host 'BASTION1_TWO_VERIFIED_PR51_ASSETS_READY no_source_overwrite=true'
       - name: Fetch exact previously verified Unity image as immutable scenery baseline
         uses: actions/download-artifact@v4
         with:
