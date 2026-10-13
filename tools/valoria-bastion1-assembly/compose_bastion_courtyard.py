@@ -105,12 +105,12 @@ for x,y,scale in bush_positions:
  obj.name='Bastion I reused original courtyard bush %02d'%bush_count
  # Preserve source orientation and materials; rescale around its source base.
  obj.matrix_world=(Matrix.Translation(Vector((x,y,surface(x,y)+.02)))
-                   @ Matrix.Scale(scale,4)
+                   @ Matrix.Scale(scale*2.35,4)
                    @ Matrix.Translation(Vector((-bx,-by,-bz)))
                    @ source_bush.matrix_world)
  bpy.context.collection.objects.link(obj)
  bush_count+=1
-print('BASTION1_REUSED_ORIGINAL_BUSHES',bush_count,source_bush.name)
+print('BASTION1_REUSED_ORIGINAL_BUSHES',bush_count,source_bush.name,'scale_multiplier',2.35)
 # Modest reused scree geometry at the lateral wall contacts only. Max 20 cm
 # height: no new nodes, no obstacle in walking area and mobile-friendly.
 rng=random.Random(9826);count=0
