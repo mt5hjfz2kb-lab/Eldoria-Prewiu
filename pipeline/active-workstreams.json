@@ -98,7 +98,9 @@
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
       "next": "Repair repeated native capture URP binding; recover actual Unity A/B. Recover genuine artist finishing 38404956232, verify raw plan and execute unchanged; exact Unity native/gameplay gates still open."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "valoria-selected-asset-library-v1-hardening-20261013",
       "title": "Harden selected Valoria Unity asset library with real source geometry budgets and safer placement",
@@ -112,16 +114,22 @@
       "resources": [
         "github-hosted-ubuntu-readonly"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-13",
       "base_main_sha": "269984a9e110107778b97431086e29481691a161",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Non-art-authoring catalog, immutable GLB geometry inspection, technical Unity staging only; no shader/mesh changes.",
       "dependency": "Bastion I owns Windows runner and canonical scene. This task uses static CI and existing evidence only.",
-      "phase": "Verify geometry/cost per selected source, add Unity prefab budget and safety checks without Windows/scene access."
-    }
-  ],
-  "history": [
+      "phase": "Verify geometry/cost per selected source, add Unity prefab budget and safety checks without Windows/scene access.",
+      "handoff_reason": "Independent GLB source/geometry preflight and Unity staging code PASS; native Unity editor/camera and mobile profiling still pending Bastion runner ownership.",
+      "final_branch": "integration/valoria-selected-asset-library-v1-20261013",
+      "static_qa_run_id": 38407171089,
+      "pending_unity_methods": [
+        "Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Build",
+        "Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Capture"
+      ],
+      "finished_available_work_at": "2026-10-13"
+    },
     {
       "id": "valoria-selected-asset-library-v1-20261013",
       "title": "Selection and isolated Unity integration of audited Valoria asset library",
