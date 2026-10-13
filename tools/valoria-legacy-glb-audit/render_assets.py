@@ -17,6 +17,8 @@ def setup_scene():
     scene.render.engine="CYCLES"
     scene.cycles.device="CPU"
     scene.cycles.samples=5
+    for layer in scene.view_layers:
+        layer.cycles.use_denoising=False
     scene.render.resolution_x=576
     scene.render.resolution_y=480
     scene.render.resolution_percentage=100
