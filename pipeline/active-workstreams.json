@@ -143,27 +143,6 @@
       "dependency": "Existing Region 1 owner retains WorldRegion1Runtime and Pages; Bastion I retains Windows runner and Valoria scene. No mutation to those surfaces.",
       "phase": "Isolated reference specification and prototype preparation",
       "art_production_routing": "required"
-    },
-    {
-      "id": "mission-continuity-guard-v1",
-      "title": "Repository mission-continuity evidence watchdog and durable recovery handoff",
-      "owner": "chat-owner-authorized-mission-continuity-guard-20261014",
-      "scope": [
-        "tools/mission-continuity/**",
-        "pipeline/mission-continuity-policy-v1.json",
-        ".github/workflows/mission-continuity-guard.yml",
-        "docs/ELDORIA_MISSION_CONTINUITY_GUARD_V1.md",
-        "pipeline/active-workstreams.json",
-        "docs/documentation-catalog.json"
-      ],
-      "resources": [],
-      "status": "active",
-      "claimed_at": "2026-10-14",
-      "base_main_sha": "4b434c226e51f5036082e62529196aaf869df9ba",
-      "branch": "pipeline/mission-continuity-guard-v1-20261014",
-      "phase": "Implement read-only monitoring, bounded handoff issues, and tests without touching production workflows or art",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only mission continuity telemetry and issue recovery pointers; no 3D assets, geometry or art production."
     }
   ],
   "history": [
@@ -4847,6 +4826,32 @@
       "result_run_id": 38393822753,
       "result_artifact_id": 11809609192,
       "remaining": "Rerun all 26 historical GLB in real Unity 6000.3.23f1 URP only after Windows lease is released; inspect and revise visually graded score."
+    },
+    {
+      "id": "mission-continuity-guard-v1",
+      "title": "Repository mission-continuity evidence watchdog and durable recovery handoff",
+      "owner": "chat-owner-authorized-mission-continuity-guard-20261014",
+      "scope": [
+        "tools/mission-continuity/**",
+        "pipeline/mission-continuity-policy-v1.json",
+        ".github/workflows/mission-continuity-guard.yml",
+        "docs/ELDORIA_MISSION_CONTINUITY_GUARD_V1.md",
+        "pipeline/active-workstreams.json",
+        "docs/documentation-catalog.json"
+      ],
+      "resources": [],
+      "status": "completed",
+      "claimed_at": "2026-10-14",
+      "base_main_sha": "4b434c226e51f5036082e62529196aaf869df9ba",
+      "branch": "pipeline/mission-continuity-guard-v1-20261014",
+      "phase": "Implement read-only monitoring, bounded handoff issues, and tests without touching production workflows or art",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only mission continuity telemetry and issue recovery pointers; no 3D assets, geometry or art production.",
+      "completed_at": "2026-10-14",
+      "result": "Implemented and live-API dry-run verified; deployment in PR #56",
+      "verified_workflow_run": 38481750311,
+      "pr_number": 56,
+      "commit_sha": "ca62aa0d2b0ee2b500c770f185bf7128bf470427"
     }
   ]
 }
