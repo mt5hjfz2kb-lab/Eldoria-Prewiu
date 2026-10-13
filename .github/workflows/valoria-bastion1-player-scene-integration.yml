@@ -192,6 +192,7 @@ jobs:
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
           if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Real before camera frame missing'}
           Write-Host 'BASTION1_NATIVE_SAME_CAMERA_BEFORE_CAPTURED'
+      # ART V4: native soil albedo plus visibly scaled reused selected bush meshes.
       - name: Compose courtyard perimeter and secondary paths on verified baseline
         shell: powershell
         run: |
