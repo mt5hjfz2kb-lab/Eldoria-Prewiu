@@ -1,0 +1,30 @@
+{
+  "concept": "Guard Station Integration via Masonry Transition",
+  "site": "x≈-20.4, y=-12.0, attached to west wall near x=-21,y=-8",
+  "why_player_camera": "Three-quarter view centered on main road (x=-3.5..3.5), courtyard remains clear; guard station must be visible without occluding axial corridor or future plots",
+  "existing_assets": [
+    "defensive_props",
+    "wall_straight",
+    "wall_connections",
+    "stone_path_platform",
+    "cliff_rocks",
+    "EA03_Nature_Bush_01a_LOD0"
+  ],
+  "composition": "Attach existing pitched-roof shelter (run 38477299159) to detached left fortification (x=-21,y=-8) via masonry transition — use wall_connections and wall_straight to form a stepped, buttressed junction. Retain roof as-is; do not rebuild or add new shelter. Use cliff_rocks for base erosion effect; place one stone_path_platform at junction’s foot for ground-level transition. Add one EA03_Nature_Bush_01a_LOD0 at base of junction to avoid uniform emptiness. No new resource nodes. No new build lots. No AI-authored props. No decal paths. No gate, tower, or bridge modifications. No new textures.",
+  "functional_risks": [
+    "wall connection clearance",
+    "future build plots"
+  ],
+  "learning": "Blender deterministic reuse only; no new meshes or nodes",
+  "_provenance": {
+    "mode": "curated_excerpts_from_two_incomplete_real_qwen_inferences",
+    "artist_model": "qwen3-vl:4b-instruct",
+    "concept_site_camera_assets_composition_from_run": 38479509741,
+    "concept_site_camera_assets_composition_raw_sha256": "28eb6a38f24540bbbb785cc09d4de9098b23841e4a233a85f0bd1058297d1b9b",
+    "risks_learning_from_run": 38480277880,
+    "risks_learning_raw_sha256": "2b0d27dbf11e5b97119a71c8fdfddd01733f462b467b157ec5f0326e2e6a3a7b",
+    "warning": "Neither source inference returned a complete valid standalone decision. These quoted/trimmed decisions have real Qwen authorship but were joined by technical orchestration; Blender mesh geometry is deterministic, not authored by Qwen. Do not call this a single complete Qwen result.",
+    "old_candidate_unity_run": 38477299159,
+    "last_visual_candidate_unity_run": 38479785780
+  }
+}
