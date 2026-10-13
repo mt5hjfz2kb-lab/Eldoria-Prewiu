@@ -1,4 +1,4 @@
-name: Bastion I frozen genuine Qwen 4B visibility replay
+name: Bastion I frozen genuine Qwen 8B with verified Unity frustum
 on:
   push:
     branches: [integration/valoria-bastion1-player-scene-20261012]
@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 18
     env:
       ART: /tmp/bastion1-qwen-verbatim
-      ORIGINAL_RUN: 38370740511
+      ORIGINAL_RUN: 38399110675
       CORE_SHA: 02751ed4a68fc3e5238558601b8143daa117d310
       TARGET: 'Valoria natural playable hilltop and rock scarps'
     steps:
@@ -27,8 +27,8 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
-          name: bastion1-genuine-qwen-artist-38370740511
-          run-id: 38370740511
+          name: bastion1-genuine-qwen-artist-38399110675
+          run-id: 38399110675
           github-token: ${{ github.token }}
           path: /tmp/bastion1-qwen-verbatim
       - name: Retrieve current signed artist execution and visual validation sources
@@ -52,7 +52,7 @@ jobs:
           model=json.loads((r/'model/artist-inference.json').read_bytes())
           ops=json.loads(p)
           assert (r/'terrain-source.blend').read_bytes()[:7]==b'BLENDER'
-          assert model['model']=='qwen3-vl:4b-instruct' and model['system_role']=='system'
+          assert model['model']=='qwen3-vl:8b-instruct' and model['system_role']=='system'
           assert len(ops)==1 and ops[0]['type']=='sculpt_path'
           assert model['direction']['planned_actions']==ops
           assert len(model['rejected_visual_cycle_evidence'])==2
@@ -60,7 +60,7 @@ jobs:
           assert model['attempt_history'][-1]['raw_response_sha256']==hashlib.sha256(raw).hexdigest()
           assert json.loads(raw)['planned_actions']==ops
           assert ops[0]['target']==os.environ['TARGET']
-          assert len(ops[0]['parameters']['knots'])==2
+          assert len(ops[0]['parameters']['knots'])==5
           proof={'source_run':int(os.environ['ORIGINAL_RUN']), 'core_sha':os.environ['CORE_SHA'],
             'source_blend_sha256':hashlib.sha256((r/'terrain-source.blend').read_bytes()).hexdigest(),
             'raw_qwen_response_sha256':hashlib.sha256(raw).hexdigest(),
@@ -70,26 +70,22 @@ jobs:
           print('BASTION1_QWEN4B_SCULPT_PATH_VERBATIM',json.dumps(proof))
           PY
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET" existing
-      - name: Execute genuine Qwen-authored 3D path on frozen Blender terrain (no LLM regeneration)
+      - name: Recover already-executed genuine Qwen sculpture without reauthoring
         shell: bash
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
-          SHA=$(sha256sum "$ART/terrain-source.blend" | cut -d' ' -f1)
-          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
-            --source "$ART/terrain-source.blend" --plan "$ART/model/artist-plan.json" \
-            --out "$ART/result" --transport direct --expected-source-sha256 "$SHA"
-          python3 - <<'PY'
+          python3 - <<'PYVERIFY'
           import json,hashlib,os,pathlib
           r=pathlib.Path(os.environ['ART'])
           plan_hash=hashlib.sha256((r/'model/artist-plan.json').read_bytes()).hexdigest()
           proof=json.loads((r/'result/artist-execution.json').read_bytes())
           assert proof['plan_sha256']==plan_hash
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
-          assert proof['executed_actions'][0]['type']=='sculpt_path'
-          assert proof['executed_actions'][0]['changed_vertices']>0
-          print('GENUINE_QWEN4B_CURVED_PATH_EXECUTED',proof['executed_actions'][0])
-          PY
+          assert proof['result_blend_sha256']==hashlib.sha256((r/'result/artist-output.blend').read_bytes()).hexdigest()
+          assert proof['executed_actions'][0]['changed_vertices']==1758
+          print('QWEN8B_ORIGINAL_SCULPTURE_REUSED',proof['executed_actions'][0])
+          PYVERIFY
       - name: Source-locked PLAYER CAMERA Blender A/B (strict visibility gate)
         shell: bash
         run: |
@@ -106,11 +102,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bastion1-original-qwen4b-path-38370740511
+          name: bastion1-original-qwen8b-verified-frustum-${{ github.run_id }}
           path: |
             /tmp/bastion1-qwen-verbatim/replay-provenance.json
             /tmp/bastion1-qwen-verbatim/model/artist-plan.json
             /tmp/bastion1-qwen-verbatim/model/artist-inference.json
+            /tmp/bastion1-qwen-verbatim/model/artist-response-raw.txt
+            /tmp/bastion1-qwen-verbatim/terrain-source.blend
             /tmp/bastion1-qwen-verbatim/result/*
             /tmp/bastion1-qwen-verbatim/ab/*
           retention-days: 14

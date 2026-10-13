@@ -37,6 +37,14 @@ def render(path,name):
  for item in list(bpy.data.objects):
   if item.type in ('CAMERA','LIGHT'):bpy.data.objects.remove(item,do_unlink=True)
  scene=bpy.context.scene
+ if a.player_camera:
+  # Unity orthographicSize is a VERTICAL half-height. Blender AUTO sensor
+  # fit previously treated ortho_scale=52 as horizontal width and cropped
+  # the foreground cliff. Match the real 1440x1000 player aspect exactly.
+  scene.render.resolution_x=720;scene.render.resolution_y=500
+ else:
+  scene.render.resolution_x=640;scene.render.resolution_y=480
+ scene.render.pixel_aspect_x=1.;scene.render.pixel_aspect_y=1.
  # Neutral material override deliberately removes unrelated PBR variance.
  mat=bpy.data.materials.new('Eldoria_Authoring_Proof_Clay')
  mat.diffuse_color=(0.47,0.44,0.40,1)
@@ -56,6 +64,14 @@ def render(path,name):
  direction=(Vector((0,0,0)) if a.player_camera else center)-cam.location
  cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
  cam_data.type='ORTHO';cam_data.ortho_scale=52 if a.player_camera else size*1.9
+ if a.player_camera:
+  cam_data.sensor_fit='VERTICAL'
+  corners=cam_data.view_frame(scene=scene)
+  height=max(v.y for v in corners)-min(v.y for v in corners)
+  width=max(v.x for v in corners)-min(v.x for v in corners)
+  if abs(height-52.)>.001 or abs(width-74.88)>.001:
+   raise ValueError('Blender/Unity projection mismatch: '+str((width,height)))
+  print('REAL_UNITY_PLAYER_FRUSTUM_PARITY',width,height)
  scene.camera=cam
  light_data=bpy.data.lights.new('QA_Locked_Sun','SUN')
  light=bpy.data.objects.new('QA_Locked_Area',light_data)
@@ -66,7 +82,7 @@ def render(path,name):
  scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=12
  for layer in scene.view_layers:
   if hasattr(layer,'cycles'):layer.cycles.use_denoising=False # System Blender does not ship OpenImageDenoiser
- scene.render.resolution_x=640;scene.render.resolution_y=480;scene.render.resolution_percentage=100
+ scene.render.resolution_percentage=100
  scene.render.image_settings.file_format='PNG';scene.render.film_transparent=False
  scene.world=bpy.data.worlds.new('QA_Locked_World');scene.world.use_nodes=True
  scene.world.node_tree.nodes['Background'].inputs['Color'].default_value=(0.3,0.35,0.42,1)
@@ -92,6 +108,7 @@ visibility=visible_change(before_pixels,after_pixels,bw,bh)
 manifest={'scope':'Blender clay A/B only, NOT Unity, NOT ART_APPROVED',
           'target':a.target,'camera':'verified Bastion I player-equivalent orthographic camera' if a.player_camera else 'orthographic camera and clay/light frozen to SOURCE bounds',
           'render_preset':'scale-independent sun 3.0, world strength 0.45; identical source-locked lighting and camera',
+          'player_frustum':{'vertical_extent':52,'horizontal_extent':74.88,'pixels':[720,500],'sensor_fit':'VERTICAL','unity_reference_pixels':[1440,1000],'unity_orthographic_size':26} if a.player_camera else None,
           'source_file_sha256':hashlib.sha256(a.before.read_bytes()).hexdigest(),
           'result_file_sha256':hashlib.sha256(a.after.read_bytes()).hexdigest(),
           'before_image_sha256':before_hash,'after_image_sha256':after_hash,
