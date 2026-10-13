@@ -93,7 +93,7 @@ def feedback_for_failed_cycles(failures):
     if len(failures)>=2:
         forbidden=forbidden_methods_from_rejected_cycles(failures)
         if forbidden:
-            lines.append('TWO or more verified invisible attempts of the same method(s) '
+            lines.append('TWO failed cycles (or more) of the same method(s) '
                          'within the last four original cycles: '+', '.join(sorted(forbidden))+
                          '. You MUST choose a different structural family with a '
                          'camera-visible shape, NOT an old failed method or tiny radius/delta.')
