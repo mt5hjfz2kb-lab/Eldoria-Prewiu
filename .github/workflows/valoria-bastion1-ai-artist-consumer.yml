@@ -166,7 +166,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$ART/third-reject"
           gh run download 38372409936 --repo "${{ github.repository }}" \
-            --name bastion1-original-qwen-alternate-38370740511 --dir "$ART/third-reject"
+            --name bastion1-qwen-original-alternate-model-38372409936 --dir "$ART/third-reject"
           python3 - <<'PY'
           import os,pathlib,json,hashlib
           root=pathlib.Path(os.environ['ART'])
