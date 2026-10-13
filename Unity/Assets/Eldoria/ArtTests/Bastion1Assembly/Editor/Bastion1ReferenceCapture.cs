@@ -167,7 +167,7 @@ namespace Eldoria.EditorTools
                     new Vector2(-23f,14f),4.8f,112f,allowed);
                 await ImportSelectedGrounded(target.transform,"BroadRockPlatform",
                     "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
-                    new Vector2(24f,12f),2.1f,198f,allowed);
+                    new Vector2(22f,8f),2.1f,198f,allowed);
             }
             finally
             {
