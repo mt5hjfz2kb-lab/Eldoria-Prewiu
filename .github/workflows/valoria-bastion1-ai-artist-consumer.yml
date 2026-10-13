@@ -17,6 +17,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       ART_CORE_SHA: 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745
+      ART_MEMORY_SHA: edef41aa79671df08eef386126070316c51d91a5
       SOURCE_RUN: '38395469618'
       SOURCE_SHA: 'c53108d7160160d55743b460526a03a2443031bc'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
@@ -39,6 +40,19 @@ jobs:
           # Keep this branch's source-camera-locked renderer, already validated by authentic replay #38367414911.
           python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py
           echo "PR36_PROVEN_CORE_READONLY $ART_CORE_SHA"
+      - name: Recover and validate cumulative art memory, without taking Bastion owner files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tools/art-direction/learning-evidence
+          git fetch --no-tags --depth=1 origin "$ART_MEMORY_SHA"
+          for n in learning.mjs observations.json cycle-hooks.mjs learning.test.mjs cycle-hooks.test.mjs; do
+            git show "$ART_MEMORY_SHA:tools/art-direction/learning-evidence/$n" > "tools/art-direction/learning-evidence/$n"
+          done
+          node tools/art-direction/learning-evidence/learning.mjs audit
+          node --test tools/art-direction/learning-evidence/learning.test.mjs
+          node --test tools/art-direction/learning-evidence/stage-blender.test.mjs
+          echo "ART_MEMORY_SOURCE_PINNED $ART_MEMORY_SHA"
       - name: Recover immutable scene assembly and real Unity player frame
         shell: bash
         run: |
@@ -245,6 +259,32 @@ jobs:
           print('AUTHENTIC_FOREGROUND_MESH_ANCHORS',json.dumps(samples))
           PY
           blender -b --python-exit-code 1 --python "$ART/visible-anchors.py"
+      - name: Feed EVERY historic verified lesson to Qwen before inference
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/art-direction/learning-evidence/cycle-hooks.mjs prepare \
+            --target bastion1 --max-chars 1200 --out "$ART/historical-memory.txt"
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          root=pathlib.Path(os.environ['ART'])
+          lesson=(root/'historical-memory.txt').read_text('utf8')
+          evidence=json.loads((root/'historical-memory.txt.provenance.json').read_text('utf8'))
+          assert evidence['case_count']==6 and evidence['status']=='HISTORIC_ADVICE_NOT_MODEL_TRAINING_OR_ART_PASS'
+          assert hashlib.sha256(lesson.encode()).hexdigest()==evidence['brief_sha256']
+          old=(root/'inventory.txt').read_text('utf8')
+          # The existing Qwen 8B --cpu-compact prompt limits the inventory to
+          # its FIRST 1000 chars; put historical lessons FIRST or Qwen never sees them.
+          text=lesson+'\nEXISTING VERIFIED ASSET CONTEXT: '+old
+          expected=('small-sculpt-repeated','tiny-sculpt-path','frustum-parity',
+                    'unity-a-b-independent','preserve-playable-protected-terrain')
+          for k in expected:assert k in text[:1000],('MEMORY TRUNCATED BEFORE QWEN',k)
+          (root/'inventory.txt').write_text(text,'utf8')
+          print('ART_MEMORY_ACTUAL_QWEN_INPUT_READY',json.dumps({
+            'lessons':len(expected),'source_sha256':evidence['catalog_sha256'],
+            'brief_sha256':evidence['brief_sha256'],'qwen_visible_first1000_sha256':
+              hashlib.sha256(text[:1000].encode()).hexdigest()}))
+          PY
       - name: NEW local Qwen visual decision for visible player-camera cliff
         timeout-minutes: 45
         shell: bash
@@ -268,6 +308,14 @@ jobs:
           ops=json.loads((r/'model/artist-plan.json').read_text())
           assert inference['model']=='qwen3-vl:8b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==ops
+          historic=(r/'historical-memory.txt').read_text('utf8')
+          source=(r/'inventory.txt').read_text('utf8')[:1800]
+          import hashlib
+          assert inference['asset_inventory_sha256']==hashlib.sha256(source.encode()).hexdigest(), 'Qwen did not consume the memory-bearing inventory'
+          for k in ('small-sculpt-repeated','tiny-sculpt-path','frustum-parity','unity-a-b-independent','preserve-playable-protected-terrain'):
+            assert k in source[:1000],('Historic learning missing from real Qwen prompt',k)
+          assert historic.startswith('EVIDENCE-BASED ART MEMORY')
+          print('ART_MEMORY_CONFIRMED_IN_QWEN_REQUEST',len(historic),'bytes')
           assert len(inference.get('rejected_visual_cycle_evidence',[]))==2, 'must use two real rejected cycles'
           assert any(op['type']!='sculpt_region' for op in ops), 'do not repeat two invisible sculpt_region strategies'
           anchors=json.loads((r/'inspect/mesh-context.json').read_text())['sample_vertices']
@@ -329,11 +377,34 @@ jobs:
           (root/'visual-impact.txt').write_text(f'changed_pixel_fraction={fraction:.9f}\nthreshold_for_study=0.0005\nnot_unity_or_visual_approval=true\n')
           if fraction<.001:raise ValueError('Qwen sculpt changes under 0.1% of matched camera pixels; ART REJECTED, must redesign')
           PY
+      - name: Record real Blender A/B outcome as pending historical learning
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -s "$ART/ab/comparison.json" && -s "$ART/model/artist-inference.json" && -s "$ART/ab/before-blender-clay.png" && -s "$ART/ab/after-blender-clay.png" ]]; then
+            node tools/art-direction/learning-evidence/stage-blender.mjs \
+              --root "$ART" --run-id "$GITHUB_RUN_ID" --git-sha "$GITHUB_SHA" \
+              --out "$ART/artist-memory-event.json"
+            node tools/art-direction/learning-evidence/learning.mjs ingest \
+              --event "$ART/artist-memory-event.json" \
+              --out "$ART/artist-memory-pending.json"
+            node tools/art-direction/learning-evidence/learning.mjs audit \
+              --db "$ART/artist-memory-pending.json"
+            echo "REAL_BLENDER_LEARNING_STAGED_PENDING_ONLY; no Unity/ART PASS, originals included"
+          else
+            echo "ART_MEMORY_STAGE_SKIPPED_NO_GENUINE_COMPLETE_AB; no fictitious learning"
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: bastion1-genuine-qwen-artist-${{ github.run_id }}
           path: |
+            /tmp/bastion1-author/historical-memory.txt
+            /tmp/bastion1-author/historical-memory.txt.provenance.json
+            /tmp/bastion1-author/artist-memory-event.json
+            /tmp/bastion1-author/artist-memory-pending.json
+            /tmp/bastion1-author/inventory.txt
             /tmp/bastion1-author/input-provenance.json
             /tmp/bastion1-author/image-derivatives.json
             /tmp/bastion1-author/ollama-version.json
