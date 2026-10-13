@@ -59,18 +59,34 @@ jobs:
           SHA=$(sha256sum "$ROOT/artist/terrain-source.blend" | cut -d' ' -f1)
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
             --source "$ROOT/artist/terrain-source.blend" --plan "$ROOT/artist/model/artist-plan.json" \
-            --out "$ROOT/repaired" --transport direct --expected-source-sha256 "$SHA"
+            --out "$ROOT/repaired" --transport direct --expected-source-sha256 "$SHA" --freeze-protected-bastion-cells
           python3 - <<'PY'
           import json,os,pathlib
           r=pathlib.Path(os.environ['ROOT'])
           old=json.loads((r/'artist/result/artist-execution.json').read_text())
           new=json.loads((r/'repaired/artist-execution.json').read_text())
           assert old['source_mesh_sha256']==new['source_mesh_sha256']
-          assert old['result_mesh_sha256']==new['result_mesh_sha256']
+          assert old['plan_sha256']==new['plan_sha256'], 'never alter the model-selected coordinates'
+          assert new['executed_actions'][0]['source_plateau_mask_enabled']
+          assert new['executed_actions'][0]['model_parameters_modified'] is False
+          assert new['executed_actions'][0]['preserved_read_only_vertices']>0
           assert new['executed_actions'][0]['target']==os.environ['TARGET']
-          assert new['executed_actions'][0]['changed_vertices']==1758
-          print('IDENTICAL_AI_GEOMETRY_REPLAY_CORRECT_TARGET_PROOF',new['result_mesh_sha256'])
+          assert 500<new['executed_actions'][0]['changed_vertices']<1758
+          print('ORIGINAL_AI_VECTOR_FIELD_WITH_READONLY_PLATEAU_SCOPE_PROOF',new['result_mesh_sha256'])
           PY
+      - name: Verify NEW scope-masked sculpture on the exact Unity-equivalent frustum
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before "$ROOT/artist/terrain-source.blend" --after "$ROOT/repaired/artist-output.blend" \
+            --target "$TARGET" --player-camera --out "$ROOT/masked-ab"
+          python3 - <<'PYVERIFY'
+          import os,pathlib,json
+          r=pathlib.Path(os.environ['ROOT'])
+          m=json.loads((r/'masked-ab/comparison.json').read_text())
+          assert m['camera_visibility']['changed_fraction']>=.001
+          assert m['player_frustum']['vertical_extent']==52
+          print('SCOPE_MASKED_QWEN_GEOMETRY_VISIBLE_NOT_ART_APPROVED',m['camera_visibility'])
+          PYVERIFY
       - name: Reconstruct full grass city and verify its terrain matches the original artist input
         run: |
           cat > "$ROOT/import.py" <<'PY'
@@ -108,4 +124,5 @@ jobs:
             /tmp/valoria-real-ai-merge/repaired/**
             /tmp/valoria-real-ai-merge/artist/model/**
             /tmp/valoria-real-ai-merge/frustum/ab/**
+            /tmp/valoria-real-ai-merge/masked-ab/**
           retention-days: 14

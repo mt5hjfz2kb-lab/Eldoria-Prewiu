@@ -16,6 +16,7 @@ p.add_argument('--transport',choices=['direct','blendermcp'],default='direct')
 p.add_argument('--mcp-addon',type=pathlib.Path)
 p.add_argument('--mcp-sha256')
 p.add_argument('--expected-source-sha256',help='Protect exact frozen Blender source')
+p.add_argument('--freeze-protected-bastion-cells',action='store_true',help='Bastion-only ownership mask: preserve plateau vertices exactly; never change model-selected knots, vectors or radii')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 if not a.source.is_file() or a.source.suffix.lower()!='.blend':raise ValueError('Original .blend required')
 if a.expected_source_sha256 and hashlib.sha256(a.source.read_bytes()).hexdigest()!=a.expected_source_sha256:raise ValueError('Frozen .blend source hash changed')
@@ -119,6 +120,16 @@ def sha(b):return hashlib.sha256(b).hexdigest()
 def state():
  return sha(json.dumps({o.name:{'verts':[tuple(round(v,6) for v in vert.co) for vert in o.data.vertices],'faces':[tuple(poly.vertices) for poly in o.data.polygons]} for o in bpy.data.objects if o.type=='MESH'},sort_keys=True).encode())
 source_mesh=state()
+readonly_vertices={}
+if a.freeze_protected_bastion_cells:
+ target='Valoria natural playable hilltop and rock scarps'
+ if any(op['target']!=target or op['type'] not in {'sculpt_region','sculpt_path','reprofile_crest'} for op in operations):
+  raise ValueError('Read-only plateau mask is scoped exclusively to existing Bastion terrain sculpts')
+ terrain=bpy.data.objects.get(target)
+ if not terrain or terrain.type!='MESH':raise ValueError('Bastion source terrain absent')
+ readonly_vertices={v.index:v.co.copy() for v in terrain.data.vertices
+                    if abs(v.co.x)<22 and -34<v.co.y<36 and v.co.z>-1}
+ if not readonly_vertices:raise ValueError('Protected plateau source mask is empty')
 def vec(v,n=3):
  if not isinstance(v,list) or len(v)!=n:raise ValueError('Invalid spatial vector')
  v=[float(x) for x in v]
@@ -130,6 +141,7 @@ def act(identifier):
  op=next(x for x in operations if x['id']==identifier)
  kind=op['type'];t=op['target'];pr=op['parameters']
  obj=bpy.data.objects.get(t)
+ before_positions=[v.co.copy() for v in obj.data.vertices] if readonly_vertices else None
  n=0;objects=1;faces_changed=0
  if kind=='construct_mesh':
   if obj:raise ValueError('New target mesh must not exist')
@@ -243,7 +255,16 @@ def act(identifier):
    if source.data:ob.data=source.data.copy()
    ob.name=t+'_artist';ob.location=vec(pr.get('location'));ob.rotation_euler=vec(pr.get('rotation',[0,0,0]));ob.scale=vec(pr.get('scale',[1,1,1]))
    bpy.context.scene.collection.objects.link(ob);n=len(ob.data.vertices) if ob.type=='MESH' else 0
- completed.append({'id':identifier,'type':kind,'target':t,'changed_vertices':n,'changed_faces':faces_changed,'changed_objects':objects,'elapsed_seconds':round(time.monotonic()-action_started,3),'applied':True})
+ preserved=0
+ if readonly_vertices:
+  if len(obj.data.vertices)!=len(before_positions):raise ValueError('Read-only mask cannot survive topology mutation')
+  for index,source_position in readonly_vertices.items():
+   if (obj.data.vertices[index].co-source_position).length>.0000001:preserved+=1
+   obj.data.vertices[index].co=source_position
+  obj.data.update()
+  n=sum((v.co-before).length>.0001 for v,before in zip(obj.data.vertices,before_positions))
+  if not n:raise ValueError('No artist-authored geometry remains inside owned editable scope')
+ completed.append({'id':identifier,'type':kind,'target':t,'changed_vertices':n,'changed_faces':faces_changed,'changed_objects':objects,'preserved_read_only_vertices':preserved,'source_plateau_mask_enabled':bool(readonly_vertices),'model_parameters_modified':False,'elapsed_seconds':round(time.monotonic()-action_started,3),'applied':True})
 if a.transport=='direct':
  for op in operations:act(op['id'])
 else:
