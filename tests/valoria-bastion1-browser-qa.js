@@ -69,6 +69,10 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   }
   // Bastion I's Cuartel is present as a selectable plot but remains locked
   // until genuine Bastion II progression. No QA cheats or economy bypass.
+  // Explicitly dismiss any lingering Sawmill panel after the timed build,
+  // otherwise its transparent layout can intercept the first Cuartel hit test.
+  const priorClose=mapUi('buildingClose');
+  if(priorClose){await page.touchscreen.tap(priorClose.x,priorClose.y);await sleep(350);}
   const barracks=mapHotspot('barracks');
   const barracksState=report.state.at(-1);
   if(barracks&&barracks.x>=0&&barracks.x<844&&barracks.y>=0&&barracks.y<390&&barracksState?.bastion===1){
