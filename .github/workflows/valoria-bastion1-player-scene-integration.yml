@@ -8,7 +8,6 @@ on:
       - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/**'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs'
-      - '.github/workflows/valoria-bastion1-player-scene-integration.yml'
 permissions:
   contents: read
   actions: read
