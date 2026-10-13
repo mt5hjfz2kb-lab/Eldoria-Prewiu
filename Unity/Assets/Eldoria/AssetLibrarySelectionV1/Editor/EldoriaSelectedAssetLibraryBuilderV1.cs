@@ -158,6 +158,7 @@ namespace Eldoria.AssetLibrary.Editor
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var catalog=EldoriaSelectedAssetLibraryV1.LoadCatalog();
             int i=0;
+            var pieces=new List<GameObject>();
             foreach(var e in catalog.entries.Where(x => x.tier == "SELECTED" && x.origin == "legacy_canonical"))
             {
                 var prefabPath=PrefabFolder+"/"+e.id+".prefab";
@@ -176,6 +177,7 @@ namespace Eldoria.AssetLibrary.Editor
                 foreach(var r in rs.Skip(1))b.Encapsulate(r.bounds);
                 var target=new Vector3((i%5-2)*6f,0,(i/5)*7f);
                 go.transform.position+=target-new Vector3(b.center.x,b.min.y,b.center.z);
+                pieces.Add(go);
                 i++;
             }
             if(i!=10)throw new InvalidOperationException("Gallery must contain exactly 10 selected prefabs");
@@ -214,7 +216,48 @@ namespace Eldoria.AssetLibrary.Editor
                 rt.Release();
                 Object.DestroyImmediate(rt);
             }
-            Debug.Log("Selected asset library Unity 10-piece gallery captured; not an artistic/mobile PASS.");
+            // Additional per-piece actual-engine evidence. Each image uses the same
+            // 3/4 view, sun, background, material pipeline, and 768px square framing.
+            // Never mistake a Blender contact sheet for these Unity captures.
+            var normalDirection = new Vector3(1.25f,1.15f,-1.6f).normalized;
+            var individual = new RenderTexture(768,768,24,RenderTextureFormat.ARGB32){antiAliasing=2};
+            try
+            {
+                for(int n=0;n<pieces.Count;n++)
+                {
+                    foreach(var piece in pieces)piece.SetActive(false);
+                    var piece=pieces[n];
+                    piece.SetActive(true);
+                    var renderers=piece.GetComponentsInChildren<Renderer>(true);
+                    if(renderers.Length==0)throw new InvalidOperationException("Missing renderers in selected prefab capture "+piece.name);
+                    var b=renderers[0].bounds;
+                    foreach(var renderer in renderers.Skip(1))b.Encapsulate(renderer.bounds);
+                    camera.orthographicSize=Mathf.Max(1.2f,b.extents.magnitude*1.45f);
+                    camera.transform.position=b.center+normalDirection*Mathf.Max(12f,b.extents.magnitude*7f);
+                    camera.transform.LookAt(b.center);
+                    RenderTexture prior=RenderTexture.active;
+                    try
+                    {
+                        camera.targetTexture=individual;
+                        camera.Render();camera.Render();
+                        RenderTexture.active=individual;
+                        var snapshot=new Texture2D(768,768,TextureFormat.RGB24,false);
+                        snapshot.ReadPixels(new Rect(0,0,768,768),0,0);
+                        snapshot.Apply();
+                        string id=piece.name.Substring("Selected prefab gallery · ".Length);
+                        File.WriteAllBytes(Path.Combine(AuditOutput,"selected-"+id+"-unity.png"),snapshot.EncodeToPNG());
+                        Object.DestroyImmediate(snapshot);
+                    }
+                    finally { RenderTexture.active=prior;camera.targetTexture=null; }
+                }
+            }
+            finally
+            {
+                individual.Release();
+                Object.DestroyImmediate(individual);
+                foreach(var piece in pieces)if(piece!=null)piece.SetActive(true);
+            }
+            Debug.Log("Selected asset library Unity gallery + 10 isolated prefab captures generated; not an artistic/mobile PASS.");
         }
 
         static string Hash(string path)
