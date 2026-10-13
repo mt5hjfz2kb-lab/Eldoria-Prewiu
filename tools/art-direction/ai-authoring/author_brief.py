@@ -4,6 +4,8 @@ Requires two genuine images; it does not execute Blender or certify art by itsel
 """
 import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time
 from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback
+from artistic_learning_feedback import (load_failed_cycles, feedback_for_failed_cycles,
+                                        distinct_strategy_errors, select_journal_lessons)
 from artistic_learning_feedback import load_failed_cycles,feedback_for_failed_cycles,distinct_strategy_errors,select_journal_lessons
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
@@ -60,6 +62,8 @@ def main():
  p.add_argument('--inventory',type=pathlib.Path)
  p.add_argument('--mesh-context',type=pathlib.Path,help='Optional existing Blender mesh vertex indices, border loops and anchoring coordinates')
  p.add_argument('--prior-visual-review',type=pathlib.Path,help='Optional real previous Blender matched-camera comparison JSON for Qwen-directed visual correction')
+ p.add_argument('--failed-plan',type=pathlib.Path,action='append',default=[],help='Original Qwen plan of one independently rejected Blender A/B cycle; repeat with --failed-review in matching order (max 4)')
+ p.add_argument('--failed-review',type=pathlib.Path,action='append',default=[],help='Original matched-camera Blender A/B comparison.json marked REJECT_NOT_VISIBLE; never an ART PASS')
  p.add_argument('--out',required=True,type=pathlib.Path)
  p.add_argument('--model',default='qwen3-vl:4b-instruct')
  p.add_argument('--num-ctx',type=int,default=16384,help='Bound the actual local Ollama context budget')
@@ -107,11 +111,11 @@ def main():
    ('; '.join(f'{x.relative_to(repo)} ({x.stat().st_size} bytes)' for x in candidates) if candidates else
     'NO LOCAL SOURCE FILES FOUND; inspect active art branches before assuming NEW required'))[:5500]
  journal=HERE.parent/'ARTIST_LEARNING_JOURNAL.md'
- memory=journal.read_text('utf8')[-2600:] if journal.is_file() else 'NO PREVIOUS LEARNING JOURNAL AVAILABLE; record this limitation.'
+ memory=select_journal_lessons(journal.read_text('utf8'),1800) if journal.is_file() else 'NO PREVIOUS LEARNING JOURNAL AVAILABLE; record this limitation.'
  memory_hash=digest(journal.read_bytes()) if journal.is_file() else None
  if a.cpu_compact:
   inventory=inventory[:1800]
-  memory=memory[-950:]
+  memory=memory[:1200]
  mesh_context='NO MESH TOPOLOGY MANIFEST; DO NOT GUESS VERTEX IDS FOR BRIDGE OPERATIONS.'
  mesh_context_sha=None
  if a.mesh_context:
@@ -137,6 +141,8 @@ def main():
   mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
  else:
   mesh_context_for_artist=mesh_context
+ failures=load_failed_cycles(a.failed_plan,a.failed_review,a.target_object)
+ failure_feedback=feedback_for_failed_cycles(failures)
  prior_review_hash=None;prior_review_feedback=''
  if a.prior_visual_review:
   if not a.prior_visual_review.is_file() or a.prior_visual_review.stat().st_size>15000:raise ValueError('Prior visual review missing/too large')
@@ -168,7 +174,7 @@ def main():
   f'Previously verified art failures and learnings (avoid repeating): {memory}. '
   f'Verified mesh topology/anchors: {mesh_context_for_artist[:11000]}. '
   f'Use no more than {a.max_actions} planned_actions; prioritize ONE high-impact geometry operation with precise coordinates. '
-  f'{prior_review_feedback} '
+  f'{prior_review_feedback} {failure_feedback} '
   'Keep valid JSON output concise (ideally under 950 output tokens), with short string fields and no repeated explanations. '
   'Output strictly JSON; model must choose artist-directed geometric edit if structural deficit.')
  if a.cpu_compact and a.target_mode=='existing':
@@ -184,7 +190,7 @@ def main():
    f'EXACT existing mesh target: {a.target_object}. Never create another mesh in this run. '
    f'Available real sources: {inventory[:1000]}. Failed attempts learned: {memory[-650:]}. '
    f'Actual mesh geometry: {mesh_context_for_artist[:5000]}. '
-   f'{prior_review_feedback} '
+   f'{prior_review_feedback} {failure_feedback} '
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
    'and no repeated data. A visible large cliff needs a region radius >=1.0 local meters and a NONZERO delta >=0.2 local meters; independently choose the actual local position, shape and displacement from the images, never copy these minimum values as defaults. Respond only well-formed JSON matching supplied schema.')
@@ -218,6 +224,7 @@ def main():
   if design is not None:
    errors.extend(inspect_artist_plan(design,a.target_object,a.target_mode,a.max_actions,
       topology if a.mesh_context else None,require_geometry=a.cpu_compact,require_camera_effect=a.cpu_compact and a.target_mode=='existing'))
+   errors.extend(distinct_strategy_errors(design,failures))
   log={'attempt':attempt_index+1,'model':a.model,'request_prompt_sha256':digest(payload['messages'][-1]['content'].encode('utf8')),
    'raw_response_sha256':response_sha,'raw_response_file':f'artist-response-attempt-{attempt_index+1}.txt',
    'eval_count':reply.get('eval_count'),'prompt_eval_count':reply.get('prompt_eval_count'),
@@ -248,7 +255,7 @@ def main():
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
-   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'rejected_visual_cycle_evidence':failures,'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
