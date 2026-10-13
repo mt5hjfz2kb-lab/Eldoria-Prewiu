@@ -282,9 +282,10 @@ jobs:
                  'Blender shape looked nearly identical. Change SOUTH CLIFF in Z; protect crown. ')
           schema=('NEW STRATEGY after real #38458664914 Blender A/B: 0.0233% visible RGB pixels; '
                   'the prior 2-knot 12m/1.5m path at x=+-22.3365,y=-26.2857,z=-12.2 was ART REJECTED. '
-                  'Do NOT repeat those anchors. Recompose the foreground cliff SILHOUETTE with '
+                  'Do NOT repeat those anchors. Choose type sculpt_path (NOT reprofile_crest). Recompose foreground cliff with '
                   '{"knots":[{"center":[x,y,z],"delta":[dx,dy,dz],"radius":R}, '
-                  '{"center":[x2,y2,z2],"delta":[dx2,dy2,dz2],"radius":R2}]}. '
+                  '{"center":[x2,y2,z2],"delta":[dx2,dy2,dz2],"radius":R2}, '
+                  '{"center":[x3,y3,z3],"delta":[dx3,dy3,dz3],"radius":R3}]}. '
                   'THREE OR MORE DISTINCT source-local cliff knots; at least one radius>=20 '
                   'and displacement>=3m, directed toward camera-visible vertical cliff; choose OWN coordinates; protect crown. ')
           ids=('small-sculpt-repeated','tiny-sculpt-path','frustum-parity',
