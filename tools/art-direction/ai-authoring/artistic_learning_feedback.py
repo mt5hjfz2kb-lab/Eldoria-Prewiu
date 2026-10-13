@@ -103,14 +103,29 @@ def feedback_for_failed_cycles(failures):
     return ' '.join(lines)
 
 
+
+def forbidden_methods_from_rejected_cycles(failures):
+    """Remove only an operation family rejected twice in verified camera A/B.
+
+    This constrains available *types*, not Qwen-authored geometry or values.
+    """
+    if not isinstance(failures, list) or len(failures)<2:
+        return set()
+    prev=failures[-2:]
+    a,b=(x.get('methods') for x in prev)
+    if isinstance(a,list) and len(a)==1 and a==b and a[0] in STRUCTURAL:
+        return {a[0]}
+    return set()
+
+
 def distinct_strategy_errors(design, failures):
     """Block a third identical, camera-invisible method, never create a fake plan."""
-    if len(failures) < 2 or not isinstance(design, dict):
+    if not isinstance(design, dict):
         return []
-    prev = failures[-2:]
-    if len(prev[0]['methods']) != 1 or prev[0]['methods'] != prev[1]['methods']:
+    forbidden = forbidden_methods_from_rejected_cycles(failures)
+    if not forbidden:
         return []
-    repeated = prev[0]['methods'][0]
+    repeated = next(iter(forbidden))
     actions = design.get('planned_actions')
     if not isinstance(actions, list):
         return []
