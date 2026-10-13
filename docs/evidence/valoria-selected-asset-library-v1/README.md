@@ -30,3 +30,14 @@ Selección prudente: la valoración visual 6.5–7.5/10 indica **candidatos**, n
 1. Ejecutar editor Unity real en un runner permitido, generar los diez prefabs e inspeccionar su galería.
 2. Guardar evidencias verificadas y decidir promoción individual. Nunca alterar automáticamente Bastión I ni `main` por un PASS estático.
 3. Si se detectan materiales negros o shaders rotos, corregir importador/compresión por pieza, sin rehacer las mallas.
+
+
+## Endurecimiento geométrico del 13 de octubre (continuación)
+- Fuente empírica: [36 GLB, ejecución Blender #38393822753](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38393822753), artifact `11809609192`, 36/36 renders válidos. No reemplaza la prueba en Unity.
+- **10 candidatos elegidos: 247.876 triángulos en una instancia de cada uno, medidos en fuentes GLB originales**; 10 objetos importados como malla simple según el informe Blender, pero no equivale a 10 draw calls efectivos en Unity.
+- Cuatro modelos seleccionados concentran la mayor parte del coste: Bastión histórico, Aserradero, Cuartel y Granero, con **49.800 triángulos cada uno**. Los 10 prefabs son fuente opcional y no deben multiplicarse sin LOD/culling y un perfil móvil real.
+- La puerta Hero V3 de la familia congelada contiene **108.844 triángulos distribuidos en 1.037 objetos de malla y 55 materiales** en Blender; **no** se agrega a esta selección ni se cambia aquí. Es una señal de posible problema de coste por draw calls y batching que necesita la revisión del propietario Bastión I.
+- Cada una de las 36 entradas del catálogo incluye ahora `source_triangles`, `source_blender_mesh_objects`, `source_materials`, `source_texture_images`, `asset_budget_review_required` y `mobile_performance_verified=false`. Los datos de fuente no predicen FPS.
+- El CI independiente vuelve a abrir los 26 GLB originales, verifica cada SHA y lee sus primitivas glTF 2.0 para cotejar el número de triángulos, sin Blender ni Unity ni modificaciones. Publica `per-asset-geometry.json`.
+- El Editor Unity, cuando pueda ejecutarse legalmente, comparará triángulos reales del importador con los datos de fuente y rechazará mallas vacías, shaders ajenos a URP/glTF, materiales ausentes o scripts ajenos introducidos por modelos. Se conservarán los nombres de shaders, vértices y triángulos en la evidencia por prefab.
+- Estado inalterado: no hay certificación artística, compilación Unity de esta rama, prueba móvil ni promoción al juego. El runner Windows sigue reservado por Bastión I. No se han pagado créditos y no se han modificado sus archivos.
