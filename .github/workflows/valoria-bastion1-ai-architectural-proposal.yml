@@ -1,0 +1,93 @@
+name: Bastion I local AI medieval courtyard composition proposal
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-ai-architectural-proposal.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: bastion1-architecture-qwen-proposal
+  cancel-in-progress: false
+jobs:
+  local-art-director:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover artistic memory and the last actual native Unity review
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          python3 - <<'PY'
+          import pathlib
+          p=pathlib.Path('docs/evidence/valoria-bastion1-camera-scale-recovery-20261013.md')
+          text=p.read_text()
+          pathlib.Path('evidence/art-memory.txt').write_text(text[-14000:])
+          PY
+          cat > evidence/brief.txt <<'TXT'
+          Eldoria Bastion I, Valoria, approved hero gate and fortifications must remain untouched.
+          REAL current native Unity baseline: run 38471224337, judged ~5.2/10.
+          Player camera strategic three-quarter view; main road center x=-3.5..3.5;
+          protected full axial corridor x=-7..7; y=-18..22.
+          Main gate (0,-17), upper fortification (0,24), stairs (0,9).
+          Existing detached left fortification x=-21,y=-8; right detached x=23,y=1.
+          Terrain playable central yard. Future build plots must stay clear; do not invent plot clearance.
+          Reuse only known verified Blender source asset names:
+          defensive_props, wall_straight, wall_connections, stone_path_platform,
+          cliff_rocks, watchtower, hero_gate_v3, EA03_Nature_Bush_01a_LOD0.
+          Do not rebuild gate, wall, tower, or create a new building. Do not add resource nodes.
+          Need ONE medieval guard/supply landmark of moderate scale adjacent to left detached wall,
+          preferably at x~-20, y~-12; maintain clearance and visible camera silhouette.
+          Past failures: tiny props invisible, pasted flat-colored roads unnatural,
+          untextured patches ugly. Choose deliberate, readable focal hierarchy and reuse.
+          Budget zero euros, mobile efficient. No claims of engine approval.
+          TXT
+      - name: Start free local Qwen4B through existing Ollama toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --rm --name bastion1-architecture-ollama -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > evidence/ollama-version.json; then break; fi; sleep 2; done
+          test -s evidence/ollama-version.json
+          docker exec bastion1-architecture-ollama ollama pull qwen3-vl:4b-instruct
+      - name: Request genuine AI-authored compositional choice with bounded output
+        shell: bash
+        timeout-minutes: 13
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,urllib.request,time
+          brief=pathlib.Path('evidence/brief.txt').read_text()
+          memory=pathlib.Path('evidence/art-memory.txt').read_text()[-4000:]
+          schema={'type':'object','properties':{
+           'concept':{'type':'string'},
+           'site':{'type':'string'},
+           'why_player_camera':{'type':'string'},
+           'existing_assets':{'type':'array','items':{'type':'string'}},
+           'composition':{'type':'string'},
+           'functional_risks':{'type':'array','items':{'type':'string'}},
+           'learning':{'type':'string'}
+          },'required':['concept','site','why_player_camera','existing_assets','composition','functional_risks','learning']}
+          payload={'model':'qwen3-vl:4b-instruct','stream':False,'format':schema,
+            'options':{'num_ctx':4096,'num_predict':480,'temperature':0.3},
+            'messages':[{'role':'system','content':'You are the existing Eldoria art director AI. Produce a concrete constrained medieval composition decision; do not claim you modeled or tested it.'},
+                        {'role':'user','content':brief+'\nActual prior learning:\n'+memory}]}
+          pathlib.Path('evidence/request.json').write_text(json.dumps(payload,indent=2))
+          req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+          start=time.time()
+          with urllib.request.urlopen(req,timeout=540) as res: result=json.load(res)
+          raw=result.get('message',{}).get('content','')
+          plan=json.loads(raw)
+          assert all(k in plan for k in schema['required'])
+          pathlib.Path('evidence/qwen-architecture-proposal.json').write_text(json.dumps(plan,indent=2,ensure_ascii=False))
+          pathlib.Path('evidence/inference-proof.json').write_text(json.dumps({'model':result.get('model'),'duration_s':round(time.time()-start,2),'done':result.get('done'),'authored_by':'local Ollama model, not deterministic script'},indent=2))
+          print('BASTION1_QWEN_REAL_ARCHITECTURE_PROPOSAL',json.dumps(plan,ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-qwen-architecture-proposal-${{ github.run_id }}
+          path: evidence/
+          retention-days: 14
