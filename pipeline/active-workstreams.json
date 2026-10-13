@@ -76,26 +76,6 @@
       "phase": "Explicit owner takeover from stalled normal chat; consume existing PBR/art evidence, resume Unity integration and player QA without repeating rejected inference.",
       "resumed_at": "2026-10-13T12:02:09.263Z",
       "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job."
-    },
-    {
-      "id": "valoria-legacy-glb-visual-audit-20261013",
-      "title": "Independent 26 historical GLB and Hero V3 visual evidence audit",
-      "owner": "chat-owner-requested-library-audit-20261013",
-      "scope": [
-        "tools/valoria-legacy-glb-audit/**",
-        ".github/workflows/valoria-legacy-glb-audit.yml",
-        "docs/evidence/valoria-legacy-glb-audit-20261013/**"
-      ],
-      "resources": [
-        "github-hosted-ubuntu-readonly"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-13",
-      "base_main_sha": "563f51b3b7b4eeba91a313be93630d6ce2f8e493",
-      "phase": "Read-only inventory and external-hosted Blender imaging; Windows Unity exact-camera gate excluded while Bastion I holds its lease.",
-      "dependency": "Bastion I owns windows-runner-heavy; no Unity/window access or canonical scene mutation.",
-      "art_production_routing": "not_required",
-      "art_production_routing_reason": "Pure read-only asset inspection and render; no authoring, promotion, or asset modification."
     }
   ],
   "history": [
@@ -4663,6 +4643,33 @@
         "evidence": "docs/evidence/valoria-bastion1-reference-assembly/RESULT.json"
       },
       "next": "Remaining original goal: authored environmental finishing and integrated mesh camera/picking/progression, followed by exact I–II gates before active initial-scene replacement. No background execution is running."
+    },
+    {
+      "id": "valoria-legacy-glb-visual-audit-20261013",
+      "title": "Independent 26 historical GLB and Hero V3 visual evidence audit",
+      "owner": "chat-owner-requested-library-audit-20261013",
+      "scope": [
+        "tools/valoria-legacy-glb-audit/**",
+        ".github/workflows/valoria-legacy-glb-audit.yml",
+        "docs/evidence/valoria-legacy-glb-audit-20261013/**"
+      ],
+      "resources": [
+        "github-hosted-ubuntu-readonly"
+      ],
+      "status": "blocked",
+      "claimed_at": "2026-10-13",
+      "base_main_sha": "563f51b3b7b4eeba91a313be93630d6ce2f8e493",
+      "phase": "Read-only inventory and external-hosted Blender imaging; Windows Unity exact-camera gate excluded while Bastion I holds its lease.",
+      "dependency": "Bastion I owns windows-runner-heavy; no Unity/window access or canonical scene mutation.",
+      "art_production_routing": "not_required",
+      "art_production_routing_reason": "Pure read-only asset inspection and render; no authoring, promotion, or asset modification.",
+      "terminal_phase": "Independent 36/36 GLB PBR+clay audit completed; 26-asset Unity exact-camera certification legitimately blocked by Bastion I ownership of windows-runner-heavy.",
+      "closed_at": "2026-10-13",
+      "result_branch": "audit/valoria-legacy-glb-20261013",
+      "result_commit": "860f4b0b55e4ce0e55fa03987d1bb9bc5e78f27b",
+      "result_run_id": 38393822753,
+      "result_artifact_id": 11809609192,
+      "remaining": "Rerun all 26 historical GLB in real Unity 6000.3.23f1 URP only after Windows lease is released; inspect and revise visually graded score."
     }
   ]
 }
