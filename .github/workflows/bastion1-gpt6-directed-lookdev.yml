@@ -1,0 +1,87 @@
+name: Bastion I GPT-6 artist-directed broad scarp A/B
+on:
+  push:
+    branches: [art/bastion1-gpt6-directed-scarp-lookdev-20261013]
+    paths:
+      - 'tools/valoria-bastion1-assembly/gpt6_scarp_lookdev.py'
+      - '.github/workflows/bastion1-gpt6-directed-lookdev.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion1-gpt6-art-scarp-clay-test
+  cancel-in-progress: false
+jobs:
+  original-3d-art-direction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      ROOT: /tmp/gpt6-valoria-scarp
+      TARGET: Valoria natural playable hilltop and rock scarps
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain untouched source from authentic preceding Qwen4B artifact
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/source" "$ROOT/edited" "$ROOT/ab"
+          gh run download 38384261910 --repo "${{ github.repository }}" \
+            --name bastion1-genuine-qwen-artist-38384261910 --dir "$ROOT/source"
+          python3 - <<'PY'
+          import hashlib,os,pathlib,json
+          base=pathlib.Path(os.environ['ROOT'])/'source'
+          blend=base/'terrain-source.blend'
+          inspected=json.loads((base/'inspect/mesh-context.json').read_text())
+          assert inspected['vertices']==12601 and inspected['faces']==23296
+          assert inspected['target']==os.environ['TARGET']
+          assert hashlib.sha256(blend.read_bytes()).hexdigest()==inspected['source_sha256']
+          assert inspected['source_sha256']=='4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880'
+          print('GPT6_UNMODIFIED_SOURCE_CONFIRMED',inspected['source_sha256'])
+          PY
+      - name: Install free Blender for real camera-locked A/B
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Apply source-grounded GPT-6 art-directed environment sculpture in Blender
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/gpt6_scarp_lookdev.py -- \
+            --source "$ROOT/source/terrain-source.blend" \
+            --source-sha256 4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880 \
+            --target "$TARGET" --out "$ROOT/edited"
+      - name: Actual same-camera clay BEFORE/AFTER, not synthetic screenshot
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before "$ROOT/source/terrain-source.blend" --after "$ROOT/edited/artist-output.blend" \
+            --target "$TARGET" --player-camera --out "$ROOT/ab"
+      - name: Reject imperceptible result; never self-approve artistic quality
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import hashlib,json,os,pathlib,numpy as np
+          from PIL import Image
+          root=pathlib.Path(os.environ['ROOT'])
+          original=np.asarray(Image.open(root/'ab/before-blender-clay.png').convert('RGB')).astype(np.int16)
+          edited=np.asarray(Image.open(root/'ab/after-blender-clay.png').convert('RGB')).astype(np.int16)
+          assert original.shape==edited.shape
+          mask=(np.max(np.abs(edited-original),axis=2)>=8)
+          fraction=float(mask.mean())
+          proof=json.loads((root/'edited/gpt6-art-direction.json').read_text())
+          assert not proof['art_approved'] and not proof['unity_verified']
+          out={'changed_pixels':int(mask.sum()),'total_pixels':int(mask.size),
+            'changed_fraction':fraction,'required_changed_fraction':0.001,
+            'camera_proof':'Blender locked player camera, clay only; not Unity nor ART_APPROVED',
+            'original_png_sha256':hashlib.sha256((root/'ab/before-blender-clay.png').read_bytes()).hexdigest(),
+            'edited_png_sha256':hashlib.sha256((root/'ab/after-blender-clay.png').read_bytes()).hexdigest(),
+            'art_approved':False}
+          (root/'ab/independent-impact.json').write_text(json.dumps(out,indent=2))
+          print('REAL_GPT6_ART_DIRECTED_BLENDER_CAMERA_PROOF',json.dumps(out))
+          if fraction<0.001:raise ValueError('ART_VISIBILITY_REJECTED: source-preserving revision still invisible')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-gpt6-art-directed-scarp-${{ github.run_id }}
+          path: |
+            /tmp/gpt6-valoria-scarp/edited/**
+            /tmp/gpt6-valoria-scarp/ab/**
+          retention-days: 14
