@@ -1,34 +1,51 @@
-# Bastión I — continuidad de Work (trabajo ABIERTO)
+# Bastión I — continuidad de Work, trabajo abierto
 
-Objetivo vigente del propietario: continuar la integración detenida, conservar trabajo existente, llegar a una escena inicial cercana a la referencia (acepta 8/10 provisional), verificar colores y probar controles reales. Presupuesto 0 € / 0 créditos de pago. No declarar terminado ni ART PASS por compilar.
+Objetivo: continuar la integración existente hasta escena jugable cercana a la referencia, con colores correctos, autoría IA real y prueba de jugador. 0 € / ningún crédito de pago. NO declarar ART PASS ni 8/10 por CI verde.
 
-## Fuentes y titularidad
-- Rama única continuada: `integration/valoria-bastion1-player-scene-20261012`.
-- Work recuperó el encargo existente en main `46c3afa06596c26d6c6047eda787b403c1d3b6b6`; no se abrió otro workstream ni otra rama.
-- Propietario operativo: `work-owner-authorized-bastion1-continuation-20261013`.
-- No modificar WorldRegion1Runtime, ValoriaCurrentWebGLBuild, solicitud de publicación ni Pages ajenos. SHARP publicado permanece protegido hasta gates de promoción.
+## Rama y titularidad
+- Rama única: integration/valoria-bastion1-player-scene-20261012.
+- Owner actual: work-owner-authorized-bastion1-continuation-20261013.
+- Recursos reclamados: valoria-player-scene y windows-runner-heavy, en pipeline/active-workstreams.json.
+- No modificar WorldRegion1Runtime, ValoriaCurrentWebGLBuild, Pages, SESSION_HANDOFF ni PROJECT_STATE reservados al otro trabajo.
+- Releer HEAD vivo y registro antes de promover. No abrir otra rama ni reconstruir familias.
 
-## Resultados ejecutados, NO repetir
-1. Capturas Unity BEFORE genuinas: run **38394884778**, fuente **08393eb1de53de4e22c23b6116c05cfc4f73bb5d**, artifact **11812445122**. El run falló DESPUÉS de la captura por nombres de materiales en `bpy.data.libraries.load`; corregido usando nombres inmutables. Esta captura se recupera, no se vuelve a renderizar.
-2. Se consumió el ensayo CC0 ya realizado en **38388922583 / 11808120370**, sin regenerar texturas, ciudad ni inferencia.
-3. Transferencia real a ciudad completa + captura Unity AFTER + compilación WebGL: **38395469618 SUCCESS**, fuente **c53108d7160160d55743b460526a03a2443031bc**, artifact **11811847205**. Geometría idéntica; GLB resultante SHA256 `06f122b45754185d65d1942c8fb89e761bc2c5f5a5349d6d2e77a3ceb9597483`.
-4. A/B independiente 1440x1000: **51.2824 %** de píxeles con diferencia RGB >5; MAE 9.7626. Es evidencia visible de materiales, NO aprobación artística. Captura real inspeccionada: suelo demasiado marrón, cliff con musgo uniforme, carretera aparente interrumpida y paisaje insuficiente. **VISUAL REJECTED**, no 8/10.
-5. QA básica del artefacto EXACTO **38396278910**, artifact **11812915521**: startup, gestos de pan, selección, construcción/coste, cuartel bloqueado en I, Mundo/retorno, reload y reset PASS; 0 errores. El workflow global está rojo por el ensayo I–II posterior, NO por esa QA ya superada. La siguiente QA reutiliza su JSON con SHA/run verificados.
-6. Fallos del comprobador I–II: primero esperaba 750 ms en vez de observar el panel real; luego omitía user agent móvil y generaba canvas desktop recortado. Se corrigieron espera explícita, user agent de iPhone y gate de lienzo visible. No atribuir esos dos fallos a la economía del juego.
-7. `KHR_texture_transform` ya se transfiere explícitamente a albedo/normal/metallic-gloss URP; rotaciones no admitidas se rechazan en vez de perderse.
-8. Guard arquitectura y art production PASS; workflow governance detectó un trigger pesado por editar su propio YAML, corregido en **3586460d7c26859908bc2718d1680ce7bf76faa7**, guard PASS. No se eludieron controles.
+## Estado inicial elegido
+Bastión I en reconstrucción. Aserradero muestra su estado 0 de terreno/cimientos; estados 1 y 2 se activan por la progresión real. Cuartel vacío/bloqueado hasta Bastión II. Cámara y selección en coordenadas de los modelos. Conservar economía y cartas iniciales existentes, sin recompensas de QA ni inyección de estado.
 
-## Ejecuciones actuales: recuperar antes de actuar
-- **38398380999** / fuente **5428741afc02e8be8bf081910784363a6ce78376**: reemplazo de tierra marrón por fotografía CC0 existente `aerial_grass_rock`, escala UV 1.35; conversión de factores glTF lineales para renderer Gamma del proyecto; metadatos reales de cámara y diagnóstico de contacto de carreteras Unity. Recuperar capturas/logs/resultado antes de repetir o promover.
-- **38398178848** / fuente **16100769d0fa8b194664c385608e81c6736d4eaa**: ensayo I–II con identidad móvil corregida, horizontal/vertical, timers/rewards reales, sin inyección de estado. Consume el WebGL anterior exacto 38395469618. No atribuir su PASS futuro al candidato de césped aún no probado.
-- **38398178834** / misma fuente: nueva inferencia genuina Qwen3-VL **8B** desde la captura Unity PBR, usando 2 rechazos visuales históricos y mesh context. El intento previo **38397449376** se detuvo ANTES de inferencia por comparar la procedencia de un rechazo histórico con el run nuevo; comparación corregida a su fuente original `38356683511`. Recuperar plan, inferencia, resultado Blender y A/B; no inventar aprobación o coordenadas del modelo.
+## Resultados ya realizados — NO repetir
+1. Fuente ciudad completa original: 38356460099, artifact 11792269250, GLB SHA256 3052ed2cc91e0dde177ec7bcca94254c3d3d2aacecb0e60101daa8f97e09f9bb.
+2. Ensayo CC0 empaquetado original: 38388922583, artifact 11808120370. Blend a06c85de85a25ae3e5212d752af445f4b59296c2b0c1efa510bbddec6e02ffd6. Se reutilizan mapas Poly Haven licenciados, no se regeneran.
+3. Ciudad PBR marrón + WebGL: 38395469618 SUCCESS, source c53108d7160160d55743b460526a03a2443031bc, artifact 11811847205. Visualmente RECHAZADA por marrón/ruido/contactos, no 8/10.
+4. QA básica de ese WebGL: 38396278910 PASS en su ensayo básico, aunque run global rojo por fallo posterior del harness.
+5. QA I-II completa exacta del mismo WebGL marrón: 38399110721 SUCCESS, source 3ca4c52e53bbb32e1d5065530b9e600dbfcfcd7b, artifact 11814743471. Ambas orientaciones, 3 selecciones reales (aserradero, bastión, cuartel), timers/recursos reales, persistencia y reset, 0 errores. Final: revision26, wood1030, stone995, gatheredWood720, gatheredStone700, sawmill1, bastion2, barracks1, archers56, trained20, configured/scout/engendro=true, objective b2.complete. 38 capturas. NO atribuir este PASS al nuevo candidato aún no compilado.
+6. Césped y factores Gamma: 38398380999 SUCCESS, source 5428741afc02e8be8bf081910784363a6ce78376, artifact11814852361. Material todavía amarillo; no aprobación.
+7. Inferencia Qwen3-VL8B genuina: 38399110675, artifact11815340532. Plan sculpt_path original de 5 nudos, 1758 vértices; no ampliar parámetros ni fingir autoría.
+8. Error real de frustum corregido en render_artist_ab.py: AUTO interpretaba ortho_scale52 como anchura, recortando acantilado. Ahora 720x500, sensor_fit VERTICAL, altura52 y anchura74.88, equivalente a Unity1440x1000/orthoSize26. Replay 38401480696 PASS de VISIBILIDAD, no calidad.
+9. Merge original 38402469730 rechazó 18 celdas protegidas. Executor tiene máscara explícita de ownership: conserva posiciones exactas abs(x)<22,-34<y<36,z>-1 y ejecuta parámetros Qwen intactos en su scope restante. También se corrigió variable t que sobrescribía nombre del target, sin cambio geométrico.
+10. Merge con máscara 38403329338 SUCCESS, artifact11816670641. 1637 vértices modificados, 0 celdas protegidas. GLB4a69ad6cbc12cb5391ce4f290a80a5641a3ed65c4adf86bf88c2ba89f347654f. Blender frustum correcto:0.341111% píxeles de clay cambiados, NO ART PASS.
+11. Mipmaps glTFast, filtro Trilinear/aniso2, KHR_texture_transform y conversión Gamma ya implementados y comprobados en Unity. Pérdida de referencia URP en segundo proceso corregida resolviendo GUID original48e3a09b57f028a4bb2e693d044ea6ca.
+12. Unity A/B real 38405267853 SUCCESS, source f27b7b94755acfa62511c260c0dac30eb54e5667, artifact11819226738. Recuperado sin rerender en 38406612333 / artifact11819148039. Cámara JSON idéntica;86330/1440000 píxeles RGB>10 (5.9951%), MAE1.3854. Inspección independiente: cambio visible pero escena global aún no aprueba objetivo artístico.
+13. Nuevo Qwen8B genuino de acabado: 38404956232. Respondió antes de editar, plan SHA714f34adc57ee8f7d1705dc59d7b8dd16a3ed97a16317e1f7b3c8af44e97fc0a. Fractura1.2m, paso4.5m, capas6m, strength.35, fase1.57, flat=false, grassRGB[.35,.55,.25], cliffRGB[.25,.25,.25], UVgrass.75/UVcliff.5. Blender falló ANTES de editar por numpy ausente; NO se repitió inferencia.
+14. Replay exacto 38406612333 SUCCESS, artifact11818663305. Se instaló numpy y ejecutaron parámetros originales:2718 vértices, 0 cambios de meseta, UV/topología/otros meshes conservados. GLB731799f563ce1cf731d2226767585eaaebd1c094712f26d45a1c95653f08bbc9.
+15. Exportador Blender perdió MixRGB multiplicadores. Detectado en Unity y JSON de GLB (baseColorFactor ausente). Reparación explícita 38409277470 SUCCESS: sólo dos factores del JSON cambiados; BIN/meshes/texturas byte-idénticos y plan original intacto. GLB9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1. No es nueva decisión artística.
+16. Camino existente RoadFamilyV1 SHA683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67 reutilizado. GLB contiene MainRoad JOINED, 1 renderer/3 primitivas, no 4 nodos. No cambiar el archivo congelado. Instancia a anchura4.1 y z[-5.5,18.5], desactiva CentralRoad antiguos.
+17. Corrección de contacto SOLO en copia de terreno de candidato: Bastion1RoadClearance.cs baja soporte bajo pavimento y escalera. Originales de carretera, escalera, modelos, UV y anclajes de parcelas intactos. Esta corrección de integración NO se atribuye a Qwen ni se confunde con su máscara protegida.
+18. Unity con RGB transferidos/camino real:38409530725 SUCCESS, source136ec0fcd70de9ed5a8d9bf6a630803ea3b518b4, artifact11820981755(frames) y11820782242(full). Logs confirman valores lineales originales y shader Gamma.
+19. Última escena nativa:38412903213 SUCCESS, source7bcc33921e122d7abe94f865268e67c82b803ec4, artifact11822493278(frames) y11822978137(full). Captura real independiente inspeccionada: escalera completa visible, camino continuo existente, césped verde/oliva. Queda trabajo de paisaje/agua/puente/acabado para objetivo global; no 8/10 certificado.
 
-## Próximos pasos concretos
-1. Inspeccionar el candidato de césped, colores y contactos; mantener cámara A/B fija. Confirmar continuidad camino/puente/escalera con logs y captura, no solo bounds de GLB.
-2. Recuperar QA I–II; reparar fallos reales desde registros/capturas. Diferenciar emulación Chromium, Unity y móvil físico.
-3. Si Qwen8B produce geometría válida y visible, consumir sus coordenadas originales con el merge existente y los hashes correctos, preservando parcelas/UV/PBR; hacer Unity A/B sobre el candidato válido más reciente, no sobre una escena antigua.
-4. No sustituir autoría genuina Qwen por scripts silenciosos. Los cambios de paleta dirigidos por GPT-6 se registran como lookdev aislado sin Qwen ART_APPROVED.
-5. Corregir arte/composición/encuadre que impidan el objetivo. No publicar ni fusionar por QA técnica; gates visuales siguen abiertos.
+## Compilación jugable actual — recuperar antes de repetir
+Se ha creado .github/workflows/valoria-bastion1-exact-candidate-build.yml con request explícito pipeline/valoria-bastion1-candidate-build-request.json. Restaura EXACTOS Valoria.unity y Generated/GeneratedNormals de 38412903213, preserva World, compila WebGL sin repetir artistas/assembly/capturas.
+- Primer intento38415030579 falló ANTES de compilar al localizar prueba del artista. Su artifact contiene un WebGL viejo del runner: NO USAR.
+- Corregido: descarga frames exactos aparte, verifica su qwen-integration-proof.json, elimina output viejo.
+- También se detectó que URP canonical móvil tiene shadowDistance50/cascade1/MSAA1, distinto al preview180/cascade4/MSAA4. El candidato ahora liga el StudyURP EXACTO capturado en todas las Quality/Graphics temporales. Sin esta corrección, el juego perdería sombras de la captura. Rendimiento físico sigue sin medir.
+- Request build_attempt2 dispara nuevo run. Recuperar el run de HEAD vivo y logs; reparar antes de asumir éxito. Arte/publicación NO autorizados por verde técnico.
+- Workflow governance217 workflows PASS.
 
-## Limitaciones concretas del entorno de Work observadas
-El CDN de Playwright devolvió descargas truncadas. Se recuperó Chromium oficial del workflow gratuito ya autorizado, pero el contenedor de Work rechaza sus sockets POSIX (Operation not permitted). Las interacciones reales con WebGL se ejecutan por el workflow Linux disponible con touch Chromium y capturas originales. No afirmar prueba física ni manual independiente, ni paralizar Unity/Blender por esta restricción local.
+## Siguiente acción concreta
+1. Recuperar compilación exacta actual; resolver fallo de transporte/compilación si existe.
+2. Actualizar .github/workflows/valoria-bastion1-browser-qa.yml para consumir SÓLO ese nuevo run/sha/artifact exitoso, no c531 histórico. Ejecutar QA básica + I-II reales en ambas orientaciones, con identidad móvil/canvas visible, sin inyectar estado ni tocar reloj.
+3. Revisar capturas WebGL contra nueva Unity/reference. No confundir native_before con player screenshot ni clay con Unity. No publicar por test verde.
+4. Continuar acabado pendiente (paisaje/puente/agua/material de roca y contactos), conservar mejoras actuales. Fuente Hero V3/familias congeladas intactas. No reiniciar infraestructura artística.
+
+## Entorno de interacción
+Work local recuperó Chromium oficial pero rechaza sockets POSIX; Playwright local no abre. Los workflows Ubuntu disponibles ejecutan Chromium/touch sobre WebGL real. Es emulación automatizada con controles reales, NO móvil físico ni humano/manual independiente. Las desconexiones de cliente no tienen diagnóstico confirmado; archivos/commits y runs externos permiten recuperación, pero no prometer ejecución indefinida del agente tras acabar turno.
