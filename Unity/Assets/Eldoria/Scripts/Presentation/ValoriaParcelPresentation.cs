@@ -123,7 +123,7 @@ namespace Eldoria.Presentation
         float MeshHomeForAspect()
         {
             float aspect=Mathf.Max(.2f,ProductionCamera.aspect);
-            return Mathf.Max(MeshHomeOrthographicSize,(aspect<.85f?25f:36f)/aspect);
+            return Mathf.Max(MeshHomeOrthographicSize,(aspect<.85f?19f:36f)/aspect);
         }
         public void Zoom(float delta)
         {

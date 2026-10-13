@@ -2,6 +2,15 @@
 
 Objetivo: continuar la integración existente hasta escena jugable cercana a la referencia, con colores correctos, autoría IA real y prueba de jugador. 0 € / ningún crédito de pago. NO declarar ART PASS ni 8/10 por CI verde.
 
+## 2026-10-13 — Chat normal: revisión visual y descarte de montaje ambiental insuficiente
+
+- Owner de integración transferido de Work al chat normal sobre `main` en `d2e1d1c7e7b83798f57432a4f586556eea4b9913`; Región 1 y otros propietarios intactos.
+- Imágenes Unity reales antes/después examinadas del ensayo de reutilización de 3 montañas LOD y 6 árboles. Fuente de prueba `28903335a5dc1cfc5a38f6762b2708cac01d4fc3`, run nativo `38431327960` **SUCCESS**, frames `11830603211`, escena+evidencias `11830987172`. Baseline nativo inmutable `38419031491`, frames `11826196119`. Diferencia exacta de imagen 1440x1000: 1,8325 % de píxeles con alguna componente RGB >10 y MAE 0,5649 (métrica de cambio, NO de calidad).
+- **ART FAIL:** los nuevos árboles de hoja ancha y las masas poligonales quedan visualmente desconectados o aparentan flotar en el fondo; no mejoran de modo convincente el paisaje. NO integrar ese montaje ni actualizar el candidato WebGL con ese artefacto; se retira exclusivamente la llamada y el helper de dicho montaje. No modificar GLB autoral, Hero V3, Hero Gate ni terrenos aprobados.
+- El ajuste exclusivo de HUD compacto permanece para futura QA; el encuadre retrato de presentación se reduce para priorizar el área visible de juego, pero no se certifica sin captura WebGL exacta. Ningún PASS del candidato anterior se transfiere a la versión modificada.
+- Siguiente paso: continuar acabado real autoral del entorno existente, empezando por acantilado/agua y fondo sin introducir árboles flotantes, mediante agente IA+Blender y comparativa Unity exacta; en paralelo se puede producir candidato WebGL de interfaz usando **fuente nativa previa aprobada técnicamente** sin rehacer esa fuente. PR #51 sigue DRAFT/no UNITY_PASS, no fusionar, no usar Windows para él antes de liberar Bastión.
+- Se conserva la clasificación técnica anterior: jugabilidad completa de `38422576301` PASS solo para WebGL `38420574701`; arte objetivo 8/10 NO aprobado, Android/iOS físico no probado, SHARP público protegido, 0 € y 0 créditos pagados.
+
 ## Estado vigente — prevalece sobre la cronología inferior
 - Rama única: integration/valoria-bastion1-player-scene-20261012. HEAD exacto de evidencias antes de esta actualización: ec998413d6d6829a0e18676a18a894071e0eb181. Último HEAD de código/QA ejecutado:55b9eddd7c130f68e39d4ccc41504423fc15f9eb. Obtener HEAD vivo antes de editar; los commits posteriores conservan pruebas/documentación.
 - Última Unity38419031491 **SUCCESS**, sourcecf1f7bc69ff832f917fa9e41285ba6c809c320ac. Frames11826196119/full11825492257. Perfil cascade1/atlas1024/MSAA1/shadowDistance180. Aserradero a izquierda, camino/escalera unidos, factores RGB originales Qwen. Captura real final mobile-profile-native-initial.png.

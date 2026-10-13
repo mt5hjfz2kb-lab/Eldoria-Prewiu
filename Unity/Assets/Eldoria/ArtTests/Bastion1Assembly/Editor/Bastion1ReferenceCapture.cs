@@ -78,7 +78,6 @@ namespace Eldoria.EditorTools
                 var controls=camera.gameObject.AddComponent<Eldoria.Art.Bastion1AssemblyCamera>();
                 controls.ConfigureHome();
                 // Existing authored world-asset depth; no generated geometry or future buildings.
-                StageExistingLandscape();
                 var directory=Path.GetFullPath("Bastion1ReferenceCaptures");Directory.CreateDirectory(directory);
                 foreach(var stale in Directory.GetFiles(directory,"*.png"))File.Delete(stale);
                 Render(camera,Path.Combine(directory,"bastion1-unity-landscape.png"),1440,1000);
@@ -141,102 +140,6 @@ namespace Eldoria.EditorTools
                 Debug.LogError("BASTION1_REFERENCE_CAPTURE_FAILED "+ex);EditorApplication.Exit(1);
             }
         }
-        static void StageExistingLandscape()
-        {
-            var mountain=AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/Eldoria/Resources/WorldInventory/Mountain01.prefab");
-            if(mountain==null)throw new Exception("Existing LOD mountain prefab unavailable");
-            var root=new GameObject("Existing noninteractive Valoria distant landscape");
-            var conversions=new Dictionary<Material,Material>();
-            // The existing fortified island and its Qwen-edited rock mesh remain untouched.
-            // Camera faces -Z from +Z; these authored landscape assets frame its rear.
-            var mountainSites=new[]{
-                new Vector3(-112f,-72f,-145f),
-                new Vector3(-26f,-85f,-176f),
-                new Vector3(93f,-79f,-157f)
-            };
-            var mountainHeights=new[]{105f,122f,113f};
-            for(int i=0;i<mountainSites.Length;i++)
-                PlaceReusableScenery(mountain,root.transform,mountainSites[i],
-                    mountainHeights[i],i*52f,conversions);
-            var treePaths=new[]{
-                "Assets/NatureStarterKit2/Nature/tree01.prefab",
-                "Assets/NatureStarterKit2/Nature/tree02.prefab"
-            };
-            var treeSites=new[]{
-                new Vector3(-42f,-23f,-66f),new Vector3(-34f,-18f,-57f),
-                new Vector3(-26f,-11f,-47f),new Vector3(31f,-12f,-48f),
-                new Vector3(38f,-18f,-60f),new Vector3(48f,-23f,-69f)
-            };
-            for(int i=0;i<treeSites.Length;i++)
-            {
-                var tree=AssetDatabase.LoadAssetAtPath<GameObject>(treePaths[i%treePaths.Length]);
-                if(tree==null)throw new Exception("Existing authored forest prefab unavailable");
-                PlaceReusableScenery(tree,root.transform,treeSites[i],11f+(i%3)*2f,i*37f,conversions);
-            }
-            Debug.Log("BASTION1_REUSED_LANDSCAPE mountains=3 trees=6 new_assets=0 playable_topology_unchanged=true");
-        }
-
-        static void PlaceReusableScenery(GameObject prefab,Transform parent,Vector3 basePosition,
-            float targetHeight,float angle,Dictionary<Material,Material> conversions)
-        {
-            var instance=PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-            if(instance==null)throw new Exception("Existing scenic prefab cannot instantiate: "+prefab.name);
-            instance.name="Existing environment source: "+prefab.name;
-            instance.transform.SetParent(parent,true);
-            instance.transform.position=Vector3.zero;
-            instance.transform.rotation=Quaternion.Euler(0f,angle,0f);
-            var renderers=instance.GetComponentsInChildren<Renderer>(true);
-            if(renderers.Length==0)throw new Exception("Existing prefab has no renderers: "+prefab.name);
-            var box=renderers[0].bounds;
-            foreach(var renderer in renderers)box.Encapsulate(renderer.bounds);
-            if(box.size.y<.001f)throw new Exception("Existing scenic geometry has no height");
-            instance.transform.localScale*=targetHeight/box.size.y;
-            box=renderers[0].bounds;
-            foreach(var renderer in renderers)box.Encapsulate(renderer.bounds);
-            instance.transform.position=new Vector3(basePosition.x-box.center.x,
-                basePosition.y-box.min.y,basePosition.z-box.center.z);
-            foreach(var collider in instance.GetComponentsInChildren<Collider>(true))
-                UnityEngine.Object.DestroyImmediate(collider);
-            foreach(var renderer in renderers)
-            {
-                var originals=renderer.sharedMaterials;
-                var materials=new Material[originals.Length];
-                for(int i=0;i<originals.Length;i++)
-                {
-                    var source=originals[i];
-                    if(source==null)continue;
-                    if(!conversions.TryGetValue(source,out var replacement))
-                    {
-                        var shader=Shader.Find("Universal Render Pipeline/Lit");
-                        if(shader==null)throw new Exception("URP Lit unavailable for existing scenery");
-                        replacement=new Material(shader){name="BastionI_ExistingEnvironment_"+source.name};
-                        var albedo=source.HasProperty("_BaseMap")?source.GetTexture("_BaseMap"):
-                            source.HasProperty("_MainTex")?source.GetTexture("_MainTex"):null;
-                        if(albedo!=null)replacement.SetTexture("_BaseMap",albedo);
-                        var tint=source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):
-                            source.HasProperty("_Color")?source.GetColor("_Color"):Color.white;
-                        replacement.SetColor("_BaseColor",tint);
-                        replacement.SetFloat("_Smoothness",.06f);
-                        var name=source.name.ToLowerInvariant();
-                        if(name.Contains("leaf")||name.Contains("foliage")||
-                            name.Contains("branch")||name.Contains("bush"))
-                        {
-                            replacement.SetFloat("_AlphaClip",1f);
-                            replacement.SetFloat("_Cutoff",.35f);
-                            replacement.EnableKeyword("_ALPHATEST_ON");
-                            replacement.SetFloat("_Cull",0f);
-                        }
-                        Persist(replacement);
-                        conversions.Add(source,replacement);
-                    }
-                    materials[i]=replacement;
-                }
-                renderer.sharedMaterials=materials;
-                renderer.shadowCastingMode=ShadowCastingMode.Off;
-            }
-        }
-
         static Transform Find(Transform root,string name)
         {foreach(var item in root.GetComponentsInChildren<Transform>(true))if(item.name==name)return item;return null;}
         internal static void Persist(UnityEngine.Object obj)
