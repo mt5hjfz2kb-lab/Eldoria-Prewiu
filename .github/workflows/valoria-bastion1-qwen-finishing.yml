@@ -1,9 +1,12 @@
-name: Bastion I genuine Qwen8B rock and turf finishing
+name: Bastion I genuine Qwen authored backdrop finishing
 on:
+  workflow_dispatch:
   push:
     branches: [integration/valoria-bastion1-player-scene-20261012]
-    paths: ['.github/workflows/valoria-bastion1-qwen-finishing.yml']
-  workflow_dispatch:
+    paths:
+      - '.github/workflows/valoria-bastion1-qwen-finishing.yml'
+      - 'tools/valoria-bastion1-finishing/backdrop_author.py'
+      - 'tools/valoria-bastion1-finishing/backdrop_execute.py'
 permissions:
   contents: read
   actions: read
@@ -11,31 +14,84 @@ concurrency:
   group: bastion1-qwen-finishing
   cancel-in-progress: false
 jobs:
-  author-and-execute:
+  genuine-artist-mountain:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 75
     env:
-      GH_TOKEN: ${{ github.token }}
-      FINISH: /tmp/bastion1-qwen-finish
+      GH_TOKEN: \${{ github.token }}
+      ART_ROOT: /tmp/bastion1-mountain-artist
     steps:
       - uses: actions/checkout@v4
-      - name: Recover completed genuine finishing without repeating inference or geometry
+        with:
+          fetch-depth: 1
+      - name: Recover exact successful Unity before frame and immutable previously Qwen-edited 3D source
+        shell: bash
         run: |
-          mkdir -p "$FINISH"
-          gh run download 38406612333 --repo "${{ github.repository }}" --name bastion1-genuine-qwen-finishing-38406612333 --dir "$FINISH"
-      - name: Transfer original artist RGB factors lost by the exporter
-        run: python3 tools/valoria-bastion1-finishing/fix_exported_factors.py --root "$FINISH"
-      - uses: actions/upload-artifact@v4
+          set -euo pipefail
+          mkdir -p "$ART_ROOT/source-art" "$ART_ROOT/source-images"
+          gh run download 38409277470 --repo "\${{ github.repository }}" --name bastion1-genuine-qwen-finishing-38409277470 --dir "$ART_ROOT/source-art"
+          gh run download 38419031491 --repo "\${{ github.repository }}" --name bastion1-unity-review-frames-38419031491 --dir "$ART_ROOT/source-images"
+          python3 - <<'PY'
+          import os,pathlib,hashlib,json
+          root=pathlib.Path(os.environ["ART_ROOT"])
+          sources=list((root/"source-art").rglob("factor-corrected/Bastion1QwenFinish.glb"))
+          images=[p for p in (root/"source-images").rglob("bastion1-unity-landscape.png") if "/after/" in p.as_posix()]
+          assert len(sources)==len(images)==1,(sources,images)
+          assert hashlib.sha256(sources[0].read_bytes()).hexdigest()=="9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1"
+          (root/"source.glb").write_bytes(sources[0].read_bytes())
+          from shutil import copyfile
+          copyfile(images[0],root/"unity.png")
+          # The owner reference is unchanged and contains no generated substitute image.
+          print("BASTION1_REUSED_IMMUTABLE_QWEN_SOURCE_AND_UNITY_FRAME",len((root/"source.glb").read_bytes()))
+          PY
+      - name: Install free Blender and Python image tools for existing geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil
+          blender --version | head -2
+          /usr/bin/python3 -c 'from PIL import Image;print("PIL_AVAILABLE")'
+      - name: Prepare approved artistic reference and real engine screenshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 - <<'PY'
+          import os,pathlib
+          from PIL import Image
+          root=pathlib.Path(os.environ["ART_ROOT"])
+          Image.open("references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg").convert("RGB").save(root/"reference.png")
+          assert Image.open(root/"unity.png").width==1440
+          PY
+      - name: Start no-cost local Ollama Qwen vision artist
+        shell: bash
+        timeout-minutes: 13
+        run: |
+          set -euo pipefail
+          docker run -d --rm --name eldoria-mountain-vision -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for i in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version; then break; fi; sleep 2; done
+          docker exec eldoria-mountain-vision ollama pull qwen3-vl:8b-instruct
+      - name: AI independently authors mountain ridge, existing PBR material use and water colors
+        shell: bash
+        timeout-minutes: 13
+        run: |
+          /usr/bin/python3 tools/valoria-bastion1-finishing/backdrop_author.py --root "$ART_ROOT"
+      - name: Blender executes ONLY genuine validated artist direction on original scene geometry
+        shell: bash
+        timeout-minutes: 15
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-finishing/backdrop_execute.py -- --root "$ART_ROOT"
+      - name: Preserve editable .blend, source GLB and genuine artist evidence for separate Unity A/B
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bastion1-genuine-qwen-finishing-${{ github.run_id }}
+          name: bastion1-genuine-qwen-mountain-\${{ github.run_id }}
           path: |
-            /tmp/bastion1-qwen-finish/factor-corrected/**
-            /tmp/bastion1-qwen-finish/edited/*.blend
-            /tmp/bastion1-qwen-finish/*proof.json
-            /tmp/bastion1-qwen-finish/source-provenance.json
-            /tmp/bastion1-qwen-finish/artist-plan.json
-            /tmp/bastion1-qwen-finish/raw-attempt-*.json
-            /tmp/bastion1-qwen-finish/reject-attempt-*.txt
-            /tmp/bastion1-qwen-finish/*-vision.jpg
+            /tmp/bastion1-mountain-artist/mountain-plan.json
+            /tmp/bastion1-mountain-artist/mountain-inference-proof.json
+            /tmp/bastion1-mountain-artist/raw-mountain-attempt-*.json
+            /tmp/bastion1-mountain-artist/mountain-reject-*.txt
+            /tmp/bastion1-mountain-artist/edited-mountain/**
+            /tmp/bastion1-mountain-artist/source.glb
+            /tmp/bastion1-mountain-artist/*-vision.jpg
           retention-days: 14
