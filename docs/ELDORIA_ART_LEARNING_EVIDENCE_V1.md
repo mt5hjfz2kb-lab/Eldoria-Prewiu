@@ -37,3 +37,34 @@ Los artefactos originales referenciados en los logs **pueden caducar**. La base 
 El Bastión I activo posee tools/art-direction/ai-authoring/**, el archivo ARTIST_LEARNING_JOURNAL.md y los workflows artísticos. **No se modifican.** Para conectar el nuevo módulo a la ejecución obligatoria tras cada ensayo, el **propietario del Bastión** debe invocar brief antes de la inferencia y registrar evidencia al terminar, conservando su propio código y runner. Este trabajo entrega el módulo de memoria y las comprobaciones, **no una automatización aún integrada al 100 % en el artista en ejecución**.
 
 Esta solución no cambia los pesos del modelo, no certifica un 8/10 y no autoriza publicar arte sin revisión. Tampoco equipara un resultado de Blender a la vista del jugador en Unity.
+
+## Adaptador de memoria antes/después — 2026-10-13
+
+El adaptador `tools/art-direction/learning-evidence/cycle-hooks.mjs` se ha diseñado **sin modificar la escena, el artista ni los workflows reservados a Bastión I**. Se consume por el propietario del trabajo en el siguiente ciclo de autoría; no debe proclamarse activación automática del runner mientras no se haya conectado al workflow vivo.
+
+**ANTES** de cada inferencia Qwen en Bastión I, tras preparar el inventario y sin cambiar la versión del modelo:
+
+```bash
+node tools/art-direction/learning-evidence/cycle-hooks.mjs prepare --target bastion1 --out "$ART/historical-memory.txt"
+cat "$ART/historical-memory.txt" >> "$ART/inventory.txt"
+```
+
+El archivo de procedencia `historical-memory.txt.provenance.json` conserva el hash del catálogo de seis casos, el hash del resumen, la referencia y número de lecciones. **Conservarlo como evidencia junto al plan original Qwen.** Verificar en el nuevo `artist-inference.json` que el contenido del inventario realmente llegó a la inferencia; un fichero preparado pero no transmitido no equivale a aprendizaje utilizado.
+
+**DESPUÉS** de un ciclo con auténticas capturas PNG A/B del mismo ángulo de Unity, y con diagnóstico, lección y siguiente cambio expresos del revisor, ejecutar el paso `stage` con el SHA, run ID y hash de cámara auténticos:
+
+```bash
+node tools/art-direction/learning-evidence/cycle-hooks.mjs stage \\
+  --target bastion1 --out "$ART/next-memory-candidate.json" \\
+  --run-id "$GITHUB_RUN_ID" --git-sha "$GITHUB_SHA" \\
+  --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \\
+  --before "$ART/unity-before-original.png" --after "$ART/unity-after-original.png" \\
+  --camera-sha "$ACTUAL_MATCHED_CAMERA_SHA256" \\
+  --view-id unity-player-pbr --render-pass unity_pbr \\
+  --diagnosis "$VERIFIED_VISUAL_DIAGNOSIS" \\
+  --lesson "$VERIFIED_LESSON" --next-action "$NEXT_ARTIST_CHANGE"
+```
+
+El adaptador decodifica bytes originales con el comparador existente, comprueba SHA de referencia y produce un candidato `pending_verification` y un archivo `.event.json`. Nunca modifica `observations.json` ni promueve automáticamente `ART_APPROVED`. Verificar origen de las capturas, coincidencia real de cámara y autoría Qwen/Blender antes de incorporar el candidato al catálogo permanente. No inventar diagnóstico si todavía no hay revisión independiente. En un rechazo artístico por Blender previo a Unity, continuar con correcciones ligeras; no lanzar compilaciones completas solo para registrar una lección.
+
+La conexión del comando `prepare` al workflow vivo y la ingestión tras cada captura requieren el consentimiento operativo del propietario actualmente reservado en `pipeline/active-workstreams.json`. Hasta entonces, la integración completa es **PENDIENTE**; las herramientas y sus pruebas son independientes. Comprobar con `node --test tools/art-direction/learning-evidence/learning.test.mjs`.
