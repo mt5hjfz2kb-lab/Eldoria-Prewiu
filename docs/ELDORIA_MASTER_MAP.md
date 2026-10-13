@@ -1,3 +1,5 @@
+> **NOTA DE VIGENCIA (2026-10-13):** esta es una referencia de **diseño macro**, no el estado de implantación de Unity. El rótulo «preproducción para futura migración» de 2026-09-24 es histórico: consultar [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md), [PROJECT_STATE.md](../PROJECT_STATE.md) y el juego real en `Unity/` para avances actuales.
+
 # Eldoria — Mapa Maestro de Producto
 
 Estado: preproducción para futura migración a Unity

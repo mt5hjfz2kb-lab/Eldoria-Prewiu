@@ -1,0 +1,983 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-13",
+  "purpose": "Navigation and lifecycle only. Not a substitute for live workstream/commit/evidence checks.",
+  "authority": "AGENTS.md",
+  "unreviewed_policy": "Unreviewed documents never grant operational authority.",
+  "scope": "Markdown directly in docs/ plus deliberately registered root operational documents",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Única norma operativa general de agentes"
+    },
+    {
+      "path": "DESIGN_DECISIONS.md",
+      "domain": "product",
+      "status": "reference",
+      "note": "Decisiones con fechas: verificar supersesiones"
+    },
+    {
+      "path": "docs/ANDROID_NATIVE_PLAYTEST.md",
+      "domain": "quality",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ASSET_SHORTLIST_ZERO_EURO.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ASSET_VISUAL_UPLIFT_PASS_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/BASTION_I_II_OWNER_PLAYTEST_CHECKLIST.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/BASTION_I_II_PLAYTEST_READINESS_PLAN.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/BASTION_I_II_WEB_UNITY_PARITY_AUDIT.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/BASTION_I_III_VISUAL_PROGRESSION_MATRIX.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/BASTION_I_X_MASTER_TABLE.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/DOCUMENTATION_INDEX.md",
+      "domain": "navigation",
+      "status": "current",
+      "note": "Índice único de navegación"
+    },
+    {
+      "path": "docs/DOCUMENTATION_POLICY.md",
+      "domain": "governance",
+      "status": "current",
+      "note": "Política documental y control de cambios"
+    },
+    {
+      "path": "docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md",
+      "domain": "art",
+      "status": "review_pending",
+      "note": "Cabecera preparada-en-rama desfasada tras PR36/40/43/47; reservado por Bastión I. Usar AGENTS y el código vivo"
+    },
+    {
+      "path": "docs/ELDORIA_ART_BIBLE.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Dirección global de arte y fuentes; no aprobación visual de escena"
+    },
+    {
+      "path": "docs/ELDORIA_ART_PIPELINE_INDEX.md",
+      "domain": "art",
+      "status": "historical",
+      "note": "Índice técnico de septiembre; reemplazado para navegación"
+    },
+    {
+      "path": "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Roadmap de biblioteca sujeto a cambios recientes"
+    },
+    {
+      "path": "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_CANONICAL_AUTOMATION_SANITATION_2026_10_06.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md",
+      "domain": "engineering",
+      "status": "reference",
+      "note": "Antiguo modelo de pipeline; verificar contra AGENTS"
+    },
+    {
+      "path": "docs/ELDORIA_GRAPHICS_TOOLCHAIN_AUDIT_2026.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_MASTER_MAP_RESUME.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_MASTER_MAP_V1_CLOSURE.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_MASTER_MAP.md",
+      "domain": "product",
+      "status": "reference",
+      "note": "Diseño macro; la fase de migración declarada era histórica"
+    },
+    {
+      "path": "docs/ELDORIA_PARALLEL_DELIVERY_HANDOFF_20261010.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Coordinación de titulares y recursos"
+    },
+    {
+      "path": "docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Normas de fuentes artísticas anteriores a autoría IA actual"
+    },
+    {
+      "path": "docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_SURFACE_PIPELINE.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_VISUAL_BENCHMARK.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Benchmark histórico; contrastar referencia canónica"
+    },
+    {
+      "path": "docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Método de trabajo visual sujeto a AGENTS"
+    },
+    {
+      "path": "docs/ELDORIA_WORK_VISUAL_INTEGRATION_BRIEF_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_WORKFLOW_QUARANTINE_V1.md",
+      "domain": "automation",
+      "status": "reference",
+      "note": "Histórico de cuarentena; gate real controla vigencia"
+    },
+    {
+      "path": "docs/ELDORIA_WORLD_MAP_4X_FOUNDATIONAL_REQUIREMENTS.md",
+      "domain": "world",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_WORLD_REGION_1_V1.md",
+      "domain": "world",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/GOLDEN_PRIMARY_FORMS_PROFESSIONAL_RECONSTRUCTION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/HISTORICAL_VISUAL_RESIDUE_CLEANUP_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/MVP_ART_DIRECTION.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/PROGRESSION_VISUAL_CONTRACT.md",
+      "domain": "gameplay",
+      "status": "current",
+      "note": "Contrato de progresión y arte"
+    },
+    {
+      "path": "docs/QA_R7.md",
+      "domain": "quality",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/R7_CONSOLIDATION.md",
+      "domain": "project",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/TRIPO_MODULE_PIPELINE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/UI_REFERENCE_CONTRACT.md",
+      "domain": "gameplay",
+      "status": "current",
+      "note": "Referencia de UI móvil"
+    },
+    {
+      "path": "docs/UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Guía especializada de acabado Unity"
+    },
+    {
+      "path": "docs/UNITY_FREE_ASSET_SHORTLIST.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/UNITY_IMPORTED_ASSET_AUDIT.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/UNITY_MIGRATION_ACCELERATION_PLAN.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/UNITY_MIGRATION_SCOREBOARD.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ART_ASSET_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ART_PRODUCTION_RESET_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ART_SOURCE_CAPABILITY_BAKEOFF_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_FAMILY_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_I_II_PRESENTATION_PARITY_CORRECTION_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_I_II_PROGRESSION_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_I_II_VERTICAL_SLICE_MIGRATION_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_I_X_VISUAL_PRODUCTION_MATRIX_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_TO_CITY_EXACT_SOURCE_IMAGE_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BASTION_TO_CITY_TRIPO_SOURCE_PREP_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BRIDGE_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_BUILDING_PRODUCTION_INVENTORY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_CABIN_SAWMILL_CAMP_PRODUCTION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_CAMERA_FIRST_PROJECTION_SHELL_V1.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_COMPOSITION_FRAME_V2_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FINAL_ASSET_DECISION.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FINAL_LOOK_AND_CAMERA_AB_PLAN.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FIRST_PLAYABLE_CITY_SLICE_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GATE_STREET_MV1_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GATE_STREET_RISE_ROCK_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GATE_STREET_V2_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GATE_STREET_V3_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GOLDEN_GENERATOR_BAKEOFF_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GRANARY_PRODUCTION_BRIEF_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GRANARY_TRIPO_INPUT_SPEC_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_GRANERO_RICH_CAMERA_FIRST_V1_RESULT.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_HERO_BASTION_V1_FINAL_GATE.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_HOUDINI_GOLDEN_INTEGRATION_PILOT_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_IMAGE_TO_3D_ASSET_RECEIPT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_IMAGE_TO_3D_PIPELINE_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_IMAGE_TO_3D_REENTRY_CHECKLIST.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_IMAGE_TO_3D_UNITY_GATE.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_IN_CITY_SURFACE_PASS_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_LAYERED_ART_TEST.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_LIBRARY_PRODUCTION_PLAN_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_LOOKDEV_PRELIMINARY_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_LOWER_GATE_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MANUAL_3D_PIPELINE_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MANUAL_HERO_FRAGMENT_BRIEF.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MASTER_PLAN_AND_PROGRESSION_REQUIREMENTS.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MASTER_PLAN_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MICRO_CITY_THREE_FAMILY_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MICRO_CITY_TWO_FAMILY_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MID_TIER_ARCHITECTURE_KIT_V1_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MID_TIER_DISTRICT_V1_PRODUCTION_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MODULE_INTERFACE_STANDARD_v1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MODULE_INTERFACE_V1_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_MODULE_KIT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_NATION1_RESET_COMPATIBILITY_AUDIT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ORIGINAL_HERO_ART_TEST.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_2_ARCHITECTURE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PREMIUM_TARGET_GAP_REVIEW_VISUAL_UPLIFT_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_C_PHASE_VERDICT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_STARTER_V1_VERDICT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_FOUNDATION_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PROGRESSION_MAP_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_PURCHASE_AUDIT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_REAL_GAME_STATE_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_REFERENCE_IMAGE_NOTES.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ROAD_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ROCK_TERRAIN_BASTION_CONTACT_UPLIFT_V1.md",
+      "domain": "gameplay",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ROCK_TERRAIN_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ROCK_TERRAIN_SEAM_FILLER_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_SHELL_V2_BLENDER_TRANSITION_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_SHELL_V2_FUSED_TRANSITION_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_STAIR_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_STONE_ARCHITECTURE_INTEGRATION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_STREET_LANDING_TRANSITION_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_STRUCTURAL_QUALITY_BAR_REVIEW_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_SURFACE_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_TRIPO_MODULAR_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md",
+      "domain": "engineering",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VEGETATION_WATER_SHORE_PRODUCTION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_AUTHORITY_RESET_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_AUTHORITY_ROUTING_GUARD_V1.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Verificar guards runtime vigentes antes de aplicación"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_BASELINE_DIAGNOSIS.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_BIBLE.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Referencia visual Valoria; sus PASS de 2026-10-06 son históricos y limitados"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_CONVERGENCE_EXECUTION_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_FORMULA_v1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_SHELL_V2_RESULT.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_WALL_FAMILY_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_ZERO_EURO_ASSET_GATE.md",
+      "domain": "art",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/VISUAL_BIBLE.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Dirección global estilística; composición Valoria se ancla en la referencia aprobada"
+    },
+    {
+      "path": "docs/WORKFLOW_INDEX.md",
+      "domain": "automation",
+      "status": "current",
+      "note": "Directorio de CI, no fuente de estado en vivo"
+    },
+    {
+      "path": "docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md",
+      "domain": "world",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/WORLD_MAP_FOREST_RESOURCE_KIT_V1_RESULT.md",
+      "domain": "world",
+      "status": "review_pending"
+    },
+    {
+      "path": "docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md",
+      "domain": "world",
+      "status": "review_pending"
+    },
+    {
+      "path": "PROJECT_STATE.md",
+      "domain": "history",
+      "status": "reference",
+      "note": "Histórico acumulado; no usar encabezados CURRENT antiguos como estado vivo"
+    },
+    {
+      "path": "QA_AND_DEPLOY.md",
+      "domain": "quality",
+      "status": "current",
+      "note": "Proceso de validación y publicación"
+    },
+    {
+      "path": "README.md",
+      "domain": "navigation",
+      "status": "current",
+      "note": "Entrada principal al código Unity"
+    },
+    {
+      "path": "SESSION_HANDOFF.md",
+      "domain": "history",
+      "status": "reference",
+      "note": "Historias y handoff; leer solo cabecera pertinente"
+    },
+    {
+      "path": "UNITY_ARCHITECTURE.md",
+      "domain": "engineering",
+      "status": "current",
+      "note": "Arquitectura del juego actual"
+    },
+    {
+      "path": "UNITY_CORE_CONTRACT.md",
+      "domain": "engineering",
+      "status": "current",
+      "note": "Contrato de componentes Unity"
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+> **HISTÓRICO — mapa artístico de 2026-09-30, no ruta operativa actual.** Las secciones antiguas «ACTIVE» se conservan como evidencia, pero no autorizan producir por ese procedimiento. Para el flujo vigente, empezar por [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md), [AGENTS.md](../AGENTS.md) y el código vivo de autoría IA.
+
 # Eldoria — Art Production Pipeline Index
 
 Status: active organizational map.  
