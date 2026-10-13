@@ -109,7 +109,7 @@ jobs:
           docker run -d --rm --name bastion1-qwen-vision -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > "$ART/ollama-version.json"; then break; fi; sleep 2; done
           test -s "$ART/ollama-version.json"
-          docker exec bastion1-qwen-vision ollama pull qwen3-vl:8b-instruct
+          docker exec bastion1-qwen-vision ollama pull qwen3-vl:4b-instruct
       - name: Derive bounded image copies from REAL Unity/reference, retaining hashes
         run: |
           /usr/bin/python3 - <<'PY'
@@ -303,7 +303,7 @@ jobs:
             --failed-plan "$ART/prior/model/artist-plan.json" --failed-review "$ART/prior/ab/comparison.json" \
             --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
-            --model qwen3-vl:8b-instruct --num-ctx 8192 --num-predict 750 --max-actions 1 \
+            --model qwen3-vl:4b-instruct --num-ctx 4096 --num-predict 600 --max-actions 1 \
             --camera-min-radius 12 --camera-min-displacement 1.5 \
             --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
@@ -312,7 +312,7 @@ jobs:
           r=pathlib.Path(os.environ['ART'])
           inference=json.loads((r/'model/artist-inference.json').read_text())
           ops=json.loads((r/'model/artist-plan.json').read_text())
-          assert inference['model']=='qwen3-vl:8b-instruct' and inference['system_role']=='system'
+          assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==ops
           historic=(r/'historical-memory.txt').read_text('utf8')
           source=(r/'inventory.txt').read_text('utf8')[:1800]
@@ -357,7 +357,7 @@ jobs:
           plan=json.loads((root/'model/artist-plan.json').read_text())
           inference=json.loads((root/'model/artist-inference.json').read_text())
           proof=json.loads((root/'result/artist-execution.json').read_text())
-          assert inference['model']=='qwen3-vl:8b-instruct' and inference['system_role']=='system'
+          assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==plan
           assert len(plan)==len(proof['executed_actions'])
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
