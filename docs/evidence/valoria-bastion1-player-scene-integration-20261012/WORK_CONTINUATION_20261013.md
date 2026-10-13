@@ -60,3 +60,12 @@ Work local recuperó Chromium oficial pero rechaza sockets POSIX; Playwright loc
 - .github/workflows/valoria-bastion1-browser-qa.yml ejecuta ahora QA básica real, no reutiliza PASS marrón antiguo; test basic exige run/SHA por env. Al aprobar nuevo build, actualizar run/SHA/name a artefacto NUEVO y ejecutar básica más full-player-qa.cjs I-II ambas orientaciones sobre ese mismo build.
 - Native workflow cancel-in-progress=false evita cancelar el build al corregir escena. Misma lease, sin otro workstream.
 - Faltan QA final del perfil ligero, inspección real WebGL y acabado global de paisaje/agua/puente/roca hacia referencia. No declarar8/10 ni publicar/main por compilación.
+
+## Relevo incremental 2026-10-13 — perfil ligero compilado, QA exacta en curso
+- HEAD de implementación/QA antes de este registro: b88a87922cbbb85372c50baa19411bfb9f453cd2 (misma rama; sin nuevos experimentos).
+- WebGL38420574701 **SUCCESS**, source7f6d708d57bd27e04c0375e79221d3fa9c932da3, artifact11826517753, name bastion1-exact-candidate-webgl-38420574701,187136907bytes,digest sha256:2a3c0c02cc7391d9b78a75ecf0422e17242f9700c74a06c3db850f94e4ff9758.
+- Fuente nativa EXACTA38419031491/sourcecf1f7bc69ff832f917fa9e41285ba6c809c320ac. No repetir Qwen/Blender ni captura Unity.
+- QA38421408687/sourceb88a87922cbbb85372c50baa19411bfb9f453cd2 está ejecutándose en Ubuntu, job115379390718. Básica y full-player I-II con ambas orientaciones sobre este mismo WebGL; no reutilizar resultados históricos.
+- Captura nativa real final conservada en Git: mobile-profile-native-initial.png en esta carpeta, blob8eef149f60f002239dc60cf31136fc8554da8e39. Fuente frames11826196119; no es screenshot WebGL.
+- Siguiente acción ejecutable: recuperar38421408687/jobs y resultado; si falla revisar logs115379390718 y artifact; resolver el fallo concreto. Si aprueba, inspeccionar PNG WebGL y conservar JSON/capturas finales en esta misma rama, actualizar este documento y estado vivo. Todavía no hay ART PASS/8/10.
+- Instrucción vigente del propietario: terminar acciones de integración actuales, sin ramas ni experimentos nuevos ni biblioteca histórica de assets; conservar avances progresivamente. No lanzar otra inferencia o runner por continuidad.
