@@ -89,7 +89,9 @@
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
       "next": "Recover 38398380999, 38398178848 and 38398178834; inspect exact captures, repair, consume genuine artist output, continue through artistic and player gates."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "valoria-selected-asset-library-v1-20261013",
       "title": "Selection and isolated Unity integration of audited Valoria asset library",
@@ -103,16 +105,24 @@
       "resources": [
         "github-hosted-ubuntu-readonly"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-13",
       "base_main_sha": "f93446353b861f7febb3998717b46b063c2696bf",
       "phase": "Create SHA-verified 26-source selection catalog, inert Unity loader and Editor prefab generator; no Bastion/Region1 modifications or Windows runner.",
       "dependency": "Unity 6000 Windows build/render visual gate waits for genuine release of Bastion I windows-runner-heavy claim.",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Select/integrate existing unchanged source GLBs only; no new artistic authoring or promotion."
-    }
-  ],
-  "history": [
+      "art_production_routing_reason": "Select/integrate existing unchanged source GLBs only; no new artistic authoring or promotion.",
+      "handoff_reason": "Selection catalog + inert Unity adapter and prefab generation code finished; full isolated Unity compile/prefab gallery not executed because Bastion I owns windows-runner-heavy.",
+      "final_branch": "integration/valoria-selected-asset-library-v1-20261013",
+      "static_qa_run_id": 38403460885,
+      "static_qa_sha": "bbb1401924c71f1b8f2150b2da3ad289852ce283",
+      "pending_unity_methods": [
+        "Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Build",
+        "Eldoria.AssetLibrary.Editor.EldoriaSelectedAssetLibraryBuilderV1.Capture"
+      ],
+      "pending_result_gate": "Real Unity capture, material validity and performance checks before any main promotion.",
+      "released_at": "2026-10-13"
+    },
     {
       "id": "valoria-mesh-only-worldspace-proof-20261010",
       "title": "Valoria Bastion I mesh-only coherent world-space proof",
