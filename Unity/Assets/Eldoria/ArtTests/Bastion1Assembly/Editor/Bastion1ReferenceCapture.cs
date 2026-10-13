@@ -46,6 +46,7 @@ namespace Eldoria.EditorTools
                 var root=new GameObject("BastionI_ReferenceAssembly_CANDIDATE");
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
                 Bastion1MaterialBindings.Apply(root,importer,source);
+                Bastion1RoadClearance.Apply(root);
                 InspectRoadContacts(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;

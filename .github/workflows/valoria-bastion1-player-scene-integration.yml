@@ -1,4 +1,4 @@
-name: Bastion I matched Unity Qwen8B native review
+name: Bastion I genuine Qwen finishing and road clearance Unity review
 on:
   workflow_dispatch:
   push:
@@ -84,28 +84,20 @@ jobs:
           $blenderPython=Get-ChildItem (Split-Path $candidate) -Recurse -Filter python.exe | Select-Object -First 1 -ExpandProperty FullName
           if(-not $blenderPython){throw 'Bundled Blender Python missing'}
           Add-Content $env:GITHUB_ENV "BASTION_PYTHON=$blenderPython"
-          & $blenderPython tools/valoria-bastion1-assembly/stage.py $sourceInputDirectory
-          if($LASTEXITCODE -ne 0){throw 'Frozen input staging failed'}
-      - name: Recover exact already-built city without repeating assembly or inference
+          # Consume completed sources; do not restage or reconstruct the city.
+      - name: Recover completed current-grass genuine Qwen city for baseline
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-qwen-full-city-38356460099
-          run-id: 38356460099
+          name: bastion1-qwen8b-current-grass-city-38403329338
+          run-id: 38403329338
           github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/Bastion1VerifiedQwen
-      - name: Recover completed original CC0 material experiment
-        uses: actions/download-artifact@v4
-        with:
-          name: bastion1-original-cc0-pbr-38388922583
-          run-id: 38388922583
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/Bastion1ExistingCC0
-      - name: Stage exact existing full city for matched Unity baseline
+          path: ${{ runner.temp }}/Bastion1QwenBaseline
+      - name: Stage exact current city for matched baseline
         shell: powershell
         run: |
-          $src=Join-Path $env:RUNNER_TEMP 'Bastion1VerifiedQwen/merged/Bastion1QwenScene.glb'
-          $expected='3052ed2cc91e0dde177ec7bcca94254c3d3d2aacecb0e60101daa8f97e09f9bb'
-          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Existing full scene checksum changed'}
+          $src=Join-Path $env:RUNNER_TEMP 'Bastion1QwenBaseline/merged/Bastion1QwenScene.glb'
+          $expected='4a69ad6cbc12cb5391ce4f290a80a5641a3ed65c4adf86bf88c2ba89f347654f'
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Current city hash changed'}
           $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
           New-Item -ItemType Directory -Force $dest | Out-Null
           Copy-Item $src (Join-Path $dest 'Bastion1ReferenceAssembly.glb') -Force
@@ -126,21 +118,6 @@ jobs:
           Copy-Item $barracks "$dest/Valoria_Cuartel_AP2_v1.glb" -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Valoria_Cuartel_AP2_v1.glb"
           if($LASTEXITCODE -ne 0){throw 'Barracks material staging failed'}
-      - name: Transfer completed packed CC0 materials into the full city
-        shell: powershell
-        run: |
-          $source=Join-Path $env:RUNNER_TEMP 'Bastion1VerifiedQwen/merged/Bastion1QwenScene.glb'
-          $materials=Join-Path $env:RUNNER_TEMP 'Bastion1ExistingCC0/edited/artist-output.blend'
-          $proof=Join-Path $env:RUNNER_TEMP 'Bastion1ExistingCC0/edited/cc0-material-proof.json'
-          $out=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
-          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-MaterialMerge.log'
-          $args=@('-b','--threads','6','--python-exit-code','1','--python',"$env:GITHUB_WORKSPACE/tools/valoria-bastion1-assembly/merge_existing_cc0_materials.py",'--','--source',$source,'--materials',$materials,'--proof',$proof,'--out',$out)
-          $process=Start-Process $env:BASTION_BLENDER -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log
-          if($process.ExitCode -ne 0){Get-Content $log -Tail 80;throw 'Existing packed CC0 transfer failed'}
-          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
-          Copy-Item (Join-Path $out 'Bastion1ReferenceAssembly.glb') $dest -Force
-          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dest
-          if($LASTEXITCODE -ne 0){throw 'CC0 texture material bindings failed'}
       - name: Capture matched current-grass BEFORE with the same importer and camera
         shell: powershell
         run: |
@@ -153,27 +130,28 @@ jobs:
           $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
           New-Item -ItemType Directory -Force $before | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
-      - name: Recover completed scope-masked genuine Qwen8B city
+      - name: Recover completed genuine Qwen8B fracture and palette finishing
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-qwen8b-current-grass-city-38403329338
-          run-id: 38403329338
+          name: bastion1-genuine-qwen-finishing-38406612333
+          run-id: 38406612333
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1Qwen8B
       - name: Stage exact merged Qwen geometry without re-inference or sculpting
         shell: powershell
         run: |
           $root=Join-Path $env:RUNNER_TEMP 'Bastion1Qwen8B'
-          $src=Join-Path $root 'merged/Bastion1QwenScene.glb'
-          $expected='4a69ad6cbc12cb5391ce4f290a80a5641a3ed65c4adf86bf88c2ba89f347654f'
+          $src=Join-Path $root 'edited/Bastion1QwenFinish.glb'
+          $expected='731799f563ce1cf731d2226767585eaaebd1c094712f26d45a1c95653f08bbc9'
           if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Scope-masked Qwen city hash changed'}
-          $proof=Get-Content (Join-Path $root 'merged/integration-proof.json') -Raw | ConvertFrom-Json
-          if($proof.protected_cell_changes -ne 0 -or $proof.changed_vertices -ne 1637){throw 'Qwen geometry ownership proof invalid'}
+          $proof=Get-Content (Join-Path $root 'edited/execution-proof.json') -Raw | ConvertFrom-Json
+          if($proof.protected_plateau_changes -ne 0 -or $proof.changed_vertices -ne 2718){throw 'Qwen geometry ownership proof invalid'}
+          if($proof.parameters_modified -ne $false -or $proof.plan_sha256 -ne '714f34adc57ee8f7d1705dc59d7b8dd16a3ed97a16317e1f7b3c8af44e97fc0a'){throw 'Original artist plan changed'}
           $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
           Copy-Item $src $dest -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dest
           if($LASTEXITCODE -ne 0){throw 'Qwen texture binding staging failed'}
-          Copy-Item (Join-Path $root 'merged/integration-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
+          Copy-Item (Join-Path $root 'edited/execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
       - name: Capture real Unity AFTER and preserve playable candidate
         shell: powershell
         run: |
@@ -186,7 +164,15 @@ jobs:
           $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
           New-Item -ItemType Directory -Force $after | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
-          Copy-Item "$env:RUNNER_TEMP/Bastion1ExistingCC0/maps/cc0-provenance.json" "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/cc0-provenance.json" -Force
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-unity-review-frames-${{ github.run_id }}
+          path: |
+            Bastion1MaterialAB/**
+            ${{ runner.temp }}/Bastion1-Unity-Before.log
+            ${{ runner.temp }}/Bastion1-Unity-After.log
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: always()
         with:
