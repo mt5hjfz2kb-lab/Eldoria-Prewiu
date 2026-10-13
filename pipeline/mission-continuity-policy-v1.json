@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "purpose": "Observe existing owned missions; never approve art, take over an owner, or auto-run expensive production.",
+  "stall_minutes": 20,
+  "issue_mode": "handoff_only",
+  "allow_workflow_dispatch": false,
+  "missions": [
+    {
+      "workstream_id": "valoria-bastion1-player-scene-integration-20261012",
+      "branch": "integration/valoria-bastion1-player-scene-20261012",
+      "workflow_names": [
+        "Bastion I local AI wall-integrated guard compound proposal",
+        "Bastion I genuine Qwen finishing and road clearance Unity review",
+        "Bastion I AI artistic authoring (consume PR 36 core)",
+        "Bastion I local AI medieval courtyard composition proposal"
+      ],
+      "required_evidence": [
+        "Real agent decision provenance when claiming AI authorship",
+        "Actual Blender edit and editable asset/GLB",
+        "Native Unity same-camera before/after comparison",
+        "Independent visual-quality decision and gameplay-space safety",
+        "Mobile framing; no physical-device certification claim without a device"
+      ],
+      "resume_hint": "Recover the latest relevant run and artifacts, inspect failures, resume the next authorized Blender/Unity/visual gate in the owning Bastion branch; never silently promote to main."
+    }
+  ]
+}
