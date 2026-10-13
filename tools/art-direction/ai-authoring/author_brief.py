@@ -5,8 +5,8 @@ Requires two genuine images; it does not execute Blender or certify art by itsel
 import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time
 from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback
 from artistic_learning_feedback import (load_failed_cycles, feedback_for_failed_cycles,
-                                        distinct_strategy_errors, select_journal_lessons)
-from artistic_learning_feedback import load_failed_cycles,feedback_for_failed_cycles,distinct_strategy_errors,select_journal_lessons
+                                        distinct_strategy_errors, select_journal_lessons,
+                                        forbidden_methods_from_rejected_cycles)
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
@@ -28,12 +28,14 @@ def prioritize_foreground_anchors(anchors,limit=14):
 
 
 
-def cpu_artist_schema(target,mode,max_actions):
+def cpu_artist_schema(target,mode,max_actions,forbidden_methods=None):
  """Constrain output *shape*, never prescribe artistic coordinates or geometry."""
  kinds=['sculpt_region','sculpt_path','reprofile_crest','bridge_boundary_loops','assign_material','place_existing_asset'] if mode=='existing' else ['construct_mesh','sculpt_region','sculpt_path','reprofile_crest','assign_material']
  if mode=='existing' and max_actions<=2:
   # For an existing cliff, avoid repeating enormous invented mesh face lists.
   kinds=['sculpt_region','sculpt_path','reprofile_crest']
+ kinds=[kind for kind in kinds if kind not in set(forbidden_methods or ())]
+ if not kinds:raise ValueError('All typed artist methods were rejected; require fresh evidence or revised strategy')
  fields={
   'observed_defect':{'type':'string','minLength':35,'maxLength':250},
   'design_intent':{'type':'string','minLength':35,'maxLength':260},
@@ -142,6 +144,7 @@ def main():
  else:
   mesh_context_for_artist=mesh_context
  failures=load_failed_cycles(a.failed_plan,a.failed_review,a.target_object)
+ forbidden_methods=forbidden_methods_from_rejected_cycles(failures)
  failure_feedback=feedback_for_failed_cycles(failures)
  prior_review_hash=None;prior_review_feedback=''
  if a.prior_visual_review:
@@ -194,7 +197,12 @@ def main():
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
    'and no repeated data. A visible large cliff needs a region radius >=1.0 local meters and a NONZERO delta >=0.2 local meters; independently choose the actual local position, shape and displacement from the images, never copy these minimum values as defaults. Respond only well-formed JSON matching supplied schema.')
- format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions) if a.cpu_compact else 'json'
+ if forbidden_methods:
+  prompt += (' ORIGINAL camera evidence forbids all of these failed structural methods: '
+    +', '.join(sorted(forbidden_methods))+
+    '. Select a DIFFERENT typed structural operation and independently author its spatial vertices/knots/profile; '
+    'do not change just the size or amplitude of a failed method.')
+ format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions,forbidden_methods) if a.cpu_compact else 'json'
  payload={'model':a.model,'stream':False,'think':False,'format':format_spec,
   'options':{'temperature':0.25,'num_predict':a.num_predict,'num_ctx':a.num_ctx},
   'messages':[{'role':'system','content':role.decode('utf8')},
@@ -255,7 +263,7 @@ def main():
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
-   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'rejected_visual_cycle_evidence':failures,'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'rejected_visual_cycle_evidence':failures,'forbidden_visual_failure_methods':sorted(forbidden_methods),'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
