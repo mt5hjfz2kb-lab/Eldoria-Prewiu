@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: 2bec82605603b56f173e3b210c710ba24e6d81ea
+      ART_CORE_SHA: eed73646eeb267d3205804968c81340e8f9f6898
       SOURCE_RUN: '38356683511'
       SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
