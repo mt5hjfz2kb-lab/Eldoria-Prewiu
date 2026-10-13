@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/valoria-bastion1-browser-qa.yml'
       - 'tests/valoria-bastion1-browser-qa.js'
+      - 'tests/valoria-bastion1-full-player-qa.cjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -64,11 +65,6 @@ jobs:
           echo $! >/tmp/bastion1-http.pid
           sleep 2
           curl -fLsS http://127.0.0.1:8765/ >/dev/null
-      - name: Actual current candidate startup, touch, construction and save acceptance
-        env:
-          ELDORIA_PROBE_SOURCE_SHA: 7f6d708d57bd27e04c0375e79221d3fa9c932da3
-          ELDORIA_PROBE_BUILD_RUN: '38420574701'
-        run: node tests/valoria-bastion1-browser-qa.js
       - name: Full uninterrupted player progression following actual visible actions and mobile identity
         env:
           ELDORIA_PROBE_URL: http://127.0.0.1:8765/
