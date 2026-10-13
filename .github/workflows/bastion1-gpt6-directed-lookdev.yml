@@ -39,6 +39,11 @@ jobs:
           assert inspected['source_sha256']=='4140260c3bc7af67d7317ca8a13065835d4cc903307db519794457dcfd6a7880'
           print('GPT6_UNMODIFIED_SOURCE_CONFIRMED',inspected['source_sha256'])
           PY
+      - name: Restore canonical artistic camera visibility library from verified main
+        run: |
+          git fetch --no-tags --depth=1 origin 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745
+          git show 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745:tools/art-direction/ai-authoring/visibility_metrics.py > tools/art-direction/ai-authoring/visibility_metrics.py
+          python3 -m py_compile tools/art-direction/ai-authoring/visibility_metrics.py
       - name: Install free Blender for real camera-locked A/B
         run: |
           sudo apt-get update -qq
@@ -51,6 +56,7 @@ jobs:
             --target "$TARGET" --out "$ROOT/edited"
       - name: Actual same-camera clay BEFORE/AFTER, not synthetic screenshot
         run: |
+          export PYTHONPATH="$GITHUB_WORKSPACE/tools/art-direction/ai-authoring"
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
             --before "$ROOT/source/terrain-source.blend" --after "$ROOT/edited/artist-output.blend" \
             --target "$TARGET" --player-camera --out "$ROOT/ab"
@@ -65,10 +71,18 @@ jobs:
           assert original.shape==edited.shape
           mask=(np.max(np.abs(edited-original),axis=2)>=8)
           fraction=float(mask.mean())
+          # An unchanged foreground centre is NOT a meaningful player-view fix,
+          # even if the lower edge changes >0.1% of the whole image.
+          focus=mask[115:360,80:560]
+          focus_fraction=float(focus.mean())
+          print('PLAYER_CENTRE_CAMERA_FRACTION',focus_fraction)
+          if focus_fraction<.003:
+              raise ValueError('CENTRAL_ART_FAIL: still changing only outer/bottom pixels')
           proof=json.loads((root/'edited/gpt6-art-direction.json').read_text())
           assert not proof['art_approved'] and not proof['unity_verified']
           out={'changed_pixels':int(mask.sum()),'total_pixels':int(mask.size),
             'changed_fraction':fraction,'required_changed_fraction':0.001,
+            'central_changed_fraction':focus_fraction,'required_central_fraction':0.003,
             'camera_proof':'Blender locked player camera, clay only; not Unity nor ART_APPROVED',
             'original_png_sha256':hashlib.sha256((root/'ab/before-blender-clay.png').read_bytes()).hexdigest(),
             'edited_png_sha256':hashlib.sha256((root/'ab/after-blender-clay.png').read_bytes()).hexdigest(),
