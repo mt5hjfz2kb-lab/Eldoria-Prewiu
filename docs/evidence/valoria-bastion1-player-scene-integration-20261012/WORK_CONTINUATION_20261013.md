@@ -2,6 +2,17 @@
 
 Objetivo: continuar la integración existente hasta escena jugable cercana a la referencia, con colores correctos, autoría IA real y prueba de jugador. 0 € / ningún crédito de pago. NO declarar ART PASS ni 8/10 por CI verde.
 
+## Estado vigente — prevalece sobre la cronología inferior
+- HEAD exacto de código/QA:55b9eddd7c130f68e39d4ccc41504423fc15f9eb. Esta actualización sólo conserva evidencias.
+- Última Unity38419031491 SUCCESS/sourcecf1f7bc69ff832f917fa9e41285ba6c809c320ac: perfil ligero, aserradero izquierda, camino/escalera unidos. Frames11826196119/full11825492257.
+- Última WebGL38420574701 SUCCESS/source7f6d708d57bd27e04c0375e79221d3fa9c932da3/artifact11826517753, perfil nativo exacto. No compilar de nuevo.
+- QA básica exacta38421408687 **PASS**: startup/pan/selección/construcción/bloqueoCuartel/mundo/regreso/recarga/reset,0 errores. Reporte y capturas reales durables en webgl-38421408687/ de esta carpeta. Se inspeccionó PNG inicial real: escena integrada/césped/road/stairs presentes; composición global y UI aún lejos de referencia, NO ART PASS.
+- Run38421408687 global FAILURE por full harness: Reset first touch neither armed confirmation nor executed reset. JSON contiene ELDORIA_PLAYABLE_RESET armed=True después de límite2.5s; no se reprodujo fallo funcional de reset (basic lo superó). Se cambió espera a15s, sin tocar gameplay/reloj/economía ni añadir estado.
+- QA full exacta reanudada38422576301/source55b9eddd7c130f68e39d4ccc41504423fc15f9eb, sólo gate pendiente; basic ya superada no se repite. Recuperar jobs/logs/artifact.
+- Runner Windows: último trabajo compilación completado; lease del workstream sigue windows-runner-heavy/valoria-player-scene. Ubuntu ejecuta full QA. No consumir runner en assets históricos.
+- Siguiente acción ejecutable: recuperar38422576301, corregir fallo concreto si aparece; inspeccionar capturas ambas orientaciones y conservar evidencia/relevo. Después sólo tareas de integración actuales permitidas; no nuevos experimentos ni ramas.
+- Pendiente artístico: paisaje/agua/puente/acantilado, detalle/contactos y composición/UI respecto a referencia. No8/10, no publicación/main. Emulación Chromium/touch es prueba automatizada sobre juego real, no humano ni dispositivo físico.
+
 ## Rama y titularidad
 - Rama única: integration/valoria-bastion1-player-scene-20261012.
 - Owner actual: work-owner-authorized-bastion1-continuation-20261013.

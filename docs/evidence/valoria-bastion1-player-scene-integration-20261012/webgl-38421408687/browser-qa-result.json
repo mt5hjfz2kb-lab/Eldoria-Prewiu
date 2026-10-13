@@ -1,0 +1,369 @@
+{
+  "exactBuildRun": 38420574701,
+  "sourceSha": "7f6d708d57bd27e04c0375e79221d3fa9c932da3",
+  "webglBuildPass": true,
+  "browserStartupPass": true,
+  "cameraPanPass": true,
+  "sawmillSelectionPass": true,
+  "sawmillBuildPass": true,
+  "barracksLockedPass": true,
+  "worldEnteredPass": true,
+  "worldReturnPass": true,
+  "reloadPass": true,
+  "resetPass": true,
+  "zeroFatalErrors": true,
+  "visualPass": false,
+  "physicalPhonePass": false,
+  "checks": [
+    {
+      "startup": true,
+      "state": {
+        "tag": "scene-loaded",
+        "scene": "ValoriaWebGL",
+        "revision": 0,
+        "wood": 230,
+        "stone": 150,
+        "sawmill": 0,
+        "bastion": 1,
+        "barracks": 0
+      }
+    },
+    {
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 844,
+        "height": 390
+      },
+      "canvasInfo": {
+        "width": 844,
+        "height": 390
+      }
+    },
+    {
+      "canvasFullyVisible": true
+    },
+    {
+      "shot": "01-initial-landscape",
+      "pinkRatio": 0,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "panLogCount": 98
+    },
+    {
+      "shot": "02-pan-home",
+      "pinkRatio": 0,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "sawmillTarget": {
+        "x": 302.7,
+        "y": 174.7
+      }
+    },
+    {
+      "buildingAction": {
+        "x": 302.7,
+        "y": 254.69999999999996
+      }
+    },
+    {
+      "shot": "03-sawmill-selection",
+      "pinkRatio": 0,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "sawmillRevisionBefore": 0,
+      "after": 1,
+      "sawmillBuildPass": true
+    },
+    {
+      "barracksTarget": {
+        "x": 523.9,
+        "y": 222.3
+      },
+      "bastionLevel": 1,
+      "barracksLevel": 0,
+      "blockedBy": "NO_SELECTABLE_PANEL",
+      "disabledAction": true,
+      "deniedCommand": true,
+      "barracksLockedPass": true
+    },
+    {
+      "worldNav": {
+        "x": 631.5,
+        "y": 364
+      }
+    },
+    {
+      "shot": "04-world",
+      "pinkRatio": 0.02620610037671649,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "cityNav": {
+        "x": 213.5,
+        "y": 358
+      }
+    },
+    {
+      "shot": "05-reload",
+      "pinkRatio": 0,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "resetButton": {
+        "x": 800,
+        "y": 75
+      },
+      "armed": true,
+      "executed": true,
+      "resetPass": true
+    }
+  ],
+  "errors": [],
+  "events": [
+    "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n",
+    "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n",
+    "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n",
+    "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n",
+    "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.525 y=49.000 z=76.621 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.525 y=49.000 z=76.621 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.525 y=49.000 z=76.621 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.051 y=49.000 z=77.242 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.051 y=49.000 z=77.242 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-27.576 y=49.000 z=77.863 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-27.576 y=49.000 z=77.863 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-26.102 y=49.000 z=78.484 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-26.102 y=49.000 z=78.484 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-26.102 y=49.000 z=78.484 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-24.504 y=49.000 z=79.156 dx=13.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-24.504 y=49.000 z=79.156 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-24.504 y=49.000 z=79.156 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-23.029 y=49.000 z=79.777 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-23.029 y=49.000 z=79.777 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-23.029 y=49.000 z=79.777 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-21.555 y=49.000 z=80.398 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-21.555 y=49.000 z=80.398 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-21.555 y=49.000 z=80.398 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-20.080 y=49.000 z=81.019 dx=12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-20.080 y=49.000 z=81.019 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-20.080 y=49.000 z=81.019 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-20.000 y=49.000 z=81.691 dx=13.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-20.000 y=49.000 z=81.691 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-20.000 y=49.000 z=81.691 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-21.598 y=49.000 z=81.019 dx=-13.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-21.598 y=49.000 z=81.019 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-21.598 y=49.000 z=81.019 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-23.072 y=49.000 z=80.398 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-23.072 y=49.000 z=80.398 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-23.072 y=49.000 z=80.398 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-24.547 y=49.000 z=79.777 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-24.547 y=49.000 z=79.777 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-24.547 y=49.000 z=79.777 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-26.021 y=49.000 z=79.156 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-26.021 y=49.000 z=79.156 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-26.021 y=49.000 z=79.156 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-27.619 y=49.000 z=78.484 dx=-13.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-27.619 y=49.000 z=78.484 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-27.619 y=49.000 z=78.484 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.093 y=49.000 z=77.863 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.093 y=49.000 z=77.863 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.093 y=49.000 z=77.863 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.568 y=49.000 z=77.242 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.568 y=49.000 z=77.242 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.043 y=49.000 z=76.621 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.043 y=49.000 z=76.621 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.517 y=49.000 z=76.000 dx=-12.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.517 y=49.000 z=76.000 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.517 y=49.000 z=76.000 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.052 y=49.000 z=74.894 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.052 y=49.000 z=74.894 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.052 y=49.000 z=74.894 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.586 y=49.000 z=73.788 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.586 y=49.000 z=73.788 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.586 y=49.000 z=73.788 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.120 y=49.000 z=72.682 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.120 y=49.000 z=72.682 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.120 y=49.000 z=72.682 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.655 y=49.000 z=71.576 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.655 y=49.000 z=71.576 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.655 y=49.000 z=71.576 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.189 y=49.000 z=70.470 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.189 y=49.000 z=70.470 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.189 y=49.000 z=70.470 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.723 y=49.000 z=69.364 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.723 y=49.000 z=69.364 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.723 y=49.000 z=69.364 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.258 y=49.000 z=68.258 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.258 y=49.000 z=68.258 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.258 y=49.000 z=68.258 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.792 y=49.000 z=67.152 dx=0.0 dy=-9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.792 y=49.000 z=67.152 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-29.792 y=49.000 z=67.152 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.258 y=49.000 z=68.258 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.258 y=49.000 z=68.258 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.258 y=49.000 z=68.258 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.723 y=49.000 z=69.364 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.723 y=49.000 z=69.364 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-30.723 y=49.000 z=69.364 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.189 y=49.000 z=70.470 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.189 y=49.000 z=70.470 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.189 y=49.000 z=70.470 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.655 y=49.000 z=71.576 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.655 y=49.000 z=71.576 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-31.655 y=49.000 z=71.576 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.120 y=49.000 z=72.682 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.120 y=49.000 z=72.682 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.120 y=49.000 z=72.682 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.586 y=49.000 z=73.788 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.586 y=49.000 z=73.788 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-32.586 y=49.000 z=73.788 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.052 y=49.000 z=74.894 dx=0.0 dy=9.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.052 y=49.000 z=74.894 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.052 y=49.000 z=74.894 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.466 y=49.000 z=75.877 dx=0.0 dy=8.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.466 y=49.000 z=75.877 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_TOUCH_PAN x=-33.466 y=49.000 z=75.877 dx=0.0 dy=0.0\n",
+    "ELDORIA_PLAYABLE_HOME production=1\n",
+    "ELDORIA_PLAYABLE_UI id=buildingAction x=302.7 y=135.3 enabled=True visible=True label=RECONSTRUIR\n",
+    "ELDORIA_PLAYABLE_UI id=buildingClose x=302.7 y=95.3 enabled=True visible=True label=CERRAR\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=523.9 y=222.3\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n",
+    "ELDORIA_PLAYABLE_COMMAND kind=Build target=sawmill ok=True revision=1\n",
+    "ELDORIA_PLAYABLE_STATE tag=command-Build-sawmill scene=ValoriaWebGL revision=1 wood=150 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=False visible=True label=OBRA EN CURSO · 3 s\n",
+    "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=SALIR AL BOSQUE\n",
+    "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=Frontier revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n",
+    "ELDORIA_PLAYABLE_UI id=home x=371.0 y=356.0 enabled=True visible=True label=CENTRAR\n",
+    "ELDORIA_PLAYABLE_UI id=cityNav x=213.5 y=32.0 enabled=True visible=True label=⌂\nCIUDAD\n",
+    "ELDORIA_PLAYABLE_UI id=worldNav x=630.5 y=32.0 enabled=True visible=True label=◎\nMUNDO\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=120.9 enabled=True visible=True label=RECOLECTAR MADERA\n",
+    "ELDORIA_PLAYABLE_UI id=reset x=795.0 y=295.0 enabled=True visible=True label=REINICIAR\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=120.9 enabled=True visible=True label=RECOLECTAR MADERA\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=387.0 y=124.0\n",
+    "ELDORIA_PLAYABLE_NAV target=Frontier city=False\n",
+    "ELDORIA_PLAYABLE_NAV target=Valoria city=False\n",
+    "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n",
+    "ELDORIA_PLAYABLE_UI id=home x=366.0 y=364.7 enabled=True visible=True label=CENTRAR\n",
+    "ELDORIA_PLAYABLE_UI id=cityNav x=213.5 y=29.3 enabled=True visible=True label=⌂\nCIUDAD\n",
+    "ELDORIA_PLAYABLE_UI id=worldNav x=630.5 y=29.3 enabled=True visible=True label=◎\nMUNDO\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=SALIR AL BOSQUE\n",
+    "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=SALIR AL BOSQUE\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n",
+    "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n",
+    "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n",
+    "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n",
+    "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=SALIR AL BOSQUE\n",
+    "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=SALIR AL BOSQUE\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n",
+    "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n",
+    "ELDORIA_PLAYABLE_RESET armed=True\n",
+    "ELDORIA_PLAYABLE_RESET fallback=True armed=True\n",
+    "ELDORIA_PLAYABLE_RESET execute=True serial=1\n",
+    "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n",
+    "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n",
+    "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n",
+    "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n",
+    "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n",
+    "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+  ],
+  "state": [
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0
+    },
+    {
+      "tag": "command-Build-sawmill",
+      "scene": "ValoriaWebGL",
+      "revision": 1,
+      "wood": 150,
+      "stone": 150,
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0
+    },
+    {
+      "tag": "advance",
+      "scene": "ValoriaWebGL",
+      "revision": 2,
+      "wood": 270,
+      "stone": 150,
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "Frontier",
+      "revision": 2,
+      "wood": 270,
+      "stone": 150,
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 2,
+      "wood": 270,
+      "stone": 150,
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 2,
+      "wood": 270,
+      "stone": 150,
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0
+    }
+  ],
+  "shots": [
+    "bastion1-browser-evidence/01-initial-landscape.png",
+    "bastion1-browser-evidence/02-pan-home.png",
+    "bastion1-browser-evidence/03-sawmill-selection.png",
+    "bastion1-browser-evidence/04-world.png",
+    "bastion1-browser-evidence/05-reload.png"
+  ],
+  "accepted": true
+}

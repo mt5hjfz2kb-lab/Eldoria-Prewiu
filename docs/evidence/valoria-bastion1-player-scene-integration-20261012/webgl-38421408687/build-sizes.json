@@ -1,0 +1,25 @@
+{
+  "source_sha": "7f6d708d57bd27e04c0375e79221d3fa9c932da3",
+  "run_id": 38420574701,
+  "total_bytes": 187634279,
+  "files": {
+    "candidate-native-provenance.json": 698,
+    "index.html": 5678,
+    "Build/Bastion1MeshCandidateWebGL.framework.js.unityweb": 86002,
+    "Build/Bastion1MeshCandidateWebGL.wasm.unityweb": 11815342,
+    "Build/Bastion1MeshCandidateWebGL.data.unityweb": 175664796,
+    "Build/Bastion1MeshCandidateWebGL.loader.js": 47867,
+    "TemplateData/MemoryProfiler.png": 665,
+    "TemplateData/unity-logo-light.png": 3077,
+    "TemplateData/progress-bar-full-dark.png": 74,
+    "TemplateData/progress-bar-empty-dark.png": 96,
+    "TemplateData/unity-logo-dark.png": 3042,
+    "TemplateData/unity-logo-title-footer.png": 1151,
+    "TemplateData/fullscreen-button.png": 175,
+    "TemplateData/favicon.ico": 2305,
+    "TemplateData/webmemd-icon.png": 1670,
+    "TemplateData/progress-bar-empty-light.png": 109,
+    "TemplateData/style.css": 1448,
+    "TemplateData/progress-bar-full-light.png": 84
+  }
+}
