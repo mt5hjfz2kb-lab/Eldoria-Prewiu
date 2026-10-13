@@ -36,9 +36,11 @@ namespace Eldoria.EditorTools
 
             // The bridge/gate and axial stairs remain empty transit space. The
             // buildable sawmill is placed to the left of the open middle court.
-            var sawmill0=await Import("SawmillState0V1",new Vector3(-16f,0f,3f),8.5f);
-            var sawmill1=await Import("SawmillState1V1",new Vector3(-16f,0f,3f),8.5f);
-            var sawmill2=await Import("SawmillState2V1",new Vector3(-16f,0f,3f),8.5f);
+            // This camera looks from negative X: screen-left is positive Unity X.
+            // glTF mirrors source X; keep models AND selection proxies consistent.
+            var sawmill0=await Import("SawmillState0V1",new Vector3(16f,0f,3f),8.5f);
+            var sawmill1=await Import("SawmillState1V1",new Vector3(16f,0f,3f),8.5f);
+            var sawmill2=await Import("SawmillState2V1",new Vector3(16f,0f,3f),8.5f);
             sawmill0.transform.SetParent(visual.transform,true);
             sawmill1.transform.SetParent(visual.transform,true);
             sawmill2.transform.SetParent(visual.transform,true);
@@ -47,7 +49,7 @@ namespace Eldoria.EditorTools
 
             // The barracks parcel stays empty in Bastion I. Its existing model
             // appears only after the Bastion II unlock and construction completes.
-            var barracks=await Import("Valoria_Cuartel_AP2_v1",new Vector3(16f,0f,3f),8.5f);
+            var barracks=await Import("Valoria_Cuartel_AP2_v1",new Vector3(-16f,0f,3f),8.5f);
             barracks.transform.SetParent(visual.transform,true);
             barracks.SetActive(false);
             // Defer all native asset registration until glTFast has finished loading every
@@ -73,9 +75,9 @@ namespace Eldoria.EditorTools
             finally { AssetDatabase.StopAssetEditing(); }
             Debug.Log("BASTION1_PARCEL_ASSETS_PERSISTED");
             var sawmillTarget=Target("InteractiveProxy_LeftCabinParcel","sawmill",
-                new Vector3(-16f,1.1f,3f),new Vector3(10f,2.2f,9f),visual.transform);
-            var barracksTarget=Target("InteractiveProxy_RightCampParcel","barracks",
                 new Vector3(16f,1.1f,3f),new Vector3(10f,2.2f,9f),visual.transform);
+            var barracksTarget=Target("InteractiveProxy_RightCampParcel","barracks",
+                new Vector3(-16f,1.1f,3f),new Vector3(10f,2.2f,9f),visual.transform);
             Target("InteractiveProxy_Bastion","bastion",
                 new Vector3(0f,5f,-21f),new Vector3(19f,10f,9f),visual.transform);
 

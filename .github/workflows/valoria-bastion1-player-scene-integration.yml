@@ -13,7 +13,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-bastion1-player-integration
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   assemble-and-capture:
     if: vars.UNITY_RUNNER_READY == 'true'
