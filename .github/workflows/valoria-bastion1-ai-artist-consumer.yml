@@ -8,7 +8,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: bastion1-art-artist-consumer
+  group: bastion1-art-artist-qwen4b-fallback
   cancel-in-progress: false
 jobs:
   qwen-directed-geometry:
