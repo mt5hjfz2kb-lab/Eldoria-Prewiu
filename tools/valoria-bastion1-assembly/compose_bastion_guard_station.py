@@ -79,20 +79,6 @@ for old in platform:
  obj=old.copy();obj.data=old.data;obj.parent=None;obj.matrix_world=trans @ old.matrix_world
  obj.name='Bastion I reused guard station paving %02d'%instances
  bpy.context.collection.objects.link(obj);instances+=1
-# A genuine three-dimensional reused flagstone connector unifies the roof
-# with its existing adjacent medieval supply handling terrace. This is not a
-# secondary decal road and does not enter the protected x=-7..+7 axial strip.
-connx,conny,connwidth,conndepth=-15.40,-10.95,4.60,2.50
-if connx+connwidth/2 >= -7:raise RuntimeError('Connector would enter protected central route')
-conn_anchor=(Matrix.Translation(Vector((connx,conny,z_at(connx,conny)-.022)))
- @ Matrix.Diagonal(Vector((connwidth/max(.01,ps.x),conndepth/max(.01,ps.y),min(1,.24/max(.01,ps.z)),1)))
- @ Matrix.Translation(Vector((-(plo.x+phi.x)/2,-(plo.y+phi.y)/2,-plo.z))))
-reused_connector_paving_meshes=0
-for old in platform:
- obj=old.copy();obj.data=old.data;obj.parent=None
- obj.matrix_world=conn_anchor @ old.matrix_world
- obj.name='Bastion I reused stone connection to western supply terrace %02d'%reused_connector_paving_meshes
- bpy.context.collection.objects.link(obj);reused_connector_paving_meshes+=1
 # Sparse framed guard sign: 2 posts + 1 lintel, weathered timber from the
 # pre-existing practical kit material if available; fallback a neutral color.
 wood=next((m for o in kit for m in o.data.materials if m and ('wood' in m.name.lower() or 'oak' in m.name.lower())),None)
@@ -167,14 +153,10 @@ masonry('Bastion I integrated west wall rear masonry return',
 # Side wing walls frame the original shelter and form a legible medieval bay.
 # No central route or future building parcel is occupied.
 for dx in (-3.88,3.88):
- # Retain the original western enclosure. Open the eastern front of the
- # compound into the adjoining real supply terrace, rather than building a
- # blind stone wall that blocks circulation from the roof to the crane yard.
- wing_y,wing_depth=(-9.24,2.17) if dx>0 else (-10.65,4.5)
  masonry('Bastion I guard compound stone wing',
- (cx+dx,wing_y,cz+.77),(.72,wing_depth,1.55))
+ (cx+dx,-10.65,cz+.77),(.72,4.5,1.55))
  masonry('Bastion I stone wing cap',
- (cx+dx,wing_y,cz+1.59),(.90,wing_depth+.12,.18))
+ (cx+dx,-10.65,cz+1.59),(.90,4.62,.18))
 # The masonry threshold makes the courtyard-side entrance read as a single
 # architectural compound, not an object floating over the grass.
 masonry('Bastion I guard compound stone threshold',
@@ -212,7 +194,7 @@ for old in pier_kit:
 # Real Qwen decision excerpts (runs 38479509741 and 38480277880):
 # stepped buttressed masonry transition + cliff-rock footing + existing bush.
 # Meshes, proportions and placements remain deterministic Blender work.
-for bx,by in ((cx-3.76,-10.25),(cx+3.76,-9.43)):
+for bx,by in ((cx-3.76,-10.25),(cx+3.76,-10.25)):
  masonry('Bastion I stepped masonry wall connection buttress lower',
          (bx,by,cz+.57),(.95,1.35,1.16))
  masonry('Bastion I stepped masonry wall connection buttress upper',
@@ -257,8 +239,8 @@ bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=Fal
 proof={'ai_proposal_sha256':hashlib.sha256(proposal_path.read_bytes()).hexdigest(),
  'ai_authorship':('curated excerpts from two genuine but incomplete local Qwen responses; every mesh implementation deterministic Blender' if proposal.get('_provenance',{}).get('mode')=='curated_excerpts_from_two_incomplete_real_qwen_inferences' else 'concept/site from original Qwen inference; geometry implementation deterministic Blender'),
  'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),'reused_connector_paving_meshes':reused_connector_paving_meshes,
- 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'reused_wall_connection_pier_meshes':reused_wall_connection_pier_meshes,'reused_junction_rock_meshes':reused_rock_meshes,'reused_junction_bush_meshes':1,'roof_panels':2,'road_clearance_m':min(abs(cx)-4.25-7,abs(connx)-connwidth/2-7),'existing_source_meshes_modified':False,
- 'new_resource_nodes':0,'architectural_integration':'western masonry return and wings, actual reused wall_connections masonry buttress, stone flagstone terrace connector and open east access, stepped ground buttresses, Qwen-selected original cliff rock and bush; deterministic execution','art_approved':False}
+ 'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),
+ 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'reused_wall_connection_pier_meshes':reused_wall_connection_pier_meshes,'reused_junction_rock_meshes':reused_rock_meshes,'reused_junction_bush_meshes':1,'roof_panels':2,'road_clearance_m':abs(cx)-4.25-7,'existing_source_meshes_modified':False,
+ 'new_resource_nodes':0,'architectural_integration':'western masonry return and wings, actual reused wall_connections masonry buttress, stepped ground buttresses, Qwen-selected original cliff rock and bush; deterministic execution','art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_AI_PROPOSED_GUARD_STATION',json.dumps(proof))
