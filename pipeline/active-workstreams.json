@@ -65,7 +65,9 @@
         ".github/workflows/valoria-bastion1-qwen-finishing.yml",
         ".github/workflows/valoria-bastion1-ai-mesh-city-merge.yml",
         ".github/workflows/valoria-bastion1-browser-qa.yml",
-        "tests/valoria-bastion1-*"
+        "tests/valoria-bastion1-*",
+        ".github/workflows/valoria-bastion1-exact-candidate-build.yml",
+        "pipeline/valoria-bastion1-candidate-build-request.json"
       ],
       "resources": [
         "valoria-player-scene",
@@ -78,7 +80,7 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Full touch I-II QA passed exact c531 build. Genuine Qwen8B sculpture merged with zero protected cells changed; matched Unity AFTER needs canonical URP recovery. Genuine Qwen finishing executing.",
+      "phase": "Genuine Qwen rock brush and RGB palette integrated in real Unity. Existing RoadFamilyV1 reused. Stair terrain clearance undergoing final native capture; isolated exact-native WebGL build prepared.",
       "resumed_at": "2026-10-13T12:02:09.263Z",
       "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job.",
       "last_verified": {
@@ -91,13 +93,17 @@
         "full_player_qa_run": 38399110721,
         "full_player_qa_pass": true,
         "masked_qwen_merge_run": 38403329338,
-        "masked_qwen_artifact": 11816670641
+        "masked_qwen_artifact": 11816670641,
+        "native_finishing_run": 38409530725,
+        "native_finishing_source_sha": "136ec0fcd70de9ed5a8d9bf6a630803ea3b518b4",
+        "artist_rgb_confirmed_in_unity": true,
+        "road_contact_pass": true
       },
       "continuation_document": {
         "branch": "integration/valoria-bastion1-player-scene-20261012",
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
-      "next": "Repair repeated native capture URP binding; recover actual Unity A/B. Recover genuine artist finishing 38404956232, verify raw plan and execute unchanged; exact Unity native/gameplay gates still open."
+      "next": "Recover 38412903213 and inspect full road-stair continuity. Then build that exact serialized native scene without repeating inference/assembly/rendering; exact touch I-II QA and visual target still open."
     }
   ],
   "history": [
