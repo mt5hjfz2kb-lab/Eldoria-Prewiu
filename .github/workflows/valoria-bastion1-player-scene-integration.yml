@@ -200,7 +200,7 @@ jobs:
           & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/compose_bastion_courtyard.py -- $src $out
           if($LASTEXITCODE -ne 0){throw 'Courtyard Blender composition failed'}
           $proof=Get-Content ([System.IO.Path]::ChangeExtension($out,'.proof.json')) -Raw | ConvertFrom-Json
-          if($proof.secondary_paths -ne 0 -or $proof.ground_islands -ne 0 -or $proof.new_resource_nodes -ne 0 -or $proof.existing_mesh_coordinates_modified){throw 'Courtyard gameplay/art constraints failed'}
+          if($proof.secondary_paths -ne 0 -or $proof.ground_islands -ne 0 -or $proof.new_resource_nodes -ne 0 -or $proof.reused_bushes -ne 12 -or $proof.existing_mesh_coordinates_modified){throw 'Courtyard gameplay/art constraints failed'}
           Copy-Item $out $src -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $src
           if($LASTEXITCODE -ne 0){throw 'Courtyard material bindings failed'}
