@@ -103,10 +103,26 @@ def main():
   if topology.get('schema_version')!=1 or topology.get('target')!=a.target_object or not isinstance(topology.get('boundary_loops'),list):raise ValueError('Mesh topology manifest target/schema mismatch')
   mesh_context_sha=digest(mesh_context.encode('utf8'))
  if a.cpu_compact and a.mesh_context:
+  # The camera enters Valoria from SOUTH (negative local Y). Earlier Qwen
+  # repeatedly edited invisible extreme corners because a naive [:16] anchor
+  # selection spent its whole context on AABB extremes and far-away vertices.
+  # Prefer VERIFIED source vertices on the front-facing slope, but NEVER
+  # fabricate center/radius/delta or replace model-authored coordinates.
+  anchors=topology.get('sample_vertices',[])
+  def front_priority(anchor):
+   role=anchor.get('role','') if isinstance(anchor,dict) else ''
+   if role.startswith('negative_y_cliff_'):return 0
+   if role=='southern_join':return 1
+   if role in ('mid_slope_center','center_mass'):return 2
+   if role=='playable_crest_center':return 3
+   if role.startswith('positive_y_cliff_'):return 5
+   return 4
+  highlighted=sorted(anchors,key=front_priority)[:14]
   compact={'schema_version':topology['schema_version'],'source_sha256':topology.get('source_sha256'),
    'target':topology['target'],'vertices':topology.get('vertices'),'faces':topology.get('faces'),
    'local_aabb':topology.get('local_aabb'),'dimensions':topology.get('dimensions'),
-   'sample_vertices':topology.get('sample_vertices',[])[:16],
+   'sample_vertices':highlighted,
+   'camera_axis_hint':'The player views this scene from SOUTH (negative Y). Positions labelled negative_y_cliff_* are genuine Blender vertices selected on the foreground scarp; design a visible change from their coordinates, protect plateau and paths.',
    'boundary_loops':topology['boundary_loops'][:4]}
   # Verification still uses the FULL on-disk topology; no unproven loop may be used.
   mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
@@ -155,7 +171,7 @@ def main():
    'Choose sculpt_region {center:[x,y,z],radius:meters,delta:[x,y,z]}, '
    'sculpt_path {knots:[{center:[x,y,z],radius:meters,delta:[x,y,z]},...]}, '
    'or reprofile_crest {axis:x|y,height_axis:y|z,control_points:[[pos,height],...],band_min,band_max}. '
-   'The topological anchors are OBJECT-LOCAL coordinates. Do not infer shape purely from words: compare both IMAGES. '
+   'The topological anchors are OBJECT-LOCAL coordinates. Prefer genuine NEGATIVE-Y FOREGROUND slope anchors, not the minimal-Z base or far corner. Use the actual player-camera IMAGE for visibility; protect play space. Do not infer shape purely from words: compare both IMAGES. '
    f'EXACT existing mesh target: {a.target_object}. Never create another mesh in this run. '
    f'Available real sources: {inventory[:1000]}. Failed attempts learned: {memory[-650:]}. '
    f'Actual mesh geometry: {mesh_context_for_artist[:5000]}. '
