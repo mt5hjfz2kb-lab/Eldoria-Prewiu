@@ -56,6 +56,8 @@ namespace Eldoria.AssetLibrary.Editor
                     throw new InvalidOperationException("Source SHA mismatch or GLB missing: " + e.id);
                 var model = AssetDatabase.LoadAssetAtPath<GameObject>(unityAssetPath);
                 if (model == null) throw new InvalidOperationException("glTF imported GameObject missing: " + e.id);
+                if (model.GetComponentsInChildren<MonoBehaviour>(true).Length != 0)
+                    throw new InvalidOperationException("Source has gameplay scripts and cannot enter a visual-only prefab: " + e.id);
 
                 var wrapper = new GameObject("Eldoria selected visual · " + e.id);
                 try
