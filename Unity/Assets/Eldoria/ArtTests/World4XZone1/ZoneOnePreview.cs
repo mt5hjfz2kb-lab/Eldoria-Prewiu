@@ -23,8 +23,8 @@ namespace Eldoria.World4XPrototype
         Vector3 target;
         void Start()
         {
-            var shader=Shader.Find("Universal Render Pipeline/Unlit");
-            if(shader==null)shader=Shader.Find("Unlit/Color");
+            var shader=Shader.Find("Sprites/Default");
+            if(shader==null)shader=Shader.Find("Universal Render Pipeline/Unlit");
             material=new Material(shader);
             material.enableInstancing=true;
             var pivot=new GameObject("Zone 1 camera pivot");
@@ -69,7 +69,8 @@ namespace Eldoria.World4XPrototype
             cameraPivot.position=target;
             view.orthographicSize=zoom;
             needed.Clear();
-            foreach(var key in world.VisibleChunks(target,chunkRadius))
+            int visibleRadius=Mathf.Max(chunkRadius,Mathf.CeilToInt(zoom*2.5f/(ZoneOneWorld.ChunkSize*ZoneOneWorld.CellWorldSize))+1);
+            foreach(var key in world.VisibleChunks(target,visibleRadius))
             {
                 needed.Add(key);
                 if(!loaded.ContainsKey(key))loaded[key]=BuildChunk(key.x,key.y);
