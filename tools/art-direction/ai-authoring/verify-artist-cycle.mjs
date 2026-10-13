@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import {certifyUnityAB} from './unity_pixel_diff.mjs';
 export const APPROVED=new Set(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED']);
 const GEOMETRY=new Set(['sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh']);
 const ACTIONS=new Set([...GEOMETRY,'assign_material','place_existing_asset']);
@@ -159,6 +160,24 @@ export function verifyCycle(c,root=process.cwd()){
     'no demonstrable geometry or material/composition change');
  }
  need(c?.unity?.same_camera===true&&SHA.test(c?.unity?.camera_matrix_sha256||''),'matched-camera Unity A/B required');
+ // ART_APPROVED must have real camera-visible merit, not merely two hashed files
+ // and a self-declared visual verdict. The actual image bytes are examined.
+ const readUnityFrame=(entry)=>{
+  if(!entry?.path||!SHA.test(entry.sha256||''))throw Error('Missing Unity PNG + SHA256');
+  const full=path.resolve(root,entry.path),base=path.resolve(root)+path.sep;
+  if(!full.startsWith(base))throw Error('Unity A/B path outside repository');
+  const real=fs.realpathSync(full),safe=fs.realpathSync(root)+path.sep;
+  if(!real.startsWith(safe))throw Error('Unity A/B symlink escapes repository');
+  const bytes=fs.readFileSync(real);
+  if(crypto.createHash('sha256').update(bytes).digest('hex')!==entry.sha256.toLowerCase())
+    throw Error('Unity A/B camera frame hash mismatch');
+  return bytes;
+ };
+ try {
+  const review=certifyUnityAB(readUnityFrame(c?.unity?.before),readUnityFrame(c?.unity?.after));
+  need(review.gate==='INDEPENDENT_REVIEW_REQUIRED','Unity frame change too small for independent artistic review');
+ }catch(err){need(false,'Unity A/B material visual difference required: '+err.message);}
+
  need(c?.reviews?.technical?.verdict==='PASS','technical verification required');
  need(c?.reviews?.visual?.verdict==='PASS'&&c.reviews.visual.independent===true&&nonempty(c.reviews.visual.visible_difference),'independent visual review required');
  need(nonempty(c?.license?.provenance),'provenance/license evidence required');
