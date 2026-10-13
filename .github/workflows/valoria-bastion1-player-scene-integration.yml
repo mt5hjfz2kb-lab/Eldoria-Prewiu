@@ -19,7 +19,7 @@ jobs:
   assemble-and-capture:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 35
+    timeout-minutes: 55
     steps:
       - name: Expose installed Git
         shell: powershell
@@ -87,55 +87,31 @@ jobs:
           Add-Content $env:GITHUB_ENV "BASTION_PYTHON=$blenderPython"
           & $blenderPython tools/valoria-bastion1-assembly/stage.py $sourceInputDirectory
           if($LASTEXITCODE -ne 0){throw 'Frozen input staging failed'}
-      - name: Compose the two-level settlement with authored source assets
-        shell: powershell
-        run: |
-          $out=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
-          if(Test-Path $out){Remove-Item $out -Recurse -Force}
-          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Blender.log'
-          $err=Join-Path $env:RUNNER_TEMP 'Bastion1-Blender.err'
-          $blenderArguments=@('-b','--threads','6','--python-exit-code','1','--python',"$env:GITHUB_WORKSPACE/tools/valoria-bastion1-assembly/assemble.py",'--','--inputs',$env:BASTION_INPUTS,'--output',$out,'--samples','24')
-          $process=Start-Process $env:BASTION_BLENDER -ArgumentList $blenderArguments -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
-          if($process.ExitCode -ne 0){Get-Content $log -Tail 100;Get-Content $err -Tail 30;throw 'Blender assembly failed'}
-          if(-not (Test-Path "$out/manifest.json")){throw 'Assembly manifest missing'}
-          $dest="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource"
-          New-Item -ItemType Directory -Force $dest | Out-Null
-          Copy-Item "$out/Bastion1ReferenceAssembly.glb" "$dest/Bastion1ReferenceAssembly.glb" -Force
-          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/Bastion1ReferenceAssembly.glb"
-          if($LASTEXITCODE -ne 0){throw 'Explicit glTF defaults staging failed'}
-      - name: Obtain exact Qwen-authored complete city (no artist regeneration in Unity)
+      - name: Recover exact already-built city without repeating assembly or inference
         uses: actions/download-artifact@v4
         with:
           name: bastion1-qwen-full-city-38356460099
           run-id: 38356460099
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1VerifiedQwen
-      - name: Replace only candidate source GLB and editable Blender provenance
+      - name: Recover completed original CC0 material experiment
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-original-cc0-pbr-38388922583
+          run-id: 38388922583
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1ExistingCC0
+      - name: Stage exact existing full city for matched Unity baseline
         shell: powershell
         run: |
-          $root=Join-Path $env:RUNNER_TEMP 'Bastion1VerifiedQwen'
-          $src=Join-Path $root 'merged/Bastion1QwenScene.glb'
-          $blend=Join-Path $root 'merged/Bastion1QwenScene.blend'
-          $proof=Join-Path $root 'merged/integration-proof.json'
-          if(-not (Test-Path $src) -or -not (Test-Path $blend) -or -not (Test-Path $proof)){throw 'Verified full-scene authored artifacts missing'}
-          $p=Get-Content -Raw $proof | ConvertFrom-Json
-          $sourceHash=(Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant()
-          $blendHash=(Get-FileHash $blend -Algorithm SHA256).Hash.ToLowerInvariant()
-          if($sourceHash -ne $p.edited_glb_sha256 -or $blendHash -ne $p.edited_blend_sha256){throw 'Qwen authored source hashes mismatch'}
-          if($sourceHash -ne '3052ed2cc91e0dde177ec7bcca94254c3d3d2aacecb0e60101daa8f97e09f9bb'){
-            throw 'Expected exact PBR-preserving authored scene version; do not build stale grassy cliff'
-          }
-          if($p.changed_vertices -lt 20 -or $p.protected_cell_changes -ne 0 -or $p.visual_art_approved -ne $false){throw 'Model authorship safety gate failed'}
-          $sourceOut=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
-          $unityOut=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
-          New-Item -ItemType Directory -Force $sourceOut,$unityOut | Out-Null
-          Copy-Item $src (Join-Path $sourceOut 'Bastion1ReferenceAssembly.glb') -Force
-          Copy-Item $blend (Join-Path $sourceOut 'Bastion1ReferenceAssembly.blend') -Force
-          Copy-Item $src (Join-Path $unityOut 'Bastion1ReferenceAssembly.glb') -Force
-          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py (Join-Path $unityOut 'Bastion1ReferenceAssembly.glb')
-          if($LASTEXITCODE -ne 0){throw 'Recomputed authored GLB material binding failed'}
-          Copy-Item $proof (Join-Path $sourceOut 'qwen-integration-proof.json')
-          Write-Host "BASTION1_GENUINE_QWEN_SOURCE_STAGED run=38356460099 vertices=$($p.changed_vertices) sha=$sourceHash"
+          $src=Join-Path $env:RUNNER_TEMP 'Bastion1VerifiedQwen/merged/Bastion1QwenScene.glb'
+          $expected='3052ed2cc91e0dde177ec7bcca94254c3d3d2aacecb0e60101daa8f97e09f9bb'
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Existing full scene checksum changed'}
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item $src (Join-Path $dest 'Bastion1ReferenceAssembly.glb') -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py (Join-Path $dest 'Bastion1ReferenceAssembly.glb')
+          if($LASTEXITCODE -ne 0){throw 'Baseline material binding staging failed'}
       - name: Stage existing authored construction states and barracks
         shell: powershell
         run: |
@@ -165,6 +141,40 @@ jobs:
           if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'Exact capture completion missing'}
           if(@(Get-ChildItem $out -Filter '*.png').Count -ne 5){throw 'Expected five genuine engine frames'}
           if(-not (Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw 'Player scene generation missing'}
+      - name: Preserve exact same-head Unity BEFORE images
+        shell: powershell
+        run: |
+          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
+          New-Item -ItemType Directory -Force $before | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
+      - name: Transfer completed packed CC0 materials into the full city
+        shell: powershell
+        run: |
+          $source=Join-Path $env:RUNNER_TEMP 'Bastion1VerifiedQwen/merged/Bastion1QwenScene.glb'
+          $materials=Join-Path $env:RUNNER_TEMP 'Bastion1ExistingCC0/edited/artist-output.blend'
+          $proof=Join-Path $env:RUNNER_TEMP 'Bastion1ExistingCC0/edited/cc0-material-proof.json'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-MaterialMerge.log'
+          $args=@('-b','--threads','6','--python-exit-code','1','--python',"$env:GITHUB_WORKSPACE/tools/valoria-bastion1-assembly/merge_existing_cc0_materials.py",'--','--source',$source,'--materials',$materials,'--proof',$proof,'--out',$out)
+          $process=Start-Process $env:BASTION_BLENDER -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 80;throw 'Existing packed CC0 transfer failed'}
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
+          Copy-Item (Join-Path $out 'Bastion1ReferenceAssembly.glb') $dest -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dest
+          if($LASTEXITCODE -ne 0){throw 'CC0 texture material bindings failed'}
+      - name: Capture real Unity AFTER and preserve playable candidate
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-After.log'
+          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own AFTER process timed out'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw 'Unity CC0 AFTER failed'}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'AFTER capture missing'}
+          $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
+          New-Item -ItemType Directory -Force $after | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
+          Copy-Item "$env:RUNNER_TEMP/Bastion1ExistingCC0/maps/cc0-provenance.json" "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/cc0-provenance.json" -Force
       - name: Quarantine unrelated shader graphs for isolated WebGL
         shell: powershell
         run: |
@@ -301,6 +311,9 @@ jobs:
           name: bastion1-player-integration-${{ github.run_id }}
           path: |
             Bastion1ReferenceSource/**
+            Bastion1MaterialAB/**
+            ${{ runner.temp }}/Bastion1-Unity-After.log
+            ${{ runner.temp }}/Bastion1-MaterialMerge.log
             Unity/Bastion1ReferenceCaptures/**
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Generated/**
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedNormals/**

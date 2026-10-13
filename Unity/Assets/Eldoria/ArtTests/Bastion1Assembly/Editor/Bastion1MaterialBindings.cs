@@ -13,7 +13,9 @@ namespace Eldoria.EditorTools
     static class Bastion1MaterialBindings
     {
         [Serializable] class Root {public SourceMaterial[] materials;}
-        [Serializable] class TextureInfo {public int index;public float scale=1f;}
+        [Serializable] class TextureTransform {public float[] offset,scale;public float rotation;}
+        [Serializable] class TextureExtensions {public TextureTransform KHR_texture_transform;}
+        [Serializable] class TextureInfo {public int index;public float scale=1f;public TextureExtensions extensions;}
         [Serializable] class Pbr
         {
             public float[] baseColorFactor;
@@ -56,6 +58,7 @@ namespace Eldoria.EditorTools
                     var texture=importer.GetTexture(p.baseColorTexture.index);
                     if(texture==null)throw new Exception("glTF albedo texture unavailable: "+src.name);
                     m.SetTexture("_BaseMap",texture);
+                    ApplyTransform(m,"_BaseMap",p.baseColorTexture);
                 }
                 m.SetFloat("_Metallic",p!=null?p.metallicFactor:1f);
                 m.SetFloat("_Smoothness",p!=null?1f-p.roughnessFactor:0f);
@@ -67,6 +70,7 @@ namespace Eldoria.EditorTools
                         values[n]=new Color(values[n].b*p.metallicFactor,0,0,1f-values[n].g*p.roughnessFactor);
                     pixels.SetPixels(values);pixels.Apply(true,false);pixels.name="Repacked glTF B metallic G roughness: "+src.name;
                     m.SetTexture("_MetallicGlossMap",pixels);m.SetFloat("_Smoothness",1f);m.EnableKeyword("_METALLICSPECGLOSSMAP");
+                    ApplyTransform(m,"_MetallicGlossMap",p.metallicRoughnessTexture);
                 }
                 if(src.normalTexture!=null&&src.normalTexture.index>=0)
                 {
@@ -80,6 +84,7 @@ namespace Eldoria.EditorTools
                     settings.mipmapEnabled=true;settings.SaveAndReimport();
                     m.SetTexture("_BumpMap",AssetDatabase.LoadAssetAtPath<Texture2D>(path));
                     m.SetFloat("_BumpScale",src.normalTexture.scale);m.EnableKeyword("_NORMALMAP");
+                    ApplyTransform(m,"_BumpMap",src.normalTexture);
                 }
                 bool leaves=src.name.IndexOf("Leaf",StringComparison.OrdinalIgnoreCase)>=0;
                 if(src.alphaMode=="MASK"||leaves)
@@ -105,6 +110,18 @@ namespace Eldoria.EditorTools
                 {if(!replacements.TryGetValue(materials[i],out var replacement))throw new Exception("Unmapped candidate material");materials[i]=replacement;}
                 renderer.sharedMaterials=materials;
             }
+        }
+        static void ApplyTransform(Material material,string property,TextureInfo info)
+        {
+            var t=info.extensions?.KHR_texture_transform;
+            if(t==null)return;
+            if(Mathf.Abs(t.rotation)>.0001f)
+                throw new Exception("Rotated glTF texture needs an authored UV bake: "+material.name);
+            var scale=t.scale!=null&&t.scale.Length==2?new Vector2(t.scale[0],t.scale[1]):Vector2.one;
+            var offset=t.offset!=null&&t.offset.Length==2?new Vector2(t.offset[0],t.offset[1]):Vector2.zero;
+            material.SetTextureScale(property,scale);
+            material.SetTextureOffset(property,new Vector2(offset.x,1f-offset.y-scale.y));
+            Debug.Log("BASTION1_TEXTURE_TRANSFORM "+material.name+" "+property+" scale="+scale);
         }
         static Texture2D ReadLinear(Texture2D source)
         {
