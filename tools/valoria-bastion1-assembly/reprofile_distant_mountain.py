@@ -41,5 +41,33 @@ bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=Fal
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
  'target':o.name,'changed_vertices':changed,'total_target_vertices':len(verts),'max_delta_m':round(max_delta,4),
  'other_mesh_geometry_modified':False,'intervention':'distant-mountain-composition','art_approved':False}
+# Readable foreground geology: the original cliff PBR multiplied its albedo
+# texture by (0.25,0.25,0.25), collapsing the largest visible surface into black.
+# Adjust only that existing material's multiplier; retain textures, UVs, normals.
+import struct
+glb=dst.read_bytes()
+magic,version,total=struct.unpack_from('<III',glb,0)
+if magic!=0x46546c67 or version!=2 or total!=len(glb):raise RuntimeError('Invalid exported GLB')
+chunks=[];offset=12
+while offset<len(glb):
+ length,kind=struct.unpack_from('<II',glb,offset);offset+=8
+ chunks.append((kind,glb[offset:offset+length]));offset+=length
+if not chunks or chunks[0][0]!=0x4e4f534a:raise RuntimeError('GLB JSON chunk missing')
+doc=json.loads(chunks[0][1].decode('utf8').rstrip(' \\x00'))
+cliff=[m for m in doc.get('materials',[]) if 'schist dark fractured cliff' in m.get('name','').lower()]
+if len(cliff)!=1:raise RuntimeError('Expected exactly one existing foreground schist material')
+pbr=cliff[0]['pbrMetallicRoughness']
+original=pbr.get('baseColorFactor',[1,1,1,1])
+if original[0]>.40:raise RuntimeError('Original cliff albedo already light; do not double brighten')
+pbr['baseColorFactor']=[.53,.51,.48,1]
+payload=json.dumps(doc,separators=(',',':')).encode('utf8')
+payload+=b' '*((-len(payload))%4)
+chunks[0]=(0x4e4f534a,payload)
+packed=b''.join(struct.pack('<II',len(data),kind)+data for kind,data in chunks)
+dst.write_bytes(struct.pack('<III',0x46546c67,2,12+len(packed))+packed)
+proof['output_sha256']=hashlib.sha256(dst.read_bytes()).hexdigest()
+proof['cliff_material_multiplier_before']=original
+proof['cliff_material_multiplier_after']=pbr['baseColorFactor']
+proof['materials_preserved_except_existing_cliff_tint']=True
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_DISTANCE_SILHOUETTE_CANDIDATE',json.dumps(proof))
