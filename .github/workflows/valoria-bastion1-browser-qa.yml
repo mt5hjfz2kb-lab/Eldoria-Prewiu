@@ -82,7 +82,7 @@ jobs:
           assert result['sourceSha']=='c53108d7160160d55743b460526a03a2443031bc'
           print('PRIOR_EXACT_CANDIDATE_BASIC_ACCEPTANCE_REUSED')
           PYVERIFY
-      - name: Full uninterrupted player progression with verified mobile browser identity
+      - name: Full uninterrupted player progression following actual visible actions and mobile identity
         env:
           ELDORIA_PROBE_URL: http://127.0.0.1:8765/
           ELDORIA_PROBE_KIND: candidate
