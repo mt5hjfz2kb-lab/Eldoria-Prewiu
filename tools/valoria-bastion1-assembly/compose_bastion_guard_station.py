@@ -30,9 +30,10 @@ def z_at(x,y):
  return hit.z
 # Site is constrained by the known detached west wall x=-21,y=-8, never
 # at a future central parcel or axial path. Reserve 7m-wide axial corridor.
-cx,cy=-20.4,-12.0
+cx,cy=-20.4,-11.3
 if abs(cx)<12 or not -16<cy<-9:raise RuntimeError('Invalid site')
 cz=z_at(cx,cy)
+wall_cz=z_at(-21.0,-8.0)
 # Source groups exist as named empties from the immutable authored assembly.
 def descendants(root):
  result=[]
@@ -128,6 +129,49 @@ for dx in (-2.45,2.45):
  for dy in (-1.8,1.8):
   diagonal('Bastion I guard post timber knee brace',
    (cx+dx,cy+dy,cz+2.15),(cx+dx*.67,cy+dy,cz+2.80))
+# Structural masonry enclosure, deliberately integrated with the west wall,
+# rather than a second roof or a scatter of standalone decorative props.
+# Wall material is borrowed from the actual authored wall asset. The geometry
+# below is deterministic and must NOT be represented as Qwen-authored vertices.
+wall_meshes=group('LeftDetachedRemnant')
+stone=next((m for o in wall_meshes for m in o.data.materials if m),None)
+if stone is None:raise RuntimeError('West wall has no reusable stone material')
+stone_parts=[]
+def masonry(label,position,dimensions):
+ bpy.ops.mesh.primitive_cube_add(size=1,location=position)
+ obj=bpy.context.object;obj.name=label;obj.dimensions=dimensions
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ obj.data.materials.append(stone)
+ stone_parts.append(obj)
+ return obj
+# A broad wall-side base ties the shelter footprint to the old west remnant.
+# Preserve the open front toward the playable courtyard. The rear return
+# reaches y=-8.25, immediately beside the existing wall at y=-8.
+rear_y=-8.75
+masonry('Bastion I integrated west wall rear masonry return',
+ (cx,rear_y,cz+1.02),(8.0,.72,2.05))
+# Side wing walls frame the original shelter and form a legible medieval bay.
+# No central route or future building parcel is occupied.
+for dx in (-3.88,3.88):
+ masonry('Bastion I guard compound stone wing',
+ (cx+dx,-10.65,cz+.77),(.72,4.5,1.55))
+ masonry('Bastion I stone wing cap',
+ (cx+dx,-10.65,cz+1.59),(.90,4.62,.18))
+# The masonry threshold makes the courtyard-side entrance read as a single
+# architectural compound, not an object floating over the grass.
+masonry('Bastion I guard compound stone threshold',
+ (cx,-13.15,cz+.12),(8.1,.72,.24))
+# Wall-to-roof bridging lintel and stepped parapet anchor the timber roof to
+# the masonry enclosure. Their height is restrained relative to fortification.
+masonry('Bastion I west wall shelter connection lintel',
+ (cx,-9.18,cz+2.88),(6.25,.50,.42))
+for dx in (-3.1,-1.55,0,1.55,3.1):
+ masonry('Bastion I west wall low merlon',
+ (cx+dx,rear_y,cz+2.34),(0.88,.77,.64))
+# An outer contact skirt visually seats the structure into the slope without
+# replacing terrain or inserting a new navigable raised building parcel.
+masonry('Bastion I guard compound embedded foundation',
+ (cx,-11.08,cz-.08),(8.35,5.8,.27))
 # Keeping the central road, playable court and state-driven lots empty is
 # explicit. No colliders or resource nodes are included in the exported GLB.
 dst.parent.mkdir(parents=True,exist_ok=True)
@@ -136,7 +180,7 @@ proof={'ai_proposal_sha256':hashlib.sha256(proposal_path.read_bytes()).hexdigest
  'ai_authorship':('owner-directed deterministic fallback, NOT Qwen' if proposal.get('_provenance')=='owner_directed_fallback' else 'concept and site from verified local Qwen inference; geometry implementation deterministic Blender'),
  'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
  'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),
- 'new_timber_meshes':len(new_parts),'roof_panels':2,'road_clearance_m':abs(cx)-3.1-7,'existing_source_meshes_modified':False,
- 'new_resource_nodes':0,'art_approved':False}
+ 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'roof_panels':2,'road_clearance_m':abs(cx)-4.25-7,'existing_source_meshes_modified':False,
+ 'new_resource_nodes':0,'architectural_integration':'west-wall return + two masonry wings + embedded foundation, deterministic pending Qwen integration review','art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_AI_PROPOSED_GUARD_STATION',json.dumps(proof))
