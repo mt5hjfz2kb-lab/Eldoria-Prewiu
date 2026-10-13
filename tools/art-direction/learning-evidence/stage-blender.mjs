@@ -32,6 +32,7 @@ export function stageBlender({dbPath=path.join(HERE,'observations.json'),root,ru
  need(sha(b)===comparison.before_image_sha256&&sha(a)===comparison.after_image_sha256,'Original clay frame hashes differ from actual images');
  const bSource=read(path.join(root,'terrain-source.blend'));
  const aSource=read(path.join(root,'result','artist-output.blend'));
+ need(bSource.subarray(0,7).toString()==='BLENDER'&&aSource.subarray(0,7).toString()==='BLENDER', 'Blender source must have genuine format header');
  need(sha(bSource)===comparison.source_file_sha256&&sha(aSource)===comparison.result_file_sha256,'Original Blender model bytes differ from renderer manifest');
  const inference=JSON.parse(read(path.join(root,'model','artist-inference.json')));
  const plan=JSON.parse(read(path.join(root,'model','artist-plan.json')));
