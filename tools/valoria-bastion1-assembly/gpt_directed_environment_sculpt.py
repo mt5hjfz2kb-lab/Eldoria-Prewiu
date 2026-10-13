@@ -5,14 +5,14 @@ Alternative to repeated camera-invisible Qwen 4B micro-sculpts. This is not a
 Qwen-authored model inference and NEVER issues ART_APPROVED/Unity PASS.
 One canonical terrain mesh is changed; all architectural meshes stay intact.
 """
-import argparse,hashlib,json,math,pathlib,struct
+import argparse,hashlib,json,math,pathlib,struct,sys
 import bpy
 from mathutils import Vector
 
 p=argparse.ArgumentParser()
 p.add_argument('--source',type=pathlib.Path,required=True)
 p.add_argument('--out',type=pathlib.Path,required=True)
-a=p.parse_args()
+a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 a.out.mkdir(parents=True,exist_ok=True)
 source=a.source.read_bytes()
 if source[:4]!=b'glTF' or struct.unpack('<I',source[8:12])[0]!=len(source):
@@ -60,6 +60,7 @@ scene.collection.objects.link(camera);scene.camera=camera
 camera.location=(32,-76,49)
 camera.rotation_euler=(Vector((0,0,0))-camera.location).to_track_quat('-Z','Y').to_euler()
 cam.type='ORTHO';cam.ortho_scale=77
+bpy.context.view_layer.update()
 camera_matrix=[[round(float(v),8) for v in row] for row in camera.matrix_world]
 
 def render(dest):
