@@ -94,3 +94,44 @@ def bounded_repair_feedback(errors,max_items=8):
          '. Keep the original defect/destination, choose real local-space cliff crest/slope anchors '
          'and output one safe, NONZERO structural Blender action with exact coordinates. '
          'Return COMPLETE JSON (including planned_actions ARRAY), never new face lists.')
+
+
+def inspect_projected_environment_scale(design,minimum_radius,minimum_displacement):
+ """Scene-specific LOWER-BOUND preflight, never a substitute for matched-camera A/B.
+
+ The caller must derive these limits from its own target scale/camera framing;
+ this function only REJECTS insufficient Qwen-authored spatial proposals.
+ It does not enlarge, move, fabricate or rewrite artist geometry.
+ """
+ if not 0 <= minimum_radius <= 50 or not 0 <= minimum_displacement <= 10:
+  raise ValueError('Unreasonable per-scene artistic screen-scale limits')
+ if not minimum_radius and not minimum_displacement:return []
+ actions=design.get('planned_actions',[]) if isinstance(design,dict) else []
+ if not isinstance(actions,list):return []
+ errors=[]
+ for i,op in enumerate(actions):
+  if not isinstance(op,dict):continue
+  kind,pr=op.get('type'),op.get('parameters')
+  if not isinstance(pr,dict):continue
+  if kind=='sculpt_region':
+   radius=pr.get('radius')
+   delta=pr.get('delta')
+   if minimum_radius and (not isinstance(radius,(float,int)) or radius<minimum_radius):
+    errors.append(f'CAMERA_SCALE_REJECT action {i}: sculpt radius must be at least {minimum_radius:g}m for THIS distant camera (model must author revised radius)')
+   if minimum_displacement and (not vec(delta) or length(delta)<minimum_displacement):
+    errors.append(f'CAMERA_SCALE_REJECT action {i}: model-authored displacement must be at least {minimum_displacement:g}m for THIS camera')
+  elif kind=='sculpt_path':
+   knots=pr.get('knots')
+   if not isinstance(knots,list) or len(knots)<2:continue
+   if minimum_radius and any(not isinstance(k,dict) or not isinstance(k.get('radius'),(int,float)) or k['radius']<minimum_radius for k in knots):
+    errors.append(f'CAMERA_SCALE_REJECT action {i}: EVERY broad scarp knot must span >= {minimum_radius:g}m radius')
+   if minimum_displacement and not any(isinstance(k,dict) and vec(k.get('delta')) and length(k['delta'])>=minimum_displacement for k in knots):
+    errors.append(f'CAMERA_SCALE_REJECT action {i}: at least one genuine knot displacement must be >= {minimum_displacement:g}m')
+  elif kind=='reprofile_crest':
+   points=pr.get('control_points')
+   if not isinstance(points,list) or len(points)<3 or not all(vec(q,2) for q in points):continue
+   if minimum_radius and max(q[0] for q in points)-min(q[0] for q in points)<minimum_radius*2:
+    errors.append(f'CAMERA_SCALE_REJECT action {i}: crest span needs >= {2*minimum_radius:g}m across player-visible scarp')
+   if minimum_displacement and max(q[1] for q in points)-min(q[1] for q in points)<minimum_displacement:
+    errors.append(f'CAMERA_SCALE_REJECT action {i}: crest needs >= {minimum_displacement:g}m height variation')
+ return errors
