@@ -2,7 +2,13 @@ name: Eldoria Mission Continuity Guard
 
 on:
   schedule:
-    - cron: '17,47 * * * *'
+    - cron: '17 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/mission-continuity-guard.yml'
+      - 'tools/mission-continuity/**'
+      - 'pipeline/mission-continuity-policy-v1.json'
   workflow_dispatch:
   pull_request:
     branches: [main]
@@ -34,7 +40,7 @@ jobs:
         run: node tools/check-workflow-governance.mjs
 
   observe:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -43,6 +49,12 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pipeline/active-workstreams.json
+            pipeline/mission-continuity-policy-v1.json
+            tools/mission-continuity
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
