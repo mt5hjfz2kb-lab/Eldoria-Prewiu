@@ -26,6 +26,7 @@ namespace Eldoria.AssetLibrary.Editor
             public long imported_triangles, imported_vertices;
             public int authored_source_triangles;
             public bool mobile_review_required, mobile_profile_pass;
+            public string[] imported_shader_names;
             public bool prefab_ok;
         }
 
@@ -84,6 +85,17 @@ namespace Eldoria.AssetLibrary.Editor
                     var renderers = wrapper.GetComponentsInChildren<Renderer>(true);
                     if (renderers.Length == 0 || renderers.Any(r => r.sharedMaterials.Any(m => m == null || m.shader == null)))
                         throw new InvalidOperationException("No renders or invalid material: " + e.id);
+                    // Some legacy Standard shaders silently render magenta in URP.
+                    // Preserve authored PBR; reject unsupported imports instead of repainting.
+                    var shaders=renderers.SelectMany(x=>x.sharedMaterials).Select(x=>x.shader.name)
+                        .Distinct().OrderBy(x=>x,StringComparer.Ordinal).ToArray();
+                    foreach(var shaderName in shaders)
+                    {
+                        if(!shaderName.StartsWith("Universal Render Pipeline/",StringComparison.Ordinal)
+                            && !shaderName.StartsWith("Shader Graphs/",StringComparison.Ordinal)
+                            && !shaderName.StartsWith("glTF/",StringComparison.Ordinal))
+                            throw new InvalidOperationException("Unverified URP material shader for " + e.id + ": " + shaderName);
+                    }
                     long triangles = 0, vertices = 0;
                     foreach(var mf in wrapper.GetComponentsInChildren<MeshFilter>(true))
                     {
@@ -117,6 +129,7 @@ namespace Eldoria.AssetLibrary.Editor
                         authored_source_triangles=e.source_triangles,
                         mobile_review_required=e.asset_budget_review_required,
                         mobile_profile_pass=false,
+                        imported_shader_names=shaders,
                         prefab_ok=true
                     });
                 }
