@@ -14,7 +14,11 @@ const gitsha=/^[a-f0-9]{40}$/;
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const need=(ok,msg)=>{if(!ok)throw Error(msg)};
 const read=p=>{need(p&&fs.existsSync(p),'Evidence missing: '+p);const s=fs.statSync(p);
-  need(s.isFile()&&s.size<26000000,'Invalid evidence file: '+p);return fs.readFileSync(p)};
+  // Editable .blend scene sources legitimately exceed the 26 MB limit used
+  // for small PNG/JSON evidence. Still cap them, hash their ORIGINAL bytes
+  // and verify Blender header plus the immutable A/B manifest below.
+  const maxBytes=p.endsWith('.blend')?110000000:26000000;
+  need(s.isFile()&&s.size<maxBytes,'Invalid evidence file: '+p);return fs.readFileSync(p)};
 export function stageBlender({dbPath=path.join(HERE,'observations.json'),root,runId,gitSha,out}) {
  need(Number.isSafeInteger(runId)&&runId>0,'Real run ID required');
  need(gitsha.test(gitSha||''),'Real source SHA required');
