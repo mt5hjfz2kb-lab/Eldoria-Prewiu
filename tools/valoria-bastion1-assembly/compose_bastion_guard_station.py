@@ -172,6 +172,25 @@ for dx in (-3.1,-1.55,0,1.55,3.1):
 # replacing terrain or inserting a new navigable raised building parcel.
 masonry('Bastion I guard compound embedded foundation',
  (cx,-11.08,cz-.08),(8.35,5.8,.27))
+# Authentic modular wall_connections stone mesh anchors the new return to the
+# western remnant. It is a scaled masonry buttress, NOT a separate watchtower.
+pier_kit=group('LeftDetachedPier')
+pier_corners=[o.matrix_world @ Vector(v) for o in pier_kit for v in o.bound_box]
+pier_lo=Vector(tuple(min(v[k] for v in pier_corners) for k in range(3)))
+pier_hi=Vector(tuple(max(v[k] for v in pier_corners) for k in range(3)))
+pier_size=pier_hi-pier_lo
+if min(pier_size.x,pier_size.y,pier_size.z)<.01:raise RuntimeError('Source wall-connection pier has degenerate bounds')
+pier_scale=min(2.45/pier_size.x,2.2/pier_size.y,3.9/pier_size.z)
+px,py=-17.95,-8.70
+pier_anchor=(Matrix.Translation(Vector((px,py,z_at(px,py)-.015)))
+ @ Matrix.Scale(pier_scale,4)
+ @ Matrix.Translation(Vector((-(pier_lo.x+pier_hi.x)/2,-(pier_lo.y+pier_hi.y)/2,-pier_lo.z))))
+reused_wall_connection_pier_meshes=0
+for old in pier_kit:
+ obj=old.copy();obj.data=old.data;obj.parent=None
+ obj.matrix_world=pier_anchor @ old.matrix_world
+ obj.name='Bastion I Qwen-selected integrated west-wall buttressed corner %02d'%reused_wall_connection_pier_meshes
+ bpy.context.collection.objects.link(obj);reused_wall_connection_pier_meshes+=1
 # Real Qwen decision excerpts (runs 38479509741 and 38480277880):
 # stepped buttressed masonry transition + cliff-rock footing + existing bush.
 # Meshes, proportions and placements remain deterministic Blender work.
@@ -221,7 +240,7 @@ proof={'ai_proposal_sha256':hashlib.sha256(proposal_path.read_bytes()).hexdigest
  'ai_authorship':('curated excerpts from two genuine but incomplete local Qwen responses; every mesh implementation deterministic Blender' if proposal.get('_provenance',{}).get('mode')=='curated_excerpts_from_two_incomplete_real_qwen_inferences' else 'concept/site from original Qwen inference; geometry implementation deterministic Blender'),
  'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
  'site':[cx,cy,cz],'reused_prop_meshes':len(kit),'reused_paving_meshes':len(platform),
- 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'reused_junction_rock_meshes':reused_rock_meshes,'reused_junction_bush_meshes':1,'roof_panels':2,'road_clearance_m':abs(cx)-4.25-7,'existing_source_meshes_modified':False,
- 'new_resource_nodes':0,'architectural_integration':'western masonry return and wing walls plus stepped buttress, original cliff rock and bush selected by Qwen excerpts; deterministic execution','art_approved':False}
+ 'new_timber_meshes':len(new_parts),'new_masonry_meshes':len(stone_parts),'reused_wall_connection_pier_meshes':reused_wall_connection_pier_meshes,'reused_junction_rock_meshes':reused_rock_meshes,'reused_junction_bush_meshes':1,'roof_panels':2,'road_clearance_m':abs(cx)-4.25-7,'existing_source_meshes_modified':False,
+ 'new_resource_nodes':0,'architectural_integration':'western masonry return and wings, actual reused wall_connections masonry buttress, stepped ground buttresses, Qwen-selected original cliff rock and bush; deterministic execution','art_approved':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_AI_PROPOSED_GUARD_STATION',json.dumps(proof))
