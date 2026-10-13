@@ -29,6 +29,7 @@ jobs:
     timeout-minutes: 3
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,6 +39,14 @@ jobs:
         run: node --test tools/mission-continuity/core.test.mjs
       - name: Validate existing workflow governance
         run: node tools/check-workflow-governance.mjs
+      - name: Dry-run live GitHub observation without writing issues
+        env:
+          GITHUB_TOKEN: ${'{'}{ secrets.GITHUB_TOKEN }}
+          MISSION_GUARD_WRITE_ISSUES: 'false'
+          MISSION_GUARD_OUTPUT: mission-continuity-report.json
+        run: node tools/mission-continuity/watch.mjs
+      - name: Verify read-only monitor report
+        run: node -e "const x=require('./mission-continuity-report.json'); if(x.errors.length || x.reports.length!==1 || x.reports[0].state==='MONITOR_ERROR')process.exit(1)"
 
   observe:
     if: github.event_name != 'pull_request'
