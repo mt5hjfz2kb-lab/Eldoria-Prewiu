@@ -67,3 +67,24 @@ test('stage refuses mismatched PNG and camera preset (no false source evidence)'
   assert.equal(fs.existsSync(out),false);
  }finally{fs.rmSync(dir,{recursive:true,force:true})}
 });
+
+test('accepts genuine-format .blend inputs above the small-evidence limit without weakening PNG/hash checks',()=>{
+ const {dir,comparison}=fixture();
+ const out=path.join(dir,'large-staged.json');
+ try{
+  const before=path.join(dir,'terrain-source.blend');
+  const after=path.join(dir,'result','artist-output.blend');
+  // Sparse test fixtures reproduce the actual 38-39 MB Blender studio inputs
+  // that failed in run 38443638059. They are NOT claimed as real artwork.
+  fs.truncateSync(before,27_000_001);
+  fs.truncateSync(after,27_000_002);
+  comparison.source_file_sha256=sha(fs.readFileSync(before));
+  comparison.result_file_sha256=sha(fs.readFileSync(after));
+  fs.writeFileSync(path.join(dir,'ab','comparison.json'),JSON.stringify(comparison));
+  const v=stageBlender({dbPath:db,root:dir,runId:39999000002,gitSha:'b'.repeat(40),out});
+  assert.equal(v.event.art_approved,false);
+  assert.equal(v.event.source.evidence_level,'pending_verification');
+  assert.equal(v.event.candidate_provenance.before_blend_sha256,comparison.source_file_sha256);
+  assert.equal(v.event.candidate_provenance.after_blend_sha256,comparison.result_file_sha256);
+ }finally{fs.rmSync(dir,{recursive:true,force:true})}
+});
