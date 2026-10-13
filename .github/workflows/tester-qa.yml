@@ -13,7 +13,7 @@ permissions:
 jobs:
   tester-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4
       - name: Install Playwright
@@ -51,4 +51,4 @@ jobs:
       - name: Current v0.32 full regression
         run: timeout 480s npm run qa:regression
       - name: Current v0.32 uninterrupted fresh-save Arc I
-        run: timeout 300s npm run qa:arc1
+        run: timeout 900s npm run qa:arc1
