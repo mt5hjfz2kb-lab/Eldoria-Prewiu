@@ -60,20 +60,20 @@ jobs:
           python3 - <<'PY'
           import json,pathlib,urllib.request,time
           brief=pathlib.Path('evidence/brief.txt').read_text()
-          memory=pathlib.Path('evidence/art-memory.txt').read_text()[-4000:]
+          memory=pathlib.Path('evidence/art-memory.txt').read_text()[-1200:]
           schema={'type':'object','properties':{
-           'concept':{'type':'string'},
-           'site':{'type':'string'},
-           'why_player_camera':{'type':'string'},
-           'existing_assets':{'type':'array','items':{'type':'string'}},
-           'composition':{'type':'string'},
-           'functional_risks':{'type':'array','items':{'type':'string'}},
-           'learning':{'type':'string'}
+           'concept':{'type':'string','maxLength':90},
+           'site':{'type':'string','maxLength':60},
+           'why_player_camera':{'type':'string','maxLength':180},
+           'existing_assets':{'type':'array','maxItems':4,'items':{'type':'string'}},
+           'composition':{'type':'string','maxLength':380},
+           'functional_risks':{'type':'array','maxItems':3,'items':{'type':'string','maxLength':95}},
+           'learning':{'type':'string','maxLength':140}
           },'required':['concept','site','why_player_camera','existing_assets','composition','functional_risks','learning']}
           payload={'model':'qwen3-vl:4b-instruct','stream':False,'format':schema,
-            'options':{'num_ctx':4096,'num_predict':1100,'temperature':0.3},
-            'messages':[{'role':'system','content':'You are the existing Eldoria art director AI. Produce a concrete constrained medieval composition decision; do not claim you modeled or tested it.'},
-                        {'role':'user','content':brief+'\nActual prior learning:\n'+memory}]}
+            'options':{'num_ctx':4096,'num_predict':760,'temperature':0.15,'repeat_penalty':1.45},
+            'messages':[{'role':'system','content':'You are the Eldoria artistic agent. Return strictly valid COMPLETE JSON with SHORT values (under 380 characters for composition, 90 for concept, 180 for camera and 140 for learning). NEVER repeat sentences or disclaimers, NEVER write paragraphs of denials. Limit existing_assets to four, risks to two. Qwen-authored decisions ONLY, no assertion of mesh authorship or Unity verification.'},
+                        {'role':'user','content':brief+'\nActual prior learning:\n'+memory+'\nCRITICAL: Previous run 38479509741 failed JSON because the composition field repeated disclaimers until output truncated. Do NOT repeat anything. Keep ALL seven JSON keys short, concise and COMPLETED. Examples of risk phrases: wall connection clearance; future build plots.'}]}
           pathlib.Path('evidence/request.json').write_text(json.dumps(payload,indent=2))
           req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
           start=time.time()
@@ -81,7 +81,10 @@ jobs:
           raw=result.get('message',{}).get('content','')
           pathlib.Path('evidence/qwen-raw-response.txt').write_text(raw)
           plan=json.loads(raw)
-          assert all(k in plan for k in schema['required'])
+          assert all(k in plan and plan[k] for k in schema['required'])
+          assert len(plan['composition'])<=380 and len(plan['concept'])<=90 and len(plan['learning'])<=140
+          assert result.get('done') is True
+          assert 'wall' in json.dumps(plan).lower() or 'muralla' in json.dumps(plan).lower()
           pathlib.Path('evidence/qwen-wall-integration-proposal.json').write_text(json.dumps(plan,indent=2,ensure_ascii=False))
           pathlib.Path('evidence/inference-proof.json').write_text(json.dumps({'model':result.get('model'),'duration_s':round(time.time()-start,2),'done':result.get('done'),'authored_by':'local Ollama model, not deterministic script'},indent=2))
           print('BASTION1_QWEN_REAL_WALL_INTEGRATION_PROPOSAL',json.dumps(plan,ensure_ascii=False))
