@@ -31,8 +31,13 @@ namespace Eldoria.EditorTools
                 if(original==null)throw new Exception("Canonical committed URP asset unavailable");
                 var pipeline=UnityEngine.Object.Instantiate(original);
                 pipeline.name="Bastion I comparative URP, unprofiled";
-                pipeline.shadowDistance=180f;pipeline.shadowCascadeCount=4;
-                pipeline.msaaSampleCount=4;pipeline.useSRPBatcher=true;
+                pipeline.shadowDistance=180f;pipeline.shadowCascadeCount=1;
+                pipeline.msaaSampleCount=1;pipeline.useSRPBatcher=true;
+                var settings=new SerializedObject(pipeline);
+                var shadowResolution=settings.FindProperty("m_MainLightShadowmapResolution");
+                if(shadowResolution==null)throw new Exception("URP main shadow resolution unavailable");
+                shadowResolution.intValue=1024;settings.ApplyModifiedPropertiesWithoutUndo();
+                Debug.Log("BASTION1_MOBILE_PROFILE shadow_distance=180 cascades=1 shadow_atlas=1024 msaa=1 geometry_unchanged=true");
                 Directory.CreateDirectory(Study+"/Generated");
                 AssetDatabase.DeleteAsset(Study+"/Generated/StudyURP.asset");
                 AssetDatabase.CreateAsset(pipeline,Study+"/Generated/StudyURP.asset");
@@ -144,7 +149,7 @@ namespace Eldoria.EditorTools
         }
         internal static void Render(Camera camera,string path,int width,int height)
         {
-            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32){antiAliasing=4};
+            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32){antiAliasing=1};
             var prior=RenderTexture.active;Texture2D pixels=null;
             bool priorAsync=ShaderUtil.allowAsyncCompilation;
             ShaderUtil.allowAsyncCompilation=false;
