@@ -39,6 +39,22 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Exact library staging failed'}
           if(!(Test-Path 'Unity/Assets/Eldoria/AssetLibrarySelectionV1/Editor/EldoriaSelectedAssetLibraryBuilderV1.cs')){throw 'Canonical builder missing'}
           Write-Host "PR51_EXACT_PINNED_SOURCE $env:LIBRARY_SOURCE_SHA"
+      - name: Apply three scoped PR51 editor compilation repairs in disposable checkout only
+        shell: powershell
+        run: |
+          $file='Unity/Assets/Eldoria/AssetLibrarySelectionV1/Editor/EldoriaSelectedAssetLibraryBuilderV1.cs'
+          $text=[System.IO.File]::ReadAllText((Join-Path $env:GITHUB_WORKSPACE $file))
+          $old='Application.dataPath'
+          if(([regex]::Matches($text,[regex]::Escape($old))).Count -ne 2){throw 'Expected exactly two Unity Application namespace errors'}
+          $text=$text.Replace($old,'UnityEngine.Application.dataPath')
+          $from='var piece=pieces[n];'
+          if(([regex]::Matches($text,[regex]::Escape($from))).Count -ne 1){throw 'Expected exactly one shadowing local'}
+          $text=$text.Replace($from,'var selectedPiece=pieces[n];')
+          $text=$text.Replace('piece.SetActive(true);','selectedPiece.SetActive(true);')
+          $text=$text.Replace('piece.GetComponentsInChildren<Renderer>(true);','selectedPiece.GetComponentsInChildren<Renderer>(true);')
+          $text=$text.Replace('piece.name.Substring(','selectedPiece.name.Substring(')
+          [System.IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE $file),$text,(New-Object System.Text.UTF8Encoding($false)))
+          Write-Host 'PR51_ONLY_DISPOSABLE_CSHARP_FIXES application_namespace=2 shadowed_name=1'
       - name: Re-resolve invalidated glTFast shaders from installed package cache only
         shell: powershell
         run: |
