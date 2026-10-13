@@ -32,8 +32,10 @@ def front_scarp_intent(x,y,z):
     """
     if z>=-1.0 or y>=-12.0 or y<=-47.0 or abs(x)>=44.0:
         return (0.,0.,0.)
-    w=smoothstep(-12.,-23.,y)*(1.-smoothstep(-34.,-46.,y))
-    w*=smoothstep(-1.,-6.,z)
+    # Earlier v1 barely affected the screen centre. Extend influence to the
+    # upper south scarp beneath the terrace edge; keep ALL playable z>=-1 intact.
+    w=smoothstep(-4.5,-16.5,y)*(1.-smoothstep(-34.,-46.,y))
+    w*=smoothstep(-1.,-3.5,z)
     w*=1.-smoothstep(35.,44.,abs(x))
     if w<=0:return (0.,0.,0.)
     # Architectural hierarchy: substantial cliff buttresses around a recessed
@@ -48,10 +50,16 @@ def front_scarp_intent(x,y,z):
     dy=-w*(buttress-gullies+stratification)
     # Geological layering is correlated with major cliff masses; gentle crests
     # and recession into gullies, rather than high-frequency vertex noise.
-    dz=w*(.52*math.sin(x*.18-.3)
-           -.62*gaussian(x,-11.,4.)
-           -.56*gaussian(x,13.,4.4)
-           +.38*gaussian(x,2.,9.))
+    dz=w*(.78*math.sin(x*.18-.3)
+           -.87*gaussian(x,-11.,4.)
+           -.80*gaussian(x,13.,4.4)
+           +.56*gaussian(x,2.,9.))
+    # A pair of geological incision heads cut into the upper scarp, where
+    # player-camera projection puts the most visible terrain junction.
+    lip=(smoothstep(-1.,-2.4,z)*
+         (1.-smoothstep(-6.,-11.,z))*
+         smoothstep(-8.,-18.,y))
+    dz-=.76*lip*(gaussian(x,-11.,5.4)+gaussian(x,13.,5.0))
     dx=w*(.16*math.sin(x*.11+z*.17))
     return (dx,dy,dz)
 
@@ -108,7 +116,7 @@ def main():
     proof={
       'art_direction_author':'GPT-6 AI art direction',
       'qwen_role':'Authentic Qwen4B independently documented real visual deficit: uniform flat cliff; Qwen coordinate plans REJECTED, NOT substituted or re-labelled',
-      'design':'Wide S-facing stratified scarp with buttresses, paired runoff gullies and asymmetric crests; unchanged buildable plateau',
+      'design':'Broad front cliff buttresses AND higher camera-facing terrace-lip gullies; asymmetric crest erosion; buildable plateau strictly frozen',
       'source_blend_sha256':sha(a.source),
       'result_blend_sha256':sha(out),
       'target_object':a.target,
