@@ -41,6 +41,7 @@ namespace Eldoria.EditorTools
                 var root=new GameObject("BastionI_ReferenceAssembly_CANDIDATE");
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
                 Bastion1MaterialBindings.Apply(root,importer,source);
+                InspectRoadContacts(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
                 sun.shadows=LightShadows.Soft;sun.transform.rotation=Quaternion.Euler(38f,-38f,0f);
@@ -152,12 +153,58 @@ namespace Eldoria.EditorTools
                     if(Vector4.Distance(pixels.GetPixel(x,y),corner)>.03f)nonempty=true;
                 if(!nonempty)throw new Exception("Empty rendered scene: "+path);
                 File.WriteAllBytes(path,pixels.EncodeToPNG());
+                File.WriteAllText(path+".camera.json",JsonUtility.ToJson(new CameraEvidence
+                {
+                    width=width,height=height,position=camera.transform.position,
+                    rotation=camera.transform.rotation,orthographicSize=camera.orthographicSize,
+                    worldToCamera=camera.worldToCameraMatrix,projection=camera.projectionMatrix,
+                    colorSpace=QualitySettings.activeColorSpace.ToString()
+                },true));
             }
             finally
             {
                 ShaderUtil.allowAsyncCompilation=priorAsync;
                 camera.targetTexture=null;RenderTexture.active=prior;
                 if(pixels!=null)UnityEngine.Object.DestroyImmediate(pixels);rt.Release();UnityEngine.Object.DestroyImmediate(rt);
+            }
+        }
+        [Serializable] class CameraEvidence
+        {
+            public int width,height;
+            public Vector3 position;
+            public Quaternion rotation;
+            public float orthographicSize;
+            public Matrix4x4 worldToCamera,projection;
+            public string colorSpace;
+        }
+        static void InspectRoadContacts(GameObject root)
+        {
+            var temporary=new List<MeshCollider>();
+            try
+            {
+                foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))
+                {
+                    string name=filter.name.ToLowerInvariant();
+                    if(!name.Contains("stone_path")&&!name.Contains("playable hilltop")&&
+                       !name.Contains("cliff plateau"))continue;
+                    if(filter.sharedMesh==null)continue;
+                    var collider=filter.gameObject.AddComponent<MeshCollider>();
+                    collider.sharedMesh=filter.sharedMesh;temporary.Add(collider);
+                }
+                Physics.SyncTransforms();
+                foreach(float z in new[]{-5f,-2f,2f,6f,10f,14f})
+                {
+                    var hits=Physics.RaycastAll(new Vector3(0,30,z),Vector3.down,80f);
+                    Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
+                    foreach(var hit in hits)
+                        Debug.Log("BASTION1_REAL_ROAD_CONTACT z="+z+" surface="+hit.collider.name+
+                            " parent="+hit.collider.transform.parent?.name+" y="+hit.point.y);
+                }
+            }
+            finally
+            {
+                foreach(var collider in temporary)UnityEngine.Object.DestroyImmediate(collider);
+                Physics.SyncTransforms();
             }
         }
     }

@@ -52,7 +52,10 @@ namespace Eldoria.EditorTools
                 Color color=Color.white;
                 if(p!=null&&p.baseColorFactor!=null&&p.baseColorFactor.Length==4)
                     color=new Color(p.baseColorFactor[0],p.baseColorFactor[1],p.baseColorFactor[2],p.baseColorFactor[3]);
-                m.SetColor("_BaseColor",color);
+                // glTF factors are linear. This project's Gamma renderer needs
+                // sRGB factors, otherwise royal blue, water and untextured
+                // foliage become markedly darker than their authored colors.
+                m.SetColor("_BaseColor",QualitySettings.activeColorSpace==ColorSpace.Gamma?color.gamma:color);
                 if(p!=null&&p.baseColorTexture!=null&&p.baseColorTexture.index>=0)
                 {
                     var texture=importer.GetTexture(p.baseColorTexture.index);

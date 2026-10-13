@@ -30,6 +30,20 @@ def main():
         if any(n not in src.materials for n in names):
             raise ValueError('Packed PBR materials unavailable')
         dst.materials=list(names)
+    loaded=dict(zip(names,dst.materials))
+    # Independent Unity review rejected leaf-litter over the entire playable
+    # plateau. Reuse the already licensed grass/rock photographs for its turf,
+    # while retaining the cliff's separate rocky material and original UVs.
+    soil=loaded['PROTOTYPE terrace earth olive grass']
+    grass=loaded['Valoria forested valley ground']
+    grass_images={suffix:next(n.image for n in grass.node_tree.nodes
+        if n.type=='TEX_IMAGE' and (' '+suffix+' ') in n.image.name)
+        for suffix in ('diff','rough','normal')}
+    for node in soil.node_tree.nodes:
+        if node.type=='TEX_IMAGE':
+            suffix=next(k for k in grass_images if (' '+k+' ') in node.image.name)
+            node.image=grass_images[suffix]
+        elif node.type=='MAPPING':node.inputs['Scale'].default_value=(1.35,1.35,1.)
     for name,material in zip(names,dst.materials):
         if name not in slots:raise ValueError('Terrain slot not found: '+name)
         target.data.materials[slots[name]]=material
@@ -44,6 +58,8 @@ def main():
     result={'source_glb_sha256':sha(a.source),'completed_material_blend_sha256':sha(a.materials),
         'output_glb_sha256':sha(glb),'output_blend_sha256':sha(blend),'geometry_unchanged':True,
         'materials_transferred':names,'source_material_run':38388922583,
+        'independent_unity_rejection_run':38395469618,
+        'artist_palette_revision':'GPT-6: replace full brown leaf-litter plateau with existing CC0 aerial grass/rock; UV scale 1.35; no geometry modification',
         'qwen_authorship_claim':False,'art_approved':False,'unity_verified':False}
     (a.out/'cc0-integration-proof.json').write_text(json.dumps(result,indent=2)+'\n')
     print('EXISTING_CC0_MATERIALS_FULL_CITY_TRANSFER',json.dumps(result))
