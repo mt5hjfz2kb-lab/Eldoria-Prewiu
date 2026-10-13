@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: 668e339f5ecac993edbb7de3a0b829f0385b1246
+      ART_CORE_SHA: 0bedb20ee53ef8e1c93d6bfa7d444b3ce0979ebb
       SOURCE_RUN: '38356683511'
       SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
@@ -29,7 +29,7 @@ jobs:
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$ART_CORE_SHA"
-          for n in author_brief.py artist_plan_validation.py execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs visibility_metrics.py; do
+          for n in author_brief.py artist_plan_validation.py artistic_learning_feedback.py execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs visibility_metrics.py; do
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
           # PR #36 moved the canonical system prompt out of the old local
@@ -133,6 +133,32 @@ jobs:
           shutil.copyfile(root/'prior/ab/comparison.json',root/'prior-clay-review.json')
           print('AUTHENTIC_QWEN_PREVIOUS_RENDER_REJECTED',previous['camera_visibility'])
           PY
+      - name: Recover second independent genuine Qwen4B camera-space VISUAL REJECTION
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ART/second-reject"
+          gh run download 38367414911 --repo "${{ github.repository }}" \
+            --name bastion1-verified-qwen4b-original-38360450981 --dir "$ART/second-reject"
+          python3 - <<'PY'
+          import json,os,pathlib,hashlib
+          root=pathlib.Path(os.environ['ART'])
+          for folder in ('prior','second-reject'):
+            base=root/folder
+            plan=base/'model/artist-plan.json'
+            comparison=base/'ab/comparison.json'
+            assert plan.is_file() and comparison.is_file(),folder
+            actions=json.loads(plan.read_text())
+            review=json.loads(comparison.read_text())
+            assert review['target']==os.environ['TARGET_MESH']
+            assert review['camera_visibility']['camera_visibility_gate']=='REJECT_NOT_VISIBLE'
+            assert len(actions)==1 and actions[0]['type']=='sculpt_region',folder
+            for phase in ('before','after'):
+              png=base/'ab'/f'{phase}-blender-clay.png'
+              assert png.is_file() and hashlib.sha256(png.read_bytes()).hexdigest()==review[f'{phase}_image_sha256'],png
+            print('REJECTED_QWEN_ORIGINAL_ART_BEFORE_NEXT_INFERENCE',folder,
+                  review['camera_visibility']['changed_pixels'])
+          PY
       - name: Build VERIFIED south-cliff mesh anchors and real prior Unity failure context
         shell: bash
         run: |
@@ -196,6 +222,8 @@ jobs:
             --inventory "$ART/inventory.txt" \
             --mesh-context "$ART/inspect/mesh-context.json" \
             --prior-visual-review "$ART/prior-clay-review.json" \
+            --failed-plan "$ART/prior/model/artist-plan.json" --failed-review "$ART/prior/ab/comparison.json" \
+            --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
             --model qwen3-vl:4b-instruct --num-ctx 16384 --num-predict 1700 --max-actions 2 \
             --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
@@ -207,6 +235,8 @@ jobs:
           ops=json.loads((r/'model/artist-plan.json').read_text())
           assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==ops
+          assert len(inference.get('rejected_visual_cycle_evidence',[]))==2, 'must use two real rejected cycles'
+          assert any(op['type']!='sculpt_region' for op in ops), 'do not repeat two invisible sculpt_region strategies'
           anchors=json.loads((r/'inspect/mesh-context.json').read_text())['sample_vertices']
           assert len(anchors)>=9 and all(a['role'].startswith('negative_y_cliff_') for a in anchors[:9])
           # Fail closed when Qwen AGAIN designs an invisible far-away edit.
