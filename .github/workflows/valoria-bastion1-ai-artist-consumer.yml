@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: eed73646eeb267d3205804968c81340e8f9f6898
+      ART_CORE_SHA: 3deec3b03c3aa23ed6b091fb3a9eddc7518fe745
       SOURCE_RUN: '38356683511'
       SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
@@ -110,7 +110,7 @@ jobs:
             top=int(im.height*(.27 if k=='reference' else .30))
             crop_box=(0,top,im.width,im.height)
             im=im.crop(crop_box)
-            im.thumbnail((640,640),Image.Resampling.LANCZOS)
+            im.thumbnail((512,512),Image.Resampling.LANCZOS)
             dst=root/(k+'.jpg');im.save(dst,'JPEG',quality=85)
             out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'crop_box':crop_box,'derived_pixels':im.size}
           (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
@@ -253,9 +253,9 @@ jobs:
             --failed-plan "$ART/prior/model/artist-plan.json" --failed-review "$ART/prior/ab/comparison.json" \
             --failed-plan "$ART/second-reject/model/artist-plan.json" --failed-review "$ART/second-reject/ab/comparison.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
-            --model qwen3-vl:4b-instruct --num-ctx 16384 --num-predict 1700 --max-actions 2 \
+            --model qwen3-vl:4b-instruct --num-ctx 8192 --num-predict 1000 --max-actions 2 \
             --camera-min-radius 12 --camera-min-displacement 1.5 \
-            --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
+            --cpu-compact --repair-attempts 0 --request-timeout 540 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
           import json,os,pathlib
