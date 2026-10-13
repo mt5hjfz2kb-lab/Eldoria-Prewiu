@@ -166,19 +166,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Qwen mountain material binding staging failed'}
           Copy-Item (Join-Path $root 'edited-mountain/mountain-execution-proof.json') "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/qwen-integration-proof.json" -Force
           Write-Host "BASTION1_QWEN_MOUNTAIN_NATIVE_INPUT artist_run=38438668388 sha=$expected"
-      - name: Capture exact native Unity BEFORE from current verified source
-        shell: powershell
-        run: |
-          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-SameCamera-Before.log'
-          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(900000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'BEFORE Unity timed out'}
-          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'BEFORE native Unity failed'}
-          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
-          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
-          if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Real before camera frame missing'}
-          Write-Host 'BASTION1_NATIVE_SAME_CAMERA_BEFORE_CAPTURED'
-      - name: Reshape ONLY existing distant mountain using local Blender, preserve authored assets
+      - name: Restore last validated Blender mountain and cliff finish as SAME-CAMERA baseline
         shell: powershell
         run: |
           $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
@@ -192,6 +180,32 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Edited mountain GLB material check failed'}
           Copy-Item ([System.IO.Path]::ChangeExtension($out,'.proof.json')) "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/distant-mountain-proof.json" -Force
           Write-Host 'BASTION1_DISTANT_MOUNTAIN_ONLY_EDITED_UNITY_NEXT'
+      - name: Capture exact native Unity BEFORE from current verified source
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-SameCamera-Before.log'
+          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(900000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'BEFORE Unity timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'BEFORE native Unity failed'}
+          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
+          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
+          if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Real before camera frame missing'}
+          Write-Host 'BASTION1_NATIVE_SAME_CAMERA_BEFORE_CAPTURED'
+      - name: Compose courtyard perimeter and secondary paths on verified baseline
+        shell: powershell
+        run: |
+          $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'Bastion1CourtyardCandidate.glb'
+          & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/compose_bastion_courtyard.py -- $src $out
+          if($LASTEXITCODE -ne 0){throw 'Courtyard Blender composition failed'}
+          $proof=Get-Content ([System.IO.Path]::ChangeExtension($out,'.proof.json')) -Raw | ConvertFrom-Json
+          if($proof.secondary_paths -ne 2 -or $proof.ground_islands -ne 6 -or $proof.new_resource_nodes -ne 0 -or $proof.existing_mesh_coordinates_modified){throw 'Courtyard gameplay/art constraints failed'}
+          Copy-Item $out $src -Force
+          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $src
+          if($LASTEXITCODE -ne 0){throw 'Courtyard material bindings failed'}
+          Copy-Item ([System.IO.Path]::ChangeExtension($out,'.proof.json')) "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/courtyard-composition-proof.json" -Force
+          Write-Host 'BASTION1_COURTYARD_COMPOSED_NATIVE_UNITY_NEXT'
       - name: Capture real Unity AFTER and preserve playable candidate
         shell: powershell
         run: |
