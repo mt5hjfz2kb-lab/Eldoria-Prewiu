@@ -111,14 +111,22 @@ jobs:
           run-id: 38419031491
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1PreviousUnity
-      - name: Stage matched existing before-frame without rerunning passed Unity work
+      - name: Reuse actual previous engine frame after locating artifact structure
         shell: powershell
         run: |
-          # Artifact ZIP layout includes the original Windows upload root, which
-          # may differ across runs. Resolve the actual earlier AFTER frame by name.
           $root=Join-Path $env:RUNNER_TEMP 'Bastion1PreviousUnity'
-          $candidates=@(Get-ChildItem -LiteralPath $root -Recurse -File -Filter 'bastion1-player-initial.png')
-          $after=@($candidates | Where-Object {$_.DirectoryName -match '(?i)[\\/]after
+          $images=@(Get-ChildItem -LiteralPath $root -Recurse -File -Filter 'bastion1-player-initial.png')
+          $candidates=@($images | Where-Object {$_.FullName.ToLowerInvariant().Contains('after')})
+          if($candidates.Count -ne 1){
+            $images | ForEach-Object {Write-Host $_.FullName}
+            throw 'Expected one real Unity after frame in the existing artifact'
+          }
+          $source=$candidates[0].DirectoryName
+          $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
+          New-Item -ItemType Directory -Force $before | Out-Null
+          Copy-Item (Join-Path $source '*') $before -Force
+          if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Engine frame missing after copy'}
+          Write-Host 'BASTION1_REUSED_PREVIOUS_UNITY_FRAME run=38419031491'
       - name: Recover completed genuine Qwen8B fracture and palette finishing
         uses: actions/download-artifact@v4
         with:
