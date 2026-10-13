@@ -3,7 +3,7 @@ const { PNG }=require('pngjs');
 const fs=require('fs'), path=require('path');
 const dir='bastion1-browser-evidence';
 fs.mkdirSync(dir,{recursive:true});
-const report={exactBuildRun:38356683511,sourceSha:'245a963f7c7eb9ee30e4de9e9cffd13f632eb82d',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
+const report={exactBuildRun:38356683511,sourceSha:'245a963f7c7eb9ee30e4de9e9cffd13f632eb82d',webglBuildPass:true,browserStartupPass:false,cameraPanPass:false,sawmillSelectionPass:false,sawmillBuildPass:false,barracksLockedPass:false,worldEnteredPass:false,worldReturnPass:false,reloadPass:false,resetPass:false,zeroFatalErrors:false,visualPass:false,physicalPhonePass:false,checks:[],errors:[],events:[],state:[],shots:[],accepted:false};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let browser;
 function state(m){const a=m.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+).*sawmill=(\d+) bastion=(\d+) barracks=(\d+)/);return a?{tag:a[1],scene:a[2],revision:+a[3],wood:+a[4],stone:+a[5],sawmill:+a[6],bastion:+a[7],barracks:+a[8]}:null;}
@@ -67,6 +67,24 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
       report.checks.push({sawmillRevisionBefore:initialRev,after:report.state.at(-1)?.revision,sawmillBuildPass:report.sawmillBuildPass});
     }
   }
+  // Bastion I's Cuartel is present as a selectable plot but remains locked
+  // until genuine Bastion II progression. No QA cheats or economy bypass.
+  const barracks=mapHotspot('barracks');
+  const barracksState=report.state.at(-1);
+  if(barracks&&barracks.x>=0&&barracks.x<844&&barracks.y>=0&&barracks.y<390&&barracksState?.bastion===1){
+    const previousEventCount=report.events.length;
+    await page.touchscreen.tap(barracks.x,barracks.y);
+    const sawBarracksPanel=await waitUntil(()=>report.events.slice(previousEventCount).some(
+      e=>e.includes('ELDORIA_PLAYABLE_UI id=buildingAction')&&e.includes('CONSTRUIR CUARTEL')),6500);
+    const panelLog=report.events.slice(previousEventCount).findLast(e=>
+      e.includes('ELDORIA_PLAYABLE_UI id=buildingAction')&&e.includes('CONSTRUIR CUARTEL'));
+    const deniedCommand=!report.events.slice(previousEventCount).some(e=>e.includes('ELDORIA_PLAYABLE_COMMAND kind=Build target=barracks ok=True'));
+    report.barracksLockedPass=!!sawBarracksPanel&&!!panelLog?.includes('enabled=False')&&deniedCommand;
+    report.checks.push({barracksTarget:barracks,bastionLevel:barracksState.bastion,panelLog,barracksLockedPass:report.barracksLockedPass});
+    const close=mapUi('buildingClose');
+    if(close)await page.touchscreen.tap(close.x,close.y);
+    await sleep(450);
+  } else report.checks.push({barracksTarget:barracks,bastionLevel:barracksState?.bastion,warning:'Barracks lock could not be checked'});
   const world=mapUi('worldNav');report.checks.push({worldNav:world});
   if(world){
     const visitedBefore=report.state.filter(s=>s.scene==='Frontier').length;
@@ -102,7 +120,7 @@ async function gesture(cdp,x,y,dx,dy){await cdp.send('Input.dispatchTouchEvent',
   }
   report.zeroFatalErrors=report.errors.length===0;
   report.visualPass=false; // Requires human inspection against owner reference; never assert art PASS from a screenshot.
-  report.accepted=report.browserStartupPass&&report.cameraPanPass&&report.sawmillSelectionPass&&report.sawmillBuildPass&&report.worldEnteredPass&&report.worldReturnPass&&report.reloadPass&&report.resetPass&&report.zeroFatalErrors&&pink<.055;
+  report.accepted=report.browserStartupPass&&report.cameraPanPass&&report.sawmillSelectionPass&&report.sawmillBuildPass&&report.barracksLockedPass&&report.worldEnteredPass&&report.worldReturnPass&&report.reloadPass&&report.resetPass&&report.zeroFatalErrors&&pink<.055;
  }catch(e){report.errors.push('PROBE: '+String(e).slice(0,1000));}
- finally{if(browser)await browser.close().catch(()=>{});fs.writeFileSync(path.join(dir,'browser-qa-result.json'),JSON.stringify(report,null,2));console.log('BASTION1_BROWSER_QA',JSON.stringify({accepted:report.accepted,startup:report.browserStartupPass,pan:report.cameraPanPass,selection:report.sawmillSelectionPass,build:report.sawmillBuildPass,worldReturn:report.worldReturnPass,reload:report.reloadPass,reset:report.resetPass,errors:report.errors.slice(0,5),shots:report.shots}));if(!report.accepted)process.exitCode=1;}
+ finally{if(browser)await browser.close().catch(()=>{});fs.writeFileSync(path.join(dir,'browser-qa-result.json'),JSON.stringify(report,null,2));console.log('BASTION1_BROWSER_QA',JSON.stringify({accepted:report.accepted,startup:report.browserStartupPass,pan:report.cameraPanPass,selection:report.sawmillSelectionPass,build:report.sawmillBuildPass,barracksLocked:report.barracksLockedPass,worldReturn:report.worldReturnPass,reload:report.reloadPass,reset:report.resetPass,errors:report.errors.slice(0,5),shots:report.shots}));if(!report.accepted)process.exitCode=1;}
 })();
