@@ -9,7 +9,6 @@ namespace Eldoria.AssetLibrary
     public static class EldoriaSelectedAssetLibraryV1
     {
         public const string CatalogResource = "EldoriaSelectedAssetCatalogV1";
-        public const string GeneratedPrefabsResource = "EldoriaSelectedAssetsV1/";
         private static Catalog cached;
 
         [Serializable]
@@ -64,8 +63,9 @@ namespace Eldoria.AssetLibrary
                 || string.IsNullOrEmpty(e.resource_key) || string.IsNullOrEmpty(e.sha256))
                 throw new InvalidOperationException("Asset is not selected for safe staging: " + id);
 
-            var source = Resources.Load<GameObject>(GeneratedPrefabsResource + id);
-            if (source == null) source = Resources.Load<GameObject>(e.resource_key);
+            // Only the already-existing canonical Resource is exposed at runtime.
+            // Editor-generated experimental prefabs are intentionally outside Resources.
+            var source = Resources.Load<GameObject>(e.resource_key);
             if (source == null) throw new InvalidOperationException("Selected Unity GLB source missing: " + e.resource_key);
 
             // Refuse any source carrying scripts BEFORE Instantiate/Awake can execute.
