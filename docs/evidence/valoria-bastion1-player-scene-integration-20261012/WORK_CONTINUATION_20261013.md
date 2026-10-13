@@ -17,6 +17,12 @@ Objetivo: continuar la integración existente hasta escena jugable cercana a la 
 - Este resultado es **BLENDER PASS, ART UNITY NOT YET REVIEWED**. Ejecutar la importación nativa, recuperar capturas `before` de `38419031491` y compararlas con `after` de misma cámara; no afirmar calidad 8/10 por compilación. El workflow Unity consume ese artefacto inmóvil sin Qwen/Blender nuevos. No publicar ni cambiar Región 1.
 - El backend WebGL se condiciona a nuevo run Unity final y a prueba posterior sobre sus propios bytes; nunca reutilizar la QA de `38422576301` como prueba del nuevo artefacto. PR #51 sigue DRAFT y espera Windows legítimamente libre.
 
+## 2026-10-13 — Review visual real: nueva fuente Qwen en Unity, profundidad aún ART FAIL
+- Nueva escena nativa: run `38439416004` SUCCESS, source `90f481f10a9f279f8eb3da3b7a9031b6c21e6098`, frames `11834222705`, full scene `11834691364`.
+- A/B nativo 1440×1000 de `38419031491` contra `38439416004`: MAE RGB 2.81666, 11.5645% de píxeles con delta RGB >10. Es una métrica de cambio, NO de calidad. La montaña gana materiales PBR pero se percibe como gran pared rocosa demasiado próxima: **ART FAIL**, no 8/10 y NO WebGL ni promoción de este candidato.
+- Siguiente corrección de Unity, sin reejecutar Qwen ni Blender: alejar y bajar ligeramente el mesh `Valoria true mountain backdrop` y ajustar fog para profundidad atmosférica; no alterar geometría/arquitectura/estado de parcela. El A/B siguiente toma como BEFORE exacto `38439416004` para medir únicamente el reencuadre. Inspectar BEFORE/AFTER antes de crear nuevo candidato WebGL. Cuartel y gameplay protegidos.
+- El último WebGL `38420574701` y QA I→II `38422576301` conservan exclusivamente su PASS previo; ni los cambios de HUD ni los nuevos cambios artísticos tienen QA final aún.
+
 ## Estado vigente — prevalece sobre la cronología inferior
 - Rama única: integration/valoria-bastion1-player-scene-20261012. HEAD exacto de evidencias antes de esta actualización: ec998413d6d6829a0e18676a18a894071e0eb181. Último HEAD de código/QA ejecutado:55b9eddd7c130f68e39d4ccc41504423fc15f9eb. Obtener HEAD vivo antes de editar; los commits posteriores conservan pruebas/documentación.
 - Última Unity38419031491 **SUCCESS**, sourcecf1f7bc69ff832f917fa9e41285ba6c809c320ac. Frames11826196119/full11825492257. Perfil cascade1/atlas1024/MSAA1/shadowDistance180. Aserradero a izquierda, camino/escalera unidos, factores RGB originales Qwen. Captura real final mobile-profile-native-initial.png.

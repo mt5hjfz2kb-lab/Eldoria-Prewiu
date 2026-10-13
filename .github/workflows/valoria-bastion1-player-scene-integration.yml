@@ -108,8 +108,8 @@ jobs:
       - name: Fetch exact previously verified Unity image as immutable scenery baseline
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-unity-review-frames-38419031491
-          run-id: 38419031491
+          name: bastion1-unity-review-frames-38439416004
+          run-id: 38439416004
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1PreviousUnity
       - name: Reuse actual previous engine frame after locating artifact structure
@@ -127,7 +127,7 @@ jobs:
           New-Item -ItemType Directory -Force $before | Out-Null
           Copy-Item (Join-Path $source '*') $before -Force
           if(-not (Test-Path (Join-Path $before 'bastion1-player-initial.png'))){throw 'Engine frame missing after copy'}
-          Write-Host 'BASTION1_REUSED_PREVIOUS_UNITY_FRAME run=38419031491'
+          Write-Host 'BASTION1_REUSED_PREVIOUS_UNITY_FRAME run=38439416004'
       - name: Recover immutable genuinely authored mountain from completed Blender replay
         uses: actions/download-artifact@v4
         with:

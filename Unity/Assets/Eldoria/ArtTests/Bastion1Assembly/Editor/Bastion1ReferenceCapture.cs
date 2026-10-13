@@ -51,6 +51,9 @@ namespace Eldoria.EditorTools
                 var root=new GameObject("BastionI_ReferenceAssembly_CANDIDATE");
                 if(!await importer.InstantiateMainSceneAsync(root.transform))throw new Exception("glTFast instantiate failed");
                 Bastion1MaterialBindings.Apply(root,importer,source);
+                // Keep the genuine Qwen-edited mesh, but correct its oversized
+                // near-camera horizon placement without editing other scene meshes.
+                ReframeExistingDistantMountain(root);
                 Bastion1RoadClearance.Apply(root);
                 await Bastion1ExistingRoadIntegration.Apply(root);
                 InspectRoadContacts(root);
@@ -61,7 +64,7 @@ namespace Eldoria.EditorTools
                 RenderSettings.ambientSkyColor=new Color(.37f,.46f,.61f);
                 RenderSettings.ambientEquatorColor=new Color(.38f,.40f,.38f);
                 RenderSettings.ambientGroundColor=new Color(.31f,.27f,.22f);
-                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0028f;
+                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0052f;
                 RenderSettings.fogColor=new Color(.30f,.38f,.45f);
                 foreach(var p in new[]{new Vector3(-4,2,20),new Vector3(4,2,20),new Vector3(-4,5.5f,-21),new Vector3(4,5.5f,-21)})
                 {
@@ -140,6 +143,28 @@ namespace Eldoria.EditorTools
                 Debug.LogError("BASTION1_REFERENCE_CAPTURE_FAILED "+ex);EditorApplication.Exit(1);
             }
         }
+        static void ReframeExistingDistantMountain(GameObject assembly)
+        {
+            var mountain=Find(assembly.transform,"Valoria true mountain backdrop");
+            if(mountain==null)throw new Exception("Exact authored distant mountain missing from source");
+            int meshCount=0;
+            foreach(var renderer in mountain.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                renderer.shadowCastingMode=ShadowCastingMode.Off;
+                meshCount++;
+            }
+            if(meshCount<1)throw new Exception("Authored mountain visual renderer missing");
+            // Composition-only adjustment of the EXISTING 3D horizon, never
+            // an additional model, procedural replacement, or interactive object.
+            // The earlier Unity matched frame placed the textured mountain as
+            // an unnaturally close vertical wall behind the upper fortress.
+            var previous=mountain.localPosition;
+            mountain.localPosition=previous+new Vector3(0f,-2f,-14f);
+            Debug.Log("BASTION1_AUTHORED_MOUNTAIN_DEPTH_FINISH before="+previous+
+                " after="+mountain.localPosition+" renderers="+meshCount+
+                " geometry_rebuilt=false fog_density=.0052");
+        }
+
         static Transform Find(Transform root,string name)
         {foreach(var item in root.GetComponentsInChildren<Transform>(true))if(item.name==name)return item;return null;}
         internal static void Persist(UnityEngine.Object obj)
