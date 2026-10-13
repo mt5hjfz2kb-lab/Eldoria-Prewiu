@@ -73,9 +73,22 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Explicit owner takeover from stalled normal chat; consume existing PBR/art evidence, resume Unity integration and player QA without repeating rejected inference.",
+      "phase": "Completed CC0 material transfer + actual Unity A/B + exact WebGL basic QA; brown palette visually rejected. Grass/Gamma-color candidate, stronger genuine Qwen8B and full mobile I-II QA are executing.",
       "resumed_at": "2026-10-13T12:02:09.263Z",
-      "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job."
+      "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job.",
+      "last_verified": {
+        "unity_build_run": 38395469618,
+        "unity_build_source_sha": "c53108d7160160d55743b460526a03a2443031bc",
+        "artifact_id": 11811847205,
+        "basic_browser_qa_run": 38396278910,
+        "basic_browser_qa_pass": true,
+        "art_approved": false
+      },
+      "continuation_document": {
+        "branch": "integration/valoria-bastion1-player-scene-20261012",
+        "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
+      },
+      "next": "Recover 38398380999, 38398178848 and 38398178834; inspect exact captures, repair, consume genuine artist output, continue through artistic and player gates."
     }
   ],
   "history": [
