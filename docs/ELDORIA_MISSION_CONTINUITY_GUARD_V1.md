@@ -22,7 +22,7 @@ Un workflow SUCCESS **nunca** cierra automáticamente la misión ni equivale a V
 
 ## Ejecución
 
-El workflow `.github/workflows/mission-continuity-guard.yml` corre en Ubuntu alojado en GitHub aproximadamente cada media hora o manualmente. El schedule solo se activa al entrar el workflow en la rama por defecto; GitHub puede retrasar sus ejecuciones.
+El workflow `.github/workflows/mission-continuity-guard.yml` corre en Ubuntu alojado en GitHub aproximadamente cada hora, tras un cambio del propio guardián en main, o manualmente. La activación tras fusionar el PR usa push; el schedule solo se activa al entrar el workflow en la rama por defecto; GitHub puede retrasar sus ejecuciones.
 
 El observador sólo crea una issue cuando el propietario está activo en la rama esperada, el último trabajo lleva al menos 20 minutos sin ejecutar una nueva fase y no existe una issue previa con su marcador. Las issues abiertas se actualizan **solo si cambia** su texto; las cerradas manualmente no se reabren. Se rechaza la creación cuando no puede descartarse una duplicación. GitHub necesita permiso de escritura de issues; un error de API deja rojo el workflow y se conserva la traza posible.
 
