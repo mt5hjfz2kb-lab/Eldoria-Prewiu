@@ -23,6 +23,18 @@ class PlanContract(unittest.TestCase):
  def test_genuine_spatial_edit_not_preselected(self):
   for delta in ([0,.85,.3],[.4,0,0],[0,0,-1.2]):
    self.assertEqual(self.check(draft(region(delta))),[])
+ def test_camera_preflight_rejects_real_millimeter_qwen_blender_failure(self):
+  tiny=draft(region([0.005,0,0]))
+  errors=inspect_artist_plan(tiny,REAL_TARGET,'existing',1,REAL_TOPOLOGY,require_camera_effect=True)
+  self.assertIn('SCULPT_CAMERA_IMPACT_FAIL',' | '.join(errors))
+  self.assertIn('executable',' | '.join(errors))
+ def test_camera_preflight_rejects_invisible_small_radius(self):
+  tiny=draft(region([0.8,0,0]));tiny['planned_actions'][0]['parameters']['radius']=0.5
+  errors=inspect_artist_plan(tiny,REAL_TARGET,'existing',1,REAL_TOPOLOGY,require_camera_effect=True)
+  self.assertIn('radius',' | '.join(errors))
+ def test_camera_sized_art_direction_not_replaced_with_fixed_script_values(self):
+  a=draft(region([0.42,-0.35,0.16]))
+  self.assertEqual(inspect_artist_plan(a,REAL_TARGET,'existing',1,REAL_TOPOLOGY,require_camera_effect=True),[])
  def test_reject_new_on_frozen_source(self):
   d=draft(region([0,.5,0]));d['asset_decision']='NEW'
   self.assertIn('MODIFY or REUSE',' | '.join(self.check(d)))
