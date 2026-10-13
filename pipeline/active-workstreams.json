@@ -108,7 +108,7 @@
       "base_main_sha": "f93446353b861f7febb3998717b46b063c2696bf",
       "phase": "Create SHA-verified 26-source selection catalog, inert Unity loader and Editor prefab generator; no Bastion/Region1 modifications or Windows runner.",
       "dependency": "Unity 6000 Windows build/render visual gate waits for genuine release of Bastion I windows-runner-heavy claim.",
-      "art_production_routing": "not_required",
+      "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Select/integrate existing unchanged source GLBs only; no new artistic authoring or promotion."
     }
   ],
