@@ -1,0 +1,117 @@
+name: Bastion I replay original Qwen alternate modeling decision
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-qwen-different-plan-replay.yml']
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: bastion1-replay-authentic-alternate-plan
+  cancel-in-progress: true
+jobs:
+  blender-authored-alternate-plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ROOT: /tmp/eldoria-original-model-plan
+      CORE_SHA: 4d928620cb83dde9dad0d4e62a34c3d37a982a8c
+      ORIGINAL_RUN: '38370740511'
+      TARGET: 'Valoria natural playable hilltop and rock scarps'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/art-direction/ai-authoring/render_artist_ab.py
+          sparse-checkout-cone-mode: false
+      - name: Recover original model, frozen Blender source, and source hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT"
+          gh run download "$ORIGINAL_RUN" --repo "${{ github.repository }}" \
+            --name "bastion1-genuine-qwen-artist-$ORIGINAL_RUN" --dir "$ROOT"
+          for f in terrain-source.blend model/artist-plan.json model/artist-inference.json model/artist-response-raw.txt; do test -s "$ROOT/$f"; done
+      - name: Pin tested model authoring contract and all new verifier dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$CORE_SHA"
+          mkdir -p tools/art-direction/ai-authoring
+          for f in execute_artist_plan.py artist_plan_validation.py artistic_learning_feedback.py verify-artist-cycle.mjs visibility_metrics.py unity_pixel_diff.mjs; do
+            git show "$CORE_SHA:tools/art-direction/ai-authoring/$f" > "tools/art-direction/ai-authoring/$f"
+          done
+          python3 -m py_compile tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py
+      - name: Verify ORIGINAL Qwen4B alternative plan, not transformed by scripts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,pathlib,hashlib,json
+          root=pathlib.Path(os.environ['ROOT'])
+          raw=(root/'model/artist-response-raw.txt').read_bytes()
+          infer=json.loads((root/'model/artist-inference.json').read_text())
+          plan_bytes=(root/'model/artist-plan.json').read_bytes()
+          plan=json.loads(plan_bytes)
+          assert infer['model']=='qwen3-vl:4b-instruct' and infer['system_role']=='system' and infer['self_approval'] is False
+          assert infer['direction']['planned_actions']==plan
+          assert infer['attempt_history'][-1]['raw_response_sha256']==hashlib.sha256(raw).hexdigest()
+          assert infer['forbidden_visual_failure_methods']==['sculpt_region']
+          assert len(infer['rejected_visual_cycle_evidence'])==2
+          assert len(plan)==1 and plan[0]['type'] in ('sculpt_path','reprofile_crest'),plan
+          assert plan[0]['target']==os.environ['TARGET']
+          assert (root/'terrain-source.blend').read_bytes()[:7]==b'BLENDER'
+          proof={'model':infer['model'],'unmodified':True,'target':os.environ['TARGET'],
+                 'method':plan[0]['type'],'qwen_run':int(os.environ['ORIGINAL_RUN']),
+                 'source_sha256':hashlib.sha256((root/'terrain-source.blend').read_bytes()).hexdigest(),
+                 'plan_sha256':hashlib.sha256(plan_bytes).hexdigest(),
+                 'raw_model_sha256':hashlib.sha256(raw).hexdigest(),
+                 'unity_art_approved':False}
+          (root/'original-plan-provenance.json').write_text(json.dumps(proof,indent=2)+'\n')
+          print('AUTHENTIC_QWEN_ALTERNATE_GEOMETRY_PLAN',json.dumps(proof))
+          PY
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ROOT/model/artist-plan.json" "$TARGET" existing
+      - name: Execute frozen Qwen design in REAL Blender without editing plan
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          SOURCE=$(sha256sum "$ROOT/terrain-source.blend" | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$ROOT/terrain-source.blend" --plan "$ROOT/model/artist-plan.json" \
+            --out "$ROOT/result" --transport direct --expected-source-sha256 "$SOURCE"
+          python3 - <<'PY'
+          import json,os,pathlib,hashlib
+          root=pathlib.Path(os.environ['ROOT'])
+          evidence=json.loads((root/'result/artist-execution.json').read_text())
+          assert evidence['source_mesh_sha256']!=evidence['result_mesh_sha256']
+          assert evidence['plan_sha256']==hashlib.sha256((root/'model/artist-plan.json').read_bytes()).hexdigest()
+          assert all(x['changed_vertices']>0 for x in evidence['executed_actions'])
+          print('REAL_BLENDER_GEOMETRY_ALTERNATE_METHOD_PASS',evidence['executed_actions'])
+          PY
+      - name: Render original source vs original Qwen alternative at player camera
+        shell: bash
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before "$ROOT/terrain-source.blend" --after "$ROOT/result/artist-output.blend" \
+            --target "$TARGET" --player-camera --out "$ROOT/ab"
+          python3 - <<'PY'
+          import json,pathlib,os
+          root=pathlib.Path(os.environ['ROOT'])
+          review=json.loads((root/'ab/comparison.json').read_text())
+          print('PLAYER_CAMERA_REAL_BENDER_ART_VISIBILITY',review['camera_visibility'])
+          assert review['camera_visibility']['camera_visibility_gate']=='REVIEW_REQUIRED'
+          print('BLENDER_VISIBILITY_SUFFICIENT_FOR_UNITY_REVIEW_NOT_ART_APPROVED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-qwen-original-alternate-model-${{ github.run_id }}
+          path: |
+            /tmp/eldoria-original-model-plan/original-plan-provenance.json
+            /tmp/eldoria-original-model-plan/model/**
+            /tmp/eldoria-original-model-plan/result/**
+            /tmp/eldoria-original-model-plan/ab/**
+          retention-days: 30
+          if-no-files-found: warn
