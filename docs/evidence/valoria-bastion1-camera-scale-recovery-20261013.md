@@ -41,3 +41,11 @@ Visual score remains approximately **4.5/10 pending independent artistic accepta
 - **First real Unity A/B run 38467372726 SUCCESS technically but ART REJECTED**. 30,567 / 1,440,000 = **2.1227%** pixels changed. Actual side-by-side showed two dark, uniform curved ribbons and large flat color patches; unnatural contrast makes the environment less coherent. Do **not** accept that candidate or call it a 6/10 result.
 - Corrective response: reduced path widths, replaced 6 large ground islands with 14 small ones, lowered and randomized scree placement, and baked portable mottled ground textures into the GLB. Commit `f95a00f7816a1cb1fc55c42f9b1b999bd36cd69d`, validation run [38468519777](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38468519777). **Pending independent image review; not approved.**
 - Reusable lesson: pixel fraction only establishes visibility. Uniform untextured surface decals can reduce art quality even when navigation and Unity compile pass. Always inspect native camera frames, especially peripheral soil/grass seams.
+
+## Courtyard v2 art review and v3 corrective strategy
+
+- Native Unity run **38468519777 SUCCESS**: authentic 1440x1000 same-camera A/B, 12,997 changed pixels (**0.902569%**), artifact **11851480786**.
+- **ART REJECTED**: narrower textured paths still render as unnaturally dark strips on the grassy terrace; smaller patches are less intrusive but do not solve the root composition problem. Preserve evidence, never promote.
+- Root issue is using additional terrain-overlay meshes as color decals; even with valid UVs and baked textures the resulting shapes are not naturally integrated in the engine.
+- Third intervention removes *all* those ribbons and islands and instead modifies the **existing original grass albedo image** in Blender with broad, bounded mottled tonal variation. No new terrain overlays, buildings or resource nodes. Sparse contact scree remains. Native A/B workflow checks the original baseline and captures identical camera again.
+- Commit `2651f5534bc45902ee59fc9fcb94a7176b46378f`. Artistic status remains **unapproved pending real Unity evidence**.
