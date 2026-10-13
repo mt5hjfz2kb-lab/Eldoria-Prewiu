@@ -10,13 +10,18 @@ const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v
  await p.locator('[data-testid="tester-intro"]').waitFor({state:'detached'});
  await p.locator('[data-testid="tester-feedback"]').waitFor({state:'visible'});
  const core=await p.evaluate(()=>({game:!!window.ELDORIA_V023,tester:!!window.ELDORIA_TESTER,screen:window.ELDORIA_V023?.state?.().view,ctx:window.ELDORIA_TESTER?.context?.()}));
- if(!core.game||!core.tester||!core.ctx||core.ctx.testerVersion!=='0.26.5-test.1')throw Error('Tester/game runtime contract failed');
+ if(!core.game||!core.tester||!core.ctx||core.ctx.testerVersion!=='0.26.5-test.2')throw Error('Tester/game runtime contract failed');
  await p.locator('[data-testid="tester-feedback"]').click();
  await p.locator('[data-testid="tester-blocked"]').waitFor({state:'visible'});
  await p.locator('[data-testid="tester-blocked"] [data-h="0"]').click();
  await p.locator('[data-testid="tester-blocked"]').waitFor({state:'detached'});
- await p.evaluate(()=>document.querySelectorAll('.e22-overlay,.aldric-cinematic,.tutorialDialogue,.tutorialAldric').forEach(x=>x.remove()));
- await p.evaluate(()=>window.ELDORIA_TESTER.ask({id:'qa-negative',question:'¿Entendiste esta prueba?',reasons:['R1','R2','R3','Otro']}));
+ // Close unrelated auto-contextual prompts atomically with opening the requested QA survey;
+ // otherwise tester poll() may race this test, making ask() defer indefinitely via busy().
+ await p.evaluate(()=>{
+   document.querySelectorAll('.testerShade,.e22-overlay,.aldric-cinematic,.tutorialDialogue,.tutorialAldric').forEach(x=>x.remove());
+   window.ELDORIA_TESTER.ask({id:'qa-negative',question:'¿Entendiste esta prueba?',reasons:['R1','R2','R3','Otro']});
+   if(!document.querySelector('[data-testid="tester-question-qa-negative"]'))throw Error('Contextual tester ask was unexpectedly deferred after clearing competing overlays');
+ });
  await p.locator('[data-testid="tester-question-qa-negative"]').waitFor({state:'visible'});
  await p.locator('[data-testid="tester-question-qa-negative"] [data-a="No"]').click();
  await p.locator('[data-testid="tester-question-qa-negative"] [data-r="1"]').click();

@@ -18,7 +18,18 @@ const URL=(process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1')+(pro
  console.log('V030 CHECKPOINT choice');
  // Real development choice: mutually exclusive grant + persisted state.
  let s=await state();
- await set({...s,bastionLevel:4,bastion3:true,developmentChoices:{},wood:1000,stone:1000,food:500,chapterProgress:{...(s.chapterProgress||{}),current:4}});
+ // Seed an actual coherent Chapter-IV state BEFORE boot, never fake a
+ // Chapter-I -> Bastion-IV progression jump during an active scene render.
+ // Preserve the genuine touch event test below.
+ await p.addScriptTag({path:require('node:path').resolve(__dirname,'../v0220/js/qa-fixtures.js')});
+ const chapter4=await p.evaluate(()=>window.ELDORIA_QA_FIXTURES.get('hero-army-base'));
+ if(chapter4?.chapterProgress?.current!==4)throw Error('Coherent Chapter-IV fixture unavailable');
+ await p.evaluate(v=>localStorage.setItem('eldoria-v022-consistent-loop',JSON.stringify(v)),{
+   ...chapter4,view:'kingdom',developmentChoices:{},wood:1000,stone:1000,food:500,
+   introSeen:true,selectedAction:null});
+ await p.reload({waitUntil:'domcontentloaded'});
+ await p.waitForFunction(()=>window.ELDORIA_V030&&window.ELDORIA_V023?.state().chapterProgress?.current===4,null,{timeout:6000});
+ s=await state();if(s.bastionLevel!==4)throw Error('Chapter-IV save did not load');
  await p.evaluate(()=>window.ELDORIA_V030.openChoice(4));
  const choice=p.locator('[data-testid="v030-choice"]');await choice.waitFor({state:'visible'});
  const opts=choice.locator('[data-choice]');if(await opts.count()!==3)throw Error('development choice must expose 3 viable options');

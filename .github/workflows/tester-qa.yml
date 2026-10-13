@@ -13,6 +13,7 @@ permissions:
 jobs:
   tester-qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4
       - name: Install Playwright
@@ -27,13 +28,27 @@ jobs:
         run: python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
       - name: Closed tester layer E2E
         run: node qa/e2e-tester-build.js
-      - name: Alias frozen snapshot for legacy QA paths
+      - name: Alias current v0.32 game for legacy QA paths
         run: |
           rm -rf playtest
-          cp -R tester-v0265 playtest
-      - name: Frozen runtime targeted regression
-        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:targeted
-      - name: Frozen runtime full regression
-        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:regression
-      - name: Frozen runtime uninterrupted fresh-save Arc I
-        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:arc1
+          cp -R v0220 playtest
+          # The frozen build intentionally has no QA-only fixture boot. The disposable
+          # test alias must restore named preset scenarios BEFORE its main game scripts.
+          python3 - <<'PY'
+          from pathlib import Path
+          page=Path('playtest/index.html')
+          data=page.read_text('utf8')
+          assert '<head>' in data
+          boot='<head><script src="js/qa-fixtures.js"></script><script src="../qa/closed-tester-preset-boot.js"></script>'
+          page.write_text(data.replace('<head>',boot,1),'utf8')
+          PY
+      - name: Fast coherent-state behavior preflight before the expensive full suite
+        run: timeout 60s node qa/e2e-behavior-regression.js
+      - name: Fast Codex and Relicario game-state preflight
+        run: timeout 35s node qa/e2e-codex-chest.js
+      - name: Current v0.32 targeted regression
+        run: timeout 300s npm run qa:targeted
+      - name: Current v0.32 full regression
+        run: timeout 480s npm run qa:regression
+      - name: Current v0.32 uninterrupted fresh-save Arc I
+        run: timeout 900s npm run qa:arc1
