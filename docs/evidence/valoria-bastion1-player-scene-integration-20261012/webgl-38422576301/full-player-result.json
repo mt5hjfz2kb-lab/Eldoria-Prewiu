@@ -1,0 +1,4741 @@
+{
+  "failure": null,
+  "logs": [
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.framework.js.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.wasm.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.data.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityCache] 'http://127.0.0.1:8765/Build/Bastion1MeshCandidateWebGL.data.unityweb' successfully downloaded and stored in the browser cache"
+    },
+    {
+      "type": "log",
+      "text": "[UnityMemory] Configuration Parameters - Can be set up in boot.config\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-main=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-worker=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-remapper-allocator-initial-capacity=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-background-worker=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-cache-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-typetree-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-editor-allocator-block-size=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-main=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size-background=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-reduction-small-platforms=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System module state changed to: Initialized.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Initialized fallback backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xdecafbad\n"
+    },
+    {
+      "type": "log",
+      "text": "Loading player data from data.unity3d\n"
+    },
+    {
+      "type": "log",
+      "text": "Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)\n"
+    },
+    {
+      "type": "log",
+      "text": "Creating WebGL 2.0 context."
+    },
+    {
+      "type": "log",
+      "text": "Renderer: WebKit WebGL\n"
+    },
+    {
+      "type": "log",
+      "text": "Vendor:   WebKit\n"
+    },
+    {
+      "type": "log",
+      "text": "Version:  OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))\n"
+    },
+    {
+      "type": "log",
+      "text": "GLES:     3\n"
+    },
+    {
+      "type": "log",
+      "text": " EXT_clip_control EXT_color_buffer_float EXT_color_buffer_half_float EXT_conservative_depth EXT_depth_clamp EXT_disjoint_timer_query_webgl2 EXT_float_blend EXT_polygon_offset_clamp EXT_texture_compression_bptc EXT_texture_compression_rgtc EXT_texture_filter_anisotropic EXT_texture_mirror_clamp_to_edge NV_shader_noperspective_interpolation OES_draw_buffers_indexed OES_sample_variables OES_shader_multisample_interpolation OES_texture_float_linear OVR_multiview2 WEBGL_clip_cull_distance WEBGL_compressed_texture_astc WEBGL_compressed_texture_etc WEBGL_compressed_texture_etc1 WEBGL_compressed_texture_s3tc WEBGL_compressed_texture_s3tc_srgb WEBGL_debug_renderer_info WEBGL_debug_shaders WEBGL_lose_context WEBGL_multi_draw WEBGL_polygon_mode WEBGL_stencil_texturing GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_depth GL_EXT_depth_clamp GL_EXT_disjoint_timer_query_webgl2 GL_EXT_float_blend GL_EXT_polygon_offset_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_comp\n"
+    },
+    {
+      "type": "log",
+      "text": "ression_rgtc GL_EXT_texture_filter_anisotropic GL_EXT_texture_mirror_clamp_to_edge GL_NV_shader_noperspective_interpolation GL_OES_draw_buffers_indexed GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_texture_float_linear GL_OVR_multiview2 GL_WEBGL_clip_cull_distance GL_WEBGL_compressed_texture_astc GL_WEBGL_compressed_texture_etc GL_WEBGL_compressed_texture_etc1 GL_WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc_srgb GL_WEBGL_debug_renderer_info GL_WEBGL_debug_shaders GL_WEBGL_lose_context GL_WEBGL_multi_draw GL_WEBGL_polygon_mode GL_WEBGL_stencil_texturing\n"
+    },
+    {
+      "type": "log",
+      "text": "OPENGL LOG: Creating OpenGL ES 3.0 graphics device ; Context level  <OpenGL ES 3.0> ; Context handle 1\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Selected backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Name: PhysX\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xf2b8ea05\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] SDK Version: 4.1.2\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Integration Version: 1.0.0\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Threading Mode: Single-Threaded\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/CoreSRP/CoreCopy shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal Render Pipeline/StencilDitherMaskSeed shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal/HDRDebugView shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "Input Manager initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 0.800000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Gsplat/Global shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET fallback=True armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET execute=True serial=1\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 10.100000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 5 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 6271.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 26.600000 ms (FindLiveObjects: 0.500000 ms CreateObjectMapping: 0.300000 ms MarkObjects: 25.700000 ms  DeleteObjects: 0.100000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET fallback=True armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET execute=True serial=2\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 5.900000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 0 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 11 unused Assets to reduce memory usage. Loaded Objects now: 6271.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 5.900000 ms (FindLiveObjects: 0.500000 ms CreateObjectMapping: 0.300000 ms MarkObjects: 5.000000 ms  DeleteObjects: 0.100000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=389.4 y=135.3 enabled=True visible=True label=RECONSTRUIR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=389.4 y=95.3 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=389.4 y=188.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=610.6 y=235.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=569.8 y=101.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=389.4 y=135.3 enabled=True visible=True label=RECONSTRUIR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=389.4 y=95.3 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=389.4 y=188.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=610.6 y=235.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=569.8 y=101.9\n"
+    },
+    {
+      "type": "warning",
+      "text": "Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior."
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Build target=sawmill ok=True revision=1\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Build-sawmill scene=ValoriaWebGL revision=1 wood=150 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=False visible=True label=OBRA EN CURSO · 4 s\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=SALIR AL BOSQUE\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 9.400000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=Frontier revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 3 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 641 unused Assets to reduce memory usage. Loaded Objects now: 11387.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 14.200000 ms (FindLiveObjects: 1.000000 ms CreateObjectMapping: 0.200000 ms MarkObjects: 8.500000 ms  DeleteObjects: 4.500000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=366.0 y=364.7 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=213.5 y=24.5 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=630.5 y=24.5 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=RECOLECTAR MADERA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=795.0 y=295.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=RECOLECTAR MADERA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=387.0 y=124.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True revision=3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Gather-forest-valoria scene=Frontier revision=3 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=4 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=gathering sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=5 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=6 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=RECOLECTAR MADERA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True revision=7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Gather-forest-valoria scene=Frontier revision=7 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=8 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=gathering sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=9 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=10 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=RECOLECTAR PIEDRA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Gather target=quarry-valoria ok=True revision=11\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Gather-quarry-valoria scene=Frontier revision=11 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=12 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=gathering sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=13 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=14 wood=1110 stone=930 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.clear-route\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=DESPEJAR LA RUTA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Fight target=corrupt-scout ok=True revision=15\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Fight-corrupt-scout scene=Frontier revision=15 wood=1110 stone=930 gatheredWood=720 gatheredStone=700 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.clear-route\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=16 wood=1200 stone=985 gatheredWood=720 gatheredStone=700 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=True engendro=False objective=b1.return\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=17 wood=1280 stone=1055 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b1.ascend\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=REGRESAR A VALORIA\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 20.900000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=17 wood=1280 stone=1055 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b1.ascend\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 1 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 393 unused Assets to reduce memory usage. Loaded Objects now: 6829.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 11.200000 ms (FindLiveObjects: 0.500000 ms CreateObjectMapping: 0.300000 ms MarkObjects: 6.400000 ms  DeleteObjects: 4.000000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=366.0 y=364.7 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=213.5 y=29.3 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=630.5 y=29.3 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=470.8 y=200.0 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=470.8 y=160.0 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=290.3 y=221.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=511.5 y=269.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=470.8 y=135.8\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=470.8 y=200.0 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=470.8 y=160.0 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=290.3 y=221.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=511.5 y=269.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=470.8 y=135.8\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=AdvanceBastion target=bastion ok=True revision=18\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-AdvanceBastion-bastion scene=ValoriaWebGL revision=18 wood=1010 stone=895 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.build-barracks\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=CONSTRUIR CUARTEL\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=444.7 y=200.0 enabled=True visible=True label=CONSTRUIR CUARTEL\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=444.7 y=160.0 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=223.5 y=152.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=444.7 y=199.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=403.9 y=66.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=444.7 y=200.0 enabled=True visible=True label=CONSTRUIR CUARTEL\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=444.7 y=160.0 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=223.5 y=152.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=444.7 y=199.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=403.9 y=66.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Build target=barracks ok=True revision=19\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Build-barracks scene=ValoriaWebGL revision=19 wood=830 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.build-barracks\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=False visible=True label=OBRA EN CURSO · 7 s\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=20 wood=970 stone=865 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.train-archers\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=ENTRENAR ARQUEROS\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=444.7 y=200.0 enabled=True visible=True label=RECLUTAR +20\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=444.7 y=160.0 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=223.5 y=152.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=444.7 y=199.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=403.9 y=66.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Recruit target=archer:t1 ok=True revision=21\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Recruit-archer:t1 scene=ValoriaWebGL revision=21 wood=570 stone=625 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.train-archers\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=False visible=True label=ENTRENAMIENTO · 6 s\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=22 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=False scout=True engendro=False objective=b2.prepare-march\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=PREPARAR MARCHA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=444.7 y=200.0 enabled=True visible=True label=CONFIRMAR MARCHA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=ConfigureMarch target=march-main ok=True revision=23\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-ConfigureMarch-march-main scene=ValoriaWebGL revision=23 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=False objective=b2.defeat-engendro\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=105.7 enabled=True visible=True label=IR CONTRA EL ENGENDRO\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 6.600001 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=Frontier revision=23 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=False objective=b2.defeat-engendro\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 1 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 641 unused Assets to reduce memory usage. Loaded Objects now: 11388.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 10.500000 ms (FindLiveObjects: 0.799999 ms CreateObjectMapping: 0.200001 ms MarkObjects: 6.200000 ms  DeleteObjects: 3.300000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=366.0 y=364.7 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=213.5 y=24.5 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=630.5 y=24.5 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=ATACAR AL ENGENDRO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=795.0 y=295.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=ATACAR AL ENGENDRO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=387.0 y=124.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Fight target=engendro-valoria ok=True revision=24\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Fight-engendro-valoria scene=Frontier revision=24 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=outbound sawmill=1 bastion=2 barracks=1 archers=0 trained=20 configured=True scout=True engendro=False objective=b2.defeat-engendro\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=25 wood=910 stone=895 gatheredWood=720 gatheredStone=700 march=returning sawmill=1 bastion=2 barracks=1 archers=0 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=26 wood=1030 stone=995 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=103.5 enabled=True visible=True label=REGRESAR A VALORIA\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 13.100000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=26 wood=1030 stone=995 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 0 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 393 unused Assets to reduce memory usage. Loaded Objects now: 6829.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 10.700000 ms (FindLiveObjects: 1.099999 ms CreateObjectMapping: 0.200000 ms MarkObjects: 5.300000 ms  DeleteObjects: 4.000000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.framework.js.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityCache] 'http://127.0.0.1:8765/Build/Bastion1MeshCandidateWebGL.data.unityweb' successfully revalidated and served from the browser cache"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.wasm.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.data.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityMemory] Configuration Parameters - Can be set up in boot.config\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-main=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-worker=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-remapper-allocator-initial-capacity=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-background-worker=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-cache-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-typetree-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-editor-allocator-block-size=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-main=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size-background=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-reduction-small-platforms=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System module state changed to: Initialized.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Initialized fallback backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xdecafbad\n"
+    },
+    {
+      "type": "log",
+      "text": "Loading player data from data.unity3d\n"
+    },
+    {
+      "type": "log",
+      "text": "Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)\n"
+    },
+    {
+      "type": "log",
+      "text": "Creating WebGL 2.0 context."
+    },
+    {
+      "type": "log",
+      "text": "Renderer: WebKit WebGL\n"
+    },
+    {
+      "type": "log",
+      "text": "Vendor:   WebKit\n"
+    },
+    {
+      "type": "log",
+      "text": "Version:  OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))\n"
+    },
+    {
+      "type": "log",
+      "text": "GLES:     3\n"
+    },
+    {
+      "type": "log",
+      "text": " EXT_clip_control EXT_color_buffer_float EXT_color_buffer_half_float EXT_conservative_depth EXT_depth_clamp EXT_disjoint_timer_query_webgl2 EXT_float_blend EXT_polygon_offset_clamp EXT_texture_compression_bptc EXT_texture_compression_rgtc EXT_texture_filter_anisotropic EXT_texture_mirror_clamp_to_edge NV_shader_noperspective_interpolation OES_draw_buffers_indexed OES_sample_variables OES_shader_multisample_interpolation OES_texture_float_linear OVR_multiview2 WEBGL_clip_cull_distance WEBGL_compressed_texture_astc WEBGL_compressed_texture_etc WEBGL_compressed_texture_etc1 WEBGL_compressed_texture_s3tc WEBGL_compressed_texture_s3tc_srgb WEBGL_debug_renderer_info WEBGL_debug_shaders WEBGL_lose_context WEBGL_multi_draw WEBGL_polygon_mode WEBGL_stencil_texturing GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_depth GL_EXT_depth_clamp GL_EXT_disjoint_timer_query_webgl2 GL_EXT_float_blend GL_EXT_polygon_offset_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_comp\n"
+    },
+    {
+      "type": "log",
+      "text": "ression_rgtc GL_EXT_texture_filter_anisotropic GL_EXT_texture_mirror_clamp_to_edge GL_NV_shader_noperspective_interpolation GL_OES_draw_buffers_indexed GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_texture_float_linear GL_OVR_multiview2 GL_WEBGL_clip_cull_distance GL_WEBGL_compressed_texture_astc GL_WEBGL_compressed_texture_etc GL_WEBGL_compressed_texture_etc1 GL_WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc_srgb GL_WEBGL_debug_renderer_info GL_WEBGL_debug_shaders GL_WEBGL_lose_context GL_WEBGL_multi_draw GL_WEBGL_polygon_mode GL_WEBGL_stencil_texturing\n"
+    },
+    {
+      "type": "log",
+      "text": "OPENGL LOG: Creating OpenGL ES 3.0 graphics device ; Context level  <OpenGL ES 3.0> ; Context handle 1\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Selected backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Name: PhysX\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xf2b8ea05\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] SDK Version: 4.1.2\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Integration Version: 1.0.0\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Threading Mode: Single-Threaded\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/CoreSRP/CoreCopy shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal Render Pipeline/StencilDitherMaskSeed shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal/HDRDebugView shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "Input Manager initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 1.000000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=26 wood=1030 stone=995 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=371.0 y=363.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=212.5 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=631.5 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=800.0 y=315.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=422.0 y=96.5 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Gsplat/Global shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=302.7 y=174.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=483.1 y=88.6\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET execute=True serial=1\n"
+    },
+    {
+      "type": "warning",
+      "text": "Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior."
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 9.599999 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 5 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 6271.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 23.000000 ms (FindLiveObjects: 0.600001 ms CreateObjectMapping: 1.899999 ms MarkObjects: 20.500000 ms  DeleteObjects: 0.000000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET fallback=True armed=False\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.framework.js.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityCache] 'http://127.0.0.1:8765/Build/Bastion1MeshCandidateWebGL.data.unityweb' successfully revalidated and served from the browser cache"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.data.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.wasm.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityMemory] Configuration Parameters - Can be set up in boot.config\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-main=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-worker=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-remapper-allocator-initial-capacity=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-background-worker=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-cache-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-typetree-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-editor-allocator-block-size=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-main=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size-background=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-reduction-small-platforms=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System module state changed to: Initialized.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Initialized fallback backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xdecafbad\n"
+    },
+    {
+      "type": "log",
+      "text": "Loading player data from data.unity3d\n"
+    },
+    {
+      "type": "log",
+      "text": "Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)\n"
+    },
+    {
+      "type": "log",
+      "text": "Creating WebGL 2.0 context."
+    },
+    {
+      "type": "log",
+      "text": "Renderer: WebKit WebGL\n"
+    },
+    {
+      "type": "log",
+      "text": "Vendor:   WebKit\n"
+    },
+    {
+      "type": "log",
+      "text": "Version:  OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))\n"
+    },
+    {
+      "type": "log",
+      "text": "GLES:     3\n"
+    },
+    {
+      "type": "log",
+      "text": " EXT_clip_control EXT_color_buffer_float EXT_color_buffer_half_float EXT_conservative_depth EXT_depth_clamp EXT_disjoint_timer_query_webgl2 EXT_float_blend EXT_polygon_offset_clamp EXT_texture_compression_bptc EXT_texture_compression_rgtc EXT_texture_filter_anisotropic EXT_texture_mirror_clamp_to_edge NV_shader_noperspective_interpolation OES_draw_buffers_indexed OES_sample_variables OES_shader_multisample_interpolation OES_texture_float_linear OVR_multiview2 WEBGL_clip_cull_distance WEBGL_compressed_texture_astc WEBGL_compressed_texture_etc WEBGL_compressed_texture_etc1 WEBGL_compressed_texture_s3tc WEBGL_compressed_texture_s3tc_srgb WEBGL_debug_renderer_info WEBGL_debug_shaders WEBGL_lose_context WEBGL_multi_draw WEBGL_polygon_mode WEBGL_stencil_texturing GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_depth GL_EXT_depth_clamp GL_EXT_disjoint_timer_query_webgl2 GL_EXT_float_blend GL_EXT_polygon_offset_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_comp\n"
+    },
+    {
+      "type": "log",
+      "text": "ression_rgtc GL_EXT_texture_filter_anisotropic GL_EXT_texture_mirror_clamp_to_edge GL_NV_shader_noperspective_interpolation GL_OES_draw_buffers_indexed GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_texture_float_linear GL_OVR_multiview2 GL_WEBGL_clip_cull_distance GL_WEBGL_compressed_texture_astc GL_WEBGL_compressed_texture_etc GL_WEBGL_compressed_texture_etc1 GL_WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc_srgb GL_WEBGL_debug_renderer_info GL_WEBGL_debug_shaders GL_WEBGL_lose_context GL_WEBGL_multi_draw GL_WEBGL_polygon_mode GL_WEBGL_stencil_texturing\n"
+    },
+    {
+      "type": "log",
+      "text": "OPENGL LOG: Creating OpenGL ES 3.0 graphics device ; Context level  <OpenGL ES 3.0> ; Context handle 1\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Selected backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Name: PhysX\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xf2b8ea05\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] SDK Version: 4.1.2\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Integration Version: 1.0.0\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Threading Mode: Single-Threaded\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/CoreSRP/CoreCopy shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal Render Pipeline/StencilDitherMaskSeed shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal/HDRDebugView shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "Input Manager initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 1.100000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=357.0 y=817.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=99.0 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=291.0 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Gsplat/Global shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=347.0 y=816.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=100.0 y=31.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=290.0 y=31.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=-63.2 y=378.1\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=327.3 y=191.8\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=-63.2 y=378.1\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=327.3 y=191.8\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET fallback=True armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET execute=True serial=1\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 6.500000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 5 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 6271.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 15.400001 ms (FindLiveObjects: 0.600001 ms CreateObjectMapping: 0.399999 ms MarkObjects: 14.400001 ms  DeleteObjects: 0.000000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=357.0 y=817.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=99.0 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=291.0 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=96.5 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=108.8 y=407.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=239.1 y=345.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=171.4 y=322.1 enabled=True visible=True label=RECONSTRUIR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=171.4 y=282.1 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=171.4 y=416.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=331.2 y=451.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=301.8 y=354.7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=171.4 y=322.1 enabled=True visible=True label=RECONSTRUIR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=171.4 y=282.1 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=171.4 y=416.9\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=331.2 y=451.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=301.8 y=354.7\n"
+    },
+    {
+      "type": "warning",
+      "text": "Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior."
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Build target=sawmill ok=True revision=1\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Build-sawmill scene=ValoriaWebGL revision=1 wood=150 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=OBRA EN CURSO · 4 s\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=SALIR AL BOSQUE\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 5.099999 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=Frontier revision=2 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 3 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 641 unused Assets to reduce memory usage. Loaded Objects now: 11387.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 11.400001 ms (FindLiveObjects: 0.900001 ms CreateObjectMapping: 0.300000 ms MarkObjects: 6.299999 ms  DeleteObjects: 3.900001 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=347.0 y=816.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=100.0 y=28.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=290.0 y=28.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECOLECTAR MADERA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=341.0 y=749.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECOLECTAR MADERA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=137.0 y=304.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True revision=3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Gather-forest-valoria scene=Frontier revision=3 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=4 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=gathering sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=5 wood=270 stone=150 gatheredWood=0 gatheredStone=0 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=6 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECOLECTAR MADERA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True revision=7\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Gather-forest-valoria scene=Frontier revision=7 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=8 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=gathering sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=9 wood=630 stone=150 gatheredWood=360 gatheredStone=0 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-wood\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=10 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECOLECTAR PIEDRA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Gather target=quarry-valoria ok=True revision=11\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Gather-quarry-valoria scene=Frontier revision=11 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=12 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=gathering sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=13 wood=990 stone=230 gatheredWood=720 gatheredStone=0 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.gather-stone\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=14 wood=1110 stone=930 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.clear-route\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=DESPEJAR LA RUTA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Fight target=corrupt-scout ok=True revision=15\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Fight-corrupt-scout scene=Frontier revision=15 wood=1110 stone=930 gatheredWood=720 gatheredStone=700 march=outbound sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=False engendro=False objective=b1.clear-route\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=16 wood=1200 stone=985 gatheredWood=720 gatheredStone=700 march=returning sawmill=1 bastion=1 barracks=0 archers=0 trained=0 configured=False scout=True engendro=False objective=b1.return\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=17 wood=1280 stone=1055 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b1.ascend\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=REGRESAR A VALORIA\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 10.300000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=17 wood=1280 stone=1055 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b1.ascend\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 1 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 393 unused Assets to reduce memory usage. Loaded Objects now: 6829.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 12.200000 ms (FindLiveObjects: 0.500000 ms CreateObjectMapping: 1.500000 ms MarkObjects: 5.500000 ms  DeleteObjects: 4.700000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=347.0 y=816.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=100.0 y=31.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=290.0 y=31.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=108.8 y=407.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=239.1 y=345.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=230.2 y=359.7 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=230.2 y=319.7 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=99.9 y=441.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=259.6 y=475.8\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=230.2 y=379.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=230.2 y=359.7 enabled=True visible=True label=ASCENDER A BASTIÓN II\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=230.2 y=319.7 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=99.9 y=441.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=259.6 y=475.8\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=230.2 y=379.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=AdvanceBastion target=bastion ok=True revision=18\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-AdvanceBastion-bastion scene=ValoriaWebGL revision=18 wood=1010 stone=895 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.build-barracks\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=CONSTRUIR CUARTEL\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=211.4 y=313.5 enabled=True visible=True label=CONSTRUIR CUARTEL\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=211.4 y=273.5 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=51.6 y=391.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=211.4 y=425.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=182.0 y=329.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=211.4 y=313.5 enabled=True visible=True label=CONSTRUIR CUARTEL\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=211.4 y=273.5 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=51.6 y=391.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=211.4 y=425.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=182.0 y=329.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Build target=barracks ok=True revision=19\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Build-barracks scene=ValoriaWebGL revision=19 wood=830 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=0 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.build-barracks\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=OBRA EN CURSO · 7 s\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=20 wood=970 stone=865 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.train-archers\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=ENTRENAR ARQUEROS\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=211.4 y=313.5 enabled=True visible=True label=RECLUTAR +20\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingClose x=211.4 y=273.5 enabled=True visible=True label=CERRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=51.6 y=391.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=barracks x=211.4 y=425.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=182.0 y=329.0\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Recruit target=archer:t1 ok=True revision=21\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Recruit-archer:t1 scene=ValoriaWebGL revision=21 wood=570 stone=625 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=36 trained=0 configured=False scout=True engendro=False objective=b2.train-archers\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=ENTRENAMIENTO · 6 s\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=ValoriaWebGL revision=22 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=False scout=True engendro=False objective=b2.prepare-march\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=PREPARAR MARCHA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=buildingAction x=211.4 y=313.5 enabled=True visible=True label=CONFIRMAR MARCHA\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=ConfigureMarch target=march-main ok=True revision=23\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-ConfigureMarch-march-main scene=ValoriaWebGL revision=23 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=False objective=b2.defeat-engendro\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=IR CONTRA EL ENGENDRO\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 11.700000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=Frontier revision=23 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=False objective=b2.defeat-engendro\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 1 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 641 unused Assets to reduce memory usage. Loaded Objects now: 11388.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 10.700000 ms (FindLiveObjects: 0.800000 ms CreateObjectMapping: 0.200000 ms MarkObjects: 6.400000 ms  DeleteObjects: 3.300000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=347.0 y=816.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=100.0 y=28.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=290.0 y=28.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=ATACAR AL ENGENDRO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=341.0 y=749.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=ATACAR AL ENGENDRO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria x=137.0 y=304.5\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_COMMAND kind=Fight target=engendro-valoria ok=True revision=24\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=command-Fight-engendro-valoria scene=Frontier revision=24 wood=790 stone=775 gatheredWood=720 gatheredStone=700 march=outbound sawmill=1 bastion=2 barracks=1 archers=0 trained=20 configured=True scout=True engendro=False objective=b2.defeat-engendro\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=25 wood=910 stone=895 gatheredWood=720 gatheredStone=700 march=returning sawmill=1 bastion=2 barracks=1 archers=0 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=MARCHA EN CURSO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=advance scene=Frontier revision=26 wood=1030 stone=995 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=REGRESAR A VALORIA\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 26.900000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=26 wood=1030 stone=995 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 0 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 393 unused Assets to reduce memory usage. Loaded Objects now: 6829.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 18.000000 ms (FindLiveObjects: 0.500000 ms CreateObjectMapping: 0.200000 ms MarkObjects: 10.700000 ms  DeleteObjects: 6.600000 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=347.0 y=816.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=100.0 y=31.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=290.0 y=31.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=108.8 y=407.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=239.1 y=345.2\n"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.framework.js.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.wasm.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityCache] 'http://127.0.0.1:8765/Build/Bastion1MeshCandidateWebGL.data.unityweb' successfully revalidated and served from the browser cache"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.data.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityMemory] Configuration Parameters - Can be set up in boot.config\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-main=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-worker=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-remapper-allocator-initial-capacity=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-background-worker=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-cache-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-typetree-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-editor-allocator-block-size=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-main=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size-background=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-reduction-small-platforms=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System module state changed to: Initialized.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Initialized fallback backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xdecafbad\n"
+    },
+    {
+      "type": "log",
+      "text": "Loading player data from data.unity3d\n"
+    },
+    {
+      "type": "log",
+      "text": "Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)\n"
+    },
+    {
+      "type": "log",
+      "text": "Creating WebGL 2.0 context."
+    },
+    {
+      "type": "log",
+      "text": "Renderer: WebKit WebGL\n"
+    },
+    {
+      "type": "log",
+      "text": "Vendor:   WebKit\n"
+    },
+    {
+      "type": "log",
+      "text": "Version:  OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))\n"
+    },
+    {
+      "type": "log",
+      "text": "GLES:     3\n"
+    },
+    {
+      "type": "log",
+      "text": " EXT_clip_control EXT_color_buffer_float EXT_color_buffer_half_float EXT_conservative_depth EXT_depth_clamp EXT_disjoint_timer_query_webgl2 EXT_float_blend EXT_polygon_offset_clamp EXT_texture_compression_bptc EXT_texture_compression_rgtc EXT_texture_filter_anisotropic EXT_texture_mirror_clamp_to_edge NV_shader_noperspective_interpolation OES_draw_buffers_indexed OES_sample_variables OES_shader_multisample_interpolation OES_texture_float_linear OVR_multiview2 WEBGL_clip_cull_distance WEBGL_compressed_texture_astc WEBGL_compressed_texture_etc WEBGL_compressed_texture_etc1 WEBGL_compressed_texture_s3tc WEBGL_compressed_texture_s3tc_srgb WEBGL_debug_renderer_info WEBGL_debug_shaders WEBGL_lose_context WEBGL_multi_draw WEBGL_polygon_mode WEBGL_stencil_texturing GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_depth GL_EXT_depth_clamp GL_EXT_disjoint_timer_query_webgl2 GL_EXT_float_blend GL_EXT_polygon_offset_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_comp\n"
+    },
+    {
+      "type": "log",
+      "text": "ression_rgtc GL_EXT_texture_filter_anisotropic GL_EXT_texture_mirror_clamp_to_edge GL_NV_shader_noperspective_interpolation GL_OES_draw_buffers_indexed GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_texture_float_linear GL_OVR_multiview2 GL_WEBGL_clip_cull_distance GL_WEBGL_compressed_texture_astc GL_WEBGL_compressed_texture_etc GL_WEBGL_compressed_texture_etc1 GL_WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc_srgb GL_WEBGL_debug_renderer_info GL_WEBGL_debug_shaders GL_WEBGL_lose_context GL_WEBGL_multi_draw GL_WEBGL_polygon_mode GL_WEBGL_stencil_texturing\n"
+    },
+    {
+      "type": "log",
+      "text": "OPENGL LOG: Creating OpenGL ES 3.0 graphics device ; Context level  <OpenGL ES 3.0> ; Context handle 1\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Selected backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Name: PhysX\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xf2b8ea05\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] SDK Version: 4.1.2\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Integration Version: 1.0.0\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Threading Mode: Single-Threaded\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/CoreSRP/CoreCopy shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal Render Pipeline/StencilDitherMaskSeed shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal/HDRDebugView shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "Input Manager initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 0.700000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=26 wood=1030 stone=995 gatheredWood=720 gatheredStone=700 march=idle sawmill=1 bastion=2 barracks=1 archers=56 trained=20 configured=True scout=True engendro=True objective=b2.complete\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=357.0 y=817.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=99.0 y=26.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=291.0 y=26.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=96.5 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=REINICIAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=96.5 enabled=False visible=True label=BASTIÓN II ASEGURADO\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Gsplat/Global shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=sawmill x=108.8 y=407.3\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_HOTSPOT id=bastion x=239.1 y=345.2\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET execute=True serial=1\n"
+    },
+    {
+      "type": "warning",
+      "text": "Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior."
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 13.000000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 5 Unused Serialized files (Serialized files now loaded: 0)\n"
+    },
+    {
+      "type": "log",
+      "text": "Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 6271.\n"
+    },
+    {
+      "type": "log",
+      "text": "Total: 17.900000 ms (FindLiveObjects: 1.600000 ms CreateObjectMapping: 0.199999 ms MarkObjects: 15.899999 ms  DeleteObjects: 0.100001 ms)\n\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET fallback=True armed=False\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_RESET armed=True\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=home x=347.0 y=816.0 enabled=True visible=True label=CENTRAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=cityNav x=100.0 y=31.0 enabled=True visible=True label=⌂\nCIUDAD\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=worldNav x=290.0 y=31.0 enabled=True visible=True label=◎\nMUNDO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=reset x=346.0 y=769.0 enabled=True visible=True label=CONFIRMAR\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_UI id=primary x=195.0 y=113.0 enabled=True visible=True label=RECONSTRUIR ASERRADERO\n"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.framework.js.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.wasm.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityCache] 'http://127.0.0.1:8765/Build/Bastion1MeshCandidateWebGL.data.unityweb' successfully revalidated and served from the browser cache"
+    },
+    {
+      "type": "log",
+      "text": "You can reduce startup time if you configure your web server to add \"Content-Encoding: gzip\" response header when serving \"Build/Bastion1MeshCandidateWebGL.data.unityweb\" file."
+    },
+    {
+      "type": "log",
+      "text": "[UnityMemory] Configuration Parameters - Can be set up in boot.config\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-main=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-allocator-temp-initial-block-size-worker=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-remapper-allocator-initial-capacity=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-background-worker=32768\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-main-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-gfx-thread-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-cache-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-typetree-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-granularity=16\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-bucket-count=8\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-size=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-bucket-allocator-block-count=1\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-allocator-block-size=16777216\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-profiler-editor-allocator-block-size=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-temp-allocator-size-main=4194304\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size=2097152\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-block-size-background=1048576\"\n"
+    },
+    {
+      "type": "log",
+      "text": "    \"memorysetup-job-temp-allocator-reduction-small-platforms=262144\"\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System module state changed to: Initialized.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Initialized fallback backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xdecafbad\n"
+    },
+    {
+      "type": "log",
+      "text": "Loading player data from data.unity3d\n"
+    },
+    {
+      "type": "log",
+      "text": "Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)\n"
+    },
+    {
+      "type": "log",
+      "text": "Creating WebGL 2.0 context."
+    },
+    {
+      "type": "log",
+      "text": "Renderer: WebKit WebGL\n"
+    },
+    {
+      "type": "log",
+      "text": "Vendor:   WebKit\n"
+    },
+    {
+      "type": "log",
+      "text": "Version:  OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))\n"
+    },
+    {
+      "type": "log",
+      "text": "GLES:     3\n"
+    },
+    {
+      "type": "log",
+      "text": " EXT_clip_control EXT_color_buffer_float EXT_color_buffer_half_float EXT_conservative_depth EXT_depth_clamp EXT_disjoint_timer_query_webgl2 EXT_float_blend EXT_polygon_offset_clamp EXT_texture_compression_bptc EXT_texture_compression_rgtc EXT_texture_filter_anisotropic EXT_texture_mirror_clamp_to_edge NV_shader_noperspective_interpolation OES_draw_buffers_indexed OES_sample_variables OES_shader_multisample_interpolation OES_texture_float_linear OVR_multiview2 WEBGL_clip_cull_distance WEBGL_compressed_texture_astc WEBGL_compressed_texture_etc WEBGL_compressed_texture_etc1 WEBGL_compressed_texture_s3tc WEBGL_compressed_texture_s3tc_srgb WEBGL_debug_renderer_info WEBGL_debug_shaders WEBGL_lose_context WEBGL_multi_draw WEBGL_polygon_mode WEBGL_stencil_texturing GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_depth GL_EXT_depth_clamp GL_EXT_disjoint_timer_query_webgl2 GL_EXT_float_blend GL_EXT_polygon_offset_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_comp\n"
+    },
+    {
+      "type": "log",
+      "text": "ression_rgtc GL_EXT_texture_filter_anisotropic GL_EXT_texture_mirror_clamp_to_edge GL_NV_shader_noperspective_interpolation GL_OES_draw_buffers_indexed GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_texture_float_linear GL_OVR_multiview2 GL_WEBGL_clip_cull_distance GL_WEBGL_compressed_texture_astc GL_WEBGL_compressed_texture_etc GL_WEBGL_compressed_texture_etc1 GL_WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc_srgb GL_WEBGL_debug_renderer_info GL_WEBGL_debug_shaders GL_WEBGL_lose_context GL_WEBGL_multi_draw GL_WEBGL_polygon_mode GL_WEBGL_stencil_texturing\n"
+    },
+    {
+      "type": "log",
+      "text": "OPENGL LOG: Creating OpenGL ES 3.0 graphics device ; Context level  <OpenGL ES 3.0> ; Context handle 1\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Selected backend.\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Name: PhysX\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Id: 0xf2b8ea05\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] SDK Version: 4.1.2\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Integration Version: 1.0.0\n"
+    },
+    {
+      "type": "log",
+      "text": "[Physics::Module] Threading Mode: Single-Threaded\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/CoreSRP/CoreCopy shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal Render Pipeline/StencilDitherMaskSeed shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "ERROR: Shader "
+    },
+    {
+      "type": "log",
+      "text": "Hidden/Universal/HDRDebugView shader is not supported on this GPU (none of subshaders/fallbacks are suitable)\n"
+    },
+    {
+      "type": "log",
+      "text": "Input Manager initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "Input System initialize...\n"
+    },
+    {
+      "type": "log",
+      "text": "UnloadTime: 0.700000 ms\n"
+    },
+    {
+      "type": "log",
+      "text": "ELDORIA_PLAYABLE_STATE tag=scene-loaded scene=ValoriaWebGL revision=0 wood=230 stone=150 gatheredWood=0 gatheredStone=0 march=idle sawmill=0 bastion=1 barracks=0 archers=36 trained=0 configured=False scout=False engendro=False objective=b1.build-sawmill\n"
+    }
+  ],
+  "requests": [],
+  "checks": {
+    "navigationGatherPersistencePass": false,
+    "initialCanvasFullyVisible": true
+  },
+  "states": [
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "command-Build-sawmill",
+      "scene": "ValoriaWebGL",
+      "revision": 1,
+      "wood": 150,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "Frontier",
+      "revision": 2,
+      "wood": 270,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-wood"
+    },
+    {
+      "tag": "command-Gather-forest-valoria",
+      "scene": "Frontier",
+      "revision": 3,
+      "wood": 270,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-wood"
+    },
+    {
+      "tag": "command-Gather-forest-valoria",
+      "scene": "Frontier",
+      "revision": 7,
+      "wood": 630,
+      "stone": 150,
+      "gatheredWood": 360,
+      "gatheredStone": 0,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-wood"
+    },
+    {
+      "tag": "command-Gather-quarry-valoria",
+      "scene": "Frontier",
+      "revision": 11,
+      "wood": 990,
+      "stone": 230,
+      "gatheredWood": 720,
+      "gatheredStone": 0,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-stone"
+    },
+    {
+      "tag": "command-Fight-corrupt-scout",
+      "scene": "Frontier",
+      "revision": 15,
+      "wood": 1110,
+      "stone": 930,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.clear-route"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 17,
+      "wood": 1280,
+      "stone": 1055,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b1.ascend"
+    },
+    {
+      "tag": "command-AdvanceBastion-bastion",
+      "scene": "ValoriaWebGL",
+      "revision": 18,
+      "wood": 1010,
+      "stone": 895,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.build-barracks"
+    },
+    {
+      "tag": "command-Build-barracks",
+      "scene": "ValoriaWebGL",
+      "revision": 19,
+      "wood": 830,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.build-barracks"
+    },
+    {
+      "tag": "command-Recruit-archer:t1",
+      "scene": "ValoriaWebGL",
+      "revision": 21,
+      "wood": 570,
+      "stone": 625,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.train-archers"
+    },
+    {
+      "tag": "command-ConfigureMarch-march-main",
+      "scene": "ValoriaWebGL",
+      "revision": 23,
+      "wood": 790,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.defeat-engendro"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "Frontier",
+      "revision": 23,
+      "wood": 790,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.defeat-engendro"
+    },
+    {
+      "tag": "command-Fight-engendro-valoria",
+      "scene": "Frontier",
+      "revision": 24,
+      "wood": 790,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 0,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.defeat-engendro"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 26,
+      "wood": 1030,
+      "stone": 995,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": true,
+      "objective": "b2.complete"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 26,
+      "wood": 1030,
+      "stone": 995,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": true,
+      "objective": "b2.complete"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "command-Build-sawmill",
+      "scene": "ValoriaWebGL",
+      "revision": 1,
+      "wood": 150,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "Frontier",
+      "revision": 2,
+      "wood": 270,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-wood"
+    },
+    {
+      "tag": "command-Gather-forest-valoria",
+      "scene": "Frontier",
+      "revision": 3,
+      "wood": 270,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-wood"
+    },
+    {
+      "tag": "command-Gather-forest-valoria",
+      "scene": "Frontier",
+      "revision": 7,
+      "wood": 630,
+      "stone": 150,
+      "gatheredWood": 360,
+      "gatheredStone": 0,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-wood"
+    },
+    {
+      "tag": "command-Gather-quarry-valoria",
+      "scene": "Frontier",
+      "revision": 11,
+      "wood": 990,
+      "stone": 230,
+      "gatheredWood": 720,
+      "gatheredStone": 0,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.gather-stone"
+    },
+    {
+      "tag": "command-Fight-corrupt-scout",
+      "scene": "Frontier",
+      "revision": 15,
+      "wood": 1110,
+      "stone": 930,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 0,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.clear-route"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 17,
+      "wood": 1280,
+      "stone": 1055,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b1.ascend"
+    },
+    {
+      "tag": "command-AdvanceBastion-bastion",
+      "scene": "ValoriaWebGL",
+      "revision": 18,
+      "wood": 1010,
+      "stone": 895,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.build-barracks"
+    },
+    {
+      "tag": "command-Build-barracks",
+      "scene": "ValoriaWebGL",
+      "revision": 19,
+      "wood": 830,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.build-barracks"
+    },
+    {
+      "tag": "command-Recruit-archer:t1",
+      "scene": "ValoriaWebGL",
+      "revision": 21,
+      "wood": 570,
+      "stone": 625,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.train-archers"
+    },
+    {
+      "tag": "command-ConfigureMarch-march-main",
+      "scene": "ValoriaWebGL",
+      "revision": 23,
+      "wood": 790,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.defeat-engendro"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "Frontier",
+      "revision": 23,
+      "wood": 790,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.defeat-engendro"
+    },
+    {
+      "tag": "command-Fight-engendro-valoria",
+      "scene": "Frontier",
+      "revision": 24,
+      "wood": 790,
+      "stone": 775,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "outbound",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 0,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": false,
+      "objective": "b2.defeat-engendro"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 26,
+      "wood": 1030,
+      "stone": 995,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": true,
+      "objective": "b2.complete"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 26,
+      "wood": 1030,
+      "stone": 995,
+      "gatheredWood": 720,
+      "gatheredStone": 700,
+      "march": "idle",
+      "sawmill": 1,
+      "bastion": 2,
+      "barracks": 1,
+      "archers": 56,
+      "trained": 20,
+      "configured": true,
+      "scout": true,
+      "engendro": true,
+      "objective": "b2.complete"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    },
+    {
+      "tag": "scene-loaded",
+      "scene": "ValoriaWebGL",
+      "revision": 0,
+      "wood": 230,
+      "stone": 150,
+      "gatheredWood": 0,
+      "gatheredStone": 0,
+      "march": "idle",
+      "sawmill": 0,
+      "bastion": 1,
+      "barracks": 0,
+      "archers": 36,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "objective": "b1.build-sawmill"
+    }
+  ],
+  "coverage": {
+    "fullBastionIToIIPass": true,
+    "visualQualityPass": false,
+    "independentHumanPlaythroughPass": false
+  },
+  "scope": "Exact mesh candidate uninterrupted real touch Bastion I-II flow in both orientations; no state injection or clock manipulation. Chromium emulation, not physical phone or independent human approval.",
+  "delivery": {
+    "kind": "candidate",
+    "target": "http://127.0.0.1:8765/",
+    "sourceSha": "7f6d708d57bd27e04c0375e79221d3fa9c932da3",
+    "buildRunId": "38420574701",
+    "candidateOnly": true,
+    "publishedPass": false
+  },
+  "fullFlows": [
+    {
+      "orientation": "landscape",
+      "steps": [
+        {
+          "step": 0,
+          "objective": "b1.build-sawmill",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 96.5,
+            "enabled": true,
+            "visible": true,
+            "label": "RECONSTRUIR ASERRADERO",
+            "css": {
+              "x": 422,
+              "y": 293.5
+            }
+          },
+          "buildingAction": {
+            "x": 389.4,
+            "unityY": 135.3,
+            "enabled": true,
+            "visible": true,
+            "label": "RECONSTRUIR",
+            "css": {
+              "x": 389.4,
+              "y": 254.69999999999996
+            }
+          },
+          "after": {
+            "tag": "command-Build-sawmill",
+            "scene": "ValoriaWebGL",
+            "revision": 1,
+            "wood": 150,
+            "stone": 150,
+            "gatheredWood": 0,
+            "gatheredStone": 0,
+            "march": "idle",
+            "sawmill": 0,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.build-sawmill"
+          }
+        },
+        {
+          "step": 1,
+          "objective": "b1.gather-wood",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 105.7,
+            "enabled": true,
+            "visible": true,
+            "label": "SALIR AL BOSQUE",
+            "css": {
+              "x": 422,
+              "y": 284.3
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "Frontier",
+            "revision": 2,
+            "wood": 270,
+            "stone": 150,
+            "gatheredWood": 0,
+            "gatheredStone": 0,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-wood"
+          }
+        },
+        {
+          "step": 2,
+          "objective": "b1.gather-wood",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "RECOLECTAR MADERA",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Gather-forest-valoria",
+            "scene": "Frontier",
+            "revision": 3,
+            "wood": 270,
+            "stone": 150,
+            "gatheredWood": 0,
+            "gatheredStone": 0,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-wood"
+          }
+        },
+        {
+          "step": 3,
+          "objective": "b1.gather-wood",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "RECOLECTAR MADERA",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Gather-forest-valoria",
+            "scene": "Frontier",
+            "revision": 7,
+            "wood": 630,
+            "stone": 150,
+            "gatheredWood": 360,
+            "gatheredStone": 0,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-wood"
+          }
+        },
+        {
+          "step": 4,
+          "objective": "b1.gather-stone",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "RECOLECTAR PIEDRA",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Gather-quarry-valoria",
+            "scene": "Frontier",
+            "revision": 11,
+            "wood": 990,
+            "stone": 230,
+            "gatheredWood": 720,
+            "gatheredStone": 0,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-stone"
+          }
+        },
+        {
+          "step": 5,
+          "objective": "b1.clear-route",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "DESPEJAR LA RUTA",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Fight-corrupt-scout",
+            "scene": "Frontier",
+            "revision": 15,
+            "wood": 1110,
+            "stone": 930,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.clear-route"
+          }
+        },
+        {
+          "step": 6,
+          "objective": "b1.ascend",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "REGRESAR A VALORIA",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "ValoriaWebGL",
+            "revision": 17,
+            "wood": 1280,
+            "stone": 1055,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b1.ascend"
+          }
+        },
+        {
+          "step": 7,
+          "objective": "b1.ascend",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 105.7,
+            "enabled": true,
+            "visible": true,
+            "label": "ASCENDER A BASTIÓN II",
+            "css": {
+              "x": 422,
+              "y": 284.3
+            }
+          },
+          "buildingAction": {
+            "x": 470.8,
+            "unityY": 200,
+            "enabled": true,
+            "visible": true,
+            "label": "ASCENDER A BASTIÓN II",
+            "css": {
+              "x": 470.8,
+              "y": 190
+            }
+          },
+          "after": {
+            "tag": "command-AdvanceBastion-bastion",
+            "scene": "ValoriaWebGL",
+            "revision": 18,
+            "wood": 1010,
+            "stone": 895,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.build-barracks"
+          }
+        },
+        {
+          "step": 8,
+          "objective": "b2.build-barracks",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 105.7,
+            "enabled": true,
+            "visible": true,
+            "label": "CONSTRUIR CUARTEL",
+            "css": {
+              "x": 422,
+              "y": 284.3
+            }
+          },
+          "buildingAction": {
+            "x": 444.7,
+            "unityY": 200,
+            "enabled": true,
+            "visible": true,
+            "label": "CONSTRUIR CUARTEL",
+            "css": {
+              "x": 444.70000000000005,
+              "y": 190
+            }
+          },
+          "after": {
+            "tag": "command-Build-barracks",
+            "scene": "ValoriaWebGL",
+            "revision": 19,
+            "wood": 830,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.build-barracks"
+          }
+        },
+        {
+          "step": 9,
+          "objective": "b2.train-archers",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 105.7,
+            "enabled": true,
+            "visible": true,
+            "label": "ENTRENAR ARQUEROS",
+            "css": {
+              "x": 422,
+              "y": 284.3
+            }
+          },
+          "buildingAction": {
+            "x": 444.7,
+            "unityY": 200,
+            "enabled": true,
+            "visible": true,
+            "label": "RECLUTAR +20",
+            "css": {
+              "x": 444.70000000000005,
+              "y": 190
+            }
+          },
+          "after": {
+            "tag": "command-Recruit-archer:t1",
+            "scene": "ValoriaWebGL",
+            "revision": 21,
+            "wood": 570,
+            "stone": 625,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.train-archers"
+          }
+        },
+        {
+          "step": 10,
+          "objective": "b2.prepare-march",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 105.7,
+            "enabled": true,
+            "visible": true,
+            "label": "PREPARAR MARCHA",
+            "css": {
+              "x": 422,
+              "y": 284.3
+            }
+          },
+          "buildingAction": {
+            "x": 444.7,
+            "unityY": 200,
+            "enabled": true,
+            "visible": true,
+            "label": "CONFIRMAR MARCHA",
+            "css": {
+              "x": 444.70000000000005,
+              "y": 190
+            }
+          },
+          "after": {
+            "tag": "command-ConfigureMarch-march-main",
+            "scene": "ValoriaWebGL",
+            "revision": 23,
+            "wood": 790,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 56,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.defeat-engendro"
+          }
+        },
+        {
+          "step": 11,
+          "objective": "b2.defeat-engendro",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 422,
+            "unityY": 105.7,
+            "enabled": true,
+            "visible": true,
+            "label": "IR CONTRA EL ENGENDRO",
+            "css": {
+              "x": 422,
+              "y": 284.3
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "Frontier",
+            "revision": 23,
+            "wood": 790,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 56,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.defeat-engendro"
+          }
+        },
+        {
+          "step": 12,
+          "objective": "b2.defeat-engendro",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "ATACAR AL ENGENDRO",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Fight-engendro-valoria",
+            "scene": "Frontier",
+            "revision": 24,
+            "wood": 790,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 0,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.defeat-engendro"
+          }
+        },
+        {
+          "step": 13,
+          "objective": "b2.complete",
+          "scene": "Frontier",
+          "primary": {
+            "x": 422,
+            "unityY": 103.5,
+            "enabled": true,
+            "visible": true,
+            "label": "REGRESAR A VALORIA",
+            "css": {
+              "x": 422,
+              "y": 286.5
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "ValoriaWebGL",
+            "revision": 26,
+            "wood": 1030,
+            "stone": 995,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 56,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": true,
+            "objective": "b2.complete"
+          }
+        }
+      ],
+      "selectedBuildings": [
+        "sawmill",
+        "bastion",
+        "barracks"
+      ],
+      "pass": true,
+      "persistencePass": true,
+      "resetPass": true,
+      "presentedBuildingSelectionPass": true,
+      "trainingCtaBrightPixels": 609,
+      "final": {
+        "revision": 26,
+        "wood": 1030,
+        "stone": 995,
+        "gatheredWood": 720,
+        "gatheredStone": 700,
+        "march": "idle",
+        "sawmill": 1,
+        "bastion": 2,
+        "barracks": 1,
+        "archers": 56,
+        "trained": 20,
+        "configured": true,
+        "scout": true,
+        "engendro": true,
+        "objective": "b2.complete"
+      },
+      "completionCtaBrightPixels": 703
+    },
+    {
+      "orientation": "portrait",
+      "steps": [
+        {
+          "step": 0,
+          "objective": "b1.build-sawmill",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 96.5,
+            "enabled": true,
+            "visible": true,
+            "label": "RECONSTRUIR ASERRADERO",
+            "css": {
+              "x": 195,
+              "y": 747.5
+            }
+          },
+          "buildingAction": {
+            "x": 171.4,
+            "unityY": 322.1,
+            "enabled": true,
+            "visible": true,
+            "label": "RECONSTRUIR",
+            "css": {
+              "x": 171.4,
+              "y": 521.9
+            }
+          },
+          "after": {
+            "tag": "command-Build-sawmill",
+            "scene": "ValoriaWebGL",
+            "revision": 1,
+            "wood": 150,
+            "stone": 150,
+            "gatheredWood": 0,
+            "gatheredStone": 0,
+            "march": "idle",
+            "sawmill": 0,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.build-sawmill"
+          }
+        },
+        {
+          "step": 1,
+          "objective": "b1.gather-wood",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "SALIR AL BOSQUE",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "Frontier",
+            "revision": 2,
+            "wood": 270,
+            "stone": 150,
+            "gatheredWood": 0,
+            "gatheredStone": 0,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-wood"
+          }
+        },
+        {
+          "step": 2,
+          "objective": "b1.gather-wood",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "RECOLECTAR MADERA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Gather-forest-valoria",
+            "scene": "Frontier",
+            "revision": 3,
+            "wood": 270,
+            "stone": 150,
+            "gatheredWood": 0,
+            "gatheredStone": 0,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-wood"
+          }
+        },
+        {
+          "step": 3,
+          "objective": "b1.gather-wood",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "RECOLECTAR MADERA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Gather-forest-valoria",
+            "scene": "Frontier",
+            "revision": 7,
+            "wood": 630,
+            "stone": 150,
+            "gatheredWood": 360,
+            "gatheredStone": 0,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-wood"
+          }
+        },
+        {
+          "step": 4,
+          "objective": "b1.gather-stone",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "RECOLECTAR PIEDRA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Gather-quarry-valoria",
+            "scene": "Frontier",
+            "revision": 11,
+            "wood": 990,
+            "stone": 230,
+            "gatheredWood": 720,
+            "gatheredStone": 0,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.gather-stone"
+          }
+        },
+        {
+          "step": 5,
+          "objective": "b1.clear-route",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "DESPEJAR LA RUTA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Fight-corrupt-scout",
+            "scene": "Frontier",
+            "revision": 15,
+            "wood": 1110,
+            "stone": 930,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 0,
+            "trained": 0,
+            "configured": false,
+            "scout": false,
+            "engendro": false,
+            "objective": "b1.clear-route"
+          }
+        },
+        {
+          "step": 6,
+          "objective": "b1.ascend",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "REGRESAR A VALORIA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "ValoriaWebGL",
+            "revision": 17,
+            "wood": 1280,
+            "stone": 1055,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 1,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b1.ascend"
+          }
+        },
+        {
+          "step": 7,
+          "objective": "b1.ascend",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "ASCENDER A BASTIÓN II",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": {
+            "x": 230.2,
+            "unityY": 359.7,
+            "enabled": true,
+            "visible": true,
+            "label": "ASCENDER A BASTIÓN II",
+            "css": {
+              "x": 230.19999999999996,
+              "y": 484.3
+            }
+          },
+          "after": {
+            "tag": "command-AdvanceBastion-bastion",
+            "scene": "ValoriaWebGL",
+            "revision": 18,
+            "wood": 1010,
+            "stone": 895,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.build-barracks"
+          }
+        },
+        {
+          "step": 8,
+          "objective": "b2.build-barracks",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "CONSTRUIR CUARTEL",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": {
+            "x": 211.4,
+            "unityY": 313.5,
+            "enabled": true,
+            "visible": true,
+            "label": "CONSTRUIR CUARTEL",
+            "css": {
+              "x": 211.4,
+              "y": 530.5
+            }
+          },
+          "after": {
+            "tag": "command-Build-barracks",
+            "scene": "ValoriaWebGL",
+            "revision": 19,
+            "wood": 830,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 0,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.build-barracks"
+          }
+        },
+        {
+          "step": 9,
+          "objective": "b2.train-archers",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "ENTRENAR ARQUEROS",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": {
+            "x": 211.4,
+            "unityY": 313.5,
+            "enabled": true,
+            "visible": true,
+            "label": "RECLUTAR +20",
+            "css": {
+              "x": 211.4,
+              "y": 530.5
+            }
+          },
+          "after": {
+            "tag": "command-Recruit-archer:t1",
+            "scene": "ValoriaWebGL",
+            "revision": 21,
+            "wood": 570,
+            "stone": 625,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 36,
+            "trained": 0,
+            "configured": false,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.train-archers"
+          }
+        },
+        {
+          "step": 10,
+          "objective": "b2.prepare-march",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "PREPARAR MARCHA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": {
+            "x": 211.4,
+            "unityY": 313.5,
+            "enabled": true,
+            "visible": true,
+            "label": "CONFIRMAR MARCHA",
+            "css": {
+              "x": 211.4,
+              "y": 530.5
+            }
+          },
+          "after": {
+            "tag": "command-ConfigureMarch-march-main",
+            "scene": "ValoriaWebGL",
+            "revision": 23,
+            "wood": 790,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 56,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.defeat-engendro"
+          }
+        },
+        {
+          "step": 11,
+          "objective": "b2.defeat-engendro",
+          "scene": "ValoriaWebGL",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "IR CONTRA EL ENGENDRO",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "Frontier",
+            "revision": 23,
+            "wood": 790,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 56,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.defeat-engendro"
+          }
+        },
+        {
+          "step": 12,
+          "objective": "b2.defeat-engendro",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "ATACAR AL ENGENDRO",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "command-Fight-engendro-valoria",
+            "scene": "Frontier",
+            "revision": 24,
+            "wood": 790,
+            "stone": 775,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "outbound",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 0,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": false,
+            "objective": "b2.defeat-engendro"
+          }
+        },
+        {
+          "step": 13,
+          "objective": "b2.complete",
+          "scene": "Frontier",
+          "primary": {
+            "x": 195,
+            "unityY": 113,
+            "enabled": true,
+            "visible": true,
+            "label": "REGRESAR A VALORIA",
+            "css": {
+              "x": 195,
+              "y": 731
+            }
+          },
+          "buildingAction": null,
+          "after": {
+            "tag": "scene-loaded",
+            "scene": "ValoriaWebGL",
+            "revision": 26,
+            "wood": 1030,
+            "stone": 995,
+            "gatheredWood": 720,
+            "gatheredStone": 700,
+            "march": "idle",
+            "sawmill": 1,
+            "bastion": 2,
+            "barracks": 1,
+            "archers": 56,
+            "trained": 20,
+            "configured": true,
+            "scout": true,
+            "engendro": true,
+            "objective": "b2.complete"
+          }
+        }
+      ],
+      "selectedBuildings": [
+        "sawmill",
+        "bastion",
+        "barracks"
+      ],
+      "pass": true,
+      "persistencePass": true,
+      "resetPass": true,
+      "presentedBuildingSelectionPass": true,
+      "trainingCtaBrightPixels": 673,
+      "final": {
+        "revision": 26,
+        "wood": 1030,
+        "stone": 995,
+        "gatheredWood": 720,
+        "gatheredStone": 700,
+        "march": "idle",
+        "sawmill": 1,
+        "bastion": 2,
+        "barracks": 1,
+        "archers": 56,
+        "trained": 20,
+        "configured": true,
+        "scout": true,
+        "engendro": true,
+        "objective": "b2.complete"
+      },
+      "completionCtaBrightPixels": 786
+    }
+  ]
+}
