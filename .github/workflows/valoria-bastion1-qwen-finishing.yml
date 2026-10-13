@@ -1,0 +1,63 @@
+name: Bastion I genuine Qwen8B rock and turf finishing
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-qwen-finishing.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion1-qwen-finishing
+  cancel-in-progress: false
+jobs:
+  author-and-execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      FINISH: /tmp/bastion1-qwen-finish
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover successful integrated artist geometry and genuine Unity palette frame
+        run: |
+          mkdir -p "$FINISH/input" "$FINISH/unity"
+          gh run download 38403329338 --repo "${{ github.repository }}" --name bastion1-qwen8b-current-grass-city-38403329338 --dir "$FINISH/input"
+          gh run download 38398380999 --repo "${{ github.repository }}" --name bastion1-player-integration-38398380999 --dir "$FINISH/unity"
+          python3 - <<'PY'
+          import pathlib,os,hashlib,json,shutil
+          r=pathlib.Path(os.environ['FINISH']);s=r/'input/merged/Bastion1QwenScene.glb'
+          assert hashlib.sha256(s.read_bytes()).hexdigest()=='4a69ad6cbc12cb5391ce4f290a80a5641a3ed65c4adf86bf88c2ba89f347654f'
+          images=[p for p in (r/'unity').rglob('bastion1-player-initial.png') if 'Bastion1MaterialAB/after' in p.as_posix()];assert len(images)==1
+          shutil.copyfile(s,r/'source.glb');shutil.copyfile(images[0],r/'unity.png');shutil.copyfile('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',r/'reference.png')
+          provenance={'geometry_run':38403329338,'unity_palette_observation_run':38398380999,'observation_geometry_precedes_scope_masked_sculpt':True,'zero_paid_credits':True,'art_approved':False}
+          for k in ('source.glb','unity.png','reference.png'):provenance[k]=hashlib.sha256((r/k).read_bytes()).hexdigest()
+          (r/'source-provenance.json').write_text(json.dumps(provenance,indent=2))
+          PY
+      - name: Install existing free art runtime
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil
+          docker run -d --rm --name bastion1-qwen-finish -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > "$FINISH/ollama.json"; then break; fi; sleep 2; done
+          test -s "$FINISH/ollama.json"
+          docker exec bastion1-qwen-finish ollama pull qwen3-vl:8b-instruct
+      - name: Genuine visual artistic decision BEFORE mesh and material mutation
+        timeout-minutes: 20
+        run: python3 tools/valoria-bastion1-finishing/author.py --root "$FINISH"
+      - name: Execute unchanged authored brush and palette in Blender
+        run: |
+          blender -b --python-exit-code 1 --python tools/valoria-bastion1-finishing/execute.py -- --root "$FINISH"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-genuine-qwen-finishing-${{ github.run_id }}
+          path: |
+            /tmp/bastion1-qwen-finish/edited/**
+            /tmp/bastion1-qwen-finish/*proof.json
+            /tmp/bastion1-qwen-finish/source-provenance.json
+            /tmp/bastion1-qwen-finish/artist-plan.json
+            /tmp/bastion1-qwen-finish/raw-attempt-*.json
+            /tmp/bastion1-qwen-finish/reject-attempt-*.txt
+            /tmp/bastion1-qwen-finish/*-vision.jpg
+          retention-days: 14
