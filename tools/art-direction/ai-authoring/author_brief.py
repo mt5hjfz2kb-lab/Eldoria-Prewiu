@@ -3,7 +3,7 @@
 Requires two genuine images; it does not execute Blender or certify art by itself.
 """
 import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time
-from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback
+from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback,camera_footprint_errors
 from artistic_learning_feedback import (load_failed_cycles, feedback_for_failed_cycles,
                                         distinct_strategy_errors, select_journal_lessons,
                                         forbidden_methods_from_rejected_cycles)
@@ -73,12 +73,17 @@ def main():
  p.add_argument('--max-actions',type=int,default=8,help='Keep pilot plans short enough for local CPU models')
  p.add_argument('--cpu-compact',action='store_true',help='Shorten only long inventory/journal/topology context; preserve genuine images, system role and design freedom')
  p.add_argument('--repair-attempts',type=int,choices=(0,1),default=1,help='Allow one NEW Qwen artist decision after typed feedback; never script a fake displacement')
+ p.add_argument('--camera-min-radius',type=float,default=0.,help='Optional environment-scale target radius for same-camera ART FAIL recovery, meters; 0 disables scene-specific gate')
+ p.add_argument('--camera-min-displacement',type=float,default=0.,help='Optional meaningful player-camera geometry displacement, meters; 0 disables scene-specific gate')
  p.add_argument('--request-timeout',type=int,default=420,help='Local Ollama timeout per independent artist decision (seconds)')
  p.add_argument('--endpoint',default='http://127.0.0.1:11434/api/chat')
  a=p.parse_args()
  if not 4096<=a.num_ctx<=32768 or not 256<=a.num_predict<=3000:raise ValueError('Unsafe local Ollama token budgets')
  if not 1<=a.max_actions<=8:raise ValueError('max-actions must be within 1..8')
  if not 60<=a.request_timeout<=540:raise ValueError('Ollama per-attempt timeout must be 60..540 seconds')
+ if not 0<=a.camera_min_radius<=40 or not 0<=a.camera_min_displacement<=10:raise ValueError('Unsafe camera footprint goals')
+ if (a.camera_min_radius or a.camera_min_displacement) and not (a.cpu_compact and a.target_mode=='existing'):
+  raise ValueError('Source-camera footprint controls apply only to verified existing-mesh compact trials')
  uri=urllib.parse.urlsplit(a.endpoint)
  if uri.scheme!='http' or uri.hostname not in ('localhost','127.0.0.1') or uri.username or uri.password or uri.path!='/api/chat':
   raise ValueError('Only loopback Ollama /api/chat is permitted')
@@ -202,6 +207,13 @@ def main():
     +', '.join(sorted(forbidden_methods))+
     '. Select a DIFFERENT typed structural operation and independently author its spatial vertices/knots/profile; '
     'do not change just the size or amplitude of a failed method.')
+ if a.camera_min_radius or a.camera_min_displacement:
+  prompt += (f' MANDATORY CAMERA-SCALE SOURCE-CAMERA DESIGN CONTRACT: choose an ORIGINAL Qwen-authored '
+    f'geometric radius at least {a.camera_min_radius:g} meters (or crest span at least {2*a.camera_min_radius:g} meters) '
+    f'and structural displacement at least {a.camera_min_displacement:g} meters. '
+    'Previously smaller REAL player-camera sculptures were invisible and rejected. '
+    'Independently select the spatial positions, profile and displacement from source evidence. '
+    'These are BOUNDS, never script-generated sculpt coordinates; preserve all playable parcels.')
  format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions,forbidden_methods) if a.cpu_compact else 'json'
  payload={'model':a.model,'stream':False,'think':False,'format':format_spec,
   'options':{'temperature':0.25,'num_predict':a.num_predict,'num_ctx':a.num_ctx},
@@ -233,6 +245,7 @@ def main():
    errors.extend(inspect_artist_plan(design,a.target_object,a.target_mode,a.max_actions,
       topology if a.mesh_context else None,require_geometry=a.cpu_compact,require_camera_effect=a.cpu_compact and a.target_mode=='existing'))
    errors.extend(distinct_strategy_errors(design,failures))
+   errors.extend(camera_footprint_errors(design,a.camera_min_radius,a.camera_min_displacement))
   log={'attempt':attempt_index+1,'model':a.model,'request_prompt_sha256':digest(payload['messages'][-1]['content'].encode('utf8')),
    'raw_response_sha256':response_sha,'raw_response_file':f'artist-response-attempt-{attempt_index+1}.txt',
    'eval_count':reply.get('eval_count'),'prompt_eval_count':reply.get('prompt_eval_count'),
@@ -263,7 +276,7 @@ def main():
  a.out.mkdir(parents=True,exist_ok=True)
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
-   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'rejected_visual_cycle_evidence':failures,'forbidden_visual_failure_methods':sorted(forbidden_methods),'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+   'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'rejected_visual_cycle_evidence':failures,'camera_footprint_contract':{'min_radius_m':a.camera_min_radius,'min_displacement_m':a.camera_min_displacement},'forbidden_visual_failure_methods':sorted(forbidden_methods),'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')

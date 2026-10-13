@@ -87,6 +87,55 @@ def inspect_artist_plan(design,target,mode,max_actions=2,topology=None,require_g
  if require_geometry and not any(isinstance(op,dict) and op.get('type') in STRUCTURAL for op in actions):errors.append('At least ONE Qwen-designed STRUCTURAL geometry operation required for this cliff')
  return errors
 
+
+def camera_footprint_errors(design, minimum_radius=0.0, minimum_displacement=0.0):
+ """Reject a proven-too-small player-camera strategy before touching Blender.
+
+ These values are scene-specific reviewer minima, NOT artist-authored numbers.
+ Qwen must select its own geometry; no script rewrites the model's plan.
+ For reprofile_crest the width of authored crest positions is a proxy for
+ affected camera footprint, not a visual approval.
+ """
+ if minimum_radius <= 0 and minimum_displacement <= 0:
+  return []
+ if not isinstance(design,dict) or not isinstance(design.get('planned_actions'),list):
+  return []
+ methods={'sculpt_region','sculpt_path','reprofile_crest'}
+ evaluated=False
+ for op in design['planned_actions']:
+  if not isinstance(op,dict) or op.get('type') not in methods:
+   continue
+  evaluated=True
+  p=op.get('parameters')
+  if not isinstance(p,dict):
+   continue
+  typ=op['type']
+  if typ=='sculpt_region':
+   if (isinstance(p.get('radius'),(int,float)) and not isinstance(p['radius'],bool) and
+       vec(p.get('delta')) and p['radius']>=minimum_radius and length(p['delta'])>=minimum_displacement):
+    return []
+  elif typ=='sculpt_path':
+   knots=p.get('knots')
+   if isinstance(knots,list) and any(
+      isinstance(k,dict) and isinstance(k.get('radius'),(int,float)) and not isinstance(k['radius'],bool)
+      and vec(k.get('delta')) and k['radius']>=minimum_radius
+      and length(k['delta'])>=minimum_displacement for k in knots):
+    return []
+  elif typ=='reprofile_crest':
+   cp=p.get('control_points')
+   if isinstance(cp,list) and len(cp)>=3 and all(vec(q,2) for q in cp):
+    width=max(q[0] for q in cp)-min(q[0] for q in cp)
+    height=max(q[1] for q in cp)-min(q[1] for q in cp)
+    if width>=2*minimum_radius and height>=minimum_displacement:
+     return []
+ if not evaluated:
+  return []
+ return [('CAMERA_FOOTPRINT_TOO_SMALL: same-camera Blender/Unity rejections prove that this '
+          f'environment view needs a Qwen-authored structural change affecting >= {minimum_radius:g} m '
+          f'of radius (or >= {2*minimum_radius:g} m crest span) with >= {minimum_displacement:g} m '
+          'meaningful shape change. Pick new genuine source-visible coordinates, '
+          'broad path knots or crest control points; never reuse tiny local bumps.')]
+
 def bounded_repair_feedback(errors,max_items=8):
  return ('Your previous artist plan is REJECTED; no geometry was executed. '
          'Correct the following errors through your OWN artistic 3D decision, not scripted defaults: '
