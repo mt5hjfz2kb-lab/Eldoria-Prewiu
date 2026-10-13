@@ -94,7 +94,7 @@ jobs:
           docker run -d --rm --name bastion1-qwen-vision -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > "$ART/ollama-version.json"; then break; fi; sleep 2; done
           test -s "$ART/ollama-version.json"
-          docker exec bastion1-qwen-vision ollama pull qwen3-vl:2b-instruct
+          docker exec bastion1-qwen-vision ollama pull qwen3-vl:4b-instruct
       - name: Derive bounded image copies from REAL Unity/reference, retaining hashes
         run: |
           /usr/bin/python3 - <<'PY'
@@ -106,6 +106,25 @@ jobs:
             dst=root/(k+'.jpg');im.save(dst,'JPEG',quality=85)
             out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'derived_pixels':im.size}
           (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
+          PY
+      - name: Recover exact preceding Qwen CAMERA-LOCKED visual rejection
+        shell: bash
+        run: |
+          mkdir -p "$ART/prior"
+          gh run download 38358105789 --repo "${{ github.repository }}" \
+            --name bastion1-genuine-qwen-artist-38358105789 --dir "$ART/prior"
+          python3 - <<'PY'
+          import json,pathlib,os,shutil
+          root=pathlib.Path(os.environ['ART'])
+          previous=json.loads((root/'prior/ab/comparison.json').read_text())
+          provenance=json.loads((root/'prior/input-provenance.json').read_text())
+          assert provenance['source_run']==int(os.environ['SOURCE_RUN'])
+          assert previous['target']==os.environ['TARGET_MESH']
+          assert 'Blender clay A/B' in previous['scope']
+          assert previous['camera_visibility']['camera_visibility_gate']=='REJECT_NOT_VISIBLE'
+          assert previous['camera_visibility']['changed_pixels']==0
+          shutil.copyfile(root/'prior/ab/comparison.json',root/'prior-clay-review.json')
+          print('AUTHENTIC_QWEN_PREVIOUS_RENDER_REJECTED',previous['camera_visibility'])
           PY
       - name: Build VERIFIED south-cliff mesh anchors and real prior Unity failure context
         shell: bash
@@ -134,8 +153,15 @@ jobs:
           manifest['sample_vertices']=samples+manifest['sample_vertices'][:3]
           f.write_text(json.dumps(manifest,indent=2))
           (root/'inventory.txt').write_text(
-            'Authentic existing 3D terrain with PBR already integrated. '
-            'SOUTH foreground cliff visible to player uses verified source vertices: '+
+            'PREVIOUS ACTUAL BLENDER ARTIST CAMERA A/B VISIBILITY FAIL: Qwen chose '
+            'radius 1.0 m and delta 0.2 m; 0/307200 pixels changed materially. '
+            'Previous Unity scene sculpt (828 vertices) changed only 125/1440000 '
+            'pixels at >10 RGB (0.00868%). Both are ART_REJECTED. An environment '
+            'cliff needs a coherent MULTI-METER VISIBLE sculpt affecting a broad '
+            'front-facing slope. Owner priority: organic cliff/terrace transition, '
+            'not a tiny local bump, not a new tower or modified parcel. '
+            'Choose your own center, radius and displacement grounded in the real '
+            'geometry and image. SOUTH front cliff verified source vertices: '+
             json.dumps(samples,separators=(',',':'))+
             '. Previous Qwen-authored operation displaced 828 vertices, but genuine Unity '
             'camera comparison changed only 125 of 1440000 pixels (>10 RGB), 0.00868%. '
@@ -149,23 +175,24 @@ jobs:
           PY
           blender -b --python-exit-code 1 --python "$ART/visible-anchors.py"
       - name: NEW local Qwen visual decision for visible player-camera cliff
-        timeout-minutes: 17
+        timeout-minutes: 27
         shell: bash
         run: |
           python3 tools/art-direction/ai-authoring/author_brief.py \
             --reference "$ART/reference.jpg" --unity-before "$ART/unity_before.jpg" \
             --inventory "$ART/inventory.txt" \
             --mesh-context "$ART/inspect/mesh-context.json" \
+            --prior-visual-review "$ART/prior-clay-review.json" \
             --target-object "$TARGET_MESH" --target-mode existing \
-            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1400 --max-actions 2 \
-            --cpu-compact --repair-attempts 1 --request-timeout 420 --out "$ART/model"
+            --model qwen3-vl:4b-instruct --num-ctx 16384 --num-predict 1700 --max-actions 2 \
+            --cpu-compact --repair-attempts 1 --request-timeout 540 --out "$ART/model"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan "$ART/model/artist-plan.json" "$TARGET_MESH" existing
           python3 - <<'PY'
           import json,os,pathlib
           r=pathlib.Path(os.environ['ART'])
           inference=json.loads((r/'model/artist-inference.json').read_text())
           ops=json.loads((r/'model/artist-plan.json').read_text())
-          assert inference['model']=='qwen3-vl:2b-instruct' and inference['system_role']=='system'
+          assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==ops
           anchors=json.loads((r/'inspect/mesh-context.json').read_text())['sample_vertices']
           assert len(anchors)>=9 and all(a['role'].startswith('negative_y_cliff_') for a in anchors[:9])
@@ -178,6 +205,15 @@ jobs:
           if focus:
             assert any(-36<=v[0]<=36 and -45<=v[1]<=-7 for v in focus),('Qwen edit outside genuine player-facing cliff',focus)
           assert all(op['target']==os.environ['TARGET_MESH'] for op in ops)
+          # A technically valid centimetre-scale edit is not a visible 3D
+          # environment intervention. Qwen must make this decision itself.
+          import math
+          for op in ops:
+            p=op['parameters']
+            if op['type']=='sculpt_region':
+              assert p['radius']>=10 and math.dist(p['delta'],[0,0,0])>=1.0,('Too-local Qwen sculpt for an actual cliff',op)
+            if op['type']=='sculpt_path':
+              assert any(k['radius']>=10 and math.dist(k['delta'],[0,0,0])>=1.0 for k in p['knots']),('Too-local Qwen path',op)
           print('NEW_QWEN_ARTISTIC_DECISION_UNMODIFIED',json.dumps(ops))
           PY
       - name: Actual typed Blender sculpt on Qwen-selected target
@@ -191,7 +227,7 @@ jobs:
           plan=json.loads((root/'model/artist-plan.json').read_text())
           inference=json.loads((root/'model/artist-inference.json').read_text())
           proof=json.loads((root/'result/artist-execution.json').read_text())
-          assert inference['model']=='qwen3-vl:2b-instruct' and inference['system_role']=='system'
+          assert inference['model']=='qwen3-vl:4b-instruct' and inference['system_role']=='system'
           assert inference['direction']['planned_actions']==plan
           assert len(plan)==len(proof['executed_actions'])
           assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
