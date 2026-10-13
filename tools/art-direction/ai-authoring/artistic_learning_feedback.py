@@ -67,7 +67,7 @@ def load_failed_cycles(plan_paths, review_paths, target):
             if not png.is_file() or png.stat().st_size > 10_000_000:
                 raise ValueError('Original rejected Blender PNG missing or too large: ' + str(png))
             raw = png.read_bytes()
-            if not raw.startswith(b'\\x89PNG\\r\\n\\x1a\\n'):
+            if not raw.startswith(b'\x89PNG\r\n\x1a\n'):
                 raise ValueError('Rejected-cycle image is not a genuine PNG file: ' + str(png))
             if hashlib.sha256(raw).hexdigest() != review[f'{label}_image_sha256']:
                 raise ValueError('Rejected-cycle PNG does not match manifest hash: ' + str(png))
