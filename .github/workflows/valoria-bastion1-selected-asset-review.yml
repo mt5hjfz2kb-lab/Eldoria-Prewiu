@@ -53,6 +53,8 @@ jobs:
           $text=$text.Replace('piece.SetActive(true);','selectedPiece.SetActive(true);')
           $text=$text.Replace('piece.GetComponentsInChildren<Renderer>(true);','selectedPiece.GetComponentsInChildren<Renderer>(true);')
           $text=$text.Replace('piece.name.Substring(','selectedPiece.name.Substring(')
+          $text=$text.Replace('capture "+piece.name);','capture "+selectedPiece.name);')
+          $text=$text.Replace('foreach(var piece in pieces)if(piece!=null)selectedPiece.SetActive(true);','foreach(var piece in pieces)if(piece!=null)piece.SetActive(true);')
           [System.IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE $file),$text,(New-Object System.Text.UTF8Encoding($false)))
           Write-Host 'PR51_ONLY_DISPOSABLE_CSHARP_FIXES application_namespace=2 shadowed_name=1'
       - name: Re-resolve invalidated glTFast shaders from installed package cache only
