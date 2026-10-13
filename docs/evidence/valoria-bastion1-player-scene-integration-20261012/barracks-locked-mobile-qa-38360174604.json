@@ -11,14 +11,15 @@
   "candidate_files": 17,
   "verified": {
     "startup": true,
-    "touch_pan_four_directions": true,
     "sawmill_selection": true,
     "sawmill_construction_resource_debit": true,
     "barracks_locked_bastion_i": true,
     "world_navigation_and_return": true,
     "persisted_reload": true,
     "save_reset": true,
-    "zero_browser_errors": true
+    "zero_browser_errors": true,
+    "touch_pan_four_gestures_attempted": true,
+    "touch_pan_logs_minimum_two_confirmed": true
   },
   "technical_reason_for_locked_plot": "ParcelBuildingStates.For(barracks) yields NOT_BUILT for BastionLevel<2; ValoriaParcelPresentation disables target.collider, so absence of an actionable barracks panel is expected and must not be misclassified as failure.",
   "test_fix_commit": "04e3e546aaada5343b1cf58e7780a176aaac7fd8",
@@ -35,5 +36,6 @@
     "art": false,
     "physical_device": false,
     "main_promotion": false
-  }
+  },
+  "note_pan_evidence": "QA sends four cardinal touch gestures but requires at least 2 instrumented pan logs; no independent proof all four directions moved the camera in this specific run."
 }
