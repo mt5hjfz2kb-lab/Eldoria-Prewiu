@@ -49,3 +49,14 @@ Se ha creado .github/workflows/valoria-bastion1-exact-candidate-build.yml con re
 
 ## Entorno de interacción
 Work local recuperó Chromium oficial pero rechaza sockets POSIX; Playwright local no abre. Los workflows Ubuntu disponibles ejecutan Chromium/touch sobre WebGL real. Es emulación automatizada con controles reales, NO móvil físico ni humano/manual independiente. Las desconexiones de cliente no tienen diagnóstico confirmado; archivos/commits y runs externos permiten recuperación, pero no prometer ejecución indefinida del agente tras acabar turno.
+
+## Actualización posterior — estado vivo a recuperar
+- 38415715022 restauró fuente/prueba correctamente pero Actions propagó robocopy exit1 (es éxito de copia). Normalizado sólo tras comprobar códigos0..7; no se ocultó fallo.
+- 38416315485 SUCCESS, source dbfce12c50b2e95b249057a3fe8eee95ada82c65, artifact11823649081 (187137867bytes). Primer WebGL real con escultura/colores/camino/escalera, perfil HQ4 cascades/MSAA4 y aserradero todavía screen-right.
+- QA básica exacta38417838180: startup real PASS (revision0, wood230,stone150,sawmill0,bastion1,barracks0,archers36), canvas844x390 completo. Falló ANTES del pan/selección por screenshot30s timeout en Chromium/software. No clasificarlo como prueba completa ni inventar fallo de economía.
+- Coordenadas de aserradero/cuarter/proxies corregidas: cámara desde X negativo, screen-left equivale a UnityX positivo. Ahora sawmill X+16, barracks X-16, proxies coincidentes. Native38417295167 SUCCESS, source0118295e4b1b832004b737a468d02b43219a43ce, artifacts11824843619(frames),11824718787(full). No repetir esa corrección ni volver a flippear sin evidencia.
+- Perfil más ligero para resolver captura/software: conservar shadowDistance180 y todos los modelos, cascade1, atlas1024, MSAA1 y RTcapturaAA1. Native38419031491 SUCCESS, sourcecf1f7bc69ff832f917fa9e41285ba6c809c320ac, artifact11826196119(frames),11825492257(full). Captura independiente inspeccionada: aserradero screen-left, escalera/camino visibles, sombras conservadas y colores autorales correctos. Mejora técnica, NO ART PASS ni rendimiento físico.
+- Request build_attempt4 ahora consume EXACTAMENTE38419031491; commit7f6d708d57bd27e04c0375e79221d3fa9c932da3. Recuperar nuevo run de exact-candidate-build antes de repetir. No consumir artifact HQ anterior como candidato final.
+- .github/workflows/valoria-bastion1-browser-qa.yml ejecuta ahora QA básica real, no reutiliza PASS marrón antiguo; test basic exige run/SHA por env. Al aprobar nuevo build, actualizar run/SHA/name a artefacto NUEVO y ejecutar básica más full-player-qa.cjs I-II ambas orientaciones sobre ese mismo build.
+- Native workflow cancel-in-progress=false evita cancelar el build al corregir escena. Misma lease, sin otro workstream.
+- Faltan QA final del perfil ligero, inspección real WebGL y acabado global de paisaje/agua/puente/roca hacia referencia. No declarar8/10 ni publicar/main por compilación.
