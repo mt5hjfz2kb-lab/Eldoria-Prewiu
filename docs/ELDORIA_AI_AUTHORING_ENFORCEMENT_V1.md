@@ -138,3 +138,8 @@ Pruebas obligatorias: `test_artistic_learning_feedback.py` y `test_cpu_artist_sc
 ### Esquema Qwen consciente de la escala de cámara
 
 Además del rechazo posterior ya integrado, `cpu_artist_schema` transmite a Ollama el radio mínimo de la cámara para `sculpt_region` y **cada nudo** de `sculpt_path` cuando se usa `--camera-min-radius`. El JSON sigue sin fabricar centros, direcciones, deltas ni perfiles. En un camino válido, `parameters` puede contener solo `knots`; el esquema general para props y edificios permanece intacto cuando la opción vale cero. El criterio de desplazamiento se verifica en el preflight auténtico, y superar ambos mínimos solo permite ejecutar Blender y comprobar la cámara real, nunca `ART_APPROVED` automático.
+
+
+## Memoria con ventana de cuatro fallos originales (13-10-2026)
+
+Dos rechazos genuinos de un mismo método permanecen activos aunque un intento posterior haya usado otro tipo también fallido. El agente evalúa hasta cuatro pares originales con comparación de cámara y hashes verificados, cuenta solo los ensayos de una única operación estructural (los mixtos no prueban qué operación causó el fallo) y retira del esquema Qwen todas las familias con dos rechazos en esa ventana. El objetivo es impedir que `sculpt_region` vuelva a resultar elegible tras un único fracaso con `sculpt_path`. Los límites son contextuales a la escena y a los originales suministrados, no entrenamiento de pesos ni prohibiciones globales perpetuas. Los intentos rechazados nunca son aprobación artística, y ninguna decisión espacial es fabricada por Python.
