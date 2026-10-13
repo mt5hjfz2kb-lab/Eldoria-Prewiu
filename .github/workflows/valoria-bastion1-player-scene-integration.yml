@@ -85,28 +85,11 @@ jobs:
           if(-not $blenderPython){throw 'Bundled Blender Python missing'}
           Add-Content $env:GITHUB_ENV "BASTION_PYTHON=$blenderPython"
           # Consume completed sources; do not restage or reconstruct the city.
-      - name: Recover completed current-grass genuine Qwen city for baseline
-        uses: actions/download-artifact@v4
-        with:
-          name: bastion1-qwen8b-current-grass-city-38403329338
-          run-id: 38403329338
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/Bastion1QwenBaseline
-      - name: Stage exact current city for matched baseline
-        shell: powershell
-        run: |
-          $src=Join-Path $env:RUNNER_TEMP 'Bastion1QwenBaseline/merged/Bastion1QwenScene.glb'
-          $expected='4a69ad6cbc12cb5391ce4f290a80a5641a3ed65c4adf86bf88c2ba89f347654f'
-          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'Current city hash changed'}
-          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
-          New-Item -ItemType Directory -Force $dest | Out-Null
-          Copy-Item $src (Join-Path $dest 'Bastion1ReferenceAssembly.glb') -Force
-          & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py (Join-Path $dest 'Bastion1ReferenceAssembly.glb')
-          if($LASTEXITCODE -ne 0){throw 'Baseline material binding staging failed'}
       - name: Stage existing authored construction states and barracks
         shell: powershell
         run: |
           $dest="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource"
+          New-Item -ItemType Directory -Force $dest | Out-Null
           $sawmill="$env:GITHUB_WORKSPACE/art-source/valoria/production/sawmill-family-v1"
           foreach($state in 0..2){
             $name="SawmillState${state}V1"
@@ -121,18 +104,22 @@ jobs:
           Copy-Item "$env:GITHUB_WORKSPACE/art-source/valoria/production/road-family-v1/RoadFamilyV1.glb" "$dest/RoadFamilyV1.glb" -Force
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py "$dest/RoadFamilyV1.glb"
           if($LASTEXITCODE -ne 0){throw 'Existing authored road bindings failed'}
-      - name: Capture matched current-grass BEFORE with the same importer and camera
+      - name: Fetch exact previously verified Unity image as immutable scenery baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: bastion1-unity-review-frames-38419031491
+          run-id: 38419031491
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1PreviousUnity
+      - name: Stage matched existing before-frame without rerunning passed Unity work
         shell: powershell
         run: |
-          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-Unity-Before.log'
-          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log)
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own BEFORE process timed out'}
-          if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw 'Unity matched BEFORE failed'}
-          if(-not (Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw 'BEFORE capture missing'}
+          $previous=Join-Path $env:RUNNER_TEMP 'Bastion1PreviousUnity/Bastion1MaterialAB/after'
+          if(-not (Test-Path (Join-Path $previous 'bastion1-player-initial.png'))){throw 'Previously verified native baseline frame absent'}
           $before=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/before'
           New-Item -ItemType Directory -Force $before | Out-Null
-          Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $before -Force
+          Copy-Item (Join-Path $previous '*') $before -Force
+          Write-Host 'BASTION1_REUSED_REAL_UNITY_BASELINE run=38419031491'
       - name: Recover completed genuine Qwen8B fracture and palette finishing
         uses: actions/download-artifact@v4
         with:

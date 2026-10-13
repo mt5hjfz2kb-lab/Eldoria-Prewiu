@@ -118,11 +118,18 @@ namespace Eldoria.Presentation
             p.z=0;
             ProductionCamera.transform.position=p;
         }
+        // Keep authored terrain legible in tall portrait without changing the
+        // scene, SHARP backup, interaction proxies or strategic pan.
+        float MeshHomeForAspect()
+        {
+            float aspect=Mathf.Max(.2f,ProductionCamera.aspect);
+            return Mathf.Max(MeshHomeOrthographicSize,(aspect<.85f?25f:36f)/aspect);
+        }
         public void Zoom(float delta)
         {
             if(MeshMode)
             {
-                float meshHome=Mathf.Max(MeshHomeOrthographicSize,36f/Mathf.Max(.1f,ProductionCamera.aspect));
+                float meshHome=MeshHomeForAspect();
                 ProductionCamera.orthographicSize=Mathf.Clamp(ProductionCamera.orthographicSize+delta,meshHome*.55f,meshHome*1.15f);
                 return;
             }
@@ -134,7 +141,7 @@ namespace Eldoria.Presentation
             if(MeshMode)
             {
                 ProductionCamera.transform.SetPositionAndRotation(MeshHomePosition,MeshHomeRotation);
-                ProductionCamera.orthographicSize=Mathf.Max(MeshHomeOrthographicSize,36f/Mathf.Max(.1f,ProductionCamera.aspect));
+                ProductionCamera.orthographicSize=MeshHomeForAspect();
                 return;
             }
             ProductionCamera.transform.SetPositionAndRotation(Vector3.zero,Quaternion.identity);
