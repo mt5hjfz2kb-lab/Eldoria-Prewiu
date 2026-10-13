@@ -1,0 +1,56 @@
+name: Bastion I genuine Unity screenshot visual inspection relay
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-evidence-image-review.yml']
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  original-unity-frames:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - name: Download two preserved real Unity player-camera artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/eldoria-eye/source /tmp/eldoria-eye/candidate
+          gh run download 38320867773 --repo "${{ github.repository }}" --name bastion1-player-integration-38320867773 --dir /tmp/eldoria-eye/source
+          gh run download 38356683511 --repo "${{ github.repository }}" --name bastion1-player-integration-38356683511 --dir /tmp/eldoria-eye/candidate
+      - name: Verify original image bytes, emit bounded preview to review log
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-pil
+          /usr/bin/python3 - <<'PY'
+          import base64,hashlib,pathlib,io
+          from PIL import Image
+          root=pathlib.Path('/tmp/eldoria-eye')
+          sha={'source':'262c7c9eddc68292cf2b14ba0c04eb1a3971ec76dec606a3d5fde2e1b7be641f',
+               'candidate':'2a0a27d483e9eb317b4ac32cae5a00120303a0ebcc0be73f340aae00fe832a96'}
+          for label,expected in sha.items():
+              files=list((root/label).rglob('bastion1-player-initial.png'))
+              assert len(files)==1,(label,files)
+              raw=files[0].read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==expected,(label,'SOURCE_SHA_MISMATCH')
+              img=Image.open(io.BytesIO(raw)).convert('RGB')
+              assert img.size==(1440,1000),(label,img.size)
+              img.thumbnail((780,560),Image.Resampling.LANCZOS)
+              out=io.BytesIO();img.save(out,format='JPEG',quality=69,optimize=True)
+              enc=base64.b64encode(out.getvalue()).decode()
+              print('ELDORIA_FRAME_BEGIN',label,'SOURCE_PNG_SHA256',expected,
+                    'DERIVED_JPEG_SHA256',hashlib.sha256(out.getvalue()).hexdigest(),
+                    'DERIVED_PIXELS',img.size,'DERIVED_BYTES',len(out.getvalue()),flush=True)
+              for i in range(0,len(enc),2048):
+                  print('ELDORIA_FRAME_CHUNK',label,enc[i:i+2048],flush=True)
+              print('ELDORIA_FRAME_END',label,flush=True)
+          print('VISUAL_INSPECTION_ONLY_NOT_ART_APPROVED')
+          PY
