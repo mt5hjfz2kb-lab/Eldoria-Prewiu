@@ -51,7 +51,7 @@ jobs:
           done
           node tools/art-direction/learning-evidence/learning.mjs audit
           node --test tools/art-direction/learning-evidence/learning.test.mjs
-          node --check tools/art-direction/learning-evidence/stage-blender.mjs
+          node --test tools/art-direction/learning-evidence/stage-blender.test.mjs
           echo "ART_MEMORY_SOURCE_PINNED $ART_MEMORY_SHA"
       - name: Recover immutable scene assembly and real Unity player frame
         shell: bash
