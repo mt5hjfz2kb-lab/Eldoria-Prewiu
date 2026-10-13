@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "native_run_id": 38412903213,
-  "source_sha": "7bcc33921e122d7abe94f865268e67c82b803ec4",
-  "native_artifact_id": 11822978137,
+  "native_run_id": 38419031491,
+  "source_sha": "cf1f7bc69ff832f917fa9e41285ba6c809c320ac",
+  "native_artifact_id": 11825492257,
   "factor_corrected_artist_glb_sha256": "9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1",
   "native_frames_inspected": true,
   "road_stair_clearance_verified": true,
   "purpose": "Isolated playable candidate from exact successful native scene; no repeated inference, assembly or native rendering",
   "art_promotion_allowed": false,
   "paid_credits": 0,
-  "build_attempt": 3,
-  "recovery": "Normalize verified successful robocopy exit 1..7; native source and artist proof unchanged"
+  "build_attempt": 4,
+  "recovery": "Exact mirrored-layout native scene with verified single-cascade 1024 shadow profile and MSAA1 after software-browser capture timeout"
 }
