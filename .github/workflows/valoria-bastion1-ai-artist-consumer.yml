@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 50
     env:
       GH_TOKEN: ${{ github.token }}
-      ART_CORE_SHA: 0bedb20ee53ef8e1c93d6bfa7d444b3ce0979ebb
+      ART_CORE_SHA: 4d928620cb83dde9dad0d4e62a34c3d37a982a8c
       SOURCE_RUN: '38356683511'
       SOURCE_SHA: '245a963f7c7eb9ee30e4de9e9cffd13f632eb82d'
       TARGET_MESH: 'Valoria natural playable hilltop and rock scarps'
@@ -29,14 +29,15 @@ jobs:
           set -euo pipefail
           mkdir -p tools/art-direction/ai-authoring
           git fetch --no-tags --depth=1 origin "$ART_CORE_SHA"
-          for n in author_brief.py artist_plan_validation.py artistic_learning_feedback.py execute_artist_plan.py render_artist_ab.py verify-artist-cycle.mjs visibility_metrics.py; do
+          for n in author_brief.py artist_plan_validation.py artistic_learning_feedback.py execute_artist_plan.py verify-artist-cycle.mjs visibility_metrics.py; do
             git show "$ART_CORE_SHA:tools/art-direction/ai-authoring/$n" > "tools/art-direction/ai-authoring/$n"
           done
           # PR #36 moved the canonical system prompt out of the old local
           # ARTIST_SYSTEM.md; load its precise pinned canonical location.
           git show "$ART_CORE_SHA:tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md" > tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
           test -s tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
-          python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py
+          # Keep this branch's source-camera-locked renderer, already validated by authentic replay #38367414911.
+          python3 -m py_compile tools/art-direction/ai-authoring/author_brief.py tools/art-direction/ai-authoring/execute_artist_plan.py tools/art-direction/ai-authoring/render_artist_ab.py
           echo "PR36_PROVEN_CORE_READONLY $ART_CORE_SHA"
       - name: Recover immutable scene assembly and real Unity player frame
         shell: bash
@@ -279,7 +280,7 @@ jobs:
       - name: Generate authentic Blender before and after clay proof
         timeout-minutes: 5
         run: |
-          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- --before "$ART/terrain-source.blend" --after "$ART/result/artist-output.blend" --target "$TARGET_MESH" --out "$ART/ab"
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/render_artist_ab.py -- --before "$ART/terrain-source.blend" --after "$ART/result/artist-output.blend" --target "$TARGET_MESH" --player-camera --out "$ART/ab"
       - name: Independently measure CAMERA-LOCKED artistic impact (still not ART APPROVED)
         shell: bash
         run: |
