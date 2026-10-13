@@ -44,7 +44,7 @@ jobs:
       - name: Install no-cost Blender and pixel comparison tools
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil python3-numpy
           blender --version | head -2
       - name: Apply GPT-directed environmental geometry to authentic scene and render A/B
         timeout-minutes: 17
