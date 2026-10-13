@@ -49,3 +49,10 @@ Visual score remains approximately **4.5/10 pending independent artistic accepta
 - Root issue is using additional terrain-overlay meshes as color decals; even with valid UVs and baked textures the resulting shapes are not naturally integrated in the engine.
 - Third intervention removes *all* those ribbons and islands and instead modifies the **existing original grass albedo image** in Blender with broad, bounded mottled tonal variation. No new terrain overlays, buildings or resource nodes. Sparse contact scree remains. Native A/B workflow checks the original baseline and captures identical camera again.
 - Commit `2651f5534bc45902ee59fc9fcb94a7176b46378f`. Artistic status remains **unapproved pending real Unity evidence**.
+
+## Courtyard v3 native ground-material gate
+
+- Run **38469503150 SUCCESS**, native same-camera Unity A/B 1440×1000: **56,503 / 1,440,000 = 3.923819%** changed pixels, artifact **11850723360**.
+- Genuine images show **no pasted-on dark paths**, and a more variegated original grass/earth material. The empty yard is still underpopulated; this is an incremental tonal improvement, **not 6/10**. No architectural or terrain-vertex edits.
+- Based on direct inspection, retain the native-ground-material strategy as a candidate, but require spatial composition work for further advancement. Score remains ~5/10, art approval pending broader scene quality.
+- Next test reuses the actual already-selected `EA03_Nature_Bush_01a_LOD0` geometry, 12 instances along the courtyard perimeter, to soften wall/soil contacts while leaving the central axial route free. No resource nodes. Run [38470564008](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38470564008) pending; do not claim accepted until native frames are inspected.
