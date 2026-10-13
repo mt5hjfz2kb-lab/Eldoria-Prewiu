@@ -984,6 +984,12 @@
       "domain": "engineering",
       "status": "current",
       "note": "Contrato de componentes Unity"
+    },
+    {
+      "path": "docs/ELDORIA_MISSION_CONTINUITY_GUARD_V1.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Control de continuidad automática y recuperación de misiones sin atribución de VISUAL PASS"
     }
   ]
 }
