@@ -1,0 +1,221 @@
+name: Bastion I exact native scene candidate WebGL
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['pipeline/valoria-bastion1-candidate-build-request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-bastion1-player-integration
+  cancel-in-progress: false
+jobs:
+  build-exact-native:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose installed Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate=Get-ChildItem "${env:LOCALAPPDATA}\GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git missing'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Verify exact successful native candidate requested for build
+        id: request
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $r=Get-Content pipeline/valoria-bastion1-candidate-build-request.json -Raw | ConvertFrom-Json
+          if($r.art_promotion_allowed -ne $false){throw 'Candidate cannot claim art approval'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $url="https://api.github.com/repos/${{ github.repository }}/actions/runs/$($r.native_run_id)"
+          $run=Invoke-RestMethod -Uri $url -Headers $headers
+          if($run.conclusion -ne 'success' -or $run.head_sha -ne $r.source_sha){throw 'Native source is not the exact successful requested capture'}
+          $artifacts=Invoke-RestMethod -Uri "$url/artifacts" -Headers $headers
+          $artifact=@($artifacts.artifacts | Where-Object {$_.id -eq $r.native_artifact_id})
+          if($artifact.Count -ne 1 -or $artifact[0].name -ne "bastion1-player-integration-$($r.native_run_id)"){throw 'Exact native artifact mismatch'}
+          Add-Content $env:GITHUB_OUTPUT "run=$($r.native_run_id)"
+          Add-Content $env:GITHUB_ENV "BASTION_NATIVE_RUN=$($r.native_run_id)"
+          Add-Content $env:GITHUB_ENV "BASTION_NATIVE_SHA=$($r.source_sha)"
+      - uses: actions/download-artifact@v4
+        with:
+          name: bastion1-player-integration-${{ steps.request.outputs.run }}
+          run-id: ${{ steps.request.outputs.run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1ExactNative
+      - name: Restore the exact captured native scene and baked assets without rerendering
+        shell: powershell
+        run: |
+          $root=Join-Path $env:RUNNER_TEMP 'Bastion1ExactNative'
+          $suffix='Unity\Assets\Eldoria\ProductionSlice\Runtime\Valoria.unity'
+          $scenes=@(Get-ChildItem $root -Recurse -File -Filter 'Valoria.unity' | Where-Object {$_.FullName.EndsWith($suffix)})
+          if($scenes.Count -ne 1){throw 'Exact native player scene missing'}
+          $prefix=$scenes[0].FullName.Substring(0,$scenes[0].FullName.Length-$suffix.Length)
+          $nativeUnity=Join-Path $prefix 'Unity'
+          foreach($folder in @('Assets/Eldoria/ArtTests/Bastion1Assembly/Generated','Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedNormals')){
+            $src=Join-Path $nativeUnity $folder
+            $dst=Join-Path "$env:GITHUB_WORKSPACE/Unity" $folder
+            if(-not (Test-Path $src)){throw "Native assets missing $folder"}
+            & robocopy.exe $src $dst /E /R:1 /W:1 /NFL /NDL /NJH /NJS
+            if($LASTEXITCODE -gt 7){throw "Native asset copy failed $folder"}
+          }
+          Copy-Item $scenes[0].FullName "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity" -Force
+          if(Test-Path "$($scenes[0].FullName).meta"){Copy-Item "$($scenes[0].FullName).meta" "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity.meta" -Force}
+          $proofs=@(Get-ChildItem $root -Recurse -File -Filter 'qwen-integration-proof.json')
+          if($proofs.Count -ne 1){throw 'Artist source proof missing'}
+          $proof=Get-Content $proofs[0].FullName -Raw | ConvertFrom-Json
+          if($proof.output_glb_sha256 -ne '9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'){throw 'Authored factor-corrected source mismatch'}
+          Write-Host "BASTION1_EXACT_NATIVE_SCENE_RESTORED source_run=$env:BASTION_NATIVE_RUN source_sha=$env:BASTION_NATIVE_SHA"
+      - name: Quarantine unrelated shader graphs for isolated WebGL
+        shell: powershell
+        run: |
+          # Only the temporary runner checkout. No source is deleted or committed.
+          # Unity otherwise prepares 36+ billion VegetationMultiColor variants
+          # although this authored mesh scene uses explicit URP/Lit materials.
+          $quarantine=Join-Path $env:RUNNER_TEMP 'Bastion1-WebGL-UnusedShaderGraphs'
+          New-Item -ItemType Directory -Force $quarantine | Out-Null
+          $graphs=@(Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph')
+          if($graphs.Count -lt 3){throw "Expected unused supplier shadergraphs, found $($graphs.Count)"}
+          foreach($graph in $graphs){
+            $relative=$graph.FullName.Substring("$env:GITHUB_WORKSPACE/Unity/Assets".Length).TrimStart([char]92,[char]47)
+            $dest=Join-Path $quarantine $relative
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            Move-Item -LiteralPath $graph.FullName -Destination $dest -Force
+            if(Test-Path -LiteralPath "$($graph.FullName).meta"){
+              Move-Item -LiteralPath "$($graph.FullName).meta" -Destination "$dest.meta" -Force
+            }
+            Write-Host "WEBGL_QUARANTINED_SHADERGRAPH $relative"
+          }
+          if((Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph' | Measure-Object).Count -ne 0){
+            throw 'Source shadergraph quarantine incomplete'
+          }
+      - name: Bind the actual URP asset in every WebGL quality level (Unity 6000.3 shader fix)
+        shell: powershell
+        run: |
+          # Unity 6000.3 can enumerate billions of URP/Lit permutations when
+          # all Quality levels use None even if Graphics has a default URP asset.
+          # Patch only this disposable CI working tree, never main or native sources.
+          $graphics="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/GraphicsSettings.asset"
+          $quality="$env:GITHUB_WORKSPACE/Unity/ProjectSettings/QualitySettings.asset"
+          # Commit is authoritative; the Unity editor may have changed GraphicsSettings
+          # in this *disposable* checkout during the earlier native screenshot pass.
+          $canonical=(& git.exe show HEAD:Unity/ProjectSettings/GraphicsSettings.asset | Out-String)
+          $guid='48e3a09b57f028a4bb2e693d044ea6ca'
+          if($canonical -notlike "*$guid*"){throw "Expected canonical URP asset GUID not in Git HEAD"}
+          [System.IO.File]::WriteAllText($graphics,$canonical,(New-Object System.Text.UTF8Encoding($false)))
+          $q=[System.IO.File]::ReadAllText($quality)
+          Write-Host "WEBGL_GRAPHICS_CANONICAL_FROM_GIT pipeline_guid=$guid"
+          $nullBinding='customRenderPipeline: {fileID: 0}'
+          $count=([regex]::Matches($q,[regex]::Escape($nullBinding))).Count
+          if($count -lt 1){throw 'No missing URP Quality bindings found; inspect live Quality settings'}
+          $correct="customRenderPipeline: {fileID: 11400000, guid: $guid, type: 2}"
+          $q=$q.Replace($nullBinding,$correct)
+          [System.IO.File]::WriteAllText($quality,$q,(New-Object System.Text.UTF8Encoding($false)))
+          if(([regex]::Matches([System.IO.File]::ReadAllText($quality),[regex]::Escape($correct))).Count -ne $count){throw 'URP Quality verification failed'}
+          Write-Host "WEBGL_URP_QUALITY_FIX_PASS quality_levels=$count pipeline_guid=$guid"
+      - name: Prune superseded Valoria Resources GLBs only in isolated WebGL build
+        shell: powershell
+        run: |
+          # Generated meshes are already baked into the candidate scene. Earlier
+          # Resources/Valoria GLBs must not be serialized into this playable test;
+          # they introduce glTFast materials and large, unrelated shaders.
+          $assets=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Resources/Valoria'
+          $quarantine=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedLegacyGLBs'
+          $sourceAssets=@(Get-ChildItem -LiteralPath $assets -Filter '*.glb' -File -Recurse)
+          if($sourceAssets.Count -lt 20){throw "Unexpected Valoria legacy GLB count: $($sourceAssets.Count)"}
+          $bytes=0L
+          foreach($file in $sourceAssets){
+            $bytes+=$file.Length
+            $relative=$file.FullName.Substring($assets.Length).TrimStart([char]92,[char]47)
+            $dst=Join-Path $quarantine $relative
+            New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
+            Move-Item -LiteralPath $file.FullName -Destination $dst -Force
+            if(Test-Path -LiteralPath "$($file.FullName).meta"){
+              Move-Item -LiteralPath "$($file.FullName).meta" -Destination "$dst.meta" -Force
+            }
+          }
+          Write-Host "BASTION1_WEBGL_LEGACY_GLB_QUARANTINED count=$($sourceAssets.Count) bytes=$bytes"
+          if((Get-ChildItem -LiteralPath $assets -Filter '*.glb' -File -Recurse | Measure-Object).Count -ne 0){
+            throw 'Legacy GLB exclusion incomplete'
+          }
+      - name: Disable unused glTFast Graph compilers in temporary WebGL PackageCache
+        shell: powershell
+        run: |
+          # The authored player meshes have URP/Lit materials, and the historic
+          # Resources/Valoria GLBs were quarantined above. Keep the package C#
+          # loader installed. Only in this disposable runner's PackageCache,
+          # quarantine its trillion-variant material ShaderGraph assets.
+          # Browser QA must still verify World/Valoria navigation and material rendering.
+          $pkgRoot=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          $packages=@(Get-ChildItem -LiteralPath $pkgRoot -Directory -Filter 'com.unity.cloud.gltfast@*')
+          if($packages.Count -lt 1){throw 'glTFast 6 package cache missing'}
+          $destRoot=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
+          $selected=@()
+          foreach($pkg in $packages){
+            $shaders=@(Get-ChildItem -LiteralPath (Join-Path $pkg.FullName 'Runtime/Shader') -Filter 'glTF-*.shadergraph' -File)
+            foreach($shader in $shaders){
+              $destination=Join-Path $destRoot $shader.Name
+              New-Item -ItemType Directory -Force (Split-Path $destination) | Out-Null
+              Move-Item -LiteralPath $shader.FullName -Destination $destination -Force
+              if(Test-Path -LiteralPath "$($shader.FullName).meta"){
+                Move-Item -LiteralPath "$($shader.FullName).meta" -Destination "$destination.meta" -Force
+              }
+              $selected+= $shader.Name
+            }
+          }
+          if(($selected | Where-Object { $_ -match '^glTF-pbrMetallicRoughness' } | Measure-Object).Count -lt 1){
+            throw 'Problematic glTFast metallic-roughness graph not found'
+          }
+          Write-Host "BASTION1_CANDIDATE_GLTF_SHADERGRAPH_GATE_PASS count=$($selected.Count) graphs=$($selected -join ',')"
+      - name: Build isolated playable WebGL candidate
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-WebGL.log'
+          $unityArguments=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.EditorTools.ValoriaBastion1MeshCandidateBuild.BuildWebGL','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          if(-not $process.WaitForExit(1200000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own WebGL process timed out'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 150;throw "WebGL build failed $($process.ExitCode)"}
+          if(-not (Select-String -Path $log -Pattern 'BASTION1_MESH_WEBGL_CANDIDATE_PASS' -Quiet)){throw 'Playable candidate completion missing'}
+      - name: Restore quarantined glTFast graphs for subsequent native Unity sessions
+        if: always()
+        shell: powershell
+        run: |
+          $stash=Join-Path $env:RUNNER_TEMP 'Bastion1-UnusedGltfShaderGraphs'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          if(Test-Path $stash){
+            foreach($pkg in @(Get-ChildItem -LiteralPath $root -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)){
+              $folder=Join-Path $pkg.FullName 'Runtime/Shader'
+              New-Item -ItemType Directory -Force $folder | Out-Null
+              foreach($f in @(Get-ChildItem -LiteralPath $stash -File -Filter 'glTF-*.shadergraph')){
+                $dest=Join-Path $folder $f.Name
+                if(-not (Test-Path $dest)){Copy-Item -LiteralPath $f.FullName $dest -Force}
+                if((Test-Path "$($f.FullName).meta") -and -not (Test-Path "$dest.meta")){
+                  Copy-Item -LiteralPath "$($f.FullName).meta" "$dest.meta" -Force
+                }
+              }
+              Write-Host "BASTION1_GLTF_CACHE_RESTORED $($pkg.Name)"
+            }
+          }
+      - name: Record exact native source in playable output
+        shell: powershell
+        run: |
+          $output=Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/Bastion1MeshCandidateWebGL'
+          Copy-Item pipeline/valoria-bastion1-candidate-build-request.json (Join-Path $output 'candidate-native-provenance.json') -Force
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-exact-candidate-webgl-${{ github.run_id }}
+          path: |
+            Unity/Builds/Bastion1MeshCandidateWebGL/**
+            ${{ runner.temp }}/Bastion1-WebGL.log
+          retention-days: 14
+
