@@ -162,7 +162,7 @@ def main():
    f'{prior_review_feedback} '
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
-   'and no repeated data. Respond only well-formed JSON matching supplied schema.')
+   'and no repeated data. A visible large cliff needs a region radius >=1.0 local meters and a NONZERO delta >=0.2 local meters; independently choose the actual local position, shape and displacement from the images, never copy these minimum values as defaults. Respond only well-formed JSON matching supplied schema.')
  format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions) if a.cpu_compact else 'json'
  payload={'model':a.model,'stream':False,'think':False,'format':format_spec,
   'options':{'temperature':0.25,'num_predict':a.num_predict,'num_ctx':a.num_ctx},
@@ -192,7 +192,7 @@ def main():
    errors.append(f'Invalid complete JSON at character {exc.pos}; planned_actions must be an ARRAY and no face-index dumps')
   if design is not None:
    errors.extend(inspect_artist_plan(design,a.target_object,a.target_mode,a.max_actions,
-      topology if a.mesh_context else None,require_geometry=a.cpu_compact))
+      topology if a.mesh_context else None,require_geometry=a.cpu_compact,require_camera_effect=a.cpu_compact and a.target_mode=='existing'))
   log={'attempt':attempt_index+1,'model':a.model,'request_prompt_sha256':digest(payload['messages'][-1]['content'].encode('utf8')),
    'raw_response_sha256':response_sha,'raw_response_file':f'artist-response-attempt-{attempt_index+1}.txt',
    'eval_count':reply.get('eval_count'),'prompt_eval_count':reply.get('prompt_eval_count'),
