@@ -1,0 +1,29 @@
+name: Valoria selected asset library V1 (hosted static QA)
+on:
+  push:
+    branches: [integration/valoria-selected-asset-library-v1-20261013]
+    paths:
+      - 'Unity/Assets/Eldoria/AssetLibrarySelectionV1/**'
+      - 'tools/valoria-selected-asset-library-v1/**'
+      - '.github/workflows/valoria-selected-asset-library-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-inventory-and-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate selection against original 26 GLB bytes without editing them
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/valoria-selected-asset-library-v1/validate_selection.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selected-library-static-qa
+          path: selected-library-v1-validation/
+          if-no-files-found: warn
+          retention-days: 14
