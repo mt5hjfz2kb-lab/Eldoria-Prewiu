@@ -47,4 +47,20 @@ class ArtistSchemaTests(unittest.TestCase):
   self.assertEqual(set(actions['required']),{'id','type','target','rationale','parameters'})
   self.assertGreaterEqual(actions['properties']['rationale']['minLength'],15)
 
+ def test_scene_specific_ollama_schema_requires_real_camera_scaled_knots(self):
+  s=cpu_artist_schema('real Bastion cliff','existing',2,{'sculpt_region'},minimum_camera_radius=12)
+  q=s['properties']['planned_actions']['items']['properties']
+  self.assertEqual(q['type']['enum'],['sculpt_path','reprofile_crest'])
+  self.assertEqual(q['parameters']['minProperties'],1)
+  knots=q['parameters']['properties']['knots']
+  self.assertEqual(knots['minItems'],2)
+  self.assertEqual(knots['items']['properties']['radius']['minimum'],12)
+  self.assertEqual(knots['items']['required'],['center','delta','radius'])
+  self.assertEqual(q['parameters']['properties']['radius']['minimum'],12)
+ def test_general_asset_schema_is_not_restricted_by_bastion_camera(self):
+  a=cpu_artist_schema('hero gate','existing',2)
+  p=a['properties']['planned_actions']['items']['properties']['parameters']
+  self.assertEqual(p,{'type':'object','minProperties':2,'maxProperties':5})
+  with self.assertRaises(ValueError):cpu_artist_schema('cliff','existing',2,minimum_camera_radius=55)
+
 if __name__=='__main__': unittest.main()

@@ -28,13 +28,26 @@ def prioritize_foreground_anchors(anchors,limit=14):
 
 
 
-def cpu_artist_schema(target,mode,max_actions,forbidden_methods=None):
+def cpu_artist_schema(target,mode,max_actions,forbidden_methods=None,minimum_camera_radius=0):
  """Constrain output *shape*, never prescribe artistic coordinates or geometry."""
  kinds=['sculpt_region','sculpt_path','reprofile_crest','bridge_boundary_loops','assign_material','place_existing_asset'] if mode=='existing' else ['construct_mesh','sculpt_region','sculpt_path','reprofile_crest','assign_material']
  if mode=='existing' and max_actions<=2:
   # For an existing cliff, avoid repeating enormous invented mesh face lists.
   kinds=['sculpt_region','sculpt_path','reprofile_crest']
  kinds=[kind for kind in kinds if kind not in set(forbidden_methods or ())]
+ if not 0<=minimum_camera_radius<=40:raise ValueError('Invalid scene-specific camera radius')
+ parameters_schema={'type':'object','minProperties':2,'maxProperties':5}
+ if minimum_camera_radius:
+  # Ollama must PROPOSE original broad geometry; never enlarge Qwen results in Python.
+  # Relax minProperties=2 because a legal sculpt_path has only "knots".
+  parameters_schema={'type':'object','minProperties':1,'maxProperties':5,
+    'properties':{'radius':{'type':'number','minimum':minimum_camera_radius,'maximum':60},
+      'knots':{'type':'array','minItems':2,'maxItems':12,'items':{'type':'object',
+        'properties':{'center':{'type':'array','minItems':3,'maxItems':3,'items':{'type':'number'}},
+                      'delta':{'type':'array','minItems':3,'maxItems':3,'items':{'type':'number'}},
+                      'radius':{'type':'number','minimum':minimum_camera_radius,'maximum':60}},
+        'required':['center','delta','radius'],'additionalProperties':False}}}}
+
  if not kinds:raise ValueError('All typed artist methods were rejected; require fresh evidence or revised strategy')
  fields={
   'observed_defect':{'type':'string','minLength':35,'maxLength':250},
@@ -48,7 +61,7 @@ def cpu_artist_schema(target,mode,max_actions,forbidden_methods=None):
     'type':{'type':'string','enum':kinds},
     'target':{'type':'string','const':target},
     'rationale':{'type':'string','minLength':15,'maxLength':190},
-    'parameters':{'type':'object','minProperties':2,'maxProperties':5}
+    'parameters':parameters_schema
    },'required':['id','type','target','rationale','parameters']}},
   'expected_visual_difference':{'type':'string','maxLength':200},
   'mobile_risks':{'type':'string','maxLength':180}
@@ -214,7 +227,7 @@ def main():
     'Previously smaller REAL player-camera sculptures were invisible and rejected. '
     'Independently select the spatial positions, profile and displacement from source evidence. '
     'These are BOUNDS, never script-generated sculpt coordinates; preserve all playable parcels.')
- format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions,forbidden_methods) if a.cpu_compact else 'json'
+ format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions,forbidden_methods,a.camera_min_radius) if a.cpu_compact else 'json'
  payload={'model':a.model,'stream':False,'think':False,'format':format_spec,
   'options':{'temperature':0.25,'num_predict':a.num_predict,'num_ctx':a.num_ctx},
   'messages':[{'role':'system','content':role.decode('utf8')},
