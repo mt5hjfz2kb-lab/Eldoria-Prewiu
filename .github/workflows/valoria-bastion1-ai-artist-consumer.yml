@@ -102,9 +102,16 @@ jobs:
           from PIL import Image
           root=pathlib.Path(os.environ['ART']);out={}
           for k,p in [('reference',pathlib.Path('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg')),('unity_before',root/'unity-before.png')]:
-            im=Image.open(p).convert('RGB');original_size=im.size;im.thumbnail((640,640),Image.Resampling.LANCZOS)
+            im=Image.open(p).convert('RGB');original_size=im.size
+            # Focus the REAL author-approved and REAL Unity pictures on the
+            # foreground gate, cliff and terrain-to-architecture junction.
+            # Both originals and their SHA256 remain unchanged and preserved.
+            top=int(im.height*(.27 if k=='reference' else .30))
+            crop_box=(0,top,im.width,im.height)
+            im=im.crop(crop_box)
+            im.thumbnail((640,640),Image.Resampling.LANCZOS)
             dst=root/(k+'.jpg');im.save(dst,'JPEG',quality=85)
-            out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'derived_pixels':im.size}
+            out[k]={'original_sha':hashlib.sha256(p.read_bytes()).hexdigest(),'derived_sha':hashlib.sha256(dst.read_bytes()).hexdigest(),'original_pixels':original_size,'crop_box':crop_box,'derived_pixels':im.size}
           (root/'image-derivatives.json').write_text(json.dumps(out,indent=2))
           PY
       - name: Recover exact preceding Qwen CAMERA-LOCKED visual rejection
@@ -157,7 +164,13 @@ jobs:
             'radius 1.0 m and delta 0.2 m; 0/307200 pixels changed materially. '
             'Previous Unity scene sculpt (828 vertices) changed only 125/1440000 '
             'pixels at >10 RGB (0.00868%). Both are ART_REJECTED. An environment '
-            'cliff needs a coherent MULTI-METER VISIBLE sculpt affecting a broad '
+            'cliff requires an ENVIRONMENT-SCALE sculpt: select an authored '
+            'radius between 12.0 and 35.0 meters with displacement length '
+            'between 1.0 and 5.0 meters. Smaller sculpt choices fail the '
+            'already-verified visual gate; the MODEL must choose actual exact '
+            'values within these bounds, scripts must not enlarge its output. '
+            'Previous Qwen4B also chose radius 1.5 m and delta [0.3,0.2,0], '
+            'rejected BEFORE Blender. Prioritize broad SOUTH front visible cliffs, '
             'front-facing slope. Owner priority: organic cliff/terrace transition, '
             'not a tiny local bump, not a new tower or modified parcel. '
             'Choose your own center, radius and displacement grounded in the real '
