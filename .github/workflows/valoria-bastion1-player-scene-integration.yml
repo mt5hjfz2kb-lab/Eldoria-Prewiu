@@ -106,8 +106,8 @@ jobs:
       - name: Obtain exact Qwen-authored complete city (no artist regeneration in Unity)
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-qwen-full-city-38323975022
-          run-id: 38323975022
+          name: bastion1-qwen-full-city-38324751573
+          run-id: 38324751573
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1VerifiedQwen
       - name: Replace only candidate source GLB and editable Blender provenance
@@ -122,6 +122,9 @@ jobs:
           $sourceHash=(Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant()
           $blendHash=(Get-FileHash $blend -Algorithm SHA256).Hash.ToLowerInvariant()
           if($sourceHash -ne $p.edited_glb_sha256 -or $blendHash -ne $p.edited_blend_sha256){throw 'Qwen authored source hashes mismatch'}
+          if($sourceHash -ne 'eff186eac2f6b1f4e7c8b8dfd5eb85998cc51620f8ad4c59ff9d1eb4e8e8f2d6068e9f5'){
+            throw 'Expected exact PBR-preserving authored scene version; do not build stale grassy cliff'
+          }
           if($p.changed_vertices -lt 20 -or $p.protected_cell_changes -ne 0 -or $p.visual_art_approved -ne $false){throw 'Model authorship safety gate failed'}
           $sourceOut=Join-Path $env:GITHUB_WORKSPACE 'Bastion1ReferenceSource'
           $unityOut=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
@@ -132,7 +135,7 @@ jobs:
           & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py (Join-Path $unityOut 'Bastion1ReferenceAssembly.glb')
           if($LASTEXITCODE -ne 0){throw 'Recomputed authored GLB material binding failed'}
           Copy-Item $proof (Join-Path $sourceOut 'qwen-integration-proof.json')
-          Write-Host "BASTION1_GENUINE_QWEN_SOURCE_STAGED run=38323975022 vertices=$($p.changed_vertices) sha=$sourceHash"
+          Write-Host "BASTION1_GENUINE_QWEN_SOURCE_STAGED run=38324751573 vertices=$($p.changed_vertices) sha=$sourceHash"
       - name: Stage existing authored construction states and barracks
         shell: powershell
         run: |

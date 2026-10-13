@@ -61,8 +61,10 @@ if len(mesh.vertices)==old_count:
  if protected:raise ValueError('Qwen terrain sculpt intrudes on '+str(protected)+' protected playable cells')
 else:
  raise ValueError('Artist sculpt must retain exactly indexed source vertices')
+saved_material_indices=[poly.material_index for poly in mesh.polygons]
 mesh.materials.clear()
 for material in old_mats:mesh.materials.append(material)
+for poly,slot in zip(mesh.polygons,saved_material_indices):poly.material_index=slot
 original.data=mesh
 mesh.update()
 bpy.context.view_layer.update()
