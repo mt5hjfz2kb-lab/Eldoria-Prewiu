@@ -26,7 +26,8 @@ for row in legacy:
     assert row["source_relative"] in manifest
     source=pathlib.Path(row["source_relative"])
     assert not source.is_absolute() and ".." not in source.parts
-    assert source.parts[:5]==("Unity","Assets","Eldoria","Resources","Valoria"),row["source_relative"]
+    assert source.parts[:4]==("Unity","Assets","Eldoria","Resources"),row["source_relative"]
+    assert source.parts[4]==("WorldPlayerCity" if row["tier"]=="WORLD_ONLY" else "Valoria"),row["source_relative"]
     assert row["resource_key"]==source.as_posix().split("/Resources/",1)[1][:-4]
     assert row["source_relative"].endswith(".glb")
     original=manifest[row["source_relative"]]
