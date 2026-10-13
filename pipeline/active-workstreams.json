@@ -60,7 +60,12 @@
         "tools/check-art-changed-scope.mjs",
         "docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md",
         ".github/workflows/valoria-bastion1-ai-artist-consumer.yml",
-        ".github/workflows/valoria-bastion1-qwen-replay-visibility.yml"
+        ".github/workflows/valoria-bastion1-qwen-replay-visibility.yml",
+        "tools/valoria-bastion1-finishing/**",
+        ".github/workflows/valoria-bastion1-qwen-finishing.yml",
+        ".github/workflows/valoria-bastion1-ai-mesh-city-merge.yml",
+        ".github/workflows/valoria-bastion1-browser-qa.yml",
+        "tests/valoria-bastion1-*"
       ],
       "resources": [
         "valoria-player-scene",
@@ -73,7 +78,7 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/valoria-bastion1-player-scene-integration-20261012.json",
       "dependency": "Region 1 owns WorldRegion1Runtime, ValoriaCurrentWebGLBuild and Pages publication. Preserve those files and coordinate exact delivery without mutation of that owner's active scope.",
-      "phase": "Completed CC0 material transfer + actual Unity A/B + exact WebGL basic QA; brown palette visually rejected. Grass/Gamma-color candidate, stronger genuine Qwen8B and full mobile I-II QA are executing.",
+      "phase": "Full touch I-II QA passed exact c531 build. Genuine Qwen8B sculpture merged with zero protected cells changed; matched Unity AFTER needs canonical URP recovery. Genuine Qwen finishing executing.",
       "resumed_at": "2026-10-13T12:02:09.263Z",
       "takeover_reason": "Owner explicitly requests Work continue Bastion I where normal chat stopped; live Actions list contains no active heavy job.",
       "last_verified": {
@@ -82,13 +87,17 @@
         "artifact_id": 11811847205,
         "basic_browser_qa_run": 38396278910,
         "basic_browser_qa_pass": true,
-        "art_approved": false
+        "art_approved": false,
+        "full_player_qa_run": 38399110721,
+        "full_player_qa_pass": true,
+        "masked_qwen_merge_run": 38403329338,
+        "masked_qwen_artifact": 11816670641
       },
       "continuation_document": {
         "branch": "integration/valoria-bastion1-player-scene-20261012",
         "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/WORK_CONTINUATION_20261013.md"
       },
-      "next": "Recover 38398380999, 38398178848 and 38398178834; inspect exact captures, repair, consume genuine artist output, continue through artistic and player gates."
+      "next": "Repair repeated native capture URP binding; recover actual Unity A/B. Recover genuine artist finishing 38404956232, verify raw plan and execute unchanged; exact Unity native/gameplay gates still open."
     }
   ],
   "history": [
