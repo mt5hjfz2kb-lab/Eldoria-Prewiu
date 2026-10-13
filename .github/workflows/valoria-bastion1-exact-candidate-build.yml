@@ -52,10 +52,18 @@ jobs:
           run-id: ${{ steps.request.outputs.run }}
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1ExactNative
+      - uses: actions/download-artifact@v4
+        with:
+          name: bastion1-unity-review-frames-${{ steps.request.outputs.run }}
+          run-id: ${{ steps.request.outputs.run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1ExactNativeFrames
       - name: Restore the exact captured native scene and baked assets without rerendering
         shell: powershell
         run: |
-          $root=Join-Path $env:RUNNER_TEMP 'Bastion1ExactNative'
+          $oldBuild=Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/Bastion1MeshCandidateWebGL'
+          if(Test-Path $oldBuild){Remove-Item $oldBuild -Recurse -Force}
+          $root=Join-Path $env:RUNNER_TEMP 'Bastion1ExactNative' 
           $suffix='Unity\Assets\Eldoria\ProductionSlice\Runtime\Valoria.unity'
           $scenes=@(Get-ChildItem $root -Recurse -File -Filter 'Valoria.unity' | Where-Object {$_.FullName.EndsWith($suffix)})
           if($scenes.Count -ne 1){throw 'Exact native player scene missing'}
@@ -70,7 +78,9 @@ jobs:
           }
           Copy-Item $scenes[0].FullName "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity" -Force
           if(Test-Path "$($scenes[0].FullName).meta"){Copy-Item "$($scenes[0].FullName).meta" "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity.meta" -Force}
-          $proofs=@(Get-ChildItem $root -Recurse -File -Filter 'qwen-integration-proof.json')
+          $proofRoot=Join-Path $env:RUNNER_TEMP 'Bastion1ExactNativeFrames'
+          $proofs=@(Get-ChildItem $proofRoot -Recurse -File -Filter 'qwen-integration-proof.json' | Where-Object {$_.FullName.EndsWith('Bastion1MaterialAB\qwen-integration-proof.json')})
+          Write-Host "BASTION1_ARTIST_PROOF_COUNT $($proofs.Count)"
           if($proofs.Count -ne 1){throw 'Artist source proof missing'}
           $proof=Get-Content $proofs[0].FullName -Raw | ConvertFrom-Json
           if($proof.output_glb_sha256 -ne '9cf0fa48e93df288ed8b86409102c413e9fc22339f1126a79d4ec3f728fd18b1'){throw 'Authored factor-corrected source mismatch'}
@@ -98,7 +108,7 @@ jobs:
           if((Get-ChildItem "$env:GITHUB_WORKSPACE/Unity/Assets" -Recurse -File -Filter '*.shadergraph' | Measure-Object).Count -ne 0){
             throw 'Source shadergraph quarantine incomplete'
           }
-      - name: Bind the actual URP asset in every WebGL quality level (Unity 6000.3 shader fix)
+      - name: Bind the exact captured URP asset in every WebGL quality level
         shell: powershell
         run: |
           # Unity 6000.3 can enumerate billions of URP/Lit permutations when
@@ -109,8 +119,15 @@ jobs:
           # Commit is authoritative; the Unity editor may have changed GraphicsSettings
           # in this *disposable* checkout during the earlier native screenshot pass.
           $canonical=(& git.exe show HEAD:Unity/ProjectSettings/GraphicsSettings.asset | Out-String)
-          $guid='48e3a09b57f028a4bb2e693d044ea6ca'
-          if($canonical -notlike "*$guid*"){throw "Expected canonical URP asset GUID not in Git HEAD"}
+          $originalGuid='48e3a09b57f028a4bb2e693d044ea6ca'
+          if($canonical -notlike "*$originalGuid*"){throw 'Canonical project URP binding missing'}
+          $study="$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Generated/StudyURP.asset"
+          if(-not (Test-Path "$study.meta")){throw 'Captured Unity pipeline metadata missing'}
+          $match=[regex]::Match([System.IO.File]::ReadAllText("$study.meta"),'(?m)^guid: ([0-9a-f]{32})')
+          if(-not $match.Success){throw 'Captured Unity pipeline GUID invalid'}
+          $guid=$match.Groups[1].Value
+          $canonical=$canonical.Replace($originalGuid,$guid)
+          Write-Host "BASTION1_WEBGL_USES_CAPTURED_URP guid=$guid native_run=$env:BASTION_NATIVE_RUN"
           [System.IO.File]::WriteAllText($graphics,$canonical,(New-Object System.Text.UTF8Encoding($false)))
           $q=[System.IO.File]::ReadAllText($quality)
           Write-Host "WEBGL_GRAPHICS_CANONICAL_FROM_GIT pipeline_guid=$guid"
