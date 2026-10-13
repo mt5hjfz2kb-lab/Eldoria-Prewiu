@@ -107,6 +107,7 @@ checks=[
  ("source scene isolated", "EditorSceneManager.NewScene" in editor),
  ("editor prefab generator", "PrefabUtility.SaveAsPrefabAsset" in editor and "AssetLibrarySelectionV1/GeneratedPrefabsV1" in editor and "AssetLibrarySelectionV1/Resources/EldoriaSelectedAssetsV1" not in editor),
  ("deterministic captures", "selected-prefabs-unity.png" in editor and "AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath)" in editor),
+ ("ten independent Unity capture files", '"selected-"+id+"-unity.png"' in editor and "RenderTexture(768,768" in editor),
  ("editor neutral namespace", "Eldoria.AssetLibrary.Editor" in editor)
 ]
 assert all(ok for _,ok in checks),[name for name,ok in checks if not ok]
