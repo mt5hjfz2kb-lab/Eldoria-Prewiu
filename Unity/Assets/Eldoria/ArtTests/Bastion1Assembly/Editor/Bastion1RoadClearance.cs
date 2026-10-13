@@ -20,11 +20,14 @@ namespace Eldoria.EditorTools
                 for(int i=0;i<vertices.Length;i++)
                 {
                     var world=filter.transform.TransformPoint(vertices[i]);
-                    // Only the existing lower paving corridor; staircase starts
-                    // beyond z=-5.5. An extra grid cell of margin prevents terrain
-                    // interpolation covering the side of the 4m-wide road.
-                    if(Mathf.Abs(world.x)>3.5f||world.z< -5.5f||world.z>14.5f||world.y<=.12f)continue;
-                    world.y=.12f;vertices[i]=filter.transform.InverseTransformPoint(world);localChanged++;
+                    // Exact existing stair envelope: z=-5.5..-12.5,
+                    // height 0..3.5. Terrain previously covered its first steps.
+                    // Preserve paving and stair geometry; lower only their support.
+                    if(Mathf.Abs(world.x)>3.5f||world.z< -13.5f||world.z>18.5f)continue;
+                    float ceiling=world.z>=-5.5f?.12f:
+                        Mathf.Max(-.12f,Mathf.Min(3.5f,(-world.z-5.5f)*.5f)-.4f);
+                    if(world.y<=ceiling)continue;
+                    world.y=ceiling;vertices[i]=filter.transform.InverseTransformPoint(world);localChanged++;
                 }
                 if(localChanged==0)continue;
                 var instance=UnityEngine.Object.Instantiate(source);

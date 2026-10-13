@@ -192,14 +192,14 @@ namespace Eldoria.EditorTools
                 foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))
                 {
                     string name=filter.name.ToLowerInvariant();
-                    if(!name.Contains("stone_path")&&!name.Contains("mainroad")&&!name.Contains("playable hilltop")&&
+                    if(!name.Contains("stone_path")&&!name.Contains("mainroad")&&!name.Contains("stairs")&&!name.Contains("playable hilltop")&&
                        !name.Contains("cliff plateau"))continue;
                     if(filter.sharedMesh==null)continue;
                     var collider=filter.gameObject.AddComponent<MeshCollider>();
                     collider.sharedMesh=filter.sharedMesh;temporary.Add(collider);
                 }
                 Physics.SyncTransforms();
-                foreach(float z in new[]{-5f,-2f,2f,6f,10f,14f})
+                foreach(float z in new[]{-12f,-10f,-8f,-6f,-5f,-2f,2f,6f,10f,14f})
                 {
                     var hits=Physics.RaycastAll(new Vector3(0,30,z),Vector3.down,80f);
                     Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
