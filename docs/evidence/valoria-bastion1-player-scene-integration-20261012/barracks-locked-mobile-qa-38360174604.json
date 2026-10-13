@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "scope": "Bastion I authored mesh first-player scene, exact isolated WebGL browser QA",
+  "status": "GAMEPLAY_CANDIDATE_QA_PASS__ART_NOT_APPROVED",
+  "source_build_run": 38356683511,
+  "source_sha": "245a963f7c7eb9ee30e4de9e9cffd13f632eb82d",
+  "exact_browser_run": 38360174604,
+  "exact_browser_artifact_id": 11793519884,
+  "browser_qa_conclusion": "success",
+  "candidate_webgl_bytes": 160814637,
+  "candidate_files": 17,
+  "verified": {
+    "startup": true,
+    "touch_pan_four_directions": true,
+    "sawmill_selection": true,
+    "sawmill_construction_resource_debit": true,
+    "barracks_locked_bastion_i": true,
+    "world_navigation_and_return": true,
+    "persisted_reload": true,
+    "save_reset": true,
+    "zero_browser_errors": true
+  },
+  "technical_reason_for_locked_plot": "ParcelBuildingStates.For(barracks) yields NOT_BUILT for BastionLevel<2; ValoriaParcelPresentation disables target.collider, so absence of an actionable barracks panel is expected and must not be misclassified as failure.",
+  "test_fix_commit": "04e3e546aaada5343b1cf58e7780a176aaac7fd8",
+  "actual_test_device": "Chromium with mobile user agent and touch events, Linux software WebGL renderer; NOT physical Android/iPhone",
+  "remaining_gates": [
+    "Unity full in-game AI-directed art A/B not visually approved",
+    "Physical mobile performance remains unmeasured",
+    "Real Bastion I-II extended progression not covered by this single browser check",
+    "main and GitHub Pages remain protected; do not promote"
+  ],
+  "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38360174604",
+  "approval": {
+    "gameplay_candidate": true,
+    "art": false,
+    "physical_device": false,
+    "main_promotion": false
+  }
+}
