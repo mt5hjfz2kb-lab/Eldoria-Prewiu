@@ -120,6 +120,10 @@ class ProfessionalArtistCycleTests(unittest.TestCase):
         self.assertFalse(artist_loop.should_continue_after_critique(
             1, 3, False, {"clearly_failed":False}))
         self.assertTrue(artist_loop.should_continue_after_critique(
+            1, 3, False, {"clearly_failed":False}, min_cycles=2))
+        self.assertFalse(artist_loop.should_continue_after_critique(
+            2, 3, False, {"clearly_failed":False}, min_cycles=2))
+        self.assertTrue(artist_loop.should_continue_after_critique(
             1, 3, False, {"clearly_failed":True}))
         self.assertFalse(artist_loop.should_continue_after_critique(
             1, 1, True, {"clearly_failed":True}))
