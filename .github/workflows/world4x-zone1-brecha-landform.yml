@@ -16,12 +16,15 @@ jobs:
   ai-curved-ground:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      PYTHONPATH: /usr/lib/python3/dist-packages
     steps:
       - uses: actions/checkout@v4
       - name: Install Blender and zero-credit geometry tools
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender -b --python-expr "import numpy, PIL; print('ELDORIA_EMBEDDED_BLENDER_DEPS_PASS', numpy.__version__)"
           mkdir -p /tmp/zoneone-brecha
       - name: Local zero-credit Qwen3-VL artist
         run: |
