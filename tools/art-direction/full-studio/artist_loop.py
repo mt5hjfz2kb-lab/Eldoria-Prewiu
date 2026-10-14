@@ -370,7 +370,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
           "An optional THIRD is material, UV or a safe non-global modifier. "
           "This ordering prevents use of stale mesh topology. "
           "All geometry and artistic values are chosen by YOU, never a script.")
-    cycle_index=int(trial.name.split("-")[-1])
+    cycle_index=int(trial.name.removeprefix("cycle-")) if re.fullmatch(r"cycle-[1-9][0-9]*",trial.name) else 1
     previous_rejections=[]
     for previous_attempt in range(1,attempt_number):
         note=trial/("rejected-plan-attempt-"+str(previous_attempt)+".json")
