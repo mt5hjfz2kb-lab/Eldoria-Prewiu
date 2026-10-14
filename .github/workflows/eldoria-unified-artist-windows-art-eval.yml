@@ -5,6 +5,7 @@ on:
       - integration/eldoria-unified-professional-artist-20261014
     paths:
       - '.github/workflows/eldoria-unified-artist-windows-art-eval.yml'
+      - 'tools/art-direction/full-studio/measure_artist_models.ps1'
   workflow_dispatch:
 permissions:
   contents: read
