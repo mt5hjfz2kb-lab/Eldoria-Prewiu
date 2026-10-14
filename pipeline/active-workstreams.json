@@ -143,6 +143,24 @@
       "dependency": "Existing Region 1 owner retains WorldRegion1Runtime and Pages; Bastion I retains Windows runner and Valoria scene. No mutation to those surfaces.",
       "phase": "Isolated reference specification and prototype preparation",
       "art_production_routing": "required"
+    },
+    {
+      "id": "eldoria-full-blender-artist-studio-20261014",
+      "title": "General-purpose AI-directed Blender asset authoring, materials and visual loop",
+      "owner": "chat-artist-full-capability-20261014",
+      "scope": [
+        "tools/art-direction/full-studio/**",
+        "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+        ".github/workflows/eldoria-full-artist-studio.yml"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-14T12:40:00+02:00",
+      "base_main_sha": "11f90e6a34c66aa4170acc19d69d48faff06c536",
+      "branch": "art/eldoria-full-blender-artist-studio-20261014",
+      "dependency": "The active Bastion I owner controls tools/art-direction/ai-authoring/** and its Unity/workflows. Build the full Blender artist independently; do not edit its live files or touch the Windows runner. Integration only after a conflict-free handoff.",
+      "art_production_routing": "required",
+      "phase": "Implementing independent general purpose Blender studio and QA"
     }
   ],
   "history": [
