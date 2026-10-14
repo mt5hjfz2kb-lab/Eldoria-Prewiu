@@ -39,13 +39,20 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     call=urllib.request.Request(endpoint,headers={"Content-Type":"application/json"},
                                 data=json.dumps(payload).encode("utf-8"))
     pieces=[];done=False
-    with urllib.request.urlopen(call,timeout=timeout) as response:
-        for line in response:
-            if not line.strip():continue
-            obj=json.loads(line)
-            if obj.get("error"):raise RuntimeError(obj["error"])
-            pieces.append(obj.get("message",{}).get("content",""))
-            if obj.get("done"):done=True;break
+    try:
+        with urllib.request.urlopen(call,timeout=timeout) as response:
+            for line in response:
+                if not line.strip():continue
+                obj=json.loads(line)
+                if obj.get("error"):raise RuntimeError(obj["error"])
+                pieces.append(obj.get("message",{}).get("content",""))
+                if obj.get("done"):done=True;break
+    except urllib.error.HTTPError as error:
+        # Ollama can reject a JSON Schema before any model inference.
+        # Make the bounded backend reason visible: do not reinterpret this as
+        # a Qwen artistic choice or silently invent replacement geometry.
+        detail=error.read(2400).decode("utf-8","replace")
+        raise RuntimeError(f"OLLAMA_SCHEMA_OR_REQUEST_REJECTED HTTP {error.code}: {detail}") from error
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
@@ -139,8 +146,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         actions_schema={"type":"array","minItems":2,"maxItems":3,
                         "prefixItems":[{"oneOf":structural},
                                        {"oneOf":finishing},
-                                       {"oneOf":optional}],
-                        "items":False}
+                                       {"oneOf":optional}]}
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
