@@ -71,3 +71,43 @@ jobs:
           path: /tmp/eldoria-world4x-real-source-inspection/
           if-no-files-found: warn
           retention-days: 14
+
+  simulate-concurrent-evidence-rebase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Simulate concurrent owner pause and artist evidence commits in an isolated local Git repository
+        run: |
+          set -euo pipefail
+          D="$(mktemp -d)"
+          git init --bare "$D/remote.git"
+          git clone "$D/remote.git" "$D/artist"
+          git -C "$D/artist" config user.email "test@example.invalid"
+          git -C "$D/artist" config user.name "Eldoria CI regression"
+          git -C "$D/artist" checkout -b main
+          echo 'CANONICAL_SOURCE_UNCHANGED' > "$D/artist/source.txt"
+          git -C "$D/artist" add source.txt
+          git -C "$D/artist" commit -m 'source'
+          git -C "$D/artist" push -u origin main
+          git -C "$D/remote.git" symbolic-ref HEAD refs/heads/main
+          git clone "$D/remote.git" "$D/owner"
+          git -C "$D/owner" config user.email "owner@example.invalid"
+          git -C "$D/owner" config user.name "Owner pause"
+          echo 'PRODUCTION_PAUSE_ACTIVE' > "$D/owner/AGENTS.md"
+          git -C "$D/owner" add AGENTS.md
+          git -C "$D/owner" commit -m 'owner pause'
+          echo 'REAL_ART_EVIDENCE_SHA_RETENTION' > "$D/artist/run-artifact.json"
+          git -C "$D/artist" add run-artifact.json
+          git -C "$D/artist" commit -m 'evidence'
+          git -C "$D/owner" push origin main
+          if git -C "$D/artist" push origin HEAD:refs/heads/main; then
+            echo "::error::Expected non-fast-forward safety rejection missing"; exit 1
+          fi
+          git -C "$D/artist" fetch origin main
+          git -C "$D/artist" rebase FETCH_HEAD
+          git -C "$D/artist" push origin HEAD:refs/heads/main
+          git clone "$D/remote.git" "$D/check"
+          grep -qx 'PRODUCTION_PAUSE_ACTIVE' "$D/check/AGENTS.md"
+          grep -qx 'CANONICAL_SOURCE_UNCHANGED' "$D/check/source.txt"
+          grep -qx 'REAL_ART_EVIDENCE_SHA_RETENTION' "$D/check/run-artifact.json"
+          echo 'ELDORIA_SAFE_CONCURRENT_EVIDENCE_REBASE_PASS'
