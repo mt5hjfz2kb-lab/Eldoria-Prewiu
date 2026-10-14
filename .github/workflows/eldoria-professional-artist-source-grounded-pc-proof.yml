@@ -1,4 +1,4 @@
-name: Eldoria third-stage continuation Qwen art from real PBR Blender with two more source-typed cycles
+name: Eldoria custom Eldoria Artist resumed native BlenderMCP professional cycles
 # Verified two prior authored Blender stages: original structural changes plus PBR shader repair.
 # Compatibility retry: Ollama prefixItems without items:false; exact HTTP error body retained.
 # Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
@@ -73,7 +73,15 @@ jobs:
           name: eldoria-windows-native-blender5-qwen-pbr-fixed
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/eldoria-verified-material-source
-      - name: Locally START already-installed cached Qwen 4B and run full artist decisions in REAL PC Blender
+      - name: Recover independent already-executed Qwen candidate with controlled PBR and mesh edits
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38620198456'
+          name: eldoria-pc-source-grounded-multitool-blendermcp-artist-proof
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-stage-three-original-qwen
+      - name: Locally START already-installed cached Eldoria Artist and refine art in real PC Blender
         shell: powershell
         timeout-minutes: 70
         run: |
@@ -136,7 +144,21 @@ jobs:
               $next.action_count -ne 3) {
             throw 'Qwen model-chain SHAs/BlenderMCP authoring mismatch; refuse production'
           }
-          Write-Host ('ELDORIA_RESUME_TWO_QWEN_AUTHORED_STAGES_SOURCE_SHA='+$nextHash)
+          # Candidate 2 preserves the wood-tone better than bright-white variants.
+          # This is a provisional artistic source, never automatically approved.
+          $stageThree=Join-Path $env:RUNNER_TEMP 'eldoria-stage-three-original-qwen'
+          $selected=Join-Path $stageThree 'cycle-2/output/artist-asset.blend'
+          $selectedProof=Join-Path $stageThree 'cycle-2/output/execution-proof.json'
+          if (-not (Test-Path $selected) -or -not (Test-Path $selectedProof)) { throw 'Prior Qwen candidate missing' }
+          $auth=Get-Content $selectedProof -Raw | ConvertFrom-Json
+          $selectedSHA=(Get-FileHash $selected -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($auth.source_sha256 -ne $nextHash -or $auth.blend_sha256 -ne $selectedSHA -or
+              $auth.transport -ne 'blendermcp' -or $auth.art_approved -or
+              -not $auth.inherited_mesh_data_changed -or $auth.action_count -ne 3) {
+            throw 'Third original Qwen candidate provenance mismatch'
+          }
+          $previous=$selected
+          Write-Host ('ELDORIA_CUSTOM_ARTIST_RESUME_THREE_GENUINE_AUTHORED_STAGES='+$selectedSHA)
           $env:OLLAMA_HOST='127.0.0.1:11434'
           $env:OLLAMA_NUM_PARALLEL='1'
           $env:OLLAMA_MAX_LOADED_MODELS='1'
@@ -155,7 +177,7 @@ jobs:
             }
             if (-not $online) { throw 'Existing Ollama cannot serve localhost' }
             $tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 8
-            if (@($tags.models | Where-Object { $_.name -eq 'qwen3-vl:4b-instruct' }).Count -eq 0) { throw 'Cached Qwen 4B not found; no model download allowed' }
+            if (@($tags.models | Where-Object { $_.name -eq 'eldoria-artist:latest' }).Count -eq 0) { throw 'Cached Eldoria Artist model not found; no model download allowed' }
             $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-pc-local-artist'
             $brief='Refine this SAME inherited Valoria medieval architecture according to the owner approved image. YOU are the actual artist: use inspected local face centers, edge midpoints and vertex landmarks; choose your own visible and meaningful structural alteration to improve silhouette and depth, then choose complementary coherent medieval material, UV and surface finishing. You choose the tools, coordinates and values; NEVER apply whole-object bevel, global subdivision or multiple face/edge topology edits in one plan on this dense mesh. Choose ONE local topology editing operation per cycle, then re-inspect real geometry before any next iteration. Preserve existing architectural identity, roof and stair connections; never replace the asset or generate a different building. Do not mistake polygon growth or beige recolour for artistic quality; compare the actual A/B and correct YOUR OWN failures. No fake approval or fabricated coordinates.'
             $params=@(
@@ -166,7 +188,7 @@ jobs:
               '--review',$review,
               '--out',$out,
               '--blender',$exe,
-              '--model','qwen3-vl:4b-instruct',
+              '--model','eldoria-artist:latest',
               '--phase','full',
               '--asset-category','architecture',
               '--max-cycles','3',
@@ -183,7 +205,7 @@ jobs:
             $manifest=Get-Content (Join-Path $out 'full-studio-result.json') -Raw | ConvertFrom-Json
             if ($manifest.frozen_source_sha256 -ne (Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Resumed inherited asset changed' }
             if (-not $manifest.blender_real_execution -or $manifest.ai_authored_action_plans -lt 2 -or $manifest.art_approved -or $manifest.unity_art_verified) { throw 'Unproven AI real authoring or false visual approval' }
-            Write-Host ('ELDORIA_PC_NATIVE_QWEN4B_BLENDER_FULL_ARTIST_REAL_SOURCE_TECHNICAL_PASS authored_cycles='+$manifest.ai_authored_action_plans)
+            Write-Host ('ELDORIA_CUSTOM_ARTIST_ORIGINAL_PC_BLENDER_MCP_MULTICYCLE_TECHNICAL_PASS authored_cycles='+$manifest.ai_authored_action_plans)
           } finally {
             if ($proc) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
             if ((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $frozen) { throw 'Original tower source modified in PC checkout' }
@@ -192,7 +214,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-pc-source-grounded-multitool-blendermcp-artist-proof
+          name: eldoria-custom-artist-pc-source-grounded-multitool-proof
           path: ${{ runner.temp }}/eldoria-real-pc-local-artist/
           if-no-files-found: warn
           retention-days: 14
