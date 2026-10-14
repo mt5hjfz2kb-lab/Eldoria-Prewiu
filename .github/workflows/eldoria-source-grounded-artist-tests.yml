@@ -33,6 +33,7 @@ jobs:
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_professional_cycle.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_minimum_professional_cycles.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_professional_source_schema.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_new_mesh_artistic_integrity.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_triangle_budget.py' -v
       - name: Confirm no Blender/Qwen/Windows/Unity production used
         run: echo 'OFFLINE_CONTRACT_ONLY and ART_APPROVED remains false'
