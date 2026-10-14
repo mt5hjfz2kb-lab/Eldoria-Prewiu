@@ -34,6 +34,7 @@ jobs:
           assert pos==170
           pathlib.Path("/tmp/zone1-prefix.pack").write_bytes(data[pos:])
           PY
+          git fetch --no-tags --depth=1 origin 34ce0ec78b2bc553f11f16562a5f18752620fb34
           set +e
           git unpack-objects -r < /tmp/zone1-prefix.pack 2> /tmp/zone1-prefix-unpack.log
           status=$?
