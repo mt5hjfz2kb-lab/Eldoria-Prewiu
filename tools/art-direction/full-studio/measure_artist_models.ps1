@@ -53,12 +53,13 @@ try{
   $installed=@($tags.models | ForEach-Object {$_.name})
   $cases=@(
     @{label='4b-sculpt';model='qwen3-vl:4b-instruct';kind='mesh_edit'},
+    @{label='4b-assembly';model='qwen3-vl:4b-instruct';kind='assembly'},
     @{label='8b-sculpt';model='qwen3-vl:8b-instruct-q4_K_M';kind='mesh_edit'},
     @{label='8b-professional';model='qwen3-vl:8b-instruct-q4_K_M';kind='professional'}
   )
   # Owner-authorized single real source/real camera experiment. Previous
   # 4B vs 8B and mandatory primitive-assembly tests are already evidenced.
-  $cases=@($cases | Where-Object {$_.label -eq '8b-professional'})
+  $cases=@($cases | Where-Object {$_.label -eq '4b-assembly'})
   foreach($case in $cases){
     if($case.model -notin $installed){throw ('No previously cached model; no download authorized: '+$case.model)}
   }
@@ -70,7 +71,7 @@ try{
     $log=Join-Path $Out ($case.label+'.log')
     $sw=[System.Diagnostics.Stopwatch]::StartNew()
     $params=@('tools/art-direction/full-studio/artist_loop.py',
-      '--brief','ELDORIA OWNER ART QUALITY CONTRACT V1. Continue the SAME frozen 2.65m timber Valoria watchtower, never a fresh redesign. INDEPENDENT ACTUAL A/B of run 38649450100 showed four camera-visible face 324/325 extrusions produced only 0.19-0.36 percent of frame change and no artistic upgrade: do not repeat that hypothesis. PRIORITY ONE: improve the currently thin roof edge contact with a genuine medieval wooden eave bracket/beam or other ORIGINAL supported architectural detail that visibly adds depth and coherent silhouette, physically joined near actual WORLD outer roof edge BELOW the apex. PRIORITY TWO: improve wall/roof load-bearing wooden joinery without replacing existing texture atlas. PRIORITY THREE: only if safer, original small physical support near staircase without blocking access. Qwen independently chooses REAL Blender operation and all actual values; prefer a clearly visible physically connected part over tiny invisible mesh face tweaks. Preserve the correct roof, door, stairs, existing 3D mesh, texture/UV atlas. A technical pass or pixel change is NOT art approval. Work on a copy. The next source cannot become an accepted source without external A/B review.'
+      '--brief','ELDORIA OWNER ART QUALITY CONTRACT V1 — NEW ARTISTIC HYPOTHESIS AFTER 8B SOURCE OPERATIONS FAILED. On a COPY of the SAME frozen Valoria 2.65m wooden village watchtower, Qwen4B must design an ORIGINAL modest three-dimensional TIMBER SUPPORT BRACKET or ROOF EAVE structural piece as a SEPARATE MESH/CUBOID attached to the outer roof and wall with convincing contact, medieval construction logic, and actual camera-visible silhouette. Do NOT tweak existing face 324/325, replace the inherited texture atlas or add any centered cylinder on the roof apex. Independent A/B found repeated extrusions, source bevel and sculpt brushes unchanged at the player view. Choose real source measured Blender WORLD x/y/z (Z UP), check actual eave perimeter, prefer wall-side bracket supporting an outer roof edge, not an arbitrary rooftop ornament. Choose YOUR OWN suitable primitive or closed noncoplanar mesh, geometry dimensions, exact transform and finishing — no assistant-generated coordinates or recipe. Preserve correct roof, stairs, front entrance, original timber logs, UV and circulation. No pass is ART_APPROVED without independent review. STOP after first genuine visible candidate and hold it for its external A/B reviewer.'
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
