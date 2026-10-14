@@ -28,6 +28,14 @@ La memoria se recupera como lecciones verificables desde el diario canónico y e
 
 La escena de revisión contiene iluminación, suelo neutro de contacto y cámara orientada realmente al asset. **Estos recursos de presentación quedan fuera del GLB reutilizable**. Los renders A/B de Blender se miden para rechazar propuestas invisibles, pero nunca equivalen a una certificación Unity ni a calidad artística por sí solos.
 
+## Biblioteca artística con reutilización verificable
+
+El artista puede realizar la operación **import_asset** para importar un GLB/GLTF existente de la biblioteca aprobada. Para evitar reconstruir y perder assets de calidad, puede elegir piezas previamente disponibles e integrarlas en un conjunto nuevo. Blender importa los objetos reales preservando materiales y procedencia y aplica únicamente los cambios artísticos elegidos por el modelo.
+
+El archivo --asset-catalog es un JSON con schema_version=1 y assets con relative_path (relativa a --texture-root), sha256, license (OWNED, CC0 o CC-BY-4.0), reuse_approved=true y attribution obligatoria para CC-BY. El ejecutor rechaza rutas fuera de la raíz, fuentes alteradas, licencias no aprobadas o importaciones vacías. El manifiesto del nuevo asset conserva SHA y licencia por cada submalla. No hay descargas automáticas ni créditos de pago.
+
+Una prueba técnica independiente utiliza el GLB generado en la primera prueba de Blender, crea un catálogo OWNED con su SHA exacto, lo vuelve a importar mediante import_asset y comprueba la preservación de geometría, inventario, licencia y origen. Esa prueba NO afirma que Qwen eligiera dicho archivo: el fixture es puramente técnico.
+
 ## Ciclo autónomo local
 
 1. artist_loop.py consulta el modelo Qwen LOCAL con la referencia visual del propietario y la memoria del artista.

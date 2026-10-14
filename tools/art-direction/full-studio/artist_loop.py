@@ -59,7 +59,7 @@ def schema_for_plan(max_actions=6, source_exists=False):
     actions=["primitive","mesh","duplicate","transform","sculpt","extrude","inset",
              "subdivide","bevel","modifier","boolean","material","uv","join","delete",
              "light","camera","render_settings","texture","asset_info",
-             "native_operator","shader_graph","geometry_nodes"]
+             "native_operator","shader_graph","geometry_nodes","import_asset"]
     if not source_exists:
         # Each action must create a real, bounded Blender mesh. Materials,
         # reuse, UV and Geometry Nodes are available in later source cycles.
@@ -129,15 +129,16 @@ def contract_brief(max_actions, source_exists=False):
       "Choose Qwen-authored operations within safe full toolbox: primitive, "
       "mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, "
       "modifier, boolean, material, uv, join, native_operator, shader_graph "
-      "and geometry_nodes; no code execution. Source object names must match "
+      "and geometry_nodes, and import_asset from a verified OWNED/CC0 source; no code execution. Source object names must match "
       "the verified inventory. Finish the existing asset rather than restart.")
 
-def run_blender(executable,plan,out,source,texture_root,review,transport='direct',mcp_addon=None,mcp_sha256=None):
+def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=None,transport='direct',mcp_addon=None,mcp_sha256=None):
     cmd=[executable,"-b","--python-exit-code","1","--python",
          str(HERE/"blender_toolbox.py"),"--",
          "--plan",str(plan),"--out",str(out),"--texture-root",str(texture_root)]
     if source:cmd+=["--source",str(source)]
     if review:cmd+=["--review",str(review)]
+    if asset_catalog:cmd+=["--asset-catalog",str(asset_catalog)]
     cmd+=["--transport",transport]
     if transport=="blendermcp":
         if not mcp_addon or not mcp_sha256:raise ValueError("Pinned BlenderMCP addon and SHA-256 required")
@@ -206,6 +207,7 @@ def main():
     p.add_argument("--current-frame",type=pathlib.Path)
     p.add_argument("--review",type=pathlib.Path)
     p.add_argument("--texture-root",type=pathlib.Path,default=REPO)
+    p.add_argument("--asset-catalog",type=pathlib.Path)
     p.add_argument("--out",type=pathlib.Path,required=True)
     p.add_argument("--model",default="qwen3-vl:4b-instruct")
     p.add_argument("--endpoint",default="http://127.0.0.1:11434/api/chat")
@@ -262,6 +264,11 @@ def main():
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
                          for x in actual["objects"][:80]]
         history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
+    if args.asset_catalog:
+        inventory=json.loads(args.asset_catalog.read_text(encoding="utf-8"))
+        allowed=[{"path":i["relative_path"],"sha256":i["sha256"],"license":i["license"]}
+                 for i in inventory.get("assets",[]) if i.get("reuse_approved") is True]
+        history+="\\nOWNER-APPROVED REAL ART SOURCE CATALOG (use exact SHA): "+json.dumps(allowed[:25])[:6000]
     records=[]
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
@@ -275,7 +282,7 @@ def main():
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
         try:
-            run_blender(args.blender,candidate,stage,source,args.texture_root,args.review,args.transport,args.mcp_addon,args.mcp_sha256)
+            run_blender(args.blender,candidate,stage,source,args.texture_root,args.review,args.asset_catalog,args.transport,args.mcp_addon,args.mcp_sha256)
         except Exception as ex:
             records.append({"cycle":cycle,"status":"BLENDER_REJECTED","error":str(ex)[-800:]})
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]

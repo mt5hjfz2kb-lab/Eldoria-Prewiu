@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse, hashlib, json, math, pathlib, sys, time
 from collections import defaultdict
 import bpy, bmesh
-from mathutils import Vector
+from mathutils import Vector, Matrix, Euler
 from mathutils import noise as bnoise
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -260,9 +260,57 @@ def triangles_evaluated():
         finally:eo.to_mesh_clear()
     return total
 
-def run_action(a,texroot):
+def load_approved_assets(catalog_file):
+    """Only licensed, SHA-frozen, owner-approved local source assets are reusable."""
+    if catalog_file is None:return {}
+    doc=json.loads(catalog_file.read_text(encoding="utf-8"))
+    if doc.get("schema_version")!=1 or not isinstance(doc.get("assets"),list):
+        raise RejectedPlan("Verified local art inventory schema_version=1 required")
+    approved={}
+    for item in doc["assets"]:
+        path=item.get("relative_path");sha=item.get("sha256");license=item.get("license")
+        if not isinstance(path,str) or pathlib.Path(path).is_absolute() or ".." in pathlib.Path(path).parts:
+            raise RejectedPlan("Unsafe relative asset file in local inventory")
+        if license not in ("OWNED","CC0","CC-BY-4.0") or item.get("reuse_approved") is not True:
+            raise RejectedPlan("Asset reuse lacks authorized source license")
+        if license=="CC-BY-4.0" and not item.get("attribution"):
+            raise RejectedPlan("CC-BY asset missing attribution evidence")
+        if not isinstance(sha,str) or len(sha)!=64 or any(ch not in "0123456789abcdef" for ch in sha.lower()):
+            raise RejectedPlan("Asset source SHA256 missing")
+        if path in approved:raise RejectedPlan("Duplicate approved asset file")
+        approved[path]=item
+    return approved
+
+def import_source_asset(name,p,root,approved):
+    rel=p["relative_path"]
+    if rel not in approved:raise RejectedPlan("Source asset absent from approved art library")
+    full=(root/rel).resolve()
+    if not full.is_relative_to(root.resolve()) or not full.is_file():
+        raise RejectedPlan("Approved source asset is missing or escaped local root")
+    expected=p["sha256"].lower()
+    if expected!=approved[rel]["sha256"].lower() or digest(full)!=expected:
+        raise RejectedPlan("Imported source license/catalog/source hash does not match")
+    before={o.as_pointer() for o in bpy.data.objects}
+    bpy.ops.import_scene.gltf(filepath=str(full))
+    new=[o for o in bpy.data.objects if o.as_pointer() not in before and o.type=="MESH"]
+    if not new:raise RejectedPlan("Verified GLB imported no real geometry")
+    m=(Matrix.Translation(Vector(p.get("location",[0,0,0]))) @
+       Euler(p.get("rotation",[0,0,0])).to_matrix().to_4x4() @
+       Matrix.Diagonal(Vector((*p.get("scale",[1,1,1]),1.0))))
+    bpy.context.view_layer.update()
+    for index,o in enumerate(new):
+        world=o.matrix_world.copy()
+        o.matrix_world=m @ world
+        o.name=name+"_"+str(index)
+        o["eldoria_source_sha256"]=expected
+        o["eldoria_source_license"]=approved[rel]["license"]
+        o["eldoria_source_relative_path"]=rel
+    return len(new)
+
+def run_action(a,texroot,approved_assets=None):
     kind,name,p=a["op"],a.get("target"),a["params"]
     if kind=="primitive":mk_primitive(name,p)
+    elif kind=="import_asset":import_source_asset(name,p,texroot,approved_assets or {})
     elif kind=="mesh":modified_mesh(name,p)
     elif kind=="duplicate":
         source=obj(p["source"]);o=source.copy();o.data=source.data.copy();o.name=name
@@ -397,12 +445,14 @@ def main():
     parser.add_argument("--source",type=pathlib.Path)
     parser.add_argument("--out",type=pathlib.Path,required=True)
     parser.add_argument("--texture-root",type=pathlib.Path,default=pathlib.Path("."))
+    parser.add_argument("--asset-catalog",type=pathlib.Path)
     parser.add_argument("--review",type=pathlib.Path)
     parser.add_argument("--transport",choices=("direct","blendermcp"),default="direct")
     parser.add_argument("--mcp-addon",type=pathlib.Path)
     parser.add_argument("--mcp-sha256")
     args=parser.parse_args(sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else [])
     plan=load_plan(args.plan)
+    approved_assets=load_approved_assets(args.asset_catalog)
     out=args.out.resolve()
     if out.exists() and list(out.iterdir()):raise RejectedPlan("Fresh output directory required; never overwrite previous proof")
     out.mkdir(parents=True,exist_ok=True)
@@ -430,7 +480,7 @@ def main():
     journal=[];started=time.monotonic()
     def apply_known_action(act):
         previous=snapshot_meshes()
-        run_action(act,args.texture_root.resolve())
+        run_action(act,args.texture_root.resolve(),approved_assets)
         now=snapshot_meshes()
         journal.append({"id":act["id"],"op":act["op"],"target":act.get("target"),
                         "reason":act["reason"],"geometry_changed":previous!=now,
@@ -467,7 +517,10 @@ def main():
           "pivot_m":[round(float(v),4) for v in o.location],
           "materials":[m.name if m else None for m in o.data.materials],
           "geometry_sha256":scene_meshes[o.name],
-          "derived_from_source_object":o.name in originals})
+          "derived_from_source_object":o.name in originals,
+          "import_source_sha256":o.get("eldoria_source_sha256"),
+          "import_source_license":o.get("eldoria_source_license"),
+          "import_source_relative_path":o.get("eldoria_source_relative_path")})
     catalog={"schema_version":1,"asset_id":plan["asset_id"],
              "authored_asset_decision":plan["asset_decision"],
              "source_sha256":srcsha,"artist_plan_sha256":digest(args.plan),
@@ -475,7 +528,11 @@ def main():
              "new_components":[n for n in scene_meshes if n not in originals],
              "source_original_meshes_preserved_in_output":[n for n in originals if n in scene_meshes],
              "source_file_unchanged":True,
-             "license_status":"SELF_AUTHORED_GEOMETRY" if not args.source else "SOURCE_LICENSE_VERIFICATION_REQUIRED",
+             "license_status":("VERIFIED_LOCAL_LIBRARY_IMPORT" if any(
+                 c["import_source_sha256"] for c in components) else
+                 "SELF_AUTHORED_GEOMETRY" if not args.source else
+                 "SOURCE_LICENSE_VERIFICATION_REQUIRED"),
+             "approved_source_inventory_sha256":digest(args.asset_catalog) if args.asset_catalog else None,
              "textures_embedded_in_glb_expected":True,
              "mobile_certified":False,"unity_art_approved":False}
     (out/"reusable-asset-catalog.json").write_text(json.dumps(catalog,indent=2)+"\n",encoding="utf-8")

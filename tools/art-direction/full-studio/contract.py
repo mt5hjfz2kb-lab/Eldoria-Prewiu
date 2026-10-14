@@ -12,7 +12,7 @@ OPS = {
  "primitive", "mesh", "duplicate", "transform", "sculpt", "extrude",
  "inset", "subdivide", "bevel", "modifier", "boolean", "material",
  "uv", "join", "delete", "light", "camera", "render_settings",
- "texture", "asset_info", "native_operator", "shader_graph", "geometry_nodes",
+ "texture", "asset_info", "import_asset", "native_operator", "shader_graph", "geometry_nodes",
 }
 SHAPES = {"cube", "cylinder", "cone", "plane", "uv_sphere", "ico_sphere", "torus"}
 MODIFIERS = {
@@ -76,6 +76,23 @@ def validate_plan(doc):
                     "Primitive scale invalid")
             require(name not in created, "Creation name repeated")
             created.add(name); geometric += 1
+        elif op == "import_asset":
+            file=p.get("relative_path")
+            require(isinstance(file,str) and 4<len(file)<260 and
+                    not Path(file).is_absolute() and
+                    ".." not in Path(file).parts and
+                    Path(file).suffix.lower() in (".glb",".gltf"),
+                    "Imported source must be a relative, approved GLB/glTF")
+            sha=p.get("sha256")
+            require(isinstance(sha,str) and len(sha)==64 and
+                    all(c in "0123456789abcdef" for c in sha.lower()),
+                    "Imported source needs exact SHA256")
+            require(vector(p.get("location",[0,0,0])) and
+                    vector(p.get("rotation",[0,0,0])) and
+                    vector(p.get("scale",[1,1,1]),low=0.0001,high=500),
+                    "Imported source transform invalid")
+            require(name not in created,"Repeated import asset name")
+            created.add(name);geometric+=1
         elif op == "mesh":
             vs, fs = p.get("vertices"), p.get("faces")
             require(isinstance(vs,list) and 3 <= len(vs) <= MAX_MESH_VERTICES and all(vector(v) for v in vs), "Invalid authored vertices")

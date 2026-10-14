@@ -81,6 +81,31 @@ jobs:
           assert ImageChops.difference(before,after).getbbox(), 'Geometry not visible in real camera'
           print('ELDORIA_FULL_ARTIST_BLENDER_TECHNICALLY_PROVEN',proof['action_count'],proof['evaluated_triangles'])
           PY
+      - name: Validate real licensed original asset reuse inside independent Blender
+        run: |
+          python3 tools/art-direction/full-studio/tests/generate_reuse_smoke.py \
+            --source /tmp/eldoria-full-artist-smoke/artist-asset.glb \
+            --out /tmp/eldoria-full-artist-smoke/reuse-fixture
+          blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
+            --plan /tmp/eldoria-full-artist-smoke/reuse-fixture/import-plan.json \
+            --out /tmp/eldoria-full-artist-smoke/reused-output \
+            --texture-root /tmp/eldoria-full-artist-smoke \
+            --asset-catalog /tmp/eldoria-full-artist-smoke/reuse-fixture/approved-library.json
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          p=pathlib.Path('/tmp/eldoria-full-artist-smoke')
+          original=p/'artist-asset.glb'
+          assert hashlib.sha256(original.read_bytes()).hexdigest()==(p/'reuse-fixture/source-sha256.txt').read_text().strip()
+          result=json.loads((p/'reused-output/execution-proof.json').read_text())
+          catalog=json.loads((p/'reused-output/reusable-asset-catalog.json').read_text())
+          assert result['blender_execution'] and result['action_count']==1
+          assert 1<result['reusable_components']<80
+          assert catalog['license_status']=='VERIFIED_LOCAL_LIBRARY_IMPORT'
+          assert all(c['import_source_license']=='OWNED' for c in catalog['components'])
+          assert all(c['import_source_sha256']==hashlib.sha256(original.read_bytes()).hexdigest() for c in catalog['components'])
+          assert result['matched_review_camera'] and not result['art_approved']
+          print('ELDORIA_REAL_APPROVED_ASSET_REUSE', result['reusable_components'])
+          PY
       - name: Upload genuine models and renders, never claim artistic certification
         if: always()
         uses: actions/upload-artifact@v4
