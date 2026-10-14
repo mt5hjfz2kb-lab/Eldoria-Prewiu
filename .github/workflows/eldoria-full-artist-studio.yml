@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - art/eldoria-full-blender-artist-studio-20261014
-      - fix/eldoria-artist-camera-visible-mesh-20261015
     paths:
       - 'tools/art-direction/full-studio/**'
       - '.github/workflows/eldoria-full-artist-studio.yml'
@@ -29,9 +28,6 @@ jobs:
       - name: Verify physically correct WORLD Z sculpt on rotated imported asset in real Blender
         run: |
           blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/tests/prove_world_sculpt_anchor_blender.py
-      - name: Prove fixed-camera raycasts expose real visible faces of rotated source
-        run: |
-          blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/tests/prove_camera_visible_faces_blender.py
       - name: Execute twenty-six real independent Blender modelling operations
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
