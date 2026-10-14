@@ -5,7 +5,8 @@ root=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(root/"tools/art-direction/ai-authoring"))
 from author_brief import cpu_artist_schema
 from artist_plan_validation import inspect_artist_plan
-from terrain_bounds_contract import verified_knot_ranges, coordinate_schema, limits_label, inside_limits
+from terrain_bounds_contract import (verified_knot_ranges, limits_label, inside_limits,
+                                    model_knot_schema, normalize_artist_authored_knots)
 p=argparse.ArgumentParser()
 p.add_argument("--out",type=pathlib.Path,required=True)
 p.add_argument("--reference",type=pathlib.Path,required=True)
@@ -29,12 +30,9 @@ for name,file in [("destination",a.reference),("actual_before",a.real_before)]:
  b64.append(base64.b64encode(frame.read_bytes()).decode())
 schema=cpu_artist_schema(target,"existing",2)
 vec={"type":"array","minItems":3,"maxItems":3,"items":{"type":"number"}}
-xyz=coordinate_schema(knot_limits)
 delta={"type":"array","minItems":3,"maxItems":3,"prefixItems":[
  {"const":0},{"const":0},{"type":"number","minimum":-14,"maximum":12}]}
-knot={"type":"object","additionalProperties":False,"properties":{
- "center":xyz,"delta":delta,"radius":{"type":"number","minimum":18,"maximum":30}},
- "required":["center","delta","radius"]}
+knot=model_knot_schema(knot_limits)
 op={"type":"object","additionalProperties":False,"properties":{
  "id":{"type":"string","minLength":4,"maxLength":32},
  "type":{"const":"sculpt_path"},"target":{"const":target},
@@ -52,7 +50,7 @@ prompt=("ELDORIA / ZONE ONE / BRECHA: two real images are owner's approved world
 "One is a distinct winding asymmetric BRECHA depression/chasm channel with Z offsets reaching -9..-14m; "
 "the other is an offset companion rising fractured shoulder/rim using Z offsets reaching +7..+12m. "
 + ("Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, " +
-"source-verified LOCAL center ranges " + limits_label(knot_limits) + "; [dx,dy]=[0,0]. ")
+"source-verified LOCAL center ranges " + limits_label(knot_limits) + ". For each knot return center_xyz as named {x,y,z}, vertical_displacement_m as a signed scalar and radius. Vertical sculpt means dx=dy=0. ")
 + "Make visually connected, irregular long curves rather than circular pimples or ruler-straight mountains. "
 "Land around it remains an open buildable meadow; do not reprofile city or edges. "
 "Place centers >= radius+2m inside the +/-118m protected boundaries and away from city pad. "
@@ -82,7 +80,8 @@ for attempt in range(3):
  raw="".join(parts);(a.out/("qwen-raw-"+str(attempt+1)+".json")).write_text(raw)
  errors=[]
  try:
-  plan=json.loads(raw)
+  plan_raw=json.loads(raw)
+  plan=normalize_artist_authored_knots(plan_raw)
   errors.extend(inspect_artist_plan(plan,target,"existing",2,topology=top))
   actions=plan["planned_actions"]
   if len(actions)!=2 or len({v.get("id") for v in actions})!=2: errors.append("Exactly two unique path operations")
@@ -111,7 +110,8 @@ for attempt in range(3):
  if not errors:
   (a.out/"artist-plan.json").write_text(json.dumps(plan["planned_actions"],indent=2))
   (a.out/"genuine-ai-evidence.json").write_text(json.dumps({"ai_model":payload["model"],"source_images":images,
-   "plan_sha256":sha(a.out/"artist-plan.json"),"original_inference":plan,
+   "plan_sha256":sha(a.out/"artist-plan.json"),"original_inference":plan_raw,
+   "serialization":"AI selected center_xyz and vertical_displacement_m; lossless [x,y,z] and [0,0,dz] mapping",
    "model_weight_training":False,"blender_operations_executed_yet":False},indent=2))
   print("BRECHA_QWEN_ART_DIRECTOR_ACCEPTED",attempt+1,flush=True)
   break
