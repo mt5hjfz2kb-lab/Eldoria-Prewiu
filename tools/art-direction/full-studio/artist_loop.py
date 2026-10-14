@@ -167,7 +167,9 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         "These are NOT preset designs. Do not output mesh:operation pseudo-parameters. "
         "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
         "For sculpt, pick your OWN center within brush radius of any real local_extrema/vertex_landmarks local_position_m, or use sculpt_anchor. "
-        "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal; NEVER copy vertex_index to face ID. "
+        "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal. "
+        "For bevel on detailed imported geometry, choose selected edge_landmarks.edge_index (NOT full-object bevel), with edges:[ids]; NEVER copy vertex_index to face/edge ID. "
+        "Plan at most ONE face/edge topology changing operator each cycle, then inspect the new mesh before more selected faces/edges. "
         "Model decisions are NEVER automatically clamped, moved or fixed; bad original choices are rejected before Blender. "
         "FULL PROFESSIONAL ARTIST MODE on verified source: choose which REAL Blender "
         "tools to use based on the observed visual defect, NOT a fixed primitive recipe. "
@@ -177,7 +179,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         "they are NOT proposed artistic values): "
         "material={base_color:[r,g,b,a],roughness:0..1,metallic:0..1}; "
         "sculpt={center:[x,y,z],delta:[dx,dy,dz],radius:positive}; "
-        "bevel={width:positive,segments:1..4,apply:true}; "
+        "bevel={edges:[real_edge_indices],width:positive,segments:1..4,apply:true}; "
         "uv={method:smart|cube|sphere|cylinder}; "
         "extrude={faces:[verified_face_indices],offset:[dx,dy,dz]}; "
         "inset={faces:[verified_face_indices],thickness:positive}; "
@@ -247,7 +249,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
              source_exists=False,known_objects=None,source_inventory=None):
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
-      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-4000:]
+      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-11800:]
       +"\nNon-copyable empirical lessons: "+memory[:600]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
@@ -407,6 +409,8 @@ def main():
                           "local_extrema":x["local_extrema"],
                           "vertex_landmarks":x.get("vertex_landmarks",[]),
                           "face_landmarks":x.get("face_landmarks",[]),
+                          "edges":x.get("edges",0),
+                          "edge_landmarks":x.get("edge_landmarks",[]),
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
                          for x in actual["objects"][:80]]
         history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
@@ -494,6 +498,7 @@ def main():
             verified_objects=[{k:x[k] for k in ("name","vertices","faces","local_extrema",
                                                 "local_bounds_min_m","local_bounds_max_m",
                                                 "vertex_landmarks","face_landmarks",
+                                                "edges","edge_landmarks",
                                                 "materials","uv_layers")}
                               for x in inspected_again["objects"][:80]]
             known_objects=[x["name"] for x in verified_objects]

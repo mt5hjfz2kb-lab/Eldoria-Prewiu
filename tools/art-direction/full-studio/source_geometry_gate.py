@@ -50,8 +50,21 @@ def verify_source_plan(document,inventory):
             structural=True
             if actual and params.get("anchor") not in actual.get("local_extrema",{}):
                 errors.append(f"Action {i}: invalid inherited-mesh anchor")
-        elif op in ("native_operator","boolean","modifier","bevel","transform"):
-            if op in ("boolean","bevel") or (op=="native_operator" and
+        elif op=="bevel":
+            structural=True
+            if actual is None or target in topology_changed:
+                errors.append(f"Action {i}: selected bevel edges require a freshly inspected source mesh")
+            else:
+                edges=params.get("edges")
+                if not isinstance(edges,list) or not edges or any(
+                        type(v)!=int or v<0 or v>=actual.get("edges",0) for v in edges):
+                    errors.append(f"Action {i}: global bevel forbidden on inherited source; "
+                                  f"choose actual edge_landmarks edge_index 0..{actual.get('edges',0)-1}")
+                elif actual.get("faces",0)>2500 and (params.get("width",0)>0.09 or params.get("segments",0)>2):
+                    errors.append(f"Action {i}: dense source bevel width/segments too destructive")
+            topology_changed.add(target)
+        elif op in ("native_operator","boolean","modifier","transform"):
+            if op=="boolean" or (op=="native_operator" and
                    str(params.get("operator","")).startswith("mesh.")) or (op=="modifier" and params.get("apply",False)):
                 topology_changed.add(target)
             if op!="native_operator" or str(params.get("operator","")).startswith("mesh."):

@@ -73,9 +73,27 @@ def main():
             "local_center_m":[round(float(t),5) for t in p.center],
             "local_normal":[round(float(t),4) for t in p.normal]}
             for p in chosen.values()]
+        edges=o.data.edges
+        selected_edges={}
+        if len(edges):
+            for axis in range(3):
+                ordered=sorted(edges,key=lambda e:sum(float(verts[int(k)].co[axis]) for k in e.vertices)/2)
+                for frac in (0.15,0.50,0.85):
+                    edge=ordered[round((len(ordered)-1)*frac)]
+                    selected_edges[edge.index]=edge
+            for edge in sorted(edges,key=lambda e:sum(
+                (float(verts[int(edge.vertices[0])].co[j])-float(verts[int(edge.vertices[1])].co[j]))**2
+                for j in range(3)),reverse=True)[:5]:
+                selected_edges[edge.index]=edge
+        edge_landmarks=[{"edge_index":e.index,
+            "local_midpoint_m":[round((float(verts[int(e.vertices[0])].co[j])+
+                                      float(verts[int(e.vertices[1])].co[j]))/2,5) for j in range(3)]}
+            for e in selected_edges.values()]
         inventory.append({
             "local_extrema":local_extrema,
             "vertex_landmarks":vertex_landmarks,
+            "edges":len(edges),
+            "edge_landmarks":edge_landmarks,
             "face_landmarks":face_landmarks,
             "name":o.name,"vertices":len(verts),"faces":len(o.data.polygons),
             "local_bounds_min_m":lo,"local_bounds_max_m":hi,

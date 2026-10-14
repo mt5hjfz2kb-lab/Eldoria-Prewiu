@@ -339,7 +339,26 @@ def run_action(a,texroot,approved_assets=None):
         sculpt(o,{"center":center,"delta":delta,"radius":p["radius"]})
     elif kind in ("extrude","inset","subdivide"):edit_face_operation(obj(name),kind,p)
     elif kind=="bevel":
-        active(obj(name));modifier(obj(name),{"kind":"BEVEL","options":{"width":p["width"],"segments":p.get("segments",2)},"apply":p.get("apply",True)})
+        target=obj(name)
+        selected=p.get("edges",[])
+        if selected:
+            # Real BMesh selected edge edit, NOT an all-object modifier.
+            bm=bmesh.new()
+            try:
+                bm.from_mesh(target.data)
+                bm.edges.ensure_lookup_table()
+                if any(type(i)!=int or i<0 or i>=len(bm.edges) for i in selected):
+                    raise RejectedPlan("Qwen selected non-existent source edge index")
+                chosen=[bm.edges[i] for i in selected]
+                bmesh.ops.bevel(bm,geom=chosen,offset=float(p["width"]),
+                                segments=int(p.get("segments",2)),affect="EDGES")
+                bm.to_mesh(target.data)
+                target.data.update()
+            finally:bm.free()
+        else:
+            # Legacy fixtures use whole-object bevel, but source-grounded
+            # professional mode requires explicit original edge indices.
+            active(target);modifier(target,{"kind":"BEVEL","options":{"width":p["width"],"segments":p.get("segments",2)},"apply":p.get("apply",True)})
     elif kind=="modifier":modifier(obj(name),p)
     elif kind=="boolean":
         o=obj(name);other=obj(p["operand"])
