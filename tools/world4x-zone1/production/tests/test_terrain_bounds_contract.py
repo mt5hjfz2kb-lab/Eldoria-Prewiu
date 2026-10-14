@@ -96,6 +96,34 @@ class SourceContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"vertical"):
             contract.artist_xy_positions(bad,limits())
 
+    def test_curvature_rejected_before_blender_without_rewriting_ai_geometry(self):
+        import copy
+        original=original_plan()
+        snapshot=copy.deepcopy(original)
+        self.assertEqual(contract.validate_artist_path_curvature(original,limits()),[])
+        self.assertEqual(original,snapshot)
+
+        duplicate=copy.deepcopy(original)
+        three=duplicate["planned_actions"][0]["parameters"]["knots"]
+        for knot in three[1:]:
+            knot["center_xy"]=dict(three[0]["center_xy"])
+        errors=contract.validate_artist_path_curvature(duplicate,limits())
+        self.assertTrue(any("DISTINCT" in error for error in errors),errors)
+        self.assertTrue(any("insufficient bend" in error for error in errors),errors)
+
+        straight=copy.deepcopy(original)
+        straight["planned_actions"][0]["parameters"]["knots"][0]["center_xy"]={"x":-40,"y":40}
+        straight["planned_actions"][0]["parameters"]["knots"][1]["center_xy"]={"x":-20,"y":41}
+        straight["planned_actions"][0]["parameters"]["knots"][2]["center_xy"]={"x":0,"y":42}
+        errors=contract.validate_artist_path_curvature(straight,limits())
+        self.assertTrue(any("area=0" in error for error in errors),errors)
+        self.assertEqual(straight["planned_actions"][0]["parameters"]["knots"][0]["center_xy"],{"x":-40,"y":40})
+
+        shallow=copy.deepcopy(straight)
+        shallow["planned_actions"][0]["parameters"]["knots"][2]["center_xy"]={"x":0,"y":48}
+        errors=contract.validate_artist_path_curvature(shallow,limits())
+        self.assertTrue(any("area=120" in error and "minimum=130" in error for error in errors),errors)
+
     def test_duplicate_ai_knots_still_fail_independent_spatial_gate(self):
         import sys
         root=Path(__file__).resolve().parents[4]

@@ -6,7 +6,7 @@ sys.path.insert(0,str(root/"tools/art-direction/ai-authoring"))
 from author_brief import cpu_artist_schema
 from artist_plan_validation import inspect_artist_plan
 from terrain_bounds_contract import (verified_knot_ranges, limits_label, artist_xy_positions,
-                                    model_knot_schema, normalize_artist_authored_knots)
+                                    model_knot_schema, normalize_artist_authored_knots, validate_artist_path_curvature)
 p=argparse.ArgumentParser()
 p.add_argument("--out",type=pathlib.Path,required=True)
 p.add_argument("--reference",type=pathlib.Path,required=True)
@@ -52,7 +52,7 @@ prompt=("ELDORIA / ZONE ONE / BRECHA: two real images are owner's approved world
 "One is a distinct winding asymmetric BRECHA depression/chasm channel with Z offsets reaching -9..-14m; "
 "the other is an offset companion rising fractured shoulder/rim using Z offsets reaching +7..+12m. "
 + ("Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, " +
-"source-verified LOCAL bounds " + limits_label(knot_limits) + ". For each knot choose ORIGINAL center_xy {x,y}, signed vertical_displacement_m and radius_m_choice from 18,20,22,24,26,28,30. The REAL SURFACE Z is measured independently in Blender; NEVER invent a center Z and NEVER confuse your vertical displacement with terrain elevation. Each path must have 3 DISTINCT XY positions that form a clear bend. ")
+"source-verified LOCAL bounds " + limits_label(knot_limits) + ". For each knot choose ORIGINAL center_xy {x,y}, signed vertical_displacement_m and radius_m_choice from 18,20,22,24,26,28,30. The REAL SURFACE Z is measured independently in Blender; NEVER invent a center Z and NEVER confuse your vertical displacement with terrain elevation. Each path must have 3 DISTINCT XY positions that form a clear bend. For any three successive points P0,P1,P2, require abs((x1-x0)*(y2-y0)-(y1-y0)*(x2-x0)) >= 130 square metres. Simply varying X on a straight line is NOT a bend; select original XY coordinates inside the source-safe range. ")
 + "Make visually connected, irregular long curves rather than circular pimples or ruler-straight mountains. "
 "Land around it remains an open buildable meadow; do not reprofile city or edges. "
 "Place centers >= radius+2m inside the +/-118m protected boundaries and away from city pad. "
@@ -84,6 +84,9 @@ for attempt in range(3):
  try:
   plan_raw=json.loads(raw)
   chosen_xy=artist_xy_positions(plan_raw,knot_limits)
+  # Reject geometric degeneracy BEFORE a Blender subprocess; leave all artistic XY values untouched.
+  path_errors=validate_artist_path_curvature(plan_raw,knot_limits)
+  if path_errors:raise ValueError("Original Qwen XY design rejected before Blender: "+"; ".join(path_errors))
   xy_file=a.out/("source-xy-request-"+str(attempt+1)+".json")
   xy_file.write_text(json.dumps({"positions":chosen_xy},indent=2))
   z_file=a.out/("measured-source-z-"+str(attempt+1)+".json")
