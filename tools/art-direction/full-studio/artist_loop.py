@@ -7,7 +7,7 @@ No paid services, cloud inference, arbitrary Python, or new game scene changes.
 from __future__ import annotations
 import argparse, base64, hashlib, json, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan, safe_action_id
-from learning_context import transferable_lessons
+from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 
@@ -20,12 +20,15 @@ CASEBOOK=HERE/"learning_cases.json"
 def sha(path):
     return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 
-def image_data(file):
-    from PIL import Image
+def image_data(file, max_edge=1024):
+    """Preserve source framing and high-frequency geometry without inventing pixels."""
+    from PIL import Image, ImageOps
     import io
-    im=Image.open(file).convert("RGB")
-    im.thumbnail((640,640))
-    buf=io.BytesIO();im.save(buf,format="JPEG",quality=82)
+    if max_edge not in (640,768,1024,1280):raise ValueError("Unapproved vision resolution")
+    with Image.open(file) as opened:
+        im=ImageOps.exif_transpose(opened).convert("RGB")
+    im.thumbnail((max_edge,max_edge))
+    buf=io.BytesIO();im.save(buf,format="JPEG",quality=88,subsampling=0)
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=None):
@@ -212,8 +215,10 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       +"\nNon-copyable empirical lessons: "+memory[:600]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
-    pictures=[image_data(reference)]
-    if current_image:pictures.append(image_data(current_image))
+    edge=getattr(args,"vision_max_edge",1024)
+    pictures=[image_data(reference,edge)]
+    if current_image:pictures.append(image_data(current_image,edge))
+    if getattr(args,"focus_image",None):pictures.append(image_data(args.focus_image,edge))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
       args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects),timeout=540)
@@ -272,8 +277,9 @@ def critique(args,reference,before,after,role):
           "required":["critique","geometry_next","material_next","clearly_failed"],
           "additionalProperties":False}
         txt=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
-         {"role":"user","content":instruction,"images":[image_data(reference),
-                       image_data(before),image_data(after)]}],350,timeout=420,schema=critique_schema)
+         {"role":"user","content":instruction,"images":[image_data(reference,getattr(args,"vision_max_edge",1024)),
+                       image_data(before,getattr(args,"vision_max_edge",1024)),
+                       image_data(after,getattr(args,"vision_max_edge",1024))]}],350,timeout=420,schema=critique_schema)
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
@@ -297,31 +303,44 @@ def main():
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
     p.add_argument("--phase",choices=("full","geometry","mesh_edit","surface","detail"),default="full")
     p.add_argument("--max-actions",type=int,default=32)
-    p.add_argument("--max-tokens",type=int,default=1250)
+    p.add_argument("--max-tokens",type=int,default=2048)
+    p.add_argument("--vision-max-edge",type=int,default=1024,choices=(640,768,1024,1280))
+    p.add_argument("--focus-image",type=pathlib.Path,
+                   help="Optional genuine detail image from the current asset; no synthetic screenshots")
     p.add_argument("--prior-lessons",type=pathlib.Path)
     args=p.parse_args()
     if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160:raise ValueError("Cycle/action limits")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
+    if args.focus_image and not args.focus_image.is_file():
+        raise FileNotFoundError("Genuine focus image not found")
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
     if args.out.exists() and any(args.out.iterdir()):raise ValueError("Fresh output required")
     args.out.mkdir(parents=True,exist_ok=True)
     canonical_role=ROLE.read_text(encoding="utf-8")
-    role=(canonical_role[:530]+"\nThis task is a NEW or UPDATED complete asset, NOT the historical cliff task. Make independent geometry, original reusable subcomponents, materials, and verifiable actual Blender edits. Historical numbers are never your current plan.")
+    # Do not truncate away OBSERVE/DIAGNOSE/DESIGN or visual quality rules.
+    # Existing source/reference/brief supersede any historical asset example.
+    role=(canonical_role+"\nCURRENT BRIEF AND LIVE SOURCE OVERRIDE HISTORICAL EXAMPLES. "
+          "Do not reproduce old geometry, object IDs or cliff coordinates. "
+          "Maintain independent artistic assessment and never invent Unity evidence.")
     # Genuine evidence-backed journal retrieval, sanitized of old rejected
     # cliff coordinates/IDs. The first 2B run replayed them and overflowed.
-    lesson_proof=transferable_lessons(JOURNAL.read_text(encoding="utf-8"),args.brief,limit=600)
+    lesson_proof=transferable_lessons(JOURNAL.read_text(encoding="utf-8"),args.brief,limit=1400)
     (args.out/"journal-context-proof.json").write_text(json.dumps(lesson_proof,indent=2)+"\n",encoding="utf-8")
     casebook=json.loads(CASEBOOK.read_text(encoding="utf-8"))
     if casebook.get("schema_version")!=1:raise ValueError("Corrupt Qwen artist casebook")
-    recent=[case["safe_lesson"] for case in casebook["cases"][-4:] if isinstance(case.get("safe_lesson"),str)]
-    memory=(" | ".join(recent)+" | "+lesson_proof["prompt_text"])[:600]
+    case_context=evidence_case_lessons(casebook,args.brief,limit=1400)
+    memory=("VERIFIED JOURNAL EXCERPTS (NOT ACTION PLANS):\n"+
+            lesson_proof["prompt_text"]+
+            "\nRECORDED PREVIOUS ARTIST FAILURES/LESSONS (NOT CURRENT GEOMETRY):\n"+
+            case_context["prompt_text"])
     (args.out/"learning-casebook-proof.json").write_text(json.dumps({
+        **case_context,
         "casebook_sha256":sha(CASEBOOK),
-        "evidence_run_ids":[case.get("run_id") for case in casebook["cases"]],
         "model_weight_training":False,
+        "independent_art_review_performed_by_memory_loader":False,
         "verbatim_historical_actions_sent":False
     },indent=2)+"\n",encoding="utf-8")
-    if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
+    if args.prior_lessons:memory+="\nOWNER-PROVIDED PRIOR LESSONS:\n"+args.prior_lessons.read_text(encoding="utf-8")[:4000]
     current=args.current_frame
     source=args.source
     original_source_sha=sha(args.source) if args.source else None
@@ -392,6 +411,17 @@ def main():
             continue
         evaluation=critique(args,args.reference,stage/"before-blender.png",stage/"after-blender.png",role)
         (trial/"qwen-critique.json").write_text(json.dumps(evaluation,indent=2)+"\n")
+        # Capture candidate provenance; independent artistic verification is
+        # still required before a case can enter the approved memory library.
+        stage_pending_art_evidence(
+            trial/"pending-learning-case.json", model=args.model,
+            source_hash=original_source_sha,plan_file=candidate,
+            before_image=stage/"before-blender.png",
+            after_image=stage/"after-blender.png",
+            critique_file=trial/"qwen-critique.json",
+            comparison_file=trial/"camera-screen-impact.json",
+            output_blend=stage/"artist-asset.blend",
+            output_glb=stage/"artist-asset.glb")
         records.append({"cycle":cycle,"status":"ART_REVIEW_REQUIRED",
                         "plan_sha256":sha(candidate),
                         "output_blend_sha256":result["blend_sha256"],
