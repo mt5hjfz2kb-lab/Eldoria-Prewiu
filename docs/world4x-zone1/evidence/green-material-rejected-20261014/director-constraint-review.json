@@ -1,0 +1,33 @@
+{
+  "original_response_sha256": "a6ad243badc01126abb9fb5268fc4455e7b2a7ca627d200f9c683c57065eba44",
+  "parameters_rewritten": false,
+  "original_rejection": "Director palette/roughness/scale preferences rejected a technically executable genuine material proposal.",
+  "reconsideration": "Style limits are not engine or safety limits. The recorded palette is a valid reversible lookdev trial. Macro scale remains at least twice micro scale. Execute the unchanged first proposal and decide from its actual image, without fabricating corrected AI parameters or approval.",
+  "accepted_bounds_for_trial": {
+    "roughness": [
+      0.5,
+      1
+    ],
+    "patch_scale_m": [
+      8,
+      45
+    ],
+    "detail_tile_m": [
+      2,
+      8
+    ],
+    "dry_fraction": [
+      0.1,
+      0.45
+    ],
+    "detail_strength": [
+      0.1,
+      0.5
+    ],
+    "rock_slope_degrees": [
+      22,
+      40
+    ]
+  },
+  "art_approved": false
+}

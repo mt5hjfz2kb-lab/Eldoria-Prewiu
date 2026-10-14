@@ -1,0 +1,70 @@
+name: Zone One actual artist curved relief revision
+on:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-ground-relief-revision.yml'
+      - 'tools/world4x-zone1/production/author_ground_revision.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-ground-source
+  cancel-in-progress: false
+jobs:
+  revise-ground:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve better textured source and inspect actual topology
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          mkdir -p /tmp/zoneone-relief/source
+          cp docs/world4x-zone1/evidence/material-replay-38553648773/geometry-normal-fixed.blend /tmp/zoneone-relief/source/source.blend
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-relief/source/source.blend --inspect --inspect-target-object 'ZoneOne continuous prairie source' --out /tmp/zoneone-relief/context
+      - name: Independent zero-credit real local artist
+        run: |
+          docker run --rm -d --name zoneone-relief-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-relief/ollama-version.json; then break; fi; sleep 2; done
+          test -s /tmp/zoneone-relief/ollama-version.json
+          docker exec zoneone-relief-artist ollama pull qwen3-vl:2b-instruct
+      - name: Artist designs actual relief from image and topology
+        run: |
+          python3 tools/world4x-zone1/production/author_ground_revision.py --work-dir /tmp/zoneone-relief --before-frame docs/world4x-zone1/evidence/material-replay-38553648773/geometry-normal-fixed.png
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/zoneone-relief/artist-plan.json 'ZoneOne continuous prairie source' existing
+      - name: Execute unchanged artist geometry and compare actual lit results
+        run: |
+          SOURCE_SHA=$(sha256sum /tmp/zoneone-relief/source/source.blend | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-relief/source/source.blend --plan /tmp/zoneone-relief/artist-plan.json --out /tmp/zoneone-relief/edited --transport direct --expected-source-sha256 "$SOURCE_SHA"
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/render_ground_geometry.py -- --before /tmp/zoneone-relief/source/source.blend --after /tmp/zoneone-relief/edited/artist-output.blend --out /tmp/zoneone-relief/relief
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/ground_surface.py -- --phase prepare --work-dir /tmp/zoneone-relief/final --source /tmp/zoneone-relief
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/export_ground_family.py -- --source /tmp/zoneone-relief/final/geometry-normal-fixed.blend --out /tmp/zoneone-relief/family
+      - name: Preserve source evidence and isolated Unity candidate asset
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/relief-revision-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/zoneone-relief; then cp -a /tmp/zoneone-relief/. "$DEST/"; fi
+          printf '%s\n' 'SOURCE_ONLY_UNITY_AND_ART_GATES_PENDING' > "$DEST/STATE.txt"
+          git config user.name 'Eldoria Zone One source workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          if test -s /tmp/zoneone-relief/family/ZoneOnePrairieCandidate.glb; then
+            MODEL=Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb
+            mkdir -p "$(dirname "$MODEL")"
+            cp /tmp/zoneone-relief/family/ZoneOnePrairieCandidate.glb "$MODEL"
+            cp /tmp/zoneone-relief/family/ground-family-export.json "$(dirname "$MODEL")/source-identity.json"
+            git add -f "$MODEL" "$(dirname "$MODEL")/source-identity.json"
+          fi
+          git commit -m 'Preserve genuine artist relief revision and isolated ground asset; native and art gates pending'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-relief-revision-${{ github.run_id }}
+          path: /tmp/zoneone-relief/
+          retention-days: 30

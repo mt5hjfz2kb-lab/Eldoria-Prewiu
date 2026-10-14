@@ -18,6 +18,13 @@ namespace Eldoria.World4XPrototype
         const string Root = "Assets/Eldoria/ArtTests/World4XZone1";
         [MenuItem("Eldoria/Zone One/Open authored sector")]
         public static async void Open() { await Create(false); }
+        [MenuItem("Eldoria/Zone One/Open ground reference candidate")]
+        public static async void OpenGround() { await Create(false, true); }
+        public static async void BuildGroundAndCapture()
+        {
+            try { await Create(true, true); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
         public static async void BuildAndCapture()
         {
             try { await Create(true); EditorApplication.Exit(0); }
@@ -74,7 +81,7 @@ namespace Eldoria.World4XPrototype
                         foreach (var importedCamera in root.GetComponentsInChildren<Camera>()) importedCamera.enabled = false;
                         // Freeze focus from original import; never recenter candidate to hide deformation.
                         if (version == 0) focus = new Vector3(ground[0].bounds.center.x,0,ground[0].bounds.center.z);
-                        foreach (var view in new[]{(1280,900,80f,"regional"),(390,844,80f,"mobile"),(1280,900,40f,"local")})
+                        foreach (var view in new[]{(1280,900,110f,"global"),(1280,900,80f,"regional"),(390,844,80f,"mobile"),(1280,900,40f,"local")})
                         {
                             camera.orthographicSize = view.Item3;
                             camera.transform.position = focus + new Vector3(0,145,-130);
@@ -113,9 +120,11 @@ namespace Eldoria.World4XPrototype
             using (var sha=SHA256.Create()) using (var stream=File.OpenRead(path))
                 return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
         }
-        static async Task Create(bool capture)
+        static async Task Create(bool capture, bool groundOnly = false)
         {
-            var source = Path.GetFullPath(Root + "/Models/ZoneOneSectorCandidate.glb");
+            var source = Path.GetFullPath(Root + (groundOnly
+                ? "/Models/Ground/ZoneOnePrairieCandidate.glb"
+                : "/Models/ZoneOneSectorCandidate.glb"));
             if (!File.Exists(source)) throw new FileNotFoundException("Authored sector GLB absent", source);
             if (GraphicsSettings.defaultRenderPipeline == null)
                 throw new InvalidOperationException("Existing project URP pipeline must be configured; no built-in substitute.");
@@ -143,8 +152,8 @@ namespace Eldoria.World4XPrototype
             camera.backgroundColor = new Color(.44f, .51f, .56f);
             var navigation = camera.gameObject.AddComponent<ZoneOneStrategicCamera>();
             var city = world.GetComponentsInChildren<Transform>().FirstOrDefault(
-                x=>x.name.Contains("Existing medieval player city"));
-            if (city == null) throw new Exception("Named source city was not retained by importer");
+                x=>x.name.Contains(groundOnly ? "ZoneOne continuous prairie source" : "Existing medieval player city"));
+            if (city == null) throw new Exception("Named source focal mesh was not retained by importer");
             var cityRenderers = city.GetComponentsInChildren<Renderer>();
             if (cityRenderers.Length == 0) throw new Exception("Imported city has no visible geometry");
             Bounds cityBounds = cityRenderers[0].bounds;
@@ -154,7 +163,7 @@ namespace Eldoria.World4XPrototype
             navigation.SetZoomLevel(1, true);
             Directory.CreateDirectory(Root + "/Scenes");
             // Persist importer-created meshes/materials before saving the scene.
-            string generated = Root + "/NativeCandidate";
+            string generated = Root + (groundOnly ? "/NativeGroundCandidate" : "/NativeCandidate");
             Directory.CreateDirectory(generated);
             int index = 0;
             foreach (var mesh in world.GetComponentsInChildren<MeshFilter>().Select(x=>x.sharedMesh).Distinct())
@@ -173,7 +182,8 @@ namespace Eldoria.World4XPrototype
                 AssetDatabase.CreateAsset(mat, AssetDatabase.GenerateUniqueAssetPath(generated + "/material-" + index++ + ".mat"));
             }
             AssetDatabase.SaveAssets();
-            EditorSceneManager.SaveScene(scene, Root + "/Scenes/ZoneOneReferenceSector.unity");
+            EditorSceneManager.SaveScene(scene, Root + (groundOnly
+                ? "/Scenes/ZoneOneGroundReference.unity" : "/Scenes/ZoneOneReferenceSector.unity"));
             if (!capture) return;
             string output = Environment.GetEnvironmentVariable("ELDORIA_ZONEONE_CAPTURE_OUT");
             if (string.IsNullOrEmpty(output)) throw new Exception("Exact capture output path must be supplied");
@@ -192,7 +202,7 @@ namespace Eldoria.World4XPrototype
                 RenderTexture.active=old; camera.targetTexture=null;
                 UnityEngine.Object.DestroyImmediate(image); rt.Release(); UnityEngine.Object.DestroyImmediate(rt);
                 File.WriteAllText(Path.Combine(output,pair.Item2+"-camera.json"),JsonUtility.ToJson(new CaptureIdentity{
-                    source=source,zoom=camera.orthographicSize,target=navigation.target,
+                    source=source,sourceSha256=HashFile(source),zoom=camera.orthographicSize,target=navigation.target,
                     cameraToWorld=camera.cameraToWorldMatrix,projection=camera.projectionMatrix,
                     rendererCount=renderers.Length,physicalDevice=false},true));
             }

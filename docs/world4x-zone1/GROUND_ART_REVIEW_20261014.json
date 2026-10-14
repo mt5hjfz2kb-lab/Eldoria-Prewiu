@@ -9,10 +9,19 @@
     "source_sha256": "d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f",
     "edited_blend_sha256": "474bfc1188778fc68ae2abab1b664383fc5a4958c038db4675fce96f52b9663b",
     "changed_vertices": 2582,
-    "lit_comparison": "docs/world4x-zone1/evidence/relief-lit-review-20261014",
-    "before_image_sha256": "0263cf23268eefe5efc42f82978689a478a88a61436dd7db0f435c9e666550d8",
-    "after_image_sha256": "806e9a251c698e967eb38951aa827c973bf5e1fbb1d1b4a5809a61ccfd423293",
+    "lit_comparison": "docs/world4x-zone1/evidence/material-replay-38553648773/relief",
+    "before_image_sha256": "5dc1417069eac8f59ddeab17cec2e63a5db341422a3489569cc57b3a7875657b",
+    "after_image_sha256": "d27eab0aa8887c527ce2ab81c4c2c7206114d16b8bc6f5cf318b687ec713c130",
     "observation": "Actual geometry changed, with boundaries and city pad protected. The fixed wide camera still reads predominantly uniform lawn; the broad ridge is too straight and its change too subtle to establish the target natural terrain. Workbench grey frames were unreadable; genuine Cycles A/B resolves the technical diagnostic but does not approve the ground."
+  },
+  "second_material_trial": {
+    "inference_run": 38554125622,
+    "parameters_rewritten": false,
+    "image": "docs/world4x-zone1/evidence/green-material-rejected-20261014/blender-surface-after.png",
+    "image_sha256": "fcf85637cdfe3d0ef2387861fe24ec5a5364a9a11099d359d006f40e7dca9add",
+    "model_sha256": "a897d6a2a50935132e6839cce7617b4a2664543d5a4547c93b7cc4150847486d",
+    "decision": "REJECT",
+    "observation": "Executing the unchanged genuine first green proposal avoids the grey cast but creates conspicuous camouflage-like dark/bright green blotches. The low-resolution whole-sector bake also loses donor microdetail. Worse than the earlier textured source; preserve that source. Next correction must address relief and subdued coherent surface variation, rather than treating pixel change or green color alone as quality."
   },
   "first_material_trial": {
     "inference_run": 38551351550,
@@ -29,6 +38,7 @@
     "Use --work-dir in Blender scripts; --cycle collides with Cycles addon CLI argument prefixes.",
     "Do not treat arbitrary director range rejection as an engine limitation; trial unchanged genuine proposals when technically valid, then judge actual images.",
     "High near-equal linear R/G/B grass colors bleach the meadow. Request a new green-dominant palette with restrained golden dry transitions, using the actual failed image.",
+    "Strong macro palette contrast creates camouflage patterns. Whole-sector 1024px baking cannot retain every strand of a tiled 4m grass donor. Real Unity detail-material lookdev remains required; do not call the generic atlas sufficient.",
     "Do not repeat narrow material edits forever if the fixed camera still shows flat, mechanically shaped land. Return to broad asymmetric relief design before multiplying sectors."
   ],
   "memory_type": "verified source experience and retrieval; no model weight training",

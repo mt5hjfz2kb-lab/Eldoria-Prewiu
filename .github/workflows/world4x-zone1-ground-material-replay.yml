@@ -1,10 +1,6 @@
 name: Zone One preserve genuine material trial and lit relief comparison
 on:
-  push:
-    branches: [prototype/world4x-zone1-zoom-reference-20261013]
-    paths:
-      - '.github/workflows/world4x-zone1-ground-material-replay.yml'
-      - 'tools/world4x-zone1/production/replay_surface_decision.py'
+  # The first trial is preserved. Reproduction is explicit; helper edits must not rerun it.
   workflow_dispatch:
 permissions:
   contents: write

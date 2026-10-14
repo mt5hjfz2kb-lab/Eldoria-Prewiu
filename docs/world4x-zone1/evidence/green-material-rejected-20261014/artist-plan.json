@@ -1,0 +1,36 @@
+[
+  {
+    "id": "/",
+    "type": "assign_material",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Apply the new material with the correct RGB values and texture to the existing terrain, not a new geometry. The material must be applied to the existing terrain, not a new geometry.",
+    "parameters": {
+      "rgb": [
+        0.03,
+        0.25,
+        0.015
+      ],
+      "roughness": 0.6,
+      "secondary_rgb": [
+        0.04,
+        0.32,
+        0.02
+      ],
+      "dry_rgb": [
+        0.25,
+        0.55,
+        0.025
+      ],
+      "rock_rgb": [
+        0.25,
+        0.55,
+        0.025
+      ],
+      "patch_scale_m": 10,
+      "detail_tile_m": 4,
+      "dry_fraction": 0.2,
+      "detail_strength": 0.3,
+      "rock_slope_degrees": 25
+    }
+  }
+]
