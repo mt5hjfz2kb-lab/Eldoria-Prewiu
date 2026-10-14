@@ -62,7 +62,7 @@ jobs:
         with:
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
           run-id: '38621127420'
-          name: eldoria-pc-qwen-original-attached-architecture-proof
+          name: eldoria-custom-artist-pc-source-grounded-multitool-proof
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/eldoria-accepted-qwen-asset
       - name: Locally START already-installed cached Eldoria Artist and refine art in real PC Blender
