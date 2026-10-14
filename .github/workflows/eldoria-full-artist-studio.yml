@@ -23,7 +23,7 @@ jobs:
       - name: Test strict authoring contracts and syntax
         run: |
           python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
-          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py tools/art-direction/full-studio/inspect_source.py tools/art-direction/full-studio/learning_context.py tools/art-direction/full-studio/screen_impact.py
+          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py tools/art-direction/full-studio/inspect_source.py tools/art-direction/full-studio/learning_context.py tools/art-direction/full-studio/screen_impact.py tools/art-direction/full-studio/glb_mobile_preflight.py tools/art-direction/full-studio/consumer_handoff.py
           blender --version | head -2
       - name: Execute twenty-six real independent Blender modelling operations
         run: |
@@ -107,6 +107,22 @@ jobs:
           assert result['matched_review_camera'] and not result['art_approved']
           print('ELDORIA_REAL_APPROVED_ASSET_REUSE', result['reusable_components'])
           PY
+      - name: Inspect actual exported GLB geometry and material provenance
+        run: |
+          python3 tools/art-direction/full-studio/glb_mobile_preflight.py \
+            /tmp/eldoria-full-artist-smoke/artist-asset.glb \
+            --out /tmp/eldoria-full-artist-smoke/glb-source-preflight.json \
+            --require-materials
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/eldoria-full-artist-smoke/glb-source-preflight.json')
+          r=json.loads(p.read_text())
+          assert r['mesh_count']>=1 and r['under_triangle_budget']
+          assert r['missing_materials']==0
+          assert not r['unity_import_verified'] and not r['artistically_approved']
+          print('ELDORIA_NATIVE_GLB_BINARY_SOURCE_PASS',r['triangle_count'])
+          PY
       - name: Upload genuine models and renders, never claim artistic certification
         if: always()
         uses: actions/upload-artifact@v4
@@ -117,7 +133,7 @@ jobs:
           retention-days: 21
 
   real-qwen-authored-asset:
-    if: contains(github.event.head_commit.message, 'NO_QWEN') == false
+    if: contains(github.event.head_commit.message, 'AUTHOR_QWEN')
     needs: real-blender-toolbox
     runs-on: ubuntu-latest
     timeout-minutes: 55
@@ -186,6 +202,7 @@ jobs:
           retention-days: 21
 
   real-qwen-refine-verified-source:
+    if: contains(github.event.head_commit.message, 'REFINE_QWEN')
     needs: real-blender-toolbox
     runs-on: ubuntu-latest
     timeout-minutes: 55
