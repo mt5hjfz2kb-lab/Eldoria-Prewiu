@@ -71,7 +71,8 @@ def main():
                 chosen[face.index]=face
         face_landmarks=[{"face_index":p.index,
             "local_center_m":[round(float(t),5) for t in p.center],
-            "local_normal":[round(float(t),4) for t in p.normal]}
+            "local_normal":[round(float(t),4) for t in p.normal],
+            "local_area_m2":round(float(p.area),6)}
             for p in chosen.values()]
         edges=o.data.edges
         selected_edges={}

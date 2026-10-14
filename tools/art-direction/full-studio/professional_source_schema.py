@@ -44,6 +44,24 @@ def source_artist_action_schema(objects):
         "strength":{"type":"number","minimum":0,"maximum":0.2},
         "texture_scale":{"type":"number","minimum":0.1,"maximum":5}
     }}
+    # Exact contracts for NEW Qwen-chosen architectural components.
+    # Model, not this executor, determines shape, placement and proportions.
+    coord={"type":"number","minimum":-15,"maximum":15}
+    xyz={"type":"array","minItems":3,"maxItems":3,"items":coord}
+    rot={"type":"array","minItems":3,"maxItems":3,
+         "items":{"type":"number","minimum":-3.1416,"maximum":3.1416}}
+    scl={"type":"array","minItems":3,"maxItems":3,
+         "items":{"type":"number","minimum":0.05,"maximum":6}}
+    new_ops={
+      "primitive":({"shape":enum(["cube","cylinder","cone","plane","uv_sphere","ico_sphere","torus"]),
+                    "location":xyz,"rotation":rot,"scale":scl},
+                   ["shape","location","rotation","scale"]),
+      "mesh":({"vertices":{"type":"array","minItems":3,"maxItems":24,"items":xyz},
+               "faces":{"type":"array","minItems":1,"maxItems":30,
+                        "items":{"type":"array","minItems":3,"maxItems":8,
+                                 "items":{"type":"integer","minimum":0,"maximum":23}}}},
+              ["vertices","faces"])
+    }
     defs={
         "sculpt_anchor":({"anchor":enum(["x_min","x_max","y_min","y_max","z_min","z_max"]),
                           "direction":enum(["+X","-X","+Y","-Y","+Z","-Z"]),
@@ -76,6 +94,15 @@ def source_artist_action_schema(objects):
                             "selection":{"const":"ALL"}},["operator","kwargs","selection"])
     }
     variants=[]
+    for op,(properties,required) in new_ops.items():
+        variants.append({"type":"object","additionalProperties":False,"properties":{
+            "id":{"type":"string","minLength":2,"maxLength":60},
+            "op":{"const":op},
+            "target":{"type":"string","minLength":4,"maxLength":70},
+            "reason":{"type":"string","minLength":15,"maxLength":170},
+            "params":{"type":"object","additionalProperties":False,
+                      "properties":properties,"required":required}},
+            "required":["id","op","target","reason","params"]})
     for op,(properties,required) in defs.items():
         variants.append({"type":"object","additionalProperties":False,"properties":{
             "id":{"type":"string","minLength":2,"maxLength":60},

@@ -57,7 +57,7 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -138,7 +138,8 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         # finish the mesh before any operations relying on its changed topology.
         tools=action["oneOf"]
         structural=[v for v in tools if v["properties"]["op"]["const"]
-                    in ("sculpt_anchor","sculpt","extrude","inset","bevel")]
+                    in (("primitive","mesh") if assembly_source else
+                        ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
         finishing=[v for v in tools if v["properties"]["op"]["const"]
                    in ("material","uv")]
         optional=[v for v in tools if v["properties"]["op"]["const"]
@@ -189,7 +190,9 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
     return base+(
         "Choose YOUR OWN tools and numeric values from NINE real, validated Blender operation families (sculpt_anchor, sculpt, extrude, inset, bevel, modifier, material, uv, native_operator). "
-        "These are NOT preset designs. Do not output mesh:operation pseudo-parameters. "
+        "These are NOT preset designs; when architectural quality needs a new part, choose a NEW primitive or an explicitly authored custom vertices/faces mesh with your own sizes and position. "
+        "The original inherited tower MUST remain recognizable; added components should attach to it and improve visible architecture. "
+        "Do not output mesh:operation pseudo-parameters. "
         "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
         "For sculpt, pick your OWN center within brush radius of any real local_extrema/vertex_landmarks local_position_m, or use sculpt_anchor. "
         "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal. "
@@ -278,10 +281,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       +"\nNon-copyable empirical lessons: "+memory[:600]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
+    if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
+        raise ValueError("Architecture build phase requires a frozen inherited source and typed sequence")
     if args.source_tool_sequencing and source_exists and args.phase=="full":
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
-          "(sculpt, sculpt_anchor, extrude, inset or selected-edge bevel). "
+          + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). " if args.source_build_phase
+             else "(sculpt, sculpt_anchor, extrude, inset, selected-edge bevel, NEW primitive or authored mesh). ")
           "The SECOND is YOUR material or UV operation. "
           "An optional THIRD is material, UV or a safe non-global modifier. "
           "This ordering prevents use of stale mesh topology. "
@@ -290,7 +296,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,args.source_build_phase),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -384,6 +390,8 @@ def main():
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
+    p.add_argument("--source-build-phase",action="store_true",
+                   help="Qwen chooses a new primitive or custom mesh for attached architecture; no prescribed shape")
     p.add_argument("--source-tool-sequencing",action="store_true",
                    help="One original Qwen structural choice followed by surface finishing per source-mesh cycle")
     p.add_argument("--max-plan-attempts",type=int,default=5,
