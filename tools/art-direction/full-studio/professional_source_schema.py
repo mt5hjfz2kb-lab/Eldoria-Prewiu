@@ -4,6 +4,10 @@ Qwen independently chooses its operations and ALL numeric design parameters.
 Schemas only encode verified executable tool signatures and inspected bounds.
 This is a progressive subset of the Blender toolbox, NOT all Blender.
 """
+# Namespaced but artist-chosen source-assembly objects cannot shadow frozen meshes.
+# Only a safe namespace constraint, not a geometry/style/template choice.
+NEW_COMPONENT_PATTERN = r"^Eldoria_Added_[A-Za-z][A-Za-z0-9_]{3,42}$"
+
 def source_artist_action_schema(objects):
     names=[x["name"] for x in objects]
     if not names:raise ValueError("Inspected existing Blender objects required")
@@ -98,7 +102,8 @@ def source_artist_action_schema(objects):
         variants.append({"type":"object","additionalProperties":False,"properties":{
             "id":{"type":"string","minLength":2,"maxLength":60},
             "op":{"const":op},
-            "target":{"type":"string","minLength":4,"maxLength":70},
+            "target":{"type":"string","minLength":18,"maxLength":60,
+                      "pattern":NEW_COMPONENT_PATTERN},
             "reason":{"type":"string","minLength":15,"maxLength":170},
             "params":{"type":"object","additionalProperties":False,
                       "properties":properties,"required":required}},

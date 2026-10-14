@@ -81,6 +81,21 @@ class TypedArtistTests(unittest.TestCase):
   authored=next(v for v in options if v["properties"]["op"]["const"]=="mesh")
   self.assertEqual(authored["properties"]["params"]["properties"]["vertices"]["maxItems"],12)
   self.assertTrue(authored["properties"]["params"]["properties"]["vertices"]["uniqueItems"])
+ def test_new_assembly_namespace_and_surface_target_binding(self):
+  from professional_source_schema import NEW_COMPONENT_PATTERN
+  import re
+  src=[{"name":"Valoria_Tower_CohV1 · EA03_Village_Tower_LOD0","faces":5338,"vertices":11000}]
+  s=schema_for_plan(4,True,"full","architecture",[src[0]["name"]],src,True,True)
+  one,two,*tail=s["properties"]["actions"]["prefixItems"]
+  self.assertFalse(re.fullmatch(NEW_COMPONENT_PATTERN,src[0]["name"]))
+  self.assertTrue(re.fullmatch(NEW_COMPONENT_PATTERN,"Eldoria_Added_StoneCanopy"))
+  for choice in one["oneOf"]:
+   self.assertEqual(choice["properties"]["target"]["pattern"],NEW_COMPONENT_PATTERN)
+  for slot in [two]+tail:
+   for choice in slot["oneOf"]:
+    self.assertEqual(choice["properties"]["target"]["pattern"],NEW_COMPONENT_PATTERN)
+  ordinary=schema_for_plan(4,True,"full","architecture",[src[0]["name"]],src,True,False)
+  self.assertEqual(ordinary["properties"]["actions"]["prefixItems"][1]["oneOf"][0]["properties"]["target"]["enum"],[src[0]["name"]])
  def test_non_source_creation_stays_unaffected(self):
   s=schema_for_plan(5,False,"full","architecture")
   self.assertEqual(s["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")

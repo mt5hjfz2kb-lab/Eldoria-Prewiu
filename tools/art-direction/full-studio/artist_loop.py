@@ -11,7 +11,8 @@ from learning_context import transferable_lessons
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan,relative_triangle_limit
-from professional_source_schema import source_artist_action_schema
+from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
+import copy, re
 from triangle_budget import check_triangle_growth
 
 HERE=pathlib.Path(__file__).resolve().parent
@@ -145,6 +146,17 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         optional=[v for v in tools if v["properties"]["op"]["const"]
                   in ("material","uv","modifier")]
         if not structural or not finishing:raise ValueError("No typed source tools")
+        if assembly_source:
+            # The first component name is selected by Qwen, under a reserved
+            # namespace that CAN NEVER collide with inherited object names.
+            # Later surface operations may reference the SAME chosen name;
+            # the runtime verifies the binding rather than inventing a name.
+            finishing=copy.deepcopy(finishing)
+            optional=copy.deepcopy(optional)
+            namespace={"type":"string","minLength":18,"maxLength":60,
+                       "pattern":NEW_COMPONENT_PATTERN}
+            for v in finishing+optional:
+                v["properties"]["target"]=copy.deepcopy(namespace)
         actions_schema={"type":"array","minItems":2,"maxItems":3,
                         "prefixItems":[{"oneOf":structural},
                                        {"oneOf":finishing},
@@ -290,7 +302,12 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if args.source_tool_sequencing and source_exists and args.phase=="full":
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
-          + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). " if args.source_build_phase and trial.name=="cycle-1"
+          + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
+             "Invent your own unique object name STARTING Eldoria_Added_ followed by a letter and 3-42 alphanumeric/underscore characters. "
+             "NEVER reuse any inherited mesh name or object mentioned in the verified source inventory. "
+             "Your SECOND and optional THIRD actions MUST use the identical NEW object name you chose FIRST, "
+             "to shade/finish YOUR newly created component, not repaint the original tower. "
+             if args.source_build_phase and trial.name=="cycle-1"
              else "(sculpt, sculpt_anchor, extrude, inset, selected-edge bevel, NEW primitive or authored mesh). ")
           + "The SECOND is YOUR material or UV operation. "
           "An optional THIRD is material, UV or a safe non-global modifier. "
@@ -312,7 +329,18 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
-    if source_exists and args.phase=='full':verify_source_plan(doc,source_inventory)
+    if source_exists and args.phase=='full':
+        verify_source_plan(doc,source_inventory)
+        if args.source_build_phase and trial.name=="cycle-1":
+            actions=doc["actions"]
+            if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
+                raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")
+            created_name=actions[0]["target"]
+            if not re.fullmatch(NEW_COMPONENT_PATTERN,created_name):
+                raise RejectedPlan("Qwen new object name must be artist-chosen and begin Eldoria_Added_; NEVER use an inherited source object's name")
+            for action in actions[1:]:
+                if action["target"] != created_name:
+                    raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
