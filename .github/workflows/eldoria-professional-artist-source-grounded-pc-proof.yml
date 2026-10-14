@@ -1,4 +1,5 @@
 name: Eldoria original Qwen two source-grounded professional BlenderMCP PC art cycles
+# Second real attempt: typed nine-tool schemas plus actual topology landmarks; retain raw model choices.
 on:
   push:
     branches:
