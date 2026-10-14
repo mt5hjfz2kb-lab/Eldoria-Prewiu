@@ -225,7 +225,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         (trial/("metadata-repairs-attempt-"+str(attempt_number)+".json")).write_text(
             json.dumps({"raw_response_sha256":hashlib.sha256(text.encode("utf-8")).hexdigest(),
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
-                        "repairs":id_repairs},indent=2)+"\\n",encoding="utf-8")
+                        "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
