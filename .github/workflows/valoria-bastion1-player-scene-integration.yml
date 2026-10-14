@@ -263,7 +263,7 @@ jobs:
           $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
           New-Item -ItemType Directory -Force $after | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
-      - name: Produce controlled global architecture candidate A2 in Blender and native Unity; artist approval stays independent
+      - name: Sculpt Qwen real-image-approved landscape and wall-side embankment on global A3; capture native Unity
         shell: powershell
         run: |
           $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
@@ -281,6 +281,24 @@ jobs:
                $proof.new_modular_masonry_meshes -lt 12 -or $proof.reused_original_mesh_instances -lt 1){
               throw "Candidate $variant invalidates gameplay/source/art invariants"
             }
+            # This is the first macro-terrain intervention driven by genuine
+            # local Qwen VISION (38530882467), not a repetition of earlier
+            # pre-authored wall-kit scripts. Its native GLB ground is sculpted,
+            # baked with entirely new spatial world UVs and soil albedo.
+            $sculpted=Join-Path $env:RUNNER_TEMP "Bastion1NativeSoilTerraces$variant.glb"
+            & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/sculpt_bastion_native_terrain.py -- $candidate $sculpted
+            if($LASTEXITCODE -ne 0){throw "Global $variant authored continuous landform/soil failed"}
+            $land=Get-Content ([System.IO.Path]::ChangeExtension($sculpted,'.proof.json')) -Raw | ConvertFrom-Json
+            $preSha=(Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($land.original_source_sha256 -ne $preSha -or $land.terrain_vertices_sculpted -lt 350 -or
+               $land.max_terrain_delta_m -lt .25 -or $land.max_terrain_delta_m -gt .65 -or
+               $land.protected_road_and_future_parcels_max_delta_m -gt .0005 -or
+               $land.soil_texture_px[0] -lt 512 -or $land.new_resource_nodes -ne 0 -or
+               $land.new_colliders -ne 0 -or $land.other_original_geometry_modified -ne $false){
+                 throw "Global $variant new full-terrain artwork invalidates camera/road/plot/original-source invariants"
+            }
+            $candidate=$sculpted
+            Write-Host "BASTION1_REAL_QWEN_VISION_TERRAIN_CHOICE_EXECUTED source_run=38530882467 sculpt_vertices=$($land.terrain_vertices_sculpted) max_change=$($land.max_terrain_delta_m)"
             Copy-Item $candidate $src -Force
             & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $src
             if($LASTEXITCODE -ne 0){throw "Global $variant GLB material integrity failure"}
@@ -293,7 +311,8 @@ jobs:
             $dst=Join-Path $env:GITHUB_WORKSPACE "Bastion1MaterialAB/global-$variant"
             New-Item -ItemType Directory -Force $dst | Out-Null
             Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $dst -Force
-            Copy-Item ([System.IO.Path]::ChangeExtension($candidate,'.proof.json')) (Join-Path $dst 'global-blender-proof.json')
+            Copy-Item ([System.IO.Path]::ChangeExtension($candidate,'.proof.json')) (Join-Path $dst 'global-native-terrain-proof.json')
+            Copy-Item ([System.IO.Path]::ChangeExtension((Join-Path $env:RUNNER_TEMP "Bastion1GlobalProposal$variant.glb"),'.proof.json')) (Join-Path $dst 'global-blender-proof.json')
             Copy-Item $candidate (Join-Path $dst 'global-native-Unity-candidate.glb') -Force
             if(-not (Test-Path (Join-Path $dst 'bastion1-player-initial.png')) -or
                -not (Test-Path (Join-Path $dst 'bastion1-player-mobile.png')) -or
@@ -306,7 +325,7 @@ jobs:
           # A2 is a follow-on artistic candidate, not an automatic promotion.
           # Keep the previous certified guard candidate in the active source.
           Copy-Item $guardBase $src -Force
-          Write-Host 'BASTION1_GLOBAL_SELECTED_A2_IMPROVEMENT_CAPTURED no_unapproved_promotion=true'
+          Write-Host 'BASTION1_GLOBAL_QWEN_VISION_TERRAIN_SCULPT_CAPTURED no_unapproved_promotion=true'
       - name: Independently measure identical Unity camera A/B without declaring artistic approval
         shell: powershell
         run: |
