@@ -111,7 +111,7 @@ jobs:
             --brief 'CREATE an original reuse-ready fortified medieval stone lookout with a complete multi-part silhouette, battlements, timber detail, stone PBR and real modelled geometry. Choose your own components and sizes. No preset tower template.' \
             --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
             --out /tmp/eldoria-full-studio-qwen \
-            --max-cycles 1 --max-actions 20 --max-tokens 4500 \
+            --max-cycles 1 --max-actions 4 --max-tokens 1250 \
             --model qwen3-vl:2b-instruct
       - name: Verify model really authored operations that Blender executed
         run: |

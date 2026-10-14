@@ -43,66 +43,69 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan():
-    # Dynamic JSON schema prevents an AI-coded Python payload while allowing
-    # broad asset design and multi-step Blender geometry authoring.
+def schema_for_plan(max_actions=6, source_exists=False):
+    # Bounded FIRST: Qwen 2B on free CPU cannot reliably emit 160 creative actions
+    # in one response. Complex assets are authored over *multiple* verified cycles.
     opnames=["primitive","mesh","duplicate","transform","sculpt","extrude","inset",
              "subdivide","bevel","modifier","boolean","material","uv","join","delete",
              "light","camera","render_settings","texture","asset_info",
              "native_operator","shader_graph","geometry_nodes"]
+    if not source_exists:
+        # A new asset must start with real geometry, not a replay of unrelated
+        # historical cliff sculpt decisions.
+        opnames=["primitive","mesh","material","duplicate","bevel","uv","modifier"]
     action={"type":"object","properties":{
-      "id":{"type":"string"},"op":{"type":"string","enum":opnames},
-      "target":{"type":"string"},"reason":{"type":"string"},
-      "params":{"type":"object"}},
-      "required":["id","op","target","reason","params"]}
+       "id":{"type":"string","minLength":2,"maxLength":60},
+       "op":{"type":"string","enum":opnames},
+       "target":{"type":"string","minLength":2},
+       "reason":{"type":"string","minLength":15,"maxLength":180},
+       "params":{"type":"object"}},
+       "required":["id","op","target","reason","params"],
+       "additionalProperties":False}
     return {"type":"object","properties":{
-      "schema_version":{"type":"integer","const":2},
-      "asset_id":{"type":"string"},"observed_defect":{"type":"string"},
-      "design_intent":{"type":"string"},
-      "asset_decision":{"type":"string","enum":["NEW","MODIFY","REUSE"]},
-      "expected_visual_difference":{"type":"string"},
-      "mobile_risks":{"type":"string"},
-      "actions":{"type":"array","minItems":1,"maxItems":160,"items":action}},
-      "required":["schema_version","asset_id","observed_defect","design_intent",
-       "asset_decision","expected_visual_difference","mobile_risks","actions"]}
+       "schema_version":{"type":"integer","const":2},
+       "asset_id":{"type":"string","minLength":2,"maxLength":70},
+       "observed_defect":{"type":"string","minLength":30,"maxLength":160},
+       "design_intent":{"type":"string","minLength":30,"maxLength":200},
+       "asset_decision":{"type":"string","enum":["MODIFY","REUSE"] if source_exists else ["NEW"]},
+       "expected_visual_difference":{"type":"string","minLength":30,"maxLength":160},
+       "mobile_risks":{"type":"string","maxLength":180},
+       "actions":{"type":"array","minItems":1,"maxItems":min(max_actions,8),"items":action}},
+       "required":["schema_version","asset_id","observed_defect","design_intent",
+         "asset_decision","expected_visual_difference","mobile_risks","actions"],
+       "additionalProperties":False}
 
-def contract_brief(max_actions):
-    return (
-      "You are the REAL 3D asset ARTIST. Your choices directly change Blender geometry; "
-      "no engineer will invent building geometry on your behalf. Return strict JSON. "
-      "Use schema_version=2, asset_id, observed_defect>=30 chars, "
-      "design_intent>=30 chars, asset_decision NEW/MODIFY/REUSE, "
-      "expected_visual_difference>=30 chars and actions with IDs, reasons>=15 chars, "
-      "targets and params. Choose a cohesive asset silhouette and build it with multiple "
-      "REAL operations, not just a single cube or a tint. You have up to "+str(max_actions)+
-      " operations. Available:\n"
-      "primitive: {shape:cube|cylinder|cone|plane|uv_sphere|ico_sphere|torus,"
-      " location:[x,y,z], rotation:[rad,rad,rad], scale:[sx,sy,sz]};\n"
-      "mesh: {vertices:[[x,y,z]...],faces:[[vertex-index,...]...]};\n"
-      "duplicate: {source:name,location:[],rotation:[],scale:[]};\n"
-      "transform: {location:[],rotation:[],scale:[],apply:bool};\n"
-      "sculpt: {center:[x,y,z],radius:meters,delta:[x,y,z]};\n"
-      "extrude: {faces:[faceIndex],offset:[x,y,z]};\n"
-      "inset: {faces:[faceIndex],thickness:meters,depth:meters};\n"
-      "subdivide: {faces:[faceIndex],cuts:integer}; bevel: {width:meters,segments:int};\n"
-      "modifier: {kind:BEVEL|SUBSURF|SOLIDIFY|DECIMATE|REMESH|MIRROR|ARRAY|"
-      "WEIGHTED_NORMAL|TRIANGULATE|SIMPLE_DEFORM|DISPLACE,options:{},apply:bool};\n"
-      "boolean: {operation:DIFFERENCE|UNION|INTERSECT,operand:name};\n"
-      "material: {base_color:[r,g,b,a],roughness:0..1,metallic:0..1,"
-      "texture_image:generatedName OR texture_path:approvedRelativePath};\n"
-      "texture: {method:NOISE|CHECKER,color_a:[r,g,b,a],color_b:[r,g,b,a],"
-      "resolution:256,scale:meters}; uv:{method:smart|cube|sphere|cylinder};\n"
-      "native_operator: {operator:safe native mesh/uv/object edit,kwargs:{},selection:ALL|FACE|EDGE|VERT,indices:[]}; "
-      "shader_graph / geometry_nodes: {nodes:[{id,type,inputs:{}}],links:[{from,output,to,input}]}; "
-      "join: {sources:[name,...]}; light:{kind:SUN|AREA|POINT|SPOT,energy:float,"
-      "location:[x,y,z]}; camera:{location:[x,y,z],rotation:[radians],"
-      "ortho_scale:meters}; render_settings:{engine:CYCLES,samples:16}; "
-      "Only finite numeric parameters, no executable Python, no code strings, "
-      "no external URLs or files, no self-approval. Build reusable medieval "
-      "fantasy game-ready art with coherent materials and realistic contact, "
-      "respecting target reference. All dimensions in meters and angles in radians. "
-      "Objects previously created by an action can be targeted by later actions. "
-      "Do not assume an unlisted source object exists.\n")
+def contract_brief(max_actions, source_exists=False):
+    # Short, exact model contract with the full vetted toolbox available once
+    # an editable source exists. This avoids copying the irrelevant cliff data
+    # from historic journals or expanding incomplete 20-action JSON documents.
+    base=("You are the sole creative 3D artist. Blender is your workshop. "
+      "Build the owner's CURRENT requested medieval asset, not terrain cliffs "
+      "from old experiments. Never copy old object IDs, numeric coordinates, "
+      "run numbers or failed actions. Do not approve yourself. Use strict JSON "
+      "schema_version=2. Action IDs must be UNIQUE descriptive names; targets "
+      "must be real objects you create, or in the verified source inventory. "
+      "Parameters are metric numbers (radians for rotations). Each reason "
+      "explains YOUR own creative geometry decision. "
+      "Generate between 2 and "+str(max_actions)+" CONCISE operations: "
+      "start by shaping the main silhouette, then include at least one "
+      "independent secondary feature. No huge face/vertex arrays. ")
+    if not source_exists:
+        return (base+
+          "The scene is EMPTY. asset_decision MUST equal NEW. No sculpting "
+          "any nonexistent cliff_rocks! CREATE actual objects first. "
+          "Use primitive {shape:cylinder|cone|cube,location:[x,y,z],"
+          "rotation:[0,0,0],scale:[sx,sy,sz]}; material {base_color:"
+          "[r,g,b,a],roughness:0..1,metallic:0}; duplicate "
+          "{source:objectName,location:[x,y,z]}; bevel {width,segments}. "
+          "Prefer a stone body plus timber roof or battlements to a single cube.")
+    return (base+
+      "The existing source objects have been INSPECTED in real Blender. "
+      "Choose Qwen-authored operations within safe full toolbox: primitive, "
+      "mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, "
+      "modifier, boolean, material, uv, join, native_operator, shader_graph "
+      "and geometry_nodes; no code execution. Source object names must match "
+      "the verified inventory. Finish the existing asset rather than restart.")
 
 def run_blender(executable,plan,out,source,texture_root,review,transport='direct',mcp_addon=None,mcp_sha256=None):
     cmd=[executable,"-b","--python-exit-code","1","--python",
@@ -118,20 +121,42 @@ def run_blender(executable,plan,out,source,texture_root,review,transport='direct
     (out.parent/(out.name+"-blender-log.txt")).write_text(result.stdout,encoding="utf-8")
     if result.returncode:raise RuntimeError("Real Blender execution failed; see output log: "+result.stdout[-1700:])
 
-def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number):
-    msg=(contract_brief(args.max_actions)
-      +"\nASSET BRIEF: "+args.brief
-      +"\nVerified old failure/lesson memory (not model weight training): "+memory[:9000]
-      +"\nPrevious cycle or typed-tool feedback: "+history[-10000:]
-      +"\nGenerate up to "+str(args.max_actions)+" concrete AI-chosen actions, not a static procedural script.")
+def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
+             source_exists=False):
+    msg=(contract_brief(args.max_actions,source_exists)
+      +"\nCurrent asset requested by owner: "+args.brief[:500]
+      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-4000:]
+      +"\nNon-copyable empirical lessons: "+memory[:600]
+      +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
+      "The examples in previous failures are warnings, not templates.")
     pictures=[image_data(reference)]
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
-      {"role":"user","content":msg,"images":pictures}],args.max_tokens,schema=schema_for_plan())
+      {"role":"user","content":msg,"images":pictures}],
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
-    filename=trial/"qwen-raw.json";filename.write_text(text,encoding="utf-8")
-    doc=json.loads(text);validate_plan(doc)
-    if len(doc["actions"])>args.max_actions:raise RejectedPlan("AI operation budget exceeded")
+    (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
+    doc=json.loads(text)
+    validate_plan(doc)
+    if len(doc["actions"])>args.max_actions:
+        raise RejectedPlan("Too many Qwen actions in one bounded cycle")
+    if not source_exists:
+        if doc["asset_decision"]!="NEW":
+            raise RejectedPlan("Fresh EMPTY scene requires Qwen to design a NEW asset")
+        if not any(a["op"] in ("primitive","mesh") for a in doc["actions"]):
+            raise RejectedPlan("No real new geometry for an empty scene")
+        created=set()
+        for act in doc["actions"]:
+            if act["op"] in ("primitive","mesh"):
+                if act["target"] in created:raise RejectedPlan("Duplicate new object")
+                created.add(act["target"])
+            elif act["op"] in ("material","uv","bevel","modifier"):
+                if act["target"] not in created:
+                    raise RejectedPlan("Qwen targeted nonexistent new mesh "+act["target"])
+            elif act["op"]=="duplicate":
+                if act["params"].get("source") not in created:
+                    raise RejectedPlan("Qwen duplicate lacks an actual prior object")
+                created.add(act["target"])
     return doc
 
 def critique(args,reference,before,after,role):
@@ -165,7 +190,7 @@ def main():
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--max-actions",type=int,default=32)
-    p.add_argument("--max-tokens",type=int,default=4500)
+    p.add_argument("--max-tokens",type=int,default=1250)
     p.add_argument("--prior-lessons",type=pathlib.Path)
     args=p.parse_args()
     if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160:raise ValueError("Cycle/action limits")
@@ -173,8 +198,12 @@ def main():
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
     if args.out.exists() and any(args.out.iterdir()):raise ValueError("Fresh output required")
     args.out.mkdir(parents=True,exist_ok=True)
-    role=ROLE.read_text(encoding="utf-8")
-    memory=JOURNAL.read_text(encoding="utf-8")[-6000:]
+    canonical_role=ROLE.read_text(encoding="utf-8")
+    role=(canonical_role[:530]+"\nThis task is a NEW or UPDATED complete asset, NOT the historical cliff task. Make independent geometry, original reusable subcomponents, materials, and verifiable actual Blender edits. Historical numbers are never your current plan.")
+    # Memory is retrieved as lessons, never pasted as an action template.
+    # The former raw 6k-character cliff journal made 2B Qwen copy obsolete
+    # sculpt coordinates 12+ times, yielding 14,727-byte unfinished JSON.
+    memory="Prior cliff small-sculpt failures show that tiny invisible edits fail. Prefer substantial camera-visible silhouette and asset-specific PBR. Do not copy historic coordinates, IDs or rejected actions."
     if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
     current=args.current_frame
     source=args.source
@@ -203,7 +232,7 @@ def main():
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,4):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source))
                 break
             except (RejectedPlan,json.JSONDecodeError) as e:
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
