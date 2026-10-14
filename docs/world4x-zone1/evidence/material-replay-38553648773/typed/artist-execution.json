@@ -1,0 +1,23 @@
+{
+  "transport": "direct",
+  "source_sha256": "73b5f0e267eb49f7892311fca2d5d6867f74f97778abc96b849c6c9de8cc5b2d",
+  "plan_sha256": "fa7978f3e10a5d8bc2aeb77cc1f731acf45fdff680ef759f721feeb8f5635633",
+  "source_mesh_sha256": "193600e020426162b30c1e30e6219a4ff7fcd21d56b209c17b3d9bf10e24b631",
+  "result_mesh_sha256": "193600e020426162b30c1e30e6219a4ff7fcd21d56b209c17b3d9bf10e24b631",
+  "result_blend_sha256": "01ad280d6615aa82751fc49a9153359790e315536e15e8f8672bf7c7d114c41f",
+  "result_glb_sha256": "b98eade0c754db702289e81f82dc77f71498ee72ee1327e17e8fca9e7bd4d6c6",
+  "elapsed_seconds": 2.132,
+  "executed_actions": [
+    {
+      "id": "assign_material",
+      "type": "assign_material",
+      "target": "ZoneOne continuous prairie source",
+      "changed_vertices": 0,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.0,
+      "applied": true
+    }
+  ],
+  "self_approval": false
+}

@@ -1,0 +1,49 @@
+{
+  "image_type": "MATCHED_BLENDER_CYCLES_NOT_UNITY",
+  "camera_equivalent": true,
+  "dimensions": [
+    1000,
+    800
+  ],
+  "before_sha256": "ab816c961b2f0b5f7c25be90a3cd02e3a9b42fce775d01c0b7f5a331612c205b",
+  "after_sha256": "446fb4d6d531eed3eca96c98335fc4b15c226bc5933b113d4fc9066351b0f899",
+  "model_sha256": "a144209bc9816d1a24f01e2b113b0e6014919afee9645cfc21ca2523d870188b",
+  "terrain_triangles": 28800,
+  "textures": [
+    {
+      "path": "prairie-color.png",
+      "bytes": 1219153,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "rgb_stddev": [
+        4.128787545855049,
+        3.0861658879626948,
+        4.684331212865145
+      ]
+    },
+    {
+      "path": "prairie-normal.png",
+      "bytes": 372716,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "rgb_stddev": [
+        0.4297450068744052,
+        0.12844214819702904,
+        0.0
+      ]
+    }
+  ],
+  "changed_rgb_pixels_over_5": 800000,
+  "total_pixels": 800000,
+  "visibility_fraction": 1.0,
+  "visibility_only_not_art_quality": true,
+  "uncompressed_ground_texture_memory_bytes_without_mips": 8388608,
+  "unity_executed": false,
+  "physical_device_performance_measured": false,
+  "art_approved": false,
+  "weights_trained": false
+}

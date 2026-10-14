@@ -1,0 +1,46 @@
+{
+  "image_type": "MATCHED_BLENDER_CYCLES_NOT_UNITY",
+  "art_approved": false,
+  "before": {
+    "source_sha256": "d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f",
+    "image_sha256": "5dc1417069eac8f59ddeab17cec2e63a5db341422a3489569cc57b3a7875657b"
+  },
+  "after": {
+    "source_sha256": "474bfc1188778fc68ae2abab1b664383fc5a4958c038db4675fce96f52b9663b",
+    "image_sha256": "d27eab0aa8887c527ce2ab81c4c2c7206114d16b8bc6f5cf318b687ec713c130"
+  },
+  "camera_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      10.0
+    ],
+    [
+      0.0,
+      0.7445693612098694,
+      -0.6675451397895813,
+      -115.0
+    ],
+    [
+      0.0,
+      0.6675451397895813,
+      0.7445693612098694,
+      145.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "changed_vertices": 2582,
+  "protected_boundary_and_city_unchanged": true,
+  "camera_equivalent": true,
+  "render_engine": "CYCLES",
+  "dimensions": [
+    1000,
+    800
+  ]
+}

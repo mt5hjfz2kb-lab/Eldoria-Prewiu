@@ -1,0 +1,74 @@
+{
+  "artist_plan_sha256": "fa7978f3e10a5d8bc2aeb77cc1f731acf45fdff680ef759f721feeb8f5635633",
+  "source_blend_sha256": "474bfc1188778fc68ae2abab1b664383fc5a4958c038db4675fce96f52b9663b",
+  "technical_interpretation": "glTF-compatible texture bake of exact Qwen material recipe; existing canonical assign_material already executed",
+  "recipe": {
+    "rgb": [
+      0.7,
+      0.7,
+      0.5
+    ],
+    "roughness": 0.6,
+    "secondary_rgb": [
+      0.8,
+      0.7,
+      0.6
+    ],
+    "dry_rgb": [
+      0.9,
+      0.8,
+      0.7
+    ],
+    "rock_rgb": [
+      0.6,
+      0.6,
+      0.5
+    ],
+    "patch_scale_m": 10,
+    "detail_tile_m": 2,
+    "dry_fraction": 0.3,
+    "detail_strength": 0.4,
+    "rock_slope_degrees": 30
+  },
+  "donor_sha256": "a74fa0d04d6b64f4075ac781204a5de92b15264ef4460bba5b11136e00ed64ae",
+  "geometry_unchanged": true,
+  "model_sha256": "a144209bc9816d1a24f01e2b113b0e6014919afee9645cfc21ca2523d870188b",
+  "textures": [
+    {
+      "path": "prairie-color.png",
+      "sha256": "06d55a258302aa7118a0cc8d74eb2cc7377e57563cb9a2772de9b9bf14f28c4e"
+    },
+    {
+      "path": "prairie-normal.png",
+      "sha256": "0a5c3639581b646ddc9e7a824942f9d1fe02ba341f8d40217d637f42803edf9f"
+    }
+  ],
+  "camera_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      10.0
+    ],
+    [
+      0.0,
+      0.7445693612098694,
+      -0.6675451397895813,
+      -115.0
+    ],
+    [
+      0.0,
+      0.6675451397895813,
+      0.7445693612098694,
+      145.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "image_type": "BLENDER_NOT_UNITY",
+  "art_approved": false
+}

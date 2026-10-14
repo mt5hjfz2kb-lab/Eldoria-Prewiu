@@ -1,0 +1,67 @@
+{
+  "model": "qwen3-vl:4b-instruct",
+  "system_role": "system",
+  "system_prompt_sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346",
+  "direction": {
+    "observed_defect": "Ground surface lacks architectural integration, appears flat and untextured, fails to convey fantasy-medieval prairie depth or terrain variation, no stone slope transitions or microdetail from donor grass texture.",
+    "design_intent": "Create a luminous, textured meadow with soft golden dry-grass transitions and pale exposed slope stone, using donor grass as microdetail, preserving all terrain geometry and boundary, avoiding new geometry or painting paths.",
+    "asset_decision": "MODIFY",
+    "reason_for_new_geometry": "No new geometry required; existing terrain mesh is editable; design is texture-based, not topology-based.",
+    "planned_actions": [
+      {
+        "id": "assign_material",
+        "type": "assign_material",
+        "target": "ZoneOne continuous prairie source",
+        "rationale": "Apply baked material with macro meadow variations, soft dry_fraction blend, donor tiled at detail_tile_m, detail_strength modulated color/normal, rock color only above slope threshold.",
+        "parameters": {
+          "rgb": [
+            0.7,
+            0.7,
+            0.5
+          ],
+          "roughness": 0.6,
+          "secondary_rgb": [
+            0.8,
+            0.7,
+            0.6
+          ],
+          "dry_rgb": [
+            0.9,
+            0.8,
+            0.7
+          ],
+          "rock_rgb": [
+            0.6,
+            0.6,
+            0.5
+          ],
+          "patch_scale_m": 10,
+          "detail_tile_m": 2,
+          "dry_fraction": 0.3,
+          "detail_strength": 0.4,
+          "rock_slope_degrees": 30
+        }
+      }
+    ],
+    "expected_visual_difference": "Luminous, textured meadow with soft golden dry-grass transitions and pale exposed slope stone, microdetail from donor grass texture, no flat green field or gritty photoreal floor.",
+    "mobile_risks": "Low; baked material retains A/B camera, lights and geometry, no new geometry or painting paths, glTF-compatible color and tangent normal atlases (1024 square)."
+  },
+  "original_response_sha256": "3ef457d5736995824e65229f45d26e5764d63375f832b6c05ca6afd978ccd6ee",
+  "original_request_sha256": "755c50470422b81f395d4f64c2cb8469eaa8e01e39308dece7f63c4dfdb4662d",
+  "input_images": [
+    {
+      "sha256": "e95a914b6af14efd4fcd8b6a05244791bdc39df04d265a197ea7993bd5d1fcfa"
+    },
+    {
+      "sha256": "f3e61cf4762015ef4673911bd36b7a7a34d23d9e2040d06f0df78661517e86e2"
+    },
+    {
+      "sha256": "6bcbae50fa5101ead33385018e80d22f14cd19f33c07fb1b14d099d8943a33bb"
+    }
+  ],
+  "original_inference_run": 38551351550,
+  "fresh_inference_claimed": false,
+  "model_weights_trained": false,
+  "self_approval": false,
+  "image_type": "BLENDER_NOT_UNITY"
+}

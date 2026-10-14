@@ -1,0 +1,36 @@
+[
+  {
+    "id": "assign_material",
+    "type": "assign_material",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Apply baked material with macro meadow variations, soft dry_fraction blend, donor tiled at detail_tile_m, detail_strength modulated color/normal, rock color only above slope threshold.",
+    "parameters": {
+      "rgb": [
+        0.7,
+        0.7,
+        0.5
+      ],
+      "roughness": 0.6,
+      "secondary_rgb": [
+        0.8,
+        0.7,
+        0.6
+      ],
+      "dry_rgb": [
+        0.9,
+        0.8,
+        0.7
+      ],
+      "rock_rgb": [
+        0.6,
+        0.6,
+        0.5
+      ],
+      "patch_scale_m": 10,
+      "detail_tile_m": 2,
+      "dry_fraction": 0.3,
+      "detail_strength": 0.4,
+      "rock_slope_degrees": 30
+    }
+  }
+]
