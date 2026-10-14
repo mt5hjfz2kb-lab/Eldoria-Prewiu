@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-14",
+  "task": "Bastion I global artistic restructuring using TWO distinct genuinely Qwen-authored proposals",
+  "inference_run": 38520396786,
+  "artifact_id": 11873117996,
+  "model": "qwen3-vl:4b-instruct",
+  "cost_eur": 0,
+  "ai_responses": [
+    {
+      "candidate": "A",
+      "source_file": "artist-1-raw.txt",
+      "sha256": "c745f20967736318151a486210ce8f3d34305248aecdce1a57c67491945a9e54",
+      "actual_text": "Layered defensive ward via ruined masonry returns + inhabited courtyards framing the lower gate and upper fort, with asymmetric medieval depth; reuse stone_path_platform, cliff_rocks and timber; preserve lots; avoid flattening depth in player camera.",
+      "executed_translation": "West and east broken perimeter ramparts, original wall_connections anchors, cliff-contact stone, upper wall returns; no central monument or future lots.",
+      "translation_deviation": "Qwen's response did not supply parcel-safe exact geometry; Blender places components only outside the protected road and plots."
+    },
+    {
+      "candidate": "B",
+      "source_file": "artist-2-raw.txt",
+      "sha256": "afdd26373d64bcabad16b8f59de9a2a9f314b9e12407e46548d83e5822224be7",
+      "actual_text": "Terraced stone retaining walls and stepped plateau masonry-to-rock transitions, distinct from a perimeter defensive ward; use cliff_rocks and wall_connections; retain original gates/stairs/road; no resource nodes.",
+      "executed_translation": "Four side-only low terraced retaining landing masses, connected along outer cliff with chipped copings, original flagstones and rock-to-stone bases.",
+      "translation_deviation": "Qwen proposed x=-8..9 or >15m heights, overlapping protected player route and implausible plateau. Unsafe positions and heights were rejected; design principle preserved at outside contours."
+    }
+  ],
+  "provenance_rule": "Raw model answer alone establishes conceptual authorship. All Blender/Unity geometry and placement are deterministic implementations; no autonomous model training or AI mesh sculpting claimed.",
+  "visual_status": "PENDING_GENUINE_NATIVE_A_B_REVIEW",
+  "unity_workflow": "valoria-bastion1-player-scene-integration.yml",
+  "protected": {
+    "axial_road": "x=-7..7",
+    "future_plots": [
+      [
+        -16,
+        3
+      ],
+      [
+        16,
+        3
+      ]
+    ],
+    "old_scene": "never overwrite previous validated assets"
+  }
+}
