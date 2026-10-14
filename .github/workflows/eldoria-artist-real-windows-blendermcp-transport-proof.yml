@@ -1,0 +1,105 @@
+name: Eldoria installed BlenderMCP transport with original Qwen model decisions
+on:
+  push:
+    branches: [validation/artist-windows-pc-bridge-20261014]
+    paths: ['.github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-pc-one-off-pinned-blendermcp
+  cancel-in-progress: true
+jobs:
+  real-pinned-blendermcp-original-qwen:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Find installed Git via GitHub Desktop
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $git) { throw 'Git unavailable' }
+            $folder=Split-Path $git
+            $env:PATH="$folder;$env:PATH"
+            Add-Content $env:GITHUB_PATH $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+          sparse-checkout-cone-mode: true
+      - uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38610802289'
+          name: eldoria-same-PC-original-Qwen-and-real-Blender-artwork
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-original-qwen
+      - name: Resolve EXACT installed BlenderMCP addon and execute original Qwen artwork over real native MCP
+        shell: powershell
+        timeout-minutes: 8
+        run: |
+          $ErrorActionPreference='Stop'
+          $binary=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $binary) {
+            $binary=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $binary) { throw 'Native Blender executable unavailable' }
+          $lines=& $binary -b --python-exit-code 1 --python-expr "import addon_utils;mods=addon_utils.modules(refresh=True);m=next(x for x in mods if x.__name__=='blender_mcp');print('ELDORIA_PINNED_MCP_MODULE='+m.__file__)"
+          if ($LASTEXITCODE -ne 0) { throw 'BlenderMCP addon not available inside real Blender' }
+          $line=@($lines | Where-Object { $_ -like 'ELDORIA_PINNED_MCP_MODULE=*' }) | Select-Object -First 1
+          if (-not $line) { throw 'Native Blender did not provide addon file' }
+          $addon=$line.Substring('ELDORIA_PINNED_MCP_MODULE='.Length).Trim()
+          if (-not (Test-Path $addon)) { throw 'BlenderMCP module path missing' }
+          $sha=(Get-FileHash $addon -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($sha -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5') { throw 'Installed BlenderMCP addon SHA mismatch; stop before importing unverified code' }
+          $input='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $beforeHash=(Get-FileHash $input -Algorithm SHA256).Hash.ToLowerInvariant()
+          $plan=Join-Path $env:RUNNER_TEMP 'eldoria-original-qwen\artist-plan.json'
+          $raw=Join-Path $env:RUNNER_TEMP 'eldoria-original-qwen\qwen-raw.json'
+          $planHash=(Get-FileHash $plan -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($planHash -ne (Get-FileHash $raw -Algorithm SHA256).Hash.ToLowerInvariant() -or
+              $planHash -ne '3962044c882b23712fbab195e5a2570af59e8e9395cde8293a1631813b7b3d09') {
+            throw 'Frozen genuine Qwen author plan mismatch'
+          }
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-pinned-mcp-actual-execution'
+          & $binary -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- `
+             --source $input --plan $plan --out $out --texture-root $env:GITHUB_WORKSPACE `
+             --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json `
+             --transport blendermcp --mcp-addon $addon --mcp-sha256 $sha
+          if ($LASTEXITCODE -ne 0) { throw 'Real installed BlenderMCP transport failed, no direct-execution fallback permitted' }
+          $p=Get-Content (Join-Path $out 'execution-proof.json') -Raw | ConvertFrom-Json
+          if ($p.transport -ne 'blendermcp' -or -not $p.blender_execution -or -not $p.inherited_mesh_data_changed -or $p.action_count -ne 2) { throw 'Actual BlenderMCP source mesh editing not independently proven' }
+          if ($p.art_approved -or $p.unity_tested) { throw 'Art/Unity cannot self-approve' }
+          if ((Get-FileHash $input -Algorithm SHA256).Hash.ToLowerInvariant() -ne $beforeHash) { throw 'Frozen source changed' }
+          Write-Host ('ELDORIA_INSTALLED_WINDOWS_BLENDERMCP_QWEN_REAL_MESH_PASS plan_sha256='+$planHash)
+          $proof=@{
+            real_windows_blender=$true
+            installed_blendermcp_module_sha256=$sha
+            transport='blendermcp'
+            artist_qwen_original_plan_sha256=$planHash
+            original_source_unchanged=$true
+            inherited_mesh_data_changed=$true
+            art_approved=$false
+            unity_tested=$false
+          }
+          $proof | ConvertTo-Json -Depth 4 | Set-Content -Path (Join-Path $out 'blender-mcp-transport-proof.json') -Encoding UTF8
+      - name: Preserve original Qwen to installed Windows BlenderMCP artifacts even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pinned-real-PC-BlenderMCP-Qwen-proof
+          path: |
+            ${{ runner.temp }}/eldoria-pinned-mcp-actual-execution/
+          retention-days: 10
+          if-no-files-found: warn
