@@ -3,7 +3,7 @@ switch the actual model's offered Blender operations; after five, diagnose.
 """
 import json,pathlib,sys,tempfile,unittest
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
-from artist_loop import track_rejected_strategy,rejected_plan_family
+from artist_loop import track_rejected_strategy,rejected_plan_family,schema_for_plan
 
 class ModelHypothesisSwitch(unittest.TestCase):
     def test_two_actual_invalid_sculpt_variants_disable_sculpt_family(self):
@@ -26,6 +26,13 @@ class ModelHypothesisSwitch(unittest.TestCase):
                 track_rejected_strategy(p,counts,blocked)
             self.assertFalse(blocked)
             self.assertEqual(counts,{"bevel":1,"sculpt_anchor":1,"mesh":1})
+    def test_assembly_can_switch_from_primitive_to_qwen_mesh_after_two_rejects(self):
+        source=[{"name":"Existing Valoria Timber Tower","faces":5338,"edges":12000}]
+        schema=schema_for_plan(3,True,"full","architecture",
+                               [source[0]["name"]],source,
+                               True,True,1,False,{"primitive"})
+        variants=schema["properties"]["actions"]["prefixItems"][0]["oneOf"]
+        self.assertEqual([v["properties"]["op"]["const"] for v in variants],["mesh"])
     def test_invalid_json_does_not_invent_qwen_tool(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=pathlib.Path(tmp)/"raw.json";p.write_text("NOT JSON")
