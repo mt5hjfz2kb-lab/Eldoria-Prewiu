@@ -114,6 +114,34 @@ def artist_xy_positions(original_plan,limits):
     return positions
 
 
+def validate_artist_path_curvature(original_plan, limits, minimum_double_area=130.0):
+    """Reject geometrically degenerate original AI paths *before* starting Blender.
+
+    This is a pure QA gate. It never edits, interpolates, straightens or authors
+    any AI-selected XY values; a rejected plan must go back to Qwen.
+    The double signed triangle area equals the two-dimensional cross product.
+    """
+    artist_xy_positions(original_plan, limits)
+    errors = []
+    for index, action in enumerate(original_plan["planned_actions"], 1):
+        xy = [(k["center_xy"]["x"], k["center_xy"]["y"])
+              for k in action["parameters"]["knots"]]
+        if len(set(xy)) < 3:
+            errors.append(f"Path {index}: needs at least three DISTINCT XY knots")
+        cross = max(
+            abs((xy[i+1][0]-xy[i][0]) * (xy[i+2][1]-xy[i][1]) -
+                (xy[i+1][1]-xy[i][1]) * (xy[i+2][0]-xy[i][0]))
+            for i in range(len(xy)-2)
+        )
+        if cross < minimum_double_area:
+            errors.append(
+                f"Path {index}: original XY knots form an insufficient bend "
+                f"(cross-product area={cross:g} m2, minimum={minimum_double_area:g} m2); "
+                "choose NEW original non-collinear XY coordinates"
+            )
+    return errors
+
+
 def normalize_artist_authored_knots(raw_document,source_heights):
     """Type-only mapping of model-picked XY/delta/radius plus ACTUAL source Z.
 
