@@ -1,23 +1,25 @@
 """Qwen-authored source-only Brecha landform: typed curved paths, no scripted terrain shapes."""
-import argparse,base64,copy,hashlib,json,pathlib,sys,time,urllib.request
+import argparse,base64,copy,hashlib,json,pathlib,subprocess,sys,time,urllib.request
 from PIL import Image
 root=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(root/"tools/art-direction/ai-authoring"))
 from author_brief import cpu_artist_schema
 from artist_plan_validation import inspect_artist_plan
-from terrain_bounds_contract import (verified_knot_ranges, limits_label, inside_limits,
+from terrain_bounds_contract import (verified_knot_ranges, limits_label, artist_xy_positions,
                                     model_knot_schema, normalize_artist_authored_knots)
 p=argparse.ArgumentParser()
 p.add_argument("--out",type=pathlib.Path,required=True)
 p.add_argument("--reference",type=pathlib.Path,required=True)
 p.add_argument("--real-before",type=pathlib.Path,required=True)
 p.add_argument("--mesh-context",type=pathlib.Path,required=True)
+p.add_argument("--source",type=pathlib.Path,required=True,help="Frozen genuine source .blend, only inspected")
 a=p.parse_args()
 a.out.mkdir(parents=True,exist_ok=False)
 sha=lambda f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest()
 top=json.loads(a.mesh_context.read_text())
 target="ZoneOne continuous prairie source"
 assert top["target"]==target and top["vertices"]>=14000
+if not a.source.is_file() or a.source.suffix.lower()!=".blend":raise ValueError("Source .blend missing")
 knot_limits=verified_knot_ranges(top)
 role=(root/"tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md").read_text()
 source_review=(root/"docs/world4x-zone1/GROUND_ART_REVIEW_20261014.json").read_text()
@@ -50,7 +52,7 @@ prompt=("ELDORIA / ZONE ONE / BRECHA: two real images are owner's approved world
 "One is a distinct winding asymmetric BRECHA depression/chasm channel with Z offsets reaching -9..-14m; "
 "the other is an offset companion rising fractured shoulder/rim using Z offsets reaching +7..+12m. "
 + ("Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, " +
-"source-verified LOCAL center ranges " + limits_label(knot_limits) + ". For each knot return center_xyz as named {x,y,z}, vertical_displacement_m as a signed scalar and radius. Vertical sculpt means dx=dy=0. ")
+"source-verified LOCAL bounds " + limits_label(knot_limits) + ". For each knot choose ORIGINAL center_xy {x,y}, signed vertical_displacement_m and radius_m_choice from 18,20,22,24,26,28,30. The REAL SURFACE Z is measured independently in Blender; NEVER invent a center Z and NEVER confuse your vertical displacement with terrain elevation. Each path must have 3 DISTINCT XY positions that form a clear bend. ")
 + "Make visually connected, irregular long curves rather than circular pimples or ruler-straight mountains. "
 "Land around it remains an open buildable meadow; do not reprofile city or edges. "
 "Place centers >= radius+2m inside the +/-118m protected boundaries and away from city pad. "
@@ -81,7 +83,23 @@ for attempt in range(3):
  errors=[]
  try:
   plan_raw=json.loads(raw)
-  plan=normalize_artist_authored_knots(plan_raw)
+  chosen_xy=artist_xy_positions(plan_raw,knot_limits)
+  xy_file=a.out/("source-xy-request-"+str(attempt+1)+".json")
+  xy_file.write_text(json.dumps({"positions":chosen_xy},indent=2))
+  z_file=a.out/("measured-source-z-"+str(attempt+1)+".json")
+  command=["blender","-b","--python-exit-code","1","--python",
+           str(root/"tools/world4x-zone1/production/inspect_ground_heights.py"),
+           "--","--source",str(a.source),"--positions",str(xy_file),"--out",str(z_file)]
+  inspection=subprocess.run(command,capture_output=True,text=True,timeout=180)
+  (a.out/("source-height-blender-"+str(attempt+1)+".log")).write_text(
+      inspection.stdout+"\\n"+inspection.stderr)
+  if inspection.returncode:raise RuntimeError("Actual source height query rejected: "+inspection.stdout[-500:])
+  measured=json.loads(z_file.read_text())
+  if not measured.get("source_unchanged") or measured.get("source_sha256")!=sha(a.source):
+      raise RuntimeError("Frozen original Blender terrain source mismatch")
+  if [v["ai_selected_xy"] for v in measured["samples"]]!=chosen_xy:
+      raise RuntimeError("Blender source height provenance doesn't match artist XY")
+  plan=normalize_artist_authored_knots(plan_raw,[v["source_sample_z"] for v in measured["samples"]])
   errors.extend(inspect_artist_plan(plan,target,"existing",2,topology=top))
   actions=plan["planned_actions"]
   if len(actions)!=2 or len({v.get("id") for v in actions})!=2: errors.append("Exactly two unique path operations")
@@ -97,7 +115,7 @@ for attempt in range(3):
    if cross<130:errors.append("Artist path must have meaningful curvature, not straight")
    for k in knots:
     x,y,z=k["center"];dx,dy,dz=k["delta"];rad=k["radius"]
-    if not inside_limits(k["center"],knot_limits) or not 18<=rad<=30:errors.append("Knot center/radius out of source-verified ground-safe bounds")
+    if not(knot_limits[0][0]<=x<=knot_limits[0][1] and knot_limits[1][0]<=y<=knot_limits[1][1] and 18<=rad<=30):errors.append("Knot XY/radius outside ground-safe limits")
     if dx!=0 or dy!=0 or not -14<=dz<=12:errors.append("Only vertical displacement")
     if abs(x)+rad>=118 or abs(y)+rad>=118:errors.append("Path intersects protected boundary")
     if -40-rad < x < 4+rad and -52-rad < y < -8+rad:errors.append("Path intersects city pad")
@@ -111,7 +129,9 @@ for attempt in range(3):
   (a.out/"artist-plan.json").write_text(json.dumps(plan["planned_actions"],indent=2))
   (a.out/"genuine-ai-evidence.json").write_text(json.dumps({"ai_model":payload["model"],"source_images":images,
    "plan_sha256":sha(a.out/"artist-plan.json"),"original_inference":plan_raw,
-   "serialization":"AI selected center_xyz and vertical_displacement_m; lossless [x,y,z] and [0,0,dz] mapping",
+   "serialization":"Qwen authored XY, signed Z displacement and exact selected radius; Blender measured the frozen source Z; no creative value rewritten",
+   "source_blend_sha256":sha(a.source),
+   "real_source_height_evidence_sha256":sha(a.out/("measured-source-z-"+str(attempt+1)+".json")),
    "model_weight_training":False,"blender_operations_executed_yet":False},indent=2))
   print("BRECHA_QWEN_ART_DIRECTOR_ACCEPTED",attempt+1,flush=True)
   break
