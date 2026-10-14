@@ -48,5 +48,36 @@ class SourceBoundsTests(unittest.TestCase):
         self.assertFalse(contract.inside_limits([float('nan'),50,0],limits))
 
 
+    def test_named_scalar_model_schema_has_axis_specific_ranges(self):
+        limits=contract.verified_knot_ranges(
+            {"local_aabb":{"min":[-100,0,-1],"max":[100,90,2]}})
+        schema=contract.model_knot_schema(limits)
+        prop=schema["properties"]["center_xyz"]["properties"]
+        self.assertEqual(prop["x"]["minimum"],-72.0)
+        self.assertEqual(prop["y"]["maximum"],86.0)
+        self.assertEqual(prop["z"]["maximum"],1.99)
+        self.assertEqual(schema["properties"]["vertical_displacement_m"]["minimum"],-14)
+        self.assertEqual(schema["required"],["center_xyz","vertical_displacement_m","radius"])
+
+    def test_serialize_only_artist_picked_numbers_no_creative_rewrite(self):
+        raw={"planned_actions":[{
+          "id":"path1","type":"sculpt_path","parameters":{
+            "knots":[{"center_xyz":{"x":-35.5,"y":68.25,"z":0.75},
+                      "vertical_displacement_m":-10.25,"radius":23.0}]}}]}
+        normalized=contract.normalize_artist_authored_knots(raw)
+        knot=normalized["planned_actions"][0]["parameters"]["knots"][0]
+        self.assertEqual(knot,{"center":[-35.5,68.25,0.75],
+                                "delta":[0,0,-10.25],"radius":23.0})
+        self.assertIn("center_xyz",raw["planned_actions"][0]["parameters"]["knots"][0])
+        self.assertEqual(raw["planned_actions"][0]["parameters"]["knots"][0]["vertical_displacement_m"],-10.25)
+
+    def test_invalid_coordinate_does_not_get_clamped_or_invented(self):
+        doc={"planned_actions":[{"parameters":{"knots":[
+          {"center_xyz":{"x":"oops","y":66,"z":0},"vertical_displacement_m":-10,"radius":24}
+        ]}}]}
+        with self.assertRaisesRegex(ValueError,"invalid numeric"):
+            contract.normalize_artist_authored_knots(doc)
+
+
 if __name__ == "__main__":
     unittest.main()
