@@ -1,107 +1,117 @@
-"""Offline regression for the repeated out-of-source-Qwen-knots failure.
-
-The *artist* still chooses every knot/delta. The infrastructure may only
-constrain future choices using actual inspected source bounds.
-"""
+"""No-creative-rewrite regressions for Qwen terrain and real source Z lookup."""
 import importlib.util
+import math
 from pathlib import Path
 import unittest
 
-SCRIPT = Path(__file__).resolve().parents[1] / "terrain_bounds_contract.py"
-spec = importlib.util.spec_from_file_location("terrain_bounds_contract", SCRIPT)
-contract = importlib.util.module_from_spec(spec)
+SCRIPT=Path(__file__).resolve().parents[1]/"terrain_bounds_contract.py"
+spec=importlib.util.spec_from_file_location("terrain_bounds_contract",SCRIPT)
+contract=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(contract)
 
 
-class SourceBoundsTests(unittest.TestCase):
-    def test_exact_real_source_intersection_follows_local_geometry(self):
-        limits = contract.verified_knot_ranges(
-            {"local_aabb":{"min":[-120,-120,-1.25],"max":[120,120,1.25]}})
-        self.assertEqual(limits[0],(-72.0,72.0))
-        self.assertEqual(limits[1],(32.0,86.0))
-        self.assertEqual(limits[2],(-1.24,1.24))
-        self.assertTrue(contract.inside_limits([22,48,0.1],limits))
-        self.assertFalse(contract.inside_limits([22,48,6],limits))
-        self.assertIn("Z=-1.24..1.24",contract.limits_label(limits))
+def limits():
+    return contract.verified_knot_ranges(
+        {"local_aabb":{"min":[-120,-120,-5.91],"max":[120,120,8.15]}})
 
-    def test_missing_aabb_is_rejected_before_expensive_qwen(self):
-        for payload in ({}, {"local_aabb":{"min":[0,0],"max":[1,1]}},
-                        {"local_aabb":{"min":[2,0,0],"max":[1,1,1]}}):
-            with self.subTest(payload=payload):
-                with self.assertRaises(ValueError):
-                    contract.verified_knot_ranges(payload)
 
-    def test_nonoverlap_does_not_guess_or_clamp_artistic_values(self):
+def original_plan():
+    return {
+        "schema_version":1,
+        "observed_defect":"Source terrain has a visually flat, synthetic grass carpet.",
+        "design_intent":"Create distinct asymmetrical chasm and fractured shoulder from inherited source.",
+        "asset_decision":"MODIFY",
+        "planned_actions":[
+            {"id":"chasm","type":"sculpt_path","target":"ZoneOne continuous prairie source",
+             "rationale":"Use an actual long curved depression to shape the Brecha.",
+             "parameters":{"knots":[
+                 {"center_xy":{"x":-72,"y":32},"vertical_displacement_m":-9,"radius_m_choice":"18"},
+                 {"center_xy":{"x":-40,"y":86},"vertical_displacement_m":-14,"radius_m_choice":"24"},
+                 {"center_xy":{"x":24,"y":45},"vertical_displacement_m":-10,"radius_m_choice":"20"}]}},
+            {"id":"shoulder","type":"sculpt_path","target":"ZoneOne continuous prairie source",
+             "rationale":"Establish a non-parallel fractured geological counter-ridge.",
+             "parameters":{"knots":[
+                 {"center_xy":{"x":72,"y":32},"vertical_displacement_m":7,"radius_m_choice":"18"},
+                 {"center_xy":{"x":40,"y":74},"vertical_displacement_m":12,"radius_m_choice":"24"},
+                 {"center_xy":{"x":-12,"y":44},"vertical_displacement_m":9,"radius_m_choice":"20"}]}}
+        ]}
+
+
+class SourceContractTests(unittest.TestCase):
+    def test_real_source_bounds_preserved(self):
+        actual=limits()
+        self.assertEqual(actual[0],(-72,72))
+        self.assertEqual(actual[1],(32,86))
+        self.assertEqual(actual[2],(-5,7))
+        self.assertTrue(contract.inside_limits([25,60,1],actual))
+        self.assertFalse(contract.inside_limits([25,60,12],actual))
+        self.assertIn("Z=-5..7",contract.limits_label(actual))
+
+    def test_invalid_source_inventory_fails_closed(self):
+        with self.assertRaises(ValueError):contract.verified_knot_ranges({})
+        with self.assertRaises(ValueError):contract.verified_knot_ranges(
+            {"local_aabb":{"min":[2,0,0],"max":[1,1,1]}})
         with self.assertRaisesRegex(ValueError,"does not overlap"):
             contract.verified_knot_ranges(
                 {"local_aabb":{"min":[-20,-100,1],"max":[20,-10,2]}})
 
-    def test_schema_has_true_coordinates_and_stays_source_bounded(self):
-        limits = contract.verified_knot_ranges(
-            {"local_aabb":{"min":[-60,20,-3],"max":[70,65,4]}})
-        schema=contract.coordinate_schema(limits)
-        self.assertEqual(schema["maxItems"],3)
-        self.assertEqual(schema["prefixItems"][0]["minimum"],-59.99)
-        self.assertEqual(schema["prefixItems"][1]["maximum"],64.99)
-        self.assertEqual(schema["prefixItems"][2]["minimum"],-2.99)
-        self.assertFalse(contract.inside_limits([70,90,-5],limits))
-        self.assertFalse(contract.inside_limits([float('nan'),50,0],limits))
+    def test_model_schema_has_no_invented_center_height(self):
+        props=contract.model_knot_schema(limits())["properties"]
+        self.assertIn("center_xy",props)
+        self.assertNotIn("center_xyz",props)
+        self.assertEqual(set(props["center_xy"]["properties"]),{"x","y"})
+        self.assertEqual(props["vertical_displacement_m"]["minimum"],-14)
+        self.assertEqual(props["radius_m_choice"]["enum"],list(contract.RADIUS_CHOICES))
 
+    def test_xy_are_genuinely_authored_and_source_bounded(self):
+        self.assertEqual(contract.artist_xy_positions(original_plan(),limits()),
+                         [[-72,32],[-40,86],[24,45],[72,32],[40,74],[-12,44]])
+        wrong=original_plan()
+        wrong["planned_actions"][0]["parameters"]["knots"][0]["center_xy"]["x"]=999
+        with self.assertRaisesRegex(ValueError,"exceeds"):
+            contract.artist_xy_positions(wrong,limits())
 
-    def test_named_scalar_model_schema_has_axis_specific_ranges(self):
-        limits=contract.verified_knot_ranges(
-            {"local_aabb":{"min":[-100,0,-1],"max":[100,90,2]}})
-        schema=contract.model_knot_schema(limits)
-        prop=schema["properties"]["center_xyz"]["properties"]
-        self.assertEqual(prop["x"]["minimum"],-72.0)
-        self.assertEqual(prop["y"]["maximum"],86.0)
-        self.assertEqual(prop["z"]["maximum"],1.99)
-        self.assertEqual(schema["properties"]["vertical_displacement_m"]["minimum"],-14)
-        self.assertEqual(schema["required"],["center_xyz","vertical_displacement_m","radius"])
+    def test_exact_artist_decisions_are_never_rewritten(self):
+        original=original_plan()
+        source_z=[.4,2.3,-.5,1.1,3.2,0.9]
+        normalized=contract.normalize_artist_authored_knots(original,source_z)
+        steps=[k for a in normalized["planned_actions"] for k in a["parameters"]["knots"]]
+        self.assertEqual(steps[0],{"center":[-72,32,.4],"delta":[0,0,-9],"radius":18})
+        self.assertEqual(steps[1],{"center":[-40,86,2.3],"delta":[0,0,-14],"radius":24})
+        self.assertEqual(steps[4],{"center":[40,74,3.2],"delta":[0,0,12],"radius":24})
+        self.assertIn("center_xy",original["planned_actions"][0]["parameters"]["knots"][0])
+        self.assertEqual(original["planned_actions"][0]["parameters"]["knots"][1]["vertical_displacement_m"],-14)
 
-    def test_serialize_only_artist_picked_numbers_no_creative_rewrite(self):
-        raw={"planned_actions":[{
-          "id":"path1","type":"sculpt_path","parameters":{
-            "knots":[{"center_xyz":{"x":-35.5,"y":68.25,"z":0.75},
-                      "vertical_displacement_m":-10.25,"radius":23.0}]}}]}
-        normalized=contract.normalize_artist_authored_knots(raw)
-        knot=normalized["planned_actions"][0]["parameters"]["knots"][0]
-        self.assertEqual(knot,{"center":[-35.5,68.25,0.75],
-                                "delta":[0,0,-10.25],"radius":23.0})
-        self.assertIn("center_xyz",raw["planned_actions"][0]["parameters"]["knots"][0])
-        self.assertEqual(raw["planned_actions"][0]["parameters"]["knots"][0]["vertical_displacement_m"],-10.25)
+    def test_invalid_radii_source_z_and_delta_are_rejected(self):
+        bad=original_plan()
+        bad["planned_actions"][0]["parameters"]["knots"][2]["radius_m_choice"]="15"
+        with self.assertRaisesRegex(ValueError,"radius"):
+            contract.artist_xy_positions(bad,limits())
+        with self.assertRaises(ValueError):
+            contract.normalize_artist_authored_knots(original_plan(),[0])
+        with self.assertRaisesRegex(ValueError,"source Z"):
+            contract.normalize_artist_authored_knots(original_plan(),[0,1,2,3,4,float("nan")])
+        bad=original_plan()
+        bad["planned_actions"][0]["parameters"]["knots"][0]["vertical_displacement_m"]=-30
+        with self.assertRaisesRegex(ValueError,"vertical"):
+            contract.artist_xy_positions(bad,limits())
 
-    def test_invalid_coordinate_does_not_get_clamped_or_invented(self):
-        doc={"planned_actions":[{"parameters":{"knots":[
-          {"center_xyz":{"x":"oops","y":66,"z":0},"vertical_displacement_m":-10,"radius":24}
-        ]}}]}
-        with self.assertRaisesRegex(ValueError,"invalid numeric"):
-            contract.normalize_artist_authored_knots(doc)
-
-
-    def test_real_failure_pattern_repeated_knot_centers_remains_rejected(self):
+    def test_duplicate_ai_knots_still_fail_independent_spatial_gate(self):
         import sys
         root=Path(__file__).resolve().parents[4]
         sys.path.insert(0,str(root/"tools/art-direction/ai-authoring"))
         from artist_plan_validation import inspect_artist_plan
-        typed={"planned_actions":[{
-          "id":"chasm","type":"sculpt_path","target":"ZoneOne continuous prairie source",
-          "rationale":"Sculpt a genuinely original non-linear chasm path",
-          "parameters":{"knots":[
-            {"center_xyz":{"x":-72,"y":32,"z":-5},"vertical_displacement_m":-9,"radius":18},
-            {"center_xyz":{"x":-72,"y":32,"z":-5},"vertical_displacement_m":-14,"radius":25},
-            {"center_xyz":{"x":-72,"y":32,"z":-5},"vertical_displacement_m":-14,"radius":20}]}}]}
-        typed.update({
-            "observed_defect":"Terrain reads as uniform flat grass with repeated fake beige stripes.",
-            "design_intent":"Sculpt a visibly winding chasm on genuinely inherited source terrain.",
-            "asset_decision":"MODIFY"})
-        normalized=contract.normalize_artist_authored_knots(typed)
+        original=original_plan()
+        knots=original["planned_actions"][0]["parameters"]["knots"]
+        knots[1]["center_xy"]=dict(knots[0]["center_xy"])
+        knots[2]["center_xy"]=dict(knots[0]["center_xy"])
+        heights=[.4,.4,.4,1.1,3.2,.9]
+        normalized=contract.normalize_artist_authored_knots(original,heights)
         errors=inspect_artist_plan(normalized,"ZoneOne continuous prairie source",
                                    "existing",2,topology={"local_aabb":{
-                                     "min":[-120,-120,-6],"max":[120,120,9]}})
-        self.assertTrue(any("DISTINCT" in x for x in errors),errors)
+                                       "min":[-120,-120,-6],"max":[120,120,9]}})
+        self.assertTrue(any("DISTINCT" in err for err in errors),errors)
 
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     unittest.main()
