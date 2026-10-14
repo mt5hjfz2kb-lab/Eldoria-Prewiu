@@ -29,6 +29,18 @@ class Grounding(unittest.TestCase):
  def test_topology_changes_force_new_inspection_before_face_ids(self):
   p={"actions":[op("extrude",{"faces":[13],"offset":[0,0,1]}),op("inset",{"faces":[15],"thickness":.04})]}
   with self.assertRaisesRegex(RejectedPlan,"re-inspect"):verify_source_plan(p,SOURCE)
+ def test_source_grounded_selective_bevel_not_whole_mesh(self):
+  dense=copy.deepcopy(SOURCE)
+  dense[0]["edges"]=14000
+  dense[0]["edge_landmarks"]=[{"edge_index":120,"local_midpoint_m":[0,0,1]}]
+  plan={"actions":[op("bevel",{"edges":[120],"width":.03,"segments":2,"apply":True})]}
+  before=copy.deepcopy(plan)
+  self.assertTrue(verify_source_plan(plan,dense))
+  self.assertEqual(plan,before)
+  with self.assertRaisesRegex(RejectedPlan,"global bevel forbidden"):
+   verify_source_plan({"actions":[op("bevel",{"width":.08,"segments":2,"apply":True})]},dense)
+  with self.assertRaisesRegex(RejectedPlan,"edge_index"):
+   verify_source_plan({"actions":[op("bevel",{"edges":[15000],"width":.03,"segments":2,"apply":True})]},dense)
  def test_no_imaginary_target(self):
   p={"actions":[{"op":"bevel","target":"Fictional new building","params":{"width":.04}}]}
   with self.assertRaisesRegex(RejectedPlan,"unknown target"):verify_source_plan(p,SOURCE)
