@@ -10,6 +10,7 @@ HERE=pathlib.Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from blender_toolbox import camera_override,render_setup,ensure_review_lighting,ensure_review_stage,snapshot_meshes
 from world_space_evidence import summarize_world_points
+from camera_visible_source_faces import camera_visible_face_landmarks
 
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -82,6 +83,9 @@ def main():
             "local_normal":[round(float(t),4) for t in p.normal],
             "local_area_m2":round(float(p.area),6)}
             for p in chosen.values()]
+        # Capture the REAL matched-camera visible face IDs while this camera
+        # still points at the original asset (before supplemental top/side).
+        visible_faces=camera_visible_face_landmarks(o,max_faces=20)
         edges=o.data.edges
         selected_edges={}
         if len(edges):
@@ -118,6 +122,8 @@ def main():
             "edges":len(edges),
             "edge_landmarks":edge_landmarks,
             "face_landmarks":face_landmarks,
+            "camera_visible_face_landmarks":visible_faces,
+            "camera_visibility_verified_by_raycast":True,
             "name":o.name,"vertices":len(verts),"faces":len(o.data.polygons),
             "local_bounds_min_m":lo,"local_bounds_max_m":hi,
             "world_location_m":[round(float(v),5) for v in o.location],
