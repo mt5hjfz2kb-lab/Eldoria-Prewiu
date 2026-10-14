@@ -1,4 +1,5 @@
 name: Eldoria Qwen artist builds original attached architectural component on real Windows Blender
+# Retry after Qwen 5x duplicate-vertex original-mesh error; enforce QA fallback and access masks.
 # Owner-authorized continued art validation: real WORLD Z-up, source AABB, door/stair safety mask.
 # No source promotion, no Unity, no paid credits. Reject artwork, never self-approve.
 # Verified two prior authored Blender stages: original structural changes plus PBR shader repair.
