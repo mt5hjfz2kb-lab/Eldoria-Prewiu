@@ -2,6 +2,15 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-14",
+  "owner_production_pause": {
+    "active": true,
+    "requested_on": "2026-10-14",
+    "scope": "ALL_ELDORIA_PRODUCTION_WORKSTREAMS",
+    "reason": "Owner explicitly ordered a temporary pause to stabilize repeated toolchain and CI failures",
+    "allowed_work": "Isolated, reversible, zero-cost stabilization fixes and offline focused tests only",
+    "resumption": "Explicit new instruction by repository owner required",
+    "note": "Existing jobs may finish; this marker does not cancel ChatGPT Work sessions or GitHub Actions runs"
+  },
   "active": [
     {
       "id": "world-region-1-visual-convergence-v3-20261010",
