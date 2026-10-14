@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - art/eldoria-full-blender-artist-studio-20261014
+      - stabilization/eldoria-art-learning-visual-context-20261014
     paths:
       - 'tools/art-direction/full-studio/**'
       - '.github/workflows/eldoria-full-artist-studio.yml'
