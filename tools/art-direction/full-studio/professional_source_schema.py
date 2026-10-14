@@ -23,6 +23,17 @@ def source_artist_action_schema(objects):
                            for item in obj.get("face_landmarks",[])
                            if type(item.get("face_index")) is int and
                            0 <= item["face_index"] < obj.get("faces",0)})
+    # Prefer raycast-proven source FACE IDs that genuinely project into
+    # the matched player view. Quantiles in the original mesh can be hidden
+    # behind roofing or walls and repeatedly yield 0 changed camera pixels.
+    checked=any(obj.get("camera_visibility_verified_by_raycast") is True
+                for obj in objects)
+    visible=sorted({int(item["face_index"]) for obj in objects
+                    for item in obj.get("camera_visible_face_landmarks",[])
+                    if type(item.get("face_index")) is int and
+                       0<=item["face_index"]<obj.get("faces",0)})
+    if checked and visible:
+        observed_faces=visible
     observed_edges=sorted({int(item["edge_index"]) for obj in objects
                            for item in obj.get("edge_landmarks",[])
                            if type(item.get("edge_index")) is int and
