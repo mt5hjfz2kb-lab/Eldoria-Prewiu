@@ -8,32 +8,31 @@ original_ask=artist_loop.ask_plan
 MANUAL='''
 IMPORTANT CURRENT GEOGRAPHY TOOL SIGNATURES (strict, not Blender UI labels):
 sculpt params={center:[x,y,z],delta:[dx,dy,dz],radius:r}; the brush edits existing vertices with smooth radial falloff. This is appropriate for continuous large prairie hills, not creating disconnected objects. No face selection is required. Terrain is 240 METRES wide, current z range -4.42..6.31m. Tiny offsets 0.1/0.2m cannot solve the visible landform failure. You choose meaningful broad original hills and saddles at real world scale.
-extrude params={faces:[verified_face_indices],offset:[dx,dy,dz]}; NOT direction, amount or use_smooth_shade. inset params={faces:[verified_face_indices],thickness:t}; NOT distance. Faces were NOT selected or supplied in this brief; do not invent them or extrude the whole terrain.
-subdivide params={faces:[verified_face_indices],cuts:n}; bevel params={edges:[verified_edge_indices],width:w,segments:n}; topology changes require independent continuity verification. modifier params={kind:BEVEL|SUBSURF|SOLIDIFY|DECIMATE|REMESH|MIRROR|ARRAY|WEIGHTED_NORMAL|TRIANGULATE|SIMPLE_DEFORM|DISPLACE,options:{supported_values}}; an unmasked displacement of the whole plane would destroy protected city/borders and be rejected.
-Preserve the existing texture and UVs; no material operation in this geography-first cycle. Sculpt brush centers must stay in northern working region x=-70..70,y=35..75,z=-4..7; radii 25..40m remain within ground and outside protected city. delta x=y=0 keeps map continuity. You choose all centers, positive hill or negative valley heights, radii and their asymmetric composition, not a preset hill template. No coincident identical brushes, repeating row, or tiny isolated lump. Use several complementary large landform edits visible from the real source camera. Ground remains one mesh and open meadow dominates.
+TOPOLOGY LOCK FOR CONTINUOUS GROUND: the independent gate identifies the original 14,641 terrain vertices. Only sculpt operations are allowed this cycle: no subdivide, bevel, extrude, inset, remesh or topology-changing modifiers. Do not move any source vertex in XY or change protected city pad / border heights. Preserve original UVs and materials. Avoid an isolated circular pimple: arrange multiple original complementary elevations and saddles using brushes at staggered positions. Broad overlapping forms matter from the strategic camera, not only a maximum Z number.\nPreserve the existing texture and UVs; no material operation in this geography-first cycle. Sculpt brush centers must stay in northern working region x=-70..70,y=35..75,z=-4..7; radii 25..40m remain within ground and outside protected city. delta x=y=0 keeps map continuity. You choose all centers, positive hill or negative valley heights, radii and their asymmetric composition, not a preset hill template. No coincident identical brushes, repeating row, or tiny isolated lump. Use several complementary large landform edits visible from the real source camera. Ground remains one mesh and open meadow dominates.
 Prior general-workshop run 38571917109 had three genuinely non-executable proposals and executed no geometry. This attempt must return your own corrected valid operations. Do not copy those rejected pseudo-parameters. Geometry before texturing; no self-approval.
 '''
 def brief(max_actions,source_exists=False):return original_brief(max_actions,source_exists)+MANUAL
 def schema(max_actions=6,source_exists=False):
  result=original_schema(max_actions,source_exists)
  if source_exists:
-  action=result['properties']['actions']['items']
+  # The existing mesh/borders are already triangulated and indexed; topology
+  # changing tool operations break the independent identity-based safety gate.
+  # Constrain the model's tools, not its creative placement/shape decisions.
+  action=copy.deepcopy(result['properties']['actions']['items'])
   vec={'type':'array','minItems':3,'maxItems':3,'items':{'type':'number'}}
-  variants=[]
-  for op,fields in [('sculpt',{'center':vec,'delta':vec,'radius':{'type':'number','minimum':25,'maximum':40}}),
-                    ('extrude',{'faces':{'type':'array','items':{'type':'integer'}},'offset':vec}),
-                    ('inset',{'faces':{'type':'array','items':{'type':'integer'}},'thickness':{'type':'number'}})]:
-   variant=copy.deepcopy(action);variant['properties']['op']={'type':'string','const':op}
-   variant['properties']['params']={'type':'object','properties':fields,'required':list(fields),'additionalProperties':False}
-   variants.append(variant)
-  other=copy.deepcopy(action)
-  other['properties']['op']['enum']=[op for op in other['properties']['op']['enum'] if op not in ('sculpt','extrude','inset')]
-  variants.append(other)
-  result['properties']['actions']['items']={'oneOf':variants}
+  action['properties']['op']={'type':'string','const':'sculpt'}
+  action['properties']['params']={'type':'object',
+    'properties':{'center':vec,'delta':vec,'radius':{'type':'number','minimum':25,'maximum':40}},
+    'required':['center','delta','radius'],'additionalProperties':False}
+  result['properties']['actions']['items']=action
  return result
 def ask_plan(*args,**kwargs):
  doc=original_ask(*args,**kwargs)
  sculpts=[action for action in doc['actions'] if action['op']=='sculpt']
+ if len(sculpts)<2 or len(sculpts)!=len(doc['actions']):
+  raise artist_loop.RejectedPlan('Topology-stable terrain cycle requires at least two genuine sculpt landform actions, no subdivide/bevel/remesh or invented face indices.')
+ if not any(a['params']['delta'][2]>=6 for a in sculpts) or not any(a['params']['delta'][2]<=-2.5 for a in sculpts):
+  raise artist_loop.RejectedPlan('Visual relief needs an authored broad hill >= +6m and a complementary valley <= -2.5m; keep original coordinates and choose original compositions.')
  if sculpts and not any(abs(action['params']['delta'][2])>=6 for action in sculpts):
   raise artist_loop.RejectedPlan('Actual source review rejected previous +2.5m/-1.2m edits as insufficient strategic relief. Choose YOUR OWN broad landforms with at least one 6..12m vertical brush; do not repeat a tiny valid-render correction. Do not alter existing rejected proposal parameters externally.')
  for action in sculpts:
