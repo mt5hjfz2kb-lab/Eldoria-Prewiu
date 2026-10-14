@@ -593,6 +593,10 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                 if act["params"].get("source") not in created:
                     raise RejectedPlan("Qwen duplicate lacks an actual prior object")
                 created.add(act["target"])
+    # The accepted authored plan is bound to the EXACT payload delivered
+    # to Ollama, including raw reference pixels, camera views and model schema.
+    attempted=trial/("actual-qwen-context-attempt-"+str(attempt_number)+".json")
+    (trial/"actual-qwen-context-executed.json").write_bytes(attempted.read_bytes())
     return doc
 
 def critique(args,reference,before,after,role):
@@ -915,7 +919,8 @@ def main():
             original_source_sha=frozen_original_sha,input_source=source if source else args.source,
             raw_plan=candidate,execution_proof=stage/"execution-proof.json",
             before=stage/"before-blender.png",after=stage/"after-blender.png",
-            model=args.model,memory_proof=args.out/"learning-casebook-proof.json",
+            model=args.model,memory_proof=trial/"actual-qwen-context-executed.json",
+            review_camera_file=args.review,
             run_id=int(os.environ.get("GITHUB_RUN_ID","0")) or None)
         records.append({"cycle":cycle,"status":"ART_REVIEW_REQUIRED",
                         "review_request_sha256":sha(trial/"art-review-request.json"),
