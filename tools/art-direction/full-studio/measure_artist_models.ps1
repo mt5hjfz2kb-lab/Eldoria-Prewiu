@@ -54,8 +54,11 @@ try{
   $cases=@(
     @{label='4b-sculpt';model='qwen3-vl:4b-instruct';kind='mesh_edit'},
     @{label='8b-sculpt';model='qwen3-vl:8b-instruct-q4_K_M';kind='mesh_edit'},
-    @{label='8b-assembly';model='qwen3-vl:8b-instruct-q4_K_M';kind='assembly'}
+    @{label='8b-professional';model='qwen3-vl:8b-instruct-q4_K_M';kind='professional'}
   )
+  # Owner-authorized single real source/real camera experiment. Previous
+  # 4B vs 8B and mandatory primitive-assembly tests are already evidenced.
+  $cases=@($cases | Where-Object {$_.label -eq '8b-professional'})
   foreach($case in $cases){
     if($case.model -notin $installed){throw ('No previously cached model; no download authorized: '+$case.model)}
   }
@@ -71,10 +74,11 @@ try{
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
-      '--max-cycles','2','--min-successful-cycles','2',
+      '--max-cycles','4','--min-successful-cycles','2',
       '--max-plan-attempts','5','--max-actions','3','--max-tokens','2048',
       '--vision-max-edge','768','--asset-category','architecture')
     if($case.kind -eq 'assembly'){$params+=@('--source-build-phase','--source-tool-sequencing')}
+    elseif($case.kind -eq 'professional'){$params+=@('--phase','full','--source-tool-sequencing')}
     else{$params+=@('--phase','mesh_edit')}
     $code=999
     try{
@@ -90,15 +94,26 @@ try{
     }
     $resultFile=Join-Path $outCase 'full-studio-result.json'
     $cycles=@()
+    $qaCount=0
     if(Test-Path $resultFile){
       $result=Get-Content $resultFile -Raw | ConvertFrom-Json
       if($result.art_approved){throw 'False self-approval forbidden'}
+      $qaCount=[int]$result.ai_authored_action_plans
       $cycles=@($result.cycles | ForEach-Object {@{cycle=$_.cycle;status=$_.status;screen_fraction=$_.screen_impact.changed_fraction}})
+    }
+    $visibilityReport=Join-Path $outCase 'source-inspection/source-inspection.json'
+    $visibleFaces=0
+    if(Test-Path $visibilityReport){
+      $observations=Get-Content $visibilityReport -Raw | ConvertFrom-Json
+      foreach($o in @($observations.objects)){
+        $visibleFaces+=@($o.camera_visible_face_landmarks).Count
+      }
     }
     $gpuAfter=if($smi){@(& $smi.Source --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits)}else{@()}
     $checks+=@{label=$case.label;model=$case.model;mode=$case.kind;
       elapsed_seconds=[math]::Round($sw.Elapsed.TotalSeconds,2);
       process_exit_code=$code;cycles=$cycles;result_present=(Test-Path $resultFile);
+      real_camera_ray_visible_faces=$visibleFaces;qa_review_candidates=$qaCount;
       gpu_after=$gpuAfter;art_approved=$false}
     Write-Host ('ELDORIA_QWEN_LOCAL_ART_TRIAL '+$case.label+' code='+$code+' seconds='+[math]::Round($sw.Elapsed.TotalSeconds,1))
   }
@@ -111,6 +126,15 @@ try{
     results=$checks}
   $report | ConvertTo-Json -Depth 15 | Set-Content -Encoding UTF8 (Join-Path $Out 'benchmark-results.json')
   Write-Host ('ELDORIA_QWEN_4B_8B_REAL_BLENDER_BENCHMARK_COMPLETE trials='+$checks.Count)
+  # GitHub SUCCESS previously masked Python code=1 and zero acceptable
+  # candidates. Make technical QA failure explicit, with artifacts uploaded.
+  $unusable=@($checks | Where-Object {
+    $_.process_exit_code -ne 0 -or $_.qa_review_candidates -lt 1 -or
+    $_.real_camera_ray_visible_faces -lt 1
+  })
+  if($unusable.Count -gt 0){
+    throw 'REAL_ARTIST_BENCHMARK_FAILED: no verified source-camera-ray-visible and QA reviewable candidate. Examine artifact, do not claim artistic success.'
+  }
 }finally{
   if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
 }
