@@ -45,6 +45,13 @@ def reject_obviously_bad_component_placement(plan,source_objects):
     if any(gap[i]>max(.5,span[i]*.35) for i in range(3)):
         raise RejectedPlan("NEW WORLD XYZ geometry is disconnected far from real source; "
                            "read world_bounds and reauthor its location (Blender Z is UP)")
+    name=action.get("target","").lower()
+    if any(t in name for t in ("chimney","spire","column","pillar","flue")):
+        dim=[hi[i]-lo[i] for i in range(3)]
+        if dim[2]<max(dim[0],dim[1])*1.1 or center_z<low[2]+.5*span[2]:
+            raise RejectedPlan("Vertical named architecture is incorrectly oriented in WORLD Y "
+                               "or too low: Blender WORLD +Z is vertical, GLB local Y is not. "
+                               "Qwen must author a genuinely upright placed element")
     # A physically attached roof/side extension must not stretch far beyond
     # the whole inherited building. The earlier accepted C02 huge Y-axis
     # block projected >1.3x the original footprint past the gable.
@@ -65,13 +72,6 @@ def reject_obviously_bad_component_placement(plan,source_objects):
         raise RejectedPlan("New component BLOCKS too much of existing low-level building "
                            "footprint, door/stairs/circulation at WORLD Z floor. "
                            "Qwen must choose a different ORIGINAL attachment/placement")
-    name=action.get("target","").lower()
-    if any(t in name for t in ("chimney","spire","column","pillar","flue")):
-        dim=[hi[i]-lo[i] for i in range(3)]
-        if dim[2]<max(dim[0],dim[1])*1.1 or center_z<low[2]+.5*span[2]:
-            raise RejectedPlan("Vertical named architecture is incorrectly oriented in WORLD Y "
-                               "or too low: Blender WORLD +Z is vertical, GLB local Y is not. "
-                               "Qwen must author a genuinely upright placed element")
     return {"source_world_bounds":[low,high],"new_world_bounds":[lo,hi],
             "ground_footprint_overlap_fraction":round(ground_intersection,4),
             "changes_to_artist_values":0,"art_approved":False}
