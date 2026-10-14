@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/world4x-zone1-full-studio-ground.yml'
       - 'tools/world4x-zone1/production/full_studio_ground_brief.txt'
+      - 'tools/world4x-zone1/production/run_general_ground_artist.py'
 permissions:
   contents: write
 concurrency:
@@ -37,7 +38,7 @@ jobs:
           docker exec zoneone-general-artist ollama pull qwen3-vl:4b-instruct
       - name: Real vision, modelling, export, A-B and critique in general workshop
         run: |
-          python3 /tmp/zoneone-general-studio/tools/art-direction/full-studio/artist_loop.py \
+          python3 tools/world4x-zone1/production/run_general_ground_artist.py /tmp/zoneone-general-studio/tools/art-direction/full-studio \
             --brief 'Edit existing continuous Zone One prairie ground. No towers, props, separate platforms or material replacement. Shape broad asymmetric rolling hills, valleys and open gentle buildable meadow visibly from the fixed strategic camera. Preserve city pad and outer border. Follow the ground constraints and real rejected source lessons. Use the full safe Blender modelling toolbox; choose your own composition and values. Geometry first; do not copy old cliff work.' \
             --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
             --source Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb \

@@ -8,9 +8,15 @@ def ground():
  objects=[o for o in bpy.data.objects if o.type=='MESH' and not o.name.startswith('_EldoriaReview')]
  if len(objects)!=1:raise ValueError('One continuous source terrain required; no props or platforms')
  return objects[0]
-original=ground();before=[list(original.matrix_world @ v.co) for v in original.data.vertices]
+def actual_points(o):
+ bpy.context.view_layer.update()
+ evaluated=o.evaluated_get(bpy.context.evaluated_depsgraph_get())
+ evaluated_mesh=evaluated.to_mesh()
+ try:return [list(evaluated.matrix_world @ v.co) for v in evaluated_mesh.vertices]
+ finally:evaluated.to_mesh_clear()
+original=ground();before=actual_points(original)
 bpy.ops.wm.open_mainfile(filepath=str(a.after.resolve()));candidate=ground()
-after=[list(candidate.matrix_world @ v.co) for v in candidate.data.vertices]
+after=actual_points(candidate)
 errors=[]
 if len(before)!=len(after):errors.append('Topology changed; protected pads cannot be verified by original vertex identity')
 else:
@@ -31,7 +37,7 @@ if candidate.data.has_custom_normals:
 assert coordinates==[list(v.co) for v in candidate.data.vertices]
 bpy.ops.wm.save_as_mainfile(filepath=str((a.out/'normal-fixed-ground.blend').resolve()))
 bpy.ops.object.select_all(action='DESELECT');candidate.select_set(True);bpy.context.view_layer.objects.active=candidate
-bpy.ops.export_scene.gltf(filepath=str((a.out/'general-ground-candidate.glb').resolve()),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=str((a.out/'general-ground-candidate.glb').resolve()),export_format='GLB',use_selection=True,export_apply=True)
 proof['normal_refresh_geometry_preserved']=True
 proof['candidate_sha256']=hashlib.sha256((a.out/'general-ground-candidate.glb').read_bytes()).hexdigest()
 proof['changed_vertices']=sum(abs(b[2]-c[2])>1e-4 for b,c in zip(before,after))
