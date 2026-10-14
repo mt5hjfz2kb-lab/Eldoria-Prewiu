@@ -43,6 +43,9 @@ if not stone:raise RuntimeError('Existing wall has no source material')
 if not wood:wood=next((m for o in woodkit for m in o.data.materials if m),None)
 if not wood:raise RuntimeError('Existing medieval kit has no usable material')
 original_names=set(o.name for o in objects)
+# Prove the immutable original mesh material slots survive every candidate.
+source_material_slots={o.name:tuple(m.name if m else None for m in o.data.materials)
+                       for o in meshes}
 created=[]; reused=[]; source_checksums={}
 def safe(label,x,y,w,d,height=0):
  # Keep at least 2m outside the 14m-wide reserved road and buffer both lots.
@@ -80,7 +83,11 @@ def clone_group(label,kit,x,y,size,base_z=None,rotate=0):
      @ Matrix.Diagonal(Vector((sx,sy,szscale,1)))
      @ Matrix.Translation(Vector((-(lo.x+hi.x)/2,-(lo.y+hi.y)/2,-lo.z))))
  for old in kit:
-  o=old.copy();o.data=old.data;o.parent=None;o.matrix_world=transform @ old.matrix_world
+  o=old.copy();o.data=old.data;o.parent=None
+  # Blender cannot apply modifiers to unlinked objects. Link first, then use
+  # the evaluated source geometry; never mutate the original kit's meshes.
+  bpy.context.collection.objects.link(o)
+  o.matrix_world=transform @ old.matrix_world
   # Preserve originals; cut repeated production family wall-kit triangle density
   # for mobile at strategic camera scale without changing mesh source.
   if variant=='A' and (kit is wallkit or kit is connectionkit):
@@ -95,7 +102,7 @@ def clone_group(label,kit,x,y,size,base_z=None,rotate=0):
     bpy.ops.object.modifier_apply(modifier=modifier.name)
     lod_mesh_cache[key]=o.data
   o.name='B1 '+variant+' original '+label+' '+str(len(reused))
-  bpy.context.collection.objects.link(o);reused.append(o)
+  reused.append(o)
  return len(kit)
 def broken_wall_line(label,x,y,length,height,orientation='Y',seed=1):
  # Segmented masonry with real joints; broken intervals imply ruined history,
@@ -235,6 +242,16 @@ assert all(o.name in original_names for o in objects)
 # bit-for-bit untouched. Reuses original texture UVs and authoring; no decals.
 if variant=='A':
  import numpy as np
+ # Object.copy() retains shared mesh datablocks, including original wall/road
+ # material slots. Isolate only candidate copies BEFORE any material edit.
+ # Multiple candidate instances may still share one isolated mesh for LOD.
+ isolated_candidate_meshes={}
+ for obj in reused:
+  source_mesh=obj.data
+  key=source_mesh.as_pointer()
+  if key not in isolated_candidate_meshes:
+   isolated_candidate_meshes[key]=source_mesh.copy()
+  obj.data=isolated_candidate_meshes[key]
  aged_material_cache={};aged_texture_cache={}
  def aged_material(m):
   if not m or m.name.startswith('B1 A3 warmer dirt-aged') or ('limestone' not in m.name.lower() and 'stone' not in m.name.lower()):
@@ -266,6 +283,8 @@ if variant=='A':
  for obj in created+reused:
   for idx,m in enumerate(list(obj.data.materials)):
    if m:obj.data.materials[idx]=aged_material(m)
+assert all(tuple(m.name if m else None for m in o.data.materials)==source_material_slots[o.name]
+           for o in meshes), 'Original source material slots changed'
 dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
@@ -274,7 +293,7 @@ proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
- 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,
+ 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'source_material_slots_verified':True,
  'visual_pass':False,'mobile_device_pass':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_GLOBAL_COMPOSITION_PROOF',json.dumps(proof))

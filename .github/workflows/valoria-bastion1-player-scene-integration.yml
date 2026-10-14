@@ -263,7 +263,7 @@ jobs:
           $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
           New-Item -ItemType Directory -Force $after | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
-      - name: Develop selected coherent A2 global architecture in Blender and native Unity; preserve tested A/B1 evidence
+      - name: Produce controlled global architecture candidate A2 in Blender and native Unity; artist approval stays independent
         shell: powershell
         run: |
           $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
@@ -276,7 +276,7 @@ jobs:
             & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/compose_bastion_global_composition.py -- $guardBase $candidate $variant
             if($LASTEXITCODE -ne 0){throw "Global Blender candidate $variant failed"}
             $proof=Get-Content ([System.IO.Path]::ChangeExtension($candidate,'.proof.json')) -Raw | ConvertFrom-Json
-            if($proof.variant -ne $variant -or $proof.source_sha256 -ne $baseline -or $proof.original_meshes_preserved -ne $true -or
+            if($proof.variant -ne $variant -or $proof.source_sha256 -ne $baseline -or $proof.original_meshes_preserved -ne $true -or $proof.source_material_slots_verified -ne $true -or
                $proof.new_resource_nodes -ne 0 -or $proof.new_gameplay_colliders -ne 0 -or
                $proof.new_modular_masonry_meshes -lt 12 -or $proof.reused_original_mesh_instances -lt 1){
               throw "Candidate $variant invalidates gameplay/source/art invariants"
@@ -328,6 +328,20 @@ jobs:
           '@ | Set-Content -LiteralPath $script -Encoding utf8
           & node $script $before $after "$env:GITHUB_WORKSPACE/Bastion1MaterialAB/native-unity-ab.json"
           if($LASTEXITCODE -ne 0){throw 'Authentic Unity matched-camera change not visible enough; reject candidate'}
+          # The previous comparison covers the isolated guard station only.
+          # Compare the WHOLE A2 global layout against the same native BEFORE.
+          $global=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/global-A/bastion1-player-initial.png'
+          if(-not (Test-Path $global)){throw 'No real native Unity global-A frame: cannot evaluate global composition'}
+          $globalProof=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/global-A/native-unity-global-ab.json'
+          & node $script $before $global $globalProof
+          if($LASTEXITCODE -ne 0){throw 'Global A2 candidate not visibly different in exact Unity camera'}
+          $result=Get-Content $globalProof -Raw | ConvertFrom-Json
+          # This metric only rejects near-invisible work; it NEVER confers ART PASS.
+          if($result.changed_fraction -lt 0.015){throw 'GLOBAL_ART_REJECT_INVISIBLE: large-scale composition barely affects player frame'}
+          if($result.changed_fraction -lt 0.08){
+            Write-Warning "BASTION1_GLOBAL_LOW_VISUAL_IMPACT changed_fraction=$($result.changed_fraction); require genuinely different composition, not more props or tint"
+          }
+          Write-Host "BASTION1_GLOBAL_ART_REVIEW_REQUIRED unity_pixel_fraction=$($result.changed_fraction) camera_locked=true technical_pass_is_not_art_pass=true"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
