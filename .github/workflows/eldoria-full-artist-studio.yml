@@ -26,6 +26,9 @@ jobs:
           python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
           python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py tools/art-direction/full-studio/inspect_source.py tools/art-direction/full-studio/learning_context.py tools/art-direction/full-studio/screen_impact.py tools/art-direction/full-studio/glb_mobile_preflight.py tools/art-direction/full-studio/consumer_handoff.py
           blender --version | head -2
+      - name: Verify physically correct WORLD Z sculpt on rotated imported asset in real Blender
+        run: |
+          blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/tests/prove_world_sculpt_anchor_blender.py
       - name: Execute twenty-six real independent Blender modelling operations
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
