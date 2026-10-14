@@ -152,6 +152,26 @@
         "unity_tested": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "qwen8b-global-uv-material-occlusion-38646315087",
+      "run_id": 38646315087,
+      "evidence_artifact_id": 11932063107,
+      "raw_response_sha256": "8294cb6ef9ab59f0a6f71e8905bcacab4a6f85cbd290bf516fe9ca6ad5e6bada",
+      "result": "BLENDER_EXECUTED_REJECTED_PROTECTED_SOURCE_TEXTURE",
+      "observed": "Actual Qwen8B chose a selected-face extrude and then a whole-dense-source material replacement plus uv.smart_project. Blender executed the changes, but fixed-camera protected entry pixels differed by 87.6% and staircase by 46.3%, violating original source preservation. Subsequent cycles repeated similarly unsafe plans. No art was approved.",
+      "safe_lesson": "Do not apply whole-object MATERIAL replacement or UV unwrap to the dense inherited watchtower texture atlas after a small extrude; they damage unrelated door, stair and roof appearance. Choose ONE local structural edit first, reinspect, and perform later material/UV finishing only on a separately created component.",
+      "review_provenance": {
+        "run_id": 38646315087,
+        "artifact_id": 11932063107,
+        "trial": "8b-professional/cycle-1",
+        "protected_entry_change_fraction": 0.876074,
+        "protected_stair_change_fraction": 0.463152,
+        "atlas_preservation_verified": false,
+        "independent_approval": false,
+        "unity_verified": false,
+        "model_weights_updated": false
+      }
     }
   ],
   "training": {
