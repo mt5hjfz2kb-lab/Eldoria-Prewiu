@@ -1,0 +1,43 @@
+name: Eldoria permanent artist owner contract focused gates
+on:
+  push:
+    branches:
+      - fix/eldoria-artist-eave-contact-visual-learning-20261015
+    paths:
+      - 'tools/art-direction/full-studio/artist_loop.py'
+      - 'tools/art-direction/full-studio/artistic_quality_gate.py'
+      - 'tools/art-direction/full-studio/tests/test_owner_hypothesis_switch.py'
+      - 'tools/art-direction/full-studio/tests/test_permanent_art_quality_contract.py'
+      - '.github/workflows/eldoria-owner-artist-quality-focused.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-owner-quality-focused-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  owner-quality-focus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install only free PIL used by original image SHA validation
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Owner artistic quality verifier — unchanged from main
+        run: |
+          node --test tools/art-visual-acceptance/verify.test.mjs
+          node tools/art-visual-acceptance/verify.mjs --directory pipeline/art-visual-approvals
+      - name: Contract and true model retry regressions only
+        run: |
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_owner_hypothesis_switch.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_permanent_art_quality_contract.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_invisible_qwen_plan_replay.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_artist_execution_truth.py' -v
+          python -m py_compile tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/artistic_quality_gate.py
