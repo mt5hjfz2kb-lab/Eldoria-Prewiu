@@ -29,7 +29,7 @@ jobs:
           docker run --rm -d --name zoneone-relief-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-relief/ollama-version.json; then break; fi; sleep 2; done
           test -s /tmp/zoneone-relief/ollama-version.json
-          docker exec zoneone-relief-artist ollama pull qwen3-vl:2b-instruct
+          docker exec zoneone-relief-artist ollama pull qwen3-vl:4b-instruct
       - name: Artist designs actual relief from image and topology
         run: |
           python3 tools/world4x-zone1/production/author_ground_revision.py --work-dir /tmp/zoneone-relief --before-frame docs/world4x-zone1/evidence/material-replay-38553648773/geometry-normal-fixed.png
