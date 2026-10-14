@@ -183,6 +183,35 @@ for points,width in (
 # Ground-only traffic fan, no new objects/colliders and future lots remain
 # unbuilt. Existing main road and stairs still physically unchanged.
 earth=np.maximum(earth,service_wear*.81)
+# QWEN *ACTUAL MATCHED UNITY BEFORE/A13* VISION DECISION (38572253674,
+# original raw SHA c4bffeedebcb16723191c7872b78f3df5a300068ef4bdeb2fc294c2539ea6a08):
+# Bifurcate broad weathered circulation from the ORIGINAL upper staircase
+# toward the WEST guard station and EAST old masonry. Paths are baked into
+# the SAME existing continuous terrain, NEVER added as floating decals.
+# Routes make large archaeological sense and skirt actual reserved plots.
+fork_wear=np.zeros_like(X,dtype=np.float32)
+for points,width in (
+ ([(-7.25,7.5),(-9.5,6.6),(-9.25,1.1),(-9.8,-3.55),(-13.2,-7.7),(-20.4,-11.3)],4.8),
+ ([(7.25,7.4),(9.5,6.1),(9.1,-.1),(10.4,-3.9),(15.6,-7.8),(21.3,-10.0)],5.0),
+ ([(19.9,-9.0),(22.9,-5.2),(23.2,1.0)],3.35)):
+ fork_wear=np.maximum(fork_wear,source_wear(points,width))
+# Genuine authored rock-family PBR atlas already EXISTS in GLB from the
+# source cliff_rocks family. Reuse its original pixels, not a synthetic gray
+# material or an overlay path. Preserve original cliff and gate image bytes.
+rock_images=[im for im in bpy.data.images if 'rock_basecolor' in im.name.lower()]
+if not rock_images:
+ raise RuntimeError('Qwen-selected cliff_rocks source photo atlas missing')
+rock_photo=rock_images[0]
+rw,rh=rock_photo.size
+if min(rw,rh)<256:raise RuntimeError('Rock source photo resolution insufficient')
+rock_pixels=np.empty(rw*rh*4,dtype=np.float32)
+rock_photo.pixels.foreach_get(rock_pixels)
+rock_pixels=rock_pixels.reshape(rh,rw,4)
+# Keep real photo's coarse speckle and vary true sample locations to avoid a
+# textbook repeated flat strip; only the baked terrain pixels are editable.
+ru=np.mod(np.floor((X*.104+.019*medium)*rw).astype(np.int32),rw)
+rv=np.mod(np.floor((Y*.127+.023*broad)*rh).astype(np.int32),rh)
+rock_road=rock_pixels[rv,ru,:3]*np.array([.92,.86,.76],dtype=np.float32)
 # SOURCE-VALIDATED PALETTE REBALANCE A7. The A6 genuine Unity screenshot
 # confirmed the baked terrain was literally too dark (mean albedo about
 # 41/53/11 RGB) versus the brighter source scene. Respect actual original
@@ -204,6 +233,12 @@ pix=np.clip(meadow*(1-mix[:,:,None])+soil*mix[:,:,None],.035,.92)
 grit=np.stack((.473+.022*medium,.441+.018*fine,.359+.018*medium),axis=2)
 worn=sat(service_wear*(.65+.075*medium))
 pix=np.clip(pix*(1-worn[:,:,None])+grit*worn[:,:,None],.035,.92)
+# Qwen chose original cliff-rock material for the FORK ONLY: physically
+# unchanged staircase and source citadel materials remain untouched.
+# Path fork has wide feathered edges and grass islands, never straight decals.
+stony_fork=sat(fork_wear*(.70+.12*medium+.05*fine))
+pix=np.clip(pix*(1-stony_fork[:,:,None])+rock_road*stony_fork[:,:,None],.035,.92)
+
 terrain_albedo_mean=np.mean(pix,axis=(0,1)).tolist()
 if not (.22<=terrain_albedo_mean[0]<=.49 and
         .23<=terrain_albedo_mean[1]<=.47 and
@@ -304,11 +339,11 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,courtyard_art_revision='A14 lighter porous limestone traffic fan and green planned lots',service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),courtyard_ward_max=float(np.max(courtyard_ward)),courtyard_ward_fraction_over_half=float(np.mean(courtyard_ward>.5)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,courtyard_art_revision='A15 Qwen real-image native rocky bifurcated circulation and preserved photo grass/stone',service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),courtyard_ward_max=float(np.max(courtyard_ward)),courtyard_ward_fraction_over_half=float(np.mean(courtyard_ward>.5)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
  native_source_terrain_sculpted=True,
- qwen_latest_vision_run=38551799312,artistically_approved=False,mobile_hardware_certified=False)
+ qwen_latest_vision_run=38572253674,latest_matched_unity_before_after_qwen_raw_sha256='c4bffeedebcb16723191c7872b78f3df5a300068ef4bdeb2fc294c2539ea6a08',source_rock_photo_pixel_reuse=True,forked_stony_route_pixel_fraction=float(np.mean(stony_fork>.30)),artistically_approved=False,mobile_hardware_certified=False)
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_QWEN_ACTUAL_TERRAIN_SCULPT',json.dumps(proof))
