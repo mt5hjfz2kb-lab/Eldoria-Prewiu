@@ -35,6 +35,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
       - name: Check PC-native Ollama model availability, no model pulls
         shell: powershell
         run: |
