@@ -11,6 +11,7 @@ from learning_context import transferable_lessons
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan
+from professional_source_schema import source_artist_action_schema
 
 HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
@@ -48,7 +49,7 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -117,6 +118,10 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         "params":params},
         "required":["id","op","target","reason","params"],
         "additionalProperties":False}
+    if source_exists and phase=="full" and category=="architecture" and source_inventory:
+        # Keep Qwen's creative tool selection; make signatures exact. A source
+        # that only has inherited meshes needs no invented new object IDs.
+        action=source_artist_action_schema(source_inventory)
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
@@ -158,6 +163,8 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
     if phase=="detail":
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
     return base+(
+        "Choose YOUR OWN tools and numeric values from NINE real, validated Blender operation families (sculpt_anchor, sculpt, extrude, inset, bevel, modifier, material, uv, native_operator). "
+        "These are NOT preset designs. Do not output mesh:operation pseudo-parameters. "
         "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
         "For sculpt, pick your OWN center within brush radius of any real local_extrema/vertex_landmarks local_position_m, or use sculpt_anchor. "
         "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal; NEVER copy vertex_index to face ID. "
@@ -248,7 +255,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
