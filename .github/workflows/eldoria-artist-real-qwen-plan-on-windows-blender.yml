@@ -1,0 +1,102 @@
+name: Eldoria owner-authorized real Qwen geometry on original Windows Blender
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-one-off-windows-qwen-native-blender-validation
+  cancel-in-progress: true
+jobs:
+  exact-qwen-plan-real-windows-blender:
+    if: github.ref == 'refs/heads/validation/artist-windows-pc-bridge-20261014'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 16
+    steps:
+      - name: Find GitHub Desktop Git without changing PC
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git unavailable' }
+            $folder=Split-Path $candidate
+            $env:PATH="$folder;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+          sparse-checkout-cone-mode: true
+      - name: Download two ORIGINAL previously Qwen-authored source plans, not synthetic presets
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-qwen-twice-source-proof
+          run-id: '38592242486'
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-real-qwen-source
+      - name: Check exact AI raw and frozen original file hashes before authoring on PC
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-real-qwen-source'
+          $manifest=Get-Content (Join-Path $root 'eldoria-repeatability-2/full-studio-result.json') -Raw | ConvertFrom-Json
+          $plan=Join-Path $root 'eldoria-repeatability-2/cycle-1/artist-plan.json'
+          $raw=Join-Path $root 'eldoria-repeatability-2/cycle-1/qwen-raw.json'
+          $sha=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($sha -ne $manifest.frozen_source_sha256) { throw 'Original tower asset SHA mismatch' }
+          if (-not (Test-Path $raw) -or -not (Test-Path $plan)) { throw 'Missing actual Qwen raw/plan evidence' }
+          $planSha=(Get-FileHash $plan -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($planSha -ne $manifest.cycles[0].plan_sha256) { throw 'Original Qwen plan SHA mismatch' }
+          $actions=(Get-Content $plan -Raw | ConvertFrom-Json).actions
+          if ($actions.Count -ne 2 -or @($actions | Where-Object op -ne 'sculpt_anchor').Count -ne 0) { throw 'Unexpected plan type' }
+          Write-Host ('ELDORIA_QWEN_ORIGINAL_APPROVED_FOR_REAL_PC_EXECUTION sha='+$planSha)
+      - name: Execute exact Qwen-owned source-mesh changes in installed Windows Blender
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $exe=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $exe) {
+            $folder=Join-Path $env:ProgramFiles 'Blender Foundation'
+            $exe=Get-ChildItem $folder -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'PC Blender missing' }
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-real-qwen-source'
+          $plan=Join-Path $root 'eldoria-repeatability-2/cycle-1/artist-plan.json'
+          $output=Join-Path $env:RUNNER_TEMP 'eldoria-qwen-native-pc-output'
+          $input='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $initialHash=(Get-FileHash $input -Algorithm SHA256).Hash.ToLowerInvariant()
+          & $exe -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- --source $input --plan $plan --out $output --texture-root $env:GITHUB_WORKSPACE --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json
+          if ($LASTEXITCODE -ne 0) { throw "PC_BPY_ARTIST_PLAN_EXECUTION_FAILED code=$LASTEXITCODE" }
+          $proof=Get-Content (Join-Path $output 'execution-proof.json') -Raw | ConvertFrom-Json
+          if (-not $proof.inherited_mesh_data_changed -or -not $proof.blender_execution -or $proof.action_count -ne 2 -or -not $proof.matched_review_camera) { throw 'Source-mesh edit was not real or camera unverified' }
+          if ($proof.art_approved -or $proof.unity_tested) { throw 'No visual/Unity self approval permitted' }
+          $afterHash=(Get-FileHash $input -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($initialHash -ne $afterHash) { throw 'Frozen source was modified' }
+          if (-not (Test-Path (Join-Path $output 'artist-asset.glb')) -or -not (Test-Path (Join-Path $output 'artist-asset.blend'))) { throw 'Expected real 3D outputs missing' }
+          Write-Host ('ELDORIA_GENUINE_QWEN_DECISIONS_EXECUTED_IN_PC_BLENDER_PASS sourceSHA='+$initialHash)
+      - name: Preserve Qwen provenance and PC-generated Blender model A/B
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-real-qwen-on-pc-blender-proof
+          path: |
+            ${{ runner.temp }}/eldoria-real-qwen-source/eldoria-repeatability-2/cycle-1/artist-plan.json
+            ${{ runner.temp }}/eldoria-real-qwen-source/eldoria-repeatability-2/cycle-1/qwen-raw.json
+            ${{ runner.temp }}/eldoria-qwen-native-pc-output/
+          if-no-files-found: warn
+          retention-days: 10
