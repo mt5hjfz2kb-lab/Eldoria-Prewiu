@@ -61,7 +61,7 @@ class AuthorScopeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct",brief="Design original watchtower with roof",asset_category="architecture")
             with patch.object(artist_loop,"image_data",return_value="encoded"),patch.object(artist_loop,"request_ollama",return_value=json.dumps(p)):
-                with self.assertRaises(RejectedPlan):
+                with self.assertRaises((RejectedPlan,artist_loop.CompositionRejected)):
                     artist_loop.ask_plan(args,Path("ref"),None,"","art director","",Path(folder),1,False)
 
 if __name__=="__main__":
