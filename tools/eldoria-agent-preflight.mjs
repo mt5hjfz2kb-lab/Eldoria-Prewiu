@@ -5,7 +5,6 @@
  * No installations, process starts, runner leases, writes, or paid API calls.
  */
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -91,11 +90,13 @@ const report = {
   repository: 'mt5hjfz2kb-lab/Eldoria-Prewiu',
   checkout: {path: root, agents_md_present: Boolean(readFile('AGENTS.md')),
     head: probe ? localCommand('git', ['rev-parse', 'HEAD']) : null},
-  machine: {platform: process.platform, hostname: os.hostname(),
+  machine: {platform: process.platform,
     github_actions: process.env.GITHUB_ACTIONS === 'true',
     runner_os: process.env.RUNNER_OS || null,
-    self_hosted_windows_confirmed_here: process.env.GITHUB_ACTIONS === 'true' &&
-      /^windows$/i.test(process.env.RUNNER_OS || '') && Boolean(process.env.RUNNER_NAME)},
+    runner_environment: process.env.RUNNER_ENVIRONMENT || null,
+    windows_self_hosted_context_reported: process.env.GITHUB_ACTIONS === 'true' &&
+      /^windows$/i.test(process.env.RUNNER_OS || '') &&
+      process.env.RUNNER_ENVIRONMENT === 'self-hosted'},
   routes: declaredRoutes(),
   local_tools: {
     unity: detectedBinary(['UNITY_EDITOR_PATH'], ['Unity.exe', 'Unity']),
