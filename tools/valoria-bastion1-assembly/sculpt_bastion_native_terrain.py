@@ -148,12 +148,12 @@ earth=np.maximum(earth,ground_patch(0,18.1,13.0,6.4)*.22)
 # the unconvincing full-carpet bright green around their perimeter.
 court=ground_patch(0,-3.15,28.2,18.9)
 court*=np.clip(.97+.12*broad+.06*medium,.70,1.0)
-plot1=pad(X,Y,-16,3,5.3,4.9)
-plot2=pad(X,Y,16,3,5.3,4.9)
+plot1=ground_patch(-16,3.0,7.0,6.0)
+plot2=ground_patch(16,3.0,7.0,6.0)
 protected_plot_turf=np.maximum(plot1,plot2)
 # The medieval movement is centered between defensible stone banks and
 # oriented to the two existing gates; not an isolated paved rectangle.
-courtyard_ward=(court*.86)*(1-.54*protected_plot_turf)
+courtyard_ward=(court*.62)*(1-.48*protected_plot_turf)
 earth=np.maximum(earth,courtyard_ward)
 upper_approach=ground_patch(0,17.0,16.5,7.5)*.44
 earth=np.maximum(earth,upper_approach)
@@ -175,10 +175,10 @@ def source_wear(points,width):
  return sat(1-ease((dist-(width*.54+feather))/2.5))*(.73+.14*medium+.10*fine)
 service_wear=np.zeros_like(X,dtype=np.float32)
 for points,width in (
- ([(-6.7,-7.9),(-11.5,-8.45),(-15.8,-9.8),(-20.6,-10.8)],2.30),
- ([(7.1,-7.4),(12.6,-8.2),(17.7,-10.5),(21.4,-11.1)],2.45),
- ([(-7.6,1.8),(-12.4,1.2),(-16.7,1.0)],2.15),
- ([(7.7,1.6),(12.4,1.0),(16.8,1.55)],2.20)):
+ ([(-6.7,-7.9),(-11.5,-8.45),(-15.8,-9.8),(-20.6,-10.8)],4.4),
+ ([(7.1,-7.4),(12.6,-8.2),(17.7,-10.5),(21.4,-11.1)],4.6),
+ ([(-7.6,1.8),(-12.4,1.2),(-16.7,1.0)],3.8),
+ ([(7.7,1.6),(12.4,1.0),(16.8,1.55)],3.9)):
  service_wear=np.maximum(service_wear,source_wear(points,width))
 # Ground-only traffic fan, no new objects/colliders and future lots remain
 # unbuilt. Existing main road and stairs still physically unchanged.
@@ -193,16 +193,16 @@ source_brightness=np.clip(.89+variation*.21+micro*.044,.73,1.18)
 meadow=np.clip(pix*np.array([.75,.91,.94],dtype=np.float32)[None,None,:]
               *source_brightness[:,:,None],.035,.93)
 soil_light=np.clip(.81+photoluma*.46+medium*.065+fine*.036,.73,1.23)
-soil=np.stack((.425*soil_light,.325*soil_light,.223*soil_light),axis=2)
+soil=np.stack((.448*soil_light,.370*soil_light,.265*soil_light),axis=2)
 # A dense, irregular earth weave beside the road, barracks and rocky footing;
 # never a pasted rectangle, slab/path mesh or overly red noisy carpet.
-mix=sat(earth*.81)
+mix=sat(earth*.79)
 pix=np.clip(meadow*(1-mix[:,:,None])+soil*mix[:,:,None],.035,.92)
 # Worn rock/soil tracks are soft, photographed-looking variances WITHIN the
 # original source texture, not separate walkable or sticker meshes. They tie
 # forecourt architecture visibly into each future building's approach.
-grit=np.stack((.392+.019*medium,.357+.014*fine,.278+.013*medium),axis=2)
-worn=sat(service_wear*(.21+.075*medium))
+grit=np.stack((.473+.022*medium,.441+.018*fine,.359+.018*medium),axis=2)
+worn=sat(service_wear*(.65+.075*medium))
 pix=np.clip(pix*(1-worn[:,:,None])+grit*worn[:,:,None],.035,.92)
 terrain_albedo_mean=np.mean(pix,axis=(0,1)).tolist()
 if not (.22<=terrain_albedo_mean[0]<=.49 and
@@ -215,7 +215,7 @@ new_image=bpy.data.images.new('Bastion I Qwen Qwen-origin native-ground courtyar
 new_image.pixels.foreach_set(colors.ravel());new_image.pack()
 # Index 0 is original olive-grass material from canonical terrain_finish.py.
 if not original_grass:raise RuntimeError('Original grass material missing')
-grass=original_grass.copy();grass.name='Bastion I Qwen-authored worn medieval courtyard ground A11'
+grass=original_grass.copy();grass.name='Bastion I Qwen-directed lower-city believable worn limestone-earth district A14'
 grass.use_nodes=True
 nodes=grass.node_tree.nodes;principled=nodes.get('Principled BSDF')
 if not principled:raise RuntimeError('URP-exportable PBR material missing')
@@ -304,7 +304,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),courtyard_ward_max=float(np.max(courtyard_ward)),courtyard_ward_fraction_over_half=float(np.mean(courtyard_ward>.5)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,courtyard_art_revision='A14 lighter porous limestone traffic fan and green planned lots',service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),courtyard_ward_max=float(np.max(courtyard_ward)),courtyard_ward_fraction_over_half=float(np.mean(courtyard_ward>.5)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
