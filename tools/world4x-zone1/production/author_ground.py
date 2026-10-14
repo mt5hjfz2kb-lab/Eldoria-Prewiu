@@ -29,6 +29,8 @@ prompt=('Current task is ZONA ONE ground-only source authoring, not Valoria arch
  'Only vertical delta [0,0,dz], magnitude 2..9m, radius 16..35m. Preserve outer boundary x/y +/-120m: centers and path corridors must stay more than radius+2m inside it. '
  'Protect the existing city ground rectangle x=-40..4,y=-52..-8: do not let sculpt footprints touch it. '
  'Use slopes suitable for armies, wide flat areas between hills, not a noisy bumpy surface. '
+ 'CRITICAL: Every sculpt_path knot has its own radius and EVERY radius must be 16 to 35 meters inclusive. A small valley radius of 10 is INVALID and has repeatedly caused genuine art plans to be rejected. '
+ 'If making a valley path, design BROAD valley knots of radius 18..28 meters, with distinct non-coincident centers from the hill crest. Choose positions yourself; do not blindly copy reference topology anchor coordinates. '
  'At least one broad camera-visible change. No approval or claimed execution. '
  'REAL MESH TOPOLOGY: '+json.dumps(top)+'\nREAL PRIOR REVIEW / RETRIEVED EXPERIENCE, NOT MODEL TRAINING: '+lessons)
 schema=cpu_artist_schema(target,'existing',2)
@@ -37,7 +39,7 @@ center={'type':'array','minItems':3,'maxItems':3,'prefixItems':[
  {'type':'number','minimum':top['local_aabb']['min'][2],'maximum':top['local_aabb']['max'][2]}]}
 delta={'type':'array','minItems':3,'maxItems':3,'prefixItems':[{'const':0},{'const':0},
  {'anyOf':[{'type':'number','minimum':2,'maximum':9},{'type':'number','minimum':-9,'maximum':-2}]}]}
-knotspec={'type':'object','properties':{'center':center,'delta':delta,'radius':{'type':'number','minimum':16,'maximum':35}},
+knotspec={'type':'object','properties':{'center':center,'delta':delta,'radius':{'type':'number','minimum':16,'maximum':35,'description':'A broad sculpt radius in meters; 10 is invalid, always choose 16..35'}},
  'required':['center','delta','radius'],'additionalProperties':False}
 variants=[]
 for kind,params in [('sculpt_region',knotspec),('sculpt_path',{'type':'object','properties':{'knots':{'type':'array','minItems':2,'maxItems':3,'items':knotspec}},'required':['knots'],'additionalProperties':False})]:
@@ -88,8 +90,25 @@ for attempt in range(3):
   (c/'artist-plan.json').write_text(json.dumps(design['planned_actions'],indent=2))
   (c/'artist-inference.json').write_text(json.dumps({'author':'QWEN_LOCAL','model':a.model,'image_type':'BLENDER_SOURCE_NOT_UNITY','system_prompt_sha256':sha(role),'images':provenance,'direction':design,'attempts':attempts,'model_weights_trained':False,'self_approval':False},indent=2));break
  if attempt==2:raise RuntimeError('Three authentic Qwen decisions rejected; no substitute geometry executed')
- payload['messages']+=[{'role':'assistant','content':raw},{'role':'user','content':
-  'Previous plan NOT EXECUTED. Correct these errors with your own new terrain design: '+str(errors)+
-  '. Keep the PRAIRIE goal, vertical changes of 2..9m and radius16..35m, not a Valoria cliff or a 0.2m tweak. '
-  'sculpt_region requires center,delta,radius directly in parameters; sculpt_path requires distinct knots. '
-  'IDs must differ. Protect city pad and boundary. Return complete JSON, never substitute scripted defaults.'}]
+ # Do not feed the invalid assistant JSON back into the context: Qwen has
+ # repeatedly copied forbidden radius=10 valley knots verbatim when shown it.
+ # Give concrete validation feedback while preserving the model's own design
+ # authority; never alter returned geometry or silently synthesize a plan.
+ defect=[]
+ if design:
+  for op in design.get('planned_actions',[]):
+   p=op.get('parameters',{})
+   for n,k in enumerate(p.get('knots',[]) if op.get('type')=='sculpt_path' else [p]):
+    rad=k.get('radius')
+    if isinstance(rad,(int,float)) and not 16<=rad<=35:
+     defect.append(f"{op.get('id','action')}.knot{n}.radius={rad} INVALID; each knot MUST choose its OWN radius 16..35m")
+ payload['messages']=payload['messages'][:2]+[{'role':'user','content':
+  'Previous generated plan NOT EXECUTED and rejected. Validations: '+str(errors)+'. Actual invalid values: '+str(defect)+
+  '. Compose an ORIGINAL revised terrain idea now, not a verbatim copy of that invalid plan. '
+  'Every sculpt_region radius and EVERY sculpt_path knot radius MUST be between 16 and 35 meters; never use 10. '
+  'A valley requires broad connected depressions, not narrow paths; use radius>=18 if uncertain. '
+  'Every vertical delta magnitude must be between 2 and 9 meters, no exceptions. '
+  'Keep northern X=-55..75 and Y=30..75 and avoid protected city pad and boundary. '
+  'You decide the actual center positions; valleys and hill crests should have distinct positions. '
+  'Use only sculpt_region or sculpt_path typed actions, and return complete valid JSON. No scripted defaults.'}]
+
