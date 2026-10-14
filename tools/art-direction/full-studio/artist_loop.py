@@ -363,6 +363,10 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
           + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
              "Invent your own unique object name STARTING Eldoria_Added_ followed by a letter and 3-42 alphanumeric/underscore characters. "
              "Create genuinely VOLUMETRIC 3D architecture with readable depth in the player's fixed camera: NOT a single floor plane or two triangles. "
+             "ROOF EAVE / FASCIA / OVERHANG means a REAL physically supported timber feature near the roof's outer WORLD X/Y perimeter, BELOW the highest roof apex. "
+             "A primitive at the CENTER of the highest apex is NOT a roof eave; a flat decorative cylinder there is not architectural progress. "
+             "Blender SOLIDIFY only thickens existing geometry; it does NOT attach disconnected objects to the original roof. "
+             "Choose a credible geometry and position grounded in the visible timber edges, roof slope and real source size. "
              "If choosing primitive, design meaningful original X/Y/Z scale and placement; a flat plane is NOT valid. "
              "If choosing your own vertices/faces, design a CLOSED physical architectural solid with at least SIX non-coplanar vertices and FOUR faces: each mesh edge must belong to exactly TWO faces, no open triangular flaps. "
              "In each next art cycle, add a DIFFERENT complementary 3D part to the same architectural feature, connecting it naturally to your previous visible addition. "
@@ -502,9 +506,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
 
 def critique(args,reference,before,after,role):
     instruction=("Inspect these REAL renders, in order: target, before, after. "
-      "Describe three exact defects in the AFTER asset, whether its silhouette "
-      "and materials improved versus BEFORE, and one new concrete artistic "
-      "approach if they did not. Do not invent Unity evidence. "
+      "Describe three defects ONLY if supported by pixels in the actual "
+      "AFTER image, whether its timber silhouette and materials visibly improved "
+      "versus BEFORE, and one concrete artistic approach if not. "
+      "These are neutral Blender previews, NOT Unity: never claim Unity screenshots, "
+      "Hero Gate comparisons, a historical cliff or any unshown object. "
+      "If improvement is too subtle, misplaced at the roof apex, or visually "
+      "incoherent, set clearly_failed=true. Do not invent Unity evidence. "
       "Return concise JSON with strings critique, geometry_next, material_next "
       "and bool clearly_failed. This critique never certifies art.")
     try:
@@ -806,6 +814,9 @@ def main():
            "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
            "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
            "art_approved":False,"unity_art_verified":False,"physical_mobile_validated":False,
+           "model_self_critique_failed_count":sum(
+               1 for rec in records if rec.get("critique",{}).get("clearly_failed",False)),
+           "independent_artistic_improvement_verified":False,
            "model":args.model,"num_ctx":int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384")),
            "vision_max_edge":args.vision_max_edge,
            "system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
