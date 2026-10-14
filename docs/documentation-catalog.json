@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-10-13",
+  "reviewed_at": "2026-10-14",
   "purpose": "Navigation and lifecycle only. Not a substitute for live workstream/commit/evidence checks.",
   "authority": "AGENTS.md",
   "unreviewed_policy": "Unreviewed documents never grant operational authority.",
@@ -72,6 +72,12 @@
       "path": "docs/BASTION_I_X_MASTER_TABLE.md",
       "domain": "gameplay",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Dirección de producción global de Bastión I; no concede aprobación visual ni altera la autoridad de Unity"
     },
     {
       "path": "docs/DOCUMENTATION_INDEX.md",
