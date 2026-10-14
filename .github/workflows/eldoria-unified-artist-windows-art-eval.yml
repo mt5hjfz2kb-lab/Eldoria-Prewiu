@@ -1,0 +1,71 @@
+name: Eldoria unified artist real local 4B vs 8B frozen tower A-B
+on:
+  push:
+    branches:
+      - integration/eldoria-unified-professional-artist-20261014
+    paths:
+      - '.github/workflows/eldoria-unified-artist-windows-art-eval.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-professional-2cycles-windows-real-blendermcp
+  cancel-in-progress: false
+jobs:
+  frozen-tower-model-comparison:
+    if: github.ref == 'refs/heads/integration/eldoria-unified-professional-artist-20261014'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - name: Resolve existing GitHub Desktop Git on owner's Windows
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git via installed GitHub Desktop not found' }
+            $folder=Split-Path $candidate
+            $env:PATH="$folder;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+            tools/art-direction/ARTIST_LEARNING_JOURNAL.md
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reuse free Pillow only; no model download or new toolchain
+        shell: powershell
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Author-approved real Windows Qwen 4B 8B two-stage Blender comparison
+        shell: powershell
+        timeout-minutes: 75
+        run: |
+          $ErrorActionPreference='Stop'
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $reference='references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg'
+          $review='tools/art-direction/full-studio/tests/valoria_tower_hero_review.json'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-unified-artist-real-pc-benchmark'
+          & powershell -NoProfile -ExecutionPolicy Bypass -File 'tools/art-direction/full-studio/measure_artist_models.ps1' -Source $source -Reference $reference -Review $review -Out $out
+          if($LASTEXITCODE -ne 0){throw 'Real local model test failed; preserved evidence for diagnosis'}
+      - name: Preserve original Qwen plans, true Blender assets, A-B images and hardware log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-unified-4b-8b-native-blender-frozen-tower-visual-proof
+          path: ${{ runner.temp }}/eldoria-unified-artist-real-pc-benchmark/
+          if-no-files-found: warn
+          retention-days: 30
