@@ -58,6 +58,15 @@ class ArtistPermanentContractTests(unittest.TestCase):
             chain=append_accepted([],case,frozen_original=req["original_asset_sha256"])
             self.assertEqual(status(chain)["blender_visual_accepted_count"],1)
             self.assertFalse(status(chain)["calibration_validated"])
+    def test_independent_review_binds_original_raw_and_executed_plan_separately(self):
+        with tempfile.TemporaryDirectory() as d:
+            req,source,_,_=self.make_request(d)
+            self.assertEqual(req["qwen_plan_sha256"],req["execution_plan_sha256"])
+            self.assertEqual(len(req["qwen_plan_sha256"]),64)
+            rv=self.review(req)
+            rv["qwen_plan_sha256"]="f"*64
+            with self.assertRaisesRegex(ValueError,"qwen_plan_sha256"):
+                validate_independent_review(req,rv)
     def test_model_cannot_approve_own_output(self):
         with tempfile.TemporaryDirectory() as d:
             req,_,_,_=self.make_request(d)
