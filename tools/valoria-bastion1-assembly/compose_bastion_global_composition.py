@@ -148,6 +148,34 @@ def stone_scree(label,x,y,size=(2.7,1.6,.58)):
 # True arch geometry is deterministic Blender construction, never claimed
 # as Qwen-sculpted vertices. Pier shafts and voussoirs physically support
 # one shared wall-walk, avoiding previously rejected floating stone ribbons.
+# One shared patinated stone derivative for ALL new upper-gallery masonry.
+# Reuse its real source PBR limestone pixels, never mutate the approved hero
+# gate's material. Reduce the bright experimental concrete-white arcade,
+# which the matched Unity A12 frame exposed as a stylistic mismatch.
+def weathered_gallery_ashlar():
+ import numpy as np
+ t=stone.copy()
+ t.name='B1 A13 old weathered arch face'
+ if not t.use_nodes:raise RuntimeError('Authentic limestone gallery material must be PBR')
+ bs=t.node_tree.nodes.get('Principled BSDF')
+ if bs is None:raise RuntimeError('Original limestone gallery lacks Principled BSDF')
+ color=bs.inputs.get('Base Color')
+ if color is None:raise RuntimeError('Original limestone base color shader unavailable')
+ src_nodes=[link.from_node for link in color.links if link.from_node.type=='TEX_IMAGE']
+ if not src_nodes:raise RuntimeError('Authentic source limestone has no reusable base color photo')
+ replacement={}
+ for node in src_nodes:
+  im=node.image
+  if im.name not in replacement:
+   ni=im.copy();ni.name='B1 A13 patinated original limestone '+im.name
+   rgba=np.empty(len(ni.pixels),dtype=np.float32)
+   ni.pixels.foreach_get(rgba)
+   rgba[0::4]*=.66;rgba[1::4]*=.68;rgba[2::4]*=.67
+   ni.pixels.foreach_set(rgba);ni.pack()
+   replacement[im.name]=ni
+  node.image=replacement[im.name]
+ return t
+arch_stone=weathered_gallery_ashlar()
 def masonry_voussoir(name,x,y,z,r_inner,r_outer,angle0,angle1,depth):
  points=[]
  for yy in (y-depth/2,y+depth/2):
@@ -157,7 +185,7 @@ def masonry_voussoir(name,x,y,z,r_inner,r_outer,angle0,angle1,depth):
  faces=((0,1,2,3),(4,7,6,5),(0,4,5,1),
         (1,5,6,2),(2,6,7,3),(3,7,4,0))
  mesh=bpy.data.meshes.new(name+' authentic stone voussoir')
- mesh.from_pydata(points,[],faces);mesh.materials.append(stone)
+ mesh.from_pydata(points,[],faces);mesh.materials.append(arch_stone)
  mesh.update();mesh.validate()
  obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
  created.append(obj)
@@ -179,7 +207,7 @@ def fortified_terrace_arcade(name,side):
  # Authored photo limestone tint is reused from the original guard fort:
  # a single horizontal supported cornice unifies the complete arcade.
  cube(name+' continuous ORIGINAL limestone upper terrace wall-walk',
-      side*16.25,9.07,cornice_z+.15,13.94,1.47,.30,stone,bevel=.045)
+      side*16.25,9.07,cornice_z+.15,13.94,1.47,.30,arch_stone,bevel=.045)
  for i,x in enumerate(centers):
   soil=ground(x,8.58)
   # Each true ring comprises 11 wedge-shaped voussoirs with radial joints.
@@ -193,10 +221,25 @@ def fortified_terrace_arcade(name,side):
    floor=ground(px,8.30)-.23
    pillarh=max(.75,arch_z-floor)
    cube(name+' load-bearing arcade medieval square pier',px,8.98,
-        floor+pillarh/2,.53,1.24,pillarh,stone,bevel=.045)
+        floor+pillarh/2,.53,1.24,pillarh,arch_stone,bevel=.045)
    # No floating stone: bury each foundation by .2m in the real terrain.
    cube(name+' supporting original rock footing',px,8.98,floor+.13,
-        .86,1.35,.35,stone,bevel=.05)
+        .86,1.35,.35,arch_stone,bevel=.05)
+ # True battlement rhythm gives the formerly flat upper coping a recognisable
+ # military wall-walk silhouette. These are load-bearing parapet blocks
+ # contiguous with the arcade, not courtyard decor.
+ for k in range(7):
+  ix=side*(10.58+k*1.89)
+  safe(name+' parapet merlon',ix,8.46,.71,.66)
+  cube(name+' weathered original-stone crenellated parapet',ix,8.46,
+       cornice_z+.59,.71,.66,.58,arch_stone,bevel=.024)
+ # Grounded stepped buttress at either terminal of the surviving gallery.
+ for ix in (side*9.95,side*22.52):
+  safe(name+' masonry terminal',ix,8.98,.84,1.38)
+  low=ground(ix,8.36)-.18
+  h=max(1.05,cornice_z-low)
+  cube(name+' gallery connected end pilaster',ix,8.98,
+       low+h/2,.85,1.36,h,arch_stone,bevel=.055)
  # The original irregular cliff stone gets to remain visible between arches.
  # This reads as deliberate reconstructed medieval defensive undercroft,
  # not a new resource node, hut or central monumental building.
@@ -454,11 +497,11 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('Qwen_eastern_roofed_rampart_with_slope_bedded_masonry_posts_A12' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('patinated_real_voussoir_gallery_with_medieval_crenels_connected_to_original_upper_cliff_A13' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
- 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'source_material_slots_verified':True,
+ 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'authentic_arch_voussoirs':66,'arch_gallery_parapet_merlons':14,'source_material_slots_verified':True,
  'visual_pass':False,'mobile_device_pass':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_GLOBAL_COMPOSITION_PROOF',json.dumps(proof))
