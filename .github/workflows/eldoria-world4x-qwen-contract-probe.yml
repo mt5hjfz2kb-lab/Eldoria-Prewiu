@@ -35,6 +35,7 @@ jobs:
         run: |
           python3 tools/world4x-zone1/production/author_brecha_transition.py \
             --mesh-context /tmp/eldoria-brecha-preflight-source/mesh-context.json \
+            --source docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
             --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
             --real-before docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/after-blender.png \
             --out /tmp/eldoria-brecha-preflight-plan
