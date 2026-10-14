@@ -962,7 +962,8 @@ def main():
         request=stage_visual_request(
             output=trial/"art-review-request.json",reference=args.reference,
             original_source_sha=frozen_original_sha,input_source=source if source else args.source,
-            raw_plan=candidate,execution_proof=stage/"execution-proof.json",
+            raw_plan=candidate,raw_response_file=trial/"qwen-raw.json",
+            execution_proof=stage/"execution-proof.json",
             before=stage/"before-blender.png",after=stage/"after-blender.png",
             model=args.model,memory_proof=trial/"actual-qwen-context-executed.json",
             review_camera_file=args.review,
