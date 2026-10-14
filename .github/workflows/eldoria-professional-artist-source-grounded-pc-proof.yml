@@ -1,4 +1,5 @@
 name: Eldoria original Qwen two source-grounded professional BlenderMCP PC art cycles
+# Third controlled test: selected BMesh edges confirmed in Windows, source damage prevention and inspected topology.
 # Second real attempt: typed nine-tool schemas plus actual topology landmarks; retain raw model choices.
 on:
   push:
@@ -109,7 +110,7 @@ jobs:
             $tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 8
             if (@($tags.models | Where-Object { $_.name -eq 'qwen3-vl:4b-instruct' }).Count -eq 0) { throw 'Cached Qwen 4B not found; no model download allowed' }
             $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-pc-local-artist'
-            $brief='Improve the SAME original Valoria medieval tower for the approved visual reference. YOU are the artist: inspect the actual asset and decide your OWN purposeful structural changes, mesh operations, and PBR/UV detail to improve its visible silhouette, depth, and medieval material coherence. Use the full Blender operation toolbox. Do not replace or move the tower wholesale. Do not submit invisible decorative gestures or simply copy historical instructions. If the first result is weak, critique the real render and refine it. Only authentic Qwen decisions executed in Blender count.'
+            $brief='Refine this SAME inherited Valoria medieval architecture according to the owner approved image. YOU are the actual artist: use inspected local face centers, edge midpoints and vertex landmarks; choose your own visible and meaningful structural alteration to improve silhouette and depth, then choose complementary coherent medieval material, UV and surface finishing. You choose the tools, coordinates and values; NEVER apply whole-object bevel, global subdivision or multiple face/edge topology edits in one plan on this dense mesh. Choose ONE local topology editing operation per cycle, then re-inspect real geometry before any next iteration. Preserve existing architectural identity, roof and stair connections; never replace the asset or generate a different building. Do not mistake polygon growth or beige recolour for artistic quality; compare the actual A/B and correct YOUR OWN failures. No fake approval or fabricated coordinates.'
             $params=@(
               'tools/art-direction/full-studio/artist_loop.py',
               '--brief',$brief,
@@ -123,7 +124,7 @@ jobs:
               '--asset-category','architecture',
               '--max-cycles','3',
               '--min-successful-cycles','2',
-              '--max-actions','5',
+              '--max-actions','4',
               '--max-tokens','2800',
               '--transport','blendermcp',
               '--mcp-addon',$addon,
