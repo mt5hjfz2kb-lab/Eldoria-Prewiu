@@ -71,7 +71,26 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False):
+def executed_action_signature(doc):
+    """Hash Qwen's exact artistic ops/values, not IDs or prose, so retries can't cheat."""
+    actions=[{"op":a["op"],"target":a["target"],"params":a["params"]}
+             for a in doc.get("actions",[])]
+    return hashlib.sha256(json.dumps(actions,sort_keys=True,separators=(",",":"),
+                                     ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+def should_reject_repeated_invisible_plan(document, prior_invisible_signatures):
+    """Refuse an already observed no-pixel-change Blender proposal unchanged."""
+    if executed_action_signature(document) in (prior_invisible_signatures or set()):
+        raise RejectedPlan(
+            "ZERO_PIXEL_CHANGE_REPLAY_REJECTED: This exact Qwen geometry, "
+            "target and numeric action was already executed in Blender and "
+            "produced no meaningful camera effect. Select a genuinely NEW "
+            "operation/face/direction/value, not the same plan with a new name.")
+    return True
+
+
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False, excluded_source_ops=None):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -159,6 +178,9 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         structural=[v for v in tools if v["properties"]["op"]["const"]
                     in (("primitive","mesh") if assembly_source else
                         ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
+        if not assembly_source and excluded_source_ops:
+            structural=[v for v in structural
+                        if v["properties"]["op"]["const"] not in excluded_source_ops]
         finishing=[v for v in tools if v["properties"]["op"]["const"]
                    in ("material","uv")]
         optional=[v for v in tools if v["properties"]["op"]["const"]
@@ -342,7 +364,8 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
 
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
-             source_exists=False,known_objects=None,source_inventory=None,spatial_views=None):
+             source_exists=False,known_objects=None,source_inventory=None,spatial_views=None,
+             prior_invisible_signatures=None,excluded_source_ops=None):
     # Preserve older offline test callers without weakening runtime constraints.
     source_build=bool(getattr(args,"source_build_phase",False))
     tool_sequence=bool(getattr(args,"source_tool_sequencing",False))
@@ -356,8 +379,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       "The examples in previous failures are warnings, not templates.")
     if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
         raise ValueError("Architecture build phase requires a frozen inherited source and typed sequence")
+    if excluded_source_ops:
+        msg+=("\\nDO NOT REPEAT PROVEN-INVISIBLE BLENDER ACTION FAMILIES: "+
+              ", ".join(sorted(excluded_source_ops))+
+              ". The original fixed-camera A/B changed 0 pixels; choose "
+              "a different, physically useful original Blender operation. ")
     if args.source_build_phase:
-        msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. "
+        msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. 
               "For any NEW object, location/rotation/scale are in Blender WORLD xyz. "
               "An imported GLB mesh may have LOCAL +Y aligned with WORLD +Z. "
               "Never put a chimney 'up' using WORLD Y; height is WORLD Z. "
@@ -468,7 +496,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       {"role":"user","content":msg,"images":pictures}],
       args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
                                        args.source_build_phase,cycle_index if args.source_build_phase else 0,
-                                       topology_fallback),timeout=540)
+                                       topology_fallback,excluded_source_ops),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -479,6 +507,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
+    should_reject_repeated_invisible_plan(doc,prior_invisible_signatures)
     if source_exists and args.phase in ('full','mesh_edit') and source_inventory:
         verify_source_plan(doc,source_inventory)
         if args.source_build_phase:
@@ -705,11 +734,13 @@ def main():
                  for i in inventory.get("assets",[]) if i.get("reuse_approved") is True]
         history+="\\nOWNER-APPROVED REAL ART SOURCE CATALOG (use exact SHA): "+json.dumps(allowed[:25])[:6000]
     records=[]
+    invisible_plan_signatures=set()
+    invisible_source_ops=set()
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,args.max_plan_attempts+1):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views,prior_invisible_signatures=invisible_plan_signatures,excluded_source_ops=invisible_source_ops)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
                 # Keep every exact rejected proposal and the actionable validator
@@ -756,6 +787,13 @@ def main():
         screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
         (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
         if not result["matched_review_camera"] or not screen["visually_present"]:
+            if screen.get("changed_pixels")==0:
+                invisible_plan_signatures.add(executed_action_signature(doc))
+                if (source and args.source_tool_sequencing and
+                    not args.source_build_phase and doc.get("actions") and
+                    doc["actions"][0]["op"] in
+                    ("extrude","inset","sculpt_anchor","sculpt","bevel")):
+                    invisible_source_ops.add(doc["actions"][0]["op"])
             stage_pending_art_evidence(
                 trial/"pending-learning-case.json",model=args.model,
                 source_hash=original_source_sha,plan_file=candidate,
