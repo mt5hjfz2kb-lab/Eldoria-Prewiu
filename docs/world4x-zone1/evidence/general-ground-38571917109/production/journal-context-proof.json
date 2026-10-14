@@ -1,0 +1,28 @@
+{
+  "journal_sha256": "b937f406f2a6c05ee3a64bed94cfeb09a5c3877dd3ab1468b86951293f6c4ce0",
+  "source": "ARTIST_LEARNING_JOURNAL.md",
+  "verbatim_grounded": true,
+  "lessons": [
+    {
+      "journal_line": 40,
+      "lesson": "further progress needs measurable high-quality geometric silhouette changes, grounded terrain contacts, materially controlled paired renders, and mobile performance checks",
+      "relevance": 18
+    },
+    {
+      "journal_line": 45,
+      "lesson": "Corrective quality gate added in : neutral-clay before/after renders under identical lighting/camera for *both* assets, independent from their differing glTF textures",
+      "relevance": 14
+    },
+    {
+      "journal_line": 86,
+      "lesson": "Corrective artist lesson for NEXT inference (important):** choose a camera-visible **terrain silhouette, slope-crest, rock mass or join**, NOT an extreme mesh AABB corner or tiny lower skirt",
+      "relevance": 13
+    },
+    {
+      "journal_line": 22,
+      "lesson": "Independently evaluate visual quality and mobile impact",
+      "relevance": 6
+    }
+  ],
+  "prompt_text": "further progress needs measurable high-quality geometric silhouette changes, grounded terrain contacts, materially controlled paired renders, and mobile performance checks | Corrective quality gate added in : neutral-clay before/after renders under identical lighting/camera for *both* assets, independent from their differing glTF textures | Corrective artist lesson for NEXT inference (important):** choose a camera-visible **terrain silhouette, slope-crest, rock mass or join**, NOT an extreme mesh AABB corner or tiny lower skirt | Independently evaluate visual quality and mobile impact"
+}

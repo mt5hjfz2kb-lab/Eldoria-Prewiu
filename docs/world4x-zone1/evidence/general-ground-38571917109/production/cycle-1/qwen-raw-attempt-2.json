@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_HillSculpt_v1",
+  "observed_defect": "Flat prairie lacks dynamic terrain silhouette for strategic camera",
+  "design_intent": "Create asymmetric rolling hills and valleys for visual depth and buildable meadow visibility",
+  "asset_decision": "REUSE",
+  "expected_visual_difference": "Gentle, organic terrain undulations with clear valley and hill contours",
+  "mobile_risks": "No excessive polygons or complex modifiers; keep mesh under 20K vertices",
+  "actions": [
+    {
+      "id": "sculpt_hill_silhouette",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Shape broad asymmetric rolling hills and valleys using sculpt tool to preserve existing geometry while adding organic terrain undulations; avoid over-detailing",
+      "params": {
+        "tool": "Displace",
+        "strength": 0.3,
+        "direction": "Y",
+        "radius": 1.5
+      }
+    },
+    {
+      "id": "inset_valley_edge",
+      "op": "inset",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create visible valley contour by insetting a narrow edge along the lowest terrain point to enhance strategic visibility and define buildable meadow boundaries",
+      "params": {
+        "distance": 0.2,
+        "offset": 0.05
+      }
+    },
+    {
+      "id": "bevel_hill_edge",
+      "op": "bevel",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Softly bevel hill edges to avoid harsh geometry and maintain mobile performance; preserve contact with city pad and outer border",
+      "params": {
+        "width": 0.1,
+        "segments": 2
+      }
+    }
+  ]
+}

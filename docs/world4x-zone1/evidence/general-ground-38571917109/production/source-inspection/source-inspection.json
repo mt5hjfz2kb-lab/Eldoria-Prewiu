@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "source_unchanged": true,
+  "image_kind": "REAL_BLENDER_NOT_UNITY",
+  "source_preview_sha256": "0875ff9838b2dd03d5dc7278fee2a3f8f6fa3d7c638ed579eb695dae03c52de2",
+  "asset_count": 1,
+  "objects": [
+    {
+      "name": "ZoneOne continuous prairie source",
+      "vertices": 15952,
+      "faces": 28800,
+      "local_bounds_min_m": [
+        -120.0,
+        -120.0,
+        -4.42184
+      ],
+      "local_bounds_max_m": [
+        120.0,
+        120.0,
+        6.31417
+      ],
+      "world_location_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "world_dimensions_m": [
+        240.0,
+        240.0,
+        10.73601
+      ],
+      "materials": [
+        "ZoneOne textured prairie and integrated scar"
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "geometry_sha256": "f76e43125d9f4f7fabcf87f1f6e2a3f466f2de8a0e365845bb41eeec5e506352"
+    }
+  ],
+  "art_approved": false
+}

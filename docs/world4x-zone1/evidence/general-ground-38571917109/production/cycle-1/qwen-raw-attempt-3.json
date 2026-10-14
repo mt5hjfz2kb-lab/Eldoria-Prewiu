@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOneRollingHills_v1",
+  "observed_defect": "Flat, untextured prairie ground without rolling hills or valleys",
+  "design_intent": "Create asymmetric, gentle rolling hills and valleys for strategic visibility from fixed camera, preserving city pad and outer border",
+  "asset_decision": "REUSE",
+  "expected_visual_difference": "Visible terrain undulations from fixed camera perspective",
+  "mobile_risks": "None",
+  "actions": [
+    {
+      "id": "extrude_and_inset_hills",
+      "op": "extrude",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create asymmetric rolling hills by extruding from base mesh, preserving city pad and outer border, using low amplitude to avoid visual clutter",
+      "params": {
+        "direction": "Z",
+        "amount": 0.2,
+        "use_smooth_shade": true
+      }
+    },
+    {
+      "id": "inset_valley",
+      "op": "inset",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Define valley by inseting a shallow depression to create visual contrast with hills, ensuring contact with existing terrain",
+      "params": {
+        "distance": 0.1,
+        "use_smooth_shade": true
+      }
+    },
+    {
+      "id": "subdivide_and_bevel_hills",
+      "op": "subdivide",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Refine hill silhouette with subdivision, then bevel edges to create soft, natural transitions for mobile performance and visual clarity",
+      "params": {
+        "iterations": 2,
+        "bevel_amount": 0.02
+      }
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_hills_v1",
+  "observed_defect": "Flat prairie lacks rolling asymmetry and strategic visual depth",
+  "design_intent": "Create broad, gentle, asymmetric hills and valleys visible from strategic camera, preserving city pad and outer border",
+  "asset_decision": "REUSE",
+  "expected_visual_difference": "Visible terrain undulations with natural slopes and valleys, no towers or platforms",
+  "mobile_risks": "No high-poly clusters, no material replacement, no platforming",
+  "actions": [
+    {
+      "id": "extrude_hill_01",
+      "op": "extrude",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create primary asymmetric hill silhouette by extruding 2.5m upward from center, preserving city pad edge",
+      "params": {
+        "direction": "Z",
+        "distance": 2.5,
+        "offset": 0.0
+      }
+    },
+    {
+      "id": "inset_valley_01",
+      "op": "inset",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create valley by inset 1.2m inward from hill crest, preserving outer border",
+      "params": {
+        "distance": 1.2,
+        "use_edge": true
+      }
+    },
+    {
+      "id": "bevel_hill_edge_01",
+      "op": "bevel",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Smooth hill transition with 0.3m bevel radius for mobile performance and visual softness",
+      "params": {
+        "radius": 0.3,
+        "segments": 3
+      }
+    },
+    {
+      "id": "material_apply_01",
+      "op": "material",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Apply unified prairie material with subtle height variation for terrain depth",
+      "params": {
+        "material": "ZoneOne textured prairie and integrated scar",
+        "uv_scale": 1.0
+      }
+    }
+  ]
+}

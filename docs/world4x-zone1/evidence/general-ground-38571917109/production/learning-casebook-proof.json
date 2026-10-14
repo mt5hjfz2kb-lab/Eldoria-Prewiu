@@ -1,0 +1,9 @@
+{
+  "casebook_sha256": "adfbe948812d8cad247d1e890c4f742a66fb7b3293c34938bcf80b1e054f413d",
+  "evidence_run_ids": [
+    38558877838,
+    38565053928
+  ],
+  "model_weight_training": false,
+  "verbatim_historical_actions_sent": false
+}
