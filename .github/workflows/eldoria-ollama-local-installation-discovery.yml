@@ -49,7 +49,7 @@ jobs:
             (Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'),
             (Join-Path $env:LOCALAPPDATA 'Ollama\ollama.exe'),
             (Join-Path $env:ProgramFiles 'Ollama\ollama.exe'),
-            (if (${env:ProgramFiles(x86)}) { Join-Path ${env:ProgramFiles(x86)} 'Ollama\ollama.exe' } else { '' })
+            $(if (${env:ProgramFiles(x86)}) { Join-Path ${env:ProgramFiles(x86)} 'Ollama\ollama.exe' } else { '' })
           )) { if ($candidate -and (Test-Path $candidate)) { $candidates.Add($candidate) } }
           # The self-hosted runner may run as SYSTEM while Ollama is installed in the owner's user profile.
           $users=Join-Path $env:SystemDrive 'Users'
