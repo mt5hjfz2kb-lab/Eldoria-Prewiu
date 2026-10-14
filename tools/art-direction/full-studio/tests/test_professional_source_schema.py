@@ -96,6 +96,22 @@ class TypedArtistTests(unittest.TestCase):
     self.assertEqual(choice["properties"]["target"]["pattern"],NEW_COMPONENT_PATTERN)
   ordinary=schema_for_plan(4,True,"full","architecture",[src[0]["name"]],src,True,False)
   self.assertEqual(ordinary["properties"]["actions"]["prefixItems"][1]["oneOf"][0]["properties"]["target"]["enum"],[src[0]["name"]])
+ def test_each_cycle_distinct_model_authored_names_and_adaptive_safe_operator(self):
+  src=[{"name":"Tower","faces":5340,"vertices":10000}]
+  first=schema_for_plan(4,True,"full","architecture",["Tower"],src,True,True,1)
+  second=schema_for_plan(4,True,"full","architecture",["Tower"],src,True,True,2)
+  def structure(s):return s["properties"]["actions"]["prefixItems"][0]["oneOf"]
+  a=structure(first)[0]["properties"]["target"]["pattern"]
+  b=structure(second)[0]["properties"]["target"]["pattern"]
+  import re
+  self.assertNotEqual(a,b)
+  self.assertTrue(re.fullmatch(a,"Eldoria_Added_C01_RoofTruss"))
+  self.assertFalse(re.fullmatch(b,"Eldoria_Added_C01_RoofTruss"))
+  self.assertTrue(re.fullmatch(b,"Eldoria_Added_C02_ArchSupport"))
+  fallback=schema_for_plan(4,True,"full","architecture",["Tower"],src,True,True,2,True)
+  kinds={v["properties"]["op"]["const"] for v in structure(fallback)}
+  self.assertEqual(kinds,{"primitive"})
+  self.assertEqual(len(fallback["properties"]["actions"]["prefixItems"][1]["oneOf"]),2)
  def test_non_source_creation_stays_unaffected(self):
   s=schema_for_plan(5,False,"full","architecture")
   self.assertEqual(s["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")

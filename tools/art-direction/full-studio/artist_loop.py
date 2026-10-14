@@ -59,7 +59,7 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -151,8 +151,15 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
             # Volumetric geometry is required for the new architecture proof.
             # The model still freely designs shape, positions and proportions.
             structural=copy.deepcopy(structural)
+            if safe_primitive_fallback:
+                # One rejected topology-authoring proposal can temporarily
+                # limit the executable tool, NEVER fix/generate model geometry.
+                structural=[v for v in structural if v["properties"]["op"]["const"]=="primitive"]
+            stage_pattern=(rf"^Eldoria_Added_C{assembly_cycle:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
+                           if assembly_cycle else NEW_COMPONENT_PATTERN)
             for variant in structural:
                 op=variant["properties"]["op"]["const"]
+                variant["properties"]["target"]["pattern"]=stage_pattern
                 prm=variant["properties"]["params"]["properties"]
                 if op=="primitive":
                     prm["shape"]["enum"]=[x for x in prm["shape"]["enum"] if x!="plane"]
@@ -166,7 +173,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
             finishing=copy.deepcopy(finishing)
             optional=copy.deepcopy(optional)
             namespace={"type":"string","minLength":18,"maxLength":60,
-                       "pattern":NEW_COMPONENT_PATTERN}
+                       "pattern":stage_pattern}
             for v in finishing+optional:
                 v["properties"]["target"]=copy.deepcopy(namespace)
         actions_schema={"type":"array","minItems":2,"maxItems":3,
@@ -330,12 +337,34 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
           "An optional THIRD is material, UV or a safe non-global modifier. "
           "This ordering prevents use of stale mesh topology. "
           "All geometry and artistic values are chosen by YOU, never a script.")
+    cycle_index=int(trial.name.split("-")[-1])
+    previous_rejections=[]
+    for previous_attempt in range(1,attempt_number):
+        note=trial/("rejected-plan-attempt-"+str(previous_attempt)+".json")
+        if note.is_file():
+            previous_rejections.append(json.loads(note.read_text(encoding="utf-8")).get("rejection",""))
+    topology_fallback=(args.source_build_phase and any(
+        "OPEN or NONMANIFOLD" in why or "ZERO-AREA" in why for why in previous_rejections))
+    if args.source_build_phase:
+        ns=f"Eldoria_Added_C{cycle_index:02d}_"
+        msg+=("\\nMandatory per-cycle new-object namespace: your chosen new name begins "+
+              ns+" followed by YOUR original descriptive identifier. "
+              "Invent a DIFFERENT name from any verified existing mesh. "
+              "Your design must be integrated with the medieval architecture without obstructing "
+              "the entry door, wooden stairs, or circulation. Do not create a freestanding oversized "
+              "box that swallows the building; compare local dimensions and player camera.")
+    if topology_fallback:
+        msg+=("\\nYour original handwritten mesh attempt did not form a closed solid. "
+              "For THIS RETRY, use a REAL VOLUMETRIC Blender primitive. "
+              "YOU still choose which primitive, placement, orientation, dimensions, material and intent. "
+              "No script chooses your new structure.")
     pictures=[image_data(reference)]
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
       args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
-                                       args.source_build_phase),timeout=540)
+                                       args.source_build_phase,cycle_index if args.source_build_phase else 0,
+                                       topology_fallback),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -353,8 +382,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
                 raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")
             created_name=actions[0]["target"]
-            if not re.fullmatch(NEW_COMPONENT_PATTERN,created_name):
-                raise RejectedPlan("Qwen new object name must be artist-chosen and begin Eldoria_Added_; NEVER use an inherited source object's name")
+            ns_pattern=rf"^Eldoria_Added_C{cycle_index:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
+            if not re.fullmatch(ns_pattern,created_name):
+                raise RejectedPlan("New Qwen object must use original descriptive suffix with CURRENT CYCLE namespace Eldoria_Added_C%02d_ and must never reuse any inherited source name" % cycle_index)
             for action in actions[1:]:
                 if action["target"] != created_name:
                     raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
