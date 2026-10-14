@@ -153,7 +153,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
     if phase=="geometry":
         return base+"THIS STAGE ONLY FIXES GEOMETRY of the real existing Blender meshes. For EACH action op=transform; choose one EXACTLY NAMED source object from verified inventory. params must contain BOTH location:[x,y,z] and scale:[sx,sy,sz], no extra keys. FIX the formerly overlapping and horizontally misaligned roof and tower by placing objects at DIFFERENT HEIGHTS. Y coordinates must not be copied blindly. Blender operation is absolute position and absolute scale. NEVER wrap values in a transform sub-object."
     if phase=="surface":
-        return base+"THIS STAGE ONLY AUTHORS REAL PBR MATERIALS on named existing Blender meshes. For EACH action op=material; choose exact source object name, params EXACTLY {base_color:[r,g,b,a],roughness:0.45..1,metallic:0..0.35}. Use plausible medieval limestone, terracotta, oak and aged iron according to each component; different real objects must receive coherent but distinct artist-picked colours. Do not use transform or invent object IDs."
+        return base+"THIS STAGE ONLY AUTHORS REAL PBR MATERIALS on named existing Blender meshes. For EACH action op=material; choose exact source object name, params EXACTLY {base_color:[r,g,b,a],roughness:0.45..1,metallic:0..0.35}. Use plausible medieval limestone, terracotta, oak and aged iron according to each component; different real objects must receive coherent but distinct artist-picked colours. NEVER assign material twice to the SAME inherited mesh: a later material overwrites the previous one. If the source has ONE mesh, choose ONE deliberate material pass; for genuine variation choose shader_graph in full mode or source-grounded multiple distinct meshes. Do not use transform or invent object IDs."
     if phase=="detail":
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
     return base+(
@@ -231,6 +231,23 @@ def repair_noncreative_action_ids(doc):
                         "scope": "NON_ARTISTIC_LOG_IDENTIFIER_ONLY"})
     return doc, repairs
 
+def reject_overwriting_material_actions(actions):
+    """Reject cosmetic pseudo-complexity: subsequent materials replace previous ones."""
+    seen=set()
+    for action in actions:
+        if action.get("op") != "material":
+            continue
+        target=action.get("target")
+        if target in seen:
+            raise RejectedPlan(
+                "Repeated material assignment to SAME real mesh "+
+                str(target)+" only overwrites the previous material. "+
+                "Choose ONE artist-authored PBR material per mesh or a deliberate "+
+                "source-grounded shader_graph for actual regional variation."
+            )
+        seen.add(target)
+
+
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None):
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
@@ -254,6 +271,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
+    reject_overwriting_material_actions(doc["actions"])
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
