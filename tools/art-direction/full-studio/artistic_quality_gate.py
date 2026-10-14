@@ -35,7 +35,7 @@ def weighted(rubric):
 
 def stage_visual_request(*,output,reference,original_source_sha,input_source,
                          raw_plan,execution_proof,before,after,model,
-                         memory_proof=None,run_id=None):
+                         memory_proof=None,review_camera_file=None,run_id=None):
     """Consume actual source+model+Blender evidence; write no art-approval flag."""
     from PIL import Image
     src=Path(input_source)
@@ -66,6 +66,7 @@ def stage_visual_request(*,output,reference,original_source_sha,input_source,
          "reference_sha256":digest(reference),
          "memory_context_sha256":extra,
          "camera_matched_in_blender":True,
+         "review_camera_spec_sha256":digest(review_camera_file) if review_camera_file else None,
          "render_profile":"actual matched native Blender fixed-camera execution",
          "resolution":resolution,
          "before_png_sha256":digest(before),"after_png_sha256":digest(after),
@@ -90,7 +91,8 @@ def validate_independent_review(request,review,*,prior=None):
         raise ValueError("Qwen cannot independently judge its own art")
     for name in ("original_asset_sha256","input_asset_sha256",
                  "output_asset_sha256","qwen_plan_sha256",
-                 "reference_sha256","before_png_sha256","after_png_sha256"):
+                 "reference_sha256","before_png_sha256","after_png_sha256",
+                 "review_camera_spec_sha256"):
         if review.get(name)!=request.get(name):
             raise ValueError("Review not bound to exact original A/B "+name)
     for name in ("diagnosis","observed_improvement","protected_parts_impact"):
