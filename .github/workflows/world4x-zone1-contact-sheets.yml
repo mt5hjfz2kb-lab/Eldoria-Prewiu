@@ -1,0 +1,43 @@
+name: Zone One provenance-preserved real visual contact sheets
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-contact-sheets.yml'
+      - 'tools/world4x-zone1/production/build_review_contact_sheets.py'
+permissions:
+  contents: write
+concurrency:
+  group: zoneone-visual-contact-export
+  cancel-in-progress: false
+jobs:
+  encode-existing-real-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free system PIL
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-pil
+      - name: Build SHA-verified actual Blender image pairs
+        run: python3 tools/world4x-zone1/production/build_review_contact_sheets.py
+      - name: Save genuine image pixels in accessible portable evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/visual-contact-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/zoneone-contact; then cp -a /tmp/zoneone-contact/. "$DEST/"; fi
+          git config user.name 'Eldoria Zone One visual evidence'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git diff --cached --quiet || { git commit -m 'Preserve reduced true Blender A-B image sheets and provenance'; git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-visual-contact-${{ github.run_id }}
+          path: /tmp/zoneone-contact/
+          retention-days: 30
