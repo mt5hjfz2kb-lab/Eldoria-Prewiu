@@ -5,6 +5,7 @@ root=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(root/"tools/art-direction/ai-authoring"))
 from author_brief import cpu_artist_schema
 from artist_plan_validation import inspect_artist_plan
+from terrain_bounds_contract import verified_knot_ranges, coordinate_schema, limits_label, inside_limits
 p=argparse.ArgumentParser()
 p.add_argument("--out",type=pathlib.Path,required=True)
 p.add_argument("--reference",type=pathlib.Path,required=True)
@@ -16,6 +17,7 @@ sha=lambda f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest()
 top=json.loads(a.mesh_context.read_text())
 target="ZoneOne continuous prairie source"
 assert top["target"]==target and top["vertices"]>=14000
+knot_limits=verified_knot_ranges(top)
 role=(root/"tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md").read_text()
 source_review=(root/"docs/world4x-zone1/GROUND_ART_REVIEW_20261014.json").read_text()
 b64=[]
@@ -27,10 +29,7 @@ for name,file in [("destination",a.reference),("actual_before",a.real_before)]:
  b64.append(base64.b64encode(frame.read_bytes()).decode())
 schema=cpu_artist_schema(target,"existing",2)
 vec={"type":"array","minItems":3,"maxItems":3,"items":{"type":"number"}}
-xyz={"type":"array","minItems":3,"maxItems":3,"prefixItems":[
- {"type":"number","minimum":-72,"maximum":72},
- {"type":"number","minimum":32,"maximum":86},
- {"type":"number","minimum":-5,"maximum":7}]}
+xyz=coordinate_schema(knot_limits)
 delta={"type":"array","minItems":3,"maxItems":3,"prefixItems":[
  {"const":0},{"const":0},{"type":"number","minimum":-14,"maximum":12}]}
 knot={"type":"object","additionalProperties":False,"properties":{
@@ -52,7 +51,8 @@ prompt=("ELDORIA / ZONE ONE / BRECHA: two real images are owner's approved world
 "YOU ARE THE ARTIST: author exactly TWO genuinely different CURVED sculpt_path landform decisions for the actual 'ZoneOne continuous prairie source' mesh. "
 "One is a distinct winding asymmetric BRECHA depression/chasm channel with Z offsets reaching -9..-14m; "
 "the other is an offset companion rising fractured shoulder/rim using Z offsets reaching +7..+12m. "
-"Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, center X=-72..72 Y=32..86 Z=-5..7; [dx,dy]=[0,0]. "
+("Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, " +
+"source-verified LOCAL center ranges " + limits_label(knot_limits) + "; [dx,dy]=[0,0]. ")
 "Make visually connected, irregular long curves rather than circular pimples or ruler-straight mountains. "
 "Land around it remains an open buildable meadow; do not reprofile city or edges. "
 "Place centers >= radius+2m inside the +/-118m protected boundaries and away from city pad. "
@@ -98,7 +98,7 @@ for attempt in range(3):
    if cross<130:errors.append("Artist path must have meaningful curvature, not straight")
    for k in knots:
     x,y,z=k["center"];dx,dy,dz=k["delta"];rad=k["radius"]
-    if not(-72<=x<=72 and 32<=y<=86 and -5<=z<=7 and 18<=rad<=30):errors.append("Knot center/radius out of ground-safe bounds")
+    if not inside_limits(k["center"],knot_limits) or not 18<=rad<=30:errors.append("Knot center/radius out of source-verified ground-safe bounds")
     if dx!=0 or dy!=0 or not -14<=dz<=12:errors.append("Only vertical displacement")
     if abs(x)+rad>=118 or abs(y)+rad>=118:errors.append("Path intersects protected boundary")
     if -40-rad < x < 4+rad and -52-rad < y < -8+rad:errors.append("Path intersects city pad")
