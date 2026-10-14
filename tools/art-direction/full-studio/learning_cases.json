@@ -35,6 +35,48 @@
       "observed": "Four genuine Qwen-directed Blender primitives exported as an editable BLEND/GLB; image revealed disconnected roof, overlapping masonry and several objects buried at wrong heights. The Qwen critique returned invalid JSON.",
       "verified_correction": "Separate geometric sanity from visual certification; return invalid silhouettes to Qwen, require roof tiers, plausible contact and material/structural refinement on a verified existing source.",
       "safe_lesson": "When creating an architecture asset, roof and shaft must occupy aligned, different real heights, parts must not be identical overlapping masses, and materials must be deliberately authored. Real Blender success is not art approval."
+    },
+    {
+      "id": "independent-38635836446-4b-sculpt-cycle2",
+      "run_id": 38635836446,
+      "evidence_artifact_id": 11928820402,
+      "model": "qwen3-vl:4b-instruct",
+      "raw_response_sha256": "8b406e7089f7dfbf164cb5c9346ab49fe04122a25b5aaf96ce272b00843c4176",
+      "result": "VISUAL_REJECTED_INDEPENDENT_REVIEW",
+      "observed": "Real fixed-camera A/B of inherited timber watchtower shows roof and stair distortions from global landmark deformation, not a professional quality improvement.",
+      "safe_lesson": "For a small timber lookout mesh, do not deform the whole stair and roof assembly with broad landmark brushes. Choose local detail that preserves the existing architectural silhouette and connections.",
+      "review_provenance": {
+        "source": "real_Windows_BlenderMCP_camera_matched_A_B",
+        "trial_path": "4b-sculpt/cycle-2",
+        "pending_learning_case_sha256": "8f5991d897d1beef23d16dbb2f553f2a671706b782142902cbde5d2825b80de8",
+        "artifact_id": 11928820402,
+        "inspected_by": "ChatGPT independent from authoring Qwen; visual assessment, NOT Unity certification",
+        "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "art_approved": false,
+        "unity_verified": false,
+        "weights_updated": false
+      }
+    },
+    {
+      "id": "independent-38635836446-8b-sculpt-cycle2",
+      "run_id": 38635836446,
+      "evidence_artifact_id": 11928820402,
+      "model": "qwen3-vl:8b-instruct-q4_K_M",
+      "raw_response_sha256": "d7e6baf4081a1a58c0f571a832e791960fe2b23d2a567cb5fe6f2f4346dc621f",
+      "result": "VISUAL_REJECTED_INDEPENDENT_REVIEW",
+      "observed": "Actual 8B source camera A/B still deforms inherited tower roof and staircase without verified reference convergence; a positive model self-critique is not independent quality approval.",
+      "safe_lesson": "Even when the local visual model self-critique sounds positive, compare real camera A-B and reject global deformations on a small inherited watchtower. Make deliberate localized changes and protect roof and stairs.",
+      "review_provenance": {
+        "source": "real_Windows_BlenderMCP_camera_matched_A_B",
+        "trial_path": "8b-sculpt/cycle-2",
+        "pending_learning_case_sha256": "121779d3b0f2d82c098646238701328fb0f3fe7623149241da7ce9b37502673f",
+        "artifact_id": 11928820402,
+        "inspected_by": "ChatGPT independent from authoring Qwen; visual assessment, NOT Unity certification",
+        "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "art_approved": false,
+        "unity_verified": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
