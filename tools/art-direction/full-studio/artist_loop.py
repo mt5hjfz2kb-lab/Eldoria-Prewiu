@@ -366,6 +366,16 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       +"\nNon-copyable empirical lessons: "+memory[:600]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
+    if source_exists and args.require_inherited_geometry_edit:
+        msg+=("\\nOWNER REQUIREMENT: produce a REAL MESH DATA CHANGE to the "
+              "verified inherited source. Include at least ONE genuine "
+              "sculpt_anchor/sculpt/extrude/inset/subdivide/boolean action with "
+              "your OWN source-grounded parameters. Two bevel modifiers, UV and "
+              "PBR recolours alone are NOT sufficient. For modifiers, BEVEL "
+              "supports only options.width and options.segments; ARRAY alone "
+              "supports options.count and options.offset. NEVER use kind=INSET "
+              "or kind=EXTRUDE: inset and extrude are DISTINCT ops. "
+              "Any unsupported option or imaginary target is rejected before Blender.")
     pictures=[image_data(reference)]
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
