@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from learning_context import BLOCK
 
 ART_RESULTS = {"VISUAL_REJECTED", "ART_SOURCE_PASS"}
 IMAGE_SIG = b"\x89PNG\r\n\x1a\n"
@@ -41,7 +42,7 @@ def curate_case(pending_path: Path, review_path: Path, casebook_path: Path) -> d
     if review.get("reviewer_role") != "INDEPENDENT_ART_REVIEW":
         raise ValueError("The model cannot approve its own proposal")
     lesson = review.get("safe_lesson", "")
-    if not isinstance(lesson, str) or not 45 <= len(lesson) <= 380:
+    if not isinstance(lesson, str) or not 45 <= len(lesson) <= 380 or BLOCK.search(lesson):
         raise ValueError("Specific transferable visual lesson required")
     if not isinstance(review.get("diagnosis"), str) or len(review["diagnosis"]) < 45:
         raise ValueError("Independent artistic diagnosis required")
