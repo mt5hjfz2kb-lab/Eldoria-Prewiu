@@ -1,0 +1,84 @@
+name: Eldoria isolated replay of accepted Qwen terrain source plan
+on:
+  push:
+    branches:
+      - stabilization/eldoria-world4x-contracts-20261014
+    paths:
+      - '.github/workflows/eldoria-world4x-qwen-plan-replay.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  replay-accepted-original-no-inference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    env:
+      PYTHONPATH: /usr/lib/python3/dist-packages
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact previously accepted Qwen3-VL artist plan and raw inference
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-qwen-world4x-typed-plan-probe
+          run-id: '38595477284'
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          github-token: ${{ github.token }}
+          path: /tmp/eldoria-qwen-original-replay
+      - name: Install free native Blender plus verify NumPy within embedded Python
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender -b --python-expr "import numpy, PIL; print('ELDORIA_EMBEDDED_NUMPY_READY', numpy.__version__)"
+      - name: Lock exact original artist decision and original terrain SHA
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json
+          source=pathlib.Path('docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend')
+          plan=pathlib.Path('/tmp/eldoria-qwen-original-replay/eldoria-brecha-preflight-plan/artist-plan.json')
+          audit=json.loads(pathlib.Path('/tmp/eldoria-qwen-original-replay/eldoria-brecha-preflight-plan/genuine-ai-evidence.json').read_text())
+          assert hashlib.sha256(source.read_bytes()).hexdigest()=='216d14929f6a9fcb6e14586c6c489316819bb0139e04fe5932b38a8f9dafa35b'
+          assert hashlib.sha256(plan.read_bytes()).hexdigest()=='9790d94bd87644006a669706dd168ac05f9f02efcd76014fa4d2688a1202151a'
+          assert audit['plan_sha256']==hashlib.sha256(plan.read_bytes()).hexdigest()
+          assert audit['source_blend_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+          assert audit['ai_model']=='qwen3-vl:4b-instruct'
+          assert audit['blender_operations_executed_yet'] is False
+          actions=json.loads(plan.read_text())
+          assert len(actions)==2 and all(a['type']=='sculpt_path' for a in actions)
+          print('ELDORIA_AUTHENTIC_AI_PLAN_REPLAY_PINNED',len(actions),flush=True)
+          PY
+      - name: Physically execute exact Qwen-selected XY and displacement in isolated Blender
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --plan /tmp/eldoria-qwen-original-replay/eldoria-brecha-preflight-plan/artist-plan.json \
+            --out /tmp/eldoria-world4x-accepted-plan-fixed-blender --transport direct
+      - name: Independently reject topology/pad/border damage and verify existing source untouched
+        run: |
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/verify_brecha_transition.py -- \
+            --before docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --after /tmp/eldoria-world4x-accepted-plan-fixed-blender/artist-output.blend \
+            --out /tmp/eldoria-world4x-accepted-plan-independent
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          original=pathlib.Path('docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend')
+          g=json.loads(pathlib.Path('/tmp/eldoria-world4x-accepted-plan-independent/geometry-gate.json').read_text())
+          proof=json.loads(pathlib.Path('/tmp/eldoria-world4x-accepted-plan-fixed-blender/artist-execution.json').read_text())
+          assert g['geometry_pass'] and g['pad_and_border_unchanged']
+          assert not g['art_approved'] and not g['unity_tested']
+          assert proof['source_sha256']==hashlib.sha256(original.read_bytes()).hexdigest()
+          assert proof['source_mesh_sha256']!=proof['result_mesh_sha256']
+          assert g['changed_vertices']>0 and g['real_min_dz']<=-3 and g['real_max_dz']>=3
+          print('ELDORIA_GENUINE_QWEN_SOURCE_SCULPT_INDEPENDENT_GEOMETRY_PASS',g['changed_vertices'],flush=True)
+          PY
+      - name: Retain exact source and proof even on failure without publishing game
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-qwen-replayed-world4x-source-proof
+          path: |
+            /tmp/eldoria-qwen-original-replay/eldoria-brecha-preflight-plan/artist-plan.json
+            /tmp/eldoria-world4x-accepted-plan-fixed-blender/
+            /tmp/eldoria-world4x-accepted-plan-independent/
+          if-no-files-found: warn
+          retention-days: 14

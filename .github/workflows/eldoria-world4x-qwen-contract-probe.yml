@@ -1,0 +1,95 @@
+name: Eldoria isolated real Qwen coordinate contract probe
+on:
+  push:
+    branches:
+      - stabilization/eldoria-world4x-contracts-20261014
+    paths:
+      - '.github/workflows/eldoria-world4x-qwen-contract-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-qwen-source-geometry-plan-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 43
+    env:
+      PYTHONPATH: /usr/lib/python3/dist-packages
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender inspection and local Qwen dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil python3-numpy
+          blender -b --python-expr "import numpy, PIL; print('ELDORIA_BLENDER_EMBEDDED_NUMPY_READY', numpy.__version__)"
+          docker run --rm -d --name eldoria-qwen-contract-probe -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:11434/api/version >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:11434/api/version
+          docker exec eldoria-qwen-contract-probe ollama pull qwen3-vl:4b-instruct
+      - name: Inspect exact frozen source geometry in Blender, do not edit
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --inspect --inspect-target-object 'ZoneOne continuous prairie source' \
+            --out /tmp/eldoria-brecha-preflight-source
+      - name: Ask local Qwen to author typed spatial plan, validate but never sculpt
+        run: |
+          python3 tools/world4x-zone1/production/author_brecha_transition.py \
+            --mesh-context /tmp/eldoria-brecha-preflight-source/mesh-context.json \
+            --source docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
+            --real-before docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/after-blender.png \
+            --out /tmp/eldoria-brecha-preflight-plan
+          python3 - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('/tmp/eldoria-brecha-preflight-plan')
+          actions=json.loads((p/'artist-plan.json').read_text())
+          proof=json.loads((p/'genuine-ai-evidence.json').read_text())
+          assert len(actions)==2 and all(a['type']=='sculpt_path' for a in actions)
+          assert proof['blender_operations_executed_yet'] is False
+          assert proof['original_inference'] and 'serialization' in proof
+          assert all(len(a['parameters']['knots'])>=3 for a in actions)
+          print('ELDORIA_QWEN_ORIGINAL_SOURCE_COORDINATES_ACCEPTED',len(actions))
+          PY
+      - name: Execute the exact AI-authored plan ONLY in a temporary independent Blender test
+        run: |
+          SOURCE=docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$SOURCE" \
+            --plan /tmp/eldoria-brecha-preflight-plan/artist-plan.json \
+            --out /tmp/eldoria-brecha-proof-edited --transport direct
+      - name: Independently verify actual inherited source geometry and protected city, without visual approval
+        run: |
+          SOURCE=docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/verify_brecha_transition.py -- \
+            --before "$SOURCE" --after /tmp/eldoria-brecha-proof-edited/artist-output.blend \
+            --out /tmp/eldoria-brecha-proof-independent
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path('/tmp')
+          plan=json.loads((root/'eldoria-brecha-preflight-plan/artist-plan.json').read_text())
+          executed=json.loads((root/'eldoria-brecha-proof-edited/artist-execution.json').read_text())
+          gate=json.loads((root/'eldoria-brecha-proof-independent/geometry-gate.json').read_text())
+          assert len(plan)==2 and len(executed['executed_actions'])==2
+          assert executed['source_mesh_sha256'] != executed['result_mesh_sha256']
+          assert executed['source_sha256']==gate['source_sha256']
+          assert gate['geometry_pass'] and gate['pad_and_border_unchanged']
+          assert gate['changed_vertices']>0 and gate['real_min_dz']<=-3 and gate['real_max_dz']>=3
+          assert not gate['art_approved'] and not gate['unity_tested']
+          assert (root/'eldoria-brecha-proof-edited/artist-output.blend').read_bytes().startswith(b'BLENDER')
+          print('ELDORIA_REAL_QWEN_CURVED_SOURCE_GEOMETRY_PASS',gate['changed_vertices'],flush=True)
+          PY
+      - name: Preserve exact Qwen original and normalized plan even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-qwen-world4x-typed-plan-probe
+          path: |
+            /tmp/eldoria-brecha-preflight-source/
+            /tmp/eldoria-brecha-preflight-plan/
+            /tmp/eldoria-brecha-proof-edited/
+            /tmp/eldoria-brecha-proof-independent/
+          if-no-files-found: warn
+          retention-days: 14

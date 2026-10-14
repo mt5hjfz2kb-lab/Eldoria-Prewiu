@@ -14,14 +14,20 @@ concurrency:
   cancel-in-progress: false
 jobs:
   ai-curved-ground:
+    # Owner pause: technical fixes may merge without launching creative production.
+    # Remove this guard only after explicit owner authorization to resume production.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      PYTHONPATH: /usr/lib/python3/dist-packages
     steps:
       - uses: actions/checkout@v4
       - name: Install Blender and zero-credit geometry tools
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender -b --python-expr "import numpy, PIL; print('ELDORIA_EMBEDDED_BLENDER_DEPS_PASS', numpy.__version__)"
           mkdir -p /tmp/zoneone-brecha
       - name: Local zero-credit Qwen3-VL artist
         run: |
@@ -44,6 +50,7 @@ jobs:
             --source "$SOURCE" --inspect --inspect-target-object 'ZoneOne continuous prairie source' --out /tmp/zoneone-brecha/context
           python3 tools/world4x-zone1/production/author_brecha_transition.py \
             --mesh-context /tmp/zoneone-brecha/context/mesh-context.json \
+            --source "$SOURCE" \
             --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
             --real-before docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/after-blender.png \
             --out /tmp/zoneone-brecha/qwen
@@ -79,7 +86,28 @@ jobs:
           git config user.name 'Eldoria Zone One Brecha sculpt'
           git config user.email 'actions@users.noreply.github.com'
           git add -f "$DEST"
-          git diff --cached --quiet || { git commit -m 'Preserve genuine AI-curved Brecha source, topology gates and real zoom renders'; git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013; }
+          if ! git diff --cached --quiet; then
+            git commit -m 'Preserve genuine AI-curved Brecha source, topology gates and real zoom renders'
+            TARGET=prototype/world4x-zone1-zoom-reference-20261013
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:refs/heads/$TARGET"; then
+                pushed=true
+                break
+              fi
+              echo "::warning::Concurrent owner commit detected; attempting safe non-forced rebase (attempt $attempt)"
+              git fetch origin "$TARGET"
+              if ! git rebase FETCH_HEAD; then
+                git rebase --abort || true
+                echo "::error::Evidence rebase conflicts; original files remain preserved by Actions artifact"
+                break
+              fi
+            done
+            if test "$pushed" != true; then
+              echo "::error::Branch evidence could not be committed without clobbering concurrent work; Actions artifact is retained"
+              exit 1
+            fi
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
