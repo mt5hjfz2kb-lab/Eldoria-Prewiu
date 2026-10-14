@@ -1,0 +1,27 @@
+name: Eldoria World4X isolated coordinate contract
+on:
+  push:
+    branches:
+      - stabilization/eldoria-world4x-contracts-20261014
+    paths:
+      - 'tools/world4x-zone1/production/**'
+      - '.github/workflows/eldoria-world4x-stabilization.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-grounded-qwen-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original Brecha author script and source-bound contract parse
+        run: |
+          python3 -m py_compile tools/world4x-zone1/production/author_brecha_transition.py \
+            tools/world4x-zone1/production/terrain_bounds_contract.py
+      - name: Run source-bounded coordinate tests without starting Qwen/Blender/Unity
+        run: |
+          python3 -m unittest discover -s tools/world4x-zone1/production/tests -p 'test_terrain_bounds_contract.py' -v
+      - name: Preserve source authority and halt before artistic production
+        run: |
+          echo 'Contract QA only; owner production pause remains active.'
