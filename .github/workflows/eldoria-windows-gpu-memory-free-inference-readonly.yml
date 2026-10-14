@@ -1,0 +1,48 @@
+name: Eldoria real PC GPU VRAM RAM and free disk for zero-cost local larger artist model
+on:
+  push:
+    branches: [validation/eldoria-pc-local-model-inventory-20261014]
+    paths: ['.github/workflows/eldoria-windows-gpu-memory-free-inference-readonly.yml']
+permissions:
+  contents: read
+jobs:
+  pc-readonly-capacity:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 4
+    steps:
+      - name: Inspect NVIDIA VRAM and machine RAM/disk free - without model downloads or modifying PC
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $report=@{cpu_ram_gib=0; free_disk_c_gib=0; gpus=@(); model_downloads=0; source_unchanged=$true; artwork_created=$false}
+          $ram=(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory
+          $report.cpu_ram_gib=[math]::Round([double]$ram/1GB,2)
+          $disk=Get-PSDrive -Name C
+          $report.free_disk_c_gib=[math]::Round([double]$disk.Free/1GB,2)
+          $smi=Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
+          if (-not $smi) {
+            $candidate=Join-Path $env:ProgramFiles 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
+            if (Test-Path $candidate) { $smi=Get-Item $candidate }
+          }
+          if ($smi) {
+            $rows=& $smi.Source --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits
+            if ($LASTEXITCODE -ne 0) { throw 'nvidia-smi error reading real VRAM' }
+            foreach($line in $rows) {
+              $cells=@($line -split ',')
+              if($cells.Count -ge 3) {
+                $report.gpus+=@{name=$cells[0].Trim();vram_mib=[int]$cells[1].Trim();free_vram_mib=[int]$cells[2].Trim()}
+              }
+            }
+          }
+          $path=Join-Path $env:RUNNER_TEMP 'eldoria-windows-hardware-capacity-readonly.json'
+          $report | ConvertTo-Json -Depth 6 | Set-Content $path -Encoding UTF8
+          Write-Host ('ELDORIA_PHYSICAL_MACHINE_GIB_RAM='+$report.cpu_ram_gib)
+          Write-Host ('ELDORIA_PHYSICAL_MACHINE_FREE_C_GIB='+$report.free_disk_c_gib)
+          foreach($gpu in $report.gpus){Write-Host ('ELDORIA_NVIDIA_VRAM_MIB='+$gpu.vram_mib+' GPU='+$gpu.name)}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-pc-local-larger-model-capacity-without-download
+          path: ${{ runner.temp }}/eldoria-windows-hardware-capacity-readonly.json
+          retention-days: 5
+          if-no-files-found: warn
