@@ -54,9 +54,8 @@ try{
   $cases=@(
     @{label='4b-sculpt';model='qwen3-vl:4b-instruct';kind='mesh_edit'},
     @{label='8b-sculpt';model='qwen3-vl:8b-instruct-q4_K_M';kind='mesh_edit'},
-    @{label='8b-camera-visible';model='qwen3-vl:8b-instruct-q4_K_M';kind='professional'}
+    @{label='8b-assembly';model='qwen3-vl:8b-instruct-q4_K_M';kind='assembly'}
   )
-  $cases=@($cases | Where-Object {$_.label -eq '8b-camera-visible'})
   foreach($case in $cases){
     if($case.model -notin $installed){throw ('No previously cached model; no download authorized: '+$case.model)}
   }
@@ -72,11 +71,10 @@ try{
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
-      '--max-cycles','3','--min-successful-cycles','2',
+      '--max-cycles','2','--min-successful-cycles','2',
       '--max-plan-attempts','5','--max-actions','3','--max-tokens','2048',
       '--vision-max-edge','768','--asset-category','architecture')
     if($case.kind -eq 'assembly'){$params+=@('--source-build-phase','--source-tool-sequencing')}
-    elseif($case.kind -eq 'professional'){$params+=@('--phase','full','--source-tool-sequencing')}
     else{$params+=@('--phase','mesh_edit')}
     $code=999
     try{
