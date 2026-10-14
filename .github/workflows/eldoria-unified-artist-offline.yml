@@ -1,0 +1,36 @@
+name: Eldoria unified professional artist - offline full regression
+on:
+  push:
+    branches:
+      - integration/eldoria-unified-professional-artist-20261014
+    paths:
+      - 'tools/art-direction/full-studio/**'
+      - '.github/workflows/eldoria-unified-artist-offline.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-artist-unified-offline-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  full-artist-evidence-and-topology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free validation-only Pillow dependency
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Compile ALL unified artist Python modules
+        run: python -m compileall -q tools/art-direction/full-studio
+      - name: Regression tests of actual professional artist and verified learning
+        run: python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
+      - name: Confirm zero hardware, production art, or payments
+        run: echo "OFFLINE SOURCE CONTRACT ONLY; no Blender/Unity/Ollama/Windows runner accessed"
