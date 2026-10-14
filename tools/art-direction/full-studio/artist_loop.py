@@ -455,6 +455,23 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "For THIS RETRY, use a REAL VOLUMETRIC Blender primitive. "
               "YOU still choose which primitive, placement, orientation, dimensions, material and intent. "
               "No script chooses your new structure.")
+    if source_exists and source_inventory:
+        # Only true Blender camera ray hits are called visible. These IDs
+        # are real observed source faces, never scripted artistic actions.
+        camera_facts=[
+            {"name":obj["name"],
+             "faces":[{"id":i["face_index"],
+                       "screen_uv":i["camera_screen_uv"],
+                       "height":i["world_height_fraction"]}
+                      for i in obj.get("camera_visible_face_landmarks",[])[:24]]}
+            for obj in source_inventory
+            if obj.get("camera_visible_face_landmarks")]
+        if camera_facts:
+            msg+=("\nACTUAL CAMERA-RAY-VISIBLE SOURCE FACE INDICES: "+
+                  json.dumps(camera_facts,ensure_ascii=False)[:5000]+
+                  "\nFor extrude/inset choose face ID with the desired on-screen "
+                  "location from these verified camera hits. Hidden faces "
+                  "from old local percentile sampling cannot improve this view.")
     edge=getattr(args,"vision_max_edge",1024)
     if source_exists and source_inventory:
         # Replace a giant truncated inventory with SHORT trustworthy local
@@ -722,6 +739,7 @@ def main():
                           "local_extrema":x["local_extrema"],
                           "vertex_landmarks":x.get("vertex_landmarks",[]),
                           "face_landmarks":x.get("face_landmarks",[]),
+                          "camera_visible_face_landmarks":x.get("camera_visible_face_landmarks",[]),
                           "edges":x.get("edges",0),
                           "edge_landmarks":x.get("edge_landmarks",[]),
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
@@ -883,7 +901,7 @@ def main():
                 raise RuntimeError("Reinspection changed candidate source")
             verified_objects=[{k:x[k] for k in ("name","vertices","faces","local_extrema",
                                                 "local_bounds_min_m","local_bounds_max_m",
-                                                "vertex_landmarks","face_landmarks",
+                                                "vertex_landmarks","face_landmarks","camera_visible_face_landmarks",
                                                 "edges","edge_landmarks",
                                                 "evaluated_triangles",
                                                 "world_bounds_min_m","world_bounds_max_m",
