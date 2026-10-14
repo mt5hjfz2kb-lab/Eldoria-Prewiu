@@ -83,8 +83,8 @@ try {
         "params":{"type":"object","additionalProperties":false,"properties":{
           "anchor":{"type":"string","enum":["x_min","x_max","y_min","y_max","z_min","z_max"]},
           "direction":{"type":"string","enum":["+X","-X","+Y","-Y","+Z","-Z"]},
-          "distance":{"type":"number","minimum":0.8,"maximum":1.8},
-          "radius":{"type":"number","minimum":1.5,"maximum":6}
+          "distance":{"type":"number","enum":[0.85,1,1.2,1.4,1.6,1.8],"minimum":0.8,"maximum":1.8},
+          "radius":{"type":"number","enum":[1.5,2,2.5,3,4,5,6],"minimum":1.5,"maximum":6}
         },"required":["anchor","direction","distance","radius"]}
       },"required":["id","op","target","reason","params"]},
       {"type":"object","additionalProperties":false,"properties":{
@@ -121,17 +121,45 @@ try {
       @{role='user';content=$prompt;images=$images}
     )
   }
-  $body=$payload | ConvertTo-Json -Depth 60 -Compress
-  Save-Utf8 (Join-Path $Out 'request-sha256.txt') ([Convert]::ToBase64String([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($body))).Substring(0,32))
-  Write-Host ('ELDORIA_PC_REAL_QWEN_INFERENCE_STARTED model='+$Model)
-  $response=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/chat' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 1100
-  $raw=$response.message.content
-  if (-not $raw -or $raw.Length -lt 300) { throw 'Local Qwen output missing or incomplete' }
-  Save-Utf8 (Join-Path $Out 'qwen-raw.json') $raw
-  $plan=$raw | ConvertFrom-Json
-  if ($plan.actions.Count -ne 2 -or $plan.actions[0].op -ne 'sculpt_anchor' -or $plan.actions[1].op -ne 'material') { throw 'Actual Qwen two-stage action contract rejected' }
-  if ($plan.actions[0].target -ne $target -or $plan.actions[1].target -ne $target) { throw 'Qwen referenced nonexistent source mesh' }
-  if ($plan.actions[0].id -eq $plan.actions[1].id) { throw 'Duplicate model action IDs' }
+  # The local model occasionally ignores a nested Ollama JSON numeric range.
+  # Reject, explain and ask Qwen to ORIGINAL-REAUTHOR its numbers. Never clamp or fabricate art values.
+  $previous=''
+  $plan=$null
+  $valid=$false
+  for($attempt=1;$attempt -le 3;$attempt++) {
+    $payload.messages[1].content=$prompt+' Explicitly select sculpt distance from [0.85,1,1.2,1.4,1.6,1.8] meters and radius from [1.5,2,2.5,3,4,5,6] meters. Values such as distance=0.1 and radius=0.05 are physically invalid; they will be rejected.'+$previous
+    $body=$payload | ConvertTo-Json -Depth 60 -Compress
+    Write-Host ('ELDORIA_PC_REAL_QWEN_INFERENCE_ATTEMPT='+$attempt+' model='+$Model)
+    $response=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/chat' -Method Post -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes($body)) -TimeoutSec 1100
+    $raw=$response.message.content
+    if (-not $raw -or $raw.Length -lt 300) { $previous='\nThe previous response was empty; generate an ORIGINAL complete valid plan.'; continue }
+    Save-Utf8 (Join-Path $Out ('qwen-raw-attempt-'+$attempt+'.json')) $raw
+    try { $plan=$raw | ConvertFrom-Json } catch { $previous='\nInvalid JSON. Generate your own correct typed JSON.'; continue }
+    $reasons=New-Object 'System.Collections.Generic.List[string]'
+    if ($plan.schema_version -ne 2 -or $plan.asset_decision -ne 'MODIFY') { $reasons.Add('schema_version=2 and asset_decision=MODIFY required') }
+    if (@($plan.actions).Count -ne 2) { $reasons.Add('Exactly two actions required') }
+    else {
+      if ($plan.actions[0].op -ne 'sculpt_anchor' -or $plan.actions[1].op -ne 'material') { $reasons.Add('Actions must be sculpt_anchor then material') }
+      if ($plan.actions[0].target -ne $target -or $plan.actions[1].target -ne $target) { $reasons.Add('Both targets must match the exact source mesh name') }
+      if ($plan.actions[0].id -eq $plan.actions[1].id) { $reasons.Add('Tracking action IDs must be distinct') }
+      $sculpt=$plan.actions[0].params
+      if ($null -eq $sculpt -or @('x_min','x_max','y_min','y_max','z_min','z_max') -notcontains $sculpt.anchor) { $reasons.Add('Select real source local extremum') }
+      if ($null -eq $sculpt -or @('+X','-X','+Y','-Y','+Z','-Z') -notcontains $sculpt.direction) { $reasons.Add('Choose positive or negative X, Y or Z axis') }
+      if ($null -eq $sculpt -or $sculpt.distance -notin @(0.85,1,1.2,1.4,1.6,1.8)) { $reasons.Add('Original distance MUST be one of 0.85,1,1.2,1.4,1.6,1.8 meters') }
+      if ($null -eq $sculpt -or $sculpt.radius -notin @(1.5,2,2.5,3,4,5,6)) { $reasons.Add('Original radius MUST be one of 1.5,2,2.5,3,4,5,6 meters') }
+      $pbr=$plan.actions[1].params
+      if ($null -eq $pbr -or @($pbr.base_color).Count -ne 4 -or $pbr.roughness -lt 0.45 -or $pbr.roughness -gt 1 -or $pbr.metallic -lt 0 -or $pbr.metallic -gt 0.15) { $reasons.Add('Material RGBA four numbers, roughness=0.45..1, metallic=0..0.15 required') }
+      if ($null -ne $pbr -and @($pbr.base_color).Count -eq 4 -and @($pbr.base_color | Where-Object { $_ -lt 0 -or $_ -gt 1 }).Count -gt 0) { $reasons.Add('RGBA color components must be in 0..1') }
+    }
+    if ($reasons.Count -eq 0) {
+      Save-Utf8 (Join-Path $Out 'qwen-raw.json') $raw
+      $valid=$true
+      break
+    }
+    Save-Utf8 (Join-Path $Out ('validation-rejected-attempt-'+$attempt+'.json')) ($reasons | ConvertTo-Json -Depth 5)
+    $previous='\nYour previous original plan failed real safety and tool contracts: '+($reasons -join '; ')+'. Reconsider the source and choose NEW artistic coordinates and ranges yourself. No Python may rewrite your values.'
+  }
+  if (-not $valid) { throw 'Qwen failed all three original numerical plan revisions; evidence preserved without executing Blender' }
   $planFile=Join-Path $Out 'artist-plan.json'
   # An identical byte copy: Blender does NOT see any rewritten model numbers.
   [IO.File]::Copy((Join-Path $Out 'qwen-raw.json'),$planFile,$false)
