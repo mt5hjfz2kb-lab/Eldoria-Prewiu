@@ -193,10 +193,19 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
                        "pattern":stage_pattern}
             for v in finishing+optional:
                 v["properties"]["target"]=copy.deepcopy(namespace)
-        actions_schema={"type":"array","minItems":2,"maxItems":3,
-                        "prefixItems":[{"oneOf":structural},
-                                       {"oneOf":finishing},
-                                       {"oneOf":optional}]}
+        inherited_atlas_only=(not assembly_source and
+                              all(obj.get("faces",0)>2500 for obj in source_inventory))
+        if inherited_atlas_only:
+            # No forced material+UV finishing on the dense imported atlas.
+            # ONE Qwen-chosen structural op, then genuine Blender reinspection
+            # before a separate later cycle can texture a newly made object.
+            actions_schema={"type":"array","minItems":1,"maxItems":1,
+                            "prefixItems":[{"oneOf":structural}]}
+        else:
+            actions_schema={"type":"array","minItems":2,"maxItems":3,
+                            "prefixItems":[{"oneOf":structural},
+                                           {"oneOf":finishing},
+                                           {"oneOf":optional}]}
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
@@ -357,7 +366,21 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "Choose your OWN scale, pose and material after examining the reference "
               "and preserve the existing door, stairs and player circulation.")
 
-    if args.source_tool_sequencing and source_exists and args.phase=="full":
+    inherited_atlas_only=(source_exists and
+        not args.source_build_phase and source_inventory and
+        all(item.get("faces",0)>2500 for item in source_inventory))
+    if args.source_tool_sequencing and args.phase=="full" and inherited_atlas_only:
+        msg+=("\nPROTECT ORIGINAL TEXTURE ATLAS: the imported inherited tower "
+              "is a single dense mesh. Choose EXACTLY ONE precise STRUCTURAL "
+              "Blender operation in this cycle (selected face/edge extrude, "
+              "sculpt, bevel, or an original attached NEW component). "
+              "Do NOT repaint or UV unwrap the source: whole-source MATERIAL "
+              "and UV would destroy the existing timber textures and protected "
+              "door/stairs appearance. Let Blender re-inspect after structural "
+              "edits; only independent newly authored objects can later "
+              "receive safe local material/UV finishing. "
+              "All structural values remain chosen by YOU, not a recipe.")
+    if args.source_tool_sequencing and source_exists and args.phase=="full" and not inherited_atlas_only:
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
           + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
