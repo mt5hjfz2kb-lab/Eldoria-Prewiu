@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-14",
+  "evidence": "Two authentic Unity screenshots with same camera and lighting",
+  "before_run": 38562136041,
+  "after_run": 38564062748,
+  "after_artifact": 11893995946,
+  "changed_pixels_at_5_channel_difference": 26807,
+  "pixels_total": 1440000,
+  "changed_fraction": 0.01861597,
+  "changed_fraction_at_15_difference": 0.00135278,
+  "critical_visual_result": "ART REJECT AS STANDALONE INTERVENTION. Four soil-worn desire lines are physically baked into the native terrain image and preserve original mesh/navigation, but the actual player camera scarcely shows them. Do not claim art pass from high Unity script success or 1.86% pixel change.",
+  "learning": "Do not repeat low-opacity albedo tracks as a primary intervention; macro wall architecture silhouettes and grounded covered ramparts should dominate instead. A11/A12 build a continuous 16m roofed defensive wall passage grounded into original cliff and east wall; compare independent native Unity player/mobile before approval.",
+  "source_authoring": "Qwen vision 38563200385 detected no credible worn routes/medieval life; deterministic Blender translated diffuse photo soil. Qwen did not author the UV pixels.",
+  "no_paid_credits": true,
+  "main_protected": true
+}
