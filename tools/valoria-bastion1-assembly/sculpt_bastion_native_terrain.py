@@ -143,14 +143,20 @@ rgb_earthen=np.stack((
   sat(pix[:,:,2]*1.20+.011*fine)),axis=2)
 mix=sat(earth*.82)
 pix=pix*(1-mix[:,:,None])+rgb_earthen*mix[:,:,None]
+# Real A5 Unity screenshot exposed the original 0.35/0.55/0.25 GLTF
+# baseColorFactor was LOST when replacing the Principled texture node.
+# Re-bake the exact original authored factor into the new texture pixels;
+# the new glTF material exports an implicit [1,1,1,1] baseColorFactor.
+# A6 restores the original lime-moss palette instead of bright orange earth.
+pix*=np.array([.35,.55,.25],dtype=np.float32)[None,None,:]
 pix=np.clip(pix,.02,.99)
 colors=np.concatenate((pix,np.ones((res,res,1),dtype=np.float32)),axis=2).astype(np.float32)
-new_image=bpy.data.images.new('Bastion I Qwen graded native photo-soil A5',
+new_image=bpy.data.images.new('Bastion I Qwen native photo-soil with restored PBR tint A6',
                                 width=res,height=res,alpha=True)
 new_image.pixels.foreach_set(colors.ravel());new_image.pack()
 # Index 0 is original olive-grass material from canonical terrain_finish.py.
 if not original_grass:raise RuntimeError('Original grass material missing')
-grass=original_grass.copy();grass.name='Bastion I detailed graded photo terrain Qwen spatial A5'
+grass=original_grass.copy();grass.name='Bastion I PBR-balanced graded photo terrain Qwen spatial A6'
 grass.use_nodes=True
 nodes=grass.node_tree.nodes;principled=nodes.get('Principled BSDF')
 if not principled:raise RuntimeError('URP-exportable PBR material missing')
@@ -172,6 +178,62 @@ for poly in mesh.polygons:
   uv_layer.data[li].uv=((p.x+50.5)/101.,(p.y+49)/106.)
   grass_loops+=1
 if grass_loops<1000:raise RuntimeError('Grass UV atlas not applied to source terrain')
+# TRUE LARGE-SCALE ARCHITECTURAL CONTACT: Qwen saw an unnatural lawn wedge
+# between the lower yard, the stairs and the upper defensive rim. Build a
+# stone-faced stepped retaining belt AS PART OF that upper native terrain bank.
+# Use the original western-fortification limestone, not procedural gray blocks
+# or a detached second shelter. No colliders or resource-node objects.
+from mathutils.bvhtree import BVHTree
+bpy.context.view_layer.update()
+terrain_bvh=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
+def here(x,y):
+ hit,n,i,d=terrain_bvh.ray_cast(Vector((x,y,100)),Vector((0,0,-1)),200)
+ if hit is None:raise RuntimeError('Upper retaining wall has no terrain footing')
+ return float(hit.z)
+wall_objects=[]
+for o in originals:
+ p=o.parent
+ while p is not None:
+  if p.name.split('.')[0]=='LeftDetachedRemnant':
+   wall_objects.append(o)
+   break
+  p=p.parent
+if not wall_objects:raise RuntimeError('Verified original west wall kit missing')
+limestone=next((m for o in wall_objects for m in o.data.materials if m),None)
+if limestone is None:raise RuntimeError('Genuine existing wall limestone material unavailable')
+new_retaining=[]
+def face(name,x,y,z,w,d,h,material):
+ bpy.ops.mesh.primitive_cube_add(size=1,location=(x,y,z))
+ o=bpy.context.object;o.name=name;o.dimensions=(w,d,h)
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ o.data.materials.append(material);new_retaining.append(o)
+ return o
+for side in (-1,1):
+ side_name='western' if side<0 else 'eastern'
+ for k,absx in enumerate((10.55,13.42,16.29,19.16,22.03)):
+  x=side*absx
+  # Physical game-space safety: no wall anywhere in the road, stairs or plots.
+  if abs(x)-1.37<9.0:raise RuntimeError('Retaining masonry enters central reserve')
+  y=9.55
+  if y-.5 <= 8.0:raise RuntimeError('Retaining wall touches future lot envelope')
+  low=here(x,8.75);high=here(x,11.25)
+  wall_h=min(2.80,max(1.25,high-low+.46))
+  base=low-.16
+  face('Bastion I Qwen terrain '+side_name+' 3D ashlar retaining course',
+       x,y,base+wall_h*.5,2.69,.81,wall_h,limestone)
+  # Contact cap makes slope and wall read as a unified earthen embankment.
+  face('Bastion I Qwen terrain '+side_name+' stepped limestone coping',
+       x,y+.11,base+wall_h+.085,2.74,.96,.17,limestone)
+ # Two embedded end supports connect the structural ribbon into the
+ # original lateral fortification/rock ledge, not freestanding turrets.
+ for absx in (11.98,20.61):
+  x=side*absx
+  low=here(x,8.45);high=here(x,11.3)
+  h=min(2.90,max(1.45,high-low+.48))
+  face('Bastion I Qwen terrain '+side_name+' masonry-bank anchor buttress',
+       x,8.91,low+h*.5-.06,1.0,1.18,h,limestone)
+retaining_count=len(new_retaining)
+if retaining_count<22:raise RuntimeError('Missing meaningful full bank masonry set')
 # Respect the original source mesh names, everything except sole native terrain.
 all_names_before={o.name for o in originals}
 if not all(o.name in all_names_before for o in originals):raise RuntimeError('Original object set changed')
@@ -184,8 +246,8 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,grass_uv_loops=grass_loops,
- original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,restored_original_pbr_base_color_factor=[.35,.55,.25],grass_uv_loops=grass_loops,
+ original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
  native_source_terrain_sculpted=True,
