@@ -1,4 +1,5 @@
 name: Eldoria continuation from Qwen authored tower and two source-typed BlenderMCP PC cycles
+# Compatibility retry: Ollama prefixItems without items:false; exact HTTP error body retained.
 # Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
 # Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
 # Third controlled test: selected BMesh edges confirmed in Windows, source damage prevention and inspected topology.
