@@ -1,0 +1,44 @@
+{
+  "state": "TECHNICAL_SOURCE_ONLY",
+  "transport": "direct",
+  "blender_execution": true,
+  "ai_self_approval": false,
+  "unity_tested": false,
+  "mobile_device_tested": false,
+  "art_approved": false,
+  "reusable_components": 1,
+  "artist_plan_sha256": "66349663d21327f485d2c97a41e6948a4b39e5f2528c243e8ed857de38d9abfd",
+  "source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "before_blender_sha256": "ad472949b533495207f78b0829b3fc01d794e6d123769d4250cbfefc069527c1",
+  "after_blender_sha256": "7612132914ef3bb2389007ff2196452854453f79ef299e1bdde25d15094235a9",
+  "blend_sha256": "39f188b195464cf94231baa3f28a8f1cbee2f80c2b25908589240ef8a6ad3f54",
+  "glb_sha256": "156165c078770f46cf3f319804df52cadfb40aba0048f3da704d1af0e0785f5c",
+  "matched_review_camera": true,
+  "evaluated_triangles": 28802,
+  "action_count": 2,
+  "execution": [
+    {
+      "id": "sculpt_hill_northeast",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad, asymmetric hill in the northeast quadrant to add visual mass and strategic depth. Center at [60, 60, 0], radius 35m, delta z +2.5m. This hill is",
+      "geometry_changed": true,
+      "mesh_count": 1,
+      "originals_changed": [
+        "ZoneOne continuous prairie source"
+      ]
+    },
+    {
+      "id": "sculpt_valley_southwest",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a soft, elongated valley in the southwest to contrast the hill and define natural terrain flow. Center at [-40, 45, 0], radius 30m, delta z -1.2m. This",
+      "geometry_changed": true,
+      "mesh_count": 1,
+      "originals_changed": [
+        "ZoneOne continuous prairie source"
+      ]
+    }
+  ],
+  "elapsed_seconds": 9.623
+}

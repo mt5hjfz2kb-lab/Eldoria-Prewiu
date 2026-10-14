@@ -1,0 +1,29 @@
+{
+  "state": "SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
+  "ai_authored_action_plans": 1,
+  "source_authority_unchanged": true,
+  "frozen_source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "blender_real_execution": true,
+  "art_approved": false,
+  "unity_art_verified": false,
+  "physical_mobile_validated": false,
+  "model": "qwen3-vl:4b-instruct",
+  "system_profile_sha256": "f7ce7d9379f694ae8ae817c0b0235dbdedf353c9aa2de20bab95224d83906f29",
+  "journal_sha256": "b937f406f2a6c05ee3a64bed94cfeb09a5c3877dd3ab1468b86951293f6c4ce0",
+  "cycles": [
+    {
+      "cycle": 1,
+      "status": "ART_REVIEW_REQUIRED",
+      "plan_sha256": "66349663d21327f485d2c97a41e6948a4b39e5f2528c243e8ed857de38d9abfd",
+      "output_blend_sha256": "39f188b195464cf94231baa3f28a8f1cbee2f80c2b25908589240ef8a6ad3f54",
+      "output_glb_sha256": "156165c078770f46cf3f319804df52cadfb40aba0048f3da704d1af0e0785f5c",
+      "matched_review_camera": true,
+      "critique": {
+        "critique": "No defects found. The after asset is a valid render of the target scene with no visible artifacts or inconsistencies.",
+        "geometry_next": "",
+        "material_next": "",
+        "clearly_failed": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_HillSaddle_01",
+  "observed_defect": "Flat prairie lacks visible rolling terrain from strategic camera, reducing visual depth and strategic legibility.",
+  "design_intent": "Create two complementary asymmetric landform edits — a gentle north-eastern hill and a soft south-western valley — to establish natural visual hierarchy and buildable space without obstructing city or",
+  "asset_decision": "MODIFY",
+  "expected_visual_difference": "Visible, continuous, non-identical hills and valleys from fixed camera, preserving city borders and terrain continuity",
+  "mobile_risks": "None — all edits are within terrain mesh, no new mesh or material introduced",
+  "actions": [
+    {
+      "id": "sculpt_hill_northeast",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad, asymmetric hill in the northeast quadrant to add visual mass and strategic depth. Center at [60, 60, 0], radius 35m, delta z +2.5m. This hill is",
+      "params": {
+        "center": [60, 60, 0],
+        "delta": [0, 0, 2.5],
+        "radius": 35
+      }
+    },
+    {
+      "id": "sculpt_valley_southwest",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a soft, elongated valley in the southwest to contrast the hill and define natural terrain flow. Center at [-40, 45, 0], radius 30m, delta z -1.2m. This",
+      "params": {
+        "center": [-40, 45, 0],
+        "delta": [0, 0, -1.2],
+        "radius": 30
+      }
+    }
+  ]
+}
