@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-14",
+  "candidate_run": 38562136041,
+  "artifact_id": 11892482908,
+  "scene_file": "Bastion1MaterialAB/global-A/global-native-Unity-candidate.glb",
+  "extracted_from": "Actual native Blender→Unity GitHub Actions artifact, glTF JSON accessor counts",
+  "glb_megabytes_binary": 74.472,
+  "nodes": 1199,
+  "meshes": 386,
+  "mesh_primitives": 394,
+  "triangles_static": 405276,
+  "materials": 51,
+  "images": 43,
+  "textures": 106,
+  "native_camera_frames": "1440x1000, 780x520, 390x844",
+  "real_mobile_device_profile": false,
+  "mobile_art_approved": false,
+  "quality_conclusion": "Counts are not proof of mobile performance; static graphics likely require instancing, atlas/material and on-device profile before release.",
+  "no_paid_credits": true
+}
