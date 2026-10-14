@@ -40,6 +40,9 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             tools/art-direction/full-studio
+            tools/art-visual-acceptance
+            pipeline/art-visual-approvals
+            docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md
             tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
             tools/art-direction/ARTIST_LEARNING_JOURNAL.md
             Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
@@ -48,6 +51,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Enforce owner quality contract and exact main artistic approval gate before Qwen
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Test-Path 'docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md')){throw 'Permanent owner art quality contract not checked out'}
+          node --test tools/art-visual-acceptance/verify.test.mjs
+          if($LASTEXITCODE -ne 0){throw 'Independent visual verifier regressions failed'}
+          node tools/art-visual-acceptance/verify.mjs --directory pipeline/art-visual-approvals
+          if($LASTEXITCODE -ne 0){throw 'Formal art approval evidence is inconsistent'}
+          Write-Host 'ART_QUALITY_CONTRACT_PREFLIGHT_PASS_NOT_ART_APPROVED'
       - name: Reuse free Pillow only; no model download or new toolchain
         shell: powershell
         run: python -m pip install --disable-pip-version-check pillow
