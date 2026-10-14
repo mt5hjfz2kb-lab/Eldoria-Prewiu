@@ -7,9 +7,9 @@
     "requested_on": "2026-10-14",
     "scope": "ALL_ELDORIA_PRODUCTION_WORKSTREAMS",
     "reason": "Owner explicitly ordered a temporary pause to stabilize repeated toolchain and CI failures",
-    "allowed_work": "Isolated, reversible, zero-cost stabilization fixes and offline focused tests only",
+    "allowed_work": "Isolated zero-cost stabilization plus owner-authorized AI Artist ONLY: unified branch, local Qwen 4B/8B, controlled Windows Blender and fixed-camera A/B on frozen assets; all other Eldoria production paused",
     "resumption": "Explicit new instruction by repository owner required",
-    "note": "Existing jobs may finish; this marker does not cancel ChatGPT Work sessions or GitHub Actions runs"
+    "note": "Artist-only explicit owner resumption 2026-10-14: canonical art/eldoria-full-blender-artist-studio-20261014; former validation branch read-only. Bastion I, world4x, deployments and Unity production remain paused. This marker cannot cancel other ChatGPT Work sessions."
   },
   "active": [
     {
@@ -156,7 +156,7 @@
     {
       "id": "eldoria-full-blender-artist-studio-20261014",
       "title": "General-purpose AI-directed Blender asset authoring, materials and visual loop",
-      "owner": "chat-artist-full-capability-20261014",
+      "owner": "chat-unified-professional-ai-artist-owner-20261014",
       "scope": [
         "tools/art-direction/full-studio/**",
         "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
@@ -168,9 +168,9 @@
       "claimed_at": "2026-10-14T12:40:00+02:00",
       "base_main_sha": "11f90e6a34c66aa4170acc19d69d48faff06c536",
       "branch": "art/eldoria-full-blender-artist-studio-20261014",
-      "dependency": "The active Bastion I owner controls tools/art-direction/ai-authoring/** and its Unity/workflows. Build the full Blender artist independently; do not edit its live files or touch the Windows runner. Integration only after a conflict-free handoff.",
+      "dependency": "Owner transferred exclusive ARTIST authority to this unified workstream; old validation/eldoria-professional-art-fixed-source-20261014 is historic/read-only. Do not edit Bastion I owner files or world4x. Windows may be used for owner-authorized artist benchmarks ONLY when no other active job uses it; protected assets and original source remain immutable.",
       "art_production_routing": "required",
-      "phase": "Implementing independent general purpose Blender studio and QA",
+      "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
     }
   ],
