@@ -1,4 +1,5 @@
 name: Eldoria real same-PC Ollama Qwen and Blender artistic cycle
+# Owner-authorized retry: preserve raw invalid Qwen evidence and ask model to repair its own choices.
 on:
   push:
     branches:
