@@ -1,0 +1,68 @@
+name: Eldoria isolated artist Qwen repeatability test
+on:
+  push:
+    branches:
+      - stabilization/eldoria-toolchain-20261014
+    paths:
+      - '.github/workflows/eldoria-artist-repeated-qwen-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  twice-real-source-nonproduction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare free independent Blender and local 2B vision model
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil python3-numpy
+          docker run --rm -d --name eldoria-artist-reliability-qwen -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:11434/api/version >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:11434/api/version
+          docker exec eldoria-artist-reliability-qwen ollama pull qwen3-vl:2b-instruct
+      - name: Twice independently author and execute source-mesh edits with actual Qwen
+        run: |
+          set -euo pipefail
+          for trial in 1 2; do
+            python3 tools/art-direction/full-studio/artist_loop.py \
+              --brief 'Refine original Valoria tower silhouette by making a source-mesh vertex change to a visually meaningful inherited masonry landmark. Never replace the tower, build a new object or alter the original source. This is a technical repeatability trial, not an artistic approval.' \
+              --source Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb \
+              --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json \
+              --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+              --out "/tmp/eldoria-repeatability-$trial" \
+              --max-cycles 1 --max-actions 2 --max-tokens 950 \
+              --asset-category architecture --phase mesh_edit \
+              --model qwen3-vl:2b-instruct
+            python3 - "$trial" <<'PY'
+          import json,pathlib,sys,hashlib
+          n=sys.argv[1]
+          root=pathlib.Path('/tmp/eldoria-repeatability-'+n)
+          report=json.loads((root/'full-studio-result.json').read_text())
+          proof=json.loads((root/'cycle-1/output/execution-proof.json').read_text())
+          plan=json.loads((root/'cycle-1/artist-plan.json').read_text())
+          assert report['ai_authored_action_plans']>=1 and report['blender_real_execution'] is True
+          assert not report['art_approved'] and not report['unity_art_verified']
+          assert proof['inherited_mesh_data_changed'] and proof['matched_review_camera']
+          assert all(a['op']=='sculpt_anchor' for a in plan['actions'])
+          assert any(s['originals_changed'] and s['geometry_changed'] for s in proof['execution'])
+          assert hashlib.sha256((root/'cycle-1/artist-plan.json').read_bytes()).hexdigest()==report['cycles'][0]['plan_sha256']
+          assert (root/'cycle-1/qwen-raw.json').is_file()
+          assert (root/'cycle-1/output/artist-asset.blend').read_bytes().startswith(b'BLENDER')
+          print('ELDORIA_ARTIST_REAL_QWEN_SOURCE_REPEATABILITY_PASS',n,len(plan['actions']),flush=True)
+          PY
+          done
+      - name: Preserve raw trials and Blender A-B; no production promotion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-qwen-twice-source-proof
+          path: |
+            /tmp/eldoria-repeatability-1/
+            /tmp/eldoria-repeatability-2/
+          if-no-files-found: warn
+          retention-days: 14
