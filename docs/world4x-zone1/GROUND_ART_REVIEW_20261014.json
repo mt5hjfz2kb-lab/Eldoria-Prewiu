@@ -84,5 +84,32 @@
   "memory_type": "verified source experience and retrieval; no model weight training",
   "weights_trained": false,
   "paid_credits": 0,
-  "native_dependency": "Main active registry retains windows-runner-heavy for Bastion I; no Unity installation or usable independent activation found locally. Do not seize its claim."
+  "native_dependency": "Main active registry retains windows-runner-heavy for Bastion I; no Unity installation or usable independent activation found locally. Do not seize its claim.",
+  "latest_topology_stable_ground": {
+    "artist_run": 38580519176,
+    "run_conclusion": "SUCCESS",
+    "ai_model": "qwen3-vl:4b-instruct",
+    "actual_artist_actions": 3,
+    "changed_vertices": 1957,
+    "triangles": 28800,
+    "protected_city_and_border": true,
+    "independent_gate_passed": true,
+    "glb_sha256": "6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8",
+    "matched_camera_changed_fraction": 0.03969,
+    "previous_changed_fraction": 0.0179363,
+    "technical_source_pass": true,
+    "art_approved": false,
+    "unity_executed": false,
+    "critique_limitation": "Qwen generic no-defects statement is insufficient for reference-matched artistic approval",
+    "zoom_run": 38583442987,
+    "zoom_run_conclusion": "SUCCESS",
+    "zoom_views": [
+      "global",
+      "regional",
+      "local",
+      "mobile portrait"
+    ],
+    "zoom_evidence": "docs/world4x-zone1/evidence/real-multizoom-38583442987/zoom-review.json",
+    "decisions": "Preserve prior candidate, do not promote to Unity until native runner lease and independent visual review"
+  }
 }

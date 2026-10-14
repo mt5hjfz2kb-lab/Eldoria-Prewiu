@@ -24,3 +24,13 @@ Intento concreto `38563776671`, commit `f721031175536a9cacfd203cc8067ebc3f44f55e
 ## Blender independiente
 
 `tools/world4x-zone1/production/run_local_blender.sh` utiliza un Blender Ubuntu extraído en un directorio propio, sin instalarlo en el sistema. Indicar `ELDORIA_LOCAL_BLENDER_ROOT`; scripts usan `--work-dir` porque `--cycle` colisiona con argumentos de Cycles. El transporte utilizado es CLI directo, no BlenderMCP. Los workflows Linux conservan fuentes, inferencias y GLB sin créditos de pago.
+
+## Continuación real: geometría estable y 4 encuadres — 2026-10-14
+
+- Artista Qwen3-VL 4B real, fuente Blender con tres acciones elegidas por el modelo: +6 m colina, −2.5 m valle y +2 m conexión tipo collado. Ejecución `38580519176` SUCCESS; evidencia `evidence/general-ground-38580519176/`.
+- La malla de origen fue protegida; 1957 vértices con variación vertical, 28.800 triángulos y la verificación independiente confirmó borde exterior, parcela edificable y XY intactos. Export GLB independiente `6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8`. NO reemplazar la fuente/Unity original sin aprobación.
+- A/B Blender a cámara de autoría invariable: 31.752 píxeles modificados / 800.000, 3,969 %. En el trabajo anterior eran 14.349 / 800.000. Esta medida acredita presencia en pantalla y magnitud relativa de edición, **no naturalidad ni calidad aprobada**.
+- Captura multizoom posterior `38583442987` SUCCESS, `evidence/real-multizoom-38583442987/`: pares BEFORE/AFTER del MISMO 3D y la MISMA cámara en encuadres global, regional, local y vertical móvil (8 renders Blender), cámara y SHA por imagen en `zoom-review.json`. No son capturas Unity ni pruebas en dispositivo.
+- Qwen evaluador afirmó genéricamente «no defects» sin señalar elementos de la referencia; **esa autocrítica no da un ART PASS**. La malla es candidato sujeto a inspección artística independiente. Los defectos anteriores de pradera uniforme y caminos pintados no se dan por subsanados solamente por los cambios geométricos.
+- Intento previo de prueba de zoom `38583098270`: faltaba `numpy` en Blender Ubuntu; corregido en workflow y repetido con éxito, conservando fallo para trazabilidad.
+- La reserva `windows-runner-heavy` sigue bajo Bastión I en main; no se inició Unity ni se cambió la escena de Región 1. No hay aprobación visual, integración en Unity, FPS móvil ni publicación. Cero servicios/créditos de pago.
