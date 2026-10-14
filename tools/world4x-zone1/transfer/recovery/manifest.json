@@ -1,0 +1,23 @@
+{
+  "source_commit": "3cf47193e5667efcf557ddfdc54a487f5cd425b5",
+  "base_commit": "34ce0ec78b2bc553f11f16562a5f18752620fb34",
+  "original_bundle_sha256": "e316053b234da65d6e071e73198bea73676592646c7fd0d62f02f8d49e53c32d",
+  "original_bundle_size": 63437036,
+  "part_size": 6291456,
+  "known_uploaded_parts": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    10
+  ],
+  "missing_part_sha": [
+    8,
+    9
+  ],
+  "state": "INCOMPLETE_TRANSFER_AFTER_SCRATCH_RESET_NOT_COMPLETE"
+}
