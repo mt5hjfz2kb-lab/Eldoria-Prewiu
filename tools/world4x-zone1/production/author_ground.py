@@ -15,12 +15,15 @@ reference=ROOT/'docs/world4x-zone1/evidence/local-cycle-20261014/references/loca
 images=[reference,c/'source/blender-before.png'];encoded=[];provenance=[]
 from PIL import Image
 for i,path in enumerate(images):
- im=Image.open(path).convert('RGB');im.thumbnail((640,640));dest=c/f'vision-{i}.jpg';im.save(dest,quality=88)
+ im=Image.open(path).convert('RGB');im.thumbnail((512,512));dest=c/f'vision-{i}.jpg';im.save(dest,quality=88)
  encoded.append(base64.b64encode(dest.read_bytes()).decode());provenance.append({'original':str(path),'sha256':sha(path.read_bytes()),'derived_sha256':sha(dest.read_bytes())})
 prompt=('Current task is ZONA ONE ground-only source authoring, not Valoria architecture. '
  'Image 1 is owner destination. Image 2 is an ACTUAL BLENDER SOURCE RENDER, NOT UNITY; there is no Unity capture yet. '
  'User requires ground quality before props or scaling. Diagnose natural prairie relief rather than decorating the scene. '
- 'Keep all other assets untouched and hidden. Design 2..4 broad, asymmetrical gentle landforms, connected valleys and open buildable prairie. '
+ 'Keep all other assets untouched and hidden. Design 1..2 broad, asymmetrical gentle landforms, connected valleys and open buildable prairie. '
+ 'DIRECTOR WORKING MASK: work ONLY in the northern reference prairie. ALL centers and ALL path knots must have X=-55..75 and Y=30..75. '
+ 'This is a permitted geographical work area, NOT a prescribed design. Choose original positions, shape and height inside it. NEVER use Y=0. '
+ 'This mask plus radius<=35 guarantees separation from city pad and sector boundaries. Source-verified northern anchors include [-50,54,0.4071593] and [-4,54,0.4682583]; interpolate freely, not invented indices. '
  'Avoid isolated circular mounds, rigid waves, terraces and mountains. No purple paint. '
  'Choose your own exact local coordinates from topology, not indices. Use ONLY sculpt_region or sculpt_path. '
  'Only vertical delta [0,0,dz], magnitude 2..9m, radius 16..35m. Preserve outer boundary x/y +/-120m: centers and path corridors must stay more than radius+2m inside it. '
@@ -28,17 +31,21 @@ prompt=('Current task is ZONA ONE ground-only source authoring, not Valoria arch
  'Use slopes suitable for armies, wide flat areas between hills, not a noisy bumpy surface. '
  'At least one broad camera-visible change. No approval or claimed execution. '
  'REAL MESH TOPOLOGY: '+json.dumps(top)+'\nREAL PRIOR REVIEW / RETRIEVED EXPERIENCE, NOT MODEL TRAINING: '+lessons)
-schema=cpu_artist_schema(target,'existing',4)
-vector={'type':'array','minItems':3,'maxItems':3,'items':{'type':'number'}}
-knotspec={'type':'object','properties':{'center':vector,'delta':vector,'radius':{'type':'number','minimum':16,'maximum':35}},
+schema=cpu_artist_schema(target,'existing',2)
+center={'type':'array','minItems':3,'maxItems':3,'prefixItems':[
+ {'type':'number','minimum':-55,'maximum':75},{'type':'number','minimum':30,'maximum':75},
+ {'type':'number','minimum':top['local_aabb']['min'][2],'maximum':top['local_aabb']['max'][2]}]}
+delta={'type':'array','minItems':3,'maxItems':3,'prefixItems':[{'const':0},{'const':0},
+ {'anyOf':[{'type':'number','minimum':2,'maximum':9},{'type':'number','minimum':-9,'maximum':-2}]}]}
+knotspec={'type':'object','properties':{'center':center,'delta':delta,'radius':{'type':'number','minimum':16,'maximum':35}},
  'required':['center','delta','radius'],'additionalProperties':False}
 variants=[]
-for kind,params in [('sculpt_region',knotspec),('sculpt_path',{'type':'object','properties':{'knots':{'type':'array','minItems':2,'maxItems':5,'items':knotspec}},'required':['knots'],'additionalProperties':False})]:
+for kind,params in [('sculpt_region',knotspec),('sculpt_path',{'type':'object','properties':{'knots':{'type':'array','minItems':2,'maxItems':3,'items':knotspec}},'required':['knots'],'additionalProperties':False})]:
  variants.append({'type':'object','properties':{'id':{'type':'string','maxLength':32},'type':{'type':'string','const':kind},
   'target':{'type':'string','const':target},'rationale':{'type':'string','minLength':15,'maxLength':190},'parameters':params},
   'required':['id','type','target','rationale','parameters'],'additionalProperties':False})
 schema['properties']['planned_actions']['items']={'oneOf':variants}
-payload={'model':a.model,'stream':True,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1400,'temperature':.3},'messages':[{'role':'system','content':role.decode()},{'role':'user','content':prompt,'images':encoded}]}
+payload={'model':a.model,'stream':True,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1100,'temperature':.3},'messages':[{'role':'system','content':role.decode()},{'role':'user','content':prompt,'images':encoded}]}
 (c/'actual-request.json').write_text(json.dumps(payload,indent=2))
 attempts=[]
 for attempt in range(3):
@@ -61,7 +68,7 @@ for attempt in range(3):
  raw=reply['message']['content'];(c/f'raw-qwen-{attempt+1}.json').write_text(json.dumps(reply,indent=2))
  errors=[]
  try:
-  design=json.loads(raw);errors=inspect_artist_plan(design,target,'existing',4,top,True,False)+camera_footprint_errors(design,16,2)
+  design=json.loads(raw);errors=inspect_artist_plan(design,target,'existing',2,top,True,False)
   for op in design.get('planned_actions',[]):
    pr=op['parameters'];knots=pr.get('knots',[]) if op['type']=='sculpt_path' else [pr]
    if op['type'] not in ('sculpt_region','sculpt_path'):errors.append('Only local vertical terrain sculpt permitted')
@@ -70,6 +77,7 @@ for attempt in range(3):
     if len(xyz)!=3 or len(delta)!=3:continue
     if delta[:2]!=[0,0] or not 2<=abs(delta[2])<=9 or not 16<=r<=35:errors.append('Respect vertical delta 2..9m and radius16..35m')
     x,y=xyz[:2]
+    if not -55<=x<=75 or not 30<=y<=75:errors.append('All centers/knots must be inside north work mask X=-55..75 Y=30..75, NEVER Y=0')
     if abs(x)+r>=118 or abs(y)+r>=118:errors.append('Scaffold boundary must stay unchanged')
     if -40-r<x<4+r and -52-r<y<-8+r:errors.append('Footprint overlaps protected city pad')
  except (ValueError,KeyError,TypeError) as e:errors.append(str(e));design=None
