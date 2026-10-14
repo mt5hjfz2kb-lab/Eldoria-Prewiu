@@ -243,6 +243,41 @@ def fortified_terrace_arcade(name,side):
  # The original irregular cliff stone gets to remain visible between arches.
  # This reads as deliberate reconstructed medieval defensive undercroft,
  # not a new resource node, hut or central monumental building.
+# AUTHENTIC QWEN two-image authoring: run 38572253674 (raw SHA
+# c4bffeedebcb16723191c7872b78f3df5a300068ef4bdeb2fc294c2539ea6a08)
+# requests TWO additional lateral stone arches as gateways to the new
+# soil/rock fork. These are not a new central gate, detached huts, or an
+# extra platform. Build each INTO the previously authored peripheral masonry
+# line x~+/-22, y=-8.6 and use the exact gallery limestone family above.
+def fork_guard_arch(side):
+ name='WEST' if side<0 else 'EAST'
+ cx=side*19.22;cy=-8.48
+ safe(name+' connected bifurcated service entry arch',cx,cy,4.05,1.63)
+ inner,outer=1.13,1.51
+ earth_z=ground(cx,cy)
+ arch_z=earth_z+1.72
+ for i in range(10):
+  a0=i*math.pi/10.;a1=(i+1)*math.pi/10.
+  masonry_voussoir(name+' REAL service arch voussoir '+str(i),
+     cx,cy,arch_z,inner,outer,a0,a1,1.12)
+ for shift in (-1.,1.):
+  px=cx+shift*(inner+.19)
+  foot=ground(px,cy)-.19
+  h=max(.80,arch_z-foot)
+  cube(name+' contiguous stone gateway jamb',px,cy,foot+h/2,
+       .43,1.21,h,arch_stone,bevel=.035)
+  cube(name+' masonry ground lock',px,cy,foot+.13,
+       .67,1.42,.34,arch_stone,bevel=.042)
+ # The OUTER jamb gets a REAL joined limestone shoulder to the surviving
+ # perimeter wall around x +/-22. Do not claim a 3D passage if disconnected.
+ farx=side*21.28
+ safe(name+' permanent external perimeter arch return',farx,cy,2.12,1.24)
+ base=min(ground(farx,cy),earth_z)-.12
+ cube(name+' continuous fortification arch wall-to-wall return',
+      farx,cy,base+.90,2.12,1.24,1.81,arch_stone,bevel=.07)
+ # Stone cap ties into the wall's weathered authentic parapet.
+ cube(name+' fortification arch connected timber-safe copestone',
+      farx,cy,base+1.86,2.19,1.36,.22,arch_stone,bevel=.025)
 def run_variant_A():
  # REVISION A2 after inspecting ACTUAL 1440x1000 Unity frames from
  # 38520697022. The initial A was too far onto the side cliffs and hidden by
@@ -411,6 +446,11 @@ def run_variant_A():
  # load-bearing medieval undercroft arcades with real stone arches.
  for side in (-1,1):
   fortified_terrace_arcade('Bastion I linked upper inner curtain arcade',side)
+ # The player can read TWO actual stone arch gateways at the ends of the
+ # real upper-to-lower worn rock route fork. These connect to existing outer
+ # curtains; the central x[-7,7] stair and future plots stay unchanged.
+ for side in (-1,1):
+  fork_guard_arch(side)
  # No freestanding central decorations or new buildings: broad central court
  # stays empty for future progression, while TWO coherent physical wall systems
  # now express foreground, midground and high medieval citadel depth.
@@ -497,11 +537,11 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('patinated_real_voussoir_gallery_with_medieval_crenels_connected_to_original_upper_cliff_A13' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('Qwen_vision_authored_two_connected_lower_side_service_arches_and_cliff_stone_path_fork_A15' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
- 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'authentic_arch_voussoirs':66,'arch_gallery_parapet_merlons':14,'source_material_slots_verified':True,
+ 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'authentic_arch_voussoirs':86,'qwen_matched_unity_source_run':38572253674,'real_connected_service_arches':2,'arch_gallery_parapet_merlons':14,'source_material_slots_verified':True,
  'visual_pass':False,'mobile_device_pass':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_GLOBAL_COMPOSITION_PROOF',json.dumps(proof))
