@@ -446,6 +446,16 @@ def main():
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
+        if source and args.phase=="full" and verified_objects:
+            # Don't mistake multiplying mesh density for professional detail.
+            baseline_faces=sum(o["faces"] for o in verified_objects)
+            budget=max(20000,baseline_faces*4+2000)
+            if result.get("evaluated_triangles",0)>budget:
+                records.append({"cycle":cycle,"status":"MOBILE_MESH_DENSITY_REJECTED",
+                                "triangles":result["evaluated_triangles"],"budget":budget,
+                                "plan_sha256":sha(candidate)})
+                history+=f"\\nREJECTED: real Blender output has {result['evaluated_triangles']} triangles versus {budget} relative source safety budget. Avoid whole-object modifiers; choose source-grounded LOCAL changes."
+                continue
         if args.phase=="mesh_edit" and source:
             edits=[step for step in result["execution"] if step["op"]=="sculpt_anchor"
                    and step["geometry_changed"] and step["originals_changed"]]

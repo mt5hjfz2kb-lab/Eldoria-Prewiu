@@ -64,6 +64,15 @@ def verify_source_plan(document,inventory):
                     errors.append(f"Action {i}: dense source bevel width/segments too destructive")
             topology_changed.add(target)
         elif op in ("native_operator","boolean","modifier","transform"):
+            # Non-selective smoothing/bevel/subdivision on a detailed imported
+            # game source can destroy silhouettes and multiply triangles.
+            # AI may select local face/edge authoring instead; never rewrite.
+            if actual and actual.get("faces",0)>2500:
+                if op=="modifier" and params.get("kind") in ("SUBSURF","BEVEL"):
+                    errors.append(f"Action {i}: dense source forbids nonselective "
+                                  f"{params.get('kind')} modifier; use source-grounded selected edges/faces")
+                if op=="native_operator" and params.get("operator")=="mesh.subdivide":
+                    errors.append(f"Action {i}: dense source forbids whole-object mesh.subdivide")
             if op=="boolean" or (op=="native_operator" and
                    str(params.get("operator","")).startswith("mesh.")) or (op=="modifier" and params.get("apply",False)):
                 topology_changed.add(target)

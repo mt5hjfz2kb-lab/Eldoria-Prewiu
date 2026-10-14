@@ -41,6 +41,12 @@ class Grounding(unittest.TestCase):
    verify_source_plan({"actions":[op("bevel",{"width":.08,"segments":2,"apply":True})]},dense)
   with self.assertRaisesRegex(RejectedPlan,"edge_index"):
    verify_source_plan({"actions":[op("bevel",{"edges":[15000],"width":.03,"segments":2,"apply":True})]},dense)
+ def test_dense_original_cannot_global_subdivide_or_modifier(self):
+  for action in (op("modifier",{"kind":"SUBSURF","options":{"levels":1},"apply":False}),
+                 op("modifier",{"kind":"BEVEL","options":{"width":0.1},"apply":True}),
+                 op("native_operator",{"operator":"mesh.subdivide","kwargs":{},"selection":"ALL"})):
+   with self.assertRaisesRegex(RejectedPlan,"dense source forbids"):
+    verify_source_plan({"actions":[action]},SOURCE)
  def test_no_imaginary_target(self):
   p={"actions":[{"op":"bevel","target":"Fictional new building","params":{"width":.04}}]}
   with self.assertRaisesRegex(RejectedPlan,"unknown target"):verify_source_plan(p,SOURCE)
