@@ -1,4 +1,4 @@
-# Owner-authorized comparison, with frozen game source and local cached models only.
+# Owner-authorized final convergence check: world-space source-safe Qwen brushes, frozen original and cached models.
 param([Parameter(Mandatory=$true)][string]$Source,
       [Parameter(Mandatory=$true)][string]$Reference,
       [Parameter(Mandatory=$true)][string]$Review,
@@ -72,7 +72,7 @@ try{
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
       '--max-cycles','2','--min-successful-cycles','2',
-      '--max-plan-attempts','4','--max-actions','3','--max-tokens','2048',
+      '--max-plan-attempts','5','--max-actions','3','--max-tokens','2048',
       '--vision-max-edge','768','--asset-category','architecture')
     if($case.kind -eq 'assembly'){$params+=@('--source-build-phase','--source-tool-sequencing')}
     else{$params+=@('--phase','mesh_edit')}
