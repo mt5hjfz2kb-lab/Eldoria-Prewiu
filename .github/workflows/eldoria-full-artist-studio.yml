@@ -208,25 +208,15 @@ jobs:
     timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
-      - name: Retrieve immutable REAL previous Qwen-authored Blender source
-        uses: actions/download-artifact@v4
-        with:
-          name: eldoria-full-artist-genuine-qwen
-          run-id: 38568103614
-          github-token: ${{ github.token }}
-          path: /tmp/eldoria-qwen-source-authenticated
-      - name: Verify exact previous AI source SHA, rejecting hypothetical source
+      - name: Verify original Eldoria production asset before any Qwen edits
         run: |
           python3 - <<'PY'
-          import json,hashlib,pathlib
-          p=pathlib.Path('/tmp/eldoria-qwen-source-authenticated/cycle-1')
-          result=json.loads((p/'output/execution-proof.json').read_text())
-          previous=json.loads((p/'artist-plan.json').read_text())
-          assert result['artist_plan_sha256']==hashlib.sha256((p/'artist-plan.json').read_bytes()).hexdigest()
-          assert result['blend_sha256']==hashlib.sha256((p/'output/artist-asset.blend').read_bytes()).hexdigest()
-          assert result['matched_review_camera'] and not result['art_approved']
-          assert len(previous['actions'])==4
-          print('VERIFIED_GENUINE_QWEN_SOURCE_TO_REAUTHOR',result['blend_sha256'])
+          import hashlib,pathlib,struct
+          p=pathlib.Path('Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb')
+          data=p.read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack_from('<I',data,4)[0]==2
+          assert struct.unpack_from('<I',data,8)[0]==len(data)
+          print('IMMUTABLE_ELDORIA_TOWER_INPUT',len(data),hashlib.sha256(data).hexdigest())
           PY
       - name: Prepare independent free Blender and local Qwen art workstation
         run: |
@@ -238,15 +228,15 @@ jobs:
             sleep 2
           done
           docker exec eldoria-studio-refine ollama pull qwen3-vl:2b-instruct
-      - name: Qwen reauthors real inherited meshes in genuine Blender rather than regenerate tower
+      - name: Qwen sculpts actual inherited Valoria tower vertices in genuine Blender
         run: |
           python3 tools/art-direction/full-studio/artist_loop.py \
-            --brief 'MODIFY the given real Blender watchtower source. It has 4 badly arranged, untextured parts. YOU must choose meaningful PBR stone and timber colours, move or remodel incoherently placed roof and walls with real Blender operations, and add sculptural details; use verified object names from source inventory, no fixed architecture script, no new cube proxy. This version is ART REJECTED until genuinely improved.' \
-            --source /tmp/eldoria-qwen-source-authenticated/cycle-1/output/artist-asset.blend \
+            --brief 'Modify existing Valoria Tower production geometry. Inspect actual local mesh bounds and preview. Choose and apply your OWN sculpt brush to visibly change inherited stone edges, top profile, defensive crenellations or roof shape; preserve tower identity and do not generate a replacement. This is not a fixed tower template. Art approval is independent.' \
+            --source Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb \
             --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
             --out /tmp/eldoria-qwen-real-source-refinement \
             --max-cycles 1 --max-actions 4 --max-tokens 1250 \
-            --asset-category architecture --phase geometry \
+            --asset-category architecture --phase mesh_edit \
             --model qwen3-vl:2b-instruct
       - name: Inspect source edit integrity and Qwen original actions
         run: |
@@ -261,7 +251,13 @@ jobs:
           proof=json.loads((root/'cycle-1/output/execution-proof.json').read_text())
           assert proof['source_sha256']==manifest['frozen_source_sha256']
           assert proof['matched_review_camera'] and proof['action_count']==len(qwen['actions'])
-          assert any(s['geometry_changed'] for s in proof['execution']), 'No source geometry was edited'
+          assert proof['inherited_mesh_data_changed'], 'No inherited mesh vertex/topology data changed'
+          assert any(s['op']=='sculpt' and s['geometry_changed'] and s['originals_changed']
+                     for s in proof['execution']), 'No actual Qwen sculpt reached inherited mesh vertices'
+          assert all(s['op']=='sculpt' for s in proof['execution']), 'Unexpected non-mesh edit operation'
+          assert all(c['derived_from_source_object'] for c in json.loads(
+              (root/'cycle-1/output/reusable-asset-catalog.json').read_text())['components'])
+          assert pathlib.Path('Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb').is_file()
           assert not proof['art_approved']
           print('GENUINE_QWEN_REAUTHOR_EXISTING_BLENDER',len(qwen['actions']),proof['evaluated_triangles'])
           PY

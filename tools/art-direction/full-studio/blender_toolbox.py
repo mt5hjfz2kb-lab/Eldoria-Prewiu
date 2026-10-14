@@ -478,13 +478,22 @@ def main():
     before=out/"before-blender.png";bpy.context.scene.render.filepath=str(before)
     bpy.ops.render.render(write_still=True)
     journal=[];started=time.monotonic()
+    def spatial_poses():
+        return {o.name:([round(float(v),6) for v in o.location],
+                        [round(float(v),6) for v in o.rotation_euler],
+                        [round(float(v),6) for v in o.scale])
+                for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("_EldoriaReview")}
     def apply_known_action(act):
         previous=snapshot_meshes()
+        previous_poses=spatial_poses()
         run_action(act,args.texture_root.resolve(),approved_assets)
         now=snapshot_meshes()
+        updated_poses=spatial_poses()
+        inherited_changed=[k for k,v in originals.items() if now.get(k)!=v]
         journal.append({"id":act["id"],"op":act["op"],"target":act.get("target"),
                         "reason":act["reason"],"geometry_changed":previous!=now,
-                        "mesh_count":len(now),"originals_changed":[k for k,v in originals.items() if now.get(k)!=v]})
+                        "spatial_transform_changed":previous_poses!=updated_poses,
+                        "mesh_count":len(now),"originals_changed":inherited_changed})
     if args.transport=="direct":
         for act in plan["actions"]:apply_known_action(act)
     else:
@@ -543,6 +552,7 @@ def main():
             "blend_sha256":digest(blend),"glb_sha256":digest(glb),
             "matched_review_camera":camera_hash==final_cam,
             "evaluated_triangles":triangle_count,"action_count":len(journal),
+            "inherited_mesh_data_changed":any(e["originals_changed"] for e in journal),
             "execution":journal,"elapsed_seconds":round(time.monotonic()-started,3)}
     (out/"execution-proof.json").write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     print("ELDORIA_FULL_STUDIO_REAL_BLENDER_PASS",json.dumps({k:result[k] for k in
