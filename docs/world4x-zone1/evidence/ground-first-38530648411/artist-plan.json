@@ -1,0 +1,57 @@
+[
+  {
+    "id": "valley_path_1",
+    "type": "sculpt_path",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Create broad valley path for camera legibility and terrain continuity",
+    "parameters": {
+      "knots": [
+        {
+          "center": [
+            -55,
+            30,
+            0.0
+          ],
+          "delta": [
+            0,
+            0,
+            3.0
+          ],
+          "radius": 28.0
+        },
+        {
+          "center": [
+            75,
+            30,
+            0.0
+          ],
+          "delta": [
+            0,
+            0,
+            3.0
+          ],
+          "radius": 28.0
+        }
+      ]
+    }
+  },
+  {
+    "id": "hill_crest_1",
+    "type": "sculpt_region",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Create hill crest for visual hierarchy and terrain contrast",
+    "parameters": {
+      "center": [
+        -30,
+        60,
+        0.0
+      ],
+      "delta": [
+        0,
+        0,
+        5.0
+      ],
+      "radius": 22.0
+    }
+  }
+]

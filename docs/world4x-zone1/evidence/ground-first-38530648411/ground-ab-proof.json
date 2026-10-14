@@ -1,0 +1,47 @@
+{
+  "changed_vertices": 2582,
+  "protected_boundary_vertices": 480,
+  "protected_city_vertices": 529,
+  "other_meshes_unchanged": true,
+  "camera_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      10.0
+    ],
+    [
+      0.0,
+      0.7445693612098694,
+      -0.6675451397895813,
+      -115.0
+    ],
+    [
+      0.0,
+      0.6675451397895813,
+      0.7445693612098694,
+      145.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "image_type": "MATCHED_BLENDER_WORKBENCH_NOT_UNITY",
+  "art_approved": false,
+  "mobile_approved": false,
+  "slopes": {
+    "under_10_degrees_area_fraction": 0.929614608133286,
+    "under_20_degrees_area_fraction": 0.9993350794272471,
+    "maximum_face_slope_degrees": 21.112556236701202,
+    "note": "Geometric source measurement, not certified navigation or mobile performance"
+  },
+  "max_height_change_m": 4.99309366941452,
+  "before_image_sha256": "72da548653fe93191b8053357937696112a1a48a94aface2a9bc7d25a5a95028",
+  "after_image_sha256": "319f154380ee6c6d4c37a671cf818d5a34afb2b7d378e734b23a2938832d9d62",
+  "camera_equivalent": true,
+  "source_output_separation": true,
+  "render_engine": "BLENDER_WORKBENCH"
+}

@@ -1,0 +1,33 @@
+{
+  "transport": "direct",
+  "source_sha256": "d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f",
+  "plan_sha256": "d801e59d84fe9c602622626c56e5269501e5e2116ad683f861815cb5d35323e9",
+  "source_mesh_sha256": "0c43082d5d0ac7a46ea62eab85c347f4dcc2db09509c3030e118ef7763f49bc6",
+  "result_mesh_sha256": "193600e020426162b30c1e30e6219a4ff7fcd21d56b209c17b3d9bf10e24b631",
+  "result_blend_sha256": "474bfc1188778fc68ae2abab1b664383fc5a4958c038db4675fce96f52b9663b",
+  "result_glb_sha256": "da2b2ddeea2fa582ef114c7b80d099ac05b310e8d13d1632530660559498b2df",
+  "elapsed_seconds": 2.176,
+  "executed_actions": [
+    {
+      "id": "valley_path_1",
+      "type": "sculpt_path",
+      "target": 1.0,
+      "changed_vertices": 2364,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.034,
+      "applied": true
+    },
+    {
+      "id": "hill_crest_1",
+      "type": "sculpt_region",
+      "target": "ZoneOne continuous prairie source",
+      "changed_vertices": 373,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.005,
+      "applied": true
+    }
+  ],
+  "self_approval": false
+}
