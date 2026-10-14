@@ -1,0 +1,64 @@
+{
+  "source_run": 38583442987,
+  "artist_run": 38580519176,
+  "art_approved": false,
+  "native_unity": false,
+  "sheets": [
+    {
+      "view": "global",
+      "sheet_sha256": "9215f6ef0f7694cf02d97396385c9d54547d2871ac6e88a85a171d54aa0ad687",
+      "base64_sha256": "5b65511a4201740947d7602e40f475144d9766908f5df54e510eca8af4a7584e",
+      "source_images": [
+        "a9f5b1a982d72e5dcb1c0290df6a0cb8750fad0728e51b62b5f0b9ebb29f02e3",
+        "5b923c93a5dac8f3a0ed1d9b83df2132590e20297eb681f421d332f3cf7470ed"
+      ],
+      "type": "REAL RESIZED BLENDER CAPTURE, NOT ILLUSTRATION",
+      "size": [
+        974,
+        418
+      ]
+    },
+    {
+      "view": "regional",
+      "sheet_sha256": "505e8455698589fb655d92005bad3b23318bde0850ddc67df93cf5299c85f337",
+      "base64_sha256": "8bf83599c040917fe9de6f9cd57d69850bd9bdeba41915a01ed9450d9cbcdbb0",
+      "source_images": [
+        "cb775d3a4a8ace8b92a2a4f8cc0b37af74865b232b1155d4416f067c2139cf24",
+        "f42eb0a48b9fff4f6557da37f98532e5007477dcdd30970bcf005903084a0605"
+      ],
+      "type": "REAL RESIZED BLENDER CAPTURE, NOT ILLUSTRATION",
+      "size": [
+        974,
+        418
+      ]
+    },
+    {
+      "view": "local",
+      "sheet_sha256": "450f151568a977e0b5ef98ac9e6b90e8673d8f324da89b0ee00fb5ddc649f999",
+      "base64_sha256": "51e89f66a84f927d2815133af8c6c8b6bd5ea6cd90a012c8d9953866818e6f2d",
+      "source_images": [
+        "c46ef7373844a546c545c8b03f711a8e81c555a94b9c7cc0b039f7017cf6ffe4",
+        "b5bbfb6477fa45dcf364c60f08b8dd279d240c8d7fdb155d68ef31c9833af826"
+      ],
+      "type": "REAL RESIZED BLENDER CAPTURE, NOT ILLUSTRATION",
+      "size": [
+        974,
+        418
+      ]
+    },
+    {
+      "view": "mobile",
+      "sheet_sha256": "0c61f542fe7917ad5bc9036e7e21e5054eab84b92ad4feb241aa64bf101e551a",
+      "base64_sha256": "17d2a525dc057a52cc733a3f5918018b360ed9dd2689a8d43aa5c9e09e43d534",
+      "source_images": [
+        "b877676aa6a4d7f997f3053ed961cca368545aeab20be035a9bd20d63a9e30c9",
+        "f63c38abba9d11fbd5884a177f8be1ebe803f34028d8d084ecefb4078cce8733"
+      ],
+      "type": "REAL RESIZED BLENDER CAPTURE, NOT ILLUSTRATION",
+      "size": [
+        486,
+        544
+      ]
+    }
+  ]
+}
