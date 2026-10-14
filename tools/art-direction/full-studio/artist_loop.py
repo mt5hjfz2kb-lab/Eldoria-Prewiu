@@ -318,6 +318,16 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       "The examples in previous failures are warnings, not templates.")
     if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
         raise ValueError("Architecture build phase requires a frozen inherited source and typed sequence")
+    if args.source_build_phase:
+        msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. "
+              "For any NEW object, location/rotation/scale are in Blender WORLD xyz. "
+              "An imported GLB mesh may have LOCAL +Y aligned with WORLD +Z. "
+              "Never put a chimney 'up' using WORLD Y; height is WORLD Z. "
+              "Use real world_bounds_min_m/world_bounds_max_m/world_bounds_center_m from "
+              "the latest inspected asset for all architectural placement. "
+              "Choose your OWN scale, pose and material after examining the reference "
+              "and preserve the existing door, stairs and player circulation.")
+
     if args.source_tool_sequencing and source_exists and args.phase=="full":
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
@@ -531,6 +541,12 @@ def main():
                           "evaluated_triangles":x["evaluated_triangles"],
                           "world_location_m":x["world_location_m"],
                           "world_dimensions_m":x["world_dimensions_m"],
+                          "world_bounds_min_m":x["world_bounds_min_m"],
+                          "world_bounds_max_m":x["world_bounds_max_m"],
+                          "world_bounds_center_m":x["world_bounds_center_m"],
+                          "world_bounds_dimensions_m":x["world_bounds_dimensions_m"],
+                          "world_up_axis":x["world_up_axis"],
+                          "mesh_local_axis_aligned_with_world_up":x["mesh_local_axis_aligned_with_world_up"],
                           "local_bounds_min_m":x["local_bounds_min_m"],
                           "local_bounds_max_m":x["local_bounds_max_m"],
                           "local_extrema":x["local_extrema"],
@@ -642,6 +658,9 @@ def main():
                                                 "vertex_landmarks","face_landmarks",
                                                 "edges","edge_landmarks",
                                                 "evaluated_triangles",
+                                                "world_bounds_min_m","world_bounds_max_m",
+                                                "world_bounds_center_m","world_bounds_dimensions_m",
+                                                "world_up_axis","mesh_local_axis_aligned_with_world_up",
                                                 "materials","uv_layers")}
                               for x in inspected_again["objects"][:80]]
             known_objects=[x["name"] for x in verified_objects]
