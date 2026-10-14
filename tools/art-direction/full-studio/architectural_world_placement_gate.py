@@ -45,6 +45,7 @@ def reject_obviously_bad_component_placement(plan,source_objects):
     if any(gap[i]>max(.5,span[i]*.35) for i in range(3)):
         raise RejectedPlan("NEW WORLD XYZ geometry is disconnected far from real source; "
                            "read world_bounds and reauthor its location (Blender Z is UP)")
+    center_z=(lo[2]+hi[2])*.5
     name=action.get("target","").lower()
     if any(t in name for t in ("chimney","spire","column","pillar","flue")):
         dim=[hi[i]-lo[i] for i in range(3)]
