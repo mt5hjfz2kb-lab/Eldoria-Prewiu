@@ -44,6 +44,7 @@ jobs:
             --source "$SOURCE" --inspect --inspect-target-object 'ZoneOne continuous prairie source' --out /tmp/zoneone-brecha/context
           python3 tools/world4x-zone1/production/author_brecha_transition.py \
             --mesh-context /tmp/zoneone-brecha/context/mesh-context.json \
+            --source "$SOURCE" \
             --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
             --real-before docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/after-blender.png \
             --out /tmp/zoneone-brecha/qwen
