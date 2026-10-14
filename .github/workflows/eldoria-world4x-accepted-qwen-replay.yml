@@ -1,0 +1,88 @@
+name: Eldoria World4X original accepted Qwen source replay
+on:
+  push:
+    branches:
+      - stabilization/eldoria-world4x-contracts-20261014
+    paths:
+      - '.github/workflows/eldoria-world4x-accepted-qwen-replay.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-source-accepted-plan-replay
+  cancel-in-progress: true
+jobs:
+  isolated-native-blender-and-protected-terrain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender with verified embedded numpy
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender -b --python-expr "import numpy;print('REPLAY_BLENDER_NUMPY_VERIFIED',numpy.__version__)"
+      - name: Retrieve exactly the original genuine Qwen-authored accepted plan (no new inference)
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-qwen-world4x-typed-plan-probe
+          run-id: 38595477284
+          github-token: ${{ github.token }}
+          path: /tmp/eldoria-source-artwork-replay
+      - name: Freeze literal accepted artist-plan hash and original source hash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          root=pathlib.Path('/tmp/eldoria-source-artwork-replay/eldoria-brecha-preflight-plan')
+          plan=root/'artist-plan.json'
+          proof=json.loads((root/'genuine-ai-evidence.json').read_text())
+          expected='9790d94bd87644006a669706dd168ac05f9f02efcd76014fa4d2688a1202151a'
+          source=pathlib.Path('docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend')
+          assert hashlib.sha256(plan.read_bytes()).hexdigest()==expected==proof['plan_sha256']
+          assert hashlib.sha256(source.read_bytes()).hexdigest()==proof['source_blend_sha256']
+          assert proof['ai_model']=='qwen3-vl:4b-instruct'
+          assert proof['blender_operations_executed_yet'] is False
+          assert len(json.loads(plan.read_text()))==2
+          print('ORIGINAL_QWEN_PLAN_SHA_PROVEN_REPLAY',expected)
+          PY
+      - name: Execute original Qwen choices on independent ORIGINAL Blender source
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --plan /tmp/eldoria-source-artwork-replay/eldoria-brecha-preflight-plan/artist-plan.json \
+            --out /tmp/eldoria-original-qwen-blender-edit --transport direct
+      - name: Independently verify original topology, unchanged plots/border, actual relief, no art approval
+        run: |
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/verify_brecha_transition.py -- \
+            --before docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --after /tmp/eldoria-original-qwen-blender-edit/artist-output.blend \
+            --out /tmp/eldoria-original-qwen-independent-gate
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('/tmp')
+          plan=root/'eldoria-source-artwork-replay/eldoria-brecha-preflight-plan/artist-plan.json'
+          result=json.loads((root/'eldoria-original-qwen-blender-edit/artist-execution.json').read_text())
+          gate=json.loads((root/'eldoria-original-qwen-independent-gate/geometry-gate.json').read_text())
+          assert result['plan_sha256']==hashlib.sha256(plan.read_bytes()).hexdigest()
+          assert result['source_mesh_sha256'] != result['result_mesh_sha256']
+          assert len(result['executed_actions'])==2 and all(a['applied'] for a in result['executed_actions'])
+          assert gate['geometry_pass'] and gate['pad_and_border_unchanged']
+          assert gate['changed_vertices']>0 and gate['real_min_dz']<=-3 and gate['real_max_dz']>=3
+          assert gate['art_approved'] is False and gate['unity_tested'] is False
+          glb=(root/'eldoria-original-qwen-blender-edit/artist-output.glb').read_bytes()
+          assert glb[:4]==b'glTF' and struct.unpack_from('<I',glb,8)[0]==len(glb)
+          assert (root/'eldoria-original-qwen-blender-edit/artist-output.blend').read_bytes().startswith(b'BLENDER')
+          print('ORIGINAL_QWEN_INHERITED_BLENDER_EDIT_PROTECTED_GROUND_PASS',
+                gate['changed_vertices'],gate['real_min_dz'],gate['real_max_dz'])
+          PY
+      - name: Retain independently replayed evidence, never merge into production
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-world4x-source-Qwen-replay-proof
+          path: |
+            /tmp/eldoria-original-qwen-blender-edit/
+            /tmp/eldoria-original-qwen-independent-gate/
+          if-no-files-found: warn
+          retention-days: 14
