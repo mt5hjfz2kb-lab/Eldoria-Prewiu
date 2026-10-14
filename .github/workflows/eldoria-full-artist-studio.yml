@@ -58,3 +58,59 @@ jobs:
           path: /tmp/eldoria-full-artist-smoke/
           if-no-files-found: warn
           retention-days: 21
+
+  real-qwen-authored-asset:
+    needs: real-blender-toolbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install independent free Blender + vision workshop
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil python3-numpy
+          docker run --rm -d --name eldoria-studio-qwen -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:11434/api/version >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:11434/api/version
+          docker exec eldoria-studio-qwen ollama pull qwen3-vl:2b-instruct
+      - name: Actual Qwen designs an original new asset then Blender physically constructs it
+        run: |
+          python3 tools/art-direction/full-studio/artist_loop.py \
+            --brief 'CREATE an original reuse-ready fortified medieval stone lookout with a complete multi-part silhouette, battlements, timber detail, stone PBR and real modelled geometry. Choose your own components and sizes. No preset tower template.' \
+            --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+            --out /tmp/eldoria-full-studio-qwen \
+            --max-cycles 1 --max-actions 20 --max-tokens 4500 \
+            --model qwen3-vl:2b-instruct
+      - name: Verify model really authored operations that Blender executed
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          p=Path('/tmp/eldoria-full-studio-qwen')
+          report=json.loads((p/'full-studio-result.json').read_text())
+          assert report['model']=='qwen3-vl:2b-instruct'
+          assert report['ai_authored_action_plans']>=1
+          assert report['blender_real_execution'] and not report['art_approved']
+          cycle=p/'cycle-1'
+          plan=json.loads((cycle/'artist-plan.json').read_text())
+          assert len(plan['actions'])>0
+          assert hashlib.sha256((cycle/'artist-plan.json').read_bytes()).hexdigest()==report['cycles'][0]['plan_sha256']
+          proof=json.loads((cycle/'output/execution-proof.json').read_text())
+          assert proof['blender_execution'] and proof['evaluated_triangles']>0
+          assert proof['action_count']==len(plan['actions'])
+          assert any(step['geometry_changed'] for step in proof['execution'])
+          assert (cycle/'qwen-raw.json').stat().st_size>100
+          assert (cycle/'output/artist-asset.blend').read_bytes().startswith(b'BLENDER')
+          print('ACTUAL_QWEN_DIRECTED_BLENDER_ASSET', len(plan['actions']), proof['evaluated_triangles'])
+          PY
+      - name: Preserve raw Qwen, actual Blender models and renders even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-full-artist-genuine-qwen
+          path: /tmp/eldoria-full-studio-qwen/
+          if-no-files-found: warn
+          retention-days: 21
