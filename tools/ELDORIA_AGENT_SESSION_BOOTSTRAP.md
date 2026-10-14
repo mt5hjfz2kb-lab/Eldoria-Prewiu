@@ -12,6 +12,8 @@
 6. Elegir solo la ruta pertinente: GitHub connector para commits y lectura; Actions + self-hosted Windows para Unity o Blender/Ollama cuando se autorice; Ubuntu hosted para validaciones baratas; BlenderMCP cuando la edición artística lo requiera. No rebajar el alcance artístico a scripts procedurales solo porque el puente no sea visible al inicio.
 7. Si falta ejecución/dispatch en el conector ChatGPT, verificar push-trigger existente o la alternativa autorizada, sin inventar endpoints ni modificar workflows productivos para sortear una prohibición. Si el recurso está reservado o la producción pausada, detener ejecución productiva.
 8. Presupuesto 0 €; no instalar, descargar modelos, lanzar procesos de producción ni gastar créditos durante un descubrimiento. No tocar reservas ni trabajos de terceros.
+9. **Regla permanente de calidad artística (2026-10-15):** antes de cualquier inferencia Qwen/Blender de Eldoria, leer la versión vigente de `main/docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md` junto con `main/AGENTS.md`. Verificar que el actual autor del artista conoce el contrato y que cualquier `ART_APPROVED`/`CALIBRATION_VALIDATED` se registrará con imágenes originales A/B, SHA y revisión independiente en `pipeline/art-visual-approvals/` usando el gate técnico de evidencias. Si el chat está trabajando en una rama antigua, la falta de ese archivo allí NO deroga la norma de `main`. No alterar workstreams ajenos ni levantar la pausa.
+
 
 ## Rutas/evidencias existentes (históricas, no autorización actual)
 
