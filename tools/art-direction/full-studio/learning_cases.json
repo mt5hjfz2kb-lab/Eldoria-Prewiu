@@ -77,6 +77,22 @@
         "unity_verified": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "qwen-source-scaled-brush-contract-rejected-38638094163",
+      "model": "qwen3-vl:8b-instruct-q4_K_M",
+      "run_id": 38638094163,
+      "evidence_artifact_id": 11928623147,
+      "raw_response_sha256": "b5f5dbea95a908da5eff9add5ae44808e4c10a010c78e12c52fe942882f8a10c",
+      "result": "REJECTED_BAD_SOURCE_SCALE",
+      "observed": "Genuine local artist Qwen proposed radius far below safe inspected source brush range on a combined wooden watchtower. Strict parser refused geometry before Blender. No output model produced.",
+      "safe_lesson": "For genuine inherited mesh edits, read actual source-relative brush limits and choose stroke distance and radius strictly inside both bounds. Never invent a smaller radius or repeat invalid brush decisions.",
+      "review_provenance": {
+        "artifact_id": 11928623147,
+        "context": "real source-scaled failed model inference",
+        "art_approved": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
