@@ -1,0 +1,74 @@
+name: Bastion I two real Qwen global composition decisions
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths: ['.github/workflows/valoria-bastion1-global-two-ai-compositions.yml']
+permissions:
+  contents: read
+concurrency:
+  group: bastion1-global-ai-two-compositions
+  cancel-in-progress: false
+jobs:
+  authentic-qwen-art-direction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start existing local zero-cost Qwen artist
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          docker run -d --rm --name bastion1-global-qwen -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 60); do if curl -fsS http://127.0.0.1:11434/api/version > evidence/ollama-version.json; then break; fi; sleep 2; done
+          test -s evidence/ollama-version.json
+          docker exec bastion1-global-qwen ollama pull qwen3-vl:4b-instruct
+      - name: Ask Qwen for TWO genuinely different global compositions in separate bounded inference calls
+        shell: bash
+        timeout-minutes: 13
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,urllib.request,time,hashlib
+          e=pathlib.Path('evidence');e.mkdir(exist_ok=True)
+          memory=pathlib.Path('docs/evidence/valoria-bastion1-camera-scale-recovery-20261013.md').read_text()[-1300:]
+          shared=("Eldoria Bastion I, Unity native 3/4 strategy camera: gate lower (0,-17), upper fort (0,24), stair (0,9), protected road x[-7,7]. "
+          "Occupied future lots: barracks (-16,3), sawmill (16,3), preserve safety >=5m from those plot centers. "
+          "Existing west guard house at (-20.4,-11.3) and detached left wall (-21,-8), right remnant (23,1). "
+          "Only reuse genuine walls, modular wall_connections, stone_path_platform, cliff_rocks, timber props, pines and original selected bushes. "
+          "DO NOT rebuild gate, stair or main road. No central monumental building or resource nodes. "
+          "Owner wants global visual composition, depth, coherent medieval culture and empty courtyard solved. "
+          "Previous tiny hut/trees and sticker-like pavements failed. Describe no implementation or Unity pass. ")
+          prompts=[
+            "DESIGN A (defensive ward): propose one coherent globally visible hierarchy from fortified side walls, ruined low masonry returns, and inhabited edge courtyards. Reserve plots. 4 SHORT lines: main idea, coordinates, asset reuse, camera/functional risks.",
+            "DESIGN B (terraced old-town landscape): propose a DIFFERENT globally visible composition from stone retaining terraces, segmented navigable plateau contours and rock-to-masonry hierarchy rather than the A side-wall ward. Reserve plots. 4 SHORT lines: main idea, coordinates, asset reuse, camera/functional risks."
+          ]
+          for i,p in enumerate(prompts):
+            payload={'model':'qwen3-vl:4b-instruct','stream':False,'options':{'num_ctx':2048,'num_predict':280,'temperature':0.45,'repeat_penalty':1.3},
+             'messages':[{'role':'system','content':'You are the existing Eldoria AI artist. Answer the owner in MAXIMUM 500 characters, in FOUR brief numbered lines. Be specific; NO disclaimers, no repeated phrases.'},
+                         {'role':'user','content':shared+p+'\nPast real lessons: '+memory[-400:]}]}
+            (e/f'artist-{i+1}-request.json').write_text(json.dumps(payload,indent=2))
+            started=time.time()
+            try:
+              req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              with urllib.request.urlopen(req,timeout=260) as rsp: result=json.load(rsp)
+              raw=result.get('message',{}).get('content','')
+              (e/f'artist-{i+1}-raw.txt').write_text(raw)
+              proof={'model':result.get('model'),'done':result.get('done'),'elapsed_s':round(time.time()-started,2),
+               'raw_sha256':hashlib.sha256(raw.encode()).hexdigest(),'raw_length':len(raw),
+               'real_ai_response':bool(raw.strip()),'finished_four_lines':len([x for x in raw.splitlines() if x.strip()])>=3,
+               'composition':('defensive_ward' if i==0 else 'terraced_old_town'),
+               'art_authorship':'Qwen prompt response ONLY; no Blender vertex or Unity frame'}
+              (e/f'artist-{i+1}-proof.json').write_text(json.dumps(proof,indent=2))
+              print('BASTION1_GLOBAL_REAL_QWEN_RESPONSE',json.dumps(proof))
+            except Exception as ex:
+              (e/f'artist-{i+1}-error.txt').write_text(repr(ex))
+              print('BASTION1_QWEN_RECOVERABLE_INFERENCE_FAILURE',i+1,repr(ex))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-qwen-two-global-compositions-${{ github.run_id }}
+          path: evidence/**
+          retention-days: 14
