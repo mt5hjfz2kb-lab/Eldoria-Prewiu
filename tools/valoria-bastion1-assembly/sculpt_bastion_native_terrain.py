@@ -140,6 +140,31 @@ pix=source_rgba[sample_v,sample_u,:3].copy()
 # baked world-space feature of the EXISTING original ground (no overlaid decal).
 earth=np.maximum(earth,ground_patch(0,-4.15,21.2,13.4)*.48)
 earth=np.maximum(earth,ground_patch(0,18.1,13.0,6.4)*.22)
+# Art director's camera-observed correction A10: the enormous central yard
+# must read as intentional connective tissue to its side medieval wall
+# service galleries and future build courts, not a featureless turf polygon.
+# These are NOT decal planes/mesh paths. They are softly worn coordinates in
+# the existing native 1024px photo-albedo, with genuine source pebble detail.
+def source_wear(points,width):
+ dist=np.full_like(X,np.inf,dtype=np.float32)
+ for (x0,y0),(x1,y1) in zip(points[:-1],points[1:]):
+  vx=x1-x0;vy=y1-y0
+  t=np.clip(((X-x0)*vx+(Y-y0)*vy)/(vx*vx+vy*vy),0,1)
+  d=np.hypot(X-(x0+vx*t),Y-(y0+vy*t))
+  dist=np.minimum(dist,d)
+ # Irregular erosion edge, natural loss of rut strength, grass islands.
+ feather=1.0+medium*.36+broad*.27
+ return sat(1-ease((dist-(width*.54+feather))/2.5))*(.73+.14*medium+.10*fine)
+service_wear=np.zeros_like(X,dtype=np.float32)
+for points,width in (
+ ([(-6.7,-7.9),(-11.5,-8.45),(-15.8,-9.8),(-20.6,-10.8)],2.30),
+ ([(7.1,-7.4),(12.6,-8.2),(17.7,-10.5),(21.4,-11.1)],2.45),
+ ([(-7.6,1.8),(-12.4,1.2),(-16.7,1.0)],2.15),
+ ([(7.7,1.6),(12.4,1.0),(16.8,1.55)],2.20)):
+ service_wear=np.maximum(service_wear,source_wear(points,width))
+# Ground-only traffic fan, no new objects/colliders and future lots remain
+# unbuilt. Existing main road and stairs still physically unchanged.
+earth=np.maximum(earth,service_wear*.81)
 # SOURCE-VALIDATED PALETTE REBALANCE A7. The A6 genuine Unity screenshot
 # confirmed the baked terrain was literally too dark (mean albedo about
 # 41/53/11 RGB) versus the brighter source scene. Respect actual original
@@ -155,18 +180,24 @@ soil=np.stack((.425*soil_light,.325*soil_light,.223*soil_light),axis=2)
 # never a pasted rectangle, slab/path mesh or overly red noisy carpet.
 mix=sat(earth*.81)
 pix=np.clip(meadow*(1-mix[:,:,None])+soil*mix[:,:,None],.035,.92)
+# Worn rock/soil tracks are soft, photographed-looking variances WITHIN the
+# original source texture, not separate walkable or sticker meshes. They tie
+# forecourt architecture visibly into each future building's approach.
+grit=np.stack((.392+.019*medium,.357+.014*fine,.278+.013*medium),axis=2)
+worn=sat(service_wear*(.21+.075*medium))
+pix=np.clip(pix*(1-worn[:,:,None])+grit*worn[:,:,None],.035,.92)
 terrain_albedo_mean=np.mean(pix,axis=(0,1)).tolist()
 if not (.22<=terrain_albedo_mean[0]<=.49 and
         .23<=terrain_albedo_mean[1]<=.47 and
         .12<=terrain_albedo_mean[2]<=.32):
  raise RuntimeError('Art guard: world-soil palette is still too dark or alien: '+str(terrain_albedo_mean))
 colors=np.concatenate((pix,np.ones((res,res,1),dtype=np.float32)),axis=2).astype(np.float32)
-new_image=bpy.data.images.new('Bastion I Qwen source-phototexture graded broad earthen medieval ward A7',
+new_image=bpy.data.images.new('Bastion I Qwen Qwen-origin native-ground courtyards organically trafficked A10',
                                 width=res,height=res,alpha=True)
 new_image.pixels.foreach_set(colors.ravel());new_image.pack()
 # Index 0 is original olive-grass material from canonical terrain_finish.py.
 if not original_grass:raise RuntimeError('Original grass material missing')
-grass=original_grass.copy();grass.name='Bastion I broad graded organic photo terrain Qwen spatial A7'
+grass=original_grass.copy();grass.name='Bastion I natural inhabited medieval native terrain Qwen spatial A10'
 grass.use_nodes=True
 nodes=grass.node_tree.nodes;principled=nodes.get('Principled BSDF')
 if not principled:raise RuntimeError('URP-exportable PBR material missing')
@@ -255,7 +286,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
