@@ -1,0 +1,53 @@
+name: Eldoria artist local Windows Blender connection read-only proof
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-artist-one-off-windows-connection-proof
+  cancel-in-progress: true
+jobs:
+  local-windows-blender-proof:
+    if: github.ref == 'refs/heads/validation/artist-windows-pc-bridge-20261014'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Identify real Windows runner and installed Blender without writes or Unity
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if ($env:RUNNER_OS -ne 'Windows') { throw 'Expected Windows self-hosted runner' }
+          Write-Host 'ELDORIA_WINDOWS_RUNNER_RESPONDED'
+          Write-Host "RUNNER_OS=$env:RUNNER_OS"
+          $cmd=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $exe=$null
+          if ($cmd) { $exe=$cmd.Source }
+          if (-not $exe) {
+            $folder=Join-Path $env:ProgramFiles 'Blender Foundation'
+            if (Test-Path $folder) {
+              $exe=Get-ChildItem $folder -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue |
+                Select-Object -First 1 -ExpandProperty FullName
+            }
+          }
+          if (-not $exe -or -not (Test-Path $exe)) { throw 'NO_LOCAL_BLENDER_INSTALLED_OR_DISCOVERABLE' }
+          & $exe --version | Select-Object -First 2
+          if ($LASTEXITCODE -ne 0) { throw 'BLENDER_EXE_VERSION_FAILED' }
+          $proof=Join-Path $env:RUNNER_TEMP 'eldoria-local-blender-bridge-readonly-proof.json'
+          $py="import bpy,json,platform,pathlib;pathlib.Path(r'$($proof.Replace('\','\\'))').write_text(json.dumps({'probe':'ELDORIA_LOCAL_BLENDER_REAL','blender_version':bpy.app.version_string,'has_bpy':True,'os':platform.system(),'local_blend_file_modified':False,'local_unity_started':False,'mcp_active_addon_names':[x for x in bpy.context.preferences.addons.keys() if 'mcp' in x.lower()]},indent=2))"
+          & $exe -b --factory-startup --python-exit-code 1 --python-expr $py
+          if ($LASTEXITCODE -ne 0 -or -not (Test-Path $proof)) { throw 'LOCAL_BLENDER_BPY_PROOF_FAILED' }
+          $parsed=Get-Content $proof -Raw | ConvertFrom-Json
+          if ($parsed.probe -ne 'ELDORIA_LOCAL_BLENDER_REAL' -or -not $parsed.has_bpy -or $parsed.os -ne 'Windows') { throw 'INVALID_PC_PROOF' }
+          Write-Host ('ELDORIA_REAL_WINDOWS_PC_BLENDER_BPY_PASS version='+$parsed.blender_version)
+      - name: Preserve read-only Blender/PC proof (no creative production)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-windows-blender-connection-proof
+          path: ${{ runner.temp }}/eldoria-local-blender-bridge-readonly-proof.json
+          retention-days: 7
+          if-no-files-found: warn
