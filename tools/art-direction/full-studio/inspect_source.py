@@ -9,6 +9,7 @@ import bpy
 HERE=pathlib.Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from blender_toolbox import camera_override,render_setup,ensure_review_lighting,ensure_review_stage,snapshot_meshes
+from world_space_evidence import summarize_world_points
 
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -38,6 +39,13 @@ def main():
     inventory=[]
     for o in sorted((o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("_EldoriaReview")),key=lambda x:x.name):
         verts=o.data.vertices
+        # IMPORTANT: original GLB local axes can be rotated by import. New
+        # Blender objects use WORLD XYZ with +Z vertical. Measure actual
+        # Blender matrix_world transformed vertex positions, not local bounds.
+        spatial=summarize_world_points([tuple(o.matrix_world @ v.co) for v in verts])
+        basis=o.matrix_world.to_3x3()
+        local_up=max(range(3),key=lambda axis:abs(float(basis.col[axis].z)))
+        signed_local_up=("+" if float(basis.col[local_up].z)>=0 else "-")+"XYZ"[local_up]
         lo=[round(min((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
         hi=[round(max((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
         local_extrema={}
@@ -101,6 +109,9 @@ def main():
         finally:
             evaluated.to_mesh_clear()
         inventory.append({
+            **spatial,
+            "mesh_local_axis_aligned_with_world_up":signed_local_up,
+            "world_coordinate_convention":"Blender WORLD XYZ: +Z vertical; GLB mesh LOCAL axes may differ",
             "evaluated_triangles":source_evaluated_triangles,
             "local_extrema":local_extrema,
             "vertex_landmarks":vertex_landmarks,
