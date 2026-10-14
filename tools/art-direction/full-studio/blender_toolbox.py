@@ -84,7 +84,17 @@ def material(name,p,texture_root):
     color=p["base_color"]
     mat=bpy.data.materials.new("Eldoria_AI_"+name+"_"+str(len(bpy.data.materials)))
     mat.diffuse_color=color;mat.use_nodes=True
-    bsdf=mat.node_tree.nodes.get("Principled BSDF")
+    # Blender 5.x does not guarantee a pre-created node named "Principled BSDF"
+    # when enabling nodes on a newly allocated material. Resolve by Blender
+    # node TYPE rather than display name and build a genuine shader-output link.
+    tree=mat.node_tree
+    if tree is None:raise RuntimeError("Blender cannot provide material node tree")
+    bsdf=next((n for n in tree.nodes if n.bl_idname=="ShaderNodeBsdfPrincipled"),None)
+    if bsdf is None:bsdf=tree.nodes.new("ShaderNodeBsdfPrincipled")
+    output=next((n for n in tree.nodes if n.bl_idname=="ShaderNodeOutputMaterial"),None)
+    if output is None:output=tree.nodes.new("ShaderNodeOutputMaterial")
+    if not any(link.from_node==bsdf and link.to_node==output for link in tree.links):
+        tree.links.new(bsdf.outputs["BSDF"],output.inputs["Surface"])
     bsdf.inputs["Base Color"].default_value=color
     bsdf.inputs["Roughness"].default_value=p["roughness"]
     bsdf.inputs["Metallic"].default_value=p.get("metallic",0)
