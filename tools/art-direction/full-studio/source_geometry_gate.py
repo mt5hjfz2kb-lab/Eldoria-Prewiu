@@ -46,6 +46,20 @@ def verify_source_plan(document,inventory):
                     type(v)!=int or v<0 or v>=actual["faces"] for v in indices)):
                 errors.append(f"Action {i}: INVALID FACE; {actual['faces']} real Blender faces "
                               f"allow FACE indices 0..{actual['faces']-1}; vertex_index is NOT face index")
+            if actual.get("camera_visibility_verified_by_raycast") is True:
+                visible={p["face_index"] for p in
+                         actual.get("camera_visible_face_landmarks",[])
+                         if type(p.get("face_index")) is int}
+                if not visible:
+                    errors.append(
+                        f"Action {i}: no camera-raycast-visible source face "
+                        "indices are available; do not guess a hidden face.")
+                elif any(index not in visible for index in indices):
+                    errors.append(
+                        f"Action {i}: selected face is NOT CAMERA-VISIBLE "
+                        "in frozen Blender review. Choose your own face "
+                        f"from verified visible indices {sorted(visible)[:24]}; "
+                        "do not replay hidden faces yielding zero changed pixels.")
             topology_changed.add(target)
         elif op=="sculpt":
             structural=True
