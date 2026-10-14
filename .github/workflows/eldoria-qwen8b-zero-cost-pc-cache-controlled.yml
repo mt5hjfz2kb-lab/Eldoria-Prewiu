@@ -1,0 +1,95 @@
+name: Eldoria owner-authorized free official Qwen3-VL 8B local GPU cache validation
+on:
+  push:
+    branches: [validation/eldoria-pc-local-model-inventory-20261014]
+    paths: ['.github/workflows/eldoria-qwen8b-zero-cost-pc-cache-controlled.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-pc-single-qwen-8b-local-cache
+  cancel-in-progress: false
+jobs:
+  local-official-qwen8b-only:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    steps:
+      - name: Verify physical local GPU and safe disk budget before any download
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $space=(Get-PSDrive -Name C).Free
+          if ($space -lt 15GB) { throw 'Refusing 6.1 GB free model when less than 15 GB disk is available' }
+          $command=Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
+          if (-not $command) { throw 'NVIDIA VRAM proof unavailable, no model pull' }
+          $memory=(& $command.Source --query-gpu=memory.total --format=csv,noheader,nounits | Select-Object -First 1).Trim()
+          if ($LASTEXITCODE -ne 0 -or [int]$memory -lt 10240) { throw 'At least 10GB of real GPU VRAM required to attempt Qwen 8B' }
+          Write-Host ('ELDORIA_PC_FREE_MODEL_PRECONDITIONS_PASS physical_vram_mib='+$memory)
+      - name: Resolve cached Ollama and pull official Apache 2.0 8B model, no other downloads
+        timeout-minutes: 48
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ollama=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if (-not (Test-Path $ollama)) {
+            $ollama=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if (-not (Test-Path $ollama)) { throw 'Owner local Ollama unavailable' }
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $models=Join-Path $env:USERPROFILE '.ollama\models'
+          if (-not (Test-Path $models)) {
+            $models=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName '.ollama\models' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if ($models -and (Test-Path $models)) { $env:OLLAMA_MODELS=$models }
+          $proc=$null
+          try {
+            $ready=$false
+            try { $null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 3; $ready=$true } catch {}
+            if (-not $ready) {
+              $out=Join-Path $env:RUNNER_TEMP 'eldoria-qwen8b-model-server-out.log'
+              $err=Join-Path $env:RUNNER_TEMP 'eldoria-qwen8b-model-server-err.log'
+              $proc=Start-Process -FilePath $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput $out -RedirectStandardError $err
+              for($i=0;$i -lt 45;$i++) {
+                try { $null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2; $ready=$true;break } catch { Start-Sleep -Seconds 1 }
+              }
+            }
+            if (-not $ready) { throw 'Installed Ollama unable to serve localhost' }
+            $prior=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 15
+            $tag='qwen3-vl:8b-instruct-q4_K_M'
+            $previous=@($prior.models | ForEach-Object {$_.name})
+            if ($tag -notin $previous) {
+              Write-Host 'PULLING_FREE_PUBLIC_APACHE_MODEL_QUANTIZED_8B (only permitted new model)'
+              & $ollama pull $tag
+              if ($LASTEXITCODE -ne 0) { throw 'Official free local 8B model pull failed' }
+            }
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
+            $found=@($tags.models | Where-Object { $_.name -eq $tag })
+            if ($found.Count -ne 1) { throw 'Qwen 8B tag absent after pull' }
+            $digest=([string]$found[0].digest).ToLowerInvariant()
+            if (-not $digest.StartsWith('0533d74300e4')) {
+              throw ('Unexpected upstream Ollama official Qwen8B tag digest; no test allowed: '+$digest)
+            }
+            $report=@{status='ORIGINAL_QWEN8B_LOCAL_CACHE_VALIDATED';tag=$tag;
+              digest=$digest;size_bytes=$found[0].size;
+              family=$found[0].details.family;parameters=$found[0].details.parameter_size;
+              quantization=$found[0].details.quantization_level;
+              existing_model_names_unchanged=$previous;
+              downloads_paid_services=0;unity_run=$false;blender_source_modified=$false;
+              art_approved=$false;model_quality_unverified=$true}
+            $path=Join-Path $env:RUNNER_TEMP 'eldoria-8b-zero-cost-original-cache-proof.json'
+            $report | ConvertTo-Json -Depth 6 | Set-Content $path -Encoding UTF8
+            Write-Host ('ELDORIA_OFFICIAL_8B_MODEL_CACHE_VERIFIED bytes='+$found[0].size)
+          } finally {
+            if ($proc) { Stop-Process -Id $proc.Id -ErrorAction SilentlyContinue }
+          }
+      - name: Preserve only local cache metadata and unchanged existing model names
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-owner-local-qwen8b-official-model-cache-evidence
+          path: ${{ runner.temp }}/eldoria-8b-zero-cost-original-cache-proof.json
+          retention-days: 7
+          if-no-files-found: warn
