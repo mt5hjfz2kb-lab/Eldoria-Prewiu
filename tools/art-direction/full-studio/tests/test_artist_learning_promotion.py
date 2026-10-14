@@ -60,7 +60,7 @@ class VerifiedCurationTests(unittest.TestCase):
             self.assertEqual(new["cases"][0]["raw_response_sha256"],sha(files["raw_response_file"]))
             self.assertFalse(new["cases"][0]["review_provenance"]["unity_verified"])
             self.assertTrue(new["cases"][0]["review_provenance"]["no_model_weight_training"])
-            with self.assertRaises(ValueError):curate_case(pending,review,Path(temp)/"missing.json")
+            with self.assertRaises(FileNotFoundError):curate_case(pending,review,Path(temp)/"missing.json")
             files["after_image"].write_bytes(b"tampered")
             with self.assertRaises(ValueError):curate_case(pending,review,casebook)
     def test_qwen_self_review_cannot_be_promoted(self):
