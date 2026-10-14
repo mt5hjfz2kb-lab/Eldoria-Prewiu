@@ -190,7 +190,11 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
     return base+(
         "Choose YOUR OWN tools and numeric values from NINE real, validated Blender operation families (sculpt_anchor, sculpt, extrude, inset, bevel, modifier, material, uv, native_operator). "
-        "These are NOT preset designs; when architectural quality needs a new part, choose a NEW primitive or an explicitly authored custom vertices/faces mesh with your own sizes and position. "
+        "These are NOT preset designs; when architectural quality needs a new part, choose a NEW primitive or an explicitly authored custom vertices/faces mesh. "
+        "New objects REQUIRE a DISTINCT name not in the observed source inventory. "
+        "Every custom mesh vertex coordinate MUST be unique and EVERY face must have nonzero area; never repeat [0,0,0] to fill a vertex array. "
+        "When uncertain of valid custom vertices/faces, choose a PRIMITIVE and set original shape/location/rotation/scale. "
+        "Do not choose the original tower name for a created object. "
         "The original inherited tower MUST remain recognizable; added components should attach to it and improve visible architecture. "
         "Do not output mesh:operation pseudo-parameters. "
         "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
@@ -286,7 +290,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if args.source_tool_sequencing and source_exists and args.phase=="full":
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
-          + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). " if args.source_build_phase
+          + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). " if args.source_build_phase and trial.name=="cycle-1"
              else "(sculpt, sculpt_anchor, extrude, inset, selected-edge bevel, NEW primitive or authored mesh). ")
           + "The SECOND is YOUR material or UV operation. "
           "An optional THIRD is material, UV or a safe non-global modifier. "
@@ -296,7 +300,8 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,args.source_build_phase),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
+                                       args.source_build_phase and trial.name=="cycle-1"),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)

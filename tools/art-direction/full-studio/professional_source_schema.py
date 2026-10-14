@@ -56,10 +56,10 @@ def source_artist_action_schema(objects):
       "primitive":({"shape":enum(["cube","cylinder","cone","plane","uv_sphere","ico_sphere","torus"]),
                     "location":xyz,"rotation":rot,"scale":scl},
                    ["shape","location","rotation","scale"]),
-      "mesh":({"vertices":{"type":"array","minItems":3,"maxItems":24,"items":xyz},
-               "faces":{"type":"array","minItems":1,"maxItems":30,
+      "mesh":({"vertices":{"type":"array","minItems":3,"maxItems":12,"uniqueItems":True,"items":xyz},
+               "faces":{"type":"array","minItems":1,"maxItems":16,
                         "items":{"type":"array","minItems":3,"maxItems":8,
-                                 "items":{"type":"integer","minimum":0,"maximum":23}}}},
+                                 "items":{"type":"integer","minimum":0,"maximum":11}}}},
               ["vertices","faces"])
     }
     defs={

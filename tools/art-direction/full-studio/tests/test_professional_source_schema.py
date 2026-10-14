@@ -79,7 +79,8 @@ class TypedArtistTests(unittest.TestCase):
   self.assertIn("location",primitive["properties"]["params"]["properties"])
   self.assertIn("scale",primitive["properties"]["params"]["properties"])
   authored=next(v for v in options if v["properties"]["op"]["const"]=="mesh")
-  self.assertEqual(authored["properties"]["params"]["properties"]["vertices"]["maxItems"],24)
+  self.assertEqual(authored["properties"]["params"]["properties"]["vertices"]["maxItems"],12)
+  self.assertTrue(authored["properties"]["params"]["properties"]["vertices"]["uniqueItems"])
  def test_non_source_creation_stays_unaffected(self):
   s=schema_for_plan(5,False,"full","architecture")
   self.assertEqual(s["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")
