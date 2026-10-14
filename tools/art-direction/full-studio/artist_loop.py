@@ -401,6 +401,29 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "YOU still choose which primitive, placement, orientation, dimensions, material and intent. "
               "No script chooses your new structure.")
     edge=getattr(args,"vision_max_edge",1024)
+    if source_exists and source_inventory:
+        # Replace a giant truncated inventory with SHORT trustworthy local
+        # geometric facts immediately before the images. Never prescribe
+        # actual new component coordinates.
+        entry=max(source_inventory,key=lambda item:item.get("evaluated_triangles",item.get("faces",0)))
+        minimum=entry.get("world_bounds_min_m")
+        maximum=entry.get("world_bounds_max_m")
+        if minimum and maximum:
+            msg+=("\nIMPORTANT BOUNDARY FACTS measured in actual Blender WORLD metres: "+
+                  "building x=[%.2f, %.2f], y=[%.2f, %.2f], z=[%.2f, %.2f]. "%(
+                      minimum[0],maximum[0],minimum[1],maximum[1],minimum[2],maximum[2])+
+                  "Blender WORLD Z is HEIGHT. Imported GLB mesh local Y may be up "+
+                  "but new component WORLD Y is horizontal depth, NOT height. "+
+                  "Choose original modest rooftop detail physically near actual x/y surface. "+
+                  "The staircase/door region must remain open.")
+        if args.phase=="mesh_edit":
+            from sculpt_scale_contract import conservative_schema_bounds
+            limits=conservative_schema_bounds(source_inventory)
+            if limits:
+                msg+=("\nSOURCE-SIZED WORLD BRUSH BOUNDS (METRES; do NOT invent other values): "
+                      "distance [%.4f,%.4f], radius [%.4f,%.4f]. "%(
+                          limits["distance"]["minimum"],limits["distance"]["maximum"],
+                          limits["radius"]["minimum"],limits["radius"]["maximum"]))
     pictures=[image_data(reference,edge)]
     if current_image:pictures.append(image_data(current_image,edge))
     if getattr(args,"focus_image",None):pictures.append(image_data(args.focus_image,edge))
@@ -442,7 +465,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             for action in actions[1:]:
                 if action["target"] != created_name:
                     raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
-            verify_volume_and_complexity(doc)
+            verify_volume_and_complexity(doc,source_inventory)
             spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
             (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
                 json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
