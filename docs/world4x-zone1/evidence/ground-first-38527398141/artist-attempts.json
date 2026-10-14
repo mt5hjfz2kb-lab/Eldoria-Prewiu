@@ -1,0 +1,32 @@
+[
+  {
+    "attempt": 1,
+    "seconds": 476.52,
+    "errors": [
+      "Respect vertical delta 2..9m and radius16..35m",
+      "Respect vertical delta 2..9m and radius16..35m"
+    ],
+    "response_sha256": "fa8483de13f11d42ff207a753de4daecc4479a48542a945765652551a7818f56",
+    "eval_count": 490
+  },
+  {
+    "attempt": 2,
+    "seconds": 141.65,
+    "errors": [
+      "Respect vertical delta 2..9m and radius16..35m",
+      "Respect vertical delta 2..9m and radius16..35m"
+    ],
+    "response_sha256": "64e4a9d2c0afabe8c9a1d1f624d0d2918a44c402fa641a59a7979b52e157af4a",
+    "eval_count": 494
+  },
+  {
+    "attempt": 3,
+    "seconds": 151.99,
+    "errors": [
+      "Respect vertical delta 2..9m and radius16..35m",
+      "Respect vertical delta 2..9m and radius16..35m"
+    ],
+    "response_sha256": "64e4a9d2c0afabe8c9a1d1f624d0d2918a44c402fa641a59a7979b52e157af4a",
+    "eval_count": 494
+  }
+]
