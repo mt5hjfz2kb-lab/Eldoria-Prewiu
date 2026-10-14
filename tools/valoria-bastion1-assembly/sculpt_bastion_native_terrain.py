@@ -57,8 +57,20 @@ wavex=(np.sin(Xs*.48+Ys*.19)*.09+
 bank=western*.31+eastern*.25+upper_sides*.38
 soft_ruts=(np.exp(-((np.abs(Xs)-10.7)/2.1)**2)
            *np.exp(-((Ys+4)/15)**4))*.16
-delta=weight*(bank+wavex*(.46+western+eastern)*.50-soft_ruts)
-delta=np.clip(delta,-.22,.58)
+# A19: large landform authoring on the ORIGINAL 100x100m source terrain.
+# Not a palette-only tweak or another isolated prefab. Define two connected
+# lateral geological earthworks as broad 11m sloping bodies, with a worn
+# secondary foot below the lower original parapet. All displacements fade at
+# original axially protected road and both 10x10 future construction parcels.
+# Expected camera effect: middle-distance bank topography rather than a
+# uniform brown tabletop between lower ramparts and upper arched castle wall.
+upper_outer=np.exp(-((np.abs(Xs)-23.9)/5.35)**4-((Ys-13.25)/5.20)**4)
+lower_outer=np.exp(-((np.abs(Xs)-23.2)/5.2)**4-((Ys+9.7)/5.0)**4)
+weathering=np.sin(Xs*.32+Ys*.19)*.20+np.sin(Xs*.58-Ys*.31)*.13
+earthwork=(upper_outer*(.94+weathering*.7)
+           +lower_outer*(.64+weathering*.4))
+delta=weight*(bank+wavex*(.46+western+eastern)*.50-soft_ruts+earthwork)
+delta=np.clip(delta,-.27,1.28)
 for v,d in zip(mesh.vertices,delta):
  if abs(d)>1e-5:v.co.z+=float(d)
 mesh.update()
@@ -292,6 +304,25 @@ pix=np.clip(pix*(1-worn[:,:,None])+grit*worn[:,:,None],.035,.92)
 # Path fork has wide feathered edges and grass islands, never straight decals.
 stony_fork=sat(fork_wear*(.70+.12*medium+.05*fine))
 pix=np.clip(pix*(1-stony_fork[:,:,None])+rock_road*stony_fork[:,:,None],.035,.92)
+# A19: geology+traffic must tell ONE story in the true original native 3D
+# ground. Two broad organically worn lower courtyard tongues join the old
+# gates and the flagstone axis WITHOUT inserting another decal plane. The
+# photo-rock pixels below come from the original author-sourced GLB atlas.
+# Keep all buildable terrain physically unchanged and future plots empty.
+stone_apron=np.maximum(ground_patch(-9.45,-5.8,7.3,6.1),
+                       ground_patch(9.45,-5.8,7.5,6.2))
+stone_shelf=np.maximum(ground_patch(-23.0,12.8,5.4,5.3),
+                       ground_patch(23.0,12.8,5.4,5.3))
+stone_shelf=np.maximum(stone_shelf,
+                       np.maximum(ground_patch(-22.2,-10.3,5.1,4.9),
+                                  ground_patch(22.2,-10.3,5.1,4.9))*.69)
+# Real stone photo remains visible, brightened with the existing SOIL grit
+# rather than a uniform light/gray analytic color.
+old_stone=np.clip(.37*rock_road+.63*grit,.13,.76)
+mineral_traffic=sat((stone_apron*.72+stone_shelf*.79)*
+                    (.79+.14*medium+.04*fine))
+pix=np.clip(pix*(1-mineral_traffic[:,:,None])
+            +old_stone*mineral_traffic[:,:,None],.035,.92)
 
 terrain_albedo_mean=np.mean(pix,axis=(0,1)).tolist()
 if not (.22<=terrain_albedo_mean[0]<=.49 and
@@ -397,7 +428,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
- native_source_terrain_sculpted=True, a18_original_cliff_vertices_sculpted=cliff_changed, a18_cliff_max_displacement_m=cliff_max_delta, a18_cliff_source_photo_isolated=bool(photo_count),
+ native_source_terrain_sculpted=True, a19_original_terrain_banks_m=max(float(np.max(earthwork)),0.0), a19_original_photo_stony_courtyard_fraction=float(np.mean(mineral_traffic>.38)), a19_no_extra_meshes=True, a18_original_cliff_vertices_sculpted=cliff_changed, a18_cliff_max_displacement_m=cliff_max_delta, a18_cliff_source_photo_isolated=bool(photo_count),
  qwen_latest_vision_run=38572253674,latest_matched_unity_before_after_qwen_raw_sha256='c4bffeedebcb16723191c7872b78f3df5a300068ef4bdeb2fc294c2539ea6a08',source_rock_photo_pixel_reuse=True,forked_stony_route_pixel_fraction=float(np.mean(stony_fork>.30)),artistically_approved=False,mobile_hardware_certified=False)
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_QWEN_ACTUAL_TERRAIN_SCULPT',json.dumps(proof))

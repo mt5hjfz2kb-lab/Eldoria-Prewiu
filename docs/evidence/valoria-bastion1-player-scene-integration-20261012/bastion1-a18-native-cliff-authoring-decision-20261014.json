@@ -9,5 +9,20 @@
   "proofs": "Sculpted vertex count, maximum vertex displacement, copied source photo texture, all source meshes otherwise preserved. Exact native Unity camera A/B, mobile and gameplay separately pending.",
   "exclusions": "No extra rock prefabs, no buildings, no colliders, no resource nodes. Plot footprints centered x±16,y3 and axis remain intact. main and 4X unchanged.",
   "paid_credits": 0,
-  "art_pass": false
+  "art_pass": false,
+  "result": {
+    "status": "INCREMENTAL_ENVIRONMENT_IMPROVEMENT_NOT_GLOBAL_ART_PASS",
+    "native_run": 38583524108,
+    "head_sha": "26c9bc69f8f0523205927cc1f57e95b7fd776c0b",
+    "source_reference_run": 38577293174,
+    "original_cliff_vertices_deformed": 714,
+    "max_geological_deformation_m": 1.94175,
+    "original_photo_pbr_isolated": true,
+    "protected_road_and_future_parcels_max_delta_m": 0,
+    "visible_triangles_A16": 1692290,
+    "visible_triangles_A18": 1692290,
+    "same_camera_changed_fraction_threshold5": 0.2657,
+    "same_camera_changed_fraction_threshold10": 0.1187,
+    "independent_camera_review": "Cliff strata and tonal definition improved modestly in foreground, but central yard still empty and too monotonous; no global ART PASS. Keep A18 as independent base for new A19 native-terrain hypothesis."
+  }
 }
