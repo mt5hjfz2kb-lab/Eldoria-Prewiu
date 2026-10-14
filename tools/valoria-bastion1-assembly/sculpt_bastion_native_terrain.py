@@ -140,6 +140,24 @@ pix=source_rgba[sample_v,sample_u,:3].copy()
 # baked world-space feature of the EXISTING original ground (no overlaid decal).
 earth=np.maximum(earth,ground_patch(0,-4.15,21.2,13.4)*.48)
 earth=np.maximum(earth,ground_patch(0,18.1,13.0,6.4)*.22)
+# A11 native medieval COURTYARD composition (not more props): turn the broad
+# otherwise-empty INNER WARD into coherent gravelly ochre foot-trafficked
+# earth. Qwen run 38563200385 identified absence of large-scale aged court.
+# All of this is embedded in the ORIGINAL native terrain's baked albedo.
+# Reserved build plots remain open and retain subtle turf pockets, but lose
+# the unconvincing full-carpet bright green around their perimeter.
+court=ground_patch(0,-3.15,28.2,18.9)
+court*=np.clip(.97+.12*broad+.06*medium,.70,1.0)
+plot1=pad(X,Y,-16,3,5.3,4.9)
+plot2=pad(X,Y,16,3,5.3,4.9)
+protected_plot_turf=np.maximum(plot1,plot2)
+# The medieval movement is centered between defensible stone banks and
+# oriented to the two existing gates; not an isolated paved rectangle.
+courtyard_ward=(court*.86)*(1-.54*protected_plot_turf)
+earth=np.maximum(earth,courtyard_ward)
+upper_approach=ground_patch(0,17.0,16.5,7.5)*.44
+earth=np.maximum(earth,upper_approach)
+
 # Art director's camera-observed correction A10: the enormous central yard
 # must read as intentional connective tissue to its side medieval wall
 # service galleries and future build courts, not a featureless turf polygon.
@@ -197,7 +215,7 @@ new_image=bpy.data.images.new('Bastion I Qwen Qwen-origin native-ground courtyar
 new_image.pixels.foreach_set(colors.ravel());new_image.pack()
 # Index 0 is original olive-grass material from canonical terrain_finish.py.
 if not original_grass:raise RuntimeError('Original grass material missing')
-grass=original_grass.copy();grass.name='Bastion I natural inhabited medieval native terrain Qwen spatial A10'
+grass=original_grass.copy();grass.name='Bastion I Qwen-authored worn medieval courtyard ground A11'
 grass.use_nodes=True
 nodes=grass.node_tree.nodes;principled=nodes.get('Principled BSDF')
 if not principled:raise RuntimeError('URP-exportable PBR material missing')
@@ -286,7 +304,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,service_desire_line_max=float(np.max(service_wear)),service_desire_line_pixels=int(np.count_nonzero(service_wear>.25)),courtyard_ward_max=float(np.max(courtyard_ward)),courtyard_ward_fraction_over_half=float(np.mean(courtyard_ward>.5)),restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
