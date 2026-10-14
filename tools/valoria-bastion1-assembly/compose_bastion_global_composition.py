@@ -71,6 +71,7 @@ def kit_bounds(group):
  lo=Vector(tuple(min(v[k] for v in pts) for k in range(3)))
  hi=Vector(tuple(max(v[k] for v in pts) for k in range(3)))
  return lo,hi
+lod_mesh_cache={}
 def clone_group(label,kit,x,y,size,base_z=None,rotate=0):
  lo,hi=kit_bounds(kit);sz=hi-lo
  sx,sy,szscale=(size[0]/max(.01,sz.x),size[1]/max(.01,sz.y),size[2]/max(.01,sz.z))
@@ -80,6 +81,19 @@ def clone_group(label,kit,x,y,size,base_z=None,rotate=0):
      @ Matrix.Translation(Vector((-(lo.x+hi.x)/2,-(lo.y+hi.y)/2,-lo.z))))
  for old in kit:
   o=old.copy();o.data=old.data;o.parent=None;o.matrix_world=transform @ old.matrix_world
+  # Preserve originals; cut repeated production family wall-kit triangle density
+  # for mobile at strategic camera scale without changing mesh source.
+  if variant=='A' and (kit is wallkit or kit is connectionkit):
+   key=old.data.name
+   if key in lod_mesh_cache:
+    o.data=lod_mesh_cache[key]
+   else:
+    o.data=old.data.copy()
+    modifier=o.modifiers.new('mobile architectural LOD 58pct','DECIMATE')
+    modifier.ratio=.58
+    bpy.context.view_layer.objects.active=o
+    bpy.ops.object.modifier_apply(modifier=modifier.name)
+    lod_mesh_cache[key]=o.data
   o.name='B1 '+variant+' original '+label+' '+str(len(reused))
   bpy.context.collection.objects.link(o);reused.append(o)
  return len(kit)
@@ -155,6 +169,33 @@ def run_variant_A():
   for xx,yy in ((side*21.8,12.50),(side*22.1,-10.10),
                 (side*19.25,9.85)):
    stone_scree(name+' authored geological masonry foot',xx,yy,(2.2,1.6,.55))
+  # Existing weathered oak and royal-blue castle fabric carry authored visual
+  # identity into BOTH new defensive ward flanks. This is a continuous stone
+  # wall-walk, not another standalone shed or rectangular floating courtyard.
+  walkx=side*20.65
+  walky=-5.1
+  safe(name+' attached medieval wall walk',walkx,walky,1.5,5.7)
+  walkz=ground(walkx,walky)
+  cube(name+' continuous oak palisade wall walk',walkx,walky,walkz+1.43,
+       1.5,5.7,.25,material=wood,bevel=.042)
+  for ddy in (-2.05,0,2.05):
+   cube(name+' heavy oak wall-walk support',side*21.25,walky+ddy,
+        walkz+.77,.22,.32,1.55,material=wood,bevel=.018)
+  # A narrow weathered oak fighting gallery below the ORIGINAL battlements,
+  # attached to upper masonry, deepens the step between plateau and courtyard.
+  galleryx=side*16.75
+  galleryy=13.75
+  safe(name+' upper parapet gallery',galleryx,galleryy,8.3,1.13)
+  cube(name+' historic upper wall timber parapet',galleryx,galleryy,
+       ground(galleryx,galleryy)+.39,8.3,1.13,.19,material=wood,bevel=.026)
+  cloth=next((m for m in bpy.data.materials if m and 'Royal_Blue_Cloth' in m.name),None)
+  if cloth:
+   flagx=side*21.65
+   flagy=9.42
+   safe(name+' heraldic pennant',flagx,flagy,.82,.20)
+   cube(name+' original castle cloth tied to original masonry corner',
+        flagx,flagy,ground(flagx,flagy)+2.20,
+        .82,.16,1.08,material=cloth,bevel=.018)
  # No freestanding central decorations or new buildings: broad central court
  # stays empty for future progression, while TWO coherent physical wall systems
  # now express foreground, midground and high medieval citadel depth.
@@ -188,15 +229,52 @@ else:run_variant_B()
 # Rigorous non-destructive proof: all original names/objects still exist and
 # new geometry has zero physical colliders/resource-node game objects.
 assert all(o.name in original_names for o in objects)
+# Visual inspection of real A2 Unity screenshot showed new limestone too white.
+# Copy and tint ONLY NEW instances of pre-authored stone materials. Actual
+# source materials on gates, existing fortifications and playable terrain stay
+# bit-for-bit untouched. Reuses original texture UVs and authoring; no decals.
+if variant=='A':
+ import numpy as np
+ aged_material_cache={};aged_texture_cache={}
+ def aged_material(m):
+  if not m or ('limestone' not in m.name.lower() and 'stone' not in m.name.lower()):
+   return m
+  if m.name in aged_material_cache:return aged_material_cache[m.name]
+  t=m.copy();t.name='B1 A3 warmer dirt-aged '+m.name
+  if t.use_nodes:
+   bs=t.node_tree.nodes.get('Principled BSDF')
+   if bs:
+    inp=bs.inputs['Base Color']
+    sources=[l.from_node for l in inp.links if l.from_node.type=='TEX_IMAGE' and l.from_node.image]
+    for tex in sources:
+     srcim=tex.image
+     if srcim.name not in aged_texture_cache:
+      newim=srcim.copy();newim.name='B1 A3 aged source limestone '+srcim.name
+      pixels=np.empty(len(newim.pixels),dtype=np.float32)
+      newim.pixels.foreach_get(pixels)
+      pixels[0::4]*=.80
+      pixels[1::4]*=.79
+      pixels[2::4]*=.75
+      newim.pixels.foreach_set(pixels)
+      newim.pack()
+      aged_texture_cache[srcim.name]=newim
+     tex.image=aged_texture_cache[srcim.name]
+    if not sources:
+     col=inp.default_value;inp.default_value=(col[0]*.80,col[1]*.79,col[2]*.75,col[3])
+  aged_material_cache[m.name]=t
+  return t
+ for obj in created+reused:
+  for idx,m in enumerate(list(obj.data.materials)):
+   if m:obj.data.materials[idx]=aged_material(m)
 dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('coherent_upper_lower_connected_curtain_ward_A2' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('medieval_connected_curtain_ward_weathered_LOD_A3' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
- 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,
+ 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,
  'visual_pass':False,'mobile_device_pass':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_GLOBAL_COMPOSITION_PROOF',json.dumps(proof))
