@@ -51,9 +51,9 @@ prompt=("ELDORIA / ZONE ONE / BRECHA: two real images are owner's approved world
 "YOU ARE THE ARTIST: author exactly TWO genuinely different CURVED sculpt_path landform decisions for the actual 'ZoneOne continuous prairie source' mesh. "
 "One is a distinct winding asymmetric BRECHA depression/chasm channel with Z offsets reaching -9..-14m; "
 "the other is an offset companion rising fractured shoulder/rim using Z offsets reaching +7..+12m. "
-("Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, " +
++ ("Three or four artist-chosen knots per sculpt_path, 18..30 meter radii, " +
 "source-verified LOCAL center ranges " + limits_label(knot_limits) + "; [dx,dy]=[0,0]. ")
-"Make visually connected, irregular long curves rather than circular pimples or ruler-straight mountains. "
++ "Make visually connected, irregular long curves rather than circular pimples or ruler-straight mountains. "
 "Land around it remains an open buildable meadow; do not reprofile city or edges. "
 "Place centers >= radius+2m inside the +/-118m protected boundaries and away from city pad. "
 "Paths should each bend noticeably (not all Y equal). Prefer different locations and widths for the chasm floor and its geological flank. "
