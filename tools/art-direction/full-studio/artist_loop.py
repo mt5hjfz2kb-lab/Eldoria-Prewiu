@@ -81,6 +81,28 @@ def executed_action_signature(doc):
                                      ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
+def rejected_plan_family(raw_file):
+    """Identify an invalid Qwen-authored tool, never repair its geometry."""
+    if not pathlib.Path(raw_file).is_file():
+        return None
+    try:
+        d=json.loads(pathlib.Path(raw_file).read_text(encoding="utf-8"))
+        actions=d.get("actions",[])
+        return actions[0].get("op") if isinstance(actions,list) and actions and isinstance(actions[0],dict) else None
+    except (json.JSONDecodeError,UnicodeError,TypeError,AttributeError):
+        return None
+
+
+def track_rejected_strategy(raw_file, counts, blocked, threshold=2):
+    """Two bounded plan rejections of same family require different tool."""
+    family=rejected_plan_family(raw_file)
+    if family:
+        counts[family]=counts.get(family,0)+1
+        if counts[family]>=threshold:
+            blocked.add(family)
+    return family
+
+
 def should_reject_repeated_invisible_plan(document, prior_invisible_signatures):
     """Refuse an already observed no-pixel-change Blender proposal unchanged."""
     if executed_action_signature(document) in (prior_invisible_signatures or set()):
@@ -790,8 +812,10 @@ def main():
     invisible_plan_signatures=set()
     invisible_source_ops=set()
     rejected_invisible_family_count={}
+    rejected_plan_family_counts={}
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
+        doc=None
         for attempt in range(1,args.max_plan_attempts+1):
             try:
                 doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views,prior_invisible_signatures=invisible_plan_signatures,excluded_source_ops=invisible_source_ops)
@@ -804,8 +828,29 @@ def main():
                     json.dumps({"attempt":attempt,"rejection":str(e),
                       "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
                       "no_artistic_values_rewritten":True},indent=2)+"\n",encoding="utf-8")
+                family=track_rejected_strategy(
+                    raw_attempt,rejected_plan_family_counts,invisible_source_ops)
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
-                if attempt==args.max_plan_attempts:raise
+                if family and family in invisible_source_ops:
+                    history+=("\nOWNER CONTRACT V1: "+family+
+                              " failed at least twice; it is now excluded "
+                              "from the future Qwen schema. Choose a "
+                              "DIFFERENT geometric or artistic hypothesis.")
+                if attempt==args.max_plan_attempts:
+                    diagnostic={"cycle":cycle,"status":"PLAN_STRATEGY_EXHAUSTED",
+                        "failure_kind":"FIVE_ORIGINAL_QWEN_PLANS_REJECTED_BEFORE_BLENDER",
+                        "blocked_tool_families":sorted(invisible_source_ops),
+                        "last_rejection":str(e),
+                        "original_source_sha256":frozen_original_sha,
+                        "model_weight_training":False,"art_approved":False}
+                    records.append(diagnostic)
+                    (trial/"five-attempt-strategy-diagnosis.json").write_text(
+                        json.dumps(diagnostic,indent=2)+"\n",encoding="utf-8")
+                    history+=("\nFIVE invalid plan attempts; do not repeat "
+                              "this artistic/geometry hypothesis. Move to "
+                              "the next distinct safe tool family if available.")
+        if doc is None:
+            continue
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
         try:
