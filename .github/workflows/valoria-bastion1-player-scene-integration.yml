@@ -17,7 +17,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   assemble-and-capture:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    # Owner pause: allow integration of technical repairs but do not consume Windows runner.
+    # Remove the false guard only after explicit owner authorization to resume production.
+    if: ${{ false && vars.UNITY_RUNNER_READY == 'true' }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
     steps:
@@ -291,7 +293,9 @@ jobs:
             $land=Get-Content ([System.IO.Path]::ChangeExtension($sculpted,'.proof.json')) -Raw | ConvertFrom-Json
             $preSha=(Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
             if($land.original_source_sha256 -ne $preSha -or $land.terrain_vertices_sculpted -lt 350 -or
-               $land.max_terrain_delta_m -lt .25 -or $land.max_terrain_delta_m -gt .65 -or
+               $land.max_terrain_delta_m -lt .25 -or # The source Blender tool clamps native soil displacement at 1.28 m (A19 geological banks).
+               # 1.30 m includes bounded float tolerance; gameplay/road/plots still strictly protected.
+               $land.max_terrain_delta_m -gt 1.30 -or
                $land.protected_road_and_future_parcels_max_delta_m -gt .0005 -or
                $land.soil_texture_px[0] -lt 512 -or $land.soil_albedo_mean_rgb_linear[0] -lt .22 -or
                $land.soil_albedo_mean_rgb_linear[1] -lt .23 -or

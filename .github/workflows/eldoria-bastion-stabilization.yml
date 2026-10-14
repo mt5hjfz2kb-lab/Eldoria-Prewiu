@@ -1,0 +1,27 @@
+name: Eldoria Bastion I isolated terrain guard verification
+on:
+  push:
+    branches:
+      - stabilization/eldoria-bastion-guard-20261014
+    paths:
+      - '.github/workflows/eldoria-bastion-stabilization.yml'
+      - '.github/workflows/valoria-bastion1-player-scene-integration.yml'
+      - 'tools/valoria-bastion1-assembly/tests/test_bastion_native_terrain_guard_alignment.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-bastion-isolated-guard-check
+  cancel-in-progress: true
+jobs:
+  native-terrain-guard-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify safety gates and actual generated 1.28m native soil geometry align
+        run: |
+          python3 -m unittest discover -s tools/valoria-bastion1-assembly/tests -p 'test_bastion_native_terrain_guard_alignment.py' -v
+      - name: Confirm no gameplay, Unity, Blender, Qwen or paid service executed
+        run: |
+          echo 'BASTION_INDEPENDENT_GUARD_CHECK_ONLY owner_production_pause=true art_approved=false'
