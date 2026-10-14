@@ -32,7 +32,7 @@ def sat(a):return np.clip(a,0,1)
 def ease(a):
  t=sat(a);return t*t*(3-2*t)
 def pad(x,y,cx,cy,wx,wy):
- return ease((np.abs(x-cx)-wx)/2.0)*ease((np.abs(y-cy)-wy)/2.0)
+ return (1-ease((np.abs(x-cx)-wx)/2.0))*(1-ease((np.abs(y-cy)-wy)/2.0))
 def safe_weight(x,y):
  # Real 14m central road + 1m feather safety, AND full 10x10m future lots.
  # No terrain Z movement at either real model footprint or central stair.
