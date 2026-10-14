@@ -151,13 +151,16 @@ def run_variant_A():
   safe(name+' continuous curtain',x,-3.0,1.44,9.8)
   clone_group(name+' original authoured crenellated lower flank',
    wallkit,x,-3.0,(9.8,1.44,2.35),rotate=90)
-  # Strong upper wall plane visibly follows the slope beside the staircase.
-  # Ground height around (+/-17,y12) is 2.5m, rising to 3.44m at y16.
-  xupper=side*16.7
-  safe(name+' upper transition',xupper,11.82,11.3,1.35)
-  clone_group(name+' existing fortification masonry shoulder',
-   wallkit,xupper,11.82,(11.3,1.35,2.00),
-   base_z=ground(xupper,11.82)-.64)
+  # Qwen real-image critique 38551799312: the long PALE MASONRY RIBBONS
+  # seen in native Unity are art-rejected, because they float as 2D strips.
+  # Replace that candidate-only construction (never the original citadel)
+  # with a continuous geological embankment of ORIGINAL authored cliff rock.
+  # The original terrain sculpt following this module embeds its foundation.
+  for n,absx in enumerate((10.35,13.8,17.25,20.70)):
+   rockx=side*absx
+   safe(name+' Qwen real upper slope rock',rockx,10.6,3.65,3.3)
+   clone_group(name+' real native geological tier '+str(n),rockkit,
+     rockx,10.6,(3.65,3.3,1.65),base_z=ground(rockx,9.5)-.35)
   # A second strip on the side boundary rises toward that shoulder. Several
   # individual foundations express the slope, never a perfectly flat slab.
   for yy in (-10.5,-7.3,3.0,8.7):
@@ -289,7 +292,7 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('medieval_connected_curtain_ward_weathered_LOD_A3' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('Qwen_native_geological_upper_bank_no_floating_wall_ribbons_A7' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
