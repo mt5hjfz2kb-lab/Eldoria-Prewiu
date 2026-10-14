@@ -128,10 +128,35 @@ def main():
     image=args.out/"source-preview-blender.png"
     bpy.context.scene.render.filepath=str(image.resolve())
     bpy.ops.render.render(write_still=True)
+    # Supplemental WORLD-coordinate orthographic references for model vision.
+    # Render only in this disposable Blender process; NO art, source, or Unity
+    # scene is changed. These are measurements, not procedural model geometry.
+    low=[min(x["world_bounds_min_m"][i] for x in inventory) for i in range(3)]
+    high=[max(x["world_bounds_max_m"][i] for x in inventory) for i in range(3)]
+    center=[(low[i]+high[i])/2 for i in range(3)]
+    span=[max(.1,high[i]-low[i]) for i in range(3)]
+    render_setup({"engine":"CYCLES","samples":6,"width":640,"height":480})
+    views={}
+    for label,eye,scale in (
+        ("top",[center[0]+.005,center[1]-.005,center[2]+8],
+          max(span[0],span[1])+1.5),
+        ("side",[center[0]+8,center[1],center[2]+1.7],
+          max(span[1],span[2])+1.5)):
+        camera_override({"location":eye,"target":center,
+                         "ortho_scale":scale,"projection":"ORTHO"})
+        frame=args.out/("source-"+label+"-blender.png")
+        bpy.context.scene.render.filepath=str(frame.resolve())
+        bpy.ops.render.render(write_still=True)
+        views[label]={"image":frame.name,"sha256":digest(frame),
+                      "camera_world_xyz":eye,
+                      "target_world_xyz":center,
+                      "source_world_up_axis":"+Z"}
     if digest(args.source)!=source_hash:raise RuntimeError("Original source was modified")
     proof={"schema_version":1,"source_sha256":source_hash,
            "source_unchanged":True,"image_kind":"REAL_BLENDER_NOT_UNITY",
-           "source_preview_sha256":digest(image),"asset_count":len(inventory),
+           "source_preview_sha256":digest(image),
+           "spatial_reference_views":views,
+           "asset_count":len(inventory),
            "objects":inventory,"art_approved":False}
     (args.out/"source-inspection.json").write_text(json.dumps(proof,indent=2)+"\n")
     print("ELDORIA_FULL_STUDIO_REAL_SOURCE_INSPECTED",len(inventory),source_hash)
