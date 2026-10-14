@@ -1,0 +1,51 @@
+{
+  "schema": "eldoria-bastion1-authentic-qwen-vision-decision-v2",
+  "date": "2026-10-14",
+  "model": "qwen3-vl:4b-instruct",
+  "cost_eur": 0,
+  "origin_unity_run": 38538248391,
+  "art_director_run": 38551799312,
+  "art_director_artifact": 11887282135,
+  "original_image_type": "genuine Unity 6000.3.23f1 player camera screenshot, Qwen received candidate_A6 JPEG resized CPU-only",
+  "separate_mobile_capture": "780x520 native Unity",
+  "ai_authored_decisions": [
+    {
+      "source": "artist-1-raw.txt",
+      "raw_sha256": "616c3bdc1b4116e9d8e0794b8c7289451810ef698159ba70b61ef9fa54ec7ad3",
+      "evidence": "Courtyard lacks terracing; rejected pale strips need stone-sloped tiers around stair and cliff base. Replace floating platforms with native-rock slope; preserve route and future lots.",
+      "execution": "A7 removes both camera-rejected upper wall-kit ribbons from global composition and replaces them with original cliff_rocks modules anchored to true terrain; retains original protected gate, staircase, rock and wall assets."
+    },
+    {
+      "source": "artist-2-raw.txt",
+      "raw_sha256": "5044af5d90dc989035a09acfe3939dbaa1c920f4972d74aa19a4cf7d7b9894d6",
+      "evidence": "Lower courtyard lacks dirt erosion/ground gradation; use original textured veined earth and graded terrain, preserve shadows and rock edges. Claims of visual cohesion must await Unity A/B.",
+      "execution": "A7 recolors ONLY the existing meadow's original photo detail in world-space broad worn-soil zones and keeps geometric ground sculpt within 0.41m with exact road/plots mask."
+    }
+  ],
+  "technical_translation": [
+    {
+      "file": "tools/valoria-bastion1-assembly/compose_bastion_global_composition.py",
+      "role": "deterministic Blender assembly; AI did not model rock vertices"
+    },
+    {
+      "file": "tools/valoria-bastion1-assembly/sculpt_bastion_native_terrain.py",
+      "role": "deterministic terrain geometry, original stone material reuse and 1024px baked phototexture; AI authored critique, not texture pixels"
+    },
+    {
+      "file": ".github/workflows/valoria-bastion1-player-scene-integration.yml",
+      "role": "same-camera native Unity 1440x1000 and 780x520 captures, immutable before and isolated candidate evidence"
+    }
+  ],
+  "preserved": {
+    "main_branch_modified": false,
+    "other_workstreams_modified": false,
+    "source_assets_immutable": true,
+    "road_clearance": "x=-7..7 unchanged, +2m buffer for new geometry",
+    "future_build_parcels": "10x10m centered at (-16,3),(16,3), no new geometry overlapping",
+    "paid_services": false
+  },
+  "visual_status": "UNASSESSED_NEW_A7_PENDING_GENUINE_NATIVE_UNITY",
+  "previous_art_gate": "REJECT A6 screenshot from 38538248391: dominant dark lawn, floating pale stone ribbons and uninhabited empty yard; technical run success was not visual approval",
+  "active_workflow": "valoria-bastion1-player-scene-integration.yml",
+  "candidate_head": "052f828708df33e1fefda752b603d070abf745f7"
+}
