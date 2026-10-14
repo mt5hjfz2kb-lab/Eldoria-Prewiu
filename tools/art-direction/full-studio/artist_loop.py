@@ -159,7 +159,8 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
     return base+(
         "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
-        "For sculpt, pick your own center within brush radius of a real local_extrema local_position_m, or use sculpt_anchor. "
+        "For sculpt, pick your OWN center within brush radius of any real local_extrema/vertex_landmarks local_position_m, or use sculpt_anchor. "
+        "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal; NEVER copy vertex_index to face ID. "
         "Model decisions are NEVER automatically clamped, moved or fixed; bad original choices are rejected before Blender. "
         "FULL PROFESSIONAL ARTIST MODE on verified source: choose which REAL Blender "
         "tools to use based on the observed visual defect, NOT a fixed primitive recipe. "
@@ -397,6 +398,8 @@ def main():
                           "local_bounds_min_m":x["local_bounds_min_m"],
                           "local_bounds_max_m":x["local_bounds_max_m"],
                           "local_extrema":x["local_extrema"],
+                          "vertex_landmarks":x.get("vertex_landmarks",[]),
+                          "face_landmarks":x.get("face_landmarks",[]),
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
                          for x in actual["objects"][:80]]
         history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
@@ -476,6 +479,7 @@ def main():
                 raise RuntimeError("Reinspection changed candidate source")
             verified_objects=[{k:x[k] for k in ("name","vertices","faces","local_extrema",
                                                 "local_bounds_min_m","local_bounds_max_m",
+                                                "vertex_landmarks","face_landmarks",
                                                 "materials","uv_layers")}
                               for x in inspected_again["objects"][:80]]
             known_objects=[x["name"] for x in verified_objects]

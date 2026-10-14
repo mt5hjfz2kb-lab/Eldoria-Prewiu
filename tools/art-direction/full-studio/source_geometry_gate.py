@@ -37,6 +37,7 @@ def verify_source_plan(document,inventory):
             structural=True
             if actual:
                 points=[p.get("local_position_m") for p in actual.get("local_extrema",{}).values()]
+                points += [p.get("local_position_m") for p in actual.get("vertex_landmarks",[])]
                 points=[p for p in points if isinstance(p,list) and len(p)==3]
                 center=params.get("center",[])
                 radius=params.get("radius",0)

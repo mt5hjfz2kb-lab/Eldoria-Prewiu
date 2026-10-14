@@ -47,8 +47,36 @@ def main():
                     vertex=selector(verts,key=lambda v:float(v.co[axis]))
                     local_extrema[letter+"_"+kind]={"vertex_index":vertex.index,
                       "local_position_m":[round(float(v),5) for v in vertex.co]}
+        # Neutral read-only topology sampling: source facts, NOT art instructions.
+        # Spread landmarks across measured coordinates so Qwen can pick brushes
+        # and face IDs without guessing numbers from a photograph.
+        sampled={}
+        for axis in range(3):
+            ordered=sorted(verts,key=lambda v:float(v.co[axis]))
+            for frac in (0.12,0.32,0.52,0.72,0.92):
+                if ordered:
+                    v=ordered[round((len(ordered)-1)*frac)]
+                    sampled[v.index]={"vertex_index":v.index,
+                        "local_position_m":[round(float(t),5) for t in v.co]}
+        vertex_landmarks=list(sampled.values())
+        polys=o.data.polygons
+        chosen={}
+        if len(polys):
+            for axis in range(3):
+                ordered=sorted(polys,key=lambda f:float(f.center[axis]))
+                for frac in (0.1,0.5,0.9):
+                    p=ordered[round((len(ordered)-1)*frac)]
+                    chosen[p.index]=p
+            for face in sorted(polys,key=lambda f:float(f.area),reverse=True)[:5]:
+                chosen[face.index]=face
+        face_landmarks=[{"face_index":p.index,
+            "local_center_m":[round(float(t),5) for t in p.center],
+            "local_normal":[round(float(t),4) for t in p.normal]}
+            for p in chosen.values()]
         inventory.append({
             "local_extrema":local_extrema,
+            "vertex_landmarks":vertex_landmarks,
+            "face_landmarks":face_landmarks,
             "name":o.name,"vertices":len(verts),"faces":len(o.data.polygons),
             "local_bounds_min_m":lo,"local_bounds_max_m":hi,
             "world_location_m":[round(float(v),5) for v in o.location],
