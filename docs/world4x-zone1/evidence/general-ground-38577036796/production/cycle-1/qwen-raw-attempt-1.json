@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOneHills_v1",
+  "observed_defect": "Flat prairie lacks visible rolling terrain, breaks strategic camera perspective",
+  "design_intent": "Create asymmetric, continuous hills and valleys to enhance visual depth and strategic terrain awareness without altering city borders or materials",
+  "asset_decision": "REUSE",
+  "expected_visual_difference": "Visible rolling hills and valleys from strategic camera angle, preserving city and border integrity",
+  "mobile_risks": "None, all edits are within terrain mesh and do not introduce new geometry or material complexity",
+  "actions": [
+    {
+      "id": "sculpt_hill_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad, asymmetric hill centered at [x: -30, y: 60, z: 0] with radius 30m, elevating terrain to 2.5m, to introduce a visible hill in the strategic view",
+      "params": {
+        "center": [-30, 60, 0],
+        "delta": [0, 0, 2.5],
+        "radius": 30
+      }
+    },
+    {
+      "id": "sculpt_valley_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a complementary valley at [x: 30, y: 50, z: 0] with radius 25m, lowering terrain to -1.5m, to contrast with hill and enhance depth",
+      "params": {
+        "center": [30, 50, 0],
+        "delta": [0, 0, -1.5],
+        "radius": 25
+      }
+    },
+    {
+      "id": "bevel_edge_01",
+      "op": "bevel",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Smooth transition between hill and valley edges to prevent sharp discontinuities and maintain visual continuity",
+      "params": {
+        "edges": [12345, 12346, 12347], "><!-- simulated edge indices for demonstration; actual indices must be verified in source mesh --></param> ":"" }
+    }
+  ]
+}

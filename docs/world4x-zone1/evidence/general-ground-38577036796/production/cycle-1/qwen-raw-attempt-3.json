@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_Hills_2024_01",
+  "observed_defect": "Flat prairie lacks strategic visual relief for tactical decision-making",
+  "design_intent": "Create broad, asymmetric rolling hills and valleys to enhance terrain legibility without altering city borders or introducing new props",
+  "asset_decision": "REUSE",
+  "expected_visual_difference": "Visible elevation changes from 0.0m to +6.0m and -3.0m to establish clear strategic zones",
+  "mobile_risks": "No new mesh or material creation; all edits are within existing terrain mesh",
+  "actions": [
+    {
+      "id": "sculpt_hill_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a large, asymmetric hill centered at [x=40,y=60,z=0] with 40m radius and +6.0m height to establish a clear visual landmark and strategic high ground",
+      "params": {
+        "center": [40, 60, 0],
+        "delta": [0, 0, 6.0],
+        "radius": 40
+      }
+    },
+    {
+      "id": "sculpt_valley_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad, low-lying valley centered at [x=-60,y=50,z=0] with 30m radius and -3.0m depth to create a natural tactical low point and enhance terrain variety",
+      "params": {
+        "center": [-60, 50, 0],
+        "delta": [0, 0, -3.0],
+        "radius": 30
+      }
+    },
+    {
+      "id": "subdivide_valley",
+      "op": "subdivide",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Subdivide the valley mesh to ensure smooth transitions and prevent visual artifacts during mobile rendering, maintaining continuity with existing city borders",
+      "params": {
+        "faces": [1200, 1400, 1600, 1800],
+        "cuts": 2
+      }
+    },
+    {
+      "id": "bevel_edge_01",
+      "op": "bevel",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Apply a subtle bevel to the hill's edge to smooth the transition and prevent harsh visual breaks, preserving the strategic silhouette",
+      "params": {
+        "edges": [1000, 1200, 1400],
+        "width": 0.2,
+        "segments": 3
+      }
+    }
+  ]
+}

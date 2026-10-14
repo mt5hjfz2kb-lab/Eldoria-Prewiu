@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "asset_id": "ZoneOne_Hills_2024_01",
+  "authored_asset_decision": "REUSE",
+  "source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "artist_plan_sha256": "aa4a7fa38d95193af8ee4e238f40de9b56be2f429787ac020a556ca987e7b89f",
+  "component_count": 1,
+  "components": [
+    {
+      "name": "ZoneOne continuous prairie source",
+      "vertices": 15980,
+      "faces": 28832,
+      "dimensions_m": [
+        240.0,
+        240.0,
+        13.0518
+      ],
+      "pivot_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "materials": [
+        "ZoneOne textured prairie and integrated scar"
+      ],
+      "geometry_sha256": "81777eb594e50d220e05d561503d6bd1ab1bb946e66333eb80a6cbb61a8bf4ee",
+      "derived_from_source_object": true,
+      "import_source_sha256": null,
+      "import_source_license": null,
+      "import_source_relative_path": null
+    }
+  ],
+  "new_components": [],
+  "source_original_meshes_preserved_in_output": [
+    "ZoneOne continuous prairie source"
+  ],
+  "source_file_unchanged": true,
+  "license_status": "SOURCE_LICENSE_VERIFICATION_REQUIRED",
+  "approved_source_inventory_sha256": null,
+  "textures_embedded_in_glb_expected": true,
+  "mobile_certified": false,
+  "unity_art_approved": false
+}

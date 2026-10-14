@@ -1,0 +1,29 @@
+{
+  "state": "SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
+  "ai_authored_action_plans": 1,
+  "source_authority_unchanged": true,
+  "frozen_source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "blender_real_execution": true,
+  "art_approved": false,
+  "unity_art_verified": false,
+  "physical_mobile_validated": false,
+  "model": "qwen3-vl:4b-instruct",
+  "system_profile_sha256": "f7ce7d9379f694ae8ae817c0b0235dbdedf353c9aa2de20bab95224d83906f29",
+  "journal_sha256": "b937f406f2a6c05ee3a64bed94cfeb09a5c3877dd3ab1468b86951293f6c4ce0",
+  "cycles": [
+    {
+      "cycle": 1,
+      "status": "ART_REVIEW_REQUIRED",
+      "plan_sha256": "aa4a7fa38d95193af8ee4e238f40de9b56be2f429787ac020a556ca987e7b89f",
+      "output_blend_sha256": "50935ca4d27a76a5eeabc8924f97080fab1a7510e93d6f3171a0f72cc5d3446b",
+      "output_glb_sha256": "73cad136f9fe2d68d429e7f3c3b018522aa240885b21b9295a84b9a741b2a870",
+      "matched_review_camera": true,
+      "critique": {
+        "critique": "No defects identified. The after asset is a valid, coherent render with no visible silhouette or material issues compared to the before asset. The grass texture, lighting, and terrain geometry are consistent with the target render.",
+        "geometry_next": "N/A",
+        "material_next": "N/A",
+        "clearly_failed": false
+      }
+    }
+  ]
+}

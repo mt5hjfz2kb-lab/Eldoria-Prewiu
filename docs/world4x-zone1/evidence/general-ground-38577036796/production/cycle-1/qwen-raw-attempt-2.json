@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_Hills_v1",
+  "observed_defect": "Flat prairie lacks visible rolling terrain from strategic camera",
+  "design_intent": "Create asymmetric, continuous rolling hills and valleys to enhance strategic visibility and aesthetic depth without altering city borders or introducing new props",
+  "asset_decision": "MODIFY", "expected_visual_difference": "Visible, non-repeating, broad asymmetric landform changes from strategic camera perspective",
+  "mobile_risks": "None — geometry remains within 240m x 240m bounds, no new mesh objects or material changes",
+  "actions": [
+    {
+      "id": "sculpt_hill_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad, asymmetric hill centered at [x=30,y=50,z=1.5] with radius 35m, using positive elevation to simulate a gentle rise, preserving city border and me",
+      "params": {
+        "center": [30, 50, 1.5],
+        "delta": [0, 0, 2.5],
+        "radius": 35
+      }
+    },
+    {
+      "id": "sculpt_valley_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a complementary valley at [x=-50,y=60,z=-1.5] with radius 30m, using negative elevation to simulate a gentle depression, maintaining continuity with hill",
+      "params": {
+        "center": [-50, 60, -1.5],
+        "delta": [0, 0, -1.5],
+        "radius": 30
+      }
+    },
+    {
+      "id": "subdivide_hill_01",
+      "op": "subdivide",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Add 2 subdivisions to the hill’s surface to improve mesh density and terrain continuity under strategic camera, preserving existing UVs and materials",
+      "params": {
+        "faces": [2000, 2001, 2002, 2003],
+        "cuts": 2
+      }
+    },
+    {
+      "id": "bevel_edge_01",
+      "op": "bevel",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Apply a 0.1m bevel to the hill’s base edge to soften terrain contact with city border, avoiding sharp geometry that could break visual continuity",
+      "params": {
+        "edges": [4000, 4001, 4002],
+        "width": 0.1,
+        "segments": 3
+      }
+    }
+  ]
+}
