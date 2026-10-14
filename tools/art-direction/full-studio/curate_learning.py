@@ -64,7 +64,8 @@ def curate_case(pending_path: Path, review_path: Path, casebook_path: Path) -> d
     trial_root = pending_path.parent
     if "raw_model_response" not in evidence:
         raise ValueError("Cannot curate provenance without actual unmodified Qwen output")
-    if (pending.get("technical_screen_gate")=="SCREENSPACE_REJECTED"
+    if (pending.get("technical_screen_gate") in
+            ("SCREENSPACE_REJECTED", "PROTECTED_ACCESS_OCCLUSION_REJECTED")
             and review["result"]!="VISUAL_REJECTED"):
         raise ValueError("Failed screen impact cannot be promoted as a source pass")
     for kind, rel in mapped.items():
@@ -74,6 +75,11 @@ def curate_case(pending_path: Path, review_path: Path, casebook_path: Path) -> d
         recorded = evidence.get(kind, {})
         if not path.is_file() or sha_bytes(path.read_bytes()) != recorded.get("sha256"):
             raise ValueError("Source evidence missing or changed: "+kind)
+    if pending.get("technical_screen_gate")=="PROTECTED_ACCESS_OCCLUSION_REJECTED":
+        original=trial_root/"protected-camera-regions.json"
+        if (not original.is_file() or
+                sha_bytes(original.read_bytes()) != evidence.get("protected_camera_regions",{}).get("sha256")):
+            raise ValueError("Missing genuine blocked player access evidence")
     for key in ("before_image","after_image"):
         if not (trial_root / mapped[key]).read_bytes().startswith(IMAGE_SIG):
             raise ValueError("Original A/B PNG evidence required")
