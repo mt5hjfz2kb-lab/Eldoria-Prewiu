@@ -156,7 +156,34 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"THIS STAGE ONLY AUTHORS REAL PBR MATERIALS on named existing Blender meshes. For EACH action op=material; choose exact source object name, params EXACTLY {base_color:[r,g,b,a],roughness:0.45..1,metallic:0..0.35}. Use plausible medieval limestone, terracotta, oak and aged iron according to each component; different real objects must receive coherent but distinct artist-picked colours. Do not use transform or invent object IDs."
     if phase=="detail":
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
-    return base+"You may choose Qwen-authored primitive, mesh, duplicate, transform, sculpt, extrude, inset, bevel, UV, modifier, boolean, material, shader_graph and geometry_nodes and verified import_asset operations. Ensure type-specific params conform to the Blender toolbox. Focus on a meaningful geometry and materials improvement, not an invisible technical change."
+    return base+(
+        "FULL PROFESSIONAL ARTIST MODE on verified source: choose which REAL Blender "
+        "tools to use based on the observed visual defect, NOT a fixed primitive recipe. "
+        "Every target must be an inspected existing mesh or an object created by an "
+        "earlier action in this plan. Tools may be combined in sequence. "
+        "Exact params contract examples (numbers below only illustrate TYPES, "
+        "they are NOT proposed artistic values): "
+        "material={base_color:[r,g,b,a],roughness:0..1,metallic:0..1}; "
+        "sculpt={center:[x,y,z],delta:[dx,dy,dz],radius:positive}; "
+        "bevel={width:positive,segments:1..4,apply:true}; "
+        "uv={method:smart|cube|sphere|cylinder}; "
+        "extrude={faces:[verified_face_indices],offset:[dx,dy,dz]}; "
+        "inset={faces:[verified_face_indices],thickness:positive}; "
+        "modifier={kind:BEVEL|SUBSURF|SOLIDIFY|DECIMATE|REMESH|MIRROR|ARRAY|"
+        "WEIGHTED_NORMAL|TRIANGULATE|SIMPLE_DEFORM|DISPLACE,options:{},apply:false}; "
+        "native_operator={operator:object.shade_smooth|object.shade_flat|"
+        "mesh.poke|mesh.subdivide|mesh.bevel|uv.smart_project,kwargs:{},selection:ALL}; "
+        "shader_graph and geometry_nodes each require nodes:[{id,type,inputs:{}}] "
+        "and links:[{from,to,output,input}] with a corresponding Output node; "
+        "choose actual supported Blender node types, never Python snippets. "
+        "Use mesh with authored vertices/faces, boolean with operand/operation, "
+        "duplicate, texture and verified import_asset when useful. "
+        "Select the operation mix that addresses SILHOUETTE, structure, depth, "
+        "PBR and meaningful camera-visible detail; do not claim unsupported "
+        "rigging/animation or substitute an unrelated building. "
+        "If this is the second cycle after an empty scene, the existing primitives "
+        "were ONLY a blockout: improve actual forms/materials with genuine art decisions."
+    )
 
 def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=None,transport='direct',mcp_addon=None,mcp_sha256=None):
     cmd=[executable,"-b","--python-exit-code","1","--python",
@@ -277,6 +304,19 @@ def critique(args,reference,before,after,role):
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
+def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation):
+    """One visible empty-scene blockout does not equal completed artistic authoring.
+
+    Existing asset work may stop when Qwen judges it adequate, subject to the
+    separate independent review gate. New assets with >1 cycle MUST receive
+    at least one source-grounded finishing pass, irrespective of Qwen self praise.
+    """
+    return cycle_number < max_cycles and (
+        evaluation.get("clearly_failed", True) or
+        (started_empty and cycle_number == 1)
+    )
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--brief",required=True)
@@ -324,6 +364,7 @@ def main():
     if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
     current=args.current_frame
     source=args.source
+    started_empty=args.source is None
     original_source_sha=sha(args.source) if args.source else None
     history=""
     known_objects=[]
@@ -408,7 +449,9 @@ def main():
         history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
         known_objects=[o["name"] for o in catalog["components"][:80]]
-        if not evaluation.get("clearly_failed",True):break
+        if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation):break
+        if started_empty and cycle==1:
+            history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
     final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
            "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
