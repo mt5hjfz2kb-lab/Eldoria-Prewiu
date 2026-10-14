@@ -95,7 +95,11 @@ class TypedArtistTests(unittest.TestCase):
    for choice in slot["oneOf"]:
     self.assertEqual(choice["properties"]["target"]["pattern"],NEW_COMPONENT_PATTERN)
   ordinary=schema_for_plan(4,True,"full","architecture",[src[0]["name"]],src,True,False)
-  self.assertEqual(ordinary["properties"]["actions"]["prefixItems"][1]["oneOf"][0]["properties"]["target"]["enum"],[src[0]["name"]])
+  stages=ordinary["properties"]["actions"]["prefixItems"]
+  self.assertEqual(len(stages),1,"Original dense GLB has one safe source edit before later finishing")
+  inherited=next(v for v in stages[0]["oneOf"]
+                 if v["properties"]["op"]["const"]=="sculpt_anchor")
+  self.assertEqual(inherited["properties"]["target"]["enum"],[src[0]["name"]])
  def test_each_cycle_distinct_model_authored_names_and_adaptive_safe_operator(self):
   src=[{"name":"Tower","faces":5340,"vertices":10000}]
   first=schema_for_plan(4,True,"full","architecture",["Tower"],src,True,True,1)
