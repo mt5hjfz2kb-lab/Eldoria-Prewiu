@@ -172,6 +172,28 @@
         "unity_verified": false,
         "model_weights_updated": false
       }
+    },
+    {
+      "id": "qwen8b-exact-zero-pixel-replay-38647158230",
+      "run_id": 38647158230,
+      "evidence_artifact_id": 11932442748,
+      "raw_response_sha256": "4c8d24d292e65b01be2652d228f9f451d259359490d5501e885d3b429bc9c81a",
+      "result": "THREE_ACTUAL_BLENDER_CYCLES_ZERO_PIXELS",
+      "observed": "Qwen3-VL 8B edited the genuine old tower three times, always extruding inherited FACE 2326 by WORLD +Z 0.15m with no materials or UV replacement. The camera-matched Blender pixel difference was exactly 0 of 691,200 on each cycle. Source material preservation succeeded, but no visible artistic improvement occurred.",
+      "safe_lesson": "After an authentic Blender A/B shows ZERO changed pixels for a face extrusion, never repeat the exact face and offset or default to the same Blender operation three times. Change the artistic tactic to a different source-grounded face/edge or compatible tool, and demand a visible result with original timber/door/stair textures intact.",
+      "review_provenance": {
+        "trial": "8b-professional/cycle-1",
+        "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "real_blender_cycles": 3,
+        "changed_pixels_each": [
+          0,
+          0,
+          0
+        ],
+        "artifact_id": 11932442748,
+        "model_weights_updated": false,
+        "art_approved": false
+      }
     }
   ],
   "training": {
