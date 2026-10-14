@@ -288,7 +288,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
           "the FIRST operation must be ONE geometric operation chosen by YOU "
           + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). " if args.source_build_phase
              else "(sculpt, sculpt_anchor, extrude, inset, selected-edge bevel, NEW primitive or authored mesh). ")
-          "The SECOND is YOUR material or UV operation. "
+          + "The SECOND is YOUR material or UV operation. "
           "An optional THIRD is material, UV or a safe non-global modifier. "
           "This ordering prevents use of stale mesh topology. "
           "All geometry and artistic values are chosen by YOU, never a script.")
