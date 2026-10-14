@@ -20,7 +20,7 @@ jobs:
       - name: Install free independent Blender source workshop
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil libegl1 libgl1-mesa-dri libgles2 xvfb
       - name: Derive ground-only source and genuine baseline
         run: |
           mkdir -p /tmp/zoneone-ground
@@ -48,7 +48,7 @@ jobs:
         run: |
           SOURCE_SHA=$(sha256sum /tmp/zoneone-ground/source/derived-source.blend | cut -d' ' -f1)
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-ground/source/derived-source.blend --plan /tmp/zoneone-ground/artist-plan.json --out /tmp/zoneone-ground/edited --transport direct --expected-source-sha256 "$SOURCE_SHA"
-          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/compare_ground.py -- --cycle /tmp/zoneone-ground
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a blender -b --python-exit-code 1 --python tools/world4x-zone1/production/compare_ground.py -- --work-dir /tmp/zoneone-ground
       - name: Persist source cycle without claiming artistic approval
         if: always()
         run: |
