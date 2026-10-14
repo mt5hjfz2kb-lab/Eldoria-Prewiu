@@ -135,28 +135,38 @@ source_rgba=raw.reshape((sh,sw,4))
 sample_u=np.mod(np.floor((X*.07+.006*medium)*sw).astype(np.int32),sw)
 sample_v=np.mod(np.floor((Y*.07+np.where(Y>12,.041,0)+.006*broad)*sh).astype(np.int32),sh)
 pix=source_rgba[sample_v,sample_u,:3].copy()
-# Warm genuine original grass/stone into organically worn-earth patches, while
-# protecting its detailed embedded stone pattern. Never replace with flat RGB.
-rgb_earthen=np.stack((
-  sat(pix[:,:,0]*1.22+.022*medium),
-  sat(pix[:,:,1]*.81+.007*medium),
-  sat(pix[:,:,2]*1.20+.011*fine)),axis=2)
-mix=sat(earth*.82)
-pix=pix*(1-mix[:,:,None])+rgb_earthen*mix[:,:,None]
-# Real A5 Unity screenshot exposed the original 0.35/0.55/0.25 GLTF
-# baseColorFactor was LOST when replacing the Principled texture node.
-# Re-bake the exact original authored factor into the new texture pixels;
-# the new glTF material exports an implicit [1,1,1,1] baseColorFactor.
-# A6 restores the original lime-moss palette instead of bright orange earth.
-pix*=np.array([.35,.55,.25],dtype=np.float32)[None,None,:]
-pix=np.clip(pix,.02,.99)
+# Qwen CAMERA feedback: the lower courtyard is an inhabited defensive ward,
+# not an endlessly uniform lawn. The new broad irregular patch is a true
+# baked world-space feature of the EXISTING original ground (no overlaid decal).
+earth=np.maximum(earth,ground_patch(0,-4.15,21.2,13.4)*.48)
+earth=np.maximum(earth,ground_patch(0,18.1,13.0,6.4)*.22)
+# SOURCE-VALIDATED PALETTE REBALANCE A7. The A6 genuine Unity screenshot
+# confirmed the baked terrain was literally too dark (mean albedo about
+# 41/53/11 RGB) versus the brighter source scene. Respect actual original
+# detailed meadow/stone photo; age into true earth, NOT a gray/black flat tint.
+# SOURCE TEXTURE detail remains in both green meadow and ochre soil.
+photoluma=(pix[:,:,0]*.30+pix[:,:,1]*.53+pix[:,:,2]*.17)
+source_brightness=np.clip(.89+variation*.21+micro*.044,.73,1.18)
+meadow=np.clip(pix*np.array([.75,.91,.94],dtype=np.float32)[None,None,:]
+              *source_brightness[:,:,None],.035,.93)
+soil_light=np.clip(.81+photoluma*.46+medium*.065+fine*.036,.73,1.23)
+soil=np.stack((.425*soil_light,.325*soil_light,.223*soil_light),axis=2)
+# A dense, irregular earth weave beside the road, barracks and rocky footing;
+# never a pasted rectangle, slab/path mesh or overly red noisy carpet.
+mix=sat(earth*.81)
+pix=np.clip(meadow*(1-mix[:,:,None])+soil*mix[:,:,None],.035,.92)
+terrain_albedo_mean=np.mean(pix,axis=(0,1)).tolist()
+if not (.22<=terrain_albedo_mean[0]<=.49 and
+        .23<=terrain_albedo_mean[1]<=.47 and
+        .12<=terrain_albedo_mean[2]<=.32):
+ raise RuntimeError('Art guard: world-soil palette is still too dark or alien: '+str(terrain_albedo_mean))
 colors=np.concatenate((pix,np.ones((res,res,1),dtype=np.float32)),axis=2).astype(np.float32)
-new_image=bpy.data.images.new('Bastion I Qwen native photo-soil with restored PBR tint A6',
+new_image=bpy.data.images.new('Bastion I Qwen source-phototexture graded broad earthen medieval ward A7',
                                 width=res,height=res,alpha=True)
 new_image.pixels.foreach_set(colors.ravel());new_image.pack()
 # Index 0 is original olive-grass material from canonical terrain_finish.py.
 if not original_grass:raise RuntimeError('Original grass material missing')
-grass=original_grass.copy();grass.name='Bastion I PBR-balanced graded photo terrain Qwen spatial A6'
+grass=original_grass.copy();grass.name='Bastion I broad graded organic photo terrain Qwen spatial A7'
 grass.use_nodes=True
 nodes=grass.node_tree.nodes;principled=nodes.get('Principled BSDF')
 if not principled:raise RuntimeError('URP-exportable PBR material missing')
@@ -246,7 +256,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,restored_original_pbr_base_color_factor=[.35,.55,.25],grass_uv_loops=grass_loops,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
