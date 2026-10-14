@@ -1,0 +1,60 @@
+name: Eldoria full-artist general Blender toolbox technical acceptance
+on:
+  push:
+    branches:
+      - art/eldoria-full-blender-artist-studio-20261014
+    paths:
+      - 'tools/art-direction/full-studio/**'
+      - '.github/workflows/eldoria-full-artist-studio.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-blender-toolbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free native Blender workshop
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+      - name: Test strict authoring contracts and syntax
+        run: |
+          python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
+          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py
+          blender --version | head -2
+      - name: Execute twenty-three real independent Blender modelling operations
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
+             --plan tools/art-direction/full-studio/tests/smoke_plan.json \
+             --out /tmp/eldoria-full-artist-smoke --texture-root .
+      - name: Verify real editable mesh and GLB plus matched-camera screenshots
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,struct
+          p=pathlib.Path('/tmp/eldoria-full-artist-smoke')
+          proof=json.loads((p/'execution-proof.json').read_text())
+          assert proof['blender_execution']
+          assert proof['action_count']==23,proof['action_count']
+          assert 30<proof['evaluated_triangles']<220000
+          assert proof['matched_review_camera'], 'A/B camera must remain identical'
+          assert not proof['art_approved'] and not proof['unity_tested']
+          assert all(x['reason'] for x in proof['execution'])
+          assert any(x['geometry_changed'] for x in proof['execution'] if x['op'] in ('primitive','mesh','sculpt','extrude','inset'))
+          assert (p/'artist-asset.blend').read_bytes().startswith(b'BLENDER')
+          data=(p/'artist-asset.glb').read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack('<I',data[4:8])[0]==2
+          assert len(data)==struct.unpack('<I',data[8:12])[0]
+          for name in ('before-blender.png','after-blender.png'):
+              data=(p/name).read_bytes();assert data.startswith(b'\x89PNG\r\n\x1a\n')
+          print('ELDORIA_FULL_ARTIST_BLENDER_TECHNICALLY_PROVEN',proof['action_count'],proof['evaluated_triangles'])
+          PY
+      - name: Upload genuine models and renders, never claim artistic certification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-full-artist-technical
+          path: /tmp/eldoria-full-artist-smoke/
+          if-no-files-found: warn
+          retention-days: 21
