@@ -10,6 +10,8 @@ During this execution, another writer changed the same prototype branch:
 - That run executed TWO genuine Qwen decisions in Blender (`REAL_ARTIST_BLENDER_EXECUTION 2 actions mesh_change True`), persisted output in `eeda30166b375a6cb4ce32e22cfebada710c276f`, artifact `11877388476`. Rendering failed, not geometry/export.
 - `a0d625d6f94ff3302758330f5c7ff7e0f9f7c05d`: the same `compare_ground.py` and source workflow were concurrently changed to Workbench and `--work-dir`; run `38530648411` was active at checkpoint inspection.
 
+Final read-only check: `38530648411` completed SUCCESS and persisted `de9bab5a3b10adf5d5af93bba7d9051d1be0d218`. The actual before/after Workbench PNGs were opened. Both appear almost uniformly grey, without useful material/relief readability. This is NOT an artistic pass or usable Unity evidence. Preserve the genuine edited geometry, but require a properly shaded render with refreshed normals and real Unity validation before judging terrain quality. No new numerical beauty score is assigned.
+
 The prepared update of this execution was NOT forced over the changed HEAD. Primary branch/main/Bastion were not overwritten. This checkpoint branch must not be merged wholesale over those newer advances.
 
 ## Prepared, unexecuted work
