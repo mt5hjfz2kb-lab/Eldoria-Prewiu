@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-14",
+  "stage": "artist_decision_before_Blender_execution",
+  "artist_director": "GPT-6 real-image reading and spatial authoring decision; Blender construction remains explicit deterministic code, not Qwen-sculpted vertices",
+  "source_run": 38577293174,
+  "source_commit": "c7bc43e1bbdfa6d6a96fdf9ef441c6c60a450e8f",
+  "source_frame": "Bastion1MaterialAB/global-A/bastion1-player-initial.png",
+  "observation": "Real 1440x1000 Unity player frame: lower/upper medieval arcades now add silhouette and occupied flank rhythm; broad lower yard still muted and both exposed straight cliff edges read as a pasted plateau. Strengthen geology under surviving masonry, not detached props or central future buildings.",
+  "intervention": "A17 four large native cliff-rock banks that tie both front curtain-wall flanks and both lateral upper retaining returns into the underlying cliff; 2 rock-bank zones per side with irregular original-source stone material; do not create structures on the courtyard or move the player path.",
+  "placement": [
+    {
+      "side": "west",
+      "x": -17.7,
+      "y": -14.85,
+      "dimensions_m": [
+        6.8,
+        6.4,
+        5.2
+      ],
+      "embed_fraction": 0.69
+    },
+    {
+      "side": "east",
+      "x": 17.7,
+      "y": -14.85,
+      "dimensions_m": [
+        6.8,
+        6.4,
+        5.2
+      ],
+      "embed_fraction": 0.69
+    },
+    {
+      "side": "west",
+      "x": -25.8,
+      "y": 8.9,
+      "dimensions_m": [
+        6.1,
+        7.1,
+        6.8
+      ],
+      "embed_fraction": 0.79
+    },
+    {
+      "side": "east",
+      "x": 25.8,
+      "y": 8.9,
+      "dimensions_m": [
+        6.1,
+        7.1,
+        6.8
+      ],
+      "embed_fraction": 0.79
+    }
+  ],
+  "safeguards": [
+    "Do not alter source meshes, Main Gate or stairs",
+    "Keep x between -7 and +7 free",
+    "Keep 10x10m reserved plots centered at (-16,+3),(+16,+3), including margins",
+    "No new gameplay colliders, actors, resources or economy changes",
+    "Use original rockkit family PBR and existing LOD reduction",
+    "A/B native player camera, return to validated A16 if visually worse",
+    "Do not publish or touch main/world4x"
+  ],
+  "gate": "real Unity pixel difference proves only visibility; separate independent camera art assessment and no invented ART PASS"
+}
