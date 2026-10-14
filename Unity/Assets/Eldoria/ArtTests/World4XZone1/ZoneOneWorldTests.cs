@@ -1,3 +1,4 @@
+#if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
 using Eldoria.World4XPrototype;
 
@@ -17,3 +18,4 @@ public class ZoneOneWorldTests
         Assert.AreEqual(256,count);
     }
 }
+#endif

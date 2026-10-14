@@ -1,0 +1,38 @@
+[
+  {
+    "id": "/ZoneOne/continuous_prairie",
+    "type": "sculpt_path",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "The sculpt_path edit will create a vertical relief with a broad asymmetric gully and a weathered crest, using the original knots and radii from the source geometry. The relief will be fully contained within the sector, ensuring the edge is not cut off. The edit will be performed using the existing source geometry, and the resulting mesh will be fully contained within the sector, ensuring the edge is not cut off.",
+    "parameters": {
+      "knots": [
+        {
+          "center": [
+            -50.0,
+            50.0,
+            0.0
+          ],
+          "delta": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "radius": 10.0
+        },
+        {
+          "center": [
+            60.0,
+            50.0,
+            0.0
+          ],
+          "delta": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "radius": 10.0
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "assets": [
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb",
+      "bytes": 18946600,
+      "errors": [],
+      "warnings": [
+        "Primitive missing UV0; verify authored material",
+        "Primitive missing UV0; verify authored material",
+        "Primitive missing UV0; verify authored material"
+      ],
+      "meshes": 13,
+      "primitives": 17,
+      "triangles_estimated": 60497,
+      "materials": 17,
+      "textures": 8,
+      "images": 7,
+      "external_images": [],
+      "has_skins": false,
+      "has_animations": false
+    }
+  ],
+  "structural_pass": true
+}

@@ -1,0 +1,3 @@
+EVIDENCE-BASED ART MEMORY: not model-weight training, not ART APPROVED.
+Pinned approved reference: 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689
+Never use pixel fraction as a beauty score. Require matched Unity evidence and independent art review.

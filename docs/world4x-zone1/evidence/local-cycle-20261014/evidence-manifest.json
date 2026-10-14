@@ -1,0 +1,257 @@
+[
+  {
+    "path": "historical-advice.txt",
+    "bytes": 267,
+    "sha256": "f38c63e9776027ae86da84bdfc82b08564faa8a2c18de5876cccc0718701614f"
+  },
+  {
+    "path": "glb-structural-audit.json",
+    "bytes": 633,
+    "sha256": "f5621a1e616d695eff170675f443aa0bc0ec8dd2fe183a87d35b517042e937c6"
+  },
+  {
+    "path": "plan-rejected-1.json",
+    "bytes": 123,
+    "sha256": "bcf3f892bda854f31cb0612a361ce9446e0cc2b6fef35a59ab048518d6716cb2"
+  },
+  {
+    "path": "blender-artist-only-after.png",
+    "bytes": 1780170,
+    "sha256": "401d3f4ef819070724b5df72391273401ea0460b84a232341c723bd843de40b0"
+  },
+  {
+    "path": "historical-advice.txt.provenance.json",
+    "bytes": 394,
+    "sha256": "67a90933a25aaf82e95d3a129882293eeb101f2afcfb002da6294abc25da6ef1"
+  },
+  {
+    "path": "blender-candidate-local.png",
+    "bytes": 1304710,
+    "sha256": "34938ea0db5471d0fc3ece3da411de30795a1fd82b1150eb2165912de4c91bf9"
+  },
+  {
+    "path": "source-inventory.json",
+    "bytes": 1857,
+    "sha256": "f6656de6ff72fbcea6eaed6d7d079d3c5104017d649042df809d5e5ee837f2d8"
+  },
+  {
+    "path": "independent-final-source-review.json",
+    "bytes": 1192,
+    "sha256": "6ba3ff895ac98cbe2212f0f07ea56a3434f8f1f7a0c761b10602d96cdaa3c982"
+  },
+  {
+    "path": "finishing-execution.json",
+    "bytes": 15331,
+    "sha256": "1a5e63b7bb24933eff54484c2dcca4fdd6564365422f03a73519d36f46ef3e0b"
+  },
+  {
+    "path": "source-scene-budget.json",
+    "bytes": 262,
+    "sha256": "f8bc2d9fdc2f02129aa3f952421844b05431db785562760d0c2041571a30d513"
+  },
+  {
+    "path": "blender-candidate-regional.png",
+    "bytes": 1374458,
+    "sha256": "a052e647ce0d957ab75a35e1ab1bc05b71e2aa6279958d3bd07a6bd4015a82c7"
+  },
+  {
+    "path": "blender-pixel-measurement.json",
+    "bytes": 281,
+    "sha256": "fe218833fbc57c98968f13ad8e106f6deaf9f421a19c7d44b9c546fe78c299ad"
+  },
+  {
+    "path": "artist-inference.json",
+    "bytes": 3389,
+    "sha256": "2c09a8fd7b9983db2ea1e41509835ea9c4de9ebe3e0b7f6851a25db9e3e68685"
+  },
+  {
+    "path": "artist-plan.json",
+    "bytes": 1054,
+    "sha256": "87cbf31416710572ad1c79e4f05e821e30b31139ffc4cbb8a93a26777a35e98f"
+  },
+  {
+    "path": "raw-qwen-attempt-2.json",
+    "bytes": 4412,
+    "sha256": "bca2c873c30026d585e97b57d5946bed8918790655d0f25f63e88ece1bd992a5"
+  },
+  {
+    "path": "actual-artist-request.json",
+    "bytes": 6690,
+    "sha256": "d7a76bcdc4e2735573ee682d6368b822025cd5002eaf929fabcee6a21b36ab9f"
+  },
+  {
+    "path": "sector-candidate.blend",
+    "bytes": 28105065,
+    "sha256": "b01cc70c8210d166f8d3dbbbce1b2ca86eabd35ab20b1a494b93554f4a8378ae"
+  },
+  {
+    "path": "blender-candidate-global.png",
+    "bytes": 1236874,
+    "sha256": "01b4a8a59a100f168c6f0350ba28a7f89fd40893ee838c114b40b77684eacad4"
+  },
+  {
+    "path": "plan-rejected-2.json",
+    "bytes": 123,
+    "sha256": "bcf3f892bda854f31cb0612a361ce9446e0cc2b6fef35a59ab048518d6716cb2"
+  },
+  {
+    "path": "raw-qwen-attempt-1.json",
+    "bytes": 4414,
+    "sha256": "a1daa782242199835498dfb289d85fe68564db257f0e10d02e35123a7d9d0ddc"
+  },
+  {
+    "path": "raw-qwen-v2-attempt-1.json",
+    "bytes": 3150,
+    "sha256": "c8784d0c98711a2f6fb13c0a5dd73334cacc752499ffca895cc6003cae99c1ab"
+  },
+  {
+    "path": "actual-artist-request-v2.json",
+    "bytes": 7950,
+    "sha256": "2b51065d550bd4a7e2289a05c946b381056822c060be7d66adf0e8216847c974"
+  },
+  {
+    "path": "blender-source-regional.png",
+    "bytes": 1780191,
+    "sha256": "3f287b5dc6fffb462807072e117cfbd5244f0af7212c4648e027820bc141b446"
+  },
+  {
+    "path": "sector-source.blend",
+    "bytes": 23411404,
+    "sha256": "7ae6c5c1349aa9580d39db888bdf65dafd0ed839d58e9211b61e869506b8b4e0"
+  },
+  {
+    "path": "geometry-ab-proof.json",
+    "bytes": 816,
+    "sha256": "ca2ee5ce66f02d7b06f35ed9bea54d70134adaf05bfdd1a340c47bb50da45870"
+  },
+  {
+    "path": "artist-edited/artist-output.blend",
+    "bytes": 23377472,
+    "sha256": "1cbb6a3325d196ae9fea3d863ef3fb7b7328dcb53944dca8ea9353ccfe30995e"
+  },
+  {
+    "path": "artist-edited/artist-output.glb",
+    "bytes": 19754676,
+    "sha256": "3792d78c8f90730a883069827ca9b55485d23110f2587af6a1ac7dfec2a23ba9"
+  },
+  {
+    "path": "artist-edited/artist-execution.json",
+    "bytes": 894,
+    "sha256": "d902b01fc0f9fcd3ebef91a10c308803a62aece31fd3fd8587cc7994101b0536"
+  },
+  {
+    "path": "rejected-pivot-placement-v2/blender-candidate-local.png",
+    "bytes": 1304183,
+    "sha256": "8425c0bcd0c51eb31a1ebbc79a5a33774bf296948d5b0f7ab9b693d2d4f29427"
+  },
+  {
+    "path": "rejected-pivot-placement-v2/finishing-execution.json",
+    "bytes": 15161,
+    "sha256": "3b953e8ea1e8fa538bb0860f7751fdab71af54bea01d8069c8385780d464f96e"
+  },
+  {
+    "path": "rejected-pivot-placement-v2/blender-candidate-regional.png",
+    "bytes": 1366404,
+    "sha256": "cc7a0e18f34643dfed1b2acbf3a058d7c5c8d60c5b2a116de3782b7275edbcd7"
+  },
+  {
+    "path": "rejected-pivot-placement-v2/blender-candidate-global.png",
+    "bytes": 1230778,
+    "sha256": "97080c7176228c96fe76f684e3e4507583bc47c48a89a8f5719717c1d10a5e95"
+  },
+  {
+    "path": "rejected-lateral-cycle/independent-review.json",
+    "bytes": 358,
+    "sha256": "15af2732360318abfea5c5d28ce93bb1199a0f6b7192111a2f249adfe20d06fa"
+  },
+  {
+    "path": "rejected-lateral-cycle/blender-artist-only-after.png",
+    "bytes": 1780833,
+    "sha256": "24aff3f1a726cee7039dd40c235347503759750a93313492a3ac765f990a32b8"
+  },
+  {
+    "path": "rejected-lateral-cycle/artist-inference.json",
+    "bytes": 2398,
+    "sha256": "76d20c7f66c6c52371ff8c1cfc87068fa2c15f9caead42f71d4161231b28cc96"
+  },
+  {
+    "path": "rejected-lateral-cycle/artist-plan.json",
+    "bytes": 820,
+    "sha256": "f14d833dedeef3075fe43b8fea50b6d4f26963545d01ef0eb26fa96e3c5b8707"
+  },
+  {
+    "path": "rejected-lateral-cycle/raw-qwen-v2-attempt-1.json",
+    "bytes": 2159,
+    "sha256": "31f14e70963a58c8d35111a61bddafa601ea404ea8ec64017f0164df3260f0f5"
+  },
+  {
+    "path": "rejected-lateral-cycle/actual-artist-request-v2.json",
+    "bytes": 7145,
+    "sha256": "597884026dc8a60e558bacc241529bf8daf1dd79cb665096e2dd982420dcc4d5"
+  },
+  {
+    "path": "rejected-lateral-cycle/geometry-ab-proof.json",
+    "bytes": 817,
+    "sha256": "e275ed8a43950e58c1a9d0400e3cf76b98db242aaf22eeaefdeaf6a10f1eba60"
+  },
+  {
+    "path": "topology/mesh-context.json",
+    "bytes": 3461,
+    "sha256": "00c03df74c3a24c9360a0a4ab32b4ced4e9a01e759978d2634ddc5ef760d0eaf"
+  },
+  {
+    "path": "rejected-finishing-v1/blender-candidate-local.png",
+    "bytes": 1109722,
+    "sha256": "c1ba65ab139432d1f2a8fbec94a540b89a6ed47ea4c5fc5bf6bc7cebfb48ab35"
+  },
+  {
+    "path": "rejected-finishing-v1/finishing-execution.json",
+    "bytes": 15161,
+    "sha256": "0c1ea5edd4e4bd49e4b043cf6b023ef1950f23bf85537d696f098603ade98d96"
+  },
+  {
+    "path": "rejected-finishing-v1/blender-candidate-regional.png",
+    "bytes": 1224143,
+    "sha256": "b67860390cc30be5772d5dba6fbed7e5a3eb9bb3550b9c268c840c6c73d66c11"
+  },
+  {
+    "path": "rejected-finishing-v1/blender-candidate-global.png",
+    "bytes": 1130407,
+    "sha256": "2747a48b5716c27376384acb3d1a5384ce539d684ef66df88f0f172ee546e739"
+  },
+  {
+    "path": "references/reference-hashes.json",
+    "bytes": 382,
+    "sha256": "0465cb2ceadbbb4b1252141de40b9ef1564e80fb9a4df76b3b20679a1d313f14"
+  },
+  {
+    "path": "references/regional-reference.png",
+    "bytes": 1048398,
+    "sha256": "f3d7b11890aead84f72fbff9cd113e9441ee70a015689263fa187ed179fdea3a"
+  },
+  {
+    "path": "references/global-reference.png",
+    "bytes": 1073874,
+    "sha256": "2a25e90510d4a1cdf3765b38516886595c0afb69bbf2785513b46147550b19b9"
+  },
+  {
+    "path": "references/local-reference.png",
+    "bytes": 886901,
+    "sha256": "aeaa8a785431bb4a64e011f9c974ca99421794d76e1cdf13a873f61ef1cbbb88"
+  },
+  {
+    "path": "rejected-lateral-cycle/artist-edited/artist-output.blend",
+    "bytes": 23377472,
+    "sha256": "4084fb1a9432ec1f8264c8e0e195e4798334eb812c89cd4ee602dff28e1f2195"
+  },
+  {
+    "path": "rejected-lateral-cycle/artist-edited/artist-output.glb",
+    "bytes": 19754676,
+    "sha256": "98e13360e2a70ea7ba6218d989ce01202dd1a991703c6db6d408c8fb850503a9"
+  },
+  {
+    "path": "rejected-lateral-cycle/artist-edited/artist-execution.json",
+    "bytes": 902,
+    "sha256": "2960314d159459787a710db29d827fb99904fcb4261b785d64b39c9617993439"
+  }
+]

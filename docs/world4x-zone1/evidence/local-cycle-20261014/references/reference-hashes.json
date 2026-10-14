@@ -1,0 +1,14 @@
+[
+  {
+    "file": "local-reference.png",
+    "sha256": "aeaa8a785431bb4a64e011f9c974ca99421794d76e1cdf13a873f61ef1cbbb88"
+  },
+  {
+    "file": "regional-reference.png",
+    "sha256": "f3d7b11890aead84f72fbff9cd113e9441ee70a015689263fa187ed179fdea3a"
+  },
+  {
+    "file": "global-reference.png",
+    "sha256": "2a25e90510d4a1cdf3765b38516886595c0afb69bbf2785513b46147550b19b9"
+  }
+]

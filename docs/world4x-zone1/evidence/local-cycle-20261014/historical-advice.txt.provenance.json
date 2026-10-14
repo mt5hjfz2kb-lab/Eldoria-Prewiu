@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "target": "zoneone",
+  "catalog_sha256": "e945e6f4c8930be0995b2ad10cdf49a502e891413c69ca480756f456c60200f8",
+  "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "case_count": 0,
+  "brief_sha256": "f38c63e9776027ae86da84bdfc82b08564faa8a2c18de5876cccc0718701614f",
+  "status": "HISTORIC_ADVICE_NOT_MODEL_TRAINING_OR_ART_PASS"
+}

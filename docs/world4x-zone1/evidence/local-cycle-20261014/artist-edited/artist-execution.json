@@ -1,0 +1,23 @@
+{
+  "transport": "direct",
+  "source_sha256": "7ae6c5c1349aa9580d39db888bdf65dafd0ed839d58e9211b61e869506b8b4e0",
+  "plan_sha256": "87cbf31416710572ad1c79e4f05e821e30b31139ffc4cbb8a93a26777a35e98f",
+  "source_mesh_sha256": "6ecca4ce7313c679da8dc68f48ebffedc281e9360c4c1834d2b441829ae0b445",
+  "result_mesh_sha256": "a17b85841da9d025ba3a7ae6fecee7e5c493ab44af87ebe6c212cf62af2238ab",
+  "result_blend_sha256": "1cbb6a3325d196ae9fea3d863ef3fb7b7328dcb53944dca8ea9353ccfe30995e",
+  "result_glb_sha256": "3792d78c8f90730a883069827ca9b55485d23110f2587af6a1ac7dfec2a23ba9",
+  "elapsed_seconds": 2.203,
+  "executed_actions": [
+    {
+      "id": "/ZoneOne/continuous_prairie",
+      "type": "sculpt_path",
+      "target": 1.0,
+      "changed_vertices": 564,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.03,
+      "applied": true
+    }
+  ],
+  "self_approval": false
+}

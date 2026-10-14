@@ -1,0 +1,23 @@
+{
+  "state": "SOURCE_CANDIDATE_ART_FAIL_UNITY_BLOCKED",
+  "reference_target": 9.5,
+  "required_first_sector": 8,
+  "blender_review_estimate": 3,
+  "unity_art_score": null,
+  "world_complete": false,
+  "unity_scene_delivered": false,
+  "unity_navigation_executed": false,
+  "physical_mobile_profile": false,
+  "paid_generation_credits": 0,
+  "retraining_performed": false,
+  "independent_review": {
+    "geography": "Continuous sector exists; not a complete world; too uniform and little integrated relief.",
+    "breach": "Not achieved. Shallow straight 1m gully is insufficient; painted violet line rejected and removed.",
+    "city": "Existing better city retained, useful as a source.",
+    "vegetation": "Mask/alpha and superimposed LOD faults corrected; only one tree family used.",
+    "resource_nodes": "Timber stock and supply props are provisional, not approved economic nodes.",
+    "camp": "Recovered canvas/windbreak is visually inadequate and rejected as final camp.",
+    "ruin": "Existing meshes valid but too sparse and oversized for reference.",
+    "next_gate": "Authorized Unity editor access and exact camera/material/nav validation; art still requires correction."
+  }
+}

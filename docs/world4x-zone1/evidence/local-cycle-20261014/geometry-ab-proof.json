@@ -1,0 +1,38 @@
+{
+  "image_type": "BLENDER_NOT_UNITY",
+  "camera_identical": true,
+  "camera_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.7415357828140259,
+      -0.6709133386611938,
+      -190.0
+    ],
+    [
+      0.0,
+      0.6709133386611938,
+      0.7415357828140259,
+      210.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "changed_vertices": 564,
+  "protected_boundary_vertices": 480,
+  "boundary_identical": true,
+  "before_image_sha256": "3f287b5dc6fffb462807072e117cfbd5244f0af7212c4648e027820bc141b446",
+  "after_image_sha256": "401d3f4ef819070724b5df72391273401ea0460b84a232341c723bd843de40b0",
+  "artist_plan_sha256": "87cbf31416710572ad1c79e4f05e821e30b31139ffc4cbb8a93a26777a35e98f",
+  "art_approved": false,
+  "mobile_performance_pass": false
+}

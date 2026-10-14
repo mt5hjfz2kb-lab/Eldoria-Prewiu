@@ -1,0 +1,634 @@
+{
+  "changes": [
+    {
+      "removed_overlaid_source_LOD": "Mountain01_LOD1.001"
+    },
+    {
+      "removed_overlaid_source_LOD": "Mountain01_LOD1.002"
+    },
+    {
+      "removed_overlaid_source_LOD": "Mountain01_LOD1.003"
+    },
+    {
+      "removed_overlaid_source_LOD": "Mountain01_LOD2.001"
+    },
+    {
+      "removed_overlaid_source_LOD": "Mountain01_LOD2.002"
+    },
+    {
+      "removed_overlaid_source_LOD": "Mountain01_LOD2.003"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.001"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.002"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.003"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.004"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.005"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.006"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.007"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.008"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.009"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.010"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.011"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.012"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.013"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.014"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD1.015"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.001"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.002"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.003"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.004"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.005"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.006"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.007"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.008"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.009"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.010"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.011"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.012"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.013"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.014"
+    },
+    {
+      "removed_overlaid_source_LOD": "Rock01_LOD2.015"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.001"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.002"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.003"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.004"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.005"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.006"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.007"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.008"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.009"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.010"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.011"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.012"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.013"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.014"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.015"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.016"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.017"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.018"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.019"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.020"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.021"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.022"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.023"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.024"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.025"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.026"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.027"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.028"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.029"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.030"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.031"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.032"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.033"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.034"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.035"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.036"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.037"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.038"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.039"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.040"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.041"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.042"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.043"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.044"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.045"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.046"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.047"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.048"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.049"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.050"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.051"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.052"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.053"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.054"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.055"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.056"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.057"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.058"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.059"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.060"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.061"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.062"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.063"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.064"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.065"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.066"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.067"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.068"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.069"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD1.070"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.001"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.002"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.003"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.004"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.005"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.006"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.007"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.008"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.009"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.010"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.011"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.012"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.013"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.014"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.015"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.016"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.017"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.018"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.019"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.020"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.021"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.022"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.023"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.024"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.025"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.026"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.027"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.028"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.029"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.030"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.031"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.032"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.033"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.034"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.035"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.036"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.037"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.038"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.039"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.040"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.041"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.042"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.043"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.044"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.045"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.046"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.047"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.048"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.049"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.050"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.051"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.052"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.053"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.054"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.055"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.056"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.057"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.058"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.059"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.060"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.061"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.062"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.063"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.064"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.065"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.066"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.067"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.068"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.069"
+    },
+    {
+      "removed_overlaid_source_LOD": "Tree01_LOD2.070"
+    },
+    {
+      "material_fix": "RGB leaf mask resolved with original Leaf01A palette and alpha",
+      "new_geometry": false
+    },
+    {
+      "material_fix": "single continuous textured color atlas; light embedded trails; corruption follows Qwen sculpt knots"
+    },
+    {
+      "reuse": "Unity/Assets/WorldPackCompare/Quaternius/FBX/Arch_Gothic.fbx",
+      "sha256": "af85f55a727388fbad67a62ffc7e30365b4a99241ff3b93e41711c15a5d5299f",
+      "placement": [
+        3.0,
+        33.574127197265625,
+        1.3581970930099487
+      ],
+      "width": 11,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/WorldPackCompare/Quaternius/FBX/Wall_Broken.fbx",
+      "sha256": "6a4383be9c0b2101e1d471d8bb2a33e8b36ca95ca5b86e6b775b12b09ae76439",
+      "placement": [
+        -3.3852882385253906,
+        36.63212966918945,
+        0.8765303492546082
+      ],
+      "width": 12,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/WorldPackCompare/Quaternius/FBX/Column_Round.fbx",
+      "sha256": "c9b3f643c5eca4b39e3490023555a053d0b490ae81a1838ed10940d1c3244d3e",
+      "placement": [
+        12.0,
+        38.0,
+        1.9912874698638916
+      ],
+      "width": 3,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/Mega Fantasy Props Pack/FBX/pile_of_planks.fbx",
+      "sha256": "6b21f174ab7aff3df7fcce4eb1fc7a8879c9f5bae4453bae81ebe71740fcee3f",
+      "placement": [
+        150.98829650878906,
+        133.91802978515625,
+        -1.4876741170883179
+      ],
+      "width": 10,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/Mega Fantasy Props Pack/FBX/bag.fbx",
+      "sha256": "d66d7049c00c320fbee27f6aa08cff0b71acf325988c8b3acf1751bfca3a066c",
+      "placement": [
+        383.4759216308594,
+        66.22396087646484,
+        -0.5821728110313416
+      ],
+      "width": 5,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/Mega Fantasy Props Pack/FBX/box.002.fbx",
+      "sha256": "4552870b108e1fb8c79b21a3f34fcf47cfb3b57277e82c0658fdbacca8f38e79",
+      "placement": [
+        178.80760192871094,
+        81.84521484375,
+        -0.4717182517051697
+      ],
+      "width": 4,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/Mega Fantasy Props Pack/FBX/canvas_on_wall.fbx",
+      "sha256": "bd8113a1299dad76d05fc8a77b092859ecd8afcb04dba9bdc7ba92588deed8cf",
+      "placement": [
+        556.4623413085938,
+        -84.50499725341797,
+        -4.128040790557861
+      ],
+      "width": 12,
+      "source_geometry_modified": false
+    },
+    {
+      "reuse": "Unity/Assets/Mega Fantasy Props Pack/FBX/windbreak.001.fbx",
+      "sha256": "6a490b692909df001dd6006e374973b544d5602df706ec860a8709ab3d04fe71",
+      "placement": [
+        162.02259826660156,
+        267.2596130371094,
+        3.741363525390625
+      ],
+      "width": 10,
+      "source_geometry_modified": false
+    }
+  ],
+  "missing_textures": [],
+  "Qwen_parameters_modified": false,
+  "model_sha256": "6d22c3319524839620591363b3696e920501813a12ad094a327c672f7d06a32d",
+  "blend_sha256": "b01cc70c8210d166f8d3dbbbce1b2ca86eabd35ab20b1a494b93554f4a8378ae",
+  "state": "CANDIDATE_NOT_UNITY_VALIDATED",
+  "camp_final_art": false,
+  "mobile_performance_pass": false
+}

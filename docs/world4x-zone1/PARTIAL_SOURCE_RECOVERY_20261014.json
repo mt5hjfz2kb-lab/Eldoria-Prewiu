@@ -1,0 +1,318 @@
+{
+  "source_commit": "3cf47193e5667efcf557ddfdc54a487f5cd425b5",
+  "state": "PARTIAL_RECOVERY_NOT_COMPLETE",
+  "restored": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
+      "sha": "4d37d74c1b9063a24f7ea894b65ff720a120065e",
+      "bytes": 169
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor.meta",
+      "sha": "0909f0780b708d0e16d0e550fd28659a19bb6260",
+      "bytes": 169
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs",
+      "sha": "3b378927177efaa043d50ab5a518e73ff17e8e8f",
+      "bytes": 7312
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs.meta",
+      "sha": "76c2fdf008de74f7939ccfb75da96719f2e4d85a",
+      "bytes": 60
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models.meta",
+      "sha": "bfe37c13f92edd0161f6b777f36d6cc51b430cf1",
+      "bytes": 169
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb",
+      "sha": "9dda9c1d9b43020c4668af615371e8735902f55a",
+      "bytes": 18946600
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb.meta",
+      "sha": "c1e291efd313899b2b85505f84a6f6b556cb816e",
+      "bytes": 717
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs",
+      "sha": "01ba8e5aa2674448618a578bf2f474e12d67e007",
+      "bytes": 6520
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs.meta",
+      "sha": "e5579dc4ea56f391c9be1c887b5cc53055c156ee",
+      "bytes": 60
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneStrategicCamera.cs",
+      "sha": "53158adf686196b95b686bff226ebc664e022cef",
+      "bytes": 4979
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneStrategicCamera.cs.meta",
+      "sha": "f2e282e7828a0a12440518c5b61dda7be8a5687b",
+      "bytes": 60
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorld.cs",
+      "sha": "55a062d6e87f0970e0412c6c8aedfdf308256a93",
+      "bytes": 3787
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorld.cs.meta",
+      "sha": "a0fa109018763684ca38b9c8c62d32b9a5697c23",
+      "bytes": 60
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorldTests.cs",
+      "sha": "552b1125d7333ec579278b4adb0cd56a42ee0409",
+      "bytes": 534
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorldTests.cs.meta",
+      "sha": "2496c5ee4f4056655f71594c6f4785d9cf4f4e18",
+      "bytes": 60
+    },
+    {
+      "path": "docs/world4x-zone1/ART_PRODUCTION_STATUS.md",
+      "sha": "fa84773b561d5a5e1462d0354e003d6effb61eaf",
+      "bytes": 1468
+    },
+    {
+      "path": "docs/world4x-zone1/BOTTOM_UP_ARCHITECTURE.md",
+      "sha": "3bdbd7d6786f717f430ed02c584d98a8cae106ec",
+      "bytes": 3926
+    },
+    {
+      "path": "docs/world4x-zone1/MODULAR_3D_KIT_V1.md",
+      "sha": "830a565bc8485368b2617318604c9fb9d7030be2",
+      "bytes": 1345
+    },
+    {
+      "path": "docs/world4x-zone1/PRODUCTION_RESULT_20261014.md",
+      "sha": "dd73358f13db447a6d645081d8b4153c287900e3",
+      "bytes": 7025
+    },
+    {
+      "path": "docs/world4x-zone1/ZONE1_IMPLEMENTATION_CONTRACT.md",
+      "sha": "a9c8ee2983994d42b6097c77d94fa267e4636dec",
+      "bytes": 2996
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/actual-artist-request-v2.json",
+      "sha": "7382a9aec9b77941e0b6480c6f86510e2e6f260b",
+      "bytes": 7950
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/actual-artist-request.json",
+      "sha": "6c1ca087019bddbd36ceee17464688f8f55adb98",
+      "bytes": 6690
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-edited/artist-execution.json",
+      "sha": "77b9f6c266ffdf4037ac9f7705470305e607ea8b",
+      "bytes": 894
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-edited/artist-output.blend",
+      "sha": "c3a6e84dca6f08c12f20f181e6df29bc83a01ea3",
+      "bytes": 23377472
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-edited/artist-output.glb",
+      "sha": "8c36bbd266697c7905f52958444fa8f0c0aa5337",
+      "bytes": 19754676
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-inference.json",
+      "sha": "446d1b0b37aaf470f5278a2040f75a6a84e923b2",
+      "bytes": 3389
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-plan.json",
+      "sha": "710305906ff1a8db84e8e53a541fecab70715d35",
+      "bytes": 1054
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-artist-only-after.png",
+      "sha": "00e34185d5ce0acdc564f85e29d688c093fa6f32",
+      "bytes": 1780170
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-candidate-global.png",
+      "sha": "4c9997c518e41c83b69c3d27eec8b1a3403b2e7e",
+      "bytes": 1236874
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-candidate-local.png",
+      "sha": "628ce94a961e48afe5b2988bc96ffbb91796f817",
+      "bytes": 1304710
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-candidate-regional.png",
+      "sha": "aa1b08813f5cd0067fb9c90b1f555c9d97ecce71",
+      "bytes": 1374458
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-pixel-measurement.json",
+      "sha": "d3735271fbacb731c83a391e25da0a344e606d1e",
+      "bytes": 281
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-source-regional.png",
+      "sha": "fa835b33c5b276b4ae8a255cee43a276db14410d",
+      "bytes": 1780191
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/evidence-manifest.json",
+      "sha": "4a309ca917319679d7ab53b93684cda144447f0a",
+      "bytes": 8225
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/finishing-execution.json",
+      "sha": "b734753153e1698f0838b51428eaaea259468009",
+      "bytes": 15331
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/geometry-ab-proof.json",
+      "sha": "468e229f1a113cdfe059eee7b823525487d3f087",
+      "bytes": 816
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/glb-structural-audit.json",
+      "sha": "31871a61b67c5b9d00ac1dbe96f88fbbbf8e1d51",
+      "bytes": 633
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/historical-advice.txt",
+      "sha": "c716626f6267958ef6d6a74868a7cb2adf932de2",
+      "bytes": 267
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/historical-advice.txt.provenance.json",
+      "sha": "5ce677b9ea69f0046fdd6e8852647d517f9c06e8",
+      "bytes": 394
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/independent-final-source-review.json",
+      "sha": "f8e63092524bf7155f4dc7466a0e5de3f817aa9d",
+      "bytes": 1192
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/plan-rejected-1.json",
+      "sha": "90dc73ca9936389afba0dc95ad9b480e80a9b0d7",
+      "bytes": 123
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/plan-rejected-2.json",
+      "sha": "90dc73ca9936389afba0dc95ad9b480e80a9b0d7",
+      "bytes": 123
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/raw-qwen-attempt-1.json",
+      "sha": "4e7ca92b4c8d77e5669a5ce107e4730b4929f6b8",
+      "bytes": 4414
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/raw-qwen-attempt-2.json",
+      "sha": "c7e3dfaace7fb985f3307959bfd1a851f8af47bf",
+      "bytes": 4412
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/raw-qwen-v2-attempt-1.json",
+      "sha": "27595c5c1cb47b04caf05b2f678a3d1f97b72dfc",
+      "bytes": 3150
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/global-reference.png",
+      "sha": "6702897dc1dc73c856f1479869cafe7df0f55fb2",
+      "bytes": 1073874
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png",
+      "sha": "b961f49a47b9783a98e33591b5531544d0b31f3d",
+      "bytes": 886901
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/reference-hashes.json",
+      "sha": "5fa4571e2318429224f9dd826f0e747c0fd74c60",
+      "bytes": 382
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/regional-reference.png",
+      "sha": "0be7231625f20c2782eba3abd6ec01b7f712f35a",
+      "bytes": 1048398
+    }
+  ],
+  "missing": [
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/rejected-finishing-v1/blender-candidate-global.png",
+      "sha": "c409f12fec8f79433cf5f266d00e69a9d554070a",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/rejected-finishing-v1/blender-candidate-local.png",
+      "sha": "8b4754d9323ae3a2da1a0e4dc664716a3411f7e8",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/rejected-finishing-v1/blender-candidate-regional.png",
+      "sha": "213699985003ee7b8502b18190ed0b39ab832ec9",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/rejected-finishing-v1/finishing-execution.json",
+      "sha": "a361cdaa5df55930ca0e1d61d1acd5c92042702b",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/rejected-lateral-cycle",
+      "sha": "310a64f811259566192cd2b1a6264332e8e1fa87",
+      "type": "tree"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/rejected-pivot-placement-v2",
+      "sha": "1039f18593253c82621d66147f8d4c542382b523",
+      "type": "tree"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/sector-candidate.blend",
+      "sha": "94e6ee0979243702107277199e269ecd58a05a94",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/sector-source.blend",
+      "sha": "f2bf0af633a30dcb1497378d515a5a0275fab3db",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/source-inventory.json",
+      "sha": "659031351f1cab9822618eeda03e435efbb802a6",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/source-scene-budget.json",
+      "sha": "e2f823e55dd06ae15de6d67bd2b4bf6b1c8dbef0",
+      "type": "blob"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/topology",
+      "sha": "3ee3bb38d4c964e95c2222e93ebc6e8ee92fd3ea",
+      "type": "tree"
+    },
+    {
+      "path": "pipeline",
+      "sha": "ceb97c3a35cdc1960df368839f7637c750dd3bdc",
+      "type": "tree"
+    },
+    {
+      "path": "tools",
+      "sha": "832f5f84ec1fbbbc58479eceeba9382858caa47f",
+      "type": "tree"
+    }
+  ]
+}
