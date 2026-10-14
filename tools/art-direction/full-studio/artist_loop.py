@@ -5,7 +5,7 @@ Blender executes only a validated typed plan; Qwen supplies every asset choice.
 No paid services, cloud inference, arbitrary Python, or new game scene changes.
 """
 from __future__ import annotations
-import argparse, base64, hashlib, json, pathlib, subprocess, sys, time, urllib.error, urllib.request
+import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan, safe_action_id
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from screen_impact import screen_impact
@@ -42,8 +42,13 @@ def image_data(file, max_edge=1024):
 def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=None):
     if endpoint != "http://127.0.0.1:11434/api/chat":
         raise ValueError("Only local zero-cost Ollama supported")
+    # Preserve the previous 16k default. The benchmark may select a smaller
+    # local memory budget explicitly without changing creative decisions.
+    num_ctx=int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384"))
+    if num_ctx not in (4096,8192,16384):
+        raise ValueError("Only tested bounded local context sizes are supported")
     payload={"model":model,"stream":True,"think":False,
-             "messages":messages,"options":{"temperature":0.35,"num_ctx":16384,"num_predict":max_tokens}}
+             "messages":messages,"options":{"temperature":0.35,"num_ctx":num_ctx,"num_predict":max_tokens}}
     if schema is not None:payload["format"]=schema
     call=urllib.request.Request(endpoint,headers={"Content-Type":"application/json"},
                                 data=json.dumps(payload).encode("utf-8"))
@@ -756,7 +761,9 @@ def main():
            "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
            "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
            "art_approved":False,"unity_art_verified":False,"physical_mobile_validated":False,
-           "model":args.model,"system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
+           "model":args.model,"num_ctx":int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384")),
+           "vision_max_edge":args.vision_max_edge,
+           "system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
            "journal_sha256":sha(JOURNAL),"cycles":records}
     (args.out/"full-studio-result.json").write_text(json.dumps(final,indent=2)+"\n")
     print("ELDORIA_FULL_STUDIO_CYCLE",json.dumps({k:final[k] for k in
