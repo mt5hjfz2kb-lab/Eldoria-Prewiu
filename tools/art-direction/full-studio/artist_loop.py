@@ -6,7 +6,7 @@ No paid services, cloud inference, arbitrary Python, or new game scene changes.
 """
 from __future__ import annotations
 import argparse, base64, hashlib, json, pathlib, subprocess, sys, time, urllib.error, urllib.request
-from contract import validate_plan, RejectedPlan
+from contract import validate_plan, RejectedPlan, safe_action_id
 from learning_context import transferable_lessons
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
@@ -173,6 +173,37 @@ def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=Non
     (out.parent/(out.name+"-blender-log.txt")).write_text(result.stdout,encoding="utf-8")
     if result.returncode:raise RuntimeError("Real Blender execution failed; see output log: "+result.stdout[-1700:])
 
+def repair_noncreative_action_ids(doc):
+    """Correct only non-artistic log IDs; NEVER repair geometric decisions.
+
+    Qwen occasionally returns duplicate, empty or unsafe tracking IDs. These
+    are provenance labels, not Blender object names or artist decisions.
+    The verbatim model response must still be saved separately for audit.
+    """
+    if not isinstance(doc, dict) or not isinstance(doc.get("actions"), list):
+        return doc, []
+    used = set()
+    repairs = []
+    for index, action in enumerate(doc["actions"]):
+        if not isinstance(action, dict):
+            continue  # semantic validation will reject malformed actions
+        original = action.get("id")
+        valid = safe_action_id(original) and original not in used
+        if valid:
+            used.add(original)
+            continue
+        candidate = f"step_{index + 1:03d}"
+        while candidate in used or any(
+            isinstance(a, dict) and a.get("id") == candidate
+            for a in doc["actions"][index+1:]
+        ):
+            candidate += "_"
+        action["id"] = candidate
+        used.add(candidate)
+        repairs.append({"index": index, "original": original, "repaired": candidate,
+                        "scope": "NON_ARTISTIC_LOG_IDENTIFIER_ONLY"})
+    return doc, repairs
+
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None):
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
@@ -189,6 +220,12 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
+    doc, id_repairs = repair_noncreative_action_ids(doc)
+    if id_repairs:
+        (trial/("metadata-repairs-attempt-"+str(attempt_number)+".json")).write_text(
+            json.dumps({"raw_response_sha256":hashlib.sha256(text.encode("utf-8")).hexdigest(),
+                        "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
+                        "repairs":id_repairs},indent=2)+"\\n",encoding="utf-8")
     validate_plan(doc)
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
