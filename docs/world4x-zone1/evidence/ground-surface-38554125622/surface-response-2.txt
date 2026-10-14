@@ -1,0 +1,44 @@
+{
+  "observed_defect": "The current ground texture is a flat, bleached, uniform surface with no natural relief, and the grass is too light and greyish, failing to create a believable prairie. The geometry is correct but the material is not matching the intended fantasy-medv",
+  "design_intent": "To create a textured, luminous, and believable fantasy-medieval prairie with restrained golden dry grass transitions, using the actual source image and texture as microdetail, under the same sun and exposure. The goal is to achieve a natural, layered",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "The current material is too light and greyish, failing to create a believable prairie. The new material must be designed to be darker and more textured, with golden transitions, to match the source texture and create a natural, layered effect.",
+  "planned_actions": [
+    {
+      "id": "/",
+      "type": "assign_material",
+      "target": "ZoneOne continuous prairie source",
+      "rationale": "To apply the new material to the source terrain, ensuring it matches the source texture and creates a natural, layered effect.",
+      "parameters": {
+        "rgb": [
+          0.25,
+          0.55,
+          0.025
+        ],
+        "roughness": 0.6,
+        "secondary_rgb": [
+          0.04,
+          0.32,
+          0.02
+        ],
+        "dry_rgb": [
+          0.25,
+          0.55,
+          0.025
+        ],
+        "rock_rgb": [
+          0.25,
+          0.55,
+          0.025
+        ],
+        "patch_scale_m": 10,
+        "detail_tile_m": 2,
+        "dry_fraction": 0.2,
+        "detail_strength": 0.1,
+        "rock_slope_degrees": 22
+      }
+    }
+  ],
+  "expected_visual_difference": "The new material will be darker and more textured, with golden transitions, creating a natural, layered effect on the prairie. The grass will be more vibrant and realistic, with a subtle golden transition that matches the source texture.",
+  "mobile_risks": "The mobile rendering cost will be moderate, as the material is designed to be lightweight and efficient, with a focus on performance and visual quality."
+}

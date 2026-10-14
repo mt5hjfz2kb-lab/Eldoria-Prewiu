@@ -1,0 +1,44 @@
+{
+  "observed_defect": "The ground surface is uniformly grey-beige, indicating a failed material bake with incorrect color values. The texture is flat and lacks natural variation, with no visible grass detail or slope. The lighting and exposure are consistent with the prior",
+  "design_intent": "Create a textured, luminous, fantasy-medieval prairie with soft golden dry-grass transitions, pale exposed slope stone, and a distinct visual hierarchy. The primary and secondary meadow colors must be green-dominant with restrained golden transitions",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "The current source geometry is already correct. The issue is with the material and texture application, not the geometry. The new texture must be applied to the existing terrain, not a new geometry.",
+  "planned_actions": [
+    {
+      "id": "/",
+      "type": "assign_material",
+      "target": "ZoneOne continuous prairie source",
+      "rationale": "Apply the new material with the correct RGB values and texture to the existing terrain, not a new geometry. The material must be applied to the existing terrain, not a new geometry.",
+      "parameters": {
+        "rgb": [
+          0.03,
+          0.25,
+          0.015
+        ],
+        "roughness": 0.6,
+        "secondary_rgb": [
+          0.04,
+          0.32,
+          0.02
+        ],
+        "dry_rgb": [
+          0.25,
+          0.55,
+          0.025
+        ],
+        "rock_rgb": [
+          0.25,
+          0.55,
+          0.025
+        ],
+        "patch_scale_m": 10,
+        "detail_tile_m": 4,
+        "dry_fraction": 0.2,
+        "detail_strength": 0.3,
+        "rock_slope_degrees": 25
+      }
+    }
+  ],
+  "expected_visual_difference": "The new material will produce a textured, luminous, fantasy-medieval prairie with soft golden dry-grass transitions, pale exposed slope stone, and a distinct visual hierarchy. The primary and secondary meadow colors will be green-dominant with restrained golden transitions, and the texture will be applied to the existing terrain, not a new geometry.",
+  "mobile_risks": "The mobile rendering cost is minimal, as the material and texture are applied to the existing terrain, not a new geometry. The material is applied to the existing terrain, not a new geometry."
+}
