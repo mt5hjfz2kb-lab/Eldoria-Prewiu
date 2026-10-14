@@ -116,6 +116,8 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         "params":params},
         "required":["id","op","target","reason","params"],
         "additionalProperties":False}
+    if source_exists and phase=="full" and known_objects:
+        action=full_source_tool_variants(known_objects,max_location)
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
@@ -129,6 +131,114 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         "required":["schema_version","asset_id","observed_defect","design_intent",
                     "asset_decision","expected_visual_difference","mobile_risks","actions"],
         "additionalProperties":False}
+
+def full_source_tool_variants(existing_objects,max_location):
+    """A true per-tool JSON signature instead of generic unconstrained params.
+
+    The AI still selects every operation, target and ARTISTIC NUMBER. Typing
+    only rejects fake Blender operators, made-up mesh targets and wrong options.
+    It does not synthesize vertices, adjust materials or substitute designs.
+    """
+    from extended_ops import SAFE_SHADER_NODES, SAFE_GEOMETRY_NODES, SAFE_NATIVE_OPS
+    existing={"type":"string","enum":list(existing_objects)}
+    free_name={"type":"string","minLength":2,"maxLength":70}
+    numerical={"type":"number","minimum":-max_location,"maximum":max_location}
+    xyz={"type":"array","minItems":3,"maxItems":3,"items":numerical}
+    size={"type":"array","minItems":3,"maxItems":3,
+          "items":{"type":"number","minimum":0.0001,"maximum":120}}
+    unit={"type":"number","minimum":0,"maximum":1}
+    rgba={"type":"array","minItems":4,"maxItems":4,"items":unit}
+    positive={"type":"number","exclusiveMinimum":0,"maximum":100}
+    indexes={"type":"array","minItems":1,"maxItems":60,
+             "items":{"type":"integer","minimum":0,"maximum":200000}}
+    def obj(props,required):
+        return {"type":"object","additionalProperties":False,
+                "properties":props,"required":required}
+    def action(op,params,required,new_object=False):
+        return obj({
+          "id":{"type":"string","minLength":2,"maxLength":50},
+          "op":{"const":op},
+          "target":free_name if new_object else existing,
+          "reason":{"type":"string","minLength":15,"maxLength":170},
+          "params":obj(params,required),
+        },["id","op","target","reason","params"])
+    entries=[]
+    entries.append(action("material",{
+        "base_color":rgba,"roughness":unit,"metallic":unit
+    },["base_color","roughness","metallic"]))
+    entries.append(action("sculpt_anchor",{
+        "anchor":{"type":"string","enum":["x_min","x_max","y_min","y_max","z_min","z_max"]},
+        "direction":{"type":"string","enum":["+X","-X","+Y","-Y","+Z","-Z"]},
+        "distance":{"type":"number","minimum":0.65,"maximum":1.8},
+        "radius":{"type":"number","minimum":1.5,"maximum":8},
+    },["anchor","direction","distance","radius"]))
+    entries.append(action("sculpt",{
+        "center":xyz,"delta":xyz,"radius":positive,
+    },["center","delta","radius"]))
+    entries.append(action("bevel",{
+        "width":positive,"segments":{"type":"integer","minimum":1,"maximum":6},
+        "apply":{"type":"boolean"},
+    },["width","segments","apply"]))
+    entries.append(action("uv",{
+        "method":{"type":"string","enum":["smart","cube","sphere","cylinder"]},
+    },["method"]))
+    entries.append(action("modifier",{
+        "kind":{"type":"string","enum":["BEVEL","SUBSURF","SOLIDIFY","DECIMATE",
+                   "REMESH","MIRROR","ARRAY","WEIGHTED_NORMAL","TRIANGULATE",
+                   "SIMPLE_DEFORM","DISPLACE"]},
+        "options":{"type":"object","additionalProperties":False,"properties":{
+            "width":positive,"segments":{"type":"integer","minimum":1,"maximum":6},
+            "levels":{"type":"integer","minimum":0,"maximum":3},
+            "render_levels":{"type":"integer","minimum":0,"maximum":3},
+            "thickness":numerical,"ratio":unit,"voxel_size":positive,
+            "count":{"type":"integer","minimum":2,"maximum":64},
+            "offset":xyz,"axis":{"type":"string","enum":["X","Y","Z"]},
+            "angle":numerical,"strength":numerical,"texture_scale":positive
+        }},
+        "apply":{"type":"boolean"},
+    },["kind","options","apply"]))
+    entries.append(action("native_operator",{
+        "operator":{"type":"string","enum":sorted(SAFE_NATIVE_OPS)},
+        "kwargs":{"type":"object","additionalProperties":False},
+        "selection":{"const":"ALL"},
+    },["operator","kwargs","selection"]))
+    for op,params,required in [
+        ("extrude",{"faces":indexes,"offset":xyz},["faces","offset"]),
+        ("inset",{"faces":indexes,"thickness":positive},["faces","thickness"]),
+        ("subdivide",{"faces":indexes,"cuts":{"type":"integer","minimum":1,"maximum":4}},["faces","cuts"]),
+        ("boolean",{"operand":existing,
+                    "operation":{"type":"string","enum":["DIFFERENCE","UNION","INTERSECT"]},
+                    "delete_operand":{"type":"boolean"}},["operand","operation"]),
+        ("transform",{"location":xyz,"scale":size},["location","scale"]),
+    ]:
+        entries.append(action(op,params,required))
+    entries.append(action("primitive",{
+        "shape":{"type":"string","enum":["cube","cylinder","cone","plane","uv_sphere","ico_sphere","torus"]},
+        "location":xyz,"rotation":xyz,"scale":size
+    },["shape","location","rotation","scale"],new_object=True))
+    entries.append(action("duplicate",{
+        "source":existing,"location":xyz,"rotation":xyz,"scale":size
+    },["source","location","rotation","scale"],new_object=True))
+    nodes_base={"type":"object","additionalProperties":False,"properties":{
+        "id":{"type":"string","minLength":1,"maxLength":70},
+        "type":{"type":"string"},
+        "inputs":{"type":"object"},
+    },"required":["id","type"]}
+    links={"type":"array","minItems":0,"maxItems":60,"items":obj({
+        "from":{"type":"string"},"to":{"type":"string"},
+        "output":{"type":"string"},"input":{"type":"string"}
+    },["from","to","output","input"])}
+    for op,allowed in [("shader_graph",SAFE_SHADER_NODES),
+                       ("geometry_nodes",SAFE_GEOMETRY_NODES)]:
+        node_schema=dict(nodes_base)
+        node_schema["properties"]=dict(nodes_base["properties"])
+        node_schema["properties"]["type"]={"type":"string","enum":sorted(allowed)}
+        entries.append(action(op,{
+           "nodes":{"type":"array","minItems":2,"maxItems":18,"items":node_schema},
+           "links":links,
+        },["nodes","links"]))
+    return {"oneOf":entries}
+
 
 def contract_brief(max_actions,source_exists=False,phase="full",category="architecture"):
     base=("You are the sole 3D ARTIST. Every operation, target object and "
