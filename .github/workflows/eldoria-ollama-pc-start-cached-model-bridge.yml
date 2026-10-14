@@ -27,9 +27,9 @@ jobs:
           if (Test-Path $local) { $exe=$local }
           if (-not $exe) {
             $users=Join-Path $env:SystemDrive 'Users'
-            $exe=Get-ChildItem $users -Filter 'ollama.exe' -Recurse -File -ErrorAction SilentlyContinue |
-              Where-Object { $_.FullName -like '*AppData\Local\Programs\Ollama\ollama.exe' } |
-              Select-Object -First 1 -ExpandProperty FullName
+            $exe=Get-ChildItem $users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
           }
           if (-not $exe -or -not (Test-Path $exe)) { throw 'INSTALLED_OLLAMA_BINARY_NOT_ACCESSIBLE' }
           $env:OLLAMA_HOST='127.0.0.1:11434'
