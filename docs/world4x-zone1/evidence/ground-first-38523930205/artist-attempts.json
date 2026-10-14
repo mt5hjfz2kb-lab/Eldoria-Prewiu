@@ -1,0 +1,42 @@
+[
+  {
+    "attempt": 1,
+    "seconds": 221.49,
+    "errors": [
+      "sculpt_region center MUST be within real LOCAL mesh AABB",
+      "sculpt_region delta MUST BE NONZERO, executable 3D displacement (>0.005, <=20)",
+      "SCULPT_CAMERA_IMPACT_FAIL: Qwen must design >=0.2m nontrivial displacement for this wide strategy-camera rock face, not millimeter jitter",
+      "Action 2: blank/duplicate id",
+      "sculpt_region center MUST be within real LOCAL mesh AABB",
+      "sculpt_region delta MUST BE NONZERO, executable 3D displacement (>0.005, <=20)",
+      "SCULPT_CAMERA_IMPACT_FAIL: Qwen must design >=0.2m nontrivial displacement for this wide strategy-camera rock face, not millimeter jitter",
+      "Footprint overlaps protected city pad"
+    ],
+    "response_sha256": "c966727df8572773e47f787d6d4aff5ae9951c8b89f03a19c4c28c479151c809",
+    "eval_count": 784
+  },
+  {
+    "attempt": 2,
+    "seconds": 76.15,
+    "errors": [
+      "sculpt_region center MUST be within real LOCAL mesh AABB",
+      "sculpt_region delta MUST BE NONZERO, executable 3D displacement (>0.005, <=20)",
+      "SCULPT_CAMERA_IMPACT_FAIL: Qwen must design >=0.2m nontrivial displacement for this wide strategy-camera rock face, not millimeter jitter",
+      "CAMERA_FOOTPRINT_TOO_SMALL: same-camera Blender/Unity rejections prove that this environment view needs a Qwen-authored structural change affecting >= 16 m of radius (or >= 32 m crest span) with >= 2 m meaningful shape change. Pick new genuine source-visible coordinates, broad path knots or crest control points; never reuse tiny local bumps."
+    ],
+    "response_sha256": "72629b293339a7403d3228bc22c0d2efc867e3e17147f0ab78a0ee8b7fadab2a",
+    "eval_count": 395
+  },
+  {
+    "attempt": 3,
+    "seconds": 67.66,
+    "errors": [
+      "sculpt_region center MUST be within real LOCAL mesh AABB",
+      "sculpt_region delta MUST BE NONZERO, executable 3D displacement (>0.005, <=20)",
+      "SCULPT_CAMERA_IMPACT_FAIL: Qwen must design >=0.2m nontrivial displacement for this wide strategy-camera rock face, not millimeter jitter",
+      "CAMERA_FOOTPRINT_TOO_SMALL: same-camera Blender/Unity rejections prove that this environment view needs a Qwen-authored structural change affecting >= 16 m of radius (or >= 32 m crest span) with >= 2 m meaningful shape change. Pick new genuine source-visible coordinates, broad path knots or crest control points; never reuse tiny local bumps."
+    ],
+    "response_sha256": "952eb49cdd40c0eb15c08abf59ee88136f9481c065d0128577b51934a550c721",
+    "eval_count": 395
+  }
+]
