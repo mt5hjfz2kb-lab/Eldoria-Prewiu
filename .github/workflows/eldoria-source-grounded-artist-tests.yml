@@ -28,13 +28,14 @@ jobs:
         run: python -m pip install --disable-pip-version-check pillow
       - name: Run source-verified Blender contract and professional phase regressions
         run: |
-          python -m py_compile tools/art-direction/full-studio/world_space_evidence.py tools/art-direction/full-studio/architectural_world_placement_gate.py tools/art-direction/full-studio/source_geometry_gate.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/inspect_source.py tools/art-direction/full-studio/professional_source_schema.py tools/art-direction/full-studio/blender_toolbox.py tools/art-direction/full-studio/architectural_component_guard.py
+          python -m py_compile tools/art-direction/full-studio/world_space_evidence.py tools/art-direction/full-studio/architectural_world_placement_gate.py tools/art-direction/full-studio/protected_camera_regions.py tools/art-direction/full-studio/source_geometry_gate.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/inspect_source.py tools/art-direction/full-studio/professional_source_schema.py tools/art-direction/full-studio/blender_toolbox.py tools/art-direction/full-studio/architectural_component_guard.py
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_source_geometry_gate.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_professional_cycle.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_minimum_professional_cycles.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_professional_source_schema.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_world_space_evidence.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_architectural_world_placement_gate.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_protected_camera_regions.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_new_mesh_artistic_integrity.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_architectural_component_guard.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_triangle_budget.py' -v
