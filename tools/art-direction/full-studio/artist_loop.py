@@ -382,6 +382,15 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
     reject_overwriting_material_actions(doc["actions"])
+    if source_exists and args.require_inherited_geometry_edit:
+        structural={"sculpt_anchor","sculpt","extrude","inset","subdivide","boolean"}
+        if not any(x["op"] in structural for x in doc["actions"]):
+            raise RejectedPlan(
+                "Owner requested REAL inherited source-mesh redesign; BEVEL, MATERIAL, "
+                "UV, object transform or unapplied modifiers alone do NOT count. "
+                "Select an artist-chosen sculpt_anchor, sculpt, extrude, inset, "
+                "subdivide or boolean operation on an inspected existing object."
+            )
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
@@ -461,6 +470,8 @@ def main():
     p.add_argument("--transport",choices=("direct","blendermcp"),default="direct")
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
+    p.add_argument("--require-inherited-geometry-edit",action="store_true",
+                   help="Require physically changed original mesh data, not modifiers/material-only gestures")
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
     p.add_argument("--phase",choices=("full","geometry","mesh_edit","surface","detail"),default="full")
@@ -471,6 +482,8 @@ def main():
     if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160:raise ValueError("Cycle/action limits")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
+    if args.require_inherited_geometry_edit and not args.source:
+        raise ValueError("Inherited-source edit requirement needs an existing BLEND/GLB")
     if args.out.exists() and any(args.out.iterdir()):raise ValueError("Fresh output required")
     args.out.mkdir(parents=True,exist_ok=True)
     canonical_role=ROLE.read_text(encoding="utf-8")
@@ -542,13 +555,14 @@ def main():
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
-        if args.phase=="mesh_edit" and source:
-            edits=[step for step in result["execution"] if step["op"]=="sculpt_anchor"
+        if (args.phase=="mesh_edit" or args.require_inherited_geometry_edit) and source:
+            edits=[step for step in result["execution"] if step["op"] in (
+                       "sculpt_anchor","sculpt","extrude","inset","subdivide","boolean")
                    and step["geometry_changed"] and step["originals_changed"]]
-            if not edits:
+            if not edits or not result.get("inherited_mesh_data_changed"):
                 records.append({"cycle":cycle,"status":"INHERITED_MESH_UNCHANGED",
                                 "plan_sha256":sha(candidate)})
-                history+="\nREJECTED: Blender changed no vertex data of an inherited mesh; select a brush that reaches real source vertices, not an object transform."
+                history+="\nREJECTED: Blender changed no original vertex or polygon data of the inspected inherited source. Material, UV, transforms and unapplied modifiers do not satisfy the owner's real source-mesh edit requirement. Select a physical mesh edit using Blender with artist-authored actual spatial decisions."
                 continue
         screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
         (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
