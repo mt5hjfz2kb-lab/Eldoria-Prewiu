@@ -67,7 +67,7 @@ try{
     $log=Join-Path $Out ($case.label+'.log')
     $sw=[System.Diagnostics.Stopwatch]::StartNew()
     $params=@('tools/art-direction/full-studio/artist_loop.py',
-      '--brief','Make a meaningful original, visible architectural improvement on the SAME inherited Valoria stone tower, with medieval identity, plausible masonry detail and unblocked player door and stairs.',
+      '--brief','Continue the SAME inherited small wooden/log Valoria village watchtower (world height only 2.65 metres; wooden stairs and roof must stay intact). Its original source is ONE combined inherited timber mesh with a texture atlas, NOT a freestanding stone castle. Choose one tasteful, small, camera-visible medieval wood or iron architectural detail or an exceptionally localized roof silhouette refinement. If ADDING an architectural piece, attach it to an upper roof/eave wall in WORLD Z between 1.5 and 2.9 metres with modest dimensions 0.10 to 0.40 metres; never add a large cylinder on the ground or cover the exterior staircase and door. The artist independently chooses the actual form, target, transform and finish. Preserve the existing tower identity and all player circulation.',
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
