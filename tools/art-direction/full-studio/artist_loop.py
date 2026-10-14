@@ -625,10 +625,12 @@ def summarize_real_artist_cycles(records):
     Never equate an executed-but-rejected dangerous edit with artistic success.
     """
     executed={"ART_REVIEW_REQUIRED", "SCREENSPACE_REJECTED",
-              "PROTECTED_ACCESS_OCCLUSION_REJECTED"}
+              "PROTECTED_ACCESS_OCCLUSION_REJECTED",
+              "BLENDER_VISUAL_ACCEPTED","ART_REJECTED"}
     return {
         "real_blender_execution_count":sum(rec.get("status") in executed for rec in records),
-        "qa_review_candidate_count":sum(rec.get("status")=="ART_REVIEW_REQUIRED" for rec in records),
+        "qa_review_candidate_count":sum(rec.get("status") in
+          ("ART_REVIEW_REQUIRED","BLENDER_VISUAL_ACCEPTED","ART_REJECTED") for rec in records),
         "protected_access_rejection_count":sum(
             rec.get("status")=="PROTECTED_ACCESS_OCCLUSION_REJECTED" for rec in records),
         "screen_impact_rejection_count":sum(
