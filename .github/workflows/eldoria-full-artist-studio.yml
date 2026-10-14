@@ -128,15 +128,22 @@ jobs:
           assert report['blender_real_execution'] and not report['art_approved']
           proof_memory=json.loads((p/'journal-context-proof.json').read_text())
           assert len(proof_memory['journal_sha256'])==64
+          casebook=json.loads((p/'learning-casebook-proof.json').read_text())
+          assert casebook['model_weight_training'] is False
+          assert len(casebook['casebook_sha256'])==64
           impact=json.loads((p/'cycle-1/camera-screen-impact.json').read_text())
           assert impact['visually_present'] and not impact['art_approved']
           cycle=p/'cycle-1'
           plan=json.loads((cycle/'artist-plan.json').read_text())
-          assert len(plan['actions'])>0
+          assert 2<=len(plan['actions'])<=4
+          assert plan['asset_decision']=='NEW'
+          assert all(a['op']=='primitive' for a in plan['actions'])
+          assert len({a['target'] for a in plan['actions']})==len(plan['actions'])
           assert hashlib.sha256((cycle/'artist-plan.json').read_bytes()).hexdigest()==report['cycles'][0]['plan_sha256']
           proof=json.loads((cycle/'output/execution-proof.json').read_text())
           assert proof['blender_execution'] and proof['evaluated_triangles']>0
           assert proof['action_count']==len(plan['actions'])
+          assert proof['reusable_components']>=2
           assert (cycle/'output/reusable-asset-catalog.json').is_file()
           assert any(step['geometry_changed'] for step in proof['execution'])
           assert (cycle/'qwen-raw.json').stat().st_size>100

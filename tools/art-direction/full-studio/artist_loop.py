@@ -14,6 +14,7 @@ HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
 ROLE=REPO/"tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md"
 JOURNAL=REPO/"tools/art-direction/ARTIST_LEARNING_JOURNAL.md"
+CASEBOOK=HERE/"learning_cases.json"
 
 def sha(path):
     return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
@@ -228,7 +229,16 @@ def main():
     # cliff coordinates/IDs. The first 2B run replayed them and overflowed.
     lesson_proof=transferable_lessons(JOURNAL.read_text(encoding="utf-8"),args.brief,limit=600)
     (args.out/"journal-context-proof.json").write_text(json.dumps(lesson_proof,indent=2)+"\n",encoding="utf-8")
-    memory=lesson_proof["prompt_text"]
+    casebook=json.loads(CASEBOOK.read_text(encoding="utf-8"))
+    if casebook.get("schema_version")!=1:raise ValueError("Corrupt Qwen artist casebook")
+    recent=[case["safe_lesson"] for case in casebook["cases"][-4:] if isinstance(case.get("safe_lesson"),str)]
+    memory=(" | ".join(recent)+" | "+lesson_proof["prompt_text"])[:600]
+    (args.out/"learning-casebook-proof.json").write_text(json.dumps({
+        "casebook_sha256":sha(CASEBOOK),
+        "evidence_run_ids":[case.get("run_id") for case in casebook["cases"]],
+        "model_weight_training":False,
+        "verbatim_historical_actions_sent":False
+    },indent=2)+"\n",encoding="utf-8")
     if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
     current=args.current_frame
     source=args.source

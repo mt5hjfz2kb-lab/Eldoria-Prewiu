@@ -18,6 +18,16 @@ Modificadores incluidos: BEVEL, SUBSURF, SOLIDIFY, DECIMATE, REMESH, MIRROR, ARR
 
 No significa literalmente toda la interfaz de Blender: rigging, animación, simulaciones, Geometry Nodes avanzados y pintura libre requieren futuras extensiones probadas. No fingir un 100 % inexistente.
 
+## Aislamiento del taller, realismo de cámara y respuesta corta del modelo
+
+La primera inferencia artística con Qwen 2B falló porque copió operaciones históricas sobre el acantilado, no la torre solicitada. La segunda produjo JSON completo pero parámetros de malla incorrectos. Ambos fallos están registrados en learning_cases.json con los hashes y artefactos originales.
+
+La corrección no sustituye creatividad por geometría preestablecida: **el primer ciclo de un asset nuevo está acotado a unas pocas formas y proporciones elegidas por Qwen**, con JSON estrictamente validado, y los ciclos sobre un BLEND ya existente ofrecen el resto de herramientas (edición, texturas, materiales, escultura, Geometry Nodes, etc.). Esto permite construir de abajo arriba sin pedir a un modelo pequeño miles de parámetros en una sola inferencia.
+
+La memoria se recupera como lecciones verificables desde el diario canónico y el registro de fallos del estudio. Se eliminan del contexto los identificadores, geometrías y coordenadas obsoletos; sus hashes quedan preservados. No hay entrenamiento de pesos.
+
+La escena de revisión contiene iluminación, suelo neutro de contacto y cámara orientada realmente al asset. **Estos recursos de presentación quedan fuera del GLB reutilizable**. Los renders A/B de Blender se miden para rechazar propuestas invisibles, pero nunca equivalen a una certificación Unity ni a calidad artística por sí solos.
+
 ## Ciclo autónomo local
 
 1. artist_loop.py consulta el modelo Qwen LOCAL con la referencia visual del propietario y la memoria del artista.

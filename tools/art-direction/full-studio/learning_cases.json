@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "project": "Eldoria Full AI Blender Artist",
+  "memory_kind": "versioned verified execution experience; not model weight training",
+  "cases": [
+    {
+      "id": "qwen-repeated-cliff-plan",
+      "run_id": 38558877838,
+      "model": "qwen3-vl:2b-instruct",
+      "evidence_artifact_id": 11892994421,
+      "raw_response_sha256": "ab8b63e1cb3f6f9a46b7f5d9e08af7ceac0302abd20d6bbc0d040ee103272eda",
+      "result": "REJECTED_INCOMPLETE_JSON",
+      "observed": "The new-watchtower prompt produced an unfinished response repeating unrelated historical cliff operations and IDs; no Blender model was generated.",
+      "verified_correction": "Do not paste historic action payloads or old coordinates. Supply only short transferable lessons and use short stage-specific response schema.",
+      "safe_lesson": "Do not repeat old rejected actions or object IDs when starting a different asset. Use an original, concise plan for the current object."
+    },
+    {
+      "id": "qwen-invalid-first-mesh",
+      "run_id": 38565053928,
+      "model": "qwen3-vl:2b-instruct",
+      "evidence_artifact_id": 11895386400,
+      "raw_response_sha256": "76d43974500889dea283d8a9251ed1cf97034f40989e6ff9fc3054f26664f4ff",
+      "result": "REJECTED_BAD_MESH_PARAMETERS",
+      "observed": "Qwen returned syntactically complete creative JSON but supplied a shape primitive parameter object to the explicit-vertex mesh operation and selected architecture scales around 100 meters, creating nonexistent targets on retry.",
+      "verified_correction": "New assets begin with schema-constrained primitive objects and dimensions 0.15–8 in a small batch; later source-verified cycles can use full Blender mesh, UV, material, sculpt and nodes operations.",
+      "safe_lesson": "New assets need genuine, proportionate mesh objects before secondary details. Do not use nonexistent objects or substitute primitive arguments for indexed vertices."
+    }
+  ],
+  "training": {
+    "weights_updated": false,
+    "automatic_evidence_retrieval": true,
+    "blender_editor_full_approval": false
+  },
+  "budget": {
+    "paid_credits": 0
+  }
+}
