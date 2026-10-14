@@ -218,32 +218,31 @@ def face(name,x,y,z,w,d,h,material):
  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
  o.data.materials.append(material);new_retaining.append(o)
  return o
+# In the real native Unity A6 image the 5+5 ashlar courses read as
+# horizontally pasted white ribbons. They are NOT in the locked old scene.
+# The VISION artist explicitly rejected them in run 38551799312; retain only
+# grounded fractured-rock contacts plus asymmetric stone anchor piers under
+# the genuine upper geological embankment created earlier this pipeline.
+rockside=next((m for m in mesh.materials if m and 'schist' in m.name.lower()),None)
+if rockside is None:rockside=mesh.materials[1]
+if rockside is None:raise RuntimeError('Original native fractured cliff rock missing')
 for side in (-1,1):
  side_name='western' if side<0 else 'eastern'
- for k,absx in enumerate((10.55,13.42,16.29,19.16,22.03)):
+ for i,absx in enumerate((11.6,16.90,21.90)):
   x=side*absx
-  # Physical game-space safety: no wall anywhere in the road, stairs or plots.
-  if abs(x)-1.37<9.0:raise RuntimeError('Retaining masonry enters central reserve')
-  y=9.55
-  if y-.5 <= 8.0:raise RuntimeError('Retaining wall touches future lot envelope')
-  low=here(x,8.75);high=here(x,11.25)
-  wall_h=min(2.80,max(1.25,high-low+.46))
-  base=low-.16
-  face('Bastion I Qwen terrain '+side_name+' 3D ashlar retaining course',
-       x,y,base+wall_h*.5,2.69,.81,wall_h,limestone)
-  # Contact cap makes slope and wall read as a unified earthen embankment.
-  face('Bastion I Qwen terrain '+side_name+' stepped limestone coping',
-       x,y+.11,base+wall_h+.085,2.74,.96,.17,limestone)
- # Two embedded end supports connect the structural ribbon into the
- # original lateral fortification/rock ledge, not freestanding turrets.
- for absx in (11.98,20.61):
-  x=side*absx
-  low=here(x,8.45);high=here(x,11.3)
-  h=min(2.90,max(1.45,high-low+.48))
-  face('Bastion I Qwen terrain '+side_name+' masonry-bank anchor buttress',
-       x,8.91,low+h*.5-.06,1.0,1.18,h,limestone)
+  # y=9.4 is north of both building plot extents y[-2,8]. Never the road.
+  if abs(x)-.65<9.0:raise RuntimeError('Rock buttress enters route')
+  y=9.25+.17*((i%2)*2-1)
+  if y-.65<=8.0:raise RuntimeError('Rock buttress intrudes parcel buffer')
+  lo=here(x,8.65);hi=here(x,11.65)
+  wall_h=min(3.2,max(1.65,hi-lo+.58))
+  base=lo-.27
+  face('Bastion I Qwen '+side_name+' fractured native cliff bank pier',
+       x,y,base+wall_h*.5,1.22,1.22,wall_h,rockside)
+  face('Bastion I Qwen '+side_name+' integrated aged original limestone cap',
+       x,y+.02,base+wall_h+.075,1.43,1.44,.15,limestone)
 retaining_count=len(new_retaining)
-if retaining_count<22:raise RuntimeError('Missing meaningful full bank masonry set')
+if retaining_count<12:raise RuntimeError('Missing non-ribbon native geological buttresses')
 # Respect the original source mesh names, everything except sole native terrain.
 all_names_before={o.name for o in originals}
 if not all(o.name in all_names_before for o in originals):raise RuntimeError('Original object set changed')
@@ -257,10 +256,10 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
  soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,soil_albedo_mean_rgb_linear=terrain_albedo_mean,restored_original_pbr_base_color_factor=[1,1,1],grass_uv_loops=grass_loops,
- original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,
+ original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
  native_source_terrain_sculpted=True,
- artistically_approved=False,mobile_hardware_certified=False)
+ qwen_latest_vision_run=38551799312,artistically_approved=False,mobile_hardware_certified=False)
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_QWEN_ACTUAL_TERRAIN_SCULPT',json.dumps(proof))
