@@ -45,14 +45,7 @@ def reject_obviously_bad_component_placement(plan,source_objects):
     if any(gap[i]>max(.5,span[i]*.35) for i in range(3)):
         raise RejectedPlan("NEW WORLD XYZ geometry is disconnected far from real source; "
                            "read world_bounds and reauthor its location (Blender Z is UP)")
-    overlap=[max(0,min(hi[i],high[i])-max(lo[i],low[i])) for i in range(3)]
-    original_area=span[0]*span[1]
-    ground_intersection=overlap[0]*overlap[1]/original_area
     center_z=(lo[2]+hi[2])*.5
-    if (center_z<low[2]+.45*span[2] and ground_intersection>.35):
-        raise RejectedPlan("New component BLOCKS too much of existing low-level building "
-                           "footprint, door/stairs/circulation at WORLD Z floor. "
-                           "Qwen must choose a different ORIGINAL attachment/placement")
     name=action.get("target","").lower()
     if any(t in name for t in ("chimney","spire","column","pillar","flue")):
         dim=[hi[i]-lo[i] for i in range(3)]
@@ -60,6 +53,26 @@ def reject_obviously_bad_component_placement(plan,source_objects):
             raise RejectedPlan("Vertical named architecture is incorrectly oriented in WORLD Y "
                                "or too low: Blender WORLD +Z is vertical, GLB local Y is not. "
                                "Qwen must author a genuinely upright placed element")
+    # A physically attached roof/side extension must not stretch far beyond
+    # the whole inherited building. The earlier accepted C02 huge Y-axis
+    # block projected >1.3x the original footprint past the gable.
+    # This geometric plausibility check DOES NOT propose new model values.
+    overhang=[max(0,low[i]-lo[i],hi[i]-high[i]) for i in range(3)]
+    if any(overhang[i]>max(.8,span[i]*.8) for i in (0,1)):
+        raise RejectedPlan("New component OUTSIZES the original building horizontally "
+                           "and projects unrealistically far from its source; "
+                           "choose YOUR OWN smaller attached world XYZ position and dimensions")
+    overlap=[max(0,min(hi[i],high[i])-max(lo[i],low[i])) for i in range(3)]
+    original_area=span[0]*span[1]
+    ground_intersection=overlap[0]*overlap[1]/original_area
+    center_z=(lo[2]+hi[2])*.5
+    center_xy=[(lo[i]+hi[i])*.5 for i in (0,1)]
+    centralized=all(abs(center_xy[i]-(low[i]+high[i])*.5)<span[i]*.3 for i in (0,1))
+    if (center_z<low[2]+.45*span[2] and (ground_intersection>.35 or
+                                      (centralized and ground_intersection>.12))):
+        raise RejectedPlan("New component BLOCKS too much of existing low-level building "
+                           "footprint, door/stairs/circulation at WORLD Z floor. "
+                           "Qwen must choose a different ORIGINAL attachment/placement")
     return {"source_world_bounds":[low,high],"new_world_bounds":[lo,hi],
             "ground_footprint_overlap_fraction":round(ground_intersection,4),
             "changes_to_artist_values":0,"art_approved":False}

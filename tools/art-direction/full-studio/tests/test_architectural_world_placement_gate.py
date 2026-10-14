@@ -25,6 +25,29 @@ class Coherence(unittest.TestCase):
  def test_slim_support_attachment_is_allowed(self):
   p=primitive("Eldoria_Added_C04_StoneSupport","cube",[1.2,0,1.4],[.28,.28,.5])
   self.assertEqual(reject_obviously_bad_component_placement(p,BASE)["changes_to_artist_values"],0)
+ def test_actual_pc_qwen_cycle1_pedestal_overlaps_front_low_center(self):
+  p=primitive("Eldoria_Added_C01_Pedestal","cube",
+              [0.0,-0.04135,0.15164],[0.8,0.3,0.8])
+  copy_before=copy.deepcopy(p)
+  with self.assertRaisesRegex(RejectedPlan,"BLOCKS"):
+   reject_obviously_bad_component_placement(p,BASE)
+  self.assertEqual(p,copy_before)
+ def test_actual_pc_qwen_cycle2_block_protrudes_past_roof_gable(self):
+  p=primitive("Eldoria_Added_C02_StoneWatchtower","cube",
+              [0.0,3.0,2.0],[1.0,2.0,1.0])
+  copy_before=copy.deepcopy(p)
+  with self.assertRaisesRegex(RejectedPlan,"OUTSIZES"):
+   reject_obviously_bad_component_placement(p,BASE)
+  self.assertEqual(p,copy_before)
+ def test_sensible_roof_attachment_and_slim_support_still_allowed(self):
+  roof=primitive("Eldoria_Added_C03_RoofFinial","cone",
+                 [0,0,3.2],[.15,.15,.4])
+  side=primitive("Eldoria_Added_C04_SideBracket","cube",
+                 [1.2,-0.2,2.5],[.18,.25,.2])
+  for p in (roof,side):
+   v=reject_obviously_bad_component_placement(p,BASE)
+   self.assertFalse(v["art_approved"])
+   self.assertEqual(v["changes_to_artist_values"],0)
  def test_disconnected_object_is_rejected(self):
   p=primitive("Eldoria_Added_C04_Support","cube",[10,0,1],[.25,.25,.5])
   with self.assertRaisesRegex(RejectedPlan,"disconnected"):reject_obviously_bad_component_placement(p,BASE)
