@@ -309,7 +309,8 @@ def critique(args,reference,before,after,role):
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
-def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation):
+def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation,
+                                  min_successful_cycles=1, successful_count=1):
     """One visible empty-scene blockout does not equal completed artistic authoring.
 
     Existing asset work may stop when Qwen judges it adequate, subject to the
@@ -318,7 +319,8 @@ def should_continue_after_critique(cycle_number, max_cycles, started_empty, eval
     """
     return cycle_number < max_cycles and (
         evaluation.get("clearly_failed", True) or
-        (started_empty and cycle_number == 1)
+        (started_empty and cycle_number == 1) or
+        successful_count < min_successful_cycles
     )
 
 
@@ -339,13 +341,16 @@ def main():
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
+    p.add_argument("--min-successful-cycles",type=int,default=1,
+                   help="Require this many real Blender/Qwen cycles before considering a self-critique stop")
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
     p.add_argument("--phase",choices=("full","geometry","mesh_edit","surface","detail"),default="full")
     p.add_argument("--max-actions",type=int,default=32)
     p.add_argument("--max-tokens",type=int,default=1250)
     p.add_argument("--prior-lessons",type=pathlib.Path)
     args=p.parse_args()
-    if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160:raise ValueError("Cycle/action limits")
+    if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
+        raise ValueError("Cycle/action/minimum-successful-cycle limits")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
     if args.out.exists() and any(args.out.iterdir()):raise ValueError("Fresh output required")
@@ -455,7 +460,8 @@ def main():
         history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
         known_objects=[o["name"] for o in catalog["components"][:80]]
-        if should_continue_after_critique(cycle,args.max_cycles,args.source is None,evaluation):
+        if should_continue_after_critique(cycle,args.max_cycles,args.source is None,evaluation,
+               args.min_successful_cycles,len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"])):
             # Topology-changing actions invalidate original face IDs. Inspect
             # the actual generated BLEND before giving Qwen the next face map.
             next_inspection=trial/"reinspection"
@@ -474,7 +480,8 @@ def main():
                               for x in inspected_again["objects"][:80]]
             known_objects=[x["name"] for x in verified_objects]
             history+="\\nUP-TO-DATE ACTUAL BLENDER FACE/EXTREMA INVENTORY: "+json.dumps(verified_objects)[:12000]
-        if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation):break
+        if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation,
+               args.min_successful_cycles,len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"])):break
         if started_empty and cycle==1:
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
