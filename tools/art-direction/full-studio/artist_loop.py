@@ -318,11 +318,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
              "Invent your own unique object name STARTING Eldoria_Added_ followed by a letter and 3-42 alphanumeric/underscore characters. "
              "Create genuinely VOLUMETRIC 3D architecture with readable depth in the player's fixed camera: NOT a single floor plane or two triangles. "
              "If choosing primitive, design meaningful original X/Y/Z scale and placement; a flat plane is NOT valid. "
-             "If choosing your own vertices/faces, choose at least SIX non-coplanar vertices, FOUR nondegenerate faces and visibly three-dimensional depth. "
+             "If choosing your own vertices/faces, design a CLOSED physical architectural solid with at least SIX non-coplanar vertices and FOUR faces: each mesh edge must belong to exactly TWO faces, no open triangular flaps. "
+             "In each next art cycle, add a DIFFERENT complementary 3D part to the same architectural feature, connecting it naturally to your previous visible addition. "
+             "Consult CURRENT actual Blender source inventory and prior real render, choosing a NEW different Eldoria_Added_ name in each cycle. "
              "NEVER reuse any inherited mesh name or object mentioned in the verified source inventory. "
              "Your SECOND and optional THIRD actions MUST use the identical NEW object name you chose FIRST, "
              "to shade/finish YOUR newly created component, not repaint the original tower. "
-             if args.source_build_phase and trial.name=="cycle-1"
+             if args.source_build_phase
              else "(sculpt, sculpt_anchor, extrude, inset, selected-edge bevel, NEW primitive or authored mesh). ")
           + "The SECOND is YOUR material or UV operation. "
           "An optional THIRD is material, UV or a safe non-global modifier. "
@@ -333,7 +335,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
       args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
-                                       args.source_build_phase and trial.name=="cycle-1"),timeout=540)
+                                       args.source_build_phase),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -346,7 +348,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     validate_plan(doc)
     if source_exists and args.phase=='full':
         verify_source_plan(doc,source_inventory)
-        if args.source_build_phase and trial.name=="cycle-1":
+        if args.source_build_phase:
             actions=doc["actions"]
             if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
                 raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")

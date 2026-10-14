@@ -20,6 +20,14 @@ class ComponentQuality(unittest.TestCase):
   p=doc("mesh",{"vertices":[[0,0,0],[1,0,0],[0,1,0],[0,0,1],[1,0,1],[0,1,1]],
                  "faces":[[0,1,2],[3,4,5],[0,1,4,3],[1,2,5,4],[2,0,3,5]]})
   frozen=copy.deepcopy(p);self.assertTrue(verify_volume_and_complexity(p));self.assertEqual(p,frozen)
+ def test_original_open_3d_spike_is_rejected(self):
+  p=doc("mesh",{"vertices":[[0,0,0],[1,0,0],[.5,.5,0],[0,.5,0],
+          [0,0,1],[1,0,1],[.5,.5,1],[0,.5,1]],
+          "faces":[[0,1,2],[2,3,0],[4,5,6],[6,5,4],[0,4,5],[5,6,1]]})
+  original=copy.deepcopy(p)
+  with self.assertRaisesRegex(RejectedPlan,"OPEN or NONMANIFOLD"):
+   verify_volume_and_complexity(p)
+  self.assertEqual(p,original)
  def test_artist_chooses_new_primitive_not_plane(self):
   with self.assertRaisesRegex(RejectedPlan,"flat PLANE"):
    verify_volume_and_complexity(doc("primitive",{"shape":"plane","scale":[.4,.4,.4]}))

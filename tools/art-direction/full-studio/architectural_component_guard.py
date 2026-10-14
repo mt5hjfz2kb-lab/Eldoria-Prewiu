@@ -38,4 +38,13 @@ def verify_volume_and_complexity(doc):
                     for k in range(j+1,len(vectors)))
         if not nonflat:
             raise RejectedPlan("All chosen new component vertices are COPLANAR; Qwen must author a genuine 3D volume")
+        # Professional reusable architecture needs closed boundaries, not a
+        # floating one-sided triangle awning. Qwen owns EVERY mesh face.
+        edge_counts={}
+        for face in faces:
+            for i,v in enumerate(face):
+                a,b=sorted((v,face[(i+1)%len(face)]))
+                edge_counts[(a,b)]=edge_counts.get((a,b),0)+1
+        if any(n!=2 for n in edge_counts.values()) or len(set(k for e in edge_counts for k in e))!=len(vertices):
+            raise RejectedPlan("Model-authored new 3D mesh is OPEN or NONMANIFOLD: every edge must belong to exactly 2 polygon faces and every vertex must be used; design YOUR OWN closed solid or choose a volumetric Blender primitive")
     return True
