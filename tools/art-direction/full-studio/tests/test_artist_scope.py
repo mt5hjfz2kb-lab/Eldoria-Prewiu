@@ -37,14 +37,21 @@ class AuthorScopeTests(unittest.TestCase):
         allowed=schema["properties"]["actions"]["items"]["properties"]["op"]["enum"]
         for op in ("sculpt","mesh","shader_graph","geometry_nodes","native_operator"):
             self.assertIn(op,allowed)
-    def test_surface_phase_allows_artistic_materials_but_not_unsafe_code(self):
-        schema=artist_loop.schema_for_plan(5,True,"surface")
-        ops=schema["properties"]["actions"]["items"]["properties"]["op"]["enum"]
-        self.assertIn("material",ops)
-        self.assertIn("primitive",ops)
-        self.assertIn("modifier",ops)
-        self.assertNotIn("geometry_nodes",ops)
-        self.assertNotIn("execute_python",ops)
+    def test_surface_phase_limits_to_authentic_pbr(self):
+        schema=artist_loop.schema_for_plan(5,True,"surface","architecture",["tower-base","tower-roof"])
+        act=schema["properties"]["actions"]["items"]["properties"]
+        self.assertEqual(act["op"]["const"],"material")
+        self.assertEqual(act["target"]["enum"],["tower-base","tower-roof"])
+        self.assertEqual(set(act["params"]["required"]),{"base_color","roughness","metallic"})
+    def test_geometry_phase_requires_actual_blender_position_and_scale(self):
+        schema=artist_loop.schema_for_plan(4,True,"geometry","architecture",["tower-base"])
+        act=schema["properties"]["actions"]["items"]["properties"]
+        self.assertEqual(act["op"]["const"],"transform")
+        self.assertEqual(act["target"]["enum"],["tower-base"])
+        self.assertEqual(set(act["params"]["required"]),{"location","scale"})
+    def test_detail_phase_only_bevel(self):
+        schema=artist_loop.schema_for_plan(2,True,"detail","architecture",["tower-base"])
+        self.assertEqual(schema["properties"]["actions"]["items"]["properties"]["op"]["const"],"bevel")
     def test_fresh_valid_approval_free_plan(self):
         with tempfile.TemporaryDirectory() as temp:
             args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct",brief="Design original watchtower with roof",asset_category="architecture",phase="full")

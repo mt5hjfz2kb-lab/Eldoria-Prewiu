@@ -164,7 +164,11 @@ def validate_plan(doc):
             require(type(p.get("samples",32)) is int and 4<=p.get("samples",32)<=256, "Samples budget invalid")
             require(type(p.get("width",960)) is int and 320<=p.get("width",960)<=1920, "Width budget invalid")
             require(type(p.get("height",720)) is int and 240<=p.get("height",720)<=1200, "Height budget invalid")
-    require(geometric > 0, "No substantial authored geometry action")
+    # An actual PBR surface-only pass on an immutable existing BLEND is a
+    # permitted artistic modification. New assets still require real geometry.
+    material_edit = doc.get("asset_decision") in ("MODIFY","REUSE") and any(
+        a.get("op") in ("material","shader_graph") for a in actions)
+    require(geometric > 0 or material_edit, "No real authored geometry or existing-source material edit")
     return {"asset_id":doc["asset_id"],"action_count":len(actions),"geometric_actions":geometric}
 
 def load_plan(filename):

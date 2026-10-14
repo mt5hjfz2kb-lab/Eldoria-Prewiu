@@ -47,99 +47,102 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full'):
-    # A small local 2B visual model cannot simultaneously design 20 Blender
-    # operations and correctly invent arbitrary face indices. Author from
-    # scratch in bounded stages: geometry first, finishing on REAL next source.
-    number={"type":"number","minimum":-15,"maximum":15}
-    angle={"type":"number","minimum":-3.1416,"maximum":3.1416}
-    dimension={"type":"number","minimum":0.15,"maximum":8}
-    point={"type":"array","minItems":3,"maxItems":3,"items":number}
-    scale={"type":"array","minItems":3,"maxItems":3,"items":dimension}
-    orientation={"type":"array","minItems":3,"maxItems":3,"items":angle}
-    actions=["primitive","mesh","duplicate","transform","sculpt","extrude","inset",
-             "subdivide","bevel","modifier","boolean","material","uv","join","delete",
-             "light","camera","render_settings","texture","asset_info",
-             "native_operator","shader_graph","geometry_nodes","import_asset"]
-    if source_exists and phase=="surface":
-        actions=["material","bevel","transform","duplicate","primitive","uv","modifier"]
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None):
+    # Let a small local visual model choose actual geometry/materials in
+    # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
+    # prevents incompatible parameter keys from being accepted.
+    max_location=180 if category=="terrain" else 35 if category=="vegetation" else 15
+    max_scale=120 if category=="terrain" else 25 if category=="vegetation" else 8
+    pos={"type":"number","minimum":-max_location,"maximum":max_location}
+    scale_dim={"type":"number","minimum":0.05,"maximum":max_scale}
+    unit={"type":"number","minimum":0,"maximum":1}
+    point={"type":"array","items":pos,"minItems":3,"maxItems":3}
+    scale={"type":"array","items":scale_dim,"minItems":3,"maxItems":3}
+    rgba={"type":"array","items":unit,"minItems":4,"maxItems":4}
+    angle={"type":"array","items":{"type":"number","minimum":-3.1416,"maximum":3.1416},"minItems":3,"maxItems":3}
+    all_ops=["primitive","mesh","duplicate","transform","sculpt","extrude",
+        "inset","subdivide","bevel","modifier","boolean","material","uv",
+        "join","delete","light","camera","render_settings","texture",
+        "asset_info","native_operator","shader_graph","geometry_nodes","import_asset"]
     if not source_exists:
-        # Each action must create a real, bounded Blender mesh. Materials,
-        # reuse, UV and Geometry Nodes are available in later source cycles.
-        primitive_params={"type":"object","properties":{
-           "shape":{"type":"string","enum":["cube","cylinder","cone","uv_sphere","ico_sphere"]},
-           "location":point,"rotation":orientation,"scale":scale},
-           "required":["shape","location","rotation","scale"],
-           "additionalProperties":False}
-        op={"type":"string","const":"primitive"}
-        params=primitive_params
+        action_op={"type":"string","const":"primitive"}
+        params={"type":"object","properties":{
+          "shape":{"type":"string","enum":["cube","cylinder","cone","uv_sphere","ico_sphere","plane"]},
+          "location":point,"rotation":angle,"scale":scale},
+          "required":["shape","location","rotation","scale"],
+          "additionalProperties":False}
+    elif phase=="geometry":
+        action_op={"type":"string","const":"transform"}
+        params={"type":"object","properties":{"location":point,"scale":scale},
+                "required":["location","scale"],"additionalProperties":False}
+    elif phase=="surface":
+        action_op={"type":"string","const":"material"}
+        params={"type":"object","properties":{
+          "base_color":rgba,
+          "roughness":{"type":"number","minimum":0.45,"maximum":1},
+          "metallic":{"type":"number","minimum":0,"maximum":0.35}},
+          "required":["base_color","roughness","metallic"],
+          "additionalProperties":False}
+    elif phase=="detail":
+        action_op={"type":"string","const":"bevel"}
+        params={"type":"object","properties":{
+          "width":{"type":"number","minimum":0.01,"maximum":0.22},
+          "segments":{"type":"integer","minimum":1,"maximum":4},
+          "apply":{"type":"boolean"}},
+          "required":["width","segments","apply"],"additionalProperties":False}
     else:
-        op={"type":"string","enum":actions}
+        action_op={"type":"string","enum":all_ops}
         params={"type":"object"}
+    target_schema={"type":"string","minLength":2,"maxLength":70}
+    if source_exists and known_objects and phase in ("geometry","surface","detail"):
+        target_schema={"type":"string","enum":known_objects}
     action={"type":"object","properties":{
-       "id":{"type":"string","minLength":2,"maxLength":60},
-       "op":op,"target":{"type":"string","minLength":2,"maxLength":70},
-       "reason":{"type":"string","minLength":15,"maxLength":160},
-       "params":params},
-       "required":["id","op","target","reason","params"],
-       "additionalProperties":False}
+        "id":{"type":"string","minLength":2,"maxLength":60},
+        "op":action_op,
+        "target":target_schema,
+        "reason":{"type":"string","minLength":15,"maxLength":170},
+        "params":params},
+        "required":["id","op","target","reason","params"],
+        "additionalProperties":False}
     return {"type":"object","properties":{
-       "schema_version":{"type":"integer","const":2},
-       "asset_id":{"type":"string","minLength":2,"maxLength":70},
-       "observed_defect":{"type":"string","minLength":30,"maxLength":160},
-       "design_intent":{"type":"string","minLength":30,"maxLength":200},
-       "asset_decision":{"type":"string","enum":["MODIFY","REUSE"] if source_exists else ["NEW"]},
-       "expected_visual_difference":{"type":"string","minLength":30,"maxLength":160},
-       "mobile_risks":{"type":"string","maxLength":180},
-       "actions":{"type":"array","minItems":2 if not source_exists else 1,
-                  "maxItems":min(max_actions,8),"items":action}},
-       "required":["schema_version","asset_id","observed_defect","design_intent",
-         "asset_decision","expected_visual_difference","mobile_risks","actions"],
-       "additionalProperties":False}
+        "schema_version":{"type":"integer","const":2},
+        "asset_id":{"type":"string","minLength":2,"maxLength":70},
+        "observed_defect":{"type":"string","minLength":30,"maxLength":180},
+        "design_intent":{"type":"string","minLength":30,"maxLength":200},
+        "asset_decision":{"type":"string","enum":["MODIFY","REUSE"] if source_exists else ["NEW"]},
+        "expected_visual_difference":{"type":"string","minLength":30,"maxLength":200},
+        "mobile_risks":{"type":"string","maxLength":180},
+        "actions":{"type":"array","minItems":2 if not source_exists else 1,
+                   "maxItems":min(max_actions,8),"items":action}},
+        "required":["schema_version","asset_id","observed_defect","design_intent",
+                    "asset_decision","expected_visual_difference","mobile_risks","actions"],
+        "additionalProperties":False}
 
-def contract_brief(max_actions, source_exists=False, phase='full'):
-    # Short, exact model contract with the full vetted toolbox available once
-    # an editable source exists. This avoids copying the irrelevant cliff data
-    # from historic journals or expanding incomplete 20-action JSON documents.
-    base=("You are the sole creative 3D artist. Blender is your workshop. "
-      "Build the owner's CURRENT requested medieval asset, not terrain cliffs "
-      "from old experiments. Never copy old object IDs, numeric coordinates, "
-      "run numbers or failed actions. Do not approve yourself. Use strict JSON "
-      "schema_version=2. Action IDs must be UNIQUE descriptive names; targets "
-      "must be real objects you create, or in the verified source inventory. "
-      "Parameters are metric numbers (radians for rotations). Each reason "
-      "explains YOUR own creative geometry decision. "
-      "Generate between 2 and "+str(max_actions)+" CONCISE operations: "
-      "start by shaping the main silhouette, then include at least one "
-      "independent secondary feature. No huge face/vertex arrays. ")
+def contract_brief(max_actions,source_exists=False,phase="full",category="architecture"):
+    base=("You are the sole 3D ARTIST. Every operation, target object and "
+      "numeric value is chosen by you and physically executed in Blender. "
+      "Return strict schema_version=2 JSON; each unique action needs op, "
+      "target, reason and params. Your current asset brief/reference and real "
+      "source inventory are authoritative, NOT historical cliff scripts. "
+      "Keep plans short: at most "+str(max_actions)+" actions. "
+      "No Python code, placeholders, model approval or artificial confirmations. ")
+    if not source_exists and category=="terrain":
+        return base+"Create a real contiguous terrain PATCH with varied elevations, cohesive silhouette and deliberate base. Every op=primitive; params={shape,location:[x,y,z],rotation:[0,0,0],scale:[x,y,z]}. Your later cycles will sculpt and shade it. You decide all original dimensions."
+    if not source_exists and category=="vegetation":
+        return base+"CREATE actual aligned trunk and canopy meshes from scratch. Every op=primitive with shape,location,rotation,scale. YOU select physical proportions. Later stages add materials."
+    if not source_exists and category=="prop":
+        return base+"CREATE a recognizable multi-part medieval prop with two or more meshes. Every op=primitive with shape,location,rotation,scale; all creative choices are YOURS."
+    if not source_exists and category=="character":
+        return base+"CREATE static humanoid blockout geometry only, proportions chosen by YOU. Do not pretend there is rigging/animation. Every op=primitive with shape,location,rotation,scale."
     if not source_exists:
-        return (base+
-          "The scene is EMPTY; asset_decision is NEW. THIS STAGE IS THE "
-          "INITIAL VISIBLE SILHOUETTE ONLY; finishing operations follow after "
-          "Blender creates actual source geometry. For ALL actions op=primitive "
-          "with params EXACTLY {shape:cube|cylinder|cone|uv_sphere|ico_sphere,"
-          "location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. "
-          "Every action must CREATE A NEW DISTINCTLY NAMED MESH. "
-          "Real medieval tower body height roughly 3-8 meters, roof above it, "
-          "stone walls, one smaller defensive feature. Location coordinates "
-          "must be between -15 and +15m, scale 0.15 to 8. All numbers realistic. "
-          "Use TWO distinct shape types (e.g. cylinder body and cone roof), "
-          "not repeated huge cube blobs. Never use operation mesh, duplicate "
-          "or material while there is no source. Never use old cliff names. "
-          "Compose original camera-visible components and preserve modularity.")
-    return (base+
-      ("This is the SURFACE AND DETAIL pass: choose exact real mesh names; "
-       "author PBR colours using material {base_color:[r,g,b,a],roughness:0..1,metallic:0}, "
-       "use bevel {width:0.02..0.14,segments:1..3}, UV {method:smart|cube}, "
-       "and at least one genuine visible geometry modification. "
-       "You may add primitive details but DO NOT replace the original geometry. "
-       if phase=="surface" else "")+
-      "The existing source objects have been INSPECTED in real Blender. "
-      "Choose Qwen-authored operations within safe full toolbox: primitive, "
-      "mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, "
-      "modifier, boolean, material, uv, join, native_operator, shader_graph "
-      "and geometry_nodes, and import_asset from a verified OWNED/CC0 source; no code execution. Source object names must match "
-      "the verified inventory. Finish the existing asset rather than restart.")
+        return base+"EMPTY scene: asset_decision=NEW, every op=primitive. Each has params EXACTLY {shape:cylinder|cone|cube|uv_sphere|ico_sphere,location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. Model a separate, vertically aligned masonry body and believable roof. Do not bury objects, offset roof or overlap identical solids. All parts must be original and camera-visible."
+    if phase=="geometry":
+        return base+"THIS STAGE ONLY FIXES GEOMETRY of the real existing Blender meshes. For EACH action op=transform; choose one EXACTLY NAMED source object from verified inventory. params must contain BOTH location:[x,y,z] and scale:[sx,sy,sz], no extra keys. FIX the formerly overlapping and horizontally misaligned roof and tower by placing objects at DIFFERENT HEIGHTS. Y coordinates must not be copied blindly. Blender operation is absolute position and absolute scale. NEVER wrap values in a transform sub-object."
+    if phase=="surface":
+        return base+"THIS STAGE ONLY AUTHORS REAL PBR MATERIALS on named existing Blender meshes. For EACH action op=material; choose exact source object name, params EXACTLY {base_color:[r,g,b,a],roughness:0.45..1,metallic:0..0.35}. Use plausible medieval limestone, terracotta, oak and aged iron according to each component; different real objects must receive coherent but distinct artist-picked colours. Do not use transform or invent object IDs."
+    if phase=="detail":
+        return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
+    return base+"You may choose Qwen-authored primitive, mesh, duplicate, transform, sculpt, extrude, inset, bevel, UV, modifier, boolean, material, shader_graph and geometry_nodes and verified import_asset operations. Ensure type-specific params conform to the Blender toolbox. Focus on a meaningful geometry and materials improvement, not an invisible technical change."
 
 def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=None,transport='direct',mcp_addon=None,mcp_sha256=None):
     cmd=[executable,"-b","--python-exit-code","1","--python",
@@ -157,8 +160,8 @@ def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=Non
     if result.returncode:raise RuntimeError("Real Blender execution failed; see output log: "+result.stdout[-1700:])
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
-             source_exists=False):
-    msg=(contract_brief(args.max_actions,source_exists,args.phase)
+             source_exists=False,known_objects=None):
+    msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
       +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-4000:]
       +"\nNon-copyable empirical lessons: "+memory[:600]
@@ -168,7 +171,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -233,7 +236,7 @@ def main():
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
-    p.add_argument("--phase",choices=("full","surface"),default="full")
+    p.add_argument("--phase",choices=("full","geometry","surface","detail"),default="full")
     p.add_argument("--max-actions",type=int,default=32)
     p.add_argument("--max-tokens",type=int,default=1250)
     p.add_argument("--prior-lessons",type=pathlib.Path)
@@ -264,6 +267,7 @@ def main():
     source=args.source
     original_source_sha=sha(args.source) if args.source else None
     history=""
+    known_objects=[]
     if args.source:
         inspected=args.out/"source-inspection"
         command=[args.blender,"-b","--python-exit-code","1","--python",str(HERE/"inspect_source.py"),
@@ -282,6 +286,7 @@ def main():
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
                          for x in actual["objects"][:80]]
         history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
+        known_objects=[o["name"] for o in verified_objects]
     if args.asset_catalog:
         inventory=json.loads(args.asset_catalog.read_text(encoding="utf-8"))
         allowed=[{"path":i["relative_path"],"sha256":i["sha256"],"license":i["license"]}
@@ -292,7 +297,7 @@ def main():
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,4):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source))
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
@@ -332,6 +337,7 @@ def main():
                  for o in catalog["components"][:60]]
         history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
+        known_objects=[o["name"] for o in catalog["components"][:80]]
         if not evaluation.get("clearly_failed",True):break
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
     final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",

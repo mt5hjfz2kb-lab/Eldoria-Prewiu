@@ -228,8 +228,8 @@ jobs:
             --source /tmp/eldoria-qwen-source-authenticated/cycle-1/output/artist-asset.blend \
             --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
             --out /tmp/eldoria-qwen-real-source-refinement \
-            --max-cycles 1 --max-actions 5 --max-tokens 1600 \
-            --asset-category architecture --phase surface \
+            --max-cycles 1 --max-actions 4 --max-tokens 1250 \
+            --asset-category architecture --phase geometry \
             --model qwen3-vl:2b-instruct
       - name: Inspect source edit integrity and Qwen original actions
         run: |
