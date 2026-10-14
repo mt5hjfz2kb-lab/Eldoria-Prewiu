@@ -424,7 +424,14 @@ def main():
                 doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
-                history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
+                # Keep every exact rejected proposal and the actionable validator
+                # reason: never clamp geometry or silently rewrite model values.
+                raw_attempt=trial/("qwen-raw-attempt-"+str(attempt)+".json")
+                (trial/("rejected-plan-attempt-"+str(attempt)+".json")).write_text(
+                    json.dumps({"attempt":attempt,"rejection":str(e),
+                      "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
+                      "no_artistic_values_rewritten":True},indent=2)+"\\n",encoding="utf-8")
+                history+="\\nA non-executable Qwen proposal was REJECTED: "+str(e)
                 if attempt==3:raise
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
