@@ -74,7 +74,7 @@ try{
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
-      '--max-cycles','3','--min-successful-cycles','2',
+      '--max-cycles','5','--min-successful-cycles','2',
       '--max-plan-attempts','5','--max-actions','3','--max-tokens','2048',
       '--vision-max-edge','768','--asset-category','architecture')
     if($case.kind -eq 'assembly'){$params+=@('--source-build-phase','--source-tool-sequencing')}
