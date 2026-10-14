@@ -328,10 +328,15 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None,source_inventory=None,spatial_views=None):
+    # Preserve older offline test callers without weakening runtime constraints.
+    source_build=bool(getattr(args,"source_build_phase",False))
+    tool_sequence=bool(getattr(args,"source_tool_sequencing",False))
+    if not hasattr(args,"source_build_phase"):args.source_build_phase=source_build
+    if not hasattr(args,"source_tool_sequencing"):args.source_tool_sequencing=tool_sequence
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
       +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-11800:]
-      +"\nNon-copyable empirical lessons: "+memory[:600]
+      +"\nEvidence-ranked verified lessons (not geometry instructions): "+memory[:3500]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
     if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
