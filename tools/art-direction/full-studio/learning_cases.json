@@ -93,6 +93,47 @@
         "art_approved": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "independent-38639177148-8b-apex-overhang",
+      "run_id": 38639177148,
+      "evidence_artifact_id": 11929881351,
+      "raw_response_sha256": "fec5f65fb71c370a9c4290512a1205fc24f79ec8f64eb765beed2f0370857117",
+      "result": "VISUAL_REJECTED_INDEPENDENT_REVIEW",
+      "observed": "On actual Blender fixed-camera timber watchtower images, Qwen 8B named a cylinder RoofOverhang but placed it centrally at WORLD Z 3.27m (roof apex), so it produced a cropped roof-top disc, NOT an attached architectural eave. Positive executable outcome is not aesthetic improvement.",
+      "safe_lesson": "When adding a timber roof eave or overhang, ensure the ORIGINAL chosen geometry touches an actual X/Y outer roof edge and is below the highest WORLD Z apex; a central roof-top cylinder is not a realistic roof-edge detail. Check matched-camera A/B for visible and coherent improvement.",
+      "review_provenance": {
+        "source": "real Qwen8B Blender fixed-camera visual comparison",
+        "artifact_id": 11929881351,
+        "trial": "8b-assembly/cycle-1",
+        "pending_manifest_sha256": "41fb6132e883cb4fa28cc7cb205f7e8090f2aa0079231b7c18106c0a8a2b7755",
+        "original_source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "before_image_sha256": "d583a46ed8b603fabcc292b0bb0d1376b725589a882bd771de15a3cf62551d7e",
+        "after_image_sha256": "97ed0e16a8cff37f9f5db5d7fb2f67237a5d192a8d1d09633581c6b1c53353b7",
+        "unity_verified": false,
+        "art_approved": false,
+        "weights_updated": false
+      }
+    },
+    {
+      "id": "independent-38639177148-4b-unsupported-unity-claim",
+      "run_id": 38639177148,
+      "evidence_artifact_id": 11929881351,
+      "raw_response_sha256": "ecf1ad368f52d3135500be55e5b146697b5b2869e9fa02d455a19d29fb00ca34",
+      "result": "VISUAL_REJECTED_INDEPENDENT_REVIEW",
+      "observed": "Qwen4B full-cycle critique described an unverified Unity render and Hero Gate V3/cliff_rocks rather than the actual grey Blender fixed-camera timber tower, and reported clearly_failed=true. New Qwen sculpt on inherited source made no reliable professional visual upgrade.",
+      "safe_lesson": "Review the actual Blender BEFORE/AFTER images of the CURRENT wooden Valoria tower only. Never invent a Unity render or reference to a historical cliff, unrelated gate or scenery not in the current images. Treat a model's clearly_failed self-assessment as negative feedback, not as an approved result.",
+      "review_provenance": {
+        "source": "real Qwen4B blender fixed camera and qwen-critique.json",
+        "artifact_id": 11929881351,
+        "trial": "4b-sculpt/cycle-1",
+        "pending_manifest_sha256": "92110ff2506fd30fda27cce630112c6bf7437e5ed973667b8e6a8e2a9c3a317f",
+        "before_image_sha256": "8780702c8cc85a22b4cf01dd28e3900c8d794232709d314177a6030149bc7840",
+        "after_image_sha256": "77b44a30f9e9d4084fe356af7675b7118072242f91ca9eefdd2f80800b881db1",
+        "unity_verified": false,
+        "art_approved": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
