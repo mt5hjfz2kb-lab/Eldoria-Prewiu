@@ -14,6 +14,7 @@ from source_geometry_gate import verify_source_plan,relative_triangle_limit
 from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
 from architectural_component_guard import verify_volume_and_complexity
 from architectural_world_placement_gate import reject_obviously_bad_component_placement
+from protected_camera_regions import inspect_protected_regions
 import copy, re
 from triangle_budget import check_triangle_growth
 
@@ -625,6 +626,22 @@ def main():
                       " of the screen, too little for the player camera. "
                       "The next Qwen plan must change the core silhouette and not simply tweak materials.")
             continue
+        if args.source_build_phase and args.review:
+            # The render is real and the camera fixed. Qwen must not cover
+            # art-directed player entry/stairs. Reject, never reposition art.
+            region_proof=inspect_protected_regions(
+                stage/"before-blender.png",stage/"after-blender.png",args.review)
+            (trial/"protected-camera-regions.json").write_text(
+                json.dumps(region_proof,indent=2)+"\n",encoding="utf-8")
+            if not region_proof["allowed"]:
+                offenders=[f"{z['name']} changed {z['changed_fraction']:.1%}"
+                           for z in region_proof["zones"] if not z["allowed"]]
+                records.append({"cycle":cycle,"status":"PROTECTED_ACCESS_OCCLUSION_REJECTED",
+                                "regions":region_proof})
+                history+=("\nVISUAL QA REJECTED: new architecture obscures original access: "+
+                          "; ".join(offenders)+
+                          ". Qwen choose ORIGINAL geometry elsewhere without blocking door or stairs.")
+                continue
         evaluation=critique(args,args.reference,stage/"before-blender.png",stage/"after-blender.png",role)
         (trial/"qwen-critique.json").write_text(json.dumps(evaluation,indent=2)+"\n")
         records.append({"cycle":cycle,"status":"ART_REVIEW_REQUIRED",
