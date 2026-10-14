@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-14",
+  "source_unity_run": 38562136041,
+  "source_unity_artifact": 11892482908,
+  "compared": "real native Unity 1440x1000 BEFORE vs A9 AFTER exactly matching camera",
+  "artist_model": "qwen3-vl:4b-instruct",
+  "artist_run": 38563200385,
+  "original_artifact": 11892684645,
+  "authoring": [
+    {
+      "attempt": "A",
+      "status": "timeout",
+      "error_file": "artist-1-error.txt",
+      "error": "TimeoutError('timed out'); no genuine proposal attributed"
+    },
+    {
+      "attempt": "B",
+      "status": "finished",
+      "raw_file": "artist-2-raw.txt",
+      "raw_sha256": "0457ee6feef4c11dd665f92b7bec926df927abff9835aaaffba79aafb0d4434a",
+      "original_text": "1. Courtyard void persists as flat grassy expanse—no worn paths or natural erosion to unify with stone walls.\n\n2. Detached wall masses (left: -21,-8; right: 23,1) create visual dissonance against unified cliff and fort structure without modular connection logic.\n\n3. Lower courtyard x[-23,23], y[-13,8] lacks soil texture gradient—no earth erosion or slope variation to match preserved grass/rock detail at edges.\n\n4. Risk: Visual hierarchy collapses; no medieval rhythm emerges from empty center unless terrain grading and material decay are redefined without micro-props or sticker roads."
+    }
+  ],
+  "actual_correction": {
+    "script": "tools/valoria-bastion1-assembly/sculpt_bastion_native_terrain.py",
+    "head_commit": "a95d2cb4d89c162ca0962d16a503e72143adca69",
+    "choices": "4 macro organic service paths baked into the original terrain photo albedo, diffuse underfoot wear not sticker mesh or physical prop; native geometry road and plot masks unchanged",
+    "authorship": "Qwen originated need for worn routes and graded earthy courtyard, art director defined coordinates and Python/Blender authored actual pixels; no AI vertex authorship claimed",
+    "target_run": 38564062748
+  },
+  "status": "native_Unity_A10_candidate_render_pending; NO_ART_PASS",
+  "new_paid_cost_eur": 0
+}
