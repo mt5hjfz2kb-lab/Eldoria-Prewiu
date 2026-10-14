@@ -90,16 +90,21 @@ def clone_group(label,kit,x,y,size,base_z=None,rotate=0):
   o.matrix_world=transform @ old.matrix_world
   # Preserve originals; cut repeated production family wall-kit triangle density
   # for mobile at strategic camera scale without changing mesh source.
-  if variant=='A' and (kit is wallkit or kit is connectionkit):
+  if variant=='A' and (kit is wallkit or kit is connectionkit or kit is rockkit):
    key=old.data.name
    if key in lod_mesh_cache:
     o.data=lod_mesh_cache[key]
    else:
     o.data=old.data.copy()
-    modifier=o.modifiers.new('mobile architectural LOD 58pct','DECIMATE')
-    modifier.ratio=.58
-    bpy.context.view_layer.objects.active=o
-    bpy.ops.object.modifier_apply(modifier=modifier.name)
+    # Qwen native cliff rock is repeated 8x to form ONE bank. Use one
+    # reusable mid-distance LOD mesh (unchanged source/original materials)
+    # instead of eight full-resolution copies on Android/iOS cameras.
+    ratio=.48 if kit is rockkit else .58
+    if len(o.data.polygons)>250:
+     modifier=o.modifiers.new('Bastion I stratified bank mobile LOD','DECIMATE')
+     modifier.ratio=ratio
+     bpy.context.view_layer.objects.active=o
+     bpy.ops.object.modifier_apply(modifier=modifier.name)
     lod_mesh_cache[key]=o.data
   o.name='B1 '+variant+' original '+label+' '+str(len(reused))
   reused.append(o)
@@ -318,7 +323,7 @@ proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
- 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'source_material_slots_verified':True,
+ 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'source_material_slots_verified':True,
  'visual_pass':False,'mobile_device_pass':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_GLOBAL_COMPOSITION_PROOF',json.dumps(proof))
