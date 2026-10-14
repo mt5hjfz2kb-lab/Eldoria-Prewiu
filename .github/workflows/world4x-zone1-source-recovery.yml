@@ -1,0 +1,84 @@
+name: Zone One interrupted source recovery
+on:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-source-recovery.yml'
+      - 'tools/world4x-zone1/transfer/recovery/restore_prefix_objects.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-source-recovery
+  cancel-in-progress: false
+jobs:
+  recover-owned-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: "!contains(github.event.head_commit.message, '[zone1-recovery-complete]')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Recover only complete objects from known uploaded bundle prefix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,json,hashlib
+          root=pathlib.Path("tools/world4x-zone1/transfer/recovery")
+          parts=[root/f"source.bundle.part-{i:03}" for i in range(8)]
+          data=b"".join(p.read_bytes() for p in parts)
+          assert len(data)==50331648
+          pos=data.index(b"PACK")
+          assert pos==170
+          pathlib.Path("/tmp/zone1-prefix.pack").write_bytes(data[pos:])
+          PY
+          set +e
+          git unpack-objects -r < /tmp/zone1-prefix.pack 2> /tmp/zone1-prefix-unpack.log
+          status=$?
+          set -e
+          test "$status" = 128
+          grep -q 'early EOF' /tmp/zone1-prefix-unpack.log
+          python3 tools/world4x-zone1/transfer/recovery/restore_prefix_objects.py
+      - name: Verify exact recovered GLB and truthful incomplete-recovery status
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib
+          c=pathlib.Path("docs/world4x-zone1/evidence/local-cycle-20261014")
+          p=json.loads((c/"finishing-execution.json").read_text())
+          model=pathlib.Path("Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb")
+          assert hashlib.sha256(model.read_bytes()).hexdigest()==p["model_sha256"]
+          assert json.loads((c/"independent-final-source-review.json").read_text())["state"]=="SOURCE_CANDIDATE_ART_FAIL_UNITY_BLOCKED"
+          print("EXACT_CANDIDATE_GLTF_RECOVERED_ART_FAIL_RETAINED",model.stat().st_size)
+          PY
+      - name: Persist recovered source on isolated branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ github.ref_name }}" = 'prototype/world4x-zone1-zoom-reference-20261013'
+          git config user.name 'Eldoria source recovery'
+          git config user.email 'actions@users.noreply.github.com'
+          git add docs/world4x-zone1
+          git add -f Unity/Assets/Eldoria/ArtTests/World4XZone1 Unity/Assets/Eldoria/ArtTests/World4XZone1.meta
+          git diff --cached --name-only > /tmp/zone1-recovered-files.txt
+          python3 - <<'PY'
+          import pathlib
+          allowed=("docs/world4x-zone1/","Unity/Assets/Eldoria/ArtTests/World4XZone1/")
+          files=pathlib.Path("/tmp/zone1-recovered-files.txt").read_text().splitlines()
+          assert all(p=="Unity/Assets/Eldoria/ArtTests/World4XZone1.meta" or p.startswith(allowed) for p in files)
+          PY
+          if ! git diff --cached --quiet; then
+            git commit -m 'Persist hash-verified Zone One partial source recovery; ART FAIL [zone1-recovery-complete]'
+            git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zone1-recovered-source-${{ github.run_id }}
+          path: |
+            docs/world4x-zone1/
+            Unity/Assets/Eldoria/ArtTests/World4XZone1/
+            /tmp/zone1-prefix-unpack.log
+          retention-days: 30
