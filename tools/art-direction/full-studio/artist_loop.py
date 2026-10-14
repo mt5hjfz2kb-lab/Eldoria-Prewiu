@@ -351,6 +351,8 @@ def main():
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
+    p.add_argument("--max-plan-attempts",type=int,default=5,
+                   help="Bounded original Qwen plan revisions; no artistic value repair")
     p.add_argument("--min-successful-cycles",type=int,default=1,
                    help="Require this many real Blender/Qwen cycles before considering a self-critique stop")
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
@@ -359,7 +361,7 @@ def main():
     p.add_argument("--max-tokens",type=int,default=1250)
     p.add_argument("--prior-lessons",type=pathlib.Path)
     args=p.parse_args()
-    if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
+    if not 1<=args.max_cycles<=5 or not 1<=args.max_plan_attempts<=6 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
         raise ValueError("Cycle/action/minimum-successful-cycle limits")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
@@ -423,7 +425,7 @@ def main():
     records=[]
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
-        for attempt in range(1,4):
+        for attempt in range(1,args.max_plan_attempts+1):
             try:
                 doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects)
                 break
@@ -434,9 +436,9 @@ def main():
                 (trial/("rejected-plan-attempt-"+str(attempt)+".json")).write_text(
                     json.dumps({"attempt":attempt,"rejection":str(e),
                       "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
-                      "no_artistic_values_rewritten":True},indent=2)+"\\n",encoding="utf-8")
-                history+="\\nA non-executable Qwen proposal was REJECTED: "+str(e)
-                if attempt==3:raise
+                      "no_artistic_values_rewritten":True},indent=2)+"\n",encoding="utf-8")
+                history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
+                if attempt==args.max_plan_attempts:raise
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
         try:

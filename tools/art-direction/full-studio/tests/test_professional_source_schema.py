@@ -31,6 +31,19 @@ class TypedArtistTests(unittest.TestCase):
   edges=byop["bevel"]["properties"]["params"]["properties"]["edges"]["items"]
   self.assertEqual(faces,{"type":"integer","enum":[14,484]})
   self.assertEqual(edges,{"type":"integer","enum":[35,91]})
+ def test_dense_original_mesh_forbids_whole_object_bevel_modifier(self):
+  observed=[{"name":"Large source","faces":5338,"edges":10000}]
+  variants=source_artist_action_schema(observed)["oneOf"]
+  modifier=next(v for v in variants if v["properties"]["op"]["const"]=="modifier")
+  opts=modifier["properties"]["params"]["properties"]
+  self.assertNotIn("BEVEL",opts["kind"]["enum"])
+  self.assertTrue(opts["options"]["additionalProperties"] is False)
+  self.assertNotIn("apply",opts["options"]["properties"])
+ def test_low_poly_source_can_still_select_a_bevel_modifier(self):
+  observed=[{"name":"Small new structure","faces":36,"edges":75}]
+  variants=source_artist_action_schema(observed)["oneOf"]
+  modifier=next(v for v in variants if v["properties"]["op"]["const"]=="modifier")
+  self.assertIn("BEVEL",modifier["properties"]["params"]["properties"]["kind"]["enum"])
  def test_invalid_landmark_indices_do_not_enter_schema(self):
   source=[{"name":"Tower","faces":4,"edges":8,
            "face_landmarks":[{"face_index":11},{"face_index":2}],

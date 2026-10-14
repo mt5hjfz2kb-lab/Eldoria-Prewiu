@@ -28,6 +28,22 @@ def source_artist_action_schema(objects):
     rgba={"type":"array","minItems":4,"maxItems":4,
           "items":{"type":"number","minimum":0,"maximum":1}}
     enum=lambda x:{"type":"string","enum":list(x)}
+    # A high-poly inherited source cannot safely receive a whole-object
+    # BEVEL modifier. Qwen may still use precisely selected BMesh edges.
+    # For low-poly or newly constructed components BEVEL stays available.
+    large_inherited=any(obj.get("faces",0)>2500 for obj in objects)
+    modifier_kinds=["SOLIDIFY","WEIGHTED_NORMAL","DECIMATE","DISPLACE","SUBSURF"]
+    if not large_inherited:modifier_kinds.insert(0,"BEVEL")
+    modifier_options={"type":"object","additionalProperties":False,"properties":{
+        "width":{"type":"number","minimum":0.001,"maximum":0.09},
+        "segments":{"type":"integer","minimum":1,"maximum":3},
+        "levels":{"type":"integer","minimum":0,"maximum":2},
+        "render_levels":{"type":"integer","minimum":0,"maximum":2},
+        "thickness":{"type":"number","minimum":0.001,"maximum":0.2},
+        "ratio":{"type":"number","minimum":0.05,"maximum":1},
+        "strength":{"type":"number","minimum":0,"maximum":0.2},
+        "texture_scale":{"type":"number","minimum":0.1,"maximum":5}
+    }}
     defs={
         "sculpt_anchor":({"anchor":enum(["x_min","x_max","y_min","y_max","z_min","z_max"]),
                           "direction":enum(["+X","-X","+Y","-Y","+Z","-Z"]),
@@ -51,8 +67,8 @@ def source_artist_action_schema(objects):
                      "metallic":{"type":"number","minimum":0,"maximum":0.2}},
                      ["base_color","roughness","metallic"]),
         "uv":({"method":enum(["smart","cube","sphere","cylinder"])},["method"]),
-        "modifier":({"kind":enum(["BEVEL","SOLIDIFY","WEIGHTED_NORMAL","DECIMATE","DISPLACE","SUBSURF"]),
-                     "options":{"type":"object"},
+        "modifier":({"kind":enum(modifier_kinds),
+                     "options":modifier_options,
                      "apply":{"type":"boolean"}},["kind","options","apply"]),
         "native_operator":({"operator":enum(["object.shade_smooth","object.shade_flat",
                                            "mesh.poke","mesh.subdivide","uv.smart_project"]),
