@@ -19,6 +19,8 @@ Rama: `prototype/world4x-zone1-zoom-reference-20261013`. No integrar en main ni 
 
 Tras una cesión legítima: ejecutar workflow, inspeccionar el suelo desde URP real, corregir detalle, mezcla de materiales y lectura de pendientes; comparar desde las mismas cámaras. No añadir ciudad ni decoración para esconder el fallo del suelo. Solo tras calidad demostrada continuar familias/composición. No certificar 8/10, jugabilidad, móvil físico ni mundo completo sin pruebas.
 
+Intento concreto `38563776671`, commit `f721031175536a9cacfd203cc8067ebc3f44f55e`: el guard consultó main vivo y devolvió `ZONE1_NATIVE_RESOURCE_BLOCKED`; job Windows `unity-ground` omitido, Unity no iniciado. Prueba de material posterior, independiente: `evidence/tiled-detail-rejected-20261014/`. Se reutilizó exclusivamente la escala 4m propuesta por Qwen, manteniendo textura donante RGB y UVs repetidas en lugar de atlas de región. Renders regional y retrato efectivos aún muestran una alfombra de césped; **VISUAL_REJECTED**, GLB aislado sin sustituir el candidato de Unity. No fue una nueva inferencia ni una aprobación nativa.
+
 ## Blender independiente
 
 `tools/world4x-zone1/production/run_local_blender.sh` utiliza un Blender Ubuntu extraído en un directorio propio, sin instalarlo en el sistema. Indicar `ELDORIA_LOCAL_BLENDER_ROOT`; scripts usan `--work-dir` porque `--cycle` colisiona con argumentos de Cycles. El transporte utilizado es CLI directo, no BlenderMCP. Los workflows Linux conservan fuentes, inferencias y GLB sin créditos de pago.

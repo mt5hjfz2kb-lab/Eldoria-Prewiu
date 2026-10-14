@@ -1,0 +1,75 @@
+name: Zone One genuine general Blender artist ground correction
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-full-studio-ground.yml'
+      - 'tools/world4x-zone1/production/full_studio_ground_brief.txt'
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-ground-source
+  cancel-in-progress: false
+jobs:
+  real-ground-authoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free isolated workshop, frozen committed general artist version
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          git fetch origin art/eldoria-full-blender-artist-studio-20261014 --depth=50
+          STUDIO=c0d9d5f279773b09c233d97dd661ec72b59313d0
+          git cat-file -e "$STUDIO^{commit}"
+          mkdir -p /tmp/zoneone-general-studio /tmp/zoneone-general-ground
+          git archive "$STUDIO" tools/art-direction/full-studio tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md tools/art-direction/ARTIST_LEARNING_JOURNAL.md | tar -x -C /tmp/zoneone-general-studio
+          printf '%s\n' "$STUDIO" > /tmp/zoneone-general-ground/toolbox-source-commit.txt
+          sha256sum Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb > /tmp/zoneone-general-ground/frozen-ground.sha256
+          python3 -m py_compile /tmp/zoneone-general-studio/tools/art-direction/full-studio/*.py
+      - name: Actual local Qwen 4B at zero credits
+        run: |
+          docker run --rm -d --name zoneone-general-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-general-ground/ollama-version.json; then break; fi; sleep 2; done
+          test -s /tmp/zoneone-general-ground/ollama-version.json
+          docker exec zoneone-general-artist ollama pull qwen3-vl:4b-instruct
+      - name: Real vision, modelling, export, A-B and critique in general workshop
+        run: |
+          python3 /tmp/zoneone-general-studio/tools/art-direction/full-studio/artist_loop.py \
+            --brief 'Edit existing continuous Zone One prairie ground. No towers, props, separate platforms or material replacement. Shape broad asymmetric rolling hills, valleys and open gentle buildable meadow visibly from the fixed strategic camera. Preserve city pad and outer border. Follow the ground constraints and real rejected source lessons. Use the full safe Blender modelling toolbox; choose your own composition and values. Geometry first; do not copy old cliff work.' \
+            --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
+            --source Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb \
+            --texture-root "$PWD" \
+            --review docs/world4x-zone1/FULL_STUDIO_GROUND_REVIEW.json \
+            --prior-lessons tools/world4x-zone1/production/full_studio_ground_brief.txt \
+            --out /tmp/zoneone-general-ground/production --max-cycles 2 --max-actions 6 --max-tokens 2400
+          sha256sum -c /tmp/zoneone-general-ground/frozen-ground.sha256
+      - name: Independently protect city pad and borders before accepting source
+        run: |
+          AFTER=$(find /tmp/zoneone-general-ground/production -path '*/output/artist-asset.blend' | sort | tail -1)
+          test -s "$AFTER"
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/verify_general_ground.py -- \
+            --before Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb \
+            --after "$AFTER" --out /tmp/zoneone-general-ground/independent
+      - name: Preserve true artist source and all failures without promoting candidate
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/general-ground-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/zoneone-general-ground; then cp -a /tmp/zoneone-general-ground/. "$DEST/"; fi
+          printf '%s\n' 'SOURCE_ONLY_INDEPENDENT_REVIEW_REQUIRED_NO_NATIVE_OR_ART_APPROVAL' > "$DEST/STATE.txt"
+          git config user.name 'Eldoria Zone One source workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git commit -m 'Preserve actual general Blender artist ground correction; independent source and native review pending'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-general-ground-${{ github.run_id }}
+          path: /tmp/zoneone-general-ground/
+          retention-days: 30

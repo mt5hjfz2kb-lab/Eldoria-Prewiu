@@ -1,0 +1,9 @@
+{
+  "camera": {
+    "location": [0, 255.4815, 275.8038],
+    "target": [0, 40, 0],
+    "projection": "ORTHO",
+    "ortho_scale": 120
+  },
+  "render": {"engine": "CYCLES", "samples": 16, "width": 1000, "height": 800, "transparent": false}
+}

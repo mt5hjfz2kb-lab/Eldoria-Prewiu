@@ -4,6 +4,21 @@
   "unity_art_score": null,
   "ground_approved": false,
   "sector_expansion_approved": false,
+  "tiled_detail_trial": {
+    "decision": "VISUAL_REJECTED",
+    "evidence": "docs/world4x-zone1/evidence/tiled-detail-rejected-20261014",
+    "authorship": "Director material route trial on actual Qwen sculpt; reused only the recorded 4m detail scale. No new Qwen inference claimed.",
+    "observation": "Full RGB donor with genuinely repeating UVs retains detail and removes baked painted roads. Actual regional and portrait renders still read as an uninterrupted grainy lawn with insufficient relief identity. Not a satisfactory direction or an approved replacement. Candidate under Unity Models remains untouched.",
+    "unity_executed": false
+  },
+  "native_attempt": {
+    "run": 38563776671,
+    "request_commit": "f721031175536a9cacfd203cc8067ebc3f44f55e",
+    "result": "ZONE1_NATIVE_RESOURCE_BLOCKED",
+    "windows_job": "skipped",
+    "unity_started": false,
+    "reservation_holder": "valoria-bastion1-player-scene-integration-20261012"
+  },
   "relief_revision": {
     "run": 38558966835,
     "artist": "Qwen3-VL 4B actual inference, unchanged sculpt_path executed in Blender CLI",

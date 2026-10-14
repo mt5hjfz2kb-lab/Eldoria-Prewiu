@@ -1,0 +1,16 @@
+{
+  "authorship": "Director technical material-route trial on genuine Qwen-authored sculpt",
+  "source_sha256": "1184148ea54d40fcff6bb1e8d16367c33f66f5814b75353acb62c05a0724abb4",
+  "recovered_artist_plan_sha256": "774825275ea0f8533d1ba182eac26d72d08de0d76ea80cb4217e9843a0cbda0a",
+  "reused_artist_parameter": {
+    "detail_tile_m": 4
+  },
+  "rejected_palette_not_adopted": true,
+  "new_inference": false,
+  "geometry_coordinates_unchanged": true,
+  "uv_changed_for_actual_repeating_detail": true,
+  "donor_sha256": "a74fa0d04d6b64f4075ac781204a5de92b15264ef4460bba5b11136e00ed64ae",
+  "model_sha256": "fe0f37d8ce36918b6b2c73dd87ca9a4a27260db13e2f5cdac06b09a2fe1fea52",
+  "art_approved": false,
+  "unity_executed": false
+}

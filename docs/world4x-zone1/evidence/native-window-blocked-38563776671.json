@@ -1,0 +1,11 @@
+{
+  "run": 38563776671,
+  "request_commit": "f721031175536a9cacfd203cc8067ebc3f44f55e",
+  "state": "ZONE1_NATIVE_RESOURCE_BLOCKED",
+  "ownWindowsLease": false,
+  "holder": "valoria-bastion1-player-scene-integration-20261012",
+  "owner": "chat-normal-bastion1-fullframe-convergence-20261013",
+  "windows_job": "skipped",
+  "unityStarted": false,
+  "reason": "Canonical live main retains shared Windows lease. Native Unity could not be started without a coordinated handoff."
+}
