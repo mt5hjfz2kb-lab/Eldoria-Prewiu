@@ -28,7 +28,16 @@ prompt=('Current task is ZONA ONE ground-only source authoring, not Valoria arch
  'Use slopes suitable for armies, wide flat areas between hills, not a noisy bumpy surface. '
  'At least one broad camera-visible change. No approval or claimed execution. '
  'REAL MESH TOPOLOGY: '+json.dumps(top)+'\nREAL PRIOR REVIEW / RETRIEVED EXPERIENCE, NOT MODEL TRAINING: '+lessons)
-schema=cpu_artist_schema(target,'existing',4,minimum_camera_radius=16);schema['properties']['planned_actions']['items']['properties']['type']['enum']=['sculpt_region','sculpt_path']
+schema=cpu_artist_schema(target,'existing',4)
+vector={'type':'array','minItems':3,'maxItems':3,'items':{'type':'number'}}
+knotspec={'type':'object','properties':{'center':vector,'delta':vector,'radius':{'type':'number','minimum':16,'maximum':35}},
+ 'required':['center','delta','radius'],'additionalProperties':False}
+variants=[]
+for kind,params in [('sculpt_region',knotspec),('sculpt_path',{'type':'object','properties':{'knots':{'type':'array','minItems':2,'maxItems':5,'items':knotspec}},'required':['knots'],'additionalProperties':False})]:
+ variants.append({'type':'object','properties':{'id':{'type':'string','maxLength':32},'type':{'type':'string','const':kind},
+  'target':{'type':'string','const':target},'rationale':{'type':'string','minLength':15,'maxLength':190},'parameters':params},
+  'required':['id','type','target','rationale','parameters'],'additionalProperties':False})
+schema['properties']['planned_actions']['items']={'oneOf':variants}
 payload={'model':a.model,'stream':True,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1400,'temperature':.3},'messages':[{'role':'system','content':role.decode()},{'role':'user','content':prompt,'images':encoded}]}
 (c/'actual-request.json').write_text(json.dumps(payload,indent=2))
 attempts=[]
@@ -52,7 +61,7 @@ for attempt in range(3):
  raw=reply['message']['content'];(c/f'raw-qwen-{attempt+1}.json').write_text(json.dumps(reply,indent=2))
  errors=[]
  try:
-  design=json.loads(raw);errors=inspect_artist_plan(design,target,'existing',4,top,True,True)+camera_footprint_errors(design,16,2)
+  design=json.loads(raw);errors=inspect_artist_plan(design,target,'existing',4,top,True,False)+camera_footprint_errors(design,16,2)
   for op in design.get('planned_actions',[]):
    pr=op['parameters'];knots=pr.get('knots',[]) if op['type']=='sculpt_path' else [pr]
    if op['type'] not in ('sculpt_region','sculpt_path'):errors.append('Only local vertical terrain sculpt permitted')
@@ -71,4 +80,8 @@ for attempt in range(3):
   (c/'artist-plan.json').write_text(json.dumps(design['planned_actions'],indent=2))
   (c/'artist-inference.json').write_text(json.dumps({'author':'QWEN_LOCAL','model':a.model,'image_type':'BLENDER_SOURCE_NOT_UNITY','system_prompt_sha256':sha(role),'images':provenance,'direction':design,'attempts':attempts,'model_weights_trained':False,'self_approval':False},indent=2));break
  if attempt==2:raise RuntimeError('Three authentic Qwen decisions rejected; no substitute geometry executed')
- payload['messages']+=[{'role':'assistant','content':raw},{'role':'user','content':bounded_repair_feedback(errors)}]
+ payload['messages']+=[{'role':'assistant','content':raw},{'role':'user','content':
+  'Previous plan NOT EXECUTED. Correct these errors with your own new terrain design: '+str(errors)+
+  '. Keep the PRAIRIE goal, vertical changes of 2..9m and radius16..35m, not a Valoria cliff or a 0.2m tweak. '
+  'sculpt_region requires center,delta,radius directly in parameters; sculpt_path requires distinct knots. '
+  'IDs must differ. Protect city pad and boundary. Return complete JSON, never substitute scripted defaults.'}]
