@@ -53,88 +53,102 @@ def inside_limits(center, limits):
                 for v, (lo, hi) in zip(center, limits)))
 
 
-RADIUS_CHOICES = ("18","20","22","24","26","28","30")
+RADIUS_CHOICES = ("18", "20", "22", "24", "26", "28", "30")
 
 
 def model_knot_schema(limits):
-    """Qwen chooses original XY path, radius and Z *displacement*.
+    """The model DIRECTLY chooses XY, vertical displacement and radius.
 
-    In the 2026-10-14 three-attempt failure Qwen confused center elevation
-    with -14m/+12m displacement. Never ask the model to invent source Z.
-    That noncreative topological lookup comes from the original .blend.
+    Base terrain Z is not an artistic choice: derive it read-only from the
+    exact original Blender mesh at the artist-picked source-local XY.
+    Previous Qwen plans wrongly copied their -14m sculpt depth into center Z.
     """
-    coords={
-        axis.lower():{"type":"number","minimum":bounds[0],"maximum":bounds[1]}
+    axes={
+        axis.lower(): {"type":"number","minimum":bounds[0],"maximum":bounds[1]}
         for axis,bounds in zip(AXES[:2],limits[:2])
     }
     return {
-        "type":"object", "additionalProperties":False,
+        "type":"object","additionalProperties":False,
         "properties":{
             "center_xy":{"type":"object","additionalProperties":False,
-                         "properties":coords,"required":["x","y"]},
+                         "properties":axes,"required":["x","y"]},
             "vertical_displacement_m":{"type":"number","minimum":-14,"maximum":12},
-            "radius":{"type":"number","minimum":18,"maximum":30},
+            "radius_m_choice":{"type":"string","enum":list(RADIUS_CHOICES)},
         },
-        "required":["center_xy","vertical_displacement_m","radius"]
+        "required":["center_xy","vertical_displacement_m","radius_m_choice"]
     }
 
 
-def actual_surface_height(surface_context,x,y,max_distance_m=3.0):
-    """Find actual frozen Blender source elevation at model-picked XY.
+def artist_xy_positions(original_plan,limits):
+    """Validate literal AI XY selections BEFORE requesting real Blender Z.
 
-    No artistic value is generated or changed. We choose the nearest genuine
-    pre-existing source vertex ONLY to anchor the path to its physical terrain,
-    rejecting targets far from all original vertices. This is a sampled
-    source lookup, not synthetic terrain height.
+    Does not snap, interpolate, clamp, invent or repair any artist choice.
     """
-    if not isinstance(surface_context,dict) or not surface_context.get("source_unchanged"):
-        raise ValueError("Read-only source height provenance missing")
-    vertices=surface_context.get("vertex_positions")
-    if not isinstance(vertices,list) or not vertices:
-        raise ValueError("Original Blender terrain height inventory missing")
-    if not all(type(v) in (int,float) and math.isfinite(v) for v in (x,y)):
-        raise ValueError("Artist XY coordinates must be finite numeric values")
-    nearest=None
-    for vertex in vertices:
-        if not isinstance(vertex,list) or len(vertex)!=4 or type(vertex[0]) is not int:
-            raise ValueError("Source terrain inventory has malformed vertices")
-        _,vx,vy,vz=vertex
-        if not all(type(v) in (int,float) and math.isfinite(v) for v in (vx,vy,vz)):
-            raise ValueError("Source terrain inventory has invalid coordinates")
-        distance_sq=(vx-x)**2+(vy-y)**2
-        if nearest is None or distance_sq<nearest[0] or (distance_sq==nearest[0] and vertex[0]<nearest[1]):
-            nearest=(distance_sq,vertex[0],vz)
-    if nearest is None or nearest[0] > max_distance_m**2:
-        raise ValueError("Artist XY knot has no nearby physical source terrain vertices")
-    return nearest[2]
+    if not isinstance(original_plan,dict):
+        raise ValueError("Original AI plan must be a JSON object")
+    actions=original_plan.get("planned_actions")
+    if not isinstance(actions,list) or len(actions)!=2:
+        raise ValueError("Exactly two original Qwen sculpt paths required")
+    positions=[]
+    for act in actions:
+        knots=act.get("parameters",{}).get("knots") if isinstance(act,dict) else None
+        if not isinstance(knots,list) or not 3<=len(knots)<=4:
+            raise ValueError("Each original sculpt path needs 3..4 artist-chosen knots")
+        for knot in knots:
+            if not isinstance(knot,dict) or set(knot)!={"center_xy","vertical_displacement_m","radius_m_choice"}:
+                raise ValueError("AI knot fields must be center_xy, vertical_displacement_m, radius_m_choice")
+            xy=knot.get("center_xy")
+            if not isinstance(xy,dict) or set(xy)!={"x","y"}:
+                raise ValueError("Original center_xy must contain only x and y")
+            x,y=xy["x"],xy["y"]
+            if not all(type(v) in (float,int) and math.isfinite(v) for v in (x,y)):
+                raise ValueError("Invalid original artist XY values")
+            if not(limits[0][0]<=x<=limits[0][1] and limits[1][0]<=y<=limits[1][1]):
+                raise ValueError("Original XY exceeds real source-terrain safe limits")
+            dz=knot["vertical_displacement_m"]
+            if type(dz) not in (float,int) or not math.isfinite(dz) or not -14<=dz<=12:
+                raise ValueError("Invalid artist-chosen vertical displacement")
+            if knot["radius_m_choice"] not in RADIUS_CHOICES:
+                raise ValueError("Invalid artist-chosen radius from allowed source-safe values")
+            positions.append([x,y])
+    return positions
 
 
-def normalize_artist_authored_knots(raw_document,surface_context):
-    """Keep Qwen's XY and signed displacement EXACT.
+def normalize_artist_authored_knots(raw_document,source_heights):
+    """Type-only mapping of model-picked XY/delta/radius plus ACTUAL source Z.
 
-    Only compute base terrain Z from an immutable, hashed read-only Blender
-    inventory. Raw Qwen JSON is preserved separately; no mesh is authored,
-    no coordinates are clamped, and invalid plans are still rejected.
+    Source elevations must already have been measured independently in
+    Blender, tied to an immutable source SHA and the model's exact XY values.
+    No artistic decisions are repaired or generated by this function.
     """
     import copy
     doc=copy.deepcopy(raw_document)
     actions=doc.get("planned_actions") if isinstance(doc,dict) else None
     if not isinstance(actions,list):
-        raise ValueError("No artist planned_actions array")
+        raise ValueError("Original planned_actions missing")
+    if not isinstance(source_heights,list):
+        raise ValueError("Read-only original source Z measurements required")
+    n=sum(len(a.get("parameters",{}).get("knots",[])) for a in actions if isinstance(a,dict))
+    if len(source_heights)!=n:
+        raise ValueError("Source Z sample count differs from original AI knot count")
+    index=0
     for action in actions:
         knots=action.get("parameters",{}).get("knots") if isinstance(action,dict) else None
         if not isinstance(knots,list):
-            raise ValueError("Artist path has no knots")
+            raise ValueError("Artist path knot array missing")
         for knot in knots:
-            if not isinstance(knot,dict) or set(knot)!={"center_xy","vertical_displacement_m","radius"}:
-                raise ValueError("Artist knot needs ONLY center_xy, vertical_displacement_m and radius")
-            pos=knot.pop("center_xy")
+            if not isinstance(knot,dict) or set(knot)!={"center_xy","vertical_displacement_m","radius_m_choice"}:
+                raise ValueError("Artist knot structure inconsistent with typed model schema")
+            xy=knot.pop("center_xy")
             dz=knot.pop("vertical_displacement_m")
-            if not isinstance(pos,dict) or set(pos)!={"x","y"}:
-                raise ValueError("Artist horizontal center must contain exactly source-local x,y")
-            if not all(type(v) in (int,float) and math.isfinite(v) for v in (pos["x"],pos["y"],dz)):
-                raise ValueError("Artist plan has invalid numeric spatial components")
-            original_z=actual_surface_height(surface_context,pos["x"],pos["y"])
-            knot["center"]=[pos["x"],pos["y"],original_z]
+            radius=knot.pop("radius_m_choice")
+            z=source_heights[index]
+            index+=1
+            if not isinstance(xy,dict) or set(xy)!={"x","y"} or radius not in RADIUS_CHOICES:
+                raise ValueError("Malformed original model XY or radius")
+            if not all(type(v) in (int,float) and math.isfinite(v) for v in (xy["x"],xy["y"],dz,z)):
+                raise ValueError("Original model coordinates or verified source Z invalid")
+            knot["center"]=[xy["x"],xy["y"],z]
             knot["delta"]=[0,0,dz]
+            knot["radius"]=int(radius)
     return doc
