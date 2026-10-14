@@ -263,7 +263,7 @@ jobs:
           $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
           New-Item -ItemType Directory -Force $after | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
-      - name: Sculpt Qwen real-image-approved landscape and wall-side embankment on global A3; capture native Unity
+      - name: Execute Qwen visual diagnosis as native terrain sculpt, recovered original PBR phototexture and major masonry retaining bank
         shell: powershell
         run: |
           $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
@@ -293,7 +293,8 @@ jobs:
             if($land.original_source_sha256 -ne $preSha -or $land.terrain_vertices_sculpted -lt 350 -or
                $land.max_terrain_delta_m -lt .25 -or $land.max_terrain_delta_m -gt .65 -or
                $land.protected_road_and_future_parcels_max_delta_m -gt .0005 -or
-               $land.soil_texture_px[0] -lt 512 -or $land.new_resource_nodes -ne 0 -or
+               $land.soil_texture_px[0] -lt 512 -or $land.restored_original_pbr_base_color_factor[0] -ne .35 -or
+               $land.retaining_bank_original_limestone_meshes -lt 22 -or $land.retained_original_source_photo_detail -ne $true -or $land.new_resource_nodes -ne 0 -or
                $land.new_colliders -ne 0 -or $land.other_original_geometry_modified -ne $false){
                  throw "Global $variant new full-terrain artwork invalidates camera/road/plot/original-source invariants"
             }
