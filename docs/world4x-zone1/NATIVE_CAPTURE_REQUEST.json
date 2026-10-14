@@ -1,0 +1,13 @@
+{
+  "state": "GROUND_LOOKDEV_REQUEST_NOT_ART_APPROVAL",
+  "before": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb",
+  "before_sha256": "6d22c3319524839620591363b3696e920501813a12ad094a327c672f7d06a32d",
+  "after": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb",
+  "after_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "source_production_run": 38558966835,
+  "purpose": "Minimal genuine URP material and relief diagnostic before more production. Capture only named ground with identical cameras; do not approve by pixel change.",
+  "requires_live_exclusive_native_lease": true,
+  "budget_paid_credits": 0,
+  "world_complete": false,
+  "ground_approved": false
+}

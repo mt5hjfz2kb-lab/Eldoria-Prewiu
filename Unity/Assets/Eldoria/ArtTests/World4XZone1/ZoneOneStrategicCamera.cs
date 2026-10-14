@@ -65,6 +65,7 @@ namespace Eldoria.World4XPrototype
                 scroll = Mouse.current.scroll.ReadValue().y / 120f;
                 Drag(Mouse.current.leftButton.isPressed, Mouse.current.position.ReadValue());
             }
+            else if (!activeTouch) dragging = false;
             if (activeTouch)
             {
                 var a = touch.touches[0]; var b = touch.touches[1];

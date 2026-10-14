@@ -1,0 +1,98 @@
+name: Zone One exact ground Unity A-B and three zooms (live lease required)
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - 'docs/world4x-zone1/NATIVE_CAPTURE_REQUEST.json'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: world4x-zone1-native-ground
+  cancel-in-progress: false
+jobs:
+  live-window:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check canonical current ownership before even queuing Windows
+        run: |
+          git fetch origin main --depth=1
+          git show FETCH_HEAD:pipeline/active-workstreams.json > /tmp/zoneone-live-claims.json
+          node tools/world4x-zone1/production/check_native_window.mjs /tmp/zoneone-live-claims.json
+  unity-ground:
+    needs: live-window
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Expose installed Git without changing existing projects
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $candidate=Get-ChildItem "${env:LOCALAPPDATA}\GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Installed Git missing'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: zoneone-native-${{ github.run_id }}
+          clean: false
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Recheck live lease and exact input bytes in isolated checkout
+        shell: powershell
+        run: |
+          $root=Join-Path $env:GITHUB_WORKSPACE 'zoneone-native-${{ github.run_id }}'
+          Set-Location $root
+          & git.exe fetch origin main --depth=1
+          if($LASTEXITCODE -ne 0){throw 'Live canonical ownership unavailable'}
+          $claims=Join-Path $env:RUNNER_TEMP 'zoneone-live-claims-${{ github.run_id }}.json'
+          & git.exe show FETCH_HEAD:pipeline/active-workstreams.json | Set-Content -Encoding UTF8 $claims
+          # Windows PowerShell writes a BOM; Node explicitly accepts a UTF8 text payload below.
+          $text=[IO.File]::ReadAllText($claims)
+          [IO.File]::WriteAllText($claims,$text,(New-Object Text.UTF8Encoding($false)))
+          & node tools/world4x-zone1/production/check_native_window.mjs $claims
+          if($LASTEXITCODE -ne 0){throw 'Native lease returned to another owner; no Unity process started'}
+          $request=Get-Content docs/world4x-zone1/NATIVE_CAPTURE_REQUEST.json -Raw | ConvertFrom-Json
+          foreach($pair in @(@($request.before,$request.before_sha256),@($request.after,$request.after_sha256))){
+            if((Get-FileHash (Join-Path $root $pair[0]) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair[1]){throw 'Requested GLB bytes changed'}
+          }
+          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity editor unavailable'}
+          Add-Content $env:GITHUB_ENV "ZONEONE_NATIVE_ROOT=$root"
+      - name: Real URP paired global regional local and mobile captures
+        shell: powershell
+        run: |
+          Set-Location $env:ZONEONE_NATIVE_ROOT
+          $request=Get-Content docs/world4x-zone1/NATIVE_CAPTURE_REQUEST.json -Raw | ConvertFrom-Json
+          $env:ELDORIA_ZONEONE_GROUND_BEFORE=Join-Path $env:ZONEONE_NATIVE_ROOT $request.before
+          $env:ELDORIA_ZONEONE_GROUND_AFTER=Join-Path $env:ZONEONE_NATIVE_ROOT $request.after
+          $env:ELDORIA_ZONEONE_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP 'ZoneOneNative-${{ github.run_id }}/pair'
+          $log=Join-Path $env:RUNNER_TEMP 'ZoneOneNative-${{ github.run_id }}-pair.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:ZONEONE_NATIVE_ROOT/Unity",'-executeMethod','Eldoria.World4XPrototype.ZoneOneSectorScene.CaptureGroundPair','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1200000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Own isolated Unity capture timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'Actual Unity capture failed'}
+          if(@(Get-ChildItem $env:ELDORIA_ZONEONE_CAPTURE_OUT -Filter '*-unity.png').Count -ne 8){throw 'Expected genuine A/B at all three zooms plus mobile'}
+      - name: Save actual isolated ground scene with the same-world navigation
+        shell: powershell
+        run: |
+          $env:ELDORIA_ZONEONE_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP 'ZoneOneNative-${{ github.run_id }}/scene'
+          $log=Join-Path $env:RUNNER_TEMP 'ZoneOneNative-${{ github.run_id }}-scene.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:ZONEONE_NATIVE_ROOT/Unity",'-executeMethod','Eldoria.World4XPrototype.ZoneOneSectorScene.BuildGroundAndCapture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Own isolated scene creation timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'Ground scene creation failed'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-native-ground-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/ZoneOneNative-${{ github.run_id }}/**
+            ${{ runner.temp }}/ZoneOneNative-${{ github.run_id }}-*.log
+            ${{ github.workspace }}/zoneone-native-${{ github.run_id }}/Unity/Assets/Eldoria/ArtTests/World4XZone1/Scenes/ZoneOneGroundReference.unity*
+            ${{ github.workspace }}/zoneone-native-${{ github.run_id }}/Unity/Assets/Eldoria/ArtTests/World4XZone1/NativeGroundCandidate/**
+          retention-days: 30

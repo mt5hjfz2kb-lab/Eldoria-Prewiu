@@ -57,6 +57,7 @@ namespace Eldoria.World4XPrototype
                 RenderSettings.fog = false;
                 var camera = new GameObject("Fixed ground gate camera").AddComponent<Camera>();
                 camera.orthographic = true; camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.nearClipPlane = .3f; camera.farClipPlane = 900;
                 camera.backgroundColor = new Color(.44f,.51f,.56f);
                 Vector3 focus = Vector3.zero;
                 int version = 0;
@@ -80,12 +81,13 @@ namespace Eldoria.World4XPrototype
                         foreach (var light in root.GetComponentsInChildren<Light>()) light.enabled = false;
                         foreach (var importedCamera in root.GetComponentsInChildren<Camera>()) importedCamera.enabled = false;
                         // Freeze focus from original import; never recenter candidate to hide deformation.
-                        if (version == 0) focus = new Vector3(ground[0].bounds.center.x,0,ground[0].bounds.center.z);
-                        foreach (var view in new[]{(1280,900,110f,"global"),(1280,900,80f,"regional"),(390,844,80f,"mobile"),(1280,900,40f,"local")})
+                        if (version == 0) focus = new Vector3(ground[0].bounds.center.x,0,
+                            Mathf.Lerp(ground[0].bounds.min.z,ground[0].bounds.max.z,1f/3f));
+                        foreach (var view in new[]{(1280,900,110f,"global"),(1280,900,60f,"regional"),(390,844,60f,"mobile"),(1280,900,32f,"local")})
                         {
                             camera.orthographicSize = view.Item3;
-                            camera.transform.position = focus + new Vector3(0,145,-130);
-                            camera.transform.LookAt(focus);
+                            camera.transform.rotation = Quaternion.Euler(52,0,0);
+                            camera.transform.position = focus - camera.transform.forward * 350;
                             camera.aspect = (float)view.Item1/view.Item2;
                             var rt = new RenderTexture(view.Item1,view.Item2,24);
                             var previous = RenderTexture.active;
@@ -159,7 +161,9 @@ namespace Eldoria.World4XPrototype
             Bounds cityBounds = cityRenderers[0].bounds;
             foreach (var renderer in cityRenderers) cityBounds.Encapsulate(renderer.bounds);
             // Derive location after actual glTF handedness conversion, never assume an axis flip.
-            navigation.PanTo(cityBounds.center);
+            navigation.PanTo(groundOnly
+                ? new Vector3(cityBounds.center.x,0,Mathf.Lerp(cityBounds.min.z,cityBounds.max.z,1f/3f))
+                : cityBounds.center);
             navigation.SetZoomLevel(1, true);
             Directory.CreateDirectory(Root + "/Scenes");
             // Persist importer-created meshes/materials before saving the scene.

@@ -4,6 +4,18 @@
   "unity_art_score": null,
   "ground_approved": false,
   "sector_expansion_approved": false,
+  "relief_revision": {
+    "run": 38558966835,
+    "artist": "Qwen3-VL 4B actual inference, unchanged sculpt_path executed in Blender CLI",
+    "changed_vertices": 2295,
+    "city_and_boundaries_preserved": true,
+    "ground_glb_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+    "mesh_triangles": 28800,
+    "source_evidence": "docs/world4x-zone1/evidence/relief-revision-38558966835",
+    "strategic_diagnostic": "docs/world4x-zone1/evidence/strategic-ground-staging-20261014",
+    "observation": "Technical source pass only. Viewed actual corrected regional diagnostic: uniformly grainy lawn, beige painted paths and insufficient relief legibility persist. No artistic approval; no Unity score. Material response requires minimal native URP lookdev before further iterations.",
+    "raw_executor_logging_issue": "sculpt_path overwrites its target variable with fraction 1.0 in shared executor output; preserve raw trace. Independent mesh preservation proofs and exact plan identify the actual edited target."
+  },
   "geometry_cycle": {
     "run": 38530648411,
     "source_sha256": "d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f",
