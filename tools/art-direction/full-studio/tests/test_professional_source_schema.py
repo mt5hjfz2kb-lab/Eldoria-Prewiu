@@ -62,12 +62,12 @@ class TypedArtistTests(unittest.TestCase):
            "edge_landmarks":[{"edge_index":3989}]}]
   schema=schema_for_plan(5,True,"full","architecture",["Tower"],source,True)
   arr=schema["properties"]["actions"]
-  self.assertEqual((arr["minItems"],arr["maxItems"]),(2,3))
+  self.assertEqual((arr["minItems"],arr["maxItems"]),(1,1),
+                   "Dense inherited atlas cannot receive forced global UV or material edits")
   self.assertNotIn("items",arr,"Ollama prefixItems must not combine with unsupported items:false")
   structurals={v["properties"]["op"]["const"] for v in arr["prefixItems"][0]["oneOf"]}
   self.assertEqual(structurals,{"sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"})
-  self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][1]["oneOf"]},{"material","uv"})
-  self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][2]["oneOf"]},{"material","uv","modifier"})
+  self.assertEqual(len(arr["prefixItems"]),1,"Dense atlas source must not be wholly repainted")
   extrude=next(v for v in arr["prefixItems"][0]["oneOf"] if v["properties"]["op"]["const"]=="extrude")
   self.assertEqual(extrude["properties"]["params"]["properties"]["faces"]["items"]["enum"],[2326])
  def test_source_build_phase_is_author_selected_primitive_or_mesh(self):
