@@ -701,6 +701,17 @@ def main():
             if not region_proof["allowed"]:
                 offenders=[f"{z['name']} changed {z['changed_fraction']:.1%}"
                            for z in region_proof["zones"] if not z["allowed"]]
+                stage_pending_art_evidence(
+                    trial/"pending-learning-case.json",model=args.model,
+                    source_hash=original_source_sha,plan_file=candidate,
+                    raw_response_file=trial/"qwen-raw.json",
+                    before_image=stage/"before-blender.png",
+                    after_image=stage/"after-blender.png",critique_file=None,
+                    comparison_file=trial/"camera-screen-impact.json",
+                    protected_regions_file=trial/"protected-camera-regions.json",
+                    output_blend=stage/"artist-asset.blend",
+                    output_glb=stage/"artist-asset.glb",
+                    screen_gate="PROTECTED_ACCESS_OCCLUSION_REJECTED")
                 records.append({"cycle":cycle,"status":"PROTECTED_ACCESS_OCCLUSION_REJECTED",
                                 "regions":region_proof})
                 history+=("\nVISUAL QA REJECTED: new architecture obscures original access: "+
