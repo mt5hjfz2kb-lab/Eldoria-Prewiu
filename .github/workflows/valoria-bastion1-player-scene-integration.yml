@@ -1,4 +1,4 @@
-name: Bastion I GLOBAL two-layout authentic Unity artist A-B review
+name: Bastion I Qwen vision-led full-terrain cliff-to-medieval-citadel art execution
 on:
   workflow_dispatch:
   push:
@@ -293,8 +293,11 @@ jobs:
             if($land.original_source_sha256 -ne $preSha -or $land.terrain_vertices_sculpted -lt 350 -or
                $land.max_terrain_delta_m -lt .25 -or $land.max_terrain_delta_m -gt .65 -or
                $land.protected_road_and_future_parcels_max_delta_m -gt .0005 -or
-               $land.soil_texture_px[0] -lt 512 -or $land.restored_original_pbr_base_color_factor[0] -ne .35 -or
-               $land.retaining_bank_original_limestone_meshes -lt 22 -or $land.retained_original_source_photo_detail -ne $true -or $land.new_resource_nodes -ne 0 -or
+               $land.soil_texture_px[0] -lt 512 -or $land.soil_albedo_mean_rgb_linear[0] -lt .22 -or
+               $land.soil_albedo_mean_rgb_linear[1] -lt .23 -or
+               $land.soil_albedo_mean_rgb_linear[2] -lt .12 -or
+               $land.retaining_bank_original_limestone_meshes -lt 12 -or
+               $land.removed_flat_masonry_ribbons -ne $true -or $land.retained_original_source_photo_detail -ne $true -or $land.new_resource_nodes -ne 0 -or
                $land.new_colliders -ne 0 -or $land.other_original_geometry_modified -ne $false){
                  throw "Global $variant new full-terrain artwork invalidates camera/road/plot/original-source invariants"
             }
