@@ -1,0 +1,110 @@
+name: Eldoria Windows Blender 5 native Principled PBR material regression
+on:
+  push:
+    branches:
+      - validation/eldoria-professional-art-fixed-source-20261014
+    paths:
+      - '.github/workflows/eldoria-windows-blender5-native-material-qwen-smoke.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-artist-real-pc-blender5-material-regression
+  cancel-in-progress: true
+jobs:
+  original-qwen-material-in-installed-windows-blender:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 18
+    steps:
+      - name: Locate existing GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $git) { throw 'Git unavailable' }
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - name: Recover original exact Qwen authored tower BLEND with SHA
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38618080690'
+          name: eldoria-pc-source-grounded-multitool-blendermcp-artist-proof
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-accepted-blend
+      - name: Recover NEW original Qwen material + inset + UV plan
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38619326830'
+          name: eldoria-pc-source-grounded-multitool-blendermcp-artist-proof
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-material-qwen-plan
+      - name: Execute original three Qwen choices with fixed Principled nodes in native Blender
+        shell: powershell
+        timeout-minutes: 13
+        run: |
+          $ErrorActionPreference='Stop'
+          $exe=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $exe) {
+            $exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'Real Windows Blender missing' }
+          $original=Join-Path $env:RUNNER_TEMP 'eldoria-accepted-blend/cycle-1/output/artist-asset.blend'
+          $firstProof=Join-Path $env:RUNNER_TEMP 'eldoria-accepted-blend/cycle-1/output/execution-proof.json'
+          $plan=Join-Path $env:RUNNER_TEMP 'eldoria-material-qwen-plan/cycle-1/artist-plan.json'
+          if (-not (Test-Path $original) -or -not (Test-Path $firstProof) -or -not (Test-Path $plan)) { throw 'Frozen model/plan missing' }
+          $first=Get-Content $firstProof -Raw | ConvertFrom-Json
+          $sha=(Get-FileHash $original -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($sha -ne $first.blend_sha256 -or $first.art_approved -or $first.transport -ne 'blendermcp') { throw 'Original prior source SHA / permissions invalid' }
+          $originalPlan=Get-Content $plan -Raw | ConvertFrom-Json
+          if (@($originalPlan.actions).Count -ne 3 -or
+              $originalPlan.actions[0].op -ne 'inset' -or
+              $originalPlan.actions[1].op -ne 'material' -or
+              $originalPlan.actions[2].op -ne 'uv') { throw 'Not genuine Qwen accepted three-tool original plan' }
+          $reported=& $exe -b --python-exit-code 1 --python-expr "import addon_utils;m=next(x for x in addon_utils.modules(refresh=True) if x.__name__=='blender_mcp');print('ELDORIA_MCP='+m.__file__)"
+          if ($LASTEXITCODE -ne 0) { throw 'BlenderMCP missing' }
+          $line=@($reported | Where-Object { $_ -like 'ELDORIA_MCP=*' }) | Select-Object -First 1
+          if (-not $line) { throw 'Pinned addon path unknown' }
+          $addon=$line.Substring('ELDORIA_MCP='.Length).Trim()
+          $mcpSha=(Get-FileHash $addon -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($mcpSha -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5') { throw 'BlenderMCP addon SHA changed' }
+          $output=Join-Path $env:RUNNER_TEMP 'eldoria-windows-blender5-material-fixed'
+          & $exe -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- `
+            --source $original --plan $plan --out $output `
+            --texture-root $env:GITHUB_WORKSPACE `
+            --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json `
+            --transport blendermcp --mcp-addon $addon --mcp-sha256 $mcpSha
+          if ($LASTEXITCODE -ne 0) { throw 'Real Windows Qwen material+mesh execution failed' }
+          $proof=Get-Content (Join-Path $output 'execution-proof.json') -Raw | ConvertFrom-Json
+          if ($proof.action_count -ne 3 -or -not $proof.inherited_mesh_data_changed -or
+              -not $proof.matched_review_camera -or $proof.art_approved -or $proof.transport -ne 'blendermcp') { throw 'Real Blender proof invalid' }
+          if ((Get-FileHash $original -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sha) { throw 'Original frozen source mutated' }
+          # Inspect the new Blender file, not a JSON claim, for a physical
+          # Principled shader -> Material Output link in the authored material.
+          $probe="import bpy;mm=[m for m in bpy.data.materials if m.name.startswith('Eldoria_AI_')];assert mm,'No Qwen material';assert any(any(n.bl_idname=='ShaderNodeBsdfPrincipled' for n in m.node_tree.nodes) and any(n.bl_idname=='ShaderNodeOutputMaterial' for n in m.node_tree.nodes) and any(l.from_node.bl_idname=='ShaderNodeBsdfPrincipled' and l.to_node.bl_idname=='ShaderNodeOutputMaterial' for l in m.node_tree.links) for m in mm),'No physical BSDF to output linkage';print('ELDORIA_PHYSICAL_BLENDER5_QWEN_PBR_NODE_LINK_PASS')"
+          & $exe -b (Join-Path $output 'artist-asset.blend') --python-exit-code 1 --python-expr $probe
+          if ($LASTEXITCODE -ne 0) { throw 'Physical PBR Shader validation failed' }
+          Write-Host 'ELDORIA_PC_NATIVE_BLENDER5_QWEN_MATERIAL_AND_INSET_UV_PASS'
+      - name: Preserve real .blend .glb and matched-camera evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-windows-native-blender5-qwen-pbr-fixed
+          path: ${{ runner.temp }}/eldoria-windows-blender5-material-fixed/
+          if-no-files-found: warn
+          retention-days: 10
