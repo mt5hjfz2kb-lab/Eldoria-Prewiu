@@ -44,6 +44,8 @@ class AuthorScopeTests(unittest.TestCase):
         self.assertEqual(act["target"]["enum"],["ValoriaExistingWall"])
         self.assertEqual(set(act["params"]["required"]),{"anchor","direction","distance","radius"})
         self.assertNotIn("location",act["params"]["properties"])
+        self.assertGreaterEqual(act["params"]["properties"]["distance"]["minimum"],0.65)
+        self.assertGreaterEqual(act["params"]["properties"]["radius"]["minimum"],1.5)
     def test_mesh_edit_prompt_requires_local_bound_decisions(self):
         brief=artist_loop.contract_brief(3,True,"mesh_edit")
         self.assertIn("LOCAL EXTREMA",brief)

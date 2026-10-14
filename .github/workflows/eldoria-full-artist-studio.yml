@@ -233,6 +233,7 @@ jobs:
           python3 tools/art-direction/full-studio/artist_loop.py \
             --brief 'Modify existing Valoria Tower production geometry. Inspect actual local mesh bounds and preview. Choose and apply your OWN sculpt brush to visibly change inherited stone edges, top profile, defensive crenellations or roof shape; preserve tower identity and do not generate a replacement. This is not a fixed tower template. Art approval is independent.' \
             --source Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb \
+            --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json \
             --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
             --out /tmp/eldoria-qwen-real-source-refinement \
             --max-cycles 1 --max-actions 2 --max-tokens 950 \

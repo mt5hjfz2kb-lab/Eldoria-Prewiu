@@ -84,8 +84,8 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         params={"type":"object","properties":{
           "anchor":{"type":"string","enum":["x_min","x_max","y_min","y_max","z_min","z_max"]},
           "direction":{"type":"string","enum":["+X","-X","+Y","-Y","+Z","-Z"]},
-          "distance":{"type":"number","minimum":0.15,"maximum":1.8},
-          "radius":{"type":"number","minimum":0.5,"maximum":8}},
+          "distance":{"type":"number","minimum":0.65,"maximum":1.8},
+          "radius":{"type":"number","minimum":1.5,"maximum":8}},
           "required":["anchor","direction","distance","radius"],"additionalProperties":False}
     elif phase=="surface":
         action_op={"type":"string","const":"material"}
@@ -149,7 +149,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
     if not source_exists:
         return base+"EMPTY scene: asset_decision=NEW, every op=primitive. Each has params EXACTLY {shape:cylinder|cone|cube|uv_sphere|ico_sphere,location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. Model a separate, vertically aligned masonry body and believable roof. Do not bury objects, offset roof or overlap identical solids. All parts must be original and camera-visible."
     if phase=="mesh_edit":
-        return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:0.15..1.8,radius:0.5..8}. INHERITED VERTEX EDIT: Read inspected local_bounds_min_m / local_bounds_max_m and LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Every action must make a visible source-mesh change; do not repeat identical actions."
+        return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:0.65..1.8,radius:1.5..8}. INHERITED VERTEX EDIT: Read inspected local_bounds_min_m / local_bounds_max_m and LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Make a substantial but controlled visible silhouette edit at a landmark consistent with the reference. Preserve recognisable architecture; choose direction and impact deliberately rather than minimum values. Every action must make a visible source-mesh change; do not repeat identical actions."
     if phase=="geometry":
         return base+"THIS STAGE ONLY FIXES GEOMETRY of the real existing Blender meshes. For EACH action op=transform; choose one EXACTLY NAMED source object from verified inventory. params must contain BOTH location:[x,y,z] and scale:[sx,sy,sz], no extra keys. FIX the formerly overlapping and horizontally misaligned roof and tower by placing objects at DIFFERENT HEIGHTS. Y coordinates must not be copied blindly. Blender operation is absolute position and absolute scale. NEVER wrap values in a transform sub-object."
     if phase=="surface":

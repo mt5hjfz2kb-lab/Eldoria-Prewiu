@@ -24,7 +24,7 @@ class ContractTests(unittest.TestCase):
         p["actions"]=[{"id":"/0","op":"sculpt_anchor",
             "target":"Valoria_Tower_CohV1 · EA03_Village_Tover_01a_LOD0",
             "reason":"Improve inherited tower wall silhouette at the actual extremum",
-            "params":{"anchor":"y_max","direction":"+Y","distance":0.42,"radius":2.1}}]
+            "params":{"anchor":"y_max","direction":"+Y","distance":0.82,"radius":2.1}}]
         self.assertEqual(validate_plan(p)["geometric_actions"],1)
         p["actions"][0]["params"]["distance"]=0
         with self.assertRaises(RejectedPlan):validate_plan(p)
