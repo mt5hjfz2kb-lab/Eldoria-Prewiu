@@ -53,52 +53,92 @@ def inside_limits(center, limits):
                 for v, (lo, hi) in zip(center, limits)))
 
 
+RADIUS_CHOICES = ("18","20","22","24","26","28","30")
+
+
 def model_knot_schema(limits):
-    """Use named/scalar coordinates because small local model JSON constraints may
-    not honor prefixItems on different numeric dimensions of a vector.
-    The model authors x/y/z and vertical change; conversion is type-only.
+    """Artist chooses actual XY, displacement and one exact tool radius.
+
+    Z is NOT an art parameter: physical contact height is independently
+    measured from the real frozen Blender terrain at the chosen XY.
     """
-    coords = {
-        axis.lower(): {"type":"number","minimum":bounds[0],"maximum":bounds[1]}
-        for axis, bounds in zip(AXES,limits)
+    xy = {
+        axis.lower(): {"type":"number","minimum":limits[index][0],
+                       "maximum":limits[index][1]}
+        for index,axis in enumerate(AXES[:2])
     }
     return {
         "type":"object", "additionalProperties":False,
         "properties":{
-            "center_xyz":{"type":"object","additionalProperties":False,
-                          "properties":coords,"required":["x","y","z"]},
+            "center_xy":{"type":"object","additionalProperties":False,
+                         "properties":xy,"required":["x","y"]},
             "vertical_displacement_m":{"type":"number","minimum":-14,"maximum":12},
-            "radius":{"type":"number","minimum":18,"maximum":30},
+            "radius_m_choice":{"type":"string","enum":list(RADIUS_CHOICES)},
         },
-        "required":["center_xyz","vertical_displacement_m","radius"]
+        "required":["center_xy","vertical_displacement_m","radius_m_choice"]
     }
 
 
-def normalize_artist_authored_knots(raw_document):
-    """Lossless typed serialization of LLM-selected spatial numbers.
+def artist_xy_positions(raw_document, xy_limits):
+    if not isinstance(raw_document,dict) or not isinstance(raw_document.get("planned_actions"),list):
+        raise ValueError("Original model document lacks actions")
+    positions=[]
+    for action in raw_document["planned_actions"]:
+        knots=action.get("parameters",{}).get("knots") if isinstance(action,dict) else None
+        if not isinstance(knots,list) or not 3<=len(knots)<=4:
+            raise ValueError("Expected 3..4 model-authored knots per path")
+        for knot in knots:
+            if not isinstance(knot,dict) or set(knot)!={"center_xy","vertical_displacement_m","radius_m_choice"}:
+                raise ValueError("Malformed original model knot fields")
+            pos=knot["center_xy"]
+            if not isinstance(pos,dict) or set(pos)!={"x","y"}:
+                raise ValueError("Missing exact model-authored x/y")
+            x,y=pos["x"],pos["y"]
+            if not all(type(q) in (int,float) and math.isfinite(q) for q in (x,y)):
+                raise ValueError("Artist supplied unsafe XY")
+            if not(xy_limits[0][0]<=x<=xy_limits[0][1] and xy_limits[1][0]<=y<=xy_limits[1][1]):
+                raise ValueError("AI terrain XY lies outside source-authorized region")
+            if knot["radius_m_choice"] not in RADIUS_CHOICES:
+                raise ValueError("Invalid artist-chosen radius enum; NEVER coerce/clamp")
+            if type(knot["vertical_displacement_m"]) not in (int,float) or not math.isfinite(knot["vertical_displacement_m"]):
+                raise ValueError("Invalid model-chosen signed relief")
+            positions.append([x,y])
+    if not 1<=len(positions)<=8:
+        raise ValueError("Unexpected number of original Qwen XY knots")
+    return positions
 
-    Never clamp, repair, snap to mesh, interpolate or change any AI-authored
-    coordinate or displacement; reject malformed fields before art execution.
-    The raw response remains the authoritative original inference evidence.
+
+def normalize_artist_authored_knots(raw_document, source_heights):
+    """Preserve every Qwen-authored value. Convert only data representation.
+
+    source_heights are measured, not invented, from the immutable source
+    terrain using inspect_ground_heights.py at each Qwen-selected XY.
     """
     import copy
     doc=copy.deepcopy(raw_document)
     actions=doc.get("planned_actions") if isinstance(doc,dict) else None
-    if not isinstance(actions,list):
-        raise ValueError("No artist planned_actions array")
+    if not isinstance(actions,list) or not isinstance(source_heights,list):
+        raise ValueError("Missing model actions or genuine Blender source heights")
+    index=0
     for action in actions:
         knots=action.get("parameters",{}).get("knots") if isinstance(action,dict) else None
         if not isinstance(knots,list):
-            raise ValueError("Artist path has no knots")
+            raise ValueError("Original model path has no knots")
         for knot in knots:
-            if not isinstance(knot,dict) or set(knot)!={"center_xyz","vertical_displacement_m","radius"}:
-                raise ValueError("Artist knot requires center_xyz, vertical_displacement_m and radius")
-            pos=knot.pop("center_xyz")
+            if index>=len(source_heights):
+                raise ValueError("Insufficient measured original terrain heights")
+            pos=knot.pop("center_xy")
             dz=knot.pop("vertical_displacement_m")
-            if not isinstance(pos,dict) or set(pos)!={"x","y","z"}:
-                raise ValueError("Artist named source-local center must contain exactly x,y,z")
-            if not all(type(v) in (int,float) and math.isfinite(v) for v in (pos["x"],pos["y"],pos["z"],dz)):
-                raise ValueError("Artist knot contains invalid numeric components")
-            knot["center"]=[pos["x"],pos["y"],pos["z"]]
+            radius_choice=knot.pop("radius_m_choice")
+            height=source_heights[index]
+            if type(height) not in (float,int) or not math.isfinite(height):
+                raise ValueError("Blender returned non-finite terrain surface height")
+            if radius_choice not in RADIUS_CHOICES:
+                raise ValueError("Model-selected radius not an approved tool value")
+            knot["center"]=[pos["x"],pos["y"],height]
             knot["delta"]=[0,0,dz]
+            knot["radius"]=float(radius_choice)
+            index+=1
+    if index!=len(source_heights):
+        raise ValueError("Source height count does not match model knot count")
     return doc
