@@ -12,6 +12,8 @@
 - Decisiones de topología irreversible, gasto/créditos, adquisición comercial o acciones que requieran acceso exclusivamente humano necesitan autorización explícita. **Presupuesto predeterminado: 0 créditos de pago.**
 
 ## 2. Arranque mínimo, fuentes de verdad y concurrencia
+> **PREFLIGHT DE HERRAMIENTAS PARA CADA NUEVO CHAT (14-10-2026):** antes de dar por inexistentes Unity, Blender, Ollama/Qwen, BlenderMCP, el runner Windows o una conexión GitHub, consultar [tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md](tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md), comprobar las herramientas GitHub disponibles en **esta sesión** y las rutas/workflows vivos de `main`, y contrastar las evidencias históricas con los runs actuales. Si se dispone de checkout y Node, ejecutar el diagnóstico de solo lectura `node tools/eldoria-agent-preflight.mjs`. El propietario no tiene que reiterar su inventario técnico. El acceso directo al PC, la presencia de un runner declarado y la disponibilidad real del servicio son hechos distintos. Este preflight **no** levanta la pausa superior ni permite ocupar Windows en producción.
+
 1. Leer este archivo y obtener HEAD vivo de la rama relevante; nunca sustituirlo por la memoria del chat.
 2. Leer **solo las cabeceras vigentes** de `SESSION_HANDOFF.md` y `PROJECT_STATE.md` que afecten a la tarea; son principalmente registros cronológicos, no instrucciones por sí mismos.
 3. Leer exclusivamente `active` de `pipeline/active-workstreams.json` para identificar propietarios y recursos. `history` tiene valor probatorio únicamente; antiguas palabras STOP, HANDOFF, PENDING, COMPLETED o REVIEW no se aplican al encargo actual.
