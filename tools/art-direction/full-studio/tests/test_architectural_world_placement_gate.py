@@ -25,6 +25,28 @@ class Coherence(unittest.TestCase):
  def test_slim_support_attachment_is_allowed(self):
   p=primitive("Eldoria_Added_C04_StoneSupport","cube",[1.2,0,1.4],[.28,.28,.5])
   self.assertEqual(reject_obviously_bad_component_placement(p,BASE)["changes_to_artist_values"],0)
+ def test_real_qwen_coat_of_arms_invisible_internal_cube_rejected(self):
+  p=primitive("Eldoria_Added_C01_Tower_CoatOfArms","cube",
+              [0.0,0.0,1.63539],[0.2,0.3,0.15])
+  original=copy.deepcopy(p)
+  with self.assertRaisesRegex(RejectedPlan,"COMPLETELY BURIED"):
+   reject_obviously_bad_component_placement(p,BASE)
+  self.assertEqual(p,original)
+ def test_real_qwen_small_belfry_inside_tower_rejected(self):
+  p=primitive("Eldoria_Added_C03_Tower_Belfry_01","cylinder",
+              [0.0,0.0,2.0],[0.5,0.5,0.5])
+  with self.assertRaisesRegex(RejectedPlan,"COMPLETELY BURIED"):
+   reject_obviously_bad_component_placement(p,BASE)
+ def test_artist_exterior_door_trim_and_roof_detail_not_forbidden(self):
+  door=primitive("Eldoria_Added_C02_External_DoorTrim","cube",
+                 [0,-1.15,1.0],[.25,.15,.3])
+  crown=primitive("Eldoria_Added_C03_Stone_Crown","cone",
+                  [0,0,3.18],[.3,.3,.2])
+  for p in (door,crown):
+   original=copy.deepcopy(p)
+   result=reject_obviously_bad_component_placement(p,BASE)
+   self.assertEqual(result["changes_to_artist_values"],0)
+   self.assertEqual(p,original)
  def test_actual_pc_qwen_cycle1_pedestal_overlaps_front_low_center(self):
   p=primitive("Eldoria_Added_C01_Pedestal","cube",
               [0.0,-0.04135,0.15164],[0.8,0.3,0.8])
