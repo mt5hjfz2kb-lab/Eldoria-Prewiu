@@ -1,0 +1,28 @@
+{
+  "observed_defect": "Ground surface lacks architectural integration, appears flat and untextured, fails to convey fantasy-medieval prairie depth or terrain variation, no stone slope transitions or microdetail from donor grass texture.",
+  "design_intent": "Create a luminous, textured meadow with soft golden dry-grass transitions and pale exposed slope stone, using donor grass as microdetail, preserving all terrain geometry and boundary, avoiding new geometry or painting paths.",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "No new geometry required; existing terrain mesh is editable; design is texture-based, not topology-based.",
+  "planned_actions": [
+    {
+      "id": "assign_material",
+      "type": "assign_material",
+      "target": "ZoneOne continuous prairie source",
+      "rationale": "Apply baked material with macro meadow variations, soft dry_fraction blend, donor tiled at detail_tile_m, detail_strength modulated color/normal, rock color only above slope threshold.",
+      "parameters": {
+        "rgb": [0.7, 0.7, 0.5],
+        "roughness": 0.6,
+        "secondary_rgb": [0.8, 0.7, 0.6],
+        "dry_rgb": [0.9, 0.8, 0.7],
+        "rock_rgb": [0.6, 0.6, 0.5],
+        "patch_scale_m": 10,
+        "detail_tile_m": 2,
+        "dry_fraction": 0.3,
+        "detail_strength": 0.4,
+        "rock_slope_degrees": 30
+      }
+    }
+  ],
+  "expected_visual_difference": "Luminous, textured meadow with soft golden dry-grass transitions and pale exposed slope stone, microdetail from donor grass texture, no flat green field or gritty photoreal floor.",
+  "mobile_risks": "Low; baked material retains A/B camera, lights and geometry, no new geometry or painting paths, glTF-compatible color and tangent normal atlases (1024 square)."
+}

@@ -1,0 +1,28 @@
+{
+  "observed_defect": "Invalid bound roughness and patch_scale_m parameters in material assignment, causing texture baking failure and terrain visual distortion.",
+  "design_intent": "Correct material parameters to ensure valid terrain baking: roughness must be 0.0–1.0, patch_scale_m must be >0 and match terrain scale for coherent microdetail.",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "No new geometry required; parameters are editable; fix invalid bounds to preserve terrain integrity and bake success.",
+  "planned_actions": [
+    {
+      "id": "assign_material",
+      "type": "assign_material",
+      "target": "ZoneOne continuous prairie source",
+      "rationale": "Fix invalid roughness and patch_scale_m to ensure valid baking and terrain coherence.",
+      "parameters": {
+        "rgb": [0.7, 0.7, 0.5],
+        "roughness": 0.6,
+        "secondary_rgb": [0.8, 0.7, 0.6],
+        "dry_rgb": [0.9, 0.8, 0.7],
+        "rock_rgb": [0.6, 0.6, 0.5],
+        "patch_scale_m": 5,
+        "detail_tile_m": 2,
+        "dry_fraction": 0.3,
+        "detail_strength": 0.4,
+        "rock_slope_degrees": 30
+      }
+    }
+  ],
+  "expected_visual_difference": "Validated material parameters ensure successful baking: roughness = 0.6 (valid), patch_scale_m = 5 (valid), preserving terrain texture and microdetail without distortion.",
+  "mobile_risks": "Low; parameters adjusted to valid bounds, no new geometry or painting paths, glTF-compatible color and tangent normal atlases (1024 square)."
+}
