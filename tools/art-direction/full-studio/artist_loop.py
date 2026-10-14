@@ -13,6 +13,7 @@ from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan,relative_triangle_limit
 from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
 from architectural_component_guard import verify_volume_and_complexity
+from architectural_world_placement_gate import reject_obviously_bad_component_placement
 import copy, re
 from triangle_budget import check_triangle_growth
 
@@ -399,6 +400,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                 if action["target"] != created_name:
                     raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
             verify_volume_and_complexity(doc)
+            spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
+            (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
+                json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
