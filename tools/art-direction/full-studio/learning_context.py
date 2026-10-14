@@ -130,11 +130,12 @@ def evidence_case_lessons(casebook: dict, brief: str = "", limit: int = 1400, ma
 def stage_pending_art_evidence(out_file, *, model: str, source_hash,
                                plan_file, before_image, after_image,
                                critique_file, comparison_file, output_blend, output_glb,
-                               raw_response_file=None, screen_gate="REVIEW_REQUIRED"):
+                               raw_response_file=None, screen_gate="REVIEW_REQUIRED",
+                               protected_regions_file=None):
     """Emit provenance for future review. Never auto-label it learned/approved."""
     import json
     from pathlib import Path
-    if screen_gate not in ("REVIEW_REQUIRED", "SCREENSPACE_REJECTED"):
+    if screen_gate not in ("REVIEW_REQUIRED", "SCREENSPACE_REJECTED", "PROTECTED_ACCESS_OCCLUSION_REJECTED"):
         raise ValueError("Unknown bounded screen impact state")
     entries = {}
     for label, file in (("plan", plan_file), ("raw_model_response", raw_response_file),
@@ -150,6 +151,13 @@ def stage_pending_art_evidence(out_file, *, model: str, source_hash,
         entries[label] = {"filename":p.name,
                           "sha256":hashlib.sha256(p.read_bytes()).hexdigest(),
                           "size_bytes":p.stat().st_size}
+    if protected_regions_file is not None:
+        p = Path(protected_regions_file)
+        if not p.is_file() or not p.stat().st_size:
+            raise ValueError("Protected camera region evidence missing")
+        entries["protected_camera_regions"]={"filename":p.name,
+            "sha256":hashlib.sha256(p.read_bytes()).hexdigest(),
+            "size_bytes":p.stat().st_size}
     if source_hash is not None and not re.fullmatch(r"[a-f0-9]{64}", source_hash):
         raise ValueError("Frozen source identity must be a SHA-256")
     record = {"schema_version":1, "status":"PENDING_INDEPENDENT_VERIFICATION",
