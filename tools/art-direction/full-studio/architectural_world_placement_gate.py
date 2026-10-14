@@ -53,6 +53,19 @@ def reject_obviously_bad_component_placement(plan,source_objects):
             raise RejectedPlan("Vertical named architecture is incorrectly oriented in WORLD Y "
                                "or too low: Blender WORLD +Z is vertical, GLB local Y is not. "
                                "Qwen must author a genuinely upright placed element")
+    # True exterior-facing architecture has to touch or reach an observable
+    # original building skin, not be a tiny cube buried at the mesh center.
+    # This pure geometric AABB bound uses measured Blender WORLD vertices and
+    # leaves every model-authored position and dimension completely unchanged.
+    boundary_margin=[max(.12,span[i]*.10) for i in range(3)]
+    reaches_exterior=any(
+        lo[i]<=low[i]+boundary_margin[i] or hi[i]>=high[i]-boundary_margin[i]
+        for i in range(3)
+    )
+    if not reaches_exterior:
+        raise RejectedPlan("NEW ARCHITECTURE IS COMPLETELY BURIED INSIDE source WORLD bounds; "
+                           "cannot be camera-visible structural addition. Rechoose YOUR "
+                           "OWN source-attached exterior location and dimensions, no automatic repositioning.")
     # A physically attached roof/side extension must not stretch far beyond
     # the whole inherited building. The earlier accepted C02 huge Y-axis
     # block projected >1.3x the original footprint past the gable.
