@@ -166,10 +166,32 @@ def run_variant_A():
   for yy in (-10.5,-7.3,3.0,8.7):
    safe(name+' buttress',x,yy,1.5,1.3)
    buttress(name+' graduated inboard ground anchor',x,yy,2.18 if yy<0 else 2.48)
-  # On-camera stone returns build architectural rhythm along the GATE-level
-  # forecourt but stop short of the 14m protected central road strip.
-  broken_wall_line(name+' lower approach inhabited court',
-    side*15.8,-12.0,7.4,1.48,'X',seed=302 if side<0 else 303)
+  # Genuine Qwen real-Unity art decision (38551799312): CONNECT detached
+  # lateral fragments to the existing courtyard wall, and reject little white
+  # floating rubble bars. An entire ORIGINALLY AUTHORED stone-wall family is
+  # reused as ONE continuous parapet, physically grounded next to the road,
+  # stopping before road x[-7,+7] and both future 10x10m building sites.
+  lower_x,lower_width=(16.10,10.4) if side>0 else (-13.20,6.4)
+  safe(name+' Qwen connected medieval lower curtain',
+       lower_x,-12.55,lower_width,1.18)
+  clone_group(name+' original connected gate-level courtyard wall',
+       wallkit,lower_x,-12.55,(lower_width,1.18,1.69),
+       base_z=ground(lower_x,-12.55)-.23)
+  if side>0:
+   # From the right surviving wall at y~1 down toward the lower approach:
+   # long stone retaining wing and actual attached oak fighting gallery.
+   # This occupies the OUTER right bank only; no extra standalone building.
+   safe('EAST junction continuous wall',21.95,-10.65,1.25,5.40)
+   clone_group('EAST authentic right fortification wing',
+      wallkit,21.95,-10.65,(5.40,1.25,2.22),
+      base_z=ground(21.95,-10.65)-.26,rotate=90)
+   safe('EAST wooden fighting wall-walk',21.05,-10.50,1.66,5.72)
+   deckz=ground(21.05,-10.50)
+   cube('EAST timber gallery attached to original wall',
+        21.05,-10.50,deckz+1.55,1.66,5.72,.23,material=wood,bevel=.038)
+   for yy in (-12.48,-10.50,-8.52):
+    cube('EAST load-bearing medieval timber wall-walk post',
+         21.60,yy,deckz+.70,.27,.31,1.4,material=wood,bevel=.018)
   # Real original wall connection module: reads as a connected tower-base /
   # defensive corner rather than a freestanding grey post.
   safe(name+' original corner reuse',x,9.42,2.2,2.2)
@@ -292,7 +314,7 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('Qwen_native_geological_upper_bank_no_floating_wall_ribbons_A7' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('Qwen_geological_upper_bank_connected_lower_curtain_and_wooden_gallery_A8' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
