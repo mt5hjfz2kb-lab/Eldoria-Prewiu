@@ -51,7 +51,8 @@ jobs:
             -Source 'Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb' `
             -Reference 'references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' `
             -Out (Join-Path $env:RUNNER_TEMP 'eldoria-native-qwen-blender-new-art') `
-            -Model 'qwen3-vl:4b-instruct'
+            -Model 'qwen3-vl:4b-instruct' `
+            -Transport 'blendermcp'
           if (-not $?) { throw 'Same-PC authentic artist cycle failed' }
       - name: Preserve original Qwen JSON, real Blender source, GLB, matched screenshots and logs
         if: always()
