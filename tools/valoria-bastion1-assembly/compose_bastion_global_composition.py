@@ -117,26 +117,47 @@ def flagstones(label,x,y,w,d,h=.14):
 def stone_scree(label,x,y,size=(2.7,1.6,.58)):
  safe(label,x,y,size[0],size[1]);clone_group(label,rockkit,x,y,size,base_z=ground(x,y)-.11)
 def run_variant_A():
- # A: 'Defensive ward'. The already validated west guardhouse is the northern
- # contact of a restored inhabited fort perimeter. An east counterpart balances
- # overall composition. Strong architecture rises on both OUTER limits only.
- broken_wall_line('WEST courtyard broken rampart',-25.15,-.95,13.8,1.82,'Y',41)
- broken_wall_line('EAST courtyard broken rampart',25.10,-3.0,16.6,2.35,'Y',42)
- # West and east architectural anchors are not detached props; buttresses
- # actually sit on the segment joints / cliff contact line.
- for name,x,y,h in [('west landing',-25.15,-8.1,2.6),('west terrace',-25.15,5.45,2.6),
-                    ('east entry',25.10,-11.05,2.8),('east terrace',25.10,5.05,3.15)]:
-  buttress(name,x,y,h)
- # Curate sightlines from front gate to upper fort using side-only masonry
- # broken returns. No masonry crosses the central x=-9..9 corridor.
- broken_wall_line('WEST upper return',-20.7,15.6,10.0,1.30,'X',73)
- broken_wall_line('EAST upper return',20.35,15.6,10.4,1.65,'X',74)
- # A pair of original architected arches/pier connections, not empty cubes.
- clone_group('west ancient junction',connectionkit,-25.1,11.4,(2.9,3.2,3.2))
- clone_group('east ancient junction',connectionkit,25.1,10.6,(3.1,3.1,3.8))
- # Make flanking landings look founded on rock not cardboard.
- for x,y in [(-26,-9.4),(26,-10.4),(-25,8.7),(25,9)]:
-  stone_scree('cliff masonry contact',x,y,(2.8,2,.65))
+ # REVISION A2 after inspecting ACTUAL 1440x1000 Unity frames from
+ # 38520697022. The initial A was too far onto the side cliffs and hidden by
+ # trees; B was explicitly rejected as four disconnected flat stone pads.
+ # Global focus now moves 3 metres toward the camera-visible INBOARD side:
+ # trace genuine masonry from outer lower courts up to the upper castle shelf.
+ for side in (-1,1):
+  name='WEST' if side<0 else 'EAST'
+  x=side*21.95
+  # The unbuilt barracks/sawmill occupy 10x9m near +/-16,y=3, so these
+  # outer curtain-wall modules are OUTSIDE the actual 10x9 model bounds.
+  safe(name+' continuous curtain',x,-3.0,1.44,9.8)
+  clone_group(name+' original authoured crenellated lower flank',
+   wallkit,x,-3.0,(9.8,1.44,2.35),rotate=90)
+  # Strong upper wall plane visibly follows the slope beside the staircase.
+  # Ground height around (+/-17,y12) is 2.5m, rising to 3.44m at y16.
+  xupper=side*16.7
+  safe(name+' upper transition',xupper,11.82,11.3,1.35)
+  clone_group(name+' existing fortification masonry shoulder',
+   wallkit,xupper,11.82,(11.3,1.35,2.00),
+   base_z=ground(xupper,11.82)-.64)
+  # A second strip on the side boundary rises toward that shoulder. Several
+  # individual foundations express the slope, never a perfectly flat slab.
+  for yy in (-10.5,-7.3,3.0,8.7):
+   safe(name+' buttress',x,yy,1.5,1.3)
+   buttress(name+' graduated inboard ground anchor',x,yy,2.18 if yy<0 else 2.48)
+  # On-camera stone returns build architectural rhythm along the GATE-level
+  # forecourt but stop short of the 14m protected central road strip.
+  broken_wall_line(name+' lower approach inhabited court',
+    side*15.8,-12.0,7.4,1.48,'X',seed=302 if side<0 else 303)
+  # Real original wall connection module: reads as a connected tower-base /
+  # defensive corner rather than a freestanding grey post.
+  safe(name+' original corner reuse',x,9.05,2.2,2.2)
+  clone_group(name+' real selected wall-connection gallery corner',
+   connectionkit,x,9.05,(2.2,2.2,3.03))
+  # Natural geological foundations replace fake heightless stone overlays.
+  for xx,yy in ((side*21.8,12.50),(side*22.1,-10.10),
+                (side*19.25,9.85)):
+   stone_scree(name+' authored geological masonry foot',xx,yy,(2.2,1.6,.55))
+ # No freestanding central decorations or new buildings: broad central court
+ # stays empty for future progression, while TWO coherent physical wall systems
+ # now express foreground, midground and high medieval citadel depth.
 def run_variant_B():
  # B: 'Terraced old town'. Recompose the entire yard as linked terraced
  # plateau edge sequences, not isolated wall towers. Stone contour segments
@@ -171,7 +192,7 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('defensive_perimeter_ward' if variant=='A' else 'stratified_terraced_old_town'),
+ 'variant':variant,'design':('coherent_upper_lower_connected_curtain_ward_A2' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
