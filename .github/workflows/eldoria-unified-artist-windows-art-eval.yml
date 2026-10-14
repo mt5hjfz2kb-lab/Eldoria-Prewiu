@@ -1,5 +1,5 @@
 name: Eldoria unified artist real local 4B vs 8B frozen tower A-B
-# Re-run isolated Qwen8B only after dense inherited source atlas protection
+# Final isolated Qwen8B after 149 tests: forbid exact zero-pixel replay, rotate tool families
 on:
   push:
     branches:
