@@ -1,0 +1,200 @@
+name: Eldoria Qwen artist builds original attached architectural component on real Windows Blender
+# Verified two prior authored Blender stages: original structural changes plus PBR shader repair.
+# Compatibility retry: Ollama prefixItems without items:false; exact HTTP error body retained.
+# Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
+# Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
+# Resume proven PBR BLEND; actual evaluated Blender triangles before/after fixes false source failure #38620198456.
+# All source SHAs, pinned installed BlenderMCP addon, zero credits and independent review preserved.
+# Third controlled test: selected BMesh edges confirmed in Windows, source damage prevention and inspected topology.
+# Second real attempt: typed nine-tool schemas plus actual topology landmarks; retain raw model choices.
+on:
+  push:
+    branches:
+      - validation/eldoria-professional-art-fixed-source-20261014
+    paths:
+      - '.github/workflows/eldoria-new-ai-authored-architecture-pc-proof.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-original-new-architectural-mesh-on-pc
+  cancel-in-progress: true
+jobs:
+  real-local-qwen-pc-blender:
+    if: github.ref == 'refs/heads/validation/eldoria-professional-art-fixed-source-20261014'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - name: Resolve Git from existing GitHub Desktop installation
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git from local GitHub Desktop missing' }
+            $folder=Split-Path $candidate
+            $env:PATH="$folder;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+            tools/art-direction/ARTIST_LEARNING_JOURNAL.md
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install only free local image package (no paid services)
+        shell: powershell
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Resume latest verified authentic Qwen-designed Blender tower with stable SHA lineage
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38621127420'
+          name: eldoria-pc-qwen-original-attached-architecture-proof
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-accepted-qwen-asset
+      - name: Locally START already-installed cached Eldoria Artist and refine art in real PC Blender
+        shell: powershell
+        timeout-minutes: 70
+        run: |
+          $ErrorActionPreference='Stop'
+          $exe=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $exe) {
+            $folder=Join-Path $env:ProgramFiles 'Blender Foundation'
+            $exe=Get-ChildItem $folder -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'Real installed Blender PC binary unavailable' }
+          # Same Windows PC has a locally installed BlenderMCP plugin.
+          # Load ONLY the known pinned SHA; never download or install anything.
+          $reported=& $exe -b --factory-startup --python-exit-code 1 --python-expr "import addon_utils;m=next(x for x in addon_utils.modules(refresh=True) if x.__name__=='blender_mcp');print('ELDORIA_MCP='+m.__file__)"
+          if ($LASTEXITCODE -ne 0) { throw 'Installed BlenderMCP missing' }
+          $row=@($reported | Where-Object { $_ -like 'ELDORIA_MCP=*' }) | Select-Object -First 1
+          if (-not $row) { throw 'No exact installed addon path' }
+          $addon=$row.Substring('ELDORIA_MCP='.Length).Trim()
+          if (-not (Test-Path $addon)) { throw 'BlenderMCP file missing' }
+          $mcpSHA=(Get-FileHash $addon -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($mcpSHA -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5') {
+            throw 'Installed BlenderMCP SHA changed'
+          }
+          $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+          if (-not $ollama) {
+            $candidates=@()
+            Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+              foreach($r in @('AppData\Local\Programs\Ollama\ollama.exe','AppData\Local\Ollama\ollama.exe')) {
+                $p=Join-Path $_.FullName $r
+                if (Test-Path $p) { $candidates+=$p }
+              }
+            }
+            $ollama=@($candidates | Select-Object -Unique | Select-Object -First 1)[0]
+          }
+          if (-not $ollama) { throw 'Existing Ollama PC installation unavailable; do not install paid models' }
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $ref='references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg'
+          $review='tools/art-direction/full-studio/tests/valoria_tower_hero_review.json'
+          if (-not (Test-Path $source) -or -not (Test-Path $ref) -or -not (Test-Path $review)) { throw 'Real source / reference / review contract missing' }
+          $frozen=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-accepted-qwen-asset'
+          $manifestFile=Join-Path $root 'full-studio-result.json'
+          $first=Join-Path $root 'cycle-1/output/artist-asset.blend'
+          $previous=Join-Path $root 'cycle-3/output/artist-asset.blend'
+          $proofFile=Join-Path $root 'cycle-3/output/execution-proof.json'
+          if (-not (Test-Path $manifestFile) -or -not (Test-Path $first) -or
+              -not (Test-Path $previous) -or -not (Test-Path $proofFile)) {
+            throw 'Accepted Qwen PC-native Blender source missing'
+          }
+          $priorManifest=Get-Content $manifestFile -Raw | ConvertFrom-Json
+          $proof=Get-Content $proofFile -Raw | ConvertFrom-Json
+          $firstHash=(Get-FileHash $first -Algorithm SHA256).Hash.ToLowerInvariant()
+          $chosenHash=(Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant()
+          $priorAccepted=@($priorManifest.cycles | Where-Object { $_.status -eq 'ART_REVIEW_REQUIRED' })
+          if ($priorManifest.ai_authored_action_plans -lt 2 -or $priorAccepted.Count -lt 2 -or
+              $priorManifest.art_approved -or -not $priorManifest.source_authority_unchanged -or
+              $proof.source_sha256 -ne $firstHash -or $proof.blend_sha256 -ne $chosenHash -or
+              $proof.transport -ne 'blendermcp' -or $proof.art_approved -or
+              -not $proof.inherited_mesh_data_changed) {
+            throw 'Selected Qwen artwork/BlenderMCP SHA chain invalid'
+          }
+          Write-Host ('ELDORIA_ADD_COMPONENT_SOURCE_BLEND_SHA='+$chosenHash)
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $env:OLLAMA_NUM_PARALLEL='1'
+          $env:OLLAMA_MAX_LOADED_MODELS='1'
+          $proc=$null
+          try {
+            $online=$false
+            try { $null=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 4; $online=$true } catch {}
+            if (-not $online) {
+              $stdout=Join-Path $env:RUNNER_TEMP 'eldoria-qwen-pc-server-stdout.txt'
+              $stderr=Join-Path $env:RUNNER_TEMP 'eldoria-qwen-pc-server-stderr.txt'
+              $proc=Start-Process -FilePath $ollama -ArgumentList 'serve' -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+              for ($n=0;$n -lt 35;$n++) {
+                Start-Sleep -Seconds 2
+                try { $null=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 2; $online=$true; break } catch {}
+              }
+            }
+            if (-not $online) { throw 'Existing Ollama cannot serve localhost' }
+            $tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 8
+            if (@($tags.models | Where-Object { $_.name -eq 'eldoria-artist:latest' }).Count -eq 0) { throw 'Cached Eldoria Artist model not found; no model download allowed' }
+            $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-pc-local-artist'
+            $brief='Continue the EXACT inherited Valoria tower scene without replacing it. The owner goal is a richly detailed medieval environment asset. Use your own artistic judgement to add ONE original and camera-visible structural component connected to this same tower. Choose whether a real Blender primitive or your own authored vertex/face mesh is artistically appropriate. All dimensions, geometry, placement, scale and reasoning must come from YOU based on the owner image and physically inspected Blender. The new component must align with the original structure and add genuine shape/depth, not a floating object, decorative spike, huge roof blob or substitute building. Finish it after inspecting its real mesh topology in the next Qwen cycle. Do not merely recolor the entire tower. Independently compare each real Blender render and improve visible architectural quality; no self-approval.'
+            $params=@(
+              'tools/art-direction/full-studio/artist_loop.py',
+              '--brief',$brief,
+              '--source',$previous,
+              '--reference',$ref,
+              '--review',$review,
+              '--out',$out,
+              '--blender',$exe,
+              '--model','eldoria-artist:latest',
+              '--phase','full',
+              '--asset-category','architecture',
+              '--max-cycles','3',
+              '--min-successful-cycles','2',
+              '--max-actions','3',
+              '--source-build-phase',
+              '--source-tool-sequencing',
+              '--max-tokens','2800',
+              '--transport','blendermcp',
+              '--mcp-addon',$addon,
+              '--mcp-sha256',$mcpSHA
+            )
+            & python @params
+            if ($LASTEXITCODE -ne 0) { throw 'Qwen real PC full artist cycle did not pass; preserve raw inference and Blender logs' }
+            $manifest=Get-Content (Join-Path $out 'full-studio-result.json') -Raw | ConvertFrom-Json
+            if ($manifest.frozen_source_sha256 -ne (Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Resumed inherited asset changed' }
+            if (-not $manifest.blender_real_execution -or $manifest.ai_authored_action_plans -lt 2 -or $manifest.art_approved -or $manifest.unity_art_verified) { throw 'Unproven AI real authoring or false visual approval' }
+            $builtFromActualAccepted=@()
+            foreach ($cycle in @($manifest.cycles | Where-Object { $_.status -eq 'ART_REVIEW_REQUIRED' })) {
+              $planFile=Join-Path $out ('cycle-'+$cycle.cycle+'/artist-plan.json')
+              if (Test-Path $planFile) {
+                $plan=Get-Content $planFile -Raw | ConvertFrom-Json
+                if (@($plan.actions | Where-Object { $_.op -eq 'primitive' -or $_.op -eq 'mesh' }).Count -gt 0) {
+                  $builtFromActualAccepted+= $cycle.cycle
+                }
+              }
+            }
+            if ($builtFromActualAccepted.Count -lt 1) { throw 'No accepted Qwen-authored real NEW mesh/primitive; retain evidence' }
+            Write-Host ('ELDORIA_QWEN_NEW_ARCHITECTURAL_COMPONENT_NATIVE_BLENDER_MCP_PASS authored_cycles='+$manifest.ai_authored_action_plans)
+          } finally {
+            if ($proc) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
+            if ((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $frozen) { throw 'Original tower source modified in PC checkout' }
+          }
+      - name: Preserve exact new model inference, real PC Blender source and A-B without promoting production art
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-custom-artist-pc-source-grounded-multitool-proof
+          path: ${{ runner.temp }}/eldoria-real-pc-local-artist/
+          if-no-files-found: warn
+          retention-days: 14
