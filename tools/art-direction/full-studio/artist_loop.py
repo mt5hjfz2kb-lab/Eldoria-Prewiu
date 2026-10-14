@@ -385,7 +385,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               ". The original fixed-camera A/B changed 0 pixels; choose "
               "a different, physically useful original Blender operation. ")
     if args.source_build_phase:
-        msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. 
+        msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. "
               "For any NEW object, location/rotation/scale are in Blender WORLD xyz. "
               "An imported GLB mesh may have LOCAL +Y aligned with WORLD +Z. "
               "Never put a chimney 'up' using WORLD Y; height is WORLD Z. "
