@@ -1,0 +1,57 @@
+[
+  {
+    "id": "valley_knot",
+    "type": "sculpt_region",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Create broad valley with 18m radius centered at [-30, 60, 0.4071593] to connect with existing cliff anchors and avoid city pad.",
+    "parameters": {
+      "center": [
+        -30,
+        60,
+        0.4071593
+      ],
+      "delta": [
+        0,
+        0,
+        -2.5
+      ],
+      "radius": 18
+    }
+  },
+  {
+    "id": "path_knot",
+    "type": "sculpt_path",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Connect valley to cliff center with 28m radius path, ensuring camera-visible terrain continuity and avoiding city pad.",
+    "parameters": {
+      "knots": [
+        {
+          "center": [
+            -30,
+            60,
+            0.4071593
+          ],
+          "delta": [
+            0,
+            0,
+            -2.5
+          ],
+          "radius": 18
+        },
+        {
+          "center": [
+            -4,
+            54,
+            0.4682583
+          ],
+          "delta": [
+            0,
+            0,
+            -2.5
+          ],
+          "radius": 28
+        }
+      ]
+    }
+  }
+]

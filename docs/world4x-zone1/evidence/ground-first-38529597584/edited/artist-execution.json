@@ -1,0 +1,33 @@
+{
+  "transport": "direct",
+  "source_sha256": "d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f",
+  "plan_sha256": "541f35333105dc79222f609c3ec02b765abb5b7d6fec9c59eb29acea64312762",
+  "source_mesh_sha256": "0c43082d5d0ac7a46ea62eab85c347f4dcc2db09509c3030e118ef7763f49bc6",
+  "result_mesh_sha256": "12dbd828509e9b825eb44b795a8ec401a5e63693ffab5c8fef8c7981d3462c00",
+  "result_blend_sha256": "048d01cd2339c9d638eaef8019a6ea26a4dec307bbadcf542fc3b519d03b466e",
+  "result_glb_sha256": "5de6c8e0e8565debc7b992d4c1b926d7bfc84d6f7faa0f975d58f94138172ee2",
+  "elapsed_seconds": 1.456,
+  "executed_actions": [
+    {
+      "id": "valley_knot",
+      "type": "sculpt_region",
+      "target": "ZoneOne continuous prairie source",
+      "changed_vertices": 249,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.003,
+      "applied": true
+    },
+    {
+      "id": "path_knot",
+      "type": "sculpt_path",
+      "target": 1.0,
+      "changed_vertices": 736,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.016,
+      "applied": true
+    }
+  ],
+  "self_approval": false
+}
