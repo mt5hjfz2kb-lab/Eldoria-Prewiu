@@ -1,0 +1,23 @@
+{
+  "transport": "direct",
+  "source_sha256": "73b5f0e267eb49f7892311fca2d5d6867f74f97778abc96b849c6c9de8cc5b2d",
+  "plan_sha256": "e697463692bab1941ffcc00a51a5e1ad43e4de9e918727c722437c1e575673fc",
+  "source_mesh_sha256": "193600e020426162b30c1e30e6219a4ff7fcd21d56b209c17b3d9bf10e24b631",
+  "result_mesh_sha256": "7a3abdf24cd92f643503607a40119ad21532dfeb725e670d6cbf8908768e4789",
+  "result_blend_sha256": "e2261f0fff7ad6d260e23f42ff4a16bbb0a00298d239d83703bf6f76e99a6f39",
+  "result_glb_sha256": "37f09256aceba3d06d4412ff098d3892f5e3944fe8bf9f89c4c2b07154a391a6",
+  "elapsed_seconds": 2.158,
+  "executed_actions": [
+    {
+      "id": "sculpt_path",
+      "type": "sculpt_path",
+      "target": 1.0,
+      "changed_vertices": 2295,
+      "changed_faces": 0,
+      "changed_objects": 1,
+      "elapsed_seconds": 0.05,
+      "applied": true
+    }
+  ],
+  "self_approval": false
+}

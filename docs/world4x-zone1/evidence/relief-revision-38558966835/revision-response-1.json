@@ -1,0 +1,35 @@
+{
+  "observed_defect": "Broad flat lawn dominates camera view; no valley or ridge contour visible, lacking natural topography for strategy gameplay.",
+  "design_intent": "Introduce a single, broad, shallow valley with negative Z displacement to establish visual hierarchy and terrain flow, avoiding straight lines or isolated mounds.",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "Valley creates focal depth and traversable terrain without disrupting city pad or sector boundaries; aligns with camera perspective and avoids prior model's flatness.",
+  "planned_actions": [
+    {
+      "id": "valley_sculpt",
+      "type": "sculpt_path",
+      "target": "ZoneOne continuous prairie source",
+      "rationale": "Define valley with three non-collinear knots for curvature and depth.",
+      "parameters": {
+        "knots": [
+          {
+            "center": [0, 0, 0],
+            "delta": [0, 0, -6],
+            "radius": 32
+          },
+          {
+            "center": [0, 0, 0],
+            "delta": [0, 0, -6],
+            "radius": 32
+          },
+          {
+            "center": [0, 0, 0],
+            "delta": [0, 0, -6],
+            "radius": 32
+          }
+        ]
+      }
+    }
+  ],
+  "expected_visual_difference": "Camera now reveals a broad, shallow valley with natural slope, enhancing strategy legibility and terrain variety without altering city or sector boundaries.",
+  "mobile_risks": "Minimal; valley depth is shallow and uniform, avoiding complex mesh deformation or high-poly regions."
+}

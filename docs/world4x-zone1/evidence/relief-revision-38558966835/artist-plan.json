@@ -1,0 +1,51 @@
+[
+  {
+    "id": "sculpt_path",
+    "type": "sculpt_path",
+    "target": "ZoneOne continuous prairie source",
+    "rationale": "Establish a valley with negative Z displacement using three non-collinear knots",
+    "parameters": {
+      "knots": [
+        {
+          "center": [
+            -60,
+            40,
+            0
+          ],
+          "delta": [
+            0,
+            0,
+            -6
+          ],
+          "radius": 24
+        },
+        {
+          "center": [
+            0,
+            70,
+            0
+          ],
+          "delta": [
+            0,
+            0,
+            -2
+          ],
+          "radius": 32
+        },
+        {
+          "center": [
+            60,
+            40,
+            0
+          ],
+          "delta": [
+            0,
+            0,
+            -6
+          ],
+          "radius": 24
+        }
+      ]
+    }
+  }
+]

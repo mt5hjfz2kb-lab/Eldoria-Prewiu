@@ -1,0 +1,35 @@
+{
+  "observed_defect": "The current geometry lacks meaningful 3D curvature and fails to establish a valley/ridge through non-collinear knot placement; all knots are constrained to flat Y=30 planes, violating the requirement for a broad, traversable valley with negative Z dz",
+  "design_intent": "Create a single sculpt_path with three non-collinear knots forming a gentle, wide valley depression with negative Z displacement, ensuring camera-visible terrain flow and avoiding straight lines or Y=0 repeats",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "The prior attempt ignored the valley requirement and used straight lines; this revision introduces a curved valley with proper Z displacement and non-collinear knot geometry to match the 3D-",
+  "planned_actions": [
+    {
+      "id": "sculpt_path",
+      "type": "sculpt_path",
+      "target": "ZoneOne continuous prairie source",
+      "rationale": "Establish a valley with negative Z displacement using three non-collinear knots",
+      "parameters": {
+        "knots": [
+          {
+            "center": [-60, 40, 0],
+            "delta": [0, 0, -6],
+            "radius": 24
+          },
+          {
+            "center": [0, 70, 0],
+            "delta": [0, 0, -2],
+            "radius": 32
+          },
+          {
+            "center": [60, 40, 0],
+            "delta": [0, 0, -6],
+            "radius": 24
+          }
+        ]
+      }
+    }
+  ],
+  "expected_visual_difference": "A broad, curved valley depression with clear 3D depth and camera-visible terrain flow, avoiding straight lines and repeating Y=30 planes",
+  "mobile_risks": "Minimal; the valley is broad and shallow, avoiding high-poly detail or sharp angles that could impact performance"
+}
