@@ -403,6 +403,17 @@ def main():
         screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
         (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
         if not result["matched_review_camera"] or not screen["visually_present"]:
+            # Persist the rejected A/B for future independent learning too.
+            stage_pending_art_evidence(
+                trial/"pending-learning-case.json",model=args.model,
+                source_hash=original_source_sha,plan_file=candidate,
+                raw_response_file=trial/"qwen-raw.json",
+                before_image=stage/"before-blender.png",
+                after_image=stage/"after-blender.png",critique_file=None,
+                comparison_file=trial/"camera-screen-impact.json",
+                output_blend=stage/"artist-asset.blend",
+                output_glb=stage/"artist-asset.glb",
+                screen_gate="SCREENSPACE_REJECTED")
             records.append({"cycle":cycle,"status":"SCREENSPACE_REJECTED","screen_impact":screen})
             history+=("\nVISUAL CAMERA FAILURE: actual Blender A/B changed "+
                       str(screen["changed_fraction"])+
@@ -416,6 +427,7 @@ def main():
         stage_pending_art_evidence(
             trial/"pending-learning-case.json", model=args.model,
             source_hash=original_source_sha,plan_file=candidate,
+            raw_response_file=trial/"qwen-raw.json",
             before_image=stage/"before-blender.png",
             after_image=stage/"after-blender.png",
             critique_file=trial/"qwen-critique.json",
