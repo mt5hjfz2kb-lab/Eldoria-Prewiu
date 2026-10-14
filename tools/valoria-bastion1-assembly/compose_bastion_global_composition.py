@@ -285,11 +285,25 @@ def run_variant_A():
   # Load-bearing upright oak posts are seated on terrain along the
   # crenellated original masonry/wood wallwalk, no collisions or AI sculpt.
   for yy in (gy-3.45,gy,gy+3.45):
-   for xx in (22.15,24.95):
+   for xx in (22.15,24.05):
     pz=ground(xx,yy)
-    cube('east parapet oak original load-bearing column',
-         xx,yy,pz+1.54,.27,.30,3.08,material=wood,bevel=.026)
-   # Eastern wall stone at x 23.0 carries the cross-beam at every bay.
+    # Read ACTUAL slope and terminate stone foundation + oak load column at
+    # the roof's structural band. The earlier fixed 3m posts were unable to
+    # reach the roof at the outer cliff edge (the 1440px plateau source drops
+    # up to 1.8m there), and would recreate another floating medieval object.
+    load_top=rz-.83
+    total_h=max(.80,load_top-pz)
+    oak_h=min(3.08,total_h)
+    masonry_h=max(0,total_h-oak_h)
+    if masonry_h>.22:
+     cube('east original-rock grounded hillside column footing',
+          xx,yy,pz+masonry_h*.5,.63,.67,masonry_h,
+          material=stone,bevel=.055)
+    cube('east roof-bearing original oak post placed on masonry',
+         xx,yy,pz+masonry_h+oak_h*.5,.28,.31,oak_h,
+         material=wood,bevel=.026)
+   # Strong carved-oak transverse bay integrated into the actual wall,
+   # not a detached hut with stilts on empty air.
    cube('east parapet carved oak bay crossbeam',
         gx,yy,rz-.84,3.23,.20,.25,material=wood,bevel=.025)
  # No freestanding central decorations or new buildings: broad central court
@@ -378,7 +392,7 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('Qwen_connected_inhabited_east_roofed_rampart_gallery_A11' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('Qwen_eastern_roofed_rampart_with_slope_bedded_masonry_posts_A12' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
