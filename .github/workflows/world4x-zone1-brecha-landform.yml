@@ -1,0 +1,88 @@
+name: Zone One genuine AI-authored Brecha landform correction
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-brecha-landform.yml'
+      - 'tools/world4x-zone1/production/author_brecha_transition.py'
+      - 'tools/world4x-zone1/production/verify_brecha_transition.py'
+permissions:
+  contents: write
+concurrency:
+  group: zoneone-brecha-actual-ground-correction
+  cancel-in-progress: false
+jobs:
+  ai-curved-ground:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and zero-credit geometry tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          mkdir -p /tmp/zoneone-brecha
+      - name: Local zero-credit Qwen3-VL artist
+        run: |
+          docker run --rm -d --name zoneone-brecha-qwen -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-brecha/ollama-version.json; then break; fi; sleep 2; done
+          test -s /tmp/zoneone-brecha/ollama-version.json
+          docker exec zoneone-brecha-qwen ollama pull qwen3-vl:4b-instruct
+      - name: Inspect real existing topology; Qwen designs original curving Brecha landform
+        run: |
+          set -euo pipefail
+          SOURCE=docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          base=pathlib.Path("docs/world4x-zone1/evidence/general-ground-38580519176/independent/")
+          proof=json.loads((base/"independent-ground-gate.json").read_text())
+          assert proof["independent_geometry_gate_passed"]
+          assert hashlib.sha256((base/"normal-fixed-ground.blend").read_bytes()).hexdigest()!=proof["source_sha256"]
+          PY
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$SOURCE" --inspect --inspect-target-object 'ZoneOne continuous prairie source' --out /tmp/zoneone-brecha/context
+          python3 tools/world4x-zone1/production/author_brecha_transition.py \
+            --mesh-context /tmp/zoneone-brecha/context/mesh-context.json \
+            --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
+            --real-before docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/after-blender.png \
+            --out /tmp/zoneone-brecha/qwen
+      - name: Apply exactly Qwen-planned curved geometry to existing Blender terrain
+        run: |
+          set -euo pipefail
+          SOURCE=docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$SOURCE" --plan /tmp/zoneone-brecha/qwen/artist-plan.json \
+            --out /tmp/zoneone-brecha/edited --transport direct
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/verify_brecha_transition.py -- \
+            --before "$SOURCE" --after /tmp/zoneone-brecha/edited/artist-output.blend \
+            --out /tmp/zoneone-brecha/independent
+      - name: Real side-angle and strategic before-after on same ground and camera
+        run: |
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/render_ground_staging.py -- \
+            --before docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --after /tmp/zoneone-brecha/edited/artist-output.blend \
+            --out /tmp/zoneone-brecha/zoom
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/render_ground_geometry.py -- \
+            --before docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --after /tmp/zoneone-brecha/edited/artist-output.blend \
+            --out /tmp/zoneone-brecha/relief
+      - name: Preserve source and failures without replacing approved or original Unity mesh
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/brecha-landform-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/zoneone-brecha; then cp -a /tmp/zoneone-brecha/. "$DEST/"; fi
+          printf '%s\n' 'SOURCE_ONLY_NATIVE_AND_INDEPENDENT_ART_REVIEW_PENDING' > "$DEST/STATE.txt"
+          git config user.name 'Eldoria Zone One Brecha sculpt'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git diff --cached --quiet || { git commit -m 'Preserve genuine AI-curved Brecha source, topology gates and real zoom renders'; git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-actual-brecha-${{ github.run_id }}
+          path: /tmp/zoneone-brecha/
+          retention-days: 30
