@@ -37,7 +37,7 @@ class AuthorScopeTests(unittest.TestCase):
             self.assertIn(op,allowed)
     def test_fresh_valid_approval_free_plan(self):
         with tempfile.TemporaryDirectory() as temp:
-            args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct")
+            args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct",brief="Design original watchtower with roof")
             with patch.object(artist_loop,"image_data",return_value="encoded"),patch.object(artist_loop,"request_ollama",return_value=json.dumps(new_asset_plan())):
                 doc=artist_loop.ask_plan(args,Path("ref"),None,"","art director","",Path(temp),1,False)
                 self.assertEqual(doc["asset_decision"],"NEW")
@@ -49,7 +49,7 @@ class AuthorScopeTests(unittest.TestCase):
                       "reason":"Replay stale old cliff commands rather than new asset",
                       "params":{"center":[-40,57,-21],"delta":[.5,.5,.5],"radius":10}}]
         with tempfile.TemporaryDirectory() as folder:
-            args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct")
+            args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct",brief="Design original watchtower with roof")
             with patch.object(artist_loop,"image_data",return_value="encoded"),patch.object(artist_loop,"request_ollama",return_value=json.dumps(p)):
                 with self.assertRaises(RejectedPlan):
                     artist_loop.ask_plan(args,Path("ref"),None,"","art director","",Path(folder),1,False)
