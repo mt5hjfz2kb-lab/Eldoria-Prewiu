@@ -71,7 +71,26 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False):
+def executed_action_signature(doc):
+    """Hash Qwen's exact artistic ops/values, not IDs or prose, so retries can't cheat."""
+    actions=[{"op":a["op"],"target":a["target"],"params":a["params"]}
+             for a in doc.get("actions",[])]
+    return hashlib.sha256(json.dumps(actions,sort_keys=True,separators=(",",":"),
+                                     ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+def should_reject_repeated_invisible_plan(document, prior_invisible_signatures):
+    """Refuse an already observed no-pixel-change Blender proposal unchanged."""
+    if executed_action_signature(document) in (prior_invisible_signatures or set()):
+        raise RejectedPlan(
+            "ZERO_PIXEL_CHANGE_REPLAY_REJECTED: This exact Qwen geometry, "
+            "target and numeric action was already executed in Blender and "
+            "produced no meaningful camera effect. Select a genuinely NEW "
+            "operation/face/direction/value, not the same plan with a new name.")
+    return True
+
+
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False, excluded_source_ops=None):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -159,6 +178,9 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         structural=[v for v in tools if v["properties"]["op"]["const"]
                     in (("primitive","mesh") if assembly_source else
                         ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
+        if not assembly_source and excluded_source_ops:
+            structural=[v for v in structural
+                        if v["properties"]["op"]["const"] not in excluded_source_ops]
         finishing=[v for v in tools if v["properties"]["op"]["const"]
                    in ("material","uv")]
         optional=[v for v in tools if v["properties"]["op"]["const"]
@@ -193,10 +215,19 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
                        "pattern":stage_pattern}
             for v in finishing+optional:
                 v["properties"]["target"]=copy.deepcopy(namespace)
-        actions_schema={"type":"array","minItems":2,"maxItems":3,
-                        "prefixItems":[{"oneOf":structural},
-                                       {"oneOf":finishing},
-                                       {"oneOf":optional}]}
+        inherited_atlas_only=(not assembly_source and
+                              all(obj.get("faces",0)>2500 for obj in source_inventory))
+        if inherited_atlas_only:
+            # No forced material+UV finishing on the dense imported atlas.
+            # ONE Qwen-chosen structural op, then genuine Blender reinspection
+            # before a separate later cycle can texture a newly made object.
+            actions_schema={"type":"array","minItems":1,"maxItems":1,
+                            "prefixItems":[{"oneOf":structural}]}
+        else:
+            actions_schema={"type":"array","minItems":2,"maxItems":3,
+                            "prefixItems":[{"oneOf":structural},
+                                           {"oneOf":finishing},
+                                           {"oneOf":optional}]}
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
@@ -333,7 +364,8 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
 
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
-             source_exists=False,known_objects=None,source_inventory=None,spatial_views=None):
+             source_exists=False,known_objects=None,source_inventory=None,spatial_views=None,
+             prior_invisible_signatures=None,excluded_source_ops=None):
     # Preserve older offline test callers without weakening runtime constraints.
     source_build=bool(getattr(args,"source_build_phase",False))
     tool_sequence=bool(getattr(args,"source_tool_sequencing",False))
@@ -347,6 +379,11 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       "The examples in previous failures are warnings, not templates.")
     if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
         raise ValueError("Architecture build phase requires a frozen inherited source and typed sequence")
+    if excluded_source_ops:
+        msg+=("\\nDO NOT REPEAT PROVEN-INVISIBLE BLENDER ACTION FAMILIES: "+
+              ", ".join(sorted(excluded_source_ops))+
+              ". The original fixed-camera A/B changed 0 pixels; choose "
+              "a different, physically useful original Blender operation. ")
     if args.source_build_phase:
         msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. "
               "For any NEW object, location/rotation/scale are in Blender WORLD xyz. "
@@ -357,12 +394,30 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "Choose your OWN scale, pose and material after examining the reference "
               "and preserve the existing door, stairs and player circulation.")
 
-    if args.source_tool_sequencing and source_exists and args.phase=="full":
+    inherited_atlas_only=(source_exists and
+        not args.source_build_phase and source_inventory and
+        all(item.get("faces",0)>2500 for item in source_inventory))
+    if args.source_tool_sequencing and args.phase=="full" and inherited_atlas_only:
+        msg+=("\nPROTECT ORIGINAL TEXTURE ATLAS: the imported inherited tower "
+              "is a single dense mesh. Choose EXACTLY ONE precise STRUCTURAL "
+              "Blender operation in this cycle (selected face/edge extrude, "
+              "sculpt, bevel, or an original attached NEW component). "
+              "Do NOT repaint or UV unwrap the source: whole-source MATERIAL "
+              "and UV would destroy the existing timber textures and protected "
+              "door/stairs appearance. Let Blender re-inspect after structural "
+              "edits; only independent newly authored objects can later "
+              "receive safe local material/UV finishing. "
+              "All structural values remain chosen by YOU, not a recipe.")
+    if args.source_tool_sequencing and source_exists and args.phase=="full" and not inherited_atlas_only:
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
           + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
              "Invent your own unique object name STARTING Eldoria_Added_ followed by a letter and 3-42 alphanumeric/underscore characters. "
              "Create genuinely VOLUMETRIC 3D architecture with readable depth in the player's fixed camera: NOT a single floor plane or two triangles. "
+             "ROOF EAVE / FASCIA / OVERHANG means a REAL physically supported timber feature near the roof's outer WORLD X/Y perimeter, BELOW the highest roof apex. "
+             "A primitive at the CENTER of the highest apex is NOT a roof eave; a flat decorative cylinder there is not architectural progress. "
+             "Blender SOLIDIFY only thickens existing geometry; it does NOT attach disconnected objects to the original roof. "
+             "Choose a credible geometry and position grounded in the visible timber edges, roof slope and real source size. "
              "If choosing primitive, design meaningful original X/Y/Z scale and placement; a flat plane is NOT valid. "
              "If choosing your own vertices/faces, design a CLOSED physical architectural solid with at least SIX non-coplanar vertices and FOUR faces: each mesh edge must belong to exactly TWO faces, no open triangular flaps. "
              "In each next art cycle, add a DIFFERENT complementary 3D part to the same architectural feature, connecting it naturally to your previous visible addition. "
@@ -441,7 +496,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       {"role":"user","content":msg,"images":pictures}],
       args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
                                        args.source_build_phase,cycle_index if args.source_build_phase else 0,
-                                       topology_fallback),timeout=540)
+                                       topology_fallback,excluded_source_ops),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -452,6 +507,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
+    should_reject_repeated_invisible_plan(doc,prior_invisible_signatures)
     if source_exists and args.phase in ('full','mesh_edit') and source_inventory:
         verify_source_plan(doc,source_inventory)
         if args.source_build_phase:
@@ -465,6 +521,14 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             for action in actions[1:]:
                 if action["target"] != created_name:
                     raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
+            verify_volume_and_complexity(doc,source_inventory)
+            spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
+            (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
+                json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
+        elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh"):
+            # Full professional source work still protects the existing real
+            # building; only the forced assembly phase used these QA gates
+            # previously, allowing unconstrained disconnected source addons.
             verify_volume_and_complexity(doc,source_inventory)
             spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
             (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
@@ -502,9 +566,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
 
 def critique(args,reference,before,after,role):
     instruction=("Inspect these REAL renders, in order: target, before, after. "
-      "Describe three exact defects in the AFTER asset, whether its silhouette "
-      "and materials improved versus BEFORE, and one new concrete artistic "
-      "approach if they did not. Do not invent Unity evidence. "
+      "Describe three defects ONLY if supported by pixels in the actual "
+      "AFTER image, whether its timber silhouette and materials visibly improved "
+      "versus BEFORE, and one concrete artistic approach if not. "
+      "These are neutral Blender previews, NOT Unity: never claim Unity screenshots, "
+      "Hero Gate comparisons, a historical cliff or any unshown object. "
+      "If improvement is too subtle, misplaced at the roof apex, or visually "
+      "incoherent, set clearly_failed=true. Do not invent Unity evidence. "
       "Return concise JSON with strings critique, geometry_next, material_next "
       "and bool clearly_failed. This critique never certifies art.")
     try:
@@ -519,6 +587,25 @@ def critique(args,reference,before,after,role):
                        image_data(after,getattr(args,"vision_max_edge",1024))]}],350,timeout=420,schema=critique_schema)
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
+
+def summarize_real_artist_cycles(records):
+    """Separate physically executed Blender from safety-approved review candidates.
+
+    Never equate an executed-but-rejected dangerous edit with artistic success.
+    """
+    executed={"ART_REVIEW_REQUIRED", "SCREENSPACE_REJECTED",
+              "PROTECTED_ACCESS_OCCLUSION_REJECTED"}
+    return {
+        "real_blender_execution_count":sum(rec.get("status") in executed for rec in records),
+        "qa_review_candidate_count":sum(rec.get("status")=="ART_REVIEW_REQUIRED" for rec in records),
+        "protected_access_rejection_count":sum(
+            rec.get("status")=="PROTECTED_ACCESS_OCCLUSION_REJECTED" for rec in records),
+        "screen_impact_rejection_count":sum(
+            rec.get("status")=="SCREENSPACE_REJECTED" for rec in records),
+        "model_self_critique_failed_count":sum(
+            rec.get("critique",{}).get("clearly_failed",False) for rec in records)
+    }
+
 
 def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation,
                                   min_successful_cycles=1, successful_count=1):
@@ -647,11 +734,13 @@ def main():
                  for i in inventory.get("assets",[]) if i.get("reuse_approved") is True]
         history+="\\nOWNER-APPROVED REAL ART SOURCE CATALOG (use exact SHA): "+json.dumps(allowed[:25])[:6000]
     records=[]
+    invisible_plan_signatures=set()
+    invisible_source_ops=set()
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,args.max_plan_attempts+1):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views,prior_invisible_signatures=invisible_plan_signatures,excluded_source_ops=invisible_source_ops)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
                 # Keep every exact rejected proposal and the actionable validator
@@ -698,6 +787,13 @@ def main():
         screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
         (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
         if not result["matched_review_camera"] or not screen["visually_present"]:
+            if screen.get("changed_pixels")==0:
+                invisible_plan_signatures.add(executed_action_signature(doc))
+                if (source and args.source_tool_sequencing and
+                    not args.source_build_phase and doc.get("actions") and
+                    doc["actions"][0]["op"] in
+                    ("extrude","inset","sculpt_anchor","sculpt","bevel")):
+                    invisible_source_ops.add(doc["actions"][0]["op"])
             stage_pending_art_evidence(
                 trial/"pending-learning-case.json",model=args.model,
                 source_hash=original_source_sha,plan_file=candidate,
@@ -714,7 +810,7 @@ def main():
                       " of the screen, too little for the player camera. "
                       "The next Qwen plan must change the core silhouette and not simply tweak materials.")
             continue
-        if args.source_build_phase and args.review:
+        if args.review and args.source and args.phase=="full":
             # The render is real and the camera fixed. Qwen must not cover
             # art-directed player entry/stairs. Reject, never reposition art.
             region_proof=inspect_protected_regions(
@@ -802,10 +898,14 @@ def main():
         if started_empty and cycle==1:
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
+    evidence_summary=summarize_real_artist_cycles(records)
     final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
-           "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
-           "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
+           "ai_authored_action_plans":evidence_summary["qa_review_candidate_count"],
+           **evidence_summary,
+           "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,
+           "blender_real_execution":evidence_summary["real_blender_execution_count"]>0,
            "art_approved":False,"unity_art_verified":False,"physical_mobile_validated":False,
+           "independent_artistic_improvement_verified":False,
            "model":args.model,"num_ctx":int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384")),
            "vision_max_edge":args.vision_max_edge,
            "system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
@@ -813,5 +913,8 @@ def main():
     (args.out/"full-studio-result.json").write_text(json.dumps(final,indent=2)+"\n")
     print("ELDORIA_FULL_STUDIO_CYCLE",json.dumps({k:final[k] for k in
         ("state","ai_authored_action_plans","blender_real_execution","art_approved")}))
-    if not final["blender_real_execution"]:raise RuntimeError("No executable AI-authored Blender asset; see cycle evidence")
+    if not final["blender_real_execution"]:
+        raise RuntimeError("No actual Blender execution; inspect raw Qwen and validator failures")
+    if not final["ai_authored_action_plans"]:
+        raise RuntimeError("Blender executed Qwen plans, but every candidate failed safety or screen QA; nothing suitable for visual review")
 if __name__=="__main__":main()

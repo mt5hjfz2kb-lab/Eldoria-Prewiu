@@ -93,6 +93,107 @@
         "art_approved": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "independent-38639177148-8b-apex-overhang",
+      "run_id": 38639177148,
+      "evidence_artifact_id": 11929881351,
+      "raw_response_sha256": "fec5f65fb71c370a9c4290512a1205fc24f79ec8f64eb765beed2f0370857117",
+      "result": "VISUAL_REJECTED_INDEPENDENT_REVIEW",
+      "observed": "On actual Blender fixed-camera timber watchtower images, Qwen 8B named a cylinder RoofOverhang but placed it centrally at WORLD Z 3.27m (roof apex), so it produced a cropped roof-top disc, NOT an attached architectural eave. Positive executable outcome is not aesthetic improvement.",
+      "safe_lesson": "When adding a timber roof eave or overhang, ensure the ORIGINAL chosen geometry touches an actual X/Y outer roof edge and is below the highest WORLD Z apex; a central roof-top cylinder is not a realistic roof-edge detail. Check matched-camera A/B for visible and coherent improvement.",
+      "review_provenance": {
+        "source": "real Qwen8B Blender fixed-camera visual comparison",
+        "artifact_id": 11929881351,
+        "trial": "8b-assembly/cycle-1",
+        "pending_manifest_sha256": "41fb6132e883cb4fa28cc7cb205f7e8090f2aa0079231b7c18106c0a8a2b7755",
+        "original_source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "before_image_sha256": "d583a46ed8b603fabcc292b0bb0d1376b725589a882bd771de15a3cf62551d7e",
+        "after_image_sha256": "97ed0e16a8cff37f9f5db5d7fb2f67237a5d192a8d1d09633581c6b1c53353b7",
+        "unity_verified": false,
+        "art_approved": false,
+        "weights_updated": false
+      }
+    },
+    {
+      "id": "independent-38639177148-4b-unsupported-unity-claim",
+      "run_id": 38639177148,
+      "evidence_artifact_id": 11929881351,
+      "raw_response_sha256": "ecf1ad368f52d3135500be55e5b146697b5b2869e9fa02d455a19d29fb00ca34",
+      "result": "VISUAL_REJECTED_INDEPENDENT_REVIEW",
+      "observed": "Qwen4B full-cycle critique described an unverified Unity render and Hero Gate V3/cliff_rocks rather than the actual grey Blender fixed-camera timber tower, and reported clearly_failed=true. New Qwen sculpt on inherited source made no reliable professional visual upgrade.",
+      "safe_lesson": "Review the actual Blender BEFORE/AFTER images of the CURRENT wooden Valoria tower only. Never invent a Unity render or reference to a historical cliff, unrelated gate or scenery not in the current images. Treat a model's clearly_failed self-assessment as negative feedback, not as an approved result.",
+      "review_provenance": {
+        "source": "real Qwen4B blender fixed camera and qwen-critique.json",
+        "artifact_id": 11929881351,
+        "trial": "4b-sculpt/cycle-1",
+        "pending_manifest_sha256": "92110ff2506fd30fda27cce630112c6bf7437e5ed973667b8e6a8e2a9c3a317f",
+        "before_image_sha256": "8780702c8cc85a22b4cf01dd28e3900c8d794232709d314177a6030149bc7840",
+        "after_image_sha256": "77b44a30f9e9d4084fe356af7675b7118072242f91ca9eefdd2f80800b881db1",
+        "unity_verified": false,
+        "art_approved": false,
+        "weights_updated": false
+      }
+    },
+    {
+      "id": "qwen8b-repeated-eave-failure-38645874637",
+      "run_id": 38645874637,
+      "evidence_artifact_id": 11932511762,
+      "raw_response_sha256": "0c854672bd8639296ba440d15b22ecb62b21754e106f65a430ec8693a65c89c6",
+      "result": "FIVE_REJECTED_QWEN_PLANS_NO_BLENDER_CYCLE",
+      "observed": "Authentic Qwen8B professional eave trial from Windows 2026-10-14 failed all 5 plans before Blender. Attempt 1 authored duplicate 3D mesh vertices; attempts 2-4 repeated geometrically disconnected CENTRAL roof apex eaves despite exact explicit measured rejection; attempt 5 chose a volume too thin/tiny to be legible. Zero valid A/B models from this run.",
+      "safe_lesson": "When full-dimensional tower detail attempts repeatedly fail physical roof attachment or closed-mesh checks, stop repeating the same cylinder-at-apex geometry. Choose another appropriate architectural tool from the Blender source-grounded inventory (selected bevel/extrusion, existing surface adjustment, real edge-attached new part); retain original source and never claim success without real A/B.",
+      "review_provenance": {
+        "run_id": 38645874637,
+        "artifact_id": 11932511762,
+        "mode": "FORCED_SINGLE_PRIMITIVE_ASSEMBLY",
+        "failed_attempts": 5,
+        "art_approved": false,
+        "unity_tested": false,
+        "weights_updated": false
+      }
+    },
+    {
+      "id": "qwen8b-global-uv-material-occlusion-38646315087",
+      "run_id": 38646315087,
+      "evidence_artifact_id": 11932063107,
+      "raw_response_sha256": "8294cb6ef9ab59f0a6f71e8905bcacab4a6f85cbd290bf516fe9ca6ad5e6bada",
+      "result": "BLENDER_EXECUTED_REJECTED_PROTECTED_SOURCE_TEXTURE",
+      "observed": "Actual Qwen8B chose a selected-face extrude and then a whole-dense-source material replacement plus uv.smart_project. Blender executed the changes, but fixed-camera protected entry pixels differed by 87.6% and staircase by 46.3%, violating original source preservation. Subsequent cycles repeated similarly unsafe plans. No art was approved.",
+      "safe_lesson": "Do not apply whole-object MATERIAL replacement or UV unwrap to the dense inherited watchtower texture atlas after a small extrude; they damage unrelated door, stair and roof appearance. Choose ONE local structural edit first, reinspect, and perform later material/UV finishing only on a separately created component.",
+      "review_provenance": {
+        "run_id": 38646315087,
+        "artifact_id": 11932063107,
+        "trial": "8b-professional/cycle-1",
+        "protected_entry_change_fraction": 0.876074,
+        "protected_stair_change_fraction": 0.463152,
+        "atlas_preservation_verified": false,
+        "independent_approval": false,
+        "unity_verified": false,
+        "model_weights_updated": false
+      }
+    },
+    {
+      "id": "qwen8b-exact-zero-pixel-replay-38647158230",
+      "run_id": 38647158230,
+      "evidence_artifact_id": 11932442748,
+      "raw_response_sha256": "4c8d24d292e65b01be2652d228f9f451d259359490d5501e885d3b429bc9c81a",
+      "result": "THREE_ACTUAL_BLENDER_CYCLES_ZERO_PIXELS",
+      "observed": "Qwen3-VL 8B edited the genuine old tower three times, always extruding inherited FACE 2326 by WORLD +Z 0.15m with no materials or UV replacement. The camera-matched Blender pixel difference was exactly 0 of 691,200 on each cycle. Source material preservation succeeded, but no visible artistic improvement occurred.",
+      "safe_lesson": "After an authentic Blender A/B shows ZERO changed pixels for a face extrusion, never repeat the exact face and offset or default to the same Blender operation three times. Change the artistic tactic to a different source-grounded face/edge or compatible tool, and demand a visible result with original timber/door/stair textures intact.",
+      "review_provenance": {
+        "trial": "8b-professional/cycle-1",
+        "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "real_blender_cycles": 3,
+        "changed_pixels_each": [
+          0,
+          0,
+          0
+        ],
+        "artifact_id": 11932442748,
+        "model_weights_updated": false,
+        "art_approved": false
+      }
     }
   ],
   "training": {
