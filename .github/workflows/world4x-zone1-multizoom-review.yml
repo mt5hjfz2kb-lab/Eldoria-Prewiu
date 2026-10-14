@@ -20,7 +20,7 @@ jobs:
       - name: Install zero-credit Blender renderer
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
       - name: Capture identical terrain at four true strategic framing scales
         run: |
           set -euo pipefail
@@ -45,7 +45,7 @@ jobs:
           DEST=docs/world4x-zone1/evidence/real-multizoom-${{ github.run_id }}
           mkdir -p "$DEST"
           if test -d /tmp/world4x-zone1-multizoom; then cp -a /tmp/world4x-zone1-multizoom/. "$DEST/"; fi
-          printf '%s\n' 'REAL_BLENDER_A_B_UNITY_AND_ART_APPROVAL_PENDING' > "$DEST/STATE.txt"
+          if test -s /tmp/world4x-zone1-multizoom/zoom-review.json; then printf '%s\n' 'REAL_BLENDER_A_B_PENDING_INDEPENDENT_ART_AND_UNITY' > "$DEST/STATE.txt"; else printf '%s\n' 'MULTIZOOM_CAPTURE_FAILED_NO_VISUAL_EVIDENCE' > "$DEST/STATE.txt"; fi
           git config user.name 'Eldoria Zone One visual workshop'
           git config user.email 'actions@users.noreply.github.com'
           git add -f "$DEST"
