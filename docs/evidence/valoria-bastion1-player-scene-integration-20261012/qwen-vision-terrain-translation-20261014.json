@@ -1,0 +1,64 @@
+{
+  "schema": "eldoria-real-image-art-decision-v1",
+  "date": "2026-10-14",
+  "artist_run": 38530882467,
+  "artist_artifact": 11878685986,
+  "native_unity_source_run": 38526273305,
+  "native_unity_frame": "Bastion1MaterialAB/global-A/bastion1-player-initial.png",
+  "native_unity_artifact": 11876141399,
+  "model": "qwen3-vl:4b-instruct",
+  "paid_euros": 0,
+  "authorship": "Qwen authored actual scene critique and proposed geography; no Qwen-authored vertices or UV/images; Blender processing is deterministic",
+  "agent_authored": [
+    {
+      "raw_file": "artist-1-raw.txt",
+      "sha256": "8ea3dd774945e1523a23a187cfb8ca75040cb88d5b3e3ff2cddf096e4dbf0ca9",
+      "proposal": "Collapse western detached wall mass near x=-20 into stepped retaining embankment, blending cliff_rocks and erosion, protect x=-7..7 main road, replace flat lawn with credible slope. Risks: excessive texture erosion may not match surrounding terrain."
+    },
+    {
+      "raw_file": "artist-2-raw.txt",
+      "sha256": "05e86f2a3366f47b58768bdbc6bd54fa63c0d07e08c5365d47f9e43cc74d578f",
+      "proposal": "Unified soil/rock/masonry terrain hierarchy with large terraced grade; correct flat unused courtyard and cliff-to-fort contact; avoid blocking existing road/stairs or plots; reject until native Unity confirms."
+    }
+  ],
+  "translated_to_operations": [
+    {
+      "file": "tools/valoria-bastion1-assembly/sculpt_bastion_native_terrain.py",
+      "operation": "directly sculpt existing original native terrain vertices where navigational and parcel masks allow; no overlay planes",
+      "author": "deterministic geometry script",
+      "reason": "A/B Qwen both singled out turf and missing terracing"
+    },
+    {
+      "file": "tools/valoria-bastion1-assembly/sculpt_bastion_native_terrain.py",
+      "operation": "new baked world-spatial 1024px soil albedo replaces artificial uniform meadow inside the already existing continuous terrain, with protected original rock UV",
+      "author": "deterministic procedural texture script",
+      "reason": "B proposed soil variation integrated with architecture; A proposed worn ground along west wall"
+    },
+    {
+      "file": "tools/valoria-bastion1-assembly/compose_bastion_global_composition.py",
+      "operation": "existing medieval wall family connected by large stone curtain, stepped shoulders and original cliff rocks",
+      "author": "deterministic Blender source reuse",
+      "reason": "A requested west masonry/slope connected to architectural silhouette"
+    }
+  ],
+  "comparability": "Native Unity 1440x1000 player frame and 780x520 mobile, exact camera+lighting; compare BEFORE vs Qwen reworked candidate and reference; pipeline success is not ART PASS",
+  "constraints": {
+    "main_branch_untouched": true,
+    "active_workstream": "valoria-bastion1-player-scene-integration-20261012",
+    "road": "x in [-7,7] unchanged",
+    "building_plot_centers": [
+      [
+        -16,
+        3
+      ],
+      [
+        16,
+        3
+      ]
+    ],
+    "plot_extent": "10x10m each plus feather",
+    "mobile_real_device": "not tested",
+    "run_immutable_source": "retain prior guard and global-A3 validated GLB"
+  },
+  "status": "UNDER_EXECUTION_ART_REVIEW_PENDING"
+}
