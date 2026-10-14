@@ -355,8 +355,14 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         note=trial/("rejected-plan-attempt-"+str(previous_attempt)+".json")
         if note.is_file():
             previous_rejections.append(json.loads(note.read_text(encoding="utf-8")).get("rejection",""))
-    topology_fallback=(args.source_build_phase and any(
-        "OPEN or NONMANIFOLD" in why or "ZERO-AREA" in why for why in previous_rejections))
+    # Model failures are rejected exactly as authored. A proven INVALID
+    # handcrafted mesh allows Qwen to choose a real Blender primitive on the
+    # next retry; it still authors every dimension, placement and material.
+    topology_fallback=args.source_build_phase and any(
+        any(marker in reason for marker in (
+            "OPEN or NONMANIFOLD","ZERO-AREA","DUPLICATE 3D vertices",
+            "COPLANAR","insufficient X/Y/Z volume","noncollinear"))
+        for reason in previous_rejections)
     if args.source_build_phase:
         ns=f"Eldoria_Added_C{cycle_index:02d}_"
         msg+=("\\nMandatory per-cycle new-object namespace: your chosen new name begins "+
