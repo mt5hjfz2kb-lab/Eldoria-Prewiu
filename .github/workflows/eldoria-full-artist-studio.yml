@@ -22,7 +22,7 @@ jobs:
       - name: Test strict authoring contracts and syntax
         run: |
           python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
-          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py tools/art-direction/full-studio/inspect_source.py
+          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py tools/art-direction/full-studio/inspect_source.py tools/art-direction/full-studio/learning_context.py tools/art-direction/full-studio/screen_impact.py
           blender --version | head -2
       - name: Execute twenty-six real independent Blender modelling operations
         run: |
@@ -123,6 +123,10 @@ jobs:
           assert report['model']=='qwen3-vl:2b-instruct'
           assert report['ai_authored_action_plans']>=1
           assert report['blender_real_execution'] and not report['art_approved']
+          proof_memory=json.loads((p/'journal-context-proof.json').read_text())
+          assert len(proof_memory['journal_sha256'])==64
+          impact=json.loads((p/'cycle-1/camera-screen-impact.json').read_text())
+          assert impact['visually_present'] and not impact['art_approved']
           cycle=p/'cycle-1'
           plan=json.loads((cycle/'artist-plan.json').read_text())
           assert len(plan['actions'])>0

@@ -7,6 +7,8 @@ No paid services, cloud inference, arbitrary Python, or new game scene changes.
 from __future__ import annotations
 import argparse, base64, hashlib, json, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan
+from learning_context import transferable_lessons
+from screen_impact import screen_impact
 
 HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
@@ -44,22 +46,37 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     return "".join(pieces)
 
 def schema_for_plan(max_actions=6, source_exists=False):
-    # Bounded FIRST: Qwen 2B on free CPU cannot reliably emit 160 creative actions
-    # in one response. Complex assets are authored over *multiple* verified cycles.
-    opnames=["primitive","mesh","duplicate","transform","sculpt","extrude","inset",
+    # A small local 2B visual model cannot simultaneously design 20 Blender
+    # operations and correctly invent arbitrary face indices. Author from
+    # scratch in bounded stages: geometry first, finishing on REAL next source.
+    number={"type":"number","minimum":-15,"maximum":15}
+    angle={"type":"number","minimum":-3.1416,"maximum":3.1416}
+    dimension={"type":"number","minimum":0.15,"maximum":8}
+    point={"type":"array","minItems":3,"maxItems":3,"items":number}
+    scale={"type":"array","minItems":3,"maxItems":3,"items":dimension}
+    orientation={"type":"array","minItems":3,"maxItems":3,"items":angle}
+    actions=["primitive","mesh","duplicate","transform","sculpt","extrude","inset",
              "subdivide","bevel","modifier","boolean","material","uv","join","delete",
              "light","camera","render_settings","texture","asset_info",
              "native_operator","shader_graph","geometry_nodes"]
     if not source_exists:
-        # A new asset must start with real geometry, not a replay of unrelated
-        # historical cliff sculpt decisions.
-        opnames=["primitive","mesh","material","duplicate","bevel","uv","modifier"]
+        # Each action must create a real, bounded Blender mesh. Materials,
+        # reuse, UV and Geometry Nodes are available in later source cycles.
+        primitive_params={"type":"object","properties":{
+           "shape":{"type":"string","enum":["cube","cylinder","cone","uv_sphere","ico_sphere"]},
+           "location":point,"rotation":orientation,"scale":scale},
+           "required":["shape","location","rotation","scale"],
+           "additionalProperties":False}
+        op={"type":"string","const":"primitive"}
+        params=primitive_params
+    else:
+        op={"type":"string","enum":actions}
+        params={"type":"object"}
     action={"type":"object","properties":{
        "id":{"type":"string","minLength":2,"maxLength":60},
-       "op":{"type":"string","enum":opnames},
-       "target":{"type":"string","minLength":2},
-       "reason":{"type":"string","minLength":15,"maxLength":180},
-       "params":{"type":"object"}},
+       "op":op,"target":{"type":"string","minLength":2,"maxLength":70},
+       "reason":{"type":"string","minLength":15,"maxLength":160},
+       "params":params},
        "required":["id","op","target","reason","params"],
        "additionalProperties":False}
     return {"type":"object","properties":{
@@ -70,7 +87,8 @@ def schema_for_plan(max_actions=6, source_exists=False):
        "asset_decision":{"type":"string","enum":["MODIFY","REUSE"] if source_exists else ["NEW"]},
        "expected_visual_difference":{"type":"string","minLength":30,"maxLength":160},
        "mobile_risks":{"type":"string","maxLength":180},
-       "actions":{"type":"array","minItems":1,"maxItems":min(max_actions,8),"items":action}},
+       "actions":{"type":"array","minItems":2 if not source_exists else 1,
+                  "maxItems":min(max_actions,8),"items":action}},
        "required":["schema_version","asset_id","observed_defect","design_intent",
          "asset_decision","expected_visual_difference","mobile_risks","actions"],
        "additionalProperties":False}
@@ -92,13 +110,19 @@ def contract_brief(max_actions, source_exists=False):
       "independent secondary feature. No huge face/vertex arrays. ")
     if not source_exists:
         return (base+
-          "The scene is EMPTY. asset_decision MUST equal NEW. No sculpting "
-          "any nonexistent cliff_rocks! CREATE actual objects first. "
-          "Use primitive {shape:cylinder|cone|cube,location:[x,y,z],"
-          "rotation:[0,0,0],scale:[sx,sy,sz]}; material {base_color:"
-          "[r,g,b,a],roughness:0..1,metallic:0}; duplicate "
-          "{source:objectName,location:[x,y,z]}; bevel {width,segments}. "
-          "Prefer a stone body plus timber roof or battlements to a single cube.")
+          "The scene is EMPTY; asset_decision is NEW. THIS STAGE IS THE "
+          "INITIAL VISIBLE SILHOUETTE ONLY; finishing operations follow after "
+          "Blender creates actual source geometry. For ALL actions op=primitive "
+          "with params EXACTLY {shape:cube|cylinder|cone|uv_sphere|ico_sphere,"
+          "location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. "
+          "Every action must CREATE A NEW DISTINCTLY NAMED MESH. "
+          "Real medieval tower body height roughly 3-8 meters, roof above it, "
+          "stone walls, one smaller defensive feature. Location coordinates "
+          "must be between -15 and +15m, scale 0.15 to 8. All numbers realistic. "
+          "Use TWO distinct shape types (e.g. cylinder body and cone roof), "
+          "not repeated huge cube blobs. Never use operation mesh, duplicate "
+          "or material while there is no source. Never use old cliff names. "
+          "Compose original camera-visible components and preserve modularity.")
     return (base+
       "The existing source objects have been INSPECTED in real Blender. "
       "Choose Qwen-authored operations within safe full toolbox: primitive, "
@@ -200,10 +224,11 @@ def main():
     args.out.mkdir(parents=True,exist_ok=True)
     canonical_role=ROLE.read_text(encoding="utf-8")
     role=(canonical_role[:530]+"\nThis task is a NEW or UPDATED complete asset, NOT the historical cliff task. Make independent geometry, original reusable subcomponents, materials, and verifiable actual Blender edits. Historical numbers are never your current plan.")
-    # Memory is retrieved as lessons, never pasted as an action template.
-    # The former raw 6k-character cliff journal made 2B Qwen copy obsolete
-    # sculpt coordinates 12+ times, yielding 14,727-byte unfinished JSON.
-    memory="Prior cliff small-sculpt failures show that tiny invisible edits fail. Prefer substantial camera-visible silhouette and asset-specific PBR. Do not copy historic coordinates, IDs or rejected actions."
+    # Genuine evidence-backed journal retrieval, sanitized of old rejected
+    # cliff coordinates/IDs. The first 2B run replayed them and overflowed.
+    lesson_proof=transferable_lessons(JOURNAL.read_text(encoding="utf-8"),args.brief,limit=600)
+    (args.out/"journal-context-proof.json").write_text(json.dumps(lesson_proof,indent=2)+"\n",encoding="utf-8")
+    memory=lesson_proof["prompt_text"]
     if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
     current=args.current_frame
     source=args.source
@@ -246,6 +271,15 @@ def main():
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
+        screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
+        (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
+        if not result["matched_review_camera"] or not screen["visually_present"]:
+            records.append({"cycle":cycle,"status":"SCREENSPACE_REJECTED","screen_impact":screen})
+            history+=("\nVISUAL CAMERA FAILURE: actual Blender A/B changed "+
+                      str(screen["changed_fraction"])+
+                      " of the screen, too little for the player camera. "
+                      "The next Qwen plan must change the core silhouette and not simply tweak materials.")
+            continue
         evaluation=critique(args,args.reference,stage/"before-blender.png",stage/"after-blender.png",role)
         (trial/"qwen-critique.json").write_text(json.dumps(evaluation,indent=2)+"\n")
         records.append({"cycle":cycle,"status":"ART_REVIEW_REQUIRED",

@@ -26,9 +26,11 @@ class AuthorScopeTests(unittest.TestCase):
     def test_first_cycle_schema_restricts_old_reuse_and_sculpt(self):
         schema=artist_loop.schema_for_plan(4,False)
         self.assertEqual(schema["properties"]["asset_decision"]["enum"],["NEW"])
-        allowed=schema["properties"]["actions"]["items"]["properties"]["op"]["enum"]
-        self.assertIn("primitive",allowed)
-        self.assertNotIn("sculpt",allowed)
+        self.assertEqual(schema["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")
+        params=schema["properties"]["actions"]["items"]["properties"]["params"]
+        self.assertEqual(params["properties"]["scale"]["items"]["maximum"],8)
+        self.assertEqual(params["properties"]["location"]["items"]["maximum"],15)
+        self.assertEqual(schema["properties"]["actions"]["minItems"],2)
         self.assertEqual(schema["properties"]["actions"]["maxItems"],4)
     def test_existing_cycle_supports_all_advanced_tools(self):
         schema=artist_loop.schema_for_plan(5,True)
