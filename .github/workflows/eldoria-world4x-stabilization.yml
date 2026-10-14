@@ -56,7 +56,7 @@ jobs:
           assert doc['vertices']>=14000
           bounds=verified_knot_ranges(doc)
           schema=model_knot_schema(bounds)
-          assert len(schema['properties']['center_xyz']['required'])==3
+          assert len(schema['properties']['center_xy']['required'])==3
           print('ELDORIA_WORLD4X_REAL_SOURCE_LIMITS_PASS',limits_label(bounds))
           p.parent.joinpath('preflight-bounds.json').write_text(json.dumps({
              'actual_target':doc['target'], 'vertex_count':doc['vertices'],
