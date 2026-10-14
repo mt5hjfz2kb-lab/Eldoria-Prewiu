@@ -1,0 +1,54 @@
+name: Zone One genuine artist ground execution after director gate correction
+on:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-ground-replay.yml'
+      - 'tools/world4x-zone1/production/replay_ground_plan.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-ground-source
+  cancel-in-progress: false
+jobs:
+  execute-original-artist-decision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install own Blender and reuse exact unmodified source
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          mkdir -p /tmp/zoneone-ground
+          cp -a docs/world4x-zone1/evidence/ground-first-38527398141/source /tmp/zoneone-ground/source
+          cp -a docs/world4x-zone1/evidence/ground-first-38527398141/context /tmp/zoneone-ground/context
+      - name: Authorize original saved decision without modifying any parameter
+        run: |
+          python3 tools/world4x-zone1/production/replay_ground_plan.py --cycle /tmp/zoneone-ground
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/zoneone-ground/artist-plan.json 'ZoneOne continuous prairie source' existing
+      - name: Real Blender edits and matched camera comparison
+        run: |
+          SOURCE_SHA=$(sha256sum /tmp/zoneone-ground/source/derived-source.blend | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-ground/source/derived-source.blend --plan /tmp/zoneone-ground/artist-plan.json --out /tmp/zoneone-ground/edited --transport direct --expected-source-sha256 "$SOURCE_SHA"
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/compare_ground.py -- --cycle /tmp/zoneone-ground
+      - name: Save source evidence only, without scene or art promotion
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/ground-replay-${{ github.run_id }}
+          mkdir -p "$DEST"
+          cp -a /tmp/zoneone-ground/. "$DEST/"
+          git config user.name 'Eldoria Zone One source workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git commit -m 'Preserve original Qwen ground edits and matched Blender evidence; art unapproved'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-ground-replay-${{ github.run_id }}
+          path: /tmp/zoneone-ground/
+          retention-days: 30
