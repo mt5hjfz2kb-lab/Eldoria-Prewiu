@@ -54,6 +54,7 @@ def curate_case(pending_path: Path, review_path: Path, casebook_path: Path) -> d
         raise ValueError("Invalid casebook schema")
     evidence = pending.get("evidence",{})
     mapped={"plan":"artist-plan.json",
+            "raw_model_response":"qwen-raw.json",
             "before_image":"output/before-blender.png",
             "after_image":"output/after-blender.png",
             "model_self_critique":"qwen-critique.json",
@@ -61,7 +62,14 @@ def curate_case(pending_path: Path, review_path: Path, casebook_path: Path) -> d
             "blend":"output/artist-asset.blend",
             "glb":"output/artist-asset.glb"}
     trial_root = pending_path.parent
+    if "raw_model_response" not in evidence:
+        raise ValueError("Cannot curate provenance without actual unmodified Qwen output")
+    if (pending.get("technical_screen_gate")=="SCREENSPACE_REJECTED"
+            and review["result"]!="VISUAL_REJECTED"):
+        raise ValueError("Failed screen impact cannot be promoted as a source pass")
     for kind, rel in mapped.items():
+        if kind == "model_self_critique" and kind not in evidence:
+            continue
         path = trial_root / rel
         recorded = evidence.get(kind, {})
         if not path.is_file() or sha_bytes(path.read_bytes()) != recorded.get("sha256"):
@@ -82,7 +90,7 @@ def curate_case(pending_path: Path, review_path: Path, casebook_path: Path) -> d
     record = {
         "id":case_id,
         "run_id":review["run_id"],"evidence_artifact_id":review["artifact_id"],
-        "raw_response_sha256":evidence["plan"]["sha256"],
+        "raw_response_sha256":evidence["raw_model_response"]["sha256"],
         "result":review["result"],
         "observed":review["diagnosis"],
         "safe_lesson":lesson,
