@@ -37,6 +37,14 @@ class AuthorScopeTests(unittest.TestCase):
         allowed=schema["properties"]["actions"]["items"]["properties"]["op"]["enum"]
         for op in ("sculpt","mesh","shader_graph","geometry_nodes","native_operator"):
             self.assertIn(op,allowed)
+    def test_surface_phase_allows_artistic_materials_but_not_unsafe_code(self):
+        schema=artist_loop.schema_for_plan(5,True,"surface")
+        ops=schema["properties"]["actions"]["items"]["properties"]["op"]["enum"]
+        self.assertIn("material",ops)
+        self.assertIn("primitive",ops)
+        self.assertIn("modifier",ops)
+        self.assertNotIn("geometry_nodes",ops)
+        self.assertNotIn("execute_python",ops)
     def test_fresh_valid_approval_free_plan(self):
         with tempfile.TemporaryDirectory() as temp:
             args=SimpleNamespace(max_actions=4,max_tokens=1200,endpoint="http://127.0.0.1:11434/api/chat",model="qwen3-vl:2b-instruct",brief="Design original watchtower with roof",asset_category="architecture")

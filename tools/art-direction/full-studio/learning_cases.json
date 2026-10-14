@@ -24,6 +24,17 @@
       "observed": "Qwen returned syntactically complete creative JSON but supplied a shape primitive parameter object to the explicit-vertex mesh operation and selected architecture scales around 100 meters, creating nonexistent targets on retry.",
       "verified_correction": "New assets begin with schema-constrained primitive objects and dimensions 0.15–8 in a small batch; later source-verified cycles can use full Blender mesh, UV, material, sculpt and nodes operations.",
       "safe_lesson": "New assets need genuine, proportionate mesh objects before secondary details. Do not use nonexistent objects or substitute primitive arguments for indexed vertices."
+    },
+    {
+      "id": "qwen-genuine-geometry-incoherent-composition",
+      "run_id": 38568103614,
+      "model": "qwen3-vl:2b-instruct",
+      "evidence_artifact_id": 11897465042,
+      "raw_response_sha256": "c2ee578dd80cd6dd44e6d611d31edd8a473782d938a709e898ec6c10922c2ea2",
+      "result": "TECHNICALLY_EXECUTED_ART_VISUALLY_REJECTED",
+      "observed": "Four genuine Qwen-directed Blender primitives exported as an editable BLEND/GLB; image revealed disconnected roof, overlapping masonry and several objects buried at wrong heights. The Qwen critique returned invalid JSON.",
+      "verified_correction": "Separate geometric sanity from visual certification; return invalid silhouettes to Qwen, require roof tiers, plausible contact and material/structural refinement on a verified existing source.",
+      "safe_lesson": "When creating an architecture asset, roof and shaft must occupy aligned, different real heights, parts must not be identical overlapping masses, and materials must be deliberately authored. Real Blender success is not art approval."
     }
   ],
   "training": {

@@ -47,7 +47,7 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full'):
     # A small local 2B visual model cannot simultaneously design 20 Blender
     # operations and correctly invent arbitrary face indices. Author from
     # scratch in bounded stages: geometry first, finishing on REAL next source.
@@ -61,6 +61,8 @@ def schema_for_plan(max_actions=6, source_exists=False):
              "subdivide","bevel","modifier","boolean","material","uv","join","delete",
              "light","camera","render_settings","texture","asset_info",
              "native_operator","shader_graph","geometry_nodes","import_asset"]
+    if source_exists and phase=="surface":
+        actions=["material","bevel","transform","duplicate","primitive","uv","modifier"]
     if not source_exists:
         # Each action must create a real, bounded Blender mesh. Materials,
         # reuse, UV and Geometry Nodes are available in later source cycles.
@@ -95,7 +97,7 @@ def schema_for_plan(max_actions=6, source_exists=False):
          "asset_decision","expected_visual_difference","mobile_risks","actions"],
        "additionalProperties":False}
 
-def contract_brief(max_actions, source_exists=False):
+def contract_brief(max_actions, source_exists=False, phase='full'):
     # Short, exact model contract with the full vetted toolbox available once
     # an editable source exists. This avoids copying the irrelevant cliff data
     # from historic journals or expanding incomplete 20-action JSON documents.
@@ -126,6 +128,12 @@ def contract_brief(max_actions, source_exists=False):
           "or material while there is no source. Never use old cliff names. "
           "Compose original camera-visible components and preserve modularity.")
     return (base+
+      ("This is the SURFACE AND DETAIL pass: choose exact real mesh names; "
+       "author PBR colours using material {base_color:[r,g,b,a],roughness:0..1,metallic:0}, "
+       "use bevel {width:0.02..0.14,segments:1..3}, UV {method:smart|cube}, "
+       "and at least one genuine visible geometry modification. "
+       "You may add primitive details but DO NOT replace the original geometry. "
+       if phase=="surface" else "")+
       "The existing source objects have been INSPECTED in real Blender. "
       "Choose Qwen-authored operations within safe full toolbox: primitive, "
       "mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, "
@@ -150,7 +158,7 @@ def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=Non
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False):
-    msg=(contract_brief(args.max_actions,source_exists)
+    msg=(contract_brief(args.max_actions,source_exists,args.phase)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
       +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-4000:]
       +"\nNon-copyable empirical lessons: "+memory[:600]
@@ -160,7 +168,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -225,6 +233,7 @@ def main():
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
+    p.add_argument("--phase",choices=("full","surface"),default="full")
     p.add_argument("--max-actions",type=int,default=32)
     p.add_argument("--max-tokens",type=int,default=1250)
     p.add_argument("--prior-lessons",type=pathlib.Path)
