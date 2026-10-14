@@ -202,7 +202,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         structural=[v for v in tools if v["properties"]["op"]["const"]
                     in (("primitive","mesh") if assembly_source else
                         ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
-        if not assembly_source and excluded_source_ops:
+        if excluded_source_ops:
             structural=[v for v in structural
                         if v["properties"]["op"]["const"] not in excluded_source_ops]
         finishing=[v for v in tools if v["properties"]["op"]["const"]
@@ -214,9 +214,10 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
             # Volumetric geometry is required for the new architecture proof.
             # The model still freely designs shape, positions and proportions.
             structural=copy.deepcopy(structural)
-            if safe_primitive_fallback:
-                # One rejected topology-authoring proposal can temporarily
-                # limit the executable tool, NEVER fix/generate model geometry.
+            if safe_primitive_fallback and "primitive" not in (excluded_source_ops or set()):
+                # A rejected handcrafted open mesh may elect the *other* real
+                # tool, but NEVER reinstate an operation blocked after two
+                # independent invalid attempts under the owner contract.
                 structural=[v for v in structural if v["properties"]["op"]["const"]=="primitive"]
             stage_pattern=(rf"^Eldoria_Added_C{assembly_cycle:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
                            if assembly_cycle else NEW_COMPONENT_PATTERN)
