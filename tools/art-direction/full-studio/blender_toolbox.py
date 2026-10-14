@@ -172,7 +172,12 @@ def camera_override(spec):
         cam=bpy.data.cameras.new("_EldoriaReviewCamera")
         o=bpy.data.objects.new("_EldoriaReviewCamera",cam);bpy.context.scene.collection.objects.link(o)
     o.location=spec.get("location",[9,-15,11])
-    o.rotation_euler=spec.get("rotation",[math.radians(63),0,math.radians(34)])
+    if "rotation" in spec:
+        # Preserve the exact scene camera if supplied by the real game.
+        o.rotation_euler=spec["rotation"]
+    else:
+        target=Vector(spec.get("target",[0,0,2]))
+        o.rotation_euler=(target-o.location).to_track_quat("-Z","Y").to_euler()
     o.data.type=spec.get("projection","ORTHO")
     o.data.ortho_scale=float(spec.get("ortho_scale",21))
     bpy.context.scene.camera=o
@@ -200,17 +205,44 @@ def ensure_review_lighting():
     if background:
         background.inputs["Color"].default_value=(.38,.44,.50,1.)
         background.inputs["Strength"].default_value=.65
-    if any(o.type=="LIGHT" for o in bpy.data.objects):return
-    dat=bpy.data.lights.new("_EldoriaReviewSun","SUN")
-    dat.energy=2.5
-    light=bpy.data.objects.new("_EldoriaReviewSun",dat)
-    bpy.context.scene.collection.objects.link(light)
-    light.rotation_euler=(math.radians(30),math.radians(-15),math.radians(-30))
+    if not any(o.name=="_EldoriaReviewSun" for o in bpy.data.objects) and not any(
+            o.type=="LIGHT" for o in bpy.data.objects):
+        dat=bpy.data.lights.new("_EldoriaReviewSun","SUN")
+        dat.energy=2.1
+        light=bpy.data.objects.new("_EldoriaReviewSun",dat)
+        bpy.context.scene.collection.objects.link(light)
+        light.rotation_euler=(math.radians(30),math.radians(-15),math.radians(-30))
+        for name,loc,energy,size in (
+            ("_EldoriaReviewFill",(-5,-6,8),480,7),
+            ("_EldoriaReviewRim",(6,5,11),520,6),
+        ):
+            area=bpy.data.lights.new(name,"AREA")
+            area.energy=energy;area.shape="DISK";area.size=size
+            obj=bpy.data.objects.new(name,area)
+            scene.collection.objects.link(obj);obj.location=loc
+            obj.rotation_euler=(Vector((0,0,2))-obj.location).to_track_quat("-Z","Y").to_euler()
+
+def ensure_review_stage():
+    """Neutral preview-only contact floor; no stage mesh enters the asset GLB."""
+    o=bpy.data.objects.get("_EldoriaReviewFloor")
+    if o is None:
+        bpy.ops.mesh.primitive_plane_add(size=1,location=(0,0,-0.10))
+        o=bpy.context.object;o.name="_EldoriaReviewFloor"
+        o.scale=(55,55,1)
+        mat=bpy.data.materials.new("_EldoriaReviewWarmNeutral")
+        mat.diffuse_color=(.27,.30,.31,1);mat.use_nodes=True
+        bsdf=mat.node_tree.nodes.get("Principled BSDF")
+        if bsdf:
+            bsdf.inputs["Base Color"].default_value=(.32,.35,.38,1)
+            bsdf.inputs["Roughness"].default_value=.92
+        o.data.materials.append(mat)
+    o.hide_render=False
+    return o
 
 def snapshot_meshes():
     r={}
     for o in bpy.data.objects:
-        if o.type!="MESH":continue
+        if o.type!="MESH" or o.name.startswith("_EldoriaReview"):continue
         r[o.name]=hashlib.sha256(json.dumps({
            "v":[[round(c,6) for c in v.co] for v in o.data.vertices],
            "f":[list(p.vertices) for p in o.data.polygons]},sort_keys=True).encode()).hexdigest()
@@ -386,8 +418,9 @@ def main():
         bpy.ops.wm.read_factory_settings(use_empty=True);srcsha=None
     review=json.loads(args.review.read_text()) if args.review else {}
     render_setup(review.get("render",{"samples":8,"width":960,"height":720}))
-    camera_override(review.get("camera",{"location":[11,-18,14],"rotation":[math.radians(58),0,math.radians(31)],"ortho_scale":22}))
+    camera_override(review.get("camera",{"location":[11,-18,14],"target":[0,0,2],"ortho_scale":19}))
     ensure_review_lighting()
+    ensure_review_stage()
     bpy.context.view_layer.update()
     camera_hash=json.dumps(
         [[float(x) for x in row] for row in bpy.context.scene.camera.matrix_world])
@@ -406,7 +439,7 @@ def main():
         for act in plan["actions"]:apply_known_action(act)
     else:
         execute_via_blendermcp(plan["actions"],apply_known_action,args.mcp_addon,args.mcp_sha256)
-    camera_override(review.get("camera",{"location":[11,-18,14],"rotation":[math.radians(58),0,math.radians(31)],"ortho_scale":22}))
+    camera_override(review.get("camera",{"location":[11,-18,14],"target":[0,0,2],"ortho_scale":19}))
     render_setup(review.get("render",{"samples":8,"width":960,"height":720}))
     bpy.context.view_layer.update()
     final_cam=json.dumps([[float(x) for x in row] for row in bpy.context.scene.camera.matrix_world])
@@ -415,12 +448,20 @@ def main():
     if triangle_count<1 or triangle_count>MAX_OUTPUT_TRIANGLES:
         raise RejectedPlan("Evaluated geometry outside mobile review budget: "+str(triangle_count))
     blend=out/"artist-asset.blend";bpy.ops.wm.save_as_mainfile(filepath=str(blend))
-    glb=out/"artist-asset.glb";bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=False)
+    glb=out/"artist-asset.glb"
+    bpy.ops.object.select_all(action="DESELECT")
+    export_objects=[o for o in bpy.data.objects
+                    if o.type=="MESH" and not o.name.startswith("_EldoriaReview")]
+    if not export_objects:raise RejectedPlan("No original artist geometry to export")
+    for o in export_objects:o.select_set(True)
+    bpy.context.view_layer.objects.active=export_objects[0]
+    bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True)
+    bpy.ops.object.select_all(action="DESELECT")
     after=out/"after-blender.png";bpy.context.scene.render.filepath=str(after)
     bpy.ops.render.render(write_still=True)
     scene_meshes=snapshot_meshes()
     components=[]
-    for o in sorted((o for o in bpy.data.objects if o.type=="MESH"),key=lambda o:o.name):
+    for o in sorted((o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("_EldoriaReview")),key=lambda o:o.name):
         components.append({"name":o.name,"vertices":len(o.data.vertices),
           "faces":len(o.data.polygons),"dimensions_m":[round(float(v),4) for v in o.dimensions],
           "pivot_m":[round(float(v),4) for v in o.location],

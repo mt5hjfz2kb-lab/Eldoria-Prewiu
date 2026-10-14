@@ -8,7 +8,7 @@ import bpy
 
 HERE=pathlib.Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
-from blender_toolbox import camera_override,render_setup,ensure_review_lighting,snapshot_meshes
+from blender_toolbox import camera_override,render_setup,ensure_review_lighting,ensure_review_stage,snapshot_meshes
 
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -31,11 +31,12 @@ def main():
     review=json.loads(args.review.read_text()) if args.review else {}
     render_setup(review.get("render",{"samples":8,"width":960,"height":720}))
     camera_override(review.get("camera",{"location":[11,-18,14],
-        "rotation":[1.012291,0,.541052],"ortho_scale":22}))
+        "target":[0,0,2],"ortho_scale":19}))
     ensure_review_lighting()
+    ensure_review_stage()
     meshes=snapshot_meshes()
     inventory=[]
-    for o in sorted((o for o in bpy.data.objects if o.type=="MESH"),key=lambda x:x.name):
+    for o in sorted((o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("_EldoriaReview")),key=lambda x:x.name):
         verts=o.data.vertices
         lo=[round(min((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
         hi=[round(max((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]

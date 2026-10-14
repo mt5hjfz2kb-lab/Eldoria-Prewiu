@@ -69,6 +69,9 @@ jobs:
           data=(p/'artist-asset.glb').read_bytes()
           assert data[:4]==b'glTF' and struct.unpack('<I',data[4:8])[0]==2
           assert len(data)==struct.unpack('<I',data[8:12])[0]
+          gltf=json.loads(data[20:20+struct.unpack_from('<I',data,12)[0]])
+          assert gltf.get('meshes'), 'Production GLB contains no actual 3D models'
+          assert not any(n.get('name','').startswith('_EldoriaReview') for n in gltf.get('nodes',[])), 'Preview geometry leaked into reusable GLB'
           for name in ('before-blender.png','after-blender.png'):
               data=(p/name).read_bytes();assert data.startswith(b'\x89PNG\r\n\x1a\n')
           from PIL import Image,ImageChops
