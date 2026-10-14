@@ -1,0 +1,11 @@
+{
+  "source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "artist_blend_sha256": "60c5633806973f37ea6b3ca2be81f6b0ca34b52c17f14c1be4c5ef0bd7f8ede7",
+  "independent_geometry_gate_passed": true,
+  "errors": [],
+  "art_approved": false,
+  "unity_executed": false,
+  "normal_refresh_geometry_preserved": true,
+  "candidate_sha256": "6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8",
+  "changed_vertices": 1957
+}

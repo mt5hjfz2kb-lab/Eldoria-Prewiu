@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_001",
+  "observed_defect": "Flat prairie lacks strategic visual relief and terrain continuity from strategic camera",
+  "design_intent": "Create broad asymmetric rolling hills and valleys to enhance strategic visibility and ground continuity without altering city borders or protected zones",
+  "asset_decision": "MODIFY",
+  "expected_visual_difference": "Visible asymmetric landform changes from strategic camera, preserving existing UVs and materials",
+  "mobile_risks": "None; no topology changes or material operations",
+  "actions": [
+    {
+      "id": "sculpt_hill_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Authoring a broad asymmetric hill with positive elevation to break flatness; center at [20, 50, -2.5] with radius 35m and delta [0, 0, 6.0] to create a gentle, ",
+      "params": {
+        "center": [
+          20,
+          50,
+          -2.5
+        ],
+        "delta": [
+          0,
+          0,
+          6.0
+        ],
+        "radius": 35
+      }
+    },
+    {
+      "id": "sculpt_valley_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Authoring a complementary valley to create visual contrast and terrain continuity; center at [-40, 60, -2.5] with radius 30m and delta [0, 0, -2.5] to create a ",
+      "params": {
+        "center": [
+          -40,
+          60,
+          -2.5
+        ],
+        "delta": [
+          0,
+          0,
+          -2.5
+        ],
+        "radius": 30
+      }
+    },
+    {
+      "id": "sculpt_saddle_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Authoring a broad saddle to connect hills and valleys visually; center at [0, 65, -2.5] with radius 40m and delta [0, 0, 2.0] to create a ",
+      "params": {
+        "center": [
+          0,
+          65,
+          -2.5
+        ],
+        "delta": [
+          0,
+          0,
+          2.0
+        ],
+        "radius": 40
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "scope": "BLENDER_RENDER_SCREEN_IMPACT_NOT_UNITY_ART",
+  "before": "before-blender.png",
+  "after": "after-blender.png",
+  "camera_same": true,
+  "resolution": [
+    1000,
+    800
+  ],
+  "total_pixels": 800000,
+  "changed_pixels": 31752,
+  "changed_fraction": 0.03969,
+  "bounding_rectangle": [
+    161,
+    276,
+    924,
+    702
+  ],
+  "minimum_fraction": 0.006,
+  "threshold_0_255": 10,
+  "visually_present": true,
+  "art_approved": false,
+  "unity_approved": false
+}

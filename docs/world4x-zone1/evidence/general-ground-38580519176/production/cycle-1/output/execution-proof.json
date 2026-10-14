@@ -1,0 +1,55 @@
+{
+  "state": "TECHNICAL_SOURCE_ONLY",
+  "transport": "direct",
+  "blender_execution": true,
+  "ai_self_approval": false,
+  "unity_tested": false,
+  "mobile_device_tested": false,
+  "art_approved": false,
+  "reusable_components": 1,
+  "artist_plan_sha256": "49feedbc163ffcf979b43adf59a5b06ef1f7e93d34fdbfbba3de3dd753c1f23e",
+  "source_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "before_blender_sha256": "e7658a2b0801ab9cc2140e4209f0fbbae9e9aca91a6658ba62b87bee068b68b9",
+  "after_blender_sha256": "619d60096aff109771fc01333a799738d21dd0459a124c759544ce6a652311d6",
+  "blend_sha256": "60c5633806973f37ea6b3ca2be81f6b0ca34b52c17f14c1be4c5ef0bd7f8ede7",
+  "glb_sha256": "6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8",
+  "matched_review_camera": true,
+  "evaluated_triangles": 28800,
+  "action_count": 3,
+  "execution": [
+    {
+      "id": "sculpt_hill_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Authoring a broad asymmetric hill with positive elevation to break flatness; center at [20, 50, -2.5] with radius 35m and delta [0, 0, 6.0] to create a gentle, ",
+      "geometry_changed": true,
+      "mesh_count": 1,
+      "originals_changed": [
+        "ZoneOne continuous prairie source"
+      ]
+    },
+    {
+      "id": "sculpt_valley_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Authoring a complementary valley to create visual contrast and terrain continuity; center at [-40, 60, -2.5] with radius 30m and delta [0, 0, -2.5] to create a ",
+      "geometry_changed": true,
+      "mesh_count": 1,
+      "originals_changed": [
+        "ZoneOne continuous prairie source"
+      ]
+    },
+    {
+      "id": "sculpt_saddle_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Authoring a broad saddle to connect hills and valleys visually; center at [0, 65, -2.5] with radius 40m and delta [0, 0, 2.0] to create a ",
+      "geometry_changed": true,
+      "mesh_count": 1,
+      "originals_changed": [
+        "ZoneOne continuous prairie source"
+      ]
+    }
+  ],
+  "elapsed_seconds": 10.453
+}

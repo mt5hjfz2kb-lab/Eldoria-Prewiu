@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "asset_id": "ZoneOne_hills_v1",
+  "observed_defect": "Flat prairie lacks strategic visual relief; no hills or valleys visible from camera",
+  "design_intent": "Create broad asymmetric rolling terrain features visible from strategic camera, preserving city pad and border",
+  "asset_decision": "MODIFY", "expected_visual_difference": "Visible hills and valleys from camera, no isolated lumps",
+  "mobile_risks": "None, terrain is one mesh, no topology changes",
+  "actions": [
+    {
+      "id": "sculpt_hill_north",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad asymmetric hill in northern region to break flatness; center at [0, 60, 0] with radius 35m, height +6m, delta=0 to preserve continuity",
+      "params": {
+        "center": [0, 60, 0],
+        "delta": [0, 0, 0],
+        "radius": 35
+      }
+    },
+    {
+      "id": "sculpt_valley_south",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create complementary valley in southern region to balance hill; center at [0, 30, 0] with radius 30m, height -2.5m, delta=0 to preserve continuity",
+      "params": {
+        "center": [0, 30, 0],
+        "delta": [0, 0, 0],
+        "radius": 30
+      }
+    },
+    {
+      "id": "sculpt_saddle_west",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Add a broad saddle feature to connect hills and valleys; center at [-40, 45, 0] with radius 25m, height +2m, delta=0 to preserve continuity",
+      "params": {
+        "center": [-40, 45, 0],
+        "delta": [0, 0, 0],
+        "radius": 25
+      }
+    }
+  ]
+}

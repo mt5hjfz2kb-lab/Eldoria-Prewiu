@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "asset_id": "valoria_terrain_001",
+  "observed_defect": "Flat prairie ground lacks visible strategic elevation variation from camera perspective",
+  "design_intent": "Create broad asymmetric rolling hills and valleys to enhance visual depth and strategic terrain awareness without altering city boundaries or moving protected vertices",
+  "asset_decision": "REUSE",
+  "expected_visual_difference": "Visible elevation changes in terrain silhouette from camera, no vertex displacement, no material change",
+  "mobile_risks": "None",
+  "actions": [
+    {
+      "id": "sculpt_hill_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a broad, asymmetric hill centered at (x=20, y=55, z=0) with radius 35m and delta z=+5m to establish a visible strategic hill in the upper right quadrant",
+      "params": {
+        "center": [20, 55, 0],
+        "delta": [0, 0, 5],
+        "radius": 35
+      }
+    },
+    {
+      "id": "sculpt_valley_01",
+      "op": "sculpt",
+      "target": "ZoneOne continuous prairie source",
+      "reason": "Create a complementary valley centered at (x=-40, y=45, z=0) with radius 30m and delta z=-3m to form a natural saddle, enhancing visual depth and terrain flow",
+      "params": {
+        "center": [-40, 45, 0],
+        "delta": [0, 0, -3],
+        "radius": 30
+      }
+    }
+  ]
+}
