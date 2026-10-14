@@ -492,29 +492,6 @@ def run_variant_A():
  # curtains; the central x[-7,7] stair and future plots stay unchanged.
  for side in (-1,1):
   covered_fork_wall_gallery(side)
- # A17 camera-led BIG-MASS geological integration, source: real native
- # 1440x1000 player frame 38577293174, artist brief in docs/evidence.
- # The last iteration's stone arcades gained identity, but flat straight
- # cliff-to-gate contacts made the plateau appear pasted into the valley.
- # Embed FOUR full-size ORIGINAL authored cliff-rock banks into the existing
- # north/south fortified flanks, tying masonry visually into underlying rock.
- # These are not mini props, new guard houses, central buildings or decals.
- # Earlier tiny floating platforms failed their real Unity visual review.
- # Qwen is not credited with these mesh vertices; this is a new camera-led
- # explicit 3D spatial decision executed through Blender and the old rock kit.
- for tag,cx,cy,w,d,h,embed,heading in (
-   ('WEST heavy forecourt cliff-root', -17.7,-14.85,6.8,6.4,5.2,.69,-11),
-   ('EAST heavy forecourt cliff-root', 17.7,-14.85,6.8,6.4,5.2,.69,11),
-   ('WEST outer curtain geological spine', -25.8,8.9,6.1,7.1,6.8,.79,13),
-   ('EAST outer curtain geological spine', 25.8,8.9,6.1,7.1,6.8,.79,-13),
- ):
-  safe('A17 whole source-rock escarpment '+tag,cx,cy,w,d)
-  # 69-79% below the actual surveyed playable terrain, never suspended.
-  # Keep the upper tip sufficiently low to avoid hiding the player route,
-  # existing lower hero gate, six upper arches and roofed side arcades.
-  clone_group('A17 scene-scale original glacial rock-to-castle foundation '+tag,
-              rockkit,cx,cy,(w,d,h),
-              base_z=ground(cx,cy)-h*embed,rotate=heading)
  # No freestanding central decorations or new buildings: broad central court
  # stays empty for future progression, while TWO coherent physical wall systems
  # now express foreground, midground and high medieval citadel depth.
@@ -605,7 +582,7 @@ proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
- 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'authentic_arch_voussoirs':86,'a17_grounded_full_scale_rock_banks':(4 if variant=='A' else 0),'qwen_matched_unity_source_run':38572253674,'real_connected_service_arches':2,'full_wall_connected_roofed_medieval_arcades':2,'arch_gallery_parapet_merlons':14,'source_material_slots_verified':True,
+ 'reserved_build_centers':[[-16,3],[16,3]],'new_resource_nodes':0,'new_gameplay_colliders':0,'wallkit_lod_ratio':(.58 if variant=='A' else 1.0),'reused_rockkit_lod_ratio':(.48 if variant=='A' else 1.0),'source_texture_materials_unchanged':True,'authentic_arch_voussoirs':86,'qwen_matched_unity_source_run':38572253674,'real_connected_service_arches':2,'full_wall_connected_roofed_medieval_arcades':2,'arch_gallery_parapet_merlons':14,'source_material_slots_verified':True,
  'visual_pass':False,'mobile_device_pass':False}
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_GLOBAL_COMPOSITION_PROOF',json.dumps(proof))

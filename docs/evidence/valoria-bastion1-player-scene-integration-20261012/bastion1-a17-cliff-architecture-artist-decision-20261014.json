@@ -62,5 +62,14 @@
     "A/B native player camera, return to validated A16 if visually worse",
     "Do not publish or touch main/world4x"
   ],
-  "gate": "real Unity pixel difference proves only visibility; separate independent camera art assessment and no invented ART PASS"
+  "gate": "real Unity pixel difference proves only visibility; separate independent camera art assessment and no invented ART PASS",
+  "result": {
+    "status": "ART_REJECTED",
+    "verification_run": 38580679826,
+    "source_commit": "ad559f5e36b04fb0911f44daf243acf0ef763afa",
+    "camera": "1440x1000 identical real Unity A16/A17",
+    "changed_fraction_vs_A16": 0.0158,
+    "additional_rendered_triangles": 505394,
+    "reason": "Four rock prefab banks visibly negligible but increased geometry about 41%. Removed in A18."
+  }
 }

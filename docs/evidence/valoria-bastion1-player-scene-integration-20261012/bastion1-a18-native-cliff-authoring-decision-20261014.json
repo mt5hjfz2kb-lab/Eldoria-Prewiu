@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-14",
+  "stage": "AI director authoring decision before Blender A18",
+  "source_run": 38580679826,
+  "source_commit": "ad559f5e36b04fb0911f44daf243acf0ef763afa",
+  "observed": "Front cliff still unnaturally angular and dark in native 1440x1000 Unity. A17 scattered rock prefab fragments gained 1.58% visual difference for +505394 scene triangles.",
+  "hypothesis": "Modify ORIGINAL native cliff itself for broad geological strata and real photographed stone texture, not another layer of scene objects. Preserve old A16 composition and geometry outside one native cliff mesh.",
+  "edits": "Sculpt only cliff-exclusive mesh vertices on both southern flanks outside x[-9,9]; spatially coherent 4-12m fractures and 0.6-2m displacement, with taper near top and valley. Isolate a source-photographic PBR cliff material and rebalance exposure without touching approved reference textures.",
+  "proofs": "Sculpted vertex count, maximum vertex displacement, copied source photo texture, all source meshes otherwise preserved. Exact native Unity camera A/B, mobile and gameplay separately pending.",
+  "exclusions": "No extra rock prefabs, no buildings, no colliders, no resource nodes. Plot footprints centered x±16,y3 and axis remain intact. main and 4X unchanged.",
+  "paid_credits": 0,
+  "art_pass": false
+}

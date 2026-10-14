@@ -62,6 +62,60 @@ delta=np.clip(delta,-.22,.58)
 for v,d in zip(mesh.vertices,delta):
  if abs(d)>1e-5:v.co.z+=float(d)
 mesh.update()
+# A18: independent inspection of ACTUAL Unity A17 player-camera image rejects
+# overlaid heavy prefab rock groups. Change hypothesis: sculpt the EXISTING
+# fractured dark cliff skin and age its original photographic surface.
+# Only cliff-exclusive vertices OUTSIDE the axial road/plots are affected.
+rockface_verts={vid for poly in mesh.polygons if poly.material_index==1
+                for vid in poly.vertices}
+otherface_verts={vid for poly in mesh.polygons if poly.material_index!=1
+                 for vid in poly.vertices}
+cliff_only=rockface_verts-otherface_verts
+cliff_changed=0; cliff_max_delta=0.0
+for vid in cliff_only:
+ v=mesh.vertices[vid];x,y,z=map(float,v.co)
+ side=ease((abs(x)-9.1)/4.1)
+ front=ease(((-y)-15.8)/6.2)
+ toe=1-ease(((-y)-38.0)/8.0)
+ w=side*front*toe
+ if w<.04:continue
+ # Large-scale jointed natural geology, not new instances or square columns.
+ strata=(.97*math.sin(x*.33+y*.10)+.51*math.sin(x*.67-y*.27)
+         +.27*math.cos(x*.22+y*.42))
+ recess=.75*math.sin(x*.24-y*.16)
+ dx=float(np.clip(w*(.58*strata+.35*recess),-1.55,1.55))
+ dy=float(np.clip(w*(.49*strata-.28*recess),-1.45,1.45))
+ dz=float(np.clip(w*(.91*strata+.21*recess),-2.10,2.10))
+ v.co.x+=dx;v.co.y+=dy;v.co.z+=dz
+ cliff_changed+=1
+ cliff_max_delta=max(cliff_max_delta,math.sqrt(dx*dx+dy*dy+dz*dz))
+mesh.update()
+if cliff_changed<150 or cliff_max_delta<.6:
+ raise RuntimeError('A18 failed to sculpt real native source cliff faces')
+# FINISH ORIGINAL rock photo and roughness; don't change source image or
+# another original model. Independent material copy applies to cliff slot 1.
+source_cliff=mesh.materials[1]
+if source_cliff is None or not source_cliff.use_nodes:
+ raise RuntimeError('A18 original schist cliff PBR material missing')
+cliff_finish=source_cliff.copy()
+cliff_finish.name='Bastion I A18 native weathered geology original photo'
+photo_count=0
+for texnode in cliff_finish.node_tree.nodes:
+ if texnode.type!='TEX_IMAGE' or not texnode.image:continue
+ if 'diff' not in texnode.image.name.lower():continue
+ native_photo=texnode.image
+ lighter=native_photo.copy()
+ lighter.name='Bastion I A18 balanced source schist photo '+native_photo.name
+ rgba=np.empty(len(lighter.pixels),dtype=np.float32)
+ lighter.pixels.foreach_get(rgba)
+ rgba[0::4]=np.clip(rgba[0::4]*1.23+.038,0,.98)
+ rgba[1::4]=np.clip(rgba[1::4]*1.22+.036,0,.98)
+ rgba[2::4]=np.clip(rgba[2::4]*1.18+.032,0,.98)
+ lighter.pixels.foreach_set(rgba);lighter.pack()
+ texnode.image=lighter;photo_count+=1
+if photo_count<1:
+ raise RuntimeError('A18 original cliff photographic base-color not found')
+mesh.materials[1]=cliff_finish
 # Guarantee true heights of gameplay entrance and both ten-metre parcels.
 protected=~(safe_weight(Xs,Ys)>0.00001)
 if np.max(np.abs(delta[protected]),initial=0)>2e-4:
@@ -343,7 +397,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,retaining_bank_original_limestone_meshes=retaining_count,removed_flat_masonry_ribbons=True,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
- native_source_terrain_sculpted=True,
+ native_source_terrain_sculpted=True, a18_original_cliff_vertices_sculpted=cliff_changed, a18_cliff_max_displacement_m=cliff_max_delta, a18_cliff_source_photo_isolated=bool(photo_count),
  qwen_latest_vision_run=38572253674,latest_matched_unity_before_after_qwen_raw_sha256='c4bffeedebcb16723191c7872b78f3df5a300068ef4bdeb2fc294c2539ea6a08',source_rock_photo_pixel_reuse=True,forked_stony_route_pixel_fraction=float(np.mean(stony_fork>.30)),artistically_approved=False,mobile_hardware_certified=False)
 dst.with_suffix('.proof.json').write_text(json.dumps(proof,indent=2))
 print('BASTION1_QWEN_ACTUAL_TERRAIN_SCULPT',json.dumps(proof))
