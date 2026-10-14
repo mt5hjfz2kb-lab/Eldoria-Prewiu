@@ -2,11 +2,18 @@
 import copy,pathlib,sys,unittest
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
 from architectural_component_guard import verify_volume_and_complexity,RejectedPlan
-from artist_loop import schema_for_plan
+from artist_loop import schema_for_plan,invalid_mesh_requires_tool_fallback
 def doc(op,params):
  return {"actions":[{"op":op,"target":"Eldoria_Added_GenuineTower",
                     "params":params}]}
 class ComponentQuality(unittest.TestCase):
+ def test_duplicate_vertices_enable_artist_reauthored_blender_primitive(self):
+  self.assertTrue(invalid_mesh_requires_tool_fallback([
+      "Custom mesh has DUPLICATE 3D vertices; choose ORIGINAL distinct [x,y,z] positions"]))
+  self.assertTrue(invalid_mesh_requires_tool_fallback(["Model-authored new 3D mesh is OPEN or NONMANIFOLD"]))
+  self.assertTrue(invalid_mesh_requires_tool_fallback(["Custom mesh has ZERO-AREA faces"]))
+  self.assertFalse(invalid_mesh_requires_tool_fallback(["Only duplicate metadata IDs (not artistic mesh)"]))
+
  def test_reject_actual_two_triangle_flat_platform(self):
   p=doc("mesh",{"vertices":[[0,0,0],[1,0,0],[1,1,0],[0,1,0]],"faces":[[0,1,2],[2,3,0]]})
   saved=copy.deepcopy(p)
