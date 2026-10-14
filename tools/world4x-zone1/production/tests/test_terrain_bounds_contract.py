@@ -79,5 +79,29 @@ class SourceBoundsTests(unittest.TestCase):
             contract.normalize_artist_authored_knots(doc)
 
 
+    def test_real_failure_pattern_repeated_knot_centers_remains_rejected(self):
+        import sys
+        root=Path(__file__).resolve().parents[4]
+        sys.path.insert(0,str(root/"tools/art-direction/ai-authoring"))
+        from artist_plan_validation import inspect_artist_plan
+        typed={"planned_actions":[{
+          "id":"chasm","type":"sculpt_path","target":"ZoneOne continuous prairie source",
+          "rationale":"Sculpt a genuinely original non-linear chasm path",
+          "parameters":{"knots":[
+            {"center_xyz":{"x":-72,"y":32,"z":-5},"vertical_displacement_m":-9,"radius":18},
+            {"center_xyz":{"x":-72,"y":32,"z":-5},"vertical_displacement_m":-14,"radius":25},
+            {"center_xyz":{"x":-72,"y":32,"z":-5},"vertical_displacement_m":-14,"radius":20}]}}]}
+        typed.update({
+            "observed_defect":"Terrain reads as uniform flat grass with repeated fake beige stripes.",
+            "design_intent":"Sculpt a visibly winding chasm on genuinely inherited source terrain.",
+            "asset_decision":"MODIFY"})
+        normalized=contract.normalize_artist_authored_knots(typed)
+        errors=inspect_artist_plan(normalized,"ZoneOne continuous prairie source",
+                                   "existing",2,topology={"local_aabb":{
+                                     "min":[-120,-120,-6],"max":[120,120,9]}})
+        self.assertTrue(any("DISTINCT" in x for x in errors),errors)
+
+
+
 if __name__ == "__main__":
     unittest.main()
