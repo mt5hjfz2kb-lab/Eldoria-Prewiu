@@ -40,13 +40,13 @@ class AuthorScopeTests(unittest.TestCase):
     def test_mesh_edit_schema_targets_real_mesh_vertices(self):
         schema=artist_loop.schema_for_plan(4,True,"mesh_edit","architecture",["ValoriaExistingWall"])
         act=schema["properties"]["actions"]["items"]["properties"]
-        self.assertEqual(act["op"]["const"],"sculpt")
+        self.assertEqual(act["op"]["const"],"sculpt_anchor")
         self.assertEqual(act["target"]["enum"],["ValoriaExistingWall"])
-        self.assertEqual(set(act["params"]["required"]),{"center","delta","radius"})
+        self.assertEqual(set(act["params"]["required"]),{"anchor","direction","distance","radius"})
         self.assertNotIn("location",act["params"]["properties"])
     def test_mesh_edit_prompt_requires_local_bound_decisions(self):
         brief=artist_loop.contract_brief(3,True,"mesh_edit")
-        self.assertIn("OBJECT-LOCAL",brief)
+        self.assertIn("LOCAL EXTREMA",brief)
         self.assertIn("local_bounds_min_m",brief)
         self.assertIn("INHERITED VERTEX EDIT",brief)
     def test_surface_phase_limits_to_authentic_pbr(self):

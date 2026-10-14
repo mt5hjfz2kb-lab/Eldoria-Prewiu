@@ -325,6 +325,18 @@ def run_action(a,texroot,approved_assets=None):
         if "scale" in p:o.scale=p["scale"]
         if p.get("apply",False):active(o);bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
     elif kind=="sculpt":sculpt(obj(name),p)
+    elif kind=="sculpt_anchor":
+        o=obj(name)
+        if not o.data.vertices:raise RejectedPlan("Source mesh has no vertices")
+        anchor=p["anchor"]
+        axis="xyz".index(anchor[0])
+        candidate=(min if anchor.endswith("min") else max)(
+            o.data.vertices,key=lambda v:float(v.co[axis]))
+        center=list(candidate.co)
+        direction=p["direction"]
+        delta=[0.,0.,0.]
+        delta["XYZ".index(direction[1])]=float(p["distance"])*(1 if direction[0]=="+" else -1)
+        sculpt(o,{"center":center,"delta":delta,"radius":p["radius"]})
     elif kind in ("extrude","inset","subdivide"):edit_face_operation(obj(name),kind,p)
     elif kind=="bevel":
         active(obj(name));modifier(obj(name),{"kind":"BEVEL","options":{"width":p["width"],"segments":p.get("segments",2)},"apply":p.get("apply",True)})

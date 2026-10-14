@@ -19,6 +19,15 @@ def good():
 
 class ContractTests(unittest.TestCase):
     def test_valid(self):self.assertEqual(validate_plan(good())["geometric_actions"],1)
+    def test_real_mesh_landmark_sculpt_contract(self):
+        p=good();p["asset_decision"]="MODIFY"
+        p["actions"]=[{"id":"/0","op":"sculpt_anchor",
+            "target":"Valoria_Tower_CohV1 · EA03_Village_Tover_01a_LOD0",
+            "reason":"Improve inherited tower wall silhouette at the actual extremum",
+            "params":{"anchor":"y_max","direction":"+Y","distance":0.42,"radius":2.1}}]
+        self.assertEqual(validate_plan(p)["geometric_actions"],1)
+        p["actions"][0]["params"]["distance"]=0
+        with self.assertRaises(RejectedPlan):validate_plan(p)
     def test_reject_code_execution(self):
         p=good();p["actions"][0]["op"]="execute_python"
         with self.assertRaises(RejectedPlan):validate_plan(p)

@@ -40,7 +40,15 @@ def main():
         verts=o.data.vertices
         lo=[round(min((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
         hi=[round(max((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
+        local_extrema={}
+        if len(verts):
+            for axis,letter in enumerate("xyz"):
+                for kind,selector in (("min",min),("max",max)):
+                    vertex=selector(verts,key=lambda v:float(v.co[axis]))
+                    local_extrema[letter+"_"+kind]={"vertex_index":vertex.index,
+                      "local_position_m":[round(float(v),5) for v in vertex.co]}
         inventory.append({
+            "local_extrema":local_extrema,
             "name":o.name,"vertices":len(verts),"faces":len(o.data.polygons),
             "local_bounds_min_m":lo,"local_bounds_max_m":hi,
             "world_location_m":[round(float(v),5) for v in o.location],

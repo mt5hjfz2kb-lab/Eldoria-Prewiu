@@ -76,15 +76,17 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         params={"type":"object","properties":{"location":point,"scale":scale},
                 "required":["location","scale"],"additionalProperties":False}
     elif phase=="mesh_edit":
-        # Qwen selects a REAL inherited mesh and a sculpt brush in its LOCAL
-        # vertex coordinate system; no fixed templates or inferred defaults.
-        action_op={"type":"string","const":"sculpt"}
+        # A LOCAL visual model chooses a physically EXISTING mesh landmark and
+        # sculpt direction/strength; Blender resolves the actual vertex.
+        # This avoids 2B JSON always emitting zero-vector brushes without
+        # substituting scripted artistic choices.
+        action_op={"type":"string","const":"sculpt_anchor"}
         params={"type":"object","properties":{
-          "center":point,
-          "delta":{"type":"array","items":{"type":"number","minimum":-3,"maximum":3},
-                   "minItems":3,"maxItems":3},
-          "radius":{"type":"number","minimum":0.1,"maximum":12}},
-          "required":["center","delta","radius"],"additionalProperties":False}
+          "anchor":{"type":"string","enum":["x_min","x_max","y_min","y_max","z_min","z_max"]},
+          "direction":{"type":"string","enum":["+X","-X","+Y","-Y","+Z","-Z"]},
+          "distance":{"type":"number","minimum":0.15,"maximum":1.8},
+          "radius":{"type":"number","minimum":0.5,"maximum":8}},
+          "required":["anchor","direction","distance","radius"],"additionalProperties":False}
     elif phase=="surface":
         action_op={"type":"string","const":"material"}
         params={"type":"object","properties":{
@@ -147,7 +149,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
     if not source_exists:
         return base+"EMPTY scene: asset_decision=NEW, every op=primitive. Each has params EXACTLY {shape:cylinder|cone|cube|uv_sphere|ico_sphere,location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. Model a separate, vertically aligned masonry body and believable roof. Do not bury objects, offset roof or overlap identical solids. All parts must be original and camera-visible."
     if phase=="mesh_edit":
-        return base+"MANDATORY INHERITED VERTEX EDIT: every op=sculpt, choose exact EXISTING object names from VERIFIED source inventory. params EXACTLY {center:[x,y,z],delta:[dx,dy,dz],radius:r}. Blender sculpt center uses OBJECT-LOCAL coordinates, not world location. Look at the local_bounds_min_m/max_m for each named mesh. Choose a center INSIDE those bounds, close to its vertices or surfaces. Choose a nonzero delta with visible silhouette purpose and radius large enough to actually touch inherited vertices; do not merely transform objects, create new primitives, edit materials or fake a mesh change. You are choosing actual brush location, strength and target to reshape this existing asset."
+        return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:0.15..1.8,radius:0.5..8}. Read inspected LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Every action must make a visible source-mesh change; do not repeat identical actions."
     if phase=="geometry":
         return base+"THIS STAGE ONLY FIXES GEOMETRY of the real existing Blender meshes. For EACH action op=transform; choose one EXACTLY NAMED source object from verified inventory. params must contain BOTH location:[x,y,z] and scale:[sx,sy,sz], no extra keys. FIX the formerly overlapping and horizontally misaligned roof and tower by placing objects at DIFFERENT HEIGHTS. Y coordinates must not be copied blindly. Blender operation is absolute position and absolute scale. NEVER wrap values in a transform sub-object."
     if phase=="surface":
@@ -193,11 +195,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if len(doc["actions"])>args.max_actions:
         raise RejectedPlan("Too many Qwen actions in one bounded cycle")
     if source_exists and args.phase=="mesh_edit":
-        if not known_objects or any(a["op"]!="sculpt" or a["target"] not in known_objects
+        if not known_objects or any(a["op"]!="sculpt_anchor" or a["target"] not in known_objects
                                     for a in doc["actions"]):
             raise RejectedPlan("Inherited mesh edit must address inspected source objects")
-        if all(max(abs(v) for v in a["params"]["delta"])<0.03 for a in doc["actions"]):
-            raise RejectedPlan("Sculpt changes too subtle for a source mesh edit")
+        signatures=[(a["target"],a["params"]["anchor"],a["params"]["direction"])
+                    for a in doc["actions"]]
+        if len(set(signatures))!=len(signatures):
+            raise RejectedPlan("Duplicate source sculpt decisions; choose independent features")
     if not source_exists:
         if doc["asset_decision"]!="NEW":
             raise RejectedPlan("Fresh EMPTY scene requires Qwen to design a NEW asset")
@@ -303,6 +307,7 @@ def main():
                           "world_dimensions_m":x["world_dimensions_m"],
                           "local_bounds_min_m":x["local_bounds_min_m"],
                           "local_bounds_max_m":x["local_bounds_max_m"],
+                          "local_extrema":x["local_extrema"],
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
                          for x in actual["objects"][:80]]
         history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
@@ -332,7 +337,7 @@ def main():
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
         if args.phase=="mesh_edit" and source:
-            edits=[step for step in result["execution"] if step["op"]=="sculpt"
+            edits=[step for step in result["execution"] if step["op"]=="sculpt_anchor"
                    and step["geometry_changed"] and step["originals_changed"]]
             if not edits:
                 records.append({"cycle":cycle,"status":"INHERITED_MESH_UNCHANGED",

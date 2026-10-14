@@ -235,7 +235,7 @@ jobs:
             --source Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb \
             --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
             --out /tmp/eldoria-qwen-real-source-refinement \
-            --max-cycles 1 --max-actions 4 --max-tokens 1250 \
+            --max-cycles 1 --max-actions 2 --max-tokens 950 \
             --asset-category architecture --phase mesh_edit \
             --model qwen3-vl:2b-instruct
       - name: Inspect source edit integrity and Qwen original actions
@@ -252,9 +252,9 @@ jobs:
           assert proof['source_sha256']==manifest['frozen_source_sha256']
           assert proof['matched_review_camera'] and proof['action_count']==len(qwen['actions'])
           assert proof['inherited_mesh_data_changed'], 'No inherited mesh vertex/topology data changed'
-          assert any(s['op']=='sculpt' and s['geometry_changed'] and s['originals_changed']
+          assert any(s['op']=='sculpt_anchor' and s['geometry_changed'] and s['originals_changed']
                      for s in proof['execution']), 'No actual Qwen sculpt reached inherited mesh vertices'
-          assert all(s['op']=='sculpt' for s in proof['execution']), 'Unexpected non-mesh edit operation'
+          assert all(s['op']=='sculpt_anchor' for s in proof['execution']), 'Unexpected non-mesh edit operation'
           assert all(c['derived_from_source_object'] for c in json.loads(
               (root/'cycle-1/output/reusable-asset-catalog.json').read_text())['components'])
           assert pathlib.Path('Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb').is_file()

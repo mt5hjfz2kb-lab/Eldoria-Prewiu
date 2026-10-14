@@ -9,7 +9,7 @@ import math
 from pathlib import Path
 
 OPS = {
- "primitive", "mesh", "duplicate", "transform", "sculpt", "extrude",
+ "primitive", "mesh", "duplicate", "transform", "sculpt", "sculpt_anchor", "extrude",
  "inset", "subdivide", "bevel", "modifier", "boolean", "material",
  "uv", "join", "delete", "light", "camera", "render_settings",
  "texture", "asset_info", "import_asset", "native_operator", "shader_graph", "geometry_nodes",
@@ -38,7 +38,13 @@ def vector(x, size=3, low=-1e5, high=1e5):
 
 def safe_name(name):
     return isinstance(name, str) and 1 <= len(name) <= 90 and all(
-        c.isalnum() or c in " _-." for c in name) and not name.startswith(".")
+        c.isalnum() or c in " _-.·" for c in name) and not name.startswith(".")
+
+def safe_action_id(value):
+    # Action IDs are log identifiers, NEVER Blender object names or file paths.
+    # Local 2B Qwen sometimes emits "/0"; that is not an unsafe command.
+    return isinstance(value,str) and 1 <= len(value) <= 60 and all(
+        c.isascii() and (c.isalnum() or c in "_-./") for c in value)
 
 def require(condition, why):
     if not condition:
@@ -60,7 +66,7 @@ def validate_plan(doc):
         require(isinstance(a, dict), f"action {index}: expected object")
         op, p = a.get("op"), a.get("params")
         require(op in OPS, f"action {index}: unsupported Blender operation {op}")
-        require(safe_name(a.get("id")) and a["id"] not in ids, f"action {index}: duplicate/invalid id")
+        require(safe_action_id(a.get("id")) and a["id"] not in ids, f"action {index}: duplicate/invalid id")
         ids.add(a["id"])
         require(isinstance(a.get("reason"), str) and len(a["reason"]) >= 15,
                 f"action {index}: missing artistic rationale")
@@ -118,6 +124,15 @@ def validate_plan(doc):
             for key in ("location","rotation"):
                 if key in p: require(vector(p[key]), key+" invalid")
             if "scale" in p: require(vector(p["scale"],low=0.0001,high=500), "scale invalid")
+            geometric += 1
+        elif op == "sculpt_anchor":
+            require(p.get("anchor") in ("x_min","x_max","y_min","y_max","z_min","z_max"),
+                    "Real inherited mesh anchor required")
+            require(p.get("direction") in ("+X","-X","+Y","-Y","+Z","-Z"),
+                    "Original AI direction required")
+            require(finite_number(p.get("distance"),0.15,1.8) and
+                    finite_number(p.get("radius"),0.5,8),
+                    "Nonzero AI sculpt distance and bounded radius required")
             geometric += 1
         elif op == "sculpt":
             require(vector(p.get("center")) and vector(p.get("delta")) and
