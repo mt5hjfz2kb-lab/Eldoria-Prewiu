@@ -21,8 +21,8 @@ jobs:
       - name: Recover genuine same-camera Unity baseline and A9, never a Blender render
         uses: actions/download-artifact@v4
         with:
-          name: bastion1-unity-review-frames-38562136041
-          run-id: 38562136041
+          name: bastion1-unity-review-frames-38569262127
+          run-id: 38569262127
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/Bastion1RealVisuals
       - name: Prepare two genuine Unity camera images for Qwen visual observation
@@ -37,15 +37,15 @@ jobs:
           root=pathlib.Path(os.environ['RUNNER_TEMP'])/'Bastion1RealVisuals'
           evidence=pathlib.Path('evidence');evidence.mkdir(exist_ok=True)
           scenes={}
-          for folder,key in [('before','baseline'),('global-A','candidate_A9')]:
+          for folder,key in [('before','baseline'),('global-A','candidate_A13')]:
             files=[p for p in root.rglob('bastion1-player-initial.png') if p.parent.name==folder]
             if len(files)!=1:raise RuntimeError(f'Expected exactly one real Unity {folder} camera frame: got {len(files)}')
             scenes[key]=files[0]
           cam0=json.loads(pathlib.Path(str(scenes['baseline'])+'.camera.json').read_text())
-          cam1=json.loads(pathlib.Path(str(scenes['candidate_A9'])+'.camera.json').read_text())
+          cam1=json.loads(pathlib.Path(str(scenes['candidate_A13'])+'.camera.json').read_text())
           if cam0!=cam1 or (cam0.get('width'),cam0.get('height'))!=(1440,1000):
             raise RuntimeError('Baseline and A9 are not the exact same native Unity strategic camera')
-          provenance={'producer_run':38562136041,'source':'native Unity 6000.3.23f1','camera':cam0,'images':{}}
+          provenance={'producer_run':38569262127,'source':'native Unity 6000.3.23f1','camera':cam0,'images':{}}
           for name,source in scenes.items():
             out=evidence/f'native-unity-{name}.jpg'
             with Image.open(source) as im:
@@ -53,7 +53,7 @@ jobs:
               im.convert('RGB').resize((576,400),Image.Resampling.LANCZOS).save(out,quality=88)
             provenance['images'][name]={'original_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'qwen_image_sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'resized_for_cpu_only':True}
           (evidence/'native-camera-image-provenance.json').write_text(json.dumps(provenance,indent=2))
-          print('BASTION1_REAL_UNITY_A3_VISUAL_INPUT_READY camera_identical=true source_run=38562136041')
+          print('BASTION1_REAL_UNITY_A13_VISUAL_INPUT_READY camera_identical=true source_run=38569262127')
           PY
       - name: Start existing local zero-cost Qwen artist
         shell: bash
@@ -72,7 +72,7 @@ jobs:
           python3 - <<'PY'
           import json,pathlib,urllib.request,urllib.error,time,hashlib,base64
           e=pathlib.Path('evidence');e.mkdir(exist_ok=True)
-          visual_images=[base64.b64encode((e/'native-unity-baseline.jpg').read_bytes()).decode(),base64.b64encode((e/'native-unity-candidate_A9.jpg').read_bytes()).decode()]
+          visual_images=[base64.b64encode((e/'native-unity-baseline.jpg').read_bytes()).decode(),base64.b64encode((e/'native-unity-candidate_A13.jpg').read_bytes()).decode()]
           visual_provenance=json.loads((e/'native-camera-image-provenance.json').read_text())
           memory=pathlib.Path('docs/evidence/valoria-bastion1-camera-scale-recovery-20261013.md').read_text()[-1300:]
           direction=pathlib.Path('docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md').read_text(encoding='utf-8')
@@ -85,13 +85,13 @@ jobs:
           "Previous tiny hut/trees and sticker-like pavements failed. Describe no implementation or Unity pass. "
           "Visual priority: reduce vacant middle courtyard with coherent medieval built rhythm and natural worn routes; no micro-props, no fake sticker roads, no monument in centre. Proposal must be materially different from existing A9. ")
           prompts=[
-            "DESIGN A: inspect the ORIGINAL Unity screenshot visually and prescribe ONE bold connected MEDIEVAL UPPER TERRACE RETAINING SYSTEM from the stair at y=9 towards existing wall and cliffs outside protected road x[-7,7] and both parcels (-16,3),(16,3). Give approximate x/y and physical terrain/stone join, height, material, and why existing pale ribbons float visually. Not micro-props. No template answer.",
-            "DESIGN B: inspect the ORIGINAL Unity screenshot and propose ONE strong native-terrain and soil readability transformation across the lower courtyard x[-23,23], y[-13,8], with road x[-7,7] and future building plots untouched. Describe grade and earth texture balance relative to preserved ORIGINAL detailed grass and rock texture, no flat gray/orange tiles. Give exact scenic hierarchy and risk."
+            "DESIGN A: Compare BEFORE and A13 images. Now a real SIX-ARCH arcade connects the upper stone terrace, while the entire LOWER courtyard remains empty. Propose ONE large, cohesive medieval architectural treatment on existing outer west/east curtain walls and gate forecourt; no central building, no reserved lots at +/-16,y=3, no more detached shelters. Give actionable anchor world xy, dimensions, genuine architecture materials and camera composition. Short.",
+            "DESIGN B: Compare BEFORE and A13 images. Propose ONE different large terrain/material/circulation hierarchy improving the empty LOWER yard without any added huts, scattered props or physically occupied future building lots. Must use the preserved detailed original meadow/stone texture and graded worn approach to preserved stone road. Specify 2-3 macro spatial interventions at grounded world xy, with visibility, navigation risk and color/scale limits. Short."
           ]
           for i,p in enumerate(prompts):
             payload={'model':'qwen3-vl:4b-instruct','stream':False,'options':{'num_ctx':4096,'num_predict':350,'temperature':0.45,'repeat_penalty':1.3},
              'messages':[{'role':'system','content':'You are the existing Eldoria AI artist. Answer the owner in MAXIMUM 500 characters, in FOUR brief numbered lines. Be specific; NO disclaimers, no repeated phrases.'},
-                         {'role':'user','content':'The attached single image is a REAL native Unity 3/4 player-camera screenshot of the A9 candidate. The two shown images are both real matched-camera Unity frames; never say you saw more images. Inspect this image for visual deficiencies before proposing spatial interventions. Never call Blender render Unity. Describe the empty courtyard and disconnected wall masses that remain evident on screen. '+shared+p+'\nNew owner art brief:\n'+direction[-1600:]+'\nPast real lessons: '+memory[-200:],'images':visual_images}] }
+                         {'role':'user','content':'Attached TWO REAL native Unity screenshots from exactly the same 3/4 player camera. First BEFORE, second A13 AFTER. The second has six genuine arched stone galleries. Distinguish their visual effects and pick a next material intervention. Never pretend the A13 image shows absent buildings or roads. Inspect this image for visual deficiencies before proposing spatial interventions. Never call Blender render Unity. Describe the empty courtyard and disconnected wall masses that remain evident on screen. '+shared+p+'\nNew owner art brief:\n'+direction[-1600:]+'\nPast real lessons: '+memory[-200:],'images':visual_images}] }
             (e/f'artist-{i+1}-request.json').write_text(json.dumps(payload,indent=2))
             started=time.time()
             try:
