@@ -4,6 +4,7 @@ NEVER rewrite a model-selected value. Reject impossible original proposals,
 explain the exact contract error and allow the model to design a NEW proposal.
 """
 from contract import RejectedPlan
+from sculpt_scale_contract import validate_source_anchor_brush
 
 def relative_triangle_limit(inventory):
     """Safe QA compares evaluated real Blender triangle counts, not face*N."""
@@ -63,6 +64,9 @@ def verify_source_plan(document,inventory):
             structural=True
             if actual and params.get("anchor") not in actual.get("local_extrema",{}):
                 errors.append(f"Action {i}: invalid inherited-mesh anchor")
+            if actual:
+                try:validate_source_anchor_brush(action,actual)
+                except ValueError as e:errors.append(f"Action {i}: {e}")
         elif op=="bevel":
             structural=True
             if actual is None or target in topology_changed:

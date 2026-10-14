@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "reviewer_role": "INDEPENDENT_ART_REVIEW",
+  "reviewer": "ChatGPT visual inspector independent of originating Qwen; not a Unity/mobile art approver",
+  "result": "VISUAL_REJECTED",
+  "run_id": 38635836446,
+  "artifact_id": 11928820402,
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "pending_sha256": "121779d3b0f2d82c098646238701328fb0f3fe7623149241da7ce9b37502673f",
+  "before_sha256": "3b191184420700f78d704ab5ee32a9482c79c577e17572080693f4ec84ac5c02",
+  "after_sha256": "8f9dab4ab36931cadab256dfc2fa5f08b9cb2fcf31c3129cfe00cb67467ef4ad",
+  "raw_response_sha256": "d7e6baf4081a1a58c0f571a832e791960fe2b23d2a567cb5fe6f2f4346dc621f",
+  "diagnosis": "Real fixed-camera A/B depicts inherited timber roof and stairs deformation rather than reference convergence. Despite positive local 8B self-critique, independent visual assessment rejects professional artistic improvement.",
+  "safe_lesson": "Even when the local visual model self-critique sounds positive, compare real camera A-B and reject global deformations on a small inherited watchtower. Make deliberate localized changes and protect roof and stairs.",
+  "review_basis": "Native fixed-camera Blender before/after, original model plans, source SHA e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869; 8/8 evidence SHA fields independently verified against ZIP.",
+  "art_approved": false,
+  "unity_verified": false,
+  "model_weight_training": false
+}

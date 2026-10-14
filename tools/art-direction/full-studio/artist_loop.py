@@ -11,6 +11,7 @@ from learning_context import transferable_lessons, evidence_case_lessons, stage_
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan,relative_triangle_limit
+from sculpt_scale_contract import conservative_schema_bounds
 from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
 from architectural_component_guard import verify_volume_and_complexity
 from architectural_world_placement_gate import reject_obviously_bad_component_placement
@@ -99,6 +100,11 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         params={"type":"object","properties":{"location":point,"scale":scale},
                 "required":["location","scale"],"additionalProperties":False}
     elif phase=="mesh_edit":
+        # Scale edit limits from real Blender WORLD dimensions when available.
+        # Never alter actual model-chosen directions or distances.
+        brush=conservative_schema_bounds(source_inventory)
+        distance=(brush["distance"] if brush else {"minimum":0.65,"maximum":1.8})
+        radius=(brush["radius"] if brush else {"minimum":1.5,"maximum":8})
         # A LOCAL visual model chooses a physically EXISTING mesh landmark and
         # sculpt direction/strength; Blender resolves the actual vertex.
         # This avoids 2B JSON always emitting zero-vector brushes without
@@ -107,8 +113,8 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         params={"type":"object","properties":{
           "anchor":{"type":"string","enum":["x_min","x_max","y_min","y_max","z_min","z_max"]},
           "direction":{"type":"string","enum":["+X","-X","+Y","-Y","+Z","-Z"]},
-          "distance":{"type":"number","minimum":0.65,"maximum":1.8},
-          "radius":{"type":"number","minimum":1.5,"maximum":8}},
+          "distance":{"type":"number",**distance},
+          "radius":{"type":"number",**radius}},
           "required":["anchor","direction","distance","radius"],"additionalProperties":False}
     elif phase=="surface":
         action_op={"type":"string","const":"material"}
@@ -223,7 +229,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
     if not source_exists:
         return base+"EMPTY scene: asset_decision=NEW, every op=primitive. Each has params EXACTLY {shape:cylinder|cone|cube|uv_sphere|ico_sphere,location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. Model a separate, vertically aligned masonry body and believable roof. Do not bury objects, offset roof or overlap identical solids. All parts must be original and camera-visible."
     if phase=="mesh_edit":
-        return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:0.65..1.8,radius:1.5..8}. INHERITED VERTEX EDIT: Read inspected local_bounds_min_m / local_bounds_max_m and LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Make a substantial but controlled visible silhouette edit at a landmark consistent with the reference. Preserve recognisable architecture; choose direction and impact deliberately rather than minimum values. Every action must make a visible source-mesh change; do not repeat identical actions."
+        return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:small positive METERS relative to measured WORLD dimensions,radius:small LOCAL brush in METERS according to actual source size}. WORLD-SPACE BRUSH: Blender WORLD +Z means physically upward even if imported GLB LOCAL +Y is aligned with WORLD +Z. The brush direction, distance and radius are in WORLD axes and physical metres; only the anchor vertex is chosen from LOCAL EXTREMA. INHERITED VERTEX EDIT: Read inspected local_bounds_min_m / local_bounds_max_m and LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Make a substantial but controlled visible silhouette edit at a landmark consistent with the reference. Preserve recognisable architecture; choose direction and impact deliberately rather than minimum values. Every action must make a visible source-mesh change; do not repeat identical actions."
     if phase=="geometry":
         return base+"THIS STAGE ONLY FIXES GEOMETRY of the real existing Blender meshes. For EACH action op=transform; choose one EXACTLY NAMED source object from verified inventory. params must contain BOTH location:[x,y,z] and scale:[sx,sy,sz], no extra keys. FIX the formerly overlapping and horizontally misaligned roof and tower by placing objects at DIFFERENT HEIGHTS. Y coordinates must not be copied blindly. Blender operation is absolute position and absolute scale. NEVER wrap values in a transform sub-object."
     if phase=="surface":
@@ -240,7 +246,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         "The original inherited tower MUST remain recognizable; added components should attach to it and improve visible architecture. "
         "Do not output mesh:operation pseudo-parameters. "
         "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
-        "For sculpt, pick your OWN center within brush radius of any real local_extrema/vertex_landmarks local_position_m, or use sculpt_anchor. "
+        "For sculpt, pick your OWN center within brush radius of real local extrema/vertex landmarks. For sculpt_anchor, choose a LOCAL anchor but WORLD direction (+Z really rises); distance and radius are physical WORLD metres and bounded by the actual source dimensions. "
         "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal. "
         "For bevel on detailed imported geometry, choose selected edge_landmarks.edge_index (NOT full-object bevel), with edges:[ids]; NEVER copy vertex_index to face/edge ID. "
         "Plan at most ONE face/edge topology changing operator each cycle, then inspect the new mesh before more selected faces/edges. "
@@ -395,6 +401,29 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "YOU still choose which primitive, placement, orientation, dimensions, material and intent. "
               "No script chooses your new structure.")
     edge=getattr(args,"vision_max_edge",1024)
+    if source_exists and source_inventory:
+        # Replace a giant truncated inventory with SHORT trustworthy local
+        # geometric facts immediately before the images. Never prescribe
+        # actual new component coordinates.
+        entry=max(source_inventory,key=lambda item:item.get("evaluated_triangles",item.get("faces",0)))
+        minimum=entry.get("world_bounds_min_m")
+        maximum=entry.get("world_bounds_max_m")
+        if minimum and maximum:
+            msg+=("\nIMPORTANT BOUNDARY FACTS measured in actual Blender WORLD metres: "+
+                  "building x=[%.2f, %.2f], y=[%.2f, %.2f], z=[%.2f, %.2f]. "%(
+                      minimum[0],maximum[0],minimum[1],maximum[1],minimum[2],maximum[2])+
+                  "Blender WORLD Z is HEIGHT. Imported GLB mesh local Y may be up "+
+                  "but new component WORLD Y is horizontal depth, NOT height. "+
+                  "Choose original modest rooftop detail physically near actual x/y surface. "+
+                  "The staircase/door region must remain open.")
+        if args.phase=="mesh_edit":
+            from sculpt_scale_contract import conservative_schema_bounds
+            limits=conservative_schema_bounds(source_inventory)
+            if limits:
+                msg+=("\nSOURCE-SIZED WORLD BRUSH BOUNDS (METRES; do NOT invent other values): "
+                      "distance [%.4f,%.4f], radius [%.4f,%.4f]. "%(
+                          limits["distance"]["minimum"],limits["distance"]["maximum"],
+                          limits["radius"]["minimum"],limits["radius"]["maximum"]))
     pictures=[image_data(reference,edge)]
     if current_image:pictures.append(image_data(current_image,edge))
     if getattr(args,"focus_image",None):pictures.append(image_data(args.focus_image,edge))
@@ -423,7 +452,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
-    if source_exists and args.phase=='full':
+    if source_exists and args.phase in ('full','mesh_edit') and source_inventory:
         verify_source_plan(doc,source_inventory)
         if args.source_build_phase:
             actions=doc["actions"]
@@ -436,7 +465,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             for action in actions[1:]:
                 if action["target"] != created_name:
                     raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
-            verify_volume_and_complexity(doc)
+            verify_volume_and_complexity(doc,source_inventory)
             spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
             (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
                 json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
@@ -695,6 +724,17 @@ def main():
             if not region_proof["allowed"]:
                 offenders=[f"{z['name']} changed {z['changed_fraction']:.1%}"
                            for z in region_proof["zones"] if not z["allowed"]]
+                stage_pending_art_evidence(
+                    trial/"pending-learning-case.json",model=args.model,
+                    source_hash=original_source_sha,plan_file=candidate,
+                    raw_response_file=trial/"qwen-raw.json",
+                    before_image=stage/"before-blender.png",
+                    after_image=stage/"after-blender.png",critique_file=None,
+                    comparison_file=trial/"camera-screen-impact.json",
+                    protected_regions_file=trial/"protected-camera-regions.json",
+                    output_blend=stage/"artist-asset.blend",
+                    output_glb=stage/"artist-asset.glb",
+                    screen_gate="PROTECTED_ACCESS_OCCLUSION_REJECTED")
                 records.append({"cycle":cycle,"status":"PROTECTED_ACCESS_OCCLUSION_REJECTED",
                                 "regions":region_proof})
                 history+=("\nVISUAL QA REJECTED: new architecture obscures original access: "+

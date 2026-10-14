@@ -1,4 +1,4 @@
-# Owner-authorized comparison, with frozen game source and local cached models only.
+# Owner-authorized final convergence check: world-space source-safe Qwen brushes, frozen original and cached models.
 param([Parameter(Mandatory=$true)][string]$Source,
       [Parameter(Mandatory=$true)][string]$Reference,
       [Parameter(Mandatory=$true)][string]$Review,
@@ -67,12 +67,12 @@ try{
     $log=Join-Path $Out ($case.label+'.log')
     $sw=[System.Diagnostics.Stopwatch]::StartNew()
     $params=@('tools/art-direction/full-studio/artist_loop.py',
-      '--brief','Make a meaningful original, visible architectural improvement on the SAME inherited Valoria stone tower, with medieval identity, plausible masonry detail and unblocked player door and stairs.',
+      '--brief','Continue the SAME inherited small wooden/log Valoria village watchtower (world height only 2.65 metres; wooden stairs and roof must stay intact). Its original source is ONE combined inherited timber mesh with a texture atlas, NOT a freestanding stone castle. Choose one tasteful, small, camera-visible medieval wood or iron architectural detail or an exceptionally localized roof silhouette refinement. If ADDING an architectural piece, attach it to an upper roof/eave wall in WORLD Z between 1.5 and 2.9 metres with modest dimensions 0.10 to 0.40 metres; never add a large cylinder on the ground or cover the exterior staircase and door. The artist independently chooses the actual form, target, transform and finish. Preserve the existing tower identity and all player circulation.',
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
       '--max-cycles','2','--min-successful-cycles','2',
-      '--max-plan-attempts','4','--max-actions','3','--max-tokens','2048',
+      '--max-plan-attempts','5','--max-actions','3','--max-tokens','2048',
       '--vision-max-edge','768','--asset-category','architecture')
     if($case.kind -eq 'assembly'){$params+=@('--source-build-phase','--source-tool-sequencing')}
     else{$params+=@('--phase','mesh_edit')}

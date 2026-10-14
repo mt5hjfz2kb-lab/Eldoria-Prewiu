@@ -6,17 +6,28 @@ chooses every shape, position, dimension, face and material. No repairs here.
 import math
 from contract import RejectedPlan
 
-def verify_volume_and_complexity(doc):
+def verify_volume_and_complexity(doc, source_inventory=None):
     actions=doc.get("actions",[])
     if not actions or actions[0].get("op") not in ("primitive","mesh"):
         raise RejectedPlan("Architectural addition must start with a Qwen-authored NEW physical component")
     action=actions[0]
     p=action["params"]
+    # An attached detail on a small existing building need not be a standalone
+    # half-metre tower. A/B visibility and source exterior gates remain mandatory.
+    measured=[x for x in (source_inventory or []) if
+              isinstance(x.get("world_bounds_min_m"),list) and
+              isinstance(x.get("world_bounds_max_m"),list)]
+    small_inherited=any(0.5 < max(
+        x["world_bounds_max_m"][i]-x["world_bounds_min_m"][i] for i in range(3)
+        ) <= 5 for x in measured)
+    min_side=.08 if small_inherited else .12
+    min_max=.28 if small_inherited else .5
+    min_volume=.006 if small_inherited else .025
     if action["op"]=="primitive":
         if p.get("shape")=="plane":
             raise RejectedPlan("An isolated flat PLANE is not the required 3D architectural component. Choose YOUR own volumetric architectural form.")
         dims=[2*float(s) for s in p["scale"]]
-        if min(dims)<.12 or max(dims)<.5 or math.prod(dims)<.025:
+        if min(dims)<min_side or max(dims)<min_max or math.prod(dims)<min_volume:
             raise RejectedPlan("New component too thin or tiny to establish a readable 3D architectural addition; choose new original proportions")
     else:
         vertices=p.get("vertices",[])
@@ -26,7 +37,7 @@ def verify_volume_and_complexity(doc):
         low=[min(v[i] for v in vertices) for i in range(3)]
         high=[max(v[i] for v in vertices) for i in range(3)]
         ext=[high[i]-low[i] for i in range(3)]
-        if min(ext)<.12 or max(ext)<.5 or math.prod(ext)<.025:
+        if min(ext)<min_side or max(ext)<min_max or math.prod(ext)<min_volume:
             raise RejectedPlan("New component has insufficient X/Y/Z volume; design an ORIGINAL spatially developed 3D structure, not a ground decal")
         # Check 4 noncoplanar points without deciding or modifying geometry.
         a=vertices[0]
