@@ -59,6 +59,7 @@ class TypedArtistTests(unittest.TestCase):
   schema=schema_for_plan(5,True,"full","architecture",["Tower"],source,True)
   arr=schema["properties"]["actions"]
   self.assertEqual((arr["minItems"],arr["maxItems"]),(2,3))
+  self.assertNotIn("items",arr,"Ollama prefixItems must not combine with unsupported items:false")
   structurals={v["properties"]["op"]["const"] for v in arr["prefixItems"][0]["oneOf"]}
   self.assertEqual(structurals,{"sculpt_anchor","sculpt","extrude","inset","bevel"})
   self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][1]["oneOf"]},{"material","uv"})
