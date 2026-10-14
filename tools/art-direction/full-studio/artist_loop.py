@@ -12,6 +12,7 @@ from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan,relative_triangle_limit
 from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
+from architectural_component_guard import verify_volume_and_complexity
 import copy, re
 from triangle_budget import check_triangle_growth
 
@@ -147,6 +148,17 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
                   in ("material","uv","modifier")]
         if not structural or not finishing:raise ValueError("No typed source tools")
         if assembly_source:
+            # Volumetric geometry is required for the new architecture proof.
+            # The model still freely designs shape, positions and proportions.
+            structural=copy.deepcopy(structural)
+            for variant in structural:
+                op=variant["properties"]["op"]["const"]
+                prm=variant["properties"]["params"]["properties"]
+                if op=="primitive":
+                    prm["shape"]["enum"]=[x for x in prm["shape"]["enum"] if x!="plane"]
+                elif op=="mesh":
+                    prm["vertices"]["minItems"]=6
+                    prm["faces"]["minItems"]=4
             # The first component name is selected by Qwen, under a reserved
             # namespace that CAN NEVER collide with inherited object names.
             # Later surface operations may reference the SAME chosen name;
@@ -304,6 +316,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
           "the FIRST operation must be ONE geometric operation chosen by YOU "
           + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
              "Invent your own unique object name STARTING Eldoria_Added_ followed by a letter and 3-42 alphanumeric/underscore characters. "
+             "Create genuinely VOLUMETRIC 3D architecture with readable depth in the player's fixed camera: NOT a single floor plane or two triangles. "
+             "If choosing primitive, design meaningful original X/Y/Z scale and placement; a flat plane is NOT valid. "
+             "If choosing your own vertices/faces, choose at least SIX non-coplanar vertices, FOUR nondegenerate faces and visibly three-dimensional depth. "
              "NEVER reuse any inherited mesh name or object mentioned in the verified source inventory. "
              "Your SECOND and optional THIRD actions MUST use the identical NEW object name you chose FIRST, "
              "to shade/finish YOUR newly created component, not repaint the original tower. "
@@ -341,6 +356,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             for action in actions[1:]:
                 if action["target"] != created_name:
                     raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
+            verify_volume_and_complexity(doc)
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
