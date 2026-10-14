@@ -559,6 +559,25 @@ def critique(args,reference,before,after,role):
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
+def summarize_real_artist_cycles(records):
+    """Separate physically executed Blender from safety-approved review candidates.
+
+    Never equate an executed-but-rejected dangerous edit with artistic success.
+    """
+    executed={"ART_REVIEW_REQUIRED", "SCREENSPACE_REJECTED",
+              "PROTECTED_ACCESS_OCCLUSION_REJECTED"}
+    return {
+        "real_blender_execution_count":sum(rec.get("status") in executed for rec in records),
+        "qa_review_candidate_count":sum(rec.get("status")=="ART_REVIEW_REQUIRED" for rec in records),
+        "protected_access_rejection_count":sum(
+            rec.get("status")=="PROTECTED_ACCESS_OCCLUSION_REJECTED" for rec in records),
+        "screen_impact_rejection_count":sum(
+            rec.get("status")=="SCREENSPACE_REJECTED" for rec in records),
+        "model_self_critique_failed_count":sum(
+            rec.get("critique",{}).get("clearly_failed",False) for rec in records)
+    }
+
+
 def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation,
                                   min_successful_cycles=1, successful_count=1):
     """One visible empty-scene blockout does not equal completed artistic authoring.
@@ -841,12 +860,13 @@ def main():
         if started_empty and cycle==1:
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
+    evidence_summary=summarize_real_artist_cycles(records)
     final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
-           "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
-           "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
+           "ai_authored_action_plans":evidence_summary["qa_review_candidate_count"],
+           **evidence_summary,
+           "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,
+           "blender_real_execution":evidence_summary["real_blender_execution_count"]>0,
            "art_approved":False,"unity_art_verified":False,"physical_mobile_validated":False,
-           "model_self_critique_failed_count":sum(
-               1 for rec in records if rec.get("critique",{}).get("clearly_failed",False)),
            "independent_artistic_improvement_verified":False,
            "model":args.model,"num_ctx":int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384")),
            "vision_max_edge":args.vision_max_edge,
@@ -855,5 +875,8 @@ def main():
     (args.out/"full-studio-result.json").write_text(json.dumps(final,indent=2)+"\n")
     print("ELDORIA_FULL_STUDIO_CYCLE",json.dumps({k:final[k] for k in
         ("state","ai_authored_action_plans","blender_real_execution","art_approved")}))
-    if not final["blender_real_execution"]:raise RuntimeError("No executable AI-authored Blender asset; see cycle evidence")
+    if not final["blender_real_execution"]:
+        raise RuntimeError("No actual Blender execution; inspect raw Qwen and validator failures")
+    if not final["ai_authored_action_plans"]:
+        raise RuntimeError("Blender executed Qwen plans, but every candidate failed safety or screen QA; nothing suitable for visual review")
 if __name__=="__main__":main()
