@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - art/eldoria-full-blender-artist-studio-20261014
+      - fix/eldoria-artist-eave-contact-visual-learning-20261015
     paths:
       - 'tools/art-direction/full-studio/**'
       - '.github/workflows/eldoria-full-artist-studio.yml'
@@ -16,6 +17,11 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Enforce owner permanent art quality acceptance verifier — no fake approval
+        run: |
+          node --test tools/art-visual-acceptance/verify.test.mjs
+          node tools/art-visual-acceptance/verify.mjs --directory pipeline/art-visual-approvals
+          python3 -m py_compile tools/art-direction/full-studio/artistic_quality_gate.py tools/art-direction/full-studio/artist_loop.py
       - name: Install free native Blender workshop
         run: |
           sudo apt-get update -qq
