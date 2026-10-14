@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "reviewer_role": "INDEPENDENT_ART_REVIEW",
+  "reviewer": "ChatGPT visual inspector independent of originating Qwen; not a Unity/mobile art approver",
+  "result": "VISUAL_REJECTED",
+  "run_id": 38635836446,
+  "artifact_id": 11928820402,
+  "model": "qwen3-vl:4b-instruct",
+  "pending_sha256": "8f5991d897d1beef23d16dbb2f553f2a671706b782142902cbde5d2825b80de8",
+  "before_sha256": "68861ecd4d2d4fc93633bcb0fd91962b1c2c6811611923896259abe01a212512",
+  "after_sha256": "57bfabf883deb440d7619a30a7a194df1c3e84536e5a4db3e3ce1c72ee5418f1",
+  "raw_response_sha256": "8b406e7089f7dfbf164cb5c9346ab49fe04122a25b5aaf96ce272b00843c4176",
+  "diagnosis": "Real camera-aligned clay A/B shows distortion of the inherited timber stair/roof silhouette following broad global-extremum edits; visual changes do not represent a convincingly higher-quality medieval asset.",
+  "safe_lesson": "For a small timber lookout mesh, do not deform the whole stair and roof assembly with broad landmark brushes. Choose local detail that preserves the existing architectural silhouette and connections.",
+  "review_basis": "Native fixed-camera Blender before/after, original model plans, source SHA e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869; 8/8 evidence SHA fields independently verified against ZIP.",
+  "art_approved": false,
+  "unity_verified": false,
+  "model_weight_training": false
+}
