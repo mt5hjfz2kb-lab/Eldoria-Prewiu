@@ -9,6 +9,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: eldoria-world4x-offline-contract-regressions
+  cancel-in-progress: true
 jobs:
   source-grounded-qwen-preflight:
     runs-on: ubuntu-latest
