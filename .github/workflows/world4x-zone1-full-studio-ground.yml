@@ -7,6 +7,7 @@ on:
       - '.github/workflows/world4x-zone1-full-studio-ground.yml'
       - 'tools/world4x-zone1/production/full_studio_ground_brief.txt'
       - 'tools/world4x-zone1/production/run_general_ground_artist.py'
+      - 'tools/world4x-zone1/production/ground_workshop_entry.py'
 permissions:
   contents: write
 concurrency:
@@ -28,6 +29,7 @@ jobs:
           mkdir -p /tmp/zoneone-general-studio /tmp/zoneone-general-ground
           git archive "$STUDIO" tools/art-direction/full-studio tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md tools/art-direction/ARTIST_LEARNING_JOURNAL.md | tar -x -C /tmp/zoneone-general-studio
           printf '%s\n' "$STUDIO" > /tmp/zoneone-general-ground/toolbox-source-commit.txt
+          chmod +x tools/world4x-zone1/production/ground_workshop_blender.sh
           sha256sum Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb > /tmp/zoneone-general-ground/frozen-ground.sha256
           python3 -m py_compile /tmp/zoneone-general-studio/tools/art-direction/full-studio/*.py
       - name: Actual local Qwen 4B at zero credits
@@ -43,6 +45,7 @@ jobs:
             --reference docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png \
             --source Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb \
             --texture-root "$PWD" \
+            --blender "$PWD/tools/world4x-zone1/production/ground_workshop_blender.sh" \
             --review docs/world4x-zone1/FULL_STUDIO_GROUND_REVIEW.json \
             --prior-lessons tools/world4x-zone1/production/full_studio_ground_brief.txt \
             --out /tmp/zoneone-general-ground/production --max-cycles 2 --max-actions 6 --max-tokens 2400

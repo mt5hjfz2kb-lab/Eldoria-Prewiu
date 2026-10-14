@@ -4,6 +4,19 @@
   "unity_art_score": null,
   "ground_approved": false,
   "sector_expansion_approved": false,
+  "general_workshop_revision": {
+    "frozen_workshop_commit": "c0d9d5f279773b09c233d97dd661ec72b59313d0",
+    "initial_run": 38571917109,
+    "initial_failure": "Three actual plans used non-executable extrude/inset pseudo-parameters. No geometry executed; raw proposals preserved.",
+    "corrected_api_run": 38573925226,
+    "actual_changed_vertices": 1644,
+    "candidate_sha256": "63b6471c02bb9318b3eb7e4d6494d13b7a6b7f7a5e3051769a3abae9b3c0d9ee",
+    "independent_city_and_border_gate": true,
+    "decision": "VISUAL_REJECTED_INSUFFICIENT_LANDFORM_CHANGE",
+    "observation": "Actual +2.5m/-1.2m brushes remain too small for strategic identity. Neutral clay review confirms insufficient change after automatic normal refresh. Raw workshop images also contain an intersecting neutral display plane; reject that presentation, preserve originals. Qwen's 'valid render/no defects' critique did not assess proximity to reference and does not approve the asset.",
+    "next_correction": "Ground-only presentation adapter, exact tool signatures, larger artist-chosen landforms. No changes to another owner's general studio code, no parameter rewriting, no model training.",
+    "unity_art_score": null
+  },
   "tiled_detail_trial": {
     "decision": "VISUAL_REJECTED",
     "evidence": "docs/world4x-zone1/evidence/tiled-detail-rejected-20261014",

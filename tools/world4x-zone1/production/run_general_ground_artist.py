@@ -4,6 +4,7 @@ studio=pathlib.Path(sys.argv[1]);sys.argv.pop(1);sys.path.insert(0,str(studio))
 import artist_loop
 original_brief=artist_loop.contract_brief
 original_schema=artist_loop.schema_for_plan
+original_ask=artist_loop.ask_plan
 MANUAL='''
 IMPORTANT CURRENT GEOGRAPHY TOOL SIGNATURES (strict, not Blender UI labels):
 sculpt params={center:[x,y,z],delta:[dx,dy,dz],radius:r}; the brush edits existing vertices with smooth radial falloff. This is appropriate for continuous large prairie hills, not creating disconnected objects. No face selection is required. Terrain is 240 METRES wide, current z range -4.42..6.31m. Tiny offsets 0.1/0.2m cannot solve the visible landform failure. You choose meaningful broad original hills and saddles at real world scale.
@@ -30,5 +31,15 @@ def schema(max_actions=6,source_exists=False):
   variants.append(other)
   result['properties']['actions']['items']={'oneOf':variants}
  return result
-artist_loop.contract_brief=brief;artist_loop.schema_for_plan=schema
+def ask_plan(*args,**kwargs):
+ doc=original_ask(*args,**kwargs)
+ sculpts=[action for action in doc['actions'] if action['op']=='sculpt']
+ if sculpts and not any(abs(action['params']['delta'][2])>=6 for action in sculpts):
+  raise artist_loop.RejectedPlan('Actual source review rejected previous +2.5m/-1.2m edits as insufficient strategic relief. Choose YOUR OWN broad landforms with at least one 6..12m vertical brush; do not repeat a tiny valid-render correction. Do not alter existing rejected proposal parameters externally.')
+ for action in sculpts:
+  c=action['params']['center'];d=action['params']['delta']
+  if not (-70<=c[0]<=70 and 35<=c[1]<=75 and -4<=c[2]<=7 and d[0]==0 and d[1]==0 and abs(d[2])<=12):
+   raise artist_loop.RejectedPlan('Choose original vertical sculpt brushes within stated safe northern region and <=12m displacement; preserve XY, city and borders.')
+ return doc
+artist_loop.contract_brief=brief;artist_loop.schema_for_plan=schema;artist_loop.ask_plan=ask_plan
 artist_loop.main()
