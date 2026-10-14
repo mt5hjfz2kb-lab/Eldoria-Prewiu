@@ -129,15 +129,21 @@ def evidence_case_lessons(casebook: dict, brief: str = "", limit: int = 1400, ma
 
 def stage_pending_art_evidence(out_file, *, model: str, source_hash,
                                plan_file, before_image, after_image,
-                               critique_file, comparison_file, output_blend, output_glb):
+                               critique_file, comparison_file, output_blend, output_glb,
+                               raw_response_file=None, screen_gate="REVIEW_REQUIRED"):
     """Emit provenance for future review. Never auto-label it learned/approved."""
     import json
     from pathlib import Path
+    if screen_gate not in ("REVIEW_REQUIRED", "SCREENSPACE_REJECTED"):
+        raise ValueError("Unknown bounded screen impact state")
     entries = {}
-    for label, file in (("plan", plan_file), ("before_image", before_image),
-                        ("after_image", after_image), ("model_self_critique", critique_file),
+    for label, file in (("plan", plan_file), ("raw_model_response", raw_response_file),
+                        ("before_image", before_image), ("after_image", after_image),
+                        ("model_self_critique", critique_file),
                         ("screen_comparison", comparison_file),
                         ("blend", output_blend), ("glb", output_glb)):
+        if file is None and label in ("raw_model_response", "model_self_critique"):
+            continue
         p = Path(file)
         if not p.is_file() or not p.stat().st_size:
             raise ValueError("Missing genuine artist-cycle input: " + label)
@@ -149,6 +155,7 @@ def stage_pending_art_evidence(out_file, *, model: str, source_hash,
     record = {"schema_version":1, "status":"PENDING_INDEPENDENT_VERIFICATION",
               "art_approved":False,"independent_visual_review":False,
               "weight_training_performed":False, "model":model,
+              "technical_screen_gate":screen_gate,
               "original_source_sha256":source_hash, "evidence":entries,
               "next_gate":"Verify A/B camera, review model quality independently, then Unity/mobile before promotion"}
     Path(out_file).write_text(json.dumps(record,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
