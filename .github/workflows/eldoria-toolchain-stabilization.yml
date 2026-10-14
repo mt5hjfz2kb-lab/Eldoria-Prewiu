@@ -32,3 +32,50 @@ jobs:
       - name: Confirm no art, Blender, Unity, Qwen, paid API or Windows runner executed
         run: |
           echo 'OFFLINE_STABILIZATION_ONLY; no production images or models built'
+
+  native-blender-contract-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated free Blender dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Verify actual Python dependencies inside Blender
+        run: |
+          blender -b --python-expr "import numpy, PIL; print('ELDORIA_BLENDER_DEPS_OK', numpy.__version__)"
+      - name: Execute existing 26-operation typed Blender fixture
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
+            --plan tools/art-direction/full-studio/tests/smoke_plan.json \
+            --out /tmp/eldoria-stabilization-blender --texture-root .
+      - name: Independently verify editable source, output GLB, camera and changed geometry
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, struct, hashlib
+          from PIL import Image,ImageChops
+          root=pathlib.Path('/tmp/eldoria-stabilization-blender')
+          proof=json.loads((root/'execution-proof.json').read_text())
+          assert proof['blender_execution'] and proof['action_count']==26
+          assert proof['matched_review_camera'] and not proof['art_approved']
+          assert proof['evaluated_triangles']>0
+          assert any(x.get('geometry_changed') for x in proof['execution'])
+          assert (root/'artist-asset.blend').read_bytes().startswith(b'BLENDER')
+          data=(root/'artist-asset.glb').read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack_from('<I',data,4)[0]==2
+          assert struct.unpack_from('<I',data,8)[0]==len(data)
+          before=Image.open(root/'before-blender.png').convert('RGB')
+          after=Image.open(root/'after-blender.png').convert('RGB')
+          assert before.size==after.size and ImageChops.difference(before,after).getbbox()
+          print('ELDORIA_REAL_BLENDER_TECHNICAL_SMOKE_PASS',
+                proof['action_count'],hashlib.sha256(data).hexdigest())
+          PY
+      - name: Keep exact Blender evidence, never mark art approved
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-stabilization-blender-proof
+          path: /tmp/eldoria-stabilization-blender/
+          if-no-files-found: warn
+          retention-days: 14
