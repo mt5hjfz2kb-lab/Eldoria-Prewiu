@@ -1,4 +1,5 @@
-name: Eldoria original Qwen two source-grounded professional BlenderMCP PC art cycles
+name: Eldoria continuation from Qwen authored tower and two source-typed BlenderMCP PC cycles
+# Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
 # Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
 # Third controlled test: selected BMesh edges confirmed in Windows, source damage prevention and inspected topology.
 # Second real attempt: typed nine-tool schemas plus actual topology landmarks; retain raw model choices.
@@ -10,6 +11,7 @@ on:
       - '.github/workflows/eldoria-professional-artist-source-grounded-pc-proof.yml'
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: eldoria-professional-2cycles-windows-real-blendermcp
   cancel-in-progress: true
@@ -51,6 +53,14 @@ jobs:
       - name: Install only free local image package (no paid services)
         shell: powershell
         run: python -m pip install --disable-pip-version-check pillow
+      - name: Restore ACCEPTED original Qwen first-cycle candidate rather than repeat its authoring
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38618080690'
+          name: eldoria-pc-source-grounded-multitool-blendermcp-artist-proof
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-prior-candidate
       - name: Locally START already-installed cached Qwen 4B and run full artist decisions in REAL PC Blender
         shell: powershell
         timeout-minutes: 70
@@ -91,6 +101,20 @@ jobs:
           $review='tools/art-direction/full-studio/tests/valoria_tower_hero_review.json'
           if (-not (Test-Path $source) -or -not (Test-Path $ref) -or -not (Test-Path $review)) { throw 'Real source / reference / review contract missing' }
           $frozen=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          $candidateRoot=Join-Path $env:RUNNER_TEMP 'eldoria-prior-candidate'
+          $previous=Join-Path $candidateRoot 'cycle-1/output/artist-asset.blend'
+          $oldProofFile=Join-Path $candidateRoot 'cycle-1/output/execution-proof.json'
+          if (-not (Test-Path $previous) -or -not (Test-Path $oldProofFile)) {
+            throw 'Previously accepted exact Qwen-owned first-cycle BLEND/provenance missing'
+          }
+          $old=Get-Content $oldProofFile -Raw | ConvertFrom-Json
+          if ($old.source_sha256 -ne $frozen -or
+              $old.blend_sha256 -ne (Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant() -or
+              $old.transport -ne 'blendermcp' -or -not $old.inherited_mesh_data_changed -or
+              -not $old.matched_review_camera -or $old.art_approved) {
+            throw 'Earlier candidate fails SHA or BlenderMCP authority; do not continue invalid source'
+          }
+          Write-Host ('ELDORIA_RESUME_REAL_QWEN_EXISTING_BLENDER_SOURCE_SHA='+$old.blend_sha256)
           $env:OLLAMA_HOST='127.0.0.1:11434'
           $env:OLLAMA_NUM_PARALLEL='1'
           $env:OLLAMA_MAX_LOADED_MODELS='1'
@@ -115,7 +139,7 @@ jobs:
             $params=@(
               'tools/art-direction/full-studio/artist_loop.py',
               '--brief',$brief,
-              '--source',$source,
+              '--source',$previous,
               '--reference',$ref,
               '--review',$review,
               '--out',$out,
@@ -126,6 +150,7 @@ jobs:
               '--max-cycles','3',
               '--min-successful-cycles','2',
               '--max-actions','4',
+              '--source-tool-sequencing',
               '--max-tokens','2800',
               '--transport','blendermcp',
               '--mcp-addon',$addon,
@@ -134,6 +159,7 @@ jobs:
             & python @params
             if ($LASTEXITCODE -ne 0) { throw 'Qwen real PC full artist cycle did not pass; preserve raw inference and Blender logs' }
             $manifest=Get-Content (Join-Path $out 'full-studio-result.json') -Raw | ConvertFrom-Json
+            if ($manifest.frozen_source_sha256 -ne (Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Resumed inherited asset changed' }
             if (-not $manifest.blender_real_execution -or $manifest.ai_authored_action_plans -lt 2 -or $manifest.art_approved -or $manifest.unity_art_verified) { throw 'Unproven AI real authoring or false visual approval' }
             Write-Host ('ELDORIA_PC_NATIVE_QWEN4B_BLENDER_FULL_ARTIST_REAL_SOURCE_TECHNICAL_PASS authored_cycles='+$manifest.ai_authored_action_plans)
           } finally {
