@@ -9,6 +9,7 @@ import argparse, base64, hashlib, json, pathlib, subprocess, sys, time, urllib.e
 from contract import validate_plan, RejectedPlan
 from learning_context import transferable_lessons
 from screen_impact import screen_impact
+from composition_health import check_new_silhouette,CompositionRejected
 
 HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
@@ -164,6 +165,8 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
     validate_plan(doc)
+    if not source_exists:
+        check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
         raise RejectedPlan("Too many Qwen actions in one bounded cycle")
     if not source_exists:
@@ -193,9 +196,14 @@ def critique(args,reference,before,after,role):
       "Return concise JSON with strings critique, geometry_next, material_next "
       "and bool clearly_failed. This critique never certifies art.")
     try:
+        critique_schema={"type":"object","properties":{
+          "critique":{"type":"string"},"geometry_next":{"type":"string"},
+          "material_next":{"type":"string"},"clearly_failed":{"type":"boolean"}},
+          "required":["critique","geometry_next","material_next","clearly_failed"],
+          "additionalProperties":False}
         txt=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
          {"role":"user","content":instruction,"images":[image_data(reference),
-                       image_data(before),image_data(after)]}],500,timeout=420)
+                       image_data(before),image_data(after)]}],350,timeout=420,schema=critique_schema)
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
@@ -216,6 +224,7 @@ def main():
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
+    p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
     p.add_argument("--max-actions",type=int,default=32)
     p.add_argument("--max-tokens",type=int,default=1250)
     p.add_argument("--prior-lessons",type=pathlib.Path)
@@ -276,7 +285,7 @@ def main():
             try:
                 doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source))
                 break
-            except (RejectedPlan,json.JSONDecodeError) as e:
+            except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
                 if attempt==3:raise
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")

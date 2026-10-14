@@ -36,6 +36,14 @@ El archivo --asset-catalog es un JSON con schema_version=1 y assets con relative
 
 Una prueba técnica independiente utiliza el GLB generado en la primera prueba de Blender, crea un catálogo OWNED con su SHA exacto, lo vuelve a importar mediante import_asset y comprueba la preservación de geometría, inventario, licencia y origen. Esa prueba NO afirma que Qwen eligiera dicho archivo: el fixture es puramente técnico.
 
+## Autoría visual comprobable y rechazo de composiciones defectuosas
+
+El primer asset diseñado realmente por Qwen quedó archivado en la ejecución 38568103614: pasó el ciclo Qwen→Blender con modelos BLEND/GLB editables y comparación A/B, pero la imagen mostraba volúmenes superpuestos, tejado separado, partes hundidas y materiales de prototipo. Era una demostración de **autoría técnica real, NO de calidad**.
+
+La nueva comprobación composition_health.py rechaza composiciones físicas incoherentes en la etapa inicial de arquitectura: piezas enteras enterradas, tejados desconectados o por debajo del soporte, repetición de volúmenes idénticos y ausencia de alturas diferenciadas. Devuelve los defectos a Qwen para que él mismo rediseñe la escena; no introduce geometría automática.
+
+La revisión Qwen usa ahora un contrato JSON de crítica acotado, mientras la verificación de presencia en pantalla y revisión artística permanecen separadas. La prueba real de reautoría toma un .blend congelado generado por Qwen, comprueba su SHA, pide nuevas operaciones originales sobre objetos inspeccionados y crea un nuevo .blend sin alterar la fuente. El objetivo es probar mejora acumulativa real. Un PASS de Blender no constituye un resultado visual aprobado.
+
 ## Ciclo autónomo local
 
 1. artist_loop.py consulta el modelo Qwen LOCAL con la referencia visual del propietario y la memoria del artista.

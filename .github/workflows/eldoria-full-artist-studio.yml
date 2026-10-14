@@ -9,6 +9,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 jobs:
   real-blender-toolbox:
     runs-on: ubuntu-latest
@@ -181,5 +182,77 @@ jobs:
         with:
           name: eldoria-full-artist-genuine-qwen
           path: /tmp/eldoria-full-studio-qwen/
+          if-no-files-found: warn
+          retention-days: 21
+
+  real-qwen-refine-verified-source:
+    needs: real-blender-toolbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve immutable REAL previous Qwen-authored Blender source
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-full-artist-genuine-qwen
+          run-id: 38568103614
+          github-token: ${{ github.token }}
+          path: /tmp/eldoria-qwen-source-authenticated
+      - name: Verify exact previous AI source SHA, rejecting hypothetical source
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          p=pathlib.Path('/tmp/eldoria-qwen-source-authenticated/cycle-1')
+          result=json.loads((p/'output/execution-proof.json').read_text())
+          previous=json.loads((p/'artist-plan.json').read_text())
+          assert result['artist_plan_sha256']==hashlib.sha256((p/'artist-plan.json').read_bytes()).hexdigest()
+          assert result['blend_sha256']==hashlib.sha256((p/'output/artist-asset.blend').read_bytes()).hexdigest()
+          assert result['matched_review_camera'] and not result['art_approved']
+          assert len(previous['actions'])==4
+          print('VERIFIED_GENUINE_QWEN_SOURCE_TO_REAUTHOR',result['blend_sha256'])
+          PY
+      - name: Prepare independent free Blender and local Qwen art workstation
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil python3-numpy
+          docker run --rm -d --name eldoria-studio-refine -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:11434/api/version >/dev/null; then break; fi
+            sleep 2
+          done
+          docker exec eldoria-studio-refine ollama pull qwen3-vl:2b-instruct
+      - name: Qwen reauthors real inherited meshes in genuine Blender rather than regenerate tower
+        run: |
+          python3 tools/art-direction/full-studio/artist_loop.py \
+            --brief 'MODIFY the given real Blender watchtower source. It has 4 badly arranged, untextured parts. YOU must choose meaningful PBR stone and timber colours, move or remodel incoherently placed roof and walls with real Blender operations, and add sculptural details; use verified object names from source inventory, no fixed architecture script, no new cube proxy. This version is ART REJECTED until genuinely improved.' \
+            --source /tmp/eldoria-qwen-source-authenticated/cycle-1/output/artist-asset.blend \
+            --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+            --out /tmp/eldoria-qwen-real-source-refinement \
+            --max-cycles 1 --max-actions 5 --max-tokens 1600 \
+            --asset-category architecture \
+            --model qwen3-vl:2b-instruct
+      - name: Inspect source edit integrity and Qwen original actions
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('/tmp/eldoria-qwen-real-source-refinement')
+          manifest=json.loads((root/'full-studio-result.json').read_text())
+          assert manifest['blender_real_execution'] and not manifest['art_approved']
+          qwen=json.loads((root/'cycle-1/artist-plan.json').read_text())
+          assert qwen['asset_decision'] in ('MODIFY','REUSE')
+          assert all(a['op']!='execute_python' for a in qwen['actions'])
+          proof=json.loads((root/'cycle-1/output/execution-proof.json').read_text())
+          assert proof['source_sha256']==manifest['frozen_source_sha256']
+          assert proof['matched_review_camera'] and proof['action_count']==len(qwen['actions'])
+          assert any(s['geometry_changed'] for s in proof['execution']), 'No source geometry was edited'
+          assert not proof['art_approved']
+          print('GENUINE_QWEN_REAUTHOR_EXISTING_BLENDER',len(qwen['actions']),proof['evaluated_triangles'])
+          PY
+      - name: Preserve full source revision proof including genuine Blender A/B
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-full-artist-actual-refinement
+          path: /tmp/eldoria-qwen-real-source-refinement/
           if-no-files-found: warn
           retention-days: 21
