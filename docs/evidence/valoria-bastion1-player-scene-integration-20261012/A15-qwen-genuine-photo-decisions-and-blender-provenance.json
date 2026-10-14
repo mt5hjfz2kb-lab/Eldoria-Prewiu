@@ -1,0 +1,61 @@
+{
+  "schema": "eldoria-art-vision-to-authored-assets-v1",
+  "date": "2026-10-14",
+  "phase": "A15 independent before/after Qwen vision, native Blender adaptation",
+  "repo": "mt5hjfz2kb-lab/Eldoria-Prewiu",
+  "branch": "integration/valoria-bastion1-player-scene-20261012",
+  "source_unity": {
+    "run": 38569262127,
+    "artifact": 11898330276,
+    "before": "Bastion1MaterialAB/before/bastion1-player-initial.png",
+    "after": "Bastion1MaterialAB/global-A/bastion1-player-initial.png",
+    "frame": "1440x1000 camera identical",
+    "mobile": "780x520 native Unity camera"
+  },
+  "qwen": {
+    "run": 38572253674,
+    "artifact": 11898855697,
+    "model": "qwen3-vl:4b-instruct",
+    "cost_eur": 0,
+    "attempt_A": {
+      "status": "timed_out",
+      "original_artifact_file": "artist-1-error.txt",
+      "agent_decision": null
+    },
+    "attempt_B": {
+      "status": "completed",
+      "raw_sha256": "c4bffeedebcb16723191c7872b78f3df5a300068ef4bdeb2fc294c2539ea6a08",
+      "original_artifact_file": "artist-2-raw.txt",
+      "evidence": "real Qwen response to two matched native Unity camera images",
+      "decisions": [
+        "Broad bifurcated worn stone approach from original main stair towards west guardhouse (-20.4,-11.3) and east outer remnant around (23,1)",
+        "Two distinct lateral arched walkways grounded in the original medieval wall modules, scale coherent with six validated A13 upper arches",
+        "Retexture approach only with reuse of original cliff_rocks material; no second paved overlay or unrelated new materials; no added huts, props or resource nodes"
+      ]
+    }
+  },
+  "implementation": {
+    "commit": "0355debc77ab0151a8a1bf18cb0b46f13e749708",
+    "scripts": [
+      "tools/valoria-bastion1-assembly/sculpt_bastion_native_terrain.py",
+      "tools/valoria-bastion1-assembly/compose_bastion_global_composition.py"
+    ],
+    "decisions_applied": [
+      "Three wide irregular fork path arms with genuine original cliff rock PHOTO atlas pixels baked into the existing 1024px native ground image",
+      "Two physical ten-voussoir lateral stone arches with grounded structural jambs and contiguous masonry returns to existing outer defensive walls x~±22,y=-8.48",
+      "Original six-arch upper arcade retained, no original gate, stairs, road, parcels or gameplay colliders edited"
+    ],
+    "difference_from_qwen": "Qwen was only art director; deterministic Blender authored vertices/material mixing. Two side arches at x≈±19.22,y=-8.48 rather than placing huge additional arches over x[-7,7] main road or future building plots."
+  },
+  "limits": {
+    "road_protected": "x[-7,7] physically unchanged",
+    "parcels_protected": "10x10m at x±16,y3; new geometry only y≈-8.48",
+    "mobile": "native Unity camera proof required; physical-device frame-time not yet measured",
+    "promotion": "VISUAL REVIEW PENDING; main remains protected"
+  },
+  "learning": [
+    "Earlier A14 wider mineral paths changed little of the real image and cannot substitute for architectural composition.",
+    "Qwen's real before/after visual critique must be translated into both broad terrain and structural connections, with real authorship separation.",
+    "Do not claim success just because Blender and Unity workflows pass."
+  ]
+}
