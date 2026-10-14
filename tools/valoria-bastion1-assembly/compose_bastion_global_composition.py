@@ -237,7 +237,7 @@ if variant=='A':
  import numpy as np
  aged_material_cache={};aged_texture_cache={}
  def aged_material(m):
-  if not m or ('limestone' not in m.name.lower() and 'stone' not in m.name.lower()):
+  if not m or m.name.startswith('B1 A3 warmer dirt-aged') or ('limestone' not in m.name.lower() and 'stone' not in m.name.lower()):
    return m
   if m.name in aged_material_cache:return aged_material_cache[m.name]
   t=m.copy();t.name='B1 A3 warmer dirt-aged '+m.name
