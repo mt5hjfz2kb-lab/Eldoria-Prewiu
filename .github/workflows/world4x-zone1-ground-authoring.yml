@@ -3,8 +3,9 @@ on:
   push:
     branches: [prototype/world4x-zone1-zoom-reference-20261013]
     paths:
-      - 'tools/world4x-zone1/production/**'
-      - '.github/workflows/world4x-zone1-ground-authoring.yml'
+      - 'tools/world4x-zone1/production/author_ground.py'
+      - 'tools/world4x-zone1/production/compare_ground.py'
+      - 'tools/world4x-zone1/production/prepare_candidate_source.py'
   workflow_dispatch:
 permissions:
   contents: write
