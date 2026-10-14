@@ -112,27 +112,45 @@ for params,op in [
 # Substantial but coherent subtle dirt/grass mixing: not a uniform mud decal.
 earth=sat(earth*(.82+.15*medium+.14*fine))
 # Confine to existing playable yard, avoid replacing cliff UVs (done below).
-soil_grass=np.stack((
- .265+.035*variation+.013*fine,
- .292+.034*variation+.013*fine,
- .155+.021*variation+.010*fine),axis=-1)
-soil_ochre=np.stack((
- .370+.045*variation+.020*fine,
- .305+.032*variation+.016*fine,
- .201+.026*variation+.014*fine),axis=-1)
-pix=soil_grass*(1-earth[:,:,None])+soil_ochre*earth[:,:,None]
-gravel=sat((np.abs(X)-22)/6)*sat((1+medium*.35)/2)
-pix=pix*(1-gravel[:,:,None]*.16)+np.array([.31,.299,.26])*(gravel[:,:,None]*.16)
-pix+=micro[:,:,None]*.012
-pix=np.clip(pix,.07,.82)
+# ANTI-REGRESSION: The real Unity 38535375899 capture revealed that replacing
+# native PHOTO albedo with analytic color fields made the patio *worse* (gray,
+# flat, dead). Keep the genuinely textured original meadow-stone image and
+# shade it according to Qwen's large-scale dirt/soil spatial decisions.
+original_grass=mesh.materials[0]
+if not original_grass or not original_grass.use_nodes:
+ raise RuntimeError('Cannot recover validated source terrain material')
+original_images=[n.image for n in original_grass.node_tree.nodes
+                 if n.type=='TEX_IMAGE' and n.image]
+source_image=next((im for im in original_images
+                   if 'meadow albedo' in im.name.lower()),None)
+if source_image is None:
+ raise RuntimeError('Original medieval detailed meadow/stone source albedo missing')
+sw,sh=source_image.size
+raw=np.empty(sw*sh*4,dtype=np.float32)
+source_image.pixels.foreach_get(raw)
+source_rgba=raw.reshape((sh,sw,4))
+# Reconstruct native terrain's 0.07 world-unit UV repetition in the new,
+# geographically addressable 1024px atlas. Source pebbles/moss remain actual
+# photo texture; terrain gets actual macro spatial variation without overlays.
+sample_u=np.mod(np.floor((X*.07+.006*medium)*sw).astype(np.int32),sw)
+sample_v=np.mod(np.floor((Y*.07+np.where(Y>12,.041,0)+.006*broad)*sh).astype(np.int32),sh)
+pix=source_rgba[sample_v,sample_u,:3].copy()
+# Warm genuine original grass/stone into organically worn-earth patches, while
+# protecting its detailed embedded stone pattern. Never replace with flat RGB.
+rgb_earthen=np.stack((
+  sat(pix[:,:,0]*1.22+.022*medium),
+  sat(pix[:,:,1]*.81+.007*medium),
+  sat(pix[:,:,2]*1.20+.011*fine)),axis=2)
+mix=sat(earth*.82)
+pix=pix*(1-mix[:,:,None])+rgb_earthen*mix[:,:,None]
+pix=np.clip(pix,.02,.99)
 colors=np.concatenate((pix,np.ones((res,res,1),dtype=np.float32)),axis=2).astype(np.float32)
-new_image=bpy.data.images.new('Bastion I Qwen broad sculpted terrain native soil A4',
+new_image=bpy.data.images.new('Bastion I Qwen graded native photo-soil A5',
                                 width=res,height=res,alpha=True)
 new_image.pixels.foreach_set(colors.ravel());new_image.pack()
 # Index 0 is original olive-grass material from canonical terrain_finish.py.
-original_grass=mesh.materials[0]
 if not original_grass:raise RuntimeError('Original grass material missing')
-grass=original_grass.copy();grass.name='Bastion I natural graded terrain Qwen spatial A4'
+grass=original_grass.copy();grass.name='Bastion I detailed graded photo terrain Qwen spatial A5'
 grass.use_nodes=True
 nodes=grass.node_tree.nodes;principled=nodes.get('Principled BSDF')
 if not principled:raise RuntimeError('URP-exportable PBR material missing')
@@ -166,7 +184,7 @@ proof=dict(artistic_choice='genuine Qwen vision run 38530882467: earthy continuo
  terrain_vertices_total=len(mesh.vertices),terrain_vertices_sculpted=change,
  max_terrain_delta_m=float(np.max(np.abs(delta))),mean_terrain_delta_m=float(np.mean(np.abs(delta))),
  protected_road_and_future_parcels_max_delta_m=float(np.max(np.abs(delta[protected]),initial=0)),
- soil_texture_px=[res,res],grass_uv_loops=grass_loops,
+ soil_texture_px=[res,res],original_source_photo_px=[sw,sh],retained_original_source_photo_detail=True,grass_uv_loops=grass_loops,
  original_mesh_objects_preserved=len(originals),other_original_geometry_modified=False,
  main_gate_and_stairs_unchanged=True,
  new_buildings=0,new_resource_nodes=0,new_colliders=0,
