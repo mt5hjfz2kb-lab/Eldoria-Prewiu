@@ -118,7 +118,7 @@ def run_blender(executable,plan,out,source,texture_root,review,transport='direct
     (out.parent/(out.name+"-blender-log.txt")).write_text(result.stdout,encoding="utf-8")
     if result.returncode:raise RuntimeError("Real Blender execution failed; see output log: "+result.stdout[-1700:])
 
-def ask_plan(args,reference,current_image,history,role,memory,trial):
+def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number):
     msg=(contract_brief(args.max_actions)
       +"\nASSET BRIEF: "+args.brief
       +"\nVerified old failure/lesson memory (not model weight training): "+memory[:9000]
@@ -128,6 +128,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial):
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],args.max_tokens,schema=schema_for_plan())
+    (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     filename=trial/"qwen-raw.json";filename.write_text(text,encoding="utf-8")
     doc=json.loads(text);validate_plan(doc)
     if len(doc["actions"])>args.max_actions:raise RejectedPlan("AI operation budget exceeded")
@@ -177,13 +178,32 @@ def main():
     if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
     current=args.current_frame
     source=args.source
+    original_source_sha=sha(args.source) if args.source else None
     history=""
+    if args.source:
+        inspected=args.out/"source-inspection"
+        command=[args.blender,"-b","--python-exit-code","1","--python",str(HERE/"inspect_source.py"),
+                 "--","--source",str(args.source),"--out",str(inspected)]
+        if args.review:command+=["--review",str(args.review)]
+        check=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=900)
+        (args.out/"source-inspection-blender-log.txt").write_text(check.stdout,encoding="utf-8")
+        if check.returncode:raise RuntimeError("Source inspection failed: "+check.stdout[-1000:])
+        actual=json.loads((inspected/"source-inspection.json").read_text())
+        if not actual["source_unchanged"] or actual["source_sha256"]!=original_source_sha:
+            raise RuntimeError("Frozen original source identity changed")
+        if not current:current=inspected/"source-preview-blender.png"
+        verified_objects=[{"name":x["name"],"vertices":x["vertices"],"faces":x["faces"],
+                          "world_location_m":x["world_location_m"],
+                          "world_dimensions_m":x["world_dimensions_m"],
+                          "materials":x["materials"],"uv_layers":x["uv_layers"]}
+                         for x in actual["objects"][:80]]
+        history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
     records=[]
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,4):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt)
                 break
             except (RejectedPlan,json.JSONDecodeError) as e:
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
@@ -206,11 +226,19 @@ def main():
                         "matched_review_camera":result["matched_review_camera"],
                         "critique":evaluation})
         history+="\nRECORDED genuine Blender visual critique: "+json.dumps(evaluation)[:3500]
+        # Genuine Blender inventory is the next model's source of truth, not
+        # invented object names or a fixed archetype template.
+        catalog=json.loads((stage/"reusable-asset-catalog.json").read_text())
+        anchors=[{"name":o["name"],"faces":o["faces"],"dimensions_m":o["dimensions_m"],
+                  "pivot_m":o["pivot_m"],"materials":o["materials"]}
+                 for o in catalog["components"][:60]]
+        history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
         if not evaluation.get("clearly_failed",True):break
+    if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
     final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
            "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
-           "source_authority_unchanged":True,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
+           "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
            "art_approved":False,"unity_art_verified":False,"physical_mobile_validated":False,
            "model":args.model,"system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
            "journal_sha256":sha(JOURNAL),"cycles":records}

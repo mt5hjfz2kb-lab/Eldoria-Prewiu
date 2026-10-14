@@ -22,13 +22,30 @@ jobs:
       - name: Test strict authoring contracts and syntax
         run: |
           python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
-          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py
+          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py tools/art-direction/full-studio/inspect_source.py
           blender --version | head -2
       - name: Execute twenty-six real independent Blender modelling operations
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
              --plan tools/art-direction/full-studio/tests/smoke_plan.json \
              --out /tmp/eldoria-full-artist-smoke --texture-root .
+      - name: Inspect real existing BLEND source without modifying the source
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/full-studio/inspect_source.py -- \
+            --source /tmp/eldoria-full-artist-smoke/artist-asset.blend \
+            --out /tmp/eldoria-full-artist-smoke/source-inspection
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          p=pathlib.Path('/tmp/eldoria-full-artist-smoke')
+          source=p/'artist-asset.blend'
+          audit=json.loads((p/'source-inspection/source-inspection.json').read_text())
+          assert audit['source_unchanged']
+          assert audit['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
+          assert audit['asset_count']>=6
+          assert not audit['art_approved']
+          assert (p/'source-inspection/source-preview-blender.png').read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
+          print('ELDORIA_REAL_SOURCE_INSPECTED',audit['asset_count'])
+          PY
       - name: Verify real editable mesh and GLB plus matched-camera screenshots
         run: |
           python3 - <<'PY'

@@ -12,7 +12,7 @@ El artista IA (Ollama/Qwen) observa referencias e imágenes originales, lee lecc
 
 Blender ejecuta las operaciones concretas con bpy y bmesh; ninguna torre, muralla o terreno está diseñado de antemano. Puede construir familias complejas con varios subobjetos y hasta 160 operaciones, dentro de un presupuesto geométrico verificable.
 
-Operaciones soportadas: primitive, mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, modifier, boolean, material, uv, join, delete, light, camera, render_settings, texture, asset_info, native_operator, shader_graph y geometry_nodes. Blender ejecuta además operadores nativos seleccionados de modelado/UV y grafos reales de nodos de shader y geometría, cada uno con lista de tipos y parámetros de seguridad.
+Operaciones soportadas: primitive, mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, modifier, boolean, material, uv, join, delete, light, camera, render_settings, texture, asset_info, native_operator, shader_graph y geometry_nodes. Blender ejecuta además operadores nativos seleccionados de modelado/UV y grafos reales de nodos de shader y geometría, cada uno con lista de tipos y parámetros de seguridad. El taller puede funcionar con Blender directo o un addon BlenderMCP local que debe verificarse mediante SHA-256 exacto antes de cargarlo. El transporte BlenderMCP aún requiere una prueba específica; no confundir código disponible con función certificada.
 
 Modificadores incluidos: BEVEL, SUBSURF, SOLIDIFY, DECIMATE, REMESH, MIRROR, ARRAY, WEIGHTED_NORMAL, TRIANGULATE, SIMPLE_DEFORM y DISPLACE.
 
@@ -21,7 +21,7 @@ No significa literalmente toda la interfaz de Blender: rigging, animación, simu
 ## Ciclo autónomo local
 
 1. artist_loop.py consulta el modelo Qwen LOCAL con la referencia visual del propietario y la memoria del artista.
-2. Qwen propone un plan original de acciones tipadas. Los errores se devuelven a Qwen para que decida su corrección, sin valores inventados por Python.
+2. Si se trabaja desde un GLB/BLEND anterior, inspect_source.py obtiene primero una captura auténtica, nombres reales de todos los objetos, dimensiones, UV y materiales sin cambiar el archivo fuente. Qwen propone después un plan original de acciones tipadas. Los errores se devuelven a Qwen para que decida su corrección, sin valores inventados por Python.
 3. blender_toolbox.py aplica en Blender las operaciones sobre una COPIA nueva, preservando el recurso original.
 4. Guarda el GLB real, el BLEND editable, hashes, operaciones efectuadas y capturas antes/después del renderer Blender con cámara fija.
 5. Qwen critica esas imágenes reales y puede decidir un nuevo ciclo con otro enfoque.
@@ -56,3 +56,5 @@ El trabajo vivo de Bastión I controla tools/art-direction/ai-authoring/**, herr
 ## Salvaguardas
 
 Sin Python arbitrario producido por IA, eval, comandos generados, descargas externas, créditos de pago ni escritura sobre origen. Texturas relativas restringidas a la raíz autorizada, verificando licencia antes de incorporar archivos ajenos. Limitaciones de polígonos, firmas y hashes. Blender no es Unity y el modelo no modifica sus propios pesos: la memoria es recuperación de experiencias comprobadas.
+
+La ejecución crea un reusable-asset-catalog.json: geometrías independientes, materiales, dimensiones, pivotes, SHA de cada componente y procedencia. Es evidencia de reusabilidad y exportación, no aprobación estética ni de licencias de terceros.
