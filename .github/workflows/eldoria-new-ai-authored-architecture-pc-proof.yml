@@ -5,6 +5,7 @@ name: Eldoria Qwen artist builds original attached architectural component on re
 # Next grounded QA: reject Qwen's actual flat two-triangle pseudo-architecture; require model-designed 3D depth.
 # Continued professional art: model-authored CLOSED 3D original components across verified source cycles; rejects open spike meshes.
 # New test: C01/C02 model-selected unique names and primitive fallback after independently rejected nonmanifold meshes.
+# Spatial revalidation: measured native Blender WORLD bounds + Z-up original Qwen placement, source unchanged.
 # Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
 # Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
 # Resume proven PBR BLEND; actual evaluated Blender triangles before/after fixes false source failure #38620198456.
