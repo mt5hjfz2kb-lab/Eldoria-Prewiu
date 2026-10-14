@@ -21,6 +21,24 @@ class TypedArtistTests(unittest.TestCase):
  def test_artistic_full_mode_dispatches_strict_schema(self):
   s=schema_for_plan(5,True,"full","architecture",["Authentic Valoria source"],SOURCE)
   self.assertIn("oneOf",s["properties"]["actions"]["items"])
+ def test_real_observed_faces_and_edges_are_model_choices_not_random_indices(self):
+  source=[{"name":"Stone source","faces":6000,"edges":8400,
+           "face_landmarks":[{"face_index":14},{"face_index":484}],
+           "edge_landmarks":[{"edge_index":35},{"edge_index":91}]}]
+  schema=source_artist_action_schema(source)["oneOf"]
+  byop={x["properties"]["op"]["const"]:x for x in schema}
+  faces=byop["extrude"]["properties"]["params"]["properties"]["faces"]["items"]
+  edges=byop["bevel"]["properties"]["params"]["properties"]["edges"]["items"]
+  self.assertEqual(faces,{"type":"integer","enum":[14,484]})
+  self.assertEqual(edges,{"type":"integer","enum":[35,91]})
+ def test_invalid_landmark_indices_do_not_enter_schema(self):
+  source=[{"name":"Tower","faces":4,"edges":8,
+           "face_landmarks":[{"face_index":11},{"face_index":2}],
+           "edge_landmarks":[{"edge_index":90},{"edge_index":7}]}]
+  variants=source_artist_action_schema(source)["oneOf"]
+  byop={v["properties"]["op"]["const"]:v for v in variants}
+  self.assertEqual(byop["extrude"]["properties"]["params"]["properties"]["faces"]["items"]["enum"],[2])
+  self.assertEqual(byop["bevel"]["properties"]["params"]["properties"]["edges"]["items"]["enum"],[7])
  def test_non_source_creation_stays_unaffected(self):
   s=schema_for_plan(5,False,"full","architecture")
   self.assertEqual(s["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")

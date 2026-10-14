@@ -10,6 +10,19 @@ def source_artist_action_schema(objects):
     face_max=max(0,max(x["faces"] for x in objects)-1)
     face_ids={"type":"array","minItems":1,"maxItems":3,
               "items":{"type":"integer","minimum":0,"maximum":face_max}}
+    # Enumerate only facts measured in actual Blender. Qwen still decides
+    # WHICH available face/edge to modify from visible source evidence.
+    # Never fabricate an index or substitute it after generation.
+    observed_faces=sorted({int(item["face_index"]) for obj in objects
+                           for item in obj.get("face_landmarks",[])
+                           if type(item.get("face_index")) is int and
+                           0 <= item["face_index"] < obj.get("faces",0)})
+    observed_edges=sorted({int(item["edge_index"]) for obj in objects
+                           for item in obj.get("edge_landmarks",[])
+                           if type(item.get("edge_index")) is int and
+                           0 <= item["edge_index"] < obj.get("edges",0)})
+    if observed_faces:
+        face_ids["items"]={"type":"integer","enum":observed_faces}
     numeric={"type":"number"}
     v3={"type":"array","minItems":3,"maxItems":3,"items":numeric}
     rgba={"type":"array","minItems":4,"maxItems":4,
@@ -27,8 +40,9 @@ def source_artist_action_schema(objects):
         "inset":({"faces":face_ids,"thickness":{"type":"number","minimum":0.005,"maximum":0.3}},
                  ["faces","thickness"]),
         "bevel":({"edges":{"type":"array","minItems":1,"maxItems":6,
-                            "items":{"type":"integer","minimum":0,
-                                     "maximum":max(0,max(x.get("edges",0) for x in objects)-1)}},
+                            "items":({"type":"integer","enum":observed_edges} if observed_edges else
+                                     {"type":"integer","minimum":0,
+                                      "maximum":max(0,max(x.get("edges",0) for x in objects)-1)})},
                   "width":{"type":"number","minimum":0.005,"maximum":0.09},
                   "segments":{"type":"integer","minimum":1,"maximum":2},
                   "apply":{"const":True}},["edges","width","segments","apply"]),
