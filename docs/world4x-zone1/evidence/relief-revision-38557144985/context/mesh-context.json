@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "source_sha256": "73b5f0e267eb49f7892311fca2d5d6867f74f97778abc96b849c6c9de8cc5b2d",
+  "target": "ZoneOne continuous prairie source",
+  "vertices": 14641,
+  "faces": 28800,
+  "location": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "dimensions": [
+    240.0,
+    240.0,
+    9.70402717590332
+  ],
+  "local_aabb": {
+    "min": [
+      -120.0,
+      -120.0,
+      -2.7970035076141357
+    ],
+    "max": [
+      120.0,
+      120.0,
+      6.9070234298706055
+    ]
+  },
+  "sample_vertices": [
+    {
+      "index": 7320,
+      "position": [
+        0.0,
+        0.0,
+        0.06151841953396797
+      ],
+      "role": "center_mass"
+    },
+    {
+      "index": 8784,
+      "position": [
+        24.0,
+        24.0,
+        5.3134307861328125
+      ],
+      "role": "playable_crest_center"
+    },
+    {
+      "index": 9165,
+      "position": [
+        60.0,
+        30.0,
+        6.9070234298706055
+      ],
+      "role": "highest_crest"
+    },
+    {
+      "index": 6930,
+      "position": [
+        -54.0,
+        -6.0,
+        -2.7970035076141357
+      ],
+      "role": "deep_slope"
+    },
+    {
+      "index": 0,
+      "position": [
+        -120.0,
+        -120.0,
+        -0.5840153098106384
+      ],
+      "role": "west_join"
+    },
+    {
+      "index": 120,
+      "position": [
+        120.0,
+        -120.0,
+        -0.41380611062049866
+      ],
+      "role": "east_join"
+    },
+    {
+      "index": 14520,
+      "position": [
+        -120.0,
+        120.0,
+        0.5372732281684875
+      ],
+      "role": "northern_join"
+    },
+    {
+      "index": 2931,
+      "position": [
+        -66.0,
+        -72.0,
+        -0.08739570528268814
+      ],
+      "role": "negative_y_cliff_left"
+    },
+    {
+      "index": 4189,
+      "position": [
+        30.0,
+        -52.0,
+        0.26067233085632324
+      ],
+      "role": "negative_y_cliff_center"
+    },
+    {
+      "index": 3475,
+      "position": [
+        54.0,
+        -64.0,
+        0.8549465537071228
+      ],
+      "role": "negative_y_cliff_right"
+    },
+    {
+      "index": 10561,
+      "position": [
+        -52.0,
+        54.0,
+        0.8643078207969666
+      ],
+      "role": "positive_y_cliff_left"
+    },
+    {
+      "index": 10706,
+      "position": [
+        -4.0,
+        56.0,
+        0.8142665028572083
+      ],
+      "role": "positive_y_cliff_center"
+    },
+    {
+      "index": 12300,
+      "position": [
+        38.0,
+        82.0,
+        1.3521369695663452
+      ],
+      "role": "positive_y_cliff_right"
+    },
+    {
+      "index": 1220,
+      "position": [
+        -100.0,
+        -100.0,
+        -0.47219398617744446
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 2440,
+      "position": [
+        -80.0,
+        -80.0,
+        -0.025343691930174828
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 3660,
+      "position": [
+        -60.0,
+        -60.0,
+        -0.6253516674041748
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 4880,
+      "position": [
+        -40.0,
+        -40.0,
+        -1.8441935777664185
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 6100,
+      "position": [
+        -20.0,
+        -20.0,
+        -1.8129620552062988
+      ],
+      "role": "distributed_source"
+    }
+  ],
+  "boundary_loops": [],
+  "note": "Only these indexed open loops may be bridged. Coordinates are Blender object-local. No manifest means no safe vertex-index operations."
+}
