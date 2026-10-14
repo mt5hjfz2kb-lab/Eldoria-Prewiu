@@ -52,6 +52,18 @@ class TypedArtistTests(unittest.TestCase):
   byop={v["properties"]["op"]["const"]:v for v in variants}
   self.assertEqual(byop["extrude"]["properties"]["params"]["properties"]["faces"]["items"]["enum"],[2])
   self.assertEqual(byop["bevel"]["properties"]["params"]["properties"]["edges"]["items"]["enum"],[7])
+ def test_optional_safe_source_sequence_still_leaves_artist_choice(self):
+  source=[{"name":"Tower","faces":5338,"vertices":11400,
+           "edges":14000,"face_landmarks":[{"face_index":2326}],
+           "edge_landmarks":[{"edge_index":3989}]}]
+  schema=schema_for_plan(5,True,"full","architecture",["Tower"],source,True)
+  arr=schema["properties"]["actions"]
+  self.assertEqual((arr["minItems"],arr["maxItems"]),(2,3))
+  structurals={v["properties"]["op"]["const"] for v in arr["prefixItems"][0]["oneOf"]}
+  self.assertEqual(structurals,{"sculpt_anchor","sculpt","extrude","inset","bevel"})
+  self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][1]["oneOf"]},{"material","uv"})
+  self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][2]["oneOf"]},{"material","uv","modifier"})
+  self.assertEqual(arr["prefixItems"][0]["oneOf"][2]["properties"]["params"]["properties"]["faces"]["items"]["enum"],[2326])
  def test_non_source_creation_stays_unaffected(self):
   s=schema_for_plan(5,False,"full","architecture")
   self.assertEqual(s["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")

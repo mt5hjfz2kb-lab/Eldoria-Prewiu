@@ -49,7 +49,7 @@ def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=No
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -122,6 +122,25 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         # Keep Qwen's creative tool selection; make signatures exact. A source
         # that only has inherited meshes needs no invented new object IDs.
         action=source_artist_action_schema(source_inventory)
+    actions_schema={"type":"array","minItems":2 if not source_exists else 1,
+                    "maxItems":min(max_actions,8),"items":action}
+    if sequenced_source and source_exists and phase=="full" and category=="architecture" and source_inventory:
+        # The artist still freely selects the actual structural tool, coordinates,
+        # target face/edge and material values. Sequence is a safety dependency:
+        # finish the mesh before any operations relying on its changed topology.
+        tools=action["oneOf"]
+        structural=[v for v in tools if v["properties"]["op"]["const"]
+                    in ("sculpt_anchor","sculpt","extrude","inset","bevel")]
+        finishing=[v for v in tools if v["properties"]["op"]["const"]
+                   in ("material","uv")]
+        optional=[v for v in tools if v["properties"]["op"]["const"]
+                  in ("material","uv","modifier")]
+        if not structural or not finishing:raise ValueError("No typed source tools")
+        actions_schema={"type":"array","minItems":2,"maxItems":3,
+                        "prefixItems":[{"oneOf":structural},
+                                       {"oneOf":finishing},
+                                       {"oneOf":optional}],
+                        "items":False}
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
@@ -130,8 +149,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         "asset_decision":{"type":"string","enum":["MODIFY","REUSE"] if source_exists else ["NEW"]},
         "expected_visual_difference":{"type":"string","minLength":30,"maxLength":200},
         "mobile_risks":{"type":"string","maxLength":180},
-        "actions":{"type":"array","minItems":2 if not source_exists else 1,
-                   "maxItems":min(max_actions,8),"items":action}},
+        "actions":actions_schema},
         "required":["schema_version","asset_id","observed_defect","design_intent",
                     "asset_decision","expected_visual_difference","mobile_risks","actions"],
         "additionalProperties":False}
@@ -253,11 +271,19 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       +"\nNon-copyable empirical lessons: "+memory[:600]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
+    if args.source_tool_sequencing and source_exists and args.phase=="full":
+        msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
+          "the FIRST operation must be ONE geometric operation chosen by YOU "
+          "(sculpt, sculpt_anchor, extrude, inset or selected-edge bevel). "
+          "The SECOND is YOUR material or UV operation. "
+          "An optional THIRD is material, UV or a safe non-global modifier. "
+          "This ordering prevents use of stale mesh topology. "
+          "All geometry and artistic values are chosen by YOU, never a script.")
     pictures=[image_data(reference)]
     if current_image:pictures.append(image_data(current_image))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -351,6 +377,8 @@ def main():
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
+    p.add_argument("--source-tool-sequencing",action="store_true",
+                   help="One original Qwen structural choice followed by surface finishing per source-mesh cycle")
     p.add_argument("--max-plan-attempts",type=int,default=5,
                    help="Bounded original Qwen plan revisions; no artistic value repair")
     p.add_argument("--min-successful-cycles",type=int,default=1,
