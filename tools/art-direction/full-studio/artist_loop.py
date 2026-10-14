@@ -8,6 +8,8 @@ from __future__ import annotations
 import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan, safe_action_id
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
+from artistic_quality_gate import (stage_visual_request,validate_independent_review,
+                                 append_accepted,status as visual_calibration_status)
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan,relative_triangle_limit
@@ -509,11 +511,23 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         for frame in spatial_views:
             if not frame.is_file():raise FileNotFoundError("Real Blender spatial camera image missing: "+str(frame))
             pictures.append(image_data(frame,edge))
-    text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
-      {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
-                                       args.source_build_phase,cycle_index if args.source_build_phase else 0,
-                                       topology_fallback,excluded_source_ops),timeout=540)
+    actual_messages=[{"role":"system","content":role},
+                     {"role":"user","content":msg,"images":pictures}]
+    actual_schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,
+                    known_objects,source_inventory,args.source_tool_sequencing,
+                    args.source_build_phase,cycle_index if args.source_build_phase else 0,
+                    topology_fallback,excluded_source_ops)
+    submitted=json.dumps({"messages":actual_messages,"schema":actual_schema,
+                          "model":args.model},sort_keys=True,separators=(",",":")).encode("utf-8")
+    (trial/("actual-qwen-context-attempt-"+str(attempt_number)+".json")).write_text(
+        json.dumps({"context_sha256":hashlib.sha256(submitted).hexdigest(),
+                    "model":args.model,"includes_original_owner_reference":True,
+                    "includes_real_inspected_blender_images":bool(current_image),
+                    "journal_and_cases_in_message":bool(memory),
+                    "source_history_characters":len(history),
+                    "note":"Exact submitted content+images+schema hashed in memory, no image bytes forged"},indent=2)+"\n")
+    text=request_ollama(args.endpoint,args.model,actual_messages,args.max_tokens,
+                        schema=actual_schema,timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -672,6 +686,12 @@ def main():
     p.add_argument("--focus-image",type=pathlib.Path,
                    help="Optional genuine source detail image, never a fabricated preview")
     p.add_argument("--prior-lessons",type=pathlib.Path)
+    p.add_argument("--independent-reviews-dir",type=pathlib.Path,
+                   help="Exact per-cycle independent reviewer JSON files; absent => hold for review")
+    p.add_argument("--accepted-chain",type=pathlib.Path,
+                   help="Previously independently accepted SHA-linked Blender-only chain")
+    p.add_argument("--frozen-original-asset-sha256",
+                   help="Original immutable tower SHA, necessary when continuing accepted outputs")
     args=p.parse_args()
     if not 1<=args.max_cycles<=5 or not 1<=args.max_plan_attempts<=6 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
         raise ValueError("Cycle/action/minimum-successful-cycle limits")
@@ -707,6 +727,15 @@ def main():
     source=args.source
     started_empty=args.source is None
     original_source_sha=sha(args.source) if args.source else None
+    frozen_original_sha=args.frozen_original_asset_sha256 or original_source_sha
+    accepted_chain=json.loads(args.accepted_chain.read_text(encoding="utf-8")) if args.accepted_chain else []
+    if accepted_chain:
+        if not args.source or accepted_chain[-1]["output_asset_sha256"]!=original_source_sha:
+            raise ValueError("Next Qwen input must be last INDEPENDENTLY ACCEPTED output SHA")
+        if accepted_chain[0]["original_asset_sha256"]!=frozen_original_sha:
+            raise ValueError("Frozen original asset does not match certified history")
+    elif args.frozen_original_asset_sha256 and args.frozen_original_asset_sha256!=original_source_sha:
+        raise ValueError("Cannot start a non-original source without an independently accepted chain")
     history=""
     known_objects=[]
     verified_objects=[]
@@ -867,12 +896,41 @@ def main():
             comparison_file=trial/"camera-screen-impact.json",
             output_blend=stage/"artist-asset.blend",
             output_glb=stage/"artist-asset.glb")
+        request=stage_visual_request(
+            output=trial/"art-review-request.json",reference=args.reference,
+            original_source_sha=frozen_original_sha,input_source=source if source else args.source,
+            raw_plan=candidate,execution_proof=stage/"execution-proof.json",
+            before=stage/"before-blender.png",after=stage/"after-blender.png",
+            model=args.model,memory_proof=args.out/"learning-casebook-proof.json",
+            run_id=int(os.environ.get("GITHUB_RUN_ID","0")) or None)
         records.append({"cycle":cycle,"status":"ART_REVIEW_REQUIRED",
+                        "review_request_sha256":sha(trial/"art-review-request.json"),
                         "plan_sha256":sha(candidate),
                         "output_blend_sha256":result["blend_sha256"],
                         "output_glb_sha256":result["glb_sha256"],
                         "matched_review_camera":result["matched_review_camera"],
                         "critique":evaluation})
+        # Qwen's critique is not independent; a visible output is a review
+        # REQUEST, never an accepted source. Do not chain unreviewed cycles.
+        path=(args.independent_reviews_dir/("cycle-"+str(cycle)+".json")
+              if args.independent_reviews_dir else None)
+        if path is None or not path.is_file():
+            history+="\nOWNER QUALITY CONTRACT: candidate held for independent visual review; do not promote as next tower input."
+            break
+        try:
+            review_decision=validate_independent_review(
+                request,path,prior=accepted_chain[-1] if accepted_chain else None)
+            accepted_chain=append_accepted(accepted_chain,review_decision,
+                                          frozen_original=frozen_original_sha)
+        except ValueError as rejection:
+            records[-1]["status"]="ART_REJECTED"
+            records[-1]["independent_visual_rejection"]=str(rejection)
+            history+="\nINDEPENDENT ART REJECTED: "+str(rejection)
+            break
+        records[-1]["status"]="BLENDER_VISUAL_ACCEPTED"
+        records[-1]["independent_review_sha256"]=sha(path)
+        (args.out/"independently-accepted-chain.json").write_text(
+            json.dumps(accepted_chain,indent=2)+"\n",encoding="utf-8")
         history+="\nRECORDED genuine Blender visual critique: "+json.dumps(evaluation)[:3500]
         # Genuine Blender inventory is the next model's source of truth, not
         # invented object names or a fixed archetype template.
@@ -917,7 +975,14 @@ def main():
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
     evidence_summary=summarize_real_artist_cycles(records)
-    final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
+    calibration=visual_calibration_status(accepted_chain)
+    final={"state":calibration["status"],"owner_art_quality_contract":"V1",
+           "formal_verifier":"tools/art-visual-acceptance/verify.mjs",
+           "blender_visual_accepted_count":calibration["blender_visual_accepted_count"],
+           "required_accepted_count":3,
+           "last_independent_visual_score":calibration["last_visual_score"],
+           "frozen_original_asset_sha256":frozen_original_sha,
+           "formal_art_approval_manifest_present":False,
            "ai_authored_action_plans":evidence_summary["qa_review_candidate_count"],
            **evidence_summary,
            "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,
