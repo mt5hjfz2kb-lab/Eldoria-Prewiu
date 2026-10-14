@@ -24,7 +24,6 @@ def camera_visible_face_landmarks(scene, obj, max_faces=24):
     cam_world=cam.matrix_world
     local_forward=Vector((0,0,-1))
     forward=(cam_world.to_3x3() @ local_forward).normalized()
-    world_verts={v.index:cam_world.inverted() @ (obj.matrix_world @ v.co) for v in obj.data.vertices}
     # Build actual camera-space projections for every source vertex ONCE.
     px={}
     for v in obj.data.vertices:
