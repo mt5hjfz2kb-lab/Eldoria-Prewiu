@@ -1,4 +1,4 @@
-name: Eldoria 4B chooses strictly typed Blender tools on genuine Windows PC
+name: Eldoria PC-local Qwen source-mesh professional real geometry proof
 on:
   push:
     branches:
@@ -108,6 +108,7 @@ jobs:
               '--model','qwen3-vl:4b-instruct',
               '--phase','full',
               '--asset-category','architecture',
+              '--require-inherited-geometry-edit',
               '--max-cycles','2',
               '--max-actions','4',
               '--max-tokens','3000'
