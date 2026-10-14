@@ -116,6 +116,12 @@
       "note": "Índice técnico de septiembre; reemplazado para navegación"
     },
     {
+      "path": "docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Contrato permanente del propietario para aceptar calidad visual independiente, mejora acumulativa y pruebas SHA/PNG; sujeto a AGENTS"
+    },
+    {
       "path": "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md",
       "domain": "art",
       "status": "reference",
