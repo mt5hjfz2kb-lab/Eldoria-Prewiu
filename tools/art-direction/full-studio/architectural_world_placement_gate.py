@@ -47,6 +47,24 @@ def reject_obviously_bad_component_placement(plan,source_objects):
                            "read world_bounds and reauthor its location (Blender Z is UP)")
     center_z=(lo[2]+hi[2])*.5
     name=action.get("target","").lower()
+    # A roof EAVE / FASCIA / OVERHANG is attached to an outer roof edge,
+    # not a tiny disc floating at the central apex. Real source bounds (not
+    # an invented shape template) establish which placements are impossible.
+    if any(t in name for t in ("eave","overhang","fascia","roofbracket","roof_bracket")):
+        margin_xy=[max(.10,span[i]*.12) for i in (0,1)]
+        touches_perimeter=any(
+            lo[i]<=low[i]+margin_xy[i] or hi[i]>=high[i]-margin_xy[i]
+            for i in (0,1))
+        near_apex=lo[2]>=high[2]-span[2]*.075
+        if not touches_perimeter or near_apex:
+            raise RejectedPlan(
+                "Roof EAVE/OVERHANG geometric attachment rejected: a roof-edge "
+                "element must reach an actual existing WORLD X/Y exterior roof "
+                "edge and overlap the roof below its highest WORLD Z apex. "
+                "This proposal is centered at or above the apex rather than "
+                "attached to a timber eave. Choose an original credible "
+                "edge-attached design from verified bounds and views; "
+                "do not repeat the central roof-top cylinder.")
     if any(t in name for t in ("chimney","spire","column","pillar","flue")):
         dim=[hi[i]-lo[i] for i in range(3)]
         if dim[2]<max(dim[0],dim[1])*1.1 or center_z<low[2]+.5*span[2]:
