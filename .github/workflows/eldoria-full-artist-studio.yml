@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - art/eldoria-full-blender-artist-studio-20261014
-      - fix/eldoria-artist-source-scale-sculpt-learning-20261014
     paths:
       - 'tools/art-direction/full-studio/**'
       - '.github/workflows/eldoria-full-artist-studio.yml'
