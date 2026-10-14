@@ -33,6 +33,12 @@ class ModelHypothesisSwitch(unittest.TestCase):
                                True,True,1,False,{"primitive"})
         variants=schema["properties"]["actions"]["prefixItems"][0]["oneOf"]
         self.assertEqual([v["properties"]["op"]["const"] for v in variants],["mesh"])
+    def test_exhausted_architecture_creator_must_fail_closed_not_resurrect_old_primitive(self):
+        source=[{"name":"Existing Valoria Timber Tower","faces":5338,"edges":12000}]
+        with self.assertRaises(ValueError):
+            schema_for_plan(3,True,"full","architecture",
+                [source[0]["name"]],source,True,True,1,True,
+                {"primitive","mesh"})
     def test_invalid_json_does_not_invent_qwen_tool(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=pathlib.Path(tmp)/"raw.json";p.write_text("NOT JSON")
