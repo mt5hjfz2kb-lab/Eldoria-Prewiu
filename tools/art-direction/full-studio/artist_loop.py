@@ -473,6 +473,14 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
             (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
                 json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
+        elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh"):
+            # Full professional source work still protects the existing real
+            # building; only the forced assembly phase used these QA gates
+            # previously, allowing unconstrained disconnected source addons.
+            verify_volume_and_complexity(doc,source_inventory)
+            spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
+            (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
+                json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
@@ -722,7 +730,7 @@ def main():
                       " of the screen, too little for the player camera. "
                       "The next Qwen plan must change the core silhouette and not simply tweak materials.")
             continue
-        if args.source_build_phase and args.review:
+        if args.review and args.source and args.phase=="full":
             # The render is real and the camera fixed. Qwen must not cover
             # art-directed player entry/stairs. Reject, never reposition art.
             region_proof=inspect_protected_regions(
