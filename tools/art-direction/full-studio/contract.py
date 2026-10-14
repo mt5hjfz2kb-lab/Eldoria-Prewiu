@@ -148,7 +148,24 @@ def validate_plan(doc):
         elif op == "modifier":
             require(p.get("kind") in MODIFIERS, "Modifier not supported")
             require(isinstance(p.get("options", {}),dict), "Modifier options invalid")
-            require(set(p.get("options",{})) <= {"width","segments","levels","render_levels","thickness","ratio","voxel_size","count","offset","axis","angle","strength","texture_scale","use_clamp_overlap"}, "Unsafe modifier options")
+            options=p.get("options",{})
+            # Semantic Blender signatures: accepting an ARRAY offset on a BEVEL
+            # silently pretends to use an artistic decision that Blender ignores.
+            by_kind={
+                "BEVEL":{"width","segments","use_clamp_overlap"},
+                "SUBSURF":{"levels","render_levels"},
+                "SOLIDIFY":{"thickness"},
+                "DECIMATE":{"ratio"},
+                "REMESH":{"voxel_size"},
+                "MIRROR":{"axis"},
+                "ARRAY":{"count","offset"},
+                "WEIGHTED_NORMAL":set(),
+                "TRIANGULATE":set(),
+                "SIMPLE_DEFORM":{"angle"},
+                "DISPLACE":{"strength","texture_scale"},
+            }
+            require(set(options) <= by_kind[p["kind"]],
+                    "Modifier "+p["kind"]+" rejects ignored/unsupported option keys "+str(sorted(set(options)-by_kind[p["kind"]])))
             geometric += 1
         elif op == "boolean":
             require(p.get("operation") in BOOLEANS and safe_name(p.get("operand")), "Invalid boolean")
