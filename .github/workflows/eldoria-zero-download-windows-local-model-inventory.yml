@@ -1,0 +1,66 @@
+name: Eldoria Windows Ollama fully local available models read-only inventory
+on:
+  push:
+    branches: [validation/eldoria-pc-local-model-inventory-20261014]
+    paths: ['.github/workflows/eldoria-zero-download-windows-local-model-inventory.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-windows-model-readonly-20261014
+  cancel-in-progress: true
+jobs:
+  installed-free-model-metadata:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Read-only enumerate installed localhost Ollama models
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $p=Join-Path $env:RUNNER_TEMP 'eldoria-available-artist-models.json'
+          $ollama=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if (-not (Test-Path $ollama)) {
+            $ollama=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if (-not (Test-Path $ollama)) { throw 'Existing owner-installed Ollama not found' }
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $modelDir=Join-Path $env:USERPROFILE '.ollama\models'
+          if (-not (Test-Path $modelDir)) {
+            $modelDir=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName '.ollama\models' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if ($modelDir -and (Test-Path $modelDir)) { $env:OLLAMA_MODELS=$modelDir }
+          $proc=$null
+          try {
+            $ready=$false
+            try { $null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 3; $ready=$true } catch {}
+            if (-not $ready) {
+              $stdout=Join-Path $env:RUNNER_TEMP 'eldoria-model-tags-stdout.log'
+              $stderr=Join-Path $env:RUNNER_TEMP 'eldoria-model-tags-stderr.log'
+              $proc=Start-Process -FilePath $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+              for($i=0;$i -lt 30;$i++) {
+                try { $null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2; $ready=$true;break } catch { Start-Sleep -Seconds 1 }
+              }
+            }
+            if (-not $ready) { throw 'Ollama cannot open localhost models endpoint' }
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 10
+            $names=@($tags.models | ForEach-Object { @{name=$_.name;size_bytes=$_.size;family=$_.details.family;parameter_size=$_.details.parameter_size;quantization=$_.details.quantization_level} })
+            $gpu=@(Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue | ForEach-Object { @{name=$_.Name;vram_gib=[math]::Round([double]$_.AdapterRAM / 1GB,2)} })
+            @{models=$names; gpu=$gpu; downloads=0;inferences=0;source_unchanged=$true;art_approved=$false} |
+              ConvertTo-Json -Depth 6 | Set-Content $p -Encoding UTF8
+            Write-Host ('ELDORIA_LOCAL_ARTIST_MODEL_COUNT='+$names.Count)
+            foreach($m in $names){Write-Host ('INSTALLED_LOCAL_MODEL='+$m.name+' '+$m.parameter_size+' '+$m.quantization)}
+          } finally {
+            if($proc){Stop-Process -Id $proc.Id -ErrorAction SilentlyContinue}
+          }
+      - name: Preserve model size inventory only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pc-installed-artist-model-options
+          path: ${{ runner.temp }}/eldoria-available-artist-models.json
+          retention-days: 5
+          if-no-files-found: warn
