@@ -10,6 +10,7 @@ from contract import validate_plan, RejectedPlan, safe_action_id
 from learning_context import transferable_lessons
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
+from source_geometry_gate import verify_source_plan
 
 HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
@@ -157,6 +158,9 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
     if phase=="detail":
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
     return base+(
+        "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
+        "For sculpt, pick your own center within brush radius of a real local_extrema local_position_m, or use sculpt_anchor. "
+        "Model decisions are NEVER automatically clamped, moved or fixed; bad original choices are rejected before Blender. "
         "FULL PROFESSIONAL ARTIST MODE on verified source: choose which REAL Blender "
         "tools to use based on the observed visual defect, NOT a fixed primitive recipe. "
         "Every target must be an inspected existing mesh or an object created by an "
@@ -232,7 +236,7 @@ def repair_noncreative_action_ids(doc):
     return doc, repairs
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
-             source_exists=False,known_objects=None):
+             source_exists=False,known_objects=None,source_inventory=None):
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
       +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-4000:]
@@ -254,6 +258,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
+    if source_exists and args.phase=='full':verify_source_plan(doc,source_inventory)
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
@@ -368,6 +373,7 @@ def main():
     original_source_sha=sha(args.source) if args.source else None
     history=""
     known_objects=[]
+    verified_objects=[]
     if args.source:
         inspected=args.out/"source-inspection"
         command=[args.blender,"-b","--python-exit-code","1","--python",str(HERE/"inspect_source.py"),
@@ -400,7 +406,7 @@ def main():
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,4):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
@@ -449,6 +455,25 @@ def main():
         history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
         known_objects=[o["name"] for o in catalog["components"][:80]]
+        if should_continue_after_critique(cycle,args.max_cycles,args.source is None,evaluation):
+            # Topology-changing actions invalidate original face IDs. Inspect
+            # the actual generated BLEND before giving Qwen the next face map.
+            next_inspection=trial/"reinspection"
+            command=[args.blender,"-b","--python-exit-code","1","--python",
+                     str(HERE/"inspect_source.py"),"--","--source",str(source),"--out",str(next_inspection)]
+            if args.review:command+=["--review",str(args.review)]
+            check=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=900)
+            (trial/"reinspection-blender-log.txt").write_text(check.stdout,encoding="utf-8")
+            if check.returncode:raise RuntimeError("Blender reinspection failed: "+check.stdout[-1000:])
+            inspected_again=json.loads((next_inspection/"source-inspection.json").read_text())
+            if not inspected_again["source_unchanged"] or inspected_again["source_sha256"]!=sha(source):
+                raise RuntimeError("Reinspection changed candidate source")
+            verified_objects=[{k:x[k] for k in ("name","vertices","faces","local_extrema",
+                                                "local_bounds_min_m","local_bounds_max_m",
+                                                "materials","uv_layers")}
+                              for x in inspected_again["objects"][:80]]
+            known_objects=[x["name"] for x in verified_objects]
+            history+="\\nUP-TO-DATE ACTUAL BLENDER FACE/EXTREMA INVENTORY: "+json.dumps(verified_objects)[:12000]
         if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation):break
         if started_empty and cycle==1:
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
