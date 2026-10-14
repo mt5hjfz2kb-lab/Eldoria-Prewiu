@@ -35,6 +35,7 @@ def weighted(rubric):
 
 def stage_visual_request(*,output,reference,original_source_sha,input_source,
                          raw_plan,execution_proof,before,after,model,
+                         raw_response_file=None,
                          memory_proof=None,review_camera_file=None,run_id=None):
     """Consume actual source+model+Blender evidence; write no art-approval flag."""
     from PIL import Image
@@ -62,7 +63,8 @@ def stage_visual_request(*,output,reference,original_source_sha,input_source,
          "input_asset_sha256":digest(src),
          "output_asset_sha256":proof.get("blend_sha256"),
          "output_glb_sha256":proof.get("glb_sha256"),
-         "qwen_plan_sha256":digest(raw_plan),
+         "qwen_plan_sha256":digest(raw_response_file) if raw_response_file else digest(raw_plan),
+         "execution_plan_sha256":digest(raw_plan),
          "reference_sha256":digest(reference),
          "memory_context_sha256":extra,
          "camera_matched_in_blender":True,
@@ -90,7 +92,7 @@ def validate_independent_review(request,review,*,prior=None):
             review["reviewer_id"]==request["model"]):
         raise ValueError("Qwen cannot independently judge its own art")
     for name in ("original_asset_sha256","input_asset_sha256",
-                 "output_asset_sha256","qwen_plan_sha256",
+                 "output_asset_sha256","qwen_plan_sha256","execution_plan_sha256",
                  "reference_sha256","before_png_sha256","after_png_sha256",
                  "review_camera_spec_sha256"):
         if review.get(name)!=request.get(name):
