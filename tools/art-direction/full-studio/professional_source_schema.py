@@ -6,6 +6,8 @@ This is a progressive subset of the Blender toolbox, NOT all Blender.
 """
 # Namespaced but artist-chosen source-assembly objects cannot shadow frozen meshes.
 # Only a safe namespace constraint, not a geometry/style/template choice.
+from sculpt_scale_contract import conservative_schema_bounds
+
 NEW_COMPONENT_PATTERN = r"^Eldoria_Added_[A-Za-z][A-Za-z0-9_]{3,42}$"
 
 def source_artist_action_schema(objects):
@@ -66,11 +68,14 @@ def source_artist_action_schema(objects):
                                  "items":{"type":"integer","minimum":0,"maximum":11}}}},
               ["vertices","faces"])
     }
+    safe_brush=conservative_schema_bounds(objects)
+    anchor_distance=(safe_brush["distance"] if safe_brush else {"minimum":0.65,"maximum":1.8})
+    anchor_radius=(safe_brush["radius"] if safe_brush else {"minimum":1.5,"maximum":8})
     defs={
         "sculpt_anchor":({"anchor":enum(["x_min","x_max","y_min","y_max","z_min","z_max"]),
                           "direction":enum(["+X","-X","+Y","-Y","+Z","-Z"]),
-                          "distance":{"type":"number","minimum":0.65,"maximum":1.8},
-                          "radius":{"type":"number","minimum":1.5,"maximum":8}},
+                          "distance":{"type":"number",**anchor_distance},
+                          "radius":{"type":"number",**anchor_radius}},
                           ["anchor","direction","distance","radius"]),
         "sculpt":({"center":v3,"delta":v3,"radius":{"type":"number","minimum":0.2,"maximum":8}},
                   ["center","delta","radius"]),
