@@ -36,7 +36,7 @@ if($modelsDir -and (Test-Path $modelsDir)){$env:OLLAMA_MODELS=$modelsDir}
 $env:OLLAMA_HOST='127.0.0.1:11434'
 $env:OLLAMA_NUM_PARALLEL='1'
 $env:OLLAMA_MAX_LOADED_MODELS='1'
-$env:ELDORIA_ARTIST_NUM_CTX='8192'
+$env:ELDORIA_ARTIST_NUM_CTX='16384'
 $server=$null;$wasActive=$false
 try{
   try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 3;$wasActive=$true}catch{}
@@ -107,7 +107,7 @@ try{
     original_source_sha256=$sourceHash;source_unchanged=$true;
     comparison='SAME_TOWER_SAME_REFERENCE_SAME_CAMERA';art_approved=$false;
     model_weight_training=$false;model_downloads=0;
-    gpu_before=$gpuBefore;vision_max_edge=768;num_ctx=8192;max_tokens=2048;
+    gpu_before=$gpuBefore;vision_max_edge=768;num_ctx=16384;max_tokens=2048;
     results=$checks}
   $report | ConvertTo-Json -Depth 15 | Set-Content -Encoding UTF8 (Join-Path $Out 'benchmark-results.json')
   Write-Host ('ELDORIA_QWEN_4B_8B_REAL_BLENDER_BENCHMARK_COMPLETE trials='+$checks.Count)
