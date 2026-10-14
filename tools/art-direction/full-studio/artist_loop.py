@@ -785,6 +785,7 @@ def main():
     records=[]
     invisible_plan_signatures=set()
     invisible_source_ops=set()
+    rejected_invisible_family_count={}
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,args.max_plan_attempts+1):
@@ -836,13 +837,24 @@ def main():
         screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
         (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
         if not result["matched_review_camera"] or not screen["visually_present"]:
-            if screen.get("changed_pixels")==0:
-                invisible_plan_signatures.add(executed_action_signature(doc))
-                if (source and args.source_tool_sequencing and
+            # The permanent contract disallows two rejected retries with the
+            # SAME geometric hypothesis, even if tiny shadow differences are
+            # nonzero. Visibility threshold is rejection, not a quality score.
+            invisible_plan_signatures.add(executed_action_signature(doc))
+            if (source and args.source_tool_sequencing and
                     not args.source_build_phase and doc.get("actions") and
                     doc["actions"][0]["op"] in
                     ("extrude","inset","sculpt_anchor","sculpt","bevel")):
-                    invisible_source_ops.add(doc["actions"][0]["op"])
+                family=doc["actions"][0]["op"]
+                rejected_invisible_family_count[family]=(
+                    rejected_invisible_family_count.get(family,0)+1)
+                if rejected_invisible_family_count[family]>=2:
+                    invisible_source_ops.add(family)
+                    history+=("\nOWNER CONTRACT V1: two visually rejected attempts "
+                              "using "+family+" => CHANGE GEOMETRIC HYPOTHESIS. "
+                              "This source tool family is disabled for the "
+                              "remaining cycles; select a genuinely different "
+                              "original Blender tool, not a minor numeric variant.")
             stage_pending_art_evidence(
                 trial/"pending-learning-case.json",model=args.model,
                 source_hash=original_source_sha,plan_file=candidate,
@@ -975,6 +987,21 @@ def main():
                args.min_successful_cycles,len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"])):break
         if started_empty and cycle==1:
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
+    rejected_count=sum(rec.get("status") in (
+            "SCREENSPACE_REJECTED","PROTECTED_ACCESS_OCCLUSION_REJECTED",
+            "MOBILE_MESH_DENSITY_REJECTED","BLENDER_REJECTED","ART_REJECTED")
+                       for rec in records)
+    if rejected_count>=5 and not accepted_chain:
+        (args.out/"owner-strategy-diagnosis.json").write_text(
+            json.dumps({"status":"STRATEGY_REVIEW_REQUIRED",
+                        "rejected_cycles":rejected_count,
+                        "source_sha256":original_source_sha,
+                        "excluded_failed_tool_families":sorted(invisible_source_ops),
+                        "accepted_interventions":0,
+                        "reason":"Five failed complete cycles; review actual "
+                        "camera, mesh face choice, artistic hypothesis and "
+                        "model constraints before any repeated run.",
+                        "art_approved":False},indent=2)+"\n")
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
     evidence_summary=summarize_real_artist_cycles(records)
     calibration=visual_calibration_status(accepted_chain)
