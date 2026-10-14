@@ -516,6 +516,8 @@ def main():
     camera_hash=json.dumps(
         [[float(x) for x in row] for row in bpy.context.scene.camera.matrix_world])
     originals=snapshot_meshes()
+    # Measure real evaluated triangles before any authored edits, including the identical review stage.
+    baseline_evaluated_triangles=triangles_evaluated()
     before=out/"before-blender.png";bpy.context.scene.render.filepath=str(before)
     bpy.ops.render.render(write_still=True)
     journal=[];started=time.monotonic()
@@ -592,6 +594,7 @@ def main():
             "before_blender_sha256":digest(before),"after_blender_sha256":digest(after),
             "blend_sha256":digest(blend),"glb_sha256":digest(glb),
             "matched_review_camera":camera_hash==final_cam,
+            "baseline_evaluated_triangles":baseline_evaluated_triangles,
             "evaluated_triangles":triangle_count,"action_count":len(journal),
             "inherited_mesh_data_changed":any(e["originals_changed"] for e in journal),
             "execution":journal,"elapsed_seconds":round(time.monotonic()-started,3)}

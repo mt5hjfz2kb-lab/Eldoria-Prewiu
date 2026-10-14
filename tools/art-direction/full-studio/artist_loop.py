@@ -12,6 +12,7 @@ from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
 from source_geometry_gate import verify_source_plan,relative_triangle_limit
 from professional_source_schema import source_artist_action_schema
+from triangle_budget import check_triangle_growth
 
 HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
@@ -484,13 +485,19 @@ def main():
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
         if source and args.phase=="full" and verified_objects:
-            # Don't mistake multiplying mesh density for professional detail.
-            budget=relative_triangle_limit(verified_objects)
-            if result.get("evaluated_triangles",0)>budget:
+            baseline=result.get("baseline_evaluated_triangles")
+            after=result.get("evaluated_triangles")
+            # Both are Blender evaluated triangles on the same source and
+            # neutral review stage. Face counts were never comparable.
+            guard=check_triangle_growth(baseline,after)
+            (trial/"evaluated-triangle-comparison.json").write_text(
+                json.dumps(guard,indent=2)+"\\n",encoding="utf-8")
+            if not guard["allowed"]:
                 records.append({"cycle":cycle,"status":"MOBILE_MESH_DENSITY_REJECTED",
-                                "triangles":result["evaluated_triangles"],"budget":budget,
+                                "baseline_evaluated_triangles":baseline,
+                                "triangles":after,"budget":guard["triangle_limit"],
                                 "plan_sha256":sha(candidate)})
-                history+=f"\\nREJECTED: real Blender output has {result['evaluated_triangles']} triangles versus {budget} relative source safety budget. Avoid whole-object modifiers; choose source-grounded LOCAL changes."
+                history+=f"\\nREJECTED: actual Blender triangle growth {baseline} -> {after} exceeds safe limit {guard['triangle_limit']}. Use localized changes, not global subdivision."
                 continue
         if args.phase=="mesh_edit" and source:
             edits=[step for step in result["execution"] if step["op"]=="sculpt_anchor"
