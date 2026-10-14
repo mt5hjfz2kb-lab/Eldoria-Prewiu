@@ -1,4 +1,4 @@
-name: Eldoria unified artist real local 4B vs 8B frozen tower A-B
+name: Eldoria artist V1 independent quality contract - Qwen8B Blender tower
 on:
   push:
     branches:
@@ -51,6 +51,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Enforce owner quality contract and exact main artistic approval gate before Qwen
         shell: powershell
         run: |
