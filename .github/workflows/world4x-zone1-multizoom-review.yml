@@ -1,0 +1,59 @@
+name: World4X Zone One real Blender A-B at global regional local and mobile zoom
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-multizoom-review.yml'
+      - 'tools/world4x-zone1/production/render_general_ground_zooms.py'
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-real-multizoom-capture
+  cancel-in-progress: false
+jobs:
+  real-source-zoom-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install zero-credit Blender renderer
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+      - name: Capture identical terrain at four true strategic framing scales
+        run: |
+          set -euo pipefail
+          test -s docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend
+          python3 -c 'import json; p=json.load(open("docs/world4x-zone1/evidence/general-ground-38580519176/independent/independent-ground-gate.json")); assert p["independent_geometry_gate_passed"] and not p["art_approved"]'
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/render_general_ground_zooms.py -- \
+            --before Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb \
+            --after docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --out /tmp/world4x-zone1-multizoom
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path("/tmp/world4x-zone1-multizoom")
+          j=json.loads((root/"zoom-review.json").read_text())
+          assert len(j["records"])==8 and not j["art_approved"] and not j["unity_tested"]
+          assert len(list(root.glob("*-blender.png")))==8
+          PY
+      - name: Preserve exact real Blender images and camera matrices
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/real-multizoom-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/world4x-zone1-multizoom; then cp -a /tmp/world4x-zone1-multizoom/. "$DEST/"; fi
+          printf '%s\n' 'REAL_BLENDER_A_B_UNITY_AND_ART_APPROVAL_PENDING' > "$DEST/STATE.txt"
+          git config user.name 'Eldoria Zone One visual workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git commit -m 'Preserve real World4X terrain A-B at global regional local and mobile zoom'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-matched-real-zooms-${{ github.run_id }}
+          path: /tmp/world4x-zone1-multizoom/
+          retention-days: 30
