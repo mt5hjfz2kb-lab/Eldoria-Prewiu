@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-full-blender-artist-studio-20261014",
+  "request_id": "eldoria-full-blender-artist-studio-20261014",
+  "asset_or_sector": "General purpose Qwen-authored Blender geometry, modelling, surface and reusable 3D asset authoring for Eldoria",
+  "profile": "environment_new_geometry",
+  "visual_gate_state": "AUTHORING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "The existing canonical 7-operation artist API cannot autonomously model complex medieval asset families; scripted Bastion geometry often substitutes Qwen creative authorship. Owner explicitly requires a genuine full Blender artistic workshop and results, not evaluator-only work.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "blender_bake": true,
+    "unity_material_blending": false
+  },
+  "validation": {
+    "source_gate": "Qwen chooses complete typed Blender operations before construction, actual editable .blend/GLB and matched Blender A/B; rejected schema actions and deterministic-only demonstrations are NOT Qwen authorship.",
+    "final_gate": "Genuine Qwen source-cycle pass, independent artistic comparison, correct mobile budget, Unity native identical-camera captures and verification with active Bastion/World4X owners before any art promotion."
+  },
+  "notes": "Isolated new tools/art-direction/full-studio/**; zero paid credits; Bastion I owns tools/art-direction/ai-authoring/** and Windows heavy runner. No owner collision or main scene replacement. ART PENDING."
+}

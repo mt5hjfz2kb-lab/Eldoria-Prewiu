@@ -151,7 +151,8 @@
       "scope": [
         "tools/art-direction/full-studio/**",
         "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
-        ".github/workflows/eldoria-full-artist-studio.yml"
+        ".github/workflows/eldoria-full-artist-studio.yml",
+        "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
       ],
       "resources": [],
       "status": "active",
@@ -160,7 +161,8 @@
       "branch": "art/eldoria-full-blender-artist-studio-20261014",
       "dependency": "The active Bastion I owner controls tools/art-direction/ai-authoring/** and its Unity/workflows. Build the full Blender artist independently; do not edit its live files or touch the Windows runner. Integration only after a conflict-free handoff.",
       "art_production_routing": "required",
-      "phase": "Implementing independent general purpose Blender studio and QA"
+      "phase": "Implementing independent general purpose Blender studio and QA",
+      "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
     }
   ],
   "history": [
