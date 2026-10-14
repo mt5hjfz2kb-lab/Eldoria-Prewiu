@@ -60,6 +60,18 @@ def verify_source_plan(document,inventory):
                     errors.append(f"Action {i}: sculpt center/radius has no verified inherited mesh landmark in range; "
                                   "choose your OWN center within radius of local_extrema local_position_m, "
                                   "or your OWN sculpt_anchor; don't invent coordinates or use world position")
+        elif op in ("material","uv","shader_graph","texture"):
+            # Imported production GLB has a shared texture atlas across the
+            # entire dense inherited mesh. Whole-object repaint or smart UV
+            # unwrap destroys existing art even for a one-face edit.
+            # Qwen may finish independent NEW meshes in their own cycles.
+            if actual and actual.get("faces",0)>2500:
+                errors.append(
+                    f"Action {i}: PRESERVE_INHERITED_TEXTURE_ATLAS: "
+                    f"whole-object {op} is forbidden on dense source "
+                    f"{target!r}. Do a LOCAL structural edit only, or "
+                    "create a distinct small mesh and finish THAT object "
+                    "in a separate safely inspected cycle.")
         elif op=="sculpt_anchor":
             structural=True
             if actual and params.get("anchor") not in actual.get("local_extrema",{}):
