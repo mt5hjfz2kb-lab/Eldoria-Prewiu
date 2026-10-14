@@ -1,0 +1,56 @@
+name: Zone One preserve genuine material trial and lit relief comparison
+on:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-ground-material-replay.yml'
+      - 'tools/world4x-zone1/production/replay_surface_decision.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-ground-source
+  cancel-in-progress: false
+jobs:
+  preserve-ground-trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install independent source workshop
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Validate unchanged recorded genuine artist proposal
+        run: |
+          python3 tools/world4x-zone1/production/replay_surface_decision.py --recorded-cycle docs/world4x-zone1/evidence/ground-surface-38551351550 --out /tmp/zoneone-material-replay
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/zoneone-material-replay/artist-plan.json 'ZoneOne continuous prairie source' existing
+      - name: Execute and bake; no fresh inference claimed
+        run: |
+          SOURCE_SHA=$(sha256sum /tmp/zoneone-material-replay/geometry-normal-fixed.blend | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-material-replay/geometry-normal-fixed.blend --plan /tmp/zoneone-material-replay/artist-plan.json --out /tmp/zoneone-material-replay/typed --transport direct --expected-source-sha256 "$SOURCE_SHA"
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/ground_surface.py -- --phase bake --work-dir /tmp/zoneone-material-replay --source docs/world4x-zone1/evidence/ground-first-38530648411
+          python3 tools/world4x-zone1/production/verify_ground_surface.py --work-dir /tmp/zoneone-material-replay
+      - name: Render geometry comparison with identical lit cameras
+        run: |
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/render_ground_geometry.py -- --before docs/world4x-zone1/evidence/ground-first-38522534427/source/derived-source.blend --after docs/world4x-zone1/evidence/ground-first-38530648411/edited/artist-output.blend --out /tmp/zoneone-material-replay/relief
+      - name: Preserve source candidates and failures without approval
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/material-replay-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/zoneone-material-replay; then cp -a /tmp/zoneone-material-replay/. "$DEST/"; fi
+          printf '%s\n' 'SOURCE_ONLY_REQUIRES_VISUAL_REVIEW_NOT_UNITY_APPROVED' > "$DEST/STATE.txt"
+          git config user.name 'Eldoria Zone One source workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git commit -m 'Preserve original Qwen material trial and genuine lit source comparison'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-material-replay-${{ github.run_id }}
+          path: /tmp/zoneone-material-replay/
+          retention-days: 30
