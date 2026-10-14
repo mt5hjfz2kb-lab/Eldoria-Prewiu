@@ -28,3 +28,46 @@ jobs:
       - name: Preserve source authority and halt before artistic production
         run: |
           echo 'Contract QA only; owner production pause remains active.'
+
+  real-source-coordinate-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender to inspect actual protected source
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+      - name: Inspect original source .blend without authoring
+        run: |
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source docs/world4x-zone1/evidence/general-ground-38580519176/independent/normal-fixed-ground.blend \
+            --inspect --inspect-target-object 'ZoneOne continuous prairie source' \
+            --out /tmp/eldoria-world4x-real-source-inspection
+      - name: Derive exact permissible AI knot bounds from the actual mesh
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,sys
+          sys.path.insert(0,"tools/world4x-zone1/production")
+          from terrain_bounds_contract import verified_knot_ranges, model_knot_schema, limits_label
+          p=pathlib.Path('/tmp/eldoria-world4x-real-source-inspection/mesh-context.json')
+          doc=json.loads(p.read_text())
+          assert doc['target']=='ZoneOne continuous prairie source'
+          assert doc['vertices']>=14000
+          bounds=verified_knot_ranges(doc)
+          schema=model_knot_schema(bounds)
+          assert len(schema['properties']['center_xyz']['required'])==3
+          print('ELDORIA_WORLD4X_REAL_SOURCE_LIMITS_PASS',limits_label(bounds))
+          p.parent.joinpath('preflight-bounds.json').write_text(json.dumps({
+             'actual_target':doc['target'], 'vertex_count':doc['vertices'],
+             'safe_ranges':bounds, 'art_approved':False,
+             'ai_inference_executed':False},indent=2))
+          PY
+      - name: Preserve source-only verified geometry bounds
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-world4x-source-bounds-proof
+          path: /tmp/eldoria-world4x-real-source-inspection/
+          if-no-files-found: warn
+          retention-days: 14
