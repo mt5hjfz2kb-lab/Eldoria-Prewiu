@@ -134,6 +134,24 @@
         "art_approved": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "qwen8b-repeated-eave-failure-38645874637",
+      "run_id": 38645874637,
+      "evidence_artifact_id": 11932511762,
+      "raw_response_sha256": "0c854672bd8639296ba440d15b22ecb62b21754e106f65a430ec8693a65c89c6",
+      "result": "FIVE_REJECTED_QWEN_PLANS_NO_BLENDER_CYCLE",
+      "observed": "Authentic Qwen8B professional eave trial from Windows 2026-10-14 failed all 5 plans before Blender. Attempt 1 authored duplicate 3D mesh vertices; attempts 2-4 repeated geometrically disconnected CENTRAL roof apex eaves despite exact explicit measured rejection; attempt 5 chose a volume too thin/tiny to be legible. Zero valid A/B models from this run.",
+      "safe_lesson": "When full-dimensional tower detail attempts repeatedly fail physical roof attachment or closed-mesh checks, stop repeating the same cylinder-at-apex geometry. Choose another appropriate architectural tool from the Blender source-grounded inventory (selected bevel/extrusion, existing surface adjustment, real edge-attached new part); retain original source and never claim success without real A/B.",
+      "review_provenance": {
+        "run_id": 38645874637,
+        "artifact_id": 11932511762,
+        "mode": "FORCED_SINGLE_PRIMITIVE_ASSEMBLY",
+        "failed_attempts": 5,
+        "art_approved": false,
+        "unity_tested": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
