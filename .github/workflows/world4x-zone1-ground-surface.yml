@@ -1,0 +1,66 @@
+name: Zone One artist-directed ground material bake
+on:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - '.github/workflows/world4x-zone1-ground-surface.yml'
+      - 'tools/world4x-zone1/production/ground_surface.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-ground-source
+  cancel-in-progress: false
+jobs:
+  source-surface-authoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GROUND_SOURCE: docs/world4x-zone1/evidence/ground-first-38530648411
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source gate and install own free workshop
+        run: |
+          test -s "$GROUND_SOURCE/ground-ab-proof.json"
+          test -s "$GROUND_SOURCE/edited/artist-output.blend"
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          mkdir -p /tmp/zoneone-surface
+      - name: Refresh imported normals without changing artist geometry
+        run: |
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/ground_surface.py -- --phase prepare --work-dir /tmp/zoneone-surface --source "$GROUND_SOURCE"
+      - name: Start independent zero-credit local artist
+        run: |
+          docker run --rm -d --name zoneone-surface-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-surface/ollama-version.json; then break; fi; sleep 2; done
+          test -s /tmp/zoneone-surface/ollama-version.json
+          docker exec zoneone-surface-artist ollama pull qwen3-vl:4b-instruct
+      - name: Actual visual material design and typed preflight
+        run: |
+          /usr/bin/python3 tools/world4x-zone1/production/ground_surface.py --phase author --work-dir /tmp/zoneone-surface --source "$GROUND_SOURCE"
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/zoneone-surface/artist-plan.json 'ZoneOne continuous prairie source' existing
+      - name: Execute unchanged material decision then bake its exact recipe
+        run: |
+          SOURCE_SHA=$(sha256sum /tmp/zoneone-surface/geometry-normal-fixed.blend | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-surface/geometry-normal-fixed.blend --plan /tmp/zoneone-surface/artist-plan.json --out /tmp/zoneone-surface/typed --transport direct --expected-source-sha256 "$SOURCE_SHA"
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/ground_surface.py -- --phase bake --work-dir /tmp/zoneone-surface --source "$GROUND_SOURCE"
+      - name: Preserve exact candidates and failure evidence; never promote automatically
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/ground-surface-${{ github.run_id }}
+          mkdir -p "$DEST"
+          if test -d /tmp/zoneone-surface; then cp -a /tmp/zoneone-surface/. "$DEST/"; fi
+          printf '%s\n' 'SOURCE_PHASE_ONLY_NOT_ART_APPROVED' > "$DEST/STATE.txt"
+          git config user.name 'Eldoria Zone One source workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git commit -m 'Preserve real Zone One material source cycle; Unity and visual gates not approved'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-ground-surface-${{ github.run_id }}
+          path: /tmp/zoneone-surface/
+          retention-days: 30
