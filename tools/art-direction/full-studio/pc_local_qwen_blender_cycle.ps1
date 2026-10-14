@@ -4,7 +4,8 @@ param(
   [Parameter(Mandatory=$true)][string]$Source,
   [Parameter(Mandatory=$true)][string]$Reference,
   [Parameter(Mandatory=$true)][string]$Out,
-  [string]$Model='qwen3-vl:4b-instruct'
+  [string]$Model='qwen3-vl:4b-instruct',
+  [ValidateSet('direct','blendermcp')][string]$Transport='blendermcp'
 )
 $ErrorActionPreference='Stop'
 if (Test-Path $Out) { if (@(Get-ChildItem $Out -Force).Count -gt 0) { throw 'Output must be new and empty' } }
@@ -22,6 +23,21 @@ if (-not $blender) {
     Select-Object -First 1 -ExpandProperty FullName
 }
 if (-not $blender) { throw 'Native Windows Blender executable missing' }
+$McpAddon=$null
+$McpHash=$null
+if ($Transport -eq 'blendermcp') {
+  # Do not install, patch or turn on a plugin in user preferences. Load the known addon in this ONE isolated Blender process.
+  $addonResult=& $blender -b --factory-startup --python-exit-code 1 --python-expr "import addon_utils;m=next(x for x in addon_utils.modules(refresh=True) if x.__name__=='blender_mcp');print('ELDORIA_INSTALLED_MCP='+m.__file__)"
+  if ($LASTEXITCODE -ne 0) { throw 'Real BlenderMCP addon not discoverable in installed Blender' }
+  $addonLine=@($addonResult | Where-Object { $_ -like 'ELDORIA_INSTALLED_MCP=*' }) | Select-Object -First 1
+  if (-not $addonLine) { throw 'Blender returned no real installed MCP module path' }
+  $McpAddon=$addonLine.Substring('ELDORIA_INSTALLED_MCP='.Length).Trim()
+  if (-not (Test-Path $McpAddon)) { throw 'BlenderMCP addon missing' }
+  $McpHash=(Get-FileHash $McpAddon -Algorithm SHA256).Hash.ToLowerInvariant()
+  if ($McpHash -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5') {
+    throw 'Verified BlenderMCP addon changed; stop before executing different code'
+  }
+}
 $ollama=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
 if (-not (Test-Path $ollama)) {
   $ollama=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
@@ -164,10 +180,14 @@ try {
   # An identical byte copy: Blender does NOT see any rewritten model numbers.
   [IO.File]::Copy((Join-Path $Out 'qwen-raw.json'),$planFile,$false)
   $output=Join-Path $Out 'native-blender-output'
-  & $blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- --source $Source --plan $planFile --out $output --texture-root $env:GITHUB_WORKSPACE --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json
+  $blenderArgs=@('-b','--factory-startup','--python-exit-code','1','--python','tools/art-direction/full-studio/blender_toolbox.py','--',
+                 '--source',$Source,'--plan',$planFile,'--out',$output,'--texture-root',$env:GITHUB_WORKSPACE,
+                 '--review','tools/art-direction/full-studio/tests/valoria_tower_hero_review.json','--transport',$Transport)
+  if ($Transport -eq 'blendermcp') { $blenderArgs+=@('--mcp-addon',$McpAddon,'--mcp-sha256',$McpHash) }
+  & $blender @blenderArgs
   if ($LASTEXITCODE -ne 0) { throw 'Original PC Qwen authored art choices rejected by Blender' }
   $proof=Get-Content (Join-Path $output 'execution-proof.json') -Raw | ConvertFrom-Json
-  if (-not $proof.blender_execution -or $proof.action_count -ne 2 -or -not $proof.inherited_mesh_data_changed -or -not $proof.matched_review_camera) { throw 'PC Blender did not modify actual original inherited mesh in fixed A/B camera' }
+  if ($proof.transport -ne $Transport -or -not $proof.blender_execution -or $proof.action_count -ne 2 -or -not $proof.inherited_mesh_data_changed -or -not $proof.matched_review_camera) { throw 'PC Blender did not modify actual original inherited mesh in fixed A/B camera' }
   if ($proof.art_approved -or $proof.unity_tested) { throw 'Technical pass cannot approve quality' }
   $verifiedSourceSHA=(Get-FileHash $Source -Algorithm SHA256).Hash.ToLowerInvariant()
   if ($sourceSHA -ne $verifiedSourceSHA) { throw 'Original game resource was modified' }
@@ -179,6 +199,8 @@ try {
     artist_model=$Model
     inference_location='SAME_WINDOWS_PC'
     blender_location='SAME_WINDOWS_PC'
+    blender_transport=$Transport
+    blender_mcp_addon_sha256=$McpHash
     qwen_original_SHA256=$originalRawSHA
     executed_plan_SHA256=$executedPlanSHA
     frozen_source_SHA256=$sourceSHA
