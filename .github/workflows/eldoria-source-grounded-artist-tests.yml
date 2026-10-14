@@ -31,5 +31,6 @@ jobs:
           python -m py_compile tools/art-direction/full-studio/source_geometry_gate.py tools/art-direction/full-studio/artist_loop.py
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_source_geometry_gate.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_professional_cycle.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_minimum_professional_cycles.py' -v
       - name: Confirm no Blender/Qwen/Windows/Unity production used
         run: echo 'OFFLINE_CONTRACT_ONLY and ART_APPROVED remains false'
