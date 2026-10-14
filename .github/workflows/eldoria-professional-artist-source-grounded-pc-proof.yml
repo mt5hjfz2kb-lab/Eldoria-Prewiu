@@ -1,4 +1,5 @@
 name: Eldoria original Qwen two source-grounded professional BlenderMCP PC art cycles
+# Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
 # Third controlled test: selected BMesh edges confirmed in Windows, source damage prevention and inspected topology.
 # Second real attempt: typed nine-tool schemas plus actual topology landmarks; retain raw model choices.
 on:
