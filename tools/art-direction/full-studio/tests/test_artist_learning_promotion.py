@@ -19,6 +19,7 @@ class VerifiedCurationTests(unittest.TestCase):
         stage.mkdir(parents=True)
         files={
             "plan_file":out/"artist-plan.json",
+            "raw_response_file":out/"qwen-raw.json",
             "before_image":stage/"before-blender.png",
             "after_image":stage/"after-blender.png",
             "critique_file":out/"qwen-critique.json",
@@ -56,6 +57,7 @@ class VerifiedCurationTests(unittest.TestCase):
             new=curate_case(pending,review,casebook)
             self.assertEqual(len(new["cases"]),1)
             self.assertEqual(new["cases"][0]["result"],"VISUAL_REJECTED")
+            self.assertEqual(new["cases"][0]["raw_response_sha256"],sha(files["raw_response_file"]))
             self.assertFalse(new["cases"][0]["review_provenance"]["unity_verified"])
             self.assertTrue(new["cases"][0]["review_provenance"]["no_model_weight_training"])
             with self.assertRaises(ValueError):curate_case(pending,review,Path(temp)/"missing.json")
