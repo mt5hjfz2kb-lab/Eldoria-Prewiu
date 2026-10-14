@@ -128,6 +128,42 @@ def sculpt(o,p):
     if not count:raise RejectedPlan("AI chose sculpt center outside real geometry")
     return count
 
+def sculpt_anchor_world(o,p):
+    """Source anchor is local; requested direction/distance/radius are WORLD-space metres.
+
+    Imported GLB can have LOCAL +Y aligned with WORLD +Z and mesh-scale
+    transforms. Never move local-Z believing it is necessarily vertical.
+    Qwen picks anchor, world direction and magnitude; Blender converts only
+    coordinates and falloff, without deciding artistic edits.
+    """
+    if not o.data.vertices:
+        raise RejectedPlan("Source mesh has no vertices")
+    anchor=p["anchor"]
+    axis="xyz".index(anchor[0])
+    candidate=(min if anchor.endswith("min") else max)(
+        o.data.vertices,key=lambda v:float(v.co[axis]))
+    world_center=o.matrix_world @ candidate.co
+    direction=p["direction"]
+    world_vector=Vector((0.,0.,0.))
+    world_vector["XYZ".index(direction[1])]=float(p["distance"])*(1 if direction[0]=="+" else -1)
+    try:
+        local_delta=o.matrix_world.to_3x3().inverted() @ world_vector
+    except Exception as exc:
+        raise RejectedPlan("Inherited mesh transform is not invertible") from exc
+    radius=float(p["radius"])
+    count=0
+    for vert in o.data.vertices:
+        real_distance=(o.matrix_world @ vert.co-world_center).length
+        if real_distance>=radius:continue
+        t=1-real_distance/radius
+        w=t*t*(3-2*t)
+        vert.co+=local_delta*w
+        count+=1
+    if not count:raise RejectedPlan("AI anchor has no affected inherited vertices")
+    o.data.update()
+    return count
+
+
 def edit_face_operation(o,kind,p):
     bm=bmesh.new()
     try:
@@ -336,17 +372,7 @@ def run_action(a,texroot,approved_assets=None):
         if p.get("apply",False):active(o);bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
     elif kind=="sculpt":sculpt(obj(name),p)
     elif kind=="sculpt_anchor":
-        o=obj(name)
-        if not o.data.vertices:raise RejectedPlan("Source mesh has no vertices")
-        anchor=p["anchor"]
-        axis="xyz".index(anchor[0])
-        candidate=(min if anchor.endswith("min") else max)(
-            o.data.vertices,key=lambda v:float(v.co[axis]))
-        center=list(candidate.co)
-        direction=p["direction"]
-        delta=[0.,0.,0.]
-        delta["XYZ".index(direction[1])]=float(p["distance"])*(1 if direction[0]=="+" else -1)
-        sculpt(o,{"center":center,"delta":delta,"radius":p["radius"]})
+        sculpt_anchor_world(obj(name),p)
     elif kind in ("extrude","inset","subdivide"):edit_face_operation(obj(name),kind,p)
     elif kind=="bevel":
         target=obj(name)
