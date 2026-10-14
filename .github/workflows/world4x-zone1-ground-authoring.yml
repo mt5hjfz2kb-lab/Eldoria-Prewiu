@@ -1,0 +1,62 @@
+name: Zone One ground-first authentic artist cycle
+on:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths:
+      - 'tools/world4x-zone1/production/**'
+      - '.github/workflows/world4x-zone1-ground-authoring.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-ground-source
+  cancel-in-progress: false
+jobs:
+  source-ground-authoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free independent Blender source workshop
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Derive ground-only source and genuine baseline
+        run: |
+          mkdir -p /tmp/zoneone-ground
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/prepare_candidate_source.py -- --out /tmp/zoneone-ground/source
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-ground/source/derived-source.blend --inspect --inspect-target-object 'ZoneOne continuous prairie source' --out /tmp/zoneone-ground/context
+      - name: Start own free CPU Ollama artist
+        run: |
+          docker run --rm -d --name zoneone-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-ground/ollama-version.json; then break; fi; sleep 2; done
+          test -s /tmp/zoneone-ground/ollama-version.json
+          docker exec zoneone-artist ollama pull qwen3-vl:8b-instruct
+      - name: Real visual analysis and ground design before editing
+        run: |
+          /usr/bin/python3 tools/world4x-zone1/production/author_ground.py --cycle /tmp/zoneone-ground
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/zoneone-ground/artist-plan.json 'ZoneOne continuous prairie source' existing
+      - name: Execute original AI plan using existing typed workshop
+        run: |
+          SOURCE_SHA=$(sha256sum /tmp/zoneone-ground/source/derived-source.blend | cut -d' ' -f1)
+          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-ground/source/derived-source.blend --plan /tmp/zoneone-ground/artist-plan.json --out /tmp/zoneone-ground/edited --transport direct --expected-source-sha256 "$SOURCE_SHA"
+          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/compare_ground.py -- --cycle /tmp/zoneone-ground
+      - name: Persist source cycle without claiming artistic approval
+        if: always()
+        run: |
+          set -euo pipefail
+          test '${{ github.ref_name }}' = 'prototype/world4x-zone1-zoom-reference-20261013'
+          DEST=docs/world4x-zone1/evidence/ground-first-${{ github.run_id }}
+          mkdir -p "$DEST"
+          cp -a /tmp/zoneone-ground/. "$DEST/"
+          git config user.name 'Eldoria Zone One artist workshop'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f "$DEST"
+          git commit -m 'Preserve genuine Zone One ground source cycle; visual review pending'
+          git push origin HEAD:refs/heads/prototype/world4x-zone1-zoom-reference-20261013
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zoneone-ground-source-${{ github.run_id }}
+          path: /tmp/zoneone-ground/
+          retention-days: 30
