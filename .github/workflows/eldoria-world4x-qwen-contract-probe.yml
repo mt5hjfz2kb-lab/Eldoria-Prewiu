@@ -12,12 +12,15 @@ jobs:
   real-qwen-source-geometry-plan-preflight:
     runs-on: ubuntu-latest
     timeout-minutes: 43
+    env:
+      PYTHONPATH: /usr/lib/python3/dist-packages
     steps:
       - uses: actions/checkout@v4
       - name: Install free Blender inspection and local Qwen dependencies
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-pil python3-numpy
+          blender -b --python-expr "import numpy, PIL; print('ELDORIA_BLENDER_EMBEDDED_NUMPY_READY', numpy.__version__)"
           docker run --rm -d --name eldoria-qwen-contract-probe -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:11434/api/version >/dev/null; then break; fi
