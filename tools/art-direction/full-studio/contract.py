@@ -147,8 +147,8 @@ def validate_plan(doc):
                     "Real inherited mesh anchor required")
             require(p.get("direction") in ("+X","-X","+Y","-Y","+Z","-Z"),
                     "Original AI direction required")
-            require(finite_number(p.get("distance"),0.65,1.8) and
-                    finite_number(p.get("radius"),1.5,8),
+            require(finite_number(p.get("distance"),0.01,1.8) and
+                    finite_number(p.get("radius"),0.1,8),
                     "Nonzero AI sculpt distance and bounded radius required")
             geometric += 1
         elif op == "sculpt":
