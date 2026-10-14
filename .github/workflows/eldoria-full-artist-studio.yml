@@ -18,13 +18,13 @@ jobs:
       - name: Install free native Blender workshop
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
       - name: Test strict authoring contracts and syntax
         run: |
           python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_*.py' -v
-          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py
+          python3 -m py_compile tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/extended_ops.py
           blender --version | head -2
-      - name: Execute twenty-three real independent Blender modelling operations
+      - name: Execute twenty-six real independent Blender modelling operations
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
              --plan tools/art-direction/full-studio/tests/smoke_plan.json \
@@ -36,9 +36,15 @@ jobs:
           p=pathlib.Path('/tmp/eldoria-full-artist-smoke')
           proof=json.loads((p/'execution-proof.json').read_text())
           assert proof['blender_execution']
-          assert proof['action_count']==23,proof['action_count']
+          assert proof['action_count']==26,proof['action_count']
           assert 30<proof['evaluated_triangles']<220000
           assert proof['matched_review_camera'], 'A/B camera must remain identical'
+          catalog=json.loads((p/'reusable-asset-catalog.json').read_text())
+          assert catalog['component_count']>=6
+          assert len(catalog['new_components'])>=6
+          assert catalog['asset_id']=='technical-test-medieval-watchtower'
+          assert all(entry['geometry_sha256'] for entry in catalog['components'])
+          assert catalog['license_status']=='SELF_AUTHORED_GEOMETRY'
           assert not proof['art_approved'] and not proof['unity_tested']
           assert all(x['reason'] for x in proof['execution'])
           assert any(x['geometry_changed'] for x in proof['execution'] if x['op'] in ('primitive','mesh','sculpt','extrude','inset'))
@@ -48,6 +54,11 @@ jobs:
           assert len(data)==struct.unpack('<I',data[8:12])[0]
           for name in ('before-blender.png','after-blender.png'):
               data=(p/name).read_bytes();assert data.startswith(b'\x89PNG\r\n\x1a\n')
+          from PIL import Image,ImageChops
+          before=Image.open(p/'before-blender.png').convert('RGB')
+          after=Image.open(p/'after-blender.png').convert('RGB')
+          assert before.size==after.size
+          assert ImageChops.difference(before,after).getbbox(), 'Geometry not visible in real camera'
           print('ELDORIA_FULL_ARTIST_BLENDER_TECHNICALLY_PROVEN',proof['action_count'],proof['evaluated_triangles'])
           PY
       - name: Upload genuine models and renders, never claim artistic certification
@@ -60,6 +71,7 @@ jobs:
           retention-days: 21
 
   real-qwen-authored-asset:
+    if: contains(github.event.head_commit.message, 'NO_QWEN') == false
     needs: real-blender-toolbox
     runs-on: ubuntu-latest
     timeout-minutes: 55
@@ -101,6 +113,7 @@ jobs:
           proof=json.loads((cycle/'output/execution-proof.json').read_text())
           assert proof['blender_execution'] and proof['evaluated_triangles']>0
           assert proof['action_count']==len(plan['actions'])
+          assert (cycle/'output/reusable-asset-catalog.json').is_file()
           assert any(step['geometry_changed'] for step in proof['execution'])
           assert (cycle/'qwen-raw.json').stat().st_size>100
           assert (cycle/'output/artist-asset.blend').read_bytes().startswith(b'BLENDER')

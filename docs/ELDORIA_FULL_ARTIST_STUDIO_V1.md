@@ -12,7 +12,7 @@ El artista IA (Ollama/Qwen) observa referencias e imágenes originales, lee lecc
 
 Blender ejecuta las operaciones concretas con bpy y bmesh; ninguna torre, muralla o terreno está diseñado de antemano. Puede construir familias complejas con varios subobjetos y hasta 160 operaciones, dentro de un presupuesto geométrico verificable.
 
-Operaciones soportadas: primitive, mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, modifier, boolean, material, uv, join, delete, light, camera, render_settings, texture y asset_info.
+Operaciones soportadas: primitive, mesh, duplicate, transform, sculpt, extrude, inset, subdivide, bevel, modifier, boolean, material, uv, join, delete, light, camera, render_settings, texture, asset_info, native_operator, shader_graph y geometry_nodes. Blender ejecuta además operadores nativos seleccionados de modelado/UV y grafos reales de nodos de shader y geometría, cada uno con lista de tipos y parámetros de seguridad.
 
 Modificadores incluidos: BEVEL, SUBSURF, SOLIDIFY, DECIMATE, REMESH, MIRROR, ARRAY, WEIGHTED_NORMAL, TRIANGULATE, SIMPLE_DEFORM y DISPLACE.
 

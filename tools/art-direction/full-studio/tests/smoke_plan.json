@@ -494,6 +494,78 @@
       }
     },
     {
+      "id": "shadergraph",
+      "op": "shader_graph",
+      "target": "Watchtower roof handmade",
+      "reason": "Author and connect genuinely editable PBR shader nodes for the tower roof",
+      "params": {
+        "nodes": [
+          {
+            "id": "surface",
+            "type": "ShaderNodeBsdfPrincipled",
+            "inputs": {
+              "Base Color": [
+                0.26,
+                0.14,
+                0.08,
+                1
+              ],
+              "Roughness": 0.87
+            }
+          },
+          {
+            "id": "output",
+            "type": "ShaderNodeOutputMaterial"
+          }
+        ],
+        "links": [
+          {
+            "from": "surface",
+            "output": "BSDF",
+            "to": "output",
+            "input": "Surface"
+          }
+        ]
+      }
+    },
+    {
+      "id": "geometrygraph",
+      "op": "geometry_nodes",
+      "target": "Watchtower stone buttress",
+      "reason": "Attach a genuinely editable Geometry Nodes group that preserves the authored base mesh",
+      "params": {
+        "nodes": [
+          {
+            "id": "input",
+            "type": "NodeGroupInput"
+          },
+          {
+            "id": "output",
+            "type": "NodeGroupOutput"
+          }
+        ],
+        "links": [
+          {
+            "from": "input",
+            "output": "Geometry",
+            "to": "output",
+            "input": "Geometry"
+          }
+        ]
+      }
+    },
+    {
+      "id": "nativeoperator",
+      "op": "native_operator",
+      "target": "Watchtower stone shaft",
+      "reason": "Use Blender native operator surface without permitting Python or external commands",
+      "params": {
+        "operator": "object.shade_flat",
+        "kwargs": {},
+        "selection": "ALL"
+      }
+    },
+    {
       "id": "assetprovenance",
       "op": "asset_info",
       "reason": "Persist technical evidence of intended asset context, not fake approval",

@@ -12,7 +12,7 @@ OPS = {
  "primitive", "mesh", "duplicate", "transform", "sculpt", "extrude",
  "inset", "subdivide", "bevel", "modifier", "boolean", "material",
  "uv", "join", "delete", "light", "camera", "render_settings",
- "texture", "asset_info",
+ "texture", "asset_info", "native_operator", "shader_graph", "geometry_nodes",
 }
 SHAPES = {"cube", "cylinder", "cone", "plane", "uv_sphere", "ico_sphere", "torus"}
 MODIFIERS = {
@@ -138,6 +138,10 @@ def validate_plan(doc):
             require(vector(p.get("color_a"),4,0,1) and vector(p.get("color_b"),4,0,1), "Texture colors invalid")
             require(type(p.get("resolution",512)) is int and 64 <= p.get("resolution",512) <= 1024, "Texture resolution invalid")
             require(finite_number(p.get("scale"),0.01,1000), "Texture scale invalid")
+        elif op in ("native_operator","shader_graph","geometry_nodes"):
+            from extended_ops import validate_extended
+            validate_extended(a,require)
+            if op!="shader_graph":geometric+=1
         elif op == "render_settings":
             require(p.get("engine","CYCLES") in ("CYCLES","BLENDER_EEVEE_NEXT","BLENDER_EEVEE"), "Render engine invalid")
             require(type(p.get("samples",32)) is int and 4<=p.get("samples",32)<=256, "Samples budget invalid")

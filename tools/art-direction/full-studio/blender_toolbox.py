@@ -192,6 +192,14 @@ def render_setup(settings):
         scene.cycles.use_denoising=False
 
 def ensure_review_lighting():
+    # Identical ambient lighting is essential when comparing before/after.
+    scene=bpy.context.scene
+    if not scene.world:scene.world=bpy.data.worlds.new("_EldoriaReviewWorld")
+    scene.world.use_nodes=True
+    background=scene.world.node_tree.nodes.get("Background")
+    if background:
+        background.inputs["Color"].default_value=(.38,.44,.50,1.)
+        background.inputs["Strength"].default_value=.65
     if any(o.type=="LIGHT" for o in bpy.data.objects):return
     dat=bpy.data.lights.new("_EldoriaReviewSun","SUN")
     dat.energy=2.5
@@ -279,10 +287,77 @@ def run_action(a,texroot):
         o=bpy.data.objects.new(name,data);bpy.context.scene.collection.objects.link(o)
         o.location=p["location"];o.rotation_euler=p["rotation"]
     elif kind=="render_settings":render_setup(p)
+    elif kind in ("native_operator","shader_graph","geometry_nodes"):
+        from extended_ops import execute_node_graph,native_bpy
+        if kind=="native_operator":native_bpy(obj(name),p)
+        else:execute_node_graph(obj(name),p,kind)
     elif kind=="asset_info":
         for k,v in p.items():
             if isinstance(v,(str,int,float,bool)) and str(k).startswith("eldoria_"):
                 bpy.context.scene[k]=v
+
+
+def execute_via_blendermcp(operations, perform, addon_file, pinned_hash):
+    """Optional, genuinely executed BlenderMCP transport with pinned local addon.
+
+    MCP receives only a call to a pre-validated local action identifier;
+    the model is never permitted to supply arbitrary executable Python.
+    """
+    import importlib.util, socket, threading
+    if not addon_file or not addon_file.is_file():
+        raise RejectedPlan("Verified BlenderMCP addon required")
+    if not pinned_hash or digest(addon_file)!=pinned_hash:
+        raise RejectedPlan("BlenderMCP addon SHA-256 mismatch")
+    spec=importlib.util.spec_from_file_location("eldoria_full_artist_verified_mcp",str(addon_file.resolve()))
+    addon=importlib.util.module_from_spec(spec)
+    sys.modules[spec.name]=addon
+    spec.loader.exec_module(addon)
+    for provider in ("polyhaven","hyper3d","sketchfab","polypizza","hunyuan3d","tripo"):
+        key="blendermcp_use_"+provider
+        if not hasattr(bpy.types.Scene,key):
+            setattr(bpy.types.Scene,key,bpy.props.BoolProperty(default=False))
+    by_id={a["id"]:a for a in operations}
+    def execute_known_artwork(identifier):
+        if identifier not in by_id:
+            raise RejectedPlan("Unapproved BlenderMCP action identifier")
+        perform(by_id[identifier])
+    bpy.app.driver_namespace["eldoria_full_artist_known_action"]=execute_known_artwork
+    server=addon.BlenderMCPServer(host="127.0.0.1",port=0)
+    server.socket=socket.socket()
+    server.socket.bind(("127.0.0.1",0))
+    port=server.socket.getsockname()[1]
+    server.socket.listen(1)
+    server.running=True
+    server.server_thread=threading.Thread(target=server._server_loop,daemon=True)
+    server.server_thread.start()
+    try:
+        for action in operations:
+            replies=[];errors=[]
+            def client():
+                try:
+                    with socket.create_connection(("127.0.0.1",port),timeout=20) as sock:
+                        sock.settimeout(150)
+                        command='import bpy\nbpy.app.driver_namespace["eldoria_full_artist_known_action"]('+repr(action["id"])+')'
+                        sock.sendall(json.dumps({"type":"execute_code","params":{"code":command}}).encode())
+                        data=b""
+                        while len(data)<2000000:
+                            chunk=sock.recv(65536)
+                            if not chunk:raise RuntimeError("MCP socket disconnected")
+                            data+=chunk
+                            try:replies.append(json.loads(data));return
+                            except json.JSONDecodeError:pass
+                except Exception as exc:errors.append(str(exc))
+            thread=threading.Thread(target=client,daemon=True)
+            thread.start();deadline=time.monotonic()+155
+            while thread.is_alive() and time.monotonic()<deadline:
+                server._drain_command_queue()
+                time.sleep(.04)
+            thread.join(timeout=1)
+            if errors or not replies or replies[0].get("status")!="success":
+                raise RuntimeError("BlenderMCP operation failed without bypass: "+str(errors or replies))
+    finally:
+        server.stop()
+        bpy.app.driver_namespace.pop("eldoria_full_artist_known_action",None)
 
 def main():
     parser=argparse.ArgumentParser()
@@ -291,6 +366,9 @@ def main():
     parser.add_argument("--out",type=pathlib.Path,required=True)
     parser.add_argument("--texture-root",type=pathlib.Path,default=pathlib.Path("."))
     parser.add_argument("--review",type=pathlib.Path)
+    parser.add_argument("--transport",choices=("direct","blendermcp"),default="direct")
+    parser.add_argument("--mcp-addon",type=pathlib.Path)
+    parser.add_argument("--mcp-sha256")
     args=parser.parse_args(sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else [])
     plan=load_plan(args.plan)
     out=args.out.resolve()
@@ -317,13 +395,17 @@ def main():
     before=out/"before-blender.png";bpy.context.scene.render.filepath=str(before)
     bpy.ops.render.render(write_still=True)
     journal=[];started=time.monotonic()
-    for act in plan["actions"]:
+    def apply_known_action(act):
         previous=snapshot_meshes()
         run_action(act,args.texture_root.resolve())
         now=snapshot_meshes()
         journal.append({"id":act["id"],"op":act["op"],"target":act.get("target"),
                         "reason":act["reason"],"geometry_changed":previous!=now,
                         "mesh_count":len(now),"originals_changed":[k for k,v in originals.items() if now.get(k)!=v]})
+    if args.transport=="direct":
+        for act in plan["actions"]:apply_known_action(act)
+    else:
+        execute_via_blendermcp(plan["actions"],apply_known_action,args.mcp_addon,args.mcp_sha256)
     camera_override(review.get("camera",{"location":[11,-18,14],"rotation":[math.radians(58),0,math.radians(31)],"ortho_scale":22}))
     render_setup(review.get("render",{"samples":8,"width":960,"height":720}))
     bpy.context.view_layer.update()
@@ -336,8 +418,28 @@ def main():
     glb=out/"artist-asset.glb";bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=False)
     after=out/"after-blender.png";bpy.context.scene.render.filepath=str(after)
     bpy.ops.render.render(write_still=True)
-    result={"state":"TECHNICAL_SOURCE_ONLY","blender_execution":True,"ai_self_approval":False,
-            "unity_tested":False,"mobile_device_tested":False,"art_approved":False,
+    scene_meshes=snapshot_meshes()
+    components=[]
+    for o in sorted((o for o in bpy.data.objects if o.type=="MESH"),key=lambda o:o.name):
+        components.append({"name":o.name,"vertices":len(o.data.vertices),
+          "faces":len(o.data.polygons),"dimensions_m":[round(float(v),4) for v in o.dimensions],
+          "pivot_m":[round(float(v),4) for v in o.location],
+          "materials":[m.name if m else None for m in o.data.materials],
+          "geometry_sha256":scene_meshes[o.name],
+          "derived_from_source_object":o.name in originals})
+    catalog={"schema_version":1,"asset_id":plan["asset_id"],
+             "authored_asset_decision":plan["asset_decision"],
+             "source_sha256":srcsha,"artist_plan_sha256":digest(args.plan),
+             "component_count":len(components),"components":components,
+             "new_components":[n for n in scene_meshes if n not in originals],
+             "source_original_meshes_preserved_in_output":[n for n in originals if n in scene_meshes],
+             "source_file_unchanged":True,
+             "license_status":"SELF_AUTHORED_GEOMETRY" if not args.source else "SOURCE_LICENSE_VERIFICATION_REQUIRED",
+             "textures_embedded_in_glb_expected":True,
+             "mobile_certified":False,"unity_art_approved":False}
+    (out/"reusable-asset-catalog.json").write_text(json.dumps(catalog,indent=2)+"\n",encoding="utf-8")
+    result={"state":"TECHNICAL_SOURCE_ONLY","transport":args.transport,"blender_execution":True,"ai_self_approval":False,
+            "unity_tested":False,"mobile_device_tested":False,"art_approved":False,"reusable_components":len(components),
             "artist_plan_sha256":digest(args.plan),"source_sha256":srcsha,
             "before_blender_sha256":digest(before),"after_blender_sha256":digest(after),
             "blend_sha256":digest(blend),"glb_sha256":digest(glb),

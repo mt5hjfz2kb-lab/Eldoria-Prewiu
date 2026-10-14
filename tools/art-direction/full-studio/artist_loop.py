@@ -48,7 +48,8 @@ def schema_for_plan():
     # broad asset design and multi-step Blender geometry authoring.
     opnames=["primitive","mesh","duplicate","transform","sculpt","extrude","inset",
              "subdivide","bevel","modifier","boolean","material","uv","join","delete",
-             "light","camera","render_settings","texture","asset_info"]
+             "light","camera","render_settings","texture","asset_info",
+             "native_operator","shader_graph","geometry_nodes"]
     action={"type":"object","properties":{
       "id":{"type":"string"},"op":{"type":"string","enum":opnames},
       "target":{"type":"string"},"reason":{"type":"string"},
@@ -91,6 +92,8 @@ def contract_brief(max_actions):
       "texture_image:generatedName OR texture_path:approvedRelativePath};\n"
       "texture: {method:NOISE|CHECKER,color_a:[r,g,b,a],color_b:[r,g,b,a],"
       "resolution:256,scale:meters}; uv:{method:smart|cube|sphere|cylinder};\n"
+      "native_operator: {operator:safe native mesh/uv/object edit,kwargs:{},selection:ALL|FACE|EDGE|VERT,indices:[]}; "
+      "shader_graph / geometry_nodes: {nodes:[{id,type,inputs:{}}],links:[{from,output,to,input}]}; "
       "join: {sources:[name,...]}; light:{kind:SUN|AREA|POINT|SPOT,energy:float,"
       "location:[x,y,z]}; camera:{location:[x,y,z],rotation:[radians],"
       "ortho_scale:meters}; render_settings:{engine:CYCLES,samples:16}; "
@@ -101,12 +104,16 @@ def contract_brief(max_actions):
       "Objects previously created by an action can be targeted by later actions. "
       "Do not assume an unlisted source object exists.\n")
 
-def run_blender(executable,plan,out,source,texture_root,review):
+def run_blender(executable,plan,out,source,texture_root,review,transport='direct',mcp_addon=None,mcp_sha256=None):
     cmd=[executable,"-b","--python-exit-code","1","--python",
          str(HERE/"blender_toolbox.py"),"--",
          "--plan",str(plan),"--out",str(out),"--texture-root",str(texture_root)]
     if source:cmd+=["--source",str(source)]
     if review:cmd+=["--review",str(review)]
+    cmd+=["--transport",transport]
+    if transport=="blendermcp":
+        if not mcp_addon or not mcp_sha256:raise ValueError("Pinned BlenderMCP addon and SHA-256 required")
+        cmd+=["--mcp-addon",str(mcp_addon),"--mcp-sha256",mcp_sha256]
     result=subprocess.run(cmd,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=1200)
     (out.parent/(out.name+"-blender-log.txt")).write_text(result.stdout,encoding="utf-8")
     if result.returncode:raise RuntimeError("Real Blender execution failed; see output log: "+result.stdout[-1700:])
@@ -152,6 +159,9 @@ def main():
     p.add_argument("--model",default="qwen3-vl:4b-instruct")
     p.add_argument("--endpoint",default="http://127.0.0.1:11434/api/chat")
     p.add_argument("--blender",default="blender")
+    p.add_argument("--transport",choices=("direct","blendermcp"),default="direct")
+    p.add_argument("--mcp-addon",type=pathlib.Path)
+    p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--max-actions",type=int,default=32)
     p.add_argument("--max-tokens",type=int,default=4500)
@@ -181,7 +191,7 @@ def main():
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
         try:
-            run_blender(args.blender,candidate,stage,source,args.texture_root,args.review)
+            run_blender(args.blender,candidate,stage,source,args.texture_root,args.review,args.transport,args.mcp_addon,args.mcp_sha256)
         except Exception as ex:
             records.append({"cycle":cycle,"status":"BLENDER_REJECTED","error":str(ex)[-800:]})
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
