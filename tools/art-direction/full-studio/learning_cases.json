@@ -194,6 +194,33 @@
         "model_weights_updated": false,
         "art_approved": false
       }
+    },
+    {
+      "id": "rejected-38649450100-camera-visible-but-invisible-extrusions",
+      "run_id": 38649450100,
+      "evidence_artifact_id": 11934131837,
+      "raw_response_sha256": "b7236fff1f19a053bb84a9a397c2db7dac5d5affb8293acd9ec7b127fb9cb784",
+      "result": "FOUR_REJECTED_BLENDER_AB_NOT_ART_IMPROVEMENT",
+      "observed": "Independent inspection of the original 960x720 Blender camera matched A/B from 2026-10-14: Qwen8B face 325/324 extrudes yielded 0.3601%, 0.19329%, 0.27619%, 0.3601% of pixels above threshold in four cycles, all below 0.6% minimum. No visibly convincing eave architecture or improved composition, although 24 real camera visible faces were measured. No accepted artwork or unity test.",
+      "safe_lesson": "Four real source camera A/B rejections demonstrate that merely selecting faces ray-visible from the camera is insufficient. After two visually negligible extrudes on the timber Valoria tower, abandon the face-extrusion hypothesis. Change real Blender tool AND artistic approach to a clearly legible attached structural detail with preserved stairs/roof/atlas. Do not count moved vertices or pixel fraction as visual approval.",
+      "review_provenance": {
+        "source": "read-only examination of genuine stored 960x720 camera-matched Blender A/B previews",
+        "run_id": 38649450100,
+        "artifact_id": 11934131837,
+        "qwen_first_cycle_sha256": "b7236fff1f19a053bb84a9a397c2db7dac5d5affb8293acd9ec7b127fb9cb784",
+        "original_source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "changed_fractions": [
+          0.003601,
+          0.0019329,
+          0.0027619,
+          0.003601
+        ],
+        "author_model": "qwen3-vl:8b-instruct-q4_K_M",
+        "art_approved": false,
+        "independent_art_approved": false,
+        "unity_verified": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
