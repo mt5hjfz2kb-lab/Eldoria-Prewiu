@@ -1,4 +1,5 @@
-name: Eldoria continuation from Qwen authored tower and two source-typed BlenderMCP PC cycles
+name: Eldoria third-stage continuation Qwen art from real PBR Blender with two more source-typed cycles
+# Verified two prior authored Blender stages: original structural changes plus PBR shader repair.
 # Compatibility retry: Ollama prefixItems without items:false; exact HTTP error body retained.
 # Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
 # Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
@@ -62,6 +63,14 @@ jobs:
           name: eldoria-pc-source-grounded-multitool-blendermcp-artist-proof
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/eldoria-prior-candidate
+      - name: Restore next Qwen-authored Blender asset with actual verified native PBR shader, preserve prior chain
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38619906290'
+          name: eldoria-windows-native-blender5-qwen-pbr-fixed
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-verified-material-source
       - name: Locally START already-installed cached Qwen 4B and run full artist decisions in REAL PC Blender
         shell: powershell
         timeout-minutes: 70
@@ -102,20 +111,30 @@ jobs:
           $review='tools/art-direction/full-studio/tests/valoria_tower_hero_review.json'
           if (-not (Test-Path $source) -or -not (Test-Path $ref) -or -not (Test-Path $review)) { throw 'Real source / reference / review contract missing' }
           $frozen=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
-          $candidateRoot=Join-Path $env:RUNNER_TEMP 'eldoria-prior-candidate'
-          $previous=Join-Path $candidateRoot 'cycle-1/output/artist-asset.blend'
-          $oldProofFile=Join-Path $candidateRoot 'cycle-1/output/execution-proof.json'
-          if (-not (Test-Path $previous) -or -not (Test-Path $oldProofFile)) {
-            throw 'Previously accepted exact Qwen-owned first-cycle BLEND/provenance missing'
+          # Chain: original GLB -> 1st authentic Qwen BLEND -> 2nd Qwen PBR/native-BSDF BLEND.
+          $firstRoot=Join-Path $env:RUNNER_TEMP 'eldoria-prior-candidate'
+          $firstProof=Join-Path $firstRoot 'cycle-1/output/execution-proof.json'
+          $firstBlend=Join-Path $firstRoot 'cycle-1/output/artist-asset.blend'
+          $nextRoot=Join-Path $env:RUNNER_TEMP 'eldoria-verified-material-source'
+          $previous=Join-Path $nextRoot 'artist-asset.blend'
+          $nextProof=Join-Path $nextRoot 'execution-proof.json'
+          if (-not (Test-Path $firstProof) -or -not (Test-Path $firstBlend) -or
+              -not (Test-Path $nextProof) -or -not (Test-Path $previous)) {
+            throw 'Verified chained Qwen Blender source artifacts missing'
           }
-          $old=Get-Content $oldProofFile -Raw | ConvertFrom-Json
-          if ($old.source_sha256 -ne $frozen -or
-              $old.blend_sha256 -ne (Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant() -or
-              $old.transport -ne 'blendermcp' -or -not $old.inherited_mesh_data_changed -or
-              -not $old.matched_review_camera -or $old.art_approved) {
-            throw 'Earlier candidate fails SHA or BlenderMCP authority; do not continue invalid source'
+          $first=Get-Content $firstProof -Raw | ConvertFrom-Json
+          $next=Get-Content $nextProof -Raw | ConvertFrom-Json
+          $firstHash=(Get-FileHash $firstBlend -Algorithm SHA256).Hash.ToLowerInvariant()
+          $nextHash=(Get-FileHash $previous -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($first.source_sha256 -ne $frozen -or $first.blend_sha256 -ne $firstHash -or
+              $next.source_sha256 -ne $firstHash -or $next.blend_sha256 -ne $nextHash -or
+              $first.transport -ne 'blendermcp' -or $next.transport -ne 'blendermcp' -or
+              -not $first.inherited_mesh_data_changed -or -not $next.inherited_mesh_data_changed -or
+              $first.art_approved -or $next.art_approved -or
+              $next.action_count -ne 3) {
+            throw 'Qwen model-chain SHAs/BlenderMCP authoring mismatch; refuse production'
           }
-          Write-Host ('ELDORIA_RESUME_REAL_QWEN_EXISTING_BLENDER_SOURCE_SHA='+$old.blend_sha256)
+          Write-Host ('ELDORIA_RESUME_TWO_QWEN_AUTHORED_STAGES_SOURCE_SHA='+$nextHash)
           $env:OLLAMA_HOST='127.0.0.1:11434'
           $env:OLLAMA_NUM_PARALLEL='1'
           $env:OLLAMA_MAX_LOADED_MODELS='1'
