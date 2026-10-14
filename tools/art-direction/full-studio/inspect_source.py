@@ -10,6 +10,7 @@ HERE=pathlib.Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from blender_toolbox import camera_override,render_setup,ensure_review_lighting,ensure_review_stage,snapshot_meshes
 from world_space_evidence import summarize_world_points
+from camera_visible_faces import camera_visible_face_landmarks
 
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -77,6 +78,10 @@ def main():
                     chosen[p.index]=p
             for face in sorted(polys,key=lambda f:float(f.area),reverse=True)[:5]:
                 chosen[face.index]=face
+        # Source faces actually ray-visible from the SAME fixed review camera.
+        # Arbitrary local-coordinate landmarks alone were causing zero-pixel
+        # edits on faces hidden from the player.
+        camera_visible_faces=camera_visible_face_landmarks(bpy.context.scene,o)
         face_landmarks=[{"face_index":p.index,
             "local_center_m":[round(float(t),5) for t in p.center],
             "local_normal":[round(float(t),4) for t in p.normal],
@@ -118,6 +123,8 @@ def main():
             "edges":len(edges),
             "edge_landmarks":edge_landmarks,
             "face_landmarks":face_landmarks,
+            "camera_visible_face_landmarks":camera_visible_faces,
+            "camera_visibility_method":"SAME_REVIEW_CAMERA_PROJECTED_POLYGON_PLUS_ACTUAL_SCENE_RAY_CAST",
             "name":o.name,"vertices":len(verts),"faces":len(o.data.polygons),
             "local_bounds_min_m":lo,"local_bounds_max_m":hi,
             "world_location_m":[round(float(v),5) for v in o.location],
