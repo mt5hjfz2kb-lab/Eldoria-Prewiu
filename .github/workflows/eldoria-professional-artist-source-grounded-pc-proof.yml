@@ -3,6 +3,8 @@ name: Eldoria third-stage continuation Qwen art from real PBR Blender with two m
 # Compatibility retry: Ollama prefixItems without items:false; exact HTTP error body retained.
 # Reuses verified .blend from run 38618080690; no repeat of accepted original authoring.
 # Controlled repeat with topology-measured face/edge enums, safe modifier families and 5 original Qwen retries.
+# Resume proven PBR BLEND; actual evaluated Blender triangles before/after fixes false source failure #38620198456.
+# All source SHAs, pinned installed BlenderMCP addon, zero credits and independent review preserved.
 # Third controlled test: selected BMesh edges confirmed in Windows, source damage prevention and inspected topology.
 # Second real attempt: typed nine-tool schemas plus actual topology landmarks; retain raw model choices.
 on:
