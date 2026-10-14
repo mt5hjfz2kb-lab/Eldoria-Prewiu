@@ -263,7 +263,7 @@ jobs:
           $after=Join-Path $env:GITHUB_WORKSPACE 'Bastion1MaterialAB/after'
           New-Item -ItemType Directory -Force $after | Out-Null
           Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $after -Force
-      - name: Build both distinct GLOBAL world compositions and render authentic SAME Unity player/mobile cameras
+      - name: Develop selected coherent A2 global architecture in Blender and native Unity; preserve tested A/B1 evidence
         shell: powershell
         run: |
           $src=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource/Bastion1ReferenceAssembly.glb'
@@ -271,7 +271,7 @@ jobs:
           Copy-Item $src $guardBase -Force
           $baseline=(Get-FileHash $guardBase -Algorithm SHA256).Hash.ToLowerInvariant()
           Write-Host "BASTION1_GLOBAL_AB_IMMUTABLE_SOURCE=$baseline"
-          foreach($variant in @('A','B')){
+          foreach($variant in @('A')){
             $candidate=Join-Path $env:RUNNER_TEMP "Bastion1GlobalProposal$variant.glb"
             & $env:BASTION_BLENDER -b --python-exit-code 1 --python tools/valoria-bastion1-assembly/compose_bastion_global_composition.py -- $guardBase $candidate $variant
             if($LASTEXITCODE -ne 0){throw "Global Blender candidate $variant failed"}
@@ -294,6 +294,7 @@ jobs:
             New-Item -ItemType Directory -Force $dst | Out-Null
             Copy-Item "$env:GITHUB_WORKSPACE/Unity/Bastion1ReferenceCaptures/*" $dst -Force
             Copy-Item ([System.IO.Path]::ChangeExtension($candidate,'.proof.json')) (Join-Path $dst 'global-blender-proof.json')
+            Copy-Item $candidate (Join-Path $dst 'global-native-Unity-candidate.glb') -Force
             if(-not (Test-Path (Join-Path $dst 'bastion1-player-initial.png')) -or
                -not (Test-Path (Join-Path $dst 'bastion1-player-mobile.png')) -or
                -not (Test-Path (Join-Path $dst 'bastion1-unity-portrait.png'))){
@@ -301,10 +302,11 @@ jobs:
             }
             Write-Host "BASTION1_GLOBAL_VARIANT_COMPLETE variant=$variant original_source_preserved=true same_camera=true native_mobile_frame=true"
           }
-          # This A/B workflow is a visual trial, not an automatic promotion.
+          # A/B1 genuine matched frames are preserved in earlier run 38520697022.
+          # A2 is a follow-on artistic candidate, not an automatic promotion.
           # Keep the previous certified guard candidate in the active source.
           Copy-Item $guardBase $src -Force
-          Write-Host 'BASTION1_GLOBAL_VISUAL_SELECTION_PENDING_REVIEW no_unapproved_promotion=true'
+          Write-Host 'BASTION1_GLOBAL_SELECTED_A2_IMPROVEMENT_CAPTURED no_unapproved_promotion=true'
       - name: Independently measure identical Unity camera A/B without declaring artistic approval
         shell: powershell
         run: |
