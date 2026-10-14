@@ -68,3 +68,88 @@ def transferable_lessons(journal: str, brief: str="", limit: int=900):
         if len(chosen)>=6:break
     return {"journal_sha256":raw_hash,"source":"ARTIST_LEARNING_JOURNAL.md",
             "verbatim_grounded":True,"lessons":chosen,"prompt_text":" | ".join(x["lesson"] for x in chosen)}
+
+
+def evidence_case_lessons(casebook: dict, brief: str = "", limit: int = 1400, max_cases: int = 5):
+    """Select relevant *recorded* lessons; never replay old actions or promote a verdict.
+
+    A case with provenance metadata is not proof that an independent reviewer
+    approved it. Every selected observation keeps the original evidence IDs.
+    """
+    if not isinstance(casebook, dict) or casebook.get("schema_version") != 1:
+        raise ValueError("Versioned artist casebook required")
+    if not 240 <= limit <= 4000 or not 1 <= max_cases <= 8:
+        raise ValueError("Artist case memory budget invalid")
+    words = {w for w in re.findall(r"[a-zA-Z]{4,}", brief.lower())
+             if w not in {"make", "with", "from", "artist", "real", "medieval"}}
+    scored = []
+    for idx, case in enumerate(casebook.get("cases", [])):
+        if not isinstance(case, dict):
+            continue
+        lesson = case.get("safe_lesson")
+        raw_sha = case.get("raw_response_sha256")
+        if not (isinstance(lesson, str) and 35 <= len(lesson) <= 450 and
+                isinstance(raw_sha, str) and re.fullmatch(r"[a-fA-F0-9]{64}", raw_sha) and
+                type(case.get("run_id")) is int and case["run_id"] > 0 and
+                type(case.get("evidence_artifact_id")) is int and case["evidence_artifact_id"] > 0):
+            continue
+        if BLOCK.search(lesson):
+            continue
+        clean = re.sub(r"\s+", " ", lesson).strip()
+        score = sum(3 for word in words if word in clean.lower())
+        score += sum(weight for topic, weight in TOPICS.items() if topic in clean.lower())
+        scored.append((score, idx, clean, case))
+    selected = []
+    used = set()
+    budget = 0
+    for score, idx, clean, case in sorted(scored, key=lambda v: (-v[0], -v[1])):
+        if clean.lower() in used:
+            continue
+        outcome = str(case.get("result", "UNVERIFIED"))[:70]
+        # Explicitly identify this as history, never as an accepted current plan.
+        prompt = "HISTORICAL OBSERVATION [" + outcome + "]: " + clean
+        if budget + len(prompt) + 1 > limit:
+            continue
+        selected.append({"case_id":case.get("id"), "run_id":case["run_id"],
+                         "artifact_id":case["evidence_artifact_id"],
+                         "raw_model_sha256":case["raw_response_sha256"],
+                         "historical_result":outcome, "lesson":clean,
+                         "relevance":score})
+        used.add(clean.lower())
+        budget += len(prompt) + 1
+        if len(selected) >= max_cases:
+            break
+    return {"schema_version":1, "kind":"recorded_lessons_not_model_training",
+            "source":"learning_cases.json", "selected":selected,
+            "evidence_fields_checked":True,
+            "independent_art_approval_inferred":False,
+            "prompt_text":"\n".join("HISTORICAL OBSERVATION [" +
+                       x["historical_result"] + "]: " + x["lesson"] for x in selected)}
+
+
+def stage_pending_art_evidence(out_file, *, model: str, source_hash,
+                               plan_file, before_image, after_image,
+                               critique_file, comparison_file, output_blend, output_glb):
+    """Emit provenance for future review. Never auto-label it learned/approved."""
+    import json
+    from pathlib import Path
+    entries = {}
+    for label, file in (("plan", plan_file), ("before_image", before_image),
+                        ("after_image", after_image), ("model_self_critique", critique_file),
+                        ("screen_comparison", comparison_file),
+                        ("blend", output_blend), ("glb", output_glb)):
+        p = Path(file)
+        if not p.is_file() or not p.stat().st_size:
+            raise ValueError("Missing genuine artist-cycle input: " + label)
+        entries[label] = {"filename":p.name,
+                          "sha256":hashlib.sha256(p.read_bytes()).hexdigest(),
+                          "size_bytes":p.stat().st_size}
+    if source_hash is not None and not re.fullmatch(r"[a-f0-9]{64}", source_hash):
+        raise ValueError("Frozen source identity must be a SHA-256")
+    record = {"schema_version":1, "status":"PENDING_INDEPENDENT_VERIFICATION",
+              "art_approved":False,"independent_visual_review":False,
+              "weight_training_performed":False, "model":model,
+              "original_source_sha256":source_hash, "evidence":entries,
+              "next_gate":"Verify A/B camera, review model quality independently, then Unity/mobile before promotion"}
+    Path(out_file).write_text(json.dumps(record,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    return record
