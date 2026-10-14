@@ -1,0 +1,41 @@
+name: Eldoria permanent art visual acceptance evidence gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md'
+      - 'pipeline/art-visual-approvals/**'
+      - 'tools/art-visual-acceptance/**'
+      - '.github/workflows/eldoria-art-visual-acceptance.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md'
+      - 'pipeline/art-visual-approvals/**'
+      - 'tools/art-visual-acceptance/**'
+      - '.github/workflows/eldoria-art-visual-acceptance.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-art-visual-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  independent-art-evidence-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reject fabricated artistic approvals and regressions
+        run: node --test tools/art-visual-acceptance/verify.test.mjs
+      - name: Fail closed on any declared approved asset without real evidence
+        run: node tools/art-visual-acceptance/verify.mjs --directory pipeline/art-visual-approvals
