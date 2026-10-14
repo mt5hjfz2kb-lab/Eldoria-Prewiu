@@ -1,4 +1,5 @@
 name: Eldoria unified artist real local 4B vs 8B frozen tower A-B
+# Re-run isolated Qwen8B only after dense inherited source atlas protection
 on:
   push:
     branches:
