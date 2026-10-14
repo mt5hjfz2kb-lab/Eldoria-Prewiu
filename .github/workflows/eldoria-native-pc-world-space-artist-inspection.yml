@@ -1,0 +1,84 @@
+name: Eldoria read-only Windows Blender world-coordinate inspection
+on:
+  push:
+    branches: [validation/eldoria-professional-art-fixed-source-20261014]
+    paths: ['.github/workflows/eldoria-native-pc-world-space-artist-inspection.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-native-pc-world-space-readonly-inspection
+  cancel-in-progress: true
+jobs:
+  prove-transformed-glb-coordinate-frame:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 14
+    steps:
+      - name: Make GitHub Desktop Git available
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $git) { throw 'Existing Windows Git unavailable' }
+            $folder=Split-Path $git
+            $env:PATH="$folder;$env:PATH"
+            Add-Content $env:GITHUB_PATH $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: '38626949838'
+          name: eldoria-custom-artist-pc-source-grounded-multitool-proof
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-world-proof-source
+      - name: Use actual PC Blender to inventory inherited + newly created WORLD geometry
+        shell: powershell
+        timeout-minutes: 10
+        run: |
+          $ErrorActionPreference='Stop'
+          $bin=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $bin) {
+            $bin=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $bin) { throw 'Installed Windows Blender missing' }
+          $source=Join-Path $env:RUNNER_TEMP 'eldoria-world-proof-source/cycle-3/output/artist-asset.blend'
+          if (-not (Test-Path $source)) { throw 'Frozen genuine Qwen 3-cycle BLEND missing' }
+          $hash=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne '1e62dec601880f65f5e26f5b120f4c274da6558389c9ec145a052779fd6770e0') { throw 'Source SHA not expected' }
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-world-space-verification'
+          & $bin -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/inspect_source.py -- --source $source --out $out
+          if ($LASTEXITCODE -ne 0) { throw 'Real Blender world-space inspection failed' }
+          $report=Get-Content (Join-Path $out 'source-inspection.json') -Raw | ConvertFrom-Json
+          if ($report.source_sha256 -ne $hash -or -not $report.source_unchanged -or $report.art_approved) {
+            throw 'Inspection source identity or art approval invalid'
+          }
+          $base=@($report.objects | Where-Object { $_.name -like 'Valoria_Tower_CohV1*' })
+          $chimney=@($report.objects | Where-Object { $_.name -like 'Eldoria_Added_C02_Chimney' })
+          if ($base.Count -ne 1 -or $chimney.Count -ne 1) { throw 'Original tower and authored chimney not found' }
+          if ($base[0].world_up_axis -ne '+Z' -or $chimney[0].world_up_axis -ne '+Z' -or
+              $base[0].world_bounds_dimensions_m[2] -le 1) { throw 'Blender world transform metadata invalid' }
+          Write-Host ('ELDORIA_REAL_PC_GLTF_LOCAL_TO_WORLD_PASS original_axes='+$base[0].mesh_local_axis_aligned_with_world_up)
+          Write-Host ('ELDORIA_WORLD_BASE_BOUNDS='+($base[0].world_bounds_min_m -join ',')+' -> '+($base[0].world_bounds_max_m -join ','))
+          Write-Host ('ELDORIA_CURRENT_CHIMNEY_WORLD_DIMENSIONS='+($chimney[0].world_bounds_dimensions_m -join ','))
+          Write-Host 'ARTISTIC_QUALITY_NOT_APPROVED'
+          if ((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $hash) { throw 'Original Qwen source was altered' }
+      - name: Keep genuine physical metadata and orthographic-ready preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-real-PC-Blender-world-bounds-proof
+          path: ${{ runner.temp }}/eldoria-real-world-space-verification/
+          retention-days: 14
+          if-no-files-found: warn

@@ -84,7 +84,17 @@ def material(name,p,texture_root):
     color=p["base_color"]
     mat=bpy.data.materials.new("Eldoria_AI_"+name+"_"+str(len(bpy.data.materials)))
     mat.diffuse_color=color;mat.use_nodes=True
-    bsdf=mat.node_tree.nodes.get("Principled BSDF")
+    # Blender 5.x does not guarantee a pre-created node named "Principled BSDF"
+    # when enabling nodes on a newly allocated material. Resolve by Blender
+    # node TYPE rather than display name and build a genuine shader-output link.
+    tree=mat.node_tree
+    if tree is None:raise RuntimeError("Blender cannot provide material node tree")
+    bsdf=next((n for n in tree.nodes if n.bl_idname=="ShaderNodeBsdfPrincipled"),None)
+    if bsdf is None:bsdf=tree.nodes.new("ShaderNodeBsdfPrincipled")
+    output=next((n for n in tree.nodes if n.bl_idname=="ShaderNodeOutputMaterial"),None)
+    if output is None:output=tree.nodes.new("ShaderNodeOutputMaterial")
+    if not any(link.from_node==bsdf and link.to_node==output for link in tree.links):
+        tree.links.new(bsdf.outputs["BSDF"],output.inputs["Surface"])
     bsdf.inputs["Base Color"].default_value=color
     bsdf.inputs["Roughness"].default_value=p["roughness"]
     bsdf.inputs["Metallic"].default_value=p.get("metallic",0)
@@ -339,7 +349,26 @@ def run_action(a,texroot,approved_assets=None):
         sculpt(o,{"center":center,"delta":delta,"radius":p["radius"]})
     elif kind in ("extrude","inset","subdivide"):edit_face_operation(obj(name),kind,p)
     elif kind=="bevel":
-        active(obj(name));modifier(obj(name),{"kind":"BEVEL","options":{"width":p["width"],"segments":p.get("segments",2)},"apply":p.get("apply",True)})
+        target=obj(name)
+        selected=p.get("edges",[])
+        if selected:
+            # Real BMesh selected edge edit, NOT an all-object modifier.
+            bm=bmesh.new()
+            try:
+                bm.from_mesh(target.data)
+                bm.edges.ensure_lookup_table()
+                if any(type(i)!=int or i<0 or i>=len(bm.edges) for i in selected):
+                    raise RejectedPlan("Qwen selected non-existent source edge index")
+                chosen=[bm.edges[i] for i in selected]
+                bmesh.ops.bevel(bm,geom=chosen,offset=float(p["width"]),
+                                segments=int(p.get("segments",2)),affect="EDGES")
+                bm.to_mesh(target.data)
+                target.data.update()
+            finally:bm.free()
+        else:
+            # Legacy fixtures use whole-object bevel, but source-grounded
+            # professional mode requires explicit original edge indices.
+            active(target);modifier(target,{"kind":"BEVEL","options":{"width":p["width"],"segments":p.get("segments",2)},"apply":p.get("apply",True)})
     elif kind=="modifier":modifier(obj(name),p)
     elif kind=="boolean":
         o=obj(name);other=obj(p["operand"])
@@ -487,6 +516,8 @@ def main():
     camera_hash=json.dumps(
         [[float(x) for x in row] for row in bpy.context.scene.camera.matrix_world])
     originals=snapshot_meshes()
+    # Measure real evaluated triangles before any authored edits, including the identical review stage.
+    baseline_evaluated_triangles=triangles_evaluated()
     before=out/"before-blender.png";bpy.context.scene.render.filepath=str(before)
     bpy.ops.render.render(write_still=True)
     journal=[];started=time.monotonic()
@@ -563,6 +594,7 @@ def main():
             "before_blender_sha256":digest(before),"after_blender_sha256":digest(after),
             "blend_sha256":digest(blend),"glb_sha256":digest(glb),
             "matched_review_camera":camera_hash==final_cam,
+            "baseline_evaluated_triangles":baseline_evaluated_triangles,
             "evaluated_triangles":triangle_count,"action_count":len(journal),
             "inherited_mesh_data_changed":any(e["originals_changed"] for e in journal),
             "execution":journal,"elapsed_seconds":round(time.monotonic()-started,3)}

@@ -1,0 +1,88 @@
+name: Eldoria native PC Blender addon and custom artist model preflight
+on:
+  push:
+    branches: [validation/artist-windows-pc-bridge-20261014]
+    paths: ['.github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml']
+permissions:
+  contents: read
+jobs:
+  read-only-capability:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Detect installed BlenderMCP addons and actual cached Eldoria artist model family
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-native-pc-art-capability'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $exe=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $exe) {
+            $exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'Blender missing' }
+          $snippet=@'
+          import bpy,addon_utils,json,pathlib,hashlib,os,sys
+          modules=addon_utils.modules(refresh=True)
+          installed=[]
+          for m in modules:
+              n=str(getattr(m,'__name__',''))
+              f=str(getattr(m,'__file__',''))
+              if ('mcp' in n.lower()) or ('blender_mcp' in f.lower()) or ('eldoria' in n.lower()):
+                  installed.append({'module':n,'enabled':n in bpy.context.preferences.addons,'sha256':hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() if pathlib.Path(f).is_file() else None})
+          file=pathlib.Path(sys.argv[-1])
+          file.write_text(json.dumps({'blender_version':bpy.app.version_string,'artist_mcp_modules':installed,'native_bpy':True,'scene_modified':False,'art_approved':False},indent=2))
+          '@
+          $py=Join-Path $out 'addon-preflight.py'
+          $snippet | Set-Content -Path $py -Encoding UTF8
+          & $exe -b --python-exit-code 1 --python $py -- (Join-Path $out 'blender-installed-addons.json')
+          if ($LASTEXITCODE -ne 0) { throw 'Native Blender addon inventory failed' }
+          $ollama=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if (-not (Test-Path $ollama)) {
+            $ollama=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if (-not $ollama) { throw 'Owner-installed Ollama missing' }
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          if (Test-Path (Join-Path $env:USERPROFILE '.ollama\models')) { $env:OLLAMA_MODELS=Join-Path $env:USERPROFILE '.ollama\models' }
+          $proc=$null
+          $ready=$false
+          try {
+            try { $null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 3; $ready=$true } catch {}
+            if (-not $ready) {
+              $proc=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.txt') -RedirectStandardError (Join-Path $out 'ollama-stderr.txt')
+              for($i=0;$i -lt 35;$i++) {
+                try { $null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 3; $ready=$true;break } catch { Start-Sleep -Seconds 1 }
+              }
+            }
+            if (-not $ready) { throw 'Ollama local endpoint inaccessible' }
+            $artist=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/show' -Method Post -ContentType 'application/json' -Body '{"model":"eldoria-artist:latest"}' -TimeoutSec 25
+            $qwen=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/show' -Method Post -ContentType 'application/json' -Body '{"model":"qwen3-vl:4b-instruct"}' -TimeoutSec 25
+            $artistInfo=@{
+              custom_model='eldoria-artist:latest'
+              custom_family=$artist.details.family
+              custom_parameter_size=$artist.details.parameter_size
+              custom_quantization=$artist.details.quantization_level
+              custom_model_digest_sha256=$artist.digest
+              base_model='qwen3-vl:4b-instruct'
+              base_family=$qwen.details.family
+              base_parameter_size=$qwen.details.parameter_size
+              base_quantization=$qwen.details.quantization_level
+              custom_system_prompt_present=([bool]$artist.template -or [bool]$artist.modelfile)
+              no_model_download=$true
+              no_generation=$true
+            }
+            $artistInfo | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $out 'local-eldoria-artist-model-metadata.json') -Encoding UTF8
+            Write-Host ('ELDORIA_PC_ARTIST_METADATA_FOUND custom='+$artistInfo.custom_family+' '+$artistInfo.custom_parameter_size)
+          } finally { if ($proc) { Stop-Process -Id $proc.Id -ErrorAction SilentlyContinue } }
+      - name: Preserve nonsecret addon and model-family evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-native-pc-artist-capabilities
+          path: |
+            ${{ runner.temp }}/eldoria-native-pc-art-capability/blender-installed-addons.json
+            ${{ runner.temp }}/eldoria-native-pc-art-capability/local-eldoria-artist-model-metadata.json
+          retention-days: 7
+          if-no-files-found: warn

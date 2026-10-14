@@ -1,0 +1,153 @@
+name: Eldoria fresh Qwen art-directed material to real PC Blender
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-fresh-qwen-to-real-windows-blender-once
+  cancel-in-progress: true
+jobs:
+  generate-real-qwen-art-plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+            tools/art-direction/ARTIST_LEARNING_JOURNAL.md
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+            references
+          sparse-checkout-cone-mode: false
+      - name: Install zero-cost Blender and local Qwen 4B on isolated Linux
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          docker run --rm -d --name eldoria-fresh-qwen-pc-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 45); do if curl -fsS http://127.0.0.1:11434/api/version >/dev/null; then break; fi; sleep 2; done
+          docker exec eldoria-fresh-qwen-pc-artist ollama pull qwen3-vl:4b-instruct
+      - name: Actual new Qwen 4B artistic surface choices on Valoria inherited model
+        timeout-minutes: 33
+        run: |
+          python3 tools/art-direction/full-studio/artist_loop.py \
+            --brief 'Create a coherent, deliberate aged medieval masonry lookdev on this exact inherited Valoria tower mesh, matching the approved reference. Choose YOUR OWN defensible stone colour, wear response and PBR properties in several target-specific material actions. This is phase surface only; do not invent new object names, substitute a tower, or reuse any template. The owner expects visible credible material differences, not a grayscale placeholder.' \
+            --source Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb \
+            --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json \
+            --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg \
+            --out /tmp/eldoria-fresh-qwen-art \
+            --asset-category architecture --phase surface \
+            --max-cycles 2 --max-actions 2 --max-tokens 2000 \
+            --model qwen3-vl:4b-instruct
+      - name: Verify exact Qwen response and selected artistic material plan, without human-number substitution
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib,shutil
+          root=pathlib.Path('/tmp/eldoria-fresh-qwen-art')
+          manifest=json.loads((root/'full-studio-result.json').read_text())
+          successes=[i for i,x in enumerate(manifest['cycles'],1) if x['status']=='ART_REVIEW_REQUIRED']
+          assert successes and manifest['blender_real_execution'] and not manifest['art_approved']
+          cycle=root/('cycle-'+str(successes[-1]))
+          plan=cycle/'artist-plan.json'
+          doc=json.loads(plan.read_text())
+          assert doc['asset_decision'] in ('MODIFY','REUSE')
+          assert all(a['op']=='material' for a in doc['actions'])
+          assert hashlib.sha256(plan.read_bytes()).hexdigest()==manifest['cycles'][successes[-1]-1]['plan_sha256']
+          assert (cycle/'qwen-raw.json').stat().st_size>200
+          dest=pathlib.Path('/tmp/eldoria-pc-handoff');dest.mkdir()
+          for p in ('artist-plan.json','qwen-raw.json'):
+              shutil.copy2(cycle/p,dest/p)
+          shutil.copy2(root/'full-studio-result.json',dest/'full-studio-result.json')
+          shutil.copy2(cycle/'qwen-critique.json',dest/'qwen-critique.json')
+          shutil.copy2(cycle/'output/after-blender.png',dest/'qwen-linux-after.png')
+          print('ELDORIA_GENUINE_NEW_QWEN_PBR_PLAN_READY_FOR_REAL_WINDOWS_PC',len(doc['actions']),flush=True)
+          PY
+      - name: Preserve exact raw Qwen and Blender evidence even if model rejects
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-fresh-qwen-art-source-and-previews
+          path: /tmp/eldoria-fresh-qwen-art/
+          retention-days: 10
+          if-no-files-found: warn
+      - name: Cross-platform immutable Qwen plan handoff
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-qwen-original-plan-for-windows
+          path: /tmp/eldoria-pc-handoff/
+          retention-days: 10
+
+  execute-qwen-choices-on-pc-blender:
+    needs: generate-real-qwen-art-plan
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 16
+    steps:
+      - name: Locate GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git unavailable' }
+            $folder=Split-Path $candidate
+            $env:PATH="$folder;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+          sparse-checkout-cone-mode: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-qwen-original-plan-for-windows
+          path: ${{ runner.temp }}/eldoria-qwen-original-plan
+      - name: Real PC Blender physically executes Qwen's newly chosen material changes
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $exe=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $exe) {
+            $folder=Join-Path $env:ProgramFiles 'Blender Foundation'
+            $exe=Get-ChildItem $folder -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'Blender PC executable unavailable' }
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-qwen-original-plan'
+          $manifest=Get-Content (Join-Path $root 'full-studio-result.json') -Raw | ConvertFrom-Json
+          $plan=Join-Path $root 'artist-plan.json'
+          $planSha=(Get-FileHash $plan -Algorithm SHA256).Hash.ToLowerInvariant()
+          $sourceSha=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($planSha -notin @($manifest.cycles | ForEach-Object plan_sha256)) { throw 'New Qwen source plan SHA invalid' }
+          if ($sourceSha -ne $manifest.frozen_source_sha256) { throw 'Frozen source SHA mismatch' }
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-new-qwen-PC-material'
+          & $exe -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- --source $source --plan $plan --out $out --texture-root $env:GITHUB_WORKSPACE --review tools/art-direction/full-studio/tests/valoria_tower_hero_review.json
+          if ($LASTEXITCODE -ne 0) { throw 'Fresh model plan could not execute real Windows Blender' }
+          $proof=Get-Content (Join-Path $out 'execution-proof.json') -Raw | ConvertFrom-Json
+          if (-not $proof.blender_execution -or -not $proof.matched_review_camera -or $proof.art_approved -or $proof.unity_tested) { throw 'Windows Blender proof incomplete' }
+          $original=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($original -ne $sourceSha) { throw 'Original asset mutated' }
+          Write-Host ('ELDORIA_NEW_QWEN_ARTISTIC_MATERIALS_DIRECTED_ON_REAL_WINDOWS_BLENDER_PASS actions='+$proof.action_count)
+      - name: Persist Windows Blender outputs and no artistic self-approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-qwen-fresh-PBR-real-PC-output
+          path: ${{ runner.temp }}/eldoria-new-qwen-PC-material/
+          retention-days: 10
+          if-no-files-found: warn

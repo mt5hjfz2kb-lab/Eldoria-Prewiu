@@ -9,6 +9,7 @@ import bpy
 HERE=pathlib.Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from blender_toolbox import camera_override,render_setup,ensure_review_lighting,ensure_review_stage,snapshot_meshes
+from world_space_evidence import summarize_world_points
 
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -38,6 +39,13 @@ def main():
     inventory=[]
     for o in sorted((o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("_EldoriaReview")),key=lambda x:x.name):
         verts=o.data.vertices
+        # IMPORTANT: original GLB local axes can be rotated by import. New
+        # Blender objects use WORLD XYZ with +Z vertical. Measure actual
+        # Blender matrix_world transformed vertex positions, not local bounds.
+        spatial=summarize_world_points([tuple(o.matrix_world @ v.co) for v in verts])
+        basis=o.matrix_world.to_3x3()
+        local_up=max(range(3),key=lambda axis:abs(float(basis.col[axis].z)))
+        signed_local_up=("+" if float(basis.col[local_up].z)>=0 else "-")+"XYZ"[local_up]
         lo=[round(min((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
         hi=[round(max((float(v.co[i]) for v in verts),default=0),5) for i in range(3)]
         local_extrema={}
@@ -47,8 +55,69 @@ def main():
                     vertex=selector(verts,key=lambda v:float(v.co[axis]))
                     local_extrema[letter+"_"+kind]={"vertex_index":vertex.index,
                       "local_position_m":[round(float(v),5) for v in vertex.co]}
+        # Neutral read-only topology sampling: source facts, NOT art instructions.
+        # Spread landmarks across measured coordinates so Qwen can pick brushes
+        # and face IDs without guessing numbers from a photograph.
+        sampled={}
+        for axis in range(3):
+            ordered=sorted(verts,key=lambda v:float(v.co[axis]))
+            for frac in (0.12,0.32,0.52,0.72,0.92):
+                if ordered:
+                    v=ordered[round((len(ordered)-1)*frac)]
+                    sampled[v.index]={"vertex_index":v.index,
+                        "local_position_m":[round(float(t),5) for t in v.co]}
+        vertex_landmarks=list(sampled.values())
+        polys=o.data.polygons
+        chosen={}
+        if len(polys):
+            for axis in range(3):
+                ordered=sorted(polys,key=lambda f:float(f.center[axis]))
+                for frac in (0.1,0.5,0.9):
+                    p=ordered[round((len(ordered)-1)*frac)]
+                    chosen[p.index]=p
+            for face in sorted(polys,key=lambda f:float(f.area),reverse=True)[:5]:
+                chosen[face.index]=face
+        face_landmarks=[{"face_index":p.index,
+            "local_center_m":[round(float(t),5) for t in p.center],
+            "local_normal":[round(float(t),4) for t in p.normal],
+            "local_area_m2":round(float(p.area),6)}
+            for p in chosen.values()]
+        edges=o.data.edges
+        selected_edges={}
+        if len(edges):
+            for axis in range(3):
+                ordered=sorted(edges,key=lambda e:sum(float(verts[int(k)].co[axis]) for k in e.vertices)/2)
+                for frac in (0.15,0.50,0.85):
+                    edge=ordered[round((len(ordered)-1)*frac)]
+                    selected_edges[edge.index]=edge
+            for edge in sorted(edges,key=lambda e:sum(
+                (float(verts[int(edge.vertices[0])].co[j])-float(verts[int(edge.vertices[1])].co[j]))**2
+                for j in range(3)),reverse=True)[:5]:
+                selected_edges[edge.index]=edge
+        edge_landmarks=[{"edge_index":e.index,
+            "local_midpoint_m":[round((float(verts[int(e.vertices[0])].co[j])+
+                                      float(verts[int(e.vertices[1])].co[j]))/2,5) for j in range(3)]}
+            for e in selected_edges.values()]
+        # Physical evaluated triangles (including live modifiers), rather
+        # than N-gon polygon counts. This source fact is mandatory for honest
+        # relative mobile-density comparisons across inherited Blender files.
+        evaluated=o.evaluated_get(bpy.context.evaluated_depsgraph_get())
+        evaluated_mesh=evaluated.to_mesh()
+        try:
+            source_evaluated_triangles=sum(max(len(poly.vertices)-2,0)
+                                           for poly in evaluated_mesh.polygons)
+        finally:
+            evaluated.to_mesh_clear()
         inventory.append({
+            **spatial,
+            "mesh_local_axis_aligned_with_world_up":signed_local_up,
+            "world_coordinate_convention":"Blender WORLD XYZ: +Z vertical; GLB mesh LOCAL axes may differ",
+            "evaluated_triangles":source_evaluated_triangles,
             "local_extrema":local_extrema,
+            "vertex_landmarks":vertex_landmarks,
+            "edges":len(edges),
+            "edge_landmarks":edge_landmarks,
+            "face_landmarks":face_landmarks,
             "name":o.name,"vertices":len(verts),"faces":len(o.data.polygons),
             "local_bounds_min_m":lo,"local_bounds_max_m":hi,
             "world_location_m":[round(float(v),5) for v in o.location],
@@ -59,10 +128,35 @@ def main():
     image=args.out/"source-preview-blender.png"
     bpy.context.scene.render.filepath=str(image.resolve())
     bpy.ops.render.render(write_still=True)
+    # Supplemental WORLD-coordinate orthographic references for model vision.
+    # Render only in this disposable Blender process; NO art, source, or Unity
+    # scene is changed. These are measurements, not procedural model geometry.
+    low=[min(x["world_bounds_min_m"][i] for x in inventory) for i in range(3)]
+    high=[max(x["world_bounds_max_m"][i] for x in inventory) for i in range(3)]
+    center=[(low[i]+high[i])/2 for i in range(3)]
+    span=[max(.1,high[i]-low[i]) for i in range(3)]
+    render_setup({"engine":"CYCLES","samples":6,"width":640,"height":480})
+    views={}
+    for label,eye,scale in (
+        ("top",[center[0]+.005,center[1]-.005,center[2]+8],
+          max(span[0],span[1])+1.5),
+        ("side",[center[0]+8,center[1],center[2]+1.7],
+          max(span[1],span[2])+1.5)):
+        camera_override({"location":eye,"target":center,
+                         "ortho_scale":scale,"projection":"ORTHO"})
+        frame=args.out/("source-"+label+"-blender.png")
+        bpy.context.scene.render.filepath=str(frame.resolve())
+        bpy.ops.render.render(write_still=True)
+        views[label]={"image":frame.name,"sha256":digest(frame),
+                      "camera_world_xyz":eye,
+                      "target_world_xyz":center,
+                      "source_world_up_axis":"+Z"}
     if digest(args.source)!=source_hash:raise RuntimeError("Original source was modified")
     proof={"schema_version":1,"source_sha256":source_hash,
            "source_unchanged":True,"image_kind":"REAL_BLENDER_NOT_UNITY",
-           "source_preview_sha256":digest(image),"asset_count":len(inventory),
+           "source_preview_sha256":digest(image),
+           "spatial_reference_views":views,
+           "asset_count":len(inventory),
            "objects":inventory,"art_approved":False}
     (args.out/"source-inspection.json").write_text(json.dumps(proof,indent=2)+"\n")
     print("ELDORIA_FULL_STUDIO_REAL_SOURCE_INSPECTED",len(inventory),source_hash)

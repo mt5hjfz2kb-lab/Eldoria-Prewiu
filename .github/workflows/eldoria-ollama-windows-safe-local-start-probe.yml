@@ -1,0 +1,84 @@
+name: Eldoria controlled local Windows Ollama 0-credit start and model probe
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-ollama-windows-safe-local-start-probe.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-one-pc-ollama-readonly-local-start
+  cancel-in-progress: true
+jobs:
+  prove-local-qwen-engine:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 6
+    steps:
+      - name: Locate owner-installed Ollama, start localhost only, inspect available models, and terminate test instance
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $report=[ordered]@{state='LOCAL_OLLAMA_TEST_ONLY';pc_windows=$true;installed_ollama_found=$false;responding=$false;models=@();started_by_test=$false;local_blender_unchanged=$true;installed_anything=$false;art_approved=$false}
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-ollama-windows-local-start-proof.json'
+          $proc=$null
+          try {
+            $exe=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+            if (-not $exe) {
+              $candidates=@()
+              foreach($p in @(
+                (Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'),
+                (Join-Path $env:LOCALAPPDATA 'Ollama\ollama.exe'),
+                (Join-Path $env:ProgramFiles 'Ollama\ollama.exe')
+              )) { if (Test-Path $p) { $candidates+=$p } }
+              if (-not $candidates) {
+                Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+                  foreach($relative in @('AppData\Local\Programs\Ollama\ollama.exe','AppData\Local\Ollama\ollama.exe')) {
+                    $p=Join-Path $_.FullName $relative
+                    if (Test-Path $p) { $candidates+=$p }
+                  }
+                }
+              }
+              $exe=@($candidates | Select-Object -Unique | Select-Object -First 1)[0]
+            }
+            if (-not $exe -or -not (Test-Path $exe)) { throw 'Ollama binary could not be located despite registry reference' }
+            $report.installed_ollama_found=$true
+            $report.signature_status=(Get-AuthenticodeSignature $exe).Status.ToString()
+            $version=& $exe --version 2>&1 | Out-String
+            $report.cli_version_detected=($version -match '\d+\.\d+\.\d+')
+            $env:OLLAMA_HOST='127.0.0.1:11434'
+            $online=$false
+            try { $null=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 3; $online=$true } catch {}
+            if (-not $online) {
+              $stdOut=Join-Path $env:RUNNER_TEMP 'eldoria-ollama-probe-stdout.txt'
+              $stdErr=Join-Path $env:RUNNER_TEMP 'eldoria-ollama-probe-stderr.txt'
+              $proc=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput $stdOut -RedirectStandardError $stdErr
+              $report.started_by_test=$true
+              for ($n=1;$n -le 40;$n++) {
+                Start-Sleep -Seconds 2
+                try { $null=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 2; $online=$true; break } catch {}
+                if ($proc.HasExited) { break }
+              }
+            }
+            $report.responding=$online
+            if ($online) {
+              $version=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 5
+              $tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 8
+              $report.server_version=$version.version
+              $report.models=@($tags.models | ForEach-Object { $_.name })
+              $report.qwen_vision_ready=@($report.models | Where-Object {$_ -match '^qwen3-vl:'}).Count -gt 0
+              Write-Host ('ELDORIA_PC_OLLAMA_LOCAL_ACTIVE model_count='+$report.models.Count+' qwen_vl_ready='+$report.qwen_vision_ready)
+            } else { Write-Host 'OLLAMA_INSTALLED_BUT_LOOPBACK_NOT_RESPONDING' }
+          } finally {
+            if ($proc) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
+            $report | ConvertTo-Json -Depth 6 | Set-Content -Path $out -Encoding UTF8
+          }
+          if (-not $report.responding) { throw 'Installed Ollama could not serve a local loopback request' }
+      - name: Retain Ollama operational facts only, no secrets or paths
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-local-ollama-qwen-availability
+          path: ${{ runner.temp }}/eldoria-ollama-windows-local-start-proof.json
+          if-no-files-found: warn
+          retention-days: 7

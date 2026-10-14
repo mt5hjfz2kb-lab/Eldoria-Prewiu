@@ -1,0 +1,109 @@
+name: Eldoria forensic PC Ollama discovery (read-only)
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-ollama-local-installation-discovery.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-ollama-one-shot-local-readonly-discovery
+  cancel-in-progress: true
+jobs:
+  local-windows-ollama-discovery:
+    if: github.ref == 'refs/heads/validation/artist-windows-pc-bridge-20261014'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 6
+    steps:
+      - name: Discover installation, runner identity, processes, service, local ports and models
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-ollama-windows-readonly-discovery.json'
+          $report=[ordered]@{
+            marker='ELDORIA_OLLAMA_PC_FORENSIC_DIAGNOSTIC'
+            run_id=$env:GITHUB_RUN_ID
+            runner_os=$env:RUNNER_OS
+            runner_windows_is_system_or_service=([Security.Principal.WindowsIdentity]::GetCurrent().Name -match '^(NT AUTHORITY|NT SERVICE)\\')
+            runner_session_id=[Diagnostics.Process]::GetCurrentProcess().SessionId
+            path_executable=$false
+            installed_binary_candidates=@()
+            registered_uninstall_entries=@()
+            ollama_processes=@()
+            ollama_services=@()
+            tcp_11434_listening=$false
+            local_endpoints=@()
+            wsl_available=$false
+            docker_available=$false
+            user_model_locations=@()
+            ollama_host_variable_set=($null -ne [Environment]::GetEnvironmentVariable('OLLAMA_HOST'))
+            diagnostics_only=$true
+            original_blender_files_modified=$false
+          }
+          $exe=Get-Command ollama.exe -ErrorAction SilentlyContinue
+          $report.path_executable=($null -ne $exe)
+          $candidates=New-Object 'System.Collections.Generic.List[string]'
+          if ($exe) {$candidates.Add($exe.Source)}
+          foreach($candidate in @(
+            (Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Ollama\ollama.exe'),
+            (Join-Path $env:ProgramFiles 'Ollama\ollama.exe'),
+            $(if (${env:ProgramFiles(x86)}) { Join-Path ${env:ProgramFiles(x86)} 'Ollama\ollama.exe' } else { '' })
+          )) { if ($candidate -and (Test-Path $candidate)) { $candidates.Add($candidate) } }
+          # The self-hosted runner may run as SYSTEM while Ollama is installed in the owner's user profile.
+          $users=Join-Path $env:SystemDrive 'Users'
+          if (Test-Path $users) {
+            Get-ChildItem $users -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+              foreach($relative in @('AppData\Local\Programs\Ollama\ollama.exe','AppData\Local\Ollama\ollama.exe','AppData\Local\Programs\Ollama\app.exe')) {
+                $candidate=Join-Path $_.FullName $relative
+                if (Test-Path $candidate) { $candidates.Add($candidate) }
+              }
+              if ((Test-Path (Join-Path $_.FullName '.ollama\models'))) {
+                $report.user_model_locations += 'owner-profile-models-present'
+              }
+            }
+          }
+          $report.installed_binary_candidates=@($candidates | Select-Object -Unique | ForEach-Object {
+            @{ file=(Split-Path $_ -Leaf); parent_kind=$(if ($_ -like '*\Users\*') {'user-local'} else {'program-files-or-path'}); exists=$true }
+          })
+          foreach($reg in @('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*','HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*')) {
+            $report.registered_uninstall_entries+=@(Get-ItemProperty $reg -ErrorAction SilentlyContinue |
+              Where-Object { $_.DisplayName -like '*Ollama*' } | ForEach-Object {$_.DisplayName})
+          }
+          $report.ollama_processes=@(Get-Process -Name 'ollama*' -ErrorAction SilentlyContinue |
+             ForEach-Object { @{ process_name=$_.ProcessName; session_id=$_.SessionId; process_running=$true } })
+          $report.ollama_services=@(Get-Service -ErrorAction SilentlyContinue |
+             Where-Object { $_.Name -like '*ollama*' -or $_.DisplayName -like '*ollama*' } |
+             ForEach-Object { @{ name=$_.Name; status=$_.Status.ToString() } })
+          try { $report.tcp_11434_listening=@(Get-NetTCPConnection -LocalPort 11434 -State Listen -ErrorAction Stop).Count -gt 0 } catch {}
+          $endpoints=@('http://127.0.0.1:11434/api/version','http://localhost:11434/api/version','http://[::1]:11434/api/version')
+          $hostVar=[Environment]::GetEnvironmentVariable('OLLAMA_HOST')
+          if ($hostVar -and $hostVar -match '^(?:http[s]?://)?(127\.0\.0\.1|localhost|\[::1\])(?::\d+)?$') {
+            $base=$hostVar.TrimEnd('/')
+            if (-not $base.StartsWith('http')) {$base='http://'+$base}
+            $endpoints+=($base+'/api/version')
+          }
+          foreach($url in ($endpoints | Select-Object -Unique)) {
+            try {
+              $response=Invoke-RestMethod -Uri $url -TimeoutSec 3 -ErrorAction Stop
+              $report.local_endpoints+=@{ responding=$true; version=$response.version; endpoint_class='loopback' }
+              try {
+                $base=$url.Replace('/api/version','')
+                $tags=Invoke-RestMethod -Uri ($base+'/api/tags') -TimeoutSec 3 -ErrorAction Stop
+                $report.local_endpoints[-1].model_names=@($tags.models | ForEach-Object {$_.name})
+              } catch {}
+            } catch { $report.local_endpoints+=@{ responding=$false; endpoint_class='loopback' } }
+          }
+          $report.wsl_available=($null -ne (Get-Command wsl.exe -ErrorAction SilentlyContinue))
+          $report.docker_available=($null -ne (Get-Command docker.exe -ErrorAction SilentlyContinue))
+          $report | ConvertTo-Json -Depth 7 | Set-Content $out -Encoding UTF8
+          Write-Host ('ELDORIA_OLLAMA_WINDOWS_DISCOVERY installed_candidates='+$report.installed_binary_candidates.Count+' running_processes='+$report.ollama_processes.Count+' responding_endpoints='+@($report.local_endpoints | Where-Object responding).Count+' model_dirs='+$report.user_model_locations.Count)
+      - name: Preserve read-only diagnostic without leaking profile paths
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pc-ollama-local-discovery
+          path: ${{ runner.temp }}/eldoria-ollama-windows-readonly-discovery.json
+          retention-days: 7
+          if-no-files-found: warn

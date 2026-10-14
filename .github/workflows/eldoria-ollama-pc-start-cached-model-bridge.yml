@@ -1,0 +1,94 @@
+name: Eldoria owner-authorized PC Ollama start and cached models
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-ollama-pc-start-cached-model-bridge.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-pc-ollama-single-controlled-start
+  cancel-in-progress: true
+jobs:
+  pc-local-model-availability:
+    if: github.ref == 'refs/heads/validation/artist-windows-pc-bridge-20261014'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    steps:
+      - name: Start previously installed Ollama on loopback only and list locally cached models
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-ollama-cached-bridge'
+          New-Item -ItemType Directory -Force -Path $root | Out-Null
+          $exe=$null
+          $local=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if (Test-Path $local) { $exe=$local }
+          if (-not $exe) {
+            $users=Join-Path $env:SystemDrive 'Users'
+            $exe=Get-ChildItem $users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if (-not $exe -or -not (Test-Path $exe)) { throw 'INSTALLED_OLLAMA_BINARY_NOT_ACCESSIBLE' }
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $models=Join-Path $env:USERPROFILE '.ollama\models'
+          $modelSource='current-profile'
+          if (-not (Test-Path $models)) {
+            $allProfiles=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue
+            $found=$allProfiles | ForEach-Object { Join-Path $_.FullName '.ollama\models' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if ($found) { $models=$found; $modelSource='existing-other-profile' }
+          }
+          if (Test-Path $models) { $env:OLLAMA_MODELS=$models }
+          $beforeAlive=$false
+          try { $null=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 3; $beforeAlive=$true } catch {}
+          $started=$null
+          if (-not $beforeAlive) {
+            $started=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden `
+              -RedirectStandardOutput (Join-Path $root 'ollama-stdout.txt') `
+              -RedirectStandardError (Join-Path $root 'ollama-stderr.txt')
+          }
+          try {
+            $ready=$false
+            foreach($n in 1..55) {
+              try {
+                $ver=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 3
+                $ready=$true;break
+              } catch { Start-Sleep -Seconds 1 }
+            }
+            if (-not $ready) { throw 'OLLAMA_SERVICE_FAILED_TO_LISTEN_AFTER_LOCAL_START' }
+            $tag=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 12
+            $names=@($tag.models | ForEach-Object { $_.name })
+            $report=[ordered]@{
+              proof='ELDORIA_REAL_INSTALLED_PC_OLLAMA_LOOPBACK_READY'
+              windows_runner=$true
+              local_binary=$true
+              existing_model_source=$modelSource
+              started_in_job=(-not $beforeAlive)
+              listening_loopback=$ready
+              ollama_version=$ver.version
+              models=$names
+              qwen_models=@($names | Where-Object { $_ -like 'qwen*' })
+              downloaded_new_models=$false
+              source_assets_modified=$false
+              art_approved=$false
+            }
+            $report | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $root 'model-readiness.json') -Encoding UTF8
+            Write-Host ('ELDORIA_PC_OLLAMA_CONNECTED version='+$ver.version+' cached_qwen='+$report.qwen_models.Count)
+            foreach($model in $report.qwen_models) { Write-Host ('CACHED_QWEN_MODEL='+$model) }
+          } finally {
+            if ($started) {
+              try { Stop-Process -Id $started.Id -ErrorAction SilentlyContinue } catch {}
+            }
+          }
+      - name: Preserve local startup and model inventory proof, no downloaded models
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-windows-local-ollama-cached-models
+          path: |
+            ${{ runner.temp }}/eldoria-ollama-cached-bridge/model-readiness.json
+          retention-days: 7
+          if-no-files-found: warn

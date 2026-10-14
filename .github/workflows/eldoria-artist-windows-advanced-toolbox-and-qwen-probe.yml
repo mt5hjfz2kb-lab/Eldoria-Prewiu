@@ -1,0 +1,94 @@
+name: Eldoria controlled Windows artist 26-tool and Qwen-local probe
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - '.github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-single-windows-artist-capability
+  cancel-in-progress: true
+jobs:
+  windows-real-blender:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 14
+    if: github.ref == 'refs/heads/validation/artist-windows-pc-bridge-20261014'
+    steps:
+      - name: Locate Git without changing local machine
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found in GitHubDesktop or PATH' }
+            $folder=Split-Path $candidate
+            $env:PATH="$folder;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $folder
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - name: Check PC-native Ollama model availability, no model pulls
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $report=@{ computer='WINDOWS_SELF_HOSTED'; stage='REAL_PC_ARTIST_CAPABILITY'; blender_native_only=$true; ollama_running=$false; local_models=@(); blender_mcp_certified=$false; creativity_approved=$false }
+          $ollama=Get-Command ollama.exe -ErrorAction SilentlyContinue
+          $report.ollama_exe_in_path=($null -ne $ollama)
+          try {
+            $api=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/version' -TimeoutSec 4
+            $models=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 7
+            $report.ollama_running=$true
+            $report.ollama_version=$api.version
+            $report.local_models=@($models.models | ForEach-Object { $_.name })
+          } catch { $report.ollama_running=$false }
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-windows-artist-capability.json'
+          $report | ConvertTo-Json -Depth 5 | Set-Content -Path $out -Encoding UTF8
+          Write-Host ('OLLAMA_ENDPOINT='+$report.ollama_running)
+          Write-Host ('OLLAMA_LOCAL_MODELS='+($report.local_models -join ', '))
+      - name: Run real 26-operation asset toolbox in installed Blender 5.x
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $bin=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $exe=$null
+          if ($bin) { $exe=$bin.Source }
+          if (-not $exe) {
+            $folder=Join-Path $env:ProgramFiles 'Blender Foundation'
+            $exe=Get-ChildItem $folder -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'PC Blender disappeared' }
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-pc-studio-26'
+          & $exe -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- --plan tools/art-direction/full-studio/tests/smoke_plan.json --out $out --texture-root $env:GITHUB_WORKSPACE
+          if ($LASTEXITCODE -ne 0) { throw "PC Blender 26 operations rejected code=$LASTEXITCODE" }
+          $proof=Get-Content (Join-Path $out 'execution-proof.json') -Raw | ConvertFrom-Json
+          if (-not $proof.blender_execution -or $proof.action_count -ne 26 -or -not $proof.matched_review_camera) { throw 'Real Windows toolbox proof invalid' }
+          if ($proof.art_approved) { throw 'Automated art approval forbidden' }
+          if (-not (Test-Path (Join-Path $out 'artist-asset.blend')) -or -not (Test-Path (Join-Path $out 'artist-asset.glb'))) { throw 'Real editable Blender/GLB absent' }
+          Write-Host ('ELDORIA_PC_REAL_BLENDER_TOOLBOX_PASS actions='+$proof.action_count+' triangles='+$proof.evaluated_triangles)
+      - name: Keep exact PC results and local-model availability
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pc-blender-toolbox-and-local-qwen-status
+          path: |
+            ${{ runner.temp }}/eldoria-windows-artist-capability.json
+            ${{ runner.temp }}/eldoria-real-pc-studio-26/execution-proof.json
+            ${{ runner.temp }}/eldoria-real-pc-studio-26/artist-asset.blend
+            ${{ runner.temp }}/eldoria-real-pc-studio-26/artist-asset.glb
+            ${{ runner.temp }}/eldoria-real-pc-studio-26/before-blender.png
+            ${{ runner.temp }}/eldoria-real-pc-studio-26/after-blender.png
+          retention-days: 7
+          if-no-files-found: warn

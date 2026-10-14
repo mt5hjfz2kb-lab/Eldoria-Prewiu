@@ -106,6 +106,23 @@ def validate_plan(doc):
                 isinstance(f,list) and 3 <= len(f) <= 12 and
                 len(set(f)) == len(f) and
                 all(type(i) is int and 0 <= i < len(vs) for i in f) for f in fs), "Invalid authored faces")
+            # A 3D model cannot be valid when every supposedly distinct
+            # vertex shares the same coordinates or its faces have zero area.
+            # Qwen MUST re-author bad artistic geometry; never infer or fix it.
+            require(len({tuple(v) for v in vs})==len(vs),
+                    "Custom mesh has DUPLICATE 3D vertices; choose ORIGINAL distinct [x,y,z] positions")
+            def real_face_area(face):
+                a=vs[face[0]]
+                total=0.0
+                for q in range(1,len(face)-1):
+                    b=vs[face[q]];c=vs[face[q+1]]
+                    u=[b[i]-a[i] for i in range(3)]
+                    v=[c[i]-a[i] for i in range(3)]
+                    cross=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]]
+                    total+=math.sqrt(sum(t*t for t in cross))*0.5
+                return total
+            require(all(real_face_area(face)>1e-5 for face in fs),
+                    "Custom mesh has ZERO-AREA faces; author real noncollinear vertex positions")
             require(name not in created, "Creation name repeated")
             created.add(name); geometric += 1
         elif op in ("duplicate", "light", "camera"):

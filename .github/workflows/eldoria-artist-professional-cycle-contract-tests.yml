@@ -1,0 +1,38 @@
+name: Eldoria isolated Qwen professional art cycle contract regressions
+on:
+  push:
+    branches:
+      - validation/artist-windows-pc-bridge-20261014
+    paths:
+      - 'tools/art-direction/full-studio/artist_loop.py'
+      - 'tools/art-direction/full-studio/tests/test_professional_cycle.py'
+      - '.github/workflows/eldoria-artist-professional-cycle-contract-tests.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-artist-professional-offline-unit
+  cancel-in-progress: true
+jobs:
+  no-blender-offline-art-orchestration-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install only lightweight free dependency required by existing visual contracts
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Verify actual Python code and short-context architectural artist decision logic
+        run: |
+          python3 -m py_compile tools/art-direction/full-studio/artist_loop.py
+          python3 -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_professional_cycle.py' -v
+      - name: Ensure this scope never edited the original Unity game or PC
+        run: |
+          echo 'OFFLINE_ONLY: no Qwen inference, Blender process, Unity, GPU, Windows or paid API'

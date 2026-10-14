@@ -5,11 +5,18 @@ Blender executes only a validated typed plan; Qwen supplies every asset choice.
 No paid services, cloud inference, arbitrary Python, or new game scene changes.
 """
 from __future__ import annotations
-import argparse, base64, hashlib, json, pathlib, subprocess, sys, time, urllib.error, urllib.request
+import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan, safe_action_id
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
+from source_geometry_gate import verify_source_plan,relative_triangle_limit
+from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
+from architectural_component_guard import verify_volume_and_complexity
+from architectural_world_placement_gate import reject_obviously_bad_component_placement
+from protected_camera_regions import inspect_protected_regions
+import copy, re
+from triangle_budget import check_triangle_growth
 
 HERE=pathlib.Path(__file__).resolve().parent
 REPO=HERE.parents[2]
@@ -21,12 +28,13 @@ def sha(path):
     return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 
 def image_data(file, max_edge=1024):
-    """Preserve source framing and high-frequency geometry without inventing pixels."""
+    """Real, camera-preserving evidence frames; never synthesize reference pixels."""
     from PIL import Image, ImageOps
     import io
-    if max_edge not in (640,768,1024,1280):raise ValueError("Unapproved vision resolution")
-    with Image.open(file) as opened:
-        im=ImageOps.exif_transpose(opened).convert("RGB")
+    if max_edge not in (640,768,1024,1280):
+        raise ValueError("Unsupported bounded vision resolution")
+    with Image.open(file) as source_image:
+        im=ImageOps.exif_transpose(source_image).convert("RGB")
     im.thumbnail((max_edge,max_edge))
     buf=io.BytesIO();im.save(buf,format="JPEG",quality=88,subsampling=0)
     return base64.b64encode(buf.getvalue()).decode("ascii")
@@ -34,23 +42,35 @@ def image_data(file, max_edge=1024):
 def request_ollama(endpoint, model, messages, max_tokens, timeout=600, schema=None):
     if endpoint != "http://127.0.0.1:11434/api/chat":
         raise ValueError("Only local zero-cost Ollama supported")
+    # Preserve the previous 16k default. The benchmark may select a smaller
+    # local memory budget explicitly without changing creative decisions.
+    num_ctx=int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384"))
+    if num_ctx not in (4096,8192,16384):
+        raise ValueError("Only tested bounded local context sizes are supported")
     payload={"model":model,"stream":True,"think":False,
-             "messages":messages,"options":{"temperature":0.35,"num_ctx":16384,"num_predict":max_tokens}}
+             "messages":messages,"options":{"temperature":0.35,"num_ctx":num_ctx,"num_predict":max_tokens}}
     if schema is not None:payload["format"]=schema
     call=urllib.request.Request(endpoint,headers={"Content-Type":"application/json"},
                                 data=json.dumps(payload).encode("utf-8"))
     pieces=[];done=False
-    with urllib.request.urlopen(call,timeout=timeout) as response:
-        for line in response:
-            if not line.strip():continue
-            obj=json.loads(line)
-            if obj.get("error"):raise RuntimeError(obj["error"])
-            pieces.append(obj.get("message",{}).get("content",""))
-            if obj.get("done"):done=True;break
+    try:
+        with urllib.request.urlopen(call,timeout=timeout) as response:
+            for line in response:
+                if not line.strip():continue
+                obj=json.loads(line)
+                if obj.get("error"):raise RuntimeError(obj["error"])
+                pieces.append(obj.get("message",{}).get("content",""))
+                if obj.get("done"):done=True;break
+    except urllib.error.HTTPError as error:
+        # Ollama can reject a JSON Schema before any model inference.
+        # Make the bounded backend reason visible: do not reinterpret this as
+        # a Qwen artistic choice or silently invent replacement geometry.
+        detail=error.read(2400).decode("utf-8","replace")
+        raise RuntimeError(f"OLLAMA_SCHEMA_OR_REQUEST_REJECTED HTTP {error.code}: {detail}") from error
     if not done:raise RuntimeError("Incomplete Qwen response; no plan accepted")
     return "".join(pieces)
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -119,6 +139,58 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         "params":params},
         "required":["id","op","target","reason","params"],
         "additionalProperties":False}
+    if source_exists and phase=="full" and category=="architecture" and source_inventory:
+        # Keep Qwen's creative tool selection; make signatures exact. A source
+        # that only has inherited meshes needs no invented new object IDs.
+        action=source_artist_action_schema(source_inventory)
+    actions_schema={"type":"array","minItems":2 if not source_exists else 1,
+                    "maxItems":min(max_actions,8),"items":action}
+    if sequenced_source and source_exists and phase=="full" and category=="architecture" and source_inventory:
+        # The artist still freely selects the actual structural tool, coordinates,
+        # target face/edge and material values. Sequence is a safety dependency:
+        # finish the mesh before any operations relying on its changed topology.
+        tools=action["oneOf"]
+        structural=[v for v in tools if v["properties"]["op"]["const"]
+                    in (("primitive","mesh") if assembly_source else
+                        ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
+        finishing=[v for v in tools if v["properties"]["op"]["const"]
+                   in ("material","uv")]
+        optional=[v for v in tools if v["properties"]["op"]["const"]
+                  in ("material","uv","modifier")]
+        if not structural or not finishing:raise ValueError("No typed source tools")
+        if assembly_source:
+            # Volumetric geometry is required for the new architecture proof.
+            # The model still freely designs shape, positions and proportions.
+            structural=copy.deepcopy(structural)
+            if safe_primitive_fallback:
+                # One rejected topology-authoring proposal can temporarily
+                # limit the executable tool, NEVER fix/generate model geometry.
+                structural=[v for v in structural if v["properties"]["op"]["const"]=="primitive"]
+            stage_pattern=(rf"^Eldoria_Added_C{assembly_cycle:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
+                           if assembly_cycle else NEW_COMPONENT_PATTERN)
+            for variant in structural:
+                op=variant["properties"]["op"]["const"]
+                variant["properties"]["target"]["pattern"]=stage_pattern
+                prm=variant["properties"]["params"]["properties"]
+                if op=="primitive":
+                    prm["shape"]["enum"]=[x for x in prm["shape"]["enum"] if x!="plane"]
+                elif op=="mesh":
+                    prm["vertices"]["minItems"]=6
+                    prm["faces"]["minItems"]=4
+            # The first component name is selected by Qwen, under a reserved
+            # namespace that CAN NEVER collide with inherited object names.
+            # Later surface operations may reference the SAME chosen name;
+            # the runtime verifies the binding rather than inventing a name.
+            finishing=copy.deepcopy(finishing)
+            optional=copy.deepcopy(optional)
+            namespace={"type":"string","minLength":18,"maxLength":60,
+                       "pattern":stage_pattern}
+            for v in finishing+optional:
+                v["properties"]["target"]=copy.deepcopy(namespace)
+        actions_schema={"type":"array","minItems":2,"maxItems":3,
+                        "prefixItems":[{"oneOf":structural},
+                                       {"oneOf":finishing},
+                                       {"oneOf":optional}]}
     return {"type":"object","properties":{
         "schema_version":{"type":"integer","const":2},
         "asset_id":{"type":"string","minLength":2,"maxLength":70},
@@ -127,8 +199,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         "asset_decision":{"type":"string","enum":["MODIFY","REUSE"] if source_exists else ["NEW"]},
         "expected_visual_difference":{"type":"string","minLength":30,"maxLength":200},
         "mobile_risks":{"type":"string","maxLength":180},
-        "actions":{"type":"array","minItems":2 if not source_exists else 1,
-                   "maxItems":min(max_actions,8),"items":action}},
+        "actions":actions_schema},
         "required":["schema_version","asset_id","observed_defect","design_intent",
                     "asset_decision","expected_visual_difference","mobile_risks","actions"],
         "additionalProperties":False}
@@ -159,7 +230,48 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"THIS STAGE ONLY AUTHORS REAL PBR MATERIALS on named existing Blender meshes. For EACH action op=material; choose exact source object name, params EXACTLY {base_color:[r,g,b,a],roughness:0.45..1,metallic:0..0.35}. Use plausible medieval limestone, terracotta, oak and aged iron according to each component; different real objects must receive coherent but distinct artist-picked colours. Do not use transform or invent object IDs."
     if phase=="detail":
         return base+"THIS STAGE ONLY ADDS REAL MESH EDGE DETAILS. For EACH action op=bevel; choose existing source mesh from verified inventory, params EXACTLY {width:0.01..0.22,segments:1..4,apply:true}. Avoid beveling huge terrain unnecessarily. You determine which edges/details merit finishing."
-    return base+"You may choose Qwen-authored primitive, mesh, duplicate, transform, sculpt, extrude, inset, bevel, UV, modifier, boolean, material, shader_graph and geometry_nodes and verified import_asset operations. Ensure type-specific params conform to the Blender toolbox. Focus on a meaningful geometry and materials improvement, not an invisible technical change."
+    return base+(
+        "Choose YOUR OWN tools and numeric values from NINE real, validated Blender operation families (sculpt_anchor, sculpt, extrude, inset, bevel, modifier, material, uv, native_operator). "
+        "These are NOT preset designs; when architectural quality needs a new part, choose a NEW primitive or an explicitly authored custom vertices/faces mesh. "
+        "New objects REQUIRE a DISTINCT name not in the observed source inventory. "
+        "Every custom mesh vertex coordinate MUST be unique and EVERY face must have nonzero area; never repeat [0,0,0] to fill a vertex array. "
+        "When uncertain of valid custom vertices/faces, choose a PRIMITIVE and set original shape/location/rotation/scale. "
+        "Do not choose the original tower name for a created object. "
+        "The original inherited tower MUST remain recognizable; added components should attach to it and improve visible architecture. "
+        "Do not output mesh:operation pseudo-parameters. "
+        "Only select face IDs 0..faces-1 from the INSPECTED SOURCE; local_extrema vertex_index is NEVER a face index. "
+        "For sculpt, pick your OWN center within brush radius of any real local_extrema/vertex_landmarks local_position_m, or use sculpt_anchor. "
+        "For extrude or inset, choose REAL observed face_landmarks.face_index according to their local_center_m/local_normal. "
+        "For bevel on detailed imported geometry, choose selected edge_landmarks.edge_index (NOT full-object bevel), with edges:[ids]; NEVER copy vertex_index to face/edge ID. "
+        "Plan at most ONE face/edge topology changing operator each cycle, then inspect the new mesh before more selected faces/edges. "
+        "Model decisions are NEVER automatically clamped, moved or fixed; bad original choices are rejected before Blender. "
+        "FULL PROFESSIONAL ARTIST MODE on verified source: choose which REAL Blender "
+        "tools to use based on the observed visual defect, NOT a fixed primitive recipe. "
+        "Every target must be an inspected existing mesh or an object created by an "
+        "earlier action in this plan. Tools may be combined in sequence. "
+        "Exact params contract examples (numbers below only illustrate TYPES, "
+        "they are NOT proposed artistic values): "
+        "material={base_color:[r,g,b,a],roughness:0..1,metallic:0..1}; "
+        "sculpt={center:[x,y,z],delta:[dx,dy,dz],radius:positive}; "
+        "bevel={edges:[real_edge_indices],width:positive,segments:1..4,apply:true}; "
+        "uv={method:smart|cube|sphere|cylinder}; "
+        "extrude={faces:[verified_face_indices],offset:[dx,dy,dz]}; "
+        "inset={faces:[verified_face_indices],thickness:positive}; "
+        "modifier={kind:BEVEL|SUBSURF|SOLIDIFY|DECIMATE|REMESH|MIRROR|ARRAY|"
+        "WEIGHTED_NORMAL|TRIANGULATE|SIMPLE_DEFORM|DISPLACE,options:{},apply:false}; "
+        "native_operator={operator:object.shade_smooth|object.shade_flat|"
+        "mesh.poke|mesh.subdivide|mesh.bevel|uv.smart_project,kwargs:{},selection:ALL}; "
+        "shader_graph and geometry_nodes each require nodes:[{id,type,inputs:{}}] "
+        "and links:[{from,to,output,input}] with a corresponding Output node; "
+        "choose actual supported Blender node types, never Python snippets. "
+        "Use mesh with authored vertices/faces, boolean with operand/operation, "
+        "duplicate, texture and verified import_asset when useful. "
+        "Select the operation mix that addresses SILHOUETTE, structure, depth, "
+        "PBR and meaningful camera-visible detail; do not claim unsupported "
+        "rigging/animation or substitute an unrelated building. "
+        "If this is the second cycle after an empty scene, the existing primitives "
+        "were ONLY a blockout: improve actual forms/materials with genuine art decisions."
+    )
 
 def run_blender(executable,plan,out,source,texture_root,review,asset_catalog=None,transport='direct',mcp_addon=None,mcp_sha256=None):
     cmd=[executable,"-b","--python-exit-code","1","--python",
@@ -207,21 +319,100 @@ def repair_noncreative_action_ids(doc):
                         "scope": "NON_ARTISTIC_LOG_IDENTIFIER_ONLY"})
     return doc, repairs
 
+def invalid_mesh_requires_tool_fallback(rejection_reasons):
+    """After an invalid original mesh, Qwen may reauthor via a volumetric Blender primitive."""
+    labels=("OPEN or NONMANIFOLD","ZERO-AREA","DUPLICATE 3D vertices",
+            "COPLANAR","insufficient X/Y/Z volume","noncollinear")
+    return any(any(label in reason for label in labels) for reason in rejection_reasons)
+
+
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
-             source_exists=False,known_objects=None):
+             source_exists=False,known_objects=None,source_inventory=None,spatial_views=None):
+    # Preserve older offline test callers without weakening runtime constraints.
+    source_build=bool(getattr(args,"source_build_phase",False))
+    tool_sequence=bool(getattr(args,"source_tool_sequencing",False))
+    if not hasattr(args,"source_build_phase"):args.source_build_phase=source_build
+    if not hasattr(args,"source_tool_sequencing"):args.source_tool_sequencing=tool_sequence
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
-      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-4000:]
-      +"\nNon-copyable empirical lessons: "+memory[:600]
+      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-11800:]
+      +"\nEvidence-ranked verified lessons (not geometry instructions): "+memory[:3500]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
+    if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
+        raise ValueError("Architecture build phase requires a frozen inherited source and typed sequence")
+    if args.source_build_phase:
+        msg+=("\\nBLENDER SPATIAL FACTS, NOT ARTISTIC PRESETS: Blender WORLD +Z is UP. "
+              "For any NEW object, location/rotation/scale are in Blender WORLD xyz. "
+              "An imported GLB mesh may have LOCAL +Y aligned with WORLD +Z. "
+              "Never put a chimney 'up' using WORLD Y; height is WORLD Z. "
+              "Use real world_bounds_min_m/world_bounds_max_m/world_bounds_center_m from "
+              "the latest inspected asset for all architectural placement. "
+              "Choose your OWN scale, pose and material after examining the reference "
+              "and preserve the existing door, stairs and player circulation.")
+
+    if args.source_tool_sequencing and source_exists and args.phase=="full":
+        msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
+          "the FIRST operation must be ONE geometric operation chosen by YOU "
+          + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
+             "Invent your own unique object name STARTING Eldoria_Added_ followed by a letter and 3-42 alphanumeric/underscore characters. "
+             "Create genuinely VOLUMETRIC 3D architecture with readable depth in the player's fixed camera: NOT a single floor plane or two triangles. "
+             "If choosing primitive, design meaningful original X/Y/Z scale and placement; a flat plane is NOT valid. "
+             "If choosing your own vertices/faces, design a CLOSED physical architectural solid with at least SIX non-coplanar vertices and FOUR faces: each mesh edge must belong to exactly TWO faces, no open triangular flaps. "
+             "In each next art cycle, add a DIFFERENT complementary 3D part to the same architectural feature, connecting it naturally to your previous visible addition. "
+             "Consult CURRENT actual Blender source inventory and prior real render, choosing a NEW different Eldoria_Added_ name in each cycle. "
+             "NEVER reuse any inherited mesh name or object mentioned in the verified source inventory. "
+             "Your SECOND and optional THIRD actions MUST use the identical NEW object name you chose FIRST, "
+             "to shade/finish YOUR newly created component, not repaint the original tower. "
+             if args.source_build_phase
+             else "(sculpt, sculpt_anchor, extrude, inset, selected-edge bevel, NEW primitive or authored mesh). ")
+          + "The SECOND is YOUR material or UV operation. "
+          "An optional THIRD is material, UV or a safe non-global modifier. "
+          "This ordering prevents use of stale mesh topology. "
+          "All geometry and artistic values are chosen by YOU, never a script.")
+    cycle_index=int(trial.name.removeprefix("cycle-")) if re.fullmatch(r"cycle-[1-9][0-9]*",trial.name) else 1
+    previous_rejections=[]
+    for previous_attempt in range(1,attempt_number):
+        note=trial/("rejected-plan-attempt-"+str(previous_attempt)+".json")
+        if note.is_file():
+            previous_rejections.append(json.loads(note.read_text(encoding="utf-8")).get("rejection",""))
+    # Model failures are rejected exactly as authored. A proven INVALID
+    # handcrafted mesh allows Qwen to choose a real Blender primitive on the
+    # next retry; it still authors every dimension, placement and material.
+    topology_fallback=(args.source_build_phase and
+                       invalid_mesh_requires_tool_fallback(previous_rejections))
+    if args.source_build_phase:
+        ns=f"Eldoria_Added_C{cycle_index:02d}_"
+        msg+=("\\nMandatory per-cycle new-object namespace: your chosen new name begins "+
+              ns+" followed by YOUR original descriptive identifier. "
+              "Invent a DIFFERENT name from any verified existing mesh. "
+              "Your design must be integrated with the medieval architecture without obstructing "
+              "the entry door, wooden stairs, or circulation. Do not create a freestanding oversized "
+              "box that swallows the building; compare local dimensions and player camera.")
+    if topology_fallback:
+        msg+=("\\nYour original handwritten mesh attempt did not form a closed solid. "
+              "For THIS RETRY, use a REAL VOLUMETRIC Blender primitive. "
+              "YOU still choose which primitive, placement, orientation, dimensions, material and intent. "
+              "No script chooses your new structure.")
     edge=getattr(args,"vision_max_edge",1024)
     pictures=[image_data(reference,edge)]
     if current_image:pictures.append(image_data(current_image,edge))
     if getattr(args,"focus_image",None):pictures.append(image_data(args.focus_image,edge))
+    if spatial_views:
+        msg+=("\\nMODEL VISUAL SOURCES ORDER: (1) owner reference, (2) CURRENT Blender hero view, "
+              "(3) actual Blender WORLD TOP orthographic from +Z looking down, "
+              "(4) actual Blender WORLD SIDE orthographic from +X. "
+              "Use these multiple camera angles and measured world bounds together "
+              "to place a physically attached, complementary medieval part. "
+              "The views are read-only diagnostic renders, not design presets.")
+        for frame in spatial_views:
+            if not frame.is_file():raise FileNotFoundError("Real Blender spatial camera image missing: "+str(frame))
+            pictures.append(image_data(frame,edge))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
-      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects),timeout=540)
+      args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
+                                       args.source_build_phase,cycle_index if args.source_build_phase else 0,
+                                       topology_fallback),timeout=540)
     (trial/("qwen-raw-attempt-"+str(attempt_number)+".json")).write_text(text,encoding="utf-8")
     (trial/"qwen-raw.json").write_text(text,encoding="utf-8")
     doc=json.loads(text)
@@ -232,6 +423,23 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
+    if source_exists and args.phase=='full':
+        verify_source_plan(doc,source_inventory)
+        if args.source_build_phase:
+            actions=doc["actions"]
+            if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
+                raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")
+            created_name=actions[0]["target"]
+            ns_pattern=rf"^Eldoria_Added_C{cycle_index:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
+            if not re.fullmatch(ns_pattern,created_name):
+                raise RejectedPlan("New Qwen object must use original descriptive suffix with CURRENT CYCLE namespace Eldoria_Added_C%02d_ and must never reuse any inherited source name" % cycle_index)
+            for action in actions[1:]:
+                if action["target"] != created_name:
+                    raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
+            verify_volume_and_complexity(doc)
+            spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
+            (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
+                json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
     if not source_exists:
         check_new_silhouette(doc,args.asset_category)
     if len(doc["actions"])>args.max_actions:
@@ -283,6 +491,21 @@ def critique(args,reference,before,after,role):
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
+def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation,
+                                  min_successful_cycles=1, successful_count=1):
+    """One visible empty-scene blockout does not equal completed artistic authoring.
+
+    Existing asset work may stop when Qwen judges it adequate, subject to the
+    separate independent review gate. New assets with >1 cycle MUST receive
+    at least one source-grounded finishing pass, irrespective of Qwen self praise.
+    """
+    return cycle_number < max_cycles and (
+        evaluation.get("clearly_failed", True) or
+        (started_empty and cycle_number == 1) or
+        successful_count < min_successful_cycles
+    )
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--brief",required=True)
@@ -300,28 +523,34 @@ def main():
     p.add_argument("--mcp-addon",type=pathlib.Path)
     p.add_argument("--mcp-sha256")
     p.add_argument("--max-cycles",type=int,default=2)
+    p.add_argument("--source-build-phase",action="store_true",
+                   help="Qwen chooses a new primitive or custom mesh for attached architecture; no prescribed shape")
+    p.add_argument("--source-tool-sequencing",action="store_true",
+                   help="One original Qwen structural choice followed by surface finishing per source-mesh cycle")
+    p.add_argument("--max-plan-attempts",type=int,default=5,
+                   help="Bounded original Qwen plan revisions; no artistic value repair")
+    p.add_argument("--min-successful-cycles",type=int,default=1,
+                   help="Require this many real Blender/Qwen cycles before considering a self-critique stop")
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
     p.add_argument("--phase",choices=("full","geometry","mesh_edit","surface","detail"),default="full")
     p.add_argument("--max-actions",type=int,default=32)
     p.add_argument("--max-tokens",type=int,default=2048)
     p.add_argument("--vision-max-edge",type=int,default=1024,choices=(640,768,1024,1280))
     p.add_argument("--focus-image",type=pathlib.Path,
-                   help="Optional genuine detail image from the current asset; no synthetic screenshots")
+                   help="Optional genuine source detail image, never a fabricated preview")
     p.add_argument("--prior-lessons",type=pathlib.Path)
     args=p.parse_args()
-    if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160:raise ValueError("Cycle/action limits")
+    if not 1<=args.max_cycles<=5 or not 1<=args.max_plan_attempts<=6 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
+        raise ValueError("Cycle/action/minimum-successful-cycle limits")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
     if args.focus_image and not args.focus_image.is_file():
-        raise FileNotFoundError("Genuine focus image not found")
+        raise FileNotFoundError("Genuine source detail image missing")
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
     if args.out.exists() and any(args.out.iterdir()):raise ValueError("Fresh output required")
     args.out.mkdir(parents=True,exist_ok=True)
     canonical_role=ROLE.read_text(encoding="utf-8")
-    # Do not truncate away OBSERVE/DIAGNOSE/DESIGN or visual quality rules.
-    # Existing source/reference/brief supersede any historical asset example.
-    role=(canonical_role+"\nCURRENT BRIEF AND LIVE SOURCE OVERRIDE HISTORICAL EXAMPLES. "
-          "Do not reproduce old geometry, object IDs or cliff coordinates. "
-          "Maintain independent artistic assessment and never invent Unity evidence.")
+    role=(canonical_role+"\nCURRENT BRIEF AND LIVE SOURCE OVERRIDE ALL HISTORICAL ART SAMPLES. "
+          "Do not replay old geometry/IDs or infer quality without real A/B and independent review.")
     # Genuine evidence-backed journal retrieval, sanitized of old rejected
     # cliff coordinates/IDs. The first 2B run replayed them and overflowed.
     lesson_proof=transferable_lessons(JOURNAL.read_text(encoding="utf-8"),args.brief,limit=1400)
@@ -329,23 +558,26 @@ def main():
     casebook=json.loads(CASEBOOK.read_text(encoding="utf-8"))
     if casebook.get("schema_version")!=1:raise ValueError("Corrupt Qwen artist casebook")
     case_context=evidence_case_lessons(casebook,args.brief,limit=1400)
-    memory=("VERIFIED JOURNAL EXCERPTS (NOT ACTION PLANS):\n"+
+    memory=("VERIFIED JOURNAL LESSONS - NOT NEW ACTION PLANS:\n"+
             lesson_proof["prompt_text"]+
-            "\nRECORDED PREVIOUS ARTIST FAILURES/LESSONS (NOT CURRENT GEOMETRY):\n"+
+            "\nHISTORICAL EVIDENCE-LINKED VISUAL FAILURES/SUCCESSES:\n"+
             case_context["prompt_text"])
     (args.out/"learning-casebook-proof.json").write_text(json.dumps({
         **case_context,
         "casebook_sha256":sha(CASEBOOK),
         "model_weight_training":False,
-        "independent_art_review_performed_by_memory_loader":False,
+        "model_self_review_not_independent":True,
         "verbatim_historical_actions_sent":False
     },indent=2)+"\n",encoding="utf-8")
-    if args.prior_lessons:memory+="\nOWNER-PROVIDED PRIOR LESSONS:\n"+args.prior_lessons.read_text(encoding="utf-8")[:4000]
+    if args.prior_lessons:memory+="\n"+args.prior_lessons.read_text(encoding="utf-8")[:6000]
     current=args.current_frame
     source=args.source
+    started_empty=args.source is None
     original_source_sha=sha(args.source) if args.source else None
     history=""
     known_objects=[]
+    verified_objects=[]
+    spatial_views=[]
     if args.source:
         inspected=args.out/"source-inspection"
         command=[args.blender,"-b","--python-exit-code","1","--python",str(HERE/"inspect_source.py"),
@@ -358,12 +590,24 @@ def main():
         if not actual["source_unchanged"] or actual["source_sha256"]!=original_source_sha:
             raise RuntimeError("Frozen original source identity changed")
         if not current:current=inspected/"source-preview-blender.png"
+        spatial_views=[inspected/"source-top-blender.png",inspected/"source-side-blender.png"]
         verified_objects=[{"name":x["name"],"vertices":x["vertices"],"faces":x["faces"],
+                          "evaluated_triangles":x["evaluated_triangles"],
                           "world_location_m":x["world_location_m"],
                           "world_dimensions_m":x["world_dimensions_m"],
+                          "world_bounds_min_m":x["world_bounds_min_m"],
+                          "world_bounds_max_m":x["world_bounds_max_m"],
+                          "world_bounds_center_m":x["world_bounds_center_m"],
+                          "world_bounds_dimensions_m":x["world_bounds_dimensions_m"],
+                          "world_up_axis":x["world_up_axis"],
+                          "mesh_local_axis_aligned_with_world_up":x["mesh_local_axis_aligned_with_world_up"],
                           "local_bounds_min_m":x["local_bounds_min_m"],
                           "local_bounds_max_m":x["local_bounds_max_m"],
                           "local_extrema":x["local_extrema"],
+                          "vertex_landmarks":x.get("vertex_landmarks",[]),
+                          "face_landmarks":x.get("face_landmarks",[]),
+                          "edges":x.get("edges",0),
+                          "edge_landmarks":x.get("edge_landmarks",[]),
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
                          for x in actual["objects"][:80]]
         history+="\nVERIFIED FROZEN SOURCE BLENDER MESH INVENTORY: "+json.dumps(verified_objects)[:12000]
@@ -376,13 +620,20 @@ def main():
     records=[]
     for cycle in range(1,args.max_cycles+1):
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
-        for attempt in range(1,4):
+        for attempt in range(1,args.max_plan_attempts+1):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
+                # Keep every exact rejected proposal and the actionable validator
+                # reason: never clamp geometry or silently rewrite model values.
+                raw_attempt=trial/("qwen-raw-attempt-"+str(attempt)+".json")
+                (trial/("rejected-plan-attempt-"+str(attempt)+".json")).write_text(
+                    json.dumps({"attempt":attempt,"rejection":str(e),
+                      "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
+                      "no_artistic_values_rewritten":True},indent=2)+"\n",encoding="utf-8")
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
-                if attempt==3:raise
+                if attempt==args.max_plan_attempts:raise
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
         try:
@@ -392,6 +643,21 @@ def main():
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
+        if source and args.phase=="full" and verified_objects:
+            baseline=result.get("baseline_evaluated_triangles")
+            after=result.get("evaluated_triangles")
+            # Both are Blender evaluated triangles on the same source and
+            # neutral review stage. Face counts were never comparable.
+            guard=check_triangle_growth(baseline,after)
+            (trial/"evaluated-triangle-comparison.json").write_text(
+                json.dumps(guard,indent=2)+"\\n",encoding="utf-8")
+            if not guard["allowed"]:
+                records.append({"cycle":cycle,"status":"MOBILE_MESH_DENSITY_REJECTED",
+                                "baseline_evaluated_triangles":baseline,
+                                "triangles":after,"budget":guard["triangle_limit"],
+                                "plan_sha256":sha(candidate)})
+                history+=f"\\nREJECTED: actual Blender triangle growth {baseline} -> {after} exceeds safe limit {guard['triangle_limit']}. Use localized changes, not global subdivision."
+                continue
         if args.phase=="mesh_edit" and source:
             edits=[step for step in result["execution"] if step["op"]=="sculpt_anchor"
                    and step["geometry_changed"] and step["originals_changed"]]
@@ -403,7 +669,6 @@ def main():
         screen=screen_impact(stage/"before-blender.png",stage/"after-blender.png")
         (trial/"camera-screen-impact.json").write_text(json.dumps(screen,indent=2)+"\n")
         if not result["matched_review_camera"] or not screen["visually_present"]:
-            # Persist the rejected A/B for future independent learning too.
             stage_pending_art_evidence(
                 trial/"pending-learning-case.json",model=args.model,
                 source_hash=original_source_sha,plan_file=candidate,
@@ -420,12 +685,26 @@ def main():
                       " of the screen, too little for the player camera. "
                       "The next Qwen plan must change the core silhouette and not simply tweak materials.")
             continue
+        if args.source_build_phase and args.review:
+            # The render is real and the camera fixed. Qwen must not cover
+            # art-directed player entry/stairs. Reject, never reposition art.
+            region_proof=inspect_protected_regions(
+                stage/"before-blender.png",stage/"after-blender.png",args.review)
+            (trial/"protected-camera-regions.json").write_text(
+                json.dumps(region_proof,indent=2)+"\n",encoding="utf-8")
+            if not region_proof["allowed"]:
+                offenders=[f"{z['name']} changed {z['changed_fraction']:.1%}"
+                           for z in region_proof["zones"] if not z["allowed"]]
+                records.append({"cycle":cycle,"status":"PROTECTED_ACCESS_OCCLUSION_REJECTED",
+                                "regions":region_proof})
+                history+=("\nVISUAL QA REJECTED: new architecture obscures original access: "+
+                          "; ".join(offenders)+
+                          ". Qwen choose ORIGINAL geometry elsewhere without blocking door or stairs.")
+                continue
         evaluation=critique(args,args.reference,stage/"before-blender.png",stage/"after-blender.png",role)
         (trial/"qwen-critique.json").write_text(json.dumps(evaluation,indent=2)+"\n")
-        # Capture candidate provenance; independent artistic verification is
-        # still required before a case can enter the approved memory library.
         stage_pending_art_evidence(
-            trial/"pending-learning-case.json", model=args.model,
+            trial/"pending-learning-case.json",model=args.model,
             source_hash=original_source_sha,plan_file=candidate,
             raw_response_file=trial/"qwen-raw.json",
             before_image=stage/"before-blender.png",
@@ -450,13 +729,46 @@ def main():
         history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
         known_objects=[o["name"] for o in catalog["components"][:80]]
-        if not evaluation.get("clearly_failed",True):break
+        if should_continue_after_critique(cycle,args.max_cycles,args.source is None,evaluation,
+               args.min_successful_cycles,len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"])):
+            # Topology-changing actions invalidate original face IDs. Inspect
+            # the actual generated BLEND before giving Qwen the next face map.
+            next_inspection=trial/"reinspection"
+            command=[args.blender,"-b","--python-exit-code","1","--python",
+                     str(HERE/"inspect_source.py"),"--","--source",str(source),"--out",str(next_inspection)]
+            if args.review:command+=["--review",str(args.review)]
+            check=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=900)
+            (trial/"reinspection-blender-log.txt").write_text(check.stdout,encoding="utf-8")
+            if check.returncode:raise RuntimeError("Blender reinspection failed: "+check.stdout[-1000:])
+            inspected_again=json.loads((next_inspection/"source-inspection.json").read_text())
+            spatial_views=[next_inspection/"source-top-blender.png",
+                           next_inspection/"source-side-blender.png"]
+            if not inspected_again["source_unchanged"] or inspected_again["source_sha256"]!=sha(source):
+                raise RuntimeError("Reinspection changed candidate source")
+            verified_objects=[{k:x[k] for k in ("name","vertices","faces","local_extrema",
+                                                "local_bounds_min_m","local_bounds_max_m",
+                                                "vertex_landmarks","face_landmarks",
+                                                "edges","edge_landmarks",
+                                                "evaluated_triangles",
+                                                "world_bounds_min_m","world_bounds_max_m",
+                                                "world_bounds_center_m","world_bounds_dimensions_m",
+                                                "world_up_axis","mesh_local_axis_aligned_with_world_up",
+                                                "materials","uv_layers")}
+                              for x in inspected_again["objects"][:80]]
+            known_objects=[x["name"] for x in verified_objects]
+            history+="\\nUP-TO-DATE ACTUAL BLENDER FACE/EXTREMA INVENTORY: "+json.dumps(verified_objects)[:12000]
+        if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation,
+               args.min_successful_cycles,len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"])):break
+        if started_empty and cycle==1:
+            history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
     final={"state":"SOURCE_CANDIDATE_UNITY_AND_INDEPENDENT_ART_REVIEW_REQUIRED",
            "ai_authored_action_plans":len([r for r in records if r["status"]=="ART_REVIEW_REQUIRED"]),
            "source_authority_unchanged":True,"frozen_source_sha256":original_source_sha,"blender_real_execution":any(r["status"]=="ART_REVIEW_REQUIRED" for r in records),
            "art_approved":False,"unity_art_verified":False,"physical_mobile_validated":False,
-           "model":args.model,"system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
+           "model":args.model,"num_ctx":int(os.environ.get("ELDORIA_ARTIST_NUM_CTX","16384")),
+           "vision_max_edge":args.vision_max_edge,
+           "system_profile_sha256":hashlib.sha256(role.encode()).hexdigest(),
            "journal_sha256":sha(JOURNAL),"cycles":records}
     (args.out/"full-studio-result.json").write_text(json.dumps(final,indent=2)+"\n")
     print("ELDORIA_FULL_STUDIO_CYCLE",json.dumps({k:final[k] for k in

@@ -1,0 +1,31 @@
+name: Eldoria external architecture actual Qwen buried-shape QA
+on:
+  push:
+    branches: [validation/eldoria-exterior-visible-component-gate-20261014]
+    paths:
+      - 'tools/art-direction/full-studio/architectural_world_placement_gate.py'
+      - 'tools/art-direction/full-studio/tests/test_architectural_world_placement_gate.py'
+      - '.github/workflows/eldoria-exterior-visible-architecture-qa.yml'
+permissions:
+  contents: read
+jobs:
+  actual-tower-screenshot-failure-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check real model buried/invisible additions and legitimate exterior cases
+        run: |
+          python -m py_compile tools/art-direction/full-studio/architectural_world_placement_gate.py
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_architectural_world_placement_gate.py' -v
+      - name: Confirm only geometric QA, no creative decisions or Windows runner
+        run: echo 'OFFLINE_SOURCE_WORLD_AABB_QA_ONLY; artistic approval remains false'
