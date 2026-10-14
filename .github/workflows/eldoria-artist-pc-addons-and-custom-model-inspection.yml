@@ -32,7 +32,7 @@ jobs:
                   installed.append({'module':n,'enabled':n in bpy.context.preferences.addons,'sha256':hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() if pathlib.Path(f).is_file() else None})
           file=pathlib.Path(sys.argv[-1])
           file.write_text(json.dumps({'blender_version':bpy.app.version_string,'artist_mcp_modules':installed,'native_bpy':True,'scene_modified':False,'art_approved':False},indent=2))
-'@
+          '@
           $py=Join-Path $out 'addon-preflight.py'
           $snippet | Set-Content -Path $py -Encoding UTF8
           & $exe -b --python-exit-code 1 --python $py -- (Join-Path $out 'blender-installed-addons.json')
