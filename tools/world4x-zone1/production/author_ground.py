@@ -6,7 +6,7 @@ from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback,c
 from author_brief import cpu_artist_schema
 def sha(b):return hashlib.sha256(b).hexdigest()
 p=argparse.ArgumentParser();p.add_argument('--cycle',type=pathlib.Path,required=True)
-p.add_argument('--model',default='qwen3-vl:8b-instruct');a=p.parse_args();c=a.cycle
+p.add_argument('--model',default='qwen3-vl:4b-instruct');a=p.parse_args();c=a.cycle
 target='ZoneOne continuous prairie source'
 top=json.loads((c/'context/mesh-context.json').read_text())
 role=(ROOT/'tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md').read_bytes()
@@ -28,14 +28,27 @@ prompt=('Current task is ZONA ONE ground-only source authoring, not Valoria arch
  'Use slopes suitable for armies, wide flat areas between hills, not a noisy bumpy surface. '
  'At least one broad camera-visible change. No approval or claimed execution. '
  'REAL MESH TOPOLOGY: '+json.dumps(top)+'\nREAL PRIOR REVIEW / RETRIEVED EXPERIENCE, NOT MODEL TRAINING: '+lessons)
-schema=cpu_artist_schema(target,'existing',4);schema['properties']['planned_actions']['items']['properties']['type']['enum']=['sculpt_region','sculpt_path']
-payload={'model':a.model,'stream':False,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1800,'temperature':.3},'messages':[{'role':'system','content':role.decode()},{'role':'user','content':prompt,'images':encoded}]}
+schema=cpu_artist_schema(target,'existing',4,minimum_camera_radius=16);schema['properties']['planned_actions']['items']['properties']['type']['enum']=['sculpt_region','sculpt_path']
+payload={'model':a.model,'stream':True,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1400,'temperature':.3},'messages':[{'role':'system','content':role.decode()},{'role':'user','content':prompt,'images':encoded}]}
 (c/'actual-request.json').write_text(json.dumps(payload,indent=2))
 attempts=[]
 for attempt in range(3):
  start=time.monotonic()
  req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
- with urllib.request.urlopen(req,timeout=540) as response:reply=json.load(response)
+ raw_chunks=[];reply={};last_report=start
+ with urllib.request.urlopen(req,timeout=540) as response:
+  with (c/f'qwen-stream-{attempt+1}.jsonl').open('w') as transcript:
+   for line in response:
+    if not line.strip():continue
+    transcript.write(line.decode());transcript.flush()
+    chunk=json.loads(line)
+    if chunk.get('error'):raise RuntimeError(chunk['error'])
+    raw_chunks.append(chunk.get('message',{}).get('content',''))
+    if time.monotonic()-last_report>30:
+     print('REAL_QWEN_STREAM_PROGRESS',attempt+1,len(''.join(raw_chunks)),flush=True);last_report=time.monotonic()
+    if chunk.get('done'):reply=chunk;break
+ if not reply.get('done'):raise RuntimeError('Incomplete model stream: no plan may execute')
+ reply['message']={'role':'assistant','content':''.join(raw_chunks)}
  raw=reply['message']['content'];(c/f'raw-qwen-{attempt+1}.json').write_text(json.dumps(reply,indent=2))
  errors=[]
  try:

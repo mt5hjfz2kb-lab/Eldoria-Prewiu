@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using GLTFast;
 using UnityEditor;
@@ -21,6 +22,96 @@ namespace Eldoria.World4XPrototype
         {
             try { await Create(true); EditorApplication.Exit(0); }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+        /// <summary>Source terrain gate, with matching real URP cameras. Requires legitimate runner access.</summary>
+        public static async void CaptureGroundPair()
+        {
+            try
+            {
+                string before = Environment.GetEnvironmentVariable("ELDORIA_ZONEONE_GROUND_BEFORE");
+                string after = Environment.GetEnvironmentVariable("ELDORIA_ZONEONE_GROUND_AFTER");
+                string output = Environment.GetEnvironmentVariable("ELDORIA_ZONEONE_CAPTURE_OUT");
+                if (string.IsNullOrEmpty(output) || string.IsNullOrEmpty(before) || string.IsNullOrEmpty(after))
+                    throw new InvalidOperationException("Explicit source pair and fresh capture output required");
+                if (Directory.Exists(output) && Directory.EnumerateFileSystemEntries(output).Any())
+                    throw new InvalidOperationException("Never replace earlier evidence");
+                if (GraphicsSettings.defaultRenderPipeline == null)
+                    throw new InvalidOperationException("Existing URP configuration required");
+                Directory.CreateDirectory(output);
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                var sun = new GameObject("Ground gate sun").AddComponent<Light>();
+                sun.type = LightType.Directional; sun.intensity = 1.4f;
+                sun.color = new Color(1, .92f, .78f); sun.shadows = LightShadows.Soft;
+                sun.transform.rotation = Quaternion.Euler(42,-35,0);
+                RenderSettings.ambientMode = AmbientMode.Trilight;
+                RenderSettings.ambientSkyColor = new Color(.52f,.64f,.76f);
+                RenderSettings.ambientEquatorColor = new Color(.36f,.40f,.32f);
+                RenderSettings.ambientGroundColor = new Color(.18f,.17f,.13f);
+                RenderSettings.fog = false;
+                var camera = new GameObject("Fixed ground gate camera").AddComponent<Camera>();
+                camera.orthographic = true; camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = new Color(.44f,.51f,.56f);
+                Vector3 focus = Vector3.zero;
+                int version = 0;
+                foreach (string source in new[]{before,after})
+                {
+                    string absolute = Path.GetFullPath(source);
+                    if (!File.Exists(absolute)) throw new FileNotFoundException("Ground source absent",absolute);
+                    var root = new GameObject("Ground pair " + version);
+                    using (var importer = new GltfImport(null,new UninterruptedDeferAgent()))
+                    {
+                        if (!await importer.Load(new Uri(absolute).AbsoluteUri) ||
+                            !await importer.InstantiateMainSceneAsync(root.transform))
+                            throw new InvalidOperationException("Ground GLB import failed");
+                        var terrain = root.GetComponentsInChildren<Transform>().FirstOrDefault(
+                            t=>t.name.Contains("ZoneOne continuous prairie source"));
+                        if (terrain == null) throw new InvalidOperationException("Named continuous terrain missing");
+                        var ground = terrain.GetComponentsInChildren<Renderer>();
+                        if (ground.Length == 0) throw new InvalidOperationException("Ground renderers missing");
+                        foreach (var renderer in root.GetComponentsInChildren<Renderer>())
+                            renderer.enabled = ground.Contains(renderer);
+                        foreach (var light in root.GetComponentsInChildren<Light>()) light.enabled = false;
+                        foreach (var importedCamera in root.GetComponentsInChildren<Camera>()) importedCamera.enabled = false;
+                        // Freeze focus from original import; never recenter candidate to hide deformation.
+                        if (version == 0) focus = new Vector3(ground[0].bounds.center.x,0,ground[0].bounds.center.z);
+                        foreach (var view in new[]{(1280,900,80f,"regional"),(390,844,80f,"mobile"),(1280,900,40f,"local")})
+                        {
+                            camera.orthographicSize = view.Item3;
+                            camera.transform.position = focus + new Vector3(0,145,-130);
+                            camera.transform.LookAt(focus);
+                            camera.aspect = (float)view.Item1/view.Item2;
+                            var rt = new RenderTexture(view.Item1,view.Item2,24);
+                            var previous = RenderTexture.active;
+                            var pixels = new Texture2D(view.Item1,view.Item2,TextureFormat.RGB24,false);
+                            try
+                            {
+                                camera.targetTexture = rt; camera.Render(); RenderTexture.active = rt;
+                                pixels.ReadPixels(new Rect(0,0,view.Item1,view.Item2),0,0); pixels.Apply();
+                                string stem = (version==0?"before-":"after-") + view.Item4;
+                                File.WriteAllBytes(Path.Combine(output,stem+"-unity.png"),pixels.EncodeToPNG());
+                                File.WriteAllText(Path.Combine(output,stem+"-camera.json"),JsonUtility.ToJson(new CaptureIdentity{
+                                    source=absolute,sourceSha256=HashFile(absolute),zoom=camera.orthographicSize,
+                                    target=focus,cameraToWorld=camera.cameraToWorldMatrix,projection=camera.projectionMatrix,
+                                    rendererCount=ground.Length,physicalDevice=false},true));
+                            }
+                            finally
+                            {
+                                RenderTexture.active=previous; camera.targetTexture=null;
+                                UnityEngine.Object.DestroyImmediate(pixels); rt.Release(); UnityEngine.Object.DestroyImmediate(rt);
+                            }
+                        }
+                        UnityEngine.Object.DestroyImmediate(root);
+                    }
+                    version++;
+                }
+                EditorApplication.Exit(0);
+            }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+        static string HashFile(string path)
+        {
+            using (var sha=SHA256.Create()) using (var stream=File.OpenRead(path))
+                return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
         }
         static async Task Create(bool capture)
         {
@@ -108,7 +199,7 @@ namespace Eldoria.World4XPrototype
         }
         [Serializable] sealed class CaptureIdentity
         {
-            public string source; public float zoom; public Vector3 target;
+            public string source, sourceSha256; public float zoom; public Vector3 target;
             public Matrix4x4 cameraToWorld, projection; public int rendererCount; public bool physicalDevice;
         }
     }

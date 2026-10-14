@@ -24,14 +24,22 @@ jobs:
       - name: Derive ground-only source and genuine baseline
         run: |
           mkdir -p /tmp/zoneone-ground
-          blender -b --python-exit-code 1 --python tools/world4x-zone1/production/prepare_candidate_source.py -- --out /tmp/zoneone-ground/source
-          blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-ground/source/derived-source.blend --inspect --inspect-target-object 'ZoneOne continuous prairie source' --out /tmp/zoneone-ground/context
+          cp -a docs/world4x-zone1/evidence/ground-first-38522534427/source /tmp/zoneone-ground/source
+          cp -a docs/world4x-zone1/evidence/ground-first-38522534427/context /tmp/zoneone-ground/context
+          python3 - <<'PY'
+          import pathlib,json,hashlib
+          c=pathlib.Path('/tmp/zoneone-ground')
+          p=json.loads((c/'source/derived-source-proof.json').read_text())
+          assert hashlib.sha256((c/'source/derived-source.blend').read_bytes()).hexdigest()==p['derived_blend_sha256']
+          assert json.loads((c/'context/mesh-context.json').read_text())['source_sha256']==p['derived_blend_sha256']
+          print('UNCHANGED_REAL_SOURCE_AND_TOPOLOGY_REUSED')
+          PY
       - name: Start own free CPU Ollama artist
         run: |
           docker run --rm -d --name zoneone-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-ground/ollama-version.json; then break; fi; sleep 2; done
           test -s /tmp/zoneone-ground/ollama-version.json
-          docker exec zoneone-artist ollama pull qwen3-vl:8b-instruct
+          docker exec zoneone-artist ollama pull qwen3-vl:4b-instruct
       - name: Real visual analysis and ground design before editing
         run: |
           /usr/bin/python3 tools/world4x-zone1/production/author_ground.py --cycle /tmp/zoneone-ground

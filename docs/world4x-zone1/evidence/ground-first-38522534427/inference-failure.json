@@ -1,0 +1,13 @@
+{
+  "run_id": 38522534427,
+  "job_id": 115715315245,
+  "source_commit": "070b85b8bc4c340d2c0316867ce0f9d3d25c381d",
+  "model": "qwen3-vl:8b-instruct",
+  "result": "HTTP_RESPONSE_TIMEOUT_540_SECONDS",
+  "artist_decision_received": false,
+  "geometry_executed": false,
+  "source_preserved": true,
+  "artifact_id": 11874572098,
+  "recovery": "Reuse exact source/mesh context; reduce model to 4B and stream genuine output. No model-authored plan may execute until complete JSON and preflight pass.",
+  "art_approved": false
+}

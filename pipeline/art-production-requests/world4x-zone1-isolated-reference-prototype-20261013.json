@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "world4x-zone1-isolated-reference-prototype-20261013",
+  "request_id": "world4x-zone1-isolated-reference-prototype-20261013",
+  "asset_or_sector": "Zone One small continuous prairie reference patch, ground-first",
+  "profile": "environment_composition",
+  "visual_gate_state": "AUTHORING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Recovered candidate remains visually rejected: broad flat ground and weak geological composition. Owner requests terrain quality before dressing and scaling.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {"approved": false, "authorized_credit_cost": 0},
+  "capabilities": {"existing_qualified_donor_assets": true, "blender_material_consolidation": true, "unity_material_blending": true},
+  "validation": {
+    "source_gate": "Original AI plan, genuine topology inspection, immutable source hash, matched Blender A/B, preserved city pad and sector boundary, independent visual rejection or review.",
+    "final_gate": "Actual Unity 6000.3.23f1 ground lookdev and matched camera captures before dressing or expansion. Three zooms and gameplay/device performance remain separate unpassed gates."
+  },
+  "notes": "Uses existing artist system prompt, typed validator and executor read-only; explicit source-phase adapter never labels Blender image Unity. No main mutation, no Bastion resource lease takeover, no model-weight training claim."
+}
