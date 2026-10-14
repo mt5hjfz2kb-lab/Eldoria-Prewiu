@@ -19,6 +19,14 @@ def source_artist_action_schema(objects):
     # Enumerate only facts measured in actual Blender. Qwen still decides
     # WHICH available face/edge to modify from visible source evidence.
     # Never fabricate an index or substitute it after generation.
+    # A real Blender camera ray-hit takes precedence over arbitrary local
+    # percentile face sampling. Never label a hidden face as camera-visible.
+    camera_proven_faces=sorted({int(item["face_index"]) for obj in objects
+       for item in obj.get("camera_visible_face_landmarks",[])
+       if item.get("camera_visible") is True and
+          item.get("camera_ray_hit_original_face") is True and
+          type(item.get("face_index")) is int and
+          0 <= item["face_index"] < obj.get("faces",0)})
     observed_faces=sorted({int(item["face_index"]) for obj in objects
                            for item in obj.get("face_landmarks",[])
                            if type(item.get("face_index")) is int and
@@ -27,7 +35,9 @@ def source_artist_action_schema(objects):
                            for item in obj.get("edge_landmarks",[])
                            if type(item.get("edge_index")) is int and
                            0 <= item["edge_index"] < obj.get("edges",0)})
-    if observed_faces:
+    if camera_proven_faces:
+        face_ids["items"]={"type":"integer","enum":camera_proven_faces}
+    elif observed_faces:
         face_ids["items"]={"type":"integer","enum":observed_faces}
     numeric={"type":"number"}
     v3={"type":"array","minItems":3,"maxItems":3,"items":numeric}
