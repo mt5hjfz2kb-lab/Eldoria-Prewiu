@@ -24,7 +24,13 @@ def bounds_for_dimensions(dimensions):
 
 
 def source_brush_bounds(obj):
-    dimensions=obj.get("world_dimensions_m")
+    dimensions=obj.get("world_bounds_dimensions_m") or obj.get("world_dimensions_m")
+    if dimensions is None:
+        bounds_lo=obj.get("world_bounds_min_m")
+        bounds_hi=obj.get("world_bounds_max_m")
+        if (isinstance(bounds_lo,list) and isinstance(bounds_hi,list)
+                and len(bounds_lo)==3 and len(bounds_hi)==3):
+            dimensions=[bounds_hi[i]-bounds_lo[i] for i in range(3)]
     if dimensions is None:
         return None
     return bounds_for_dimensions(dimensions)
