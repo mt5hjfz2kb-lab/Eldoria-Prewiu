@@ -16,5 +16,28 @@
     "samples": 16,
     "width": 960,
     "height": 720
-  }
+  },
+  "protected_screen_regions": [
+    {
+      "name": "Original Valoria entry door and circulation",
+      "box_px": [
+        495,
+        315,
+        575,
+        478
+      ],
+      "max_changed_fraction": 0.18
+    },
+    {
+      "name": "Original exterior staircase and railings",
+      "box_px": [
+        600,
+        180,
+        760,
+        458
+      ],
+      "max_changed_fraction": 0.22
+    }
+  ],
+  "human_annotation": "Pixel boxes refer ONLY to this 960x720 locked Blender review camera; source original door/stair access remains physically usable. These are safety exclusions for NEW attached architecture, never a substitute for independent artistic review."
 }
