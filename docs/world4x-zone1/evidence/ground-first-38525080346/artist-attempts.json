@@ -1,0 +1,33 @@
+[
+  {
+    "attempt": 1,
+    "seconds": 514.2,
+    "errors": [
+      "Footprint overlaps protected city pad",
+      "Footprint overlaps protected city pad",
+      "Footprint overlaps protected city pad"
+    ],
+    "response_sha256": "0c248894fb4792d255377db5ad56366ba0e6315b80fb910048ffe93b407eb596",
+    "eval_count": 517
+  },
+  {
+    "attempt": 2,
+    "seconds": 168.26,
+    "errors": [
+      "Footprint overlaps protected city pad",
+      "Footprint overlaps protected city pad"
+    ],
+    "response_sha256": "986acc7f547bce131026e5f76ae780d18b599248b54c9d9649e857cc24c4c618",
+    "eval_count": 547
+  },
+  {
+    "attempt": 3,
+    "seconds": 175.76,
+    "errors": [
+      "Footprint overlaps protected city pad",
+      "Footprint overlaps protected city pad"
+    ],
+    "response_sha256": "986acc7f547bce131026e5f76ae780d18b599248b54c9d9649e857cc24c4c618",
+    "eval_count": 547
+  }
+]
