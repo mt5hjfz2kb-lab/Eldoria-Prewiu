@@ -451,7 +451,7 @@ def critique(args,reference,before,after,role):
         return json.loads(txt)
     except Exception as ex:return {"critique":"Visual critique unavailable: "+str(ex),"clearly_failed":True}
 
-def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation):
+def should_continue_after_critique(cycle_number, max_cycles, started_empty, evaluation, min_cycles=1):
     """One visible empty-scene blockout does not equal completed artistic authoring.
 
     Existing asset work may stop when Qwen judges it adequate, subject to the
@@ -459,6 +459,7 @@ def should_continue_after_critique(cycle_number, max_cycles, started_empty, eval
     at least one source-grounded finishing pass, irrespective of Qwen self praise.
     """
     return cycle_number < max_cycles and (
+        cycle_number < min_cycles or
         evaluation.get("clearly_failed", True) or
         (started_empty and cycle_number == 1)
     )
@@ -482,6 +483,8 @@ def main():
     p.add_argument("--mcp-sha256")
     p.add_argument("--require-inherited-geometry-edit",action="store_true",
                    help="Require physically changed original mesh data, not modifiers/material-only gestures")
+    p.add_argument("--min-cycles",type=int,default=1,
+                   help="Owner-authorized number of genuine AI render-and-critique cycles before stop")
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--asset-category",choices=("architecture","terrain","vegetation","prop","character"),default="architecture")
     p.add_argument("--phase",choices=("full","geometry","mesh_edit","surface","detail"),default="full")
@@ -490,6 +493,8 @@ def main():
     p.add_argument("--prior-lessons",type=pathlib.Path)
     args=p.parse_args()
     if not 1<=args.max_cycles<=5 or not 1<=args.max_actions<=160:raise ValueError("Cycle/action limits")
+    if not 1<=args.min_cycles<=args.max_cycles:
+        raise ValueError("Minimum AI art cycles must be within maximum; no fake completed passes")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
     if args.source and not args.source.is_file():raise FileNotFoundError("Source .blend/GLB missing")
     if args.require_inherited_geometry_edit and not args.source:
@@ -601,7 +606,7 @@ def main():
         history+="\nSOURCE-VERIFIED CURRENT BLENDER ASSET INVENTORY: "+json.dumps(anchors)[:7000]
         source=stage/"artist-asset.blend";current=stage/"after-blender.png"
         known_objects=[o["name"] for o in catalog["components"][:80]]
-        if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation):break
+        if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation,args.min_cycles):break
         if started_empty and cycle==1:
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     if args.source and sha(args.source)!=original_source_sha:raise RuntimeError("Original frozen source mutated")
