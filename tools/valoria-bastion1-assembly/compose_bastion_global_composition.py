@@ -148,9 +148,9 @@ def run_variant_A():
     side*15.8,-12.0,7.4,1.48,'X',seed=302 if side<0 else 303)
   # Real original wall connection module: reads as a connected tower-base /
   # defensive corner rather than a freestanding grey post.
-  safe(name+' original corner reuse',x,9.05,2.2,2.2)
+  safe(name+' original corner reuse',x,9.42,2.2,2.2)
   clone_group(name+' real selected wall-connection gallery corner',
-   connectionkit,x,9.05,(2.2,2.2,3.03))
+   connectionkit,x,9.42,(2.2,2.2,3.03))
   # Natural geological foundations replace fake heightless stone overlays.
   for xx,yy in ((side*21.8,12.50),(side*22.1,-10.10),
                 (side*19.25,9.85)):
