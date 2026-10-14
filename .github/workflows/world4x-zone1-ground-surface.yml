@@ -17,6 +17,7 @@ jobs:
     timeout-minutes: 35
     env:
       GROUND_SOURCE: docs/world4x-zone1/evidence/ground-first-38530648411
+      REJECTED_FRAME: docs/world4x-zone1/evidence/material-replay-38553648773/blender-surface-after.png
     steps:
       - uses: actions/checkout@v4
       - name: Check source gate and install own free workshop
@@ -34,16 +35,18 @@ jobs:
           docker run --rm -d --name zoneone-surface-artist -p 127.0.0.1:11434:11434 ollama/ollama:latest
           for n in $(seq 1 30); do if curl -fsS http://127.0.0.1:11434/api/version > /tmp/zoneone-surface/ollama-version.json; then break; fi; sleep 2; done
           test -s /tmp/zoneone-surface/ollama-version.json
-          docker exec zoneone-surface-artist ollama pull qwen3-vl:4b-instruct
+          docker exec zoneone-surface-artist ollama pull qwen3-vl:2b-instruct
       - name: Actual visual material design and typed preflight
         run: |
-          /usr/bin/python3 tools/world4x-zone1/production/ground_surface.py --phase author --work-dir /tmp/zoneone-surface --source "$GROUND_SOURCE"
+          test -s "$REJECTED_FRAME"
+          /usr/bin/python3 tools/world4x-zone1/production/ground_surface.py --phase author --work-dir /tmp/zoneone-surface --source "$GROUND_SOURCE" --model qwen3-vl:2b-instruct --rejected-frame "$REJECTED_FRAME"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs --preflight-plan /tmp/zoneone-surface/artist-plan.json 'ZoneOne continuous prairie source' existing
       - name: Execute unchanged material decision then bake its exact recipe
         run: |
           SOURCE_SHA=$(sha256sum /tmp/zoneone-surface/geometry-normal-fixed.blend | cut -d' ' -f1)
           blender -b --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source /tmp/zoneone-surface/geometry-normal-fixed.blend --plan /tmp/zoneone-surface/artist-plan.json --out /tmp/zoneone-surface/typed --transport direct --expected-source-sha256 "$SOURCE_SHA"
           blender -b --python-exit-code 1 --python tools/world4x-zone1/production/ground_surface.py -- --phase bake --work-dir /tmp/zoneone-surface --source "$GROUND_SOURCE"
+          python3 tools/world4x-zone1/production/verify_ground_surface.py --work-dir /tmp/zoneone-surface
       - name: Preserve exact candidates and failure evidence; never promote automatically
         if: always()
         run: |

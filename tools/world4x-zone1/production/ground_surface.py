@@ -30,17 +30,24 @@ def author(c,source):
  role=(ROOT/'tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md').read_bytes()
  donor=ROOT/'Unity/Assets/Mega Fantasy Props Pack/Textures/grass_1_fixed_d.png'
  paths=[ROOT/'docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png',c/'geometry-normal-fixed.png',donor]
+ if args.rejected_frame:paths.append(args.rejected_frame)
  images=[];provenance=[]
  for i,path in enumerate(paths):
-  im=Image.open(path).convert('RGB');im.thumbnail((512,512));dest=c/f'surface-vision-{i}.jpg';im.save(dest,quality=85)
+  im=Image.open(path).convert('RGB');im.thumbnail((384,384));dest=c/f'surface-vision-{i}.jpg';im.save(dest,quality=85)
   images.append(base64.b64encode(dest.read_bytes()).decode());provenance.append({'source':str(path),'sha256':sha(path.read_bytes()),'vision_sha256':sha(dest.read_bytes())})
  recipe={'rgb':{'type':'array','items':{'type':'number','minimum':0,'maximum':1},'minItems':3,'maxItems':3},
-  'roughness':{'type':'number','minimum':.7,'maximum':1},'secondary_rgb':{'type':'array','items':{'type':'number','minimum':0,'maximum':1},'minItems':3,'maxItems':3},
+  'roughness':{'type':'number','minimum':.6,'maximum':1},'secondary_rgb':{'type':'array','items':{'type':'number','minimum':0,'maximum':1},'minItems':3,'maxItems':3},
   'dry_rgb':{'type':'array','items':{'type':'number','minimum':0,'maximum':1},'minItems':3,'maxItems':3},
   'rock_rgb':{'type':'array','items':{'type':'number','minimum':0,'maximum':1},'minItems':3,'maxItems':3},
-  'patch_scale_m':{'type':'number','minimum':12,'maximum':45},'detail_tile_m':{'type':'number','minimum':2,'maximum':8},
+  'patch_scale_m':{'type':'number','minimum':8,'maximum':45},'detail_tile_m':{'type':'number','minimum':2,'maximum':8},
   'dry_fraction':{'type':'number','minimum':.1,'maximum':.45},'detail_strength':{'type':'number','minimum':.1,'maximum':.5},
   'rock_slope_degrees':{'type':'number','minimum':22,'maximum':40}}
+ # Director style ranges, not fixed artist colors. Linear shader colors must not bleach the grass.
+ palette_bounds={'rgb':[(.03,.25),(.22,.5),(.015,.15)],
+  'secondary_rgb':[(.04,.32),(.25,.6),(.02,.18)],
+  'dry_rgb':[(.25,.55),(.16,.42),(.025,.12)]}
+ for key,bounds in palette_bounds.items():
+  recipe[key].pop('items',None);recipe[key]['prefixItems']=[{'type':'number','minimum':lo,'maximum':hi} for lo,hi in bounds]
  fields={key:{'type':'string','minLength':35,'maxLength':250} for key in ['observed_defect','design_intent']}
  fields.update({'asset_decision':{'type':'string','const':'MODIFY'},'reason_for_new_geometry':{'type':'string'},
  'planned_actions':{'type':'array','minItems':1,'maxItems':1,'items':{'type':'object','properties':{
@@ -48,6 +55,7 @@ def author(c,source):
  'rationale':{'type':'string','minLength':15},'parameters':{'type':'object','properties':recipe,'required':list(recipe),'additionalProperties':False}},'required':['id','type','target','rationale','parameters'],'additionalProperties':False}},
  'expected_visual_difference':{'type':'string'},'mobile_risks':{'type':'string'}})
  schema={'type':'object','properties':fields,'required':list(fields),'additionalProperties':False}
+ memory=(ROOT/'docs/world4x-zone1/GROUND_ART_REVIEW_20261014.json').read_text()
  prompt=('Zone One ground-only SOURCE surface stage, not Valoria architecture. Images are owner reference, ACTUAL BLENDER SOURCE AFTER TERRAIN EDIT (NOT Unity), '
   'and existing donor grass texture. Preserve all terrain geometry, boundary, city pads and source props. '
   'Design textured, luminous, fantasy-medieval prairie using the donor as microdetail, not a flat green field or a gritty photoreal floor. '
@@ -56,11 +64,19 @@ def author(c,source):
   'The assigned RGB and roughness execute in the existing typed API. A scoped technical bake will realize your additional exact recipe: '
   'macro meadow variations at patch_scale_m, soft dry_fraction blend, donor tiled at detail_tile_m, detail_strength modulated color/normal, rock color only above your slope threshold. '
   'The bake makes glTF-compatible color and tangent normal atlases (1024 square) and retains A/B camera, lights and geometry. '
-  'These are production proposals, not Unity/device approval. Return a SINGLE assign_material action, with strict schema. No self-approval.')
- payload={'model':'qwen3-vl:4b-instruct','stream':True,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1100,'temperature':.3},
+  'VERIFIED PREVIOUS FAILURE: the fourth image, when supplied, is the actual rejected material trial. Previous AI chose primary [.7,.7,.5], secondary [.8,.7,.6], dry [.9,.8,.7]. '
+  'Those high linear values produced a grey-beige bleached field, not green prairie. Actual geometry, texture bake and export succeeded; artistic result was rejected. '
+  'Correct the palette, not the lighting or geometry. Grass must stay recognizably green, with restrained golden transitions, under the SAME sun and exposure. '
+  'These are shader LINEAR colors. Choose original colors WITHIN these R/G/B channel ranges: '+json.dumps(palette_bounds)+'. '
+  'For both green palettes, G must exceed R by at least 25% and B by at least 30%. Golden dry grass must have R>=G and B much lower. '
+  'Exact numeric allowed bounds: roughness .6..1, patch_scale_m 8..45, detail_tile_m 2..8, dry_fraction .1...45, detail_strength .1...5, rock_slope_degrees 22..40. '
+  'These are production proposals, not Unity/device approval. Return a SINGLE assign_material action, with strict schema. No self-approval. '
+  'RETRIEVED ACTUAL SOURCE EXPERIENCE, NOT WEIGHT TRAINING: '+memory)
+ payload={'model':args.model,'stream':True,'think':False,'format':schema,'options':{'num_ctx':8192,'num_predict':1000,'temperature':.3},
   'messages':[{'role':'system','content':role.decode()},{'role':'user','content':prompt,'images':images}]}
  (c/'surface-request.json').write_text(json.dumps(payload,indent=2))
  for attempt in range(2):
+  (c/f'surface-request-attempt-{attempt+1}.json').write_text(json.dumps(payload,indent=2))
   chunks=[];reply={};start=time.monotonic();last=start
   req=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
   with urllib.request.urlopen(req,timeout=540) as response, (c/f'surface-stream-{attempt+1}.jsonl').open('w') as log:
@@ -81,7 +97,11 @@ def author(c,source):
     val=pr.get(key)
     if spec['type']=='array':
      if not isinstance(val,list) or len(val)!=3 or not all(isinstance(v,(int,float)) and 0<=v<=1 for v in val):errors.append('Invalid RGB '+key)
-    elif not isinstance(val,(int,float)) or not spec['minimum']<=val<=spec['maximum']:errors.append('Invalid bound '+key)
+     elif key in palette_bounds and not all(lo<=v<=hi for v,(lo,hi) in zip(val,palette_bounds[key])):errors.append(f'{key}={val} must follow R/G/B ranges {palette_bounds[key]}')
+    elif not isinstance(val,(int,float)) or not spec['minimum']<=val<=spec['maximum']:errors.append(f'{key}={val} must be {spec["minimum"]}..{spec["maximum"]}')
+   for key in ['rgb','secondary_rgb']:
+    if isinstance(pr.get(key),list) and len(pr[key])==3 and not (pr[key][1]>=1.25*pr[key][0] and pr[key][1]>=1.3*pr[key][2]):errors.append(key+' must have G>=1.25*R and G>=1.3*B; grass must be green')
+   if isinstance(pr.get('dry_rgb'),list) and len(pr['dry_rgb'])==3 and pr['dry_rgb'][0]<pr['dry_rgb'][1]:errors.append('Dry grass must be golden: R>=G')
    if design['planned_actions'][0]['type']!='assign_material':errors.append('Only material assignment allowed')
   except (ValueError,TypeError,KeyError) as exc:errors.append(str(exc))
   if not errors:
@@ -90,7 +110,7 @@ def author(c,source):
     'input_images':provenance,'image_type':'BLENDER_NOT_UNITY','direction':design,'seconds':time.monotonic()-start,
     'model_weights_trained':False,'self_approval':False},indent=2));return
   if attempt==1:raise RuntimeError('Material design rejected: '+str(errors))
-  payload['messages'] += [{'role':'assistant','content':raw},{'role':'user','content':'Correct these exact errors by your own decisions: '+str(errors)}]
+  payload['messages'] += [{'role':'user','content':'Your previous proposal was rejected. Choose NEW parameters yourself within these exact constraints: '+str(errors)}]
 
 def bake(c,source):
  import bpy
@@ -142,14 +162,19 @@ def bake(c,source):
  assert coordinates==[list(v.co) for v in terrain.data.vertices],'Surface stage must not alter terrain geometry'
  bpy.ops.wm.save_as_mainfile(filepath=str((c/'ground-surface.blend').resolve()))
  bpy.ops.export_scene.gltf(filepath=str((c/'ground-surface.glb').resolve()),export_format='GLB',use_selection=False)
+ # Separate reusable ground family from the preserved full source assembly.
+ bpy.ops.object.select_all(action='DESELECT');terrain.select_set(True);bpy.context.view_layer.objects.active=terrain
+ bpy.ops.export_scene.gltf(filepath=str((c/'ground-only.glb').resolve()),export_format='GLB',use_selection=True)
  scene.render.filepath=str((c/'blender-surface-after.png').resolve());scene.cycles.samples=16;bpy.ops.render.render(write_still=True)
  (c/'surface-execution.json').write_text(json.dumps({'artist_plan_sha256':sha((c/'artist-plan.json').read_bytes()),'source_blend_sha256':sha((source/'edited/artist-output.blend').read_bytes()),
   'technical_interpretation':'glTF-compatible texture bake of exact Qwen material recipe; existing canonical assign_material already executed',
   'recipe':recipe,'donor_sha256':sha(donorpath.read_bytes()),'geometry_unchanged':True,'model_sha256':sha((c/'ground-surface.glb').read_bytes()),
+  'ground_family_sha256':sha((c/'ground-only.glb').read_bytes()),'ground_family_bytes':(c/'ground-only.glb').stat().st_size,
   'textures':[{'path':p.name,'sha256':sha(p.read_bytes())} for image,p in baked],
   'camera_matrix':[list(row) for row in scene.camera.matrix_world],'image_type':'BLENDER_NOT_UNITY','art_approved':False},indent=2))
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--phase',choices=['prepare','author','bake'],required=True);p.add_argument('--work-dir',dest='cycle',type=pathlib.Path,required=True);p.add_argument('--source',type=pathlib.Path,required=True)
+ p.add_argument('--model',default='qwen3-vl:2b-instruct');p.add_argument('--rejected-frame',type=pathlib.Path)
  args=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else sys.argv[1:]);args.cycle.mkdir(parents=True,exist_ok=True)
  {'prepare':prepare,'author':author,'bake':bake}[args.phase](args.cycle,args.source)

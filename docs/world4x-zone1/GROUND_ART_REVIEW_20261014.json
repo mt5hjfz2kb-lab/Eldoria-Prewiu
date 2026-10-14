@@ -1,0 +1,38 @@
+{
+  "state": "SOURCE_VISUAL_REJECTED_REQUIRES_CORRECTION",
+  "unity_executed": false,
+  "unity_art_score": null,
+  "ground_approved": false,
+  "sector_expansion_approved": false,
+  "geometry_cycle": {
+    "run": 38530648411,
+    "source_sha256": "d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f",
+    "edited_blend_sha256": "474bfc1188778fc68ae2abab1b664383fc5a4958c038db4675fce96f52b9663b",
+    "changed_vertices": 2582,
+    "lit_comparison": "docs/world4x-zone1/evidence/relief-lit-review-20261014",
+    "before_image_sha256": "0263cf23268eefe5efc42f82978689a478a88a61436dd7db0f435c9e666550d8",
+    "after_image_sha256": "806e9a251c698e967eb38951aa827c973bf5e1fbb1d1b4a5809a61ccfd423293",
+    "observation": "Actual geometry changed, with boundaries and city pad protected. The fixed wide camera still reads predominantly uniform lawn; the broad ridge is too straight and its change too subtle to establish the target natural terrain. Workbench grey frames were unreadable; genuine Cycles A/B resolves the technical diagnostic but does not approve the ground."
+  },
+  "first_material_trial": {
+    "inference_run": 38551351550,
+    "preservation_run": 38553648773,
+    "local_model_sha256": "a144209bc9816d1a24f01e2b113b0e6014919afee9645cfc21ca2523d870188b",
+    "local_before_image_sha256": "ab816c961b2f0b5f7c25be90a3cd02e3a9b42fce775d01c0b7f5a331612c205b",
+    "local_after_image_sha256": "e7fbdfd05cb211674d9372750c4f92ccaff3267032e42095b5901a99d70e0283",
+    "artist_parameters_rewritten": false,
+    "decision": "REJECT",
+    "observation": "Qwen primary linear RGB [0.7,0.7,0.5], secondary [0.8,0.7,0.6] and dry [0.9,0.8,0.7] produced a grey-beige bleached surface. UVs, tangent normal texture, export, geometry preservation and identical camera pass. All pixels visibly changing does not make this an artistic improvement. Preserve the prior textured meadow."
+  },
+  "reusable_lessons": [
+    "Refresh imported custom normals after a genuine sculpt and compare with the same lit renderer.",
+    "Use --work-dir in Blender scripts; --cycle collides with Cycles addon CLI argument prefixes.",
+    "Do not treat arbitrary director range rejection as an engine limitation; trial unchanged genuine proposals when technically valid, then judge actual images.",
+    "High near-equal linear R/G/B grass colors bleach the meadow. Request a new green-dominant palette with restrained golden dry transitions, using the actual failed image.",
+    "Do not repeat narrow material edits forever if the fixed camera still shows flat, mechanically shaped land. Return to broad asymmetric relief design before multiplying sectors."
+  ],
+  "memory_type": "verified source experience and retrieval; no model weight training",
+  "weights_trained": false,
+  "paid_credits": 0,
+  "native_dependency": "Main active registry retains windows-runner-heavy for Bastion I; no Unity installation or usable independent activation found locally. Do not seize its claim."
+}
