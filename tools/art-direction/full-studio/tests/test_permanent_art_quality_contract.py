@@ -27,7 +27,7 @@ class ArtistPermanentContractTests(unittest.TestCase):
             "blend_sha256":"a"*64,"glb_sha256":"b"*64}))
         request=stage_visual_request(output=p/"review-request.json",reference=ref,
             original_source_sha=sha(source.read_bytes()),input_source=source,
-            raw_plan=plan,execution_proof=proof,before=before,after=after,
+            raw_plan=plan,raw_response_file=plan,execution_proof=proof,before=before,after=after,
             model="qwen8b",memory_proof=None,run_id=123)
         return request,source,before,after
     def review(self,req):
@@ -37,6 +37,7 @@ class ArtistPermanentContractTests(unittest.TestCase):
             "input_asset_sha256":req["input_asset_sha256"],
             "output_asset_sha256":req["output_asset_sha256"],
             "qwen_plan_sha256":req["qwen_plan_sha256"],
+            "execution_plan_sha256":req["execution_plan_sha256"],
             "reference_sha256":req["reference_sha256"],
             "before_png_sha256":req["before_png_sha256"],
             "after_png_sha256":req["after_png_sha256"],
