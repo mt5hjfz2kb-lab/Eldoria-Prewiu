@@ -1,0 +1,76 @@
+name: Eldoria physical Windows Blender 5.2 selected BMesh edge proof
+on:
+  push:
+    branches:
+      - validation/eldoria-professional-art-fixed-source-20261014
+    paths:
+      - '.github/workflows/eldoria-selected-bmesh-edge-windows-real-smoke.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-artist-selected-edge-technical-only-windows
+  cancel-in-progress: true
+jobs:
+  physical-selective-bmesh-blender:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Find GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $exe=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $exe) { throw 'Git missing' }
+            $path=Split-Path $exe
+            $env:PATH="$path;$env:PATH"
+            Add-Content $env:GITHUB_PATH $path
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: true
+      - name: Replace legacy global fixture bevel with precise selected edges, test actual BMesh
+        shell: powershell
+        timeout-minutes: 9
+        run: |
+          $ErrorActionPreference='Stop'
+          $bin=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $bin) {
+            $bin=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $bin) { throw 'Real Windows Blender missing' }
+          $original=Get-Content 'tools/art-direction/full-studio/tests/smoke_plan.json' -Raw | ConvertFrom-Json
+          $bevel=@($original.actions | Where-Object { $_.id -eq 'shaftbevel' })
+          if ($bevel.Count -ne 1 -or $bevel[0].op -ne 'bevel') { throw 'Known smoke fixture missing' }
+          $bevel[0].params | Add-Member -MemberType NoteProperty -Name edges -Value @(0,1,2) -Force
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-selected-bmesh-pc-test'
+          $plan=Join-Path $env:RUNNER_TEMP 'eldoria-selective-blender-plan.json'
+          [IO.File]::WriteAllText($plan,($original | ConvertTo-Json -Depth 70),[Text.UTF8Encoding]::new($false))
+          & $bin -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- --plan $plan --out $out --texture-root $env:GITHUB_WORKSPACE
+          if ($LASTEXITCODE -ne 0) { throw 'Selected BMesh edges failed inside original installed Windows Blender' }
+          $proof=Get-Content (Join-Path $out 'execution-proof.json') -Raw | ConvertFrom-Json
+          $changed=@($proof.execution | Where-Object { $_.id -eq 'shaftbevel' -and $_.geometry_changed })
+          if (@($changed).Count -ne 1 -or $proof.action_count -ne 26 -or -not $proof.matched_review_camera -or $proof.art_approved) {
+            throw 'Real selected-edge geometry proof invalid'
+          }
+          if (-not (Test-Path (Join-Path $out 'artist-asset.blend'))) { throw 'Editable Blender asset missing' }
+          Write-Host 'ELDORIA_ACTUAL_WINDOWS_BLENDER_SELECTED_EDGE_BMESH_PASS'
+      - name: Preserve actual physical Blender proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pc-selected-bmesh-edge-physical-proof
+          path: |
+            ${{ runner.temp }}/eldoria-selected-bmesh-pc-test/
+            ${{ runner.temp }}/eldoria-selective-blender-plan.json
+          if-no-files-found: warn
+          retention-days: 7
