@@ -318,7 +318,7 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
 
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
-             source_exists=False,known_objects=None,source_inventory=None):
+             source_exists=False,known_objects=None,source_inventory=None,spatial_views=None):
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
       +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-11800:]
@@ -382,6 +382,16 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "No script chooses your new structure.")
     pictures=[image_data(reference)]
     if current_image:pictures.append(image_data(current_image))
+    if spatial_views:
+        msg+=("\\nMODEL VISUAL SOURCES ORDER: (1) owner reference, (2) CURRENT Blender hero view, "
+              "(3) actual Blender WORLD TOP orthographic from +Z looking down, "
+              "(4) actual Blender WORLD SIDE orthographic from +X. "
+              "Use these multiple camera angles and measured world bounds together "
+              "to place a physically attached, complementary medieval part. "
+              "The views are read-only diagnostic renders, not design presets.")
+        for frame in spatial_views:
+            if not frame.is_file():raise FileNotFoundError("Real Blender spatial camera image missing: "+str(frame))
+            pictures.append(image_data(frame))
     text=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
       {"role":"user","content":msg,"images":pictures}],
       args.max_tokens,schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,known_objects,source_inventory,args.source_tool_sequencing,
@@ -540,6 +550,7 @@ def main():
     history=""
     known_objects=[]
     verified_objects=[]
+    spatial_views=[]
     if args.source:
         inspected=args.out/"source-inspection"
         command=[args.blender,"-b","--python-exit-code","1","--python",str(HERE/"inspect_source.py"),
@@ -552,6 +563,7 @@ def main():
         if not actual["source_unchanged"] or actual["source_sha256"]!=original_source_sha:
             raise RuntimeError("Frozen original source identity changed")
         if not current:current=inspected/"source-preview-blender.png"
+        spatial_views=[inspected/"source-top-blender.png",inspected/"source-side-blender.png"]
         verified_objects=[{"name":x["name"],"vertices":x["vertices"],"faces":x["faces"],
                           "evaluated_triangles":x["evaluated_triangles"],
                           "world_location_m":x["world_location_m"],
@@ -583,7 +595,7 @@ def main():
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         for attempt in range(1,args.max_plan_attempts+1):
             try:
-                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects)
+                doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views)
                 break
             except (RejectedPlan,CompositionRejected,json.JSONDecodeError) as e:
                 # Keep every exact rejected proposal and the actionable validator
@@ -682,6 +694,8 @@ def main():
             (trial/"reinspection-blender-log.txt").write_text(check.stdout,encoding="utf-8")
             if check.returncode:raise RuntimeError("Blender reinspection failed: "+check.stdout[-1000:])
             inspected_again=json.loads((next_inspection/"source-inspection.json").read_text())
+            spatial_views=[next_inspection/"source-top-blender.png",
+                           next_inspection/"source-side-blender.png"]
             if not inspected_again["source_unchanged"] or inspected_again["source_sha256"]!=sha(source):
                 raise RuntimeError("Reinspection changed candidate source")
             verified_objects=[{k:x[k] for k in ("name","vertices","faces","local_extrema",
