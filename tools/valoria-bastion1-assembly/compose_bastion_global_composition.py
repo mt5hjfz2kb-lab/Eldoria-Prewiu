@@ -233,6 +233,33 @@ def run_variant_A():
    cube(name+' original castle cloth tied to original masonry corner',
         flagx,flagy,ground(flagx,flagy)+2.20,
         .82,.16,1.08,material=cloth,bevel=.018)
+ # Major Qwen-specified perimeter link: tie the surviving east wall
+ # at (23,1) to the original LOWER gate approach and the existing upper
+ # shelf. This is ONE coherent wall line outside both future plots, not
+ # additional isolated huts, white strips or towers in the courtyard.
+ # Source wallkit stone, joints, merlons and actual cliff contact reused.
+ for label,cx,cy,length,height in [
+   ('EAST original occupied lower courtyard curtain',22.9,-8.25,7.4,2.34),
+   ('EAST original occupied central curtain',23.05,-1.10,7.2,2.20),
+   ('EAST original upper bridge to citadel',23.28,6.38,7.15,2.30)]:
+  safe(label,cx,cy,1.56,length)
+  # Group x-extent mapped into true north-south local orientation.
+  clone_group(label,wallkit,cx,cy,(length,1.56,height),
+              base_z=ground(cx,cy)-.27,rotate=90)
+ # Believable forecourt: broad ORIGINAL fractured-stone stones founded in
+ # native terrain against the existing lower castle wall. The central
+ # x[-7,7] route and both future plots are kept completely open.
+ for side in (-1,1):
+  name='WEST' if side<0 else 'EAST'
+  px=side*10.95
+  safe(name+' outer gate threshold',px,-12.38,3.48,3.02)
+  clone_group(name+' original gate outer mineral courtyard',pavingkit,
+      px,-12.38,(3.48,3.02,.22),
+      base_z=ground(px,-12.38)-.065)
+  # Stone footing follows the existing outer gate wall, never another
+  # disconnected ribbon or decorative flat plane.
+  stone_scree(name+' integrated outer gate slope footing',
+      side*14.15,-13.05,(3.1,1.8,.70))
  # No freestanding central decorations or new buildings: broad central court
  # stays empty for future progression, while TWO coherent physical wall systems
  # now express foreground, midground and high medieval citadel depth.
@@ -319,7 +346,7 @@ dst.parent.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(dst),export_format='GLB',export_apply=False)
 proof={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'output_sha256':hashlib.sha256(dst.read_bytes()).hexdigest(),
- 'variant':variant,'design':('Qwen_geological_upper_bank_connected_lower_curtain_and_wooden_gallery_A8' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
+ 'variant':variant,'design':('Qwen_connected_eastern_medieval_outer_fortification_and_gate_terrace_A9' if variant=='A' else 'stratified_terraced_old_town_rejected_B1'),
  'authorship':'deterministic Blender execution; Qwen review is separate; no new AI-sculpted vertices',
  'reused_original_mesh_instances':len(reused),'new_modular_masonry_meshes':len(created),
  'original_meshes_preserved':True,'protected_road_x':[-7,7],
