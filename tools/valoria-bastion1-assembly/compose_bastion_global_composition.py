@@ -156,7 +156,7 @@ def run_variant_A():
   # Replace that candidate-only construction (never the original citadel)
   # with a continuous geological embankment of ORIGINAL authored cliff rock.
   # The original terrain sculpt following this module embeds its foundation.
-  for n,absx in enumerate((10.35,13.8,17.25,20.70)):
+  for n,absx in enumerate((10.95,14.30,17.65,21.00)):
    rockx=side*absx
    safe(name+' Qwen real upper slope rock',rockx,10.6,3.65,3.3)
    clone_group(name+' real native geological tier '+str(n),rockkit,
