@@ -10,7 +10,7 @@ from contract import validate_plan, RejectedPlan, safe_action_id
 from learning_context import transferable_lessons
 from screen_impact import screen_impact
 from composition_health import check_new_silhouette,CompositionRejected
-from source_geometry_gate import verify_source_plan
+from source_geometry_gate import verify_source_plan,relative_triangle_limit
 from professional_source_schema import source_artist_action_schema
 
 HERE=pathlib.Path(__file__).resolve().parent
@@ -438,6 +438,7 @@ def main():
             raise RuntimeError("Frozen original source identity changed")
         if not current:current=inspected/"source-preview-blender.png"
         verified_objects=[{"name":x["name"],"vertices":x["vertices"],"faces":x["faces"],
+                          "evaluated_triangles":x["evaluated_triangles"],
                           "world_location_m":x["world_location_m"],
                           "world_dimensions_m":x["world_dimensions_m"],
                           "local_bounds_min_m":x["local_bounds_min_m"],
@@ -484,8 +485,7 @@ def main():
         result=json.loads((stage/"execution-proof.json").read_text())
         if source and args.phase=="full" and verified_objects:
             # Don't mistake multiplying mesh density for professional detail.
-            baseline_faces=sum(o["faces"] for o in verified_objects)
-            budget=max(20000,baseline_faces*4+2000)
+            budget=relative_triangle_limit(verified_objects)
             if result.get("evaluated_triangles",0)>budget:
                 records.append({"cycle":cycle,"status":"MOBILE_MESH_DENSITY_REJECTED",
                                 "triangles":result["evaluated_triangles"],"budget":budget,
@@ -545,6 +545,7 @@ def main():
                                                 "local_bounds_min_m","local_bounds_max_m",
                                                 "vertex_landmarks","face_landmarks",
                                                 "edges","edge_landmarks",
+                                                "evaluated_triangles",
                                                 "materials","uv_layers")}
                               for x in inspected_again["objects"][:80]]
             known_objects=[x["name"] for x in verified_objects]

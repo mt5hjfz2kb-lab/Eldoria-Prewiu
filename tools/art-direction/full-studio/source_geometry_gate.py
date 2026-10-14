@@ -5,6 +5,19 @@ explain the exact contract error and allow the model to design a NEW proposal.
 """
 from contract import RejectedPlan
 
+def relative_triangle_limit(inventory):
+    """Safe QA compares evaluated real Blender triangle counts, not face*N."""
+    if not inventory or any(type(o.get("evaluated_triangles")) is not int or
+                            o["evaluated_triangles"] < 0 for o in inventory):
+        raise RejectedPlan("Physical evaluated source triangle counts required; never estimate from face count")
+    source_triangles=sum(o["evaluated_triangles"] for o in inventory)
+    if source_triangles <= 0:raise RejectedPlan("Empty source evaluated mesh")
+    # Preserve an inherited asset's existing geometry; reject substantial
+    # growth but never misclassify the old 33k-triangle model as 'too dense'
+    # solely because its ~5k faces include 3+ triangles per face.
+    return min(220000,max(20000,int(source_triangles*1.25)+1500))
+
+
 def verify_source_plan(document,inventory):
     if not inventory:raise RejectedPlan("Source Blender inventory missing")
     known={obj["name"]:obj for obj in inventory}

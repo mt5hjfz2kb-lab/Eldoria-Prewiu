@@ -89,7 +89,18 @@ def main():
             "local_midpoint_m":[round((float(verts[int(e.vertices[0])].co[j])+
                                       float(verts[int(e.vertices[1])].co[j]))/2,5) for j in range(3)]}
             for e in selected_edges.values()]
+        # Physical evaluated triangles (including live modifiers), rather
+        # than N-gon polygon counts. This source fact is mandatory for honest
+        # relative mobile-density comparisons across inherited Blender files.
+        evaluated=o.evaluated_get(bpy.context.evaluated_depsgraph_get())
+        evaluated_mesh=evaluated.to_mesh()
+        try:
+            source_evaluated_triangles=sum(max(len(poly.vertices)-2,0)
+                                           for poly in evaluated_mesh.polygons)
+        finally:
+            evaluated.to_mesh_clear()
         inventory.append({
+            "evaluated_triangles":source_evaluated_triangles,
             "local_extrema":local_extrema,
             "vertex_landmarks":vertex_landmarks,
             "edges":len(edges),

@@ -9,6 +9,19 @@ SOURCE=[{"name":NAME,"vertices":11400,"faces":5338,"local_extrema":{
   "y_max":{"local_position_m":[-0.3498,10.35283,0.21904]}}}]
 def op(kind,params):return {"op":kind,"target":NAME,"params":params}
 class Grounding(unittest.TestCase):
+ def test_original_33k_triangles_are_not_rejected_by_wrong_face_budget(self):
+  from source_geometry_gate import relative_triangle_limit
+  mesh=[{"faces":5344,"evaluated_triangles":33510}]
+  self.assertGreaterEqual(relative_triangle_limit(mesh),33522)
+  self.assertLess(relative_triangle_limit(mesh),60000)
+ def test_triangulation_facts_required_fail_closed(self):
+  from source_geometry_gate import relative_triangle_limit
+  with self.assertRaisesRegex(RejectedPlan,"evaluated source triangle counts"):
+   relative_triangle_limit([{"faces":5344}])
+ def test_pathological_density_growth_remains_bounded(self):
+  from source_geometry_gate import relative_triangle_limit
+  self.assertLessEqual(relative_triangle_limit([{"evaluated_triangles":200000}]),220000)
+
  def test_original_invalid_vertex_id_used_as_face(self):
   p={"actions":[op("extrude",{"faces":[11243],"offset":[0,0,1]})]}; before=copy.deepcopy(p)
   with self.assertRaisesRegex(RejectedPlan,"5338 real Blender faces"):verify_source_plan(p,SOURCE)
