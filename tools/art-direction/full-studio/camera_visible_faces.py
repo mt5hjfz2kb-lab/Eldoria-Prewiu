@@ -15,7 +15,8 @@ def camera_visible_face_landmarks(scene, obj, max_faces=24):
     if cam is None or obj.type!="MESH":
         return []
     scene.view_layers[0].update()
-    dg=scene.evaluated_depsgraph_get()
+    import bpy
+    dg=bpy.context.evaluated_depsgraph_get()
     width=max(1,scene.render.resolution_x * scene.render.resolution_percentage // 100)
     height=max(1,scene.render.resolution_y * scene.render.resolution_percentage // 100)
     frame=cam.data.view_frame(scene=scene)
