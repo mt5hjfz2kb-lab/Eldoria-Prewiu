@@ -310,6 +310,13 @@ def repair_noncreative_action_ids(doc):
                         "scope": "NON_ARTISTIC_LOG_IDENTIFIER_ONLY"})
     return doc, repairs
 
+def invalid_mesh_requires_tool_fallback(rejection_reasons):
+    """After an invalid original mesh, Qwen may reauthor via a volumetric Blender primitive."""
+    labels=("OPEN or NONMANIFOLD","ZERO-AREA","DUPLICATE 3D vertices",
+            "COPLANAR","insufficient X/Y/Z volume","noncollinear")
+    return any(any(label in reason for label in labels) for reason in rejection_reasons)
+
+
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None,source_inventory=None):
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
@@ -358,11 +365,8 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     # Model failures are rejected exactly as authored. A proven INVALID
     # handcrafted mesh allows Qwen to choose a real Blender primitive on the
     # next retry; it still authors every dimension, placement and material.
-    topology_fallback=args.source_build_phase and any(
-        any(marker in reason for marker in (
-            "OPEN or NONMANIFOLD","ZERO-AREA","DUPLICATE 3D vertices",
-            "COPLANAR","insufficient X/Y/Z volume","noncollinear"))
-        for reason in previous_rejections)
+    topology_fallback=(args.source_build_phase and
+                       invalid_mesh_requires_tool_fallback(previous_rejections))
     if args.source_build_phase:
         ns=f"Eldoria_Added_C{cycle_index:02d}_"
         msg+=("\\nMandatory per-cycle new-object namespace: your chosen new name begins "+
