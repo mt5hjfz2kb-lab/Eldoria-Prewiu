@@ -14,6 +14,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   ai-curved-ground:
+    # Owner pause: technical fixes may merge without launching creative production.
+    # Remove this guard only after explicit owner authorization to resume production.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
