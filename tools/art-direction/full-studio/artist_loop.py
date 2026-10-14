@@ -479,6 +479,21 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                       "distance [%.4f,%.4f], radius [%.4f,%.4f]. "%(
                           limits["distance"]["minimum"],limits["distance"]["maximum"],
                           limits["radius"]["minimum"],limits["radius"]["maximum"]))
+    if source_exists and source_inventory:
+        visible_facts=[{"object":obj["name"],
+                        "camera_faces":[{"face_index":face["face_index"],
+                                         "screen_xy":face.get("screen_xy"),
+                                         "world_center_m":face.get("world_center_m")}
+                                        for face in obj.get("camera_visible_face_landmarks",[])[:20]]}
+                       for obj in source_inventory
+                       if obj.get("camera_visibility_verified_by_raycast") is True]
+        if visible_facts:
+            msg+=("\\nACTUAL FIXED CAMERA RAYCAST-VISIBLE SOURCE FACES, "
+                  "not arbitrary quantiles or hidden polygon IDs: "+
+                  json.dumps(visible_facts,ensure_ascii=False)[:3500]+
+                  ". Choose a source-grounded face by its projected position "
+                  "and visible timber architectural role, never replay a face "
+                  "that produced ZERO changed camera pixels. ")
     pictures=[image_data(reference,edge)]
     if current_image:pictures.append(image_data(current_image,edge))
     if getattr(args,"focus_image",None):pictures.append(image_data(args.focus_image,edge))
@@ -722,6 +737,8 @@ def main():
                           "local_extrema":x["local_extrema"],
                           "vertex_landmarks":x.get("vertex_landmarks",[]),
                           "face_landmarks":x.get("face_landmarks",[]),
+                          "camera_visible_face_landmarks":x.get("camera_visible_face_landmarks",[]),
+                          "camera_visibility_verified_by_raycast":x.get("camera_visibility_verified_by_raycast",False),
                           "edges":x.get("edges",0),
                           "edge_landmarks":x.get("edge_landmarks",[]),
                           "materials":x["materials"],"uv_layers":x["uv_layers"]}
@@ -891,6 +908,10 @@ def main():
                                                 "world_up_axis","mesh_local_axis_aligned_with_world_up",
                                                 "materials","uv_layers")}
                               for x in inspected_again["objects"][:80]]
+            for target_obj,real_obj in zip(verified_objects,inspected_again["objects"][:80]):
+                target_obj["camera_visible_face_landmarks"]=real_obj.get("camera_visible_face_landmarks",[])
+                target_obj["camera_visibility_verified_by_raycast"]=real_obj.get(
+                    "camera_visibility_verified_by_raycast",False)
             known_objects=[x["name"] for x in verified_objects]
             history+="\\nUP-TO-DATE ACTUAL BLENDER FACE/EXTREMA INVENTORY: "+json.dumps(verified_objects)[:12000]
         if not should_continue_after_critique(cycle,args.max_cycles,started_empty,evaluation,
