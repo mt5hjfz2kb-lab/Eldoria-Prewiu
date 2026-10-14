@@ -5,14 +5,18 @@ from professional_source_schema import source_artist_action_schema
 from artist_loop import schema_for_plan
 SOURCE=[{"name":"Authentic Valoria source","faces":5338,"vertices":11400}]
 class TypedArtistTests(unittest.TestCase):
- def test_model_has_nine_distinct_creative_blender_operations(self):
+ def test_model_has_eleven_real_creative_blender_operation_families(self):
   schema=source_artist_action_schema(SOURCE)
   variations=schema["oneOf"]
   ops={variant["properties"]["op"]["const"] for variant in variations}
   self.assertEqual(ops,{"sculpt_anchor","sculpt","extrude","inset","bevel",
-                        "material","uv","modifier","native_operator"})
+                        "material","uv","modifier","native_operator","primitive","mesh"})
   for v in variations:
-   self.assertEqual(v["properties"]["target"]["enum"],["Authentic Valoria source"])
+   name=v["properties"]["op"]["const"]
+   if name in ("primitive","mesh"):
+    self.assertEqual(v["properties"]["target"]["type"],"string")
+   else:
+    self.assertEqual(v["properties"]["target"]["enum"],["Authentic Valoria source"])
    self.assertTrue(v["properties"]["params"]["additionalProperties"] is False)
  def test_face_range_is_blender_face_count_not_vertex_count(self):
   z=source_artist_action_schema(SOURCE)["oneOf"]
@@ -61,10 +65,21 @@ class TypedArtistTests(unittest.TestCase):
   self.assertEqual((arr["minItems"],arr["maxItems"]),(2,3))
   self.assertNotIn("items",arr,"Ollama prefixItems must not combine with unsupported items:false")
   structurals={v["properties"]["op"]["const"] for v in arr["prefixItems"][0]["oneOf"]}
-  self.assertEqual(structurals,{"sculpt_anchor","sculpt","extrude","inset","bevel"})
+  self.assertEqual(structurals,{"sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"})
   self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][1]["oneOf"]},{"material","uv"})
   self.assertEqual({v["properties"]["op"]["const"] for v in arr["prefixItems"][2]["oneOf"]},{"material","uv","modifier"})
-  self.assertEqual(arr["prefixItems"][0]["oneOf"][2]["properties"]["params"]["properties"]["faces"]["items"]["enum"],[2326])
+  extrude=next(v for v in arr["prefixItems"][0]["oneOf"] if v["properties"]["op"]["const"]=="extrude")
+  self.assertEqual(extrude["properties"]["params"]["properties"]["faces"]["items"]["enum"],[2326])
+ def test_source_build_phase_is_author_selected_primitive_or_mesh(self):
+  source=[{"name":"Inherited Tower","faces":5338,"vertices":11400}]
+  schema=schema_for_plan(4,True,"full","architecture",["Inherited Tower"],source,True,True)
+  options=schema["properties"]["actions"]["prefixItems"][0]["oneOf"]
+  self.assertEqual({v["properties"]["op"]["const"] for v in options},{"primitive","mesh"})
+  primitive=next(v for v in options if v["properties"]["op"]["const"]=="primitive")
+  self.assertIn("location",primitive["properties"]["params"]["properties"])
+  self.assertIn("scale",primitive["properties"]["params"]["properties"])
+  authored=next(v for v in options if v["properties"]["op"]["const"]=="mesh")
+  self.assertEqual(authored["properties"]["params"]["properties"]["vertices"]["maxItems"],24)
  def test_non_source_creation_stays_unaffected(self):
   s=schema_for_plan(5,False,"full","architecture")
   self.assertEqual(s["properties"]["actions"]["items"]["properties"]["op"]["const"],"primitive")
