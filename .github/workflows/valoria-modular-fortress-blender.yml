@@ -63,9 +63,11 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or -not $lines) { throw "Pinned Blender source blob not accessible: $spec" }
           [System.IO.File]::WriteAllLines($script, [string[]]$lines, [System.Text.UTF8Encoding]::new($false))
           if (-not (Test-Path $script) -or (Get-Item $script).Length -lt 4000) { throw 'Pinned Blender source is empty' }
-          & "${{ steps.blender.outputs.exe }}" --background --python-exit-code 1 --python $script *> $log
-          $exit=$LASTEXITCODE
-          Get-Content $log -Tail 110
+          $errlog=Join-Path $env:RUNNER_TEMP 'eldoria-modular-fortress-blender.stderr.log'
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script) -PassThru -Wait -NoNewWindow -RedirectStandardOutput $log -RedirectStandardError $errlog
+          $exit=$p.ExitCode
+          if (Test-Path $log) { Get-Content $log -Tail 110 }
+          if (Test-Path $errlog) { Get-Content $errlog -Tail 100 }
           if ($exit -ne 0) { throw "Blender native authoring failed with exit code $exit" }
           $dir=Join-Path $env:RUNNER_TEMP 'valoria_modular_blender'
           $glb=Get-ChildItem $dir -Filter '*.glb' -ErrorAction SilentlyContinue
@@ -82,5 +84,6 @@ jobs:
           path: |
             ${{ runner.temp }}/valoria_modular_blender/*
             ${{ runner.temp }}/eldoria-modular-fortress-blender.log
+            ${{ runner.temp }}/eldoria-modular-fortress-blender.stderr.log
           if-no-files-found: warn
           retention-days: 14
