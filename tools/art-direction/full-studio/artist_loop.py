@@ -9,7 +9,7 @@ import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urll
 from contract import validate_plan, RejectedPlan, safe_action_id
 from artist_capabilities_v1 import (artist_skill_prompt, strict_preflight_plan,
     check_source_environment, visual_intent_payload, is_semantically_reviewable,
-    failure_category, source_contact_facts)
+    failure_category, source_contact_facts, grounded_beam_pair_facts)
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from artistic_quality_gate import (stage_visual_request,validate_independent_review,
                                  append_accepted,status as visual_calibration_status)
@@ -633,6 +633,17 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                   "WORLD Z hits and the actual scene bounds: WORLD Y is depth, "
                   "not height. Do not pick generic roof positions like y=2 "
                   "when the inspected source ends at y=1.325.")
+    if source_exists and source_inventory and args.source_build_phase:
+        pairs=grounded_beam_pair_facts(source_inventory,limit=9)
+        if pairs:
+            msg+=("\\nORIGINAL BLENDER-MEASURED ARCHITECTURAL CONTACT PAIRS "
+                  "(NON-PRESCRIPTIVE; these pairs have viable geometric "
+                  "separations but no aesthetic preapproval): "+
+                  json.dumps(pairs,ensure_ascii=False)[:4700]+
+                  "\\nChoose YOUR OWN meaningful pair on the correct source "
+                  "and choose cross section so volume >=0.006 cubic metres "
+                  "(distance_m * width_m * depth_m). Do NOT repeat a "
+                  "short adjacent-roof-face pair; it was genuinely rejected.")
     edge=getattr(args,"vision_max_edge",1024)
     if source_exists and source_inventory:
         # Replace a giant truncated inventory with SHORT trustworthy local
@@ -1039,7 +1050,7 @@ def main():
                               "DIFFERENT geometric or artistic hypothesis.")
                 if attempt==args.max_plan_attempts:
                     diagnostic={"cycle":cycle,"status":"PLAN_STRATEGY_EXHAUSTED",
-                        "failure_kind":"FIVE_ORIGINAL_QWEN_PLANS_REJECTED_BEFORE_BLENDER",
+                        "failure_kind":str(args.max_plan_attempts)+"_ORIGINAL_QWEN_PLANS_REJECTED_BEFORE_BLENDER",
                         "blocked_tool_families":sorted(invisible_source_ops),
                         "last_rejection":str(e),
                         "original_source_sha256":frozen_original_sha,
