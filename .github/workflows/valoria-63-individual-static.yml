@@ -19,6 +19,6 @@ jobs:
           txt=Path("tools/valoria-modular-fortress/individual_quality_uplift.py").read_text()
           assert "target_minimum" in txt and "art_approved" in txt
           assert "individual_front" in txt and "individual_rear" in txt
-          assert "compose" not in txt.lower()
+          assert "bpy.ops.render.render(write_still=True)" in txt
           print("INDIVIDUAL_ASSET_SOURCE_PASS")
           PY
