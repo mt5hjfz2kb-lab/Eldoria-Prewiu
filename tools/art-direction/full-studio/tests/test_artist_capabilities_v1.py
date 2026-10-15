@@ -57,6 +57,25 @@ class ArtistCapabilityBridgeTests(unittest.TestCase):
         self.assertEqual(result[0]["faces"][0]["world_xyz_m"],
                          [0.8313,1.091,0.8972])
 
+    def test_source_contacts_retain_real_roof_and_lower_anchors(self):
+        source={"name":"Timber tower","camera_visible_face_landmarks":[]}
+        for k in range(24):
+            h=0.1 if k<8 else (0.48 if k<16 else 0.87)
+            source["camera_visible_face_landmarks"].append({
+                "face_index":k,"camera_visible":True,
+                "camera_ray_hit_original_face":True,
+                "camera_screen_uv":[0.4,0.6],
+                "world_center_m":[0.1,1.0,h*3.2],
+                "world_height_fraction":h})
+        anchors=source_contact_facts([source])
+        faces=anchors[0]["faces"]
+        self.assertEqual(len(faces),12)
+        self.assertTrue(any(x["height"]>=0.67 for x in faces))
+        self.assertTrue(any(x["height"]<0.35 for x in faces))
+        self.assertTrue(any(0.35<=x["height"]<0.67 for x in faces))
+        self.assertEqual({x["id"] for x in faces},
+                         {16,17,18,19,8,9,10,11,0,1,2,3})
+
     def test_new_source_gates_inherited_geometry(self):
         c = capability_catalog(existing_source=False)
         self.assertNotIn("extrude", c["skills"]["masonry_and_parapet"]["allowed_ops"])
