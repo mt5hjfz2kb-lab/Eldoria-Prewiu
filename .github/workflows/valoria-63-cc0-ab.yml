@@ -58,7 +58,7 @@ jobs:
           if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned donor comparator missing'}
           [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
           $current=Join-Path $env:RUNNER_TEMP 'donor-ab-current\eldoria-upgrade63'
-          $free=Join-Path $env:RUNNER_TEMP 'donor-ab-free\eldoria-cc0-donors'
+          $free=Join-Path $env:RUNNER_TEMP 'donor-ab-free'
           $out=Join-Path $env:RUNNER_TEMP 'eldoria-cc0-ab13'
           if(-not(Test-Path (Join-Path $free 'source_manifest.json'))){throw "Donor manifest missing at $free"}
           if(-not(Test-Path (Join-Path $current 'individual_quality_status.json'))){throw "Quality baseline missing at $current"}
