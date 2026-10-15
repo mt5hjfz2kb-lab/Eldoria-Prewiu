@@ -1,6 +1,6 @@
 """Adversarial and regression tests: previously false 'diagonal fascia' must HOLD."""
 import copy, json, unittest
-from grounded_review import manifest, validate_critique, critic_messages
+from grounded_review import manifest, validate_critique, critic_messages, validate_independent_delta
 
 SOURCE="Valoria_Tower_CohV1"
 LEFT="Eldoria_GPT6_R2_LeftFramePost"
@@ -71,6 +71,27 @@ class CriticTests(unittest.TestCase):
         c={"artist_plan_sha256":"a"*64,"new_components":list(IDS),"components":[]}
         with self.assertRaisesRegex(ValueError,"MISMATCH"):
             manifest(p,c,{"objects":[]})
+    def test_stage2_hallucinated_high_scores_and_copied_phase1_rejected(self):
+        previous=copy.deepcopy(self.p)
+        previous["scores_before"]={"silhouette":6,"architectural_contact":6,
+             "materials":6,"style":6,"game_camera":6}
+        previous["reasons"]=["This timber frame looks coherent with the original outer facade."]
+        previous["uncertainties"]=[]
+        self.assertEqual(validate_independent_delta(previous,self.p["observations"])["status"],"RUBRIC_UNRELIABLE")
+    def test_independent_before_after_reasoned_delta_provisional(self):
+        later=copy.deepcopy(self.p)
+        later["scores_before"]={"silhouette":5,"architectural_contact":5,
+             "materials":5,"style":5,"game_camera":5}
+        later["decision"]="IMPROVED"
+        later["scores"]={"silhouette":5.5,"architectural_contact":5.5,
+             "materials":5.5,"style":5.5,"game_camera":5.5}
+        later["reasons"]=["The new posts change the visible facade framing in this camera.",
+            "The untextured inherited original still prevents polished game style."]
+        later["uncertainties"]=["Cannot verify final materials from the Blender screenshot alone."]
+        for x in later["observations"]:x["visual_reason"]="The frame makes an identifiable new contrast compared with before."
+        r=validate_independent_delta(later,self.p["observations"])
+        self.assertEqual(r["status"],"PROVISIONAL_DELTA_GROUNDED")
+        self.assertFalse(r["art_approved"])
     def test_duplicate_observations_hold(self):
         p=copy.deepcopy(self.p);p["observations"][1]=copy.deepcopy(p["observations"][0])
         self.assertEqual(self.decision(p)["status"],"REVIEW_UNGROUNDED")
