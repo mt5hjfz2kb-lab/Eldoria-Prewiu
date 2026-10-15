@@ -9,7 +9,7 @@ import math
 from pathlib import Path
 
 OPS = {
- "primitive", "mesh", "duplicate", "transform", "sculpt", "sculpt_anchor", "extrude",
+ "primitive", "mesh", "beam_between_faces", "duplicate", "transform", "sculpt", "sculpt_anchor", "extrude",
  "inset", "subdivide", "bevel", "modifier", "boolean", "material",
  "uv", "join", "delete", "light", "camera", "render_settings",
  "texture", "asset_info", "import_asset", "native_operator", "shader_graph", "geometry_nodes",
@@ -82,6 +82,21 @@ def validate_plan(doc):
                     "Primitive scale invalid")
             require(name not in created, "Creation name repeated")
             created.add(name); geometric += 1
+        elif op == "beam_between_faces":
+            # An actual Qwen-authored timber/stone support between two Blender
+            # camera-verified source-face anchors. Only the interpolation is
+            # deterministic; Qwen owns the endpoints, profile and artistic intent.
+            require(safe_name(p.get("source")) and p["source"] != name,
+                    "Beam requires distinct real source object")
+            indices=(p.get("start_face"),p.get("end_face"))
+            require(all(type(x) is int and x >= 0 for x in indices)
+                    and indices[0]!=indices[1],
+                    "Beam requires two different source face IDs")
+            require(finite_number(p.get("width_m"),0.06,0.45)
+                    and finite_number(p.get("depth_m"),0.06,0.45),
+                    "Beam profile must be tangible and physically bounded")
+            require(name not in created,"Beam name shadows another authored mesh")
+            created.add(name);geometric+=1
         elif op == "import_asset":
             file=p.get("relative_path")
             require(isinstance(file,str) and 4<len(file)<260 and
