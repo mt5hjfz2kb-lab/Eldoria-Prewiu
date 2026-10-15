@@ -34,3 +34,11 @@
 - `BLOCKED`: describir error exacto, intento de ruta alternativa y siguiente paso seguro.
 
 `tools/eldoria-agent-preflight.mjs` **no** abre conexiones remotas de ChatGPT, no hace escrituras y no certifica runners a distancia. Su utilidad es evitar deducciones falsas en el entorno local. Ningún cambio en esta carpeta reinicia producción ni modifica el juego.
+
+## Continuidad obligatoria y criterio de cierre (2026-10-15)
+
+- Una comprobación estática, un commit, un archivo preparado o un workflow lanzado son **hitos**, no finalización. El agente continúa con el siguiente paso autorizado en la misma sesión, sin pedir al propietario que repita «continúa».
+- Antes de cualquier cierre, registrar de forma concisa: rama y HEAD comprobados, objetivo verificable, último resultado medido, paso pendiente exacto, responsable/recurso, restricciones vigentes y evidencia enlazada. Consultar el handoff existente; no crear un sistema paralelo.
+- En sesiones nuevas, recuperar primero el trabajo incompleto de la rama asignada. No repetir tests ya acreditados sobre el mismo SHA ni convertir una pausa artística en prohibición de diagnóstico autorizado.
+- Si una operación recibe una denegación explícita de seguridad, **no** repetirla con nombres, rutas, API o herramientas equivalentes para eludir el control. Conservar evidencia, continuar únicamente trabajo independiente permitido y concretar qué autorización o intervención externa falta. No afirmar que el bloqueo ha desaparecido.
+- No presentar «trabajo terminado» hasta obtener el resultado de aceptación de la misión. Si hay bloqueo genuino, distinguir claramente avance parcial y validación pendiente. Estas reglas no amplían permisos ni autorizan usar Windows o reanudar arte.
