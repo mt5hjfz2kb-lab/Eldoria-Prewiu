@@ -120,3 +120,5 @@ jobs:
             ${{ runner.temp }}/reference-first-pilot-unity.log
           retention-days: 14
           if-no-files-found: warn
+
+# Source retry checkpoint after resolving CS0234 namespace shadowing.
