@@ -102,15 +102,15 @@ jobs:
           foreach ($png in $frames) { if ($png.Length -lt 80000) { throw "Suspiciously small Unity render: $($png.Name)" } }
           $manifest = Get-Content (Join-Path $out 'render-manifest-v3.json') -Raw | ConvertFrom-Json
           if ($manifest.artApproved -ne $false) { throw 'Pilot must remain explicitly UNAPPROVED' }
-          if ($manifest.architectureInstances -lt 20 -or $manifest.forestInstances -lt 35 -or $manifest.rockInstances -lt 20) { throw 'Real source reuse count below V2 minimum' }
+          if ($manifest.architectureInstances -lt 20 -or $manifest.forestInstances -lt 35 -or $manifest.rockInstances -lt 20) { throw 'Real source reuse count below V3 minimum' }
           Get-Content (Join-Path $out 'render-manifest-v3.json')
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: reference-first-real-unity-${{ github.run_id }}
           path: |
-            reference-first-isolated-checkout/artifacts/reference-first-pilot/**
-            reference-first-isolated-checkout/Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/V2/ReferenceFirstCompositionV3.unity
+            reference-first-isolated-checkout/artifacts/reference-first-composition-v3/**
+            reference-first-isolated-checkout/Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/V3/ReferenceFirstCompositionV3.unity
             ${{ runner.temp }}/reference-first-pilot-unity.log
           retention-days: 14
           if-no-files-found: warn
