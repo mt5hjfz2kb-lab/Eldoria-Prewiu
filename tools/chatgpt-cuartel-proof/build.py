@@ -20,13 +20,15 @@ def image_texture(name,c,kind):
     n=512; y,x=np.mgrid[0:n,0:n]; rng=np.random.default_rng(15)
     if kind=='cloth':
         v=1+.033*np.sin(x*math.pi)+.025*np.sin(y*math.pi/1.5)+rng.normal(0,.018,(n,n))
-    else:
+    elif kind=='wood':
         v=.88+.10*np.sin(x*.16+2*np.sin(y*.014))+.06*np.sin(x*.58+np.sin(y*.026))+rng.normal(0,.025,(n,n))
+    else:
+        v=.9+.12*np.sin(x*.031+np.sin(y*.024))+.085*np.sin(y*.068+np.sin(x*.052))+.045*rng.normal(0,1,(n,n))
     px=np.ones((n,n,4),dtype=np.float32)
     for k in range(3):px[:,:,k]=np.clip(c[k]*v,0,1)
     im=bpy.data.images.new(name,n,n); im.pixels.foreach_set(px.ravel()); im.pack(); return im
 
-blue=material('Royal blue woven canvas',(.025,.10,.29),.86,texture=image_texture('Canvas woven albedo',(.035,.14,.38),'cloth'))
+blue=material('Royal blue woven canvas',(.025,.10,.29),.92,texture=image_texture('Canvas woven albedo',(.022,.075,.23),'cloth'))
 blue_dark=material('Canvas shadow blue',(.024,.07,.18),.87)
 gold=material('Ochre gold embroidered edging',(.70,.40,.105),.64)
 wood=material('Weathered structural oak',(.20,.095,.035),.84,texture=image_texture('Oak grain albedo',(.31,.17,.075),'wood'))
@@ -34,11 +36,11 @@ endwood=material('Pale end grain',(.34,.20,.095),.9)
 iron=material('Forged iron',(.065,.082,.093),.46,.65)
 steel=material('Blade steel',(.34,.41,.44),.35,.75)
 rope=material('Hemp ropes',(.48,.36,.19),.94)
-earth=material('Trampled earth',(.21,.135,.065),1)
+earth=material('Trampled earth',(.21,.135,.065),1,texture=image_texture('Mottled soil albedo',(.27,.19,.105),'earth'))
 stone=material('Warm broken stone',(.36,.33,.26),.97)
 grass=material('Dry moss green',(.16,.19,.075),1)
 straw=material('Training sack and straw',(.48,.34,.16),.94)
-dark=material('Interior deep shade',(.014,.022,.031),1)
+dark=material('Interior natural woven mat',(.065,.045,.022),1)
 asset=[]
 def tag(o,mat):
     if mat:o.data.materials.append(mat)
@@ -85,7 +87,7 @@ def tent(cx,cy,w,L,H,label):
     def surf(side,u,t):
         x=cx+side*w*u
         y=cy+L*(t-.5)
-        z=apex*(1-u)+eave*u-.13*math.sin(math.pi*u)+.024*math.sin(t*math.pi*16)*u
+        z=apex*(1-u)+eave*u-.24*math.sin(math.pi*u)+.027*math.sin(t*math.pi*16+u*1.8)*math.sin(math.pi*u*.8)
         return (x,y,z)
     for side in [-1,1]:
         for panel in range(8):
@@ -96,7 +98,7 @@ def tent(cx,cy,w,L,H,label):
             faces=[]
             for i in range(nu):
                 for j in range(nv):
-                    a=i*(nv+1)+j;faces.append((a,a+nv+1,a+nv+2,a+1))
+                    a=i*(nv+1)+j;f=(a,a+nv+1,a+nv+2,a+1);faces.append(f if side>0 else tuple(reversed(f)))
             o=mesh(label+' tailored roof panel',verts,faces,blue,uv)
             sol=o.modifiers.new('Canvas thickness','SOLIDIFY');sol.thickness=.012
             for p in o.data.polygons:p.use_smooth=True
@@ -108,7 +110,8 @@ def tent(cx,cy,w,L,H,label):
         for j in range(65):
             t=j/64;y=cy+L*(t-.5);xx=cx+side*(w-.04+.025*math.sin(t*32*math.pi))
             for k in [0,1]:verts.append((xx,y,.09 if k==0 else eave));uv.append((t,k))
-        mesh(label+' pleated side canvas',verts,[(2*j,2*j+1,2*j+3,2*j+2) for j in range(64)],blue,uv)
+        fs=[(2*j,2*j+1,2*j+3,2*j+2) for j in range(64)]
+        mesh(label+' pleated side canvas',verts,fs if side<0 else [tuple(reversed(f)) for f in fs],blue,uv)
         for yy in [-L*.48,0,L*.48]:
             start=(cx+side*w,cy+yy,eave+.01);end=(cx+side*(w+.62),cy+yy+(.20 if yy>0 else -.20),.045)
             mid=tuple((start[k]+end[k])/2 for k in range(3));mid=(mid[0],mid[1],mid[2]-.07)
@@ -117,12 +120,27 @@ def tent(cx,cy,w,L,H,label):
         # Front fabric tied back to expose a real opening and dark interior.
         yf=cy-L*.505
         points=[(cx,yf,H),(cx+side*w,yf,eave),(cx+side*(w-.08),yf,.10),(cx+side*.55,yf+.18,.10),(cx+side*.62,yf+.10,H*.64)]
-        o=mesh(label+' gathered front flap',points,[(0,1,4),(1,2,3,4)],blue,[(.5,1),(1,.4),(1,0),(.6,0),(.6,.65)])
+        # Subdivided front fabric with a soft drape rather than a flat polygon.
+        pf=[];pu=[]
+        for j in range(17):
+            for i in range(13):
+                u=i/12;v=j/16
+                top=Vector(points[1]).lerp(Vector(points[4]),u);bottom=Vector(points[2]).lerp(Vector(points[3]),u)
+                co=top.lerp(bottom,v);co.y-=.035*math.sin(u*math.pi*6)*math.sin(v*math.pi)
+                pf.append(tuple(co));pu.append((u,v))
+        ff=[]
+        for j in range(16):
+            for i in range(12):
+                a=j*13+i;f=(a,a+1,a+14,a+13);ff.append(f if side<0 else tuple(reversed(f)))
+        o=mesh(label+' gathered front flap',pf,ff,blue,pu)
+        for p in o.data.polygons:p.use_smooth=True
+        fs=[(0,1,4)] if side<0 else [(4,1,0)]
+        mesh(label+' upper gable canvas',points,fs,blue,[(.5,1),(1,.4),(1,0),(.6,0),(.6,.65)])
         line(label+' flap gold edge',[points[0],points[4],points[3]],.022,gold)
         line(label+' flap tie',[(cx+side*.60,yf,.65),(cx+side*(w-.08),yf,.78)],.02,rope)
     # Back triangular textile closure and floor; open front remains geometrically open.
     yb=cy+L*.498
-    mesh(label+' back canvas',[(cx-w,yb,.05),(cx+w,yb,.05),(cx+w,yb,eave),(cx,yb,H),(cx-w,yb,eave)],[(0,1,2,3,4)],blue,[(0,0),(1,0),(1,.4),(.5,1),(0,.4)])
+    mesh(label+' back canvas',[(cx-w,yb,.05),(cx+w,yb,.05),(cx+w,yb,eave),(cx,yb,H),(cx-w,yb,eave)],[(4,3,2,1,0)],blue,[(0,0),(1,0),(1,.4),(.5,1),(0,.4)])
     cube(label+' floor mat',(cx,cy,.032),(w*1.9,L*.98,.035),dark,0)
     # Entrance decking makes access and ground contact readable.
     for i in range(7):cube(label+' entrance oak plank',(cx+(i-3)*.19,cy-L/2-.33,.055),(.18,.69,.065),wood,.012)
@@ -202,7 +220,7 @@ cube('Chest lock',(cx,cy-.30,.43),(.12,.034,.14),iron,.014)
 shield(3.28,.03,.59,.95)
 
 # Brazier in foreground right, low warm source, flame is preview only.
-fx,fy=1.55,-1.35
+fx,fy=.10,-1.60
 for a in [0,2.094,4.189]:beam('Brazier splayed leg',(fx+.22*math.cos(a),fy+.22*math.sin(a),.03),(fx+.13*math.cos(a),fy+.13*math.sin(a),.45),.025,iron)
 bpy.ops.mesh.primitive_uv_sphere_add(segments=16,ring_count=8,radius=1,location=(fx,fy,.49));o=bpy.context.object;o.name='Iron fire bowl';o.scale=(.29,.29,.12);tag(o,iron)
 coal=material('Warm embers',(.40,.055,.006),.9)
@@ -233,10 +251,24 @@ for o in list(asset):
         if not o.data.uv_layers:
             bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(island_margin=.03);bpy.ops.object.mode_set(mode='OBJECT')
 
-# Export asset without presentation lighting/background. Meter units, ground pivot.
+# Export material-batched duplicates; keep individual original parts editable in BLEND.
 bpy.ops.object.select_all(action='DESELECT')
-for o in asset:o.select_set(True)
+groups={}
+for o in asset:
+    key=o.data.materials[0].name;groups.setdefault(key,[]).append(o)
+export_objects=[]
+for key,originals in groups.items():
+    bpy.ops.object.select_all(action='DESELECT');copies=[]
+    for original in originals:
+        dup=original.copy();dup.data=original.data.copy();bpy.context.collection.objects.link(dup);dup.select_set(True);copies.append(dup)
+    bpy.context.view_layer.objects.active=copies[0]
+    if len(copies)>1:bpy.ops.object.join()
+    batched=bpy.context.object;batched.name='EXPORT '+key;export_objects.append(batched)
+bpy.ops.object.select_all(action='DESELECT')
+for o in export_objects:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=OUT+'/Cuartel_ChatGPT_v1.glb',export_format='GLB',use_selection=True,export_yup=True)
+export_mesh_count=len(export_objects)
+for o in export_objects:bpy.data.objects.remove(o,do_unlink=True)
 
 # Presentation scene: genuine Blender Cycles renders.
 stage=material('Presentation backdrop',(.105,.13,.14),.95)
@@ -248,7 +280,7 @@ area('Warm late afternoon key',(-5,-5,9),1800,(1,.77,.51),5)
 area('Cool sky fill',(3,5,7),1400,(.47,.66,1),6)
 ld=bpy.data.lights.new('Brazier warm light','POINT');ld.energy=35;ld.color=(1,.25,.04);lo=bpy.data.objects.new('Brazier warm light',ld);bpy.context.collection.objects.link(lo);lo.location=(fx,fy,.85)
 bpy.ops.object.camera_add();cam=bpy.context.object;cam.name='Review camera';cam.data.type='ORTHO';bpy.context.scene.camera=cam
-sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=64;sc.cycles.use_denoising=False;sc.render.image_settings.file_format='PNG';sc.render.film_transparent=False
+sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=64;sc.cycles.use_denoising=False;sc.cycles.sample_clamp_indirect=1.5;sc.cycles.max_bounces=5;sc.render.image_settings.file_format='PNG';sc.render.film_transparent=False
 sc.view_settings.view_transform='Standard';sc.view_settings.look='Medium High Contrast';sc.view_settings.exposure=0;sc.view_settings.gamma=1
 def render(name,pos,scale,w,h):
     cam.location=pos;cam.rotation_euler=(Vector((0,.25,1.05))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=scale
@@ -259,6 +291,8 @@ render('cuartel-rear',(-11,12,10),12.7,1100,850)
 cam.location=(10,-15,11);cam.rotation_euler=(Vector((0,.25,1.05))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=12.6
 bpy.ops.wm.save_as_mainfile(filepath=OUT+'/Cuartel_ChatGPT_v1.blend')
 stats={'author':'ChatGPT, this conversation; explicit owner request 15 Oct 2026','execution':bpy.app.version_string,'qwen_used':False,'credits_spent':0,'unity_verified':False,'art_approved':False,'calibration_validated':False,'status':'EXPERIMENTAL_ASSET_REQUIRES_INDEPENDENT_REVIEW','objects':len(asset),'vertices':sum(len(o.data.vertices) for o in asset if o.type=='MESH'),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in asset if o.type=='MESH'),'reference_sha256':hashlib.sha256(open('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg','rb').read()).hexdigest(),'design':'Compact early Bastion military camp: blue canvas ridge pavilion, smaller recruit shelter, oak fencing, open training yard, weapons and royal standard. Frozen existing assets unchanged.'}
+stats['export_meshes']=export_mesh_count
+stats['revision']='r2: clear entrance, softer canvas, muted blue, mottled soil, material-batched GLB; original r1 preserved in prior run'
 stats['files']={f:hashlib.sha256(open(OUT+'/'+f,'rb').read()).hexdigest() for f in os.listdir(OUT) if f.endswith(('.glb','.blend','.png'))}
 open(OUT+'/evidence.json','w').write(json.dumps(stats,indent=2))
 print(json.dumps(stats,indent=2))
