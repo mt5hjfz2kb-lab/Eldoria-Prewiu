@@ -15,13 +15,13 @@ source=sorted(IN.glob('*.glb'))
 if len(source)!=63: raise RuntimeError('Exactly 63 input GLBs required, got '+str(len(source)))
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene=bpy.context.scene
-scene.render.engine='BLENDER_EEVEE_NEXT'
+scene.render.engine='BLENDER_EEVEE'
 scene.render.resolution_x=768;scene.render.resolution_y=768;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 scene.render.film_transparent=False
 scene.render.image_settings.color_mode='RGBA'
 scene.view_settings.view_transform='AgX'
-scene.render.engine='BLENDER_EEVEE_NEXT'
+scene.render.engine='BLENDER_EEVEE'
 scene.render.use_file_extension=True
 scene.world=bpy.data.worlds.new('Neutral catalog environment');scene.world.use_nodes=True
 scene.world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.20,.25,.31,1)
