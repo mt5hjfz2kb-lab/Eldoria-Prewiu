@@ -72,7 +72,7 @@ def beam_between_source_faces(name,p):
     if not .28<=length<=8:
         raise RejectedPlan("BEAM_ANCHOR_DISTANCE_INVALID")
     width=float(p["width_m"]);depth=float(p["depth_m"])
-    if not .06<=width<=.45 or not .06<=depth<=.45:
+    if not .10<=width<=.45 or not .10<=depth<=.45:
         raise RejectedPlan("BEAM_CROSS_SECTION_OUT_OF_BOUNDS")
     bpy.ops.mesh.primitive_cube_add(location=(start+end)*.5)
     beam=bpy.context.object
