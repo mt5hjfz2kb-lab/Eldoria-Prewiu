@@ -156,7 +156,12 @@ def source_contact_facts(objects, limit_per_mesh=12):
 
 
 def grounded_beam_pair_facts(source_objects, limit=12):
-    """Genuine Blender ray-hit face pairs for Qwen selection, not artistic templates."""
+    """Real camera-visible WORLD face pairs, sorted for visible wall support.
+
+    Physical evidence only. Does NOT select an artistic design or infer absent
+    geometry. Wall support pairs are shown first when real camera UV and
+    source heights demonstrate a useful projected span.
+    """
     import math
     groups=[]
     for item in source_objects:
@@ -174,17 +179,28 @@ def grounded_beam_pair_facts(source_objects, limit=12):
                 z1=h.get("world_height_fraction",0)
                 z2=other.get("world_height_fraction",0)
                 if not (type(z1) in (int,float) and type(z2) in (int,float)
-                        and max(z1,z2)>=.60 and min(z1,z2)>=.35):
+                        and max(z1,z2)>=.60 and min(z1,z2)>=.18):
                     continue
                 dist=math.dist(h["world_center_m"],other["world_center_m"])
-                if .75<=dist<=2.0:
-                    candidates.append({"start_face":h["face_index"],
-                                       "end_face":other["face_index"],
-                                       "distance_m":round(dist,3),
-                                       "start_world_xyz_m":h["world_center_m"],
-                                       "end_world_xyz_m":other["world_center_m"]})
-        candidates.sort(key=lambda v:(abs(v["distance_m"]-1.1),
-                        v["start_face"],v["end_face"]))
+                if not .75<=dist<=2.0:continue
+                visible_wall=(min(z1,z2)<.55)
+                uv1=h.get("camera_screen_uv")
+                uv2=other.get("camera_screen_uv")
+                if visible_wall and isinstance(uv1,list) and isinstance(uv2,list) and len(uv1)==2 and len(uv2)==2:
+                    # Both faces must project to different heights near one
+                    # visible exterior wall; reject hidden and foreshortened.
+                    visible_wall=(abs(uv1[1]-uv2[1])>=.13
+                                  and abs(uv1[0]-uv2[0])<=.35)
+                category="visible_wall_support" if visible_wall else "roof_or_other_support"
+                candidates.append({"start_face":h["face_index"],
+                                   "end_face":other["face_index"],
+                                   "distance_m":round(dist,3),
+                                   "visible_evidence_category":category,
+                                   "start_world_xyz_m":h["world_center_m"],
+                                   "end_world_xyz_m":other["world_center_m"]})
+        candidates.sort(key=lambda v:(
+            0 if v["visible_evidence_category"]=="visible_wall_support" else 1,
+            abs(v["distance_m"]-1.25),v["start_face"],v["end_face"]))
         if candidates:
             groups.append({"source":item["name"],"candidate_pairs":candidates[:limit],
                            "geometry_prescribed":False,"art_approved":False})
