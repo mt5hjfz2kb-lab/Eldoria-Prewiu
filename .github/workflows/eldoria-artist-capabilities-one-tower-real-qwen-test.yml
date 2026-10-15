@@ -51,6 +51,12 @@ jobs:
             Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
             references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
           sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-eyes-brain-4b-8b-original-unchanged
+          run-id: 38699407600
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-vision-8b-frozen
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -104,8 +110,23 @@ jobs:
             $available=@((Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20).models|ForEach-Object {$_.name})
             if('qwen3-vl:4b-instruct' -notin $available){throw 'QWEN_VL_4B_NOT_INSTALLED'}
             $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+            $diagnosis=Join-Path $env:RUNNER_TEMP 'eldoria-vision-8b-frozen/diagnosis-8b.json'
+            if(-not (Test-Path $diagnosis)){throw 'HISTORICAL_REAL_VISION_PROOF_MISSING'}
+            $eyes=Get-Content $diagnosis -Raw | ConvertFrom-Json
+            if($eyes.original_source_sha256 -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'QWEN8B_EYES_REFER_TO_DIFFERENT_SOURCE'}
+            $v1=@($eyes.single_image_observations | Where-Object {$_.view -eq 'front_three_quarter'}) | Select-Object -First 1
+            $v2=@($eyes.single_image_observations | Where-Object {$_.view -eq 'reverse_three_quarter'}) | Select-Object -First 1
+            if(-not $v1 -or -not $v2 -or -not $v1.complete -or -not $v2.complete){throw 'TWO_GROUNDED_VIEWS_NOT_AVAILABLE'}
+            $lessons=Join-Path $out 'original-qwen8b-vision-to-artist.txt'
+            @(
+              'FROZEN ORIGINAL SOURCE SHA256: e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869',
+              'The following two source-specific captions came from already executed Qwen-VL 8B on original camera images, not descriptions of the owner STYLE reference. They are observations not infallible architectural truth.',
+              'front_three_quarter: '+$v1.text,
+              'reverse_three_quarter: '+$v2.text,
+              'Design for the actual source materials and attachments. If material is timber, DO NOT hallucinate stone masonry. Distinguish owner target style from existing source construction. Source original is immutable.'
+            ) | Set-Content -Path $lessons -Encoding utf8
             $argv=@('studio/tools/art-direction/full-studio/artist_loop.py',
-              '--brief','Improve the EXISTING inherited Valoria watchtower as an art director: choose a meaningful visible medieval architectural improvement to silhouette or structure guided by actual source camera, keep the door, stairs, roof, UV and original stone character unchanged; source-freeze original; no self approval',
+              '--brief','Improve the inherited timber/log Valoria watchtower using actual source images and verified Qwen8B source observations: create ONE physically attached and visibly useful original timber brace, support or roof fascia chosen by YOU. Keep door, wooden stairs, railing, roof and UV intact; do not propose stone buttresses; source frozen; no self approval',
               '--source',$src,
               '--reference','frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',
               '--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
@@ -113,12 +134,15 @@ jobs:
               '--texture-root','studio',
               '--model','qwen3-vl:4b-instruct',
               '--phase','full',
+              '--source-build-phase',
+              '--source-tool-sequencing',
+              '--prior-lessons',$lessons,
               '--asset-category','architecture',
               '--max-cycles','1',
-              '--max-plan-attempts','3',
-              '--max-actions','1',
-              '--max-tokens','1200',
-              '--vision-max-edge','768',
+              '--max-plan-attempts','2',
+              '--max-actions','2',
+              '--max-tokens','1000',
+              '--vision-max-edge','640',
               '--frozen-original-asset-sha256','e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869',
               '--out',(Join-Path $out 'art-output'))
             & python @argv
