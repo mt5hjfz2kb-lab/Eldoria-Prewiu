@@ -1,0 +1,21 @@
+{
+    "stage": "ISOLATED_UNITY_LOOKDEV_NOT_ART_APPROVED",
+    "referencePath": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "heroPath": "Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx",
+    "treePath": "Assets/Eldoria/Resources/WorldInventory/Tree01A.prefab",
+    "cliffPath": "Assets/Eldoria/Resources/Valoria/SM_Cliffs_01.prefab",
+    "heroRenderers": 13,
+    "treeInstances": 22,
+    "cliffInstances": 14,
+    "rockInstances": 11,
+    "placeholderRoadTiles": 15,
+    "width": 1536,
+    "height": 1024,
+    "captures": [
+        "01-wide-camera.png",
+        "02-main-architecture.png"
+    ],
+    "licenseVerified": false,
+    "artApproved": false,
+    "sourceCommit": "d35aa1126cc316514ebab2b593c99e35635fd2b1"
+}
