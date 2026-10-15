@@ -180,13 +180,14 @@
       "branch": "diagnostic/valoria-ai-eyes-brain-20261015",
       "scope": [
         ".github/workflows/eldoria-local-director-inventory.yml",
-        "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md"
+        "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
       ],
       "resources": [],
       "status": "active",
       "claimed_at": "2026-10-15T10:49:00Z",
       "art_production_routing": "not_applicable",
-      "phase": "Existing read-only inventory; no Qwen inference, model edits, download or Blender execution",
+      "phase": "Fresh Windows/Ollama health SUCCESS; persist actual route in existing bootstrap and evidence; selective benchmark security rejection unresolved",
       "dependency": "Short owner-authorized health probe only; zero running Actions observed; existing Windows-heavy claim unchanged. Prior rejected benchmark/test operations remain blocked."
     }
   ],
