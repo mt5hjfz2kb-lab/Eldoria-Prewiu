@@ -4,7 +4,9 @@ Outputs advisory scores, NEVER ART_APPROVED.
 """
 import sys,json,base64,urllib.request,urllib.error,os,time,re,hashlib
 from pathlib import Path
-args=sys.argv[1:];source=Path(args[0]);output=Path(args[1]);model=args[2]
+args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else sys.argv[1:]
+if len(args)<3:raise SystemExit('Required: source output model')
+source=Path(args[0]);output=Path(args[1]);model=args[2]
 output.mkdir(parents=True,exist_ok=True)
 m=json.loads((source/'individual_quality_status.json').read_text())
 reference=("Valoria Eldoria reference: premium stylized medieval fortress on natural alpine "
@@ -23,6 +25,7 @@ available=[q.get('name','') for q in models.get('models',[])]
 if model not in available:
  raise SystemExit('No installed local model '+model+'; installed='+str(available))
 records=[]
+print('INPUT',str(source),'REVIEW_MODEL',model,'ASSETS',len(m['assets']),flush=True)
 for i,a in enumerate(m['assets']):
  name=a['asset']
  views=[source/'previews'/(name+'_front.png'),source/'previews'/(name+'_back.png')]
