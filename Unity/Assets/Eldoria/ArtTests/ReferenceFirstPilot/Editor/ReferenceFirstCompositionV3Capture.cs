@@ -57,7 +57,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
 
             // Irregular continuous escarpment; no oversized grassy mountain prefabs from V1.
             Island(stage,"Continuous wide grass plateau",0f,-8f,72f,82f,6f,-13f,grass,cliff);
-            Island(stage,"Upper raised fortified terrace",0f,53f,53f,25f,14f,5.7f,grass,cliff);
+            Island(stage,"Upper raised fortified terrace",0f,63f,53f,23f,14f,5.7f,grass,cliff);
             var water = GameObject.CreatePrimitive(PrimitiveType.Plane);
             water.name="Distant blue water, temporary shader";
             water.transform.SetParent(stage,false);
@@ -67,12 +67,12 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             Object.DestroyImmediate(water.GetComponent<Collider>());
 
             int architecture = 0;
-            Place(fortress,buildings,"UPPER DEFENSIVE GATE",0,53,14.0f,18.5f,180f); architecture++;
+            Place(fortress,buildings,"UPPER DEFENSIVE GATE",0,63,14.0f,18.5f,180f); architecture++;
             Place(lowerGate,buildings,"LOWER BRIDGE GATE",0,-77,6.0f,14.5f,180f); architecture++;
             // Real modular walls provide the scene's long, low defensive silhouette.
             for(int i=-3;i<=3;i++) if(i!=0)
             {
-                Place(wall,buildings,"Upper wall "+i,i*14f,54,13.8f,9.3f,90f); architecture++;
+                Place(wall,buildings,"Upper wall "+i,i*14f,64,13.8f,9.3f,90f); architecture++;
                 Place(wall,buildings,"Lower wall "+i,i*10f,-77,5.8f,8.0f,90f); architecture++;
             }
             for(int i=0;i<4;i++)
@@ -82,7 +82,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             }
             foreach(float x in new[]{-30f,30f})
             {
-                Place(tower,buildings,"Upper corner tower "+x,x,53,14f,11f,0f);architecture++;
+                Place(tower,buildings,"Upper corner tower "+x,x,63,14f,11f,0f);architecture++;
                 Place(tower,buildings,"Lower corner tower "+x,x,-77,6f,11f,0f);architecture++;
             }
 
@@ -117,11 +117,11 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             var amber=Material("torch-amber",shader,new Color(1f,.49f,.19f),null);
             foreach(float x in new[]{-8f,8f})
                 Box(buildings,"Lower blue banner "+x,new Vector3(x,13.8f,-79f),new Vector3(2.3f,5.2f,.12f),banner);
-            Box(buildings,"Upper blue banner",new Vector3(0,22f,52f),new Vector3(2.4f,5.4f,.12f),banner);
+            Box(buildings,"Upper blue banner",new Vector3(0,22f,62f),new Vector3(2.4f,5.4f,.12f),banner);
             foreach(float x in new[]{-7f,7f})
             {
                 Torch(buildings,"Lower fire "+x,new Vector3(x,9.3f,-82f),amber);
-                Torch(buildings,"Upper fire "+x,new Vector3(x,16f,49f),amber);
+                Torch(buildings,"Upper fire "+x,new Vector3(x,16f,59f),amber);
             }
 
             int forest=0;
