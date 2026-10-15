@@ -50,7 +50,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
 
         public static void BuildAndCapture()
         {
-            if (!UnityEngine.Application.isBatchMode)
+            if (!UnityEngine.UnityEngine.Application.isBatchMode)
                 throw new InvalidOperationException("Run in batchmode only: the current editor scene must not be replaced.");
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             var heroAsset = MustLoad(HeroPath);
@@ -175,7 +175,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
 
             string output = Environment.GetEnvironmentVariable("ELDORIA_LOOKDEV_OUTPUT");
             if (string.IsNullOrWhiteSpace(output))
-                output = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "../../artifacts/reference-first-pilot"));
+                output = Path.GetFullPath(Path.Combine(UnityEngine.UnityEngine.Application.dataPath, "../../artifacts/reference-first-pilot"));
             Directory.CreateDirectory(output);
 
             Vector3 look = hb.center + new Vector3(0f, 1.5f, 3f);
