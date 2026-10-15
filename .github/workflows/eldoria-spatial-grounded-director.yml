@@ -1,0 +1,138 @@
+name: Eldoria artist brain - grounded spatial director verification
+on:
+  push:
+    branches:
+      - diagnostic/valoria-ai-eyes-brain-20261015
+    paths:
+      - '.github/workflows/eldoria-spatial-grounded-director.yml'
+      - 'tools/art-direction/vision-diagnostic/spatial_grounding.py'
+      - 'tools/art-direction/vision-diagnostic/grounded_director_benchmark.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-native-windows-exclusivity-artist-brain-20261015
+  cancel-in-progress: false
+jobs:
+  grounded-director:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Resolve previously installed Git via GitHub Desktop
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Existing GitHub Desktop Git not found'}
+            $parent=Split-Path $candidate
+            $env:PATH="$parent;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $parent
+          }
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/vision-diagnostic
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reuse actual prior three-view Qwen original evidence; no re-inference
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-eyes-brain-4b-8b-original-unchanged
+          run-id: 38699407600
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-existing-vision-evidence
+      - name: Verify provenance, owner policy, scripts and real installed Blender
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $policy=(Invoke-WebRequest 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/main/AGENTS.md' -UseBasicParsing -TimeoutSec 35).Content
+          if($policy -notmatch 'PAUSA DE LA LINEA DE CORRECCION ARTISTICA PARA DIAGNOSTICO VISUAL') {
+            throw 'Owner latest read-only diagnostic authorization changed'
+          }
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $hash=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869') {
+            throw 'Original GLB SHA mismatch'
+          }
+          $b=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $native=if($b){$b.Source}else{Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $native){throw 'Installed Blender missing'}
+          "ELDORIA_BLENDER_EXE=$native" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+          $o=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if(-not (Test-Path $o)){
+            $o=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if(-not $o){throw 'Existing Ollama missing'}
+          "ELDORIA_OLLAMA_EXE=$o" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+          python -m py_compile tools/art-direction/vision-diagnostic/spatial_grounding.py tools/art-direction/vision-diagnostic/grounded_director_benchmark.py
+          if($LASTEXITCODE -ne 0){throw 'New director Python scripts failed syntax'}
+          $old=Join-Path $env:RUNNER_TEMP 'eldoria-existing-vision-evidence'
+          if(-not (Test-Path (Join-Path $old 'diagnosis-4b.json')) -or -not (Test-Path (Join-Path $old 'diagnosis-8b.json')) -or -not (Test-Path (Join-Path $old 'vision-observation.json'))) {
+            throw 'Original independent evidence missing'
+          }
+      - name: Derive new verifiable geometry and cameras from immutable GLB
+        shell: powershell
+        timeout-minutes: 14
+        run: |
+          $ErrorActionPreference='Stop'
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $old=Join-Path $env:RUNNER_TEMP 'eldoria-existing-vision-evidence'
+          $output=Join-Path $env:RUNNER_TEMP 'eldoria-spatial-director-evidence'
+          New-Item -ItemType Directory -Path $output -Force | Out-Null
+          & $env:ELDORIA_BLENDER_EXE -b --factory-startup --python-exit-code 1 --python tools/art-direction/vision-diagnostic/spatial_grounding.py -- --source $source --observation (Join-Path $old 'vision-observation.json') --out (Join-Path $output 'spatial-grounding.json')
+          if($LASTEXITCODE -ne 0){throw 'Real original geometry inspection failed'}
+          if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'Original source changed unexpectedly'}
+      - name: Benchmark evidence-grounded Qwen director on spatial contradiction traps
+        shell: powershell
+        timeout-minutes: 42
+        run: |
+          $ErrorActionPreference='Stop'
+          $old=Join-Path $env:RUNNER_TEMP 'eldoria-existing-vision-evidence'
+          $output=Join-Path $env:RUNNER_TEMP 'eldoria-spatial-director-evidence'
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $env:OLLAMA_NUM_PARALLEL='1'
+          $env:OLLAMA_MAX_LOADED_MODELS='1'
+          $dir=Join-Path $env:USERPROFILE '.ollama\models'
+          if(-not (Test-Path $dir)){
+            $dir=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName '.ollama\models'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if($dir -and (Test-Path $dir)){$env:OLLAMA_MODELS=$dir}
+          $server=$null
+          try {
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process -FilePath $env:ELDORIA_OLLAMA_EXE -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $output 'ollama-stdout.log') -RedirectStandardError (Join-Path $output 'ollama-stderr.log')
+              for($i=0;$i -lt 40;$i++){
+                try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}
+              }
+            }
+            if(-not $ready){throw 'Local Ollama could not respond'}
+            python tools/art-direction/vision-diagnostic/grounded_director_benchmark.py --grounding (Join-Path $output 'spatial-grounding.json') --prior $old --out $output
+            if($LASTEXITCODE -ne 0){throw 'Grounded director test itself failed'}
+          } finally {
+            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
+          }
+      - name: Archive measured original geometry and all read-only director evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-spatial-grounded-art-director-4b-8b
+          path: ${{ runner.temp }}/eldoria-spatial-director-evidence/
+          if-no-files-found: warn
+          retention-days: 30
