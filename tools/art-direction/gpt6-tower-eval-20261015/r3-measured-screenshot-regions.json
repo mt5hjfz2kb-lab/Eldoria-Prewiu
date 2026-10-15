@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "evidence_source": "manual ROIs annotated from actual immutable Blender A/B artifact 11994566724 (run 38776804558), verified visually",
+  "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "before_sha256": "7a708cd6431249d3d2010421ef30a797df15da87a6c0c5120b3abf26f7b454f1",
+  "after_sha256": "609e64a824cc03b07c46cb8a56d751d856b47749b177ef2618fa1793dd02bb25",
+  "regions": [
+    {
+      "component_id": "Eldoria_GPT6_R3_FrontLintel",
+      "box_px": [
+        278,
+        170,
+        480,
+        230
+      ]
+    },
+    {
+      "component_id": "Eldoria_GPT6_R3_LeftFramePost",
+      "box_px": [
+        270,
+        185,
+        325,
+        390
+      ]
+    },
+    {
+      "component_id": "Eldoria_GPT6_R3_RightFramePost",
+      "box_px": [
+        435,
+        192,
+        488,
+        442
+      ]
+    }
+  ],
+  "auto_generated": false,
+  "art_approved": false
+}
