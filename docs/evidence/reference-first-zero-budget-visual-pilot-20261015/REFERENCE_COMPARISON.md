@@ -40,3 +40,10 @@ The current capture builder is a first **technical baseline** using OriginalHero
 
 ## Safe next action
 Coordinate with the Bastion I runner owner and the other pilot workflow author. After the Windows resource is released, run a Unity job in an isolated dedicated checkout with the same source SHA and collect genuine capture artifacts; then compare images against the approved reference. Any failure must be diagnosed before a repeat; do not treat a green Ubuntu source gate as aesthetic progress.
+
+## Updated native Unity failure diagnosis and safe source repair
+
+- Isolated Windows run `38794999022` did reach C# compilation in Unity 6000.3.23f1; the capture failed **before executing the scene method**, with two precise `CS0234` errors in `ReferenceFirstPilotCapture.cs`: unqualified `Application.isBatchMode` and `Application.dataPath` were resolved against namespace `Eldoria.Application` rather than `UnityEngine.Application`.
+- The builder now uses explicit `UnityEngine.Application.isBatchMode` and `UnityEngine.Application.dataPath`; correction commit `7032d51bfbab1e20ef0f8543744ff9eafc008340`.
+- Static rule updated to accept this qualification (commit `aba18c80f3e259a61ca97c3055122f991f72ca4f`). Both commits have `[skip ci]` intentionally: **do not launch another Windows CI on a retained reservation by accident**.
+- **VALIDATION LIMIT:** source repair is straightforward and grounded in compiler errors but has NOT been recompiled in Unity since the correction. Actual PNGs, art review and performance remain pending. When Windows runner is explicitly coordinated, rerun the exact fixed commit using an isolated worktree and record the genuine outcome.
