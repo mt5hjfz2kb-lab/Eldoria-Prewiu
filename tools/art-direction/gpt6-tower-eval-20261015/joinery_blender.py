@@ -84,7 +84,7 @@ def bevel_member(o,width):
     bpy.ops.object.modifier_apply(modifier=mod.name)
     o.data.update()
 
-def build(spec,source,review,out,plan_sha):
+def build(spec,source,review,out,plan_sha,placement=None):
     proof=validate(spec)
     if out.exists() and any(out.iterdir()):
         raise JoineryRejected("REQUIRES_FRESH_OUTPUT_DIRECTORY")
@@ -136,6 +136,9 @@ def build(spec,source,review,out,plan_sha):
         o=objects[member["id"]]
         bevel_member(o,member["edge_bevel_m"])
         put_material_uv(o,mat)
+    if placement is not None:
+        # Trusted skill placement only; never model-supplied Python.
+        for o in objects.values():o.matrix_world=placement @ o.matrix_world
     bpy.context.view_layer.update()
     after_mesh=studio.snapshot_meshes()
     if any(after_mesh.get(k)!=v for k,v in original.items()):

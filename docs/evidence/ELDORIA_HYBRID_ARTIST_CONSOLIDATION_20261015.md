@@ -178,3 +178,31 @@ Se reconectan además los gates EXISTENTES de regiones protegidas y presencia
 visual al adaptador. Aplicados sobre las imágenes auténticas de la primera
 prueba: puerta 0,046 % cambiado, escalera 0 %; impacto global 3,45428 %.
 Son protección/visibilidad, no una aprobación artística.
+
+
+## Quinta propuesta y diagnóstico de la estrategia
+
+Run 38789401142 / artifact 11999206767, ZIP SHA256
+72ac407ad55d1ad856329c53ba179d6c5c968d6e4c602947098ef8949460f05d.
+La corrección UTF-8 funciona y Qwen produce un plan válido sin reescritura,
+width 1.2 m, height 1.8 m, dos postes con offsets +.15/-.15 m, ancla 421.
+Tiempo de planificación 61,25 s. No se obtuvo un candidato: ambos brazos
+rechazados por FRAME_REQUIRES_VERIFIED_VERTICAL_WALL_FACE_NOT_ROOF.
+
+Diagnóstico sobre los bytes del GLB real (normales de triángulos transformadas):
+ancla GPT 1836: normal aprox. [0.0024,-0.2711,0.9625], z 1.0277 m;
+ancla Qwen 421: [0.6372,0.6442,0.4230]. Los troncos son facetados y sus caras
+locales no equivalen al plano arquitectónico de una pared. La herramienta no
+puede exigir un único plano vertical perfecto para ensamblar sobre ellos.
+
+Se conserva la quinta propuesta, se termina la generación de ESTA estrategia
+y se prepara SOLO una reproducción diagnóstica de los planes existentes.
+El taller monta las piezas y sus uniones en un marco local, luego aplica una
+transformación rígida al conjunto según el punto real y la proyección horizontal
+de la normal. No altera ninguna proporción ni separación elegida por el autor.
+Rechaza anclas fuera de la banda medida inferior a la cubierta y superficies
+sin componente horizontal. Registra punto/normal reales, matriz y parámetros.
+Ambos brazos usan el mismo código, mismo input y mismos gates; los planos
+previos quedan intactos. La reproducción no cuenta como nueva inferencia ni
+como nueva intervención aceptada. Se mantienen protección de accesos y crítico
+ciego; no se encadena ni promueve arte por arreglar la herramienta.

@@ -108,21 +108,29 @@ def compare(a):
        'Mortise center enters bottom of its lintel but stops .005m below top. '
        'Every tenon/socket must physically overlap its member also in X/Y. '
        'Peg radius .005.. .04m, length .02.. .20m, peg center must cross socket.')}]
-    put(a.out/'submitted-local-context.json',{'model':a.model,'messages':messages,'schema':context['schema'],
+    put(a.out/('replay-effective-context.json' if a.local_plan else 'submitted-local-context.json'),{'model':a.model,'messages':messages,'schema':context['schema'],
         'common_context_sha256':sha(pack/'common-context.json')})
     t=time.monotonic();rejections=[];local=None
-    for attempt in range(1,a.max_plan_attempts+1):
-        put(a.out/f'submitted-local-context-{attempt}.json',{'model':a.model,
-            'messages':messages,'schema':context['schema'],
-            'common_context_sha256':sha(pack/'common-context.json')})
-        raw=request_ollama(a.endpoint,a.model,messages,2800,timeout=540,schema=context['schema'])
-        (a.out/f'qwen-raw-{attempt}.json').write_text(raw,encoding='utf8')
-        try:
-            local=json.loads(raw);validator(local)
-            break
-        except (ValueError,KeyError,TypeError) as e:
-            local=None;rejections.append(str(e))
-            messages=messages+[{'role':'assistant','content':raw},{'role':'user','content':'Plan rejected: '+str(e)+'. Revise your own plan, no guessing.'}]
+    if a.local_plan:
+        if not a.local_plan_source_run:raise ValueError('REPLAY_REQUIRES_ORIGINAL_RUN')
+        local=json.loads(a.local_plan.read_text(encoding='utf8'));validator(local)
+        (a.out/'replayed-local-raw.json').write_bytes(a.local_plan.read_bytes())
+        put(a.out/'local-replay-provenance.json',{'run_id':a.local_plan_source_run,
+          'raw_sha256':sha(a.local_plan),'new_inference':False,
+          'purpose':'Diagnose corrected skill execution on unchanged original artist proposal'})
+    else:
+        for attempt in range(1,a.max_plan_attempts+1):
+            put(a.out/f'submitted-local-context-{attempt}.json',{'model':a.model,
+                'messages':messages,'schema':context['schema'],
+                'common_context_sha256':sha(pack/'common-context.json')})
+            raw=request_ollama(a.endpoint,a.model,messages,2800,timeout=540,schema=context['schema'])
+            (a.out/f'qwen-raw-{attempt}.json').write_text(raw,encoding='utf8')
+            try:
+                local=json.loads(raw);validator(local)
+                break
+            except (ValueError,KeyError,TypeError) as e:
+                local=None;rejections.append(str(e))
+                messages=messages+[{'role':'assistant','content':raw},{'role':'user','content':'Plan rejected: '+str(e)+'. Revise your own plan, no guessing.'}]
     planning_seconds=round(time.monotonic()-t,3)
     rows=[]
     arms=([('external',json.loads(a.external_plan.read_text(encoding="utf8")))] if a.mode=='compare' else [])+[('local',local)]
@@ -161,7 +169,7 @@ def compare(a):
     put(a.out/'comparison-result.json',{'common_context_sha256':sha(pack/'common-context.json'),
        'same_source_sha256':sha(source),'same_review_sha256':sha(a.review),
        'same_workshop_schema_sha256':hashlib.sha256(json.dumps(context['schema'],sort_keys=True).encode()).hexdigest(),
-       'directors':rows,'local_plan_rejections':rejections,'local_planning_seconds':planning_seconds,
+       'directors':rows,'local_model_inference_performed':not bool(a.local_plan),'local_plan_rejections':rejections,'local_planning_seconds':planning_seconds,
        'external_planning_seconds':None,'external_planning_time_measured':False,
        'total_seconds':round(time.monotonic()-t,3),
        'art_approved':False,'calibration_validated':False,'unity_paused':True,
@@ -173,6 +181,8 @@ def main():
     p.add_argument('--blender',required=True);p.add_argument('--model',default='qwen3:14b')
     p.add_argument('--vision-model',default='qwen3-vl:8b-instruct-q4_K_M')
     p.add_argument('--endpoint',default='http://127.0.0.1:11434/api/chat')
+    p.add_argument('--local-plan',type=pathlib.Path)
+    p.add_argument('--local-plan-source-run',type=int)
     p.add_argument('--max-plan-attempts',type=int,choices=(1,2),default=2)
     p.add_argument('--workshop',choices=('explicit','frame'),default='explicit')
     p.add_argument('--external-context-sha256',help='SHA of the exact prepared pack inspected by the external director')
