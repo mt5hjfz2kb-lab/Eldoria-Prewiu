@@ -1,0 +1,20 @@
+{
+    "stage": "REAL_UNITY_V6_WARM_STONE_REFERENCE_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V6/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V6/Imported/LowerGateFamilyV1.glb",
+    "revision": "ac60bacc5676addc543f972ed4e48c4c1ecc50e4",
+    "frames": [
+        "11-reference-stone-overview.png",
+        "12-reference-stone-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 37,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
