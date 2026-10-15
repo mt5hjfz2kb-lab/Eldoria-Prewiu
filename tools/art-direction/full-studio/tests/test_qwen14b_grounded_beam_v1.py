@@ -75,6 +75,19 @@ class Qwen14BGroundedBeamTests(unittest.TestCase):
         bad=beam();bad["actions"][0]["params"]["width_m"]=.001
         with self.assertRaises(RejectedPlan):validate_plan(bad)
 
+    def test_beam_contract_cannot_offer_rejected_six_centimetre_section(self):
+        doc=beam()
+        doc["actions"][0]["params"]["depth_m"]=.06
+        with self.assertRaises(RejectedPlan):validate_plan(doc)
+        doc["actions"][0]["params"]["depth_m"]=.10
+        doc["actions"][0]["params"]["width_m"]=.10
+        self.assertEqual(validate_plan(doc)["geometric_actions"],1)
+        variants=source_artist_action_schema([original()])["oneOf"]
+        b=next(x for x in variants if x["properties"]["op"].get("const")=="beam_between_faces")
+        param=b["properties"]["params"]["properties"]
+        self.assertEqual(param["width_m"]["minimum"],.10)
+        self.assertEqual(param["depth_m"]["minimum"],.10)
+
     def test_source_typed_schema_only_uses_camera_proven_faces(self):
         variants=source_artist_action_schema([original()])["oneOf"]
         beams=[v for v in variants if v["properties"]["op"].get("const")=="beam_between_faces"]
