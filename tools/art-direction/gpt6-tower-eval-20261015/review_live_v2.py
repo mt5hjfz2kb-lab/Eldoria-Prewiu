@@ -9,7 +9,7 @@ import argparse,base64,hashlib,json,pathlib,urllib.request
 from PIL import Image
 import numpy as np
 from grounded_review import (sha,manifest,extract_json,validate_critique,
-   forbidden_unobserved_terms,UnreliableCritic)
+   forbidden_unobserved_terms,UnreliableCritic,validate_independent_delta)
 import re
 
 def img(path,box=None):
@@ -178,24 +178,32 @@ def main():
         result["phase1"]=check
         if check["status"]=="IDENTIFICATION_GROUNDED":
             raw2=ask(z.model,
-              "PHASE 2: independently judge aesthetic change from reference, BEFORE, AFTER, and zoomed AFTER. "
-              "Use the inventory; never invent new structural components. Physical contact is measured by Blender "
-              "and visual joinery can still look poor. Return strict JSON: "
+              "PHASE 2: CRITICAL independent visual evaluation, NOT identification. Compare approved style language reference, "
+              "BEFORE, AFTER, zoomed AFTER. Known mesh IDs are already verified; do not copy the prior identification's "
+              "visual descriptions (they are withheld from you). Never infer professional quality from geometry alone. "
+              "Score BEFORE and AFTER each independently on 0-10 in geometry/silhouette, architecture/contact, materials, "
+              "style and game camera. Be conservative: a Blender-only screenshot is not a Unity-game-quality evaluation. "
+              "Your AFTER rubric can be higher or lower; provide two distinct, specific reasons for visible improvements "
+              "AND remaining shortcomings, including architecture/shadows/material mismatch when present. Explicitly "
+              "name uncertainties due to camera/material rendering. Physical contact measured by Blender can still "
+              "look visually poor. Return strict JSON: "
               "{observations:[{component_id,visibility,visual_joinery,visual_reason}],"
               "decision:IMPROVED|REJECTED|INCONCLUSIVE,"
+              "scores_before:{silhouette,architectural_contact,materials,style,game_camera},"
               "scores:{silhouette,architectural_contact,materials,style,game_camera},"
-              "reasons:[text],uncertainties:[text]}. Values for scores are 0-10. "
-              "Do NOT echo SHA/image provenance or physical distances; runner attaches verified data. "
-              "Provisional visual critique only, NEVER ART_APPROVED.",
-              "Actual new components: "+json.dumps(names,ensure_ascii=False)+
-              ". Phase1 verified identifications: "+json.dumps(parsed1["observations"],ensure_ascii=False),
+              "reasons:[at least two detailed sentences],uncertainties:[at least one specific item]}. "
+              "No fake hashes, physical measurements, or art approval. ALL claims must be visually grounded.",
+              "Only verified newly-added mesh IDs and dimensions, NOT previous critique: "+json.dumps(names,ensure_ascii=False),
               [img(z.reference),img(z.before),img(z.after),img(z.after,focus)])
             parsed2,repaired2=parse_recoverable_model_json(raw2)
             result["phase2_format_repaired_whitelist_only"]=repaired2
             data=inject_trusted_facts(parsed2,inv,hashes)
             assessment=validate_critique(data,inv,hashes)
+            independent=validate_independent_delta(parsed2,parsed1["observations"])
             result["phase2"]=assessment
-            if assessment["status"]=="PROVISIONAL_REVIEW_GROUNDED":
+            result["phase2_delta_rubric_gate"]=independent
+            if (assessment["status"]=="PROVISIONAL_REVIEW_GROUNDED"
+                and independent["status"]=="PROVISIONAL_DELTA_GROUNDED"):
                 result["status"]="PROVISIONAL_REVIEW_GROUNDED"
         else:
             result["phase2"]="BLOCKED_BY_VISIBILITY_GATE"
