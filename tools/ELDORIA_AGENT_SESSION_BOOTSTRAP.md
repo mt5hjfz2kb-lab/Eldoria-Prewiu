@@ -94,7 +94,7 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     "artifact_id": 11961931949,
     "artifact_sha256": "2f485ed8843ea7d5e9ef3b87acd42f2fb8323ee1e3778a552cd05c93b30b8cff",
     "paired_json_sha256": "ae60e31dcdf7d6cfb96620290665745a6b6c469cee46f766127941b7c6428d4b",
-    "current_windows_liveness": "NOT_VERIFIED"
+    "current_windows_liveness": "Separate fresh health probe SUCCESS at 2026-10-15T10:49:15Z; see last_working_connection, not permanent liveness."
   },
   "inputs": [
     {
@@ -158,17 +158,17 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     {
       "key": "actions_dispatch",
       "inventory_tools": [],
-      "last_observation": "NOT_EXPOSED_IN_RECORDED_SESSION; workflow_dispatch declared in YAML is not a callable tool"
+      "last_observation": "Direct dispatch not exposed; authorized existing push-trigger inventory verified operational in run 38722927795. This cannot bypass rejected benchmark writes."
     },
     {
       "key": "windows_powershell",
       "inventory_tools": [],
-      "last_observation": "HISTORICALLY_VERIFIED_VIA_ACTIONS_ONLY; no direct Windows shell exposed"
+      "last_observation": "VERIFIED_AT_2026-10-15T10:49:15Z via actual Actions run 38722927795 / job 116381681682 on DESKTOP-R10PE55. No direct shell. Recheck freshness in a future session."
     },
     {
       "key": "ollama_qwen14b",
       "inventory_tools": [],
-      "last_observation": "HISTORICALLY_VERIFIED_ON_WINDOWS; not a Linux localhost service"
+      "last_observation": "VERIFIED_AT_2026-10-15T10:49:15Z on Windows: Ollama 0.40.2 answered /api/version and /api/tags; qwen3:14b installed. No fresh inference. Probe may stop its own ephemeral server."
     },
     {
       "key": "blender",
@@ -185,7 +185,34 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     "Tool inventory proves exposure only, never credentials, operation approval or Windows health.",
     "No automatic launch, installation, model download, credential search or retry of blocked modifications.",
     "16-case baseline is saturated; matching 16/16 would show no regression on these cases, not superiority over baseline or unseen-case generalisation."
-  ]
+  ],
+  "last_working_connection": {
+    "observed_utc": "2026-10-15T10:49:15.2655125Z",
+    "method": "Existing read-only inventory push-trigger on diagnostic branch; actual workflow executed PowerShell on owner PC",
+    "workflow": ".github/workflows/eldoria-local-director-inventory.yml",
+    "source_commit": "d7ace70f840c986dda61be58924a60e2081ca9da",
+    "run_id": 38722927795,
+    "job_id": 116381681682,
+    "artifact_id": 11966897453,
+    "artifact_sha256": "c54d53b7ecedbb72224b6fc66c3cd55e5017d7ffa75ec21521ce14fc7f38f04f",
+    "runner": "DESKTOP-R10PE55",
+    "result": "success",
+    "ollama_version": "0.40.2",
+    "qwen3_14b_installed": true,
+    "new_inferences": 0,
+    "blender_started": false,
+    "production_resumed": false
+  }
 }
 ```
 <!-- ELDORIA_RECOVERY_CHECKPOINT_END -->
+
+## Comprobación real posterior del PC — 15-10-2026 12:49 Europe/Madrid
+
+**El PC sí respondió ahora**: [run 38722927795](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38722927795) SUCCESS, job `116381681682`, `DESKTOP-R10PE55`. PowerShell ejecutado, Ollama 0.40.2 respondió y `qwen3:14b` está instalado; RTX 3060 12.288 MiB. Esta prueba no arrancó Blender ni realizó inferencias, descargas o producción. El servicio puede cerrarse al terminar si lo inició la prueba.
+
+**Ruta recuperable sin dispatch directo:** el workflow EXISTENTE `.github/workflows/eldoria-local-director-inventory.yml` tiene push-trigger en la rama diagnóstica y solo inspecciona el PC/modelos. Para una nueva comprobación de salud autorizada, inspeccionar versión actual, concurrencia y permisos; una actualización acotada y legítima de sus metadatos de diagnóstico puede disparar la prueba. Seguir el run del SHA exacto hasta fin y leer el artefacto. No repetir todo el benchmark ni suponer que la falta de dispatch equivale a falta de ejecución.
+
+No usar este workflow para incorporar la condición selectiva rechazada ni para ejecutar código equivalente a las dos escrituras bloqueadas. La recuperación de conectividad **no** levanta esos rechazos.
+
+Permisos GitHub consultados: ajuste específico `Allow all actions`; lecturas y escrituras actuales funcionan. No se cambiaron permisos. Ese ajuste no anula controles de seguridad de plataforma ni explica por sí solo los rechazos previos.
