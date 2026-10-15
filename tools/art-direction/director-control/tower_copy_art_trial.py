@@ -297,6 +297,22 @@ def main():
         "qwen3-vl:8b-instruct-q4_K_M",visual_messages,
         600,timeout=700,schema=visual_schema)
     visual_design=json.loads(visual_raw)
+    # The observer once prescribed a new stair platform despite explicitly
+    # protected stair/entry and existing 8B hallucinations. Visual hypotheses
+    # inform defect detection only, never authorized geometric construction.
+    restricted_visual_terms=("plataforma", "barandilla", "escalera",
+                             "pasillo elevado", "roof", "stair", "railing",
+                             "platform", "cubierta", "tejado")
+    suspect_vision=any(t in str(visual_design.get("integrated_architectural_idea","")).lower()
+                       for t in restricted_visual_terms)
+    visual_focus={
+        "visible_defect_hypothesis":visual_design.get("visible_defect",""),
+        "uncertainty":visual_design.get("uncertainty",""),
+        "design_idea_discarded":suspect_vision,
+        "rejected_unsafe_visual_design":(
+            visual_design.get("integrated_architectural_idea","")
+            if suspect_vision else None),
+    }
     (out/"independent-visual-before-plan.json").write_text(
         json.dumps({"model":"qwen3-vl:8b-instruct-q4_K_M",
                     "source_preview_sha256":digest((inspect_root/"source-preview-blender.png").read_bytes()),
@@ -332,7 +348,7 @@ def main():
        "You choose original location, rotation, proportions, geometry and "
        "material. Design for one fixed 3/4 camera, pending independent review. "
        "Qwen-VL image observation is HYPOTHETICAL, not spatial proof: "+
-       json.dumps(visual_design,ensure_ascii=False)+". "
+       json.dumps(visual_focus,ensure_ascii=False)+". "
     )
     local_geom={
       "world_up":"+Z","source_sha256":ORIGINAL_SHA,
@@ -348,7 +364,7 @@ def main():
           {"view":str(v["view"]),"hypothesis":str(v["text"])[:360]}
           for v in caps],
       "focus_14b_from_previous_call":direction,
-      "real_image_visual_hypothesis":visual_design,
+      "real_image_visual_hypothesis":visual_focus,
       "source_original_unchanged":True
     }
     # Typed action contract already exists in the professional studio:
@@ -374,6 +390,37 @@ def main():
       "original o UV. Blender Z hacia arriba. Tú eliges geometría ORIGINAL "
       "y sus valores, nadie los corrige. No comandos Python ni aprobación propia."
     )
+    # Ollama JSON-schema constrained decoding: no alias "geometry", no source
+    # target edits, no typed-field rewriting after the model output.
+    # This schema constrains syntax only; studio performs semantic rejection.
+    model_schema={
+        "type":"object",
+        "properties":{
+            "schema_version":{"type":"integer","enum":[2]},
+            "asset_id":{"type":"string"},
+            "observed_defect":{"type":"string"},
+            "design_intent":{"type":"string"},
+            "expected_visual_difference":{"type":"string"},
+            "mobile_risks":{"type":"string"},
+            "asset_decision":{"type":"string","enum":["MODIFY"]},
+            "art_approved":{"type":"boolean","enum":[False]},
+            "actions":{"type":"array","minItems":4,"maxItems":4,"items":{
+                "type":"object",
+                "properties":{
+                    "id":{"type":"string"},
+                    "op":{"type":"string","enum":["primitive","mesh","material"]},
+                    "target":{"type":"string"},
+                    "reason":{"type":"string"},
+                    "params":{"type":"object"}
+                },
+                "required":["id","op","target","reason","params"],
+                "additionalProperties":False}}
+        },
+        "required":["schema_version","asset_id","observed_defect",
+                    "design_intent","expected_visual_difference",
+                    "mobile_risks","asset_decision","art_approved","actions"],
+        "additionalProperties":False
+    }
     trial_root=out/"one-art-trial"/"cycle-1"
     trial_root.mkdir(parents=True,exist_ok=True)
     failures=[]
@@ -383,6 +430,18 @@ def main():
                 json.dumps(local_geom,ensure_ascii=False,separators=(",",":"))+
                 "\nSELECTED VERIFIED LESSONS:\n"+memory["prompt_fragment"]+
                 "\nFORMAL PLAN CONTRACT:\n"+typed_spec+
+                "\nPREVIOUS VALIDATION FAILURE THAT MUST NOT REPEAT: "
+                "Qwen generated three plans with op='geometry' which is "
+                "NOT a studio operation. Use action op='primitive' or "
+                "op='mesh' ONLY, with params.shape at the top level for "
+                "primitive, and target a NEW unique object name, NEVER "
+                "the imported original source object. "
+                "Another independent visual model suggested a staircase "
+                "platform and railing despite explicit NO-STAIRS protection. "
+                "That suggestion was REJECTED. Do not design a platform, "
+                "railing or corridor or assert staircase defects. "
+                "Create exactly TWO coherent connected wooden components "
+                "on the unobstructed lateral wall, free of entry/staircase.\n"
                 "\nREJECTIONS FROM PRIOR ATTEMPTS ON THIS COPY:\n"+
                 json.dumps(failures,ensure_ascii=False))
         message=[
@@ -393,9 +452,9 @@ def main():
           {"role":"user","content":content_prompt}
         ]
         req={
-           "model":"qwen3:14b","stream":False,"think":False,"format":"json",
+           "model":"qwen3:14b","stream":False,"think":False,"format":model_schema,
            "messages":message,
-           "options":{"temperature":0.22,"seed":20261015+attempt,
+           "options":{"temperature":0.32,"seed":20261026+attempt,
                       "num_ctx":16384,"num_predict":3600},"keep_alive":0}
         wire=json.dumps(req,ensure_ascii=False).encode("utf-8")
         started=time.monotonic()
@@ -419,6 +478,14 @@ def main():
             created=[x["target"] for x in actions[:2]]
             if len(set(created))!=2 or [x["target"] for x in actions[2:]]!=created:
                 raise RejectedPlan("MATERIALS_MUST_MATCH_TWO_DISTINCT_NEW_OBJECTS")
+            intention=(doc.get("design_intent","")+" "+
+                        doc.get("expected_visual_difference","")).casefold()
+            forbidden_intent=("plataforma","barandilla","pasillo elevado",
+                              "platform","railing","corridor",
+                              "conectar la escalera","nueva escalera")
+            if any(word in intention for word in forbidden_intent):
+                raise RejectedPlan(
+                    "AI_PLAN_PRESCRIBES_UNAUTHORIZED_STAIR_PLATFORM_NOT_WALL_JOINERY")
             verify_source_plan(doc,source_inventory)
             from architectural_world_placement_gate import _aabb_from_original_art
             spatial_gate={"components":[]}
