@@ -1,0 +1,118 @@
+name: Eldoria identical-Qwen-plan Blender direct vs installed MCP parity
+on:
+  push:
+    branches:
+      - diagnostic/valoria-ai-eyes-brain-20261015
+    paths:
+      - '.github/workflows/eldoria-artist-mcp-vs-direct-parity-20261015.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  pinned-direct-vs-mcp-real-blender:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 38
+    steps:
+      - name: Resolve preinstalled GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'PREINSTALLED_GIT_UNAVAILABLE'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          ref: 6e11bf237e6009b7eb8484bcba2f0def35a07b5c
+          path: studio
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-same-PC-original-Qwen-and-real-Blender-artwork
+          run-id: 38610802289
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-parity-frozen-qwen
+      - name: Preflight exact old Qwen plan, frozen source, real Blender and pinned addon
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $sha='e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'
+          if(-not (Test-Path $src)){throw 'FROZEN_SOURCE_MISSING'}
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sha){throw 'FROZEN_SOURCE_SHA_MISMATCH'}
+          $plan=Join-Path $env:RUNNER_TEMP 'eldoria-parity-frozen-qwen/artist-plan.json'
+          if(-not (Test-Path $plan)){throw 'ORIGINAL_QWEN_PLAN_ARTIFACT_NOT_DOWNLOADED'}
+          $exe=(Get-Command blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source)
+          if(-not $exe){$exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $exe){throw 'BLENDER_ON_PC_UNAVAILABLE'}
+          $lines=@(& $exe -b --python-exit-code 1 --python-expr "import addon_utils;mods=addon_utils.modules(refresh=True);m=next(x for x in mods if x.__name__=='blender_mcp');print('ELDORIA_PINNED_MCP_MODULE='+m.__file__)")
+          if($LASTEXITCODE -ne 0){throw 'PINNED_ADDON_NOT_INSTALLED'}
+          $line=@($lines|Where-Object {$_ -like 'ELDORIA_PINNED_MCP_MODULE=*'})|Select-Object -First 1
+          if(-not $line){throw 'PINNED_ADDON_NOT_RESOLVED'}
+          $addon=$line.Substring('ELDORIA_PINNED_MCP_MODULE='.Length).Trim()
+          $expected='eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5'
+          if((Get-FileHash $addon -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'PINNED_ADDON_SHA_MISMATCH'}
+          "ELDORIA_PARITY_BLENDER=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ELDORIA_PARITY_ADDON=$addon" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          python -m py_compile studio/tools/art-direction/full-studio/transport_parity_v1.py studio/tools/art-direction/full-studio/artist_loop.py studio/tools/art-direction/full-studio/blender_toolbox.py
+          if($LASTEXITCODE -ne 0){throw 'ARTIST_STUDIO_PRECHECK_FAILED'}
+          python -m pip install --disable-pip-version-check --quiet pillow
+          if($LASTEXITCODE -ne 0){throw 'FREE_PIL_UNAVAILABLE'}
+      - name: Run SAME SHA Qwen plan through direct then BlenderMCP on separate copies
+        shell: powershell
+        timeout-minutes: 30
+        run: |
+          $ErrorActionPreference='Stop'
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $plan=Join-Path $env:RUNNER_TEMP 'eldoria-parity-frozen-qwen/artist-plan.json'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-direct-vs-mcp-same-plan'
+          $argv=@('studio/tools/art-direction/full-studio/transport_parity_v1.py',
+            '--source',$src,
+            '--original-sha256','e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869',
+            '--plan',$plan,
+            '--reference','frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',
+            '--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
+            '--blender',$env:ELDORIA_PARITY_BLENDER,
+            '--mcp-addon',$env:ELDORIA_PARITY_ADDON,
+            '--mcp-sha256','eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5',
+            '--texture-root','studio',
+            '--out',$out)
+          & python @argv
+          if($LASTEXITCODE -ne 0){throw 'ACTUAL_DIRECT_VS_MCP_PARITY_FAILED_REVIEW_EVIDENCE'}
+      - name: Preserve source plan, Blender logs and both genuine independent run outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-direct-vs-mcp-same-plan-evidence
+          path: ${{ runner.temp }}/eldoria-direct-vs-mcp-same-plan/
+          if-no-files-found: warn
+          retention-days: 30
