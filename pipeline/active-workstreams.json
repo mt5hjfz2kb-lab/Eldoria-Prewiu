@@ -172,6 +172,26 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
+    },
+    {
+      "id": "eldoria-selective-memory-reviewed-resumption-20261015",
+      "title": "Explicit owner-requested normal-tool resubmission and real selective Qwen validation if approved",
+      "owner": "chat-selective-memory-resumption-20261015",
+      "branch": "diagnostic/valoria-ai-eyes-brain-20261015",
+      "scope": [
+        "tools/art-direction/director-control/brain_memory_selective_ab.py",
+        "tools/art-direction/director-control/test_selective_memory.py",
+        ".github/workflows/eldoria-brain-memory-ab.yml",
+        "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md",
+        "docs/evidence/ELDORIA_WRITE_REVIEW_INCIDENT_20261015.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-15T11:11:28Z",
+      "art_production_routing": "not_applicable",
+      "phase": "Submit directly through normal create_file review under owner's explicit request to retry; no alternate tool, renamed path, policy change or hidden execution",
+      "dependency": "Keep historical rejections and new literal outcomes. Stop on a fresh explicit denial. No Blender, Unity, original tower edit or production. Shared runner health showed no active job; use only bounded read-only Qwen diagnosis if the tool approves source."
     }
   ],
   "history": [
