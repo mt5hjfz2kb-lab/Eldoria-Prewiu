@@ -1,6 +1,6 @@
 // Conservative, pure eligibility gates for unattended GitHub Actions retries.
 // A chat/agent's lost connection cannot be detected reliably from Actions.
-export const TRANSIENT_INFRA = /(?:HTTP\\s*(?:502|503|504)\\b|(?:ECONNRESET|ETIMEDOUT|EAI_AGAIN|ENOTFOUND)\\b|runner (?:lost communication|was removed|disconnected unexpectedly)|GitHub (?:Actions|API) (?:temporarily unavailable|service unavailable))/i;
+export const TRANSIENT_INFRA = /(?:HTTP\s*(?:502|503|504)\b|(?:ECONNRESET|ETIMEDOUT|EAI_AGAIN|ENOTFOUND)\b|runner (?:lost communication|was removed|disconnected unexpectedly)|GitHub (?:Actions|API) (?:temporarily unavailable|service unavailable))/i;
 export function localNight(now, zone = 'Europe/Madrid', start = 22, end = 8) {
   const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: '2-digit', hourCycle: 'h23' }).format(new Date(now)));
   return start > end ? hour >= start || hour < end : hour >= start && hour < end;
@@ -21,6 +21,6 @@ export function checkRetry({ policy, track, owner, latest, branchSha, globalBusy
   if (failedJobs.length !== 1 || !failedJobs[0]?.id) return 'NOT_EXACTLY_ONE_FAILED_JOB';
   if (!TRANSIENT_INFRA.test(log || '')) return 'NOT_TRANSIENT_INFRA_FAILURE';
   // Treat source/script/asset failures as definitive, regardless of log also mentioning connectivity.
-  if (/(?:error CS\\d{4}|Traceback \\(most recent call last\\)|SyntaxError:|AssertionError:|No such file or directory|ART_APPROVED|quality threshold|Missing output:|shader compilation error)/i.test(log)) return 'SOURCE_OR_ART_ERROR';
+  if (/(?:error CS\d{4}|Traceback \(most recent call last\)|SyntaxError:|AssertionError:|No such file or directory|ART_APPROVED|quality threshold|Missing output:|shader compilation error)/i.test(log)) return 'SOURCE_OR_ART_ERROR';
   return 'ELIGIBLE';
 }
