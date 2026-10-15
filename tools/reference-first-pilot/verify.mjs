@@ -35,7 +35,7 @@ if (!manifest.dependencies['com.unity.render-pipelines.universal']) throw Error(
 const path = 'Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstPilotCapture.cs';
 const src = readFileSync(resolve(root, path), 'utf8');
 const rules = [
-  ['batch-only', /if \(!Application\.isBatchMode\)/],
+  ['batch-only', /if \(!(?:UnityEngine\.)?Application\.isBatchMode\)/],
   ['isolated-scene', /ReferenceFirstValoriaLookdev\.unity/],
   ['reference-size-width', /CaptureWidth\s*=\s*1536/],
   ['reference-size-height', /CaptureHeight\s*=\s*1024/],
