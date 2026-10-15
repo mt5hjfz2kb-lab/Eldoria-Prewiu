@@ -1,0 +1,73 @@
+name: "[ART GEO POLISH] Genuine CC0 rock face color grade for Valoria"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-scan-cliff-palette.yml'
+      - 'tools/valoria-modular-fortress/palette_grade_scanned_cliff.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-rockface-02-palette-a-b
+  cancel-in-progress: false
+jobs:
+  independent-scan-palette-study:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Find installed Git and Blender
+        shell: powershell
+        id: tools
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-real-cc0-geology-38825975637
+          run-id: 38825975637
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/palette-scan-cc0
+      - name: Native Blender photogrammetry-neutral and slate-purple palette A-B
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'palette-scan-cc0\eldoria-rockface-cc0-professional\glb'
+          $dst=Join-Path $env:RUNNER_TEMP 'eldoria-rockface-palette-02'
+          if(-not(Test-Path (Join-Path $src 'cliff_rock_column__rock_face_02.glb'))){throw "Scanned rock GLB missing"}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/palette_grade_scanned_cliff.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned palette test missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-scan-palette.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-scan-palette.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-scan-palette.err'
+          $proc=Start-Process -FilePath "${{ steps.tools.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$dst) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 40 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Scanned rock palette Blender failure $($proc.ExitCode)"}
+          $count=(Get-ChildItem (Join-Path $dst 'glb') -Filter '*.glb').Count
+          if($count -ne 2){throw "Expected two scan recolor options, got $count"}
+      - name: Archive only genuine source rock variations and photos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-rock-02-palette-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-rockface-palette-02/**
+            ${{ runner.temp }}/eldoria-scan-palette.log
+            ${{ runner.temp }}/eldoria-scan-palette.err
+          if-no-files-found: warn
+          retention-days: 30
