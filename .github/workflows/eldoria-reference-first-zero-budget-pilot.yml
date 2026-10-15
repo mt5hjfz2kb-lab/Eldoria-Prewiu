@@ -52,8 +52,8 @@ jobs:
             Unity/Packages
             Unity/ProjectSettings
             docs/evidence/reference-first-zero-budget-visual-pilot-20261015
-            art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb
-            art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb
+            art-source/valoria/production/bastion-family-v1
+            art-source/valoria/production/lower-gate-family-v1
           persist-credentials: true
       - name: Verify required Unity source without modifying or cleaning shared checkout
         shell: powershell
