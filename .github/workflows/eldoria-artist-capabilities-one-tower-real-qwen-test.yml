@@ -32,7 +32,7 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          ref: fa1338cc8119db535dbb855fd3c1afefe8edbc21
+          ref: 33a7959a9ed443982c27a3f850a23e2f503192fe
           path: studio
           persist-credentials: false
           filter: blob:none
@@ -143,7 +143,7 @@ jobs:
               '--asset-category','architecture',
               '--max-cycles','1',
               '--max-plan-attempts','2',
-              '--max-actions','2',
+              '--max-actions','3',
               '--max-tokens','1000',
               '--vision-max-edge','640',
               '--frozen-original-asset-sha256','e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869',
