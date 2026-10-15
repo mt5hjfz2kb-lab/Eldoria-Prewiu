@@ -221,6 +221,26 @@
         "unity_verified": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "independent-review-38652707944-qwen4b-floating-timber-roof-cube",
+      "run_id": 38652707944,
+      "evidence_artifact_id": 11935546466,
+      "raw_response_sha256": "afa5e624a8a10337fa2b110f8908cc73ef74008c3897ea02448af3ed14718f09",
+      "result": "INDEPENDENT_ART_REJECTED_FLOATING_COMPONENT",
+      "observed": "Qwen4B claimed there were no defects, but genuine same-camera PNGs display a detached 0.6 m cube floating 0.875 m beyond source WORLD Y bounds. It is a new spatial-composition defect. Pixel-change fraction 0.0338064 is visibility only, not aesthetic improvement.",
+      "safe_lesson": "Real source WORLD Y is [-1.325,1.325] metres. Adding an original primitive centered at Y=2.5 with half-size 0.3 leaves a 0.875m contact gap; don't claim roof attachment because a piece changes pixels or passes a loose scene AABB. Choose a fully new authored design with physically overlapping source world volume and real supporting geometry; preserve original tower and camera, no assistant auto placement.",
+      "review_provenance": {
+        "run_id": 38652707944,
+        "artifact_id": 11935546466,
+        "review_json_path": "tools/art-direction/full-studio/reviews/review-qwen4b-detached-38652707944.json",
+        "before_sha256": "6683aafbed132f80686f0f44914cadfbcda0782893cc5cadba12d9012da83cdc",
+        "after_sha256": "90385c66dac9b04cdf93f0e3a9a6161fe9481cd367a8193825fbfdffe960cf32",
+        "original_asset_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "accepted": false,
+        "art_approved": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
