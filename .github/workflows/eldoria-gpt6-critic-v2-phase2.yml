@@ -1,4 +1,4 @@
-name: Eldoria GPT6 Grounded Phase2 Replay On Verified Qwen Recognition
+name: Eldoria GPT6 Independent Delta V3 Replay On Verified Vision
 on:
   push:
     branches:
@@ -67,6 +67,8 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'NO_NUMPY_PIL'}
           python -m compileall -q 'studio/tools/art-direction/gpt6-tower-eval-20261015'
           if($LASTEXITCODE -ne 0){throw 'SCRIPT_SYNTAX'}
+          python -m unittest discover -v -s 'studio/tools/art-direction/gpt6-tower-eval-20261015' -p 'test_*.py'
+          if($LASTEXITCODE -ne 0){throw 'ART_RUBRIC_REGRESSION'}
           $env:PYTHONPATH='studio/tools/art-direction/gpt6-tower-eval-20261015'
           $raw=(Join-Path $env:RUNNER_TEMP 'eldoria-phase1-real/critic-v2-phase1.txt')
           $py=@'
@@ -118,7 +120,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-gpt6-phase2-corrected-vision-exact-r3
+          name: eldoria-gpt6-v3-independent-before-after-delta-exact-r3
           path: ${{ env.ELDORIA_REVIEW_OUT }}/
           if-no-files-found: warn
           retention-days: 30
