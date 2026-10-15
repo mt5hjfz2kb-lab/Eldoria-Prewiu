@@ -155,3 +155,26 @@ Ruta local sin GPT preparada: `hybrid_trial.py local --workshop frame --pack ...
 usa visión, memoria selectiva y Qwen locales; `compare` añade el brazo externo.
 Ninguna aprobación o encadenamiento sucede automáticamente. Esta ruta local
 queda implementada, no se presenta como autonomía artística ya validada.
+
+
+## Ensayo semántico real y corrección de integración
+
+Run 38788814637 / artifact 11999280949, ZIP SHA256
+3dd7880967cab17ca174d192246f5c9f562227f4c7879d515289057d2e9b965c.
+Qwen: dos planes fuera de rango (frame width .25/.30 m, height 2.5 m,
+section depth .06 m y lintel .05 m). El esquema estructurado no sustituyó
+comunicar los rangos numéricos en el mensaje. No corregir valores creativos.
+GPT: fallo de integración EXACT_SOURCE_FACE_MISSING, antes de construir.
+La causa es lectura Path.read_text() con codificación Windows predeterminada:
+el nombre fuente con punto medio se convierte en Â·. Se corrigen lecturas a
+UTF-8 explícito, sin renombrar objetos ni cambiar decisiones del modelo.
+Tiempo planificación local 81,234 s; total 85,687 s. Ningún candidato nuevo.
+
+Una última propuesta local acotada explicita dimensiones del conjunto completo
+frente a sección de viga. Si vuelve a fallar será la quinta propuesta local
+rechazada de esta estrategia: terminar la estrategia y conservar diagnóstico,
+no una sexta vuelta de parámetros. El revisor queda ciego al discurso autor.
+Se reconectan además los gates EXISTENTES de regiones protegidas y presencia
+visual al adaptador. Aplicados sobre las imágenes auténticas de la primera
+prueba: puerta 0,046 % cambiado, escalera 0 %; impacto global 3,45428 %.
+Son protección/visibilidad, no una aprobación artística.

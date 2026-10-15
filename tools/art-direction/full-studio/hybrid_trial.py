@@ -14,6 +14,8 @@ from artist_loop import request_ollama, observe_source_with_vl, image_data
 from joinery_contract import validate
 from selective_memory import recall_context
 import timber_frame_skill
+from protected_camera_regions import inspect_protected_regions
+from screen_impact import screen_impact
 
 BRIEF=('Improve the architectural craftsmanship and readable front framing of '
  'this existing timber watchtower in the fixed camera, toward the owner Valoria '
@@ -45,7 +47,7 @@ def schema_like(value):
             'required':list(value),'additionalProperties':False}
 
 def common_schema():
-    example=json.loads((HERE.parent/'gpt6-tower-eval-20261015/gpt6-joinery-plan-r3.json').read_text())
+    example=json.loads((HERE.parent/'gpt6-tower-eval-20261015/gpt6-joinery-plan-r3.json').read_text(encoding="utf8"))
     s=schema_like(example);props=s['properties']
     props['schema_version']={'type':'integer','const':1}
     props['members'].update(minItems=2,maxItems=12)
@@ -63,7 +65,7 @@ def prepare(a):
     source=a.out/'source/normalized-source.glb'
     blender(a.blender,HERE/'inspect_source.py',['--source',source,'--review',a.review,
       '--out',a.out/'inspection'],a.out/'inspection.log')
-    inspection=a.out/'inspection';inv=json.loads((inspection/'source-inspection.json').read_text())
+    inspection=a.out/'inspection';inv=json.loads((inspection/'source-inspection.json').read_text(encoding="utf8"))
     args=SimpleNamespace(vision_model=a.vision_model,model=a.model,endpoint=a.endpoint)
     obs=observe_source_with_vl(args,a.reference,inspection/'source-preview-blender.png',
           [inspection/'source-top-blender.png',inspection/'source-side-blender.png'],'',a.out)
@@ -84,7 +86,7 @@ def prepare(a):
     (a.out/'common-context.sha256').write_text(sha(a.out/'common-context.json')+'\n')
 
 def compare(a):
-    pack=a.pack;context=json.loads((pack/'common-context.json').read_text())
+    pack=a.pack;context=json.loads((pack/'common-context.json').read_text(encoding="utf8"))
     if a.mode=='compare' and a.external_context_sha256!=sha(pack/'common-context.json'):
         raise ValueError('EXTERNAL_DIRECTOR_DID_NOT_ACKNOWLEDGE_EXACT_COMMON_CONTEXT')
     source=pack/'source/normalized-source.glb'
@@ -100,7 +102,7 @@ def compare(a):
     a.out.mkdir(parents=True,exist_ok=False)
     messages=[{'role':'system','content':'You are a timber architectural artist. Return only original JSON using the provided workshop schema. No self approval. /no_think'},
       {'role':'user','content':json.dumps({k:v for k,v in context.items() if k!='schema'},ensure_ascii=False)+
-       (('\nFrame skill: post_offsets_m are your chosen tangent offsets from the source face center, each must fit strictly inside your lintel. bottom_z_m is WORLD Z. Choose a wall face, not roof or stairs. Joint arithmetic is handled by the tool. All source geometry stays intact.') if frame_mode else '\nWorkshop physical rules: member IDs start Eldoria_. size each axis .025..6m; bevel .001..min(size)/4. '
+       (('\nFrame skill dimensions describe the WHOLE frame, not one beam: width_m .6..2.5 metres, height_m .6..2.3 metres, bottom_z_m 0..1.2; post_width_m .06.. .22, depth_m .08.. .22, lintel_height_m .09.. .24, surface_offset_m -.02.. .05 and bevel_m .002.. .012. Do not use a .25m whole frame or a 2.5m frame height: both are rejected. post_offsets_m are your chosen tangent offsets from the source face center, each must fit strictly inside your lintel. bottom_z_m is WORLD Z. Choose a wall face, not roof or stairs. Joint arithmetic is handled by the tool. All source geometry stays intact.') if frame_mode else '\nWorkshop physical rules: member IDs start Eldoria_. size each axis .025..6m; bevel .001..min(size)/4. '
        'Every post top equals joint center Z minus tenon height/2, tolerance .008m. '
        'Tenon sizes each .015.. .30m; socket is .002.. .015m larger in every axis. '
        'Mortise center enters bottom of its lintel but stops .005m below top. '
@@ -109,7 +111,7 @@ def compare(a):
     put(a.out/'submitted-local-context.json',{'model':a.model,'messages':messages,'schema':context['schema'],
         'common_context_sha256':sha(pack/'common-context.json')})
     t=time.monotonic();rejections=[];local=None
-    for attempt in range(1,3):
+    for attempt in range(1,a.max_plan_attempts+1):
         put(a.out/f'submitted-local-context-{attempt}.json',{'model':a.model,
             'messages':messages,'schema':context['schema'],
             'common_context_sha256':sha(pack/'common-context.json')})
@@ -123,7 +125,7 @@ def compare(a):
             messages=messages+[{'role':'assistant','content':raw},{'role':'user','content':'Plan rejected: '+str(e)+'. Revise your own plan, no guessing.'}]
     planning_seconds=round(time.monotonic()-t,3)
     rows=[]
-    arms=([('external',json.loads(a.external_plan.read_text()))] if a.mode=='compare' else [])+[('local',local)]
+    arms=([('external',json.loads(a.external_plan.read_text(encoding="utf8")))] if a.mode=='compare' else [])+[('local',local)]
     for label,plan in arms:
         if plan is None:
             rows.append({'director':label,'state':'PLAN_REJECTED','rejections':rejections});continue
@@ -132,8 +134,17 @@ def compare(a):
         try:
             elapsed=blender(a.blender,(HERE/'frame_skill_blender.py' if frame_mode else HERE.parent/'gpt6-tower-eval-20261015/joinery_blender.py'),
                 ['--plan',planpath,'--source',source,'--review',a.review,'--out',dest],a.out/(label+'-blender.log'))
-            proof=json.loads((dest/'workshop-proof.json').read_text())
-            contact=json.loads((dest/'actual-mesh-contact.json').read_text())
+            proof=json.loads((dest/'workshop-proof.json').read_text(encoding="utf8"))
+            contact=json.loads((dest/'actual-mesh-contact.json').read_text(encoding="utf8"))
+            protected=inspect_protected_regions(dest/'before-blender.png',dest/'after-blender.png',a.review)
+            impact=screen_impact(dest/'before-blender.png',dest/'after-blender.png')
+            put(dest/'protected-camera-regions.json',protected)
+            put(dest/'camera-screen-impact.json',impact)
+            if not contact.get('actual_surface_contact_all_new_components') or not protected['allowed'] or not impact['visually_present']:
+                rows.append({'director':label,'state':'TECHNICAL_VISUAL_REJECTED',
+                    'proof':proof,'contact':contact,'protected':protected,'screen_impact':impact,
+                    'plan_sha256':sha(planpath),'blender_seconds':elapsed})
+                continue
             # Existing intent critic sees true rendered pixels; cannot promote.
             critic_schema={'type':'object','properties':{k:{'type':'string'} for k in
                 ('visible_change','architectural_benefit','regressions','style_gap','uncertainty','verdict')},
@@ -162,6 +173,7 @@ def main():
     p.add_argument('--blender',required=True);p.add_argument('--model',default='qwen3:14b')
     p.add_argument('--vision-model',default='qwen3-vl:8b-instruct-q4_K_M')
     p.add_argument('--endpoint',default='http://127.0.0.1:11434/api/chat')
+    p.add_argument('--max-plan-attempts',type=int,choices=(1,2),default=2)
     p.add_argument('--workshop',choices=('explicit','frame'),default='explicit')
     p.add_argument('--external-context-sha256',help='SHA of the exact prepared pack inspected by the external director')
     a=p.parse_args();prepare(a) if a.mode=='prepare' else compare(a)

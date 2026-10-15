@@ -14,6 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   original-qwen-artist-verified-tower-copy:
+    if: ${{ !contains(github.event.head_commit.message, '[no-art-run]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 48
     steps:
@@ -152,7 +153,7 @@ jobs:
               if($LASTEXITCODE -ne 0){throw 'EXACT_HYBRID_CONTEXT_PREPARATION_FAILED'}
             }
             if($request.mode -eq 'compare'){
-              python $script compare --workshop frame --pack (Join-Path $env:RUNNER_TEMP ('eldoria-hybrid-prepared-'+$env:GITHUB_RUN_ID+'/pack')) --reference $reference --review $review --blender $env:ELDORIA_BLENDER_BIN --external-plan 'studio/tools/art-direction/full-studio/hybrid-external-plan.json' --external-context-sha256 $request.external_context_sha256 --out (Join-Path $out 'comparison')
+              python $script compare --max-plan-attempts 1 --workshop frame --pack (Join-Path $env:RUNNER_TEMP ('eldoria-hybrid-prepared-'+$env:GITHUB_RUN_ID+'/pack')) --reference $reference --review $review --blender $env:ELDORIA_BLENDER_BIN --external-plan 'studio/tools/art-direction/full-studio/hybrid-external-plan.json' --external-context-sha256 $request.external_context_sha256 --out (Join-Path $out 'comparison')
               if($LASTEXITCODE -ne 0){throw 'COMPARISON_EXECUTION_FAILED'}
             }
             if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_SOURCE_CHANGED'}

@@ -25,7 +25,7 @@ def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(a.source.resolve()))
     meshes=studio.snapshot_meshes();uv=uv_snapshot()
-    review=json.loads(a.review.read_text())
+    review=json.loads(a.review.read_text(encoding="utf8"))
     studio.render_setup(review['render']);studio.camera_override(review['camera'])
     studio.ensure_review_lighting();studio.ensure_review_stage()
     bpy.context.scene.cycles.seed=0
