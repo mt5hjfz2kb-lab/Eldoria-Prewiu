@@ -86,8 +86,8 @@ def source_artist_action_schema(objects):
             {"source":enum(names),
              "start_face":{"type":"integer","enum":camera_proven_faces},
              "end_face":{"type":"integer","enum":camera_proven_faces},
-             "width_m":{"type":"number","minimum":0.06,"maximum":0.45},
-             "depth_m":{"type":"number","minimum":0.06,"maximum":0.45}},
+             "width_m":{"type":"number","minimum":0.10,"maximum":0.45},
+             "depth_m":{"type":"number","minimum":0.10,"maximum":0.45}},
             ["source","start_face","end_face","width_m","depth_m"])
     safe_brush=conservative_schema_bounds(objects)
     anchor_distance=(safe_brush["distance"] if safe_brush else {"minimum":0.65,"maximum":1.8})
