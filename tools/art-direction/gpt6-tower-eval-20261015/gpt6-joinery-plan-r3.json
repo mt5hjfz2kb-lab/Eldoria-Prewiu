@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "asset_id": "valoria_tower_gpt6_real_timber_joinery_workshop_r3_20261015",
+  "art_approved": false,
+  "source": "Valoria_Tower_CohV1.glb frozen; never edit source",
+  "camera": "fixed original Valoria orthographic source review",
+  "design_intent": "Original aesthetic experiment on timber tower: improve fabrication realism with two slim weathered frame posts, a lower-roof lintel, hidden mortise-tenon seats and visible wooden pegs. Artist chooses WORLD positions and material colour; all geometry is actual Blender mesh; no source roof or stair modifications.",
+  "wood_color_rgba": [
+    0.37,
+    0.215,
+    0.117,
+    1
+  ],
+  "members": [
+    {
+      "id": "Eldoria_GPT6_R3_LeftFramePost",
+      "center_m": [
+        -0.78,
+        -0.951,
+        1.1975
+      ],
+      "size_m": [
+        0.122,
+        0.122,
+        1.315
+      ],
+      "edge_bevel_m": 0.009
+    },
+    {
+      "id": "Eldoria_GPT6_R3_RightFramePost",
+      "center_m": [
+        0.51,
+        -0.951,
+        1.1975
+      ],
+      "size_m": [
+        0.122,
+        0.122,
+        1.315
+      ],
+      "edge_bevel_m": 0.009
+    },
+    {
+      "id": "Eldoria_GPT6_R3_FrontLintel",
+      "center_m": [
+        -0.135,
+        -0.951,
+        1.91
+      ],
+      "size_m": [
+        1.42,
+        0.122,
+        0.11
+      ],
+      "edge_bevel_m": 0.008
+    }
+  ],
+  "joints": [
+    {
+      "kind": "mortise_tenon",
+      "axis": "Z",
+      "tenon_member": "Eldoria_GPT6_R3_LeftFramePost",
+      "socket_member": "Eldoria_GPT6_R3_FrontLintel",
+      "center_m": [
+        -0.78,
+        -0.951,
+        1.895
+      ],
+      "tenon_size_m": [
+        0.074,
+        0.074,
+        0.08
+      ],
+      "socket_size_m": [
+        0.082,
+        0.082,
+        0.088
+      ],
+      "peg": {
+        "center_m": [
+          -0.78,
+          -1.019,
+          1.9
+        ],
+        "radius_m": 0.014,
+        "length_m": 0.07
+      }
+    },
+    {
+      "kind": "mortise_tenon",
+      "axis": "Z",
+      "tenon_member": "Eldoria_GPT6_R3_RightFramePost",
+      "socket_member": "Eldoria_GPT6_R3_FrontLintel",
+      "center_m": [
+        0.51,
+        -0.951,
+        1.895
+      ],
+      "tenon_size_m": [
+        0.074,
+        0.074,
+        0.08
+      ],
+      "socket_size_m": [
+        0.082,
+        0.082,
+        0.088
+      ],
+      "peg": {
+        "center_m": [
+          0.51,
+          -1.019,
+          1.9
+        ],
+        "radius_m": 0.014,
+        "length_m": 0.07
+      }
+    }
+  ]
+}
