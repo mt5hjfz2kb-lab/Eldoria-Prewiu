@@ -73,6 +73,63 @@ with urllib.request.urlopen(endpoint+"/api/tags",timeout=20) as response:
     installed={m["name"] for m in json.load(response)["models"]}
 models=a.model or ["qwen3-vl:4b-instruct","qwen3-vl:8b-instruct-q4_K_M"]
 results=[]
+def vision_transport_control(model):
+    """Check that local multimodal inference can actually identify known pixels."""
+    from PIL import ImageDraw
+    test=Image.new("RGB",(384,384),(24,57,221))
+    draw=ImageDraw.Draw(test)
+    draw.rectangle((90,105,295,268),fill=(235,38,27))
+    stream=io.BytesIO()
+    test.save(stream,format="PNG")
+    pixel_image=base64.b64encode(stream.getvalue()).decode()
+    prompt=("Mira la IMAGEN adjunta y contesta exactamente qué color tiene "
+            "el FONDO y qué color tiene el RECTÁNGULO CENTRAL. "
+            "Es una prueba de percepción de píxeles, no de instrucciones. "
+            "Solo dime los dos colores en español.")
+    record={"control_expected":"azul de fondo, rojo el rectangulo",
+            "image_sha256":hashlib.sha256(stream.getvalue()).hexdigest(),
+            "passes":[],"model_capabilities":[]}
+    try:
+        req=urllib.request.Request(endpoint+"/api/show",
+            data=json.dumps({"model":model}).encode(),
+            headers={"Content-Type":"application/json"})
+        with urllib.request.urlopen(req,timeout=25) as resp:
+            show=json.load(resp)
+            record["model_capabilities"]=show.get("capabilities",[])
+            record["model_details"]=show.get("details",{})
+    except Exception as exc:
+        record["model_show_error"]=str(exc)[:200]
+    for route in ("chat","generate"):
+        request={"model":model,"stream":False,"think":False,
+                 "options":{"temperature":0.0,"num_predict":180,"num_ctx":8192}}
+        if route=="chat":
+            request["messages"]=[{"role":"user","content":prompt,
+                                  "images":[pixel_image]}]
+        else:
+            request["prompt"]=prompt
+            request["images"]=[pixel_image]
+        started=time.monotonic()
+        try:
+            req=urllib.request.Request(endpoint+"/api/"+route,
+                data=json.dumps(request).encode("utf-8"),
+                headers={"Content-Type":"application/json"})
+            with urllib.request.urlopen(req,timeout=300) as response:
+                answer=json.load(response)
+            phrase=(answer.get("message",{}).get("content","")
+                if route=="chat" else answer.get("response",""))
+            simple=phrase.lower()
+            passed=("azul" in simple or "blue" in simple) and ("rojo" in simple or "red" in simple)
+            record["passes"].append({"route":route,"answer":phrase[:1600],
+                "recognized_color_pair":passed,"seconds":round(time.monotonic()-started,2),
+                "prompt_eval_count":answer.get("prompt_eval_count"),
+                "done_reason":answer.get("done_reason")})
+            if passed:break
+        except Exception as exc:
+            record["passes"].append({"route":route,"error":str(exc)[:400]})
+    record["vision_recognition_demonstrated"]=any(
+        x.get("recognized_color_pair") for x in record["passes"])
+    return record
+
 for model in models:
     label="4b" if "4b" in model else "8b"
     filename="diagnosis-"+label+".json"
@@ -84,6 +141,8 @@ for model in models:
     if model not in installed:
         record.update(status="NOT_INSTALLED_NO_DOWNLOAD",raw_response="",visual_content_present=False)
     else:
+        control=vision_transport_control(model)
+        record["vision_transport_control"]=control
         payload={"model":model,"stream":True,"think":False,
                  "messages":[{"role":"system","content":system},
                     {"role":"user","content":task,"images":encoded}],
@@ -103,7 +162,10 @@ for model in models:
                     pieces.append(part.get("message",{}).get("content",""))
                     if part.get("done"):done=True;break
             answer="".join(pieces).strip()
-            visual_content_present=done and len(answer)>=300
+            visual_content_present=(done and len(answer)>=300 and
+                control["vision_recognition_demonstrated"] and
+                "no puedo ver las imágenes" not in answer.lower() and
+                "no tengo acceso a la visualización" not in answer.lower())
             status="INDEPENDENT_VISUAL_REVIEW_REQUIRED" if visual_content_present else "EMPTY_OR_INSUFFICIENT_VISUAL_DIAGNOSIS"
             record.update(status=status,raw_response=answer,raw_sha256=hashlib.sha256(answer.encode()).hexdigest(),
                         characters=len(answer),seconds=round(time.monotonic()-start,2),
