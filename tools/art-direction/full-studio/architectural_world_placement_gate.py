@@ -109,7 +109,16 @@ def reject_obviously_bad_component_placement(plan,source_objects):
         lo[i]<=low[i]+boundary_margin[i] or hi[i]>=high[i]-boundary_margin[i]
         for i in range(3)
     )
-    if not reaches_exterior:
+    # AABB is the enclosing BOX of the entire inherited building, not its
+    # solid wall. A source-face-to-source-face beam can correctly occupy roof/
+    # wall AIR SPACE entirely inside this box. Rejecting it here was a false
+    # positive (#38780427364): two genuine camera-ray-hit original surfaces.
+    # Keep the coarse buried check for primitives/handwritten meshes, but
+    # defer anchored beams to the ACTUAL Blender mesh-surface contact + fixed-
+    # camera visibility/access checks. This never auto-approves an art piece.
+    beam_measured_surface_exception=(action["op"]=="beam_between_faces"
+                                     and first is not None and second is not None)
+    if not reaches_exterior and not beam_measured_surface_exception:
         raise RejectedPlan("NEW ARCHITECTURE IS COMPLETELY BURIED INSIDE source WORLD bounds; "
                            "cannot be camera-visible structural addition. Rechoose YOUR "
                            "OWN source-attached exterior location and dimensions, no automatic repositioning.")
