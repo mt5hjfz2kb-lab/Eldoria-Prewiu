@@ -1,4 +1,4 @@
-> **ESTADO VIGENTE 15-10-2026:** recuperación operativa y comparación Qwen selectiva COMPLETADAS. Run 38726028141: sin memoria 32/32, completa 31/32, selectiva 32/32; 96 inferencias reales y datos brutos verificados/preservados en Git. Cero regresiones selectivas de decisión en esta muestra, no superioridad sobre baseline ni autorización artística. El checkpoint actual sustituye los antiguos siguientes pasos BLOCKED/RUNNING que quedan como historia. Producción pausada.
+> **ESTADO VIGENTE 15-10-2026:** recuperación operativa y comparación diagnóstica Qwen selectiva COMPLETADAS. Run 38726028141: sin memoria 32/32, completa 31/32, selectiva 32/32; 96 inferencias reales y respuestas brutas preservadas en Git. Se evita la regresión one_mesh frente a memoria completa y se iguala el baseline. No hay superioridad general demostrada ni aprobación artística. Producción pausada.
 
 # ELDORIA — Inicio de conversación: descubrimiento técnico obligatorio
 
@@ -45,22 +45,28 @@
 - Si una operación recibe una denegación explícita de seguridad, **no** repetirla con nombres, rutas, API o herramientas equivalentes para eludir el control. Conservar evidencia, continuar únicamente trabajo independiente permitido y concretar qué autorización o intervención externa falta. No afirmar que el bloqueo ha desaparecido.
 - No presentar «trabajo terminado» hasta obtener el resultado de aceptación de la misión. Si hay bloqueo genuino, distinguir claramente avance parcial y validación pendiente. Estas reglas no amplían permisos ni autorizan usar Windows o reanudar arte.
 
-## Recuperación reproducible y estado estructurado (2026-10-15)
+## Recuperación reproducible del estado actual
 
-El siguiente bloque es el checkpoint **dentro de este arranque existente**, no un segundo registro. Actualizarlo tras una interrupción relevante; conservar el informe diagnóstico y los artefactos originales. `SESSION_HANDOFF.md` y `PROJECT_STATE.md` están reservados por otro workstream y sus cabeceras antiguas no sustituyen el HEAD de la rama diagnóstica.
+Este es el arranque existente, no un segundo registro. La información operativa vigente está en el checkpoint único inferior; las versiones anteriores de este documento quedan conservadas en Git y en el informe diagnóstico como historia.
 
-1. Descubrir el inventario ACTUAL de herramientas de la sesión; llamar una lectura real de GitHub. Inventario ≠ conexión verificada. Nunca dar por herendada una capacidad.
-2. Leer este archivo desde `main`, la orden vigente en `main/AGENTS.md`, HEAD vivo de la rama del checkpoint y el informe diagnóstico de ESA rama. Un 404 del bootstrap en una rama antigua exige consultar `main`, no reconstruirlo.
-3. Con checkout, ejecutar `node tools/eldoria-agent-preflight.mjs --root RUTA_REPO`. Opcional: `--tool-inventory RUTA_JSON` recibe un array JSON de nombres de herramientas actuales (o `{"tools":[...]}`); no tokens ni credenciales. Emite automáticamente pendiente, diferencias del inventario y estado de entradas. Sin checkout puede recuperarse el mismo checkpoint por conector y leer los blobs exactos.
-4. Comparar SHA de entrada ANTES de repetir gates. Solo reutilizar el alcance de la prueba acreditada si la entrada coincide; fuente ausente o distinta requiere evaluación focalizada, nunca inventar PASS ni ejecutar todo de nuevo.
-5. Consultar `GET /repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs?branch=diagnostic%2Fvaloria-ai-eyes-brain-20261015&per_page=30` y los `jobs`/`artifacts` pertinentes mediante GitHub. Distinguir job completado, en cola y ejecutándose. La lista `/actions/runners` fue rechazada por el conector como endpoint no permitido: no equivale a runner offline.
-6. Para Windows, el último método real fue PowerShell del workflow A/B: Git preinstalado en GitHub Desktop → checkout → evidencia congelada → Ollama instalado (arranque solo si necesario, en el mismo paso) → Qwen3 14B → artefacto aun con gate rojo. No extraer credenciales del PC ni crear un puente paralelo. `git ls-remote https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git HEAD` funcionó como lectura pública; el proxy `git.chatgpt-team.site` pidió credenciales ausentes. Lectura pública no prueba push.
-7. Si una herramienta antes expuesta desaparece, registrar `UNAVAILABLE_IN_THIS_SESSION` para esa interfaz y conservar su historial. Sin inventario, reportar `NOT_TESTED`. Un servicio histórico siempre requiere prueba actual en el host correcto antes de `CONNECTED_NOW`.
-8. Antes de nuevos jobs, comprobar permisos de ejecución, SHA, pausa y concurrencia. Un rerun usa código original y NO prueba el selector. El benchmark actual no ofrece parámetro/callback/tercera condición selectiva; extenderlo con contenido equivalente al rechazado sigue bloqueado. La falta de dispatch es independiente del rechazo de seguridad.
-9. Resolver primero el `next_action` del checkpoint. Mientras siga bloqueado, continuar solo labores independientes autorizadas. Para desbloquear, hace falta revisión/resolución externa de los rechazos; otro nombre, ruta, API, inline script o modificación del benchmark no son soluciones permitidas.
-10. Al recuperar una interrupción, registrar rama/HEAD recién leído, último run/job/artefacto, gate y paso pendiente. No prometer que otros chats leerán automáticamente este archivo ni que una documentación puede garantizar acceso permanente de la plataforma.
+1. Descubrir las herramientas ACTUALES y hacer una lectura real de GitHub. Inventario solo acredita exposición; no prueba autenticación ni ejecución.
+2. Leer main/AGENTS.md, este bootstrap y HEAD vivo de la rama indicada. Leer después la cabecera y conclusión vigente del informe de ESA rama. Un 404 de bootstrap en una rama antigua exige consultar main.
+3. Con checkout: `node tools/eldoria-agent-preflight.mjs --root RUTA_REPO --tool-inventory RUTA_JSON`. Inventario opcional: array JSON de nombres actuales o `{"tools":[...]}`, sin secretos. Emite siguiente paso y comparación de blobs; sin inventario marca NOT_TESTED. Con solo conector, recuperar el mismo checkpoint mediante lectura del archivo.
+4. Comparar las cuatro entradas del checkpoint antes de reutilizar gates. Si coinciden, no repetir el mismo benchmark ni las 13 comprobaciones de selector. Si faltan o cambian, recuperar los blobs y revisar únicamente el gate afectado; no inferir PASS.
+5. **Estado actual completado:** run 38726028141 / job 116391981342 / fuente a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c terminó SUCCESS. No hay run pendiente que observar ni revisión externa necesaria para ESTE ensayo ya ejecutado. Recuperar el artefacto 11967828291 o el ZIP exacto preservado en Git y su informe, sin lanzar otro job.
+6. **Ruta Windows probada:** GitHub Actions push-trigger existente en rama diagnóstica → PowerShell en DESKTOP-R10PE55 → Git preinstalado de GitHub Desktop → evidencia congelada → Ollama instalado, iniciado localmente en el mismo paso solo si hace falta → Qwen3 14B → artefacto. No existe terminal Windows directa expuesta aquí. Falta de dispatch callable no significa falta de ejecución por push. El inventario de salud existente es `.github/workflows/eldoria-local-director-inventory.yml`, run verificado 38722927795.
+7. Para una NUEVA prueba autorizada, leer pausa/claims y cola antes de usar el recurso. `GET /repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs?branch=diagnostic%2Fvaloria-ai-eyes-brain-20261015&per_page=30`, después jobs/artifacts. Para HEAD usar `/git/ref/heads/diagnostic/valoria-ai-eyes-brain-20261015`. El endpoint /actions/runners fue rechazado por el conector; no implica runner offline. Un job histórico tampoco certifica salud permanente.
+8. Los dos rechazos antiguos siguen documentados sin causa original recuperada. Después de la petición explícita del propietario de volver a presentar la operación, la MISMA herramienta create_file aceptó la MISMA ruta original del benchmark, commit 9bd2ae06da7df716de3b3fbc27dc7298d6cd2158. No se alteraron permisos/controles ni se usaron rutas alternativas. Esta aceptación permitió el ensayo completado. No propagar el bloqueo histórico como impedimento actual de ese ensayo; tampoco autoriza sortear una nueva denegación.
+9. Detectar interfaces desaparecidas comparando inventario actual y capabilities: ausencia => UNAVAILABLE_IN_THIS_SESSION para esa interfaz, conservando el historial; inventario ausente => NOT_TESTED. Revalidar siempre en el host correcto. Localhost Linux no es el PC. Git público por terminal funcionó; el proxy git.chatgpt-team.site pidió credenciales ausentes. No buscar/extráer credenciales; lectura pública no prueba push.
+10. **Siguiente paso actual:** preservar resultados y pausa; esperar nuevo alcance autorizado del propietario. No reanudar arte, Bastión I, 4X, Unity o publicación a partir de este resultado diagnóstico. No afirmar entrenamiento de pesos, superioridad sobre baseline ni ART_APPROVED. No prometer que otros chats lean automáticamente cambios del repositorio.
 
-**Prueba independiente:** ejecutar el preflight en un proceso nuevo y repetir con un inventario al que se retire GitHub. Debe conservar el pendiente, marcar las interfaces ausentes y NO declarar Windows online ni lanzar un job. Una prueba de agente sin historial puede limitarse a leer este bootstrap y resolver el siguiente paso; ninguna de estas pruebas valida Qwen selectivo ni equivale a una nueva sesión real del usuario.
+### Comprobaciones efectuadas del propio procedimiento
+
+- Seis escenarios del preflight: contexto/proceso nuevo y cwd distinto; GitHub ausente; inventario inválido/ausente; input cambiado/ausente; checkpoint malformado/ausente; conservación de pausa/limitaciones.
+- La ejecución final recuperó estado COMPLETED, siguiente paso vigente y cuatro blobs coincidentes, sin fingir una nueva comprobación Windows local.
+- Un agente sin historial reconstruyó resultados y verificó por llamadas reales run/job/artefacto; encontró prosa antigua, que se reconcilió aquí. Esta prueba no equivale a una nueva sesión real del usuario ni garantiza credenciales futuras.
+- `SESSION_HANDOFF.md` y `PROJECT_STATE.md` permanecen reservados por otros trabajos. Sus cabeceras históricas no reactivan tareas frente a la orden vigente de main.
+- La comparación son 32 preguntas, una semilla y una ejecución por condición. Es evidencia de no regresión de decisión en esa muestra, no una garantía universal.
 
 <!-- ELDORIA_RECOVERY_CHECKPOINT_START -->
 ```json
@@ -254,19 +260,3 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
 }
 ```
 <!-- ELDORIA_RECOVERY_CHECKPOINT_END -->
-
-## Comprobación real posterior del PC — 15-10-2026 12:49 Europe/Madrid
-
-**El PC sí respondió ahora**: [run 38722927795](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38722927795) SUCCESS, job `116381681682`, `DESKTOP-R10PE55`. PowerShell ejecutado, Ollama 0.40.2 respondió y `qwen3:14b` está instalado; RTX 3060 12.288 MiB. Esta prueba no arrancó Blender ni realizó inferencias, descargas o producción. El servicio puede cerrarse al terminar si lo inició la prueba.
-
-**Ruta recuperable sin dispatch directo:** el workflow EXISTENTE `.github/workflows/eldoria-local-director-inventory.yml` tiene push-trigger en la rama diagnóstica y solo inspecciona el PC/modelos. Para una nueva comprobación de salud autorizada, inspeccionar versión actual, concurrencia y permisos; una actualización acotada y legítima de sus metadatos de diagnóstico puede disparar la prueba. Seguir el run del SHA exacto hasta fin y leer el artefacto. No repetir todo el benchmark ni suponer que la falta de dispatch equivale a falta de ejecución.
-
-No usar este workflow para incorporar la condición selectiva rechazada ni para ejecutar código equivalente a las dos escrituras bloqueadas. La recuperación de conectividad **no** levanta esos rechazos.
-
-Permisos GitHub consultados: ajuste específico `Allow all actions`; lecturas y escrituras actuales funcionan. No se cambiaron permisos. Ese ajuste no anula controles de seguridad de plataforma ni explica por sí solo los rechazos previos.
-
-## Reanudación aceptada posteriormente — 15-10-2026
-
-Esta nota y el checkpoint RUNNING sustituyen el siguiente paso de revisión externa para el benchmark. Tras la petición explícita del propietario de volver a presentar las operaciones, la herramienta normal `create_file` aceptó crear `tools/art-direction/director-control/brain_memory_selective_ab.py` en su **ruta original** (commit `9bd2ae06da7df716de3b3fbc27dc7298d6cd2158`). No se cambiaron permisos ni nombres ni herramientas, ni se desactivó revisión. No sabemos el motivo de los rechazos antiguos y esta aceptación no autoriza repetir una operación que reciba una nueva denegación.
-
-El workflow existente de memoria ahora ejecuta la comparación aceptada: run `38726028141`, job `116391981342`, Windows `DESKTOP-R10PE55`. Leer el checkpoint y observar ESE run, no iniciar otro ni volver a pedir al propietario permisos generales. Son 96 inferencias con respuestas API/modelo completas, solicitudes/hashes, selecciones y guardado parcial por respuesta. La torre y la producción siguen intactas. Los resultados originales se conservan. No marcar PASS antes de recuperar y evaluar el artefacto.
