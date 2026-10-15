@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-14",
+  "updated_at": "2026-10-15",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-14",
@@ -172,6 +172,26 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
+    },
+    {
+      "id": "reference-first-zero-budget-visual-pilot-20261015",
+      "title": "Pilot Valoria reference-first: asset reuse and standalone Unity art scene",
+      "owner": "chat-reference-first-zero-budget-pilot-20261015",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/**",
+        "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/**",
+        "tools/reference-first-pilot/**"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-10-15",
+      "base_main_sha": "aa1a642ed32f6840dec1bd46929fd9163ce0ef2b",
+      "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+      "art_production_routing": "isolated-lookdev-only-no-promotion",
+      "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact.",
+      "dependency": "Valoria production, world4x, Bastion1 and Windows runner remain under other claims; do not edit their paths, launch heavy Windows or publish.",
+      "phase": "Reference analysis and isolated Unity editor capture builder; no art approval asserted",
+      "next": "Create scene-only nonproduction capture tool with existing models, stage same-camera PNG, and evaluate image against approved reference after compatible runner is available."
     }
   ],
   "history": [
