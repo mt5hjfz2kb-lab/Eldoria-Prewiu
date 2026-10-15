@@ -457,6 +457,52 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
     return any(any(label in reason for label in labels) for reason in rejection_reasons)
 
 
+def observe_source_with_vl(args,reference,current_image,spatial_views,role,trial):
+    """Dedicated genuine VISION stage for a text-only Qwen14B art director.
+
+    Evidence is frozen per cycle, never re-inferred per plan retry. No guessed
+    image captions and no substitution of style reference for source material.
+    """
+    path=trial/"vision-source-observation.json"
+    if path.is_file():
+        return json.loads(path.read_text(encoding="utf-8"))
+    if not args.vision_model or not current_image:
+        raise RuntimeError("TEXT_DIRECTOR_REQUIRES_REAL_BLENDER_VISION")
+    frames=[current_image]+list(spatial_views or [])[:2]
+    for frame in frames:
+        if not frame.is_file():
+            raise FileNotFoundError("REAL_SOURCE_CAMERA_FRAME_REQUIRED: "+str(frame))
+    schema={"type":"object","additionalProperties":False,"properties":{
+        "source_material":{"type":"string","minLength":12},
+        "source_architecture":{"type":"string","minLength":20},
+        "supported_defect":{"type":"string","minLength":25},
+        "candidate_attachment_surfaces":{"type":"string","minLength":25},
+        "protected_access_roof_stairs":{"type":"string","minLength":20},
+        "uncertainties":{"type":"string","minLength":12}},
+        "required":["source_material","source_architecture","supported_defect",
+                    "candidate_attachment_surfaces","protected_access_roof_stairs","uncertainties"]}
+    actual_images=[image_data(frame,640) for frame in frames]
+    prompt=("Describe the ACTUAL inherited building visible in these genuine Blender "
+        "camera renders, not an imaginary target asset. In order: current hero view, "
+        "WORLD overhead, WORLD side. Do not infer unseen timber/stone, missing roof "
+        "or precise XYZ. Report material, one visible defect worth improving, "
+        "candidate attachment surfaces and protected stairs/door/roof. "
+        "If no demonstrable defect, explicitly say so. All geometric facts "
+        "and face IDs are authoritative only from the separate Blender inventory. "
+        "No art approval and no invented view. JSON only.")
+    result=json.loads(request_ollama(args.endpoint,args.vision_model,
+        [{"role":"system","content":"Independent local visual observer; only visual facts in supplied Blender images."},
+         {"role":"user","content":prompt,"images":actual_images}],400,timeout=420,schema=schema))
+    proof={"vision_model":args.vision_model,"director_model":args.model,
+           "source_camera_sha256":[sha(frame) for frame in frames],
+           "style_reference_sha256":sha(reference),
+           "camera_views":len(frames),"source_image_observed":True,
+           "director_image_input":False,"visual_observation":result,
+           "art_approved":False}
+    path.write_text(json.dumps(proof,indent=2,ensure_ascii=False)+"\\n",encoding="utf-8")
+    return proof
+
+
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None,source_inventory=None,spatial_views=None,
              prior_invisible_signatures=None,excluded_source_ops=None):
@@ -624,8 +670,22 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         for frame in spatial_views:
             if not frame.is_file():raise FileNotFoundError("Real Blender spatial camera image missing: "+str(frame))
             pictures.append(image_data(frame,edge))
-    actual_messages=[{"role":"system","content":role},
-                     {"role":"user","content":msg,"images":pictures}]
+    if getattr(args,"vision_model",None):
+        # Qwen14B is TEXT ONLY. The separate local Qwen-VL model sees the
+        # genuine source pixels and produces a SHA-bound textual observation.
+        # Never pass images directly to the 14B director or label it visual.
+        observed=observe_source_with_vl(args,reference,current_image,spatial_views,role,trial)
+        msg+=("\\nVERIFIED SOURCE CAMERA OBSERVATION BY SEPARATE QWEN-VL: "+
+              json.dumps(observed["visual_observation"],ensure_ascii=False)+
+              "\\nThis text is a grounded but fallible visual interpretation; "
+              "only Blender's measured geometry/anchors verify world XYZ. "
+              "You, the Qwen14B ART DIRECTOR, must choose geometry, tool, "
+              "face IDs and numeric dimensions yourself.")
+        actual_messages=[{"role":"system","content":role[:4200]},
+                         {"role":"user","content":msg}]
+    else:
+        actual_messages=[{"role":"system","content":role},
+                         {"role":"user","content":msg,"images":pictures}]
     actual_schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,
                     known_objects,source_inventory,args.source_tool_sequencing,
                     args.source_build_phase,cycle_index if args.source_build_phase else 0,
@@ -636,7 +696,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     (trial/("actual-qwen-context-attempt-"+str(attempt_number)+".json")).write_text(
         json.dumps({"context_sha256":hashlib.sha256(submitted).hexdigest(),
                     "model":args.model,"includes_original_owner_reference":True,
-                    "includes_real_inspected_blender_images":bool(current_image),
+                    "includes_real_inspected_blender_images":bool(current_image) and not bool(getattr(args,"vision_model",None)),
+                    "images_seen_by_separate_vl":bool(getattr(args,"vision_model",None)),
+                    "text_director_only":bool(getattr(args,"vision_model",None)),
                     "journal_and_cases_in_message":bool(memory),
                     "source_history_characters":len(history),
                     "note":"Exact submitted content+images+schema hashed in memory, no image bytes forged"},indent=2)+"\n")
@@ -751,7 +813,7 @@ def critique(args,reference,before,after,role,plan=None):
                 'visible_change_observed':{'type':'string','minLength':8},
                 'plan_vs_geometry_reason':{'type':'string','minLength':12}})
             critique_schema['required'] += ['intent_alignment','visible_change_observed','plan_vs_geometry_reason']
-        txt=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
+        txt=request_ollama(args.endpoint,args.vision_model or args.model,[{"role":"system","content":role},
          {"role":"user","content":instruction,"images":[image_data(reference,getattr(args,"vision_max_edge",1024)),
                        image_data(before,getattr(args,"vision_max_edge",1024)),
                        image_data(after,getattr(args,"vision_max_edge",1024))]}],350,timeout=420,schema=critique_schema)
@@ -806,6 +868,7 @@ def main():
     p.add_argument("--asset-catalog",type=pathlib.Path)
     p.add_argument("--out",type=pathlib.Path,required=True)
     p.add_argument("--model",default="qwen3-vl:4b-instruct")
+    p.add_argument("--vision-model",help="Separate actual camera observer and review model; e.g. local qwen3-vl:8b-instruct-q4_K_M with text director qwen3:14b")
     p.add_argument("--endpoint",default="http://127.0.0.1:11434/api/chat")
     p.add_argument("--blender",default="blender")
     p.add_argument("--transport",choices=("direct","blendermcp"),default="direct")
@@ -837,6 +900,8 @@ def main():
     p.add_argument("--frozen-original-asset-sha256",
                    help="Original immutable tower SHA, necessary when continuing accepted outputs")
     args=p.parse_args()
+    if args.vision_model and args.model == args.vision_model:
+        raise ValueError("TEXT_DIRECTOR_AND_VISION_REVIEW_MUST_BE_SEPARATE_MODELS")
     if args.multi_component_assembly and (not args.source_build_phase
                                         or not args.source_tool_sequencing
                                         or args.max_actions<3):
