@@ -1,11 +1,14 @@
 {
   "schema_version": 1,
   "enabled": true,
-  "mode": "prepare",
+  "mode": "compare",
   "owner_authorization": "2026-10-15 hybrid consolidation: isolated frozen copies only, zero paid services; Unity/Bastion/4X/publication paused",
   "owner_branch": "diagnostic/valoria-ai-eyes-brain-20261015",
   "hypothesis": "Restore exact source atlas by Unity GUID, then compare complete timber assemblies through the same workshop/schema",
   "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
   "atlas_sha256": "139f70a56e475755347b4fcaf4c8640f209b7b49133047d00c3b1f11de277f5c",
-  "art_approved": false
+  "art_approved": false,
+  "external_context_sha256": "60a7081bf870e74326035a1e716b23447fb42c74108b71464c983098e029cdc0",
+  "prepared_run": 38786948113,
+  "prepared_artifact": 11997163937
 }

@@ -84,6 +84,8 @@ def prepare(a):
 
 def compare(a):
     pack=a.pack;context=json.loads((pack/'common-context.json').read_text())
+    if a.external_context_sha256!=sha(pack/'common-context.json'):
+        raise ValueError('EXTERNAL_DIRECTOR_DID_NOT_ACKNOWLEDGE_EXACT_COMMON_CONTEXT')
     source=pack/'source/normalized-source.glb'
     if sha(source)!=context['source_sha256'] or sha(a.reference)!=context['reference_sha256'] or sha(a.review)!=context['review_sha256']:
         raise ValueError('EXACT_COMPARISON_INPUT_CHANGED')
@@ -127,7 +129,7 @@ def compare(a):
                {'role':'user','content':'Images: BEFORE, AFTER, destination STYLE. Identify visible benefit or harm. Distinguish material recovery from added geometry. '+plan.get('design_intent',''),
                 'images':[image_data(dest/'before-blender.png',640),image_data(dest/'after-blender.png',640),image_data(a.reference,640)]}],650,timeout=420,schema=critic_schema)
             (dest/'independent-vl-raw.json').write_text(raw,encoding='utf8')
-            rows.append({'director':label,'state':'ART_REVIEW_REQUIRED','blender_seconds':elapsed,
+            rows.append({'director':label,'state':'ART_REVIEW_REQUIRED' if contact.get('actual_surface_contact_all_new_components') else 'SPATIAL_REJECTED','blender_seconds':elapsed,
                 'proof':proof,'contact_all_new':contact.get('actual_surface_contact_all_new_components'),
                 'plan_sha256':sha(planpath),'critic':json.loads(raw)})
         except Exception as e:
@@ -145,5 +147,6 @@ def main():
     p.add_argument('--blender',required=True);p.add_argument('--model',default='qwen3:14b')
     p.add_argument('--vision-model',default='qwen3-vl:8b-instruct-q4_K_M')
     p.add_argument('--endpoint',default='http://127.0.0.1:11434/api/chat')
+    p.add_argument('--external-context-sha256',help='SHA of the exact prepared pack inspected by the external director')
     a=p.parse_args();prepare(a) if a.mode=='prepare' else compare(a)
 if __name__=='__main__':main()

@@ -69,6 +69,21 @@ jobs:
             Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
             references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
           sparse-checkout-cone-mode: false
+      - name: Read bounded hybrid request
+        id: request
+        shell: powershell
+        run: |
+          $r=Get-Content 'studio/pipeline/artist-hybrid-trial-request.json' -Raw | ConvertFrom-Json
+          if(-not $r.enabled){throw 'REQUEST_DISABLED'}
+          "mode=$($r.mode)" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - name: Recover exact shared observation pack, never regenerate between directors
+        if: steps.request.outputs.mode == 'compare'
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-hybrid-workshop-evidence
+          run-id: 38786948113
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-hybrid-prepared-${{ github.run_id }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -132,10 +147,12 @@ jobs:
               '--atlas','studio/Unity/Assets/EmaceArt/Slavic World Free/Texture/EA03_FREE_Slavica.png',
               '--reference',$reference,'--review',$review,'--blender',$env:ELDORIA_BLENDER_BIN,
               '--out',(Join-Path $out 'pack'))
-            & python @argv
-            if($LASTEXITCODE -ne 0){throw 'EXACT_HYBRID_CONTEXT_PREPARATION_FAILED'}
+            if($request.mode -eq 'prepare'){
+              & python @argv
+              if($LASTEXITCODE -ne 0){throw 'EXACT_HYBRID_CONTEXT_PREPARATION_FAILED'}
+            }
             if($request.mode -eq 'compare'){
-              python $script compare --pack (Join-Path $out 'pack') --reference $reference --review $review --blender $env:ELDORIA_BLENDER_BIN --external-plan 'studio/tools/art-direction/full-studio/hybrid-external-plan.json' --out (Join-Path $out 'comparison')
+              python $script compare --pack (Join-Path $env:RUNNER_TEMP ('eldoria-hybrid-prepared-'+$env:GITHUB_RUN_ID+'/pack')) --reference $reference --review $review --blender $env:ELDORIA_BLENDER_BIN --external-plan 'studio/tools/art-direction/full-studio/hybrid-external-plan.json' --external-context-sha256 $request.external_context_sha256 --out (Join-Path $out 'comparison')
               if($LASTEXITCODE -ne 0){throw 'COMPARISON_EXECUTION_FAILED'}
             }
             if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_SOURCE_CHANGED'}

@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "asset_id": "valoria_frozen_tower_hybrid_external_complete_front_frame",
+  "art_approved": false,
+  "source": "Normalized exact original 8a77d244b0434faeec1d4430b6194ffddd17234bfda20bedbe83e382c0a01632; original frozen SHA remains unchanged",
+  "camera": "fixed original Valoria orthographic source review",
+  "design_intent": "After observing the exact textured hero/top/side source, improve front structural hierarchy with a complete ground-reaching timber frame. The existing horizontal log facade reads as an undifferentiated slab beneath a broad roof. Two slightly broader end posts and one lintel add a clear load path, craft and depth without a new tower or blocking the side entry/stairs. Hidden mortises are fabrication only, not visible quality evidence. The VL statement that no topology is missing is not visually verifiable and is not treated as a fact. Target remains Valoria; this single intervention is not claimed to reach 8/10.",
+  "wood_color_rgba": [
+    0.3,
+    0.19,
+    0.095,
+    1
+  ],
+  "members": [
+    {
+      "id": "Eldoria_Hybrid_External_LeftFramePost",
+      "center_m": [
+        -0.78,
+        -0.951,
+        0.975
+      ],
+      "size_m": [
+        0.15,
+        0.15,
+        1.87
+      ],
+      "edge_bevel_m": 0.009
+    },
+    {
+      "id": "Eldoria_Hybrid_External_RightFramePost",
+      "center_m": [
+        0.51,
+        -0.951,
+        0.975
+      ],
+      "size_m": [
+        0.15,
+        0.15,
+        1.87
+      ],
+      "edge_bevel_m": 0.009
+    },
+    {
+      "id": "Eldoria_Hybrid_External_FrontLintel",
+      "center_m": [
+        -0.135,
+        -0.951,
+        1.985
+      ],
+      "size_m": [
+        1.48,
+        0.165,
+        0.15
+      ],
+      "edge_bevel_m": 0.008
+    }
+  ],
+  "joints": [
+    {
+      "kind": "mortise_tenon",
+      "axis": "Z",
+      "tenon_member": "Eldoria_Hybrid_External_LeftFramePost",
+      "socket_member": "Eldoria_Hybrid_External_FrontLintel",
+      "center_m": [
+        -0.78,
+        -0.951,
+        1.955
+      ],
+      "tenon_size_m": [
+        0.08,
+        0.08,
+        0.09
+      ],
+      "socket_size_m": [
+        0.088,
+        0.088,
+        0.098
+      ],
+      "peg": {
+        "center_m": [
+          -0.78,
+          -1.035,
+          1.955
+        ],
+        "radius_m": 0.012,
+        "length_m": 0.12
+      }
+    },
+    {
+      "kind": "mortise_tenon",
+      "axis": "Z",
+      "tenon_member": "Eldoria_Hybrid_External_RightFramePost",
+      "socket_member": "Eldoria_Hybrid_External_FrontLintel",
+      "center_m": [
+        0.51,
+        -0.951,
+        1.955
+      ],
+      "tenon_size_m": [
+        0.08,
+        0.08,
+        0.09
+      ],
+      "socket_size_m": [
+        0.088,
+        0.088,
+        0.098
+      ],
+      "peg": {
+        "center_m": [
+          0.51,
+          -1.035,
+          1.955
+        ],
+        "radius_m": 0.012,
+        "length_m": 0.12
+      }
+    }
+  ]
+}
