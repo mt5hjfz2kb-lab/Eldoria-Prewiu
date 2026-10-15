@@ -27,7 +27,12 @@ def digest(data):
     return hashlib.sha256(data if isinstance(data,bytes) else data.encode("utf-8")).hexdigest()
 
 def local_json(path):
-    return json.loads(pathlib.Path(path).read_text(encoding="utf-8-sig"))
+    # Historical Qwen-VL artifact 38699407600 appends literal ASCII backslash+n
+    # AFTER the final JSON brace. Preserve its raw bytes for SHA, decode only.
+    raw=pathlib.Path(path).read_text(encoding="utf-8-sig").strip()
+    if raw.endswith("\\n"):
+        raw=raw[:-2].rstrip()
+    return json.loads(raw)
 
 def ask_local(model,prompt):
     payload={
