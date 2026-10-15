@@ -53,7 +53,12 @@ jobs:
             })
             $smi=Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
             $gpu=if($smi){@(& $smi.Source --query-gpu=name,memory.total --format=csv,noheader,nounits)}else{@()}
-            $manifest=@{schema_version=1;mode='READ_ONLY_DISCOVERY';
+            $version=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 10
+            $manifest=@{schema_version=2;mode='READ_ONLY_DISCOVERY';
+              observed_utc=(Get-Date).ToUniversalTime().ToString('o');
+              runner_name=$env:RUNNER_NAME;runner_os=$env:RUNNER_OS;
+              ollama_version=$version.version;
+              qwen3_14b_installed=('qwen3:14b' -in @($tags.models | ForEach-Object {$_.name}));
               previously_installed_models=$selected;gpu_information=$gpu;
               new_models_downloaded=0;models_trained=0;art_approved=$false;
               model_comparison_not_assumed=$true}
