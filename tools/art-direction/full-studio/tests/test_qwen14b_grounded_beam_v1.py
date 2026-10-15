@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from test_contract import good
 from contract import RejectedPlan,validate_plan
-from artist_capabilities_v1 import capability_catalog
+from artist_capabilities_v1 import capability_catalog, grounded_beam_pair_facts
 from professional_source_schema import source_artist_action_schema
 from source_geometry_gate import verify_source_plan
 from architectural_component_guard import verify_volume_and_complexity
@@ -83,6 +83,18 @@ class Qwen14BGroundedBeamTests(unittest.TestCase):
         self.assertEqual(props["start_face"]["enum"],[31,92])
         self.assertEqual(props["end_face"]["enum"],[31,92])
         self.assertNotIn(0,props["start_face"]["enum"])
+
+    def test_genuine_beam_pairs_are_not_artistic_preset(self):
+        ob=original()
+        ob["camera_visible_face_landmarks"][1]["world_center_m"]=[.18,1.05,2.9]
+        pairs=grounded_beam_pair_facts([ob],limit=9)
+        self.assertEqual(len(pairs),1)
+        self.assertEqual(len(pairs[0]["candidate_pairs"]),1)
+        q=pairs[0]["candidate_pairs"][0]
+        self.assertEqual((q["start_face"],q["end_face"]),(31,92))
+        self.assertGreater(q["distance_m"],.75)
+        self.assertFalse(pairs[0]["art_approved"])
+        self.assertFalse(pairs[0]["geometry_prescribed"])
 
     def test_distinct_local_models_and_actual_picture_bytes(self):
         from PIL import Image
