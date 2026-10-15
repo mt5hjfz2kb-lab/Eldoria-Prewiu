@@ -92,8 +92,8 @@ def validate_plan(doc):
             require(all(type(x) is int and x >= 0 for x in indices)
                     and indices[0]!=indices[1],
                     "Beam requires two different source face IDs")
-            require(finite_number(p.get("width_m"),0.06,0.45)
-                    and finite_number(p.get("depth_m"),0.06,0.45),
+            require(finite_number(p.get("width_m"),0.10,0.45)
+                    and finite_number(p.get("depth_m"),0.10,0.45),
                     "Beam profile must be tangible and physically bounded")
             require(name not in created,"Beam name shadows another authored mesh")
             created.add(name);geometric+=1
