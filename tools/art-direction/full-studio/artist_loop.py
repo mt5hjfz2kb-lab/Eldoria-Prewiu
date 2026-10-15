@@ -731,6 +731,7 @@ def summarize_real_artist_cycles(records):
     """
     executed={"ART_REVIEW_REQUIRED", "SCREENSPACE_REJECTED",
               "PROTECTED_ACCESS_OCCLUSION_REJECTED",
+              "ACTUAL_MESH_CONTACT_REJECTED",
               "BLENDER_VISUAL_ACCEPTED","ART_REJECTED"}
     return {
         "real_blender_execution_count":sum(rec.get("status") in executed for rec in records),
@@ -965,6 +966,28 @@ def main():
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
+        if getattr(args,"multi_component_assembly",False) and source:
+            actual_mesh_proof=result.get("actual_mesh_surface_contact")
+            if (not actual_mesh_proof or
+                not actual_mesh_proof.get("verified") or
+                not actual_mesh_proof.get("actual_surface_contact_all_new_components")):
+                (trial/"real-blender-surface-contact-rejected.json").write_text(
+                    json.dumps({"status":"ACTUAL_MESH_CONTACT_REJECTED",
+                        "plan_sha256":sha(candidate),
+                        "actual_mesh_surface_contact":actual_mesh_proof,
+                        "art_approved":False},indent=2)+"\n",
+                    encoding="utf-8")
+                records.append({"cycle":cycle,"status":"ACTUAL_MESH_CONTACT_REJECTED",
+                                "actual_mesh_surface_contact":actual_mesh_proof,
+                                "art_approved":False})
+                invisible_plan_signatures.add(executed_action_signature(doc))
+                history+=("\nINDEPENDENT NATIVE BLENDER GEOMETRIC CONTACT REJECTED: "+
+                          json.dumps(actual_mesh_proof,ensure_ascii=False)[:3500]+
+                          " Source AABB overlap is insufficient; Qwen must "
+                          "design an ORIGINAL timber composition touching "
+                          "actual wood MESH SURFACE, not an empty corner of "
+                          "the source bounding box. Do not repeat plan.")
+                continue
         if source and args.phase=="full" and verified_objects:
             baseline=result.get("baseline_evaluated_triangles")
             after=result.get("evaluated_triangles")
@@ -1145,6 +1168,7 @@ def main():
             history+="\\nFIRST CYCLE WAS BLOCKOUT ONLY: source geometry now exists. For this second cycle choose actual higher-level Blender finishing operations (mesh editing, material, UV, bevel, surface/node work) guided by the real render and reference. No preset values."
     rejected_count=sum(rec.get("status") in (
             "SCREENSPACE_REJECTED","PROTECTED_ACCESS_OCCLUSION_REJECTED",
+            "ACTUAL_MESH_CONTACT_REJECTED",
             "MOBILE_MESH_DENSITY_REJECTED","BLENDER_REJECTED","ART_REJECTED")
                        for rec in records)
     if rejected_count>=5 and not accepted_chain:
