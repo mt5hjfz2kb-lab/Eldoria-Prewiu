@@ -51,7 +51,7 @@ def reject_obviously_bad_component_placement(plan,source_objects):
     tolerance=min(.06,max(.015,min(span)*.02))
     if any(g>tolerance for g in gap):
         raise RejectedPlan(
-            "NO_SOURCE_CONTACT_AABB: New artist-made structure is detached "
+            "NO_SOURCE_CONTACT_AABB: New artist-made structure is disconnected and detached "
             "from the existing real Valoria tower WORLD bounds; "
             "axis_gaps_m="+str([round(g,4) for g in gap])+
             ", allowed_tolerance_m="+str(round(tolerance,4))+
