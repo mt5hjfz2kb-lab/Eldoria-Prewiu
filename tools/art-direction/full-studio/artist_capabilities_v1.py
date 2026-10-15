@@ -132,6 +132,7 @@ def visual_intent_payload(*, original_reference, before_png, after_png, plan):
     substitute for visual perception or camera-matching evidence.
     """
     strict_preflight_plan(plan)
+    from PIL import Image
     images = {}
     for role, path in (("reference", original_reference),
                        ("before", before_png), ("after", after_png)):
@@ -141,8 +142,13 @@ def visual_intent_payload(*, original_reference, before_png, after_png, plan):
         content = p.read_bytes()
         if content[:8] != bytes.fromhex("89504e470d0a1a0a") and content[:3] != bytes.fromhex("ffd8ff"):
             raise ValueError("NOT_A_REAL_PNG_OR_JPEG: " + role)
+        with Image.open(p) as decoded:
+            size = list(decoded.size)
+            decoded.verify()
         images[role] = {"sha256": hashlib.sha256(content).hexdigest(),
-                        "path": str(p), "bytes": len(content)}
+                        "path": str(p), "bytes": len(content), "size": size}
+    if images["before"]["size"] != images["after"]["size"]:
+        raise ValueError("BEFORE_AFTER_RESOLUTION_MISMATCH")
     if images["before"]["sha256"] == images["after"]["sha256"]:
         raise ValueError("BEFORE_AFTER_IMAGES_IDENTICAL")
     return {"images": images, "intent": {
