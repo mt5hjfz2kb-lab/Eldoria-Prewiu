@@ -1,0 +1,33 @@
+name: "[PILOT] V4 canonical visual source preflight (Ubuntu only)"
+on:
+  push:
+    branches: [prototype/reference-first-zero-budget-visual-pilot-20261015]
+    paths:
+      - '.github/workflows/reference-first-v4-static-source.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/eldoria-reference-first-zero-budget-pilot.yml
+            Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor
+            Unity/Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png
+            Unity/Assets/Eldoria/Resources/Valoria/Stone_Wall.prefab
+            Unity/Assets/Eldoria/Resources/Valoria/Stone_Tower.prefab
+            Unity/Assets/Eldoria/Resources/WorldInventory/Tree01A.prefab
+            Unity/Assets/Eldoria/Resources/WorldInventory/Rock01.prefab
+            docs/evidence/reference-first-zero-budget-visual-pilot-20261015/CANONICAL_USER_REFERENCE_V3.md
+            tools/reference-first-pilot/check-v4.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Assert V4 reference fidelity, isolated execution and real reuse sources
+        run: node tools/reference-first-pilot/check-v4.mjs
