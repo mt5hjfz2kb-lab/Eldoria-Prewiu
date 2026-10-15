@@ -1,0 +1,83 @@
+name: "[ART MASONRY] Individually repair 12-step staircase and stone bridge"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-stairs-bridge-two.yml'
+      - 'tools/valoria-modular-fortress/stone_bridge_staircase_v5.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-stone-stairbridge-independent
+  cancel-in-progress: false
+jobs:
+  finish-two-individual-assets:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Native Blender and Git
+        shell: powershell
+        id: exes
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Missing Git'}
+            $dir=Split-Path $git;Add-Content $env:GITHUB_PATH $dir;$env:PATH="$dir;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Missing Blender'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/two-architecture-base
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-38823501643
+          run-id: 38823501643
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/two-architecture-texture
+      - name: Native Blender individual stair and bridge authoring
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'two-architecture-base\eldoria-upgrade63\glb'
+          $tex=Join-Path $env:RUNNER_TEMP 'two-architecture-texture'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-stair-and-bridge-v5'
+          if(-not(Test-Path (Join-Path $src 'staircase_flight_12.glb'))){throw 'Original stairs missing'}
+          if(-not(Test-Path (Join-Path $tex 'rock_3_diffuse.jpg'))){throw 'CC0 material source missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/stone_bridge_staircase_v5.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned source not found'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-two-architecture-v5.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-two-architecture.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-two-architecture.err'
+          $proc=Start-Process -FilePath "${{ steps.exes.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$tex,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 75 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 35 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender failed $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $c=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($c -ne 2){throw "Expected 2 $folder, got $c"}
+          }
+      - name: Preserve only individual module evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-two-architecture-module-v5-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-stair-and-bridge-v5/**
+            ${{ runner.temp }}/eldoria-two-architecture.log
+            ${{ runner.temp }}/eldoria-two-architecture.err
+          retention-days: 30
+          if-no-files-found: warn
