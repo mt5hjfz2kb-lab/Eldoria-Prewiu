@@ -1,0 +1,42 @@
+name: Eldoria ChatGPT reference-led barracks isolated Blender study
+on:
+  push:
+    branches: [diagnostic/chatgpt-cuartel-reference-20261015]
+    paths:
+      - tools/chatgpt-cuartel-proof/**
+      - .github/workflows/eldoria-chatgpt-cuartel-study.yml
+permissions:
+  contents: write
+concurrency:
+  group: chatgpt-cuartel-isolated-20261015
+  cancel-in-progress: false
+jobs:
+  isolated-blender:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Blender on isolated hosted Linux
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1
+      - name: Build ChatGPT-authored asset and actual Blender renders
+        env:
+          OMP_NUM_THREADS: 4
+        run: |
+          blender -b -t 4 --python tools/chatgpt-cuartel-proof/build.py
+          test -s art-studies/chatgpt-cuartel-20261015/evidence.json
+          test -s art-studies/chatgpt-cuartel-20261015/cuartel-hero.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chatgpt-cuartel-real-blender-study
+          path: art-studies/chatgpt-cuartel-20261015/
+          retention-days: 30
+      - name: Preserve only isolated study outputs on this branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-studies/chatgpt-cuartel-20261015/
+          git commit -m "evidence: actual ChatGPT barracks Blender asset and three real camera renders"
+          git push origin HEAD:diagnostic/chatgpt-cuartel-reference-20261015
