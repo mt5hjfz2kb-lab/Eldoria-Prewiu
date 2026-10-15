@@ -24,10 +24,9 @@ let performed=false;
 let problems=0;
 let globalBusy=true;
 try{
-  const page=await request('/actions/runs?per_page=100');
-  // Fail closed if pagination could conceal another running job.
-  globalBusy=(page.workflow_runs||[]).some(x=>['in_progress','queued','pending','waiting','requested'].includes(x.status))
-    || (page.workflow_runs||[]).length===100;
+  const states=['in_progress','queued','pending','waiting','requested'];
+  const pages=await Promise.all(states.map(s=>request('/actions/runs?status='+s+'&per_page=100')));
+  globalBusy=pages.some(p=>p.total_count>0 || (p.workflow_runs||[]).length===100);
 }catch(e){problems++;findings.push({track:'global',result:'CANNOT_VERIFY_RUNNER_IDLE',error:e.message});}
 for(const track of policy.tracks){
   const row={track:track.id,branch:track.branch,checked_at:now,dry_run:dryRun};
@@ -63,8 +62,8 @@ for(const track of policy.tracks){
       else{
         // Reconfirm exact branch HEAD and no concurrent work before mutating any job.
         const after=await request('/branches/'+track.branch.split('/').map(encodeURIComponent).join('/'));
-        const busy=await request('/actions/runs?per_page=100');
-        if(after.commit.sha!==branch.commit.sha||(busy.workflow_runs||[]).some(x=>['in_progress','queued','pending','waiting','requested'].includes(x.status))||(busy.workflow_runs||[]).length===100){
+        const busyPages=await Promise.all(['in_progress','queued','pending','waiting','requested'].map(s=>request('/actions/runs?status='+s+'&per_page=100')));
+        if(after.commit.sha!==branch.commit.sha||busyPages.some(p=>p.total_count>0||(p.workflow_runs||[]).length===100)){
           row.result='PRE_DISPATCH_RACE_STOP';
         }else{
           await request('/actions/jobs/'+row.job_id+'/rerun',{method:'POST'});
