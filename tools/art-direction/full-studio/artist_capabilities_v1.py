@@ -17,6 +17,14 @@ from contract import OPS, RejectedPlan, validate_plan
 # Every allowed operation below already exists in contract.OPS and
 # blender_toolbox.run_action; Qwen determines target, location and dimensions.
 ARCHITECTURAL_SKILLS = {
+    "timber_bracing_and_joinery": {
+        "purpose": "For verified timber buildings: roof-edge fascia, slender bracing, beam joints and real contact with existing wooden structures.",
+        "operations": ("mesh", "primitive", "extrude", "bevel", "boolean", "modifier", "material"),
+    },
+    "timber_roof_and_eaves": {
+        "purpose": "For verified timber roofs: thin sloped fascia, eaves, rafter supports and coherent shingles without disturbing original UV atlases.",
+        "operations": ("mesh", "primitive", "extrude", "bevel", "modifier", "material"),
+    },
     "masonry_and_parapet": {
         "purpose": "Improve the inherited wall rhythm, masonry depth and parapet.",
         "operations": ("extrude", "inset", "bevel", "sculpt", "modifier", "material"),
@@ -76,6 +84,14 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
         + ". Each skill is a design goal. Choose the exact supported operation(s), "
         "actual inspected source object(s), parameters and composition yourself. "
         "Never use skill names or invented 'geometry' as executable op. "
+        "Before choosing an architectural skill, identify the ACTUAL "
+        "source material from genuine source-camera images. A wooden log or "
+        "timber tower is NOT stone masonry: do not invent limestone buttresses "
+        "or stone weathering if no stone exists. The owner STYLE reference is "
+        "not the same as the inherited source's material. For timber fascia "
+        "or roof braces choose your OWN elongated slender connected geometry "
+        "rather than a floating cubic block. New objects use Blender WORLD "
+        "metres and WORLD +Z is up; a local GLB axis is not WORLD XYZ. "
         "FIRST author exactly the structural action count required by the "
         "live schema. An op=sculpt with params.delta=[0,0,0] is not sculpting: "
         "it changes ZERO inherited vertices and is rejected by the actual "
