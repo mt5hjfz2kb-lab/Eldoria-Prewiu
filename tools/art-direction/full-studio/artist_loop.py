@@ -499,7 +499,7 @@ def observe_source_with_vl(args,reference,current_image,spatial_views,role,trial
            "camera_views":len(frames),"source_image_observed":True,
            "director_image_input":False,"visual_observation":result,
            "art_approved":False}
-    path.write_text(json.dumps(proof,indent=2,ensure_ascii=False)+"\\n",encoding="utf-8")
+    path.write_text(json.dumps(proof,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     return proof
 
 
@@ -675,9 +675,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         # genuine source pixels and produces a SHA-bound textual observation.
         # Never pass images directly to the 14B director or label it visual.
         observed=observe_source_with_vl(args,reference,current_image,spatial_views,role,trial)
-        msg+=("\\nVERIFIED SOURCE CAMERA OBSERVATION BY SEPARATE QWEN-VL: "+
+        msg+=("\nVERIFIED SOURCE CAMERA OBSERVATION BY SEPARATE QWEN-VL: "+
               json.dumps(observed["visual_observation"],ensure_ascii=False)+
-              "\\nThis text is a grounded but fallible visual interpretation; "
+              "\nThis text is a grounded but fallible visual interpretation; "
               "only Blender's measured geometry/anchors verify world XYZ. "
               "You, the Qwen14B ART DIRECTOR, must choose geometry, tool, "
               "face IDs and numeric dimensions yourself.")
