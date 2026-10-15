@@ -1,0 +1,115 @@
+name: Eldoria GPT6 Joinery Workshop And Two-Phase Grounded Critic
+on:
+  push:
+    branches:
+      - diagnostic/gpt6-vs-qwen-valoria-tower-20261015
+    paths:
+      - '.github/workflows/eldoria-gpt6-joinery-grounded-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  test-real-mortise-tenon-and-critic:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 29
+    steps:
+      - name: Reuse existing GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'PREINSTALLED_GIT_MISSING'}
+            $folder=Split-Path $git;$env:PATH="$folder;$env:PATH";Add-Content $env:GITHUB_PATH $folder
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: studio
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/gpt6-tower-eval-20261015
+            tools/art-direction/full-studio
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test joinery specification and adversarial two-phase critic
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m pip install --quiet pillow
+          if($LASTEXITCODE -ne 0){throw 'PYTHON_DEPENDENCY_MISSING'}
+          python -m unittest discover -v -s studio/tools/art-direction/gpt6-tower-eval-20261015 -p 'test_*.py'
+          if($LASTEXITCODE -ne 0){throw 'JOINERY_OR_CRITIC_TEST_FAILED'}
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_SOURCE_MISMATCH'}
+      - name: Run actual Blender 5.2 real Boolean joinery and UV
+        shell: powershell
+        timeout-minutes: 10
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP ("eldoria-joinery-"+$env:GITHUB_RUN_ID)
+          "ELDORIA_JOINERY_OUT=$out" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $exe){throw 'BLENDER_NOT_INSTALLED'}
+          & $exe -b -t 4 --python-exit-code 1 --python 'studio/tools/art-direction/gpt6-tower-eval-20261015/joinery_blender.py' -- --plan 'studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-joinery-plan-r3.json' --source $src --review 'studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json' --out $out
+          if($LASTEXITCODE -ne 0){throw 'REAL_JOINERY_BLENDER_FAILED'}
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'ORIGINAL_CHANGED'}
+          if(-not (Test-Path (Join-Path $out 'workshop-proof.json'))){throw 'MISSING_WORKSHOP_PROOF'}
+      - name: Two-phase independent Qwen-VL critique with fail-closed result
+        shell: powershell
+        timeout-minutes: 16
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=$env:ELDORIA_JOINERY_OUT
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          $server=$null
+          try{
+            if($exe){
+              $models=Join-Path $env:USERPROFILE '.ollama/models'
+              if(Test-Path $models){$env:OLLAMA_MODELS=$models}
+              $env:OLLAMA_HOST='127.0.0.1:11434'
+              $env:OLLAMA_NUM_PARALLEL='1';$env:OLLAMA_MAX_LOADED_MODELS='1'
+              $ready=$false
+              try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+              if(-not $ready){
+                $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+                for($i=0;$i -lt 35;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+              }
+            }
+            python 'studio/tools/art-direction/gpt6-tower-eval-20261015/review_live.py' --plan (Join-Path $out 'joinery-plan.json') --catalog (Join-Path $out 'reusable-asset-catalog.json') --contact (Join-Path $out 'actual-mesh-contact.json') --reference 'frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' --before (Join-Path $out 'before-blender.png') --after (Join-Path $out 'after-blender.png') --out $out
+            if($LASTEXITCODE -ne 0){throw 'REVIEW_SCRIPT_ERROR'}
+          }finally{if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}}
+      - name: Preserve original images, BLEND, GLB, texture, workshop and vision proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-gpt6-real-joinery-and-two-phase-grounded-vision
+          path: ${{ env.ELDORIA_JOINERY_OUT }}/
+          if-no-files-found: warn
+          retention-days: 30
