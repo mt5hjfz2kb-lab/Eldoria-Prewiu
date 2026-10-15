@@ -50,6 +50,26 @@ def verify_qwen_composition(doc, source_inventory, cycle_index):
         alo,ahi=a;blo,bhi=b
         return all(max(0,alo[i]-bhi[i],blo[i]-ahi[i])<=tol
                    for i in range(3))
+    # Real Qwen8B run 38692904219 built LEFT and RIGHT roof braces with
+    # identical center, rotation and scale. They render as ONE pole despite
+    # two model-authored object IDs, not a useful architectural composition.
+    for i in range(len(component_boxes)):
+        alo,ahi=component_boxes[i]
+        avol=max(0,(ahi[0]-alo[0])*(ahi[1]-alo[1])*(ahi[2]-alo[2]))
+        for j in range(i+1,len(component_boxes)):
+            blo,bhi=component_boxes[j]
+            bvol=max(0,(bhi[0]-blo[0])*(bhi[1]-blo[1])*(bhi[2]-blo[2]))
+            common=[max(0,min(ahi[k],bhi[k])-max(alo[k],blo[k]))
+                    for k in range(3)]
+            overlap_volume=common[0]*common[1]*common[2]
+            if min(avol,bvol)>0 and overlap_volume/min(avol,bvol)>.92:
+                raise RejectedPlan(
+                    "DUPLICATE_OR_NEAR_COINCIDENT_NEW_COMPONENTS: "
+                    "Qwen supplied separate IDs but essentially the SAME "
+                    "3D part twice (overlap >92%). A medieval timber joint "
+                    "needs distinct connected beams/brace directions; "
+                    "choose different ORIGINAL geometry and pose, never "
+                    "auto-offset a coincident Qwen component.")
     visited={0};frontier=[0]
     while frontier:
         i=frontier.pop()
