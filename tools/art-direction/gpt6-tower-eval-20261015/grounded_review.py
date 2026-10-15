@@ -28,6 +28,17 @@ def manifest(plan, catalog, contacts):
                 "scale_m": action.get("params", {}).get("scale"),
                 "rotation_rad": action.get("params", {}).get("rotation", [0,0,0]),
             }
+    # A real Blender workshop can author joined members directly rather than
+    # using legacy primitive actions; reuse identical provenance controls.
+    if not author and isinstance(plan.get("members"),list):
+        for m in plan["members"]:
+            name=m.get("id")
+            if not isinstance(name,str) or name in author:
+                raise UnreliableCritic("DUPLICATE_OR_MISSING_TARGET")
+            author[name]={"id":name,"operation":"real_boolean_joinery",
+                "shape":"bevelled_timber_with_mortise_tenon",
+                "location_m":m.get("center_m"),"scale_m":m.get("size_m"),
+                "rotation_rad":[0,0,0]}
     actual = set(catalog.get("new_components", []))
     if set(author) != actual or not author:
         raise UnreliableCritic("PLAN_OUTPUT_COMPONENT_SET_MISMATCH")
@@ -130,7 +141,7 @@ def critic_messages(inventory, hashes):
     instructions = ("You are an independent Blender screenshot critic. Inspect only the 3 supplied genuine images "
         "(approved visual language reference, BEFORE, AFTER). An inventory derived from actual exported Blender meshes "
         "is authoritative about which NEW parts exist. DO NOT remember or discuss previous candidates. "
-        "Do not invent beams, braces, diagonals or fascia that are absent from this inventory. "
+        "Do not invent ANY new components, construction details or identifiers absent from the inventory. "
         "Geometric NEAR_SOURCE measures sampled proximity only: it does not guarantee structurally welded or visually "
         "convincing joinery. Discuss visual joinery SEPARATELY. Original roof and steps may be discussed. "
         "For each inventory component, return exactly one observation; no missing or extra component. "
