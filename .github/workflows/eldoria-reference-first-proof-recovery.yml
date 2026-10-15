@@ -1,0 +1,100 @@
+name: "[PILOT] Recover genuine Unity PNGs without Windows"
+on:
+  push:
+    branches: [prototype/reference-first-zero-budget-visual-pilot-20261015]
+    paths: [.github/workflows/eldoria-reference-first-proof-recovery.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eldoria-reference-first-pilot-evidence-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pilot-recover
+          fetch-depth: 3
+          filter: blob:none
+          sparse-checkout: |
+            docs/evidence/reference-first-zero-budget-visual-pilot-20261015
+            .github/workflows/eldoria-reference-first-proof-recovery.yml
+      - name: Recover original Windows run's successful capture bytes
+        uses: actions/download-artifact@v4
+        with:
+          name: reference-first-real-unity-38796237340
+          run-id: 38796237340
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered
+      - name: Verify PNG signature, actual dimensions and original evidence manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          find recovered -type f | head -30
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, struct, shutil, hashlib
+          root=Path("recovered")
+          output=Path("pilot-recover/docs/evidence/reference-first-zero-budget-visual-pilot-20261015")
+          output.mkdir(parents=True, exist_ok=True)
+          names=("01-wide-camera.png","02-main-architecture.png","render-manifest.json")
+          located={}
+          for name in names:
+              hits=list(root.rglob(name))
+              if len(hits)!=1:
+                  raise SystemExit(f"Expected exactly one recovered {name}: {hits}")
+              located[name]=hits[0]
+          manifest=json.loads(located["render-manifest.json"].read_text(encoding="utf-8-sig"))
+          assert manifest["artApproved"] is False, manifest
+          assert manifest["heroRenderers"] >= 7, manifest
+          assert manifest["treeInstances"] >= 12, manifest
+          assert manifest["cliffInstances"] >= 10, manifest
+          assert manifest["width"] == 1536 and manifest["height"] == 1024, manifest
+          digests=[]
+          for name in names[:2]:
+              raw=located[name].read_bytes()
+              if raw[:8]!=b"\x89PNG\r\n\x1a\n":
+                  raise SystemExit(f"Not a PNG: {name}")
+              width,height=struct.unpack(">II",raw[16:24])
+              if (width,height)!=(1536,1024) or len(raw)<80000:
+                  raise SystemExit(f"Invalid dimensions/bytes: {name}: {width}x{height} {len(raw)}")
+              digests.append(hashlib.sha256(raw).hexdigest())
+              shutil.copyfile(located[name],output/name)
+              print(f"Verified real Unity {name} {width}x{height} bytes={len(raw)} sha256={digests[-1]}")
+          if digests[0]==digests[1]:
+              raise SystemExit("Wide and architecture views identical; reject")
+          shutil.copyfile(located["render-manifest.json"],output/"render-manifest.json")
+          (output/"CAPTURE_RECOVERY.md").write_text(
+              "# Authentic reference-first Unity pilot captures\n\n"
+              "Recovered from Windows run [38796237340](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38796237340), "
+              "which generated two genuine 1536x1024 frames and passed the Unity capture step; its branch-saving step failed "
+              "with unstaged Unity import changes. This recovery downloads the ORIGINAL run artifact, does not re-render "
+              "or use Windows, and has not approved artistic quality.\n\n"
+              f"- 01-wide-camera.png SHA256: {digests[0]}\n"
+              f"- 02-main-architecture.png SHA256: {digests[1]}\n"
+              "- ART_APPROVED=false; license clearance pending; visual independent inspection pending.\n",
+              encoding="utf-8")
+          PY
+      - name: Publish ONLY recovered evidence on isolated branch, never main
+        shell: bash
+        working-directory: pilot-recover
+        run: |
+          set -euo pipefail
+          git add docs/evidence/reference-first-zero-budget-visual-pilot-20261015/
+          git diff --cached --quiet && { echo "Nothing new"; exit 0; }
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: recover original real Unity captures from 38796237340 [skip ci]'
+          for attempt in 1 2 3; do
+            git fetch origin prototype/reference-first-zero-budget-visual-pilot-20261015
+            git rebase origin/prototype/reference-first-zero-budget-visual-pilot-20261015
+            if git push origin HEAD:prototype/reference-first-zero-budget-visual-pilot-20261015; then
+              echo "Recovered evidence pushed on attempt $attempt"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Failed to push original PNG evidence after bounded retries"
+          exit 1
