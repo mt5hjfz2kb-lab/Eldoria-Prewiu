@@ -22,7 +22,7 @@ assert.match(v4,/BRIDGE stone deck/);
 assert.match(v4,/MAIN AXIS/);
 assert.match(v4,/UnityEngine\.Application\.isBatchMode/);
 assert.match(v4,/UnityEngine\.Application\.dataPath/);
-assert.doesNotMatch(v4,/UnityEngine\.UnityEngine\.Application|Application\.dataPath/,"invalid Application namespace");
+assert.doesNotMatch(v4,/UnityEngine\\.UnityEngine\\.Application|(?<!UnityEngine\\.)Application\\.dataPath/,"invalid Application namespace");
 assert.doesNotMatch(v4,/Repeatable earth variation|new Vector3\(54f,4\.8f,3\.2f\)/,"V3 rejected decal/floating masonry still present");
 assert.match(v4,/artApproved = false/);
 assert.match(v4,/productionModified = false/);
