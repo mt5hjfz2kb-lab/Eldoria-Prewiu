@@ -57,7 +57,13 @@ jobs:
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-modular-fortress-blender.log'
-          & "${{ steps.blender.outputs.exe }}" --background --python-exit-code 1 --python tools/valoria-modular-fortress/build_blender.py *> $log
+          $script=Join-Path $env:RUNNER_TEMP 'eldoria-63-assets-authoring.py'
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/build_blender.py'
+          $lines = & git show $spec
+          if ($LASTEXITCODE -ne 0 -or -not $lines) { throw "Pinned Blender source blob not accessible: $spec" }
+          [System.IO.File]::WriteAllLines($script, [string[]]$lines, [System.Text.UTF8Encoding]::new($false))
+          if (-not (Test-Path $script) -or (Get-Item $script).Length -lt 4000) { throw 'Pinned Blender source is empty' }
+          & "${{ steps.blender.outputs.exe }}" --background --python-exit-code 1 --python $script *> $log
           $exit=$LASTEXITCODE
           Get-Content $log -Tail 110
           if ($exit -ne 0) { throw "Blender native authoring failed with exit code $exit" }
