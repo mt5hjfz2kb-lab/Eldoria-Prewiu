@@ -172,7 +172,9 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-pc-live-health-20261015",
       "title": "Owner-requested current Windows and Ollama health verification",
@@ -184,14 +186,23 @@
         "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
       ],
       "resources": [],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-15T10:49:00Z",
       "art_production_routing": "not_applicable",
-      "phase": "Fresh Windows/Ollama health SUCCESS; persist actual route in existing bootstrap and evidence; selective benchmark security rejection unresolved",
-      "dependency": "Short owner-authorized health probe only; zero running Actions observed; existing Windows-heavy claim unchanged. Prior rejected benchmark/test operations remain blocked."
-    }
-  ],
-  "history": [
+      "phase": "Fresh PC connectivity check complete; broader selective-memory mission remains externally blocked",
+      "dependency": "Short owner-authorized health probe only; zero running Actions observed; existing Windows-heavy claim unchanged. Prior rejected benchmark/test operations remain blocked.",
+      "completed_at": "2026-10-15T10:51:16Z",
+      "run_id": 38722927795,
+      "job_id": 116381681682,
+      "artifact_id": 11966897453,
+      "source_commit": "d7ace70f840c986dda61be58924a60e2081ca9da",
+      "result": "success",
+      "evidence_commit": "6575c4b9bbaf1dbaa8fa5a8a737266246c68f472",
+      "bootstrap_commit": "a82fff509180a132a38b7d8cfc782ebcd9e391f8",
+      "selective_memory_qwen_validated": false,
+      "broader_mission_complete": false,
+      "next": "External review/resolution of earlier rejected benchmark/test writes; PC connection is operational as observed, not the blocker"
+    },
     {
       "id": "eldoria-operational-recovery-selective-memory-20261015",
       "title": "Owner-priority recovery of verified connections, selective-memory blocker and existing session bootstrap",
