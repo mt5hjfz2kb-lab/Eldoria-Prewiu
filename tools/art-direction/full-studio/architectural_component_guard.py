@@ -8,7 +8,7 @@ from contract import RejectedPlan
 
 def verify_volume_and_complexity(doc, source_inventory=None):
     actions=doc.get("actions",[])
-    if not actions or actions[0].get("op") not in ("primitive","mesh"):
+    if not actions or actions[0].get("op") not in ("primitive","mesh","beam_between_faces"):
         raise RejectedPlan("Architectural addition must start with a Qwen-authored NEW physical component")
     action=actions[0]
     p=action["params"]
@@ -23,6 +23,23 @@ def verify_volume_and_complexity(doc, source_inventory=None):
     min_side=.08 if small_inherited else .12
     min_max=.28 if small_inherited else .5
     min_volume=.006 if small_inherited else .025
+    if action["op"]=="beam_between_faces":
+        actual=next((o for o in (source_inventory or []) if o["name"]==p["source"]),None)
+        if actual is None:raise RejectedPlan("Beam requires inspected original geometry")
+        actual_hits={h["face_index"]:h["world_center_m"] for h in
+            actual.get("camera_visible_face_landmarks",[]) if
+            h.get("camera_visible") is True and
+            h.get("camera_ray_hit_original_face") is True and
+            isinstance(h.get("world_center_m"),list)}
+        a,b=p["start_face"],p["end_face"]
+        if a not in actual_hits or b not in actual_hits or a==b:
+            raise RejectedPlan("Beam must use two different REAL source-contact faces")
+        length=math.dist(actual_hits[a],actual_hits[b])
+        width,depth=float(p["width_m"]),float(p["depth_m"])
+        if (length<min_max or min(width,depth)<min_side or
+                length*width*depth<min_volume):
+            raise RejectedPlan("Real beam between verified faces too small for credible mobile architecture")
+        return True
     if action["op"]=="primitive":
         if p.get("shape")=="plane":
             raise RejectedPlan("An isolated flat PLANE is not the required 3D architectural component. Choose YOUR own volumetric architectural form.")
