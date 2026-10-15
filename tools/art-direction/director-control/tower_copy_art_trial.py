@@ -201,7 +201,8 @@ def main():
     sys.path.insert(0,str(workshop))
     from contract import validate_plan, RejectedPlan
     from artist_loop import run_blender, repair_noncreative_action_ids, critique
-    from source_geometry_gate import verify_source_plan, check_triangle_growth
+    from source_geometry_gate import verify_source_plan
+    from triangle_budget import check_triangle_growth
     from architectural_component_guard import verify_volume_and_complexity
     from architectural_world_placement_gate import reject_obviously_bad_component_placement
     from screen_impact import screen_impact
