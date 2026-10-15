@@ -1,0 +1,96 @@
+name: "[ART REVIEW] Qwen VL independent visual review for all 63 assets"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-63-independent-qwen.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-63-independent-readonly-review
+  cancel-in-progress: false
+jobs:
+  independent-63:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 110
+    steps:
+      - name: Locate Git, Blender and Ollama existing software (no downloads)
+        shell: powershell
+        id: deps
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Missing Git on PC'}
+            $env:PATH="$(Split-Path $git);$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $git)
+          }
+          $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Blender not found'}
+          "blender=$blender" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+          if(-not $ollama) {
+            $candidate=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+            if(Test-Path $candidate){$ollama=$candidate}
+          }
+          if(-not $ollama){throw 'Ollama must be installed before read-only Qwen evaluation'}
+          "ollama=$ollama" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          & $ollama --version
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/qwen-quality-input
+      - name: Boot ephemeral local Ollama without model download
+        shell: powershell
+        run: |
+          $ready=$false
+          try {$tag=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 8; $ready=$true} catch {}
+          if(-not $ready) {
+            Start-Process -FilePath "${{ steps.deps.outputs.ollama }}" -ArgumentList 'serve' -WindowStyle Hidden | Out-Null
+            for($i=0;$i -lt 30;$i++) {
+              Start-Sleep -Seconds 2
+              try {$tag=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3; $ready=$true;break}catch {}
+            }
+          }
+          if(-not $ready){throw 'Cannot start existing local Ollama service'}
+          $models=@($tag.models | ForEach-Object {$_.name})
+          $models | ForEach-Object {Write-Output "LOCAL_MODEL $_"}
+          if('qwen3-vl:8b-instruct-q4_K_M' -notin $models) { throw 'Installed Qwen3-VL 8B was not found. No download permitted.' }
+      - name: Score 63 genuine asset views with independent Qwen VL
+        shell: powershell
+        run: |
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/independent_qwen_review.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned reviewer script missing'}
+          $script=Join-Path $env:RUNNER_TEMP 'eldoria-independent-review.py'
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $src=Join-Path $env:RUNNER_TEMP 'qwen-quality-input\eldoria-upgrade63'
+          $dest=Join-Path $env:RUNNER_TEMP 'eldoria-independent-qwen63'
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-independent-qwen.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-independent-qwen.err'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$src,$dest,'qwen3-vl:8b-instruct-q4_K_M') -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 85 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 25 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Independent reviewer failed: $($proc.ExitCode)"}
+          if(-not(Test-Path (Join-Path $dest 'review.json'))){throw '63-review file missing'}
+      - name: Archive independent advisory decisions (not artistic approval)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-63-independent-qwen-review-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-independent-qwen63/**
+            ${{ runner.temp }}/eldoria-independent-qwen.log
+            ${{ runner.temp }}/eldoria-independent-qwen.err
+          retention-days: 30
+          if-no-files-found: warn
