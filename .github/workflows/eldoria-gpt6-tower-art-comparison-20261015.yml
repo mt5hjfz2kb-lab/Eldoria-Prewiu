@@ -1,4 +1,4 @@
-name: Eldoria isolated GPT6 timber tower Blender candidate and independent vision review
+name: Eldoria GPT6 r2 timber facade frame independent Blender visual review
 on:
   push:
     branches:
@@ -31,7 +31,7 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          ref: 9c5a7ea48818030ca64bfccf7bf0a61a0cbed619
+          ref: 3c09ecce34455c76931f8b6bfad12e000058f9f6
           path: studio
           persist-credentials: false
           filter: blob:none
@@ -64,7 +64,7 @@ jobs:
           import sys,json
           sys.path.insert(0,'studio/tools/art-direction/full-studio')
           from artist_capabilities_v1 import strict_preflight_plan
-          p=json.load(open('studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan.json',encoding='utf-8'))
+          p=json.load(open('studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan-r2.json',encoding='utf-8'))
           print('GPT6_PLAN_PREFLIGHT',json.dumps(strict_preflight_plan(p)))
           '@
           $script | python -
@@ -79,9 +79,9 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
-          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-true-blender-a-b'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-r2-post-lintel-a-b'
           $args=@('-b','-t','4','--python-exit-code','1','--python','studio/tools/art-direction/full-studio/blender_toolbox.py',
-            '--','--plan','studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan.json',
+            '--','--plan','studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan-r2.json',
             '--source',$src,'--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
             '--texture-root','studio','--out',$out)
           & $env:ELDORIA_GPT6_BLENDER @args
@@ -92,7 +92,7 @@ jobs:
         timeout-minutes: 19
         run: |
           $ErrorActionPreference='Stop'
-          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-true-blender-a-b'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-r2-post-lintel-a-b'
           $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
           if(-not (Test-Path $exe)){
             $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
@@ -117,14 +117,14 @@ jobs:
             if($ready){$names=@((Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20).models|ForEach-Object {$_.name});if($model -notin $names){$ready=$false}}
             if(-not $ready){'INDEPENDENT_QWEN_VL8B_UNAVAILABLE_REVIEW_WILL_BE_PENDING' | Out-File (Join-Path $out 'independent-critic-unavailable.txt') -Encoding utf8}
             $env:ELDORIA_GPT6_CRITIC_READY= $(if($ready){'yes'}else{'no'})
-            python studio/tools/art-direction/gpt6-tower-eval-20261015/evaluate.py --out $out --source 'frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb' --reference 'frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' --plan 'studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan.json' --model $model
+            python studio/tools/art-direction/gpt6-tower-eval-20261015/evaluate.py --out $out --source 'frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb' --reference 'frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' --plan 'studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan-r2.json' --model $model
             if($LASTEXITCODE -ne 0){throw 'OBJECTIVE_AB_EVALUATION_FAILED'}
           }finally{if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}}
       - name: Preserve BLEND, GLB, original A/B, raw critic, source and rejection evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-gpt6-true-blender-a-b-and-independent-review
-          path: ${{ runner.temp }}/eldoria-gpt6-true-blender-a-b/
+          name: eldoria-gpt6-r2-post-lintel-a-b-and-independent-review
+          path: ${{ runner.temp }}/eldoria-gpt6-r2-post-lintel-a-b/
           if-no-files-found: warn
           retention-days: 30
