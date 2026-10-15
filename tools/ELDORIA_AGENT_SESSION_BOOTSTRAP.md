@@ -1,3 +1,5 @@
+> **ESTADO VIGENTE 15-10-2026:** recuperación operativa y comparación Qwen selectiva COMPLETADAS. Run 38726028141: sin memoria 32/32, completa 31/32, selectiva 32/32; 96 inferencias reales y datos brutos verificados/preservados en Git. Cero regresiones selectivas de decisión en esta muestra, no superioridad sobre baseline ni autorización artística. El checkpoint actual sustituye los antiguos siguientes pasos BLOCKED/RUNNING que quedan como historia. Producción pausada.
+
 # ELDORIA — Inicio de conversación: descubrimiento técnico obligatorio
 
 **Finalidad:** nuevos chats normales/Work identifican automáticamente las rutas ya existentes. No inventar accesos ni exigir al propietario que repita el inventario. Este contrato de infraestructura NO autoriza a levantar la pausa de producción de 2026-10-14.
@@ -66,35 +68,43 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
   "schema_version": 1,
   "repository": "mt5hjfz2kb-lab/Eldoria-Prewiu",
   "branch": "diagnostic/valoria-ai-eyes-brain-20261015",
-  "last_verified_source_head": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
-  "recorded_at": "2026-10-15T11:16:18Z",
-  "mission_status": "RUNNING_REAL_QWEN_THREE_ARM_DIAGNOSIS",
+  "last_verified_source_head": "1bee49de140b748b3469086c2ff6d28041888eff",
+  "recorded_at": "2026-10-15T11:23:03Z",
+  "mission_status": "COMPLETED_OPERATIONAL_RECOVERY_AND_BOUNDED_SELECTIVE_MEMORY_DIAGNOSIS",
   "production_paused": true,
-  "selective_memory_qwen_validated": false,
+  "selective_memory_qwen_validated": true,
   "next_action": {
-    "id": "collect-current-three-arm-run",
-    "kind": "observe_existing_job",
-    "action": "Consultar run 38726028141 / job 116391981342 del SHA a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c hasta completar, recuperar artefacto eldoria-qwen14b-memory-selective-three-arm-v1 y evaluar respuestas/regresiones. No lanzar otro job.",
-    "avoid": "No reejecutar V2 ni afirmar validación antes de leer los resultados reales."
+    "id": "preserve-result-and-owner-production-pause",
+    "kind": "await_new_authorized_scope",
+    "action": "La recuperación operativa y comparación real están completadas. Conservar evidencia/run y la pausa artística; continuar solo el siguiente alcance que autorice el propietario. No volver a ejecutar el mismo benchmark ni enviar a soporte como condición para este ensayo ya terminado.",
+    "avoid": "No asumir producción habilitada, mejora general del modelo, entrenamiento de pesos o ART_APPROVED."
   },
   "last_working_execution": {
     "workflow": ".github/workflows/eldoria-brain-memory-ab.yml",
     "ref": "diagnostic/valoria-ai-eyes-brain-20261015",
-    "source_sha": "6d5342857e94dc8e7a9a03f5e2b74e2fcb28637f",
-    "run_id": 38714648879,
-    "job_id": 116354265361,
+    "source_sha": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
+    "run_id": 38726028141,
+    "job_id": 116391981342,
     "runner": "DESKTOP-R10PE55",
-    "runner_id": 22,
-    "completed_at": "2026-10-15T09:42:27Z",
-    "execution": "32 inferencias Qwen3 14B completadas vía PowerShell/Actions; gate falló por regresión",
-    "baseline": 16,
-    "full_memory": 15,
-    "case_count": 16,
-    "regression": "one_mesh",
-    "artifact_id": 11961931949,
-    "artifact_sha256": "2f485ed8843ea7d5e9ef3b87acd42f2fb8323ee1e3778a552cd05c93b30b8cff",
-    "paired_json_sha256": "ae60e31dcdf7d6cfb96620290665745a6b6c469cee46f766127941b7c6428d4b",
-    "current_windows_liveness": "Separate fresh health probe SUCCESS at 2026-10-15T10:49:15Z; see last_working_connection, not permanent liveness."
+    "completed_at": "2026-10-15T11:19:19Z",
+    "result": "success",
+    "real_inferences": 96,
+    "case_count": 32,
+    "counts": {
+      "without_memory": 32,
+      "with_memory": 31,
+      "selective_memory": 32
+    },
+    "selective_regressions_vs_baseline": [],
+    "selective_recoveries_vs_full": [
+      "one_mesh"
+    ],
+    "artifact_id": 11967828291,
+    "artifact_sha256": "0ad49fd03f07b628ebe084bc32fbb59ab340b128eea26b52f50182b5478a508e",
+    "three_arm_json_sha256": "d5b36db3aab797a959fa42dabacc48b0e69b29c0ba070318a735985865abd8a2",
+    "persistent_archive": "docs/evidence/eldoria-memory-selective-20261015/three-arm-evidence.zip",
+    "archive_blob_sha": "62c572aae74653b92289e8dccf6813c4dc6d2808",
+    "current_windows_liveness": "Verified by actual execution at recorded completion time; recheck in a future session"
   },
   "inputs": [
     {
@@ -104,6 +114,14 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     {
       "path": "tools/art-direction/director-control/brain_memory_epistemic_v2.py",
       "git_blob_sha": "09e18053a881a4040ddcba450b9ae60327b2e056"
+    },
+    {
+      "path": "tools/art-direction/director-control/brain_memory_selective_ab.py",
+      "git_blob_sha": "674c31f2a1625fe6ea874db8aec93be6693681ad"
+    },
+    {
+      "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+      "git_blob_sha": "ba8403185d0deb9ca6fd9f26e6c13b92a0a83aea"
     }
   ],
   "completed_gates": [
@@ -116,6 +134,12 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
       "id": "director-unit",
       "run_id": 38715972496,
       "result": "success; excludes selective Qwen"
+    },
+    {
+      "id": "real-three-arm-qwen-32",
+      "run_id": 38726028141,
+      "source_commit": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
+      "result": "32/32 selective; 32/32 baseline;31/32 full; 0 selective decision regressions in this sample; raw payload hashes independently verified"
     }
   ],
   "blocked_operations": [
@@ -186,7 +210,8 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     "This checkpoint is historical on every future session; fetch live HEAD/jobs before conclusions.",
     "Tool inventory proves exposure only, never credentials, operation approval or Windows health.",
     "No automatic launch, installation, model download, credential search or retry of blocked modifications.",
-    "16-case baseline is saturated; matching 16/16 would show no regression on these cases, not superiority over baseline or unseen-case generalisation."
+    "16-case baseline is saturated; matching 16/16 would show no regression on these cases, not superiority over baseline or unseen-case generalisation.",
+    "Diagnostic comparison is complete, but artistic production remains paused. The sample does not show superiority over no-memory baseline, nor artistic competence."
   ],
   "last_working_connection": {
     "observed_utc": "2026-10-15T10:49:15.2655125Z",
@@ -205,23 +230,27 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     "blender_started": false,
     "production_resumed": false
   },
-  "pending_execution": {
-    "run_id": 38726028141,
-    "job_id": 116391981342,
+  "previous_measured_execution": {
+    "workflow": ".github/workflows/eldoria-brain-memory-ab.yml",
+    "ref": "diagnostic/valoria-ai-eyes-brain-20261015",
+    "source_sha": "6d5342857e94dc8e7a9a03f5e2b74e2fcb28637f",
+    "run_id": 38714648879,
+    "job_id": 116354265361,
     "runner": "DESKTOP-R10PE55",
-    "source_sha": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
-    "path": ".github/workflows/eldoria-brain-memory-ab.yml",
-    "planned_inferences": 96,
-    "conditions": [
-      "without_memory",
-      "with_memory",
-      "selective_memory"
-    ],
-    "case_groups": [
-      "original_16",
-      "prospective_phrasing_holdout_16"
-    ]
-  }
+    "runner_id": 22,
+    "completed_at": "2026-10-15T09:42:27Z",
+    "execution": "32 inferencias Qwen3 14B completadas vía PowerShell/Actions; gate falló por regresión",
+    "baseline": 16,
+    "full_memory": 15,
+    "case_count": 16,
+    "regression": "one_mesh",
+    "artifact_id": 11961931949,
+    "artifact_sha256": "2f485ed8843ea7d5e9ef3b87acd42f2fb8323ee1e3778a552cd05c93b30b8cff",
+    "paired_json_sha256": "ae60e31dcdf7d6cfb96620290665745a6b6c469cee46f766127941b7c6428d4b",
+    "current_windows_liveness": "Separate fresh health probe SUCCESS at 2026-10-15T10:49:15Z; see last_working_connection, not permanent liveness."
+  },
+  "mission_complete": true,
+  "validation_scope": "96 real queries, 32 claims (16 original+16 prospective phrasing holdout), one fixed-seed run; no general superiority claim"
 }
 ```
 <!-- ELDORIA_RECOVERY_CHECKPOINT_END -->
