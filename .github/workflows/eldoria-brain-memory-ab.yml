@@ -47,14 +47,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ runner.temp }}/eldoria-spatial
       - name: Verify benchmark offline tests
-        shell: pwsh
+        shell: powershell
         run: |
           python -m unittest discover -s tools/art-direction/director-control -p test_brain_memory_ab.py -v
           if($LASTEXITCODE -ne 0){throw 'BRAIN_BENCHMARK_TESTS_FAILED'}
           python -m unittest discover -s tools/art-direction/director-control -p test_memory_regression_gate.py -v
           if($LASTEXITCODE -ne 0){throw 'MEMORY_GATE_TESTS_FAILED'}
       - name: Start previously installed Ollama if needed
-        shell: pwsh
+        shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
@@ -80,7 +80,7 @@ jobs:
           $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
           if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw 'EXISTING_QWEN14B_NOT_FOUND_NO_DOWNLOAD'}
       - name: Run read-only 14B paired reasoning
-        shell: pwsh
+        shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $root=Join-Path $env:RUNNER_TEMP 'eldoria-spatial'
