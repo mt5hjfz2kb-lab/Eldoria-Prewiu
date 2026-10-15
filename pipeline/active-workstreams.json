@@ -200,17 +200,19 @@
       "art_production_routing": "isolated-lookdev-only-no-promotion",
       "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact. Subsequent owner message authorizes pausing other work to use PC for the pilot.",
       "dependency": "Windows runner retained by Bastion I active workstream, and another actor added a branch Windows workflow that failed checkout before Unity. Pilot can continue read-only and doc/Ubuntu gates but no heavy Windows until coordinated.",
-      "phase": "Verified Ubuntu-only static gate PASS (#38794583466); visually compared existing Unity OriginalHero capture against the approved image; no actual pilot Unity capture.",
-      "next": "Do not retrigger separate pilot Windows workflow while Bastion1 owns runner. Coordinate runner release and isolated worktree; then real Unity A/B of existing fortified wall/gate families against target, review actual PNG. Avoid treating OriginalHero technical baseline as upper fortress.",
+      "phase": "SOURCE_PASS (#38794583466); isolated Windows #38794999022 reached Unity compiler but failed two namespace-resolution CS0234 errors, repaired without rerun (pilot branch 7032d51 and aba18c80); no genuine new images.",
+      "next": "Hold Windows jobs until runner owner releases claim; then run isolated Unity 6000.3.23f1 build/capture on fixed exact pilot SHA. Inspect actual 1536x1024 PNG and compare existing fortress and gate families; do not promote OriginalHero as full fortress by assumption.",
       "last_verified": {
         "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
         "static_run": 38794583466,
         "static_result": "success",
-        "failed_windows_run": 38794504051,
-        "failed_windows_stage": "actions/checkout before Unity",
+        "failed_windows_run": 38794999022,
+        "failed_windows_stage": "Unity C# compilation: Eldoria.Application namespace shadowing; repaired source without recompilation",
         "windows_shared_runner_reserved_by": "valoria-bastion1-player-scene-integration-20261012",
         "pilot_unity_capture": false,
-        "art_approved": false
+        "art_approved": false,
+        "source_repair": "7032d51bfbab1e20ef0f8543744ff9eafc008340",
+        "contract_repair": "aba18c80f3e259a61ca97c3055122f991f72ca4f"
       }
     }
   ],
