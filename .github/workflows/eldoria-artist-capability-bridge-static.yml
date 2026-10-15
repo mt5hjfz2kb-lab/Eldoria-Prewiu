@@ -1,0 +1,31 @@
+name: Eldoria AI artist capability bridge static acceptance (no Windows)
+on:
+  push:
+    branches:
+      - diagnostic/eldoria-artist-capability-bridge-20261015
+    paths:
+      - 'tools/art-direction/full-studio/artist_capabilities_v1.py'
+      - 'tools/art-direction/full-studio/artist_loop.py'
+      - 'tools/art-direction/full-studio/tests/test_artist_capabilities_v1.py'
+      - '.github/workflows/eldoria-artist-capability-bridge-static.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  artist-static-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free picture-decode dependency
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Compile and test only the new artist bridge without Ollama or Blender
+        run: |
+          python -m py_compile tools/art-direction/full-studio/artist_capabilities_v1.py tools/art-direction/full-studio/artist_loop.py
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_artist_capabilities_v1.py' -v
+      - name: Declare technical-only scope
+        run: |
+          echo 'TECHNICAL_STATIC_PRECHECK_ONLY - No Blender/Qwen/art/Unity approval'
