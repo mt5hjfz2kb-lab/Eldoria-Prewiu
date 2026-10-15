@@ -104,6 +104,10 @@ jobs:
           if ($LASTEXITCODE -eq 0) { Write-Host 'No new lookdev evidence to commit'; exit 0 }
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: real isolated Unity reference-first lookdev frames [skip ci]'
           if ($LASTEXITCODE -ne 0) { throw 'Could not commit isolated real capture evidence' }
+          git fetch origin prototype/reference-first-zero-budget-visual-pilot-20261015
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot fetch live isolated branch before publishing evidence' }
+          git rebase origin/prototype/reference-first-zero-budget-visual-pilot-20261015
+          if ($LASTEXITCODE -ne 0) { throw 'Isolated branch changed and evidence could not rebase; preserve uploaded artifact' }
           git push origin HEAD:prototype/reference-first-zero-budget-visual-pilot-20261015
           if ($LASTEXITCODE -ne 0) { throw 'Isolated evidence push failed; see uploaded artifact' }
       - uses: actions/upload-artifact@v4
