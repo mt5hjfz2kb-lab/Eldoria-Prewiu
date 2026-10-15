@@ -215,7 +215,7 @@ for index,n in enumerate(names):
 # Geometry authored in native Blender. Compose a bounded showcase, reusing shared module designs.
 def instance(name,loc,ang=0,scale=1):
     for source in groups[name]:
-        ob=source.copy();ob.data=source.data;ob.rotation_euler.z+=ang
+        ob=source.copy();ob.data=source.data;ob.hide_render=False;ob.rotation_euler.z+=ang
         ob.location=Vector(loc)+source.location*scale
         ob.scale=source.scale*scale
         bpy.context.collection.objects.link(ob)
@@ -259,7 +259,8 @@ for x in (-4.5,4.5):light('POINT',(x,-12,2),420,(1,.39,.09),0)
 camd=bpy.data.cameras.new("Valoria reference pose");cam=bpy.data.objects.new('Valoria reference pose',camd)
 bpy.context.collection.objects.link(cam);cam.location=(48,-66,47);cam.rotation_euler=(Vector((0,0,2))-cam.location).to_track_quat('-Z','Y').to_euler()
 camd.type='ORTHO';camd.ortho_scale=75;scene.camera=cam
-scene.render.engine='BLENDER_EEVEE_NEXT' if 'BLENDER_EEVEE_NEXT' in [i.identifier for i in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items] else 'BLENDER_EEVEE'
+try:scene.render.engine='BLENDER_EEVEE_NEXT'
+except Exception:scene.render.engine='BLENDER_EEVEE'
 scene.render.resolution_x=1536;scene.render.resolution_y=1024;scene.render.resolution_percentage=100
 scene.render.filepath=str(root/'blender_scene.png');scene.render.image_settings.file_format='PNG'
 bpy.ops.wm.save_as_mainfile(filepath=str(root/'valoria_modular_library.blend'))
