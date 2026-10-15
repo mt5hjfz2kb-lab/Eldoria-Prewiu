@@ -56,11 +56,12 @@ try{
     @{label='4b-assembly';model='qwen3-vl:4b-instruct';kind='assembly'},
     @{label='8b-sculpt';model='qwen3-vl:8b-instruct-q4_K_M';kind='mesh_edit'},
     @{label='8b-assembly';model='qwen3-vl:8b-instruct-q4_K_M';kind='assembly'},
+    @{label='8b-composition';model='qwen3-vl:8b-instruct-q4_K_M';kind='composition'},
     @{label='8b-professional';model='qwen3-vl:8b-instruct-q4_K_M';kind='professional'}
   )
   # Owner-authorized single real source/real camera experiment. Previous
   # 4B vs 8B and mandatory primitive-assembly tests are already evidenced.
-  $cases=@($cases | Where-Object {$_.label -eq '8b-assembly'})
+  $cases=@($cases | Where-Object {$_.label -eq '8b-composition'})
   foreach($case in $cases){
     if($case.model -notin $installed){throw ('No previously cached model; no download authorized: '+$case.model)}
   }
@@ -72,14 +73,15 @@ try{
     $log=Join-Path $Out ($case.label+'.log')
     $sw=[System.Diagnostics.Stopwatch]::StartNew()
     $params=@('tools/art-direction/full-studio/artist_loop.py',
-      '--brief','ELDORIA OWNER ART QUALITY CONTRACT V1. The SAME IMMUTABLE original Valoria timber watchtower is 2.65m wide in WORLD Y and 3.27m high in WORLD Z. Previous 8B central roof cylinders, 4B floating 0.875m outside wall and 4B duplicated mesh vertices were independently visually REJECTED, not artistic progress. CHANGE ORIGINAL HYPOTHESIS: use real Blender primitive or CLOSED multi-faced custom mesh to AUTHOR a genuine medieval TIMBER DIAGONAL SUPPORT or timber roof-edge beam touching outer ROOF and WALL, in the silhouette of the SAME inherited tower. Real WORLD bounds X [-1.22387,1.22387], Y [-1.325,1.325], Z [0,3.27077]. WORLD Z is vertical, WORLD Y is depth: do not mistake Y=2.5 for roof height. Support must overlap/nearly touch source across all axes, a plausible physical joint, never float near the gable. Qwen decides its own component geometry, position, dimension, surface, tools and finishing; do not replace the original texture atlas or hide stairs/door. A flat cap/cube suspended outside original wall fails; a slight pixel change is not art improvement. Inspect actual fixed-angle source and choose a believable scene-visible wood component. No source modification until independent acceptance; STOP after first genuine visible candidate. Budget 0.'
+      '--brief','ELDORIA ART QUALITY OWNER CONTRACT V1: Genuine NEW ARTISTIC COMPOSITION, NOT one cube. On COPY of SAME frozen 2.65m-wide timber Valoria village tower, Qwen8B independently design at least TWO physically CONNECTED medieval wooden load-bearing architectural components (timber braces, eave support or wall-to-roof roof-edge structural ensemble) using several real Blender primitive/custom mesh operations. YOU choose exact original objects, unique CYCLE names, all shapes, dimensions, WORLD XYZ locations and rotations. Each component must overlap/nearly touch OLD source on ALL XYZ axes AND connect to the other NEW components; no floating unrelated boxes, detached cubes, apex cylinders, duplicate object names or fake roof joints. Original tower WORLD bounds X [-1.22387,1.22387], Y [-1.325,1.325], Z [0,3.27077]; WORLD Z is vertical, Y is horizontal depth. Use fixed camera plus Blender top/side views to attach believable timber beams to real outer roof/wall. Keep door and stairs usable and preserve inherited 3D atlas and UV. No scripted generation of beams: YOU author every shape, placement and visual decision. Previous 4B and 8B lone objects were independent ART_REJECTED. A visible changed-pixel count is not ART_APPROVED, real external review must accept it. Budget 0, SAME original asset only.'
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
       '--max-cycles','4','--min-successful-cycles','2',
-      '--max-plan-attempts','5','--max-actions','3','--max-tokens','2048',
+      '--max-plan-attempts','5','--max-actions','4','--max-tokens','3072',
       '--vision-max-edge','768','--asset-category','architecture')
     if($case.kind -eq 'assembly'){$params+=@('--source-build-phase','--source-tool-sequencing')}
+    elseif($case.kind -eq 'composition'){$params+=@('--source-build-phase','--source-tool-sequencing','--multi-component-assembly')}
     elseif($case.kind -eq 'professional'){$params+=@('--phase','full','--source-tool-sequencing')}
     else{$params+=@('--phase','mesh_edit')}
     $code=999
