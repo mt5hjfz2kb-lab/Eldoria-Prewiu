@@ -1,0 +1,32 @@
+name: Reference-first zero-budget pilot static source gate
+
+on:
+  push:
+    branches:
+      - prototype/reference-first-zero-budget-visual-pilot-20261015
+    paths:
+      - '.github/workflows/reference-first-zero-budget-pilot.yml'
+      - 'tools/reference-first-pilot/**'
+      - 'Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/**'
+      - 'docs/evidence/reference-first-zero-budget-visual-pilot-20261015/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reference-first-pilot-static-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-only:
+    name: Preflight sources (NO Windows, NO rendering)
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate source assets, rights boundary and isolated Unity code
+        run: node tools/reference-first-pilot/verify.mjs
