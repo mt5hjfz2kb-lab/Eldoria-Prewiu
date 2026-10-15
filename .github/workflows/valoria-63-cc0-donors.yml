@@ -1,0 +1,35 @@
+name: "[ART DONOR] Free CC0 3D nature model source verification"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-63-cc0-donors.yml'
+      - 'tools/valoria-modular-fortress/collect_cc0_donors.py'
+permissions:
+  contents: read
+jobs:
+  inspect-free-licensed-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download only specified free CC0 glTF donor and dependencies
+        run: python3 tools/valoria-modular-fortress/collect_cc0_donors.py "$RUNNER_TEMP/eldoria-cc0-donors"
+      - name: Verify CC0 license and model count
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-cc0-donors'
+          d=json.loads((p/'source_manifest.json').read_text())
+          assert d['license']=='CC0'
+          assert len(d['models'])==16
+          assert len(list(p.glob('*.gltf')))==16
+          print('FREE_CC0_DONOR_MODEL_VALIDATION_PASS')
+          PY
+      - name: Archive source candidates for Blender individual A/B only
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-cc0-nature-donor-candidates-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-cc0-donors/**
+          retention-days: 30
+          if-no-files-found: error
