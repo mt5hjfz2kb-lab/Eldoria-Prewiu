@@ -7,16 +7,18 @@
   "art_approved": false,
   "calibration_validated": false,
   "status": "EXPERIMENTAL_ASSET_REQUIRES_INDEPENDENT_REVIEW",
-  "objects": 316,
-  "vertices": 19946,
-  "triangles": 37380,
+  "objects": 320,
+  "vertices": 20830,
+  "triangles": 38908,
   "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "design": "Compact early Bastion military camp: blue canvas ridge pavilion, smaller recruit shelter, oak fencing, open training yard, weapons and royal standard. Frozen existing assets unchanged.",
+  "export_meshes": 14,
+  "revision": "r2: clear entrance, softer canvas, muted blue, mottled soil, material-batched GLB; original r1 preserved in prior run",
   "files": {
-    "Cuartel_ChatGPT_v1.glb": "a4975847d3b91fca4b7efecd02b34934b70c1d43f6bc6c86dd026fbffe3f3c87",
-    "cuartel-rear.png": "bed98f031797cb5b69af7d6af1989708e85c414036bb96e1708e4aa02ee517c7",
-    "cuartel-hero.png": "1e8d015d39527e1f4efaef0b845b8a8b5361d38f4da790f66fc3fc72d7db9a7e",
-    "Cuartel_ChatGPT_v1.blend": "9d5db5a68f6b643bcce4ec1a06361d871ce0dd1383a5ac02b258ca38b27f515f",
-    "cuartel-strategic.png": "464fdd01a91ff22ef6313576d3f689f0d111b8f6bd77198844787247238b0585"
+    "Cuartel_ChatGPT_v1.glb": "21a5f1d12964a8bf5cb043f9951df2947c992edd1ef09199ed6627a8d521dfd0",
+    "cuartel-rear.png": "ada34f265a5399033b0af2de53ad8d56be0838a9953e7b8b05c58faab3ea4f2c",
+    "cuartel-hero.png": "9a87b61a536b6d9bb57e1724dd7b5123984757370e9be988e168c7e341b7f128",
+    "Cuartel_ChatGPT_v1.blend": "9d0d188b8a9fd500f710311ab1b24b03b2b46fea6f1cd4abc906c2807d2d51c8",
+    "cuartel-strategic.png": "40f28e05abd2751f10d7f582384eb217ea22b0fa5a410bfbf7c782388489c8b6"
   }
 }
