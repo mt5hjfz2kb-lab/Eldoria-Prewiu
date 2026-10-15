@@ -105,6 +105,37 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
     )
 
 
+def source_contact_facts(objects, limit_per_mesh=24):
+    """Expose ONLY genuine ray-hit WORLD contact coordinates measured by Blender.
+
+    Qwen remains responsible for deciding which anchor to use, and for designing
+    the geometry/placement. Never synthesize a point from a screen pixel.
+    """
+    import math
+    result=[]
+    for item in objects:
+        hits=[]
+        for hit in item.get("camera_visible_face_landmarks",[])[:limit_per_mesh]:
+            xyz=hit.get("world_center_m")
+            screen=hit.get("camera_screen_uv")
+            if hit.get("camera_visible") is not True or hit.get("camera_ray_hit_original_face") is not True:
+                continue
+            if type(hit.get("face_index")) is not int:
+                continue
+            if not (isinstance(xyz,list) and len(xyz)==3
+                    and all(type(v) in (int,float) and math.isfinite(v) for v in xyz)):
+                continue
+            if not (isinstance(screen,list) and len(screen)==2
+                    and all(type(v) in (int,float) and math.isfinite(v) for v in screen)):
+                continue
+            hits.append({"id":hit["face_index"],"screen_uv":screen,
+                         "world_xyz_m":xyz,
+                         "height":hit.get("world_height_fraction")})
+        if hits:
+            result.append({"name":item["name"],"faces":hits})
+    return result
+
+
 def strict_preflight_plan(plan):
     """Cheap source-side validation BEFORE launching Blender.
     
