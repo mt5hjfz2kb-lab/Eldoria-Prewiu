@@ -1,3 +1,5 @@
+> **ESTADO VIGENTE — 2026-10-15: COMPARACIÓN REAL DE MEMORIA SELECTIVA COMPLETADA.** Run [38726028141](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38726028141), 96 inferencias Qwen3 14B en el PC. Sin memoria 32/32; completa 31/32; selectiva 32/32. Se reproduce y evita la regresión `one_mesh`; cero regresiones de DECISIÓN selectiva en esta muestra. No demuestra superioridad sobre baseline ni generalización. Fuente y selector intactos; producción artística pausada. Esta cabecera y la sección final sustituyen los anteriores estados PENDING/BLOCKED, que se conservan como historia. La solicitud actual de creación en la ruta original fue aceptada por los controles normales; el motivo de los rechazos antiguos sigue desconocido.
+
 # ELDORIA — Arquitectura de ojos, geometría y cerebro artístico IA (validación V1)
 
 **Fecha:** 15-10-2026. **Presupuesto:** 0 €. **Estatus:** capa de diagnóstico y transferencia segura **IMPLEMENTADA Y PROBADA**; artista profesional que puede editar **NO VALIDADO**. Nada se publica ni se modifica en la malla/Unity. **Autoridad:** último `main/AGENTS.md` mantiene pausa de producción.
@@ -836,3 +838,135 @@ Artefacto `11966897453`, ZIP descargado y hash real verificado `c54d53b7ecedbb72
 **Corrección operativa:** había una ruta legítima para verificar la salud actual sin dispatch directo: el push-trigger del inventario read-only existente. La falta de dispatch callable no bloquea esa vía. Se dejó registrada en `main/tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md`, commit `a82fff509180a132a38b7d8cfc782ebcd9e391f8`, junto con el instante/run/job/artefacto. En futuras sesiones, inspeccionar este método antes de afirmar que no se puede comprobar el PC. Esta operación fue independiente del benchmark rechazado y no incorporó código equivalente.
 
 Permisos actuales de la app GitHub consultados: ajuste específico **Allow all actions**. Lecturas, escrituras y ejecución por push han funcionado en esta sesión. No se modificaron permisos. Los rechazos antiguos de seguridad de los dos archivos del benchmark no se explican por falta de esta autorización, no se han revocado y **no se reintentaron**. No existe en las herramientas actuales un mecanismo de revisión/revocación de esas decisiones. La comparación selectiva sigue pendiente de resolución externa, no de reinstalar Qwen ni de reparar el PC.
+
+## Validación real final — memoria selectiva, 2026-10-15
+
+### Ejecución y resultado observado
+
+- Modelo local `qwen3:14b`; Windows `DESKTOP-R10PE55`; run **38726028141**, job **116391981342**, fuente exacta `a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c`; **SUCCESS**. Completado a las 11:19 UTC.
+- **96/96 inferencias reales**: tres condiciones entremezcladas sobre 16 preguntas originales y 16 reformulaciones prospectivas equilibradas (ocho verdaderas / ocho falsas-no probadas por conjunto). Misma evidencia congelada, mismo modelo, temperatura 0, seed 221015, contexto 4096 y límite 200 tokens.
+- Los 32 hashes de prompts originales de baseline/control coinciden con el ensayo V2 previo. La fuente original, el catálogo y el selector **no se cambiaron** para esta prueba. Manifiesto de casos y gold fijados antes de inferir, sin pasar gold al modelo/selector.
+- Las 16 nuevas frases son un holdout de formulación en dominios conocidos, no una prueba independiente de nuevos tipos de problema. El orden aleatorio cambia respecto a V2 al introducir brazos/casos; las respuestas del mismo prompt no se asumieron deterministas, se volvieron a medir como controles emparejados.
+
+| Conjunto | Sin memoria | Memoria completa | Memoria selectiva |
+|---|---:|---:|---:|
+| 16 originales | 16/16 | 15/16 | 16/16 |
+| 16 reformulaciones prospectivas | 16/16 | 16/16 | 16/16 |
+| **Total** | **32/32** | **31/32** | **32/32** |
+
+**Resultado limitado a esta muestra:** la recuperación selectiva evita la regresión que se reproduce al inyectar memoria completa, sin errores adicionales de decisión respecto al baseline. No supera al baseline sin memoria: lo iguala. No hay evidencia suficiente para superioridad estadística general, aprendizaje de pesos ni dirección artística profesional.
+
+### Regresión conservada y revisión independiente
+
+`one_mesh`, gold `PROBADO`:
+- Completa: `NO_PROBADO`, vuelve a dudar de que el único objeto sea la torre aunque recibe `mesh_object_count:1`.
+- Selectiva: recupera **0 lecciones**, responde `PROBADO` y cita el objeto único.
+- Baseline: `PROBADO`; su respuesta bruta es idéntica a la selectiva en este caso.
+
+Se inspeccionaron las 32 explicaciones selectivas, además de recalcular resultados y verificar las 96 respuestas API/modelo originales. No se detectó nueva regresión binaria. Las respuestas sobre UV contienen la expresión ambigua «nuevo propietario», que también aparece en baseline/control al traducir la evidencia inglesa: no es un permiso nuevo ni una regresión introducida por el selector. Las etiquetas correctas no prueban razonamiento perfecto. El caso reformulado `h_roof_count` no recupera lección por sus pistas léxicas y responde correctamente sin ella: el ensayo no certifica recall semántico exhaustivo.
+
+Selección real: 16 preguntas con abstención, 12 con una lección y 4 con dos. Se conserva origen, índices y hashes de cada selección. Latencia API acumulada 206,37 s, incluyendo carga inicial; medianas observadas sin/control/selectiva 1,625 / 1,844 / 1,703 s. No se usa esta ejecución aislada como certificación de rendimiento.
+
+### Evidencia bruta persistente y comprobación de bytes
+
+Artefacto **11967828291**, nombre `eldoria-qwen14b-memory-selective-three-arm-v1`. ZIP SHA-256 `0ad49fd03f07b628ebe084bc32fbb59ab340b128eea26b52f50182b5478a508e`.
+
+El ZIP EXACTO se conserva además en Git, sin depender de la caducidad del artefacto:
+- Archivo: [three-arm-evidence.zip](eldoria-memory-selective-20261015/three-arm-evidence.zip).
+- Commit de conservación: `a1dc9ae0ba048f39594508513ca80a4fff79049f`.
+- Blob Git verificado contra bytes locales originales: `62c572aae74653b92289e8dccf6813c4dc6d2808`.
+- `three-arm.json`: **510.351 bytes**, SHA-256 `d5b36db3aab797a959fa42dabacc48b0e69b29c0ba070318a735985865abd8a2`.
+- Incluye petición completa por inferencia, respuesta API original y texto del modelo sin truncar, gold separado, decisiones, selecciones, tiempos, tokens, hashes, manifiesto predeclarado y fuente. Los originales V1/V2 permanecen intactos.
+
+Revisión de integridad, realizada fuera del script productor:
+
+```json
+{
+  "artifact_sha256": "0ad49fd03f07b628ebe084bc32fbb59ab340b128eea26b52f50182b5478a508e",
+  "three_arm_json_sha256": "d5b36db3aab797a959fa42dabacc48b0e69b29c0ba070318a735985865abd8a2",
+  "original_raw_file_bytes": 510351,
+  "recomputed_correct_counts": {
+    "selective_memory": 32,
+    "without_memory": 32,
+    "with_memory": 31
+  },
+  "cases": 32,
+  "responses": 96,
+  "by_group": {
+    "original": {
+      "complete": true,
+      "counts": {
+        "without_memory": 16,
+        "with_memory": 15,
+        "selective_memory": 16
+      },
+      "case_count": 16,
+      "selective_regressions_vs_baseline": [],
+      "selective_recoveries_vs_full": [
+        "one_mesh"
+      ],
+      "errors": [],
+      "verdict": "NO_SELECTIVE_REGRESSION_IN_THIS_SAMPLE"
+    },
+    "phrasing_holdout": {
+      "complete": true,
+      "counts": {
+        "without_memory": 16,
+        "with_memory": 16,
+        "selective_memory": 16
+      },
+      "case_count": 16,
+      "selective_regressions_vs_baseline": [],
+      "selective_recoveries_vs_full": [],
+      "errors": [],
+      "verdict": "NO_SELECTIVE_REGRESSION_IN_THIS_SAMPLE"
+    }
+  },
+  "errors": [
+    {
+      "case": "one_mesh",
+      "arm": "with_memory",
+      "raw": "{\"decision\":\"NO_PROBADO\",\"reason\":\"No hay evidencia inequívoca de que Blender haya importado un único objeto de malla de la torre. El contexto medido menciona un único objeto de malla, pero no especifica que corresponda a una torre.\"}"
+    }
+  ],
+  "one_mesh": [
+    {
+      "arm": "with_memory",
+      "raw": "{\"decision\":\"NO_PROBADO\",\"reason\":\"No hay evidencia inequívoca de que Blender haya importado un único objeto de malla de la torre. El contexto medido menciona un único objeto de malla, pero no especifica que corresponda a una torre.\"}",
+      "recall_count": null
+    },
+    {
+      "arm": "selective_memory",
+      "raw": "{\"decision\":\"PROBADO\",\"reason\":\"El hecho indica que 'mesh_object_count':1, lo que confirma que Blender importó un único objeto de malla de la torre.\"}",
+      "recall_count": 0
+    },
+    {
+      "arm": "without_memory",
+      "raw": "{\"decision\":\"PROBADO\",\"reason\":\"El hecho indica que 'mesh_object_count':1, lo que confirma que Blender importó un único objeto de malla de la torre.\"}",
+      "recall_count": null
+    }
+  ],
+  "seconds_total": 206.37,
+  "sha_sources": {
+    "brain_memory_epistemic_v2.py": "da05cf7faab0186177081f93489fa2c2db74c3cc42ea2d8fcad6da568cf42d09",
+    "selective_memory.py": "c85382e9a7691a1acaeb828ab151b6c06ff367141287067be64fdb7977dd6057",
+    "brain_memory_selective_ab.py": "a2fc108132bb8989e1f15c6773e0fa88c0a10cb13951bb4de1d2230da3daea5f"
+  }
+}
+```
+
+### Trazabilidad del desbloqueo actual
+
+Tras la petición expresa del propietario de volver a presentar la operación, la **misma herramienta normal `create_file` aceptó la ruta original** `tools/art-direction/director-control/brain_memory_selective_ab.py`, commit `9bd2ae06da7df716de3b3fbc27dc7298d6cd2158`. Respuesta literal guardada en `ELDORIA_WRITE_REVIEW_INCIDENT_20261015.md`. No se cambió configuración de seguridad, se renombró el archivo ni se usó una vía indirecta. Esta aceptación específica permitió continuar. No se ha recuperado la causa de las dos negativas históricas: no atribuirlas a fallo de GitHub, PC, política nueva ni falso positivo sin evidencia.
+
+El archivo de pruebas selector rechazado antiguamente no fue necesario: no se repitieron las 13 comprobaciones estáticas ya acreditadas. Se verificó la sintaxis/integridad del NUEVO harness y la equivalencia de sus prompts, y después se midió el modelo real. No se promueve producción por un CI verde.
+
+### Estado y continuidad
+
+- `SELECTIVE_MEMORY_QWEN_COMPARISON_COMPLETED=true`.
+- `SELECTIVE_MEMORY_NO_DECISION_REGRESSION_OBSERVED=true`, **alcance 32 preguntas / 1 seed / 1 ejecución**.
+- `SELECTIVE_MEMORY_QWEN_AB_VALIDATED=true` **solo para este ensayo diagnóstico**; no autorización general de edición, despliegue o producción.
+- `SELECTIVE_MEMORY_GENERAL_BENEFIT_VALIDATED=false`; no superioridad frente a no usar memoria.
+- `SELECTIVE_MEMORY_PRODUCTION_ENABLED=false`, `ART_APPROVED=false`, `CALIBRATION_VALIDATED=false`, `BLENDER_EDITS=0`, `MODEL_WEIGHTS_TRAINED=false`.
+
+La misión de recuperación operativa y comparación diagnóstica puede cerrarse con estas evidencias y límites. El siguiente trabajo artístico exige nueva autorización de alcance que levante su pausa; no se reinicia automáticamente Bastión I, 4X ni la torre. El bootstrap existente de main debe recuperar este resultado y no seguir enviando a soporte como paso obligatorio del benchmark ya ejecutado.
