@@ -71,12 +71,38 @@ def main():
     if len(inventory)!=1:
         raise RuntimeError("EXPECTED_EXACTLY_ONE_IMPORTED_FROZEN_MESH")
     obj=inventory[0]
+    # Blender projects actual imported source vertices into fixed review camera,
+    # preserving original source. Qwen must select from these exact facts.
+    visible_file=work/"projected-safe-source-landmarks.json"
+    projection=subprocess.run([
+       str(pathlib.Path(a.blender).resolve()),"-b","--python-exit-code","1",
+       "--python",str(HERE/"visible_source_landmarks.py"),"--",
+       "--source",str(frozen_copy),"--review",
+       str(pathlib.Path(a.review).resolve()),"--out",str(visible_file)],
+       stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,
+       timeout=900,check=False)
+    (work/"projected-visible-vertices-blender-log.txt").write_text(
+        projection.stdout,encoding="utf8")
+    if projection.returncode:
+        raise RuntimeError("READ_ONLY_WORLD_TO_HERO_PIXEL_PROJECTION_FAILED")
+    projected=local_json(visible_file)
+    if projected.get("source_sha256")!=ORIGINAL_SHA or len(
+            projected.get("selected_balanced_landmarks",[]))<10:
+        raise RuntimeError("VERTEX_PROJECTION_SOURCE_NOT_VERIFIED")
+    selected_vertices=projected["selected_balanced_landmarks"]
+    inv=dict(obj)
+    inv["vertex_landmarks"]=list(obj["vertex_landmarks"])+[
+        {"vertex_index":p["vertex_index"],
+         "local_position_m":p["local_center"]}
+        for p in selected_vertices]
+    working_inventory=[inv]
     bounds=source_brush_bounds(obj)
     if not bounds:
         raise RuntimeError("VERIFIED_SOURCE_BRUSH_LIMITS_MISSING")
     lesson=recall_context(
-        "¿Puede una IA mejorar localmente un ensamblaje de troncos de la malla heredada "
-        "preservando fuente, UV, medidas de Blender y entrada/escalera?")
+        "¿Una cámara o vista diferente de un GLB prueba que sus vértices "
+        "cambiaron de verdad? ¿Permite modificar UV, la entrada o la "
+        "escalera protegida para mejorar la calidad de un asset?")
     if lesson["selection_count"]>2:
         raise RuntimeError("RECALL_SELECTOR_EXCEEDED_TWO_LESSONS")
 
@@ -92,7 +118,9 @@ def main():
         "max_world_brush_limits":bounds,
         "camera_protected_regions":local_json(a.review)["protected_screen_regions"],
         "vision_hypotheses_not_geometry":vision.get("single_image_observations",[])[:4],
-        "original_source_immutable":True
+        "original_source_immutable":True,
+        "source_verified_camera_projected_safe_vertices":selected_vertices,
+        "projected_safe_landmark_proof_sha256":digest(visible_file.read_bytes())
     }
     encoded=json.dumps(source_data,ensure_ascii=False,separators=(",",":"))
     preview=inspect/"source-preview-blender.png"
@@ -116,19 +144,16 @@ def main():
         "actions":{"type":"array","minItems":1,"maxItems":1,"items":{
            "type":"object","properties":{
              "id":{"type":"string"},
-             "op":{"type":"string","enum":["sculpt_anchor"]},
+             "op":{"type":"string","enum":["sculpt"]},
              "target":{"type":"string","enum":[obj["name"]]},
              "reason":{"type":"string"},
              "params":{"type":"object","properties":{
-                "anchor":{"type":"string","enum":["x_min","x_max","y_min","y_max","z_min","z_max"]},
-                "direction":{"type":"string","enum":["+X","-X","+Y","-Y","+Z","-Z"]},
-                "distance":{"type":"number",
-                    "minimum":bounds["distance"]["minimum"],
-                    "maximum":bounds["distance"]["maximum"]},
-                "radius":{"type":"number",
-                    "minimum":bounds["radius"]["minimum"],
-                    "maximum":bounds["radius"]["maximum"]}
-             },"required":["anchor","direction","distance","radius"],
+                "center":{"type":"array","minItems":3,"maxItems":3,
+                          "items":{"type":"number"}},
+                "delta":{"type":"array","minItems":3,"maxItems":3,
+                         "items":{"type":"number","minimum":-0.48,"maximum":0.48}},
+                "radius":{"type":"number","minimum":0.7,"maximum":1.6}
+             },"required":["center","delta","radius"],
                "additionalProperties":False}
             },"required":["id","op","target","reason","params"],
               "additionalProperties":False}}
@@ -141,26 +166,25 @@ def main():
     # This is a source *vertex edit* so we intentionally do not author
     # standalone geometric boxes. A source copy may change; source GLB never.
     prompt=(
-      "You are the Qwen3 14B 3D artist for an ISOLATED EXPERIMENT: "
-      "reshape a small existing timber detail on the frozen tower COPY using "
-      "the EXISTING Blender studio operation sculpt_anchor. "
-      "The visual review rejected three previous ADDITIVE designs as "
-      "unintegrated colored cubes; do not author any NEW geometry. "
-      "Source is one dense inherited mesh with 3029 disjoint islands, "
-      "11,400 vertices, shared UV atlas. Choose ONE small physically coherent "
-      "sculpt_anchor operation and select anchor,direction,distance,radius "
-      "from actual SOURCE LOCALS and verified measured limits. "
-      "The local axis is NOT Blender World Z! Blender handles transform. "
-      "Avoid roof overhang redesign, original front doorway, exterior staircase "
-      "and railings. Prefer a side-wall corner/joinery detail but acknowledge "
-      "uncertainty: local coordinate extrema alone do NOT semantically certify "
-      "that the chosen anchor is a timber corner. Your output must remain "
-      "a trial, never art approval. "
-      "If the available anchors cannot identify a safe local repair, "
-      "you may explain uncertainty, but must never invent unsupported coordinates. "
-      "Typed tool call only; never freeform commands. "
-      "JSON SCHEMA fields must match EXACTLY. "
-      "REFERENCE OBSERVATIONS from real source, not invented data:\n"+encoded+
+      "You are Qwen3 14B, 3D artist for an isolated calibration on a "
+      "FROZEN COPY. Two prior sculpt_anchor attempts selected the exact "
+      "same x_min,+Z,distance 0.0392m,radius 0.229m, moving actual vertices "
+      "but modifying only 0.031% of camera pixels. Those were REJECTED. "
+      "A Qwen-created giant rectangular prism also failed artistic review; "
+      "do NOT add objects. NEW STRATEGY: use professional Blender 'sculpt' "
+      "on an ACTUAL SAFE SCREEN-VISIBLE SOURCE VERTEX. "
+      "Blender mapped original LOCAL vertex coordinates into fixed camera "
+      "pixels. params.center MUST equal ONE of "
+      "source_verified_camera_projected_safe_vertices[*].local_center "
+      "triples, without interpolation, not WORLD coords. "
+      "The params.delta and params.radius are in imported mesh LOCAL units "
+      "(distinct from WORLD XYZ). Choose a clearly perceptible but not "
+      "destructive sculpt. Radius 0.7..1.6 LOCAL, and delta vector length "
+      "0.15..0.48 LOCAL. UV coordinates, source GLB, doorway, staircase, "
+      "railings and roof shape remain protected. A screen-space projected "
+      "vertex is not proof of a timber joint; explain uncertainty. "
+      "Return exactly ONE original typed 'sculpt' action, no others; "
+      "do NOT self-approve. Original source evidence:\n"+encoded+
       "\nSELECTED MEMORY:\n"+lesson["prompt_fragment"]
     )
     results=[]
@@ -213,10 +237,17 @@ def main():
             if len(proposal["actions"])!=1:
                 raise RejectedPlan("EXACTLY_ONE_LOCAL_SCULPT_REQUIRED")
             action=proposal["actions"][0]
-            if action["op"]!="sculpt_anchor" or action["target"]!=obj["name"]:
-                raise RejectedPlan("ONLY_ORIGINAL_INHERITED_MESH_SCULPT_ANCHOR_ALLOWED")
-            verify_source_plan(proposal,inventory)
-            validate_source_anchor_brush(action,obj)
+            if action["op"]!="sculpt" or action["target"]!=obj["name"]:
+                raise RejectedPlan("ONLY_SOURCE_GROUNDED_ORIGINAL_SCULPT_ALLOWED")
+            xyz=action["params"]["center"]
+            if not any(max(abs(x-y) for x,y in zip(xyz,p["local_center"]))<0.0002
+                       for p in selected_vertices):
+                raise RejectedPlan("SCULPT_CENTER_NOT_FROM_FROZEN_BLENDER_CAMERA_LANDMARK")
+            delta=action["params"]["delta"]
+            magnitude=sum(float(x)*float(x) for x in delta)**0.5
+            if not 0.15<=magnitude<=0.48:
+                raise RejectedPlan("SCULPT_DELTA_LOCAL_UNITS_TOO_SMALL_OR_LARGE")
+            verify_source_plan(proposal,working_inventory)
             entry["qwen_artist_values_unchanged"]=True
             entry["noncreative_id_repairs"]=ids
             plan=trial/"qwen14b-art-plan.json"
