@@ -9,6 +9,7 @@ p.add_argument("--prior-director",required=True)
 p.add_argument("--out",required=True)
 p.add_argument("--model",default="qwen3:14b")
 p.add_argument("--selective-freeform-diagnostic",action="store_true",help="Read-only paired free artistic reasoning with selectively recalled verified lessons; original behavior unchanged otherwise")
+p.add_argument("--provenance-calibration",action="store_true",help="Focused UV/material reasoning plus read-only Blender inspection planning; no edits")
 a=p.parse_args()
 out=pathlib.Path(a.out);out.mkdir(parents=True,exist_ok=True)
 g_bytes=pathlib.Path(a.grounding).read_bytes()
@@ -61,12 +62,14 @@ endpoint="http://127.0.0.1:11434"
 with urllib.request.urlopen(endpoint+"/api/tags",timeout=15) as res:
     models={m["name"] for m in json.load(res)["models"]}
 if a.model not in models:raise RuntimeError("STRONG_MODEL_NOT_INSTALLED_NO_PULL_IN_PYTHON")
-def ask(prompt,limit=350):
+def ask(prompt,limit=350,*,json_mode=False,temperature=0.1):
     request=urllib.request.Request(endpoint+"/api/chat",
        data=json.dumps({"model":a.model,"stream":False,"think":False,
+          **({"format":"json"} if json_mode else {}),
           "messages":[{"role":"system","content":"Eres un director de arte 3D senior especializado en geometría y pruebas. Distingue hechos de imágenes, hipótesis y mediciones. Nada de Blender, ni autorizar ediciones."},
                       {"role":"user","content":prompt}],
-          "options":{"temperature":0.1,"num_ctx":12288,"num_predict":limit}}).encode(),
+          "options":{"temperature":temperature,"num_ctx":12288,"num_predict":limit,
+                     **({"seed":20261015} if json_mode else {})}}).encode(),
        headers={"Content-Type":"application/json"})
     start=time.monotonic()
     with urllib.request.urlopen(request,timeout=900) as res:
@@ -78,7 +81,138 @@ def ask(prompt,limit=350):
             "done_reason":data.get("done_reason"),
             "prompt_eval_count":data.get("prompt_eval_count"),
             "eval_count":data.get("eval_count"),
-            "total_duration_ns":data.get("total_duration") }
+            "total_duration_ns":data.get("total_duration"),
+            "raw_api_response":data }
+# Focused calibration is an opt-in read-only diagnostic through this SAME 14B
+# art director, not a replacement agent and not an authoring/production pipeline.
+if a.provenance_calibration:
+    if a.selective_freeform_diagnostic:
+        raise RuntimeError("DIRECTOR_DIAGNOSTIC_MODES_ARE_EXCLUSIVE")
+    import random
+    from selective_memory import recall_context, ORIGINAL_SHA256
+    from evidence_gate import validate_provenance_diagnostic, RejectedArtDirection
+    if EXPECTED != ORIGINAL_SHA256 or not geo.get("immutable_source_verified"):
+        raise RuntimeError("SOURCE_NOT_FROZEN_FOR_CALIBRATION")
+    if not geo.get("all_cameras_same_exact_source_sha256"):
+        raise RuntimeError("CAMERA_SOURCE_NOT_VERIFIED")
+    inventory=geo.get("mesh_provenance",[])
+    if len(inventory)!=1 or inventory[0].get("uv_layer_count",0)<1 or not inventory[0].get("materials"):
+        raise RuntimeError("INVENTORY_MATERIAL_UV_SOURCE_MISSING")
+    # Unaltered measured fields, no fabricated material certification.
+    grounded={
+        "source_sha256":EXPECTED,
+        "same_immutable_glb_all_cameras":True,
+        "world_up":geo["world_up"],
+        "bounding_box":geo["bounding_box"],
+        "geometry":geo["geometry"],
+        "connected_island_count":geo["connected_island_count"],
+        "mesh_provenance":geo["mesh_provenance"],
+        "evidence_limitations":geo["evidence_limitations"],
+        "protected_elements":ground["protected_elements"],
+        "observations_from_8b_uncertain":[
+           {"camera":str(x["view"]), "hypothesis":str(x["text"])[:220]} for x in caps
+        ]
+    }
+    grounded_json=json.dumps(grounded,ensure_ascii=False,separators=(",",":"))
+    questions=[
+       ("source_uv",
+        "Audita los datos REALES de UV y material asignado del GLB. Enumera hechos medidos con cita de campo; separa inventario de fidelidad en Unity."),
+       ("neutral_materials",
+        "Se ve una torre en luz neutra y una referencia con antorchas. ¿Qué prueba el inventario sobre UV/material de origen y qué NO demuestra sobre material definitivo ni antorchas?"),
+       ("islands_and_uv",
+        "Hay una sola malla importada y muchas islas topológicas. ¿Cómo afecta esto a la EXISTENCIA de UV y material asignado? No deduzcas ausencia de UV por fragmentación."),
+       ("preproduction_plan",
+        "Eres director de arte: prepara hasta tres inspecciones profesionales de SOLO LECTURA sobre UV, material, tejado y contacto usando información Blender y observaciones visuales. No plantees ediciones ejecutables.")
+    ]
+    spec=(
+       "DEVUELVE SOLO UN OBJETO JSON en español con EXACTAMENTE estos campos "
+       "(sin Markdown): source_has_uv (boolean), uv_layer_count (integer), "
+       "uv_coordinates (integer), source_has_assigned_material (boolean), "
+       "assigned_source_material (string), original_mesh_object_count (integer), "
+       "topological_island_count (integer), final_unity_material_certified (boolean), "
+       "torches_in_source_proven (boolean), roof_type_proven (boolean), "
+       "physical_contacts_proven (boolean), model_edit_authorized (boolean), "
+       "art_approved (boolean), decision (string), "
+       "evidence_paths (array of source field names EXACTLY like "
+       "mesh_provenance[0].uv_layer_count, mesh_provenance[0].uv_coordinates, "
+       "mesh_provenance[0].materials[0], geometry.mesh_object_count, "
+       "connected_island_count), read_only_inspection_plan (array of 1-3 objects "
+       "with keys tool,mode,goal. tool ONLY one of BLENDER_READ_ONLY, "
+       "QWEN_VL_OBSERVATION, INDEPENDENT_REVIEW; mode INSPECT_ONLY), "
+       "uncertainty (brief grounded reason). Verifica que los datos "
+       "POSITIVOS de inventario no equivalen a certificación Unity. "
+       "No afirmes que no hay material ni UV cuando sí existe un registro medido. "
+       "Nunca ejecutes una herramienta ni ordenes modificar ningún asset."
+    )
+    runs=[(key,question,arm,repeat) for key,question in questions
+          for arm in ("baseline","selective") for repeat in (1,2)]
+    random.Random(20261015).shuffle(runs)
+    records=[]
+    result={"schema_version":1,"mode":"DIAGNOSTIC_ONLY_MATERIAL_UV_CALIBRATION",
+            "model":a.model,"source_sha256":EXPECTED,
+            "spatial_grounding_sha256":hashlib.sha256(g_bytes).hexdigest(),
+            "prior_vision_sha256":hashlib.sha256(pathlib.Path(a.prior_vision).read_bytes()).hexdigest(),
+            "prior_director_sha256":hashlib.sha256(pathlib.Path(a.prior_director).read_bytes()).hexdigest(),
+            "source_context_sha256":hashlib.sha256(grounded_json.encode()).hexdigest(),
+            "prompt_schema_sha256":hashlib.sha256(spec.encode()).hexdigest(),
+            "material_ground_truth":inventory[0],
+            "questions":[{"key":k,"question":q} for k,q in questions],
+            "conditions":["baseline","selective"],"fixed_seed":20261015,
+            "repetitions_per_case_arm":2,"responses":records,
+            "art_approved":False,"can_edit_blender":False,
+            "editor_actions":[],"model_weights_trained":False,
+            "calibration_validated":False}
+    target=out/"qwen3-14b-material-provenance-calibration.json"
+    def save():
+        target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    save()
+    for key,question,arm,repeat in runs:
+        memory=recall_context(question) if arm=="selective" else None
+        prompt=("MEDICIONES DE BLENDER Y OBSERVACIONES DE CÁMARA NO CONFIRMADAS: "+
+            grounded_json+"\nCUESTIÓN DEL DIRECTOR: "+question+"\n"+spec)
+        if memory and memory["prompt_fragment"]:
+            prompt+="\n"+memory["prompt_fragment"]
+        rec={"case":key,"arm":arm,"replicate":repeat,
+             "prompt":prompt,
+             "prompt_sha256":hashlib.sha256(prompt.encode()).hexdigest(),
+             "recall":memory,
+             "selected_lesson_indices":
+                [x["index"] for x in memory["selection"]] if memory else []}
+        try:
+            response=ask(prompt,720,json_mode=True,temperature=0)
+            rec["ollama"]=response
+            if response.get("done_reason")!="stop" or not response["complete"]:
+                raise ValueError("TRUNCATED_OR_INCOMPLETE_OUTPUT")
+            parsed=json.loads(response["text"])
+            rec["parsed"]=parsed
+            rec["independent_gate"]=validate_provenance_diagnostic(parsed,geo)
+        except Exception as error:
+            rec["error"]=repr(error)[:550]
+            rec["independent_gate"]={"status":"FAIL_CLOSED","reason":repr(error)[:550],
+                                      "can_edit_blender":False,"art_approved":False}
+        records.append(rec)
+        save()
+        print("ELDORIA_UV_MATERIAL_REVIEW",key,arm,repeat,
+              rec["independent_gate"]["status"],flush=True)
+    result["summary"]={
+         "calls":len(records),
+         "valid":sum(r["independent_gate"]["status"]=="PROVENANCE_DIAGNOSTIC_TECH_PASS_NOT_ART_APPROVAL" for r in records),
+         "invalid":sum(r["independent_gate"]["status"]=="FAIL_CLOSED" for r in records),
+         "by_arm":{arm:{
+             "valid":sum(r["arm"]==arm and r["independent_gate"]["status"]=="PROVENANCE_DIAGNOSTIC_TECH_PASS_NOT_ART_APPROVAL" for r in records),
+             "total":sum(r["arm"]==arm for r in records)}
+             for arm in ("baseline","selective")},
+         "no_mesh_edits":True,
+         "art_approved":False,
+         "calibration_validated":False
+    }
+    save()
+    print("ELDORIA_UV_MATERIAL_CALIBRATION_SUMMARY",
+          json.dumps(result["summary"]),flush=True)
+    if result["summary"]["invalid"]>0:
+        raise SystemExit("PROVENANCE_DIAGNOSTIC_GATE_REJECTED")
+    raise SystemExit(0)
+
 # The actual Qwen3 14B director uses the same grounded input and camera hypotheses
 # as the original experiment. This opt-in branch tests selective recall for OPEN
 # artistic reasoning; it never reaches a Blender command or any production output.
