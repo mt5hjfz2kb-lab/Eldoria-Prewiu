@@ -458,66 +458,89 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
 
 
 def observe_source_with_vl(args,reference,current_image,spatial_views,role,trial):
-    """Dedicated genuine VISION stage for a text-only Qwen14B art director.
+    """Use independent Qwen-VL8B observations on SOURCE and STYLE separately.
 
-    Evidence is frozen per cycle, never re-inferred per plan retry. No guessed
-    image captions and no substitution of style reference for source material.
+    A mixed-image request led VL8B to claim that no building was present
+    (#38780427364). Never pass such hallucination to Qwen14B as a source fact.
+    Two bounded local VL calls avoid target/source image identity confusion.
+    Results are evidence observations, not an artistic pass or geometry proof.
     """
     path=trial/"vision-source-observation.json"
     if path.is_file():
         return json.loads(path.read_text(encoding="utf-8"))
     if not args.vision_model or not current_image:
         raise RuntimeError("TEXT_DIRECTOR_REQUIRES_REAL_BLENDER_VISION")
-    # Compare REAL owner destination to REAL current Blender source, without
-    # increasing image count beyond the 3-image local 16k VL8B envelope.
-    frames=[reference,current_image]
-    if spatial_views:
-        frames.append(spatial_views[-1])  # SOURCE side view, not a target
-    for frame in frames:
+    source_frames=[current_image]+list(spatial_views or [])[:2]
+    for frame in [reference]+source_frames:
         if not frame.is_file():
-            raise FileNotFoundError("REAL_SOURCE_OR_STYLE_FRAME_REQUIRED: "+str(frame))
-    schema={"type":"object","additionalProperties":False,"properties":{
+            raise FileNotFoundError("GENUINE_SOURCE_OR_OWNER_IMAGE_REQUIRED: "+str(frame))
+    source_schema={"type":"object","additionalProperties":False,"properties":{
         "source_material":{"type":"string","minLength":12},
         "source_architecture":{"type":"string","minLength":20},
-        "reference_style_gap":{"type":"string","minLength":25},
-        "priority_visible_zone":{"type":"string","minLength":12},
         "supported_defect":{"type":"string","minLength":25},
         "candidate_attachment_surfaces":{"type":"string","minLength":25},
         "protected_access_roof_stairs":{"type":"string","minLength":20},
         "uncertainties":{"type":"string","minLength":12}},
-        "required":["source_material","source_architecture","reference_style_gap",
-                    "priority_visible_zone","supported_defect",
+        "required":["source_material","source_architecture","supported_defect",
                     "candidate_attachment_surfaces","protected_access_roof_stairs","uncertainties"]}
-    actual_images=[image_data(frame,640) for frame in frames]
-    prompt=("Analyze THREE genuine images in this exact order: (1) OWNER STYLE "
-        "DESTINATION REFERENCE for Valoria (not the actual source object), "
-        "(2) CURRENT imported Blender watchtower in fixed hero camera, "
-        "(3) CURRENT Blender watchtower side view. Compare destination "
-        "architectural richness, silhouette and coherent timber joinery to the "
-        "REAL existing source. Identify a visible source-to-reference STYLE GAP "
-        "that an original architectural intervention could genuinely close, "
-        "with priority_visible_zone in the current HERO CAMERA. Avoid recommending "
-        "a roof-edge strip or cap if the actual roof already has eaves. "
-        "If there is no demonstrable reference gap, explicitly report none "
-        "without inventing a defect. The neutral GREY Blender inspection "
-        "shader is NOT evidence that this timber source lacks textures. "
-        "Do not hallucinate stone or missing roof. Identify protected door, "
-        "stairs, roof, railings; face IDs and XYZ come ONLY from separately "
-        "measured Blender geometry, never guessed from these pixels. JSON only.")
-    result=json.loads(request_ollama(args.endpoint,args.vision_model,
-        [{"role":"system","content":"Independent local visual observer; only visual facts in supplied Blender images."},
-         {"role":"user","content":prompt,"images":actual_images}],400,timeout=420,schema=schema))
+    source_prompt=(
+        "These THREE genuine images show ONLY the actual inherited Blender "
+        "SOURCE, in order: fixed game hero camera, WORLD TOP, WORLD SIDE. "
+        "Describe the physically visible log-cabin/timber watchtower, roof, "
+        "wall geometry, staircase and railings accurately. What changes "
+        "would make its silhouette or architectural structure more readable "
+        "without damaging those elements? Report no actual defect if none. "
+        "The neutral inspection material is a GREY diagnostic shader, "
+        "not proof of missing textures. Never invent source geometry, "
+        "wall materials, coordinates, missing eaves, or original image defects. "
+        "The independent Blender inventory supplies true face IDs/XYZ.")
+    src=json.loads(request_ollama(args.endpoint,args.vision_model,[
+        {"role":"system","content":"Visual source observer: only the actual SOURCE images."},
+        {"role":"user","content":source_prompt,
+         "images":[image_data(p,640) for p in source_frames]}],
+        360,timeout=420,schema=source_schema))
+    arch=src["source_architecture"].lower().strip()
+    if ("none detected" in arch or "no geometry" in arch or
+            "none visible" in arch or "nothing visible" in arch):
+        raise RuntimeError("VL8B_SOURCE_IMAGE_PERCEPTION_FAILED_NO_EDIT")
+
+    style_schema={"type":"object","additionalProperties":False,"properties":{
+        "reference_architecture":{"type":"string","minLength":25},
+        "reference_visible_style_features":{"type":"string","minLength":30},
+        "reference_joinery_and_material_hierarchy":{"type":"string","minLength":25},
+        "reference_distinctive_silhouette":{"type":"string","minLength":20},
+        "uncertain_details":{"type":"string","minLength":12}},
+        "required":["reference_architecture","reference_visible_style_features",
+                    "reference_joinery_and_material_hierarchy",
+                    "reference_distinctive_silhouette","uncertain_details"]}
+    style_prompt=(
+        "This ONE genuine picture is the OWNER-APPROVED VALORIA STYLE "
+        "DESTINATION, NOT a Blender render of the current tower. Describe "
+        "only the visibly supported medieval fantasy architectural "
+        "sophistication, wood/stone/material hierarchy, silhouette and "
+        "detailed craftsmanship. Do not pretend that these objects already "
+        "exist in the editable source. No face IDs, no world XYZ, no invented "
+        "objects. Report any visually uncertain details.")
+    style=json.loads(request_ollama(args.endpoint,args.vision_model,[
+        {"role":"system","content":"Destination STYLE observer: owner reference image only."},
+        {"role":"user","content":style_prompt,"images":[image_data(reference,640)]}],
+        280,timeout=420,schema=style_schema))
     proof={"vision_model":args.vision_model,"director_model":args.model,
-           "source_camera_sha256":[sha(frame) for frame in frames[1:]],
+           "source_camera_sha256":[sha(frame) for frame in source_frames],
            "style_reference_sha256":sha(reference),
-           "actual_visual_input_order":["OWNER_STYLE_REFERENCE","CURRENT_BLENDER_HERO","CURRENT_BLENDER_SIDE"][:len(frames)],
-           "camera_views":len(frames)-1,"source_image_observed":True,
-           "style_reference_visually_compared":True,
-           "director_image_input":False,"visual_observation":result,
+           "source_image_order":["BLENDER_HERO","BLENDER_TOP","BLENDER_SIDE"][:len(source_frames)],
+           "owner_style_reference_observed_separately":True,
+           "camera_views":len(source_frames),
+           "source_image_observed":True,
+           "source_perception_guard_passed":True,
+           "director_image_input":False,
+           "visual_observation":{
+                "source_geometry_observation":src,
+                "owner_destination_style_observation":style,
+                "art_director_must_compare_both_not_invent_geometry":True},
            "art_approved":False}
     path.write_text(json.dumps(proof,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     return proof
-
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None,source_inventory=None,spatial_views=None,
