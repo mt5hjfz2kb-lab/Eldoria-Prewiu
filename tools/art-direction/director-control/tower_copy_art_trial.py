@@ -8,6 +8,7 @@ Any Blender A/B is a candidate for INDEPENDENT review, never ART_APPROVED.
 import argparse
 import hashlib
 import json
+import re
 import os
 import pathlib
 import shutil
@@ -123,10 +124,36 @@ def main():
        "en la cámara elevada 3/4 de la torre, preservando entrada, "
        "escalera y UV. No afirmes que ya está corregido. "
        "La referencia de estilo no es prueba de geometría existente. "
+       "No presupongas ni propongas cambiar el tipo de cubierta: ninguna "
+       "medición prueba dos aguas, cuatro aguas o un solo faldón. "
+       "Prioriza mejora localizada de bordes, aleros, juntas o remates "
+       "sin modificar la tipología o la estructura protegida. "
        "Una IA visual separada decidirá después las operaciones Blender "
        "sujetas a un validador, y un revisor INDEPENDIENTE deberá aceptar el A/B."
     )
-    plan=ask_local("qwen3:14b",prompt)
+    director_attempts=[]
+    feedback=""
+    forbidden_pattern=(r"\b(dos aguas|cuatro aguas|dos faldones|cuatro faldones|"
+                       r"two[- ]slope|hipped roof|gable roof)\b")
+    for attempt in range(1,3):
+        plan=ask_local("qwen3:14b",prompt+feedback)
+        director_attempts.append(plan)
+        choice=plan["direction"]
+        unsupported=(choice["visual_defect"]+"\n"+
+                     choice["proposed_visible_change"]).casefold()
+        if not re.search(forbidden_pattern,unsupported):
+            break
+        feedback=(
+          "\nRECHAZO: la respuesta anterior infería o prescribía "
+          "un número/tipo de aguas del tejado NO certificado por Blender. "
+          "Replantea UN acabado o defecto visual localizado "
+          "sin cambiar la tipología de cubierta."
+        )
+    (out/"director-14b-all-attempts.json").write_text(
+        json.dumps(director_attempts,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    if re.search(forbidden_pattern,(plan["direction"]["visual_defect"]+"\n"+
+                     plan["direction"]["proposed_visible_change"]).casefold()):
+        raise RuntimeError("DIRECTOR_REPEATED_UNVERIFIED_ROOF_TOPOLOGY")
     handoff={
       "schema_version":1,"mode":"OWNER_AUTHORIZED_ONE_TOWER_COPY_ART_TRIAL",
       "model":"qwen3:14b","model_text_only":True,
@@ -135,6 +162,7 @@ def main():
       "8b_vision_sha256":digest(pathlib.Path(a.vision).read_bytes()),
       "selected_memory":memory,
       "director":plan,
+      "director_attempts":len(director_attempts),
       "art_approved":False,"calibration_validated":False,
       "unity_tested":False,"original_source_edited":False
     }
