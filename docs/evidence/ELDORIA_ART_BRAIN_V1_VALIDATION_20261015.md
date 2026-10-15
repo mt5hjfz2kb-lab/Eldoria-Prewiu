@@ -770,3 +770,69 @@ A continuación se conserva el contenido original de `paired.json` recuperado, s
 - CI del bootstrap exacto `9eaaa927275539c9045799554aa7c7e7f3c8ca09`: [#38721902138](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38721902138), job `116378249079`, `architecture` SUCCESS. Este CI no prueba Qwen ni Windows.
 - El endpoint de runs con `?branch=diagnostic%2Fvaloria-ai-eyes-brain-20261015&per_page=30` se comprobó realmente y funciona. Para HEAD se utilizó `/git/ref/heads/diagnostic/valoria-ai-eyes-brain-20261015`; codificar la barra en el path de `/branches/...` produjo `INVALID_ARGUMENT`, resuelto con la ruta Git ref permitida. No es un bloqueo del repositorio.
 - El informe íntegro incorpora ahora los 32 registros originales de V2 además de las referencias al ZIP; no depende solo de la caducidad del artefacto para conservar sus resultados. Ningún resultado fue recalificado.
+
+## Comprobación EN VIVO del PC solicitada posteriormente — 15-10-2026
+
+**Esta evidencia sustituye el estado anterior NOT_VERIFIED para la observación de las 12:49 Europe/Madrid; no garantiza disponibilidad permanente.** Se inspeccionó el workflow de inventario ya existente, se añadieron únicamente fecha/runner/versión y disponibilidad 14B al manifiesto, y el push autorizado disparó [#38722927795](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38722927795). SHA fuente `d7ace70f840c986dda61be58924a60e2081ca9da`, job `116381681682`, Windows `DESKTOP-R10PE55`: **SUCCESS**.
+
+PowerShell real ejecutó la consulta de Ollama instalado, iniciando localhost solo si era necesario, y recuperó el inventario de cinco modelos. Se comprobó **Ollama 0.40.2 respondiendo**, `qwen3:14b` instalado (14.8B, Q4_K_M, 8.64 GiB), GPU RTX 3060 12.288 MiB. Cero nuevas inferencias, descargas o entrenamiento; Blender no arrancó; torre/producción intactas. El proceso Ollama que inicia la prueba se cierra al terminar: esto no significa que esté desinstalado o se haya perdido acceso.
+
+Artefacto `11966897453`, ZIP descargado y hash real verificado `c54d53b7ecedbb72224b6fc66c3cd55e5017d7ffa75ec21521ce14fc7f38f04f`. Manifiesto original conservado:
+
+```json
+{
+  "runner_name": "DESKTOP-R10PE55",
+  "models_trained": 0,
+  "schema_version": 2,
+  "observed_utc": "2026-10-15T10:49:15.2655125Z",
+  "previously_installed_models": [
+    {
+      "name": "qwen3:14b",
+      "size_gb": 8.64,
+      "parameter_size": "14.8B",
+      "quantization_level": "Q4_K_M",
+      "family": "qwen3"
+    },
+    {
+      "name": "qwen3-vl:8b-instruct-q4_K_M",
+      "size_gb": 5.76,
+      "parameter_size": "8.8B",
+      "quantization_level": "Q4_K_M",
+      "family": "qwen3vl"
+    },
+    {
+      "name": "qwen3-vl:4b-instruct",
+      "size_gb": 3.11,
+      "parameter_size": "4.4B",
+      "quantization_level": "Q4_K_M",
+      "family": "qwen3vl"
+    },
+    {
+      "name": "eldoria-artist:latest",
+      "size_gb": 3.11,
+      "parameter_size": "4.4B",
+      "quantization_level": "Q4_K_M",
+      "family": "qwen3vl"
+    },
+    {
+      "name": "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M",
+      "size_gb": 1.45,
+      "parameter_size": "1.72B",
+      "quantization_level": "Q4_K_M",
+      "family": "qwen3vl"
+    }
+  ],
+  "gpu_information": "NVIDIA GeForce RTX 3060, 12288",
+  "new_models_downloaded": 0,
+  "model_comparison_not_assumed": true,
+  "art_approved": false,
+  "runner_os": "Windows",
+  "mode": "READ_ONLY_DISCOVERY",
+  "qwen3_14b_installed": true,
+  "ollama_version": "0.40.2"
+}
+```
+
+**Corrección operativa:** había una ruta legítima para verificar la salud actual sin dispatch directo: el push-trigger del inventario read-only existente. La falta de dispatch callable no bloquea esa vía. Se dejó registrada en `main/tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md`, commit `a82fff509180a132a38b7d8cfc782ebcd9e391f8`, junto con el instante/run/job/artefacto. En futuras sesiones, inspeccionar este método antes de afirmar que no se puede comprobar el PC. Esta operación fue independiente del benchmark rechazado y no incorporó código equivalente.
+
+Permisos actuales de la app GitHub consultados: ajuste específico **Allow all actions**. Lecturas, escrituras y ejecución por push han funcionado en esta sesión. No se modificaron permisos. Los rechazos antiguos de seguridad de los dos archivos del benchmark no se explican por falta de esta autorización, no se han revocado y **no se reintentaron**. No existe en las herramientas actuales un mecanismo de revisión/revocación de esas decisiones. La comparación selectiva sigue pendiente de resolución externa, no de reinstalar Qwen ni de reparar el PC.
