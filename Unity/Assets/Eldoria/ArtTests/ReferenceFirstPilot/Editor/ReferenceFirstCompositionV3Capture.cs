@@ -48,8 +48,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             var buildings = Group(root,"Existing upper/lower stone architecture, no source changes");
             var nature = Group(root,"Actual reused forest/rock prefabs");
 
-            Material grass = Material("ground-olive", shader, new Color(.31f,.33f,.23f), null);
-            Material cliff = Material("rock-grey", shader, new Color(.58f,.57f,.55f),
+            Material grass = Material("ground-olive", shader, new Color(.43f,.40f,.27f), null);
+            Material cliff = Material("rock-grey", shader, new Color(.58f,.53f,.54f),
                 "Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png");
             Material path = Material("paving-weathered", shader, new Color(.74f,.69f,.62f),
                 "Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png");
@@ -86,6 +86,23 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                 Place(tower,buildings,"Lower corner tower "+x,x,-77,6f,11f,0f);architecture++;
             }
 
+            // Sparse earth/grass variation using repeated low-cost dressing tiles.
+            // Camera needs an open court, not a plain uniform green rectangle.
+            var earth=Material("dry-earth-patch",shader,new Color(.53f,.42f,.28f),null);
+            for(int i=0;i<46;i++)
+            {
+                float x=-45f+((i*29)%92);
+                float z=-58f+((i*37)%81);
+                if(Mathf.Abs(x)<8f || x*x/(70f*70f)+(z+8f)*(z+8f)/(80f*80f)>.80f)continue;
+                Box(stage,"Repeatable earth variation "+i,new Vector3(x,6.03f,z),
+                    new Vector3(3.0f+(i%5)*1.35f,.035f,2.6f+(i%4)*1.15f),earth);
+            }
+            // Backing masonry connects the existing wall family without moving the gatehouse.
+            var masonry=Material("warm-connecting-masonry",shader,new Color(.63f,.60f,.54f),
+                "Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png");
+            foreach(float side in new[]{-1f,1f})
+                Box(stage,"Upper CONTINUOUS stone defensive core "+side,
+                    new Vector3(side*38f,16.3f,66f),new Vector3(54f,4.8f,3.2f),masonry);
             // Reference-correct single route: bridge over water -> lower gate -> open courtyard -> stair -> upper gate.
             for(int i=0;i<13;i++)
             {
@@ -124,23 +141,46 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                 Torch(buildings,"Upper fire "+x,new Vector3(x,16f,59f),amber);
             }
 
+            // Correct placement: trees are rooted ON the plateau, never floating in surrounding water.
             int forest=0;
-            for(int i=0;i<78;i++)
+            for(int i=0;i<86;i++)
             {
-                float t=i*2f*Mathf.PI/78f;
-                float x=Mathf.Cos(t)*(80f+(i%5)*2.5f);
-                float z=Mathf.Sin(t)*(89f+(i%4)*3f)+12f;
-                if(z < -64f && Mathf.Abs(x) < 18f) continue;
-                Place(tree,nature,"Reused real conifer "+i,x,z,z>37f?14f:5.9f,10f+(i%4)*1.1f,i*47f); forest++;
+                float t=(i+.3f)*2f*Mathf.PI/86f;
+                float x=Mathf.Cos(t)*(62f+(i%4)*1.4f);
+                float z=-8f+Mathf.Sin(t)*(72f+(i%4));
+                if(z>26f || (z < -65f && Mathf.Abs(x) < 16f))continue;
+                Place(tree,nature,"Lower plateau rooted conifer "+i,x,z,5.95f,
+                      9.5f+(i%4)*1.3f,i*47f);
+                forest++;
+            }
+            // Upper tree belt belongs behind the top wall and grows on the upper terrace.
+            for(int i=0;i<30;i++)
+            {
+                float t=(i+.3f)*Mathf.PI/30f;
+                float x=Mathf.Cos(t)*46f;
+                float z=71f+Mathf.Sin(t)*11.5f;
+                Place(tree,nature,"Upper rooted pine belt "+i,x,z,14.05f,
+                      12f+(i%5)*1.35f,i*39f);
+                forest++;
             }
             int rocks=0;
             for(int i=0;i<44;i++)
             {
                 float t=(i+.2f)*2f*Mathf.PI/44f;
-                float x=Mathf.Cos(t)*(69f+(i%4));
-                float z=Mathf.Sin(t)*(82f+(i%5)-8f);
-                if(z < -64f && Mathf.Abs(x)<16f)continue;
-                Place(rock,nature,"Reused real rock "+i,x,z,z>30f?12f:5f,3.9f+(i%3)*1.1f,i*29f); rocks++;
+                float x=Mathf.Cos(t)*(65f+(i%3)*1.2f);
+                float z=-8f+Mathf.Sin(t)*(75f+(i%4));
+                if(z>28f || (z < -64f && Mathf.Abs(x)<17f))continue;
+                Place(rock,nature,"Rooted escarpment boulder "+i,x,z,5.85f,
+                      2.2f+(i%3)*1.0f,i*29f);
+                rocks++;
+            }
+            for(int i=0;i<12;i++)
+            {
+                float x=-42f+(i%6)*16.8f;
+                float z=75f+(i/6)*4f;
+                Place(rock,nature,"Upper wall rubble "+i,x,z,14f,
+                      1.6f+(i%3)*.55f,i*43f);
+                rocks++;
             }
             RenderSettings.ambientMode=AmbientMode.Flat;
             RenderSettings.ambientLight=new Color(.25f,.32f,.43f);
@@ -164,8 +204,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             AssetDatabase.SaveAssets();
             string folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../artifacts/reference-first-composition-v3"));
             Directory.CreateDirectory(folder);
-            Save(cam,folder,"03-fortified-plateau-overview.png",new Vector3(92,99,-129),new Vector3(0,9,-6),91f);
-            Save(cam,folder,"04-fortified-plateau-architecture.png",new Vector3(82,91,-116),new Vector3(0,8,-8),72f);
+            Save(cam,folder,"05-reference-restart-overview.png",new Vector3(92,99,-129),new Vector3(0,9,-6),91f);
+            Save(cam,folder,"06-reference-restart-close.png",new Vector3(82,91,-116),new Vector3(0,8,-8),72f);
             var report=new Report{revision=Environment.GetEnvironmentVariable("GITHUB_SHA")??"LOCAL",
                 architectureInstances=architecture,forestInstances=forest,rockInstances=rocks};
             File.WriteAllText(Path.Combine(folder,"render-manifest-v3.json"),JsonUtility.ToJson(report,true));
@@ -259,8 +299,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                 int next=(i+1)%N;
                 capTri[i*3]=0;capTri[i*3+1]=next+1;capTri[i*3+2]=i+1;
                 int k=i*6;
-                sideTri[k]=i*2;sideTri[k+1]=i*2+1;sideTri[k+2]=next*2;
-                sideTri[k+3]=next*2;sideTri[k+4]=i*2+1;sideTri[k+5]=next*2+1;
+                sideTri[k]=i*2;sideTri[k+1]=next*2;sideTri[k+2]=i*2+1;
+                sideTri[k+3]=next*2;sideTri[k+4]=next*2+1;sideTri[k+5]=i*2+1;
             }
             MeshObject(parent,name+" ground",cap,capUv,capTri,grass);
             MeshObject(parent,name+" rock wall",sides,sideUv,sideTri,rock);
