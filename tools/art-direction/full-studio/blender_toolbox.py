@@ -567,6 +567,15 @@ def main():
         for act in plan["actions"]:apply_known_action(act)
     else:
         execute_via_blendermcp(plan["actions"],apply_known_action,args.mcp_addon,args.mcp_sha256)
+    contact_proof=None
+    if args.source and any(
+            o.type=="MESH" and o.name not in originals and
+            not o.name.startswith("_EldoriaReview")
+            for o in bpy.data.objects):
+        from blender_surface_contact import actual_inherited_surface_contact
+        contact_proof=actual_inherited_surface_contact(set(originals))
+        (out/"actual-mesh-contact.json").write_text(
+            json.dumps(contact_proof,indent=2)+"\n",encoding="utf-8")
     camera_override(review.get("camera",{"location":[11,-18,14],"target":[0,0,2],"ortho_scale":19}))
     render_setup(review.get("render",{"samples":8,"width":960,"height":720}))
     bpy.context.view_layer.update()
@@ -623,6 +632,7 @@ def main():
             "baseline_evaluated_triangles":baseline_evaluated_triangles,
             "evaluated_triangles":triangle_count,"action_count":len(journal),
             "inherited_mesh_data_changed":any(e["originals_changed"] for e in journal),
+            "actual_mesh_surface_contact":contact_proof,
             "execution":journal,"elapsed_seconds":round(time.monotonic()-started,3)}
     (out/"execution-proof.json").write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     print("ELDORIA_FULL_STUDIO_REAL_BLENDER_PASS",json.dumps({k:result[k] for k in
