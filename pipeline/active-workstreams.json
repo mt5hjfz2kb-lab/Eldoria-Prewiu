@@ -172,7 +172,9 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-operational-recovery-selective-memory-20261015",
       "title": "Owner-priority recovery of verified connections, selective-memory blocker and existing session bootstrap",
@@ -184,15 +186,29 @@
         "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md"
       ],
       "resources": [],
-      "status": "active",
+      "status": "blocked",
       "claimed_at": "2026-10-15T10:38:00Z",
       "base_main_sha": "6ba6faef6cf9b18719aeb4b67f804cb713899dab",
       "art_production_routing": "not_applicable",
-      "phase": "Read-only connectivity verified; prior security rejections preserved; extend/test existing bootstrap only",
-      "dependency": "No production, no Windows job dispatched, no source tower edits, no benchmark/test-file equivalents; main bootstrap/preflight only plus diagnostic evidence. Existing active owners and reservations unchanged."
-    }
-  ],
-  "history": [
+      "phase": "Existing bootstrap/preflight implemented and independently verified; selective Qwen validation externally blocked",
+      "dependency": "No production, no Windows job dispatched, no source tower edits, no benchmark/test-file equivalents; main bootstrap/preflight only plus diagnostic evidence. Existing active owners and reservations unchanged.",
+      "closed_at": "2026-10-15T10:50:00Z",
+      "mission_complete": false,
+      "final_commit_sha": "7b7dcc405f4bbe8ebf19cb1f31f2cf5fe373214c",
+      "continuity_commits": [
+        "6a55fbabf1e3cc162c0ce892332c95a7b9f47fff",
+        "9eaaa927275539c9045799554aa7c7e7f3c8ca09"
+      ],
+      "continuity_ci_run": 38721902138,
+      "independent_recovery_test": "PASS for reading/reconstructing pending work from a no-history agent; not a new real user session",
+      "next": "External platform review/resolution of two rejected create_file operations before implementing/executing selective condition; preserve production pause",
+      "handoff": {
+        "branch": "diagnostic/valoria-ai-eyes-brain-20261015",
+        "path": "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md"
+      },
+      "windows_liveness": "NOT_VERIFIED",
+      "selective_memory_qwen_validated": false
+    },
     {
       "id": "eldoria-art-learning-evidence-retention-20261013",
       "title": "Persistent, evidence-grounded art learning and comparison helpers",
