@@ -184,13 +184,14 @@
         ".github/workflows/eldoria-brain-memory-ab.yml",
         "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md",
         "docs/evidence/ELDORIA_WRITE_REVIEW_INCIDENT_20261015.md",
-        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        "docs/evidence/eldoria-memory-selective-20261015/**"
       ],
       "resources": [],
       "status": "active",
       "claimed_at": "2026-10-15T11:11:28Z",
       "art_production_routing": "not_applicable",
-      "phase": "Normal create_file accepted original benchmark path; real 96-query three-arm Qwen diagnosis running",
+      "phase": "96 real inferences complete; independent recomputation 32/32 baseline,31/32 full,32/32 selective; preserve raw artifact and final continuity",
       "dependency": "Keep historical rejections and new literal outcomes. Stop on a fresh explicit denial. No Blender, Unity, original tower edit or production. Shared runner health showed no active job; use only bounded read-only Qwen diagnosis if the tool approves source.",
       "source_commit": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
       "run_id": 38726028141,
