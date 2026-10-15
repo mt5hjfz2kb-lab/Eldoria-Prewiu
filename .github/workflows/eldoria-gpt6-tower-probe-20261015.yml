@@ -1,0 +1,68 @@
+name: Eldoria isolated GPT-6 vs Qwen tower read-only probe
+on:
+  push:
+    branches:
+      - diagnostic/gpt6-vs-qwen-valoria-tower-20261015
+    paths:
+      - '.github/workflows/eldoria-gpt6-tower-probe-20261015.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  real-frozen-tower-camera-and-geometry:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 23
+    steps:
+      - name: Locate preinstalled GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'PREINSTALLED_GIT_MISSING'}
+            $folder=Split-Path $git;$env:PATH="$folder;$env:PATH";Add-Content $env:GITHUB_PATH $folder
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/gpt6-tower-eval-20261015
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
+          sparse-checkout-cone-mode: false
+      - name: Run real Blender frozen-source probe with fixed cameras
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $b=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if($b){$exe=$b.Source}else{$exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $exe){throw 'INSTALLED_BLENDER_NOT_FOUND'}
+          $source='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-source-probe'
+          & $exe -b -t 4 --python-exit-code 1 --python tools/art-direction/gpt6-tower-eval-20261015/source_probe.py -- $source $out
+          if($LASTEXITCODE -ne 0){throw 'ACTUAL_TOWER_PROBE_FAILED'}
+          if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'ORIGINAL_TOWER_CHANGED'}
+      - name: Preserve source-locked original views and geometry proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-gpt6-frozen-tower-source-probe
+          path: ${{ runner.temp }}/eldoria-gpt6-source-probe/
+          retention-days: 30
+          if-no-files-found: warn
