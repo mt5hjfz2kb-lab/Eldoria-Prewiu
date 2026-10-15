@@ -38,6 +38,28 @@ def ask(model,system,user,images):
     if not done:raise RuntimeError("STREAM_TRUNCATED")
     return "".join(chunks)
 
+
+_ALLOWED_KEYS=set("observations component_id visibility visual_joinery visual_reason decision scores silhouette architectural_contact materials style game_camera reasons uncertainties".split())
+_ALLOWED_WORDS=set("visible not_visible uncertain convincing poor not_applicable NEAR_SOURCE NOT_NEAR_SOURCE IMPROVED REJECTED INCONCLUSIVE".split())
+
+def parse_recoverable_model_json(raw):
+    """Repair only unquoted WHITELISTED JSON keys and ENUMS, never facts."""
+    try:return extract_json(raw),False
+    except UnreliableCritic:
+        if not isinstance(raw,str) or len(raw)>12000:raise
+        import re
+        keypat=r"([,{]\s*)([A-Za-z_][A-Za-z_0-9]*)(\s*:)"
+        def key_fix(m):
+            return m[1]+'"'+m[2]+'"'+m[3] if m[2] in _ALLOWED_KEYS else m[0]
+        repaired=re.sub(keypat,key_fix,raw)
+        enums=r"(:\s*)([A-Za-z_][A-Za-z_0-9]*)(?=\s*[,}\]])"
+        def enum_fix(m):
+            return m[1]+'"'+m[2]+'"' if m[2] in _ALLOWED_WORDS else m[0]
+        repaired=re.sub(enums,enum_fix,repaired)
+        result=json.loads(repaired)
+        if not isinstance(result,dict):raise UnreliableCritic("RECOVERED_JSON_NOT_OBJECT")
+        return result,True
+
 def screen_grounding(regions,inventory,before,after,source_sha):
     if regions.get("before_sha256")!=sha(before) or regions.get("after_sha256")!=sha(after):
         raise UnreliableCritic("ROI_NOT_FROM_THESE_IMAGE_BYTES")
@@ -116,6 +138,7 @@ def main():
     p=argparse.ArgumentParser()
     for name in ("plan","catalog","contact","reference","before","after","roi","out"):p.add_argument("--"+name,required=True)
     p.add_argument("--model",default="qwen3-vl:8b-instruct-q4_K_M")
+    p.add_argument("--phase1-raw",default=None,help="Reuse exact prior vision output with matching source and image hashes")
     z=p.parse_args()
     out=pathlib.Path(z.out);out.mkdir(parents=True,exist_ok=True)
     artplan=json.loads(pathlib.Path(z.plan).read_text())
@@ -134,13 +157,14 @@ def main():
             "images":hashes,"objective_roi_change":ground,
             "phase1":"NOT_RUN","phase2":"NOT_RUN"}
     raw1=raw2=""
+    result["phase1_reused_from_verified_artifact"]=bool(z.phase1_raw)
     names=[{"component_id":k["id"],"mesh_shape":k["shape"],
             "dimensions_m":k["dimensions_m"]} for k in inv["new_components"]]
     focus=[min(p["box_px"][0] for p in ground.values()),min(p["box_px"][1] for p in ground.values()),
            max(p["box_px"][2] for p in ground.values()),max(p["box_px"][3] for p in ground.values())]
     focus=[max(0,focus[0]-20),max(0,focus[1]-20),focus[2]+20,focus[3]+20]
     try:
-        raw1=ask(z.model,
+        raw1=pathlib.Path(z.phase1_raw).read_text(encoding="utf8") if z.phase1_raw else ask(z.model,
            "PHASE 1: object recognition ONLY. You will see BEFORE photo, AFTER photo, and a ZOOM of AFTER front facade, all from the SAME Blender camera. "
            "Identify new parts from actual exported mesh names. Compare AFTER to BEFORE, not to unrelated architecture. "
            "A visible timber frame is not absent because it was not in BEFORE. Never mention previous experiments. "
@@ -148,7 +172,8 @@ def main():
            "Exactly one record per identifier. No hash copying, no physical distance claims, no quality score.",
            "Check the NEW parts exactly: "+json.dumps(names,ensure_ascii=False)+"; image1=BEFORE, image2=AFTER, image3=zoomed AFTER.",
            [img(z.before),img(z.after),img(z.after,focus)])
-        parsed1=extract_json(raw1)
+        parsed1,repaired1=parse_recoverable_model_json(raw1)
+        result["phase1_format_repaired_whitelist_only"]=repaired1
         check=phase1_check(parsed1,inv,ground)
         result["phase1"]=check
         if check["status"]=="IDENTIFICATION_GROUNDED":
@@ -165,7 +190,9 @@ def main():
               "Actual new components: "+json.dumps(names,ensure_ascii=False)+
               ". Phase1 verified identifications: "+json.dumps(parsed1["observations"],ensure_ascii=False),
               [img(z.reference),img(z.before),img(z.after),img(z.after,focus)])
-            data=inject_trusted_facts(extract_json(raw2),inv,hashes)
+            parsed2,repaired2=parse_recoverable_model_json(raw2)
+            result["phase2_format_repaired_whitelist_only"]=repaired2
+            data=inject_trusted_facts(parsed2,inv,hashes)
             assessment=validate_critique(data,inv,hashes)
             result["phase2"]=assessment
             if assessment["status"]=="PROVISIONAL_REVIEW_GROUNDED":
