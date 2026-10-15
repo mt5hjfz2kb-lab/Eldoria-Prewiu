@@ -30,7 +30,7 @@ def main():
     question=("Usando el contexto original completo, devuelve ÚNICAMENTE JSON con estas claves exactas: "+
               "source_sha256 (string), connected_islands (integer), roof_form_proven (boolean), "+
               "editing_allowed (boolean), reason (una frase). NO INVENTES. "+
-              "El modo autorizado es DIAGNÓSTICO read-only, el techo no está segmentado y hay exactamente 3029 islas conectadas.")
+              "Aplica las restricciones vigentes del proyecto y usa exclusivamente las pruebas del contexto, sin inventar datos.")
     # Hold identical evidence and question fixed, vary only the actual Ollama num_ctx.
     probes=[]
     for window in (4096,12288):
