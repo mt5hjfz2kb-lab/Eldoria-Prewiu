@@ -26,7 +26,8 @@
         "[ART REVIEW] Qwen VL independent visual review for all 63 assets",
         "[ART DONOR] Genuine Blender per-asset A-B using Quaternius CC0 models",
         "[ART INDIVIDUAL] Valoria 63 module per-asset quality uplift",
-        "[ART V4] 12 CC0 nature assets individual Blender finishing"
+        "[ART V4] 12 CC0 nature assets individual Blender finishing",
+        "[ART V4 REVIEW] Local Qwen VL independent Blender A-B 12 assets"
       ],
       "retry_enabled": true,
       "requires_owner": true,
