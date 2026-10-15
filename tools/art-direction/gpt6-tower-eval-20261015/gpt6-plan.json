@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "asset_id": "valoria_tower_frozen_gpt6_timber_eave_braces_20261015",
+  "observed_defect": "The original small log watchtower shows its roof edges without a clear readable timber support rhythm on the camera-facing front elevation; the left/front eave lacks foreground structural hierarchy.",
+  "design_intent": "Add a modest three-part structural composition in dark, weathered timber on the front-facing left eave: a continuous fascia and two angled braces anchored visually against the log wall and toward the fascia. Protect the existing door, stairs, railings, roof tiles, UV atlas, and original mesh.",
+  "expected_visual_difference": "From the fixed (6,-9,6) camera the upper front roofline should gain one visible horizontal dark-brown fascia and two diagonal wooden knee braces; the original tower keeps the same silhouette, roof shingles and stair access.",
+  "asset_decision": "MODIFY",
+  "art_approved": false,
+  "actions": [
+    {
+      "id": "gpt6_eave_fascia",
+      "op": "primitive",
+      "target": "Eldoria_GPT6_FrontEaveFascia",
+      "reason": "Visibly clarify the unsupported front eave edge with a long, slender timber fascia that does not interfere with stairs or the roof.",
+      "params": {
+        "shape": "cube",
+        "location": [
+          -0.22,
+          -1.025,
+          2.135
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.75,
+          0.066,
+          0.068
+        ]
+      }
+    },
+    {
+      "id": "gpt6_fascia_material",
+      "op": "material",
+      "target": "Eldoria_GPT6_FrontEaveFascia",
+      "reason": "Use restrained weathered dark timber rather than masonry while leaving all inherited texture atlas slots untouched.",
+      "params": {
+        "base_color": [
+          0.29,
+          0.155,
+          0.078,
+          1
+        ],
+        "roughness": 0.84,
+        "metallic": 0
+      }
+    },
+    {
+      "id": "gpt6_support_left",
+      "op": "primitive",
+      "target": "Eldoria_GPT6_LeftKneeBrace",
+      "reason": "Add an angled physical timber knee brace supporting the left portion of the fascia from the solid upper log wall below.",
+      "params": {
+        "shape": "cube",
+        "location": [
+          -0.69,
+          -0.842,
+          1.901
+        ],
+        "rotation": [
+          0.54,
+          0,
+          0
+        ],
+        "scale": [
+          0.061,
+          0.069,
+          0.32
+        ]
+      }
+    },
+    {
+      "id": "gpt6_left_material",
+      "op": "material",
+      "target": "Eldoria_GPT6_LeftKneeBrace",
+      "reason": "Match the timber brace to the new dark fascia for a coherent unified architectural element.",
+      "params": {
+        "base_color": [
+          0.25,
+          0.126,
+          0.064,
+          1
+        ],
+        "roughness": 0.87,
+        "metallic": 0
+      }
+    },
+    {
+      "id": "gpt6_support_right",
+      "op": "primitive",
+      "target": "Eldoria_GPT6_RightKneeBrace",
+      "reason": "Repeat the support language at the right end of the fascia with adequate clearance from the protected stair and railing system.",
+      "params": {
+        "shape": "cube",
+        "location": [
+          0.25,
+          -0.842,
+          1.901
+        ],
+        "rotation": [
+          0.54,
+          0,
+          0
+        ],
+        "scale": [
+          0.061,
+          0.069,
+          0.32
+        ]
+      }
+    },
+    {
+      "id": "gpt6_right_material",
+      "op": "material",
+      "target": "Eldoria_GPT6_RightKneeBrace",
+      "reason": "Match the second knee brace to the same timber material and keep the inherited atlas completely unchanged.",
+      "params": {
+        "base_color": [
+          0.25,
+          0.126,
+          0.064,
+          1
+        ],
+        "roughness": 0.87,
+        "metallic": 0
+      }
+    }
+  ]
+}
