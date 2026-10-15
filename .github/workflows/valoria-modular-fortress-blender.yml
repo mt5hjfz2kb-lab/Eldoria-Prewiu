@@ -1,0 +1,80 @@
+name: "[ART TEST] Eldoria modular fortress native Blender 63 assets"
+on:
+  push:
+    branches:
+      - prototype/valoria-modular-fortress-library-20261015
+    paths:
+      - 'tools/valoria-modular-fortress/**'
+      - '.github/workflows/valoria-modular-fortress-blender.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-modular-fortress-blender-only
+  cancel-in-progress: false
+jobs:
+  author-modular-assets:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Add GitHub Desktop Git executable if absent
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root = Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $found = Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $found) { throw 'Git missing on runner' }
+            $dir = Split-Path $found
+            $env:PATH = "$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Locate actual Blender on PC
+        id: blender
+        shell: powershell
+        run: |
+          $cmd = Get-Command blender.exe -ErrorAction SilentlyContinue
+          $candidate = if ($cmd) { $cmd.Source } else { $null }
+          if (-not $candidate) {
+            foreach ($root in @('C:\Program Files\Blender Foundation', (Join-Path $env:LOCALAPPDATA 'Programs\Blender Foundation'))) {
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+                if ($candidate) { break }
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Native Blender executable is not installed or cannot be discovered' }
+          "exe=$candidate" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          & $candidate --version | Select-Object -First 2
+      - name: Generate 63 actual 3D GLBs, native BLEND and 1536x1024 lookdev PNG
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-modular-fortress-blender.log'
+          & "${{ steps.blender.outputs.exe }}" --background --python-exit-code 1 --python tools/valoria-modular-fortress/build_blender.py *> $log
+          $exit=$LASTEXITCODE
+          Get-Content $log -Tail 110
+          if ($exit -ne 0) { throw "Blender native authoring failed with exit code $exit" }
+          $dir=Join-Path $env:RUNNER_TEMP 'valoria_modular_blender'
+          $glb=Get-ChildItem $dir -Filter '*.glb' -ErrorAction SilentlyContinue
+          if ($glb.Count -ne 63) { throw "Expected 63 GLBs, found $($glb.Count)" }
+          foreach ($required in @('valoria_modular_library.blend','blender_scene.png','manifest.json')) {
+            if (-not (Test-Path (Join-Path $dir $required))) { throw "Missing output: $required" }
+          }
+          Get-Content (Join-Path $dir 'manifest.json')
+      - name: Archive source and real Blender output
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-modular-fortress-native-blender-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria_modular_blender/*
+            ${{ runner.temp }}/eldoria-modular-fortress-blender.log
+          if-no-files-found: warn
+          retention-days: 14
