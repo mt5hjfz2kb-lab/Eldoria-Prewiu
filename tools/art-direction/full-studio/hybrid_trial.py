@@ -93,7 +93,18 @@ def compare(a):
     frame_mode=a.workshop=='frame'
     validator=timber_frame_skill.validate if frame_mode else validate
     if frame_mode:
-        context['schema']=timber_frame_skill.schema([f['face_index'] for o in context['geometry'] for f in o.get('camera_visible_face_landmarks',[]) if .15<f.get('world_height_fraction',0)<.6])
+        review=json.loads(a.review.read_text(encoding='utf8'))
+        w,h=review['render']['width'],review['render']['height']
+        eligible=[]
+        for o in context['geometry']:
+            for f in o.get('camera_visible_face_landmarks',[]):
+                if not .15<f.get('world_height_fraction',0)<.6:continue
+                u,v=f['camera_screen_uv'];x,y=u*w,(1-v)*h
+                if any(r['box_px'][0]<=x<=r['box_px'][2] and r['box_px'][1]<=y<=r['box_px'][3]
+                       for r in review.get('protected_screen_regions',[])):continue
+                eligible.append(f['face_index'])
+        if not eligible:raise ValueError('NO_SOURCE_ANCHORS_OUTSIDE_PROTECTED_ACCESS')
+        context['schema']=timber_frame_skill.schema(eligible)
         context['schema']['properties']['source_object']['enum']=[o['name'] for o in context['geometry']]
         context['capabilities']='Source-face anchored timber frame; artist chooses actual face ID, width/height, WORLD bottom Z, post count/spacing, cross-section, surface offset, bevel and color. Tool derives mechanical mortise fit, never relocates your design.'
         context['previous_failure']='Previous explicit-joint plans placed vertical posts inside the tower and repeated impossible sockets. This is a DIFFERENT semantic assembly skill. Use measured visible wall faces for actual attachment; do not guess a center inside the building.'

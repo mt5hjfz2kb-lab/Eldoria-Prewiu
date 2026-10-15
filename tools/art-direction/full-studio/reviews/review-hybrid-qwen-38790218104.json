@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "ART_REJECTED",
+  "review_scope": "Independent review of Qwen authored asset in genuine Blender images; no Unity score",
+  "reviewer_role": "INDEPENDENT_ART_REVIEW",
+  "reviewer": "GPT reviewing Qwen original plan; not the Qwen author",
+  "run_id": 38790218104,
+  "artifact_id": 11999307435,
+  "original_plan_source_run": 38789401142,
+  "new_inference_in_replay": false,
+  "source_sha256": "8a77d244b0434faeec1d4430b6194ffddd17234bfda20bedbe83e382c0a01632",
+  "before_sha256": "5985060563c0bcbc29b831d521c03dc59239a5242c6dd04aea6eadfe16f4a889",
+  "after_sha256": "3ab8a844d946ce8c9b79a3a2e63c92649238d29d697e9a58ace212d3e161ea8e",
+  "plan_sha256": "42b5e6fd22158969869798c46085d7420fbde4e156df9d92846796645d7a7d56",
+  "output_glb_sha256": "f89ed7d832ac88b952bd38c73156ca501b10dd4033cd1f4cb20b6059d0ae5467",
+  "diagnosis": "The new orange timber frame sits beside and above the staircase rather than reinforcing the log facade. The lintel projects beyond the roof edge. One post lacks actual source contact: nearest mesh distance 0.10407 m exceeds 0.07 m tolerance. This structural defect is directly visible and measured. Original roof/wall detail has not improved.",
+  "rubric": {
+    "geometry_and_silhouette": {
+      "before": 5,
+      "after": 4.5,
+      "reason": "Original silhouette remains readable, but a new isolated horizontal timber projects beyond the right roof edge."
+    },
+    "architecture_proportions_contact": {
+      "before": 5,
+      "after": 3,
+      "reason": "Two close posts and a broad overhanging lintel are not a convincing support assembly for the staircase; one post fails measured contact."
+    },
+    "materials_detail": {
+      "before": 4,
+      "after": 3,
+      "reason": "Saturated orange additions clash with the subdued brown restored source; no coherent material transition."
+    },
+    "valoria_style": {
+      "before": 4,
+      "after": 3.5,
+      "reason": "The addition has no evident relation to the reference craftsmanship or organized structural hierarchy."
+    },
+    "actual_player_camera_legibility": {
+      "before": null,
+      "after": null,
+      "reason": "Unity remains paused. Blender hero view cannot certify actual player-camera readability."
+    }
+  },
+  "weighted_score": null,
+  "weighted_delta": null,
+  "weighted_score_withheld_reason": "Actual player-camera criterion unverified. Structural regression already rejects candidate.",
+  "accepted_interventions": 0,
+  "art_approved": false,
+  "calibration_validated": false,
+  "unity_verified": false,
+  "safe_lesson": "A visible source surface near stairs is not a safe architectural wall anchor. Preserve access zones, inspect the actual frame in camera, and reject disconnected or stylistically mismatched timber additions."
+}

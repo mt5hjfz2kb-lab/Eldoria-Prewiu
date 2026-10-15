@@ -33,6 +33,7 @@ def camera_visible_face_landmarks(scene, obj, max_faces=24):
     source_z=[(obj.matrix_world @ v.co).z for v in obj.data.vertices]
     bottom=min(source_z,default=0);span=max(.001,max(source_z,default=1)-bottom)
     candidates=[]
+    normal_matrix=obj.matrix_world.to_3x3().inverted().transposed()
     for poly in obj.data.polygons:
         xy=[px[int(i)] for i in poly.vertices]
         if not xy or any(q.z<=0 for q in xy):continue
@@ -75,6 +76,7 @@ def camera_visible_face_landmarks(scene, obj, max_faces=24):
             "camera_ray_hit_original_face":True,
             "camera_screen_uv":[round(float(uv.x),4),round(float(uv.y),4)],
             "world_center_m":[round(float(t),4) for t in center],
+            "world_normal":[round(float(t),6) for t in (normal_matrix@poly.normal).normalized()],
             "world_height_fraction":round(float((center.z-bottom)/span),4),
             "projected_bbox_area_px":round(float(area),1),
             "local_center_m":[round(float(v),4) for v in poly.center]}

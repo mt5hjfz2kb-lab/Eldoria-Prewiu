@@ -1,3 +1,8 @@
+> **ESTADO ACTUAL:** ronda finalizada sin aprobación artística. Ruta consolidada
+> y ejecución comparable real de ambos planes verificadas en #38790218104.
+> Estrategia de marcos diagnosticada tras cinco propuestas locales; request
+> desactivado. Ver resultado final inferior, imágenes originales y revisión.
+
 # Artista híbrido — consolidación en la línea diagnóstica existente
 
 Autorización: solicitud del propietario 15-10-2026, consolidar y ensayar copias
@@ -189,9 +194,11 @@ width 1.2 m, height 1.8 m, dos postes con offsets +.15/-.15 m, ancla 421.
 Tiempo de planificación 61,25 s. No se obtuvo un candidato: ambos brazos
 rechazados por FRAME_REQUIRES_VERIFIED_VERTICAL_WALL_FACE_NOT_ROOF.
 
-Diagnóstico sobre los bytes del GLB real (normales de triángulos transformadas):
-ancla GPT 1836: normal aprox. [0.0024,-0.2711,0.9625], z 1.0277 m;
-ancla Qwen 421: [0.6372,0.6442,0.4230]. Los troncos son facetados y sus caras
+Diagnóstico definitivo de Blender WORLD (autoridad, no conversión manual de ejes glTF):
+ancla GPT 1836: [0.002431,-0.962548,-0.271102], z 1.0277 m;
+ancla Qwen 421: [0.637216,-0.423040,0.644199]. Una aproximación manual
+anterior confundió ejes glTF; se corrige aquí con la prueba real del ejecutor.
+Los troncos son facetados y sus caras
 locales no equivalen al plano arquitectónico de una pared. La herramienta no
 puede exigir un único plano vertical perfecto para ensamblar sobre ellos.
 
@@ -206,3 +213,72 @@ Ambos brazos usan el mismo código, mismo input y mismos gates; los planos
 previos quedan intactos. La reproducción no cuenta como nueva inferencia ni
 como nueva intervención aceptada. Se mantienen protección de accesos y crítico
 ciego; no se encadena ni promueve arte por arreglar la herramienta.
+
+
+## Resultado final de esta ronda — 15/10/2026
+
+Run [38790218104](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38790218104),
+commit 16f145ba8312d95c613359bc0bdfc52ce01baad6, artifact 11999307435,
+ZIP SHA256 a76cffe9b676d6d54f0a5239f9e619ea2d1a29e498fb876afde35b8790eb6073.
+Reproducción sin nuevas inferencias autoras; Blender real en ambos brazos:
+
+| Resultado | GPT externo | Plan Qwen original |
+|---|---:|---:|
+| Construcción Blender | 12,391 s | 11,765 s |
+| Miembros nuevos / uniones reales | 3 / 2 | 3 / 2 |
+| Geometría original preservada | Sí | Sí |
+| UV y textura nuevas incrustadas | Sí | Sí |
+| Contacto de todas las piezas | Sí | NO: poste a 0,10407 m, tolerancia 0,07 m |
+| Cambio de pantalla | 3,5842 % | 1,72758 % |
+| Aprobación artística | HOLD | REJECTED |
+
+GLB GPT: 27f5f038ffc0a886fde3dcb440a243164bca6e4adc92353b6e215029f2ccdbf9.
+GLB Qwen: f89ed7d832ac88b952bd38c73156ca501b10dd4033cd1f4cb20b6059d0ae5467.
+Ambos usan la misma fuente 8a77d244..., esquema, taller y cámaras. El tiempo
+GPT de diseño no está medido: no comparar rapidez/autonomía de extremo a extremo.
+La variación de hashes de PNG baseline por render no cambia cámara/fuente;
+se conservan los originales de cada brazo y su proof cámara matched.
+
+**Juicio independiente:** la crítica VL ciega del GPT detecta discontinuidad y
+falta de beneficio convincente. También exagera al decir que los troncos se
+reemplazaron/ocultaron: el proof y la imagen muestran geometría original intacta
+y troncos aún visibles. Se retiene como opinión negativa falible, no aprobación
+ni puntuación automática. El propio autor GPT NO autoaprueba ese candidato.
+
+Revisión GPT independiente del plan Qwen:
+`tools/art-direction/full-studio/reviews/review-hybrid-qwen-38790218104.json`.
+Se ven piezas naranjas junto a la escalera y un dintel saliente sobre el borde
+trasero del tejado, con contacto fallido. Rúbrica Blender provisional fundamentada,
+pero sin total ponderado: falta cámara real de jugador. Rechazo estructural
+suficiente antes de Unity; no inflar nota ni convertir presencia en calidad.
+
+**Balance:** se recuperaron los tres trabajos originales, el atlas correcto y
+un taller compartido real; se pasó de planes inválidos a ejecución geométrica
+real de ambos autores. Se corrigieron codificación y montaje sobre superficies
+heredadas, y se verificó que los gates impiden promover un montaje desconectado.
+Eso mejora capacidad/fiabilidad, NO demuestra todavía acercamiento artístico
+aceptado al 8/10. Cero intervenciones aceptadas, cero versiones encadenadas;
+no ART_APPROVED, CALIBRATION_VALIDATED ni producción escalable.
+
+**Regla de parada de estrategia aplicada:** cinco propuestas locales originales
+(2 juntas explícitas, 2 marcos fuera de rango, 1 marco válido pero mal anclado).
+Se diagnostica y termina esta estrategia de añadir marcos; no se emite una sexta.
+La reproducción posterior verifica el ejecutor, no añade otra propuesta.
+No transferencia al cuartel/tercer asset: su condición previa no se cumple.
+El cuartel original sigue conservado y no se ha recreado ni alterado.
+
+**Memoria y continuidad:** lección del Qwen nuevo queda en revisión independiente
+con PNG/SHA exactos. No se inserta a ciegas en el casebook canónico ni se afirma
+entrenamiento; el resumen selectivo original sigue intacto. El inspector ya
+exporta normales WORLD reales y el nuevo adaptador excluye anclas proyectadas
+sobre las zonas protegidas de puerta/escalera antes de pedir planes. Esas dos
+mejoras finales están preparadas/compiladas, no se presentan como nueva inferencia
+Qwen validada. La prueba de reproducción sí está validada en PC.
+
+**Siguiente acción técnica concreta:** regenerar observación con normales y mapa
+cara→zona protegida; abandonar hipótesis de marco y dirigir una corrección
+significativa de la cubierta/materialidad contra la referencia. Revisar A/B antes
+de cualquier nueva cadena. La percepción VL y las decisiones espaciales siguen
+siendo los límites principales; disponer de manos nuevas no los resuelve solo.
+Unity/Bastión/4X/publicación siguen pausados, request desactivado. No hay un
+proceso GPT permanente instalado ni trabajo artístico ejecutándose en segundo plano.
