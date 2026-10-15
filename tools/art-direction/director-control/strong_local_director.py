@@ -10,6 +10,7 @@ p.add_argument("--out",required=True)
 p.add_argument("--model",default="qwen3:14b")
 p.add_argument("--selective-freeform-diagnostic",action="store_true",help="Read-only paired free artistic reasoning with selectively recalled verified lessons; original behavior unchanged otherwise")
 p.add_argument("--provenance-calibration",action="store_true",help="Focused UV/material reasoning plus read-only Blender inspection planning; no edits")
+p.add_argument("--calibration-smoke",action="store_true",help="Recheck one repetition per case and arm after a targeted format correction")
 a=p.parse_args()
 out=pathlib.Path(a.out);out.mkdir(parents=True,exist_ok=True)
 g_bytes=pathlib.Path(a.grounding).read_bytes()
@@ -132,7 +133,8 @@ if a.provenance_calibration:
        "topological_island_count (integer), final_unity_material_certified (boolean), "
        "torches_in_source_proven (boolean), roof_type_proven (boolean), "
        "physical_contacts_proven (boolean), model_edit_authorized (boolean), "
-       "art_approved (boolean), decision (string), "
+       "art_approved (boolean), decision (string EXACTLY NO_EDIT, "
+       "not an explanatory sentence), "
        "evidence_paths (array of source field names EXACTLY like "
        "mesh_provenance[0].uv_layer_count, mesh_provenance[0].uv_coordinates, "
        "mesh_provenance[0].materials[0], geometry.mesh_object_count, "
@@ -147,6 +149,8 @@ if a.provenance_calibration:
     runs=[(key,question,arm,repeat) for key,question in questions
           for arm in ("baseline","selective") for repeat in (1,2)]
     random.Random(20261015).shuffle(runs)
+    if a.calibration_smoke:
+        runs=[row for row in runs if row[3]==1]
     records=[]
     result={"schema_version":1,"mode":"DIAGNOSTIC_ONLY_MATERIAL_UV_CALIBRATION",
             "model":a.model,"source_sha256":EXPECTED,
@@ -158,7 +162,9 @@ if a.provenance_calibration:
             "material_ground_truth":inventory[0],
             "questions":[{"key":k,"question":q} for k,q in questions],
             "conditions":["baseline","selective"],"fixed_seed":20261015,
-            "repetitions_per_case_arm":2,"responses":records,
+            "repetitions_per_case_arm":1 if a.calibration_smoke else 2,
+            "format_revision":"decision_must_be_literal_NO_EDIT",
+            "responses":records,
             "art_approved":False,"can_edit_blender":False,
             "editor_actions":[],"model_weights_trained":False,
             "calibration_validated":False}
