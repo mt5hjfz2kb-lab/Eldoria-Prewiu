@@ -260,6 +260,29 @@
         "accepted": false,
         "model_weights_updated": false
       }
+    },
+    {
+      "id": "qwen8b-multipart-premature-tool-family-exhaustion-38693577383",
+      "run_id": 38693577383,
+      "evidence_artifact_id": 11952899681,
+      "raw_response_sha256": "4afdc08e43f63be7109a35418306204d0e4b93e1ee92b6e159a0c165a524528c",
+      "result": "FOUR_DISTINCT_MODEL_ERRORS_PREMATURE_GENERIC_TOOL_EXCLUSION",
+      "observed": "Original Qwen8B run 38693577383 proposed 4 distinct actual multi-object plans, all rejected before Blender: (1) custom mesh repeated same vertex positions; (2) too-small roof apex primitives; (3) near-coincident original timber beams; (4) repeated custom-mesh vertex duplication. The controller wrongly banned both creator op families ('mesh' and 'primitive') although small objects and duplicate components are different errors. It repeated STRATEGY_EXHAUSTED four cycles without Blender. No visual candidate, no art approval.",
+      "safe_lesson": "Distinguish specific geometry pathology from a Blender TOOL name. Never ban all native primitives because one proposed beam was tiny and another overlapped; instead require Qwen to choose a genuinely different useful original design with physically contacted, distinct, connected components. Block repeated custom mesh nonmanifold topology only if that hypothesis is truly repeated; do not generate or shift geometry in scripts.",
+      "review_provenance": {
+        "source": "actual Qwen JSON, validator rejections and full-studio-result artifact 11952899681",
+        "original_source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "attempt_sha256": [
+          "4afdc08e43f63be7109a35418306204d0e4b93e1ee92b6e159a0c165a524528c",
+          "19a2d46f460b4b7f4a0f253388f2dc7e0ba1335d255dc248c688f09db7d18686",
+          "6b069e082f693d335d5e562110707bd6a9c5f270ca5710e20d5dfdbf39bf22ec",
+          "98db5d9ab38f70c9d92f2326e097c8b725a1a87c33216a361bc3045a8e4a233a"
+        ],
+        "artifact_id": 11952899681,
+        "art_approved": false,
+        "unity_verified": false,
+        "model_weights_updated": false
+      }
     }
   ],
   "training": {
