@@ -19,11 +19,11 @@ from contract import OPS, RejectedPlan, validate_plan
 ARCHITECTURAL_SKILLS = {
     "timber_bracing_and_joinery": {
         "purpose": "For verified timber buildings: roof-edge fascia, slender bracing, beam joints and real contact with existing wooden structures.",
-        "operations": ("mesh", "primitive", "extrude", "bevel", "boolean", "modifier", "material"),
+        "operations": ("beam_between_faces", "mesh", "primitive", "extrude", "bevel", "boolean", "modifier", "material"),
     },
     "timber_roof_and_eaves": {
         "purpose": "For verified timber roofs: thin sloped fascia, eaves, rafter supports and coherent shingles without disturbing original UV atlases.",
-        "operations": ("mesh", "primitive", "extrude", "bevel", "modifier", "material"),
+        "operations": ("beam_between_faces", "mesh", "primitive", "extrude", "bevel", "modifier", "material"),
     },
     "masonry_and_parapet": {
         "purpose": "Improve the inherited wall rhythm, masonry depth and parapet.",
@@ -59,6 +59,8 @@ def capability_catalog(*, existing_source=True):
     if missing:
         raise RuntimeError("SKILL_REFERENCES_UNSUPPORTED_BLENDER_OPS: "
                            + ",".join(sorted(missing)))
+    if "beam_between_faces" not in OPS:
+        raise RuntimeError("MISSING_GROUNDED_BEAM_DISPATCH")
     if "geometry" in OPS:
         raise RuntimeError("AMBIGUOUS_GEOMETRY_ALIAS_NOT_ALLOWED")
     skills = {}
@@ -177,7 +179,7 @@ def check_source_environment(repo_root):
         raise RuntimeError("STUDIO_DISPATCH_ENTRYPOINTS_MISSING")
     # Proves the known dispatch routes are present, not that Blender ran.
     known = {
-        "primitive", "mesh", "duplicate", "transform", "sculpt", "sculpt_anchor",
+        "primitive", "mesh", "beam_between_faces", "duplicate", "transform", "sculpt", "sculpt_anchor",
         "extrude", "inset", "subdivide", "bevel", "modifier", "boolean",
         "material", "texture", "uv", "join", "delete", "light", "camera",
         "render_settings", "native_operator", "shader_graph", "geometry_nodes",
