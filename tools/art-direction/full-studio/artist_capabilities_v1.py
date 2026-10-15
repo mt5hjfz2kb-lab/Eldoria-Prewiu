@@ -101,6 +101,13 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
         "measured source-space support, or choose extrude, inset or bevel "
         "on a verified, real source face/edge instead. Never attach a second "
         "operation that relies on a topology edit before reinspection. "
+        "For beam_between_faces, select a MEASURED pair of source faces "
+        "with a physically meaningful separation, not adjacent roof polygons. "
+        "A mobile-readable original timber brace often needs endpoints "
+        "around 0.75m apart or farther, width/depth around 0.12m or more "
+        "when visibly justified. The actual required beam solid volume "
+        "is at least 0.006 cubic metres. Qwen chooses actual source faces, "
+        "cross-section and artistic purpose; the tool never repairs them. "
         "Do not repack the protected inherited source UV atlas with a generic "
         "smart UV action. Inspect the resulting mesh and camera after each "
         "structural stage; do not mistake changed pixels for art quality."
@@ -146,6 +153,42 @@ def source_contact_facts(objects, limit_per_mesh=12):
         if hits:
             result.append({"name":item["name"],"faces":hits[:limit_per_mesh]})
     return result
+
+
+def grounded_beam_pair_facts(source_objects, limit=12):
+    """Genuine Blender ray-hit face pairs for Qwen selection, not artistic templates."""
+    import math
+    groups=[]
+    for item in source_objects:
+        hits=[h for h in item.get("camera_visible_face_landmarks",[])[:24]
+              if h.get("camera_visible") is True
+              and h.get("camera_ray_hit_original_face") is True
+              and type(h.get("face_index")) is int
+              and isinstance(h.get("world_center_m"),list)
+              and len(h["world_center_m"])==3
+              and all(type(v) in (int,float) and math.isfinite(v)
+                      for v in h["world_center_m"])]
+        candidates=[]
+        for i,h in enumerate(hits):
+            for other in hits[i+1:]:
+                z1=h.get("world_height_fraction",0)
+                z2=other.get("world_height_fraction",0)
+                if not (type(z1) in (int,float) and type(z2) in (int,float)
+                        and max(z1,z2)>=.60 and min(z1,z2)>=.35):
+                    continue
+                dist=math.dist(h["world_center_m"],other["world_center_m"])
+                if .75<=dist<=2.0:
+                    candidates.append({"start_face":h["face_index"],
+                                       "end_face":other["face_index"],
+                                       "distance_m":round(dist,3),
+                                       "start_world_xyz_m":h["world_center_m"],
+                                       "end_world_xyz_m":other["world_center_m"]})
+        candidates.sort(key=lambda v:(abs(v["distance_m"]-1.1),
+                        v["start_face"],v["end_face"]))
+        if candidates:
+            groups.append({"source":item["name"],"candidate_pairs":candidates[:limit],
+                           "geometry_prescribed":False,"art_approved":False})
+    return groups
 
 
 def strict_preflight_plan(plan):
