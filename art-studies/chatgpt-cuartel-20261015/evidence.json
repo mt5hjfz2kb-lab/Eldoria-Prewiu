@@ -1,0 +1,22 @@
+{
+  "author": "ChatGPT, this conversation; explicit owner request 15 Oct 2026",
+  "execution": "4.0.2",
+  "qwen_used": false,
+  "credits_spent": 0,
+  "unity_verified": false,
+  "art_approved": false,
+  "calibration_validated": false,
+  "status": "EXPERIMENTAL_ASSET_REQUIRES_INDEPENDENT_REVIEW",
+  "objects": 316,
+  "vertices": 19946,
+  "triangles": 37380,
+  "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "design": "Compact early Bastion military camp: blue canvas ridge pavilion, smaller recruit shelter, oak fencing, open training yard, weapons and royal standard. Frozen existing assets unchanged.",
+  "files": {
+    "Cuartel_ChatGPT_v1.glb": "a4975847d3b91fca4b7efecd02b34934b70c1d43f6bc6c86dd026fbffe3f3c87",
+    "cuartel-rear.png": "bed98f031797cb5b69af7d6af1989708e85c414036bb96e1708e4aa02ee517c7",
+    "cuartel-hero.png": "1e8d015d39527e1f4efaef0b845b8a8b5361d38f4da790f66fc3fc72d7db9a7e",
+    "Cuartel_ChatGPT_v1.blend": "9d5db5a68f6b643bcce4ec1a06361d871ce0dd1383a5ac02b258ca38b27f515f",
+    "cuartel-strategic.png": "464fdd01a91ff22ef6313576d3f689f0d111b8f6bd77198844787247238b0585"
+  }
+}
