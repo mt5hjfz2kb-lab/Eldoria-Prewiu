@@ -1,0 +1,22 @@
+{
+    "stage": "REAL_UNITY_V8_VISIBLE_MOUNTAINS_NOT_APPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V8/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V8/Imported/LowerGateFamilyV1.glb",
+    "revision": "62e54b10e41f84d3cb2d24e9394198e0dc04d795",
+    "frames": [
+        "15-visible-mountains-overview.png",
+        "16-visible-mountains-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 37,
+    "distantTreeInstances": 39,
+    "pavingStoneInstances": 78,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
