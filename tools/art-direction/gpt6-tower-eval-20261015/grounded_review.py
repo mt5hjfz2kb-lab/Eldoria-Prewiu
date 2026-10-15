@@ -170,3 +170,34 @@ def extract_json(s):
     if not isinstance(parsed,dict):
         raise UnreliableCritic("NON_OBJECT_RESPONSE")
     return parsed
+
+def identification_messages(inventory, hashes):
+    """Phase ONE, with no quality scoring. The critic cannot grade before this."""
+    parts=[{"component_id":p["id"],"shape":p["shape"],
+            "dimensions_m":p["dimensions_m"],
+            "rotation_rad":p["rotation_rad"],
+            "measured_contact":"NEAR_SOURCE" if p["surface_near_original"] else "NOT_NEAR_SOURCE"}
+           for p in inventory["new_components"]]
+    return [{"role":"system","content":
+        "PHASE ONE ONLY: identify which actual added objects are visible in before/after images. "
+        "Reference image is aesthetic target, not object inventory. "
+        "An exact Blender-generated object list is authoritative: do not add fictional objects. "
+        "Physical proximity measured by Blender is independent of visual quality. "
+        "Return strict JSON, no markdown: image_sha256 object matching provided, "
+        "observations list with EXACTLY one entry per part {component_id,visibility (visible/not_visible/uncertain),"
+        "visual_joinery (convincing/poor/uncertain/not_applicable),measured_contact (NEAR_SOURCE/NOT_NEAR_SOURCE),"
+        "visual_reason}. No grades, no conclusion and no prior candidate names."},
+        {"role":"user","content":"Real added mesh objects: "+json.dumps(parts,ensure_ascii=False)
+        +"\\nPhoto provenance: "+json.dumps(hashes,sort_keys=True)}]
+
+def validate_identification(data,inventory,hashes):
+    if not isinstance(data,dict):return {"status":"IDENTIFICATION_UNRELIABLE","errors":["NOT_OBJECT"]}
+    probe=dict(data)
+    # Apply the same strict provenance, object coverage and unsupported-feature
+    # checks, with neutral rubric fields injected by trusted code, not Qwen.
+    probe.update({"decision":"INCONCLUSIVE",
+      "scores":{"silhouette":5,"architectural_contact":5,"materials":5,"style":5,"game_camera":5},
+      "reasons":[],"uncertainties":[]})
+    result=validate_critique(probe,inventory,hashes)
+    return {"status":"IDENTIFICATION_TRUSTED" if result["status"]=="PROVISIONAL_REVIEW_GROUNDED"
+         else "IDENTIFICATION_UNRELIABLE","errors":result["errors"]}
