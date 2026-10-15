@@ -9,7 +9,7 @@ import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urll
 from contract import validate_plan, RejectedPlan, safe_action_id
 from artist_capabilities_v1 import (artist_skill_prompt, strict_preflight_plan,
     check_source_environment, visual_intent_payload, is_semantically_reviewable,
-    failure_category)
+    failure_category, source_contact_facts)
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from artistic_quality_gate import (stage_visual_request,validate_independent_review,
                                  append_accepted,status as visual_calibration_status)
@@ -560,19 +560,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if source_exists and source_inventory:
         # Only true Blender camera ray hits are called visible. These IDs
         # are real observed source faces, never scripted artistic actions.
-        camera_facts=[
-            {"name":obj["name"],
-             "faces":[{"id":i["face_index"],
-                       "screen_uv":i["camera_screen_uv"],
-                       "world_xyz_m":i["world_center_m"],
-                       "height":i["world_height_fraction"]}
-                      for i in obj.get("camera_visible_face_landmarks",[])[:24]
-                      if i.get("camera_visible") is True
-                      and i.get("camera_ray_hit_original_face") is True
-                      and isinstance(i.get("world_center_m"),list)
-                      and len(i["world_center_m"])==3]}
-            for obj in source_inventory
-            if obj.get("camera_visible_face_landmarks")]
+        camera_facts=source_contact_facts(source_inventory)
         if camera_facts:
             msg+=("\nACTUAL CAMERA-RAY-VISIBLE SOURCE FACE INDICES: "+
                   json.dumps(camera_facts,ensure_ascii=False)[:5000]+
