@@ -139,7 +139,7 @@ def cone_between(name,a,b,r0,r1,mat,segments=5):
 def generate_tree(n,old):
  dims=np.array([float(i) for i in dims_for(old)])
  h=max(dims[2],5);scale=h/7.5
- for o in old:bpy.data.objects.remove(o,do_unlink=True)
+ for o in old:assign_existing(o)
  R.seed(321+sum(ord(k) for k in n))
  cone_between(n+'_real_trunk',(0,0,0),(0,0,h*.91),.16*scale,.025*scale,'wood',8)
  levels=13 if 'tall' in n else 11
@@ -170,7 +170,7 @@ def dims_for(objects):
  return np.ptp(v,axis=0)
 def add_shrub(n,old):
  dims=dims_for(old);h=max(.85,float(dims[2]))
- for o in old:bpy.data.objects.remove(o,do_unlink=True)
+ for o in old:assign_existing(o)
  R.seed(300+len(n));num=75 if n.endswith('1') else (110 if n.endswith('2') else 145)
  for i in range(num):
   angle=R.uniform(0,2*math.pi);rad=(R.random()**.6)*max(float(dims[0]),.8)*.41
@@ -246,11 +246,120 @@ def add_stone_surface(n,old):
   if ob.type=='MESH' and len(ob.data.polygons)<300:
    m=ob.modifiers.new('Fine limestone edge abrasion','BEVEL')
    m.width=.008 if n.startswith('stone') else .005;m.segments=2;m.limit_method='ANGLE'
+
+def improved_bridge_arch(n,old):
+ # Correct shape: arch_bridge_support must be a complete bearing arch,
+ # not the single radial wedge produced by the old generic factory rule.
+ for o in old:bpy.data.objects.remove(o,do_unlink=True)
+ radius=1.45; depth=1.10; thickness=.44
+ for i in range(16):
+  a=(i+.015)*math.pi/16;b=(i+.985)*math.pi/16
+  verts=[]
+  for y in (-depth/2,depth/2):
+   for rad,ang in ((radius,a),(radius+thickness,a),(radius+thickness,b),(radius,b)):
+    verts.append((rad*math.cos(ang),y,rad*math.sin(ang)+radius))
+  faces=[(0,1,2),(0,2,3),(4,6,5),(4,7,6)]
+  for j in range(4):
+   k=(j+1)%4;faces.extend(((j,k,k+4),(j,k+4,j+4)))
+  poly(n+'_loadbearing_voussoir',verts,faces,'light' if i%5 else 'stone')
+ for x in (-radius-thickness*.55,radius+thickness*.55):
+  for j in range(4):
+   cube(n+'_bearing_pier',(x,0,.22+j*.44),(.52,depth,.43),
+        'stone' if j%3==0 else 'light',.025)
+def improved_foam(n,old):
+ for o in old:bpy.data.objects.remove(o,do_unlink=True)
+ verts=[];faces=[];count=46
+ for i in range(count+1):
+  x=-1.65+3.3*i/count
+  y=.10*math.sin(i*.35)+.045*math.sin(i*.78)
+  w=.045+.050*(.5+.5*math.sin(i*.43+1.2))
+  verts.extend(((x,y-w,.02),(x,y+w,.02)))
+  if i:
+   k=2*i;faces.extend(((k-2,k-1,k),(k-1,k+1,k)))
+ poly(n+'_organic_whitewater',verts,faces,'light')
+ for i in range(18):
+  x=R.uniform(-1.65,1.65);y=.1*math.sin((x+1.65)*46/3.3*.35)+R.uniform(-.16,.16)
+  ob=cube(n+'_foam_bubble',(x,y,.03),(R.uniform(.025,.085),R.uniform(.02,.08),.009),'light',.004)
+def improved_water(n,old):
+ for o in old:bpy.data.objects.remove(o,do_unlink=True)
+ W=31;verts=[];faces=[]
+ for j in range(W):
+  for i in range(W):
+   x=-2+4*i/(W-1);y=-2+4*j/(W-1)
+   z=.031*math.sin(math.pi*x/2)*math.sin(math.pi*y/2)+.014*math.sin(math.pi*x*2)*math.sin(math.pi*y*1.4)
+   verts.append((x,y,z))
+   if i and j:
+    p=j*W+i;faces.extend(((p,p-1,p-1-W),(p,p-1-W,p-W)))
+ poly(n+'_subtle_surface_waves',verts,faces,'water')
+def improved_ground(n,old):
+ # Reduce flat grass tile appearance with rooted blade clusters;
+ # preserve tileable original soil/grass surface and UVs.
+ for ob in old:assign_existing(ob)
+ if n=='grass_ground_patch':
+  R.seed(3922)
+  for cluster in range(105):
+   x=R.uniform(-1.92,1.92);y=R.uniform(-1.92,1.92)
+   ang=R.uniform(0,math.tau);l=R.uniform(.07,.23)
+   v=[(x-.015,y,0),(x+.015,y,0),
+      (x+math.cos(ang)*l,y+math.sin(ang)*l,.11+R.uniform(0,.11))]
+   poly(n+'_meadow_blade',v,[(0,1,2)],'grass' if cluster%4 else 'leaf')
+ else:
+  R.seed(1003)
+  for i in range(17):
+   x=R.uniform(-1.75,1.75);y=R.uniform(-1.75,1.75)
+   cube(n+'_soil_aggregate',(x,y,.025),
+        (R.uniform(.04,.095),R.uniform(.04,.095),R.uniform(.018,.04)),'rock',.007)
+def strengthen_scaffold(n,old):
+ for ob in old:assign_existing(ob)
+ h=max(float(dims_for(old)[2]),2.)
+ for x in (-1.42,1.42):
+  for a,b in [((x,-1.12,.3),(x,1.1,h-.45)),((x,1.1,.3),(x,-1.12,h-.45))]:
+   cone_between(n+'_cross_brace',a,b,.075,.065,'wood',7)
+ for y in (-1.12,1.1):
+  for a,b in [((-1.40,y,.4),(1.38,y,h*.72)),((1.38,y,.4),(-1.40,y,h*.72))]:
+   cone_between(n+'_structural_brace',a,b,.065,.055,'wood',7)
+ for j in range(8):
+  x=(-1.42,1.42)[j%2];y=(-1.12,1.1)[(j//2)%2];z=(.7,h*.61)[(j//4)%2]
+  bpy.ops.mesh.primitive_torus_add(major_radius=.084,minor_radius=.014,location=(x,y,z))
+  ob=bpy.context.object;ob.name=n+'_rope_lashings';ob.data.materials.append(material('wood'))
+def improve_fires(n,old):
+ for ob in old:assign_existing(ob)
+ if n.startswith('brazier'):
+  center=Vector((0,0,1.24))
+ else:center=Vector((0,0,1.0))
+ for k in range(7):
+  ang=k*math.tau/7
+  root=center+Vector((math.cos(ang)*.13,math.sin(ang)*.13,0))
+  tip=root+Vector((R.uniform(-.10,.10),R.uniform(-.10,.10),R.uniform(.37,.66)))
+  cone_between(n+'_flame_lobe',root,tip,.10,.001,'fire',7)
+def improve_rock_silhouette(n,old):
+ for ob in old:assign_existing(ob)
+ dim=dims_for(old)
+ R.seed(287+len(n))
+ if 'cliff_rock_column' in n:
+  for i in range(9):
+   phi=R.uniform(0,math.tau);z=R.uniform(.2,max(float(dim[2]),.5))
+   a=(math.cos(phi)*.12,math.sin(phi)*.13,z)
+   b=(math.cos(phi)*.34,math.sin(phi)*.32,z+R.uniform(.12,.7))
+   cone_between(n+'_jagged_stratum',a,b,.20,.02,'rock',5)
+ elif n.startswith('boulder'):
+  for i in range(5):
+   phi=R.uniform(0,math.tau);x=math.cos(phi)*float(dim[0])*.19;y=math.sin(phi)*float(dim[1])*.19
+   ob=cube(n+'_stratum_flake',(x,y,float(dim[2])*.22),(.26,.35,.08),'rock',.012)
+   ob.rotation_euler.z=phi
+
 def prepare(n,old):
+ if n=='arch_bridge_support':return improved_bridge_arch(n,old)
+ if n=='river_foam_line':return improved_foam(n,old)
+ if n=='river_water_tile':return improved_water(n,old)
+ if n.endswith('ground_patch'):return improved_ground(n,old)
  if n.startswith('pine_'):return generate_tree(n,old)
  if n.startswith('shrub_'):return add_shrub(n,old)
  if n.startswith('grass_tuft'):return add_grass(n,old)
  if n.startswith('banner_'):return make_banner(n,old)
+ if n.startswith(('boulder_','cliff_')):return improve_rock_silhouette(n,old)
+ if n.startswith('scaffold_'):return strengthen_scaffold(n,old)
+ if n.startswith(('torch_wall','brazier_pedestal')):return improve_fires(n,old)
  if n.startswith(('reinforced_oak_gate','portcullis_')):add_door_hardware(n,old)
  for ob in old:
   if ob.type=='MESH':assign_existing(ob)
