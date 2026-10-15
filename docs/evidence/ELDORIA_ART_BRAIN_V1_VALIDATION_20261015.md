@@ -970,3 +970,16 @@ El archivo de pruebas selector rechazado antiguamente no fue necesario: no se re
 - `SELECTIVE_MEMORY_PRODUCTION_ENABLED=false`, `ART_APPROVED=false`, `CALIBRATION_VALIDATED=false`, `BLENDER_EDITS=0`, `MODEL_WEIGHTS_TRAINED=false`.
 
 La misión de recuperación operativa y comparación diagnóstica puede cerrarse con estas evidencias y límites. El siguiente trabajo artístico exige nueva autorización de alcance que levante su pausa; no se reinicia automáticamente Bastión I, 4X ni la torre. El bootstrap existente de main debe recuperar este resultado y no seguir enviando a soporte como paso obligatorio del benchmark ya ejecutado.
+
+### Recuperación final independiente y conciliación de instrucciones
+
+La prueba sin historial recuperó correctamente run/job/artefacto completados, resultados 32/31/32, ausencia de superioridad frente a baseline y pausa artística. Detectó prosa antigua BLOCKED/RUNNING fuera del checkpoint: se corrigió antes del cierre, no se dejó como instrucción contradictoria.
+
+Versiones operativas finales:
+- Bootstrap main commit `afeddcebdc19488a5bdcd4789610f6b8988cce40`, blob `88b88e017bd439724b623cdba72fe35768e7802a`: procedimiento y checkpoint COMPLETED coherentes; causas históricas no se presentan como bloqueo vigente.
+- AGENTS main commit `830f1672cd4febee67218d06a2194cc19a78cb98`, blob `fa8bcb93bda48628f9382fce3d9404c1e6f82e86`: distingue comparación diagnóstica de memoria completada y A/B artístico todavía ausente.
+- Tras releer solo esos dos archivos, el revisor independiente confirmó que no persiste una obligación de acudir a soporte ni observar un run pendiente para el ensayo.
+- Un proceso local nuevo del preflight volvió a recuperar COMPLETED, el siguiente paso de preservar pausa y los cuatro hashes de entrada coincidentes. No se repitieron inferencias ni pruebas de selector.
+- Esto demuestra recuperación del estado desde contexto independiente en la infraestructura actual; no promete acceso permanente de Work ni salud Windows fuera del instante registrado.
+
+**Entrega diagnóstica cerrada:** conectividad real y método de ejecución recuperados; comparación selectiva real completada y evaluada; respuestas preservadas en Git; continuidad reconciliada y comprobada. Se conserva íntegra la pausa de producción y el límite de no superioridad sobre el baseline.
