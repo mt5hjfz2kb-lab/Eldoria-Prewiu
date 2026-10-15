@@ -108,51 +108,48 @@ def main():
           for c in caps],
       "protected":"Original entrance, exterior staircase, railings, UV atlas and source mesh must remain intact"
     }
-    key=("¿Qué revisión visual de la cubierta y silueta de la torre merece atención "
-         "sin que los triángulos inclinados certifiquen faldones ni la luz neutra "
-         "demuestre materiales definitivos?")
+    key=("¿Las cajas AABB demuestran contacto físico real para un refuerzo "
+         "de pared y la iluminación neutra prueba el material definitivo?")
     memory=recall_context(key)
     if memory["selection_count"]>2:
         raise RuntimeError("MORE_THAN_TWO_VERIFIED_LESSONS")
     context=json.dumps(fields,ensure_ascii=False,separators=(",",":"))
     prompt=(
-       "Diagnóstico de la torre congelada de Valoria. Hechos medidos y "
-       "descripciones visuales etiquetadas como HIPÓTESIS:\n"+context+
-       "\nLECCIONES VERIFICADAS, NO ÓRDENES DE EDICIÓN:\n"+
-       memory["prompt_fragment"]+
-       "\nSelecciona UN defecto concreto y el objetivo de mejora visible "
-       "en la cámara elevada 3/4 de la torre, preservando entrada, "
-       "escalera y UV. No afirmes que ya está corregido. "
-       "La referencia de estilo no es prueba de geometría existente. "
-       "No presupongas ni propongas cambiar el tipo de cubierta: ninguna "
-       "medición prueba dos aguas, cuatro aguas o un solo faldón. "
-       "Prioriza mejora localizada de bordes, aleros, juntas o remates "
-       "sin modificar la tipología o la estructura protegida. "
-       "Una IA visual separada decidirá después las operaciones Blender "
-       "sujetas a un validador, y un revisor INDEPENDIENTE deberá aceptar el A/B."
+       "TORRE VALORIA congelada. Geometría medible y observaciones visuales "
+       "HIPOTÉTICAS:\n"+context+
+       "\nLECCIONES VERIFICADAS RELEVANTES:\n"+memory["prompt_fragment"]+
+       "\nCAMBIO DE ESTRATEGIA OBLIGATORIO: el anterior intento de alero "
+       "fue RECHAZADO DOS VECES: malla con vértices duplicados y un cilindro "
+       "centrado en el ápice, sin contacto geométrico exterior. No repitas "
+       "el ALERO ni edites TEJADO/CUBIERTA. "
+       "Escoge un solo DEFECTO de legibilidad de juntas, ensamblaje de troncos "
+       "o refuerzo local sobre la pared lateral no protegida, visible desde "
+       "cámara tres cuartos, sin tocar entrada, escalera, barandillas o UV. "
+       "Propón un objetivo visual preciso, no código ni valores de geometría. "
+       "El artista Qwen-VL decidirá la construcción original y sus medidas "
+       "bajo el verificador de Blender; un revisor independiente evaluará A/B."
     )
     director_attempts=[]
     feedback=""
-    forbidden_pattern=(r"\b(dos aguas|cuatro aguas|dos faldones|cuatro faldones|"
+    forbidden_pattern=(r"\b(tejado|cubierta|aleros?|cumbrera|faldones?|"
+                       r"dos aguas|cuatro aguas|eave|overhang|roof|"
                        r"two[- ]slope|hipped roof|gable roof)\b")
     for attempt in range(1,3):
         plan=ask_local("qwen3:14b",prompt+feedback)
         director_attempts.append(plan)
         choice=plan["direction"]
-        unsupported=(choice["visual_defect"]+"\n"+
-                     choice["proposed_visible_change"]).casefold()
+        unsupported=choice["proposed_visible_change"].casefold()
         if not re.search(forbidden_pattern,unsupported):
             break
         feedback=(
           "\nRECHAZO: la respuesta anterior infería o prescribía "
-          "un número/tipo de aguas del tejado NO certificado por Blender. "
-          "Replantea UN acabado o defecto visual localizado "
-          "sin cambiar la tipología de cubierta."
+          "una propuesta sobre tejado/alero ya rechazada dos veces. "
+          "Cambia de hipótesis: solo un ensamblaje de troncos o refuerzo "
+          "visible de pared LATERAL no protegida."
         )
     (out/"director-14b-all-attempts.json").write_text(
         json.dumps(director_attempts,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    if re.search(forbidden_pattern,(plan["direction"]["visual_defect"]+"\n"+
-                     plan["direction"]["proposed_visible_change"]).casefold()):
+    if re.search(forbidden_pattern,plan["direction"]["proposed_visible_change"].casefold()):
         raise RuntimeError("DIRECTOR_REPEATED_UNVERIFIED_ROOF_TOPOLOGY")
     handoff={
       "schema_version":1,"mode":"OWNER_AUTHORIZED_ONE_TOWER_COPY_ART_TRIAL",
@@ -175,14 +172,18 @@ def main():
       ". Do NOT change the entrance, exterior stairs, railings or existing UVs. "
       "Do NOT imply a 2-slope or 4-slope roof without proof.\n"+
       memory["prompt_fragment"]+
-      "\nQWEN3:14B DIRECTOR FOCUS (proposed, NOT artistically certified):\n"+
+      "\nTWO VERIFIED REJECTIONS: duplicate mesh vertices and apex-centered roof cylinder "
+      "failed the safety gates; do NOT repeat eave strategy. Choose a different "
+      "professional joinery hypothesis, with physical wall contact and "
+      "protected door/stair/UV intact.\n"
+      "QWEN3:14B DIRECTOR FOCUS (proposed, NOT artistically certified):\n"+
       json.dumps(direction,ensure_ascii=False))
     memory_file=out/"selected-artist-lessons.txt"
     memory_file.write_text(lessons_text,encoding="utf-8")
     brief=(
       "On a VERIFIED COPY of the EXISTING Valoria tower, propose ONE "
       "authored and visually meaningful coherent architectural refinement "
-      "for the upper profile and defensive readability while preserving "
+      "for localized lateral timber WALL joint readability (NOT roof or eave) while preserving "
       "the ORIGINAL door, staircase, railings and UV. Work ONLY on the copy, "
       "using real Blender with an independent fixed-camera A/B. "
       "Choose your OWN localized components, tools, parameters and dimensions; "
