@@ -103,13 +103,47 @@ def rejected_plan_family(raw_file):
         return None
 
 
-def track_rejected_strategy(raw_file, counts, blocked, threshold=2):
-    """Two bounded plan rejections of same family require different tool."""
+def track_rejected_strategy(raw_file, counts, blocked, threshold=2,
+                            *, rejection="", multi_component_assembly=False):
+    """Track a genuinely repeated geometric HYPOTHESIS, not just its Blender tool.
+
+    Source editing can change tools after twice-rejected local operations.
+    For multi-part authorship the same Blender primitive is also capable of
+    making many different timber members. A tiny member and overlapping
+    supports are TWO DIFFERENT design errors, not proof Blender primitives
+    can never be used. Do not exclude the only viable creator family.
+    """
     family=rejected_plan_family(raw_file)
-    if family:
+    if not family:
+        return None
+    if not multi_component_assembly:
         counts[family]=counts.get(family,0)+1
         if counts[family]>=threshold:
             blocked.add(family)
+        return family
+    reason=str(rejection).upper()
+    if "DUPLICATE 3D VERTICES" in reason:
+        defect="DUPLICATE_VERTICES"
+    elif "OPEN OR NONMANIFOLD" in reason:
+        defect="OPEN_MESH"
+    elif "DUPLICATE_OR_NEAR_COINCIDENT" in reason:
+        defect="COINCIDENT_TIMBER"
+    elif "TOO THIN OR TINY" in reason:
+        defect="TINY_UNREADABLE"
+    elif "NO_SOURCE_CONTACT_AABB" in reason:
+        defect="DETACHED_FROM_TOWER"
+    elif "DISJOINT_NEW_TIMBER_COMPONENTS" in reason:
+        defect="DISCONNECTED_ASSEMBLY"
+    else:
+        defect="OTHER_"+hashlib.sha256(reason.encode()).hexdigest()[:10]
+    key=family+":"+defect
+    counts[key]=counts.get(key,0)+1
+    # Blender primitives remain a valid authoring tool even after a model
+    # produces two bad ORIGINAL placements. Exclude only repeated invalid
+    # *hand-authored mesh topology*, leaving the alternative tool available.
+    if (family=="mesh" and defect in ("DUPLICATE_VERTICES","OPEN_MESH")
+            and counts[key]>=threshold):
+        blocked.add("mesh")
     return family
 
 
@@ -892,7 +926,9 @@ def main():
                       "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
                       "no_artistic_values_rewritten":True},indent=2)+"\n",encoding="utf-8")
                 family=track_rejected_strategy(
-                    raw_attempt,rejected_plan_family_counts,invisible_source_ops)
+                    raw_attempt,rejected_plan_family_counts,invisible_source_ops,
+                    rejection=str(e),
+                    multi_component_assembly=bool(getattr(args,"multi_component_assembly",False)))
                 history+="\nA non-executable Qwen proposal was REJECTED: "+str(e)
                 if family and family in invisible_source_ops:
                     history+=("\nOWNER CONTRACT V1: "+family+
@@ -913,6 +949,12 @@ def main():
                               "this artistic/geometry hypothesis. Move to "
                               "the next distinct safe tool family if available.")
         if doc is None:
+            # Do not waste 3 more Windows inference cycles repeating a
+            # globally exhausted creator hypothesis with no actual Blender
+            # result. Preserve exact five rejected plans and diagnosis.
+            if records and records[-1].get("status") in (
+                    "STRATEGY_EXHAUSTED","PLAN_STRATEGY_EXHAUSTED"):
+                break
             continue
         candidate=trial/"artist-plan.json";candidate.write_text(json.dumps(doc,indent=2)+"\n")
         stage=trial/"output"
