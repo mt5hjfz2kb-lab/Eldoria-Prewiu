@@ -155,29 +155,62 @@ class Qwen14BGroundedBeamTests(unittest.TestCase):
             for i,n in enumerate(("reference","hero","top","side")):
                 Image.new("RGB",(32,24),(i*40,90,100)).save(root/(n+".png"))
             args=SimpleNamespace(endpoint="http://127.0.0.1:11434/api/chat",
-               vision_model="qwen3-vl:8b-instruct-q4_K_M",model="qwen3:14b")
-            response={"source_material":"Wood timber photographed in source",
-                      "source_architecture":"Raised wooden watchtower with eaves",
-                      "supported_defect":"Side support lacks sufficient bracing",
-                      "candidate_attachment_surfaces":"Two visible roof-edge wooden face contacts",
-                      "protected_access_roof_stairs":"Keep doorway stairs and roof unmodified",
-                      "uncertainties":"Cannot tell whether back edge is visible"}
+                vision_model="qwen3-vl:8b-instruct-q4_K_M",model="qwen3:14b")
+            response_source={
+                "source_material":"Wood timber photographed in source",
+                "source_architecture":"Raised wooden watchtower with eaves",
+                "supported_defect":"Side support lacks sufficient bracing",
+                "candidate_attachment_surfaces":"Visible roof-edge original wooden face contacts",
+                "protected_access_roof_stairs":"Keep doorway stairs and roof unmodified",
+                "uncertainties":"Cannot tell whether back edge is visible"}
+            response_style={
+                "reference_architecture":"High quality stylized medieval fantasy architecture",
+                "reference_visible_style_features":"Rich ornamental structural joinery and readable materials",
+                "reference_joinery_and_material_hierarchy":"Strong believable wood and stone material separation",
+                "reference_distinctive_silhouette":"Deliberate depth and architectural detailing",
+                "uncertain_details":"Fine invisible rear detail cannot be verified"}
             observed=[]
             def fake(endpoint,model,messages,max_tokens,timeout,schema):
                 observed.append((model,messages))
-                return json.dumps(response)
+                return json.dumps(response_source if len(observed)==1 else response_style)
             with patch("artist_loop.request_ollama",side_effect=fake):
                 proof=observe_source_with_vl(args,root/"reference.png",root/"hero.png",
                       [root/"top.png",root/"side.png"],"role",root)
                 second=observe_source_with_vl(args,root/"reference.png",root/"hero.png",
                       [root/"top.png",root/"side.png"],"role",root)
-            self.assertEqual(len(observed),1)
-            self.assertEqual(observed[0][0],"qwen3-vl:8b-instruct-q4_K_M")
-            self.assertEqual(len(observed[0][1][1]["images"]),3)
+            self.assertEqual(len(observed),2)
+            self.assertEqual([len(x[1][1]["images"]) for x in observed],[3,1])
+            self.assertEqual([x[0] for x in observed],
+                ["qwen3-vl:8b-instruct-q4_K_M"]*2)
             self.assertFalse(proof["director_image_input"])
+            self.assertTrue(proof["owner_style_reference_observed_separately"])
             self.assertEqual(proof["director_model"],"qwen3:14b")
+            self.assertIn("source_geometry_observation",proof["visual_observation"])
+            self.assertIn("owner_destination_style_observation",proof["visual_observation"])
             self.assertEqual(second["source_camera_sha256"],proof["source_camera_sha256"])
             self.assertFalse(proof["art_approved"])
+
+    def test_vl8b_hallucinated_missing_source_blocks_14b_art(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            for name in ("ref","hero"):
+                Image.new("RGB",(32,24)).save(root/(name+".png"))
+            args=SimpleNamespace(endpoint="http://127.0.0.1:11434/api/chat",
+                vision_model="qwen3-vl:8b-instruct-q4_K_M",model="qwen3:14b")
+            hallucination={
+                "source_material":"none detected anywhere",
+                "source_architecture":"none detected in Blender geometry",
+                "supported_defect":"none detected in Blender geometry",
+                "candidate_attachment_surfaces":"none detected in Blender geometry",
+                "protected_access_roof_stairs":"none detected in Blender geometry",
+                "uncertainties":"none detected in Blender geometry"}
+            with patch("artist_loop.request_ollama",return_value=json.dumps(hallucination)) as request:
+                with self.assertRaisesRegex(RuntimeError,"SOURCE_IMAGE_PERCEPTION_FAILED"):
+                    observe_source_with_vl(args,root/"ref.png",root/"hero.png",[],
+                            "role",root)
+            self.assertEqual(request.call_count,1)
+            self.assertFalse((root/"vision-source-observation.json").exists())
 
 
 if __name__=="__main__":
