@@ -16,6 +16,13 @@
 
 La prueba Windows se registra por separado; no declarar `DIRECT_MCP_PARITY_PASS` sin leer su resultado `transport-parity-result.json`. Si la prueba falla, analizar su etapa real, conservar artefactos y corregir en rama diagnóstica, no rediseñar automáticamente la arquitectura del cerebro.
 
+
+## Resultados reales recibidos después de iniciar la prueba
+
+La prueba Windows [#38766521237](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38766521237), fuente de diagnóstico `d2e20f33952a1243143faca67a568b3da75e1702`, finalizó **SUCCESS / TECHNICAL_GEOMETRY_PARITY**. Archivo [artifact 11988443079](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38766521237): una fuente GLB inmutable y un plan Qwen previo SHA-256 `3962044c882b23712fbab195e5a2570af59e8e9395cde8293a1631813b7b3d09`, ejecutados cada uno en Blender directo y BlenderMCP instalado, sin tocar original. Ambos aplicaron `sculpt_anchor` y `material`, con efectos idénticos y hash final de GLB **`2c06893fcd1595ab257fcbdd27886b386739135356b422f935baf323e3b1d0aa`**. Tiempo observado: direct 6.329 s; MCP 7.046 s (una repetición; insuficiente para benchmarking de velocidad). Capturas de render de los dos transportes tienen SHA diferentes; los hashes de **geometría GLB** son idénticos. **`art_approved=false`.**
+
+**Primera prueba artística del estudio corregido:** workflow nuevo [#38767006506](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38767006506) sobre SHA `006dc0bd0ce29a20502f5681cb8fd4777e4b2f4c`, con `qwen3-vl:4b-instruct` local, fuente original y sala Blender, una única intervención y crítica con resultado de intención/realidad. **No declarar PASS de este ensayo hasta consultar sus logs y artefactos.**
+
 ## Siguiente paso autorizable y límites
 
 1. Aceptar o rechazar paridad de transportes **por fuente, mismo plan y evidencias reales**. Los dos transportes usan el mismo `apply_known_action`, por lo que paridad geométrica no significa creatividad.
