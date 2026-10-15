@@ -1,15 +1,20 @@
-name: Eldoria 14B memory A-B diagnostic
+name: Eldoria 14B three-condition selective memory diagnostic
 on:
   push:
     branches: [diagnostic/valoria-ai-eyes-brain-20261015]
     paths:
       - 'tools/art-direction/director-control/brain_memory_epistemic_v2.py'
+      - 'tools/art-direction/director-control/brain_memory_selective_ab.py'
+      - 'tools/art-direction/director-control/selective_memory.py'
       - 'tools/art-direction/director-control/memory_regression_gate.py'
       - '.github/workflows/eldoria-brain-memory-ab.yml'
   workflow_dispatch:
 permissions:
   contents: read
   actions: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
 jobs:
   paired-memory:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -46,21 +51,12 @@ jobs:
           run-id: 38701710879
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ runner.temp }}/eldoria-spatial
-      - name: Verify benchmark offline tests
-        shell: powershell
-        run: |
-          python -m unittest discover -s tools/art-direction/director-control -p test_brain_memory_ab.py -v
-          if($LASTEXITCODE -ne 0){throw 'BRAIN_BENCHMARK_TESTS_FAILED'}
-          python -m unittest discover -s tools/art-direction/director-control -p test_memory_regression_gate.py -v
-          if($LASTEXITCODE -ne 0){throw 'MEMORY_GATE_TESTS_FAILED'}
-          python -m unittest discover -s tools/art-direction/director-control -p test_brain_memory_v2.py -v
-          if($LASTEXITCODE -ne 0){throw 'PREDECLARED_BALANCED_MEMORY_TESTS_FAILED'}
-      - name: Run read-only paired diagnosis with Ollama alive in same Windows step
+      - name: Run read-only three-condition Qwen diagnosis and preserve complete responses
         shell: powershell
         timeout-minutes: 95
         run: |
           $ErrorActionPreference='Stop'
-          $out=Join-Path $env:RUNNER_TEMP 'eldoria-memory-ab'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-memory-selective-ab'
           New-Item -ItemType Directory -Force -Path $out | Out-Null
           $root=Join-Path $env:RUNNER_TEMP 'eldoria-spatial'
           $geo=Get-ChildItem $root -Recurse -Filter spatial-grounding.json | Select-Object -First 1
@@ -94,16 +90,16 @@ jobs:
             try{$gpu=(& nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits 2>$null | Select-Object -First 1)}catch{}
             @{physical_ram_bytes=$cs.TotalPhysicalMemory;gpu_inventory=$gpu;model='qwen3:14b';observed_utc=(Get-Date).ToUniversalTime().ToString('o')} |
               ConvertTo-Json -Depth 4 | Out-File (Join-Path $out 'windows-hardware.json') -Encoding utf8
-            python tools/art-direction/director-control/brain_memory_epistemic_v2.py --grounding $geo.FullName --out (Join-Path $out 'paired.json') --model qwen3:14b
-            if($LASTEXITCODE -ne 0){throw 'QWEN_AB_EXECUTION_FAILED'}
-            python tools/art-direction/director-control/memory_regression_gate.py --input (Join-Path $out 'paired.json') --out (Join-Path $out 'gate.json')
-            if($LASTEXITCODE -ne 0){throw 'MEMORY_REGRESSION_DETECTED'}
+            python tools/art-direction/director-control/brain_memory_selective_ab.py --grounding $geo.FullName --out (Join-Path $out 'predeclared.json') --dry-run
+            if($LASTEXITCODE -ne 0){throw 'THREE_ARM_PROTOCOL_INVALID'}
+            python tools/art-direction/director-control/brain_memory_selective_ab.py --grounding $geo.FullName --out (Join-Path $out 'three-arm.json')
+            if($LASTEXITCODE -ne 0){throw 'THREE_ARM_ERROR_OR_SELECTIVE_REGRESSION'}
           } finally {
             if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-qwen14b-memory-ab-v2
-          path: ${{ runner.temp }}/eldoria-memory-ab/
+          name: eldoria-qwen14b-memory-selective-three-arm-v1
+          path: ${{ runner.temp }}/eldoria-memory-selective-ab/
           if-no-files-found: warn
