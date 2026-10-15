@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "review_kind": "INDEPENDENT_BLENDER_VISUAL_REVIEW",
+  "run_id": 38695886870,
+  "artifact_id": 11954610013,
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "status": "ART_REJECTED",
+  "accepted": false,
+  "art_approved": false,
+  "original_asset_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "original_qwen_sha256": "e10736c30c1d5f3ece619c685910f4d360af5ed99e1192620688ab0d5ea100cc",
+  "actual_blender_plan_sha256": "548f26767ff8408c4b22933d359c8f6d49f1bb5df9bd0cb42f2eaf2643802711",
+  "before_png_sha256": "1db4063255f6ff916a3cc2a10843cc9f640a7790e743ada1093ebd51628f540b",
+  "after_png_sha256": "8ddb154588f983752568c2072805182637c1f963b949cb281fb2770e23ae8940",
+  "real_mesh_surface_distances_m": [
+    0.00035,
+    0.00025
+  ],
+  "protected_staircase_changed_fractions": [
+    0.260567,
+    0.257262
+  ],
+  "maximum_allowed": 0.22,
+  "independent_visual_finding": "Two large, squat, unintegrated beige cylindrical studs are authored near the original exterior staircase. Both contact actual inherited mesh surface, but are not medieval roof structural supports; they occlude and degrade the staircase/rail circulation area. Contact alone is not artistic quality. The first piece was positioned at [0.8313,1.091,0.8972] WORLD XYZ, the second at [0.5135,1.0906,1.2309]; the same location persisted into cycle 2 under new object names.",
+  "severe_regressions": [
+    "New cylinder occludes exterior staircase and railings"
+  ],
+  "rubric_scores": null,
+  "reviewer": "ChatGPT independent of local Qwen8B author",
+  "model_weights_updated": false,
+  "calibration_validated": false,
+  "unity_verified": false
+}
