@@ -78,6 +78,17 @@ def source_artist_action_schema(objects):
                                  "items":{"type":"integer","minimum":0,"maximum":11}}}},
               ["vertices","faces"])
     }
+    if len(camera_proven_faces)>=2:
+        # A professional high-level tool, NOT a fixed model: Qwen selects two
+        # actual observed ray-hit face IDs and the beam cross section.
+        # Blender calculates vertices/orientation from genuine source polygons.
+        new_ops["beam_between_faces"]=(
+            {"source":enum(names),
+             "start_face":{"type":"integer","enum":camera_proven_faces},
+             "end_face":{"type":"integer","enum":camera_proven_faces},
+             "width_m":{"type":"number","minimum":0.06,"maximum":0.45},
+             "depth_m":{"type":"number","minimum":0.06,"maximum":0.45}},
+            ["source","start_face","end_face","width_m","depth_m"])
     safe_brush=conservative_schema_bounds(objects)
     anchor_distance=(safe_brush["distance"] if safe_brush else {"minimum":0.65,"maximum":1.8})
     anchor_radius=(safe_brush["radius"] if safe_brush else {"minimum":1.5,"maximum":8})
