@@ -84,7 +84,7 @@ def bevel_member(o,width):
     bpy.ops.object.modifier_apply(modifier=mod.name)
     o.data.update()
 
-def build(spec,source,review,out):
+def build(spec,source,review,out,plan_sha):
     proof=validate(spec)
     if out.exists() and any(out.iterdir()):
         raise JoineryRejected("REQUIRES_FRESH_OUTPUT_DIRECTORY")
@@ -137,7 +137,6 @@ def build(spec,source,review,out):
         bevel_member(o,member["edge_bevel_m"])
         put_material_uv(o,mat)
     bpy.context.view_layer.update()
-    if studio.snapshot_meshes()|{} == {}:raise JoineryRejected("NO_SOURCE")
     after_mesh=studio.snapshot_meshes()
     if any(after_mesh.get(k)!=v for k,v in original.items()):
         raise JoineryRejected("SOURCE_GEOMETRY_CHANGED")
@@ -165,7 +164,7 @@ def build(spec,source,review,out):
             "material_count":len(o.data.materials)}
            for o in exported]
     catalog={"schema_version":1,"asset_id":spec["asset_id"],
-       "artist_plan_sha256":digest(out/"joinery-plan.json"),
+       "artist_plan_sha256":plan_sha,
        "new_components":sorted(objects),"components":comps,
        "source_sha256":digest(source),"source_file_unchanged":True,
        "art_approved":False}
@@ -193,10 +192,6 @@ if __name__=="__main__":
     a=p.parse_args(sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else [])
     source=pathlib.Path(a.source);out=pathlib.Path(a.out)
     spec=json.loads(pathlib.Path(a.plan).read_text(encoding="utf8"))
-    out.mkdir(parents=True,exist_ok=True)
-    (out/"joinery-plan.json").write_bytes(pathlib.Path(a.plan).read_bytes())
-    # build insists fresh output apart from the immutable copied plan.
-    plan_snapshot=(out/"joinery-plan.json").read_bytes()
-    (out/"joinery-plan.json").unlink()
-    build(spec,source,json.loads(pathlib.Path(a.review).read_text()),out)
-    (out/"joinery-plan.json").write_bytes(plan_snapshot)
+    plan_path=pathlib.Path(a.plan)
+    build(spec,source,json.loads(pathlib.Path(a.review).read_text()),out,digest(plan_path))
+    (out/"joinery-plan.json").write_bytes(plan_path.read_bytes())
