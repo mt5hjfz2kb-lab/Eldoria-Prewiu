@@ -33,13 +33,29 @@ def reject_obviously_bad_component_placement(plan,source_objects):
     if not plan.get("actions") or not source_objects:
         raise RejectedPlan("Original authored component + real source inspection required")
     action=plan["actions"][0]
-    if action["op"] not in ("mesh","primitive"):
+    if action["op"] not in ("mesh","primitive","beam_between_faces"):
         raise RejectedPlan("New component must have original Blender geometry")
     original=max(source_objects,key=lambda o:o.get("evaluated_triangles",o.get("faces",0)))
     low=original.get("world_bounds_min_m");high=original.get("world_bounds_max_m")
     if not low or not high or any(high[i]<=low[i] for i in range(3)):
         raise RejectedPlan("Physical Blender WORLD source bounds required before Qwen edits")
-    lo,hi=_aabb_from_original_art(action)
+    if action["op"]=="beam_between_faces":
+        source=next((x for x in source_objects if x["name"]==action["params"]["source"]),None)
+        if source is None:raise RejectedPlan("Real source for Qwen beam anchors missing")
+        hits={h["face_index"]:h["world_center_m"] for h in
+            source.get("camera_visible_face_landmarks",[]) if
+            h.get("camera_visible") is True and
+            h.get("camera_ray_hit_original_face") is True and
+            isinstance(h.get("world_center_m"),list)}
+        first=hits.get(action["params"]["start_face"])
+        second=hits.get(action["params"]["end_face"])
+        if first is None or second is None:
+            raise RejectedPlan("Beam start/end not camera-proven source surface")
+        margin=max(action["params"]["width_m"],action["params"]["depth_m"])*.5
+        lo=[min(first[i],second[i])-margin for i in range(3)]
+        hi=[max(first[i],second[i])+margin for i in range(3)]
+    else:
+        lo,hi=_aabb_from_original_art(action)
     span=[high[i]-low[i] for i in range(3)]
     gap=[max(0,low[i]-hi[i],lo[i]-high[i]) for i in range(3)]
     # The historical permissive 0.5--1.14 metre gap incorrectly accepted a
