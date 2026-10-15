@@ -1,3 +1,5 @@
+> **ESTADO POSTERIOR: REANUDACIÓN Y COMPARACIÓN REAL COMPLETADAS.** La solicitud normal actual del benchmark en la ruta original fue aceptada; run 38726028141 SUCCESS, 96 inferencias, sin/completa/selectiva 32/32,31/32,32/32. No hay un bloqueo pendiente que impida ese ensayo ya ejecutado. Los estados anteriores se conservan como historia. La causa de los rechazos originales sigue sin determinarse; no hubo cambios de permisos ni uso de una ruta alternativa. Producción artística pausada.
+
 # Eldoria — investigation of two historical write rejections
 
 Observed at 2026-10-15T11:06:51Z. Repository: mt5hjfz2kb-lab/Eldoria-Prewiu. Diagnostic branch: diagnostic/valoria-ai-eyes-brain-20261015.
@@ -79,3 +81,8 @@ New protocol preparation checks (not a repeat of the 13 selector checks):
 ```
 
 Source syntax and dry-run integrity passed, without a local model call. Results are still PENDING until the actual run artifact is recovered and evaluated. The original rejected selector-test file was not needed or retried; existing routing evidence is preserved. No Blender, Unity, tower edits, model-weight training or production resumption.
+
+
+## Completion evidence
+
+Real run 38726028141, source a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c, job 116391981342, artifact 11967828291. The exact ZIP is preserved in Git under docs/evidence/eldoria-memory-selective-20261015/three-arm-evidence.zip (commit a1dc9ae0ba048f39594508513ca80a4fff79049f; blob 62c572aae74653b92289e8dccf6813c4dc6d2808). Final measured evaluation and limits: docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md at commit 1bee49de140b748b3469086c2ff6d28041888eff. Existing main bootstrap updated in 255c3f3be33a8993c52cc2e3fe2022b2a8e3955e; a fresh local process recovered the completed state, all four input hashes and owner production pause. No model superiority over baseline or art approval claimed.
