@@ -1,0 +1,88 @@
+name: "[ART INDIVIDUAL] Valoria 63 module per-asset quality uplift"
+on:
+  push:
+    branches:
+      - art/valoria-63-individual-quality-uplift-20261015
+    paths:
+      - 'tools/valoria-modular-fortress/individual_quality_uplift.py'
+      - '.github/workflows/valoria-63-individual-quality.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-individual-63-blender-uplift
+  cancel-in-progress: false
+jobs:
+  upgrade-and-capture-each:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 115
+    steps:
+      - name: Locate Git and Blender 5.2
+        shell: powershell
+        id: toolcheck
+        run: |
+          $cmd = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $cmd) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git = Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $git) { throw 'Git missing' }
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          $b=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $exe=if($b){$b.Source}else{$null}
+          if (-not $exe) {
+            $root='C:\Program Files\Blender Foundation'
+            $exe=Get-ChildItem $root -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if (-not $exe) { throw 'No Blender on authorized PC' }
+          "exe=$exe" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          & $exe --version | Select-Object -First 2
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Reuse original 63 Blender-native models from verified workflow
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-modular-fortress-native-blender-38810636076
+          run-id: 38810636076
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+          path: \${{ runner.temp }}/eldoria-base63
+      - name: Produce exactly 63 distinct upgraded GLBs and 126 individual images
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'eldoria-base63\valoria_modular_blender'
+          $dest=Join-Path $env:RUNNER_TEMP 'eldoria-upgrade63'
+          $script=Join-Path $env:RUNNER_TEMP 'eldoria-individual-uplift-pinned.py'
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/individual_quality_uplift.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw "Pinned script unavailable: $spec"}
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $files=Get-ChildItem $src -Filter '*.glb' -ErrorAction SilentlyContinue
+          if ($files.Count -ne 63) {throw "Source GLB count mismatch: $($files.Count)"}
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-individual-uplift.log'
+          $stderr=Join-Path $env:RUNNER_TEMP 'eldoria-individual-uplift.stderr.log'
+          $proc=Start-Process -FilePath "\${{ steps.toolcheck.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$src,$dest) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $stderr
+          Get-Content $log -Tail 140 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 50 -ErrorAction SilentlyContinue
+          if ($proc.ExitCode -ne 0) { throw "Native Blender per-asset job exit $($proc.ExitCode)" }
+          $count=(Get-ChildItem (Join-Path $dest 'glb') -Filter '*.glb').Count
+          $imgs=(Get-ChildItem (Join-Path $dest 'previews') -Filter '*.png').Count
+          if($count -ne 63 -or $imgs -ne 126){throw "Expected 63 GLB + 126 PNG; got $count + $imgs"}
+          Get-Content (Join-Path $dest 'individual_quality_status.json') -TotalCount 25
+      - name: Save all 63 individual assets and review frames
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-individual-quality-63-\${{ github.run_id }}
+          path: |
+            \${{ runner.temp }}/eldoria-upgrade63/**
+            \${{ runner.temp }}/eldoria-individual-uplift.log
+            \${{ runner.temp }}/eldoria-individual-uplift.stderr.log
+          if-no-files-found: warn
+          retention-days: 30
