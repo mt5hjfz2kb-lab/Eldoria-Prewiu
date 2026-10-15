@@ -1,0 +1,34 @@
+name: "[ART CC0 SCANS] Two real licensed Alpine cliff photogrammetry candidates"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-real-cliff-scans.yml'
+      - 'tools/valoria-modular-fortress/collect_real_cliff_scans.py'
+permissions:
+  contents: read
+jobs:
+  download-official-real-rock-scans:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve official real cliff CC0 meshes with 1K textures
+        run: python3 tools/valoria-modular-fortress/collect_real_cliff_scans.py "$RUNNER_TEMP/eldoria-polyhaven-scanned-cliffs"
+      - name: Validate licensed, noncommercial sources and 2 distinct scanned files
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-polyhaven-scanned-cliffs'
+          d=json.loads((p/'official_cc0_models.json').read_text())
+          assert d['license']=='CC0' and d['cost_eur']==0
+          assert set(d['models'])=={'rock_face_01','rock_face_02'}
+          for m in d['models'].values():assert any(f['name'].lower().endswith(('.gltf','.glb')) for f in m['files'])
+          print('REAL_CC0_ROCK_MODEL_SOURCES_VERIFIED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-polyhaven-real-rock-faces-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-polyhaven-scanned-cliffs/**
+          if-no-files-found: error
+          retention-days: 30
