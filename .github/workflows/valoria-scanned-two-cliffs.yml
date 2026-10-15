@@ -1,0 +1,83 @@
+name: "[ART GEO SCANNED] Two authentic high-detail Poly Haven cliff candidates"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-scanned-two-cliffs.yml'
+      - 'tools/valoria-modular-fortress/compare_scanned_cc0_cliffs.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-two-real-scanned-cliffs
+  cancel-in-progress: false
+jobs:
+  professional-geologic-scan-study:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Native Git and Blender
+        shell: powershell
+        id: installed
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-one-continuous-geologic-cliff-38825223115
+          run-id: 38825223115
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/cc0-cliff-procedural
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-polyhaven-real-rock-faces-38825684780
+          run-id: 38825684780
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/cc0-real-photogrammetry
+      - name: Import 2 actual Poly Haven rock face models with real normal maps
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'cc0-cliff-procedural\eldoria-continuous-cliff-v6\glb'
+          $cc0=Join-Path $env:RUNNER_TEMP 'cc0-real-photogrammetry'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-rockface-cc0-professional'
+          if(-not(Test-Path (Join-Path $src 'cliff_rock_column.glb'))){throw 'Prior cliff absent'}
+          if(-not(Test-Path (Join-Path $cc0 'rock_face_01\rock_face_01_1k.gltf'))){throw 'Real scanned source absent'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/compare_scanned_cc0_cliffs.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned photogrammetry process missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-polyhaven-two-cc0.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-photogrammetry-two.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-photogrammetry-two.err'
+          $proc=Start-Process -FilePath "${{ steps.installed.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$cc0,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Photogrammetry comparison exit $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($count -ne 2){throw "Expected two candidates in $folder, got $count"}
+          }
+      - name: Preserve real scanned independent rock GLB and A-B proofs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-two-real-cc0-geology-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-rockface-cc0-professional/**
+            ${{ runner.temp }}/eldoria-photogrammetry-two.log
+            ${{ runner.temp }}/eldoria-photogrammetry-two.err
+          if-no-files-found: warn
+          retention-days: 30
