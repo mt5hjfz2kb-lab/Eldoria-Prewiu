@@ -116,7 +116,7 @@ result={"schema_version":1,"status":"SOURCE_GROUNDED_READ_ONLY_NOT_ART_APPROVAL"
     "bounding_box": {"world_min_m":[round(v,5) for v in lo],
         "world_max_m":[round(v,5) for v in hi],
         "world_dimensions_m":[round(v,5) for v in dims],
-        "footprint_approximately_rectangular":True,
+        "bounding_box_footprint_rectangular":True,
         "footprint_does_not_constrain_roof_to_flat":True},
     "geometry":{"mesh_object_count":len(meshes),
         "triangle_count_approx":total_triangles,
