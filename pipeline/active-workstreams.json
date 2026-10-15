@@ -172,7 +172,9 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-selective-memory-reviewed-resumption-20261015",
       "title": "Explicit owner-requested normal-tool resubmission and real selective Qwen validation if approved",
@@ -188,18 +190,35 @@
         "docs/evidence/eldoria-memory-selective-20261015/**"
       ],
       "resources": [],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-15T11:11:28Z",
       "art_production_routing": "not_applicable",
-      "phase": "96 real inferences complete; independent recomputation 32/32 baseline,31/32 full,32/32 selective; preserve raw artifact and final continuity",
+      "phase": "Accepted normal-tool creation and 96 real Qwen inferences independently verified; source/raw artifact preserved; completed-state recovery tested",
       "dependency": "Keep historical rejections and new literal outcomes. Stop on a fresh explicit denial. No Blender, Unity, original tower edit or production. Shared runner health showed no active job; use only bounded read-only Qwen diagnosis if the tool approves source.",
       "source_commit": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
       "run_id": 38726028141,
       "job_id": 116391981342,
-      "next": "Observe existing run, recover exact artifact, evaluate all raw responses and regressions; no art or duplicate job"
-    }
-  ],
-  "history": [
+      "next": "Preserve diagnostic findings and await next owner-authorized scope; no automatic Blender/Unity/production resumption",
+      "completed_at": "2026-10-15T11:26:23Z",
+      "mission_complete": true,
+      "scope_limit": "Operational recovery, bounded diagnostic comparison and continuity only; production remains paused",
+      "artifact_id": 11967828291,
+      "result": {
+        "without_memory": 32,
+        "with_memory": 31,
+        "selective_memory": 32,
+        "case_count": 32,
+        "selective_decision_regressions": 0
+      },
+      "evidence_commit": "1bee49de140b748b3469086c2ff6d28041888eff",
+      "raw_archive_commit": "a1dc9ae0ba048f39594508513ca80a4fff79049f",
+      "raw_archive_blob": "62c572aae74653b92289e8dccf6813c4dc6d2808",
+      "bootstrap_commit": "255c3f3be33a8993c52cc2e3fe2022b2a8e3955e",
+      "continuity_ci_run": 38727144262,
+      "selective_memory_qwen_validated": true,
+      "selective_memory_general_benefit_validated": false,
+      "art_approved": false
+    },
     {
       "id": "eldoria-create-file-failure-isolation-20261015",
       "title": "Isolate GitHub create_file availability without retrying rejected executable benchmark files",
@@ -222,7 +241,10 @@
       "handoff": {
         "branch": "diagnostic/valoria-ai-eyes-brain-20261015",
         "path": "docs/evidence/ELDORIA_WRITE_REVIEW_INCIDENT_20261015.md"
-      }
+      },
+      "resolved_by": "eldoria-selective-memory-reviewed-resumption-20261015",
+      "resolution": "Later explicit owner-requested normal-tool submission accepted; run 38726028141 completed and evidence preserved. Original historical rejection cause unknown; not a current execution blocker.",
+      "resolution_evidence_commit": "1bee49de140b748b3469086c2ff6d28041888eff"
     },
     {
       "id": "eldoria-pc-live-health-20261015",
@@ -284,7 +306,10 @@
         "path": "docs/evidence/ELDORIA_ART_BRAIN_V1_VALIDATION_20261015.md"
       },
       "windows_liveness": "NOT_VERIFIED",
-      "selective_memory_qwen_validated": false
+      "selective_memory_qwen_validated": false,
+      "resolved_by": "eldoria-selective-memory-reviewed-resumption-20261015",
+      "resolution": "Later explicit owner-requested normal-tool submission accepted; run 38726028141 completed and evidence preserved. Original historical rejection cause unknown; not a current execution blocker.",
+      "resolution_evidence_commit": "1bee49de140b748b3469086c2ff6d28041888eff"
     },
     {
       "id": "eldoria-art-learning-evidence-retention-20261013",
