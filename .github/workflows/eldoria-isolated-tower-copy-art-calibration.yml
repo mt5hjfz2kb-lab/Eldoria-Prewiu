@@ -1,0 +1,155 @@
+name: Eldoria one frozen-tower copy visual art calibration
+on:
+  push:
+    branches: [diagnostic/valoria-ai-eyes-brain-20261015]
+    paths:
+      - '.github/workflows/eldoria-isolated-tower-copy-art-calibration.yml'
+      - 'tools/art-direction/director-control/tower_copy_art_trial.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  one-original-tower-copy-only:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Use Git from preinstalled GitHub Desktop Windows runner
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'GITHUB_DESKTOP_GIT_MISSING'}
+            $folder=Split-Path $git
+            $env:PATH="$folder;$env:PATH"
+            Add-Content $env:GITHUB_PATH $folder
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          path: trial
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/director-control
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 65add927cde3722407906808f93f22035c975d4c
+          path: studio
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+            tools/art-direction/ARTIST_LEARNING_JOURNAL.md
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-eyes-brain-4b-8b-original-unchanged
+          run-id: 38699407600
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-tower-art-vision
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-spatial-grounded-art-director-4b-8b
+          run-id: 38701710879
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-tower-art-spatial
+      - name: Verify frozen GLB and existing native Blender
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $policy=(Invoke-WebRequest 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/main/AGENTS.md' -UseBasicParsing -TimeoutSec 30).Content
+          if($policy -notmatch 'TORRE DE VALORIA CONGELADA'){throw 'QUALITY_CONTRACT_MISSING'}
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $expected='e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'
+          if(-not (Test-Path $src)){throw 'ORIGINAL_FROZEN_TOWER_NOT_IN_CHECKOUT'}
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'FROZEN_ORIGINAL_SHA_MISMATCH'}
+          $b=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if($b){$exe=$b.Source}
+          else{$exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $exe -or -not (Test-Path $exe)){throw 'KNOWN_WINDOWS_BLENDER_NOT_FOUND'}
+          "ELDORIA_BLENDER_BIN=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          & $exe --version | Select-Object -First 2
+          python -m py_compile trial/tools/art-direction/director-control/tower_copy_art_trial.py
+          if($LASTEXITCODE -ne 0){throw 'ART_TRIAL_SCRIPT_SYNTAX_INVALID'}
+          python -m pip install --disable-pip-version-check --quiet pillow
+          if($LASTEXITCODE -ne 0){throw 'FREE_IMAGE_DEPENDENCY_NOT_AVAILABLE'}
+      - name: One Qwen14B-to-existing-Blender-studio trial on immutable tower COPY
+        shell: powershell
+        timeout-minutes: 68
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-tower-copy-art-trial'
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue | ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if(-not $exe){throw 'INSTALLED_OLLAMA_NOT_FOUND'}
+          $models=Join-Path $env:USERPROFILE '.ollama/models'
+          if(-not (Test-Path $models)){
+            $models=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue | ForEach-Object {Join-Path $_.FullName '.ollama/models'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if($models){$env:OLLAMA_MODELS=$models}
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $env:OLLAMA_NUM_PARALLEL='1'
+          $env:OLLAMA_MAX_LOADED_MODELS='1'
+          $env:ELDORIA_ARTIST_NUM_CTX='8192'
+          $server=$null
+          try{
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+              for($i=0;$i -lt 45;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+            }
+            if(-not $ready){throw 'OLLAMA_LOCAL_SERVICE_UNAVAILABLE'}
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 25
+            $available=@($tags.models|ForEach-Object {$_.name})
+            foreach($needed in @('qwen3:14b','qwen3-vl:8b-instruct-q4_K_M')){
+              if($needed -notin $available){throw "INSTALLED_MODEL_NOT_FOUND: $needed"}
+            }
+            $argv=@('trial/tools/art-direction/director-control/tower_copy_art_trial.py',
+              '--original','frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb',
+              '--reference','frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',
+              '--spatial',(Join-Path $env:RUNNER_TEMP 'eldoria-tower-art-spatial/spatial-grounding.json'),
+              '--vision',(Join-Path $env:RUNNER_TEMP 'eldoria-tower-art-vision/diagnosis-8b.json'),
+              '--studio','studio','--blender',$env:ELDORIA_BLENDER_BIN,
+              '--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
+              '--out',$out)
+            & python @argv
+            if($LASTEXITCODE -ne 0){throw 'ONE_COPY_ART_TRIAL_FAILED_PRESERVE_EVIDENCE'}
+          }finally{
+            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
+          }
+      - name: Preserve source locks original Qwen plans real Blender A B and candidate bytes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-one-frozen-tower-copy-art-calibration-evidence
+          path: ${{ runner.temp }}/eldoria-tower-copy-art-trial/
+          if-no-files-found: warn
+          retention-days: 30
