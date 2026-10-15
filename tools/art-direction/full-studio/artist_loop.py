@@ -91,7 +91,7 @@ def creator_hypothesis_exhausted(assembly_mode, excluded_ops):
     Never resurrect a twice-rejected creator merely to generate an asset.
     The next independent study should change artistic approach or model.
     """
-    return bool(assembly_mode and {"primitive","mesh"}.issubset(set(excluded_ops or set())))
+    return bool(assembly_mode and {"primitive","mesh","beam_between_faces"}.issubset(set(excluded_ops or set())))
 
 
 def rejected_plan_family(raw_file):
