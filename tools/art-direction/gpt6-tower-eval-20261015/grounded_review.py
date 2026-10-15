@@ -230,6 +230,19 @@ def validate_independent_delta(data, stage1_observations):
                     n+=1
     if n:
         errors.append("STAGE2_REUSED_STAGE1_DESCRIPTION:"+str(n))
+    if isinstance(observed,list):
+        reasons_by_part=[str(x.get("visual_reason","")).strip().casefold()
+                         for x in observed if isinstance(x,dict)]
+        if len(reasons_by_part)>1 and len(set(reasons_by_part))<len(reasons_by_part):
+            errors.append("GENERIC_DUPLICATE_REASON_ACROSS_MEMBERS")
+        # Mortises are hidden by the wooden assembly in the frozen normal
+        # camera. Even if Boolean topology is proven, the model cannot
+        # certify a hidden tenon just by looking at a non-cutaway PNG.
+        for x in observed:
+            if not isinstance(x,dict):continue
+            phrase=(str(x.get("visual_reason",""))+" "+str(x.get("visual_joinery",""))).lower()
+            if "tenon" in phrase and "visible" in phrase:
+                errors.append("CLAIMED_HIDDEN_JOINERY_VISIBLE")
     reasons=data.get("reasons")
     if not isinstance(reasons,list) or len(reasons)<2 or any(
             not isinstance(x,str) or len(x.strip())<25 for x in reasons):
@@ -242,6 +255,8 @@ def validate_independent_delta(data, stage1_observations):
                      ("materials",.20),("style",.20),("game_camera",.10)))
         if data.get("decision")=="IMPROVED" and delta<=0:
             errors.append("IMPROVEMENT_WITH_NONPOSITIVE_DELTA")
+        if delta>1.5:
+            errors.append("UNVERIFIED_EXTREME_DELTA_REQUIRES_SECOND_OPINION")
     else:delta=None
     return {"status":"RUBRIC_UNRELIABLE" if errors else "PROVISIONAL_DELTA_GROUNDED",
             "errors":errors,"weighted_delta":round(delta,4) if delta is not None else None,
