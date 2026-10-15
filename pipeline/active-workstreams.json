@@ -199,9 +199,19 @@
       "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
       "art_production_routing": "isolated-lookdev-only-no-promotion",
       "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact. Subsequent owner message authorizes pausing other work to use PC for the pilot.",
-      "dependency": "Bastion/4X/world work remains paused, preservation mandatory; temporary exclusive Windows lease explicitly handed from Bastion, no publication or main Unity content.",
-      "phase": "Stage and execute reference-first Unity-only A/B lookdev on existing assets; no changes to player scenes",
-      "next": "Run one Unity 6000.3.23f1 isolated genuine render, inspect artifact PNG, iterate visually then restore Windows lease"
+      "dependency": "Windows runner retained by Bastion I active workstream, and another actor added a branch Windows workflow that failed checkout before Unity. Pilot can continue read-only and doc/Ubuntu gates but no heavy Windows until coordinated.",
+      "phase": "Verified Ubuntu-only static gate PASS (#38794583466); visually compared existing Unity OriginalHero capture against the approved image; no actual pilot Unity capture.",
+      "next": "Do not retrigger separate pilot Windows workflow while Bastion1 owns runner. Coordinate runner release and isolated worktree; then real Unity A/B of existing fortified wall/gate families against target, review actual PNG. Avoid treating OriginalHero technical baseline as upper fortress.",
+      "last_verified": {
+        "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+        "static_run": 38794583466,
+        "static_result": "success",
+        "failed_windows_run": 38794504051,
+        "failed_windows_stage": "actions/checkout before Unity",
+        "windows_shared_runner_reserved_by": "valoria-bastion1-player-scene-integration-20261012",
+        "pilot_unity_capture": false,
+        "art_approved": false
+      }
     }
   ],
   "history": [
