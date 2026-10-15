@@ -17,6 +17,14 @@ from contract import OPS, RejectedPlan, validate_plan
 # Every allowed operation below already exists in contract.OPS and
 # blender_toolbox.run_action; Qwen determines target, location and dimensions.
 ARCHITECTURAL_SKILLS = {
+    "timber_bracing_and_joinery": {
+        "purpose": "For verified timber buildings: roof-edge fascia, slender bracing, beam joints and real contact with existing wooden structures.",
+        "operations": ("mesh", "primitive", "extrude", "bevel", "boolean", "modifier", "material"),
+    },
+    "timber_roof_and_eaves": {
+        "purpose": "For verified timber roofs: thin sloped fascia, eaves, rafter supports and coherent shingles without disturbing original UV atlases.",
+        "operations": ("mesh", "primitive", "extrude", "bevel", "modifier", "material"),
+    },
     "masonry_and_parapet": {
         "purpose": "Improve the inherited wall rhythm, masonry depth and parapet.",
         "operations": ("extrude", "inset", "bevel", "sculpt", "modifier", "material"),
@@ -76,6 +84,14 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
         + ". Each skill is a design goal. Choose the exact supported operation(s), "
         "actual inspected source object(s), parameters and composition yourself. "
         "Never use skill names or invented 'geometry' as executable op. "
+        "Before choosing an architectural skill, identify the ACTUAL "
+        "source material from genuine source-camera images. A wooden log or "
+        "timber tower is NOT stone masonry: do not invent limestone buttresses "
+        "or stone weathering if no stone exists. The owner STYLE reference is "
+        "not the same as the inherited source's material. For timber fascia "
+        "or roof braces choose your OWN elongated slender connected geometry "
+        "rather than a floating cubic block. New objects use Blender WORLD "
+        "metres and WORLD +Z is up; a local GLB axis is not WORLD XYZ. "
         "FIRST author exactly the structural action count required by the "
         "live schema. An op=sculpt with params.delta=[0,0,0] is not sculpting: "
         "it changes ZERO inherited vertices and is rejected by the actual "
@@ -87,6 +103,37 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
         "smart UV action. Inspect the resulting mesh and camera after each "
         "structural stage; do not mistake changed pixels for art quality."
     )
+
+
+def source_contact_facts(objects, limit_per_mesh=24):
+    """Expose ONLY genuine ray-hit WORLD contact coordinates measured by Blender.
+
+    Qwen remains responsible for deciding which anchor to use, and for designing
+    the geometry/placement. Never synthesize a point from a screen pixel.
+    """
+    import math
+    result=[]
+    for item in objects:
+        hits=[]
+        for hit in item.get("camera_visible_face_landmarks",[])[:limit_per_mesh]:
+            xyz=hit.get("world_center_m")
+            screen=hit.get("camera_screen_uv")
+            if hit.get("camera_visible") is not True or hit.get("camera_ray_hit_original_face") is not True:
+                continue
+            if type(hit.get("face_index")) is not int:
+                continue
+            if not (isinstance(xyz,list) and len(xyz)==3
+                    and all(type(v) in (int,float) and math.isfinite(v) for v in xyz)):
+                continue
+            if not (isinstance(screen,list) and len(screen)==2
+                    and all(type(v) in (int,float) and math.isfinite(v) for v in screen)):
+                continue
+            hits.append({"id":hit["face_index"],"screen_uv":screen,
+                         "world_xyz_m":xyz,
+                         "height":hit.get("world_height_fraction")})
+        if hits:
+            result.append({"name":item["name"],"faces":hits})
+    return result
 
 
 def strict_preflight_plan(plan):

@@ -9,7 +9,7 @@ import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urll
 from contract import validate_plan, RejectedPlan, safe_action_id
 from artist_capabilities_v1 import (artist_skill_prompt, strict_preflight_plan,
     check_source_environment, visual_intent_payload, is_semantically_reviewable,
-    failure_category)
+    failure_category, source_contact_facts)
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from artistic_quality_gate import (stage_visual_request,validate_independent_review,
                                  append_accepted,status as visual_calibration_status)
@@ -560,20 +560,23 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if source_exists and source_inventory:
         # Only true Blender camera ray hits are called visible. These IDs
         # are real observed source faces, never scripted artistic actions.
-        camera_facts=[
-            {"name":obj["name"],
-             "faces":[{"id":i["face_index"],
-                       "screen_uv":i["camera_screen_uv"],
-                       "height":i["world_height_fraction"]}
-                      for i in obj.get("camera_visible_face_landmarks",[])[:24]]}
-            for obj in source_inventory
-            if obj.get("camera_visible_face_landmarks")]
+        camera_facts=source_contact_facts(source_inventory)
         if camera_facts:
             msg+=("\nACTUAL CAMERA-RAY-VISIBLE SOURCE FACE INDICES: "+
                   json.dumps(camera_facts,ensure_ascii=False)[:5000]+
                   "\nFor extrude/inset choose face ID with the desired on-screen "
                   "location from these verified camera hits. Hidden faces "
-                  "from old local percentile sampling cannot improve this view.")
+                  "from old local percentile sampling cannot improve this view. "
+                  "Each world_xyz_m is the VERIFIED camera-ray-hit WORLD surface "
+                  "position in metres, not a model-generated guess. For new "
+                  "geometry YOU select the artistic geometry, pose and size "
+                  "relative to these contact landmarks. The new object's "
+                  "WORLD bounding box must touch the original model's WORLD "
+                  "bounds on ALL X/Y/Z axes; any gap over 0.049m is rejected, "
+                  "not silently repositioned. For roof/eaves use real elevated "
+                  "WORLD Z hits and the actual scene bounds: WORLD Y is depth, "
+                  "not height. Do not pick generic roof positions like y=2 "
+                  "when the inspected source ends at y=1.325.")
     edge=getattr(args,"vision_max_edge",1024)
     if source_exists and source_inventory:
         # Replace a giant truncated inventory with SHORT trustworthy local
