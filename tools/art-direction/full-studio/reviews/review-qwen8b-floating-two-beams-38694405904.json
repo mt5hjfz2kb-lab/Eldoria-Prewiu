@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "run_id": 38694405904,
+  "review_kind": "INDEPENDENT_BLENDER_VISUAL_REVIEW",
+  "reviewer": "ChatGPT, separate from authoring Qwen8B",
+  "decision": "ART_REJECTED",
+  "accepted": false,
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "artifact_id": 11953058281,
+  "original_source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "qwen_raw_sha256": "8f6cff1374784504b7af27daf184a7c089f76ac8d75dcd47ac1194ab6bdc155b",
+  "executed_plan_sha256": "6308b6e59686220a5f7265b0368577f60320784d10ce8e9862f235f96e4575cd",
+  "before_png_sha256": "88d2e725a0fc228f6b657c94a48d69db972795bfa66250be3632c41b2c21070a",
+  "after_png_sha256": "cec85648729636392513d34459aa225014e0dbad2ea18c32f26b5e39020a922e",
+  "pixel_fraction_technical_only": 0.0061892,
+  "blender_changed_pixels": 4278,
+  "artistic_diagnosis": "The actual native camera AFTER image shows two short beige wood-cylinder pieces suspended above and to the right of the tower roof, no contact with supporting roof/wall visible. Architecture and material finish are inconsistent with the original coherent timber village watchtower. Actual A/B did not improve roof, stairs, doorway or load-bearing joinery. Whole-source AABB overlap is a false positive for real source surface contact.",
+  "protected_areas": "Existing stairs, doorway and roof remain visually intact; new pieces are visibly detached from the real source surface, a severe new structural/compositional regression.",
+  "severe_regressions": [
+    "two visibly floating non-architectural new components"
+  ],
+  "rubric_scores": null,
+  "rubric_note": "No weighted numeric artistic improvement can be accepted where the new geometry has obvious major defects; score must not be manufactured.",
+  "art_approved": false,
+  "unity_verified": false,
+  "calibration_validated": false,
+  "model_weights_updated": false
+}
