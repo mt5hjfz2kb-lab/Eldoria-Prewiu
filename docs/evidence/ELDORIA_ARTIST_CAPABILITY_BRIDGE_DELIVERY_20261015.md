@@ -34,6 +34,10 @@ El workflow independiente `.github/workflows/eldoria-artist-capability-bridge-st
 - `tests/test_artist_capabilities_v1.py`: catálogo basado en operadores disponibles, rechazo de `geometry`, no autoaprobación, simulación de imágenes reales con Pillow, rechazo de imagen falsa/resolución, intención discordante, clasificación de fallos, invariantes de comparador.
 - `transport_parity_v1.py` no toca el original y no se activa automáticamente; para usarlo se debe escoger **un mismo plan previamente validado** y una fuente congelada, más BlenderMCP local SHA validado, con exclusividad del runner.
 
+### Advertencia de integración: estudio fijado a una revisión antigua
+
+El workflow vivo `.github/workflows/eldoria-isolated-tower-copy-art-calibration.yml` en `diagnostic/valoria-ai-eyes-brain-20261015` extrae `studio` con `ref: 65add927cde3722407906808f93f22035c975d4c`, de la rama del artista del 14 de octubre. **Por tanto, ni crear esta PR ni fusionarla en diagnóstico activa por sí solo las nuevas capacidades en el runner.** El propietario debe reconciliar los cambios con su revisión de estudio, sustituir ese pin por un SHA aprobado, y lanzar un ensayo delimitado únicamente cuando tenga derecho al runner Windows. No basta con ver un workflow SUCCESS de esta rama estática.
+
 ## Paso de integración y aceptación restante
 
 1. El propietario de la rama diagnóstica revisa e integra la PR de esta rama sin mezclarla con cambios nuevos no verificados. El trabajo en la rama artística canónica continúa siendo de su propietario; **NO** aplicar parche directo a ella ni promover a main por un CI de sintaxis.
