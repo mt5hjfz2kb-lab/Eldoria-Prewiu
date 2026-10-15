@@ -1,0 +1,126 @@
+name: Eldoria Eyes and Brain - frozen Valoria diagnostic
+on:
+  push:
+    branches:
+      - diagnostic/valoria-ai-eyes-brain-20261015
+    paths:
+      - '.github/workflows/eldoria-eyes-brain-vision-diagnostic.yml'
+      - 'tools/art-direction/vision-diagnostic/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-native-pc-exclusive-vision-diagnostic
+  cancel-in-progress: false
+jobs:
+  original-tower-vision-exam:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Locate existing GitHub Desktop Git if not in PATH
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git) { throw 'Existing GitHub Desktop Git unavailable' }
+            $folder=Split-Path $git
+            $env:PATH="$folder;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/vision-diagnostic
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify exact original, latest owner permission, native Blender, and local Ollama
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $sha=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($sha -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'Frozen tower original source mismatch'}
+          $policy=(Invoke-WebRequest 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/main/AGENTS.md' -UseBasicParsing -TimeoutSec 30).Content
+          if($policy -notmatch 'PAUSA DE LA LINEA DE CORRECCION ARTISTICA PARA DIAGNOSTICO VISUAL'){throw 'Latest owner authorization no longer matches'}
+          if(-not (Test-Path 'references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg')){throw 'Missing approved reference'}
+          $bin=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $blender=if($bin){$bin.Source}else{Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Native PC Blender not found'}
+          "ELDORIA_BLENDER_EXE=$blender" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $o=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if(-not (Test-Path $o)) {
+            $o=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object { Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
+          if(-not $o){throw 'Previously installed Ollama not found'}
+          "ELDORIA_OLLAMA_EXE=$o" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          python -m pip install --disable-pip-version-check --quiet pillow
+          if($LASTEXITCODE -ne 0){throw 'Free image preprocessor not available'}
+          python -m py_compile tools/art-direction/vision-diagnostic/eyes_brain_exam.py
+          if($LASTEXITCODE -ne 0){throw 'Vision exam Python syntax failed'}
+      - name: Render three genuinely distinct cameras, untouched original tower
+        shell: powershell
+        timeout-minutes: 18
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-eyes-brain-original'
+          New-Item -Path $out -ItemType Directory -Force | Out-Null
+          & $env:ELDORIA_BLENDER_EXE -b --factory-startup --python-exit-code 1 --python tools/art-direction/vision-diagnostic/render_source_views.py -- --source Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb --out $out
+          if($LASTEXITCODE -ne 0){throw 'Authentic Blender multiview render failed'}
+          Write-Host 'IMMUTABLE_ORIGINAL_3_CAMERA_VIEWS_PASS'
+      - name: Examine three original views plus style reference with Qwen 4B and 8B
+        shell: powershell
+        timeout-minutes: 49
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-eyes-brain-original'
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $sha=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $env:OLLAMA_NUM_PARALLEL='1'
+          $env:OLLAMA_MAX_LOADED_MODELS='1'
+          $modelsDir=Join-Path $env:USERPROFILE '.ollama\models'
+          if(-not (Test-Path $modelsDir)){
+            $modelsDir=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName '.ollama\models'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if($modelsDir -and (Test-Path $modelsDir)){$env:OLLAMA_MODELS=$modelsDir}
+          $startedOllama=$null
+          try {
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 3;$ready=$true}catch{}
+            if(-not $ready){
+              $startedOllama=Start-Process -FilePath $env:ELDORIA_OLLAMA_EXE -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+              for($i=0;$i -lt 35;$i++){
+                try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}
+              }
+            }
+            if(-not $ready){throw 'Local Ollama could not start'}
+            python tools/art-direction/vision-diagnostic/eyes_brain_exam.py --views $out --reference references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg --out $out --model qwen3-vl:4b-instruct --model qwen3-vl:8b-instruct-q4_K_M
+            if($LASTEXITCODE -ne 0){throw 'No Qwen local vision diagnosis completed'}
+          } finally {
+            if($startedOllama){try{Stop-Process -Id $startedOllama.Id -ErrorAction SilentlyContinue}catch{}}
+            if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sha){throw 'Original tower was modified'}
+          }
+      - name: Upload original real PNG views and unfiltered Qwen diagnoses for independent human review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-eyes-brain-4b-8b-original-unchanged
+          path: ${{ runner.temp }}/valoria-eyes-brain-original/
+          if-no-files-found: warn
+          retention-days: 30
