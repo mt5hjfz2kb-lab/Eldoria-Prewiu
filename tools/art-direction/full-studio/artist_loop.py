@@ -7,6 +7,9 @@ No paid services, cloud inference, arbitrary Python, or new game scene changes.
 from __future__ import annotations
 import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan, safe_action_id
+from artist_capabilities_v1 import (artist_skill_prompt, strict_preflight_plan,
+    check_source_environment, visual_intent_payload, is_semantically_reviewable,
+    failure_category)
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from artistic_quality_gate import (stage_visual_request,validate_independent_review,
                                  append_accepted,status as visual_calibration_status)
@@ -453,6 +456,8 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     if not hasattr(args,"source_build_phase"):args.source_build_phase=source_build
     if not hasattr(args,"source_tool_sequencing"):args.source_tool_sequencing=tool_sequence
     msg=(contract_brief(args.max_actions,source_exists,args.phase,args.asset_category)
+      +artist_skill_prompt(existing_source=source_exists,phase=args.phase,
+                           category=args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
       +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-11800:]
       +"\nEvidence-ranked verified lessons (not geometry instructions): "+memory[:3500]
@@ -634,6 +639,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                         "scope":"NON_ARTISTIC_LOG_IDENTIFIERS_ONLY",
                         "repairs":id_repairs},indent=2)+"\n",encoding="utf-8")
     validate_plan(doc)
+    strict_preflight_plan(doc)  # Same actual ops/constraints before paying for Blender.
     should_reject_repeated_invisible_plan(doc,prior_invisible_signatures)
     if source_exists and args.phase in ('full','mesh_edit') and source_inventory:
         verify_source_plan(doc,source_inventory)
@@ -700,7 +706,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     (trial/"actual-qwen-context-executed.json").write_bytes(attempted.read_bytes())
     return doc
 
-def critique(args,reference,before,after,role):
+def critique(args,reference,before,after,role,plan=None):
+    evidence=(visual_intent_payload(original_reference=reference,
+                 before_png=before,after_png=after,plan=plan) if plan else None)
     instruction=("Inspect these REAL renders, in order: target, before, after. "
       "Describe three defects ONLY if supported by pixels in the actual "
       "AFTER image, whether its timber silhouette and materials visibly improved "
@@ -710,13 +718,26 @@ def critique(args,reference,before,after,role):
       "If improvement is too subtle, misplaced at the roof apex, or visually "
       "incoherent, set clearly_failed=true. Do not invent Unity evidence. "
       "Return concise JSON with strings critique, geometry_next, material_next "
-      "and bool clearly_failed. This critique never certifies art.")
+      "and bool clearly_failed. This critique never certifies art. ")
+    if evidence:
+        instruction+=("\\nMODEL-AUTHORED INTENTION AND ACTUAL OP FAMILIES (not truth "
+          "about result): "+json.dumps(evidence['intent'],ensure_ascii=False)+
+          ". Do the ACTUAL after pixels show that intended change? State intent_alignment "
+          "MATCH, MISMATCH or UNCERTAIN. Identify visible_change_observed and "
+          "plan_vs_geometry_reason. Never infer that a large pixel difference "
+          "alone is a coherent structure, nor self-approve.")
     try:
         critique_schema={"type":"object","properties":{
           "critique":{"type":"string"},"geometry_next":{"type":"string"},
           "material_next":{"type":"string"},"clearly_failed":{"type":"boolean"}},
           "required":["critique","geometry_next","material_next","clearly_failed"],
           "additionalProperties":False}
+        if evidence:
+            critique_schema['properties'].update({
+                'intent_alignment':{'type':'string','enum':['MATCH','MISMATCH','UNCERTAIN']},
+                'visible_change_observed':{'type':'string','minLength':8},
+                'plan_vs_geometry_reason':{'type':'string','minLength':12}})
+            critique_schema['required'] += ['intent_alignment','visible_change_observed','plan_vs_geometry_reason']
         txt=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
          {"role":"user","content":instruction,"images":[image_data(reference,getattr(args,"vision_max_edge",1024)),
                        image_data(before,getattr(args,"vision_max_edge",1024)),
@@ -809,6 +830,7 @@ def main():
         raise ValueError("Qwen multi-part mode requires source-build, source sequence and >=3 actions")
     if not 1<=args.max_cycles<=5 or not 1<=args.max_plan_attempts<=6 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
         raise ValueError("Cycle/action/minimum-successful-cycle limits")
+    check_source_environment(REPO)  # Catch source/contract drift before Ollama/Blender.
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
     if args.focus_image and not args.focus_image.is_file():
         raise FileNotFoundError("Genuine source detail image missing")
@@ -925,6 +947,7 @@ def main():
                 (trial/("rejected-plan-attempt-"+str(attempt)+".json")).write_text(
                     json.dumps({"attempt":attempt,"rejection":str(e),
                       "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
+                      "failure_category":failure_category(e),
                       "no_artistic_values_rewritten":True},indent=2)+"\n",encoding="utf-8")
                 family=track_rejected_strategy(
                     raw_attempt,rejected_plan_family_counts,invisible_source_ops,
@@ -962,7 +985,9 @@ def main():
         try:
             run_blender(args.blender,candidate,stage,source,args.texture_root,args.review,args.asset_catalog,args.transport,args.mcp_addon,args.mcp_sha256)
         except Exception as ex:
-            records.append({"cycle":cycle,"status":"BLENDER_REJECTED","error":str(ex)[-800:]})
+            records.append({"cycle":cycle,"status":"BLENDER_REJECTED",
+                            "failure_category":failure_category(ex),
+                            "error":str(ex)[-800:]})
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
@@ -1075,8 +1100,16 @@ def main():
                           "; ".join(offenders)+
                           ". Qwen choose ORIGINAL geometry elsewhere without blocking door or stairs.")
                 continue
-        evaluation=critique(args,args.reference,stage/"before-blender.png",stage/"after-blender.png",role)
+        evaluation=critique(args,args.reference,stage/"before-blender.png",stage/"after-blender.png",role,plan=doc)
         (trial/"qwen-critique.json").write_text(json.dumps(evaluation,indent=2)+"\n")
+        if not is_semantically_reviewable(evaluation):
+            # This is a conservative HOLD, never a self-certified art pass.
+            records.append({'cycle':cycle,'status':'INTENT_GEOMETRY_REVIEW_FAILED',
+                            'failure_category':'ART_QUALITY',
+                            'plan_sha256':sha(candidate),'vision_review':evaluation,
+                            'art_approved':False})
+            history+='\nREJECTED before independent quality scoring: real renders do not clearly match the Qwen-authored architectural intention. Change artistic hypothesis.'
+            break
         stage_pending_art_evidence(
             trial/"pending-learning-case.json",model=args.model,
             source_hash=original_source_sha,plan_file=candidate,
