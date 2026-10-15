@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT))
 from artist_capabilities_v1 import (
     capability_catalog, artist_skill_prompt, strict_preflight_plan,
     check_source_environment, visual_intent_payload,
-    is_semantically_reviewable, failure_category)
+    is_semantically_reviewable, failure_category, source_contact_facts)
 from contract import RejectedPlan
 from test_contract import good
 
@@ -23,6 +23,39 @@ class ArtistCapabilityBridgeTests(unittest.TestCase):
         self.assertIn("sculpt", catalog["atomic_blender_ops"])
         self.assertNotIn("geometry", catalog["atomic_blender_ops"])
         self.assertFalse(catalog["unsafe_arbitrary_python"])
+
+    def test_timber_skill_is_real_and_source_grounded(self):
+        catalog = capability_catalog(existing_source=True)
+        self.assertIn("timber_bracing_and_joinery", catalog["skills"])
+        self.assertIn("timber_roof_and_eaves", catalog["skills"])
+        prompt = artist_skill_prompt(existing_source=True, phase="full")
+        self.assertIn("NOT stone masonry", prompt)
+        self.assertIn("WORLD +Z", prompt)
+
+    def test_world_anchors_reject_hidden_or_unverified_points(self):
+        inventory = [{"name":"Original timber tower",
+                      "camera_visible_face_landmarks":[
+            {"face_index":325,"camera_visible":True,
+             "camera_ray_hit_original_face":True,
+             "camera_screen_uv":[0.7161,0.6237],
+             "world_center_m":[0.8313,1.091,0.8972],
+             "world_height_fraction":0.2743},
+            {"face_index":99,"camera_visible":False,
+             "camera_ray_hit_original_face":True,
+             "camera_screen_uv":[0.1,0.1],"world_center_m":[1,2,3]},
+            {"face_index":100,"camera_visible":True,
+             "camera_ray_hit_original_face":False,
+             "camera_screen_uv":[0.1,0.1],"world_center_m":[1,2,3]},
+            {"face_index":101,"camera_visible":True,
+             "camera_ray_hit_original_face":True,
+             "camera_screen_uv":[0.1,0.1],"world_center_m":None}
+            ]}]
+        result = source_contact_facts(inventory)
+        self.assertEqual(len(result),1)
+        self.assertEqual(len(result[0]["faces"]),1)
+        self.assertEqual(result[0]["faces"][0]["id"],325)
+        self.assertEqual(result[0]["faces"][0]["world_xyz_m"],
+                         [0.8313,1.091,0.8972])
 
     def test_new_source_gates_inherited_geometry(self):
         c = capability_catalog(existing_source=False)
