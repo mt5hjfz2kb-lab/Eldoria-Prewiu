@@ -1,0 +1,101 @@
+name: "[PILOT] Valoria reference-first isolated Unity captures"
+on:
+  push:
+    branches:
+      - prototype/reference-first-zero-budget-visual-pilot-20261015
+    paths:
+      - '.github/workflows/eldoria-reference-first-zero-budget-pilot.yml'
+      - 'Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eldoria-reference-first-unity-pilot
+  cancel-in-progress: false
+
+jobs:
+  real-unity-lookdev:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Expose already installed Git from GitHub Desktop when necessary
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop = Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Previously installed Git not found' }
+            $gitDir = Split-Path $candidate
+            $env:PATH = "$gitDir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $gitDir
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 2
+          persist-credentials: true
+      - name: Restore committed Unity source but keep cached Unity Library
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if ($LASTEXITCODE -ne 0) { throw 'Unity source restore failed' }
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'Unity 6000.3.23f1 not available in runner' }
+          Get-Content Unity/ProjectSettings/ProjectVersion.txt
+      - name: Capture two genuine Unity frames from existing reusable assets
+        shell: powershell
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'reference-first-pilot-unity.log'
+          $out = Join-Path $env:GITHUB_WORKSPACE 'artifacts/reference-first-pilot'
+          if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+          $unityArgs = @('-batchmode','-force-d3d11','-quit','-projectPath',(Join-Path $env:GITHUB_WORKSPACE 'Unity'),'-executeMethod','Eldoria.EditorTools.ReferenceFirstPilot.ReferenceFirstPilotCapture.BuildAndCapture','-logFile',$log)
+          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArgs -PassThru
+          if (-not $p.WaitForExit(1800000)) {
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 100 }
+            throw 'Own Unity capture timed out'
+          }
+          if ($p.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 220 }
+            throw "Unity failed with exit code $($p.ExitCode)"
+          }
+          if (-not (Select-String -Path $log -Pattern 'REFERENCE_FIRST_PILOT_RENDERED:' -Quiet)) {
+            Get-Content $log -Tail 180
+            throw 'No genuine render completion marker'
+          }
+          $frames = @(Get-ChildItem $out -Filter '*.png')
+          if ($frames.Count -ne 2) { throw "Expected 2 PNGs, found $($frames.Count)" }
+          foreach ($png in $frames) { if ($png.Length -lt 80000) { throw "Suspiciously small Unity render: $($png.Name)" } }
+          $manifest = Get-Content (Join-Path $out 'render-manifest.json') -Raw | ConvertFrom-Json
+          if ($manifest.artApproved -ne $false) { throw 'Pilot must remain explicitly UNAPPROVED' }
+          if ($manifest.heroRenderers -lt 7 -or $manifest.treeInstances -lt 12 -or $manifest.cliffInstances -lt 10) { throw 'Real source reuse count below minimum' }
+          Get-Content (Join-Path $out 'render-manifest.json')
+      - name: Save isolated proof to its own branch only
+        shell: powershell
+        run: |
+          $target = 'docs/evidence/reference-first-zero-budget-visual-pilot-20261015'
+          New-Item -ItemType Directory -Force $target | Out-Null
+          Copy-Item 'artifacts/reference-first-pilot/*.png' $target -Force
+          Copy-Item 'artifacts/reference-first-pilot/render-manifest.json' $target -Force
+          git add -- 'Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot' $target
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) { Write-Host 'No new lookdev evidence to commit'; exit 0 }
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: real isolated Unity reference-first lookdev frames [skip ci]'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not commit isolated real capture evidence' }
+          git push origin HEAD:prototype/reference-first-zero-budget-visual-pilot-20261015
+          if ($LASTEXITCODE -ne 0) { throw 'Isolated evidence push failed; see uploaded artifact' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reference-first-real-unity-${{ github.run_id }}
+          path: |
+            artifacts/reference-first-pilot/**
+            Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/ReferenceFirstValoriaLookdev.unity
+            ${{ runner.temp }}/reference-first-pilot-unity.log
+          retention-days: 14
+          if-no-files-found: warn
