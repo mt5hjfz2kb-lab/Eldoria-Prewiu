@@ -1,0 +1,89 @@
+name: "[ART GEOLOGY] Five individual boulders and stratified cliff CC0 PBR"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-geology-five.yml'
+      - 'tools/valoria-modular-fortress/sculpt_geology_five.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-independent-stratified-rock
+  cancel-in-progress: false
+jobs:
+  geologic-art-study:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - name: Discover installed Git and Blender
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $dir=Split-Path $git;Add-Content $env:GITHUB_PATH $dir;$env:PATH="$dir;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/geo-original
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-13-independent-ab-38815831008
+          run-id: 38815831008
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/geo-donors
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-38823501643
+          run-id: 38823501643
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/geo-pbr
+      - name: Blender independently author five geology modules and camera shots
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'geo-original\eldoria-upgrade63\glb'
+          $donor=Join-Path $env:RUNNER_TEMP 'geo-donors\eldoria-cc0-ab13\glb'
+          $maps=Join-Path $env:RUNNER_TEMP 'geo-pbr'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-geology-five'
+          foreach($p in @((Join-Path $base 'cliff_rock_column.glb'),(Join-Path $donor 'boulder_1.glb'),(Join-Path $maps 'quarry_wall_diffuse.jpg'))) {if(-not(Test-Path $p)){throw "Source missing: $p"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/sculpt_geology_five.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned geology code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-geology-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-geology.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-geology.err'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$donor,$maps,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Geology test failed $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($count -ne 5){throw "Expected five $folder assets, got $count"}
+          }
+      - name: Archive real independent rock models and renders
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-five-rock-face-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-geology-five/**
+            ${{ runner.temp }}/eldoria-geology.log
+            ${{ runner.temp }}/eldoria-geology.err
+          if-no-files-found: warn
+          retention-days: 30
