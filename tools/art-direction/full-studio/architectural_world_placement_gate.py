@@ -42,9 +42,22 @@ def reject_obviously_bad_component_placement(plan,source_objects):
     lo,hi=_aabb_from_original_art(action)
     span=[high[i]-low[i] for i in range(3)]
     gap=[max(0,low[i]-hi[i],lo[i]-high[i]) for i in range(3)]
-    if any(gap[i]>max(.5,span[i]*.35) for i in range(3)):
-        raise RejectedPlan("NEW WORLD XYZ geometry is disconnected far from real source; "
-                           "read world_bounds and reauthor its location (Blender Z is UP)")
+    # The historical permissive 0.5--1.14 metre gap incorrectly accepted a
+    # cube FLOATING BESIDE the 2.65m wooden watchtower (run 38652707944).
+    # Never describe a loose object as an attached support. Use a bounded
+    # world-space contact tolerance for real modelling/raycast inaccuracies;
+    # this does NOT create or move authored geometry. Actual surface contact
+    # still requires independent review.
+    tolerance=min(.06,max(.015,min(span)*.02))
+    if any(g>tolerance for g in gap):
+        raise RejectedPlan(
+            "NO_SOURCE_CONTACT_AABB: New artist-made structure is detached "
+            "from the existing real Valoria tower WORLD bounds; "
+            "axis_gaps_m="+str([round(g,4) for g in gap])+
+            ", allowed_tolerance_m="+str(round(tolerance,4))+
+            ". It must physically overlap or nearly touch the source on "
+            "ALL WORLD X/Y/Z axes; redesign original contact/geometry, "
+            "do not automatically translate the AI piece.")
     center_z=(lo[2]+hi[2])*.5
     name=action.get("target","").lower()
     # A roof EAVE / FASCIA / OVERHANG is attached to an outer roof edge,
@@ -105,5 +118,7 @@ def reject_obviously_bad_component_placement(plan,source_objects):
                            "footprint, door/stairs/circulation at WORLD Z floor. "
                            "Qwen must choose a different ORIGINAL attachment/placement")
     return {"source_world_bounds":[low,high],"new_world_bounds":[lo,hi],
+            "bbox_contact_axis_gaps_m":[round(g,4) for g in gap],
+            "bbox_contact_tolerance_m":round(tolerance,4),
             "ground_footprint_overlap_fraction":round(ground_intersection,4),
             "changes_to_artist_values":0,"art_approved":False}
