@@ -123,6 +123,31 @@ class Qwen14BGroundedBeamTests(unittest.TestCase):
         self.assertEqual(pairs[0]["candidate_pairs"][0]["start_face"],31)
         self.assertFalse(pairs[0]["geometry_prescribed"])
 
+    def test_real_source_beam_in_air_space_not_falsely_called_buried(self):
+        # Production failure #38780427364: an architectural brace can be
+        # inside the big imported tower AABB while joining real outer faces.
+        original_source=original()
+        original_source["camera_visible_face_landmarks"][0]["world_center_m"]=[-.23,.12,1.65]
+        original_source["camera_visible_face_landmarks"][1]["world_center_m"]=[.28,.35,2.45]
+        p=beam()
+        self.assertTrue(verify_source_plan(p,[original_source]))
+        self.assertTrue(verify_volume_and_complexity(p,[original_source]))
+        proof=reject_obviously_bad_component_placement(p,[original_source])
+        self.assertFalse(proof["art_approved"])
+        self.assertEqual(proof["changes_to_artist_values"],0)
+        # This is only a spatial precheck: no claim of screen or BVH acceptance.
+
+    def test_buried_arbitrary_primitive_remains_rejected(self):
+        source=original()
+        p=beam()
+        p["actions"][0]={"id":"buried_component","op":"primitive",
+             "target":"Eldoria_Added_C01_BuriedBlock",
+             "reason":"A candidate entirely inside the source enclosing bounds",
+             "params":{"shape":"cube","location":[0,0,2.2],
+                       "scale":[.12,.12,.12],"rotation":[0,0,0]}}
+        with self.assertRaisesRegex(RejectedPlan,"COMPLETELY BURIED"):
+            reject_obviously_bad_component_placement(p,[source])
+
     def test_distinct_local_models_and_actual_picture_bytes(self):
         from PIL import Image
         with tempfile.TemporaryDirectory() as d:
