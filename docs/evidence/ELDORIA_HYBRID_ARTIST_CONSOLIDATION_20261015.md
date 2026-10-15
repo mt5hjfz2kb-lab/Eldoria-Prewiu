@@ -83,3 +83,75 @@ a cuartel/tercer asset antes de una mejora real aceptada de la torre.
 Memoria: usa `director-control/selective_memory.py`, hasta dos lecciones;
 contexto exacto archivado. Es recuperación de experiencias, no entrenamiento.
 ART_APPROVED=false; CALIBRATION_VALIDATED=false; Unity sigue pausado.
+
+
+## Preparación real completada
+
+Run 38786948113, commit 74ca48138f79934962a23a08a0344b1fce8ce236,
+Windows DESKTOP-R10PE55, SUCCESS. Artifact 11997163937 (ZIP SHA256
+37bd4fb16bb688b42e5e7db225504b933c8b048b59c46393ad0203a853183f9e).
+Restauración real: normalized-source.glb SHA256
+8a77d244b0434faeec1d4430b6194ffddd17234bfda20bedbe83e382c0a01632,
+556112 bytes, un PNG incrustado y TEXCOORD_0 en todas las primitivas.
+Proof Blender: geometría y UV idénticos; original intacto.
+
+El A/B real muestra recuperación marrón del tejado, troncos, puerta y escalera.
+Esto elimina un sesgo de evaluación, no acredita nueva autoría artística.
+Contexto común exacto SHA256
+60a7081bf870e74326035a1e716b23447fb42c74108b71464c983098e029cdc0.
+Dos lecciones recuperadas realmente incluidas: AABB no demuestra contacto;
+referencia de estilo/luz no es una medida geométrica. No entrenamiento.
+
+Limitación observada: VL8B describe la torre pero afirma sin justificación
+que no hay defectos, incertidumbres ni caras ausentes. Una imagen no certifica
+inventario topológico ni ausencia de errores; no adoptar esas frases como
+verdad geométrica. Mantener crítica independiente de autor y de observador.
+
+Comparación en curso: run 38787448197, commit
+89d4823c005199bb3c80ea5bda5208d32c63a7c4. Descarga exactamente el artefacto
+anterior en vez de regenerar observaciones entre directores. GPT externo
+reconoce el contexto exacto por SHA; Qwen recibe ese mismo contexto textual,
+memoria, geometría y esquema. El director externo además inspecciona los PNG
+originales: la mediación visual VL8B para el director 14B se declara como límite,
+no como igualdad de percepción. Aún no existe resultado artístico aceptado.
+
+
+## Primera comparación recibida y cambio de hipótesis obligatorio
+
+Run 38787448197 SUCCESS técnico; artifact 11997969936, ZIP SHA256
+7a23941fd26ab41c7b69c71a7fc61daacb051803c05de729b8fe42560db4b14f.
+GPT externo: tres miembros, dos uniones reales, UV y textura incrustada,
+contacto BVH de todos los miembros; Blender 15,938 s; GLB SHA256
+1b2185c09ecc63a5bf72b9d69978586e58af4901a52faab9153e05ca61c0f059.
+No aprobación: estructura sencilla, la estética global apenas cambia; bases
+por encima del plano de revisión. El crítico repite el encargo y llama
+material recovery a una adición geométrica. Esa crítica NO es una aceptación.
+
+Qwen14B: dos planes idénticos, TENON_SOCKET_SIZE_MISMATCH. Además de las
+holguras imposibles, coloca postes verticales dentro del volumen de la torre y
+llama uniones a conexiones entre postes separados. No ejecutó Blender para
+ese brazo. La comparación produjo un resultado asimétrico y no demuestra
+superioridad causal general de ningún modelo. Tiempo total del ensayo
+239,735 s; tiempo manual GPT no medido, no inferir ahorro.
+
+Tras los dos rechazos se cambia hipótesis: **no pedir microaritmética de
+fabricación al director artístico**. `timber_frame_skill.py` ofrece una habilidad
+semántica: el autor escoge una cara fuente real, dimensiones, altura de base,
+separación y número de postes (2–5), sección, offset y acabado. La herramienta
+calcula las mortajas con holgura fija documentada de 6 mm. No desplaza ni
+repara silenciosamente el diseño: composiciones incompatibles se rechazan.
+No genera una torre ni una pieza fija; sigue disponible el estudio completo.
+`frame_skill_blender.py` resuelve ancla y normal REALES de Blender y llama al
+mismo taller probado. Ambos directores reciben el mismo esquema nuevo.
+
+El crítico de esta prueba posterior se vuelve **ciego a la intención**: observa
+BEFORE/AFTER/referencia sin recibir el discurso del autor. La nueva prueba
+reutiliza la misma base normalizada, NO encadena el marco sin aprobar.
+Cuatro pruebas focalizadas verifican variación de composición sin reescritura,
+ensamblajes reales compatibles, rechazo de piezas fuera de dintel y veto a
+convertir una cara de tejado en pared. Falta todavía su ejecución real en PC.
+
+Ruta local sin GPT preparada: `hybrid_trial.py local --workshop frame --pack ...`
+usa visión, memoria selectiva y Qwen locales; `compare` añade el brazo externo.
+Ninguna aprobación o encadenamiento sucede automáticamente. Esta ruta local
+queda implementada, no se presenta como autonomía artística ya validada.
