@@ -53,6 +53,35 @@ def mk_primitive(name,p):
     o=bpy.context.object;o.name=name;o.scale=p.get("scale",[1,1,1])
     return o
 
+def beam_between_source_faces(name,p):
+    """One reusable BLENDER carpentry operation using two real source faces.
+
+    Qwen authors face IDs and both dimensions. Source is untouched; no
+    guessed mesh vertices, pasted design or model-provided arbitrary Python.
+    """
+    source=obj(p["source"])
+    faces=source.data.polygons
+    a_id,b_id=p["start_face"],p["end_face"]
+    if a_id<0 or b_id<0 or a_id>=len(faces) or b_id>=len(faces) or a_id==b_id:
+        raise RejectedPlan("BEAM_SOURCE_FACE_ID_MISSING_OR_IDENTICAL")
+    bpy.context.view_layer.update()
+    start=source.matrix_world @ faces[a_id].center
+    end=source.matrix_world @ faces[b_id].center
+    direction=end-start
+    length=float(direction.length)
+    if not .28<=length<=8:
+        raise RejectedPlan("BEAM_ANCHOR_DISTANCE_INVALID")
+    width=float(p["width_m"]);depth=float(p["depth_m"])
+    if not .06<=width<=.45 or not .06<=depth<=.45:
+        raise RejectedPlan("BEAM_CROSS_SECTION_OUT_OF_BOUNDS")
+    bpy.ops.mesh.primitive_cube_add(location=(start+end)*.5)
+    beam=bpy.context.object
+    beam.name=name
+    beam.rotation_euler=direction.to_track_quat("Z","Y").to_euler()
+    beam.scale=(width*.5,depth*.5,length*.5)
+    bpy.context.view_layer.update()
+    return beam
+
 def modified_mesh(name,p):
     mesh=bpy.data.meshes.new(name+"_AI_geometry")
     mesh.from_pydata(p["vertices"],[],p["faces"])
@@ -358,6 +387,7 @@ def run_action(a,texroot,approved_assets=None):
     if kind=="primitive":mk_primitive(name,p)
     elif kind=="import_asset":import_source_asset(name,p,texroot,approved_assets or {})
     elif kind=="mesh":modified_mesh(name,p)
+    elif kind=="beam_between_faces":beam_between_source_faces(name,p)
     elif kind=="duplicate":
         source=obj(p["source"]);o=source.copy();o.data=source.data.copy();o.name=name
         bpy.context.scene.collection.objects.link(o)
