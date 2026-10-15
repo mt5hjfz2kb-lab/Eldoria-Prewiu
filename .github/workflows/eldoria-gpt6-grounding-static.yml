@@ -1,0 +1,29 @@
+name: Eldoria GPT6 Grounded Critic And Joinery Offline Regression
+on:
+  push:
+    branches:
+      - diagnostic/gpt6-vs-qwen-valoria-tower-20261015
+    paths:
+      - '.github/workflows/eldoria-gpt6-grounding-static.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/gpt6-tower-eval-20261015
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify import, Python compilation and adversarial safety tests
+        run: |
+          python -m compileall -q tools/art-direction/gpt6-tower-eval-20261015
+          python -m unittest discover -v -s tools/art-direction/gpt6-tower-eval-20261015 -p 'test_*.py'
