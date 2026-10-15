@@ -1,0 +1,124 @@
+name: Eldoria GPT6 Grounded Phase2 Replay On Verified Qwen Recognition
+on:
+  push:
+    branches:
+      - diagnostic/gpt6-vs-qwen-valoria-tower-20261015
+    paths:
+      - '.github/workflows/eldoria-gpt6-critic-v2-phase2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  exact-r3-image-independent-phase2:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Resolve native Git installation
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'GIT_MISSING'}
+            $folder=Split-Path $git;$env:PATH="$folder;$env:PATH";Add-Content $env:GITHUB_PATH $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: studio
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/gpt6-tower-eval-20261015
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-gpt6-real-joinery-and-two-phase-grounded-vision
+          run-id: 38776804558
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-source-r3
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-gpt6-grounded-v2-on-exact-r3-images
+          run-id: 38778491176
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-phase1-real
+      - name: Verify raw Qwen phase1 actually identifies 3 new parts before art scoring
+        shell: powershell
+        run: |
+          python -m pip install --quiet --disable-pip-version-check numpy pillow
+          if($LASTEXITCODE -ne 0){throw 'NO_NUMPY_PIL'}
+          python -m compileall -q 'studio/tools/art-direction/gpt6-tower-eval-20261015'
+          if($LASTEXITCODE -ne 0){throw 'SCRIPT_SYNTAX'}
+          $env:PYTHONPATH='studio/tools/art-direction/gpt6-tower-eval-20261015'
+          $raw=(Join-Path $env:RUNNER_TEMP 'eldoria-phase1-real/critic-v2-phase1.txt')
+          $py=@'
+          import pathlib
+          from review_live_v2 import parse_recoverable_model_json
+          import sys
+          p=pathlib.Path(sys.argv[1])
+          data,repaired=parse_recoverable_model_json(p.read_text(encoding='utf8'))
+          obs=data['observations']
+          assert len(obs)==3 and all(o['visibility']=='visible' for o in obs), 'REAL_QWEN_RECOGNITION_NOT_COMPLETE'
+          print('ELDORIA_REAL_QWEN_3_VISIBLE_PARTS_RECOVERED',repaired)
+          '@
+          $py | python - $raw
+          if($LASTEXITCODE -ne 0){throw 'SAFE_REPLAY_RECOGNITION_FAIL'}
+      - name: Score only if evidence and real image recognition are aligned
+        shell: powershell
+        timeout-minutes: 11
+        run: |
+          $ErrorActionPreference='Stop'
+          $src=Join-Path $env:RUNNER_TEMP 'eldoria-source-r3'
+          $seen=Join-Path $env:RUNNER_TEMP 'eldoria-phase1-real'
+          $out=Join-Path $env:RUNNER_TEMP ('eldoria-critic-phase2-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          "ELDORIA_REVIEW_OUT=$out" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          $server=$null
+          try{
+            if($exe){
+              $models=Join-Path $env:USERPROFILE '.ollama/models'
+              if(Test-Path $models){$env:OLLAMA_MODELS=$models}
+              $env:OLLAMA_HOST='127.0.0.1:11434'
+              $env:OLLAMA_NUM_PARALLEL='1'
+              $ready=$false
+              try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+              if(-not $ready){
+                $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+                for($i=0;$i -lt 35;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+              }
+            }
+            python 'studio/tools/art-direction/gpt6-tower-eval-20261015/review_live_v2.py' --plan (Join-Path $src 'joinery-plan.json') --catalog (Join-Path $src 'reusable-asset-catalog.json') --contact (Join-Path $src 'actual-mesh-contact.json') --reference 'frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' --before (Join-Path $src 'before-blender.png') --after (Join-Path $src 'after-blender.png') --roi 'studio/tools/art-direction/gpt6-tower-eval-20261015/r3-measured-screenshot-regions.json' --phase1-raw (Join-Path $seen 'critic-v2-phase1.txt') --out $out
+            if($LASTEXITCODE -ne 0){throw 'V2_PHASE2_SCRIPT_ERROR'}
+          }finally{if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}}
+      - name: Keep exact no-approval raw visual verdict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-gpt6-phase2-corrected-vision-exact-r3
+          path: ${{ env.ELDORIA_REVIEW_OUT }}/
+          if-no-files-found: warn
+          retention-days: 30
