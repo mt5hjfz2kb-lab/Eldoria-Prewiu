@@ -303,6 +303,23 @@
         "unity_verified": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "independent-38695886870-actual-contact-stair-obstruction",
+      "run_id": 38695886870,
+      "evidence_artifact_id": 11954610013,
+      "raw_response_sha256": "e10736c30c1d5f3ece619c685910f4d360af5ed99e1192620688ab0d5ea100cc",
+      "result": "NATIVE_BVH_CONTACT_PASSED_PROTECTED_STAIRCASE_REJECTED",
+      "observed": "Two large, squat, unintegrated beige cylindrical studs are authored near the original exterior staircase. Both contact actual inherited mesh surface, but are not medieval roof structural supports; they occlude and degrade the staircase/rail circulation area. Contact alone is not artistic quality. The first piece was positioned at [0.8313,1.091,0.8972] WORLD XYZ, the second at [0.5135,1.0906,1.2309]; the same location persisted into cycle 2 under new object names.",
+      "safe_lesson": "Actual source BVH contact is necessary but not sufficient. Two physically touching barrel-shaped pieces at WORLD [0.83,1.09,0.90] and [.51,1.09,1.23] sit in the protected RIGHT EXTERIOR STAIRCASE view, altering 26% of its pixels and obstructing circulation. Qwen must abandon staircase-side low-height studs and choose a qualitatively different roof/upper wall timber connection on an unobstructed side, with preserved railings and door.",
+      "review_provenance": {
+        "artifact_id": 11954610013,
+        "review_path": "tools/art-direction/full-studio/reviews/review-qwen8b-attached-but-staircase-obstructed-38695886870.json",
+        "reviewed_before": "1db4063255f6ff916a3cc2a10843cc9f640a7790e743ada1093ebd51628f540b",
+        "reviewed_after": "8ddb154588f983752568c2072805182637c1f963b949cb281fb2770e23ae8940",
+        "art_approved": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
