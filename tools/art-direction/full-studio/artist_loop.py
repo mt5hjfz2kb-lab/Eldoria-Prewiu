@@ -247,7 +247,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         # finish the mesh before any operations relying on its changed topology.
         tools=action["oneOf"]
         structural=[v for v in tools if v["properties"]["op"]["const"]
-                    in (("primitive","mesh") if assembly_source else
+                    in (("primitive","mesh","beam_between_faces") if assembly_source else
                         ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
         if excluded_source_ops:
             structural=[v for v in structural
@@ -265,7 +265,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
                 # A rejected handcrafted open mesh may elect the *other* real
                 # tool, but NEVER reinstate an operation blocked after two
                 # independent invalid attempts under the owner contract.
-                structural=[v for v in structural if v["properties"]["op"]["const"]=="primitive"]
+                structural=[v for v in structural if v["properties"]["op"]["const"] in ("primitive","beam_between_faces")]
             stage_pattern=(rf"^Eldoria_Added_C{assembly_cycle:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
                            if assembly_cycle else NEW_COMPONENT_PATTERN)
             for variant in structural:
@@ -343,6 +343,16 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"CREATE static humanoid blockout geometry only, proportions chosen by YOU. Do not pretend there is rigging/animation. Every op=primitive with shape,location,rotation,scale."
     if not source_exists:
         return base+"EMPTY scene: asset_decision=NEW, every op=primitive. Each has params EXACTLY {shape:cylinder|cone|cube|uv_sphere|ico_sphere,location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. Model a separate, vertically aligned masonry body and believable roof. Do not bury objects, offset roof or overlap identical solids. All parts must be original and camera-visible."
+    if source_exists and phase=="full" and category=="architecture":
+        base+=(" Professional Blender carpentry tool beam_between_faces: "
+               "Qwen chooses one NEW object name, an exact existing source "
+               "object, TWO DISTINCT camera-ray-hit original face indices "
+               "start_face and end_face, plus width_m and depth_m 0.06..0.45. "
+               "Blender connects those measured polygon centers as an oriented "
+               "SOLID beam. Qwen still selects the actual placement by face "
+               "IDs, proportions and artistic purpose. No invented mesh "
+               "vertices, no premade geometry composition. Use only when "
+               "source evidence supports a useful connected timber brace.")
     if phase=="mesh_edit":
         return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:small positive METERS relative to measured WORLD dimensions,radius:small LOCAL brush in METERS according to actual source size}. WORLD-SPACE BRUSH: Blender WORLD +Z means physically upward even if imported GLB LOCAL +Y is aligned with WORLD +Z. The brush direction, distance and radius are in WORLD axes and physical metres; only the anchor vertex is chosen from LOCAL EXTREMA. INHERITED VERTEX EDIT: Read inspected local_bounds_min_m / local_bounds_max_m and LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Make a substantial but controlled visible silhouette edit at a landmark consistent with the reference. Preserve recognisable architecture; choose direction and impact deliberately rather than minimum values. Every action must make a visible source-mesh change; do not repeat identical actions."
     if phase=="geometry":
@@ -648,7 +658,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         verify_source_plan(doc,source_inventory)
         if args.source_build_phase:
             actions=doc["actions"]
-            if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
+            if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh","beam_between_faces"):
                 raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")
             if getattr(args,"multi_component_assembly",False):
                 placement=verify_qwen_composition(doc,source_inventory,cycle_index)
@@ -666,7 +676,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                 spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
                 (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
                     json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
-        elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh"):
+        elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh","beam_between_faces"):
             # Full professional source work still protects the existing real
             # building; only the forced assembly phase used these QA gates
             # previously, allowing unconstrained disconnected source addons.
@@ -693,7 +703,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             raise RejectedPlan("No real new geometry for an empty scene")
         created=set()
         for act in doc["actions"]:
-            if act["op"] in ("primitive","mesh"):
+            if act["op"] in ("primitive","mesh","beam_between_faces"):
                 if act["target"] in created:raise RejectedPlan("Duplicate new object")
                 created.add(act["target"])
             elif act["op"] in ("material","uv","bevel","modifier"):
