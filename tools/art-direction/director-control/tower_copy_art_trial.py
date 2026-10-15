@@ -250,7 +250,7 @@ def main():
     workshop=studio/"tools/art-direction/full-studio"
     sys.path.insert(0,str(workshop))
     from contract import validate_plan, RejectedPlan
-    from artist_loop import run_blender, repair_noncreative_action_ids, critique
+    from artist_loop import run_blender, repair_noncreative_action_ids, critique, image_data, request_ollama
     from source_geometry_gate import verify_source_plan
     from triangle_budget import check_triangle_growth
     from architectural_component_guard import verify_volume_and_complexity
@@ -274,14 +274,45 @@ def main():
         raise RuntimeError("ORIGINAL_BLENDER_SOURCE_INSPECTION_MISMATCH")
     source_inventory=inspected.get("objects",[])
     if not source_inventory:raise RuntimeError("NO_REAL_BLENDER_SOURCE_MESH_INVENTORY")
+    visual_schema={"type":"object","properties":{
+        "visible_defect":{"type":"string"},
+        "integrated_architectural_idea":{"type":"string"},
+        "safe_visible_wall":{"type":"string"},
+        "uncertainty":{"type":"string"}},
+        "required":["visible_defect","integrated_architectural_idea",
+                    "safe_visible_wall","uncertainty"],"additionalProperties":False}
+    visual_messages=[{"role":"system","content":
+        "Eres un observador artístico visual independiente. Identifica SOLO lo visible. "
+        "Las imágenes no prueban contactos estructurales ni coordenadas WORLD."
+        "No apruebes arte ni diseñes bloques geométricos numéricos."},
+        {"role":"user","content":
+        "Primera imagen: referencia artística de Valoria. Segunda: render REAL "
+        "Blender de la torre congelada. Describe UN defecto visible y una "
+        "mejora de ensamblaje arquitectónico COHERENTE con varios elementos "
+        "conectados, nunca un cubo de adorno aislado. No tocar tejado, puerta, "
+        "escaleras o barandillas. La visión no certifica geometría ni materiales.",
+        "images":[image_data(a.reference,768),
+                  image_data(inspect_root/"source-preview-blender.png",768)]}]
+    visual_raw=request_ollama(LOCAL_API+"/api/chat",
+        "qwen3-vl:8b-instruct-q4_K_M",visual_messages,
+        600,timeout=700,schema=visual_schema)
+    visual_design=json.loads(visual_raw)
+    (out/"independent-visual-before-plan.json").write_text(
+        json.dumps({"model":"qwen3-vl:8b-instruct-q4_K_M",
+                    "source_preview_sha256":digest((inspect_root/"source-preview-blender.png").read_bytes()),
+                    "reference_sha256":digest(pathlib.Path(a.reference).read_bytes()),
+                    "raw_response_sha256":digest(visual_raw),
+                    "hypothesis_only":True,"assessment":visual_design},
+                    ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     brief=(
        "You are the 14B author of an ORIGINAL small architectural improvement "
        "on a frozen Valoria tower COPY. The previous Qwen-VL8B was unable to "
        "author valid geometry: its custom mesh had duplicate vertices and its "
        "next proposed wall addition was too thin to be seen, both REJECTED. "
-       "This is a new author strategy. Choose genuine Blender tools and "
-       "sizes for ONE visible attachment to an unprotected lateral log-wall "
-       "joint, such as joinery or a support detail. Preserve door, staircase, "
+       "This is a new artist strategy: coherent MULTI-PART joinery rather "
+       "than another generic solitary colored cube. Original Qwen values only. "
+       "Choose genuine Blender tools and proportions for TWO connected "
+       "components on an unprotected timber wall. Preserve door, staircase, "
        "railings, roof type and original UV. The building is only about "
        "2.45x2.65x3.27 metres. Use verified WORLD +Z up, NOT GLB local Y. "
        "The last REAL Qwen3:14B addition successfully built but was REJECTED: "
@@ -299,7 +330,9 @@ def main():
        "filler, no hovering component, no tiny thin decoration. "
        "Do not reuse any rejected geometric coordinates or prior action. "
        "You choose original location, rotation, proportions, geometry and "
-       "material. Design for one fixed 3/4 camera, pending independent review."
+       "material. Design for one fixed 3/4 camera, pending independent review. "
+       "Qwen-VL image observation is HYPOTHETICAL, not spatial proof: "+
+       json.dumps(visual_design,ensure_ascii=False)+". "
     )
     local_geom={
       "world_up":"+Z","source_sha256":ORIGINAL_SHA,
@@ -315,30 +348,31 @@ def main():
           {"view":str(v["view"]),"hypothesis":str(v["text"])[:360]}
           for v in caps],
       "focus_14b_from_previous_call":direction,
+      "real_image_visual_hypothesis":visual_design,
       "source_original_unchanged":True
     }
     # Typed action contract already exists in the professional studio:
     # schema v2, model chooses first primitive/mesh and optional material.
     # Importing its contract means no parallel Blender operator implementation.
     typed_spec=(
-      "Devuelve SOLO JSON schema_version=2 con campos asset_id(string), "
-      "observed_defect(string min 30 chars), design_intent(string min 30), "
-      "expected_visual_difference(string min 30), mobile_risks(string), "
-      "asset_decision='MODIFY', art_approved=false, "
-      "actions array of EXACTLY 2 objects. "
-      "Action 1: id unique, op EITHER 'primitive' OR 'mesh', "
-      "target new safe name ^Eldoria_Added_C01_[A-Za-z][A-Za-z0-9_]{3,35}$, "
-      "reason >=15 chars, params. For primitive: shape cube/cylinder/cone, "
-      "location [x,y,z] WORLD, rotation [x,y,z] radians, scale [sx,sy,sz] "
-      "are HALF dimensions and all positive. For mesh: DISTINCT vertices "
-      "noncoplanar and CLOSED faces with each edge in exactly two faces. "
-      "Use primitive if you cannot author closed manifold topology. "
-      "Action 2: id different, op='material', target EXACT same new component, "
-      "reason >=15 chars, params with base_color=[r,g,b,1] each 0..1, "
-      "roughness 0.45..1, metallic 0..0.35. "
-      "Never issue arbitrary Python, native commands or modify the original "
-      "source mesh. Existing contact/volume/UV/protected gates independently "
-      "validate and REJECT your design without editing values."
+      "Devuelve JSON schema_version=2 con asset_id(string), observed_defect "
+      "(string >=30), design_intent(string >=30), expected_visual_difference "
+      "(string >=30), mobile_risks(string), asset_decision='MODIFY', art_approved=false. "
+      "actions debe contener EXACTAMENTE 4 elementos: PRIMERO dos GEOMETRÍAS "
+      "nuevas originales (cada una primitive o mesh), con DOS nombres distintos "
+      "Eldoria_Added_C01_Nombre; DESPUÉS dos actions op='material', "
+      "cada material aplicado a su geometría correspondiente, mismo orden. "
+      "Cada action: id único, target, reason >=15, params. "
+      "primitive params: shape cube/cylinder/cone, location WORLD [x,y,z], "
+      "rotation euler radianes [x,y,z], scale SEMIDIMENSIONES positivas [sx,sy,sz]. "
+      "mesh params: vértices 3D todos distintos, caras CERRADAS, "
+      "cada borde compartido por exactamente dos caras. "
+      "material params: base_color=[r,g,b,1] todos 0..1, roughness 0.45..1, "
+      "metallic 0..0.35. Dos miembros FÍSICAMENTE CONECTADOS: al menos uno "
+      "ALARGADO >=2.5 veces su espesor, ninguno un cubo decorativo suelto. "
+      "Ninguno tapa acceso ni escaleras en cámara tres cuartos, ni cambia fuente "
+      "original o UV. Blender Z hacia arriba. Tú eliges geometría ORIGINAL "
+      "y sus valores, nadie los corrige. No comandos Python ni aprobación propia."
     )
     trial_root=out/"one-art-trial"/"cycle-1"
     trial_root.mkdir(parents=True,exist_ok=True)
@@ -362,7 +396,7 @@ def main():
            "model":"qwen3:14b","stream":False,"think":False,"format":"json",
            "messages":message,
            "options":{"temperature":0.22,"seed":20261015+attempt,
-                      "num_ctx":12288,"num_predict":2100},"keep_alive":0}
+                      "num_ctx":16384,"num_predict":3600},"keep_alive":0}
         wire=json.dumps(req,ensure_ascii=False).encode("utf-8")
         started=time.monotonic()
         try:
@@ -379,15 +413,31 @@ def main():
             original_doc_hash=digest(text)
             doc,identifier_repairs=repair_noncreative_action_ids(doc)
             validate_plan(doc)
-            if len(doc["actions"])!=2 or doc["actions"][0]["op"] not in ("primitive","mesh") or doc["actions"][1]["op"]!="material":
-                raise RejectedPlan("FIRST ORIGINAL PHYSICAL GEOMETRY SECOND NEW COMPONENT MATERIAL REQUIRED")
-            if doc["actions"][0]["target"]!=doc["actions"][1]["target"]:
-                raise RejectedPlan("MATERIAL_TARGET_MUST_MATCH_ORIGINAL_QWEN_COMPONENT")
+            actions=doc["actions"]
+            if len(actions)!=4 or any(x["op"] not in ("primitive","mesh") for x in actions[:2]) or any(x["op"]!="material" for x in actions[2:]):
+                raise RejectedPlan("TWO_ORIGINAL_GEOMETRIES_THEN_TWO_MATCHING_MATERIALS_REQUIRED")
+            created=[x["target"] for x in actions[:2]]
+            if len(set(created))!=2 or [x["target"] for x in actions[2:]]!=created:
+                raise RejectedPlan("MATERIALS_MUST_MATCH_TWO_DISTINCT_NEW_OBJECTS")
             verify_source_plan(doc,source_inventory)
-            verify_volume_and_complexity(doc,source_inventory)
-            spatial_gate=reject_obviously_bad_component_placement(doc,source_inventory)
-            projection_gate=camera_protection_preflight(doc["actions"][0],a.review)
-            spatial_gate["locked_camera_protection"]=projection_gate
+            from architectural_world_placement_gate import _aabb_from_original_art
+            spatial_gate={"components":[]}
+            bounds=[]
+            for action in actions[:2]:
+                verify_volume_and_complexity({"actions":[action]},source_inventory)
+                probe=reject_obviously_bad_component_placement({"actions":[action]},source_inventory)
+                probe["locked_camera_protection"]=camera_protection_preflight(action,a.review)
+                spatial_gate["components"].append(probe)
+                bounds.append(_aabb_from_original_art(action))
+            dimensions=[[v[1][i]-v[0][i] for i in range(3)] for v in bounds]
+            if not any(min(d)>0 and max(d)/min(d)>=2.5 for d in dimensions):
+                raise RejectedPlan("ISOLATED_GENERIC_CUBES_ARE_NOT_PROFESSIONAL_JOINERY")
+            gaps=[max(0,bounds[0][0][i]-bounds[1][1][i],
+                        bounds[1][0][i]-bounds[0][1][i]) for i in range(3)]
+            if max(gaps)>.06:
+                raise RejectedPlan("ORIGINAL_QWEN_COMPONENTS_DISCONNECTED:"+str(gaps))
+            spatial_gate["joint_contact_gaps_m"]=gaps
+            spatial_gate["artistic_values_rewritten"]=False
             (trial_root/"spatial-placement-proof.json").write_text(
                 json.dumps(spatial_gate,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             plan_file=trial_root/"artist-plan.json"
@@ -423,7 +473,7 @@ def main():
         raise RuntimeError("REAL_BLENDER_CAMERA_OR_EXECUTION_NOT_PROVEN")
     if proof.get("source_sha256")!=ORIGINAL_SHA:
         raise RuntimeError("ACTUAL_EXECUTION_SOURCE_SHA_CHANGED")
-    if proof.get("action_count")!=2:
+    if proof.get("action_count")!=4:
         raise RuntimeError("BLENDER_DID_NOT_EXECUTE_EXACT_MODEL_ACTION_COUNT")
     if any(step.get("originals_changed") for step in proof["execution"]):
         raise RuntimeError("PROTECTED_SOURCE_MESH_MODIFIED")
