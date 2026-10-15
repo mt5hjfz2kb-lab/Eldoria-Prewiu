@@ -1,7 +1,7 @@
 """Eldoria CC0 PBR source test, 1k maps only; zero paid assets."""
 import json,urllib.request,sys,pathlib,hashlib
 out=pathlib.Path(sys.argv[1]);out.mkdir(parents=True,exist_ok=True)
-ASSETS=['quarry_wall','rock_3','plastered_stone_wall']
+ASSETS=['quarry_wall','rock_3','plastered_stone_wall','oak_veneer_05','rusty_metal_05']
 def get(url):
  req=urllib.request.Request(url,headers={'User-Agent':'Eldoria-CC0-ArtResearch/1.0'})
  with urllib.request.urlopen(req,timeout=60) as r:return r.read()
