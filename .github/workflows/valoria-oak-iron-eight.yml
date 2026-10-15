@@ -1,0 +1,80 @@
+name: "[ART TIMBER] Eight oak and iron CC0 per-asset Blender A-B"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-oak-iron-eight.yml'
+      - 'tools/valoria-modular-fortress/oak_iron_eight.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-eight-oak-iron-art
+  cancel-in-progress: false
+jobs:
+  real-studio-eight:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - name: Blender and Git installed
+        shell: powershell
+        id: exes
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $dir=Split-Path $git;Add-Content $env:GITHUB_PATH $dir;$env:PATH="$dir;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/oak-iron-old-63
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-38823501643
+          run-id: 38823501643
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/oak-iron-cc0-maps
+      - name: Produce eight individually enhanced GLBs and sixteen studio views
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'oak-iron-old-63\eldoria-upgrade63\glb'
+          $maps=Join-Path $env:RUNNER_TEMP 'oak-iron-cc0-maps'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-oak-iron-eight'
+          if(-not(Test-Path (Join-Path $src 'reinforced_oak_gate.glb'))){throw 'Source oak gate missing'}
+          if(-not(Test-Path (Join-Path $maps 'oak_veneer_05_diffuse.jpg'))){throw 'Real CC0 wood map missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/oak_iron_eight.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned source unavailable'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-oak-iron-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-oak-iron.stdout.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-oak-iron.stderr.log'
+          $proc=Start-Process -FilePath "${{ steps.exes.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$maps,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 140 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender 8-asset exit $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $c=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($c -ne 8){throw "Expected eight in $folder; got $c"}
+          }
+      - name: Archive only candidate quality modules
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-eight-oak-iron-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-oak-iron-eight/**
+            ${{ runner.temp }}/eldoria-oak-iron.stdout.log
+            ${{ runner.temp }}/eldoria-oak-iron.stderr.log
+          retention-days: 30
+          if-no-files-found: warn
