@@ -93,6 +93,9 @@ def cliff_body(mat,dark):
    ob=bpy.data.objects.new('rock_plate_'+str(j)+'_'+str(i),mesh)
    bpy.context.collection.objects.link(ob)
    ob.data.materials.append(mat if (i+j)%4 else dark);uv(ob);objs.append(ob)
+ bpy.ops.mesh.primitive_cube_add(size=1,location=(0,.35,3.05))
+ backing=bpy.context.object;backing.name='rock_strata_shadow_backing';backing.dimensions=(3.2,.75,6.25)
+ backing.data.materials.append(dark);objs.append(backing)
  return objs
 def dark_material():
  m=bpy.data.materials.new('Valoria_deep_joint_rock');m.diffuse_color=(.10,.11,.14,1);m.use_nodes=True
