@@ -283,6 +283,26 @@
         "unity_verified": false,
         "model_weights_updated": false
       }
+    },
+    {
+      "id": "independent-38694405904-two-floating-short-rods-actual-surface-contact",
+      "run_id": 38694405904,
+      "evidence_artifact_id": 11953058281,
+      "raw_response_sha256": "8f6cff1374784504b7af27daf184a7c089f76ac8d75dcd47ac1194ab6bdc155b",
+      "result": "VISUAL_REJECTED_FLOATING_SOURCE_AABB_FALSE_POSITIVE",
+      "observed": "Real matched-camera native Blender 960x720 A/B from 38694405904 showed TWO beige short cylinder pieces suspended ABOVE/BEYOND right roof eave, not carrying any visible medieval joinery. AABB source contact and 0.0061892 changed-pixel fraction were false technical positives. Exact original Qwen8B raw and plan stored in run artifacts, independent rejection recorded.",
+      "safe_lesson": "World AABB overlap only estimates proximity, never exact source contact. New authored timber beams must make REAL physical contact with actual inherited mesh surfaces; Qwen must inspect roof geometry and choose original supported poses, not short rods suspended off the gable. A scene impact score or Blender execution alone is not artistic improvement.",
+      "review_provenance": {
+        "run_id": 38694405904,
+        "artifact_id": 11953058281,
+        "review_json_path": "tools/art-direction/full-studio/reviews/review-qwen8b-floating-two-beams-38694405904.json",
+        "before_png_sha256": "88d2e725a0fc228f6b657c94a48d69db972795bfa66250be3632c41b2c21070a",
+        "after_png_sha256": "cec85648729636392513d34459aa225014e0dbad2ea18c32f26b5e39020a922e",
+        "accepted": false,
+        "art_approved": false,
+        "unity_verified": false,
+        "weights_updated": false
+      }
     }
   ],
   "training": {
