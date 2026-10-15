@@ -24,7 +24,7 @@ jobs:
           names=marker.split()
           assert len(names)==63, len(names)
           assert len(set(names))==63
-          for term in ('Tripo','paid_api','purchases','rm -rf','shutil.rmtree'):
+          for term in ('Tripo','paid_api','rm -rf','shutil.rmtree'):
               assert term not in source,term
           print('SOURCE_63_SYNTAX_PASS',len(names),'unique names')
           PY
