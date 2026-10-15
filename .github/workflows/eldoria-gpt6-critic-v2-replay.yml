@@ -1,0 +1,99 @@
+name: Eldoria GPT6 V2 Vision Replay On Exact Frozen Joinery Frames
+on:
+  push:
+    branches:
+      - diagnostic/gpt6-vs-qwen-valoria-tower-20261015
+    paths:
+      - '.github/workflows/eldoria-gpt6-critic-v2-replay.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  exact-artifact-vision-replay:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 17
+    steps:
+      - name: Resolve Git installed with GitHub Desktop
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'GIT_MISSING'}
+            $folder=Split-Path $git;$env:PATH="$folder;$env:PATH";Add-Content $env:GITHUB_PATH $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: studio
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/gpt6-tower-eval-20261015
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch immutable run 38776804558 artifacts without any new modeling
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-gpt6-real-joinery-and-two-phase-grounded-vision
+          run-id: 38776804558
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-source-r3
+      - name: Fail-closed Qwen-VL physical evidence and cropped before after
+        shell: powershell
+        timeout-minutes: 12
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m pip install --quiet --disable-pip-version-check numpy pillow
+          if($LASTEXITCODE -ne 0){throw 'NUMPY_PIL_UNAVAILABLE'}
+          $src=Join-Path $env:RUNNER_TEMP 'eldoria-source-r3'
+          $out=Join-Path $env:RUNNER_TEMP ('eldoria-review-v2-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          "ELDORIA_VISION_OUT=$out" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          $server=$null
+          try{
+            if($exe){
+              $models=Join-Path $env:USERPROFILE '.ollama/models'
+              if(Test-Path $models){$env:OLLAMA_MODELS=$models}
+              $env:OLLAMA_HOST='127.0.0.1:11434'
+              $env:OLLAMA_NUM_PARALLEL='1'
+              $ready=$false
+              try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+              if(-not $ready){
+                $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+                for($i=0;$i -lt 35;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+              }
+            }
+            python 'studio/tools/art-direction/gpt6-tower-eval-20261015/review_live_v2.py' --plan (Join-Path $src 'joinery-plan.json') --catalog (Join-Path $src 'reusable-asset-catalog.json') --contact (Join-Path $src 'actual-mesh-contact.json') --reference 'frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' --before (Join-Path $src 'before-blender.png') --after (Join-Path $src 'after-blender.png') --roi 'studio/tools/art-direction/gpt6-tower-eval-20261015/r3-measured-screenshot-regions.json' --out $out
+            if($LASTEXITCODE -ne 0){throw 'V2_REVIEW_RUNTIME_BUG'}
+          }finally{if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}}
+      - name: Upload exact grounded critic verdict no fake ART approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-gpt6-grounded-v2-on-exact-r3-images
+          path: ${{ env.ELDORIA_VISION_OUT }}/
+          if-no-files-found: warn
+          retention-days: 30
