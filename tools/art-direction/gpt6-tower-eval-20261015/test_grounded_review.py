@@ -88,10 +88,27 @@ class CriticTests(unittest.TestCase):
         later["reasons"]=["The new posts change the visible facade framing in this camera.",
             "The untextured inherited original still prevents polished game style."]
         later["uncertainties"]=["Cannot verify final materials from the Blender screenshot alone."]
-        for x in later["observations"]:x["visual_reason"]="The frame makes an identifiable new contrast compared with before."
+        for i,x in enumerate(later["observations"]):x["visual_reason"]=f"The observed member {i} creates visible contrast compared with the unchanged facade."
         r=validate_independent_delta(later,self.p["observations"])
         self.assertEqual(r["status"],"PROVISIONAL_DELTA_GROUNDED")
         self.assertFalse(r["art_approved"])
+    def test_inflated_copy_pasted_hidden_joinery_is_held(self):
+        bad=copy.deepcopy(self.p)
+        bad["decision"]="IMPROVED"
+        bad["scores_before"]={"silhouette":3,"architectural_contact":3,
+             "materials":3,"style":3,"game_camera":3}
+        bad["scores"]={"silhouette":8,"architectural_contact":8,
+             "materials":8,"style":8,"game_camera":8}
+        bad["reasons"]=["The original looked crude and wooden framing improves the surface contrast.",
+            "The new trim appears larger from the game view but remains simple in shape."]
+        bad["uncertainties"]=["Unity rendering has not been checked."]
+        for o in bad["observations"]:
+            o["visual_reason"]="The mortise and tenon joint is visible at the top of frame post"
+        evidence=validate_independent_delta(bad,self.p["observations"])
+        self.assertEqual(evidence["status"],"RUBRIC_UNRELIABLE")
+        self.assertIn("GENERIC_DUPLICATE_REASON_ACROSS_MEMBERS",evidence["errors"])
+        self.assertIn("CLAIMED_HIDDEN_JOINERY_VISIBLE",evidence["errors"])
+        self.assertIn("UNVERIFIED_EXTREME_DELTA_REQUIRES_SECOND_OPINION",evidence["errors"])
     def test_duplicate_observations_hold(self):
         p=copy.deepcopy(self.p);p["observations"][1]=copy.deepcopy(p["observations"][0])
         self.assertEqual(self.decision(p)["status"],"REVIEW_UNGROUNDED")
