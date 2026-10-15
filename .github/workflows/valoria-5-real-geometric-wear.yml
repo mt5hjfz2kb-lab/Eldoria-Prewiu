@@ -1,0 +1,71 @@
+name: "[ART STONE] Physical corner wear on five CC0 PBR modules"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-5-real-geometric-wear.yml'
+      - 'tools/valoria-modular-fortress/geometric_wear_five.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-five-geometric-wear
+  cancel-in-progress: false
+jobs:
+  wear-five:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Find Git and Blender
+        shell: powershell
+        id: toolcheck
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-five-masonry-pbr-38822723551
+          run-id: 38822723551
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/wear-original-5
+      - name: Sculpt actual corner loss on five distinct modules and render A-B
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'wear-original-5\eldoria-five-masonry-ab\glb'
+          $dest=Join-Path $env:RUNNER_TEMP 'eldoria-physical-wear-five'
+          if(-not(Test-Path (Join-Path $src 'stone_ashlar_01.glb'))){throw "No source at $src"}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/geometric_wear_five.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Missing pinned sculpt script'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-geometric-wear-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-wear.stdout.log';$err=Join-Path $env:RUNNER_TEMP 'eldoria-wear.stderr.log'
+          $proc=Start-Process -FilePath "${{ steps.toolcheck.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$dest) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender sculpt exit $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')) {
+            $count=(Get-ChildItem (Join-Path $dest $folder) -File).Count
+            if($count -ne 5){throw "Expected 5 $folder files, got $count"}
+          }
+      - name: Archive per asset images and GLBs; no scene composition
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-five-physical-wear-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-physical-wear-five/**
+            ${{ runner.temp }}/eldoria-wear.stdout.log
+            ${{ runner.temp }}/eldoria-wear.stderr.log
+          if-no-files-found: warn
+          retention-days: 30
