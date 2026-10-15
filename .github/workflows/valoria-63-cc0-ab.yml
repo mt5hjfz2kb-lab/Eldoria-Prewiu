@@ -1,0 +1,83 @@
+name: "[ART DONOR] Genuine Blender per-asset A-B using Quaternius CC0 models"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-63-cc0-ab.yml'
+      - 'tools/valoria-modular-fortress/compare_cc0_models.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-quaternius-cc0-ab-windows
+  cancel-in-progress: false
+jobs:
+  real-blender-13-ab:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Expose available Git and Blender programs
+        id: exes
+        shell: powershell
+        run: |
+          if (-not(Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $git)
+            $env:PATH="$(Split-Path $git);$env:PATH"
+          }
+          $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender 5.2 unavailable'}
+          "blender=$blender" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/donor-ab-current
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-nature-donor-candidates-38815449976
+          run-id: 38815449976
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/donor-ab-free
+      - name: Execute 13 actual individual asset A-B in Blender
+        shell: powershell
+        run: |
+          $script=Join-Path $env:RUNNER_TEMP 'eldoria-cc0-ab-pinned.py'
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/compare_cc0_models.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned donor comparator missing'}
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $current=Join-Path $env:RUNNER_TEMP 'donor-ab-current\eldoria-upgrade63'
+          $free=Join-Path $env:RUNNER_TEMP 'donor-ab-free\eldoria-cc0-donors'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-cc0-ab13'
+          if(-not(Test-Path (Join-Path $free 'source_manifest.json'))){throw "Donor manifest missing at $free"}
+          if(-not(Test-Path (Join-Path $current 'individual_quality_status.json'))){throw "Quality baseline missing at $current"}
+          $stdout=Join-Path $env:RUNNER_TEMP 'eldoria-cc0-13.log'
+          $stderr=Join-Path $env:RUNNER_TEMP 'eldoria-cc0-13.err'
+          $proc=Start-Process -FilePath "${{ steps.exes.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$current,$free,$out) -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 80 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 30 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Donor A-B failed $($proc.ExitCode)"}
+          $count=(Get-ChildItem (Join-Path $out 'glb') -Filter '*.glb').Count
+          if($count -ne 13){throw "Expected 13 donor GLBs, got $count"}
+      - name: Archive source-authentic individual candidates, 13 matched A/B previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-cc0-13-independent-ab-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-cc0-ab13/**
+            ${{ runner.temp }}/eldoria-cc0-13.log
+            ${{ runner.temp }}/eldoria-cc0-13.err
+          if-no-files-found: warn
+          retention-days: 30
