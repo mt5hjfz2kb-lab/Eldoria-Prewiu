@@ -155,61 +155,115 @@ def single_tower_image_probe(model):
           len(answer)>75 and not is_refusal and specific),
         "refusal":is_refusal,"done_reason":body.get("done_reason")}
 
+def ask_model(model,question,image64=None,max_tokens=900):
+    # First look at ONE actual image. Ask higher-level art questions later,
+    # using captions the vision model genuinely created itself.
+    message={"role":"user","content":question}
+    if image64 is not None:message["images"]=[image64]
+    payload={"model":model,"stream":False,"think":False,"messages":[message],
+             "options":{"temperature":0.20,"num_ctx":8192,"num_predict":max_tokens}}
+    request=urllib.request.Request(endpoint+"/api/chat",
+        data=json.dumps(payload).encode("utf-8"),headers={"Content-Type":"application/json"})
+    started=time.monotonic()
+    with urllib.request.urlopen(request,timeout=600) as response:
+        data=json.load(response)
+    answer=data.get("message",{}).get("content","").strip()
+    return {"text":answer,"complete":bool(data.get("done")),
+            "seconds":round(time.monotonic()-started,2),
+            "prompt_eval_count":data.get("prompt_eval_count"),
+            "eval_count":data.get("eval_count"),
+            "sha256":hashlib.sha256(answer.encode("utf-8")).hexdigest()}
+
+camera_questions=[
+ ("front_three_quarter",
+  "Describe solamente lo visible en esta imagen de una construcción medieval 3D. "
+  "¿Qué forma tienen sus paredes, qué forma tiene el tejado y qué elementos aparecen "
+  "al lado derecho? Da cuatro observaciones concretas, sin comentar tus capacidades."),
+ ("reverse_three_quarter",
+  "Observa esta imagen. Describe la forma y estructura del edificio, el tejado, "
+  "la escalera y las barandillas si las ves, con sus posiciones y conexiones. "
+  "Responde con cuatro frases concretas sobre la imagen."),
+ ("elevated_roof",
+  "Esta imagen está tomada desde arriba de un edificio medieval 3D. "
+  "Describe solo qué ves en el tejado: forma, tablones, cumbrera y encuentros "
+  "con otros elementos visibles. Describe cuatro detalles concretos."),
+ ("approved_style_reference",
+  "Describe el estilo artístico, los materiales aparentes y la paleta de esta imagen "
+  "de referencia para un videojuego de fantasía medieval. Nombra cuatro rasgos visuales "
+  "concretos; no inventes nada fuera de la imagen.")
+]
+def usable_text(x):
+    txt=x["text"].lower()
+    refusals=("no puedo ver","no tengo acceso a las im","no puedo visualizar",
+              "no puedo observar","no tengo capacidad para ver")
+    return x["complete"] and len(txt)>=110 and not any(z in txt for z in refusals)
+
 for model in models:
     label="4b" if "4b" in model else "8b"
     filename="diagnosis-"+label+".json"
-    record={"schema_version":2,"requested_model":model,"image_sources":sources,
+    record={"schema_version":3,"requested_model":model,"image_sources":sources,
             "original_source_sha256":obs["source_sha256"],"prompt_sha256":prompt_sha,
             "no_blender_executed":True,"art_approved":False,
             "independent_review":"PENDING","model_weights_updated":False,
-            "no_new_model_downloads":True}
+            "no_new_model_downloads":True,"test_method":"ONE_IMAGE_AT_A_TIME_THEN_REASON_FROM_OWN_CAPTIONS"}
+    began=time.monotonic()
     if model not in installed:
         record.update(status="NOT_INSTALLED_NO_DOWNLOAD",raw_response="",visual_content_present=False)
     else:
-        control=vision_transport_control(model)
-        record["vision_transport_control"]=control
         try:
-            tower_probe=single_tower_image_probe(model)
+            control=vision_transport_control(model)
+            record["vision_transport_control"]=control
+            captions=[]
+            for i,(view,question) in enumerate(camera_questions):
+                result=ask_model(model,question,encoded[i],max_tokens=780)
+                result["view"]=view
+                result["visually_substantive"]=usable_text(result)
+                captions.append(result)
+                print("ELDORIA_SINGLE_VIEW",model,view,"chars",len(result["text"]),
+                      "usable",result["visually_substantive"],flush=True)
+            record["single_image_observations"]=captions
+            observational_text="\\n".join(
+                "VISTA "+r["view"]+" (observación tentativa): "+r["text"]
+                for r in captions)
+            reasoning=(
+                "Eres director de arte 3D. Has observado por separado las tres vistas de "
+                "la MISMA torre original de Valoria y una cuarta imagen de REFERENCIA "
+                "DE ESTILO. Estos son tus propios informes de observación anteriores:\\n"
+                +observational_text+"\\n"
+                "Geometría original WORLD XYZ (Z arriba): "
+                "min[-1.224,-1.325,0] max[1.224,1.325,3.271]. "
+                "No modifiques Blender. Señala en orden los TRES defectos visuales "
+                "con mayor impacto realmente sustentados en esas observaciones. "
+                "Para cada uno: evidencia y vista; posible causa; corrección física "
+                "con apoyo estructural real; mejora visible desde la cámara de juego. "
+                "Preserva puerta, escalera, barandillas y UV. "
+                "Separa cuidadosamente hechos vistos de hipótesis. "
+                "Di qué no puedes asegurar sin más vistas. Responde con detalle en español."
+            )
+            diagnosis=ask_model(model,reasoning,max_tokens=2100)
+            record["brain_reasoning"]=diagnosis
+            answer=diagnosis["text"]
+            num_tower_views=sum(x["visually_substantive"] for x in captions[:3])
+            status_ok=(control["vision_recognition_demonstrated"] and
+                num_tower_views>=2 and usable_text(diagnosis) and len(answer)>=430)
+            record.update(status=("INDEPENDENT_VISUAL_REVIEW_REQUIRED" if status_ok
+                    else "INSUFFICIENT_SINGLE_VIEW_OR_REASONING"),
+                    raw_response=answer,raw_sha256=diagnosis["sha256"],
+                    characters=len(answer),
+                    seconds=round(time.monotonic()-began,2),
+                    tower_views_with_substantive_description=num_tower_views,
+                    response_complete=diagnosis["complete"],
+                    visual_content_present=bool(status_ok))
         except Exception as exc:
-            tower_probe={"source_image_recognition_plausible":False,
-                         "error":str(exc)[:450]}
-        record["single_original_tower_probe"]=tower_probe
-        payload={"model":model,"stream":True,"think":False,
-                 "messages":[{"role":"system","content":system},
-                    {"role":"user","content":task,"images":encoded}],
-                 "options":{"temperature":0.25,"num_ctx":16384,"num_predict":2400}}
-        # No JSON format or schema: two real Qwen versions previously returned an
-        # identical empty four-field skeleton when JSON mode was imposed.
-        request=urllib.request.Request(endpoint+"/api/chat",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type":"application/json"})
-        start=time.monotonic();pieces=[];done=False
-        try:
-            with urllib.request.urlopen(request,timeout=600) as response:
-                for line in response:
-                    if not line.strip():continue
-                    part=json.loads(line)
-                    if part.get("error"):raise RuntimeError(str(part["error"])[:500])
-                    pieces.append(part.get("message",{}).get("content",""))
-                    if part.get("done"):done=True;break
-            answer="".join(pieces).strip()
-            visual_content_present=(done and len(answer)>=300 and
-                control["vision_recognition_demonstrated"] and
-                tower_probe.get("source_image_recognition_plausible",False) and
-                "no puedo ver las imágenes" not in answer.lower() and
-                "no tengo acceso a la visualización" not in answer.lower())
-            status="INDEPENDENT_VISUAL_REVIEW_REQUIRED" if visual_content_present else "EMPTY_OR_INSUFFICIENT_VISUAL_DIAGNOSIS"
-            record.update(status=status,raw_response=answer,raw_sha256=hashlib.sha256(answer.encode()).hexdigest(),
-                        characters=len(answer),seconds=round(time.monotonic()-start,2),
-                        response_complete=done,visual_content_present=visual_content_present)
-        except Exception as exc:
-            record.update(status="MODEL_CALL_ERROR",error=str(exc)[:600],raw_response="".join(pieces),
-                        seconds=round(time.monotonic()-start,2),visual_content_present=False)
-    (out/filename).write_text(json.dumps(record,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+            record.update(status="MODEL_CALL_ERROR",error=str(exc)[:600],
+                          seconds=round(time.monotonic()-began,2),
+                          visual_content_present=False)
+    (out/filename).write_text(json.dumps(record,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
     results.append({k:record.get(k) for k in ("requested_model","status","seconds","raw_sha256",
-                                           "characters","visual_content_present")})
+        "characters","visual_content_present","tower_views_with_substantive_description")})
     results[-1]["evidence_file"]=filename
-    print("ELDORIA_EYES_BRAIN_EXAM",model,record["status"],"chars",len(record.get("raw_response","")),flush=True)
+    print("ELDORIA_EYES_BRAIN_EXAM",model,record["status"],"chars",
+          len(record.get("raw_response","")),flush=True)
 summary={"schema_version":2,"state":"DIAGNOSTIC_ONLY_NEEDS_INDEPENDENT_ART_REVIEW",
          "tower_sha256":obs["source_sha256"],"images":sources,
          "model_results":results,"artist_edit_executed":False,
