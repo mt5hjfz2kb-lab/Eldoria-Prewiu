@@ -66,16 +66,16 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
   "schema_version": 1,
   "repository": "mt5hjfz2kb-lab/Eldoria-Prewiu",
   "branch": "diagnostic/valoria-ai-eyes-brain-20261015",
-  "last_verified_source_head": "4a6240fd9e3e87155a850479c699dd5aca41cb86",
-  "recorded_at": "2026-10-15T10:38:00Z",
-  "mission_status": "BLOCKED_EXTERNAL_SECURITY_REVIEW",
+  "last_verified_source_head": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
+  "recorded_at": "2026-10-15T11:16:18Z",
+  "mission_status": "RUNNING_REAL_QWEN_THREE_ARM_DIAGNOSIS",
   "production_paused": true,
   "selective_memory_qwen_validated": false,
   "next_action": {
-    "id": "resolve-selective-benchmark-security-rejection",
-    "kind": "external_intervention",
-    "action": "Obtener revisión/resolución de las dos operaciones rechazadas por el canal de soporte/aprobación de la plataforma. No reintentar sus equivalentes. Después, revisar incorporación y ejecución autorizadas de la condición selectiva.",
-    "avoid": "No reejecutar V2 esperando una tercera condición; no sustituir pruebas Qwen por estáticas."
+    "id": "collect-current-three-arm-run",
+    "kind": "observe_existing_job",
+    "action": "Consultar run 38726028141 / job 116391981342 del SHA a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c hasta completar, recuperar artefacto eldoria-qwen14b-memory-selective-three-arm-v1 y evaluar respuestas/regresiones. No lanzar otro job.",
+    "avoid": "No reejecutar V2 ni afirmar validación antes de leer los resultados reales."
   },
   "last_working_execution": {
     "workflow": ".github/workflows/eldoria-brain-memory-ab.yml",
@@ -123,13 +123,15 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
       "operation": "mcp__GitHub__create_file",
       "path": "tools/art-direction/director-control/test_selective_memory.py",
       "purpose": "Automated selector tests",
-      "reason": "Rechazo por controles de seguridad de OpenAI (registro recuperado; no se dispone aquí del payload completo original)."
+      "reason": "Rechazo por controles de seguridad de OpenAI (registro recuperado; no se dispone aquí del payload completo original).",
+      "current_status": "Not retried; static selector checks already exist and are not repeated. This test file is not required for the running protocol."
     },
     {
       "operation": "mcp__GitHub__create_file",
       "path": "tools/art-direction/director-control/brain_memory_selective_ab.py",
       "purpose": "Three-condition Qwen benchmark",
-      "reason": "La plataforma no pudo determinar el estado de seguridad (registro recuperado; no se dispone aquí del payload completo original)."
+      "reason": "La plataforma no pudo determinar el estado de seguridad (registro recuperado; no se dispone aquí del payload completo original).",
+      "current_status": "Normal create_file request on SAME ORIGINAL PATH accepted under owner's explicit resubmission request; commit 9bd2ae06da7df716de3b3fbc27dc7298d6cd2158. Historical cause remains unknown; no old rationale was recovered."
     }
   ],
   "capabilities": [
@@ -202,6 +204,23 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
     "new_inferences": 0,
     "blender_started": false,
     "production_resumed": false
+  },
+  "pending_execution": {
+    "run_id": 38726028141,
+    "job_id": 116391981342,
+    "runner": "DESKTOP-R10PE55",
+    "source_sha": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
+    "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+    "planned_inferences": 96,
+    "conditions": [
+      "without_memory",
+      "with_memory",
+      "selective_memory"
+    ],
+    "case_groups": [
+      "original_16",
+      "prospective_phrasing_holdout_16"
+    ]
   }
 }
 ```
@@ -216,3 +235,9 @@ El siguiente bloque es el checkpoint **dentro de este arranque existente**, no u
 No usar este workflow para incorporar la condición selectiva rechazada ni para ejecutar código equivalente a las dos escrituras bloqueadas. La recuperación de conectividad **no** levanta esos rechazos.
 
 Permisos GitHub consultados: ajuste específico `Allow all actions`; lecturas y escrituras actuales funcionan. No se cambiaron permisos. Ese ajuste no anula controles de seguridad de plataforma ni explica por sí solo los rechazos previos.
+
+## Reanudación aceptada posteriormente — 15-10-2026
+
+Esta nota y el checkpoint RUNNING sustituyen el siguiente paso de revisión externa para el benchmark. Tras la petición explícita del propietario de volver a presentar las operaciones, la herramienta normal `create_file` aceptó crear `tools/art-direction/director-control/brain_memory_selective_ab.py` en su **ruta original** (commit `9bd2ae06da7df716de3b3fbc27dc7298d6cd2158`). No se cambiaron permisos ni nombres ni herramientas, ni se desactivó revisión. No sabemos el motivo de los rechazos antiguos y esta aceptación no autoriza repetir una operación que reciba una nueva denegación.
+
+El workflow existente de memoria ahora ejecuta la comparación aceptada: run `38726028141`, job `116391981342`, Windows `DESKTOP-R10PE55`. Leer el checkpoint y observar ESE run, no iniciar otro ni volver a pedir al propietario permisos generales. Son 96 inferencias con respuestas API/modelo completas, solicitudes/hashes, selecciones y guardado parcial por respuesta. La torre y la producción siguen intactas. Los resultados originales se conservan. No marcar PASS antes de recuperar y evaluar el artefacto.
