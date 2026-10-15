@@ -3,7 +3,7 @@ on:
   push:
     branches: [diagnostic/valoria-ai-eyes-brain-20261015]
     paths:
-      - 'tools/art-direction/director-control/brain_memory_ab.py'
+      - 'tools/art-direction/director-control/brain_memory_epistemic_v2.py'
       - 'tools/art-direction/director-control/memory_regression_gate.py'
       - '.github/workflows/eldoria-brain-memory-ab.yml'
   workflow_dispatch:
@@ -53,6 +53,8 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'BRAIN_BENCHMARK_TESTS_FAILED'}
           python -m unittest discover -s tools/art-direction/director-control -p test_memory_regression_gate.py -v
           if($LASTEXITCODE -ne 0){throw 'MEMORY_GATE_TESTS_FAILED'}
+          python -m unittest discover -s tools/art-direction/director-control -p test_brain_memory_v2.py -v
+          if($LASTEXITCODE -ne 0){throw 'PREDECLARED_BALANCED_MEMORY_TESTS_FAILED'}
       - name: Run read-only paired diagnosis with Ollama alive in same Windows step
         shell: powershell
         timeout-minutes: 95
@@ -92,7 +94,7 @@ jobs:
             try{$gpu=(& nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits 2>$null | Select-Object -First 1)}catch{}
             @{physical_ram_bytes=$cs.TotalPhysicalMemory;gpu_inventory=$gpu;model='qwen3:14b';observed_utc=(Get-Date).ToUniversalTime().ToString('o')} |
               ConvertTo-Json -Depth 4 | Out-File (Join-Path $out 'windows-hardware.json') -Encoding utf8
-            python tools/art-direction/director-control/brain_memory_ab.py --grounding $geo.FullName --out (Join-Path $out 'paired.json') --model qwen3:14b
+            python tools/art-direction/director-control/brain_memory_epistemic_v2.py --grounding $geo.FullName --out (Join-Path $out 'paired.json') --model qwen3:14b
             if($LASTEXITCODE -ne 0){throw 'QWEN_AB_EXECUTION_FAILED'}
             python tools/art-direction/director-control/memory_regression_gate.py --input (Join-Path $out 'paired.json') --out (Join-Path $out 'gate.json')
             if($LASTEXITCODE -ne 0){throw 'MEMORY_REGRESSION_DETECTED'}
@@ -102,6 +104,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-qwen14b-memory-ab
+          name: eldoria-qwen14b-memory-ab-v2
           path: ${{ runner.temp }}/eldoria-memory-ab/
           if-no-files-found: warn
