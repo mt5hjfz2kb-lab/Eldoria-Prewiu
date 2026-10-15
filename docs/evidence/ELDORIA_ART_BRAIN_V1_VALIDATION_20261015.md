@@ -41,3 +41,27 @@
 **Fase de ingeniería cerrada:** ojos separados, medición espacial, director mayor, controles y transferencia segura probados a coste 0. **Fase artística pendiente:** autorización del propietario para levantar parcialmente la pausa y validar UNA corrección sobre copia + A/B de Blender + Unity + revisión independiente; después tres mejoras sucesivas según contrato. No recomendar edición concreta ni integrar 14B en el ejecutor productivo sin esa validación.
 
 **Prohibido sustituir por una afirmación de éxito técnico la falta de aprobación artística.**
+
+
+## Ampliación experimental 15-10-2026 — memoria, contexto amplio y hardware reales
+
+**Autorización:** diagnóstico Qwen/visión de solo lectura ordenado por el propietario en la misma rama. La pausa de modelado y de Bastión I / 4X / Unity sigue activa. No modifica GLB, no usa créditos, no entrena pesos ni autoriza `ART_APPROVED`.
+
+### Ejecución A/B original — respuesta observada, no aceptación artística
+
+- **Run:** [38713558774](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38713558774); **artefacto** [11961059956](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38713558774/artifacts/11961059956), ZIP SHA-256 `31976e68f4b97354f89f9b8dfef1651dcc1f7f35b1a1ed9f670d00d525dd471a`; `paired.json` SHA-256 `c2df4ad769b6b82d7c536931c6e4b00eace80b76bf8649beff91a077237fcb15`.
+- El runner físico `DESKTOP-R10PE55` recuperó la fuente original y ejecutó **24/24 inferencias auténticas Qwen3 14B**, dos variantes por doce afirmaciones, orden entremezclado; suma de latencias API **111,14 segundos**. La memoria eran siete lecciones incluidas efectivamente en la variante con memoria; no pesos entrenados.
+- Puntuación automática de tres etiquetas: **sin memoria 8/12, con memoria 7/12; cero mejoras y una regresión**, `REGRESSION`, gate cerrado. **No hay evidencia de ganancia por memoria**. El único caso contado regresión es «la luz neutra demuestra materiales finales»: `NO_DEMOSTRADO` sin memoria y `CONTRADICHO` con memoria. Ambas respuestas niegan que el material final esté demostrado; la distinción del evaluador es discutible y NO se puede reinterpretar retroactivamente como una mejora.
+- Limitación detectada al leer respuestas originales: dos preguntas sobre procedencia de cámara no recibían en el prompt la propiedad booleana explícita `all_cameras_same_exact_source_sha256`, aunque sí existía en la evidencia; no inventar certeza a partir de un contexto parcial. Se conserva intacto el trial V1 y se registra un **segundo ensayo prospectivo con etiquetas binarias equilibradas 8/8**, en el mismo sistema de memoria, sin suplantar el resultado original.
+- Windows físico: **17.106.989.056 bytes RAM (~15,93 GiB)**; **NVIDIA RTX 3060, 12.288 MiB VRAM**, disponibles antes del modelo 11.716 MiB. Logs Ollama del contexto 4K: ~8.423 MiB de pesos CUDA, ~640 MiB KV, **41/41 capas GPU**.
+
+### Comparación de contexto completo autenticado: 4K frente a 12K
+
+- **Run:** [38714184789](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38714184789), `SUCCESS`; **artefacto** [11962281075](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38714184789/artifacts/11962281075), ZIP SHA-256 `e5cd04465530c17c3538474a887a72373fd471f178147f59ee81c5a758a73ab5`; `context-probe.json` SHA-256 `ab97ff7af69f74ce5c5a5a1fd8d894197566ecabccb58bb5ae17eaf5344d8293`.
+- Se alimentaron **38.691 caracteres de evidencia auténtica**, incluyendo Blender WORLD de la torre congelada, descripciones de cámaras Qwen8B identificadas como hipótesis y diagnóstico espacial previo. Mismo contexto, pregunta, Qwen3 14B y temperatura cero; solo cambia `num_ctx`. Fuente SHA original validada `e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869`.
+- **4K:** `2/4` comprobaciones correctas; entrada procesada `2050` tokens; generación `33,38 tokens/s`; pared `40,44 s`; SHA e islas topológicas erróneos (afirmó SHA ajeno y una isla).
+- **12K:** `4/4` correctas; entrada procesada `6146` tokens; generación `16,88 tokens/s`; pared `50,23 s`; identifica SHA original, `3029` islas, sin certificar tejado exacto ni autorización para editar.
+- En 12K, GPU consumida tras carga `10563 MiB`, libre `1553 MiB`; Ollama informa `context_length=12288` y `size_vram=10480034774` bytes. **39/41 capas** en GPU (2 capas CPU) en lugar de 41/41 en 4K. Por tanto, ampliación viable en la máquina, pero con pérdida de velocidad y poco margen VRAM. El cambio de latencia está afectado por cargas/reconfiguración: no tratar 40,44 vs 50,23 s como benchmarking de solicitudes calientes idénticas.
+- Prueba exploratoria de **una ejecución por ventana**. Demuestra este caso, NO superioridad estadística general ni dirección artística profesional. No se han hecho cambios de fuente ni validación visual A/B.
+
+**Conclusión vigente:** el modelo de texto Qwen3 14B funciona realmente en el Windows del propietario y es viable como director asíncrono de diagnóstico, con contexto 12K útil pero más lento. La utilidad real de la memoria aún requiere el segundo conjunto equilibrado y no se considera validada. Ninguna prueba produce `ART_APPROVED` ni `CALIBRATION_VALIDATED`.
