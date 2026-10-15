@@ -35,6 +35,7 @@ ground={
   "triangle_slope_does_not_reveal_exact_roof_form":True,
   "one_imported_mesh":geo["geometry"]["mesh_object_count"]==1,
   "distinct_topological_islands":geo["connected_island_count"],
+  "mesh_provenance":geo["mesh_provenance"],
   "protected_elements":["entrance","exterior staircase","railings","UV atlas"],
   "prohibitions":[
    "camera differences never imply geometric mutations of an unchanged source",
@@ -74,6 +75,7 @@ def ask(prompt,limit=350):
     return {"text":t,"sha256":hashlib.sha256(t.encode()).hexdigest(),
             "seconds":round(time.monotonic()-start,2),
             "complete":bool(data.get("done")),
+            "done_reason":data.get("done_reason"),
             "prompt_eval_count":data.get("prompt_eval_count"),
             "eval_count":data.get("eval_count"),
             "total_duration_ns":data.get("total_duration") }
@@ -128,7 +130,9 @@ if a.selective_freeform_diagnostic:
         prompt=(source_context+"\nOPEN DIRECTOR QUESTION: "+question+
              "\nExplain what is supported by actual geometry vs visual hypothesis. "
              "Give specific priority only if justified; otherwise say NO_EDIT. "
-             "Never propose executable modeling commands.")
+             "Never propose executable modeling commands. "
+             "Respond in Spanish in at most 300 words using compact sections: verified facts, "
+             "visual hypotheses, additional measurements, and NO_EDIT conclusion if insufficient.")
         if recall and recall["prompt_fragment"]:
             prompt+="\n"+recall["prompt_fragment"]
         record={"case":name,"condition":mode,"question":question,
@@ -137,10 +141,10 @@ if a.selective_freeform_diagnostic:
                 "selected_lesson_indices":[x["index"] for x in recall["selection"]] if recall else [],
                 "original_source_sha256":EXPECTED}
         try:
-            response=ask(prompt,950)
-            if not response["complete"] or not response["text"].strip():
-                raise ValueError("FREEFORM_INFERENCE_INCOMPLETE")
+            response=ask(prompt,1200)
             record.update({"answer":response})
+            if not response["complete"] or response.get("done_reason")!="stop" or not response["text"].strip():
+                raise ValueError("FREEFORM_INFERENCE_INCOMPLETE_OR_TRUNCATED")
         except Exception as exc:
             record["error"]=str(exc)[:450]
         evidence["responses"].append(record)
@@ -148,7 +152,7 @@ if a.selective_freeform_diagnostic:
         print("ELDORIA_SELECTIVE_DIRECTOR_FREEFORM",name,mode,
               "memories",len(record["selected_lesson_indices"]),
               "complete",bool(record.get("answer")),flush=True)
-    evidence["all_inferences_completed"]=len(evidence["responses"])==len(trials) and all("answer" in x for x in evidence["responses"])
+    evidence["all_inferences_completed"]=len(evidence["responses"])==len(trials) and all("answer" in x and "error" not in x for x in evidence["responses"])
     persist()
     print("ELDORIA_REAL_DIRECTOR_SELECTIVE_DIAGNOSTIC",
           len(evidence["responses"]),"complete",evidence["all_inferences_completed"],flush=True)
