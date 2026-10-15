@@ -347,7 +347,7 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         base+=(" Professional Blender carpentry tool beam_between_faces: "
                "Qwen chooses one NEW object name, an exact existing source "
                "object, TWO DISTINCT camera-ray-hit original face indices "
-               "start_face and end_face, plus width_m and depth_m 0.06..0.45. "
+               "start_face and end_face, plus width_m and depth_m 0.10..0.45. "
                "Blender connects those measured polygon centers as an oriented "
                "SOLID beam. Qwen still selects the actual placement by face "
                "IDs, proportions and artistic purpose. No invented mesh "
