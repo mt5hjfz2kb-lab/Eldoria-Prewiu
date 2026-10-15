@@ -1,0 +1,46 @@
+name: Eldoria 14B memory A-B diagnostic
+on:
+  push:
+    branches: [diagnostic/valoria-ai-eyes-brain-20261015]
+    paths:
+      - 'tools/art-direction/director-control/brain_memory_ab.py'
+      - 'tools/art-direction/director-control/memory_regression_gate.py'
+      - '.github/workflows/eldoria-brain-memory-ab.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  paired-memory:
+    runs-on: [self-hosted, windows]
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-spatial-grounded-art-director-4b-8b
+          run-id: 38701710879
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-spatial
+      - name: Run read-only 14B paired reasoning
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-spatial'
+          $geo=Get-ChildItem $root -Recurse -Filter spatial-grounding.json | Select-Object -First 1
+          if(-not $geo){throw 'REAL_SPATIAL_GROUNDING_NOT_FOUND'}
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-memory-ab'
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          python tools/art-direction/director-control/brain_memory_ab.py --grounding $geo.FullName --out (Join-Path $out 'paired.json') --model qwen3:14b
+          if($LASTEXITCODE -ne 0){throw 'QWEN_AB_EXECUTION_FAILED'}
+          python tools/art-direction/director-control/memory_regression_gate.py --input (Join-Path $out 'paired.json') --out (Join-Path $out 'gate.json')
+          if($LASTEXITCODE -ne 0){throw 'MEMORY_REGRESSION_DETECTED'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-qwen14b-memory-ab
+          path: ${{ runner.temp }}/eldoria-memory-ab/
+          if-no-files-found: warn
