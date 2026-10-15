@@ -762,3 +762,11 @@ A continuación se conserva el contenido original de `paired.json` recuperado, s
 ```
 
 **Criterio final:** conectividad de GitHub verificada; ruta Windows histórica recuperada pero salud actual no comprobada; continuidad implementada/probada en el alcance indicado; B permanece bloqueado externamente; misión completa **NO TERMINADA**. Torre original intacta, cero Blender/Unity/jobs nuevos de producción, cero gasto, `SELECTIVE_MEMORY_QWEN_AB_VALIDATED=false`, `ART_APPROVED=false`, `CALIBRATION_VALIDATED=false`.
+
+### Confirmación final de recuperación independiente y CI
+
+- Contexto independiente sin historial de misión: lectura real de `AGENTS.md` blob `96aed3520a2bade9eebd07a609948b8f4ee3692a`, bootstrap blob `2ee85fecee48827d018674d6ae166a7593a26da6`, selector/benchmark originales y logs/jobs/artefactos. Reconstruyó correctamente el mismo pendiente y mantuvo Windows `NOT_VERIFIED`; no escribió ni ejecutó modelos/jobs.
+- El contexto nuevo enumeró 89 herramientas GitHub y confirmó lectura real, pero no ejecución, ni una nueva sesión independiente de credenciales.
+- CI del bootstrap exacto `9eaaa927275539c9045799554aa7c7e7f3c8ca09`: [#38721902138](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38721902138), job `116378249079`, `architecture` SUCCESS. Este CI no prueba Qwen ni Windows.
+- El endpoint de runs con `?branch=diagnostic%2Fvaloria-ai-eyes-brain-20261015&per_page=30` se comprobó realmente y funciona. Para HEAD se utilizó `/git/ref/heads/diagnostic/valoria-ai-eyes-brain-20261015`; codificar la barra en el path de `/branches/...` produjo `INVALID_ARGUMENT`, resuelto con la ruta Git ref permitida. No es un bloqueo del repositorio.
+- El informe íntegro incorpora ahora los 32 registros originales de V2 además de las referencias al ZIP; no depende solo de la caducidad del artefacto para conservar sus resultados. Ningún resultado fue recalificado.
