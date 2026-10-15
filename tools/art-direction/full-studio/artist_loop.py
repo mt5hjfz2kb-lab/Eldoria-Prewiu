@@ -444,6 +444,33 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
     return any(any(label in reason for label in labels) for reason in rejection_reasons)
 
 
+def candidate_visible_roof_surface_facts(inventory, height_floor=.62):
+    """Rank actual native Blender camera ray-hits near upper tower for roof art.
+
+    This provides measured REFERENCE DATA, not authored geometry or Qwen poses.
+    Crucial after run 38695886870: Qwen copied the FIRST two source camera
+    face centers, but those were low exterior STAIRCASE vertices at heights
+    0.27 and 0.38 of the source, not roof/eave attachments.
+    """
+    facts=[]
+    for obj in (inventory or []):
+        for record in obj.get("camera_visible_face_landmarks",[]):
+            height=record.get("world_height_fraction")
+            xyz=record.get("world_center_m")
+            if (record.get("camera_ray_hit_original_face") is True and
+                record.get("camera_visible") is True and
+                isinstance(height,(int,float)) and height_floor<=height<=.92 and
+                isinstance(xyz,list) and len(xyz)==3):
+                facts.append({"source_object":obj["name"],
+                              "original_face_id":record["face_index"],
+                              "world_surface_point_m":xyz,
+                              "on_camera_uv":record.get("camera_screen_uv"),
+                              "relative_height":height})
+    # Measured mid-upper roof/eave band first, NEVER low stair locations.
+    return sorted(facts,key=lambda item:(abs(item["relative_height"]-.74),
+                        item["original_face_id"]))[:12]
+
+
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None,source_inventory=None,spatial_views=None,
              prior_invisible_signatures=None,excluded_source_ops=None):
@@ -552,6 +579,23 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "For THIS RETRY, use a REAL VOLUMETRIC Blender primitive. "
               "YOU still choose which primitive, placement, orientation, dimensions, material and intent. "
               "No script chooses your new structure.")
+    if source_exists and source_inventory and getattr(args,"multi_component_assembly",False):
+        roof_facts=candidate_visible_roof_surface_facts(source_inventory)
+        if roof_facts:
+            msg+=("\nCRITICAL ACTUAL 3D CAMERA-VERIFIED ROOF/EAVE SURFACE FACTS "
+                  "(REFERENCES, NOT REQUIRED MODEL COORDINATES): "+
+                  json.dumps(roof_facts,ensure_ascii=False)[:5200]+
+                  "\nThese original WORLD XYZ points lie on ACTUAL VISIBLE "
+                  "UPPER source roof/eave surfaces. Build your OWN original "
+                  "supports visually connecting to actual ROOF/WALL load paths. "
+                  "DO NOT reuse the first original generic face landmarks "
+                  "325/324 from last rejected run: those WORLD points "
+                  "[0.8313,1.091,0.8972] and [0.5135,1.0906,1.2309] "
+                  "were LOWER STAIRCASE and your Qwen timber cylinders blocked "
+                  "26% of protected stairs. Choose a NEW creative timber joint "
+                  "on a visibly unobstructed upper roof/wall zone. "
+                  "The coordinates above are observed SOURCE evidence, never "
+                  "auto-authored Qwen object transforms.")
     if source_exists and source_inventory:
         # Only true Blender camera ray hits are called visible. These IDs
         # are real observed source faces, never scripted artistic actions.
@@ -559,8 +603,15 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             {"name":obj["name"],
              "faces":[{"id":i["face_index"],
                        "screen_uv":i["camera_screen_uv"],
-                       "height":i["world_height_fraction"]}
-                      for i in obj.get("camera_visible_face_landmarks",[])[:24]]}
+                       "height":i["world_height_fraction"],
+                       "actual_world_surface_m":i.get("world_center_m")}
+                      for i in (
+                          sorted(obj.get("camera_visible_face_landmarks",[]),
+                                 key=lambda k:(
+                                   abs(k.get("world_height_fraction",0)-.74)
+                                   if getattr(args,"multi_component_assembly",False)
+                                   else 0))
+                      )[:24]]}
             for obj in source_inventory
             if obj.get("camera_visible_face_landmarks")]
         if camera_facts:
