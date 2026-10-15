@@ -112,7 +112,10 @@ jobs:
             $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
             $diagnosis=Join-Path $env:RUNNER_TEMP 'eldoria-vision-8b-frozen/diagnosis-8b.json'
             if(-not (Test-Path $diagnosis)){throw 'HISTORICAL_REAL_VISION_PROOF_MISSING'}
-            $eyes=Get-Content $diagnosis -Raw | ConvertFrom-Json
+            $raw=Get-Content $diagnosis -Raw -Encoding UTF8
+            $raw=$raw.Trim()
+            if($raw.EndsWith('\\n')){$raw=$raw.Substring(0,$raw.Length-2).TrimEnd()}
+            $eyes=$raw | ConvertFrom-Json
             if($eyes.original_source_sha256 -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'QWEN8B_EYES_REFER_TO_DIFFERENT_SOURCE'}
             $v1=@($eyes.single_image_observations | Where-Object {$_.view -eq 'front_three_quarter'}) | Select-Object -First 1
             $v2=@($eyes.single_image_observations | Where-Object {$_.view -eq 'reverse_three_quarter'}) | Select-Object -First 1
