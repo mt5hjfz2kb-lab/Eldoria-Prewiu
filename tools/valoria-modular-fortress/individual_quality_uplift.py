@@ -111,8 +111,8 @@ def make_uv(ob):
 def assign_existing(ob):
  if ob.type!='MESH':return
  for i,mat in enumerate(ob.data.materials):
-  s=(mat.name if mat else '').lower()
-  s=re.sub(r'\.\d+
+  s=(mat.name if mat else '').lower().split('.')[0]
+  key=next((k for k in palette if s.endswith('_'+k)),None)
   if not key:key='stone'
   ob.data.materials[i]=material(key)
  if not ob.data.materials:ob.data.materials.append(material('stone'))
