@@ -7,6 +7,8 @@ on:
       - 'tools/art-direction/full-studio/artist_loop.py'
       - 'tools/art-direction/full-studio/artistic_quality_gate.py'
       - 'tools/art-direction/full-studio/architectural_world_placement_gate.py'
+      - 'tools/art-direction/full-studio/assembly_composition_gate.py'
+      - 'tools/art-direction/full-studio/tests/test_multi_qwen_composition.py'
       - 'tools/art-direction/full-studio/tests/test_eave_contact_real_qwen.py'
       - 'tools/art-direction/full-studio/tests/test_owner_hypothesis_switch.py'
       - 'tools/art-direction/full-studio/tests/test_permanent_art_quality_contract.py'
@@ -39,6 +41,7 @@ jobs:
       - name: Contract and true model retry regressions only
         run: |
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_eave_contact_real_qwen.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_multi_qwen_composition.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_owner_hypothesis_switch.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_permanent_art_quality_contract.py' -v
           python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_invisible_qwen_plan_replay.py' -v
