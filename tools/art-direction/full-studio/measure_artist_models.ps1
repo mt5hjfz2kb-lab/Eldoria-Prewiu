@@ -55,11 +55,12 @@ try{
     @{label='4b-sculpt';model='qwen3-vl:4b-instruct';kind='mesh_edit'},
     @{label='4b-assembly';model='qwen3-vl:4b-instruct';kind='assembly'},
     @{label='8b-sculpt';model='qwen3-vl:8b-instruct-q4_K_M';kind='mesh_edit'},
+    @{label='8b-assembly';model='qwen3-vl:8b-instruct-q4_K_M';kind='assembly'},
     @{label='8b-professional';model='qwen3-vl:8b-instruct-q4_K_M';kind='professional'}
   )
   # Owner-authorized single real source/real camera experiment. Previous
   # 4B vs 8B and mandatory primitive-assembly tests are already evidenced.
-  $cases=@($cases | Where-Object {$_.label -eq '4b-assembly'})
+  $cases=@($cases | Where-Object {$_.label -eq '8b-assembly'})
   foreach($case in $cases){
     if($case.model -notin $installed){throw ('No previously cached model; no download authorized: '+$case.model)}
   }
@@ -71,7 +72,7 @@ try{
     $log=Join-Path $Out ($case.label+'.log')
     $sw=[System.Diagnostics.Stopwatch]::StartNew()
     $params=@('tools/art-direction/full-studio/artist_loop.py',
-      '--brief','ELDORIA OWNER ART QUALITY CONTRACT V1 — NEW ARTISTIC HYPOTHESIS AFTER 8B SOURCE OPERATIONS FAILED. On a COPY of the SAME frozen Valoria 2.65m wooden village watchtower, Qwen4B must design an ORIGINAL modest three-dimensional TIMBER SUPPORT BRACKET or ROOF EAVE structural piece as a SEPARATE MESH/CUBOID attached to the outer roof and wall with convincing contact, medieval construction logic, and actual camera-visible silhouette. Do NOT tweak existing face 324/325, replace the inherited texture atlas or add any centered cylinder on the roof apex. Independent A/B found repeated extrusions, source bevel and sculpt brushes unchanged at the player view. Real frozen tower SOURCE AABB world X [-1.22387,1.22387], Y [-1.325,1.325], Z [0,3.27077] metres, WORLD Z IS HEIGHT, not Y. Prior Qwen4B timber cube at [0.5,2.5,1.2] and half-size [0.3,0.3,0.3] FLOATED 0.875m outside world-Y source. Never repeat. Attach each new part with ACTUAL AABB contact along ALL WORLD x/y/z axes (allowed gap <=0.06m) and visually meaningful support of eave/roof. Choose all original values yourself from measured source, no assistant repair. Check actual eave perimeter, prefer wall-side bracket supporting an outer roof edge, not an arbitrary rooftop ornament. Choose YOUR OWN suitable primitive or closed noncoplanar mesh, geometry dimensions, exact transform and finishing — no assistant-generated coordinates or recipe. Preserve correct roof, stairs, front entrance, original timber logs, UV and circulation. No pass is ART_APPROVED without independent review. STOP after first genuine visible candidate and hold it for its external A/B reviewer.'
+      '--brief','ELDORIA OWNER ART QUALITY CONTRACT V1. The SAME IMMUTABLE original Valoria timber watchtower is 2.65m wide in WORLD Y and 3.27m high in WORLD Z. Previous 8B central roof cylinders, 4B floating 0.875m outside wall and 4B duplicated mesh vertices were independently visually REJECTED, not artistic progress. CHANGE ORIGINAL HYPOTHESIS: use real Blender primitive or CLOSED multi-faced custom mesh to AUTHOR a genuine medieval TIMBER DIAGONAL SUPPORT or timber roof-edge beam touching outer ROOF and WALL, in the silhouette of the SAME inherited tower. Real WORLD bounds X [-1.22387,1.22387], Y [-1.325,1.325], Z [0,3.27077]. WORLD Z is vertical, WORLD Y is depth: do not mistake Y=2.5 for roof height. Support must overlap/nearly touch source across all axes, a plausible physical joint, never float near the gable. Qwen decides its own component geometry, position, dimension, surface, tools and finishing; do not replace the original texture atlas or hide stairs/door. A flat cap/cube suspended outside original wall fails; a slight pixel change is not art improvement. Inspect actual fixed-angle source and choose a believable scene-visible wood component. No source modification until independent acceptance; STOP after first genuine visible candidate. Budget 0.'
       '--reference',$Reference,'--source',$Source,'--review',$Review,
       '--out',$outCase,'--model',$case.model,'--blender',$blender,
       '--transport','blendermcp','--mcp-addon',$mcp,'--mcp-sha256',$mcpHash,
