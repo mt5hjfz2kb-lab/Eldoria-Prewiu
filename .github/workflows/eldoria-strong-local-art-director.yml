@@ -54,75 +54,37 @@ jobs:
           run-id: 38701710879
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ runner.temp }}/eldoria-prior-grounding
-      - name: Validate latest owner diagnosis authorization, candidate disk capacity and code
+      - name: Confirm paused production, installed Qwen and read-only director code
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $policy=(Invoke-WebRequest 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/main/AGENTS.md' -UseBasicParsing -TimeoutSec 30).Content
-          if($policy -notmatch 'PAUSA DE LA LINEA DE CORRECCION ARTISTICA PARA DIAGNOSTICO VISUAL'){throw 'Owner latest authorization changed'}
-          if(-not (Test-Path (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json'))){throw 'Verified prior spatial evidence missing'}
-          if(-not (Test-Path (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json'))){throw 'Prior 8B visual observation evidence missing'}
-          python -m py_compile tools/art-direction/director-control/strong_local_director.py
-          if($LASTEXITCODE -ne 0){throw 'Stronger local director script syntax failed'}
-          $drive=$env:SystemDrive.TrimEnd(':')
-          $free=(Get-PSDrive -Name $drive).Free
-          if($free -lt 20GB){throw ('INSUFFICIENT_FREE_DISK_SPACE_FOR_9GB_MODEL: '+[math]::Round($free/1GB,2)+' GB')}
-          $o=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
-          if(-not (Test-Path $o)){
-            $o=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+          if($policy -notmatch 'PAUSA DE LA LINEA DE CORRECCION ARTISTICA PARA DIAGNOSTICO VISUAL'){throw 'Owner diagnosis permission changed'}
+          foreach($filename in @('spatial-grounding.json','grounded-director-8b.json')){
+            if(-not (Test-Path (Join-Path $env:RUNNER_TEMP "eldoria-prior-grounding/$filename"))){throw "MISSING_ORIGINAL_GROUNDED_EVIDENCE:$filename"}
+          }
+          if(-not (Test-Path (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json'))){throw 'MISSING_REAL_VISION_EVIDENCE'}
+          python -m py_compile tools/art-direction/director-control/strong_local_director.py tools/art-direction/director-control/selective_memory.py
+          if($LASTEXITCODE -ne 0){throw 'DIRECTOR_SELECTIVE_MODULE_SYNTAX_FAILED'}
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
               ForEach-Object {Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe'} |
               Where-Object {Test-Path $_} | Select-Object -First 1
           }
-          if(-not $o){throw 'Existing Ollama unavailable'}
-          "ELDORIA_OLLAMA_EXE=$o" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
-          $dir=Join-Path $env:USERPROFILE '.ollama\models'
-          if(-not (Test-Path $dir)){
-            $dir=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+          if(-not $exe){throw 'EXISTING_OLLAMA_NOT_FOUND'}
+          "ELDORIA_OLLAMA_EXE=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $models=Join-Path $env:USERPROFILE '.ollama\models'
+          if(-not (Test-Path $models)){
+            $models=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
               ForEach-Object {Join-Path $_.FullName '.ollama\models'} |
               Where-Object {Test-Path $_} | Select-Object -First 1
           }
-          if($dir -and (Test-Path $dir)){"ELDORIA_OLLAMA_MODELS=$dir" | Out-File $env:GITHUB_ENV -Append -Encoding utf8}
-          Write-Host ('PRECHECK_FREE_DISK_GB='+[math]::Round($free/1GB,1))
-      - name: Download only free Apache 2 licensed Qwen3 14B Q4 model from official Ollama registry
+          if($models){"ELDORIA_OLLAMA_MODELS=$models" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          }
+      - name: Compare genuine freeform director judgments with and without selective recall
         shell: powershell
         timeout-minutes: 32
-        run: |
-          $ErrorActionPreference='Stop'
-          $env:OLLAMA_HOST='127.0.0.1:11434'
-          $env:OLLAMA_NUM_PARALLEL='1'
-          $env:OLLAMA_MAX_LOADED_MODELS='1'
-          if($env:ELDORIA_OLLAMA_MODELS){$env:OLLAMA_MODELS=$env:ELDORIA_OLLAMA_MODELS}
-          $out=Join-Path $env:RUNNER_TEMP 'eldoria-14b-director-candidate'
-          New-Item -Path $out -ItemType Directory -Force | Out-Null
-          $server=$null
-          try {
-            $ready=$false
-            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
-            if(-not $ready){
-              $server=Start-Process -FilePath $env:ELDORIA_OLLAMA_EXE -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
-              for($i=0;$i -lt 30;$i++){
-                try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}
-              }
-            }
-            if(-not $ready){throw 'Previously installed Ollama not responding'}
-            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 15
-            if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){
-              Write-Host 'FETCHING_FREE_LOCAL_QWEN3_14B_9_3GB_NO_PAID_SERVICES'
-              & $env:ELDORIA_OLLAMA_EXE pull qwen3:14b
-              if($LASTEXITCODE -ne 0){throw 'Free model download failed; prior models untouched'}
-            }else{Write-Host 'REUSING_EXISTING_QWEN3_14B'}
-            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 15
-            $found=@($tags.models | Where-Object {$_.name -eq 'qwen3:14b'})
-            if($found.Count -ne 1){throw 'Expected Qwen3 14B model did not appear after pull'}
-            @{schema_version=1;name='qwen3:14b';size_bytes=$found[0].size;source='Ollama official Qwen3:14b';cost_eur=0;trained_weights=$false} |
-              ConvertTo-Json -Depth 5 | Out-File (Join-Path $out 'strong-model-presence.json') -Encoding utf8
-            Write-Host 'LOCAL_FREE_QWEN3_14B_CACHED_AVAILABLE'
-          } finally {
-            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
-          }
-      - name: Compare grounded 14B reasoning against real prior 8B visual diagnoses
-        shell: powershell
-        timeout-minutes: 13
         run: |
           $ErrorActionPreference='Stop'
           $env:OLLAMA_HOST='127.0.0.1:11434'
@@ -141,7 +103,9 @@ jobs:
               }
             }
             if(-not $ready){throw 'Local Ollama not responding'}
-            python tools/art-direction/director-control/strong_local_director.py --grounding (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json') --prior-vision (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json') --prior-director (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/grounded-director-8b.json') --out $out --model qwen3:14b
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
+            if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw 'EXISTING_QWEN14B_NOT_INSTALLED_NO_DOWNLOAD'}
+            python tools/art-direction/director-control/strong_local_director.py --grounding (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json') --prior-vision (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json') --prior-director (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/grounded-director-8b.json') --out $out --model qwen3:14b --selective-freeform-diagnostic
             if($LASTEXITCODE -ne 0){throw 'Local Qwen 14B director diagnosis failed; preserve evidence'}
           } finally {
             if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
@@ -150,7 +114,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-stronger-14b-local-director-verification
+          name: eldoria-14b-selective-freeform-director-validation
           path: ${{ runner.temp }}/eldoria-14b-director-candidate/
           if-no-files-found: warn
           retention-days: 30
