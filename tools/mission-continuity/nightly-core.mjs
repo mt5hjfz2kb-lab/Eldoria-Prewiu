@@ -5,11 +5,29 @@ export function localNight(now, zone = 'Europe/Madrid', start = 22, end = 8) {
   const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: '2-digit', hourCycle: 'h23' }).format(new Date(now)));
   return start > end ? hour >= start || hour < end : hour >= start && hour < end;
 }
+// The monitor's own Actions run is not an external job competing for Windows.
+export function otherActiveRuns(pages, ownRunId) {
+  if (!Array.isArray(pages) || pages.length !== 5 || !ownRunId) return true;
+  return pages.some(page => {
+    if (!Array.isArray(page?.workflow_runs) || !Number.isInteger(page?.total_count)) return true;
+    if (page.workflow_runs.length >= 100 || page.total_count > page.workflow_runs.length) return true;
+    const other = page.workflow_runs.filter(run => String(run.id) !== String(ownRunId));
+    return other.length > 0;
+  });
+}
 export function checkRetry({ policy, track, owner, latest, branchSha, globalBusy, failedJobs, log, now }) {
   if (!policy.enabled || !track.retry_enabled) return 'RETRY_DISABLED';
   if (!localNight(now, policy.zone, policy.window_start_hour, policy.window_end_hour)) return 'NOT_NIGHT';
   if (track.requires_owner && (!owner || owner.status !== 'active' || owner.branch !== track.branch)) return 'OWNER_NOT_ACTIVE';
-  if (track.requires_owner && track.runner_type === 'windows' && !owner.resources?.includes('windows-runner-heavy')) return 'WINDOWS_NOT_CLAIMED';
+  if (track.requires_owner && track.runner_type === 'windows') {
+    const resource = track.owner_resource || 'windows-runner-heavy';
+    if (!owner.resources?.includes(resource)) return 'WINDOWS_NOT_CLAIMED';
+    // The existing Unity lease is never transferred. This second branch has
+    // explicit owner authorization for retries ONLY if the runner is wholly idle.
+    if (resource !== 'windows-runner-heavy' && track.windows_delegation !== 'idle_only_no_lease_transfer') {
+      return 'NO_IDLE_WINDOWS_DELEGATION';
+    }
+  }
   if (!latest || !track.workflow_names.includes(latest.name)) return 'NO_ALLOWLISTED_RUN';
   if (latest.status !== 'completed' || latest.conclusion !== 'failure') return 'NOT_FAILED';
   if (!['push', 'workflow_dispatch'].includes(latest.event)) return 'UNAUTHORIZED_EVENT';
