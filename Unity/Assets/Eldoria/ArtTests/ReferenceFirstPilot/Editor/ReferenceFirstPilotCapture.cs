@@ -86,12 +86,15 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             Bounds hb = RenderBounds(hero);
             float groundY = hb.min.y - 0.15f;
 
+            var grassMaterial = StageMaterial("plateau-grass", shader, new Color(0.37f, 0.41f, 0.27f));
+            var waterMaterial = StageMaterial("lake-water", shader, new Color(0.075f, 0.16f, 0.23f));
+            var roadMaterial = StageMaterial("road-markers", shader, new Color(0.53f, 0.48f, 0.41f));
             var ground = Block("BLOCKOUT plateau (temporary)", stageGroup.transform,
                 new Vector3(hb.center.x, groundY - 0.55f, hb.center.z + 7f),
-                new Vector3(110f, 1.0f, 85f), shader, new Color(0.37f, 0.41f, 0.27f));
+                new Vector3(110f, 1.0f, 85f), grassMaterial);
             var water = Block("BLOCKOUT river/lake plane (temporary)", stageGroup.transform,
                 new Vector3(hb.center.x, groundY - 7.7f, hb.center.z + 5f),
-                new Vector3(220f, 0.25f, 200f), shader, new Color(0.075f, 0.16f, 0.23f));
+                new Vector3(220f, 0.25f, 200f), waterMaterial);
             ground.isStatic = false;
             water.isStatic = false;
 
@@ -102,7 +105,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                 float z = hb.center.z + 42f - n * 5.1f;
                 Block("BLOCKOUT stone route " + n, stageGroup.transform,
                     new Vector3(hb.center.x + 6.0f, groundY + 0.015f, z),
-                    new Vector3(6.2f, 0.08f, 4.6f), shader, new Color(0.53f, 0.48f, 0.41f));
+                    new Vector3(6.2f, 0.08f, 4.6f), roadMaterial);
                 roadCount++;
             }
 
@@ -245,17 +248,31 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             return go;
         }
 
+        private static Material StageMaterial(string key, Shader shader, Color color)
+        {
+            string path = Pilot + "/Materials/BLOCKOUT_" + key + ".mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+            material.name = "BLOCKOUT only - " + key;
+            material.shader = shader;
+            material.SetColor("_BaseColor", color);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
         private static GameObject Block(string name, Transform parent,
-            Vector3 position, Vector3 scale, Shader shader, Color color)
+            Vector3 position, Vector3 scale, Material material)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
             go.name = name;
             go.transform.SetParent(parent);
             go.transform.position = position;
             go.transform.localScale = scale;
-            var mat = new Material(shader) { name = "BLOCKOUT only - " + name };
-            mat.SetColor("_BaseColor", color);
-            go.GetComponent<Renderer>().sharedMaterial = mat;
+            go.GetComponent<Renderer>().sharedMaterial = material;
             return go;
         }
 
