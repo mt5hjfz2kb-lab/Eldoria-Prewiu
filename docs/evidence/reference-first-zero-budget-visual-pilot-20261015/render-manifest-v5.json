@@ -1,0 +1,20 @@
+{
+    "stage": "REAL_UNITY_V5_CAMERA_SHADER_STABILITY_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V5/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V5/Imported/LowerGateFamilyV1.glb",
+    "revision": "58cfa6f154a2aabbbe43a10bcbf71698c590453d",
+    "frames": [
+        "09-reference-framed-overview.png",
+        "10-reference-framed-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 37,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
