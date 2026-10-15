@@ -51,8 +51,8 @@ jobs:
         with:
           name: eldoria-modular-fortress-native-blender-38810636076
           run-id: 38810636076
-          github-token: \${{ secrets.GITHUB_TOKEN }}
-          path: \${{ runner.temp }}/eldoria-base63
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-base63
       - name: Produce exactly 63 distinct upgraded GLBs and 126 individual images
         shell: powershell
         run: |
@@ -67,7 +67,7 @@ jobs:
           if ($files.Count -ne 63) {throw "Source GLB count mismatch: $($files.Count)"}
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-individual-uplift.log'
           $stderr=Join-Path $env:RUNNER_TEMP 'eldoria-individual-uplift.stderr.log'
-          $proc=Start-Process -FilePath "\${{ steps.toolcheck.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$src,$dest) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $stderr
+          $proc=Start-Process -FilePath "${{ steps.toolcheck.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$src,$dest) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $stderr
           Get-Content $log -Tail 140 -ErrorAction SilentlyContinue
           Get-Content $stderr -Tail 50 -ErrorAction SilentlyContinue
           if ($proc.ExitCode -ne 0) { throw "Native Blender per-asset job exit $($proc.ExitCode)" }
@@ -79,10 +79,10 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-individual-quality-63-\${{ github.run_id }}
+          name: valoria-individual-quality-63-${{ github.run_id }}
           path: |
-            \${{ runner.temp }}/eldoria-upgrade63/**
-            \${{ runner.temp }}/eldoria-individual-uplift.log
-            \${{ runner.temp }}/eldoria-individual-uplift.stderr.log
+            ${{ runner.temp }}/eldoria-upgrade63/**
+            ${{ runner.temp }}/eldoria-individual-uplift.log
+            ${{ runner.temp }}/eldoria-individual-uplift.stderr.log
           if-no-files-found: warn
           retention-days: 30
