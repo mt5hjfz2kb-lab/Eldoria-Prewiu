@@ -1,0 +1,72 @@
+name: Eldoria local AI director candidate inventory
+on:
+  push:
+    branches: [diagnostic/valoria-ai-eyes-brain-20261015]
+    paths:
+      - '.github/workflows/eldoria-local-director-inventory.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local-candidates:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 7
+    steps:
+      - name: Detect installed local vision and reasoning models with no new downloads
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $o=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if(-not (Test-Path $o)){
+            $o=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if(-not $o){throw 'Previously installed Ollama unavailable'}
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $modelsRoot=Join-Path $env:USERPROFILE '.ollama\models'
+          if(-not (Test-Path $modelsRoot)){
+            $modelsRoot=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName '.ollama\models'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if($modelsRoot -and (Test-Path $modelsRoot)){$env:OLLAMA_MODELS=$modelsRoot}
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-local-art-director-model-inventory'
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          $server=$null
+          try {
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process -FilePath $o -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-out.log') -RedirectStandardError (Join-Path $out 'ollama-err.log')
+              for($i=0;$i -lt 30;$i++){
+                try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}
+              }
+            }
+            if(-not $ready){throw 'Previously installed local model service unavailable'}
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 15
+            $selected=@($tags.models | ForEach-Object {
+              [ordered]@{name=$_.name;size_gb=[math]::Round($_.size / 1GB,2);
+                parameter_size=$_.details.parameter_size;
+                quantization_level=$_.details.quantization_level;
+                family=$_.details.family}
+            })
+            $smi=Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
+            $gpu=if($smi){@(& $smi.Source --query-gpu=name,memory.total --format=csv,noheader,nounits)}else{@()}
+            $manifest=@{schema_version=1;mode='READ_ONLY_DISCOVERY';
+              previously_installed_models=$selected;gpu_information=$gpu;
+              new_models_downloaded=0;models_trained=0;art_approved=$false;
+              model_comparison_not_assumed=$true}
+            $manifest | ConvertTo-Json -Depth 12 | Out-File (Join-Path $out 'local-director-candidates.json') -Encoding utf8
+            Write-Host ('ELDORIA_CACHED_DIRECTOR_MODELS_DISCOVERED='+$selected.Count)
+            $selected | ForEach-Object {Write-Host ('CACHED_MODEL_NAME='+$_.name)}
+          } finally {
+            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-local-ai-director-candidates-readonly
+          path: ${{ runner.temp }}/eldoria-local-art-director-model-inventory/
+          if-no-files-found: warn
+          retention-days: 30
