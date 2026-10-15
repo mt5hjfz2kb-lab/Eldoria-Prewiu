@@ -25,6 +25,11 @@ jobs:
           run-id: 38701710879
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ runner.temp }}/eldoria-spatial
+      - name: Verify benchmark offline tests
+        shell: pwsh
+        run: |
+          python -m unittest discover -s tools/art-direction/director-control -p test_brain_memory_ab.py -v
+          if($LASTEXITCODE -ne 0){throw 'BRAIN_BENCHMARK_TESTS_FAILED'}
       - name: Start previously installed Ollama if needed
         shell: pwsh
         run: |
