@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {checkRetry} from './nightly-core.mjs';
+import {checkRetry, otherActiveRuns} from './nightly-core.mjs';
 
 const root=process.env.GITHUB_WORKSPACE||process.cwd();
 const policy=JSON.parse(fs.readFileSync(path.join(root,'pipeline/night-recovery-policy-v1.json'),'utf8'));
@@ -26,7 +26,7 @@ let globalBusy=true;
 try{
   const states=['in_progress','queued','pending','waiting','requested'];
   const pages=await Promise.all(states.map(s=>request('/actions/runs?status='+s+'&per_page=100')));
-  globalBusy=pages.some(p=>p.total_count>0 || (p.workflow_runs||[]).length===100);
+  globalBusy=otherActiveRuns(pages,process.env.GITHUB_RUN_ID);
 }catch(e){problems++;findings.push({track:'global',result:'CANNOT_VERIFY_RUNNER_IDLE',error:e.message});}
 for(const track of policy.tracks){
   const row={track:track.id,branch:track.branch,checked_at:now,dry_run:dryRun};
@@ -63,7 +63,7 @@ for(const track of policy.tracks){
         // Reconfirm exact branch HEAD and no concurrent work before mutating any job.
         const after=await request('/branches/'+track.branch.split('/').map(encodeURIComponent).join('/'));
         const busyPages=await Promise.all(['in_progress','queued','pending','waiting','requested'].map(s=>request('/actions/runs?status='+s+'&per_page=100')));
-        if(after.commit.sha!==branch.commit.sha||busyPages.some(p=>p.total_count>0||(p.workflow_runs||[]).length===100)){
+        if(after.commit.sha!==branch.commit.sha||otherActiveRuns(busyPages,process.env.GITHUB_RUN_ID)){
           row.result='PRE_DISPATCH_RACE_STOP';
         }else{
           await request('/actions/jobs/'+row.job_id+'/rerun',{method:'POST'});
