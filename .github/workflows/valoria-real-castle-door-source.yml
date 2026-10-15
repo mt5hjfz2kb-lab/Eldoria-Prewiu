@@ -1,0 +1,34 @@
+name: "[ART CC0 GATE] Genuine medieval castle door high quality 1K"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-real-castle-door-source.yml'
+      - 'tools/valoria-modular-fortress/collect_cc0_castle_door.py'
+permissions:
+  contents: read
+jobs:
+  source-single-public-domain-door:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download only public Poly Haven CC0 double wooden fortified door model at 1K
+        run: python3 tools/valoria-modular-fortress/collect_cc0_castle_door.py "$RUNNER_TEMP/eldoria-castle-door-cc0"
+      - name: Verify genuine licensed model source
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,os
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-castle-door-cc0'
+          d=json.loads((p/'official_cc0_models.json').read_text())
+          assert d['license']=='CC0' and d['cost_eur']==0
+          assert set(d['models'])=={'large_castle_door'}
+          assert any(z['name'].endswith(('.gltf','.glb')) for z in d['models']['large_castle_door']['files'])
+          print('CASTLE_GATE_CC0_MODEL_VALIDATED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-polyhaven-authentic-castle-door-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-castle-door-cc0/**
+          if-no-files-found: error
+          retention-days: 30
