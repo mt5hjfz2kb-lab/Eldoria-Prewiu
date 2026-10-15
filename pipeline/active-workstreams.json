@@ -180,7 +180,8 @@
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/**",
         "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/**",
-        "tools/reference-first-pilot/**"
+        "tools/reference-first-pilot/**",
+        ".github/workflows/reference-first-zero-budget-pilot.yml"
       ],
       "resources": [],
       "status": "active",
