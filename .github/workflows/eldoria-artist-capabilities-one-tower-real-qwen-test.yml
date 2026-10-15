@@ -1,0 +1,137 @@
+name: Eldoria integrated architect skills real Qwen Blender one-tower diagnostic
+on:
+  push:
+    branches:
+      - diagnostic/valoria-ai-eyes-brain-20261015
+    paths:
+      - '.github/workflows/eldoria-artist-capabilities-one-tower-real-qwen-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  original-qwen-artist-verified-tower-copy:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 48
+    steps:
+      - name: Use installed GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'PREINSTALLED_DESKTOP_GIT_MISSING'}
+            $folder=Split-Path $git;$env:PATH="$folder;$env:PATH";Add-Content $env:GITHUB_PATH $folder
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          ref: 6e11bf237e6009b7eb8484bcba2f0def35a07b5c
+          path: studio
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+            tools/art-direction/ARTIST_LEARNING_JOURNAL.md
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Strict source + local model preflight
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $source='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_SOURCE_SHA_MISMATCH'}
+          $b=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if($b){$exe=$b.Source}else{$exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $exe){throw 'INSTALLED_BLENDER_NOT_FOUND'}
+          "ELDORIA_BLENDER_BIN=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          python -m pip install --disable-pip-version-check --quiet pillow
+          if($LASTEXITCODE -ne 0){throw 'FREE_IMAGE_DEPENDENCY_MISSING'}
+          python -m py_compile studio/tools/art-direction/full-studio/artist_loop.py studio/tools/art-direction/full-studio/artist_capabilities_v1.py studio/tools/art-direction/full-studio/blender_toolbox.py
+          if($LASTEXITCODE -ne 0){throw 'CURRENT_ARTIST_CODE_INVALID'}
+      - name: Start installed Ollama and run one original Qwen visual art direction and Blender copy edit
+        shell: powershell
+        timeout-minutes: 40
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-integrated-artist-one-tower'
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if(-not $exe){throw 'PREINSTALLED_OLLAMA_MISSING'}
+          $models=Join-Path $env:USERPROFILE '.ollama/models'
+          if(-not (Test-Path $models)){
+            $models=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName '.ollama/models'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if($models){$env:OLLAMA_MODELS=$models}
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $env:OLLAMA_NUM_PARALLEL='1';$env:OLLAMA_MAX_LOADED_MODELS='1'
+          $env:ELDORIA_ARTIST_NUM_CTX='8192'
+          $server=$null
+          try{
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+              for($i=0;$i -lt 45;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+            }
+            if(-not $ready){throw 'LOCAL_OLLAMA_UNAVAILABLE'}
+            $available=@((Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20).models|ForEach-Object {$_.name})
+            if('qwen3-vl:4b-instruct' -notin $available){throw 'QWEN_VL_4B_NOT_INSTALLED'}
+            $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+            $argv=@('studio/tools/art-direction/full-studio/artist_loop.py',
+              '--brief','Improve the EXISTING inherited Valoria watchtower as an art director: choose a meaningful visible medieval architectural improvement to silhouette or structure guided by actual source camera, keep the door, stairs, roof, UV and original stone character unchanged; source-freeze original; no self approval',
+              '--source',$src,
+              '--reference','frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',
+              '--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
+              '--blender',$env:ELDORIA_BLENDER_BIN,
+              '--texture-root','studio',
+              '--model','qwen3-vl:4b-instruct',
+              '--phase','full',
+              '--asset-category','architecture',
+              '--max-cycles','1',
+              '--max-plan-attempts','2',
+              '--max-actions','4',
+              '--max-tokens','1850',
+              '--vision-max-edge','768',
+              '--frozen-original-asset-sha256','e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869',
+              '--out',(Join-Path $out 'art-output'))
+            & python @argv
+            if($LASTEXITCODE -ne 0){throw 'ONE_ORIGINAL_QWEN_ART_TRIAL_FAILED_REVIEW_EVIDENCE'}
+            if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_SOURCE_CHANGED'}
+          }finally{
+            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
+          }
+      - name: Preserve true model requests, geometry, original A/B and rejection reasons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-integrated-artist-one-tower-evidence
+          path: ${{ runner.temp }}/eldoria-integrated-artist-one-tower/
+          if-no-files-found: warn
+          retention-days: 30
