@@ -1,0 +1,33 @@
+name: "[ART TEXTURE] Official Poly Haven CC0 PBR source probe"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-pbr-source-probe.yml'
+      - 'tools/valoria-modular-fortress/download_polyhaven_pbr.py'
+permissions:
+  contents: read
+jobs:
+  cc0-material-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch CC0 maps at only 1K over official API
+        run: python3 tools/valoria-modular-fortress/download_polyhaven_pbr.py "$RUNNER_TEMP/eldoria-polyhaven-three"
+      - name: Verify no paid service and maps
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-polyhaven-three'
+          d=json.loads((p/'source_manifest.json').read_text())
+          assert d['license']=='CC0 1.0' and d['cost_eur']==0
+          for n in ('quarry_wall','rock_3','plastered_stone_wall'): assert d['maps'][n]['maps']
+          print('OFFICIAL_CC0_PBR_SOURCE_VERIFIED',sum(len(x['maps']) for x in d['maps'].values()))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-polyhaven-three/**
+          retention-days: 30
+          if-no-files-found: error
