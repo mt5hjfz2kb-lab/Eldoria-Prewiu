@@ -1,0 +1,24 @@
+name: "[ART INDIVIDUAL] 63 asset Python source sanity"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-63-individual-static.yml'
+      - 'tools/valoria-modular-fortress/individual_quality_uplift.py'
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax
+        run: python3 -m py_compile tools/valoria-modular-fortress/individual_quality_uplift.py
+      - name: Art gate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          txt=Path("tools/valoria-modular-fortress/individual_quality_uplift.py").read_text()
+          assert "target_minimum" in txt and "art_approved" in txt
+          assert "individual_front" in txt and "individual_rear" in txt
+          assert "compose" not in txt.lower()
+          print("INDIVIDUAL_ASSET_SOURCE_PASS")
+          PY
