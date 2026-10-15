@@ -9,6 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync, spawnSync } from 'node:child_process';
 import http from 'node:http';
+import { createHash } from 'node:crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(__dirname, '..');
@@ -83,8 +84,69 @@ function productionPause() {
       state.owner_production_pause?.active === false ? 'inactive' : 'unknown';
   } catch { return 'unknown'; }
 }
+function recoveryCheckpoint() {
+  // Existing bootstrap is the sole checkpoint; no service, second registry or execution bus.
+  const source = readFile('tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md') || '';
+  const section = source.split('<!-- ELDORIA_RECOVERY_CHECKPOINT_START -->')[1]?.split('<!-- ELDORIA_RECOVERY_CHECKPOINT_END -->')[0];
+  const encoded = section?.match(/```json\s*([\s\S]*?)```/)?.[1];
+  if (!encoded) return {status: 'checkpoint_missing', next_action: 'Read live main bootstrap through the connected GitHub tool.'};
+  let checkpoint;
+  try {
+    checkpoint = JSON.parse(encoded);
+    if (checkpoint.schema_version !== 1 || !Array.isArray(checkpoint.inputs) ||
+        !Array.isArray(checkpoint.capabilities) || !checkpoint.next_action?.id) throw new Error();
+  } catch {
+    return {status: 'checkpoint_invalid', next_action: 'Recover valid bootstrap from live main; do not execute from malformed state.'};
+  }
+  let inventory = null;
+  let inventoryStatus = 'not_supplied';
+  const inventoryPath = valueAfter('--tool-inventory');
+  if (inventoryPath) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(path.resolve(inventoryPath), 'utf8'));
+      const names = Array.isArray(parsed) ? parsed : parsed.tools;
+      if (!Array.isArray(names) || !names.every(n => typeof n === 'string')) throw new Error();
+      inventory = new Set(names);
+      inventoryStatus = 'supplied_exposure_only';
+    } catch { inventoryStatus = 'invalid'; }
+  }
+  const inputs = checkpoint.inputs.map(input => {
+    if (typeof input.path !== 'string' || path.isAbsolute(input.path) ||
+        input.path.split(/[\\/]/).includes('..') || !/^[a-f0-9]{40}$/.test(input.git_blob_sha || '')) {
+      return {path: input.path, status: 'invalid_checkpoint_input', repeat_gate: 'review_required'};
+    }
+    let raw;
+    try { raw = fs.readFileSync(path.join(root, input.path)); }
+    catch { return {...input, status: 'not_present_on_this_checkout', repeat_gate: 'retrieve_exact_blob_before_deciding'}; }
+    const actual = createHash('sha1').update(`blob ${raw.length}\0`).update(raw).digest('hex');
+    return {...input, actual_git_blob_sha: actual,
+      status: actual === input.git_blob_sha ? 'unchanged' : 'changed',
+      repeat_gate: actual === input.git_blob_sha ? 'reuse_only_previously_certified_scope' : 'review_affected_gate'};
+  });
+  const interfaces = checkpoint.capabilities.map(capability => {
+    const names = capability.inventory_tools || [];
+    return {key: capability.key,
+      exposure_now: !names.length ? 'no_callable_interface_recorded' :
+        !inventory ? 'not_tested' : names.every(n => inventory.has(n)) ? 'available_in_inventory_only' : 'unavailable_in_this_session',
+      missing_tools: inventory ? names.filter(n => !inventory.has(n)) : [],
+      verified_now: false,
+      last_recorded_observation: capability.last_observation};
+  });
+  return {status: 'checkpoint_recovered', checkpoint_is_historical: true,
+    repository: checkpoint.repository, branch: checkpoint.branch,
+    last_verified_source_head: checkpoint.last_verified_source_head,
+    recorded_at: checkpoint.recorded_at, mission_status: checkpoint.mission_status,
+    next_action: checkpoint.next_action, last_working_execution: checkpoint.last_working_execution,
+    selective_memory_qwen_validated: checkpoint.selective_memory_qwen_validated === true,
+    inputs, completed_gates: checkpoint.completed_gates,
+    blocked_operations: checkpoint.blocked_operations, tool_inventory_status: inventoryStatus,
+    interfaces, windows_live_verified_by_this_process: false,
+    evidence: checkpoint.evidence,
+    required_live_reads: ['main/AGENTS.md', 'assigned branch HEAD', 'active workstreams', 'relevant Actions jobs/artifacts'],
+    conclusion: 'Recovered pending work and historical evidence only. Tool exposure is not authentication, execution approval or remote health.'};
+}
 const report = {
-  schema_version: 1,
+  schema_version: 2,
   purpose: 'Eldoria agent start: capability discovery without execution',
   inspected_at: new Date().toISOString(),
   repository: 'mt5hjfz2kb-lab/Eldoria-Prewiu',
@@ -106,6 +168,7 @@ const report = {
     ollama_http: await ollamaLocalVersion()
   },
   owner_production_pause: productionPause(),
+  recovery: recoveryCheckpoint(),
   required_follow_up: [
     'Read live main/AGENTS.md, HEAD, and active workstreams before doing anything else.',
     'In a ChatGPT session: separately verify its connected GitHub tools; this process cannot see ChatGPT connectors.',
@@ -116,3 +179,4 @@ const report = {
   conclusion: 'Machine-local facts and repository route declarations only; NOT proof of remote Windows availability.'
 };
 process.stdout.write(JSON.stringify(report, null, 2) + '\n');
+
