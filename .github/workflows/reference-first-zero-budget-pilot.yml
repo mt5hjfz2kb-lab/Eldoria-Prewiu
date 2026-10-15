@@ -25,6 +25,19 @@ jobs:
     timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            Unity/ProjectSettings/ProjectVersion.txt
+            Unity/Packages/manifest.json
+            Unity/Assets/Eldoria/ArtTests/OriginalHero
+            Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot
+            Unity/Assets/Eldoria/Resources/WorldInventory/Tree01A.prefab
+            Unity/Assets/Eldoria/Resources/WorldInventory/Rock01.prefab
+            Unity/Assets/Eldoria/Resources/Valoria/SM_Cliffs_01.prefab
+            tools/reference-first-pilot
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
