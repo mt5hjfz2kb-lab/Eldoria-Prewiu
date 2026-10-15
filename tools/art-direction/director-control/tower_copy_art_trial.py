@@ -69,6 +69,56 @@ def ask_local(model,prompt):
             "raw_response":parsed,"direction":doc,
             "seconds":round(time.monotonic()-t,2)}
 
+def camera_protection_preflight(action,review_json):
+    """Conservatively reject AI geometry whose WORLD bbox projects over protected regions.
+
+    Uses the existing studio WORLD AABB calculator and actual locked review
+    camera, without making or moving geometry. It does NOT approve aesthetics.
+    """
+    import itertools, math
+    from architectural_world_placement_gate import _aabb_from_original_art
+    review=local_json(review_json)
+    camera=review["camera"]
+    render=review["render"]
+    location=camera["location"]; target=camera["target"]
+    def sub(x,y):return [x[i]-y[i] for i in range(3)]
+    def cross(a,b):return [a[1]*b[2]-a[2]*b[1],
+                           a[2]*b[0]-a[0]*b[2],
+                           a[0]*b[1]-a[1]*b[0]]
+    def norm(v):
+        n=math.sqrt(sum(x*x for x in v))
+        if n<1e-9:raise ValueError("INVALID_CAMERA_VECTOR")
+        return [x/n for x in v]
+    def dot(a,b):return sum(x*y for x,y in zip(a,b))
+    forward=norm(sub(target,location))
+    right=norm(cross(forward,[0,0,1]))
+    up=norm(cross(right,forward))
+    W,H=render["width"],render["height"];ortho=camera["ortho_scale"]
+    low,high=_aabb_from_original_art(action)
+    points=[]
+    for corner in itertools.product((0,1),repeat=3):
+        world=[high[i] if corner[i] else low[i] for i in range(3)]
+        vec=sub(world,target)
+        points.append((W*.5+dot(vec,right)*H/ortho,
+                       H*.5-dot(vec,up)*H/ortho))
+    bounds=[min(p[0] for p in points),min(p[1] for p in points),
+            max(p[0] for p in points),max(p[1] for p in points)]
+    intersects=[]
+    for region in review.get("protected_screen_regions",[]):
+        a,b,c,d=region["box_px"]
+        ix=max(0,min(bounds[2],c)-max(bounds[0],a))
+        iy=max(0,min(bounds[3],d)-max(bounds[1],b))
+        if ix*iy>4:
+            intersects.append({"name":region["name"],"overlap_pixels_upper_bound":round(ix*iy,2),
+                               "protected_box_px":region["box_px"]})
+    if intersects:
+        raise ValueError("PROPOSED_WORLD_GEOMETRY_PROJECTS_OVER_PROTECTED_ENTRANCE_OR_STAIRS: "+
+                         json.dumps({"new_projected_box_px":[round(x) for x in bounds],
+                                     "conflicts":intersects},ensure_ascii=False))
+    return {"camera_type":"LOCKED_ORTHOGRAPHIC","candidate_bbox_px":[round(x,2) for x in bounds],
+            "protected_regions_intersected":[],"original_model_modified":False,
+            "independent_artistic_approval":False}
+
 def main():
     p=argparse.ArgumentParser()
     for k in ("original","reference","spatial","vision","studio","blender","out","review"):
@@ -234,6 +284,16 @@ def main():
        "joint, such as joinery or a support detail. Preserve door, staircase, "
        "railings, roof type and original UV. The building is only about "
        "2.45x2.65x3.27 metres. Use verified WORLD +Z up, NOT GLB local Y. "
+       "The last REAL Qwen3:14B addition successfully built but was REJECTED: "
+       "a giant box near the front-facing doorway changed 35.32% of the protected "
+       "door review region (max 18%). DO NOT use the previous x=0.8, y=-0.6, "
+       "z=1.2 and scales; choose a DIFFERENT original placement on the EMPTY "
+       "WORLD -Y exterior wall, on the left side of the fixed front 3/4 render. "
+       "Camera pixel coordinates: protected door [495,315,575,478], "
+       "protected staircase [600,180,760,458]; avoid both when the new "
+       "geometry projects into the locked review camera. "
+       "The projected candidate AABB will be PRE-REJECTED without running "
+       "Blender if it overlaps a protected box. "
        "New component must be a closed 3D volume, physically sizeable and "
        "situated at an existing exterior X/Y surface; no centrally buried "
        "filler, no hovering component, no tiny thin decoration. "
@@ -249,6 +309,8 @@ def main():
                        "triangles":m["evaluated_triangles"]}
                       for m in source_inventory[:3]],
       "source_materials":geo["mesh_provenance"],
+      "locked_review_camera":local_json(a.review)["camera"],
+      "locked_review_protected_boxes":local_json(a.review)["protected_screen_regions"],
       "eyes_8b_visual_hypotheses":[
           {"view":str(v["view"]),"hypothesis":str(v["text"])[:360]}
           for v in caps],
@@ -324,6 +386,8 @@ def main():
             verify_source_plan(doc,source_inventory)
             verify_volume_and_complexity(doc,source_inventory)
             spatial_gate=reject_obviously_bad_component_placement(doc,source_inventory)
+            projection_gate=camera_protection_preflight(doc["actions"][0],a.review)
+            spatial_gate["locked_camera_protection"]=projection_gate
             (trial_root/"spatial-placement-proof.json").write_text(
                 json.dumps(spatial_gate,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             plan_file=trial_root/"artist-plan.json"
