@@ -47,8 +47,14 @@ jobs:
           MISSION_GUARD_WRITE_ISSUES: 'false'
           MISSION_GUARD_OUTPUT: mission-continuity-report.json
         run: node tools/mission-continuity/watch.mjs
+      - name: Dry-run bounded nightly recovery without dispatching jobs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NIGHTLY_RECOVERY_DRY_RUN: 'true'
+          NIGHTLY_RECOVERY_OUTPUT: night-recovery-report.json
+        run: node tools/mission-continuity/nightly-recovery.mjs
       - name: Verify read-only monitor report
-        run: node -e "const x=require('./mission-continuity-report.json'); if(x.errors.length || x.reports.length!==1 || x.reports[0].state==='MONITOR_ERROR')process.exit(1)"
+        run: node -e "const x=require('./mission-continuity-report.json'); if(x.errors.length || x.reports.length!==3 || x.reports.some(r=>r.state==='MONITOR_ERROR'))process.exit(1)"
 
   observe:
     if: github.event_name != 'pull_request'
@@ -71,7 +77,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test decisions before live issue updates
-        run: node --test tools/mission-continuity/core.test.mjs
+        run: node --test tools/mission-continuity/core.test.mjs tools/mission-continuity/nightly-core.test.mjs
       - name: Inspect existing owners and recoverable runs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
