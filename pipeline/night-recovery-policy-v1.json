@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "zone": "Europe/Madrid",
+  "window_start_hour": 22,
+  "window_end_hour": 8,
+  "minimum_idle_minutes": 20,
+  "maximum_run_attempts": 1,
+  "purpose": "Restart ONLY a failed job with a proven transient GitHub infrastructure error; never resume a ChatGPT session, repair source, approve art, or schedule new production.",
+  "tracks": [
+    {
+      "id": "reference-first-zero-budget-visual-pilot-20261015",
+      "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+      "workflow_names": [
+        "[PILOT] Valoria reference-first isolated Unity captures"
+      ],
+      "retry_enabled": true,
+      "requires_owner": true,
+      "runner_type": "windows"
+    },
+    {
+      "id": "valoria-63-individual-quality-uplift-20261015",
+      "branch": "art/valoria-63-individual-quality-uplift-20261015",
+      "workflow_names": [
+        "[ART REVIEW] Qwen VL independent visual review for all 63 assets",
+        "[ART DONOR] Genuine Blender per-asset A-B using Quaternius CC0 models"
+      ],
+      "retry_enabled": false,
+      "requires_owner": true,
+      "runner_type": "windows"
+    }
+  ]
+}
