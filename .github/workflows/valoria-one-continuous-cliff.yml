@@ -1,0 +1,74 @@
+name: "[ART GEO V6] Connected authentic cliff panel, no stacked stone bricks"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-one-continuous-cliff.yml'
+      - 'tools/valoria-modular-fortress/cliff_continuous_geology_v6.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-single-continuous-cliff-blender
+  cancel-in-progress: false
+jobs:
+  geological-quality-uplift:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Locate installed Git and Blender
+        shell: powershell
+        id: deps
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Missing Git'}
+            $dir=Split-Path $git;Add-Content $env:GITHUB_PATH $dir;$env:PATH="$dir;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Missing Blender'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-five-rock-face-38824169625
+          run-id: 38824169625
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/continuous-cliff-donor
+      - name: Native Blender continuous independent geological face
+        shell: powershell
+        run: |
+          $source=Join-Path $env:RUNNER_TEMP 'continuous-cliff-donor\eldoria-geology-five\glb'
+          $dest=Join-Path $env:RUNNER_TEMP 'eldoria-continuous-cliff-v6'
+          if(-not(Test-Path (Join-Path $source 'cliff_rock_column.glb'))){throw 'CC0 donor cliff source missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/cliff_continuous_geology_v6.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned cliff code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-cliff-v6-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-cliff-v6.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-cliff-v6.err'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$source,$dest) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 80 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 45 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Single cliff failed $($proc.ExitCode)"}
+          foreach($required in @('glb\cliff_rock_column.glb','before\cliff_rock_column.png','after\cliff_rock_column.png')){
+            if(-not(Test-Path (Join-Path $dest $required))){throw "Missing $required"}
+          }
+      - name: Archive no-composition continuous CC0-PBR cliff candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-continuous-geologic-cliff-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-continuous-cliff-v6/**
+            ${{ runner.temp }}/eldoria-cliff-v6.log
+            ${{ runner.temp }}/eldoria-cliff-v6.err
+          if-no-files-found: warn
+          retention-days: 30
