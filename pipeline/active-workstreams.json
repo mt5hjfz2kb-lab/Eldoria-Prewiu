@@ -79,8 +79,7 @@
         "pipeline/valoria-bastion1-candidate-build-request.json"
       ],
       "resources": [
-        "valoria-player-scene",
-        "windows-runner-heavy"
+        "valoria-player-scene"
       ],
       "status": "active",
       "claimed_at": "2026-10-12T19:16:58.288Z",
@@ -134,6 +133,13 @@
         "ubuntu_qa_status": "completed",
         "own_active_jobs": 0,
         "reservations_retained_for_bastion_integration": true
+      },
+      "owner_paused_runner_for_reference_pilot": {
+        "paused_by": "owner explicit authorization 2026-10-15 (continue pilot; may pause other work for PC)",
+        "temporary_resource": "windows-runner-heavy",
+        "delegated_to": "reference-first-zero-budget-visual-pilot-20261015",
+        "prior_resource_state": "reserved_for_bastion_integration",
+        "resume_requires": "Release of pilot lease and explicit coordination; do not infer Bastion workstream was closed"
       }
     },
     {
@@ -181,18 +187,21 @@
         "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/**",
         "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/**",
         "tools/reference-first-pilot/**",
-        ".github/workflows/reference-first-zero-budget-pilot.yml"
+        ".github/workflows/reference-first-zero-budget-pilot.yml",
+        ".github/workflows/eldoria-reference-first-zero-budget-pilot.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "status": "active",
       "claimed_at": "2026-10-15",
       "base_main_sha": "aa1a642ed32f6840dec1bd46929fd9163ce0ef2b",
       "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
       "art_production_routing": "isolated-lookdev-only-no-promotion",
-      "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact.",
-      "dependency": "Valoria production, world4x, Bastion1 and Windows runner remain under other claims; do not edit their paths, launch heavy Windows or publish.",
-      "phase": "Reference analysis and isolated Unity editor capture builder; no art approval asserted",
-      "next": "Create scene-only nonproduction capture tool with existing models, stage same-camera PNG, and evaluate image against approved reference after compatible runner is available."
+      "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact. Subsequent owner message authorizes pausing other work to use PC for the pilot.",
+      "dependency": "Bastion/4X/world work remains paused, preservation mandatory; temporary exclusive Windows lease explicitly handed from Bastion, no publication or main Unity content.",
+      "phase": "Stage and execute reference-first Unity-only A/B lookdev on existing assets; no changes to player scenes",
+      "next": "Run one Unity 6000.3.23f1 isolated genuine render, inspect artifact PNG, iterate visually then restore Windows lease"
     }
   ],
   "history": [
