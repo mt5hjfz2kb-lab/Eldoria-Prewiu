@@ -24,6 +24,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
         private const string TreePath = "Assets/Eldoria/Resources/WorldInventory/Tree01A.prefab";
         private const string CliffPath = "Assets/Eldoria/Resources/Valoria/SM_Cliffs_01.prefab";
         private const string RockPath = "Assets/Eldoria/Resources/WorldInventory/Rock01.prefab";
+        private const string GatePath = "Assets/Eldoria/Resources/Valoria/Stone_Gate.prefab";
+        private const string WallPath = "Assets/Eldoria/Resources/Valoria/Stone_Wall.prefab";
         private const int CaptureWidth = 1536;
         private const int CaptureHeight = 1024;
 
@@ -35,10 +37,14 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             public string heroPath = HeroPath;
             public string treePath = TreePath;
             public string cliffPath = CliffPath;
+            public string gatePath = GatePath;
+            public string wallPath = WallPath;
             public int heroRenderers;
             public int treeInstances;
             public int cliffInstances;
             public int rockInstances;
+            public int gatewayInstances;
+            public int wallInstances;
             public int placeholderRoadTiles;
             public int width = CaptureWidth;
             public int height = CaptureHeight;
@@ -57,6 +63,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             var treeAsset = MustLoad(TreePath);
             var cliffAsset = MustLoad(CliffPath);
             var rockAsset = MustLoad(RockPath);
+            var gateAsset = MustLoad(GatePath);
+            var wallAsset = MustLoad(WallPath);
             var shader = Shader.Find("Universal Render Pipeline/Lit");
             if (shader == null)
                 throw new InvalidOperationException("URP Lit unavailable. Do not modify global render settings as a workaround.");
@@ -73,6 +81,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             stageGroup.transform.SetParent(group.transform);
             var vegetationGroup = new GameObject("Reusable candidate prefabs — license pending");
             vegetationGroup.transform.SetParent(group.transform);
+            var fortificationGroup = new GameObject("Existing gate and wall prefabs — composition proof, license pending");
+            fortificationGroup.transform.SetParent(group.transform);
 
             var hero = (GameObject)PrefabUtility.InstantiatePrefab(heroAsset);
             if (hero == null)
@@ -88,7 +98,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
 
             var grassMaterial = StageMaterial("plateau-grass", shader, new Color(0.37f, 0.41f, 0.27f));
             var waterMaterial = StageMaterial("lake-water", shader, new Color(0.075f, 0.16f, 0.23f));
-            var roadMaterial = StageMaterial("road-markers", shader, new Color(0.53f, 0.48f, 0.41f));
+            var roadMaterial = StageMaterial("road-markers", shader, new Color(0.88f, 0.80f, 0.71f));
+            var cliffRockMaterial = StageMaterial("cliff-rock", shader, new Color(.82f,.78f,.72f));
             var ground = Block("BLOCKOUT plateau (temporary)", stageGroup.transform,
                 new Vector3(hb.center.x, groundY - 0.55f, hb.center.z + 7f),
                 new Vector3(110f, 1.0f, 85f), grassMaterial);
@@ -105,7 +116,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                 float z = hb.center.z + 42f - n * 5.1f;
                 Block("BLOCKOUT stone route " + n, stageGroup.transform,
                     new Vector3(hb.center.x + 6.0f, groundY + 0.015f, z),
-                    new Vector3(6.2f, 0.08f, 4.6f), roadMaterial);
+                    new Vector3(6.2f, 0.08f, 5.05f), roadMaterial);
                 roadCount++;
             }
 
@@ -129,8 +140,16 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                                   : hb.center.x + (i % 2 == 0 ? -53f : 53f);
                 float z = onFront ? hb.center.z + 48f
                                   : hb.center.z - 39f + (i - 8) * 13f;
-                PlaceRealAsset(cliffAsset, vegetationGroup.transform, "Cliff source " + i,
+                var cliff = PlaceRealAsset(cliffAsset, vegetationGroup.transform, "Cliff source " + i,
                     x, z, groundY - 6.6f, 12.0f + i % 3, i * 21f);
+                // Only the LOOKDEV instance receives the rock material; the source prefab is immutable.
+                // The former bright-green/high-key imported hill texture overwhelms the medieval frame.
+                foreach (var rr in cliff.GetComponentsInChildren<Renderer>(true))
+                {
+                    var slots = rr.sharedMaterials;
+                    for (int k = 0; k < slots.Length; k++) slots[k] = cliffRockMaterial;
+                    rr.sharedMaterials = slots;
+                }
                 cliffCount++;
             }
 
@@ -146,6 +165,32 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             }
             if (treeCount < 12 || cliffCount < 10 || rockCount < 6)
                 throw new InvalidOperationException("Real source environment did not reach pilot staging minimum.");
+
+            // Make the fortress readable as a fortified settlement rather than an isolated townhouse.
+            // Genuine existing gate/wall prefabs, not new meshes invented for the showcase.
+            int gatewayCount = 0;
+            int wallCount = 0;
+            PlaceRealAsset(gateAsset, fortificationGroup.transform, "Lower gate — retained prefab source",
+                hb.center.x + 6f, hb.center.z + 32f, groundY, 17f, 0f);
+            gatewayCount++;
+            PlaceRealAsset(gateAsset, fortificationGroup.transform, "Upper inner gate — retained prefab source",
+                hb.center.x + 6f, hb.center.z - 24f, groundY, 12f, 0f);
+            gatewayCount++;
+            var wallPositions = new Vector3[] {
+                new Vector3(hb.center.x - 20f,groundY,hb.center.z + 29f),
+                new Vector3(hb.center.x + 32f,groundY,hb.center.z + 29f),
+                new Vector3(hb.center.x - 24f,groundY,hb.center.z - 21f),
+                new Vector3(hb.center.x + 31f,groundY,hb.center.z - 21f)
+            };
+            for (int w = 0; w < wallPositions.Length; w++)
+            {
+                var p = wallPositions[w];
+                PlaceRealAsset(wallAsset, fortificationGroup.transform, "Stone curtain wall source " + w,
+                    p.x, p.z, p.y, 9.8f, w < 2 ? 0f : 180f);
+                wallCount++;
+            }
+            if (gatewayCount < 2 || wallCount < 4)
+                throw new InvalidOperationException("Missing source fortification placement.");
 
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.48f, .53f, .62f);
@@ -187,6 +232,8 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
                 treeInstances = treeCount,
                 cliffInstances = cliffCount,
                 rockInstances = rockCount,
+                gatewayInstances = gatewayCount,
+                wallInstances = wallCount,
                 placeholderRoadTiles = roadCount,
                 captures = new[] {"01-wide-camera.png", "02-main-architecture.png"},
                 sourceCommit = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "UNKNOWN_LOCAL_SOURCE"
@@ -196,6 +243,7 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             Debug.Log("REFERENCE_FIRST_PILOT_RENDERED: " + output
                 + " heroMeshes=" + heroRenderers + " trees=" + treeCount
                 + " cliffs=" + cliffCount + " rocks=" + rockCount
+                + " gates=" + gatewayCount + " curtainWalls=" + wallCount
                 + " ART_APPROVED=false");
         }
 
@@ -260,6 +308,18 @@ namespace Eldoria.EditorTools.ReferenceFirstPilot
             material.name = "BLOCKOUT only - " + key;
             material.shader = shader;
             material.SetColor("_BaseColor", color);
+            string albedoName =
+                key == "plateau-grass" ? "ground_albedo.png" :
+                key == "road-markers" ? "stone_albedo.png" :
+                key == "cliff-rock" ? "rock_albedo.png" : null;
+            if (albedoName != null)
+            {
+                var texturePath = "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/" + albedoName;
+                var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+                if (texture == null) throw new FileNotFoundException("Existing authored PBR source texture missing: " + texturePath);
+                material.SetTexture("_BaseMap", texture);
+                material.SetTextureScale("_BaseMap", key == "cliff-rock" ? new Vector2(1.25f,1.25f) : new Vector2(2.7f,2.7f));
+            }
             EditorUtility.SetDirty(material);
             return material;
         }
