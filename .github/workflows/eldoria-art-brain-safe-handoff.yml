@@ -1,0 +1,82 @@
+name: Eldoria final grounded director evidence handoff
+on:
+  push:
+    branches: [diagnostic/valoria-ai-eyes-brain-20261015]
+    paths:
+      - '.github/workflows/eldoria-art-brain-safe-handoff.yml'
+      - 'tools/art-direction/director-control/build_diagnostic_handoff.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  closed-loop-no-edit-gate:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Use previously installed GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Preinstalled Git unavailable'}
+            $folder=Split-Path $git
+            $env:PATH="$folder;$env:PATH"
+            Add-Content $env:GITHUB_PATH $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/director-control
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-eyes-brain-4b-8b-original-unchanged
+          run-id: 38699407600
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/brain-old-vision
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-spatial-grounded-art-director-4b-8b
+          run-id: 38701710879
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/brain-measured-geometry
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-14b-roof-orientation-epistemic-check
+          run-id: 38705235631
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/brain-strong-director
+      - name: Verify source provenance and enforce safe 14B handoff
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $base=$env:RUNNER_TEMP
+          $out=Join-Path $base 'eldoria-closed-loop-handoff'
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          python -m unittest discover -s tools/art-direction/director-control -p 'test_evidence_gate.py' -v
+          if($LASTEXITCODE -ne 0){throw 'Fail-closed independent director gate tests failed'}
+          python tools/art-direction/director-control/build_diagnostic_handoff.py --grounding (Join-Path $base 'brain-measured-geometry/spatial-grounding.json') --observation (Join-Path $base 'brain-old-vision/vision-observation.json') --director (Join-Path $base 'brain-strong-director/qwen3-14b-roof-independent-correction.json') --out (Join-Path $out 'director-no-edit-handoff.json')
+          if($LASTEXITCODE -ne 0){throw 'Brain provenance cannot be transferred to safe action gate'}
+          python tools/art-direction/director-control/evidence_gate.py --proposal (Join-Path $out 'director-no-edit-handoff.json') --grounding (Join-Path $base 'brain-measured-geometry/spatial-grounding.json') --observation (Join-Path $base 'brain-old-vision/vision-observation.json') --out (Join-Path $out 'independent-evidence-gate-result.json')
+          if($LASTEXITCODE -ne 0){throw 'Independent brain safety gate rejected handoff'}
+          $gate=Get-Content (Join-Path $out 'independent-evidence-gate-result.json') -Raw | ConvertFrom-Json
+          if($gate.can_edit_blender -or $gate.art_approved){throw 'INVALID ART APPROVAL OR EDIT AUTHORIZATION'}
+          Write-Host 'ELDORIA_EYES_WORLD_GEOMETRY_STRONGER_BRAIN_NO_EDIT_HANDOFF_VERIFIED'
+      - name: Preserve end-to-end independent safe handoff
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-14b-brain-to-artist-safe-handoff
+          path: ${{ runner.temp }}/eldoria-closed-loop-handoff/
+          if-no-files-found: warn
+          retention-days: 30
