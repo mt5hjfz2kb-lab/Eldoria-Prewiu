@@ -1,0 +1,73 @@
+name: "[ART EVERGREEN] Three authentic denser conifers CC0 individual A-B"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-conifers-3-dense.yml'
+      - 'tools/valoria-modular-fortress/conifers_denser_foliage.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-three-independent-evergreens
+  cancel-in-progress: false
+jobs:
+  artist-pines:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - name: Native installed tools
+        shell: powershell
+        id: exec
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'No Blender'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-12-independent-blender-v4-38819524063
+          run-id: 38819524063
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/evergreen-cc0-original
+      - name: Blender conifer foliage + 3 independent A-B previews
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'evergreen-cc0-original\eldoria-individual-cc0-v4\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-dense-pines'
+          if(-not(Test-Path (Join-Path $src 'pine_small.glb'))){throw 'Original Quaternius CC0 donor missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/conifers_denser_foliage.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned conifer script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-pines-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-pines.log';$err=Join-Path $env:RUNNER_TEMP 'eldoria-pines.err'
+          $proc=Start-Process -FilePath "${{ steps.exec.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 30 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Conifer Blender exit $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            if((Get-ChildItem (Join-Path $out $folder) -File).Count -ne 3){throw "Three pine previews required: $folder"}
+          }
+      - name: Archive each individual pine
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-3-denser-cc0-pines-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-real-dense-pines/**
+            ${{ runner.temp }}/eldoria-pines.log
+            ${{ runner.temp }}/eldoria-pines.err
+          retention-days: 30
+          if-no-files-found: warn
