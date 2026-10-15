@@ -87,3 +87,678 @@
 - **Pendiente y no validado:** realizar prueba real Qwen3 14B de las tres variantes (sin memoria, siete lecciones, memoria selectiva) sobre la misma evidencia congelada y un conjunto reservado de afirmaciones nuevas. Guardar respuestas crudas, hashes del contexto exacto, selecciones, latencia, aciertos y regresiones; bloquear promoción si existe una sola regresión con respecto a la variante sin memoria. No modificar los resultados V1/V2.
 - En esta sesión, la plataforma **bloqueó expresamente** dos operaciones GitHub de creación de nuevos archivos para pruebas y benchmark (`mcp__GitHub__create_file`; una por controles de seguridad y otra por no poder determinar su estado de seguridad). No se reintentaron por vías alternativas para eludir el control. Esto es **un impedimento del lanzamiento de la validación**, no evidencia de fallo de conexión al runner Windows, que continúa históricamente demostrado.
 - **Decisión vigente:** `SELECTIVE_MEMORY_ROUTING_IMPLEMENTED`; `SELECTIVE_MEMORY_QWEN_AB_VALIDATED=false`; `ART_APPROVED=false`; `CALIBRATION_VALIDATED=false`. La producción artística sigue pausada; no reclamar mejora de calidad hasta evidencia Qwen y revisión artística independientes.
+
+## Misión prioritaria de control operativo — resultado PARCIAL, 2026-10-15
+
+**Esta sección prevalece sobre cualquier cierre diagnóstico anterior:** comparación selectiva Qwen PENDIENTE por rechazo de seguridad externo. El protocolo de continuidad sí se ha ampliado y comprobado. No se ha ejecutado producción, Blender ni una nueva inferencia en esta misión.
+
+### A. Vías comprobadas en esta sesión
+
+| Vía | Evidencia real / límite |
+|---|---|
+| GitHub lectura | Lecturas reales de repo, archivos, refs Git, runs, jobs, logs y artefacto. HEAD diagnóstico al inicio `4a6240fd9e3e87155a850479c699dd5aca41cb86`; main inicial `6ba6faef6cf9b18719aeb4b67f804cb713899dab`. |
+| GitHub escritura | Claim aditivo de continuidad `3284d912de9f80c88169a4c2249bc4c4a14b447d`, script `6a55fbabf1e3cc162c0ce892332c95a7b9f47fff`, bootstrap `9eaaa927275539c9045799554aa7c7e7f3c8ca09`. Esto no elimina ni autoriza los rechazos previos. |
+| Git público desde terminal Linux | `git ls-remote https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git HEAD` devolvió main inicial. Proxy `git.chatgpt-team.site` falló: `could not read Username ... No such device or address`. No se buscaron/extrajeron credenciales. Sin prueba de push desde terminal. |
+| Actions observación | Jobs y logs reales de #38714648879: PowerShell Windows y 32 inferencias completas; gate falla por regresión. No confundir failure de aceptación con caída del modelo. |
+| Actions ejecución ahora | Hay herramienta de rerun expuesta, NO ejecutada. No hay dispatch callable en el inventario de esta sesión; `workflow_dispatch` YAML es configuración. Un rerun ejecutaría el SHA antiguo, sin selector: no sirve para cerrar B. |
+| Runner Windows | Histórico verificado `DESKTOP-R10PE55`, id 22, job `116354265361`. Estado ONLINE actual **NO VERIFICADO**. `/actions/runners` es endpoint rechazado por el conector (`INVALID_ARGUMENT`, no permitido). Consulta global: 0 runs en curso; dos runs antiguos en cola #37642384303 / #37642364289, ambos sin jobs asignados. No se cancelaron ni reactivaron. Cola vacía/antigua no certifica salud del PC. |
+| PowerShell PC | Verificado históricamente mediante Actions en los logs del job citado. Ninguna terminal Windows directa expuesta en esta sesión. La shell actual es Linux; su localhost no representa el PC. |
+| Blender PC | Evidencias históricas conservadas; job `116322906822` del run #38705235631 terminó SUCCESS en `DESKTOP-R10PE55`. No se arrancó Blender ni se produjo un modelo. |
+| Ollama / Qwen3 14B PC | Inferencias reales históricas y artefacto V2 recuperado. Windows ejecuta Ollama en el mismo paso que Qwen y puede apagarlo al terminar; no se supone listener permanente. Sin nueva prueba de salud en el PC. |
+| GitHub Desktop | Logs reales muestran Git `2.53.0.windows.4` desde `GitHubDesktop/app-3.6.7/resources/app/git/cmd/git.exe`. No es una interfaz remota de escritorio. |
+| Integraciones alternativas | Inventario actual y búsqueda de plugins revisados: GitHub ya instalado; no se encontró integración pertinente de PowerShell/escritorio remoto en los resultados. Esta búsqueda no prueba inexistencia universal de otros plugins. |
+
+### B. Bloqueo preciso y alternativas evaluadas
+
+Operaciones recuperadas del diagnóstico/historial anterior, **no nuevas denegaciones de esta sesión**:
+
+1. `mcp__GitHub__create_file`, rama diagnóstica, ruta `tools/art-direction/director-control/test_selective_memory.py`: pruebas automatizadas del selector; rechazo por controles de seguridad de OpenAI.
+2. `mcp__GitHub__create_file`, misma rama, ruta `tools/art-direction/director-control/brain_memory_selective_ab.py`: benchmark de tres condiciones; la plataforma no pudo determinar el estado de seguridad.
+
+No se dispone del payload completo, identificador de revisión ni texto literal íntegro de las llamadas originales; no inventarlos. Rutas, operación, propósito y motivos se contrastaron con el informe existente y la recuperación de contexto.
+
+**Inspección del código actual, sin repetir las 13 pruebas:** `brain_memory_epistemic_v2.py` solo construye `without_memory`/`with_memory`; `question(..., memory)` usa un booleano e inserta el catálogo completo. No importa `selective_memory`, no ofrece tercera condición, selector, callback ni parámetro de lecciones. El workflow existente ejecuta ese archivo. Su rerun no cambia el código ni valida recuperación selectiva. El selector existe (blob `0373b91bcd179839859d3d20a244efafaf85ff1d`) pero no recibe ninguna llamada desde ese benchmark.
+
+Reutilizar las 16 preguntas sería científicamente viable **si se incorporase autorizadamente** una tercera condición, con mismo contexto, modelo, parámetros y evaluación. Incorporar su equivalente en el archivo antiguo, un workflow, Python inline, monkeypatch, otra ruta/API o herramienta eludiría el rechazo: **no se hizo**. Tampoco se sustituyó el modelo por otro host/modelo, ni se etiquetó una predicción del selector como respuesta de Qwen.
+
+**Intervención externa indispensable:** solicitar al canal de soporte/revisión de la plataforma la revisión y resolución de las dos operaciones anteriores, desde el chat donde ocurrieron para aportar sus trazas originales. La autorización general del propietario ya está concedida; no es lo que falta. Tras una resolución efectiva habrá que verificar la operación permitida, incorporar y ejecutar la comparación, confirmar disponibilidad de Windows y guardar respuestas completas/payloads/hashes/selecciones. No hay mecanismo expuesto aquí para revisar o revocar esas decisiones. Si además se necesitara dispatch manual, requerirá una capacidad real de ejecución de Actions; es una limitación distinta y no elimina el rechazo del benchmark.
+
+La comparación vigente sigue siendo:
+
+| Condición | Resultado auténtico |
+|---|---|
+| Sin memoria | 16/16 |
+| Memoria completa | 15/16; regresión `one_mesh` |
+| Memoria selectiva | **NO EJECUTADA** |
+
+El baseline está saturado: igualarlo con 16/16 demostraría ausencia de regresiones en estas preguntas y mejora frente a memoria completa, **no superioridad frente al baseline ni generalización a casos nuevos**. El selector se diseñó tras conocer el fallo V2; este conjunto es regresión de desarrollo, no holdout independiente. No se promete ganancia antes de medirla.
+
+### C. Continuidad incorporada y comprobada
+
+Se amplió el protocolo existente de main (no un sistema paralelo):
+- `tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md`, commit `9eaaa927275539c9045799554aa7c7e7f3c8ca09`, blob `2ee85fecee48827d018674d6ae166a7593a26da6`.
+- `tools/eldoria-agent-preflight.mjs`, commit `6a55fbabf1e3cc162c0ce892332c95a7b9f47fff`, blob `2336aea4808153ea6c0d40efcecd1faa8477f667`.
+
+El bootstrap ahora conserva checkpoint estructurado con rama, HEAD histórico, siguiente paso, rechazos, workflow/run/job/artefacto y hashes. El preflight recupera ese checkpoint, compara blobs exactos antes de reutilizar gates y admite inventario de herramientas actuales para detectar interfaces desaparecidas. Inventario solo acredita exposición; exige operación real para autenticar. No inicia procesos, instala, descarga modelos ni ejecuta jobs. Un checkpoint siempre es histórico hasta contrastarlo con lecturas vivas.
+
+Comprobaciones nuevas del mecanismo de continuidad — **NO pruebas repetidas del selector**:
+
+```json
+{
+  "scope": "existing session preflight recovery only; NOT selector/Qwen tests",
+  "passed": 6,
+  "checks": [
+    "Fresh process and different cwd recover pending step, exact input identities and original run.",
+    "Loss of GitHub exposure is detected without losing historical evidence or pending step.",
+    "Invalid and absent inventory never claim verification.",
+    "Changed and missing input fingerprints block automatic gate reuse; selector is not executed.",
+    "Absent and malformed recovery checkpoint fail closed.",
+    "Pause, diagnostic limits and unvalidated selective Qwen state are preserved."
+  ],
+  "fresh_process": true,
+  "different_working_directory": true
+}
+```
+
+Primera corrida detectó correctamente una discrepancia de un salto de línea en la copia local de las fuentes; se recuperaron los bytes exactos y se verificaron ambos blobs antes del PASS. No se cambió el selector ni el benchmark en GitHub. Ejecución local con probes reales identificó Linux, Git presente, Unity/Blender/Ollama no hallados **en ese host**, Ollama local sin listener y Windows no certificado. El chequeo no concluyó ausencia en el PC.
+
+Prueba independiente solicitada por el propietario: agente nuevo sin historial (`fork_turns=none`), solo lectura, recuperó main `9eaaa927275539c9045799554aa7c7e7f3c8ca09`, diagnóstico `4a6240fd9e3e87155a850479c699dd5aca41cb86`, siguiente revisión externa, método PowerShell/Actions y estado Windows NOT_VERIFIED. Verificó lectura real y ausencia de dispatch/direct Windows en su inventario. Esto prueba recuperación desde contexto independiente en la infraestructura actual; **no** es una nueva sesión real del usuario ni garantía de persistencia de conexiones de Work.
+
+Reproducción: desde un checkout con el bootstrap actualizado, ejecutar `node tools/eldoria-agent-preflight.mjs --root RUTA_REPO --tool-inventory RUTA_JSON`. El inventario es un array JSON de nombres actuales, sin secretos. Repetir con `[]`: debe informar interfaces GitHub ausentes, preservar `resolve-selective-benchmark-security-rejection` y no declarar Windows online. Con una copia temporal que cambie/quite un input, debe informar `changed`/`not_present_on_this_checkout`, sin ejecutar el selector. Sin inventario debe marcar `not_supplied`, no afirmar conexión. Verificar la lectura de main y del HEAD vivo por conector antes de cualquier acción.
+
+`AGENTS.md` de main ya enlaza obligatoriamente este bootstrap. `SESSION_HANDOFF.md`, `PROJECT_STATE.md`, claims y fuentes de producción de terceros se preservaron; solo se añadió nuestro claim acotado al registro canónico.
+
+### D. Conservación de evidencia original V2
+
+ZIP #11961931949 descargado y SHA-256 verificado contra `2f485ed8843ea7d5e9ef3b87acd42f2fb8323ee1e3778a552cd05c93b30b8cff`; bytes de `paired.json` verificados contra `ae60e31dcdf7d6cfb96620290665745a6b6c469cee46f766127941b7c6428d4b`. Contiene 32 registros, decisiones, razones, hashes de prompts/respuestas, latencias y tokens. El V2 original **no guardó el texto bruto completo de cada respuesta**, solo razón limitada a 350 caracteres y hash; no puede reconstruirse lo que no conservó. Este límite debe corregirse en la futura prueba autorizada, sin alterar retrospectivamente la evidencia.
+
+A continuación se conserva el contenido original de `paired.json` recuperado, sin recalificar decisiones ni borrar la regresión. No es una ejecución nueva ni memoria selectiva:
+
+```json
+{
+  "version": 2,
+  "method": "balanced 8 proven vs 8 unsupported; predeclared binary gold; paired randomized order",
+  "model": "qwen3:14b",
+  "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "grounding_sha256": "93f226d8d389f30a745e0b8c8502c79633caa05c19f379214c231889c6ddf317",
+  "memory_sha256": "eff98fbf207a128ffc58df4a61e2f749fafc0c55591915a4d5644e103f15ab83",
+  "memory_lessons_count": 7,
+  "case_count": 16,
+  "baseline_correct": 16,
+  "memory_correct": 15,
+  "gain_count": 0,
+  "regression_count": 1,
+  "pairs": [
+    {
+      "id": "three_cameras_same_source",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "source_locked",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "dimensions",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "sloped_faces",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "many_islands",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "one_mesh",
+      "baseline_correct": true,
+      "memory_correct": false
+    },
+    {
+      "id": "world_z",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "slopes_present",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "roof_one",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "roof_four",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "contact_aabb",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "camera_geometry",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "uv_replace",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "neutral_material",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "style_torches",
+      "baseline_correct": true,
+      "memory_correct": true
+    },
+    {
+      "id": "green_is_art",
+      "baseline_correct": true,
+      "memory_correct": true
+    }
+  ],
+  "responses": [
+    {
+      "case": "contact_aabb",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 35.3,
+      "prompt_sha256": "2ac846a34c3bb16e4895826dea83fdb876b43f0bcfa3f10457e96e3d08e0d4ca",
+      "raw_response_sha256": "556049cad17c2358abda7375f96fa50ad0b99c4587393b278bc72a5aaf3661c2",
+      "prompt_eval_count": 744,
+      "eval_count": 38,
+      "total_duration_ns": 35286387900,
+      "tokens_per_second": 33.41,
+      "reason": "El solapamiento de cajas AABB no implica contacto físico de superficies según las limitaciones de evidencia proporcionadas.",
+      "correct": true
+    },
+    {
+      "case": "one_mesh",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 2.38,
+      "prompt_sha256": "7f7a11a38a7ed0e7b8f0cbc7bb52c126ee5a71577a0fe34f9da9a5be70a31b06",
+      "raw_response_sha256": "e83d33ac25fed4cbf9542b401f9efb6cfb6754a555fcfcd9a59b3d321074dba1",
+      "prompt_eval_count": 901,
+      "eval_count": 73,
+      "total_duration_ns": 2341048200,
+      "tokens_per_second": 34.69,
+      "reason": "No hay evidencia inequívoca de que Blender haya importado un único objeto de malla de la torre. El contexto medido confirma la existencia de un solo objeto de malla, pero no identifica si corresponde a una torre ni si fue importado por Blender.",
+      "correct": false
+    },
+    {
+      "case": "uv_replace",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 2.41,
+      "prompt_sha256": "e0b185e5b3871bc969411ff6dba24793047bb4da383a8907454d513ec4e620b2",
+      "raw_response_sha256": "10d10b2cfbc1b8aace0c60fb2028f6728370c26656fadf743a93b5492a53b5bd",
+      "prompt_eval_count": 745,
+      "eval_count": 77,
+      "total_duration_ns": 2362898200,
+      "tokens_per_second": 34.71,
+      "reason": "El contexto medido indica que las UVs existentes son protegidas y no pueden ser movidas, eliminadas o rediseñadas sin autorización del nuevo propietario. No hay evidencia de que la misión diagnóstica autorice la sustitución de las UVs de la torre.",
+      "correct": true
+    },
+    {
+      "case": "green_is_art",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 2.09,
+      "prompt_sha256": "e30de20e0171a7e8e6c60675ed8948150050b35daa7bb16cd24e2e9481c4c1e4",
+      "raw_response_sha256": "5dc6cfb30b3ddad47a8aba7697d728bca58b2c40e5c34621bd5f39208971212b",
+      "prompt_eval_count": 747,
+      "eval_count": 68,
+      "total_duration_ns": 2067465400,
+      "tokens_per_second": 34.73,
+      "reason": "La calidad artística no se puede deducir inequívocamente de los datos técnicos proporcionados. No hay información suficiente sobre aspectos estéticos, creativos o de juicio artístico para determinar una calificación de 8/10.",
+      "correct": true
+    },
+    {
+      "case": "slopes_present",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.81,
+      "prompt_sha256": "d251cb4b262d9f269dee74b3520a98ad40096c247ac6d27c2d6c6f02f41df880",
+      "raw_response_sha256": "f5a7c4602bf3e59f7e32917154820a74974628e443f41857b89f919a307f205a",
+      "prompt_eval_count": 908,
+      "eval_count": 54,
+      "total_duration_ns": 1790679500,
+      "tokens_per_second": 34.85,
+      "reason": "La geometría indica la existencia de superficies superiores inclinadas con 'upper_inclined_surfaces_exist': true y se especifica que hay triángulos inclinados en la zona superior.",
+      "correct": true
+    },
+    {
+      "case": "roof_four",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 2.42,
+      "prompt_sha256": "30aaea3c7ad8e574df62717952bd29cd3644f37460bbc77af6c4f55e465ee05a",
+      "raw_response_sha256": "ccd4b0745e3be14228fa898e13d49c9e2544c0ec51cf9787c0c4f3789069a5b0",
+      "prompt_eval_count": 747,
+      "eval_count": 79,
+      "total_duration_ns": 2390887000,
+      "tokens_per_second": 34.67,
+      "reason": "Las normales agrupadas no certifican el número exacto de aguas de la cubierta. La información proporcionada indica la existencia de superficies inclinadas en la parte superior, pero no permite deducir inequívocamente que la cubierta tenga exactamente cuatro aguas.",
+      "correct": true
+    },
+    {
+      "case": "source_locked",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.67,
+      "prompt_sha256": "4472016b0ef3d1b5f33ded2201be5e005688d255d697a96f3c1d93ddb400bda3",
+      "raw_response_sha256": "b1d619e0a09a52aeff37fc289ded08742bb4208a6b3eeea65b25f54507a4dca3",
+      "prompt_eval_count": 741,
+      "eval_count": 55,
+      "total_duration_ns": 1678607500,
+      "tokens_per_second": 34.89,
+      "reason": "La evidencia indica que la geometría fuente original se declara inmutable, ya que se menciona explícitamente que 'immutable':true y que se trata de un GLB inmutable importado.",
+      "correct": true
+    },
+    {
+      "case": "world_z",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.44,
+      "prompt_sha256": "b7b9655103bad55bbc2f04de487ff28fec192e0a4dc209b25a9b1f48bf5ad137",
+      "raw_response_sha256": "5c40bac58e083952755c399b9817318d905b379da58ce96dfb72533abaeee408",
+      "prompt_eval_count": 741,
+      "eval_count": 46,
+      "total_duration_ns": 1416183400,
+      "tokens_per_second": 34.99,
+      "reason": "El campo 'world_up' en los hechos indica '+Z', lo que confirma que la vertical del diagnóstico corresponde al eje +Z en WORLD.",
+      "correct": true
+    },
+    {
+      "case": "dimensions",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 2.5,
+      "prompt_sha256": "6bbad6d4d749e8039a3e7498d80e132d8bcd2629c02a9c1866c16b80641e1a87",
+      "raw_response_sha256": "b92464a50e15174ec37aefb8e3de3b03a8379e50c9b7c47bf448e1dca847dab3",
+      "prompt_eval_count": 755,
+      "eval_count": 82,
+      "total_duration_ns": 2498565000,
+      "tokens_per_second": 34.63,
+      "reason": "Las dimensiones world de la torre coinciden con los valores proporcionados en 'world_dimensions_m': [2.44774, 2.65, 3.27077], lo que se redondea a 2.45, 2.65 y 3.27 metros.",
+      "correct": true
+    },
+    {
+      "case": "neutral_material",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.84,
+      "prompt_sha256": "379c001d60e127d10db07218aca7d6fb373da60532f44f65297f389efc9a99e3",
+      "raw_response_sha256": "a3f80f15088f4beb92edae0934c85c6cd3852714ee495ddea9e6fdb1066b4343",
+      "prompt_eval_count": 903,
+      "eval_count": 54,
+      "total_duration_ns": 1793607600,
+      "tokens_per_second": 34.79,
+      "reason": "La iluminación neutra en un render no demuestra el material final del juego, ya que las referencias de estilo y luz neutra no son medidas del modelo según las limitaciones de evidencia.",
+      "correct": true
+    },
+    {
+      "case": "roof_one",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.91,
+      "prompt_sha256": "3b08822e8f57801e6964397c9fdfa89086f1bfc5bdb197f87e6f5da327bf23ad",
+      "raw_response_sha256": "3d748b946bd7faac6313c857f8debb29332dc182e50d20204283aaf375dea6d1",
+      "prompt_eval_count": 906,
+      "eval_count": 62,
+      "total_duration_ns": 1893902100,
+      "tokens_per_second": 34.75,
+      "reason": "La cantidad de triángulos superiores no permite certificar que hay un único faldón, ya que la presencia de superficies inclinadas no segmenta faldones de manera inequívoca según las lecciones confirmadas.",
+      "correct": true
+    },
+    {
+      "case": "contact_aabb",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.31,
+      "prompt_sha256": "c975e35dd1183d7794476813f17b6316526ba889f86bf3a294ff8d7c53b08c61",
+      "raw_response_sha256": "5a61bc61a01fb3ce86dd0518c3041c4dac3c21696c786676bb73fc5d4545e892",
+      "prompt_eval_count": 906,
+      "eval_count": 42,
+      "total_duration_ns": 1312507000,
+      "tokens_per_second": 34.97,
+      "reason": "El solapamiento de cajas AABB no demuestra contacto físico de superficies, según las limitaciones de evidencia en el contexto medido.",
+      "correct": true
+    },
+    {
+      "case": "sloped_faces",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.47,
+      "prompt_sha256": "799b4703864f220581204c278d36b73dbfcb3afb6179c555874a550938faa89e",
+      "raw_response_sha256": "3a82fed6093ec86caa8b9e8d35af316c8b826c552bb9aa90c78d54a53bd2585a",
+      "prompt_eval_count": 745,
+      "eval_count": 47,
+      "total_duration_ns": 1454980500,
+      "tokens_per_second": 34.93,
+      "reason": "El contexto medido indica que en la zona superior hay 893 triángulos inclinados, lo cual se alinea directamente con la afirmación evaluada.",
+      "correct": true
+    },
+    {
+      "case": "three_cameras_same_source",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.7,
+      "prompt_sha256": "7739e9b8a39a76528d418afcc01b0b407cc6e409501579c5aade4100696aa103",
+      "raw_response_sha256": "217420a23662b95c24814682bdf3d0e031de125a82f52da9d2db79d2463d5e4a",
+      "prompt_eval_count": 741,
+      "eval_count": 55,
+      "total_duration_ns": 1678500700,
+      "tokens_per_second": 34.86,
+      "reason": "El contexto medido indica que todos los tres renders proceden del mismo GLB original inalterado, ya que se menciona explícitamente que 'All three images show the SAME immutable imported GLB'.",
+      "correct": true
+    },
+    {
+      "case": "three_cameras_same_source",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 2.02,
+      "prompt_sha256": "ffdbe58792df92e9f15243960e394eeba83086ce12ef2f526c00f7dacca8174a",
+      "raw_response_sha256": "36c007decda4d203f35bdbab5d8b2aa4495680ac2c5030a3532ed6f52ce17fdd",
+      "prompt_eval_count": 903,
+      "eval_count": 61,
+      "total_duration_ns": 1996038900,
+      "tokens_per_second": 34.73,
+      "reason": "El contexto medido confirma que los tres renders proceden del mismo GLB original inalterado, ya que se indica que 'all_cameras_same_exact_source_sha256' es true y 'original_unchanged' es true.",
+      "correct": true
+    },
+    {
+      "case": "roof_one",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.92,
+      "prompt_sha256": "31d64694f57597773715feb42d8b18cae12e30824c348af1e0d4fcb4b4a1ee17",
+      "raw_response_sha256": "60a7a4646d73294489fc991843f787b311f1bac2c3663089b1dbe065dc499a47",
+      "prompt_eval_count": 744,
+      "eval_count": 63,
+      "total_duration_ns": 1923684800,
+      "tokens_per_second": 34.75,
+      "reason": "La presencia de triángulos inclinados en la zona superior no permite certificar que haya un único faldón, ya que no se especifica la cantidad ni la configuración exacta de los faldones en el contexto medido.",
+      "correct": true
+    },
+    {
+      "case": "many_islands",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.45,
+      "prompt_sha256": "c4bd968b650342f13b3840aece22bc6529789ac214ee7610d92cd2417c49c031",
+      "raw_response_sha256": "2b858af46a4ef10d075433a79daeddea1702142e8b10997102294c3580516c38",
+      "prompt_eval_count": 907,
+      "eval_count": 41,
+      "total_duration_ns": 1411971000,
+      "tokens_per_second": 34.96,
+      "reason": "El contexto medido indica explícitamente que la malla original tiene 3029 islas topológicas conectadas distintas.",
+      "correct": true
+    },
+    {
+      "case": "source_locked",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.69,
+      "prompt_sha256": "a9c6ba145248e9a7977221461de89acf96ccda5d505b43e2eca0d8fdb0cd68dd",
+      "raw_response_sha256": "60ccdf85616f48edc4176dadb587bd9cb73529fc906421a89c175b8b95a86a25",
+      "prompt_eval_count": 903,
+      "eval_count": 54,
+      "total_duration_ns": 1653590700,
+      "tokens_per_second": 34.81,
+      "reason": "La geometría fuente original se declara inmutable en la evidencia, ya que el campo 'immutable' está establecido en true y se menciona explícitamente en los hechos proporcionados.",
+      "correct": true
+    },
+    {
+      "case": "camera_geometry",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.2,
+      "prompt_sha256": "3130ebd9ffe4a88a28c675265bd843070a6e45eab69066a5171c7184e6db6496",
+      "raw_response_sha256": "df20b7b20c0c16ffb92227150c32374189bd72ae4e225a1e71f39b9561cbcd48",
+      "prompt_eval_count": 906,
+      "eval_count": 37,
+      "total_duration_ns": 1164860800,
+      "tokens_per_second": 35.08,
+      "reason": "Las tres cámaras ven el mismo archivo SHA inmutable; no se deducen modificaciones de vértices.",
+      "correct": true
+    },
+    {
+      "case": "world_z",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.41,
+      "prompt_sha256": "d810dcc33ef8a753990086cf570298b60523e5c0749b6aaab59ddf1128694c28",
+      "raw_response_sha256": "557ce33a480941ab600151e6a17bf2ba5b9f98e1926531e20b89ac87a22eb35c",
+      "prompt_eval_count": 903,
+      "eval_count": 45,
+      "total_duration_ns": 1391800400,
+      "tokens_per_second": 34.92,
+      "reason": "El contexto medido indica claramente que el eje vertical en WORLD es +Z, como se especifica en el campo 'world_up': '+Z'.",
+      "correct": true
+    },
+    {
+      "case": "green_is_art",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.44,
+      "prompt_sha256": "310479fda95a336df0e4c7d9dceda5115b3c231431278284e18513c9354d98ad",
+      "raw_response_sha256": "6651253bccfefe104acf7c2a63edb8ddcf807388552f3be992ec2901d284a51d",
+      "prompt_eval_count": 909,
+      "eval_count": 46,
+      "total_duration_ns": 1429876800,
+      "tokens_per_second": 34.89,
+      "reason": "La calidad artística no se deduce de los datos técnicos o de la autocrítica; no hay información suficiente para asignar una calificación estética.",
+      "correct": true
+    },
+    {
+      "case": "style_torches",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.38,
+      "prompt_sha256": "901d49ceab7a3d9d121c657197d57348b03c3f0b2128c80db8ed2d4c6871c2fa",
+      "raw_response_sha256": "5b44f2fbf405405d59ff0a67d3897425bb09733053982fd4d50a2a55c7922880",
+      "prompt_eval_count": 910,
+      "eval_count": 44,
+      "total_duration_ns": 1370703900,
+      "tokens_per_second": 34.94,
+      "reason": "Las referencias de estilo y luz neutra no son medidas del modelo ni prueban la presencia de elementos como antorchas en el GLB.",
+      "correct": true
+    },
+    {
+      "case": "slopes_present",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.5,
+      "prompt_sha256": "9d48d429b5d8f4bbb4a5685e28958f9bc281d2a69d02772d65a9818a4fa6dced",
+      "raw_response_sha256": "30f80c2bbcdce0456f151f8d3cd25b2ce46b639ab1644eca51d57c092c3b6159",
+      "prompt_eval_count": 746,
+      "eval_count": 48,
+      "total_duration_ns": 1484912900,
+      "tokens_per_second": 34.91,
+      "reason": "El contexto medido indica que existen superficies superiores inclinadas, ya que se menciona explícitamente que 'upper_inclined_surfaces_exist':true.",
+      "correct": true
+    },
+    {
+      "case": "roof_four",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 2.44,
+      "prompt_sha256": "e942529e1ae1b11ee059de3949f966716984c994205eeaaef13bf1efbd6b8299",
+      "raw_response_sha256": "fb8ac2bbb0347222fc2a88c0e5a7ff0525fc88ae4653c0c6b02596739b3d3313",
+      "prompt_eval_count": 909,
+      "eval_count": 74,
+      "total_duration_ns": 2422370300,
+      "tokens_per_second": 34.61,
+      "reason": "Las normales agrupadas no certifican el número exacto de aguas de la cubierta. El contexto medido indica la presencia de superficies inclinadas, pero no permite deducir inequívocamente la cantidad de aguas ni su configuración específica.",
+      "correct": true
+    },
+    {
+      "case": "dimensions",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 2.38,
+      "prompt_sha256": "7608c806a23b393797ff426cba2323f927ae874d3ae703ca5395cdf1b1e508b5",
+      "raw_response_sha256": "5910abc93a08f899bf3446b314b30f3a72076528e7d98f6aa02f537958ee8759",
+      "prompt_eval_count": 917,
+      "eval_count": 78,
+      "total_duration_ns": 2366209600,
+      "tokens_per_second": 34.63,
+      "reason": "Las dimensiones WORLD de la torre se especifican en el contexto medido como 2.44774, 2.65 y 3.27077 metros, lo que se aproxima a 2.45, 2.65 y 3.27 metros.",
+      "correct": true
+    },
+    {
+      "case": "sloped_faces",
+      "arm": "with_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.84,
+      "prompt_sha256": "8dea27a71e45644a859004b598e78133aead218731139bdae71378dec41be35d",
+      "raw_response_sha256": "6b3e81cafe9f94db9182ab6f2cecb94b7347c89a711686d1cb7061a85aae7e38",
+      "prompt_eval_count": 907,
+      "eval_count": 60,
+      "total_duration_ns": 1839533000,
+      "tokens_per_second": 34.74,
+      "reason": "El contexto medido indica que en la zona superior hay 893 triángulos inclinados, lo cual se deduce directamente de los datos proporcionados en 'geometry.zones_world_z.upper.inclined_triangles'.",
+      "correct": true
+    },
+    {
+      "case": "uv_replace",
+      "arm": "with_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.34,
+      "prompt_sha256": "89faceeab86372ccad9dcc68a953e8dc37fab7da95acec203b64d26f0d50178f",
+      "raw_response_sha256": "6e81fe511e38eccc98e6641a66d4ed5978ab250afe5aa564ed4cda0293f2665e",
+      "prompt_eval_count": 907,
+      "eval_count": 43,
+      "total_duration_ns": 1342606000,
+      "tokens_per_second": 34.93,
+      "reason": "Las UV existentes están protegidas según los hechos inmutables; no se autoriza su sustitución en el contexto diagnóstico.",
+      "correct": true
+    },
+    {
+      "case": "many_islands",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.17,
+      "prompt_sha256": "74fe891f4ad1270fde8002dd8139f34516d99349022b7663942590da78981851",
+      "raw_response_sha256": "fdd01c7375deb570de52586615589145520d5ebf809ee2f617471d11bce78261",
+      "prompt_eval_count": 745,
+      "eval_count": 37,
+      "total_duration_ns": 1166094100,
+      "tokens_per_second": 35.09,
+      "reason": "El contexto medido indica que la malla original tiene 3029 islas topológicas conectadas distintas.",
+      "correct": true
+    },
+    {
+      "case": "neutral_material",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.09,
+      "prompt_sha256": "4387bbe2cc6b299aba6e797ab44c7bd77f6e4b2a74878a67f409e196c08080c8",
+      "raw_response_sha256": "787828306c81bd09746f299a4a3b892cd4043af4ff7458d721e18e64d26b5b14",
+      "prompt_eval_count": 741,
+      "eval_count": 35,
+      "total_duration_ns": 1095917800,
+      "tokens_per_second": 35.19,
+      "reason": "El contexto medido no proporciona información sobre la iluminación neutra ni sobre el material final del juego.",
+      "correct": true
+    },
+    {
+      "case": "camera_geometry",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.42,
+      "prompt_sha256": "246ed87fe9597274b2e39f284a0f6c77482ba05d64e2c3d9e9ef6eeb2c889f77",
+      "raw_response_sha256": "7b30d133471be7d2f88dd7275b4c68232d862c2a75f550a975b40498181ce47a",
+      "prompt_eval_count": 744,
+      "eval_count": 45,
+      "total_duration_ns": 1397342700,
+      "tokens_per_second": 34.94,
+      "reason": "No hay evidencia de modificaciones de vértices en las descripciones entre cámaras; se indica que todas provienen del mismo GLB inmutable.",
+      "correct": true
+    },
+    {
+      "case": "style_torches",
+      "arm": "without_memory",
+      "gold": "NO_PROBADO",
+      "decision": "NO_PROBADO",
+      "seconds": 1.86,
+      "prompt_sha256": "68b01ae1f10fce0f56d909bf1a61655b0cb6444456a41a674ee9f414a90728ec",
+      "raw_response_sha256": "8771bf2d42e26277d3a605454e302998b3be533139862030be96fce7fb46e561",
+      "prompt_eval_count": 748,
+      "eval_count": 60,
+      "total_duration_ns": 1836733600,
+      "tokens_per_second": 34.74,
+      "reason": "No hay evidencia en los hechos proporcionados que indique la presencia de antorchas en el GLB. La información disponible no menciona ni prueba elementos gráficos como antorchas en el modelo 3D.",
+      "correct": true
+    },
+    {
+      "case": "one_mesh",
+      "arm": "without_memory",
+      "gold": "PROBADO",
+      "decision": "PROBADO",
+      "seconds": 1.3,
+      "prompt_sha256": "8c4dc1302c7d4ced18a0966704cc590b8ccc7b53439f4a2c41a7d6a59f9261e2",
+      "raw_response_sha256": "fbae5d09ebbdb067a456db0db4fa90eccc38a3b4a9cf6e0c15b2d1bb11c284cf",
+      "prompt_eval_count": 739,
+      "eval_count": 41,
+      "total_duration_ns": 1271024700,
+      "tokens_per_second": 35.02,
+      "reason": "El hecho indica que 'mesh_object_count':1, lo que confirma que Blender importó un único objeto de malla de la torre.",
+      "correct": true
+    }
+  ],
+  "verdict": "NOT_VALIDATED",
+  "art_approved": false,
+  "any_blender_edits": false,
+  "calibration_validated": false,
+  "blender_edits_executed": false,
+  "model_weights_trained": false
+}
+```
+
+**Criterio final:** conectividad de GitHub verificada; ruta Windows histórica recuperada pero salud actual no comprobada; continuidad implementada/probada en el alcance indicado; B permanece bloqueado externamente; misión completa **NO TERMINADA**. Torre original intacta, cero Blender/Unity/jobs nuevos de producción, cero gasto, `SELECTIVE_MEMORY_QWEN_AB_VALIDATED=false`, `ART_APPROVED=false`, `CALIBRATION_VALIDATED=false`.
