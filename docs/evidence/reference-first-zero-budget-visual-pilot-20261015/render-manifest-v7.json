@@ -1,0 +1,22 @@
+{
+    "stage": "REAL_UNITY_V7_VALLEY_LANDSCAPE_NOT_APPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V7/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V7/Imported/LowerGateFamilyV1.glb",
+    "revision": "4278738c04e310881bfe5d162c63dea93ef0192e",
+    "frames": [
+        "13-environment-overview.png",
+        "14-environment-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 37,
+    "distantTreeInstances": 77,
+    "pavingStoneInstances": 78,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
