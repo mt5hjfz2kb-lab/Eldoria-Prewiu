@@ -105,19 +105,21 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
     )
 
 
-def source_contact_facts(objects, limit_per_mesh=24):
-    """Expose ONLY genuine ray-hit WORLD contact coordinates measured by Blender.
+def source_contact_facts(objects, limit_per_mesh=12):
+    """Provide genuine WORLD ray-hit anchors across LOWER/MIDDLE/ROOF bands.
 
-    Qwen remains responsible for deciding which anchor to use, and for designing
-    the geometry/placement. Never synthesize a point from a screen pixel.
+    Select up to four strongest measured points per height band, preserving
+    useful roof anchors and bounded Qwen context. No inferred coordinates.
+    Qwen remains free to choose its own architecture and proportions.
     """
     import math
     result=[]
     for item in objects:
-        hits=[]
-        for hit in item.get("camera_visible_face_landmarks",[])[:limit_per_mesh]:
+        groups={"roof":[],"middle":[],"lower":[]}
+        for hit in item.get("camera_visible_face_landmarks",[])[:24]:
             xyz=hit.get("world_center_m")
             screen=hit.get("camera_screen_uv")
+            height=hit.get("world_height_fraction")
             if hit.get("camera_visible") is not True or hit.get("camera_ray_hit_original_face") is not True:
                 continue
             if type(hit.get("face_index")) is not int:
@@ -128,11 +130,19 @@ def source_contact_facts(objects, limit_per_mesh=24):
             if not (isinstance(screen,list) and len(screen)==2
                     and all(type(v) in (int,float) and math.isfinite(v) for v in screen)):
                 continue
-            hits.append({"id":hit["face_index"],"screen_uv":screen,
-                         "world_xyz_m":xyz,
-                         "height":hit.get("world_height_fraction")})
+            if type(height) not in (int,float) or not math.isfinite(height):
+                continue
+            zone="roof" if height>=0.67 else ("middle" if height>=0.35 else "lower")
+            groups[zone].append({"id":hit["face_index"],"screen_uv":screen,
+                                 "world_xyz_m":xyz,"height":height})
+        # Present physically elevated camera rays early, without omitting
+        # wall/foundation anchors. Remaining hits never become fake guesses.
+        hits=[]
+        each=max(1,limit_per_mesh//3)
+        for zone in ("roof","middle","lower"):
+            hits.extend(groups[zone][:each])
         if hits:
-            result.append({"name":item["name"],"faces":hits})
+            result.append({"name":item["name"],"faces":hits[:limit_per_mesh]})
     return result
 
 
