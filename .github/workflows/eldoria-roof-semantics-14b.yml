@@ -1,0 +1,117 @@
+name: Eldoria 14B art director - roof semantics grounding check
+on:
+  push:
+    branches: [diagnostic/valoria-ai-eyes-brain-20261015]
+    paths:
+      - '.github/workflows/eldoria-roof-semantics-14b.yml'
+      - 'tools/art-direction/director-control/roof_direction_probe.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare-real-surface-orientations:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 16
+    steps:
+      - name: Use already installed GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Installed Git missing'}
+            $folder=Split-Path $git
+            $env:PATH="$folder;$env:PATH"
+            Add-Content $env:GITHUB_PATH $folder
+          }
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            tools/art-direction/director-control
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-stronger-14b-local-director-verification
+          run-id: 38704030602
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/eldoria-prior-14b
+      - name: Check owner latest read-only authorization and derive exact upper surface normal distribution
+        shell: powershell
+        timeout-minutes: 8
+        run: |
+          $ErrorActionPreference='Stop'
+          $policy=(Invoke-WebRequest 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/main/AGENTS.md' -UseBasicParsing -TimeoutSec 30).Content
+          if($policy -notmatch 'PAUSA DE LA LINEA DE CORRECCION ARTISTICA PARA DIAGNOSTICO VISUAL'){throw 'Owner authorization changed'}
+          $bin=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $blender=if($bin){$bin.Source}else{Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Filter blender.exe -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Previously installed Blender unavailable'}
+          $source='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-roof-meaning'
+          New-Item -Path $out -ItemType Directory -Force | Out-Null
+          & $blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/director-control/roof_direction_probe.py -- --source $source --out (Join-Path $out 'roof-world-normals.json')
+          if($LASTEXITCODE -ne 0){throw 'Native roof direction geometry analysis failed'}
+      - name: Correct unverified roof form with installed Qwen3 14B director
+        shell: powershell
+        timeout-minutes: 7
+        run: |
+          $ErrorActionPreference='Stop'
+          $env:OLLAMA_HOST='127.0.0.1:11434'
+          $env:OLLAMA_NUM_PARALLEL='1'
+          $env:OLLAMA_MAX_LOADED_MODELS='1'
+          $dir=Join-Path $env:USERPROFILE '.ollama\models'
+          if(-not (Test-Path $dir)){
+            $dir=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName '.ollama\models'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if($dir -and (Test-Path $dir)){$env:OLLAMA_MODELS=$dir}
+          $bin=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
+          if(-not (Test-Path $bin)){
+            $bin=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData\Local\Programs\Ollama\ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          if(-not $bin){throw 'Ollama previously installed binary missing'}
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-roof-meaning'
+          $server=$null
+          try {
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process -FilePath $bin -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+              for($i=0;$i -lt 30;$i++){
+                try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}
+              }
+            }
+            if(-not $ready){throw 'Local Ollama service unavailable'}
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 10
+            if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw '14B no longer cached'}
+            $roof=Get-Content (Join-Path $out 'roof-world-normals.json') -Raw | ConvertFrom-Json
+            $prior=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-prior-14b/qwen3-14b-grounded-director.json') -Raw | ConvertFrom-Json
+            $prompt='Eres director artístico 3D. NUEVA PRUEBA INDEPENDIENTE SIN EDITAR. En tu informe anterior afirmaste como hecho verificado que la torre de Valoria original tiene un tejado a dos aguas. Sin embargo solo recibiste descripciones visuales hipotéticas generadas por otra IA. Ahora Blender ha medido en WORLD XYZ la distribución de normales de triángulos inclinados de la zona superior. Estas normales pueden incluir tejas, paredes y adornos, y NO etiquetan tejados. Contexto JSON: '+($roof | ConvertTo-Json -Depth 12 -Compress)+'\nAnaliza: 1) ¿estaba JUSTIFICADA tu certeza anterior de dos aguas? 2) ¿qué evidencia geométrica APORTAN realmente los grupos de normales X+/X-/Y+/Y-? 3) ¿qué inferencias NO puedes hacer sobre la cantidad y naturaleza exacta de vertientes? 4) si observaciones de cámara difieren, ¿debe cambiar el modelo? 5) ¿puedes autorizar una corrección concreta del tejado, o corresponde NO_EDIT? Corrige los errores previos sin inventar contactos. Breve y explícito en español.'
+            $body=@{model='qwen3:14b';stream=$false;think=$false;messages=@(@{role='user';content=$prompt});options=@{temperature=0.1;num_ctx=8192;num_predict=1300}} | ConvertTo-Json -Depth 12
+            $reply=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/chat' -Method Post -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -ContentType 'application/json' -TimeoutSec 330
+            $result=@{schema_version=1;original_sha256=$roof.source_sha256;
+              model='qwen3:14b';rooftype_certified=$false;
+              text=$reply.message.content;corrective_question=$prompt;
+              done=$reply.done;art_approved=$false;any_geometry_edited=$false}
+            $result | ConvertTo-Json -Depth 15 | Out-File (Join-Path $out 'qwen3-14b-roof-independent-correction.json') -Encoding utf8
+            if(-not $reply.done -or [string]::IsNullOrWhiteSpace($reply.message.content)){throw 'Strong director response incomplete'}
+          } finally {
+            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
+          }
+      - name: Preserve original direction measurements and strong director answer
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-14b-roof-orientation-epistemic-check
+          path: ${{ runner.temp }}/eldoria-roof-meaning/
+          if-no-files-found: warn
+          retention-days: 30
