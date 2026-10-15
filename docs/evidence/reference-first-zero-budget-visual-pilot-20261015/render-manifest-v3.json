@@ -1,0 +1,20 @@
+{
+    "stage": "REAL_UNITY_V3_CANONICAL_REFERENCE_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V3/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V3/Imported/LowerGateFamilyV1.glb",
+    "revision": "034d6dbdc3cb00efb105aa55f08374006ab04e88",
+    "frames": [
+        "05-reference-restart-overview.png",
+        "06-reference-restart-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 80,
+    "rockInstances": 37,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
