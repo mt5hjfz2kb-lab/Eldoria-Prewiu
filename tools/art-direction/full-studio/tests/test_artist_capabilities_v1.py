@@ -97,5 +97,31 @@ class ArtistCapabilityBridgeTests(unittest.TestCase):
         self.assertTrue(is_semantically_reviewable(critique))
 
 
+class TransportParityProofTests(unittest.TestCase):
+    def test_same_plan_can_be_compared_without_claiming_art(self):
+        from transport_parity_v1 import compare_manifests
+        baseline = {"transport":"direct","blender_execution":True,
+                    "matched_review_camera":True,"action_count":2,
+                    "execution":[{"op":"sculpt","geometry_changed":True}],
+                    "source_component_geometry":[["tower","abc"]]}
+        via = dict(baseline, transport="blendermcp")
+        result = compare_manifests(baseline, via)
+        self.assertTrue(result["same_action_effects"])
+        self.assertTrue(result["same_component_geometry"])
+        self.assertFalse(result["art_approved"])
+
+    def test_mismatched_geometry_never_gets_parity_pass(self):
+        from transport_parity_v1 import compare_manifests
+        left = {"transport":"direct","blender_execution":True,
+                "matched_review_camera":True,"action_count":1,
+                "execution":[{"geometry_changed":True}],
+                "source_component_geometry":[["tower","hash-one"]]}
+        right = dict(left, transport="blendermcp",
+                     source_component_geometry=[["tower","hash-two"]])
+        result = compare_manifests(left, right)
+        self.assertFalse(result["same_component_geometry"])
+
+
+
 if __name__ == "__main__":
     unittest.main()
