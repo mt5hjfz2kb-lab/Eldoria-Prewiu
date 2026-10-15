@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Test strict evidence gate: reject edits and false proof
+      - name: Test strict evidence gate and unsafe directives
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
