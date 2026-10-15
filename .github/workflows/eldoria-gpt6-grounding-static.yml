@@ -1,4 +1,4 @@
-name: Eldoria GPT6 Grounded Critic And Joinery Offline Regression
+name: Eldoria GPT6 Grounded Critic And Joinery 20 Adversarial Checks
 on:
   push:
     branches:
