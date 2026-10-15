@@ -104,6 +104,10 @@ jobs:
           if ($LASTEXITCODE -eq 0) { Write-Host 'No new lookdev evidence to commit'; exit 0 }
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: real isolated Unity reference-first lookdev frames [skip ci]'
           if ($LASTEXITCODE -ne 0) { throw 'Could not commit isolated real capture evidence' }
+          # Unity may alter already-tracked import metadata and project settings during batchmode.
+          # Discard ONLY unstaged changes in this exclusive isolated checkout after committing pilot evidence.
+          git reset --hard HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot clean tracked Unity side-effects inside isolated pilot checkout' }
           git fetch origin prototype/reference-first-zero-budget-visual-pilot-20261015
           if ($LASTEXITCODE -ne 0) { throw 'Cannot fetch live isolated branch before publishing evidence' }
           git rebase origin/prototype/reference-first-zero-budget-visual-pilot-20261015
