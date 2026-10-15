@@ -3,7 +3,7 @@
 This is an independent safety/verifiability layer, NOT artistic judgment.
 In diagnostic mode it cannot authorize ANY mesh edit or ART_APPROVED state.
 """
-import argparse, hashlib, json, pathlib, sys
+import argparse, hashlib, json, pathlib, sys, re
 
 EXPECTED="e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869"
 ALLOWED_GEOMETRY={"bounding_box.world_dimensions_m","geometry.upper_inclined_surfaces_exist",
@@ -104,6 +104,16 @@ def validate_provenance_diagnostic(answer, grounding):
         must(item.get("mode")=="INSPECT_ONLY", "UNAUTHORIZED_INSPECTION_ACTION")
         must(isinstance(item.get("goal"),str) and len(item["goal"])>=15,
              "INSPECTION_GOAL_MISSING")
+        if item["tool"]=="QWEN_VL_OBSERVATION":
+            visual_goal=item["goal"].casefold()
+            must(not re.search(r"\b(confirmar|certificar|demostrar|probar)\b",
+                               visual_goal),
+                 "VL_OBSERVATION_CANNOT_CERTIFY_GEOMETRY_OR_UNITY")
+            must(not re.search(r"\b(ausencia|no hay|no existe)\b.*"
+                               r"\b(antorchas|material|uv|geometr[ií]a)\b",
+                               visual_goal),
+                 "VL_OBSERVATION_CANNOT_PROVE_SOURCE_ABSENCE")
+
     reason=answer.get("uncertainty")
     must(isinstance(reason,str) and len(reason)>=25, "UNCERTAINTY_NOT_EXPLAINED")
     return {

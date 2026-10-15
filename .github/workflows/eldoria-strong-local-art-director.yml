@@ -106,7 +106,7 @@ jobs:
             if(-not $ready){throw 'Local Ollama not responding'}
             $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
             if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw 'EXISTING_QWEN14B_NOT_INSTALLED_NO_DOWNLOAD'}
-            python tools/art-direction/director-control/strong_local_director.py --grounding (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json') --prior-vision (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json') --prior-director (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/grounded-director-8b.json') --out $out --model qwen3:14b --provenance-calibration
+            python tools/art-direction/director-control/strong_local_director.py --grounding (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json') --prior-vision (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json') --prior-director (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/grounded-director-8b.json') --out $out --model qwen3:14b --provenance-calibration --calibration-smoke
             if($LASTEXITCODE -ne 0){throw 'Local Qwen 14B director diagnosis failed; preserve evidence'}
           } finally {
             if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
