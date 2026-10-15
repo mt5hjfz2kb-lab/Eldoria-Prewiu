@@ -130,6 +130,31 @@ def vision_transport_control(model):
         x.get("recognized_color_pair") for x in record["passes"])
     return record
 
+def single_tower_image_probe(model):
+    """Separate single-image real tower identification from 4-image art reasoning."""
+    picture=images[0]
+    prompt=("Observa esta única fotografía. Describe EN TRES FRASES qué construcción "
+            "se representa, la forma de su parte superior y dos elementos concretos "
+            "que estén visibles en uno de sus laterales. No inventes elementos ocultos.")
+    request_data={"model":model,"stream":False,"think":False,
+         "messages":[{"role":"user","content":prompt,"images":[img_b64(picture)]}],
+         "options":{"temperature":0.0,"num_predict":370,"num_ctx":8192}}
+    req=urllib.request.Request(endpoint+"/api/chat",
+            data=json.dumps(request_data).encode("utf-8"),
+            headers={"Content-Type":"application/json"})
+    with urllib.request.urlopen(req,timeout=300) as response:
+        body=json.load(response)
+    answer=body.get("message",{}).get("content","").strip()
+    content=answer.casefold()
+    is_refusal=any(s in content for s in ["no puedo ver", "no tengo acceso a la visualiz", "sin las imágenes", "sin las imagenes"])
+    specific=any(w in content for w in ["tejado","techo","cubierta","torre","cabaña","caseta"]) and any(
+       w in content for w in ["escalera","barandilla","madera","tronco","tablón","pared","escalones"])
+    return {"image_sha256":sources[0]["sha256"],"raw_response":answer,
+        "raw_sha256":hashlib.sha256(answer.encode()).hexdigest(),
+        "characters":len(answer),"source_image_recognition_plausible":bool(
+          len(answer)>75 and not is_refusal and specific),
+        "refusal":is_refusal,"done_reason":body.get("done_reason")}
+
 for model in models:
     label="4b" if "4b" in model else "8b"
     filename="diagnosis-"+label+".json"
@@ -143,6 +168,12 @@ for model in models:
     else:
         control=vision_transport_control(model)
         record["vision_transport_control"]=control
+        try:
+            tower_probe=single_tower_image_probe(model)
+        except Exception as exc:
+            tower_probe={"source_image_recognition_plausible":False,
+                         "error":str(exc)[:450]}
+        record["single_original_tower_probe"]=tower_probe
         payload={"model":model,"stream":True,"think":False,
                  "messages":[{"role":"system","content":system},
                     {"role":"user","content":task,"images":encoded}],
@@ -164,6 +195,7 @@ for model in models:
             answer="".join(pieces).strip()
             visual_content_present=(done and len(answer)>=300 and
                 control["vision_recognition_demonstrated"] and
+                tower_probe.get("source_image_recognition_plausible",False) and
                 "no puedo ver las imágenes" not in answer.lower() and
                 "no tengo acceso a la visualización" not in answer.lower())
             status="INDEPENDENT_VISUAL_REVIEW_REQUIRED" if visual_content_present else "EMPTY_OR_INSUFFICIENT_VISUAL_DIAGNOSIS"
