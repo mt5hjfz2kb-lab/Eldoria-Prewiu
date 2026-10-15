@@ -611,18 +611,18 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                 placement=verify_qwen_composition(doc,source_inventory,cycle_index)
                 (trial/("multi-part-world-contact-attempt-"+str(attempt_number)+".json")).write_text(
                     json.dumps(placement,indent=2)+"\n",encoding="utf-8")
-                return doc
-            created_name=actions[0]["target"]
-            ns_pattern=rf"^Eldoria_Added_C{cycle_index:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
-            if not re.fullmatch(ns_pattern,created_name):
-                raise RejectedPlan("New Qwen object must use original descriptive suffix with CURRENT CYCLE namespace Eldoria_Added_C%02d_ and must never reuse any inherited source name" % cycle_index)
-            for action in actions[1:]:
-                if action["target"] != created_name:
-                    raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
-            verify_volume_and_complexity(doc,source_inventory)
-            spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
-            (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
-                json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
+            else:
+                created_name=actions[0]["target"]
+                ns_pattern=rf"^Eldoria_Added_C{cycle_index:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
+                if not re.fullmatch(ns_pattern,created_name):
+                    raise RejectedPlan("New Qwen object must use original descriptive suffix with CURRENT CYCLE namespace Eldoria_Added_C%02d_ and must never reuse any inherited source name" % cycle_index)
+                for action in actions[1:]:
+                    if action["target"] != created_name:
+                        raise RejectedPlan("New assembly: all subsequent surface/modifier operations must target the SAME new component named by Qwen's first action")
+                verify_volume_and_complexity(doc,source_inventory)
+                spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
+                (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
+                    json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
         elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh"):
             # Full professional source work still protects the existing real
             # building; only the forced assembly phase used these QA gates
