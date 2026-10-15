@@ -248,7 +248,7 @@ area('Warm late afternoon key',(-5,-5,9),1800,(1,.77,.51),5)
 area('Cool sky fill',(3,5,7),1400,(.47,.66,1),6)
 ld=bpy.data.lights.new('Brazier warm light','POINT');ld.energy=35;ld.color=(1,.25,.04);lo=bpy.data.objects.new('Brazier warm light',ld);bpy.context.collection.objects.link(lo);lo.location=(fx,fy,.85)
 bpy.ops.object.camera_add();cam=bpy.context.object;cam.name='Review camera';cam.data.type='ORTHO';bpy.context.scene.camera=cam
-sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=32;sc.cycles.use_denoising=True;sc.render.image_settings.file_format='PNG';sc.render.film_transparent=False
+sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=64;sc.cycles.use_denoising=False;sc.render.image_settings.file_format='PNG';sc.render.film_transparent=False
 sc.view_settings.view_transform='Standard';sc.view_settings.look='Medium High Contrast';sc.view_settings.exposure=0;sc.view_settings.gamma=1
 def render(name,pos,scale,w,h):
     cam.location=pos;cam.rotation_euler=(Vector((0,.25,1.05))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=scale
