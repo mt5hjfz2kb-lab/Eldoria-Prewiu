@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/eldoria-strong-local-art-director.yml'
       - 'tools/art-direction/director-control/strong_local_director.py'
+      - 'tools/art-direction/director-control/evidence_gate.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -64,7 +65,7 @@ jobs:
             if(-not (Test-Path (Join-Path $env:RUNNER_TEMP "eldoria-prior-grounding/$filename"))){throw "MISSING_ORIGINAL_GROUNDED_EVIDENCE:$filename"}
           }
           if(-not (Test-Path (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json'))){throw 'MISSING_REAL_VISION_EVIDENCE'}
-          python -m py_compile tools/art-direction/director-control/strong_local_director.py tools/art-direction/director-control/selective_memory.py
+          python -m py_compile tools/art-direction/director-control/strong_local_director.py tools/art-direction/director-control/selective_memory.py tools/art-direction/director-control/evidence_gate.py
           if($LASTEXITCODE -ne 0){throw 'DIRECTOR_SELECTIVE_MODULE_SYNTAX_FAILED'}
           $exe=Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe'
           if(-not (Test-Path $exe)){
@@ -82,9 +83,9 @@ jobs:
           }
           if($models){"ELDORIA_OLLAMA_MODELS=$models" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
           }
-      - name: Compare genuine freeform director judgments with and without selective recall
+      - name: Test actual Qwen director UV material facts and read-only artistic inspection plan
         shell: powershell
-        timeout-minutes: 32
+        timeout-minutes: 38
         run: |
           $ErrorActionPreference='Stop'
           $env:OLLAMA_HOST='127.0.0.1:11434'
@@ -105,7 +106,7 @@ jobs:
             if(-not $ready){throw 'Local Ollama not responding'}
             $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
             if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw 'EXISTING_QWEN14B_NOT_INSTALLED_NO_DOWNLOAD'}
-            python tools/art-direction/director-control/strong_local_director.py --grounding (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json') --prior-vision (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json') --prior-director (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/grounded-director-8b.json') --out $out --model qwen3:14b --selective-freeform-diagnostic
+            python tools/art-direction/director-control/strong_local_director.py --grounding (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/spatial-grounding.json') --prior-vision (Join-Path $env:RUNNER_TEMP 'eldoria-prior-vision-evidence/diagnosis-8b.json') --prior-director (Join-Path $env:RUNNER_TEMP 'eldoria-prior-grounding/grounded-director-8b.json') --out $out --model qwen3:14b --provenance-calibration
             if($LASTEXITCODE -ne 0){throw 'Local Qwen 14B director diagnosis failed; preserve evidence'}
           } finally {
             if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
@@ -114,7 +115,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-14b-selective-freeform-director-validation
+          name: eldoria-14b-material-uv-calibration
           path: ${{ runner.temp }}/eldoria-14b-director-candidate/
           if-no-files-found: warn
           retention-days: 30
