@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "review_kind": "INDEPENDENT_BLENDER_VISUAL_REVIEW",
+  "status": "ART_REJECTED",
+  "accepted": false,
+  "calibration_validated": false,
+  "art_approved": false,
+  "run_id": 38692904219,
+  "artifact_id": 11952299150,
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "source_original_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "raw_qwen_sha256": "8bc022da15300605e40d6fca9bc02c8dfff7bd5f9910d61b60fad6e116f3e60a",
+  "execution_plan_sha256": "e27dd0411b56d3b4737fa2909b8dd805831a0a7620ddab40c2afacbbff377c62",
+  "before_png_sha256": "1183770c189eb492a51c1f320f0b2d4ce34493b51a2ce16b213e5d0768c02bf2",
+  "after_png_sha256": "3584d0612f94fe5df268055797dcd66b23e96d7b934e0001b73024d0cded92cc",
+  "camera_sha256": "3b86b1613cd9d515f4af7f1333798c69cd4a1874390a0f558022304c11925ab1",
+  "spatial_evidence": {
+    "authored_new_component_count": 2,
+    "left_brace_center_world_m": [
+      0.3,
+      1,
+      2.5
+    ],
+    "right_brace_center_world_m": [
+      0.3,
+      1,
+      2.5
+    ],
+    "left_brace_half_scale_m": [
+      0.15,
+      0.15,
+      0.8
+    ],
+    "right_brace_half_scale_m": [
+      0.15,
+      0.15,
+      0.8
+    ],
+    "aabb_overlap_fraction": 1,
+    "screen_changed_fraction": 0.0098756
+  },
+  "observed_defect": "Left and right original Qwen roof braces occupy exactly the same XYZ coordinates and dimensions. Genuine fixed-camera render depicts a single wood-colored vertical pole protruding behind roof, not distinct timber structural support. No believable roof-edge contact or visual quality gain.",
+  "independent_review": "Examined actual matched 960x720 Blender PNG before/after, raw model plan and source/world placement proof; never accept solely because 0.98756% of pixels changed.",
+  "severe_regressions": [
+    "Duplicate completely coincident new architectural members",
+    "Unconvincing pole extending behind roof"
+  ],
+  "protected_regions_ok": true,
+  "numeric_scores": "NOT_CLAIMED_FOR_CLEAR_GEOMETRIC_COMPOSITION_FAILURE",
+  "visual_improvement_accepted": false,
+  "weights_updated": false,
+  "unity_verified": false
+}
