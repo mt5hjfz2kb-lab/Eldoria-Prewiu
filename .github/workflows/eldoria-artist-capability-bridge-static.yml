@@ -4,6 +4,7 @@ on:
     branches:
       - diagnostic/eldoria-artist-capability-bridge-20261015
       - diagnostic/eldoria-real-world-contact-context-20261015
+      - diagnostic/valoria-ai-eyes-brain-20261015
     paths:
       - 'tools/art-direction/full-studio/artist_capabilities_v1.py'
       - 'tools/art-direction/full-studio/artist_loop.py'
