@@ -1,0 +1,30 @@
+name: Eldoria Qwen14B director + VL8B genuine eyes + grounded Blender beam static gate
+on:
+  push:
+    branches:
+      - diagnostic/eldoria-grounded-beam-tool-20261015
+    paths:
+      - 'tools/art-direction/full-studio/**'
+      - '.github/workflows/eldoria-artist-beam-and-14b-static-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Free local image library for fixtures
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Validate changed native Blender contracts without Qwen or PC
+        run: |
+          python -m py_compile tools/art-direction/full-studio/artist_loop.py tools/art-direction/full-studio/artist_capabilities_v1.py tools/art-direction/full-studio/contract.py tools/art-direction/full-studio/blender_toolbox.py tools/art-direction/full-studio/professional_source_schema.py tools/art-direction/full-studio/source_geometry_gate.py tools/art-direction/full-studio/architectural_component_guard.py tools/art-direction/full-studio/architectural_world_placement_gate.py
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_qwen14b_grounded_beam_v1.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_artist_capabilities_v1.py' -v
+          python -m unittest discover -s tools/art-direction/full-studio/tests -p 'test_contract.py' -v
+      - name: Declare technical-only gate
+        run: echo 'STATIC_PASS_ONLY — No local inference, Blender geometry, independent art or Unity approval'
