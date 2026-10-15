@@ -468,35 +468,51 @@ def observe_source_with_vl(args,reference,current_image,spatial_views,role,trial
         return json.loads(path.read_text(encoding="utf-8"))
     if not args.vision_model or not current_image:
         raise RuntimeError("TEXT_DIRECTOR_REQUIRES_REAL_BLENDER_VISION")
-    frames=[current_image]+list(spatial_views or [])[:2]
+    # Compare REAL owner destination to REAL current Blender source, without
+    # increasing image count beyond the 3-image local 16k VL8B envelope.
+    frames=[reference,current_image]
+    if spatial_views:
+        frames.append(spatial_views[-1])  # SOURCE side view, not a target
     for frame in frames:
         if not frame.is_file():
-            raise FileNotFoundError("REAL_SOURCE_CAMERA_FRAME_REQUIRED: "+str(frame))
+            raise FileNotFoundError("REAL_SOURCE_OR_STYLE_FRAME_REQUIRED: "+str(frame))
     schema={"type":"object","additionalProperties":False,"properties":{
         "source_material":{"type":"string","minLength":12},
         "source_architecture":{"type":"string","minLength":20},
+        "reference_style_gap":{"type":"string","minLength":25},
+        "priority_visible_zone":{"type":"string","minLength":12},
         "supported_defect":{"type":"string","minLength":25},
         "candidate_attachment_surfaces":{"type":"string","minLength":25},
         "protected_access_roof_stairs":{"type":"string","minLength":20},
         "uncertainties":{"type":"string","minLength":12}},
-        "required":["source_material","source_architecture","supported_defect",
+        "required":["source_material","source_architecture","reference_style_gap",
+                    "priority_visible_zone","supported_defect",
                     "candidate_attachment_surfaces","protected_access_roof_stairs","uncertainties"]}
     actual_images=[image_data(frame,640) for frame in frames]
-    prompt=("Describe the ACTUAL inherited building visible in these genuine Blender "
-        "camera renders, not an imaginary target asset. In order: current hero view, "
-        "WORLD overhead, WORLD side. Do not infer unseen timber/stone, missing roof "
-        "or precise XYZ. Report material, one visible defect worth improving, "
-        "candidate attachment surfaces and protected stairs/door/roof. "
-        "If no demonstrable defect, explicitly say so. All geometric facts "
-        "and face IDs are authoritative only from the separate Blender inventory. "
-        "No art approval and no invented view. JSON only.")
+    prompt=("Analyze THREE genuine images in this exact order: (1) OWNER STYLE "
+        "DESTINATION REFERENCE for Valoria (not the actual source object), "
+        "(2) CURRENT imported Blender watchtower in fixed hero camera, "
+        "(3) CURRENT Blender watchtower side view. Compare destination "
+        "architectural richness, silhouette and coherent timber joinery to the "
+        "REAL existing source. Identify a visible source-to-reference STYLE GAP "
+        "that an original architectural intervention could genuinely close, "
+        "with priority_visible_zone in the current HERO CAMERA. Avoid recommending "
+        "a roof-edge strip or cap if the actual roof already has eaves. "
+        "If there is no demonstrable reference gap, explicitly report none "
+        "without inventing a defect. The neutral GREY Blender inspection "
+        "shader is NOT evidence that this timber source lacks textures. "
+        "Do not hallucinate stone or missing roof. Identify protected door, "
+        "stairs, roof, railings; face IDs and XYZ come ONLY from separately "
+        "measured Blender geometry, never guessed from these pixels. JSON only.")
     result=json.loads(request_ollama(args.endpoint,args.vision_model,
         [{"role":"system","content":"Independent local visual observer; only visual facts in supplied Blender images."},
          {"role":"user","content":prompt,"images":actual_images}],400,timeout=420,schema=schema))
     proof={"vision_model":args.vision_model,"director_model":args.model,
-           "source_camera_sha256":[sha(frame) for frame in frames],
+           "source_camera_sha256":[sha(frame) for frame in frames[1:]],
            "style_reference_sha256":sha(reference),
-           "camera_views":len(frames),"source_image_observed":True,
+           "actual_visual_input_order":["OWNER_STYLE_REFERENCE","CURRENT_BLENDER_HERO","CURRENT_BLENDER_SIDE"][:len(frames)],
+           "camera_views":len(frames)-1,"source_image_observed":True,
+           "style_reference_visually_compared":True,
            "director_image_input":False,"visual_observation":result,
            "art_approved":False}
     path.write_text(json.dumps(proof,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
