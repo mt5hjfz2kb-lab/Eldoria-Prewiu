@@ -76,8 +76,16 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
         + ". Each skill is a design goal. Choose the exact supported operation(s), "
         "actual inspected source object(s), parameters and composition yourself. "
         "Never use skill names or invented 'geometry' as executable op. "
-        "Inspect the resulting mesh and camera after each structural stage; "
-        "do not mistake a changed-pixel threshold for aesthetic approval."
+        "FIRST author exactly the structural action count required by the "
+        "live schema. An op=sculpt with params.delta=[0,0,0] is not sculpting: "
+        "it changes ZERO inherited vertices and is rejected by the actual "
+        "Blender contract. Choose a NONZERO deliberate displacement with "
+        "measured source-space support, or choose extrude, inset or bevel "
+        "on a verified, real source face/edge instead. Never attach a second "
+        "operation that relies on a topology edit before reinspection. "
+        "Do not repack the protected inherited source UV atlas with a generic "
+        "smart UV action. Inspect the resulting mesh and camera after each "
+        "structural stage; do not mistake changed pixels for art quality."
     )
 
 
@@ -181,7 +189,9 @@ def failure_category(error):
         return "INTEGRATION"
     if any(t in s for t in ("unsupported blender operation", "unknown operator",
                              "schema", "invalid json", "unsupported_executor_op",
-                             "rejected_plan", "unsupported blender op")):
+                             "rejected_plan", "unsupported blender op",
+                             "invalid ai sculpt brush", "zero delta",
+                             "zero displacement", "zero sculpt")):
         return "SCHEMA_OR_PLAN"
     if any(t in s for t in ("not_visible", "screen", "invisible", "0.031%",
                              "below pixel")):
