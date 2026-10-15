@@ -17,6 +17,7 @@ from sculpt_scale_contract import conservative_schema_bounds
 from professional_source_schema import source_artist_action_schema, NEW_COMPONENT_PATTERN
 from architectural_component_guard import verify_volume_and_complexity
 from architectural_world_placement_gate import reject_obviously_bad_component_placement
+from assembly_composition_gate import verify_qwen_composition
 from protected_camera_regions import inspect_protected_regions
 import copy, re
 from triangle_budget import check_triangle_growth
@@ -123,7 +124,7 @@ def should_reject_repeated_invisible_plan(document, prior_invisible_signatures):
     return True
 
 
-def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False, excluded_source_ops=None):
+def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='architecture', known_objects=None, source_inventory=None, sequenced_source=False, assembly_source=False, assembly_cycle=0, safe_primitive_fallback=False, excluded_source_ops=None, multi_component_assembly=False):
     # Let a small local visual model choose actual geometry/materials in
     # separate valid Blender MICRO-OPERATIONS. The schema, not a script,
     # prevents incompatible parameter keys from being accepted.
@@ -249,9 +250,21 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
                        "pattern":stage_pattern}
             for v in finishing+optional:
                 v["properties"]["target"]=copy.deepcopy(namespace)
+        if assembly_source and multi_component_assembly:
+            if not structural:raise ValueError("NO_ORIGINAL_CREATOR_TOOLS: redesign strategy")
+            # Two or three ORIGINAL geometric components, each authored by
+            # Qwen; optional material on an earlier, newly created object.
+            actions_schema={"type":"array","minItems":2,"maxItems":4,
+                "prefixItems":[
+                    {"oneOf":copy.deepcopy(structural)},
+                    {"oneOf":copy.deepcopy(structural)},
+                    {"oneOf":copy.deepcopy(structural+finishing)},
+                    {"oneOf":copy.deepcopy(finishing)}]}
         inherited_atlas_only=(not assembly_source and
                               all(obj.get("faces",0)>2500 for obj in source_inventory))
-        if inherited_atlas_only:
+        if assembly_source and multi_component_assembly:
+            pass  # Use the original Qwen multi-object composition schema.
+        elif inherited_atlas_only:
             # No forced material+UV finishing on the dense imported atlas.
             # ONE Qwen-chosen structural op, then genuine Blender reinspection
             # before a separate later cycle can texture a newly made object.
@@ -442,7 +455,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
               "edits; only independent newly authored objects can later "
               "receive safe local material/UV finishing. "
               "All structural values remain chosen by YOU, not a recipe.")
-    if args.source_tool_sequencing and source_exists and args.phase=="full" and not inherited_atlas_only:
+    if args.source_tool_sequencing and source_exists and args.phase=="full" and not inherited_atlas_only and not getattr(args,"multi_component_assembly",False):
         msg+=("\nThis is a staged mesh-edit session on a dense original asset: "
           "the FIRST operation must be ONE geometric operation chosen by YOU "
           + ("(choose a NEW primitive or handcrafted mesh and its dimensions yourself). "
@@ -465,6 +478,22 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
           "An optional THIRD is material, UV or a safe non-global modifier. "
           "This ordering prevents use of stale mesh topology. "
           "All geometry and artistic values are chosen by YOU, never a script.")
+    if getattr(args,"multi_component_assembly",False):
+        msg+=("\nMULTI-PART ORIGINAL QWEN ARTISTIC ASSEMBLY: Choose TWO or "
+              "THREE NEW REAL independent Blender components in the same "
+              "architectural idea — e.g. timber braces supporting a roof "
+              "edge with visible meaningful geometry. YOU choose every real "
+              "shape, WORLD XYZ coordinate, dimensions, rotation and name. "
+              "Each piece must contact the existing frozen Valoria tower "
+              "on all WORLD XYZ axes within measured tolerance; no floating "
+              "slabs or roof-center caps. Use a DIFFERENT descriptive "
+              "Eldoria_Added_Cxx_ name for EVERY original created piece. "
+              "Actions 1 and 2 create new meshes/primitives, action 3 "
+              "may create another original component or finish one already "
+              "created; optional action 4 finishes an earlier new component. "
+              "Never edit original atlas, roof, door or stairs. "
+              "No code prescribes component placement; use current REAL "
+              "source measured bounds and camera views yourself.")
     cycle_index=int(trial.name.removeprefix("cycle-")) if re.fullmatch(r"cycle-[1-9][0-9]*",trial.name) else 1
     previous_rejections=[]
     for previous_attempt in range(1,attempt_number):
@@ -548,7 +577,8 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     actual_schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,
                     known_objects,source_inventory,args.source_tool_sequencing,
                     args.source_build_phase,cycle_index if args.source_build_phase else 0,
-                    topology_fallback,excluded_source_ops)
+                    topology_fallback,excluded_source_ops,
+                    getattr(args,"multi_component_assembly",False))
     submitted=json.dumps({"messages":actual_messages,"schema":actual_schema,
                           "model":args.model},sort_keys=True,separators=(",",":")).encode("utf-8")
     (trial/("actual-qwen-context-attempt-"+str(attempt_number)+".json")).write_text(
@@ -577,6 +607,11 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             actions=doc["actions"]
             if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
                 raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")
+            if getattr(args,"multi_component_assembly",False):
+                placement=verify_qwen_composition(doc,source_inventory,cycle_index)
+                (trial/("multi-part-world-contact-attempt-"+str(attempt_number)+".json")).write_text(
+                    json.dumps(placement,indent=2)+"\n",encoding="utf-8")
+                return doc
             created_name=actions[0]["target"]
             ns_pattern=rf"^Eldoria_Added_C{cycle_index:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
             if not re.fullmatch(ns_pattern,created_name):
@@ -710,6 +745,8 @@ def main():
     p.add_argument("--max-cycles",type=int,default=2)
     p.add_argument("--source-build-phase",action="store_true",
                    help="Qwen chooses a new primitive or custom mesh for attached architecture; no prescribed shape")
+    p.add_argument("--multi-component-assembly",action="store_true",
+                   help="Qwen composes several independent original connected timber geometry parts")
     p.add_argument("--source-tool-sequencing",action="store_true",
                    help="One original Qwen structural choice followed by surface finishing per source-mesh cycle")
     p.add_argument("--max-plan-attempts",type=int,default=5,
@@ -731,6 +768,10 @@ def main():
     p.add_argument("--frozen-original-asset-sha256",
                    help="Original immutable tower SHA, necessary when continuing accepted outputs")
     args=p.parse_args()
+    if args.multi_component_assembly and (not args.source_build_phase
+                                        or not args.source_tool_sequencing
+                                        or args.max_actions<3):
+        raise ValueError("Qwen multi-part mode requires source-build, source sequence and >=3 actions")
     if not 1<=args.max_cycles<=5 or not 1<=args.max_plan_attempts<=6 or not 1<=args.max_actions<=160 or not 1<=args.min_successful_cycles<=args.max_cycles:
         raise ValueError("Cycle/action/minimum-successful-cycle limits")
     if not args.reference.is_file():raise FileNotFoundError("Real owner reference required")
