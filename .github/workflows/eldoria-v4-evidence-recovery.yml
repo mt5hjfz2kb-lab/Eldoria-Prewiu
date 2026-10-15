@@ -1,0 +1,84 @@
+name: "[PILOT] Recover authentic V4 images without another Unity render"
+on:
+  push:
+    branches: [prototype/reference-first-zero-budget-visual-pilot-20261015]
+    paths: [.github/workflows/eldoria-v4-evidence-recovery.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: reference-first-pilot-v4-evidence
+  cancel-in-progress: false
+jobs:
+  recover-exact-frames:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: prototype/reference-first-zero-budget-visual-pilot-20261015
+          filter: blob:none
+          fetch-depth: 3
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            docs/evidence/reference-first-zero-budget-visual-pilot-20261015
+      - uses: actions/download-artifact@v4
+        with:
+          name: reference-first-real-unity-38815982032
+          run-id: 38815982032
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered
+      - name: Verify original bytes and correct ONLY the filename mismatch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,hashlib,struct,json,shutil
+          src=pathlib.Path('recovered')
+          dst=pathlib.Path('docs/evidence/reference-first-zero-budget-visual-pilot-20261015')
+          dst.mkdir(parents=True,exist_ok=True)
+          frames=[
+            ('05-reference-restart-overview.png','07-reference-materials-overview.png','762ece778d09df36b872126c215c2ac0b4f6be4a2a8bf748dfcd1a990092585d'),
+            ('06-reference-restart-close.png','08-reference-materials-close.png','b1d4248e55e769899c963f1d014a66962b0eaf8166fb05648feaa412c51a7ab4')]
+          for old,new,digest in frames:
+              f=list(src.rglob(old))
+              assert len(f)==1,(old,f)
+              payload=f[0].read_bytes()
+              assert hashlib.sha256(payload).hexdigest()==digest,old
+              assert payload[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',payload[16:24])==(1536,1024),old
+              (dst/new).write_bytes(payload)
+              print('ORIGINAL UNITY RENDER VERIFIED:',old,'=>',new,digest)
+          manifests=list(src.rglob('render-manifest-v4.json'))
+          assert len(manifests)==1
+          manifest=json.loads(manifests[0].read_text(encoding='utf-8-sig'))
+          assert manifest['revision']=='6cf5cec0cfa1e4d9f9e4b976dea709f634b644e4'
+          assert manifest['artApproved'] is False and manifest['productionModified'] is False
+          assert manifest['architectureInstances']>=20 and manifest['forestInstances']>=35
+          # Manifest lists intended names (07/08), archived original bytes were incorrectly named (05/06).
+          assert manifest['frames']==[x[1] for x in frames]
+          shutil.copyfile(manifests[0],dst/'render-manifest-v4.json')
+          (dst/'V4_CAPTURE_RECOVERY.md').write_text(
+              '# Authentic Unity V4 screenshots (art NOT approved)\n\n'
+              'Source: exact Windows Unity run [38815982032](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38815982032). '
+              'The native Unity capture stage completed successfully. The original ZIP artifact (ID 12010809200) '
+              'contained PNG bytes under old 05/06 filenames due to a Save() naming mismatch. '
+              'These two original PNGs have been verified by SHA256 and their names corrected to 07/08 without changing a pixel or rerendering.\n\n'
+              '- V4 overview source SHA256: '+frames[0][2]+'\n'
+              '- V4 close source SHA256: '+frames[1][2]+'\n'
+              '- License and art approval remain FALSE.\n'
+              '- First/wide V4 frame shows strong electric-blue pine material regression; closer frame shows green pines. '
+              'Difference appears inside same Unity run and must be diagnosed as a render/material stability problem, not accepted.\n',
+              encoding='utf8')
+          PY
+      - name: Commit original Unity proof only to isolated art branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=docs/evidence/reference-first-zero-budget-visual-pilot-20261015
+          git add "$d/07-reference-materials-overview.png" "$d/08-reference-materials-close.png" "$d/render-manifest-v4.json" "$d/V4_CAPTURE_RECOVERY.md"
+          git diff --cached --quiet && exit 0
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: preserve exact original V4 Unity PNGs verified by hash [skip ci]'
+          git fetch origin prototype/reference-first-zero-budget-visual-pilot-20261015
+          git rebase origin/prototype/reference-first-zero-budget-visual-pilot-20261015
+          git push origin HEAD:prototype/reference-first-zero-budget-visual-pilot-20261015
