@@ -1,3 +1,5 @@
+> **CONTINUACIÓN VERIFICADA — 2026-10-15: DIRECTOR LIBRE REAL CON MEMORIA SELECTIVA.** El director `strong_local_director.py` usa ahora recuperación de hasta dos lecciones verificadas exclusivamente en el modo diagnóstico `--selective-freeform-diagnostic`. Run [38730229017](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38730229017) SUCCESS real Windows: 10/10 inferencias y 10/10 terminaciones normales, SHA de entradas y respuestas comprobados, 0 órdenes de Blender. Roof/contact/cameras conservan NO_EDIT e incertidumbre correcta; la variante sin memoria inventó ausencia de información de materiales pese a existir 1 capa UV y material original en Blender. Selectiva evitó esa negación literal pero omitió citar los metadatos; **NO hay validación de criterio artístico general ni superioridad estadística**. Primera corrida [38728807895](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38728807895) detectó truncamiento a 950 tokens, corregido con `done_reason=stop` y contexto `mesh_provenance`. Producción y edición siguen pausadas. Esta cabecera complementa la comparación binaria histórica de 96 inferencias, que NO se repitió.
+
 > **ESTADO VIGENTE — 2026-10-15: COMPARACIÓN REAL DE MEMORIA SELECTIVA COMPLETADA.** Run [38726028141](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38726028141), 96 inferencias Qwen3 14B en el PC. Sin memoria 32/32; completa 31/32; selectiva 32/32. Se reproduce y evita la regresión `one_mesh`; cero regresiones de DECISIÓN selectiva en esta muestra. No demuestra superioridad sobre baseline ni generalización. Fuente y selector intactos; producción artística pausada. Esta cabecera y la sección final sustituyen los anteriores estados PENDING/BLOCKED, que se conservan como historia. La solicitud actual de creación en la ruta original fue aceptada por los controles normales; el motivo de los rechazos antiguos sigue desconocido.
 
 # ELDORIA — Arquitectura de ojos, geometría y cerebro artístico IA (validación V1)
@@ -983,3 +985,44 @@ Versiones operativas finales:
 - Esto demuestra recuperación del estado desde contexto independiente en la infraestructura actual; no promete acceso permanente de Work ni salud Windows fuera del instante registrado.
 
 **Entrega diagnóstica cerrada:** conectividad real y método de ejecución recuperados; comparación selectiva real completada y evaluada; respuestas preservadas en Git; continuidad reconciliada y comprobada. Se conserva íntegra la pausa de producción y el límite de no superioridad sobre el baseline.
+
+
+
+## Director artístico real — A/B libre con recuperación selectiva y revisión independiente (15-10-2026)
+
+**Scope y titularidad:** solo rama `diagnostic/valoria-ai-eyes-brain-20261015`; se adaptó el director canónico de texto para diagnóstico `tools/art-direction/director-control/strong_local_director.py` existente. No se alteró la familia productiva de Blender, los propietarios de Bastión I / mundo 4X / Unity ni el registro de reservas. El modo por defecto sigue siendo el histórico; `--selective-freeform-diagnostic` activa un modo opt-in aislado, **no integrado en el ejecutor de ediciones**. Con él el mismo modelo Qwen3 14B recibe hechos `Blender WORLD`, observaciones auténticas de `qwen3-vl:8b` explícitamente hipotéticas, y cuando corresponde hasta dos lecciones traídas por el selector existente `selective_memory.recall_context`. Presupuesto 0 €, sin descargas de modelos ni servicios pagos.
+
+### Evidencia reproducible
+
+| Eslabón | Identidad |
+|---|---|
+| Original congelado | `e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869` |
+| JSON Blender real | SHA-256 `93f226d8d389f30a745e0b8c8502c79633caa05c19f379214c231889c6ddf317`; artículo original run [38701710879](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38701710879) |
+| Cámaras de Qwen-VL originales | Run [38699407600](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38699407600) |
+| Director con selección inicialmente conectado | Commit `b21ba19a6efb6548b0c95ab3c4bfdef1aaf94026` |
+| Workflow diagnóst. controlado | Commit `26429a704c2acf4c6adc11a228af786940deb8b3` |
+| A/B libre inicial | Run [38728807895](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38728807895), job `116402183993`, artefacto [11968938719](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38728807895/artifacts/11968938719), JSON SHA-256 `23261aba4a5bb88127b127ea28176a9c34f468f6e09254042c5fb976068c861e` |
+| Corrección procedencia + truncamiento | Commit `d4b0cf1431a0512a572165f60e0f3690b826e1c8` |
+| A/B libre corregido | Run [38730229017](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38730229017), job `116405904854`, artefacto [11969624607](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38730229017/artifacts/11969624607), ZIP SHA-256 `491101b7957c41c5d506d937022250700313de61600f261381b60e1281cde66e`, JSON SHA-256 `04b6703f3908ee2b1f7ac9f7d6c75eafa6575cee7cc4ec0b450ccdac5d5fc18c` |
+
+**Datos originales recuperados y no alterados:** importación con 1 objeto de malla, 11.400 vértices, 5.338 caras, 3.029 islas topológicas, 893 triángulos inclinados superiores, dimensiones WORLD [2.44774,2.65,3.27077] m. El inventario `mesh_provenance` acredita **1 capa UV, 16.014 coordenadas UV y material de origen asignado `EA02_LPNP-Slavika_Colorsheet_v1.png.038`**. Nada de ello certifica calidad o material final en Unity, y no se puede identificar un tejado exacto solo con 893 triángulos.
+
+**Primera ejecución: error de aceptación detectado.** El flujo emitió diez textos y SUCCESS, pero dos textos del caso `overview` terminaron abruptamente en el token 950 aunque `done=true`. El director tampoco incluía `mesh_provenance` en su contexto y emitió afirmaciones incorrectas sobre UV/materiales. Se conservó el artefacto íntegro. El arreglo posterior añadió datos fuente reales, comprobación `done_reason=stop`, reducción del texto solicitado y límite seguro de 1.200 tokens.
+
+**Ejecución corregida: comprobación independiente de integridad.** Fueron **10/10 inferencias**, **10/10 finalizaciones normales**, **10/10 SHA de respuestas y prompts coherentes**, **10/10 prompts con procedencia del material y UV**, cero errores de API y **0 operaciones de Blender**. Los prompts de un mismo caso solo difieren en el sufijo de memoria seleccionada, lo que se comprobó comparando sus bytes. La suma de duraciones de API fue `228,39 s`; no inferir mejora de velocidad de cada brazo, porque los tiempos de primera carga no son comparables.
+
+| Caso libre | Lecciones seleccionadas | Juicio independiente sobre respuestas |
+|---|---:|---|
+| Tejado | 1, índice 2 | Ambos brazos rechazan certificar número de faldones; reclaman segmentación |
+| Contacto | 2, índices 0 y 3 | Ambos rechazan interpretar AABB solapadas como contacto real |
+| Cámaras | 2, índices 0 y 1 | Ambos respetan SHA original e inmutabilidad entre vistas |
+| Materiales | 1, índice 4 | **Fallo residual en baseline:** asegura erróneamente que la geometría no incluye información de materiales/texturas a pesar del material asignado en `mesh_provenance`. La respuesta selectiva distingue materiales *finales* no certificados, sin esa negación categórica; tampoco cita el material bruto específico. **Comprensión incompleta.** |
+| Prioridades generales | 0 | Ambos se abstienen (`NO_EDIT`) sin evidencias visuales suficientes; los prompts son idénticos, pero las respuestas difieren, señal de variabilidad entre inferencias |
+
+**No atribuir causalidad ni aprobar arte:** Las salidas `overview` sin memoria recuperada difieren aun con SHA de prompt idéntico, por lo que cambios cualitativos entre condiciones no prueban efecto de la memoria. Las cinco preguntas son de problemas conocidos y no garantizan generalización. El modelo de texto no hace revisión artística independiente de imágenes ni demuestra creación de obra nivel 8/10. `ART_APPROVED=false`, `CALIBRATION_VALIDATED=false`, `NO_EDIT` mantenido y ninguna orden ejecutable. La validación anterior del selector binario 32/32 selectiva se conserva y no se ha repetido.
+
+### Siguiente paso de calibración sin levantar pausa
+
+**Nuevo fallo específico a someter a criterio externo:** contrastar la extracción positiva de `mesh_provenance` (1 capa UV, 16.014 coordenadas, nombre del material original) con la incertidumbre sobre materiales **definitivos** y sobre existencia de antorchas sin segmentación. Crear evaluación focalizada de afirmaciones abiertas con citas de campos SHA, mínimo contexto necesario y abstención cuando falten datos. Probar con preguntas nuevas y varias ejecuciones para cuantificar consistencia, sin convertir un PASS técnico en calidad artística. No reanudar modelado en Blender hasta nueva orden del propietario; cuando se autorice, exigir torre congelada, A/B de cámara idéntica y revisión independiente según contrato artístico de `main`.
+
+**Retención:** los artefactos completos en GitHub Actions son temporales; conservar la ZIP original, el resumen de revisión y los hashes fuera del almacenamiento efímero antes de su caducidad. Los enlaces de Actions identifican run/job, no hacen aprobación estética.
