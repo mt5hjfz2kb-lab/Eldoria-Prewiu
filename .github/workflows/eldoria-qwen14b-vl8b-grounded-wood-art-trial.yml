@@ -32,7 +32,7 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          ref: 94d02218c73bb40f3ae6ae444fff5434927a0df8
+          ref: bbe5cbb6e925468fead8cecad82868e627f48af7
           path: studio
           persist-credentials: false
           filter: blob:none
