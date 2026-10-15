@@ -459,8 +459,8 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
       +artist_skill_prompt(existing_source=source_exists,phase=args.phase,
                            category=args.asset_category)
       +"\nCurrent asset requested by owner: "+args.brief[:500]
-      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-11800:]
-      +"\nEvidence-ranked verified lessons (not geometry instructions): "+memory[:3500]
+      +"\nVerified existing geometry or actual PREVIOUS cycle feedback: "+history[-7500:]
+      +"\nEvidence-ranked verified lessons (not geometry instructions): "+memory[:2600]
       +"\nUse only YOUR NEW reasoning about the supplied owner reference. "
       "The examples in previous failures are warnings, not templates.")
     if args.source_build_phase and not (args.source_tool_sequencing and source_exists and args.phase=="full"):
