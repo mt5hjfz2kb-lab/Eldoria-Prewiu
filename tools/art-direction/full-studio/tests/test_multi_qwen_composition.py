@@ -13,7 +13,7 @@ def new(name,point,size):
             "reason":"Qwen authored unique physical timber architecture",
             "params":{"shape":"cube","location":point,"rotation":[0,0,0],"scale":size}}
 A=new("Eldoria_Added_C01_TimberWallBrace",[1.10,.90,2.50],[.20,.15,.40])
-B=new("Eldoria_Added_C01_RoofCrossBeam",[.90,-.80,2.35],[.40,.13,.10])
+B=new("Eldoria_Added_C01_RoofCrossBeam",[.90,.80,2.35],[.40,.13,.10])
 
 class MultiQwenArchitecture(unittest.TestCase):
     def test_original_separate_components_can_make_valid_attached_beams(self):
@@ -23,6 +23,11 @@ class MultiQwenArchitecture(unittest.TestCase):
         self.assertFalse(proof["art_approved"])
         self.assertFalse(proof["actual_surface_contact_verified"])
         self.assertEqual(source,[A,B],"Gate must not author or alter the artist's values")
+    def test_two_distant_boxes_each_touching_source_are_not_one_assembly(self):
+        other=new("Eldoria_Added_C01_DistantWallBeam",
+                  [.9,-.80,2.35],[.40,.13,.10])
+        with self.assertRaisesRegex(RejectedPlan,"DISJOINT_NEW_TIMBER_COMPONENTS"):
+            verify_qwen_composition({"actions":[A,other]},SOURCE,1)
     def test_reject_real_float_as_one_of_three_components(self):
         floating=new("Eldoria_Added_C01_BadFlyingWood",[.5,2.5,1.2],[.3,.3,.3])
         with self.assertRaisesRegex(RejectedPlan,"NO_SOURCE_CONTACT_AABB"):
