@@ -109,6 +109,20 @@ class Qwen14BGroundedBeamTests(unittest.TestCase):
         self.assertFalse(pairs[0]["art_approved"])
         self.assertFalse(pairs[0]["geometry_prescribed"])
 
+    def test_visible_wall_pairs_are_grounded_not_preset_brace(self):
+        ob=original()
+        a,b=ob["camera_visible_face_landmarks"][:2]
+        a["world_height_fraction"]=.27
+        b["world_height_fraction"]=.76
+        a["camera_screen_uv"]=[.60,.46]
+        b["camera_screen_uv"]=[.63,.77]
+        b["world_center_m"]=[.18,1.05,2.9]
+        pairs=grounded_beam_pair_facts([ob])
+        self.assertEqual(pairs[0]["candidate_pairs"][0]["visible_evidence_category"],
+                         "visible_wall_support")
+        self.assertEqual(pairs[0]["candidate_pairs"][0]["start_face"],31)
+        self.assertFalse(pairs[0]["geometry_prescribed"])
+
     def test_distinct_local_models_and_actual_picture_bytes(self):
         from PIL import Image
         with tempfile.TemporaryDirectory() as d:
