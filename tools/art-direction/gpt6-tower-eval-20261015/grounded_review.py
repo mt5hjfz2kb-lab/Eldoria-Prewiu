@@ -201,3 +201,48 @@ def validate_identification(data,inventory,hashes):
     result=validate_critique(probe,inventory,hashes)
     return {"status":"IDENTIFICATION_TRUSTED" if result["status"]=="PROVISIONAL_REVIEW_GROUNDED"
          else "IDENTIFICATION_UNRELIABLE","errors":result["errors"]}
+
+def validate_independent_delta(data, stage1_observations):
+    """Critic must not recycle stage1 prose or grade AFTER without BEFORE.
+
+    A passing return is a QUALITY-OF-EVIDENCE gate, NOT an art approval.
+    """
+    errors=[]
+    if not isinstance(data,dict):
+        return {"status":"RUBRIC_UNRELIABLE","errors":["NOT_OBJECT"],"art_approved":False}
+    categories={"silhouette","architectural_contact","materials","style","game_camera"}
+    scores_before=data.get("scores_before")
+    scores_after=data.get("scores")
+    for tag,values in (("BEFORE",scores_before),("AFTER",scores_after)):
+        if (not isinstance(values,dict) or set(values)!=categories or any(
+                type(x) not in (int,float) or not math.isfinite(x) or x<0 or x>10
+                for x in values.values())):
+            errors.append("INVALID_"+tag+"_CATEGORIES")
+    original={item["component_id"]:str(item.get("visual_reason","")).strip().casefold()
+              for item in stage1_observations if isinstance(item,dict)
+              and isinstance(item.get("component_id"),str)}
+    observed=data.get("observations",[])
+    n=0
+    if isinstance(observed,list):
+        for item in observed:
+            if isinstance(item,dict) and item.get("component_id") in original:
+                if str(item.get("visual_reason","")).strip().casefold()==original[item["component_id"]]:
+                    n+=1
+    if n:
+        errors.append("STAGE2_REUSED_STAGE1_DESCRIPTION:"+str(n))
+    reasons=data.get("reasons")
+    if not isinstance(reasons,list) or len(reasons)<2 or any(
+            not isinstance(x,str) or len(x.strip())<25 for x in reasons):
+        errors.append("INSUFFICIENT_EXPLAINED_DELTA")
+    if not isinstance(data.get("uncertainties"),list) or not data["uncertainties"]:
+        errors.append("UNJUSTIFIED_CERTAINTY_WITHOUT_UNITY")
+    if all(isinstance(x,dict) for x in (scores_before,scores_after)):
+        delta=sum((scores_after[k]-scores_before[k])*weight for k,weight
+                 in (("silhouette",.25),("architectural_contact",.25),
+                     ("materials",.20),("style",.20),("game_camera",.10)))
+        if data.get("decision")=="IMPROVED" and delta<=0:
+            errors.append("IMPROVEMENT_WITH_NONPOSITIVE_DELTA")
+    else:delta=None
+    return {"status":"RUBRIC_UNRELIABLE" if errors else "PROVISIONAL_DELTA_GROUNDED",
+            "errors":errors,"weighted_delta":round(delta,4) if delta is not None else None,
+            "art_approved":False}
