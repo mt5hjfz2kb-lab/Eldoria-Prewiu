@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "review_kind": "INDEPENDENT_BLENDER_VISUAL_REVIEW",
+  "status": "ART_REJECTED",
+  "accepted": false,
+  "art_approved": false,
+  "calibration_validated": false,
+  "run_id": 38652707944,
+  "artifact_id": 11935546466,
+  "model": "qwen3-vl:4b-instruct",
+  "original_asset_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "qwen_raw_sha256": "afa5e624a8a10337fa2b110f8908cc73ef74008c3897ea02448af3ed14718f09",
+  "execution_plan_sha256": "a3e2e9c22b3a06e8e28960b086c55af9e3615a1b388de98297306b1763296704",
+  "before_png_sha256": "6683aafbed132f80686f0f44914cadfbcda0782893cc5cadba12d9012da83cdc",
+  "after_png_sha256": "90385c66dac9b04cdf93f0e3a9a6161fe9481cd367a8193825fbfdffe960cf32",
+  "camera_spec_sha256": "3b86b1613cd9d515f4af7f1333798c69cd4a1874390a0f558022304c11925ab1",
+  "original_world_bounds_m": [
+    [
+      -1.22387,
+      -1.325,
+      0
+    ],
+    [
+      1.22387,
+      1.325,
+      3.27077
+    ]
+  ],
+  "added_world_bounds_m": [
+    [
+      0.2,
+      2.2,
+      0.9
+    ],
+    [
+      0.8,
+      2.8,
+      1.5
+    ]
+  ],
+  "detached_axis_gap_m": {
+    "x": 0,
+    "y": 0.875,
+    "z": 0
+  },
+  "observed_before": "Actual Blender source watchtower timber roof with existing stairs and entrance, no separate floating box",
+  "observed_after": "A plainly separated beige box hovers next to roof, unsupported by original timber walls/eave; no improved physical medieval architecture, silhouette coherence or contact",
+  "independent_diagnosis": "Qwen4B claimed there were no defects, but genuine same-camera PNGs display a detached 0.6 m cube floating 0.875 m beyond source WORLD Y bounds. It is a new spatial-composition defect. Pixel-change fraction 0.0338064 is visibility only, not aesthetic improvement.",
+  "severe_regressions": [
+    "New visible floating disconnected object"
+  ],
+  "protected_regions_ok": true,
+  "numeric_scores": "NOT_CLAIMED_FOR_OBVIOUS_STRUCTURAL_REJECTION",
+  "independent_review": "visual analysis of downloaded original matched-camera PNGs, geometry source inspection JSON and raw Qwen authored plan",
+  "source_unchanged": true,
+  "model_weights_updated": false
+}
