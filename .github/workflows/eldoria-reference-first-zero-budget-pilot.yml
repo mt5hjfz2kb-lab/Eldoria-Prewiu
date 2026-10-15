@@ -41,7 +41,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: reference-first-isolated-checkout
-          clean: true
+          # Preserve only this pilot's local Unity/Library import cache between runs.
+          # The checkout is already isolated from Bastion, World4X and all other jobs.
+          # Removing Library on every run previously caused lengthy repeated reimports.
+          clean: false
           fetch-depth: 2
           filter: blob:none
           sparse-checkout: |
