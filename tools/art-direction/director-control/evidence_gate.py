@@ -54,6 +54,68 @@ def validate(proposal,grounding,original_observation):
             "checked_proposals":proven,"can_edit_blender":False,"art_approved":False,
             "independent_artistic_verdict":"NOT_ISSUED"}
 
+def validate_provenance_diagnostic(answer, grounding):
+    """Independent, fail-closed ground-truth check for Qwen artistic *diagnosis*.
+
+    Compare the model's affirmative factual assertions with original Blender
+    mesh provenance. A well-formed response cannot authorize mesh edits.
+    This is not aesthetic approval: inspections are proposals for later review.
+    """
+    must(isinstance(answer, dict), "PROVENANCE_ANSWER_NOT_JSON_OBJECT")
+    must(grounding.get("source_sha256")==EXPECTED, "PROVENANCE_SOURCE_SHA_MISMATCH")
+    must(grounding.get("immutable_source_verified") is True, "PROVENANCE_SOURCE_NOT_FROZEN")
+    must(grounding.get("all_cameras_same_exact_source_sha256") is True, "PROVENANCE_CAMERAS_NOT_SAME_SOURCE")
+    meshes=grounding.get("mesh_provenance")
+    must(isinstance(meshes,list) and len(meshes)==1, "PROVENANCE_MESH_INVENTORY_INVALID")
+    mesh=meshes[0]
+    exact={
+        "source_has_uv":mesh["uv_layer_count"]>0,
+        "uv_layer_count":mesh["uv_layer_count"],
+        "uv_coordinates":mesh["uv_coordinates"],
+        "source_has_assigned_material":len(mesh["materials"])>0,
+        "assigned_source_material":mesh["materials"][0],
+        "original_mesh_object_count":grounding["geometry"]["mesh_object_count"],
+        "topological_island_count":grounding["connected_island_count"]
+    }
+    for key,value in exact.items():
+        must(key in answer and type(answer[key]) is type(value) and answer[key]==value,
+             "PROVENANCE_FACT_MISMATCH:"+key)
+    for key in ("final_unity_material_certified","torches_in_source_proven",
+                "roof_type_proven","physical_contacts_proven","model_edit_authorized",
+                "art_approved"):
+        must(answer.get(key) is False, "UNSUPPORTED_CERTAINTY_OR_EDIT:"+key)
+    must(answer.get("decision")=="NO_EDIT", "DIAGNOSIS_MUST_NOT_EDIT")
+    cites=answer.get("evidence_paths")
+    must(isinstance(cites,list) and all(isinstance(x,str) for x in cites),
+         "PROVENANCE_CITATIONS_INVALID")
+    for key in ("mesh_provenance[0].uv_layer_count",
+                "mesh_provenance[0].uv_coordinates",
+                "mesh_provenance[0].materials[0]",
+                "geometry.mesh_object_count",
+                "connected_island_count"):
+        must(key in cites,"PROVENANCE_FIELD_CITATION_MISSING:"+key)
+    plan=answer.get("read_only_inspection_plan")
+    must(isinstance(plan,list) and 1<=len(plan)<=3,
+         "INSPECTION_PLAN_REQUIRED_AND_BOUNDED")
+    for item in plan:
+        must(isinstance(item,dict) and item.get("tool") in
+             ("BLENDER_READ_ONLY","QWEN_VL_OBSERVATION","INDEPENDENT_REVIEW"),
+             "UNAUTHORIZED_DIAGNOSTIC_TOOL")
+        must(item.get("mode")=="INSPECT_ONLY", "UNAUTHORIZED_INSPECTION_ACTION")
+        must(isinstance(item.get("goal"),str) and len(item["goal"])>=15,
+             "INSPECTION_GOAL_MISSING")
+    reason=answer.get("uncertainty")
+    must(isinstance(reason,str) and len(reason)>=25, "UNCERTAINTY_NOT_EXPLAINED")
+    return {
+       "status":"PROVENANCE_DIAGNOSTIC_TECH_PASS_NOT_ART_APPROVAL",
+       "original_source_sha256":EXPECTED,
+       "checked_grounded_fields":len(exact),
+       "checked_citations":5,
+       "read_only_inspections":len(plan),
+       "can_edit_blender":False,
+       "art_approved":False
+    }
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--proposal",required=True)
