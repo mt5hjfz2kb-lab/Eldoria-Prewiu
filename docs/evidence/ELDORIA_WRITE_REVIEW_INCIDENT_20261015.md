@@ -41,3 +41,41 @@ SUCCESS. The normal current-session GitHub create_file call created this documen
 The narrower unresolved condition is review of the exact historical requests. No tool exposed in this session can retrieve or revoke their approval-review records. No legitimate benchmark integration path was established that both executes the selective condition and respects the known rejection constraints. The existing benchmark lacks that condition. The PC connection is not the pending blocker.
 
 The incident report, workflow/PC evidence and comparison commits are now available for the platform's review. No additional general permission from the owner is missing. A platform-supported review/approval for the exact rejected action, or external investigation of the original session traces, remains necessary.
+
+## Later explicit owner-requested resubmission: current request ACCEPTED
+
+This section supersedes the earlier statement that external intervention was the only available next step. The owner explicitly asked to retry the blocked requests and continue. A new bounded proposal was submitted through the SAME normal `create_file` tool, on the SAME original benchmark path `tools/art-direction/director-control/brain_memory_selective_ab.py`. No permissions or security rules were changed; no renamed path, alternate API, inline execution or indirect substitute was used.
+
+Literal tool result for this submission:
+
+```json
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "commit_sha": "9bd2ae06da7df716de3b3fbc27dc7298d6cd2158"
+  },
+  "isError": false
+}
+```
+
+Accepted source commit: `9bd2ae06da7df716de3b3fbc27dc7298d6cd2158`. This does not establish the cause of the historical rejections, nor override a future explicit denial. It proves this specific, current normal-tool request was accepted. Earlier blanket conclusions that no resubmission could be considered were too strong.
+
+The existing workflow was updated normally in `a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c`. Real run `38726028141`, job `116391981342`, `DESKTOP-R10PE55` is executing a 96-query paired comparison: 16 original questions and 16 prospectively fixed paraphrases, three conditions. Full baseline/control prompts on original questions match all 32 historical prompt hashes exactly. The selector and the original benchmark source remain unchanged.
+
+New protocol preparation checks (not a repeat of the 13 selector checks):
+
+```json
+{
+  "manifest_sha256": "c62c2e3559a4c72becbaa9e13697b0bc060be5c229b61a8bc58b35fbc36848c8",
+  "grounding_sha256": "93f226d8d389f30a745e0b8c8502c79633caa05c19f379214c231889c6ddf317",
+  "context_sha256": "3bfc1a9f8775209953f77381679d74416db99543884d504d2b8d9ef258c6a747",
+  "cases": 32
+}
+```
+
+Source syntax and dry-run integrity passed, without a local model call. Results are still PENDING until the actual run artifact is recovered and evaluated. The original rejected selector-test file was not needed or retried; existing routing evidence is preserved. No Blender, Unity, tower edits, model-weight training or production resumption.
