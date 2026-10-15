@@ -4,10 +4,14 @@
     "heroPath": "Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx",
     "treePath": "Assets/Eldoria/Resources/WorldInventory/Tree01A.prefab",
     "cliffPath": "Assets/Eldoria/Resources/Valoria/SM_Cliffs_01.prefab",
+    "gatePath": "Assets/Eldoria/Resources/Valoria/Stone_Gate.prefab",
+    "wallPath": "Assets/Eldoria/Resources/Valoria/Stone_Wall.prefab",
     "heroRenderers": 13,
     "treeInstances": 22,
     "cliffInstances": 14,
     "rockInstances": 11,
+    "gatewayInstances": 2,
+    "wallInstances": 4,
     "placeholderRoadTiles": 15,
     "width": 1536,
     "height": 1024,
@@ -17,5 +21,5 @@
     ],
     "licenseVerified": false,
     "artApproved": false,
-    "sourceCommit": "d35aa1126cc316514ebab2b593c99e35635fd2b1"
+    "sourceCommit": "b5133dd5abf73ed1747f5464f25ff1bb7e749406"
 }
