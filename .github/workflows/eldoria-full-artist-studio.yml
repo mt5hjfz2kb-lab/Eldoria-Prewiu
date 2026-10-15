@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - art/eldoria-full-blender-artist-studio-20261014
+      - fix/eldoria-artist-eave-contact-visual-learning-20261015
     paths:
       - 'tools/art-direction/full-studio/**'
       - '.github/workflows/eldoria-full-artist-studio.yml'
@@ -36,6 +37,9 @@ jobs:
       - name: Prove review-camera FACE IDs in actual Blender ray casts
         run: |
           blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/tests/prove_visible_faces_blender.py
+      - name: Prove ACTUAL inherited Blender surface contact, not loose AABB
+        run: |
+          blender -b --factory-startup --python-exit-code 1 --python tools/art-direction/full-studio/tests/prove_real_surface_contact_blender.py
       - name: Execute twenty-six real independent Blender modelling operations
         run: |
           blender -b --python-exit-code 1 --python tools/art-direction/full-studio/blender_toolbox.py -- \
