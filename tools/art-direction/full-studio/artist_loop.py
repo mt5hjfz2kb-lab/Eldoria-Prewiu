@@ -564,8 +564,13 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             {"name":obj["name"],
              "faces":[{"id":i["face_index"],
                        "screen_uv":i["camera_screen_uv"],
+                       "world_xyz_m":i["world_center_m"],
                        "height":i["world_height_fraction"]}
-                      for i in obj.get("camera_visible_face_landmarks",[])[:24]]}
+                      for i in obj.get("camera_visible_face_landmarks",[])[:24]
+                      if i.get("camera_visible") is True
+                      and i.get("camera_ray_hit_original_face") is True
+                      and isinstance(i.get("world_center_m"),list)
+                      and len(i["world_center_m"])==3]}
             for obj in source_inventory
             if obj.get("camera_visible_face_landmarks")]
         if camera_facts:
@@ -573,7 +578,17 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                   json.dumps(camera_facts,ensure_ascii=False)[:5000]+
                   "\nFor extrude/inset choose face ID with the desired on-screen "
                   "location from these verified camera hits. Hidden faces "
-                  "from old local percentile sampling cannot improve this view.")
+                  "from old local percentile sampling cannot improve this view. "
+                  "Each world_xyz_m is the VERIFIED camera-ray-hit WORLD surface "
+                  "position in metres, not a model-generated guess. For new "
+                  "geometry YOU select the artistic geometry, pose and size "
+                  "relative to these contact landmarks. The new object's "
+                  "WORLD bounding box must touch the original model's WORLD "
+                  "bounds on ALL X/Y/Z axes; any gap over 0.049m is rejected, "
+                  "not silently repositioned. For roof/eaves use real elevated "
+                  "WORLD Z hits and the actual scene bounds: WORLD Y is depth, "
+                  "not height. Do not pick generic roof positions like y=2 "
+                  "when the inspected source ends at y=1.325.")
     edge=getattr(args,"vision_max_edge",1024)
     if source_exists and source_inventory:
         # Replace a giant truncated inventory with SHORT trustworthy local
