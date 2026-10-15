@@ -53,10 +53,16 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'BRAIN_BENCHMARK_TESTS_FAILED'}
           python -m unittest discover -s tools/art-direction/director-control -p test_memory_regression_gate.py -v
           if($LASTEXITCODE -ne 0){throw 'MEMORY_GATE_TESTS_FAILED'}
-      - name: Start previously installed Ollama if needed
+      - name: Run read-only paired diagnosis with Ollama alive in same Windows step
         shell: powershell
+        timeout-minutes: 95
         run: |
           $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-memory-ab'
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-spatial'
+          $geo=Get-ChildItem $root -Recurse -Filter spatial-grounding.json | Select-Object -First 1
+          if(-not $geo){throw 'REAL_SPATIAL_GROUNDING_NOT_FOUND'}
           $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
           if(-not (Test-Path $exe)){
             $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue | ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
@@ -68,30 +74,31 @@ jobs:
           }
           if($models){$env:OLLAMA_MODELS=$models}
           $env:OLLAMA_HOST='127.0.0.1:11434'
-          $ready=$false
-          try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
-          if(-not $ready){
-            $log=Join-Path $env:RUNNER_TEMP 'eldoria-ollama-memory'
-            New-Item -ItemType Directory -Force -Path $log | Out-Null
-            Start-Process -FilePath $exe -ArgumentList 'serve' -WindowStyle Hidden -RedirectStandardOutput (Join-Path $log 'stdout.log') -RedirectStandardError (Join-Path $log 'stderr.log') | Out-Null
-            for($i=0;$i -lt 40;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+          $env:OLLAMA_NUM_PARALLEL='1'
+          $env:OLLAMA_MAX_LOADED_MODELS='1'
+          $server=$null
+          try {
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+              for($i=0;$i -lt 40;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+            }
+            if(-not $ready){throw 'OLLAMA_NOT_RESPONDING_SAME_STEP'}
+            $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
+            if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw 'EXISTING_QWEN14B_NOT_FOUND_NO_DOWNLOAD'}
+            $cs=Get-CimInstance Win32_ComputerSystem
+            $gpu=$null
+            try{$gpu=(& nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits 2>$null | Select-Object -First 1)}catch{}
+            @{physical_ram_bytes=$cs.TotalPhysicalMemory;gpu_inventory=$gpu;model='qwen3:14b';observed_utc=(Get-Date).ToUniversalTime().ToString('o')} |
+              ConvertTo-Json -Depth 4 | Out-File (Join-Path $out 'windows-hardware.json') -Encoding utf8
+            python tools/art-direction/director-control/brain_memory_ab.py --grounding $geo.FullName --out (Join-Path $out 'paired.json') --model qwen3:14b
+            if($LASTEXITCODE -ne 0){throw 'QWEN_AB_EXECUTION_FAILED'}
+            python tools/art-direction/director-control/memory_regression_gate.py --input (Join-Path $out 'paired.json') --out (Join-Path $out 'gate.json')
+            if($LASTEXITCODE -ne 0){throw 'MEMORY_REGRESSION_DETECTED'}
+          } finally {
+            if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}
           }
-          if(-not $ready){throw 'OLLAMA_NOT_RESPONDING'}
-          $tags=Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20
-          if('qwen3:14b' -notin @($tags.models | ForEach-Object {$_.name})){throw 'EXISTING_QWEN14B_NOT_FOUND_NO_DOWNLOAD'}
-      - name: Run read-only 14B paired reasoning
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP 'eldoria-spatial'
-          $geo=Get-ChildItem $root -Recurse -Filter spatial-grounding.json | Select-Object -First 1
-          if(-not $geo){throw 'REAL_SPATIAL_GROUNDING_NOT_FOUND'}
-          $out=Join-Path $env:RUNNER_TEMP 'eldoria-memory-ab'
-          New-Item -ItemType Directory -Force -Path $out | Out-Null
-          python tools/art-direction/director-control/brain_memory_ab.py --grounding $geo.FullName --out (Join-Path $out 'paired.json') --model qwen3:14b
-          if($LASTEXITCODE -ne 0){throw 'QWEN_AB_EXECUTION_FAILED'}
-          python tools/art-direction/director-control/memory_regression_gate.py --input (Join-Path $out 'paired.json') --out (Join-Path $out 'gate.json')
-          if($LASTEXITCODE -ne 0){throw 'MEMORY_REGRESSION_DETECTED'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
