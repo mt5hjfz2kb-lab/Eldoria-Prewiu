@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/eldoria-isolated-tower-copy-art-calibration.yml'
       - 'tools/art-direction/director-control/tower_copy_art_trial.py'
+      - 'tools/art-direction/director-control/tower_source_refinement.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -93,11 +94,11 @@ jobs:
           if(-not $exe -or -not (Test-Path $exe)){throw 'KNOWN_WINDOWS_BLENDER_NOT_FOUND'}
           "ELDORIA_BLENDER_BIN=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
           & $exe --version | Select-Object -First 2
-          python -m py_compile trial/tools/art-direction/director-control/tower_copy_art_trial.py
+          python -m py_compile trial/tools/art-direction/director-control/tower_copy_art_trial.py trial/tools/art-direction/director-control/tower_source_refinement.py
           if($LASTEXITCODE -ne 0){throw 'ART_TRIAL_SCRIPT_SYNTAX_INVALID'}
           python -m pip install --disable-pip-version-check --quiet pillow
           if($LASTEXITCODE -ne 0){throw 'FREE_IMAGE_DEPENDENCY_NOT_AVAILABLE'}
-      - name: One Qwen14B-to-existing-Blender-studio trial on immutable tower COPY
+      - name: Source-mesh Qwen14B artist correction through existing Blender toolbox on frozen COPY
         shell: powershell
         timeout-minutes: 68
         run: |
@@ -132,7 +133,7 @@ jobs:
             foreach($needed in @('qwen3:14b','qwen3-vl:8b-instruct-q4_K_M')){
               if($needed -notin $available){throw "INSTALLED_MODEL_NOT_FOUND: $needed"}
             }
-            $argv=@('trial/tools/art-direction/director-control/tower_copy_art_trial.py',
+            $argv=@('trial/tools/art-direction/director-control/tower_source_refinement.py',
               '--original','frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb',
               '--reference','frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',
               '--spatial',(Join-Path $env:RUNNER_TEMP 'eldoria-tower-art-spatial/spatial-grounding.json'),
