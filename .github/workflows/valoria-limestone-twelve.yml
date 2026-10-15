@@ -1,0 +1,81 @@
+name: "[ART LIMESTONE] Twelve individual phototextured historic masonry assets"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-limestone-twelve.yml'
+      - 'tools/valoria-modular-fortress/limestone_twelve_individual.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-twelve-limestone-pbr
+  cancel-in-progress: false
+jobs:
+  finish-twelve:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 110
+    steps:
+      - name: Find Git and Blender
+        shell: powershell
+        id: deps
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/pbr-twelve-base
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-38823501643
+          run-id: 38823501643
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/pbr-twelve-maps
+      - name: Execute 12 independent GLBs plus matching camera views
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'pbr-twelve-base\eldoria-upgrade63\glb'
+          $maps=Join-Path $env:RUNNER_TEMP 'pbr-twelve-maps'
+          $dst=Join-Path $env:RUNNER_TEMP 'eldoria-twelve-limestone'
+          if(-not(Test-Path (Join-Path $src 'arch_complete_major.glb'))){throw 'Missing old arch source'}
+          if(-not(Test-Path (Join-Path $maps 'rock_3_diffuse.jpg'))){throw 'Missing CC0 PBR image'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/limestone_twelve_individual.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-pbr-twelve.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-pbr-twelve.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-pbr-twelve.err'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$maps,$dst) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 110 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender PBR twelve failed $($proc.ExitCode)"}
+          foreach($fld in @('glb','before','after')){
+            $c=(Get-ChildItem (Join-Path $dst $fld) -File).Count
+            if($c -ne 12){throw "Expected 12 $fld, got $c"}
+          }
+      - name: Preserve real Blender output with failures visible
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-twelve-limestone-cc0-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-twelve-limestone/**
+            ${{ runner.temp }}/eldoria-pbr-twelve.log
+            ${{ runner.temp }}/eldoria-pbr-twelve.err
+          if-no-files-found: warn
+          retention-days: 30
