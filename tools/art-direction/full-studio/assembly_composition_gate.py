@@ -9,8 +9,7 @@ import json
 import re
 from contract import RejectedPlan
 from architectural_component_guard import verify_volume_and_complexity
-from architectural_world_placement_gate import (reject_obviously_bad_component_placement,
-    _aabb_from_original_art)
+from architectural_world_placement_gate import reject_obviously_bad_component_placement
 
 def verify_qwen_composition(doc, source_inventory, cycle_index):
     actions=doc.get("actions",[])
@@ -20,7 +19,7 @@ def verify_qwen_composition(doc, source_inventory, cycle_index):
     created=set();proofs=[];component_boxes=[]
     for i,act in enumerate(actions,1):
         kind=act.get("op"); name=act.get("target","")
-        if kind in ("primitive","mesh"):
+        if kind in ("primitive","mesh","beam_between_faces"):
             if not re.fullmatch(namespace,name) or name in created:
                 raise RejectedPlan(
                     f"Qwen component {i}: unique ORIGINAL C{cycle_index:02d} name required")
@@ -28,7 +27,10 @@ def verify_qwen_composition(doc, source_inventory, cycle_index):
             verify_volume_and_complexity(single,source_inventory)
             proof=reject_obviously_bad_component_placement(single,source_inventory)
             created.add(name)
-            component_boxes.append(_aabb_from_original_art(act))
+            # A real anchored beam obtains its WORLD AABB from source face
+            # geometry; arbitrary primitive/mesh uses the same common proof.
+            # Do not call the primitive-only bbox converter on a beam.
+            component_boxes.append(tuple(proof["new_world_bounds"]))
             proofs.append({"target":name,"op":kind,
                            "contact":proof,"world_source_unchanged":True})
         elif kind in ("material","uv","modifier"):
@@ -38,8 +40,8 @@ def verify_qwen_composition(doc, source_inventory, cycle_index):
                     "earlier component in THIS composition; preserve original tower")
         else:
             raise RejectedPlan(
-                "Multi-part architecture Qwen may only choose native new "
-                "primitive/mesh plus safe finishing on newly created objects")
+                "Multi-part architecture Qwen may only choose real new "
+                "primitive/mesh/beam_between_faces plus safe finishing on new objects")
     if len(created)<2:
         raise RejectedPlan(
             "Single primitive is not an original multi-part timber assembly. "

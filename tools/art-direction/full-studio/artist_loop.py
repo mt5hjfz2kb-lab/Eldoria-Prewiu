@@ -9,7 +9,7 @@ import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urll
 from contract import validate_plan, RejectedPlan, safe_action_id
 from artist_capabilities_v1 import (artist_skill_prompt, strict_preflight_plan,
     check_source_environment, visual_intent_payload, is_semantically_reviewable,
-    failure_category, source_contact_facts)
+    failure_category, source_contact_facts, grounded_beam_pair_facts)
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from artistic_quality_gate import (stage_visual_request,validate_independent_review,
                                  append_accepted,status as visual_calibration_status)
@@ -91,7 +91,7 @@ def creator_hypothesis_exhausted(assembly_mode, excluded_ops):
     Never resurrect a twice-rejected creator merely to generate an asset.
     The next independent study should change artistic approach or model.
     """
-    return bool(assembly_mode and {"primitive","mesh"}.issubset(set(excluded_ops or set())))
+    return bool(assembly_mode and {"primitive","mesh","beam_between_faces"}.issubset(set(excluded_ops or set())))
 
 
 def rejected_plan_family(raw_file):
@@ -247,7 +247,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
         # finish the mesh before any operations relying on its changed topology.
         tools=action["oneOf"]
         structural=[v for v in tools if v["properties"]["op"]["const"]
-                    in (("primitive","mesh") if assembly_source else
+                    in (("primitive","mesh","beam_between_faces") if assembly_source else
                         ("sculpt_anchor","sculpt","extrude","inset","bevel","primitive","mesh"))]
         if excluded_source_ops:
             structural=[v for v in structural
@@ -265,7 +265,7 @@ def schema_for_plan(max_actions=6, source_exists=False, phase='full', category='
                 # A rejected handcrafted open mesh may elect the *other* real
                 # tool, but NEVER reinstate an operation blocked after two
                 # independent invalid attempts under the owner contract.
-                structural=[v for v in structural if v["properties"]["op"]["const"]=="primitive"]
+                structural=[v for v in structural if v["properties"]["op"]["const"] in ("primitive","beam_between_faces")]
             stage_pattern=(rf"^Eldoria_Added_C{assembly_cycle:02d}_[A-Za-z][A-Za-z0-9_]{{3,35}}$"
                            if assembly_cycle else NEW_COMPONENT_PATTERN)
             for variant in structural:
@@ -343,6 +343,16 @@ def contract_brief(max_actions,source_exists=False,phase="full",category="archit
         return base+"CREATE static humanoid blockout geometry only, proportions chosen by YOU. Do not pretend there is rigging/animation. Every op=primitive with shape,location,rotation,scale."
     if not source_exists:
         return base+"EMPTY scene: asset_decision=NEW, every op=primitive. Each has params EXACTLY {shape:cylinder|cone|cube|uv_sphere|ico_sphere,location:[x,y,z],rotation:[0,0,0],scale:[sx,sy,sz]}. Model a separate, vertically aligned masonry body and believable roof. Do not bury objects, offset roof or overlap identical solids. All parts must be original and camera-visible."
+    if source_exists and phase=="full" and category=="architecture":
+        base+=(" Professional Blender carpentry tool beam_between_faces: "
+               "Qwen chooses one NEW object name, an exact existing source "
+               "object, TWO DISTINCT camera-ray-hit original face indices "
+               "start_face and end_face, plus width_m and depth_m 0.10..0.45. "
+               "Blender connects those measured polygon centers as an oriented "
+               "SOLID beam. Qwen still selects the actual placement by face "
+               "IDs, proportions and artistic purpose. No invented mesh "
+               "vertices, no premade geometry composition. Use only when "
+               "source evidence supports a useful connected timber brace.")
     if phase=="mesh_edit":
         return base+"REAL SOURCE MESH EDIT ONLY: every op=sculpt_anchor, target MUST match the literal existing object name (including a middle dot, if any). For EACH action params EXACTLY {anchor:x_min|x_max|y_min|y_max|z_min|z_max,direction:+X|-X|+Y|-Y|+Z|-Z,distance:small positive METERS relative to measured WORLD dimensions,radius:small LOCAL brush in METERS according to actual source size}. WORLD-SPACE BRUSH: Blender WORLD +Z means physically upward even if imported GLB LOCAL +Y is aligned with WORLD +Z. The brush direction, distance and radius are in WORLD axes and physical metres; only the anchor vertex is chosen from LOCAL EXTREMA. INHERITED VERTEX EDIT: Read inspected local_bounds_min_m / local_bounds_max_m and LOCAL EXTREMA and the owner reference: decide which SOURCE extremum is artistically defective and which direction, distance and radius would improve its silhouette. The executor will resolve the chosen extremal vertex in actual Blender geometry and deform nearby inherited vertices. NO zero delta, NO new primitives, NO fake object transforms. Make a substantial but controlled visible silhouette edit at a landmark consistent with the reference. Preserve recognisable architecture; choose direction and impact deliberately rather than minimum values. Every action must make a visible source-mesh change; do not repeat identical actions."
     if phase=="geometry":
@@ -446,6 +456,92 @@ def invalid_mesh_requires_tool_fallback(rejection_reasons):
             "COPLANAR","insufficient X/Y/Z volume","noncollinear")
     return any(any(label in reason for label in labels) for reason in rejection_reasons)
 
+
+def observe_source_with_vl(args,reference,current_image,spatial_views,role,trial):
+    """Use independent Qwen-VL8B observations on SOURCE and STYLE separately.
+
+    A mixed-image request led VL8B to claim that no building was present
+    (#38780427364). Never pass such hallucination to Qwen14B as a source fact.
+    Two bounded local VL calls avoid target/source image identity confusion.
+    Results are evidence observations, not an artistic pass or geometry proof.
+    """
+    path=trial/"vision-source-observation.json"
+    if path.is_file():
+        return json.loads(path.read_text(encoding="utf-8"))
+    if not args.vision_model or not current_image:
+        raise RuntimeError("TEXT_DIRECTOR_REQUIRES_REAL_BLENDER_VISION")
+    source_frames=[current_image]+list(spatial_views or [])[:2]
+    for frame in [reference]+source_frames:
+        if not frame.is_file():
+            raise FileNotFoundError("GENUINE_SOURCE_OR_OWNER_IMAGE_REQUIRED: "+str(frame))
+    source_schema={"type":"object","additionalProperties":False,"properties":{
+        "source_material":{"type":"string","minLength":12},
+        "source_architecture":{"type":"string","minLength":20},
+        "supported_defect":{"type":"string","minLength":25},
+        "candidate_attachment_surfaces":{"type":"string","minLength":25},
+        "protected_access_roof_stairs":{"type":"string","minLength":20},
+        "uncertainties":{"type":"string","minLength":12}},
+        "required":["source_material","source_architecture","supported_defect",
+                    "candidate_attachment_surfaces","protected_access_roof_stairs","uncertainties"]}
+    source_prompt=(
+        "These THREE genuine images show ONLY the actual inherited Blender "
+        "SOURCE, in order: fixed game hero camera, WORLD TOP, WORLD SIDE. "
+        "Describe the physically visible log-cabin/timber watchtower, roof, "
+        "wall geometry, staircase and railings accurately. What changes "
+        "would make its silhouette or architectural structure more readable "
+        "without damaging those elements? Report no actual defect if none. "
+        "Do not assume that white surfaces are an intentional diagnostic shader. "
+        "Texture availability is established by the actual material inventory, "
+        "not inferred from appearance alone. Never invent source geometry, "
+        "wall materials, coordinates, missing eaves, or original image defects. "
+        "The independent Blender inventory supplies true face IDs/XYZ.")
+    src=json.loads(request_ollama(args.endpoint,args.vision_model,[
+        {"role":"system","content":"Visual source observer: only the actual SOURCE images."},
+        {"role":"user","content":source_prompt,
+         "images":[image_data(p,640) for p in source_frames]}],
+        360,timeout=420,schema=source_schema))
+    arch=src["source_architecture"].lower().strip()
+    if ("none detected" in arch or "no geometry" in arch or
+            "none visible" in arch or "nothing visible" in arch):
+        raise RuntimeError("VL8B_SOURCE_IMAGE_PERCEPTION_FAILED_NO_EDIT")
+
+    style_schema={"type":"object","additionalProperties":False,"properties":{
+        "reference_architecture":{"type":"string","minLength":25},
+        "reference_visible_style_features":{"type":"string","minLength":30},
+        "reference_joinery_and_material_hierarchy":{"type":"string","minLength":25},
+        "reference_distinctive_silhouette":{"type":"string","minLength":20},
+        "uncertain_details":{"type":"string","minLength":12}},
+        "required":["reference_architecture","reference_visible_style_features",
+                    "reference_joinery_and_material_hierarchy",
+                    "reference_distinctive_silhouette","uncertain_details"]}
+    style_prompt=(
+        "This ONE genuine picture is the OWNER-APPROVED VALORIA STYLE "
+        "DESTINATION, NOT a Blender render of the current tower. Describe "
+        "only the visibly supported medieval fantasy architectural "
+        "sophistication, wood/stone/material hierarchy, silhouette and "
+        "detailed craftsmanship. Do not pretend that these objects already "
+        "exist in the editable source. No face IDs, no world XYZ, no invented "
+        "objects. Report any visually uncertain details.")
+    style=json.loads(request_ollama(args.endpoint,args.vision_model,[
+        {"role":"system","content":"Destination STYLE observer: owner reference image only."},
+        {"role":"user","content":style_prompt,"images":[image_data(reference,640)]}],
+        280,timeout=420,schema=style_schema))
+    proof={"vision_model":args.vision_model,"director_model":args.model,
+           "source_camera_sha256":[sha(frame) for frame in source_frames],
+           "style_reference_sha256":sha(reference),
+           "source_image_order":["BLENDER_HERO","BLENDER_TOP","BLENDER_SIDE"][:len(source_frames)],
+           "owner_style_reference_observed_separately":True,
+           "camera_views":len(source_frames),
+           "source_image_observed":True,
+           "source_perception_guard_passed":True,
+           "director_image_input":False,
+           "visual_observation":{
+                "source_geometry_observation":src,
+                "owner_destination_style_observation":style,
+                "art_director_must_compare_both_not_invent_geometry":True},
+           "art_approved":False}
+    path.write_text(json.dumps(proof,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+    return proof
 
 def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_number,
              source_exists=False,known_objects=None,source_inventory=None,spatial_views=None,
@@ -577,6 +673,17 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                   "WORLD Z hits and the actual scene bounds: WORLD Y is depth, "
                   "not height. Do not pick generic roof positions like y=2 "
                   "when the inspected source ends at y=1.325.")
+    if source_exists and source_inventory and args.source_build_phase:
+        pairs=grounded_beam_pair_facts(source_inventory,limit=9)
+        if pairs:
+            msg+=("\\nORIGINAL BLENDER-MEASURED ARCHITECTURAL CONTACT PAIRS "
+                  "(NON-PRESCRIPTIVE; these pairs have viable geometric "
+                  "separations but no aesthetic preapproval): "+
+                  json.dumps(pairs,ensure_ascii=False)[:4700]+
+                  "\\nChoose YOUR OWN meaningful pair on the correct source "
+                  "and choose cross section so volume >=0.006 cubic metres "
+                  "(distance_m * width_m * depth_m). Do NOT repeat a "
+                  "short adjacent-roof-face pair; it was genuinely rejected.")
     edge=getattr(args,"vision_max_edge",1024)
     if source_exists and source_inventory:
         # Replace a giant truncated inventory with SHORT trustworthy local
@@ -614,8 +721,22 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         for frame in spatial_views:
             if not frame.is_file():raise FileNotFoundError("Real Blender spatial camera image missing: "+str(frame))
             pictures.append(image_data(frame,edge))
-    actual_messages=[{"role":"system","content":role},
-                     {"role":"user","content":msg,"images":pictures}]
+    if getattr(args,"vision_model",None):
+        # Qwen14B is TEXT ONLY. The separate local Qwen-VL model sees the
+        # genuine source pixels and produces a SHA-bound textual observation.
+        # Never pass images directly to the 14B director or label it visual.
+        observed=observe_source_with_vl(args,reference,current_image,spatial_views,role,trial)
+        msg+=("\nVERIFIED SOURCE CAMERA OBSERVATION BY SEPARATE QWEN-VL: "+
+              json.dumps(observed["visual_observation"],ensure_ascii=False)+
+              "\nThis text is a grounded but fallible visual interpretation; "
+              "only Blender's measured geometry/anchors verify world XYZ. "
+              "You, the Qwen14B ART DIRECTOR, must choose geometry, tool, "
+              "face IDs and numeric dimensions yourself.")
+        actual_messages=[{"role":"system","content":role[:4200]},
+                         {"role":"user","content":msg}]
+    else:
+        actual_messages=[{"role":"system","content":role},
+                         {"role":"user","content":msg,"images":pictures}]
     actual_schema=schema_for_plan(args.max_actions,source_exists,args.phase,args.asset_category,
                     known_objects,source_inventory,args.source_tool_sequencing,
                     args.source_build_phase,cycle_index if args.source_build_phase else 0,
@@ -626,7 +747,9 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
     (trial/("actual-qwen-context-attempt-"+str(attempt_number)+".json")).write_text(
         json.dumps({"context_sha256":hashlib.sha256(submitted).hexdigest(),
                     "model":args.model,"includes_original_owner_reference":True,
-                    "includes_real_inspected_blender_images":bool(current_image),
+                    "includes_real_inspected_blender_images":bool(current_image) and not bool(getattr(args,"vision_model",None)),
+                    "images_seen_by_separate_vl":bool(getattr(args,"vision_model",None)),
+                    "text_director_only":bool(getattr(args,"vision_model",None)),
                     "journal_and_cases_in_message":bool(memory),
                     "source_history_characters":len(history),
                     "note":"Exact submitted content+images+schema hashed in memory, no image bytes forged"},indent=2)+"\n")
@@ -648,7 +771,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
         verify_source_plan(doc,source_inventory)
         if args.source_build_phase:
             actions=doc["actions"]
-            if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh"):
+            if len(actions)<2 or actions[0]["op"] not in ("primitive","mesh","beam_between_faces"):
                 raise RejectedPlan("First creation action must be an artist-selected new primitive or custom mesh")
             if getattr(args,"multi_component_assembly",False):
                 placement=verify_qwen_composition(doc,source_inventory,cycle_index)
@@ -666,7 +789,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
                 spatial_proof=reject_obviously_bad_component_placement(doc,source_inventory)
                 (trial/("world-placement-proof-attempt-"+str(attempt_number)+".json")).write_text(
                     json.dumps(spatial_proof,indent=2)+"\n",encoding="utf-8")
-        elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh"):
+        elif doc.get("actions") and doc["actions"][0]["op"] in ("primitive","mesh","beam_between_faces"):
             # Full professional source work still protects the existing real
             # building; only the forced assembly phase used these QA gates
             # previously, allowing unconstrained disconnected source addons.
@@ -693,7 +816,7 @@ def ask_plan(args,reference,current_image,history,role,memory,trial,attempt_numb
             raise RejectedPlan("No real new geometry for an empty scene")
         created=set()
         for act in doc["actions"]:
-            if act["op"] in ("primitive","mesh"):
+            if act["op"] in ("primitive","mesh","beam_between_faces"):
                 if act["target"] in created:raise RejectedPlan("Duplicate new object")
                 created.add(act["target"])
             elif act["op"] in ("material","uv","bevel","modifier"):
@@ -741,7 +864,7 @@ def critique(args,reference,before,after,role,plan=None):
                 'visible_change_observed':{'type':'string','minLength':8},
                 'plan_vs_geometry_reason':{'type':'string','minLength':12}})
             critique_schema['required'] += ['intent_alignment','visible_change_observed','plan_vs_geometry_reason']
-        txt=request_ollama(args.endpoint,args.model,[{"role":"system","content":role},
+        txt=request_ollama(args.endpoint,args.vision_model or args.model,[{"role":"system","content":role},
          {"role":"user","content":instruction,"images":[image_data(reference,getattr(args,"vision_max_edge",1024)),
                        image_data(before,getattr(args,"vision_max_edge",1024)),
                        image_data(after,getattr(args,"vision_max_edge",1024))]}],350,timeout=420,schema=critique_schema)
@@ -796,6 +919,7 @@ def main():
     p.add_argument("--asset-catalog",type=pathlib.Path)
     p.add_argument("--out",type=pathlib.Path,required=True)
     p.add_argument("--model",default="qwen3-vl:4b-instruct")
+    p.add_argument("--vision-model",help="Separate actual camera observer and review model; e.g. local qwen3-vl:8b-instruct-q4_K_M with text director qwen3:14b")
     p.add_argument("--endpoint",default="http://127.0.0.1:11434/api/chat")
     p.add_argument("--blender",default="blender")
     p.add_argument("--transport",choices=("direct","blendermcp"),default="direct")
@@ -827,6 +951,8 @@ def main():
     p.add_argument("--frozen-original-asset-sha256",
                    help="Original immutable tower SHA, necessary when continuing accepted outputs")
     args=p.parse_args()
+    if args.vision_model and args.model == args.vision_model:
+        raise ValueError("TEXT_DIRECTOR_AND_VISION_REVIEW_MUST_BE_SEPARATE_MODELS")
     if args.multi_component_assembly and (not args.source_build_phase
                                         or not args.source_tool_sequencing
                                         or args.max_actions<3):
@@ -964,7 +1090,7 @@ def main():
                               "DIFFERENT geometric or artistic hypothesis.")
                 if attempt==args.max_plan_attempts:
                     diagnostic={"cycle":cycle,"status":"PLAN_STRATEGY_EXHAUSTED",
-                        "failure_kind":"FIVE_ORIGINAL_QWEN_PLANS_REJECTED_BEFORE_BLENDER",
+                        "failure_kind":str(args.max_plan_attempts)+"_ORIGINAL_QWEN_PLANS_REJECTED_BEFORE_BLENDER",
                         "blocked_tool_families":sorted(invisible_source_ops),
                         "last_rejection":str(e),
                         "original_source_sha256":frozen_original_sha,

@@ -19,11 +19,11 @@ from contract import OPS, RejectedPlan, validate_plan
 ARCHITECTURAL_SKILLS = {
     "timber_bracing_and_joinery": {
         "purpose": "For verified timber buildings: roof-edge fascia, slender bracing, beam joints and real contact with existing wooden structures.",
-        "operations": ("mesh", "primitive", "extrude", "bevel", "boolean", "modifier", "material"),
+        "operations": ("beam_between_faces", "mesh", "primitive", "extrude", "bevel", "boolean", "modifier", "material"),
     },
     "timber_roof_and_eaves": {
         "purpose": "For verified timber roofs: thin sloped fascia, eaves, rafter supports and coherent shingles without disturbing original UV atlases.",
-        "operations": ("mesh", "primitive", "extrude", "bevel", "modifier", "material"),
+        "operations": ("beam_between_faces", "mesh", "primitive", "extrude", "bevel", "modifier", "material"),
     },
     "masonry_and_parapet": {
         "purpose": "Improve the inherited wall rhythm, masonry depth and parapet.",
@@ -59,6 +59,8 @@ def capability_catalog(*, existing_source=True):
     if missing:
         raise RuntimeError("SKILL_REFERENCES_UNSUPPORTED_BLENDER_OPS: "
                            + ",".join(sorted(missing)))
+    if "beam_between_faces" not in OPS:
+        raise RuntimeError("MISSING_GROUNDED_BEAM_DISPATCH")
     if "geometry" in OPS:
         raise RuntimeError("AMBIGUOUS_GEOMETRY_ALIAS_NOT_ALLOWED")
     skills = {}
@@ -99,6 +101,13 @@ def artist_skill_prompt(*, existing_source=True, phase="full", category="archite
         "measured source-space support, or choose extrude, inset or bevel "
         "on a verified, real source face/edge instead. Never attach a second "
         "operation that relies on a topology edit before reinspection. "
+        "For beam_between_faces, select a MEASURED pair of source faces "
+        "with a physically meaningful separation, not adjacent roof polygons. "
+        "A mobile-readable original timber brace often needs endpoints "
+        "around 0.75m apart or farther, width/depth around 0.12m or more "
+        "when visibly justified. The actual required beam solid volume "
+        "is at least 0.006 cubic metres. Qwen chooses actual source faces, "
+        "cross-section and artistic purpose; the tool never repairs them. "
         "Do not repack the protected inherited source UV atlas with a generic "
         "smart UV action. Inspect the resulting mesh and camera after each "
         "structural stage; do not mistake changed pixels for art quality."
@@ -146,6 +155,58 @@ def source_contact_facts(objects, limit_per_mesh=12):
     return result
 
 
+def grounded_beam_pair_facts(source_objects, limit=12):
+    """Real camera-visible WORLD face pairs, sorted for visible wall support.
+
+    Physical evidence only. Does NOT select an artistic design or infer absent
+    geometry. Wall support pairs are shown first when real camera UV and
+    source heights demonstrate a useful projected span.
+    """
+    import math
+    groups=[]
+    for item in source_objects:
+        hits=[h for h in item.get("camera_visible_face_landmarks",[])[:24]
+              if h.get("camera_visible") is True
+              and h.get("camera_ray_hit_original_face") is True
+              and type(h.get("face_index")) is int
+              and isinstance(h.get("world_center_m"),list)
+              and len(h["world_center_m"])==3
+              and all(type(v) in (int,float) and math.isfinite(v)
+                      for v in h["world_center_m"])]
+        candidates=[]
+        for i,h in enumerate(hits):
+            for other in hits[i+1:]:
+                z1=h.get("world_height_fraction",0)
+                z2=other.get("world_height_fraction",0)
+                if not (type(z1) in (int,float) and type(z2) in (int,float)
+                        and max(z1,z2)>=.60 and min(z1,z2)>=.18):
+                    continue
+                dist=math.dist(h["world_center_m"],other["world_center_m"])
+                if not .75<=dist<=2.0:continue
+                visible_wall=(min(z1,z2)<.55)
+                uv1=h.get("camera_screen_uv")
+                uv2=other.get("camera_screen_uv")
+                if visible_wall and isinstance(uv1,list) and isinstance(uv2,list) and len(uv1)==2 and len(uv2)==2:
+                    # Both faces must project to different heights near one
+                    # visible exterior wall; reject hidden and foreshortened.
+                    visible_wall=(abs(uv1[1]-uv2[1])>=.13
+                                  and abs(uv1[0]-uv2[0])<=.35)
+                category="visible_wall_support" if visible_wall else "roof_or_other_support"
+                candidates.append({"start_face":h["face_index"],
+                                   "end_face":other["face_index"],
+                                   "distance_m":round(dist,3),
+                                   "visible_evidence_category":category,
+                                   "start_world_xyz_m":h["world_center_m"],
+                                   "end_world_xyz_m":other["world_center_m"]})
+        candidates.sort(key=lambda v:(
+            0 if v["visible_evidence_category"]=="visible_wall_support" else 1,
+            abs(v["distance_m"]-1.25),v["start_face"],v["end_face"]))
+        if candidates:
+            groups.append({"source":item["name"],"candidate_pairs":candidates[:limit],
+                           "geometry_prescribed":False,"art_approved":False})
+    return groups
+
+
 def strict_preflight_plan(plan):
     """Cheap source-side validation BEFORE launching Blender.
     
@@ -177,7 +238,7 @@ def check_source_environment(repo_root):
         raise RuntimeError("STUDIO_DISPATCH_ENTRYPOINTS_MISSING")
     # Proves the known dispatch routes are present, not that Blender ran.
     known = {
-        "primitive", "mesh", "duplicate", "transform", "sculpt", "sculpt_anchor",
+        "primitive", "mesh", "beam_between_faces", "duplicate", "transform", "sculpt", "sculpt_anchor",
         "extrude", "inset", "subdivide", "bevel", "modifier", "boolean",
         "material", "texture", "uv", "join", "delete", "light", "camera",
         "render_settings", "native_operator", "shader_graph", "geometry_nodes",

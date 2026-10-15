@@ -28,12 +28,29 @@ def verify_source_plan(document,inventory):
     structural=False
     for i,action in enumerate(document.get("actions",[]),1):
         op=action["op"]; target=action["target"]; params=action["params"]
-        if op not in ("mesh","primitive","duplicate","import_asset") and target not in available:
+        if op not in ("mesh","primitive","beam_between_faces","duplicate","import_asset") and target not in available:
             errors.append(f"Action {i}: unknown target {target!r}; use actual inspected Blender names")
             continue
-        if op in ("mesh","primitive","duplicate","import_asset"):
+        if op in ("mesh","primitive","beam_between_faces","duplicate","import_asset"):
             if target in available:errors.append(f"Action {i}: new target shadows {target!r}")
             if op=="duplicate" and params.get("source") not in available:errors.append(f"Action {i}: duplicate source missing")
+            if op=="beam_between_faces":
+                anchor_source=known.get(params.get("source"))
+                if anchor_source is None:
+                    errors.append(f"Action {i}: source for two anchor faces not found")
+                else:
+                    allowed={h.get("face_index"):h for h in
+                        anchor_source.get("camera_visible_face_landmarks",[])
+                        if h.get("camera_visible") is True and
+                           h.get("camera_ray_hit_original_face") is True}
+                    aa,bb=params.get("start_face"),params.get("end_face")
+                    if aa==bb or aa not in allowed or bb not in allowed:
+                        errors.append(f"Action {i}: only TWO DISTINCT camera-ray-hit verified source faces allowed")
+                    elif not all(isinstance(allowed[q].get("world_center_m"),list)
+                                 and len(allowed[q]["world_center_m"])==3
+                                 for q in (aa,bb)):
+                        errors.append(f"Action {i}: missing REAL WORLD source face centers")
+
             available.add(target);structural=True;continue
         actual=known.get(target)
         if op in ("extrude","inset","subdivide"):
