@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-15",
+  "updated_at": "2026-10-16",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-14",
@@ -214,6 +214,28 @@
         "source_repair": "7032d51bfbab1e20ef0f8543744ff9eafc008340",
         "contract_repair": "aba18c80f3e259a61ca97c3055122f991f72ca4f"
       }
+    },
+    {
+      "id": "valoria-63-individual-quality-uplift-20261015",
+      "title": "Valoria 63 modular art — independent individual-quality uplift",
+      "owner": "owner-authorized-art-63-quality-workstream-20261015",
+      "branch": "art/valoria-63-individual-quality-uplift-20261015",
+      "status": "active",
+      "scope": [
+        "tools/valoria-modular-fortress/**",
+        ".github/workflows/valoria-63-*.yml",
+        "docs/evidence/valoria-63-individual-quality-uplift-20261015/**"
+      ],
+      "resources": [
+        "valoria-63-module-art"
+      ],
+      "claimed_at": "2026-10-16",
+      "base_main_sha": "d32755d07aa230e064f413f44ff205d9d99a9e70",
+      "art_production_routing": "isolated-per-asset-only-no-promotion",
+      "authorization": "Owner explicitly authorized nighttime technical recovery for this existing isolated 63-assets track on 2026-10-16. Never claim or override Unity's Windows runner lease. A retry is permitted only for an already-started exact job after unequivocal transient infrastructure failure; only with verified repository-wide inactivity, unchanged commit, isolated tools and one-attempt ceiling.",
+      "dependency": "Unity Reference-First holds windows-runner-heavy; runner time is NOT claimed by this track. A tightly constrained retry can only be queued under explicit owner-directed idle-only delegation when no other GitHub Actions job is queued or active; no overlap and no new authoring stage.",
+      "phase": "63 real Blender GLBs and two-view renders created; independent Qwen review completed; ongoing isolated source/lod nature comparisons. Technical night-retry enabled under isolated owner and fail-closed shared runner gate. Visual 8/10 NOT approved.",
+      "next": "Complete ongoing 12-item CC0 native Blender A/B, inspect exact paired renders, improve only rejected individual assets. No composition, no production merge, no paid tools; night supervisor must never launch unstarted creative work or reattach ChatGPT."
     }
   ],
   "history": [

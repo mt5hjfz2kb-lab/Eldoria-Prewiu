@@ -6,7 +6,7 @@
   "window_end_hour": 8,
   "minimum_idle_minutes": 20,
   "maximum_run_attempts": 1,
-  "purpose": "Restart ONLY a failed job with a proven transient GitHub infrastructure error; never resume a ChatGPT session, repair source, approve art, or schedule new production.",
+  "purpose": "Both explicitly owned tracks: retry only one exactly pinned FAILED GitHub Actions job after independently proven transient infrastructure fault, at zero cost and only when every other job is idle. Never resume a disconnected chat, rerun successful art, fix source, dispatch a new creative phase, bypass Windows lease, or approve quality.",
   "tracks": [
     {
       "id": "reference-first-zero-budget-visual-pilot-20261015",
@@ -16,18 +16,24 @@
       ],
       "retry_enabled": true,
       "requires_owner": true,
-      "runner_type": "windows"
+      "runner_type": "windows",
+      "owner_resource": "windows-runner-heavy"
     },
     {
       "id": "valoria-63-individual-quality-uplift-20261015",
       "branch": "art/valoria-63-individual-quality-uplift-20261015",
       "workflow_names": [
         "[ART REVIEW] Qwen VL independent visual review for all 63 assets",
-        "[ART DONOR] Genuine Blender per-asset A-B using Quaternius CC0 models"
+        "[ART DONOR] Genuine Blender per-asset A-B using Quaternius CC0 models",
+        "[ART INDIVIDUAL] Valoria 63 module per-asset quality uplift",
+        "[ART V4] 12 CC0 nature assets individual Blender finishing",
+        "[ART V4 REVIEW] Local Qwen VL independent Blender A-B 12 assets"
       ],
-      "retry_enabled": false,
+      "retry_enabled": true,
       "requires_owner": true,
-      "runner_type": "windows"
+      "runner_type": "windows",
+      "owner_resource": "valoria-63-module-art",
+      "windows_delegation": "idle_only_no_lease_transfer"
     }
   ]
 }
