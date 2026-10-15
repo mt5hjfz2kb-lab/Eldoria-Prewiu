@@ -32,7 +32,7 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          ref: bbe5cbb6e925468fead8cecad82868e627f48af7
+          ref: d4bbad04b1191629ba93c9bbcd200cb7af344329
           path: studio
           persist-credentials: false
           filter: blob:none
@@ -104,8 +104,15 @@ jobs:
             $available=@((Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20).models|ForEach-Object {$_.name})
             foreach($needed in @('qwen3:14b','qwen3-vl:8b-instruct-q4_K_M')){if($needed -notin $available){throw "INSTALLED_MODEL_MISSING: $needed"}}
             $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+            $previous=Join-Path $out 'verified-previous-artist-lessons.txt'
+            @(
+              'EVIDENCE #38779070266 SAME ORIGINAL TOWER SHA: Qwen14B authored beam_between_faces between face IDs 5191 and 5192, width_m=0.12 and depth_m=0.12. Real Blender successfully executed 3 actions. Original source remained unchanged; mesh contact was verified.',
+              'REAL MATCHED CAMERA BEFORE/AFTER: changed pixels 2743 / 691200 = 0.0039685 (0.397 percent), below the 0.006 minimum. The addition was a small near-ridge roof strip and did NOT demonstrate meaningful artistic improvement.',
+              'Do NOT repeat 5191-5192 or choose a second insignificant near-ridge stripe just to create geometry. Compare the owner STYLE reference against the current REAL timber tower. Prefer an intervention that enhances a genuinely deficient front or side visible structural feature if and only if pixel evidence supports the change. You must select real face IDs, relative positions, width/depth, and design; no geometry template or fake quality claim.',
+              'The original source and source texture atlas are protected. All changes remain on a temporary copy until independently accepted.'
+            ) | Set-Content -Path $previous -Encoding UTF8
             $argv=@('studio/tools/art-direction/full-studio/artist_loop.py',
-              '--brief','Real timber/log Valoria watchtower: preserve original roof, door, stairs, railing, UV and wood character. Qwen14B text artistic director is supported by Qwen-VL8B true source vision and Blender WORLD ray-hit face points. Design one meaningful visible timber support between TWO DISTINCT genuine source faces using beam_between_faces, choosing YOUR own real face IDs, dimensions and artistic intent. Avoid fake vertices, floating shapes or global source edits. Existing roof already has eaves; do not assume they are missing. Qwen directs art; Blender builds; visual reviewer checks; no self approval.',
+              '--brief','Compare real imported timber/log Valoria watchtower in fixed hero camera with the provided destination style reference. Qwen-VL8B first identifies an evidence-supported architectural style gap; Qwen14B then chooses a genuinely meaningful HERO-VISIBLE timber support between two different real source surface face IDs (beam_between_faces) with your own width/depth and rationale. Favor material-coherent readable structure over tiny ridge decoration. Do not fabricate defects, alter original roof/door/stairs/UV or pretend that changed pixels equal improved art. Source frozen, no self approval.',
               '--source',$src,
               '--reference','frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',
               '--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
@@ -116,6 +123,7 @@ jobs:
               '--phase','full',
               '--source-build-phase',
               '--source-tool-sequencing',
+              '--prior-lessons',$previous,
               '--asset-category','architecture',
               '--max-cycles','1',
               '--max-plan-attempts','2',
