@@ -8,7 +8,8 @@ from __future__ import annotations
 import argparse, base64, hashlib, json, os, pathlib, subprocess, sys, time, urllib.error, urllib.request
 from contract import validate_plan, RejectedPlan, safe_action_id
 from artist_capabilities_v1 import (artist_skill_prompt, strict_preflight_plan,
-    check_source_environment, visual_intent_payload, is_semantically_reviewable)
+    check_source_environment, visual_intent_payload, is_semantically_reviewable,
+    failure_category)
 from learning_context import transferable_lessons, evidence_case_lessons, stage_pending_art_evidence
 from artistic_quality_gate import (stage_visual_request,validate_independent_review,
                                  append_accepted,status as visual_calibration_status)
@@ -946,6 +947,7 @@ def main():
                 (trial/("rejected-plan-attempt-"+str(attempt)+".json")).write_text(
                     json.dumps({"attempt":attempt,"rejection":str(e),
                       "raw_model_sha256":sha(raw_attempt) if raw_attempt.is_file() else None,
+                      "failure_category":failure_category(e),
                       "no_artistic_values_rewritten":True},indent=2)+"\n",encoding="utf-8")
                 family=track_rejected_strategy(
                     raw_attempt,rejected_plan_family_counts,invisible_source_ops,
@@ -983,7 +985,9 @@ def main():
         try:
             run_blender(args.blender,candidate,stage,source,args.texture_root,args.review,args.asset_catalog,args.transport,args.mcp_addon,args.mcp_sha256)
         except Exception as ex:
-            records.append({"cycle":cycle,"status":"BLENDER_REJECTED","error":str(ex)[-800:]})
+            records.append({"cycle":cycle,"status":"BLENDER_REJECTED",
+                            "failure_category":failure_category(ex),
+                            "error":str(ex)[-800:]})
             history+="\nACTUAL BLENDER REJECTION: "+str(ex)[-1100:]
             continue
         result=json.loads((stage/"execution-proof.json").read_text())
@@ -1101,6 +1105,7 @@ def main():
         if not is_semantically_reviewable(evaluation):
             # This is a conservative HOLD, never a self-certified art pass.
             records.append({'cycle':cycle,'status':'INTENT_GEOMETRY_REVIEW_FAILED',
+                            'failure_category':'ART_QUALITY',
                             'plan_sha256':sha(candidate),'vision_review':evaluation,
                             'art_approved':False})
             history+='\nREJECTED before independent quality scoring: real renders do not clearly match the Qwen-authored architectural intention. Change artistic hypothesis.'
