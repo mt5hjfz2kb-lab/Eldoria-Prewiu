@@ -172,7 +172,9 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-selective-memory-reviewed-resumption-20261015",
       "title": "Explicit owner-requested normal-tool resubmission and real selective Qwen validation if approved",
@@ -189,16 +191,16 @@
         "AGENTS.md"
       ],
       "resources": [],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-15T11:11:28Z",
       "art_production_routing": "not_applicable",
-      "phase": "Independent recovery found stale prose; reconcile existing bootstrap/AGENTS before final closure",
+      "phase": "Real 96-query comparison and verified raw evidence complete; independent recovery reconciled stale prose; metadata reason supplied",
       "dependency": "Keep historical rejections and new literal outcomes. Stop on a fresh explicit denial. No Blender, Unity, original tower edit or production. Shared runner health showed no active job; use only bounded read-only Qwen diagnosis if the tool approves source.",
       "source_commit": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
       "run_id": 38726028141,
       "job_id": 116391981342,
       "next": "Preserve diagnostic findings and await next owner-authorized scope; no automatic Blender/Unity/production resumption",
-      "completed_at": "2026-10-15T11:26:23Z",
+      "completed_at": "2026-10-15T11:29:35Z",
       "mission_complete": true,
       "scope_limit": "Operational recovery, bounded diagnostic comparison and continuity only; production remains paused",
       "artifact_id": 11967828291,
@@ -209,17 +211,18 @@
         "case_count": 32,
         "selective_decision_regressions": 0
       },
-      "evidence_commit": "1bee49de140b748b3469086c2ff6d28041888eff",
+      "evidence_commit": "71cafa752c9cdc61a9957734eac227ad917f32ee",
       "raw_archive_commit": "a1dc9ae0ba048f39594508513ca80a4fff79049f",
       "raw_archive_blob": "62c572aae74653b92289e8dccf6813c4dc6d2808",
-      "bootstrap_commit": "255c3f3be33a8993c52cc2e3fe2022b2a8e3955e",
+      "bootstrap_commit": "afeddcebdc19488a5bdcd4789610f6b8988cce40",
       "continuity_ci_run": 38727144262,
       "selective_memory_qwen_validated": true,
       "selective_memory_general_benefit_validated": false,
-      "art_approved": false
-    }
-  ],
-  "history": [
+      "art_approved": false,
+      "art_production_routing_reason": "Read-only diagnostic Qwen comparison, evidence preservation and existing session-bootstrap documentation only; no Blender authoring, Unity/game assets, production publication or paid generation.",
+      "agents_clarification_commit": "830f1672cd4febee67218d06a2194cc19a78cb98",
+      "independent_final_recovery": "PASS after re-reading corrected AGENTS and bootstrap; no support dependency or pending-run instruction remains"
+    },
     {
       "id": "eldoria-create-file-failure-isolation-20261015",
       "title": "Isolate GitHub create_file availability without retrying rejected executable benchmark files",
