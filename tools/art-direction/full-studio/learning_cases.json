@@ -241,6 +241,25 @@
         "art_approved": false,
         "weights_updated": false
       }
+    },
+    {
+      "id": "independent-38692904219-8b-composition-duplicate-roof-braces",
+      "run_id": 38692904219,
+      "evidence_artifact_id": 11952299150,
+      "raw_response_sha256": "8bc022da15300605e40d6fca9bc02c8dfff7bd5f9910d61b60fad6e116f3e60a",
+      "result": "INDEPENDENT_ART_REJECTED_IDENTICAL_NEW_GEOMETRY",
+      "observed": "Left and right original Qwen roof braces occupy exactly the same XYZ coordinates and dimensions. Genuine fixed-camera render depicts a single wood-colored vertical pole protruding behind roof, not distinct timber structural support. No believable roof-edge contact or visual quality gain.",
+      "safe_lesson": "Qwen may write different descriptive LEFT/RIGHT object names yet assign exactly identical WORLD location, rotation and scale. These are not two structural braces but one doubled overlapping post. For genuine multi-part timber architecture, design physically connected AND spatially distinct members; no component may overlap another by >92% of its volume. Independent A/B must confirm coherent construction rather than count different IDs or changed pixels.",
+      "review_provenance": {
+        "run_id": 38692904219,
+        "artifact_id": 11952299150,
+        "review_json_path": "tools/art-direction/full-studio/reviews/review-qwen8b-coincident-braces-38692904219.json",
+        "before_sha256": "1183770c189eb492a51c1f320f0b2d4ce34493b51a2ce16b213e5d0768c02bf2",
+        "after_sha256": "3584d0612f94fe5df268055797dcd66b23e96d7b934e0001b73024d0cded92cc",
+        "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+        "accepted": false,
+        "model_weights_updated": false
+      }
     }
   ],
   "training": {
