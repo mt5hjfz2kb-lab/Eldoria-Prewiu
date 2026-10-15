@@ -1,0 +1,130 @@
+name: Eldoria isolated GPT6 timber tower Blender candidate and independent vision review
+on:
+  push:
+    branches:
+      - diagnostic/gpt6-vs-qwen-valoria-tower-20261015
+    paths:
+      - '.github/workflows/eldoria-gpt6-tower-art-comparison-20261015.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-exclusive-native-windows-free-text-director
+  cancel-in-progress: false
+jobs:
+  gpt6-original-edit-fixed-blender-a-b:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 38
+    steps:
+      - name: Resolve already installed GitHub Desktop Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'PREINSTALLED_GIT_MISSING'}
+            $folder=Split-Path $git;$env:PATH="$folder;$env:PATH";Add-Content $env:GITHUB_PATH $folder
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          ref: 9c5a7ea48818030ca64bfccf7bf0a61a0cbed619
+          path: studio
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/art-direction/full-studio
+            tools/art-direction/gpt6-tower-eval-20261015
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: e5fc3715356378abc9a5d472071499c738f5e8ed
+          path: frozen
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Static contract and frozen asset preflight
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m pip install --quiet --disable-pip-version-check pillow numpy
+          if($LASTEXITCODE -ne 0){throw 'FREE_PYTHON_DEPENDENCIES_UNAVAILABLE'}
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_SOURCE_SHA_MISMATCH'}
+          $script=@'
+          import sys,json
+          sys.path.insert(0,'studio/tools/art-direction/full-studio')
+          from artist_capabilities_v1 import strict_preflight_plan
+          p=json.load(open('studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan.json',encoding='utf-8'))
+          print('GPT6_PLAN_PREFLIGHT',json.dumps(strict_preflight_plan(p)))
+          '@
+          $script | python -
+          if($LASTEXITCODE -ne 0){throw 'GPT6_PLAN_CONTRACT_REJECTED'}
+          $b=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if($b){$exe=$b.Source}else{$exe=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -File -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $exe){throw 'BLENDER_NOT_INSTALLED'}
+          "ELDORIA_GPT6_BLENDER=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Run GPT6-authored structural edit in REAL Blender on copied immutable source
+        shell: powershell
+        timeout-minutes: 16
+        run: |
+          $ErrorActionPreference='Stop'
+          $src='frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-true-blender-a-b'
+          $args=@('-b','-t','4','--python-exit-code','1','--python','studio/tools/art-direction/full-studio/blender_toolbox.py',
+            '--','--plan','studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan.json',
+            '--source',$src,'--review','studio/tools/art-direction/full-studio/tests/valoria_tower_hero_review.json',
+            '--texture-root','studio','--out',$out)
+          & $env:ELDORIA_GPT6_BLENDER @args
+          if($LASTEXITCODE -ne 0){throw 'REAL_GPT6_BLENDER_EXECUTION_FAILED'}
+          if((Get-FileHash $src -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869'){throw 'FROZEN_TOWER_CHANGED'}
+      - name: Independent local Qwen-VL critic plus objective A/B checks
+        shell: powershell
+        timeout-minutes: 19
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-gpt6-true-blender-a-b'
+          $exe=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+          if(-not (Test-Path $exe)){
+            $exe=Get-ChildItem C:/Users -Directory -ErrorAction SilentlyContinue |
+              ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+          }
+          $server=$null
+          try{
+            $ready=$false
+            if($exe){
+              $models=Join-Path $env:USERPROFILE '.ollama/models'
+              if(Test-Path $models){$env:OLLAMA_MODELS=$models}
+              $env:OLLAMA_HOST='127.0.0.1:11434'
+              $env:OLLAMA_NUM_PARALLEL='1';$env:OLLAMA_MAX_LOADED_MODELS='1'
+              try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+              if(-not $ready){
+                $server=Start-Process -FilePath $exe -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $out 'ollama-stdout.log') -RedirectStandardError (Join-Path $out 'ollama-stderr.log')
+                for($i=0;$i -lt 35;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+              }
+            }
+            $model='qwen3-vl:8b-instruct-q4_K_M'
+            if($ready){$names=@((Invoke-RestMethod 'http://127.0.0.1:11434/api/tags' -TimeoutSec 20).models|ForEach-Object {$_.name});if($model -notin $names){$ready=$false}}
+            if(-not $ready){'INDEPENDENT_QWEN_VL8B_UNAVAILABLE_REVIEW_WILL_BE_PENDING' | Out-File (Join-Path $out 'independent-critic-unavailable.txt') -Encoding utf8}
+            $env:ELDORIA_GPT6_CRITIC_READY= $(if($ready){'yes'}else{'no'})
+            python studio/tools/art-direction/gpt6-tower-eval-20261015/evaluate.py --out $out --source 'frozen/Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb' --reference 'frozen/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg' --plan 'studio/tools/art-direction/gpt6-tower-eval-20261015/gpt6-plan.json' --model $model
+            if($LASTEXITCODE -ne 0){throw 'OBJECTIVE_AB_EVALUATION_FAILED'}
+          }finally{if($server){try{Stop-Process -Id $server.Id -ErrorAction SilentlyContinue}catch{}}}
+      - name: Preserve BLEND, GLB, original A/B, raw critic, source and rejection evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-gpt6-true-blender-a-b-and-independent-review
+          path: ${{ runner.temp }}/eldoria-gpt6-true-blender-a-b/
+          if-no-files-found: warn
+          retention-days: 30
