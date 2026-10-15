@@ -32,7 +32,7 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          ref: d4bbad04b1191629ba93c9bbcd200cb7af344329
+          ref: 1124af1e29f12ef228c64ee3a631bdcfb53478ed
           path: studio
           persist-credentials: false
           filter: blob:none
@@ -109,6 +109,7 @@ jobs:
               'EVIDENCE #38779070266 SAME ORIGINAL TOWER SHA: Qwen14B authored beam_between_faces between face IDs 5191 and 5192, width_m=0.12 and depth_m=0.12. Real Blender successfully executed 3 actions. Original source remained unchanged; mesh contact was verified.',
               'REAL MATCHED CAMERA BEFORE/AFTER: changed pixels 2743 / 691200 = 0.0039685 (0.397 percent), below the 0.006 minimum. The addition was a small near-ridge roof strip and did NOT demonstrate meaningful artistic improvement.',
               'Do NOT repeat 5191-5192 or choose a second insignificant near-ridge stripe just to create geometry. Compare the owner STYLE reference against the current REAL timber tower. Prefer an intervention that enhances a genuinely deficient front or side visible structural feature if and only if pixel evidence supports the change. You must select real face IDs, relative positions, width/depth, and design; no geometry template or fake quality claim.',
+              'FAILURE CLASSIFICATION: #38780427364 had a separate VL mixed-reference perception failure and an over-restrictive AABB buried-box test. Both are corrected in this revision. A source-face anchored timber beam may occupy empty AIR SPACE inside the broad tower bounds: Blender checks actual source surface contact and camera visibility. This does not certify art.',
               'The original source and source texture atlas are protected. All changes remain on a temporary copy until independently accepted.'
             ) | Set-Content -Path $previous -Encoding UTF8
             $argv=@('studio/tools/art-direction/full-studio/artist_loop.py',
