@@ -21,7 +21,7 @@ def evidence():
 
 def review(inv):
     hashes={"reference":"a"*64,"before":"b"*64,"after":"c"*64}
-    return hashes,{"image_sha256":hashes,"observations":[{"component_id":n,
+    return hashes,{"image_sha256":dict(hashes),"observations":[{"component_id":n,
       "visibility":"visible","visual_joinery":"uncertain",
       "measured_contact":"NEAR_SOURCE","visual_reason":"Appears as a simple cuboid in this camera."} for n in IDS],
       "decision":"INCONCLUSIVE","scores":{"silhouette":5,"architectural_contact":5,
