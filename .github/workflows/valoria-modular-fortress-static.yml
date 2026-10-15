@@ -1,0 +1,30 @@
+name: "[ART TEST] Eldoria native Blender asset author source syntax"
+on:
+  push:
+    branches: [prototype/valoria-modular-fortress-library-20261015]
+    paths:
+      - 'tools/valoria-modular-fortress/**'
+      - '.github/workflows/valoria-modular-fortress-static.yml'
+permissions: {contents: read}
+jobs:
+  static-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm module generator syntax and 63-source contract
+        run: |
+          python -m py_compile tools/valoria-modular-fortress/build_blender.py
+          python - <<'PY'
+          from pathlib import Path
+          import re,ast
+          source=Path('tools/valoria-modular-fortress/build_blender.py').read_text()
+          tree=ast.parse(source)
+          marker=source.split('names="""',1)[1].split('""".split()',1)[0]
+          names=marker.split()
+          assert len(names)==63, len(names)
+          assert len(set(names))==63
+          for term in ('Tripo','paid_api','purchases','rm -rf','shutil.rmtree'):
+              assert term not in source,term
+          print('SOURCE_63_SYNTAX_PASS',len(names),'unique names')
+          PY
