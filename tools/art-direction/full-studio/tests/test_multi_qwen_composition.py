@@ -23,6 +23,16 @@ class MultiQwenArchitecture(unittest.TestCase):
         self.assertFalse(proof["art_approved"])
         self.assertFalse(proof["actual_surface_contact_verified"])
         self.assertEqual(source,[A,B],"Gate must not author or alter the artist's values")
+    def test_actual_qwen8b_left_and_right_same_xyz_does_not_form_two_beams(self):
+        original=new("Eldoria_Added_C02_TimberBrace_L",
+                     [.30,1.0,2.50],[.15,.15,.80])
+        duplicate=new("Eldoria_Added_C02_TimberBrace_R",
+                      [.30,1.0,2.50],[.15,.15,.80])
+        plan={"actions":[original,duplicate]}
+        before=copy.deepcopy(plan)
+        with self.assertRaisesRegex(RejectedPlan,"DUPLICATE_OR_NEAR_COINCIDENT"):
+            verify_qwen_composition(plan,SOURCE,2)
+        self.assertEqual(plan,before)
     def test_two_distant_boxes_each_touching_source_are_not_one_assembly(self):
         other=new("Eldoria_Added_C01_DistantWallBeam",
                   [.9,-.80,2.35],[.40,.13,.10])
