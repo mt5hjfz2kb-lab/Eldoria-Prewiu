@@ -75,17 +75,17 @@ def main():
     for key,_,_ in CASES:
         x=next(v for v in responses if v["case"]==key and v["arm"]=="without_memory")
         y=next(v for v in responses if v["case"]==key and v["arm"]=="with_memory")
-        pairs.append({"case":key,"without_memory_correct":x["correct"],"with_memory_correct":y["correct"]})
-    base=sum(x["without_memory_correct"] for x in pairs);mem=sum(x["with_memory_correct"] for x in pairs)
-    gains=sum(not x["without_memory_correct"] and x["with_memory_correct"] for x in pairs)
-    regressions=sum(x["without_memory_correct"] and not x["with_memory_correct"] for x in pairs)
+        pairs.append({"id":key,"baseline_correct":x["correct"],"memory_correct":y["correct"]})
+    base=sum(x["baseline_correct"] for x in pairs);mem=sum(x["memory_correct"] for x in pairs)
+    gains=sum(not x["baseline_correct"] and x["memory_correct"] for x in pairs)
+    regressions=sum(x["baseline_correct"] and not x["memory_correct"] for x in pairs)
     result={"version":2,"method":"balanced 8 proven vs 8 unsupported; predeclared binary gold; paired randomized order","model":a.model,
         "source_sha256":SHA,"grounding_sha256":hashlib.sha256(raw).hexdigest(),
         "memory_sha256":digest(json.dumps(MEMORY,ensure_ascii=False)),
         "memory_lessons_count":len(MEMORY),"case_count":len(CASES),"baseline_correct":base,"memory_correct":mem,
         "gain_count":gains,"regression_count":regressions,"pairs":pairs,"responses":responses,
         "verdict":"MEMORY_FIXED_SET_GAIN" if gains>0 and regressions==0 else "NOT_VALIDATED",
-        "art_approved":False,"calibration_validated":False,"blender_edits_executed":False,"model_weights_trained":False}
+        "art_approved":False,"any_blender_edits":False,"calibration_validated":False,"blender_edits_executed":False,"model_weights_trained":False}
     path=pathlib.Path(a.out);path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("ELDORIA_MEMORY_V2_RESULT",base,mem,gains,regressions,flush=True)
