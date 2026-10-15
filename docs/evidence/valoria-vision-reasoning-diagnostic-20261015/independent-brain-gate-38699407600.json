@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-15",
+  "review_kind": "INDEPENDENT_MODEL_VISION_AND_REASONING_EVALUATION",
+  "reviewer": "GPT-6 (independent of local Qwen authors)",
+  "source": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb",
+  "source_sha256": "e7592eaaf10824dadf6a272551518456c1dc054fdbd24f769fae90d0b4b76869",
+  "run_id": 38699407600,
+  "artifact_id": 11956145394,
+  "actions_run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38699407600",
+  "prompt_sha256": "92a6c8a2bfc5914d44f8dca404a1bf7fe142bcf26325ac099140072a38fc9f41",
+  "origin_unchanged": true,
+  "model_results": {
+    "qwen3-vl:4b-instruct": {
+      "raw_brain_sha256": "e70a4b67a0db53d1e894014f8cb8a7ff5cf87d73d38ebaf7110234d3d358e251",
+      "elapsed_seconds": 52.69,
+      "pixel_color_probe": "PASS",
+      "one_image_tower_identification": "PASS_WITH_OBSERVATIONAL_ERRORS",
+      "per_view_descriptions": "3_OF_3_SUBSTANTIVE",
+      "independent_art_criterion": "REJECTED",
+      "severe_faults": [
+        "incorrectly attributes differing perspective descriptions to distinct or broken physical meshes",
+        "proposes rebuilding protected stairs/railings without demonstrated defect"
+      ],
+      "verified_visual_improvement": false
+    },
+    "qwen3-vl:8b-instruct-q4_K_M": {
+      "raw_brain_sha256": "c1d032c3ce5cfa749fbd63c941f98382cbe6f886151201291d5326742c20b236",
+      "elapsed_seconds": 83.22,
+      "pixel_color_probe": "PASS",
+      "one_image_tower_identification": "PASS_WITH_OBSERVATIONAL_ERRORS",
+      "per_view_descriptions": "3_OF_3_SUBSTANTIVE",
+      "independent_art_criterion": "REJECTED",
+      "severe_faults": [
+        "false assumption that cuboid footprint or XYZ bounding box mandates flat roof",
+        "proposes moving protected exterior stair inside"
+      ],
+      "verified_visual_improvement": false
+    }
+  },
+  "reviewer_inference": "Both locally available vision models can analyze single images. Neither produced a reliable independent geometric-artistic synthesis from multiple views. Do not use their proposals for edits. This does not imply models are permanently incapable or that all image transport was broken.",
+  "decision": "VISION_VERIFIED_BOTH__MULTIVIEW_REASONING_ART_REJECTED_BOTH",
+  "independent_art_approved": false,
+  "calibration_validated": false,
+  "engine_unity_verified": false,
+  "model_weights_updated": false,
+  "next_allowed_only": "Read-only geometry-grounded reasoning and critic-guided planning on immutable Valoria original; no Qwen/Blender geometry edit without further explicit owner order",
+  "details_path": "docs/evidence/valoria-vision-reasoning-diagnostic-20261015/INDEPENDENT_QWEN_4B_8B_VISION_COMPARISON_V1.md"
+}
