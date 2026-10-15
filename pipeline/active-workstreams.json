@@ -190,8 +190,12 @@
       "status": "active",
       "claimed_at": "2026-10-15T11:11:28Z",
       "art_production_routing": "not_applicable",
-      "phase": "Submit directly through normal create_file review under owner's explicit request to retry; no alternate tool, renamed path, policy change or hidden execution",
-      "dependency": "Keep historical rejections and new literal outcomes. Stop on a fresh explicit denial. No Blender, Unity, original tower edit or production. Shared runner health showed no active job; use only bounded read-only Qwen diagnosis if the tool approves source."
+      "phase": "Normal create_file accepted original benchmark path; real 96-query three-arm Qwen diagnosis running",
+      "dependency": "Keep historical rejections and new literal outcomes. Stop on a fresh explicit denial. No Blender, Unity, original tower edit or production. Shared runner health showed no active job; use only bounded read-only Qwen diagnosis if the tool approves source.",
+      "source_commit": "a9f1ffd83fa6fad6a88ed5e0a9e110aae205d52c",
+      "run_id": 38726028141,
+      "job_id": 116391981342,
+      "next": "Observe existing run, recover exact artifact, evaluate all raw responses and regressions; no art or duplicate job"
     }
   ],
   "history": [
