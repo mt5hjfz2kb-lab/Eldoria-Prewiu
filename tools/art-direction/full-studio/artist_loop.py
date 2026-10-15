@@ -81,6 +81,15 @@ def executed_action_signature(doc):
                                      ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
+def creator_hypothesis_exhausted(assembly_mode, excluded_ops):
+    """No creative primitive/mesh tools remain: stop this failed hypothesis.
+
+    Never resurrect a twice-rejected creator merely to generate an asset.
+    The next independent study should change artistic approach or model.
+    """
+    return bool(assembly_mode and {"primitive","mesh"}.issubset(set(excluded_ops or set())))
+
+
 def rejected_plan_family(raw_file):
     """Identify an invalid Qwen-authored tool, never repair its geometry."""
     if not pathlib.Path(raw_file).is_file():
@@ -818,6 +827,18 @@ def main():
         trial=args.out/("cycle-"+str(cycle));trial.mkdir()
         doc=None
         for attempt in range(1,args.max_plan_attempts+1):
+            if creator_hypothesis_exhausted(args.source_build_phase,invisible_source_ops):
+                diagnostic={"cycle":cycle,"status":"STRATEGY_EXHAUSTED",
+                    "failure_kind":"ALL_ORIGINAL_ASSEMBLY_CREATOR_FAMILIES_REJECTED",
+                    "excluded_ops":sorted(invisible_source_ops),
+                    "next_hypothesis":"Try alternate model or fully different source-safe "
+                                      "Blender operation family; do not repeat primitive/mesh",
+                    "frozen_original_asset_sha256":frozen_original_sha,
+                    "art_approved":False,"model_weight_training":False}
+                (trial/"creator-hypothesis-exhausted.json").write_text(
+                    json.dumps(diagnostic,indent=2)+"\n",encoding="utf-8")
+                records.append(diagnostic)
+                break
             try:
                 doc=ask_plan(args,args.reference,current,history,role,memory,trial,attempt,source_exists=bool(source),known_objects=known_objects,source_inventory=verified_objects,spatial_views=spatial_views,prior_invisible_signatures=invisible_plan_signatures,excluded_source_ops=invisible_source_ops)
                 break
