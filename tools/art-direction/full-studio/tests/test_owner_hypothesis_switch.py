@@ -3,7 +3,7 @@ switch the actual model's offered Blender operations; after five, diagnose.
 """
 import json,pathlib,sys,tempfile,unittest
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
-from artist_loop import track_rejected_strategy,rejected_plan_family,schema_for_plan
+from artist_loop import track_rejected_strategy,rejected_plan_family,schema_for_plan,creator_hypothesis_exhausted
 
 class ModelHypothesisSwitch(unittest.TestCase):
     def test_two_actual_invalid_sculpt_variants_disable_sculpt_family(self):
@@ -39,6 +39,11 @@ class ModelHypothesisSwitch(unittest.TestCase):
             schema_for_plan(3,True,"full","architecture",
                 [source[0]["name"]],source,True,True,1,True,
                 {"primitive","mesh"})
+    def test_after_two_invalid_mesh_and_primitive_families_record_strategy_exhaustion(self):
+        self.assertFalse(creator_hypothesis_exhausted(True,{"mesh"}))
+        self.assertFalse(creator_hypothesis_exhausted(True,{"primitive"}))
+        self.assertTrue(creator_hypothesis_exhausted(True,{"mesh","primitive"}))
+        self.assertFalse(creator_hypothesis_exhausted(False,{"mesh","primitive"}))
     def test_invalid_json_does_not_invent_qwen_tool(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=pathlib.Path(tmp)/"raw.json";p.write_text("NOT JSON")
