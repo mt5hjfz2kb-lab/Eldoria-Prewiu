@@ -44,6 +44,34 @@ class ModelHypothesisSwitch(unittest.TestCase):
         self.assertFalse(creator_hypothesis_exhausted(True,{"primitive"}))
         self.assertTrue(creator_hypothesis_exhausted(True,{"mesh","primitive"}))
         self.assertFalse(creator_hypothesis_exhausted(False,{"mesh","primitive"}))
+    def test_real_multi_assembly_different_primitive_defects_keep_tool(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=pathlib.Path(tmp)/"raw.json"
+            p.write_text(json.dumps({"actions":[
+                {"op":"primitive","target":"Eldoria_Added_C01_A","params":{"shape":"cube"}},
+                {"op":"primitive","target":"Eldoria_Added_C01_B","params":{"shape":"cube"}}]}))
+            counts={};blocked=set()
+            track_rejected_strategy(p,counts,blocked,
+                rejection="New component too thin or tiny",
+                multi_component_assembly=True)
+            track_rejected_strategy(p,counts,blocked,
+                rejection="DUPLICATE_OR_NEAR_COINCIDENT_NEW_COMPONENTS",
+                multi_component_assembly=True)
+            self.assertEqual(counts["primitive:TINY_UNREADABLE"],1)
+            self.assertEqual(counts["primitive:COINCIDENT_TIMBER"],1)
+            self.assertNotIn("primitive",blocked)
+    def test_twice_invalid_qwen_custom_mesh_only_blocks_mesh_tool(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=pathlib.Path(tmp)/"raw.json"
+            p.write_text(json.dumps({"actions":[
+                {"op":"mesh","target":"Eldoria_Added_C01_TimberBrace"}]}))
+            counts={};blocked=set()
+            for _ in range(2):
+                track_rejected_strategy(p,counts,blocked,
+                    rejection="Custom mesh has DUPLICATE 3D vertices",
+                    multi_component_assembly=True)
+            self.assertIn("mesh",blocked)
+            self.assertNotIn("primitive",blocked)
     def test_invalid_json_does_not_invent_qwen_tool(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=pathlib.Path(tmp)/"raw.json";p.write_text("NOT JSON")
