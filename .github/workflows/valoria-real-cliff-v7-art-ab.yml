@@ -1,0 +1,67 @@
+name: "[ART CLIFF V7] Replace artificial cliff face with archived natural CC0 rock scan"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-real-cliff-v7-art-ab.yml'
+      - 'tools/valoria-modular-fortress/real_cliff_scan_v7.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-real-cliff-v7-unique-windows
+  cancel-in-progress: false
+jobs:
+  author-cliff:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-one-continuous-geologic-cliff-38825223115
+          run-id: 38825223115
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_cliff_v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-real-cc0-geology-38825975637
+          run-id: 38825975637
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_real_scan
+      - name: Blender authentic CC0 cliff matched perspective and dimension A/B
+        shell: powershell
+        run: |
+          $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Local Blender missing'}
+          $old=Join-Path $env:RUNNER_TEMP 'exact_cliff_v6\eldoria-continuous-cliff-v6\glb\cliff_rock_column.glb'
+          $src=Join-Path $env:RUNNER_TEMP 'exact_real_scan\eldoria-rockface-cc0-professional\glb\cliff_rock_column__rock_face_02.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-cliff-v7'
+          if(-not(Test-Path $old) -or -not(Test-Path $src)){throw 'Verified original CC0 source or current GLB missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/real_cliff_scan_v7.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned Blender author script missing'}
+          $script=Join-Path $env:RUNNER_TEMP 'real_cliff_v7_pinned.py'
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $stdout=Join-Path $env:RUNNER_TEMP 'real_cliff_v7.stdout'
+          $stderr=Join-Path $env:RUNNER_TEMP 'real_cliff_v7.stderr'
+          $proc=Start-Process -FilePath $blender -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$old,$src,$out) -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 50
+          Get-Content $stderr -Tail 50
+          if($proc.ExitCode -ne 0){throw "Blender source scan failed: $($proc.ExitCode)"}
+          foreach($required in @('before\cliff_rock_column.png','after\cliff_rock_column.png','after\cliff_rock_column_macro.png','glb\cliff_rock_column.glb','reports\cliff_real_scan_v7.json')){
+            if(-not(Test-Path (Join-Path $out $required))){throw "Missing real A/B file $required"}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-cc0-cliff-v7-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-cliff-v7/**
+            ${{ runner.temp }}/real_cliff_v7.stdout
+            ${{ runner.temp }}/real_cliff_v7.stderr
+          retention-days: 30
+          if-no-files-found: warn
