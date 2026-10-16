@@ -1,0 +1,26 @@
+{
+    "stage": "REAL_UNITY_V20_ROCK_TO_WALL_SINGLE_DONOR_TEST_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V20/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V20/Imported/LowerGateFamilyV1.glb",
+    "revision": "686ffe9d7eda5a97c58abd5fd75ed8d0aa6d8be3",
+    "frames": [
+        "41-transition-integrated-overview.png",
+        "42-transition-integrated-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 53,
+    "distantTreeInstances": 16,
+    "pavingStoneInstances": 78,
+    "mountainSourceInstances": 6,
+    "candidateSource": "Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+    "isolatedTransitionInstances": 4,
+    "sourcePrefabEdited": false,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
