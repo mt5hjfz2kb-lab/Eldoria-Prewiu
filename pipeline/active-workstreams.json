@@ -96,10 +96,15 @@
       "dependency": "Native Unity build authorized for isolated 63 scene; sibling SceneBreakthrough completed and released runner; no modification of frozen production branches.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
-      "phase": "Direct owner-authorized takeover: native Unity construction, re-open persistence, real capture and visual verdict. Active run #38956747071 checked; no duplicate starts until it finishes.",
+      "phase": "Unity native 63-asset clean scene BUILT, reopened and three frames captured; run #38960623402 success, scene commit 40027a490ace2. 63 distinct GLBs, 408 instances. Visual ART_REJECT (~3/10 subjective): terrain slabs, 26 of 34 outer pines outside main+upper deck, scattered unsupported props, interrupted visual bridge. A gate/terrain/lighting microtest is running #38962837092; do not duplicate Windows runner.",
       "previous_owner": "chat-owner-clean63-20261016",
-      "next": "Inspect first native run logs and artifact; repair real compiler/import failures, retry one exclusive run, verify saved Unity scene and original 63 source coverage; inspect camera-matched PNGs and decide visually.",
-      "takeover_authority": "Direct user instruction 2026-10-16: assume work and finish; retain isolated branch, ownership and Windows runner lease, no production merges."
+      "next": "Wait for running microtest 38962837092 to finish and assess real Unity images. Then fix entire-scene visual contact: constrain outer pines to polygon, put background trees inside upper deck, bridge deck visibly continuous, remove floating rocky scatter, preserve reference/camera and re-run one native build. Do not claim ART_APPROVED. Preserve source SHA and frozen production branches.",
+      "takeover_authority": "Direct user instruction 2026-10-16: assume work and finish; retain isolated branch, ownership and Windows runner lease, no production merges.",
+      "last_native_success_run": 38960623402,
+      "native_scene_source_count": 63,
+      "native_module_instances": 408,
+      "art_approved": false,
+      "visual_assessment": "ART_REJECT_20261016_APPROX_3_10"
     }
   ],
   "history": [
