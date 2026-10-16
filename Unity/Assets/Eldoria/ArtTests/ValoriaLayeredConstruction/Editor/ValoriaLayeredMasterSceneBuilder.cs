@@ -19,7 +19,7 @@ namespace Eldoria.ValoriaLayered.Editor
         const string ScenePath = Root + "/Valoria_MasterPlan_Layers_ABC.unity";
         const string ReferenceSha = "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689";
         static readonly string EvidenceDir = Path.GetFullPath(
-            Path.Combine(Application.dataPath, "..", "..", "docs", "evidence", "valoria-layered-construction-20261016"));
+            Path.Combine(UnityEngine.Application.dataPath, "..", "..", "docs", "evidence", "valoria-layered-construction-20261016"));
         static Material soil, road, plot, upper, stone, reserve, water, timber;
         static Transform root, layerA, layerB, layerC, support;
         static Camera camera;
@@ -160,7 +160,7 @@ namespace Eldoria.ValoriaLayered.Editor
             var landing=Get("VPD · L1 landing");
             var lastY=plan.stair.first_center[1]+(plan.stair.count-1)*plan.stair.rise+plan.stair.step_height*.5f;
             var result=new Result {
-                scene=ScenePath,unity=Application.unityVersion,
+                scene=ScenePath,unity=UnityEngine.Application.unityVersion,
                 classification="GREYBOX / SUPPORT / TEMPORARY",
                 source_layout=LayoutPath,camera_authority="HISTORICAL_ORTHOGRAPHIC_QA_NOT_SHARP",
                 visual_authority=ReferenceSha,bridge_status="PROVISIONAL_NOT_CERTIFIED",
