@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 namespace Eldoria.Breakthrough {
-public static class SceneCapture {
+public static partial class SceneCapture {
  const string Root="Assets/Eldoria/ArtTests/SceneBreakthrough";
  const string Evidence="../docs/evidence/valoria-scene-breakthrough-20261016";
  static Camera cam; static int serial; static readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();

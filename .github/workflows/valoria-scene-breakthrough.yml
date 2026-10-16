@@ -9,6 +9,7 @@ on:
       - '.github/workflows/valoria-scene-breakthrough.yml'
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: eldoria-scene-breakthrough
   cancel-in-progress: false
@@ -42,11 +43,30 @@ jobs:
           $hash=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLowerInvariant()
           if($hash -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference mismatch'}
           node tools/eldoria-agent-preflight.mjs
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38877895047
+          name: valoria-one-full-medium-pine-38877895047
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/breakthrough-pine
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38826318218
+          name: valoria-real-rock-02-palette-38826318218
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/breakthrough-cliff
+      - name: Stage exact existing art without changing sources
+        shell: powershell
+        run: |
+          $python=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter python.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $python){throw 'Existing Blender Python unavailable'}
+          & $python tools/valoria-scene-breakthrough/stage.py
+          if($LASTEXITCODE -ne 0){throw 'Immutable source staging failed'}
       - name: Construct and capture clean isolated scene
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Breakthrough-Unity.log'
-          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Run','-logFile',$log)
+          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Hybrid','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Unity exit $($process.ExitCode)"}
@@ -56,7 +76,7 @@ jobs:
         run: |
           git config user.name "Eldoria scene experiment"
           git config user.email "scene-experiment@users.noreply.github.com"
-          git add -- Unity/Assets/Eldoria/ArtTests/SceneBreakthrough docs/evidence/valoria-scene-breakthrough-20261016
+          git add -f -- Unity/Assets/Eldoria/ArtTests/SceneBreakthrough docs/evidence/valoria-scene-breakthrough-20261016
           if(git diff --cached --quiet){exit 0}
           git commit -m "evidence: real clean-scene Unity blockout and native camera suite"
           git push origin HEAD:experiment/valoria-scene-method-breakthrough-20261016
