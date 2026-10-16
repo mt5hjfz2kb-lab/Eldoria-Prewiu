@@ -1,0 +1,639 @@
+{
+  "assets": [
+    {
+      "id": "arch_bridge_support",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "440fdec7acfa0942a2d50fe954c232c808edc88887a8391cfbd193682dfcd396",
+      "mesh_count": 24,
+      "node_count": 24,
+      "size_bytes": 496736
+    },
+    {
+      "id": "arch_complete_major",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "b2026a1046e8e8b64556b440e00aed8dd4a788aab599ca3c60582b02e8640bfa",
+      "mesh_count": 23,
+      "node_count": 23,
+      "size_bytes": 681736
+    },
+    {
+      "id": "arch_complete_minor",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "5af635086089d62a366a2e76f30e2c85feaee60b1bb73e1342cedde90c42f181",
+      "mesh_count": 21,
+      "node_count": 21,
+      "size_bytes": 666372
+    },
+    {
+      "id": "arch_keystone_major",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "055a067259c5acef6533b386775191b30f097fbd08efa34a6233a128ccb4922e",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 209084
+    },
+    {
+      "id": "arch_keystone_minor",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "a2bba3fd4683e6bb08bfc29a2ac25c798bc58c0f4bcfacb5c5fbdd1f52cfcb41",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 209084
+    },
+    {
+      "id": "arch_voussoir_major",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "489b7aa7e15a4f2231c985312bc1cc91ba00f20fd5217950721fcb0de4e4135e",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 209084
+    },
+    {
+      "id": "arch_voussoir_minor",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "531d0c1ae5698ddd30a3a8f9288492f8b24ffcf8e88d0b57670f5bf63cc76f9f",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 209084
+    },
+    {
+      "id": "arrow_slit_frame",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "03c3bcbf421f9d1321a08512b178834b200e57f8698b510127dbeb3d3e35c565",
+      "mesh_count": 2,
+      "node_count": 2,
+      "size_bytes": 392836
+    },
+    {
+      "id": "banner_royal_blue",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "be95150ecaf59a92946974cdfe84e0b416df1ec1ae320ea129ceb38b39b8a4af",
+      "mesh_count": 9,
+      "node_count": 9,
+      "size_bytes": 714820
+    },
+    {
+      "id": "banner_small",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "b14967e4ed940d43688386e072e0c64344238f997be9f9b3b20b9f9be9547fc4",
+      "mesh_count": 9,
+      "node_count": 9,
+      "size_bytes": 714820
+    },
+    {
+      "id": "boulder_1",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "d52b84fea633c927ecaf1dcf69bb4aa046f61211cea4b80d8e5e50471d807357",
+      "mesh_count": 6,
+      "node_count": 6,
+      "size_bytes": 241732
+    },
+    {
+      "id": "boulder_2",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "754fd46df1f2c7382fd0ce08996166252b5d3ce866e1ab16831c7460ba75e2e4",
+      "mesh_count": 6,
+      "node_count": 6,
+      "size_bytes": 241740
+    },
+    {
+      "id": "boulder_3",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "640b1bfdf7c08d75cf861f48d5987504027bb2cc9a369ae3fba29195a0042a95",
+      "mesh_count": 6,
+      "node_count": 6,
+      "size_bytes": 241740
+    },
+    {
+      "id": "brazier_pedestal",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "14dc3b48cc892e010ea02787c86da6421804cd6402bfb23e7de2eb95da3d41e9",
+      "mesh_count": 15,
+      "node_count": 15,
+      "size_bytes": 794700
+    },
+    {
+      "id": "bridge_span_4m",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "d84bfc9a245520399b8c2298e86fcc48afbbb6fbec8de32e4e639281351b6b49",
+      "mesh_count": 15,
+      "node_count": 15,
+      "size_bytes": 700548
+    },
+    {
+      "id": "cliff_rock_column",
+      "source_type": "documented_visually_preferred_not_final_approval",
+      "run_id": 38826318218,
+      "artifact_name": "cliff",
+      "sha256": "614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 4401968
+    },
+    {
+      "id": "cliff_stone_chip",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "31212ec9b8c7e0d0003ea50abf65651f804c079cdfdf92c4e280688268a0bb41",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 202252
+    },
+    {
+      "id": "cobble_pebbles",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "074ceb52e81c823dfdc6370a2d4979ebaae9fd95640ba400def22901b332ad6d",
+      "mesh_count": 25,
+      "node_count": 25,
+      "size_bytes": 266592
+    },
+    {
+      "id": "dirt_ground_patch",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "458dfc6ac4c2f84c581cf30ad2e018107676cce74909f0eeaf1686b0edfde744",
+      "mesh_count": 18,
+      "node_count": 18,
+      "size_bytes": 521788
+    },
+    {
+      "id": "grass_ground_patch",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "af1051bbb8ebf121bbd0878df41e81a5bd9f5cd3c1624ff1e4a1b959e57f9040",
+      "mesh_count": 106,
+      "node_count": 106,
+      "size_bytes": 445516
+    },
+    {
+      "id": "grass_tuft_1",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "418c9ce64edcf5f9e32bc8b33c157150f2c3e9e47d93bbb7d016f8333ff6893e",
+      "mesh_count": 40,
+      "node_count": 40,
+      "size_bytes": 396376
+    },
+    {
+      "id": "grass_tuft_2",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "e32b3fdb3ef0216a1f8548ea0703401493a868c4ee4e259ac274044fece8d5cd",
+      "mesh_count": 40,
+      "node_count": 40,
+      "size_bytes": 396372
+    },
+    {
+      "id": "merlon_low",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "c1dc98a295433c8b980d337598311c7e28e5777dc0d1f5e6f838e2dcea5a29ee",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 210984
+    },
+    {
+      "id": "merlon_tall",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "022bf407bcfeeb7e717874b0a27def4e3f9831bb0c6edfb1933bc99f4f447bb9",
+      "mesh_count": 3,
+      "node_count": 3,
+      "size_bytes": 433488
+    },
+    {
+      "id": "mortar_joint_recess",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "d517031dd149165b775d71facef8ffe7c67f7a2dfd6707b990f4a71369f86394",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 176044
+    },
+    {
+      "id": "parapet_walk_4m",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "3dba808e8e8ef60d89c635208cf5363708c0c81d1a3293c791383483e96d1892",
+      "mesh_count": 47,
+      "node_count": 47,
+      "size_bytes": 947304
+    },
+    {
+      "id": "paver_flagstone",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "61dc90e0f8fb899609d2ab1f5aaf6f09cd8e7ebf85ad9f7e49ad33f9a534e768",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 210920
+    },
+    {
+      "id": "paver_rect_long",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "0fbdd2432d0e3e778bfcb545babf1d8932f65d6323fec52f0594b9aecb875b78",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 210948
+    },
+    {
+      "id": "paver_rect_short",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "58671e5577c6e7841181ac3157f20000a5b40cb54a357d71da39e932d3dafb5b",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 210948
+    },
+    {
+      "id": "pine_medium",
+      "source_type": "documented_visually_preferred_not_final_approval",
+      "run_id": 38877895047,
+      "artifact_name": "pine",
+      "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
+      "mesh_count": 3,
+      "node_count": 3,
+      "size_bytes": 8736484
+    },
+    {
+      "id": "pine_small",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "f770adb87f9d41a534efdb64bd8772dc95499d72043173f656c553e1d531fd54",
+      "mesh_count": 311,
+      "node_count": 311,
+      "size_bytes": 868500
+    },
+    {
+      "id": "pine_tall",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "a35fc73fdbad83695f0a78a8d09a3630beae43a7239a17857b8e78489caea023",
+      "mesh_count": 367,
+      "node_count": 367,
+      "size_bytes": 931072
+    },
+    {
+      "id": "portcullis_large",
+      "source_type": "documented_visually_preferred_not_final_approval",
+      "run_id": 38860266981,
+      "artifact_name": "iron",
+      "sha256": "09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
+      "mesh_count": 63,
+      "node_count": 63,
+      "size_bytes": 1787056
+    },
+    {
+      "id": "portcullis_small",
+      "source_type": "documented_visually_preferred_not_final_approval",
+      "run_id": 38860266981,
+      "artifact_name": "iron",
+      "sha256": "f74af38088acb53ee6561699c9fd610fd836687185cbbe1558e57e50b4d55809",
+      "mesh_count": 53,
+      "node_count": 53,
+      "size_bytes": 1721932
+    },
+    {
+      "id": "reinforced_oak_gate",
+      "source_type": "documented_visually_preferred_not_final_approval",
+      "run_id": 38858438155,
+      "artifact_name": "gate",
+      "sha256": "6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
+      "mesh_count": 3,
+      "node_count": 3,
+      "size_bytes": 3281552
+    },
+    {
+      "id": "river_foam_line",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "85643f1fbadd8cba34187270bcb81e2561194c877314691409e5af8b3a02f936",
+      "mesh_count": 19,
+      "node_count": 19,
+      "size_bytes": 351264
+    },
+    {
+      "id": "river_water_tile",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "f05e9a1c90b06012a80e640b29d680db8f497900538c3e8f32e46fbaad771ba5",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 364500
+    },
+    {
+      "id": "scaffold_small",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "fabb53dbda6d32ffd890539f7af2c83bd8580978e7c037c5164d487ef24897d6",
+      "mesh_count": 29,
+      "node_count": 29,
+      "size_bytes": 852624
+    },
+    {
+      "id": "scaffold_watch_platform",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "5c158d9890451fd83985e7f82e0b304be4fa646ada9cc8a9558406dde35b400e",
+      "mesh_count": 29,
+      "node_count": 29,
+      "size_bytes": 852736
+    },
+    {
+      "id": "shrub_1",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "23094dc6df85d2fdf60dc734abe5c32321b81b635f2c5f0e81b1f83829a7ce57",
+      "mesh_count": 96,
+      "node_count": 96,
+      "size_bytes": 639552
+    },
+    {
+      "id": "shrub_2",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "b0fc600ffc3e9fb0a96a7c813b2861d5c14b765318cb6bd1f82dc1a4721d8009",
+      "mesh_count": 131,
+      "node_count": 131,
+      "size_bytes": 667744
+    },
+    {
+      "id": "shrub_3",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "0d9798fa68869b5038cb247713f2e305a439e88fc7ffe2f52261ad274a0fe118",
+      "mesh_count": 166,
+      "node_count": 166,
+      "size_bytes": 695968
+    },
+    {
+      "id": "stair_step",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "834315648d48226093c9b1638a2c031f57de17e298bd9af99498d78d678db0df",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 215836
+    },
+    {
+      "id": "staircase_flight_12",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "c42cf07fa79d1af23cb9c5416843ccf4537075db3a9f5ce45481d55dc3161a4a",
+      "mesh_count": 28,
+      "node_count": 28,
+      "size_bytes": 799896
+    },
+    {
+      "id": "stone_ashlar_01",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "996da1c2736e83a0b7253272e3413f1f355756c76bcbf636635ea5a240a4f58f",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 215928
+    },
+    {
+      "id": "stone_ashlar_02",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "6cae71648d0a37a1f63a6b1773f1b410db62e2827a55ada0906b8bec063fc227",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 211004
+    },
+    {
+      "id": "stone_ashlar_03",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "6a636a005740fe4ee29d78d7a9884f8fe17047d14445e6bedfbde92498b53f43",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 182832
+    },
+    {
+      "id": "stone_ashlar_04",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "db8409c17246035a0d1b7d9fc7aa12f1b651c80f7474d3864f66420026da1ce2",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 211000
+    },
+    {
+      "id": "stone_corner_quoin",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "6bef502388c97c9e0f634bd489994bfe9e75e2d635aba68818f8bef7e78b840b",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 211008
+    },
+    {
+      "id": "stone_half_block",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "ffd7782169ff70a648587bf73fbfb6bfa91dc05ff3a4bb230e6c5e817d57972a",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 210984
+    },
+    {
+      "id": "stone_slab_cap",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "0c632d3656e4db63ded29ba76265536c0b4cb64f5b96dfe265656985390a3383",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 210912
+    },
+    {
+      "id": "timber_beam_1",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "258dedffb59c164316117d9dbedd4581a4b970974b44c47b3583dfdc3691dbb7",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 182288
+    },
+    {
+      "id": "timber_beam_2",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "bf200753c4472a91c1cda9f31153ac75cf008d5becdc67a6ec2613c221116ef9",
+      "mesh_count": 1,
+      "node_count": 1,
+      "size_bytes": 182584
+    },
+    {
+      "id": "timber_brace_X",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "ac94e8529373b84a96283da6523634620659933ce8b5332994bcbe3eafd3ae0b",
+      "mesh_count": 2,
+      "node_count": 2,
+      "size_bytes": 178616
+    },
+    {
+      "id": "torch_wall",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "ed5f8c9d8ae5a4c8591d77bdd8b15e43367ef79c3c61d6879c3491acd0cbe00b",
+      "mesh_count": 10,
+      "node_count": 10,
+      "size_bytes": 538440
+    },
+    {
+      "id": "tower_square_short",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "a514d97fc3241477f4b98b7e4d04b1213d75a1718e53d662fca9e83be8dfd4ac",
+      "mesh_count": 233,
+      "node_count": 233,
+      "size_bytes": 2389576
+    },
+    {
+      "id": "tower_square_tall",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "3982355e1fdd532def9723bfe624a41fc9a9c57e1fd9cacab8469d6246e6889e",
+      "mesh_count": 353,
+      "node_count": 353,
+      "size_bytes": 3319360
+    },
+    {
+      "id": "wall_buttress",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "f4d4d325106eae4f5c3e5c9a5e3f1433eecb8ca6bb063bd812ccd73101a53d64",
+      "mesh_count": 7,
+      "node_count": 7,
+      "size_bytes": 638412
+    },
+    {
+      "id": "wall_corner_90",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "97d97d6417cb8eb82ba20fd8ba2a5e91319aa0d94c7420ec398ec67bd6504d8a",
+      "mesh_count": 84,
+      "node_count": 84,
+      "size_bytes": 1233432
+    },
+    {
+      "id": "wall_course_4m",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "f2a2157a9954c9005c725b4245809df0d74bff9a1365c05a35d368ddfb824b81",
+      "mesh_count": 5,
+      "node_count": 5,
+      "size_bytes": 622924
+    },
+    {
+      "id": "wall_panel_crenellated_4m",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "476d4cd3bb9d220845489833b3386311c1994b6db55ab3353571cf564a6dd05f",
+      "mesh_count": 46,
+      "node_count": 46,
+      "size_bytes": 940100
+    },
+    {
+      "id": "wall_panel_regular_4m",
+      "source_type": "documented_visually_preferred_not_final_approval",
+      "run_id": 38865543613,
+      "artifact_name": "wall",
+      "sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
+      "mesh_count": 91,
+      "node_count": 91,
+      "size_bytes": 4807536
+    },
+    {
+      "id": "wall_panel_ruined_4m",
+      "source_type": "preserved_base_63",
+      "run_id": 38813966671,
+      "artifact_name": "valoria-individual-quality-63-38813966671",
+      "sha256": "417abb254fda570c8eaf9147da9c45f2facc0ae818ee4beac4b596dc4b4b9dd3",
+      "mesh_count": 38,
+      "node_count": 38,
+      "size_bytes": 878044
+    }
+  ],
+  "expected_count": 63,
+  "staged_count": 63,
+  "base_run": 38813966671,
+  "no_new_models": true,
+  "art_approved": false
+}
