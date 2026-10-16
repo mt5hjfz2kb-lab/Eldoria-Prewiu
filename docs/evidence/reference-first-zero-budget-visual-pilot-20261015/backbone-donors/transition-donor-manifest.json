@@ -1,0 +1,38 @@
+{
+    "stage": "NATIVE_UNITY_V21_FOUR_ORIGINAL_BACKBONE_PREFABS_UNAPPROVED",
+    "reference": "Canonical owner supplied fortified plateau image 1513x1039",
+    "revision": "8344a3238a2735875656acc5f8b0f54520bcc6f1",
+    "sources": [
+        "Assets/Eldoria/Resources/Valoria/SM_Cliffs_01.prefab",
+        "Assets/Eldoria/Resources/Valoria/SM_Cliffs_03.prefab",
+        "Assets/Eldoria/Resources/Valoria/SM_Terrain_03.prefab",
+        "Assets/Eldoria/Resources/Valoria/SM_Hills_01.prefab"
+    ],
+    "positions": [
+        "A left front",
+        "B right front",
+        "C left rear",
+        "D right rear"
+    ],
+    "frames": [
+        "43-terrain-backbone-oblique.png",
+        "44-terrain-backbone-high.png"
+    ],
+    "renderers": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalLongestDimensions": [
+        100.08474731445313,
+        100.08474731445313,
+        100.0847396850586,
+        100.0847396850586
+    ],
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
