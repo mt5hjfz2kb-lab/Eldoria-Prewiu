@@ -20,6 +20,7 @@
 | Código y gameplay vigente | [Unity](../Unity/) y [Arquitectura Unity](../UNITY_ARCHITECTURE.md) | [Contrato Unity](../UNITY_CORE_CONTRACT.md), [QA](../QA_AND_DEPLOY.md) |
 | Calidad y composición Valoria | [Referencia visual aprobada](../references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg) y [Biblia Valoria](VALORIA_VISUAL_BIBLE.md) | [Biblia general](ELDORIA_ART_BIBLE.md), [guía visual](VISUAL_BIBLE.md); no copiar antiguos ART PASS |
 | Método de producción visual | [Reglas de producción](ELDORIA_VISUAL_PRODUCTION_RULES.md) | [Manual de acabado Unity](UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md); sujetos a AGENTS |
+| Planes de contingencia visual (NO activados) | [Alternativas Valoria — 14 rutas y gates de decisión](VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md) | **Reserva documental:** no cambia la prioridad exclusiva vigente, no pausa al constructor y exige autorización del propietario para ejecutar un pivote. |
 | Autoría IA Qwen/Blender/Unity | [AGENTS §7](../AGENTS.md) y el **código vivo** en `tools/art-direction/ai-authoring/` | [Guía técnica](ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md) con **cabecera desactualizada**; [Issue #34](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/34) y último ensayo real; no asumir ART APPROVED |
 | Publicación, QA y apps | [QA_AND_DEPLOY.md](../QA_AND_DEPLOY.md) | [Catálogo de workflows](WORKFLOW_INDEX.md), resultado de la ejecución y artefacto exacto |
 | Evidencias e historial | [docs/evidence](evidence/) y [docs/archive](archive/) | No conceden permisos, reservas, ni hacen revivir tareas cerradas |
