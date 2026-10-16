@@ -1,0 +1,24 @@
+name: "Eldoria Valoria 63 per-asset feedback contract (isolated)"
+on:
+  push:
+    branches:
+      - infra/valoria-63-feedback-guard-20261016
+    paths:
+      - 'tools/valoria-asset-feedback/**'
+      - '.github/workflows/eldoria-asset-feedback-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-feedback-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate exact 63 IDs and review log
+        run: node tools/valoria-asset-feedback/guard.mjs validate
+      - name: Test fail-closed per-module acceptance
+        run: node --test tools/valoria-asset-feedback/guard.test.mjs
