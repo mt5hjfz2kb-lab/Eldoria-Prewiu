@@ -37,3 +37,16 @@ Revisión de los logs y artifact **12047807616**: la tanda V9 falló **4 de 4** 
 ## Mortero — nueva preparación sin ejecución forzada
 
 `tools/valoria-modular-fortress/true_lime_mortar_v10_staged.py` commit b691e339c5: conserva el perfil físico de 2,6 cm y plantea corregir granos blancos sueltos, fotografía de cal con PBR normal embebida, misma cámara overview/macro. Código **preparado pero no ejecutado**, y no sirve como prueba artística mientras no termine Blender. Los datos originales V9 siguen siendo el mejor candidato en producción aislada, 5,7 provisional. Otra intervención artística de mortero del mismo repositorio debe coordinarse para evitar trabajo duplicado. 
+
+
+## Cantería V9 reparada — ejecución #38906155308
+
+Tras el fracaso #38905895962, Blender volvió a ejecutar cuatro biseles **dentro del envelope modular** en la prueba #38906155308 (artefacto 12048097620), con cuatro GLB, ocho PNG y cuatro atlas CC0. Recuento por módulo: 284 caras iniciales, 400/404 caras finales; 120 a 157 vértices de borde reencajados dentro del volumen original; comprobación automatizada `within_previous_fit_envelope=true`. A/B real inspeccionado: fotografía menos lineal, piedra caliza más uniforme y aristas ligeramente trabajadas. **Cuatro valoraciones de calidad mínima aproximada 6,0/10**, no 8, **sujetas a confirmación humana y pruebas Unity**. Se admiten como nuevos mejores *candidatos*, con las versiones anteriores conservadas y no como `ART_APPROVED`. Se mantienen visibles los defectos: poca talla frente a referencia Valoria y cierto aspecto de bloque industrial. Si una prueba de contacto/intradós falla, revertir al anterior.
+
+## Mortero V10 — ejecución #38906245333
+
+Se revisó la vista macro real del artifact 12048128099. Aunque terminó técnicamente, la junta parece **una banda muy oscura con franjas longitudinales grisáceas**; no demuestra una mejora artística sobre la V9. **ART_REJECT / no promoción; puntuación permanece 5,7 provisional**, a pesar de los PNG y GLB exportados. Mejorar contraste mineral no implica oscurecer uniformemente toda la junta ni pintar líneas rectas. Intervenir solo después de estudiar un material de juntas históricas verdadero al tamaño de 2,6cm.
+
+## Corte intermedio
+
+**56/63** es el último recuento consolidado; contando además tierra V10 y los cuatro bloques de arco V9 como candidatos de **6,0/10 aproximado**, el recuento evaluado asciende *provisionalmente* a **61/63**. Falta evidencia visual 6/10 para **`mortar_joint_recess` y `river_water_tile`**, ambos alrededor de 5,7. **0 `ART_APPROVED`**; no alterar Unity ni integraciones de juego hasta nueva orden.
