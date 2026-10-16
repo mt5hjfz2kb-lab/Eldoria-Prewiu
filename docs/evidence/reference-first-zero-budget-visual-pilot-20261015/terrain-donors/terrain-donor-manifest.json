@@ -1,0 +1,20 @@
+{
+    "test": "NATIVE_UNITY_TERRAIN_DONOR_AB_UNAPPROVED",
+    "reference": "Owner image 1513x1039; cliff ledges below two defensive gatehouses",
+    "sourceA": "Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+    "sourceB": "Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+    "frames": [
+        "31-broad-vs-stepped-oblique.png",
+        "32-broad-vs-stepped-high.png"
+    ],
+    "revision": "56421f3635d4a4971539d6e4a3abe81b928e1d7e",
+    "width": 1536,
+    "height": 1024,
+    "rendererCountA": 1,
+    "rendererCountB": 1,
+    "nativeLongestDimensionA": 0.39443740248680117,
+    "nativeLongestDimensionB": 0.3015751838684082,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
