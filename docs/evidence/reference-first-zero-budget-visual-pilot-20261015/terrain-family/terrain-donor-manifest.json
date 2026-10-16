@@ -1,0 +1,20 @@
+{
+    "test": "NATIVE_UNITY_V22_ORIGINAL_ROCK_FAMILY_VS_PREMIUM_SQUARE_UNAPPROVED",
+    "reference": "Owner image 1513x1039; cliff ledges below two defensive gatehouses",
+    "sourceA": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/TerrainFamilyStudio/Imported/RockTerrainFamilyV1.glb",
+    "sourceB": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/TerrainFamilyStudio/Imported/Valoria_PremiumSquareMetre_v1.glb",
+    "frames": [
+        "45-authored-terrain-family-oblique.png",
+        "46-authored-terrain-family-high.png"
+    ],
+    "revision": "46f896f1737f6bafd23a99ba74562ca9b8f96308",
+    "width": 1536,
+    "height": 1024,
+    "rendererCountA": 5,
+    "rendererCountB": 34,
+    "nativeLongestDimensionA": 92.36592102050781,
+    "nativeLongestDimensionB": 1.9944815635681153,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
