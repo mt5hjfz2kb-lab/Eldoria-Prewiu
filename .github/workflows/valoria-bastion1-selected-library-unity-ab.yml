@@ -55,18 +55,16 @@ jobs:
         shell: powershell
         run: |
           if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Configured Unity 6000.3.23f1 executable missing'}
-          $python=Get-Command python.exe -ErrorAction SilentlyContinue
-          if(-not $python){
-            $dirs=@(Get-ChildItem 'C:\Program Files\Blender Foundation' -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending)
-            foreach($dir in $dirs){
-              $py=Get-ChildItem $dir.FullName -Recurse -Filter python.exe -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-              if($py){break}
-            }
-            if(-not $py){throw 'Installed Python interpreter not found'}
-            "BASTION_PYTHON=$py"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
-          }else{
-            "BASTION_PYTHON=$($python.Source)"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
-          }
+          # Do not trust WindowsApps python.exe: it is often a Microsoft Store alias.
+          # Blender's bundled CPython is already installed; it is invoked alone,
+          # without starting Blender or consuming the Qwen/Blender art runner.
+          $py=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter python.exe -File -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $py -or -not(Test-Path $py)){throw 'Bundled existing Blender Python missing'}
+          $version=& $py --version 2>&1
+          if($LASTEXITCODE -ne 0 -or "$version" -notmatch 'Python 3'){throw "Bundled Python not executable: $version"}
+          "BASTION_PYTHON=$py"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "VALIDATED_EMBEDDED_PYTHON $version"
           Write-Host "UNITY_EDITOR=$env:UNITY_EDITOR_PATH"
       - name: Recover exact historical Bastion I player scene source (not rebuild)
         uses: actions/download-artifact@v4
