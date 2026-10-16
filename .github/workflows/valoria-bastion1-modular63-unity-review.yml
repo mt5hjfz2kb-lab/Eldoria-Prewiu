@@ -168,12 +168,19 @@ jobs:
             Copy-Item -LiteralPath $src -Destination (Join-Path $dest ($asset.id+'.glb')) -Force
             Write-Host "BASTION63_PINNED_GLTF $($asset.id) run=$($asset.artifact_run) sha=$real"
           }
-          $python=(Get-Command python.exe -ErrorAction SilentlyContinue).Source
+          # WindowsApps python.exe is a Microsoft Store install alias, not a Python interpreter.
+          # Prefer real embedded Python already installed with Blender, WITHOUT running Blender.
+          $python=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter python.exe -Recurse -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch 'WindowsApps' } |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
           if(-not $python){
-            $python=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter python.exe -Recurse -ErrorAction SilentlyContinue |
-              Select-Object -First 1 -ExpandProperty FullName
+            $fallback=Get-Command python.exe -ErrorAction SilentlyContinue
+            if($fallback -and $fallback.Source -notmatch 'WindowsApps'){$python=$fallback.Source}
           }
-          if(-not $python){throw 'Existing Python for glTF metadata missing (Blender not launched)'}
+          if(-not $python -or -not(Test-Path -LiteralPath $python)){
+            throw 'Existing real Python for glTF metadata missing (Blender NOT launched)'
+          }
+          Write-Host "BASTION63_REAL_PYTHON $python"
           foreach($asset in $manifest.selected){
             & $python tools/valoria-bastion1-assembly/materials.py (Join-Path $dest ($asset.id+'.glb'))
             if($LASTEXITCODE -ne 0){throw "Failed to extract glTF metadata $($asset.id)"}
