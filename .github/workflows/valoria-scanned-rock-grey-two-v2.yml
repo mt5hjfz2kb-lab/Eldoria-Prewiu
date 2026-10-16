@@ -1,0 +1,72 @@
+name: "[ART GEOLOGY FLOOR6] Matte alpine greys for two actual scanned CC0 rocks"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-scanned-rock-grey-two-v2.yml'
+      - 'tools/valoria-modular-fortress/grade_two_actual_scan_rocks_v2.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-two-genuine-grey-rocks-only
+  cancel-in-progress: false
+jobs:
+  scanned-rock-photo-art:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Locate native installed Git and Blender
+        id: deps
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-true-rock-upgrades-38873968905
+          run-id: 38873968905
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/actual_rock_cc0
+      - name: Change only original photographed rock pigments and roughness, matched camera
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'actual_rock_cc0\eldoria-two-scanned-rocks\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-two-grey-real-rocks'
+          if(-not(Test-Path (Join-Path $src 'boulder_2.glb'))){throw 'Actual photogrammetric source unavailable'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/grade_two_actual_scan_rocks_v2.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned source unavailable'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-two-graded-rocks.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-two-graded-rocks.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-two-graded-rocks.err'
+          $p=Start-Process -FilePath "${{ steps.deps.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 95 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "Two scanned rock grading failed $($p.ExitCode)"}
+          foreach($folder in @('glb','before','after','atlas')){
+            $number=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($number -ne 2){throw "Expected two $folder files; got $number"}
+          }
+      - name: Keep genuine visual evidence, no automatic threshold promotion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-two-photo-grey-real-rocks-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-two-grey-real-rocks/**
+            ${{ runner.temp }}/eldoria-two-graded-rocks.log
+            ${{ runner.temp }}/eldoria-two-graded-rocks.err
+          if-no-files-found: warn
+          retention-days: 30
