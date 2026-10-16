@@ -1,0 +1,78 @@
+name: "[ART PINE V8] Two organic Quaternius same-family canopy replacements"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-two-pine-same-family-v8.yml'
+      - 'tools/valoria-modular-fortress/two_native_same_family_pines_v8.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-two-pines-same-family-v8
+  cancel-in-progress: false
+jobs:
+  real-organic-canopy:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Set installed GitHub Desktop Git before sparse checkout
+        shell: powershell
+        run: |
+          $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          if(-not $git){throw 'Git unavailable'}
+          Add-Content $env:GITHUB_PATH (Split-Path $git)
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-modular-fortress/two_native_same_family_pines_v8.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-12-independent-blender-v4-38819524063
+          run-id: 38819524063
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_native_pines
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-one-full-medium-pine-38877895047
+          run-id: 38877895047
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_full_green_pine
+      - name: Generate independent Blender A/B of two corrected original trees
+        shell: powershell
+        run: |
+          $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender missing'}
+          $src=Join-Path $env:RUNNER_TEMP 'exact_native_pines\eldoria-individual-cc0-v4\glb'
+          $donor=Join-Path $env:RUNNER_TEMP 'exact_full_green_pine\eldoria-one-full-medium-pine\glb\pine_medium.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-pines-same-family-v8'
+          if(-not(Test-Path $src) -or -not(Test-Path $donor)){throw 'Pinned existing GLBs absent'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/two_native_same_family_pines_v8.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Git SHA native artist source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-native-pines-v8.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $stdout=Join-Path $env:RUNNER_TEMP 'pines_v8.stdout'
+          $stderr=Join-Path $env:RUNNER_TEMP 'pines_v8.stderr'
+          $process=Start-Process -FilePath $blender -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$donor,$out) -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 55 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 55 -ErrorAction SilentlyContinue
+          if($process.ExitCode -ne 0){throw "Native Blender pine generation failure $($process.ExitCode)"}
+          foreach($asset in @('pine_small','pine_tall')){
+            foreach($ext in @("before\$asset.png","after\$asset.png","glb\$asset.glb","reports\$asset.json")){
+              if(-not(Test-Path (Join-Path $out $ext))){throw "Missing source A/B $ext"}
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-two-organic-pines-v8-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-pines-same-family-v8/**
+            ${{ runner.temp }}/pines_v8.stdout
+            ${{ runner.temp }}/pines_v8.stderr
+          if-no-files-found: warn
+          retention-days: 30
