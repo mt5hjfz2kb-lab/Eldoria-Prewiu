@@ -86,5 +86,7 @@
     }
   ],
   "selection_readiness": "EXPERIMENT_ONLY_NOT_ART_APPROVED",
-  "selection_change_note": "Confirmed 2026-10-16 comparison swaps tower/merlon to lighter exact base-63 GLBs; no general Blender correction implied; pending palette feedback remains pending."
+  "selection_change_note": "Confirmed 2026-10-16 comparison swaps tower/merlon to lighter exact base-63 GLBs; no general Blender correction implied; pending palette feedback remains pending.",
+  "source_file": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs",
+  "source_git_blob_sha1": "a4182af229e971eada3ce2e927857dc5a2cc302c"
 }
