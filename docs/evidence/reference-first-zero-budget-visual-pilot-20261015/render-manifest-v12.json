@@ -1,0 +1,23 @@
+{
+    "stage": "REAL_UNITY_V12_OPEN_VALLEY_HORIZON_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V12/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V12/Imported/LowerGateFamilyV1.glb",
+    "revision": "863bf6265de9b7d56f2f81bab166dfbde3668939",
+    "frames": [
+        "23-open-horizon-overview.png",
+        "24-open-horizon-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 37,
+    "distantTreeInstances": 26,
+    "pavingStoneInstances": 78,
+    "mountainSourceInstances": 6,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
