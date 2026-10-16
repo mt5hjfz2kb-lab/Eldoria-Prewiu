@@ -1,0 +1,78 @@
+name: "[ART DIRT V10] Real photographed soil, eleven real olive grass clusters"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-dirt-photo-real-grass-v10.yml'
+      - 'tools/valoria-modular-fortress/soil_reuse_real_olive_tufts_v10.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-ground-dirt-real-tufts
+  cancel-in-progress: false
+jobs:
+  native-photodirt-tufts:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - name: Find installed Git and Blender on PC
+        id: deps
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-4-cc0-natural-ground-and-ruin-v2-38871626493
+          run-id: 38871626493
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/true_dirt_CC0
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-real-bending-grass-38881298032
+          run-id: 38881298032
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/proven_living_tufts
+      - name: Native Blender single naturally planted dirt patch with 11 physically smaller real tufts
+        shell: powershell
+        run: |
+          $dirt=Join-Path $env:RUNNER_TEMP 'true_dirt_CC0\eldoria-real-soil-grass-ruinedwall\glb\dirt_ground_patch.glb'
+          $tuft=Join-Path $env:RUNNER_TEMP 'proven_living_tufts\valoria-two-bent-grass-tuften\glb\grass_tuft_1.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-naturally-planted-dirt-v10'
+          foreach($p in @($dirt,$tuft)){if(-not(Test-Path $p)){throw "Authentic CC0 source missing: $p"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/soil_reuse_real_olive_tufts_v10.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned art code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-photodirt-v10.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $stdout=Join-Path $env:RUNNER_TEMP 'valoria-soil-olive-v10.stdout'
+          $stderr=Join-Path $env:RUNNER_TEMP 'valoria-soil-olive-v10.stderr'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$dirt,$tuft,$out) -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 70 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Native Blender botanical loam failed: $($proc.ExitCode)"}
+          foreach($file in @('glb\dirt_ground_patch.glb','before\dirt_ground_patch.png','after\dirt_ground_patch.png','reports\dirt_with_proven_botanical_tufts.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "Missing physical A/B asset $file"}
+          }
+      - name: Preserve physically repeatable soil module with provenance and photo comparisons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-true-dirt-planted-v10-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-naturally-planted-dirt-v10/**
+            ${{ runner.temp }}/valoria-soil-olive-v10.stdout
+            ${{ runner.temp }}/valoria-soil-olive-v10.stderr
+          if-no-files-found: warn
+          retention-days: 30
