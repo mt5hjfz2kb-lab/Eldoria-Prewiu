@@ -31,7 +31,7 @@ bpy.ops.import_scene.gltf(filepath=str(src))
 original=meshes()
 if not original:raise RuntimeError('Original stair_step asset missing geometry')
 lo,hi=bounds(original);span=hi-lo;center=(lo+hi)*.5
-if not (3.9<span.x<4.1 and .20<span.y<.27 and .60<span.z<.70):raise RuntimeError('Do not replace a different modular scale')
+if not (3.9<span.x<4.1 and .60<span.y<.70 and .20<span.z<.27):raise RuntimeError('Do not replace a different modular scale, Blender Z-up expected '+str(span))
 cam.location=center+Vector((1.1,-1.4,1)).normalized()*span.length*2.3
 cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
 cd.ortho_scale=span.length*1.15
