@@ -1,0 +1,78 @@
+name: "[ART EARTH FLOOR6] True CC0 dirt with living 3D olive sprouts"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-dirt-green-cc0-v8.yml'
+      - 'tools/valoria-modular-fortress/dirt_true_olive_grass_v8.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-one-real-dirt-living-grass-v8
+  cancel-in-progress: false
+jobs:
+  produce-individual-dirt-asset:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - name: Native installed Blender and Git
+        shell: powershell
+        id: app
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No local git'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'No installed Blender'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-4-cc0-natural-ground-and-ruin-v2-38871626493
+          run-id: 38871626493
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/true_original_soil_v2
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-meadow-soil-photo-v7-38896547109
+          run-id: 38896547109
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/successful_real_meadow_v7
+      - name: Photo grade genuine original soil with naturally blurred grass CC0 and bent 3D blades
+        shell: powershell
+        run: |
+          $soil=Join-Path $env:RUNNER_TEMP 'true_original_soil_v2\eldoria-real-soil-grass-ruinedwall\glb'
+          $grass=Join-Path $env:RUNNER_TEMP 'successful_real_meadow_v7\eldoria-grass-real-loam-v7\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-dirt-olive-grass-v8'
+          foreach($f in @((Join-Path $soil 'dirt_ground_patch.glb'),(Join-Path $grass 'grass_ground_patch.glb'))){if(-not(Test-Path $f)){throw "Missing CC0 source $f"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/dirt_true_olive_grass_v8.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned script absent'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-real-earth-olive-v8.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-real-earth-olive.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-real-earth-olive.err'
+          $proc=Start-Process -FilePath "${{ steps.app.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$soil,$grass,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Earth-and-grass Blender error $($proc.ExitCode)"}
+          foreach($path in @('glb\dirt_ground_patch.glb','before\dirt_ground_patch.png','after\dirt_ground_patch.png','reports\dry_earth_real_grass_quality.json')){
+            if(-not(Test-Path (Join-Path $out $path))){throw "Missing actual asset $path"}
+          }
+      - name: Preserve photos and reusable individual GLB, not ART_APPROVED
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-real-dirt-olive-cc0-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-real-dirt-olive-grass-v8/**
+            ${{ runner.temp }}/eldoria-real-earth-olive.log
+            ${{ runner.temp }}/eldoria-real-earth-olive.err
+          if-no-files-found: warn
+          retention-days: 30
