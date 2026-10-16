@@ -4,7 +4,7 @@ on:
     branches: [art/valoria-63-individual-quality-uplift-20261015]
     paths:
       - '.github/workflows/valoria-lime-mortar-v13-aggregate.yml'
-      - 'tools/valoria-modular-fortress/true_lime_mortar_v13_true_scale.py'
+      - 'tools/valoria-modular-fortress/true_lime_mortar_v13_aggregate.py'
 permissions:
   contents: read
   actions: read
@@ -52,7 +52,7 @@ jobs:
           $out=Join-Path $env:RUNNER_TEMP 'eldoria-lime-grout-v13'
           if(-not(Test-Path (Join-Path $src 'mortar_joint_recess.glb'))){throw 'Source 26mm seam missing'}
           if(-not(Test-Path $photo)){throw 'Verified Poly Haven CC0 photo absent'}
-          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/true_lime_mortar_v13_true_scale.py'
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/true_lime_mortar_v13_aggregate.py'
           $lines=& git show $spec
           if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Version pinned artisan source missing'}
           $py=Join-Path $env:RUNNER_TEMP 'eldoria-lime-v13-pinned.py'
