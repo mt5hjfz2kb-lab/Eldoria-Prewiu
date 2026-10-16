@@ -1,0 +1,71 @@
+name: "[ART WHITEWATER FLOOR6] Actual scalloped river foam 3D with alpha"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-whitewater-real-froth-v5.yml'
+      - 'tools/valoria-modular-fortress/foamy_photo_alpha_v5.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-one-river-froth-real-water-v5
+  cancel-in-progress: false
+jobs:
+  one-alpha-froth-component:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Locate local Git and Blender
+        shell: powershell
+        id: binaries
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-water-vfx-artist-38879211990
+          run-id: 38879211990
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/existing_foam_line
+      - name: Native Blender create physical froth and compare same studio blue plane
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'existing_foam_line\eldoria-two-true-water-vfx\glb\river_foam_line.glb'
+          $dest=Join-Path $env:RUNNER_TEMP 'eldoria-one-natural-whitewater-v5'
+          if(-not(Test-Path $old)){throw "Required last VFX candidate missing $old"}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/foamy_photo_alpha_v5.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned VFX source unavailable'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-whitewater-froth-v5.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-whitewater-froth-v5.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-whitewater-froth-v5.err'
+          $proc=Start-Process -FilePath "${{ steps.binaries.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$dest) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Real froth Blender failed $($proc.ExitCode)"}
+          foreach($name in @('glb\river_foam_line.glb','before\river_foam_line.png','after\river_foam_line.png','reports\water_edge_photo_foam_v5.json','atlas\whitewater_froth_irregular_alpha.png')){
+            if(-not(Test-Path (Join-Path $dest $name))){throw "Missing legitimate foam result $name"}
+          }
+      - name: Retain standalone whitewater GLB and honest same-camera previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-physical-translucent-river-foam-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-one-natural-whitewater-v5/**
+            ${{ runner.temp }}/eldoria-whitewater-froth-v5.log
+            ${{ runner.temp }}/eldoria-whitewater-froth-v5.err
+          if-no-files-found: warn
+          retention-days: 30
