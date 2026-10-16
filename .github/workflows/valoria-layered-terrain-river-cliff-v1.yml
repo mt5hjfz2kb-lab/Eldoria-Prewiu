@@ -1,0 +1,146 @@
+name: "[VALORIA] Native authored river-cliff terrain over real bridge"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - '.github/workflows/valoria-layered-terrain-river-cliff-v1.yml'
+      - 'docs/evidence/valoria-layered-construction-20261016/author-ValoriaTerrainRiverCliffV1.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor/**'
+permissions: {contents: write, actions: read}
+concurrency:
+  group: valoria-single-authored-terrain-v1
+  cancel-in-progress: false
+jobs:
+  author-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free Blender with glTF/NumPy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1-mesa-dri
+      - name: Sculpt native geometric source from exact existing city layout
+        run: |
+          mkdir -p docs/evidence/valoria-layered-construction-20261016/terrain-v1
+          blender -b -t 2 --python docs/evidence/valoria-layered-construction-20261016/author-ValoriaTerrainRiverCliffV1.py -- \
+             Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json \
+             docs/evidence/valoria-layered-construction-20261016/terrain-v1
+          python3 - <<'PY'
+          import json,os
+          p="docs/evidence/valoria-layered-construction-20261016/terrain-v1"
+          m=json.load(open(p+"/ValoriaTerrainRiverCliffV1-manifest.json"))
+          assert m["layout_footprints"]==22 and m["stair_steps_protected"]==12
+          assert m["unity_route_and_colliders_unmodified"]
+          assert m["triangles"]>10000
+          assert os.path.getsize(p+"/ValoriaTerrainRiverCliffV1.blend")>50000
+          assert os.path.getsize(p+"/ValoriaTerrainRiverCliffV1.glb")>20000
+          print("VALORIA_EDITABLE_TERRAIN_ART_SOURCE_CREATED",m["triangles"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-authored-terrain-v1-${{ github.run_id }}
+          path: docs/evidence/valoria-layered-construction-20261016/terrain-v1/**
+          if-no-files-found: error
+  native-unity:
+    needs: author-source
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    defaults: {run: {working-directory: valoria-terrain-v1}}
+    steps:
+      - name: Resolve installed local git
+        shell: powershell
+        working-directory: .
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+             $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter "app-*" -ErrorAction SilentlyContinue |
+               Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName "resources/app/git/cmd/git.exe"} |
+               Where-Object {Test-Path $_} | Select-Object -First 1
+             if(-not $g){throw 'Git missing'}
+             Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with: {path: valoria-terrain-v1, clean: false}
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-terrain-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Check no competing executor and unchanged owner reference
+        shell: powershell
+        run: |
+          $reg=Get-Content "$env:GITHUB_WORKSPACE/valoria-terrain-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          if(@($reg.active|Where-Object {$_.id -eq "valoria-master-plan-layered-construction-20261016"}).Count -ne 1){throw 'Layered claim missing'}
+          if(@($reg.active|Where-Object {$_.id -ne "valoria-master-plan-layered-construction-20261016" -and $_.resources -contains "windows-runner-heavy"}).Count){throw 'Runner conflict'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender PC already in use'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity absent'}
+          $ref=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($ref -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference changed'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-authored-terrain-v1-${{ github.run_id }}
+          path: ${{ github.workspace }}/valoria-terrain-v1/docs/evidence/valoria-layered-construction-20261016/terrain-v1
+      - name: Stage visual mesh without changing canonical scenes
+        shell: powershell
+        run: |
+          $source="docs/evidence/valoria-layered-construction-20261016/terrain-v1/ValoriaTerrainRiverCliffV1.glb"
+          if(-not(Test-Path $source)){throw 'No real Blender terrain source'}
+          $target="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Sources"
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Copy-Item $source "$target/ValoriaTerrainRiverCliffV1.glb"
+      - name: Integrate authored terrain with real Unity and capture new city views
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-terrain-v1-native.log'
+          $args=@("-batchmode","-force-d3d11","-projectPath","$env:GITHUB_WORKSPACE/valoria-terrain-v1/Unity",
+             "-executeMethod","Eldoria.ValoriaLayered.Editor.ValoriaTerrainRiverCliffV1.Build","-logFile",$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2700000)){
+             & taskkill.exe /PID $p.Id /T /F | Out-Null
+             throw 'Unity terrain authoring timeout'
+          }
+          Get-Content $log -Tail 120
+          Copy-Item $log docs/evidence/valoria-layered-construction-20261016/terrain-v1/native-Unity.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_TERRAIN_RIVER_CLIFF_NATIVE_COMPLETE' -Quiet)){
+             throw "Native Unity terrain scene failed exit=$($p.ExitCode)"
+          }
+      - name: Validate real source scene, prefab, full-frame captures and route non-regression
+        shell: powershell
+        run: |
+          $r="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction"
+          $ev="docs/evidence/valoria-layered-construction-20261016/terrain-v1"
+          foreach($p in @("$r/Valoria_MasterPlan_BridgeTerrainV1.unity",
+            "$r/GeneratedTerrainV1/ValoriaTerrainRiverCliffV1.prefab",
+            "$ev/terrain-v1-unity.json","$ev/terrain-v1-home-12.png",
+            "$ev/terrain-v1-home-19.png","$ev/terrain-v1-home-9.png","$ev/terrain-v1-portrait.png")){
+               if(-not(Test-Path $p)){throw "Missing real Unity output $p"}
+          }
+          $j=Get-Content "$ev/terrain-v1-unity.json" -Raw | ConvertFrom-Json
+          if($j.bridge_rays -ne 5 -or $j.stair_rays -ne 12 -or -not $j.original_colliders_retained -or $j.public_scene_modified){
+            throw 'Gameplay geometry was altered'
+          }
+          Write-Host 'VALORIA_TERRAIN_RIVER_NATIVE_TECH_PASS; VISUAL STILL REQUIRES INDEPENDENT A/B'
+      - name: Save the independent new scene and editable Blender source
+        shell: powershell
+        run: |
+          git config user.name "Valoria authored terrain"
+          git config user.email "valoria-terrain@users.noreply.github.com"
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/terrain-v1/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity
+          if(-not(git diff --cached --quiet)){
+             git commit -m "evidence(valoria): real sculpted river terrain above native bridge"
+             git push origin HEAD:construction/valoria-master-plan-layers-20261016
+             if($LASTEXITCODE){throw 'Branch advanced elsewhere, preserve artifact and reconcile'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-river-terrace-v1-native-${{ github.run_id }}
+          path: |
+            valoria-terrain-v1/docs/evidence/valoria-layered-construction-20261016/terrain-v1/**
+            valoria-terrain-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1/**
+            valoria-terrain-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity
+          if-no-files-found: warn
