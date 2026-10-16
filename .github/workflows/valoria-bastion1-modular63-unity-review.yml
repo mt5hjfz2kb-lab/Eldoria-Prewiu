@@ -61,7 +61,8 @@ jobs:
             docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json \
             docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json \
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
-            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs
   review-on-unity:
     # Do not consume sole Windows runner for this feedback wiring-only commit.
     if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'infra: feedback gate') }}
@@ -285,7 +286,8 @@ jobs:
             docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json \
             docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json \
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
-            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs
           for file in before-landscape.png after-landscape.png before-mobile.png after-mobile.png before-portrait.png after-portrait.png modular63-scene-review.json; do
             test -s "review/$file" || { echo "MISSING_REAL_NATIVE_FRAME $file"; exit 1; }
           done
