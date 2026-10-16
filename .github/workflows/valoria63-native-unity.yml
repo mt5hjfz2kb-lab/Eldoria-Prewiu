@@ -1,0 +1,56 @@
+name: "[VALORIA63] Native Unity clean-scene build"
+on:
+  push:
+    branches: [experiment/valoria-63-clean-composition-20261016]
+    paths: ['tools/valoria63-clean-scene/native-request.txt']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  build:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check resource claim and Unity availability
+        shell: powershell
+        run: |
+          $state=Get-Content pipeline/active-workstreams.json -Raw | ConvertFrom-Json
+          $owners=@($state.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($owners.Count -ne 1 -or $owners[0].id -ne 'valoria63-clean-modular-assembly-20261016'){throw 'No exclusive runner lease'}
+          if(Get-Process Unity -ErrorAction SilentlyContinue){throw 'Unity already active'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not found'}
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38954736752
+          name: valoria63-clean-sources-38954736752
+          github-token: ${{ github.token }}
+          path: .
+      - name: Build clean scene in native Unity
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria63-native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.Valoria63.Editor.Valoria63CleanSceneBuilder.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          Get-Content $log -Tail 120
+          New-Item -ItemType Directory -Force docs/evidence/valoria63-clean-scene-20261016 | Out-Null
+          Copy-Item $log docs/evidence/valoria63-clean-scene-20261016/native.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA63_CLEAN_SCENE_COMPLETE' -Quiet)){throw 'Native Unity build failed'}
+      - name: Commit isolated scene and screenshots
+        shell: powershell
+        run: |
+          git config user.name 'Valoria63 scene automation'
+          git config user.email 'valoria63@users.noreply.github.com'
+          git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated
+          git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity
+          git add -f docs/evidence/valoria63-clean-scene-20261016
+          git commit -m 'build: native Valoria clean scene and evidence'
+          git push origin HEAD:experiment/valoria-63-clean-composition-20261016
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria63-native-result-${{ github.run_id }}
+          path: |
+            docs/evidence/valoria63-clean-scene-20261016/**
+            Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity
+          if-no-files-found: warn
