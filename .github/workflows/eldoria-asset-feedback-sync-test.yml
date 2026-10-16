@@ -1,0 +1,30 @@
+name: "[INFRA] Valoria 63 live-main cross-branch feedback gate"
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/valoria-asset-feedback/**'
+      - '.github/workflows/eldoria-asset-feedback-sync-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-feedback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check canonical 63-asset registry and guard cases
+        run: |
+          node tools/valoria-asset-feedback/guard.mjs validate
+          node --test tools/valoria-asset-feedback/guard.test.mjs tools/valoria-asset-feedback/workstream-sync.test.mjs
+      - name: Validate current artist owner plan
+        run: node tools/valoria-asset-feedback/workstream-sync.mjs artist tools/valoria-asset-feedback/art-workstream-plan.json
+      - name: Validate exact Bastion pinned selection against main
+        run: |
+          git fetch --depth=1 origin integration/valoria-bastion1-player-scene-20261012
+          git show FETCH_HEAD:docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json > /tmp/bastion63-selected.json
+          node tools/valoria-asset-feedback/workstream-sync.mjs unity tools/valoria-asset-feedback/unity-workstream-plan.json /tmp/bastion63-selected.json
