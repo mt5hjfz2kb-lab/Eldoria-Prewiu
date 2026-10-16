@@ -112,17 +112,17 @@ def tube(name,coords,radius,material,style='POLY'):
 def mortar_rebuild(lo,hi):
  # Standalone physical recessed mortar profile; U-shaped aged backing plus
  # fine darker broken center line. Not a wall composition.
- w=float(hi.x-lo.x);depth=max(.20,float(hi.y-lo.y))
- x=float((lo.x+hi.x)/2);y=float((lo.y+hi.y)/2)
+ w=float(hi.x-lo.x);depth=max(.045,float(hi.y-lo.y));height=float(hi.z-lo.z)
+ x=float((lo.x+hi.x)/2);y=float((lo.y+hi.y)/2);z=float((lo.z+hi.z)/2)
  out=[]
- out.append(cube('recessed_dark_mortar_core',(x,y,0),(w,depth,.018),mortar,.005))
+ out.append(cube('recessed_dark_mortar_core',(x,y,z),(w,depth*.80,max(.02,height*.78)),mortar,.005))
  for side in (-1,1):
-  out.append(cube('stone_recess_rough_cut_lip_'+str(side),(x,y,side*.026),
+  out.append(cube('stone_recess_rough_cut_lip_'+str(side),(x,y,z+side*height*.44),
                   (w,depth,.015),dark_stone,.008))
  rng=random.Random(168)
  for i in range(8):
   xx=float(lo.x)+.12+i*(w-.24)/7
-  out.append(sphere('embedded_microgravel_in_mortar_'+str(i),(xx,y+rng.uniform(-.07,.07),.002),
+  out.append(sphere('embedded_microgravel_in_mortar_'+str(i),(xx,y+rng.uniform(-.012,.012),z+rng.uniform(-.11,.11)*height),
       rng.uniform(.012,.025),stone,(1.5,.8,.45),8,5))
  return out
 def foam_rebuild(lo,hi):
@@ -134,14 +134,14 @@ def foam_rebuild(lo,hi):
   pts=[]
   for i in range(29):
    t=i/28;x=x0+width*t
-   y=.012+math.sin(t*7.2+band*.8)*.008
-   z=math.sin(t*13.5+band*.72)*.055+math.sin(t*24+1.3)*.021+(band-1)*.11
+   y=math.sin(t*13.5+band*.72)*.055+math.sin(t*24+1.3)*.021+(band-1)*.11
+   z=.012+math.sin(t*7.2+band*.8)*.008
    pts.append((x,y,z))
   out.append(tube('sinuous_broken_whitewater_ribbon_'+str(band),pts,.012 if band==1 else .007,
                   foam_shine if band==1 else foam))
  for j in range(32):
-  x=x0+rng.random()*width;z=rng.gauss(0,.11)
-  out.append(sphere('tiny_water_bubble_'+str(j),(x,.02,z),rng.uniform(.009,.025),
+  x=x0+rng.random()*width;y=rng.gauss(0,.11)
+  out.append(sphere('tiny_water_bubble_'+str(j),(x,y,.02),rng.uniform(.009,.025),
                     foam_shine,(1.2,.45,1),8,4))
  return out
 def flame_layers(center,r,height,prefix):
