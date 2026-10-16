@@ -307,7 +307,10 @@ namespace Eldoria.EditorTools
                 var pier=CopyOn(buttress,replacement.transform,"BUILT_CONNECTED_BUTTRESS_"+i);
                 RebindNeutralLimestone(pier);
                 var pb=Bounds(pier);
-                float buttressScale=(size.y*.94f)/pb.size.y;
+                // Do not let integrated crenels inflate the pier footprint beyond
+                // the grounded .9x buttress envelope verified in Unity 38940426182.
+                // The physical buttress bears on the curtain wall, below crenels.
+                float buttressScale=Mathf.Min((size.y*.94f)/pb.size.y,.90f);
                 if(buttressScale<.35f||buttressScale>1.5f)
                     throw new Exception("Unsupported buttress physical scale");
                 pier.transform.localScale*=buttressScale;

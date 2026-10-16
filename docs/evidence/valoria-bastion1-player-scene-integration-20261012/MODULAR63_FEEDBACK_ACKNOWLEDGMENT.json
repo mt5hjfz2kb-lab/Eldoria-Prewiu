@@ -96,7 +96,7 @@
     }
   ],
   "selection_readiness": "EXPERIMENT_ONLY_NOT_ART_APPROVED",
-  "selection_change_note": "Non-destructive Unity A/B of full-volume built-in battlements versus previous independent merlon assembly, with tower and grounded buttresses preserved; art approval remains false.",
+  "selection_change_note": "Reuses full-volume crenellated wall and fixed 0.90 max buttress envelope, previously supported in native Unity; refuse unsupported foundations instead of widening tolerance; no artistic approval.",
   "source_file": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs",
-  "source_git_blob_sha1": "776c37ee07cc9a28a28f4c92b860121a08efff9f"
+  "source_git_blob_sha1": "5b5cf752cbd2f28a5ba67825061e1354142cf71e"
 }
