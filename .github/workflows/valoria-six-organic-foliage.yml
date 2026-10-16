@@ -1,0 +1,78 @@
+name: "[ART FOLIAGE FLOOR6] Six CC0 nature modules with real layered branches"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-six-organic-foliage.yml'
+      - 'tools/valoria-modular-fortress/six_nature_density_organic.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-six-nature-modules-real-boughs
+  cancel-in-progress: false
+jobs:
+  scatter-real-foliage-individually:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - name: Local Blender and Git
+        shell: powershell
+        id: exe
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Git missing'}
+            $d=Split-Path $g;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-12-independent-blender-v4-38819524063
+          run-id: 38819524063
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/CC0-nature-v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-3-denser-cc0-pines-38823354618
+          run-id: 38823354618
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/CC0-pine-best
+      - name: Blender six individually enriched shrubs pines and grasses
+        shell: powershell
+        run: |
+          $v4=Join-Path $env:RUNNER_TEMP 'CC0-nature-v4\eldoria-individual-cc0-v4\glb'
+          $pine=Join-Path $env:RUNNER_TEMP 'CC0-pine-best\eldoria-real-dense-pines\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-six-real-boughs'
+          foreach($f in @((Join-Path $v4 'shrub_1.glb'),(Join-Path $pine 'pine_medium.glb'))){if(-not(Test-Path $f)){throw "CC0 source unavailable $f"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/six_nature_density_organic.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned artist script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-organic-foliage.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-organic.log'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-organic.err'
+          $proc=Start-Process -FilePath "${{ steps.exe.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$v4,$pine,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 55 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Foliage density native Blender failure $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            if((Get-ChildItem (Join-Path $out $folder) -File).Count -ne 6){throw "Six per-module GLBs/PNGs required in $folder"}
+          }
+      - name: Save unchanged originals alongside A-B inspection candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-six-real-foliage-layered-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-six-real-boughs/**
+            ${{ runner.temp }}/valoria-organic.log
+            ${{ runner.temp }}/valoria-organic.err
+          retention-days: 30
+          if-no-files-found: warn
