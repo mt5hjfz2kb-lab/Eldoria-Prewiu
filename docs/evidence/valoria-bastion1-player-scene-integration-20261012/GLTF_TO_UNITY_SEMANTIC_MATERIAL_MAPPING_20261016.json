@@ -1,0 +1,81 @@
+{
+  "schema": "eldoria.bastion1.gltf-to-unity-semantic-material-classification.v1",
+  "verified_original_native_source": {
+    "run": 38419031491,
+    "file": "Bastion1ReferenceSource/Bastion1ReferenceAssembly.glb",
+    "sha256": "b0a5a5314591bba54a4eb85a5f9acddf4440b325873500f097298b4fbb71d5ea"
+  },
+  "finding": "Unity source renderer materials were persisted as numeric 0000.asset etc. Their names cannot be used to identify semantic GLB material families. Resolve semantics from preserved node names + primitive group indices.",
+  "glb_material_slots_verified": {
+    "Valoria natural playable hilltop and rock scarps": [
+      "PROTOTYPE terrace earth olive grass.001",
+      "Valoria schist dark fractured cliff.001",
+      "Valoria forested valley ground.001"
+    ],
+    "Valoria lower valley continuous terrain": [
+      "Valoria forested valley ground"
+    ],
+    "watchtower_material_group_": [
+      "Valoria_Weathered_Oak.001",
+      "Valoria_Loophole_Interior",
+      "Valoria_Forged_Iron",
+      "Valoria_Royal_Blue_Cloth",
+      "Valoria_Limestone_5.001",
+      "Valoria_Limestone_4.001",
+      "Valoria_Limestone_2.001",
+      "Valoria_Limestone_1.001",
+      "Valoria_Limestone_0.001",
+      "Valoria_Limestone_3.001",
+      "Valoria_Deep_Joints",
+      "Valoria_Carved_Limestone.001",
+      "Valoria_Tarnished_Brass"
+    ],
+    "hero_gate_v3_material_group_": [
+      "Valoria_Carved_Limestone",
+      "Valoria_Limestone_2",
+      "Valoria_Limestone_1",
+      "Valoria_Limestone_5",
+      "Valoria_Limestone_4",
+      "Valoria_Limestone_3",
+      "Valoria_Limestone_0",
+      "Valoria_Loophole_Interior",
+      "Valoria_Forged_Iron",
+      "Brazier amber flame",
+      "Valoria_Tarnished_Brass",
+      "Valoria_Weathered_Oak",
+      "Valoria_Deep_Joints",
+      "Valoria_Royal_Blue_Cloth"
+    ],
+    "wall_straight_material_group_": [
+      "Valoria_Limestone_3.001",
+      "Valoria_Limestone_4.001",
+      "Valoria_Limestone_2.001",
+      "Valoria_Limestone_1.001",
+      "Valoria_Limestone_5.001",
+      "Valoria_Limestone_0.001",
+      "Valoria_Deep_Joints",
+      "Valoria_Carved_Limestone.001"
+    ]
+  },
+  "source_mesh_characteristics": {
+    "Valoria natural playable hilltop and rock scarps": {
+      "terrain_top_tris": 5114,
+      "cliff_tris": 6062,
+      "lower_valley_tris": 12120
+    },
+    "Valoria lower valley continuous terrain": {
+      "tris": 3942
+    },
+    "Valoria true mountain backdrop": {
+      "tris": 3300
+    }
+  },
+  "guardrails": [
+    "No new 3D models or duplicate full-game scene.",
+    "Material clones may be used only in isolated test candidate scenes; preserve original asset files and source SHA.",
+    "Never recolor iron, wood, royal banners, flames, stone joints when retinting limestone.",
+    "No quality approval without genuine native same-camera before/after inspection.",
+    "Protect transition road, first 2 buildable parcels, triggers and progression."
+  ],
+  "not_art_approval": true
+}
