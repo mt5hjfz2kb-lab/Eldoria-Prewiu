@@ -1,0 +1,86 @@
+name: "[ART GATE] Genuine Poly Haven castle door independent Blender A/B"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-cc0-castle-door-ab.yml'
+      - 'tools/valoria-modular-fortress/real_cc0_castle_door_ab.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-castle-gate-independent
+  cancel-in-progress: false
+jobs:
+  single-castle-gate-study:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Locate existing Git and Blender on owner PC
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $dir=Split-Path $git
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender not available'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+          & $b --version | Select-Object -First 2
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-eight-oak-iron-38823915374
+          run-id: 38823915374
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/oak-gate-prev
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-polyhaven-authentic-castle-door-38826410219
+          run-id: 38826410219
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/authentic-gate-cc0
+      - name: Import, preserve pivots and materials, render actual single 3D gate
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'oak-gate-prev\eldoria-oak-iron-eight\glb\reinforced_oak_gate.glb'
+          $donor=Join-Path $env:RUNNER_TEMP 'authentic-gate-cc0\large_castle_door'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-cc0-real-gate-ab'
+          foreach($p in @($old,(Join-Path $donor 'large_castle_door_1k.gltf'),(Join-Path $donor 'large_castle_door_diff_1k.jpg'))){
+            if(-not(Test-Path $p)){throw "Required verified file missing: $p"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/real_cc0_castle_door_ab.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw "Cannot obtain pinned code $spec"}
+          $script=Join-Path $env:RUNNER_TEMP 'eldoria-authentic-gate-ab.py'
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-gate-ab.stdout.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-gate-ab.stderr.log'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$old,$donor,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender standalone castle gate failed $($proc.ExitCode)"}
+          foreach($required in @('glb\reinforced_oak_gate.glb','before\reinforced_oak_gate.png','after\reinforced_oak_gate.png','after\reinforced_oak_gate_rear.png','reports\independent_authentic_castle_gate.json')){
+            if(-not(Test-Path (Join-Path $out $required))){throw "Missing result: $required"}
+          }
+      - name: Archive single GLB and camera proof without artistic auto-approval
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-one-authentic-gate-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-cc0-real-gate-ab/**
+            ${{ runner.temp }}/eldoria-gate-ab.stdout.log
+            ${{ runner.temp }}/eldoria-gate-ab.stderr.log
+          retention-days: 30
+          if-no-files-found: warn
