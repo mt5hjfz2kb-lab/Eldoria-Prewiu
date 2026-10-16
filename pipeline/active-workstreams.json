@@ -79,7 +79,8 @@
         "pipeline/valoria-bastion1-candidate-build-request.json"
       ],
       "resources": [
-        "valoria-player-scene"
+        "valoria-player-scene",
+        "windows-runner-heavy"
       ],
       "status": "active",
       "claimed_at": "2026-10-12T19:16:58.288Z",
@@ -134,12 +135,10 @@
         "own_active_jobs": 0,
         "reservations_retained_for_bastion_integration": true
       },
-      "owner_paused_runner_for_reference_pilot": {
-        "paused_by": "owner explicit authorization 2026-10-15 (continue pilot; may pause other work for PC)",
-        "temporary_resource": "windows-runner-heavy",
-        "delegated_to": "reference-first-zero-budget-visual-pilot-20261015",
-        "prior_resource_state": "reserved_for_bastion_integration",
-        "resume_requires": "Release of pilot lease and explicit coordination; do not infer Bastion workstream was closed"
+      "windows_runner_lease_restored": {
+        "restored_on": "2026-10-16",
+        "source": "reference-first-zero-budget-visual-pilot-20261015 discarded by owner",
+        "semantics": "Reservation returned to previous Bastion I workstream. Work itself remains paused under the existing global owner production pause; this lease transfer does not start or authorize execution."
       }
     },
     {
@@ -178,44 +177,6 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-    },
-    {
-      "id": "reference-first-zero-budget-visual-pilot-20261015",
-      "title": "Pilot Valoria reference-first: asset reuse and standalone Unity art scene",
-      "owner": "chat-reference-first-zero-budget-pilot-20261015",
-      "scope": [
-        "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/**",
-        "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/**",
-        "tools/reference-first-pilot/**",
-        ".github/workflows/reference-first-zero-budget-pilot.yml",
-        ".github/workflows/eldoria-reference-first-zero-budget-pilot.yml"
-      ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-15",
-      "base_main_sha": "aa1a642ed32f6840dec1bd46929fd9163ce0ef2b",
-      "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
-      "art_production_routing": "not_applicable",
-      "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact. Subsequent owner message authorizes pausing other work to use PC for the pilot.",
-      "dependency": "Windows runner retained by Bastion I active workstream, and another actor added a branch Windows workflow that failed checkout before Unity. Pilot can continue read-only and doc/Ubuntu gates but no heavy Windows until coordinated.",
-      "phase": "SOURCE_PASS (#38794583466); isolated Windows #38794999022 reached Unity compiler but failed two namespace-resolution CS0234 errors, repaired without rerun (pilot branch 7032d51 and aba18c80); no genuine new images.",
-      "next": "Hold Windows jobs until runner owner releases claim; then run isolated Unity 6000.3.23f1 build/capture on fixed exact pilot SHA. Inspect actual 1536x1024 PNG and compare existing fortress and gate families; do not promote OriginalHero as full fortress by assumption.",
-      "last_verified": {
-        "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
-        "static_run": 38794583466,
-        "static_result": "success",
-        "failed_windows_run": 38794999022,
-        "failed_windows_stage": "Unity C# compilation: Eldoria.Application namespace shadowing; repaired source without recompilation",
-        "windows_shared_runner_reserved_by": "valoria-bastion1-player-scene-integration-20261012",
-        "pilot_unity_capture": false,
-        "art_approved": false,
-        "source_repair": "7032d51bfbab1e20ef0f8543744ff9eafc008340",
-        "contract_repair": "aba18c80f3e259a61ca97c3055122f991f72ca4f"
-      },
-      "art_production_isolation": "isolated-lookdev-only-no-promotion",
-      "art_production_routing_reason": "Isolated visual Unity lookdev only; independent screenshots, no production art requests, publication, scene promotion or certification. Existing isolated authorization remains in effect."
     },
     {
       "id": "valoria-63-individual-quality-uplift-20261015",
@@ -5089,6 +5050,56 @@
       "verified_workflow_run": 38481750311,
       "pr_number": 56,
       "commit_sha": "ca62aa0d2b0ee2b500c770f185bf7128bf470427"
+    },
+    {
+      "id": "reference-first-zero-budget-visual-pilot-20261015",
+      "title": "Pilot Valoria reference-first: asset reuse and standalone Unity art scene",
+      "owner": "chat-reference-first-zero-budget-pilot-20261015",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/**",
+        "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/**",
+        "tools/reference-first-pilot/**",
+        ".github/workflows/reference-first-zero-budget-pilot.yml",
+        ".github/workflows/eldoria-reference-first-zero-budget-pilot.yml"
+      ],
+      "resources": [],
+      "status": "discarded",
+      "claimed_at": "2026-10-15",
+      "base_main_sha": "aa1a642ed32f6840dec1bd46929fd9163ce0ef2b",
+      "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+      "art_production_routing": "not_applicable",
+      "authorization": "Explicit owner instruction 2026-10-15 to start the proposed zero-budget reference-first plan. Narrow permission: inspect/reuse candidates; author isolated visual experiment; leave global production pause and all other workstream ownership intact. Subsequent owner message authorizes pausing other work to use PC for the pilot.",
+      "dependency": "Windows runner retained by Bastion I active workstream, and another actor added a branch Windows workflow that failed checkout before Unity. Pilot can continue read-only and doc/Ubuntu gates but no heavy Windows until coordinated.",
+      "phase": "SOURCE_PASS (#38794583466); isolated Windows #38794999022 reached Unity compiler but failed two namespace-resolution CS0234 errors, repaired without rerun (pilot branch 7032d51 and aba18c80); no genuine new images.",
+      "next": "NONE — no continuation or reactivation without a fresh explicit owner request.",
+      "last_verified": {
+        "branch": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+        "static_run": 38794583466,
+        "static_result": "success",
+        "failed_windows_run": 38794999022,
+        "failed_windows_stage": "Unity C# compilation: Eldoria.Application namespace shadowing; repaired source without recompilation",
+        "windows_shared_runner_reserved_by": "valoria-bastion1-player-scene-integration-20261012",
+        "pilot_unity_capture": false,
+        "art_approved": false,
+        "source_repair": "7032d51bfbab1e20ef0f8543744ff9eafc008340",
+        "contract_repair": "aba18c80f3e259a61ca97c3055122f991f72ca4f"
+      },
+      "art_production_isolation": "isolated-lookdev-only-no-promotion",
+      "art_production_routing_reason": "Isolated visual Unity lookdev only; independent screenshots, no production art requests, publication, scene promotion or certification. Existing isolated authorization remains in effect.",
+      "discarded_at": "2026-10-16",
+      "closed_by": "Explicit owner request 2026-10-16: stop and discard this visual pilot.",
+      "terminal_phase": "ABANDONED — reference-first zero-budget Unity visual pilot. No further executions, assets, background jobs, evaluation loops or scene integration authorized.",
+      "terminal_result": {
+        "completed_production_integration": false,
+        "art_approved": false,
+        "decision": "Do not use any V1–V15 lookdev results or donor candidates as accepted Eldoria assets; retain evidence only for audit",
+        "last_known_run": 38868361234,
+        "last_known_run_result": "failure",
+        "active_or_queued_pilot_runs_checked": 0,
+        "branch_retained_for_read_only_history": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+        "authorizations_revoked_for_future_pilot_work": true,
+        "windows_runner_lease_released": true
+      }
     }
   ]
 }
