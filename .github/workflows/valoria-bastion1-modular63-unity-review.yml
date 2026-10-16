@@ -12,7 +12,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-single-bastion-modular63-unity-review
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   validate-selection:
     runs-on: ubuntu-latest
@@ -35,6 +35,10 @@ jobs:
           print('BASTION63_PINNED_SELECTION_VALID candidate_only=true')
           PY
   review-on-unity:
+    # Single-runner protection: original scene Unity terrain/material lookdev
+    # already executes on the same Windows PC. This side-prop experiment is
+    # visually ART_REJECTED; preserve only historical evidence, no duplicate.
+    if: ${{ false }}
     needs: validate-selection
     # All heavy local jobs target the same single self-hosted Windows runner;
     # never start a separate Blender process. Fail rather than overlap an
