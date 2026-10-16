@@ -84,6 +84,20 @@ def uv_project(o,patch):
    u=(co[a]-mins[a])/max(ranges[a],.00001)
    v=(co[b]-mins[b])/max(ranges[b],.00001)
    uv.data[li].uv=(u0+u*(u1-u0),v0+v*(v1-v0))
+# Dedicated supported glTF core-PBR image connection for capstones; the older
+# material hierarchy sometimes exported a pale diffuse slab on the top faces.
+cap_material=bpy.data.materials.new('Valoria_warm_dressed_photostone_maintained_top')
+cap_material.use_nodes=True
+cap_nodes=cap_material.node_tree.nodes
+cap_nodes.clear()
+cap_tex=cap_nodes.new('ShaderNodeTexImage')
+cap_tex.image=atlas
+cap_tex.extension='EXTEND'
+cap_shader=cap_nodes.new('ShaderNodeBsdfPrincipled')
+cap_shader.inputs['Roughness'].default_value=.9
+cap_out=cap_nodes.new('ShaderNodeOutputMaterial')
+cap_material.node_tree.links.new(cap_tex.outputs['Color'],cap_shader.inputs['Base Color'])
+cap_material.node_tree.links.new(cap_shader.outputs['BSDF'],cap_out.inputs['Surface'])
 caps=[]
 for i,old in enumerate(sorted(top,key=lambda o:o.location.x)):
  mn,mx=bbox([old]);wide=mx.x-mn.x
@@ -91,12 +105,12 @@ for i,old in enumerate(sorted(top,key=lambda o:o.location.x)):
  # Cap overlaps the exposed central core, but extends neither left nor right
  # of the original modular envelope and covers its top.
  cy=(float(lo.y)+float(hi.y))*.5
- cz=float(hi.z)-.05
+ cz=float(hi.z)+.022
  bpy.ops.mesh.primitive_cube_add(size=1,location=((mn.x+mx.x)*.5,cy,cz))
  ob=bpy.context.object;ob.name='individually_dressed_top_capstone_%02d'%i
- ob.dimensions=(max(.14,float(wide)-.008),thick,.099)
+ ob.dimensions=(max(.14,float(wide)-.008),thick,.135)
  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
- ob.data.materials.append(stone_materials[i%len(stone_materials)])
+ ob.data.materials.append(cap_material)
  bevel=ob.modifiers.new('light dressed arris','BEVEL');bevel.width=.014;bevel.segments=3
  bpy.context.view_layer.objects.active=ob;bpy.ops.object.modifier_apply(modifier=bevel.name)
  uv_project(ob,rng.choice(patches));caps.append(ob)
