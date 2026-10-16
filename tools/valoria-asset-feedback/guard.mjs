@@ -4,7 +4,9 @@
 //        node guard.mjs check <artist|unity> candidate.json [registry.json] [asset-ids.json]
 import fs from 'node:fs';
 import path from 'node:path';
-const base=path.dirname(new URL(import.meta.url).pathname);
+import {fileURLToPath} from 'node:url';
+const modulePath=fileURLToPath(import.meta.url);
+const base=path.dirname(modulePath);
 const load=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const regDefault=path.join(base,'registry.json'),idsDefault=path.join(base,'asset-ids.json');
 const SHA=/^[a-f0-9]{64}$/;
@@ -74,7 +76,7 @@ export function checkCandidate(phase,cand,reg,ids){
  }
  return {asset_id:cand.asset_id,phase,corrections_checked:a.correction_ids.length,pending:pending.length,ready_for_unity:!!cand.ready_for_unity};
 }
-const invoked=process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname);
+const invoked=process.argv[1]&&path.resolve(process.argv[1])===path.resolve(modulePath);
 if(invoked)try{
  const [mode,...argv]=process.argv.slice(2);
  if(mode==='validate'){const r=validateRegistry(load(argv[0]||regDefault),load(argv[1]||idsDefault));console.log('PASS',JSON.stringify(r));}
