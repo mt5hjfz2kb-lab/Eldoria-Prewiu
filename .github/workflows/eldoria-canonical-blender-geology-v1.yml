@@ -1,0 +1,157 @@
+name: "[PILOT] Real Blender one-piece canonical Valoria geological plateau"
+on:
+  push:
+    branches: [prototype/reference-first-zero-budget-visual-pilot-20261015]
+    paths: [.github/workflows/eldoria-canonical-blender-geology-v1.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-isolated-one-piece-geology
+  cancel-in-progress: false
+
+jobs:
+  windows-blender-sculpt:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: reference-first-blender-checkout
+    steps:
+      - name: Find already installed Git from GitHub Desktop
+        shell: powershell
+        working-directory: .
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $git=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Already-installed Git not found'}
+            $d=Split-Path $git
+            Add-Content $env:GITHUB_PATH $d
+            $env:PATH="$d;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: reference-first-blender-checkout
+          clean: false
+          fetch-depth: 2
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/reference-first-geology/author_canonical_plateau_v1.py
+            art-source/valoria/production/rock-terrain-family-v1/stone_grain_albedo.png
+            art-source/valoria/production/rock-terrain-family-v1/stone_grain_normal.png
+            docs/evidence/reference-first-zero-budget-visual-pilot-20261015/STATUS.md
+      - name: Find Blender already installed on authorized Windows PC
+        shell: powershell
+        id: blender
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender) {
+            foreach($root in @('C:\Program Files\Blender Foundation',"${env:LOCALAPPDATA}\Programs\Blender Foundation")) {
+              if($blender){break}
+              if(Test-Path $root) {
+                $blender=Get-ChildItem $root -Filter blender.exe -Recurse -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if(-not $blender -or -not (Test-Path $blender)) {throw 'Installed Blender unavailable'}
+          "exe=$blender" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          & $blender --version | Select-Object -First 2
+      - name: Author and render one contiguous editable meseta — still ART UNAPPROVED
+        shell: powershell
+        run: |
+          $src=Join-Path (Get-Location) 'tools/reference-first-geology/author_canonical_plateau_v1.py'
+          $rock=Join-Path (Get-Location) 'art-source/valoria/production/rock-terrain-family-v1/stone_grain_albedo.png'
+          $norm=Join-Path (Get-Location) 'art-source/valoria/production/rock-terrain-family-v1/stone_grain_normal.png'
+          $out=Join-Path (Get-Location) 'artifacts/canonical-plateau-geology-v1'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $log=Join-Path $env:RUNNER_TEMP 'reference-first-one-piece-geology-blender.log'
+          foreach($f in @($src,$rock,$norm)){if(-not (Test-Path $f)){throw "Missing authored source $f"}}
+          $exe="${{ steps.blender.outputs.exe }}"
+          $params=@('--background','--python-exit-code','1','--python',"$src",'--','--output',"$out",'--rock-albedo',"$rock",'--rock-normal',"$norm")
+          $p=Start-Process -FilePath $exe -ArgumentList $params -PassThru -RedirectStandardOutput $log -RedirectStandardError (Join-Path $env:RUNNER_TEMP 'reference-first-geology-stderr.log')
+          if(-not $p.WaitForExit(1100000)) {
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 80}
+            throw 'Only this Blender authoring process timed out'
+          }
+          $p.Refresh()
+          if($p.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw "Blender authoring exited $($p.ExitCode)"
+          }
+          $report=Get-Content (Join-Path $out 'authoring-report.json') -Raw | ConvertFrom-Json
+          if($report.technical -ne 'NATIVE_BLENDER_EXPORTED_NEEDS_VISUAL_REVIEW') {throw 'Actual Blender export missing'}
+          if($report.art_approved -ne $false -or $report.mesh_count -ne 1) {throw 'Single terrain unapproved mesh gate failed'}
+          foreach($f in @('Valoria_CanonicalPlateau_Geology_v1.glb','Valoria_CanonicalPlateau_Geology_v1.blend',
+                         '01-authored-plateau-overview.png','02-authored-cliff-structure.png')){
+            if(-not (Test-Path (Join-Path $out $f))) {throw "Missing real Blender art $f"}
+            if((Get-Item (Join-Path $out $f)).Length -lt 60000){throw "Suspicious Blender output $f"}
+          }
+          Get-Content (Join-Path $out 'authoring-report.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-single-real-blender-geology-${{ github.run_id }}
+          path: |
+            reference-first-blender-checkout/artifacts/canonical-plateau-geology-v1/**
+            ${{ runner.temp }}/reference-first-one-piece-geology-blender.log
+            ${{ runner.temp }}/reference-first-geology-stderr.log
+          retention-days: 30
+          if-no-files-found: warn
+  archive-geology-evidence:
+    needs: windows-blender-sculpt
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: prototype/reference-first-zero-budget-visual-pilot-20261015
+          fetch-depth: 2
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            docs/evidence/reference-first-zero-budget-visual-pilot-20261015
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-single-real-blender-geology-${{ github.run_id }}
+          path: proof
+      - name: Verify exact screenshots and preserve references, never autoapprove
+        shell: bash
+        run: |
+          set -euo pipefail
+          dst=docs/evidence/reference-first-zero-budget-visual-pilot-20261015/canonical-geology-v1
+          mkdir -p "$dst"
+          for name in 01-authored-plateau-overview.png 02-authored-cliff-structure.png authoring-report.json; do
+            src=$(find proof -type f -name "$name" -print -quit)
+            test -n "$src" || { echo "Missing actual Blender proof $name"; exit 1; }
+            cp "$src" "$dst/$name"
+          done
+          python3 - <<'PY'
+          import pathlib,json,struct
+          root=pathlib.Path('docs/evidence/reference-first-zero-budget-visual-pilot-20261015/canonical-geology-v1')
+          for n in ['01-authored-plateau-overview.png','02-authored-cliff-structure.png']:
+              data=(root/n).read_bytes()
+              assert data[:8]==b'\x89PNG\r\n\x1a\n' and len(data)>60000
+              assert struct.unpack('>II',data[16:24])==(1536,1024),n
+          r=json.loads((root/'authoring-report.json').read_text())
+          assert r['art_approved'] is False and r['mesh_count']==1
+          print('REAL_BLENDER_GEOLOGY_ONLY_NOT_ART_APPROVED')
+          PY
+      - name: Save proof to isolated branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add docs/evidence/reference-first-zero-budget-visual-pilot-20261015/canonical-geology-v1
+          git diff --cached --quiet && exit 0
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: Blender authored single geology mesh real source screenshots [skip ci]'
+          git fetch origin prototype/reference-first-zero-budget-visual-pilot-20261015
+          git rebase origin/prototype/reference-first-zero-budget-visual-pilot-20261015
+          git push origin HEAD:prototype/reference-first-zero-budget-visual-pilot-20261015
