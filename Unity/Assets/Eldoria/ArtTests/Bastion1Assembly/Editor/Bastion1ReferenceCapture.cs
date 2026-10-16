@@ -54,6 +54,9 @@ namespace Eldoria.EditorTools
                 Bastion1RoadClearance.Apply(root);
                 await Bastion1ExistingRoadIntegration.Apply(root);
                 InspectRoadContacts(root);
+                // Only the isolated AFTER run imports SHA-pinned versions from the art-63 pilot.
+                // BEFORE remains byte-identical at source and uses the same Unity camera.
+                await Bastion1SelectedAssetOverlay.Apply(root);
                 var sun=new GameObject("Bastion I afternoon sun").AddComponent<Light>();
                 sun.type=LightType.Directional;sun.color=new Color(1f,.86f,.72f);sun.intensity=1.25f;
                 sun.shadows=LightShadows.Soft;sun.transform.rotation=Quaternion.Euler(38f,-38f,0f);
