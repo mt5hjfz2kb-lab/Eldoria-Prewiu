@@ -16,6 +16,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   validate-selection:
+    # OWNER_PAUSE_20261016 — explicit user freeze; preserve script for later authorized resume.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
