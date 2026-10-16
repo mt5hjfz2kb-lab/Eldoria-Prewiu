@@ -1,0 +1,59 @@
+{
+    "stage": "NATIVE_UNITY_V18_STONE_LIT_MATERIAL_SALVAGE_STUDY",
+    "reference": "Canonical owner supplied fortified plateau image 1513x1039",
+    "revision": "0faaef622564f40a022eead8b9dee73a9da25ba1",
+    "sources": [
+        "Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+        "Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+    ],
+    "positions": [
+        "A left front",
+        "B right front",
+        "C left rear",
+        "D right rear"
+    ],
+    "frames": [
+        "37-stone-study-oblique.png",
+        "38-stone-study-high.png"
+    ],
+    "renderers": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalMaterialSlotCounts": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalShaderNames": [
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness"
+    ],
+    "allRendererMaterialsReplacedInSceneOnly": false,
+    "rockTexture": "Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png",
+    "limestoneTexture": "Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png",
+    "materialPolicy": [
+        "A: original GLB geometry, URP Lit project rock texture",
+        "B: original GLB geometry, URP Lit project limestone texture",
+        "C: original GLB geometry, URP Lit project limestone texture",
+        "D: original GLB materials unchanged, baseline reference"
+    ],
+    "originalLongestDimensions": [
+        0.9799115657806397,
+        0.9792413115501404,
+        0.9699085354804993,
+        0.32435736060142519
+    ],
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
