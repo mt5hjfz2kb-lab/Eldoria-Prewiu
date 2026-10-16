@@ -3,7 +3,6 @@ on:
   push:
     branches: [integration/valoria-bastion1-player-scene-20261012]
     paths:
-      - '.github/workflows/valoria-bastion1-modular63-unity-review.yml'
       - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs'
       - 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json'
   workflow_dispatch:
@@ -34,6 +33,22 @@ jobs:
           assert not any(x['id']=='mortar_joint_recess' for x in d['selected'])
           print('BASTION63_TRUE_VOLUME_WALL_TOWER_SELECTION_VALID review_only=true')
           PY
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: .valoria-feedback
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read current main and fail if pinned GLBs ignore module-specific corrections
+        shell: bash
+        run: |
+          node .valoria-feedback/tools/valoria-asset-feedback/workstream-sync.mjs unity \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json \
+            .valoria-feedback/tools/valoria-asset-feedback/registry.json \
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
   review-on-unity:
     # Owner-authorized structural reuse, never launch Blender here.
     # GitHub serializes this on the sole self-hosted Windows runner; the
@@ -229,3 +244,34 @@ jobs:
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedModular63/**
           if-no-files-found: warn
           retention-days: 14
+  postflight-feedback-review:
+    needs: [validate-selection, review-on-unity]
+    if: ${{ needs['review-on-unity'].result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: .valoria-feedback
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: bastion1-modular63-unity-review-${{ github.run_id }}
+          path: review
+      - name: Verify exact current main feedback and native A/B evidence
+        shell: bash
+        run: |
+          node .valoria-feedback/tools/valoria-asset-feedback/workstream-sync.mjs unity \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json \
+            .valoria-feedback/tools/valoria-asset-feedback/registry.json \
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+          for file in before-landscape.png after-landscape.png before-mobile.png after-mobile.png before-portrait.png after-portrait.png modular63-scene-review.json; do
+            test -s "review/$file" || { echo "MISSING_REAL_NATIVE_FRAME $file"; exit 1; }
+          done
+          echo 'BASTION63_FEEDBACK_RECHECK_PASS non-promoted trial; aesthetic review still independent'
