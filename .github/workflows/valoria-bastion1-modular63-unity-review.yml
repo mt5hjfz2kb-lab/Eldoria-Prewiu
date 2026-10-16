@@ -35,10 +35,9 @@ jobs:
           print('BASTION63_STRUCTURAL5_SELECTION_VALID review_only=true')
           PY
   review-on-unity:
-    # Single-runner protection: original scene Unity terrain/material lookdev
-    # already executes on the same Windows PC. This side-prop experiment is
-    # visually ART_REJECTED; preserve only historical evidence, no duplicate.
-    if: ${{ false }}
+    # Owner-authorized structural reuse, never launch Blender here.
+    # GitHub serializes this on the sole self-hosted Windows runner; the
+    # job itself rejects Blender/Unity processes found outside Actions.
     needs: validate-selection
     # All heavy local jobs target the same single self-hosted Windows runner;
     # never start a separate Blender process. Fail rather than overlap an
