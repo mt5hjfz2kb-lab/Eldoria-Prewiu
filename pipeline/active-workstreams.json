@@ -4,109 +4,14 @@
   "updated_at": "2026-10-16",
   "owner_production_pause": {
     "active": true,
-    "requested_on": "2026-10-14",
-    "scope": "ALL_ELDORIA_PRODUCTION_WORKSTREAMS",
-    "reason": "Owner explicitly ordered a temporary pause to stabilize repeated toolchain and CI failures",
-    "allowed_work": "Isolated zero-cost stabilization plus owner-authorized AI Artist ONLY: unified branch, local Qwen 4B/8B, controlled Windows Blender and fixed-camera A/B on frozen assets; all other Eldoria production paused; EXTRA OWNER AUTHORIZATION 2026-10-16: isolated NEW UNITY SCENE experimental A/B on art-direction hybrid 3D vs camera-controlled 2.5D, with no changes to frozen Bastion I and 63 asset branches, no paid tools, protected gameplay, and fresh independent claim.",
-    "resumption": "Explicit new instruction by repository owner required",
-    "note": "Artist-only explicit owner resumption 2026-10-14: canonical art/eldoria-full-blender-artist-studio-20261014; former validation branch read-only. Bastion I, world4x, deployments and Unity production remain paused. This marker cannot cancel other ChatGPT Work sessions. New scoped owner pause 2026-10-16 for two active branches is recorded in owner_specific_pauses; they were handed off to history; new isolated visual experiment is explicitly authorized."
+    "requested_on": "2026-10-16",
+    "scope": "ALL_ELDORIA_PRODUCTION_WORKSTREAMS_EXCEPT_EXCLUSIVE_LAYERED_VALORIA",
+    "reason": "LATEST OWNER ORDER 2026-10-16: absolute priority to Valoria construction from existing master plan by layers; every other active Eldoria workstream paused.",
+    "allowed_work": "ONLY valoria-master-plan-layered-construction-20261016 in isolated non-overlapping Unity scope, after a real claim, reuse verified certified topology/gameplay, no spend; read-only recovery and repository governance allowed.",
+    "resumption": "Other workstreams require a fresh explicit owner instruction. Do not automatically resume artist, World4X, Region 1, Bastion I, 63-asset branches or deployments.",
+    "note": "Exclusive new construction line is authorized by latest owner order; original previously paused branches remain paused. No publication, production-scene overwrites, paid credits or automatic runner appropriation. Repo pause does not cancel running chats or GitHub jobs. See docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md"
   },
-  "active": [
-    {
-      "id": "world-region-1-visual-convergence-v3-20261010",
-      "title": "World Region 1 production visual convergence v3 and WebGL delivery",
-      "owner": "chat-owner-authorized-two-track-takeover-20261010",
-      "scope": [
-        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/WorldRegion1RuntimeTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs",
-        "pipeline/unity-publish-request.json",
-        "pipeline/active-workstreams.json",
-        "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md",
-        "docs/evidence/world-region-1-visual-convergence-v3-20261010/**",
-        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs"
-      ],
-      "resources": [
-        "github-pages-owner-publication"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-10",
-      "base_main_sha": "431a08a8627d4deb8c03534c39789d2a5d0a95b9",
-      "art_production_routing": "required",
-      "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
-      "phase": "Corrected WebGL candidate built; exact QA completed; Windows lease handed to same-owner isolated prototype diagnostic.",
-      "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
-      "resumed_at": "2026-10-10T18:50:00Z"
-    },
-    {
-      "id": "world4x-zone1-isolated-reference-prototype-20261013",
-      "title": "Zone 1 4X map zoom and streaming isolated prototype",
-      "owner": "chat-world4x-zone1-20261013",
-      "scope": [
-        "docs/world4x-zone1/**",
-        "tools/world4x-zone1/**",
-        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
-      ],
-      "resources": [],
-      "status": "active",
-      "claimed_at": "2026-10-13",
-      "branch": "prototype/world4x-zone1-zoom-reference-20261013",
-      "dependency": "Existing Region 1 owner retains WorldRegion1Runtime and Pages; Bastion I retains Windows runner and Valoria scene. No mutation to those surfaces.",
-      "phase": "Isolated reference specification and prototype preparation",
-      "art_production_routing": "required"
-    },
-    {
-      "id": "eldoria-full-blender-artist-studio-20261014",
-      "title": "General-purpose AI-directed Blender asset authoring, materials and visual loop",
-      "owner": "chat-unified-professional-ai-artist-owner-20261014",
-      "scope": [
-        "tools/art-direction/full-studio/**",
-        "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
-        ".github/workflows/eldoria-full-artist-studio.yml",
-        "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-      ],
-      "resources": [],
-      "status": "active",
-      "claimed_at": "2026-10-14T12:40:00+02:00",
-      "base_main_sha": "11f90e6a34c66aa4170acc19d69d48faff06c536",
-      "branch": "art/eldoria-full-blender-artist-studio-20261014",
-      "dependency": "Owner transferred exclusive ARTIST authority to this unified workstream; old validation/eldoria-professional-art-fixed-source-20261014 is historic/read-only. Do not edit Bastion I owner files or world4x. Windows may be used for owner-authorized artist benchmarks ONLY when no other active job uses it; protected assets and original source remain immutable.",
-      "art_production_routing": "required",
-      "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
-      "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
-    },
-    {
-      "id": "valoria63-clean-modular-assembly-20261016",
-      "title": "Valoria first scene from all 63 existing modular GLBs, isolated Unity composition",
-      "owner": "chat-gpt6-valoria63-direct-takeover-20261016",
-      "branch": "experiment/valoria-63-clean-composition-20261016",
-      "status": "active",
-      "claimed_at": "2026-10-16",
-      "base_main_sha": "main",
-      "scope": [
-        "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/**",
-        "tools/valoria63-clean-scene/**",
-        ".github/workflows/valoria63-clean-scene.yml",
-        "docs/evidence/valoria63-clean-scene-20261016/**"
-      ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "dependency": "Native Unity build authorized for isolated 63 scene; sibling SceneBreakthrough completed and released runner; no modification of frozen production branches.",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
-      "phase": "Unity native 63-asset clean scene BUILT, reopened and three frames captured; run #38960623402 success, scene commit 40027a490ace2. 63 distinct GLBs, 408 instances. Visual ART_REJECT (~3/10 subjective): terrain slabs, 26 of 34 outer pines outside main+upper deck, scattered unsupported props, interrupted visual bridge. A gate/terrain/lighting microtest is running #38962837092; do not duplicate Windows runner.",
-      "previous_owner": "chat-owner-clean63-20261016",
-      "next": "Wait for running microtest 38962837092 to finish and assess real Unity images. Then fix entire-scene visual contact: constrain outer pines to polygon, put background trees inside upper deck, bridge deck visibly continuous, remove floating rocky scatter, preserve reference/camera and re-run one native build. Do not claim ART_APPROVED. Preserve source SHA and frozen production branches.",
-      "takeover_authority": "Direct user instruction 2026-10-16: assume work and finish; retain isolated branch, ownership and Windows runner lease, no production merges.",
-      "last_native_success_run": 38960623402,
-      "native_scene_source_count": 63,
-      "native_module_instances": 408,
-      "art_approved": false,
-      "visual_assessment": "ART_REJECT_20261016_APPROX_3_10"
-    }
-  ],
+  "active": [],
   "history": [
     {
       "id": "valoria-scene-method-breakthrough-20261016",
@@ -5214,6 +5119,124 @@
         "retirement_commit": "f8a9d3ec03784386b396c79d985f5180825a59fb",
         "continuity": "docs/evidence/valoria-scene-breakthrough-20261016/DUPLICATE_SESSION_HANDOFF.md"
       }
+    },
+    {
+      "id": "world-region-1-visual-convergence-v3-20261010",
+      "title": "World Region 1 production visual convergence v3 and WebGL delivery",
+      "owner": "chat-owner-authorized-two-track-takeover-20261010",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/WorldRegion1RuntimeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs",
+        "pipeline/unity-publish-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "docs/evidence/world-region-1-visual-convergence-v3-20261010/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs"
+      ],
+      "resources": [
+        "github-pages-owner-publication"
+      ],
+      "status": "handoff",
+      "claimed_at": "2026-10-10",
+      "base_main_sha": "431a08a8627d4deb8c03534c39789d2a5d0a95b9",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Region 1 environment/route/landmark visual improvement with matched real camera captures and candidate WebGL QA.",
+      "phase": "PAUSED_BY_OWNER_20261016; previous phase: Corrected WebGL candidate built; exact QA completed; Windows lease handed to same-owner isolated prototype diagnostic.",
+      "next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass.",
+      "resumed_at": "2026-10-10T18:50:00Z",
+      "pause_effective_date": "2026-10-16",
+      "pause_reason": "Absolute priority to Valoria master-plan layered construction; not completed; do not resume automatically.",
+      "resume_only_by": "fresh explicit owner instruction",
+      "handoff_target": "valoria-master-plan-layered-construction-20261016",
+      "resources_released_logically": true,
+      "previous_next": "Repeat native gate and exact WebGL candidate QA after source resource-parity fix; retain visual rejection until actual captures pass."
+    },
+    {
+      "id": "world4x-zone1-isolated-reference-prototype-20261013",
+      "title": "Zone 1 4X map zoom and streaming isolated prototype",
+      "owner": "chat-world4x-zone1-20261013",
+      "scope": [
+        "docs/world4x-zone1/**",
+        "tools/world4x-zone1/**",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
+      ],
+      "resources": [],
+      "status": "handoff",
+      "claimed_at": "2026-10-13",
+      "branch": "prototype/world4x-zone1-zoom-reference-20261013",
+      "dependency": "Existing Region 1 owner retains WorldRegion1Runtime and Pages; Bastion I retains Windows runner and Valoria scene. No mutation to those surfaces.",
+      "phase": "PAUSED_BY_OWNER_20261016; previous phase: Isolated reference specification and prototype preparation",
+      "art_production_routing": "required",
+      "pause_effective_date": "2026-10-16",
+      "pause_reason": "Absolute priority to Valoria master-plan layered construction; not completed; do not resume automatically.",
+      "resume_only_by": "fresh explicit owner instruction",
+      "handoff_target": "valoria-master-plan-layered-construction-20261016",
+      "resources_released_logically": true,
+      "previous_next": null
+    },
+    {
+      "id": "eldoria-full-blender-artist-studio-20261014",
+      "title": "General-purpose AI-directed Blender asset authoring, materials and visual loop",
+      "owner": "chat-unified-professional-ai-artist-owner-20261014",
+      "scope": [
+        "tools/art-direction/full-studio/**",
+        "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+        ".github/workflows/eldoria-full-artist-studio.yml",
+        "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
+      ],
+      "resources": [],
+      "status": "handoff",
+      "claimed_at": "2026-10-14T12:40:00+02:00",
+      "base_main_sha": "11f90e6a34c66aa4170acc19d69d48faff06c536",
+      "branch": "art/eldoria-full-blender-artist-studio-20261014",
+      "dependency": "Owner transferred exclusive ARTIST authority to this unified workstream; old validation/eldoria-professional-art-fixed-source-20261014 is historic/read-only. Do not edit Bastion I owner files or world4x. Windows may be used for owner-authorized artist benchmarks ONLY when no other active job uses it; protected assets and original source remain immutable.",
+      "art_production_routing": "required",
+      "phase": "PAUSED_BY_OWNER_20261016; previous phase: Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
+      "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json",
+      "pause_effective_date": "2026-10-16",
+      "pause_reason": "Absolute priority to Valoria master-plan layered construction; not completed; do not resume automatically.",
+      "resume_only_by": "fresh explicit owner instruction",
+      "handoff_target": "valoria-master-plan-layered-construction-20261016",
+      "resources_released_logically": true,
+      "previous_next": null
+    },
+    {
+      "id": "valoria63-clean-modular-assembly-20261016",
+      "title": "Valoria first scene from all 63 existing modular GLBs, isolated Unity composition",
+      "owner": "chat-gpt6-valoria63-direct-takeover-20261016",
+      "branch": "experiment/valoria-63-clean-composition-20261016",
+      "status": "handoff",
+      "claimed_at": "2026-10-16",
+      "base_main_sha": "main",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/**",
+        "tools/valoria63-clean-scene/**",
+        ".github/workflows/valoria63-clean-scene.yml",
+        "docs/evidence/valoria63-clean-scene-20261016/**"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "dependency": "Native Unity build authorized for isolated 63 scene; sibling SceneBreakthrough completed and released runner; no modification of frozen production branches.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
+      "phase": "PAUSED_BY_OWNER_20261016; previous phase: Unity native 63-asset clean scene BUILT, reopened and three frames captured; run #38960623402 success, scene commit 40027a490ace2. 63 distinct GLBs, 408 instances. Visual ART_REJECT (~3/10 subjective): terrain slabs, 26 of 34 outer pines outside main+upper deck, scattered unsupported props, interrupted visual bridge. A gate/terrain/lighting microtest is running #38962837092; do not duplicate Windows runner.",
+      "previous_owner": "chat-owner-clean63-20261016",
+      "next": "Wait for running microtest 38962837092 to finish and assess real Unity images. Then fix entire-scene visual contact: constrain outer pines to polygon, put background trees inside upper deck, bridge deck visibly continuous, remove floating rocky scatter, preserve reference/camera and re-run one native build. Do not claim ART_APPROVED. Preserve source SHA and frozen production branches.",
+      "takeover_authority": "Direct user instruction 2026-10-16: assume work and finish; retain isolated branch, ownership and Windows runner lease, no production merges.",
+      "last_native_success_run": 38960623402,
+      "native_scene_source_count": 63,
+      "native_module_instances": 408,
+      "art_approved": false,
+      "visual_assessment": "ART_REJECT_20261016_APPROX_3_10",
+      "pause_effective_date": "2026-10-16",
+      "pause_reason": "Absolute priority to Valoria master-plan layered construction; not completed; do not resume automatically.",
+      "resume_only_by": "fresh explicit owner instruction",
+      "handoff_target": "valoria-master-plan-layered-construction-20261016",
+      "resources_released_logically": true,
+      "previous_next": "Wait for running microtest 38962837092 to finish and assess real Unity images. Then fix entire-scene visual contact: constrain outer pines to polygon, put background trees inside upper deck, bridge deck visibly continuous, remove floating rocky scatter, preserve reference/camera and re-run one native build. Do not claim ART_APPROVED. Preserve source SHA and frozen production branches."
     }
   ],
   "owner_specific_pauses": [
@@ -5234,6 +5257,45 @@
         38943488120
       ],
       "notice": "Repository writes do not remotely pause running chats or cancel active GitHub Actions. Jobs already in flight must be checked/cancelled separately."
+    },
+    {
+      "id": "ELDORIA_EXCLUSIVE_VALORIA_LAYERED_PRIORITY_20261016",
+      "date": "2026-10-16",
+      "status": "PAUSED_BY_EXPLICIT_OWNER_ORDER",
+      "affected_workstreams": [
+        "world-region-1-visual-convergence-v3-20261010",
+        "world4x-zone1-isolated-reference-prototype-20261013",
+        "eldoria-full-blender-artist-studio-20261014",
+        "valoria63-clean-modular-assembly-20261016"
+      ],
+      "scope": "All Eldoria active production outside master-plan layered Valoria; retain older specific pauses",
+      "exclusive_resume": "Only fresh explicit owner instruction",
+      "preserve": "All branches, commits, scenes, prefabs, BLEND/GLB, captures, runs, artifacts and source; these workstreams are paused, not completed or cancelled.",
+      "allowed_exception": "valoria-master-plan-layered-construction-20261016, strictly isolated/claimed, 0 € and no old-scene/paused-branch mutations",
+      "notice": "Registry updates are logical ownership only; they do not stop other ChatGPT sessions or cancel queued/inflight Actions. Inspect actual runs and cancel via authorized UI if necessary."
     }
-  ]
+  ],
+  "exclusive_priority": {
+    "id": "valoria-master-plan-layered-construction-20261016",
+    "title": "Valoria — recuperar plano maestro y construir por capas",
+    "status": "owner_authorized_pending_constructor_claim",
+    "owner": "UNCLAIMED — next authorized construction chat must claim per protocol",
+    "authorized_on": "2026-10-16",
+    "instructions": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+    "priority": "ABSOLUTE",
+    "budget_eur": 0,
+    "approved_sequence": [
+      "recover certified Valoria master plan",
+      "validate camera/composition and expansion",
+      "terrain and continuous topography",
+      "roads bridge stair/circulation",
+      "architectural blockout",
+      "selected real modular assembled structures",
+      "surfaces materials vegetation environment and lighting",
+      "gameplay compatibility and tests",
+      "full-frame visual plus technical and mobile validation"
+    ],
+    "restrictions": "Isolated work and original paused branches protected; no publication or expenditure without separate approvals. Do not claim runner until available.",
+    "reference_image": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
+  }
 }
