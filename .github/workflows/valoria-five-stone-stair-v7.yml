@@ -1,0 +1,76 @@
+name: "[ART STAIR] Five individual existing dressed-stone pavers for 4m modular tread"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-five-stone-stair-v7.yml'
+      - 'tools/valoria-modular-fortress/stair_five_dressed_stones_v7.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-5-stone-stair-v7
+  cancel-in-progress: false
+jobs:
+  actual-stone-stair:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Set existing GitHub Desktop Git PATH
+        shell: powershell
+        run: |
+          $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          if(-not $git){throw 'Existing Git unavailable'}
+          Add-Content $env:GITHUB_PATH (Split-Path $git)
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-modular-fortress/stair_five_dressed_stones_v7.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-six-weakest-native-ab-38870003255
+          run-id: 38870003255
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_stair
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-twelve-limestone-cc0-38825364463
+          run-id: 38825364463
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/existing_ashlar_donor
+      - name: Author real stone step module and compare true Blender A/B
+        shell: powershell
+        run: |
+          $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Blender not installed'}
+          $src=Join-Path $env:RUNNER_TEMP 'exact_stair\eldoria-six-weakest-candidates\glb\stair_step.glb'
+          $donor=Join-Path $env:RUNNER_TEMP 'existing_ashlar_donor\eldoria-twelve-limestone\glb\paver_flagstone.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-stair-stone-v7'
+          if(-not(Test-Path $src) -or -not(Test-Path $donor)){throw 'Actual source/donor GLBs missing; inspect precise archive paths'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/stair_five_dressed_stones_v7.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'stair_v7_pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'stair_v7.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'stair_v7.stderr'
+          $proc=Start-Process -FilePath $blender -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$donor,$out) -Wait -PassThru -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 80 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 65 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Native Blender stair production failed $($proc.ExitCode)"}
+          foreach($file in @('before\stair_step.png','after\stair_step.png','after\stair_step_macro.png','glb\stair_step.glb','reports\stair_five_dressed_stones_v7.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "No real evidence $file"}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-one-stone-stair-v7-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-stair-stone-v7/**
+            ${{ runner.temp }}/stair_v7.stdout
+            ${{ runner.temp }}/stair_v7.stderr
+          if-no-files-found: warn
+          retention-days: 30
