@@ -72,6 +72,7 @@ jobs:
           ref: main
           path: valoria-layered-live-main
           sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Verify exclusive Windows lease and reference before launching Unity
         shell: powershell
