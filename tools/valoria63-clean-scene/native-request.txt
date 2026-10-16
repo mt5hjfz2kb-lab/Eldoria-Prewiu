@@ -1,3 +1,5 @@
 Native clean scene build requested 2026-10-16. Exclusive Windows runner lease recorded in main registry.
 Retry native after verified Windows checkout bug fix.
 Retry exact native after UnityEngine.Application compile fix and live-main Windows claim check; prior runs 38955241572 and 38955695709 blocked pre-scene.
+
+DIRECT TAKEOVER retry after real Unity compiler failures #38956747071: fixed UnityEngine.Application tokens (source 91f89b14), added Physics.SyncTransforms before raycasts, and mandatory separate Unity reopen/three PNG/63 actual GLB gate (workflow 6f4efcb4). No other active run at request creation.
