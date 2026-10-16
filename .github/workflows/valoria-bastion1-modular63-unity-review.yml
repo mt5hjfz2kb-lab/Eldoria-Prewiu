@@ -28,9 +28,9 @@ jobs:
           assert d['base_63']['expected_count']==63
           assert d['constraints']['no_new_meshes'] and d['constraints']['source_assets_immutable']
           assert not d['constraints']['gameplay_publication']
-          assert len(d['selected'])==7 and len({x['id'] for x in d['selected']})==7
+          assert len(d['selected'])==8 and len({x['id'] for x in d['selected']})==7
           assert all(re.fullmatch('[a-f0-9]{64}',x['sha256']) for x in d['selected'])
-          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'wall_panel_regular_4m','tower_square_short'}
+          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'wall_panel_regular_4m','tower_square_short','merlon_tall'}
           assert not any(x['id']=='mortar_joint_recess' for x in d['selected'])
           print('BASTION63_TRUE_VOLUME_WALL_TOWER_SELECTION_VALID review_only=true')
           PY
@@ -169,6 +169,7 @@ jobs:
               'pine_medium' {'pine'}
               'cliff_rock_column' {'cliff'}
               'tower_square_short' {'masonry'}
+              'merlon_tall' {'masonry'}
               default {throw "Unrecognized source: $($asset.id)"}
             }
             $relative=$asset.file.Replace('/',[IO.Path]::DirectorySeparatorChar)
@@ -198,7 +199,7 @@ jobs:
           }
           New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review') | Out-Null
           Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review/selection.json')
-          Write-Host 'BASTION63_REUSE_ONLY 63 inventoried, 7 pinned, 2 structurally assembled and old wall visually disabled, no new mesh'
+          Write-Host 'BASTION63_REUSE_ONLY 63 inventoried, 8 pinned, 3 structurally assembled and old wall visually disabled, no new mesh'
       - name: Render identical-camera before and after with original player scene preserved
         shell: powershell
         run: |

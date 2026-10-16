@@ -60,10 +60,12 @@ namespace Eldoria.EditorTools
                 // freestanding FULL-DEPTH masonry volume and attach a real kit tower.
                 var wall=await Import("wall_panel_regular_4m");
                 var tower=await Import("tower_square_short");
-                RebuildGateWingWithTower(originalRoot,wall,tower,group.transform,
+                var merlon=await Import("merlon_tall");
+                RebuildGateWingWithTower(originalRoot,wall,tower,merlon,group.transform,
                                          "LowerGateRightWing",evidence);
                 UnityEngine.Object.DestroyImmediate(wall);
                 UnityEngine.Object.DestroyImmediate(tower);
+                UnityEngine.Object.DestroyImmediate(merlon);
                 if(evidence.Count<4)
                     throw new Exception("The complete modular wall+tower proof is incomplete");
                 CollectOwnedAssets(group);
@@ -227,7 +229,7 @@ namespace Eldoria.EditorTools
         // the old visual wall. No 0.16 depth scaling and no front-surface decals.
         // Old renderer state only is disabled; colliders/triggers/transforms live on.
         static void RebuildGateWingWithTower(GameObject original,GameObject wall,
-                                            GameObject tower,Transform parent,
+                                            GameObject tower,GameObject merlon,Transform parent,
                                             string wing,List<string> notes)
         {
             var historical=FindNode(original,wing);
@@ -265,6 +267,34 @@ namespace Eldoria.EditorTools
                     throw new Exception("Wall bay joint leaves a visible gap at "+i);
                 rightEdge=actual.max.x;
                 if(first){aggregate=actual;first=false;}else aggregate.Encapsulate(actual);
+                // Real load-bearing wall beneath individually socketed merlons.
+                // Unlike an overlapping crenellated facade, these are disjoint
+                // constructive blocks resting on the actual NEW wall top face.
+                int count=Mathf.Max(3,Mathf.RoundToInt(bayWidth/.95f));
+                float toothHeight=.92f;
+                for(int tooth=0;tooth<count;tooth++)
+                {
+                    var cap=CopyOn(merlon,replacement.transform,
+                        "BUILT_STONE_MERLON_BAY_"+i+"_"+tooth);
+                    var sourceCap=Bounds(cap);
+                    float uniform=toothHeight/sourceCap.size.y;
+                    if(uniform<.4f||uniform>1.6f)
+                        throw new Exception("Merlon kit scale outside construction envelope");
+                    cap.transform.localScale*=uniform;
+                    RebindNeutralLimestone(cap);
+                    var mb=Bounds(cap);
+                    float x=actual.min.x+(tooth+.5f)*bayWidth/count;
+                    Centre(cap,new Vector3(x,actual.max.y+mb.size.y*.5f,
+                        actual.center.z));
+                    mb=Bounds(cap);
+                    if(Mathf.Abs(mb.min.y-actual.max.y)>.035f ||
+                       mb.min.x<actual.min.x-.03f ||
+                       mb.max.x>actual.max.x+.03f ||
+                       mb.size.z>actual.size.z+.08f ||
+                       Mathf.Abs(mb.center.z-actual.center.z)>.035f)
+                        throw new Exception("Merlon neither socketed nor truly supported: "+cap.name);
+                    notes.Add("BUILT_REAL_MERLON_BAY_"+i+"_"+tooth);
+                }
                 notes.Add("BUILT_FULL_DEPTH_BAY_"+i);
             }
             if(Mathf.Abs(aggregate.min.x-oldBounds.min.x)>.075f ||

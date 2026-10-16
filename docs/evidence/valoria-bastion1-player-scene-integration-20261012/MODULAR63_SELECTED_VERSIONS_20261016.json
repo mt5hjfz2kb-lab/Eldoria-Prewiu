@@ -1,6 +1,6 @@
 {
   "schema": "eldoria.bastion1.modular63.version_selection.v1",
-  "note": "Phase-1 full-geometry joint: wall V6 and authentic full-volume masonry tower, with historical lower gate/Hero V3 retained. Prior four overlay/prop alternatives staged only, avoiding duplicate faces and wooden/iron gates. Captures A/B/C required; NOT ART_APPROVED.",
+  "note": "Phase-1 structural joint: V6 masonry wall, outboard tower and real separately assembled crenel blocks; preserve original gate temporarily; Unity before/after/lookdev required and NOT ART_APPROVED.",
   "base_63": {
     "run_id": 38813966671,
     "artifact_id": 12010106460,
@@ -79,6 +79,16 @@
       "provisional_score": null,
       "usage": "candidate_in_scene",
       "rationale": "Real masonry PBR successor to 63-base tower, correct 4.715 x 6.43 x 4.717m mass; not yet artistically approved in Unity"
+    },
+    {
+      "id": "merlon_tall",
+      "artifact_run": 38871632375,
+      "artifact": "valoria-eleven-under6-masonry-a-b-38871632375",
+      "file": "eldoria-eleven-architecture-pbr/glb/merlon_tall.glb",
+      "sha256": "96541f0fac4ca8b4856c3b897ff2552ebec5560b2251df9b33b875efd06f7820",
+      "provisional_score": null,
+      "usage": "candidate_in_scene",
+      "rationale": "Individual masonry battlement blocks grounded on full-volume V6 wall, not a duplicate wall facade; must pass Unity A/B before artistic approval"
     }
   ],
   "rejected_or_pending": [
