@@ -15,7 +15,7 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 s=bpy.context.scene;s.render.engine='BLENDER_EEVEE';s.render.resolution_x=950;s.render.resolution_y=950
 s.render.image_settings.file_format='PNG';s.view_settings.view_transform='AgX'
 world=bpy.data.worlds.new('Standalone terrain module neutral studio');world.use_nodes=True
-world.node_tree.nodes['Background'].inputs['Color'].default_value=(.2,.25,.33)
+world.node_tree.nodes['Background'].inputs['Color'].default_value=(.2,.25,.33,1)
 world.node_tree.nodes['Background'].inputs['Strength'].default_value=.78;s.world=world
 def lamp(name,power,pos,c):
  d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=c;d.size=9;d.shape='DISK'
