@@ -1,0 +1,81 @@
+name: "[ART ARCH V8] Four single-stone CC0 photo crops, no masonry grid"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-real-single-ashlar-arches-v8.yml'
+      - 'tools/valoria-modular-fortress/single_photo_cut_stone_arch_four_v8.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-four-truly-cut-stone-photos
+  cancel-in-progress: false
+jobs:
+  face-crops-four:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 100
+    steps:
+      - name: Check installed Git and native Blender
+        id: native
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-four-natural-limestone-arches-38901831398
+          run-id: 38901831398
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/prior-natural-geologic-v7
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-four-bold-hand-dressed-arch-v4-38888410182
+          run-id: 38888410182
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/true-dressed-sillars-photo
+      - name: Crop stone-face interior from real CC0 wall atlas, preserve physical wedge
+        shell: powershell
+        run: |
+          $source=Join-Path $env:RUNNER_TEMP 'prior-natural-geologic-v7\valoria-four-naturally-cut-wedges-v7\glb'
+          $donors=Join-Path $env:RUNNER_TEMP 'true-dressed-sillars-photo\eldoria-four-dovelas-chisel-v4\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-four-clean-real-sillars-v8'
+          foreach($need in @((Join-Path $source 'arch_keystone_major.glb'),(Join-Path $donors 'arch_keystone_major.glb'))){
+            if(-not(Test-Path $need)){throw "Missing authentic stone donor $need"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/single_photo_cut_stone_arch_four_v8.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned photosculpt code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-real-stone-photo-crop-v8.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-real-stone-photo-crop-v8.log'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-real-stone-photo-crop-v8.err'
+          $p=Start-Process -FilePath "${{ steps.native.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$source,$donors,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "True four stone photo crop failed $($p.ExitCode)"}
+          foreach($folder in @('glb','before','after','atlas')){
+            $number=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($number -ne 4){throw "Expected four distinct $folder results, got $number"}
+          }
+      - name: Archive four individual models, cropped original-CC0 photo patches and paired renders
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-four-true-photocropped-single-stones-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-four-clean-real-sillars-v8/**
+            ${{ runner.temp }}/valoria-real-stone-photo-crop-v8.log
+            ${{ runner.temp }}/valoria-real-stone-photo-crop-v8.err
+          if-no-files-found: warn
+          retention-days: 30
