@@ -1,2 +1,3 @@
 Native clean scene build requested 2026-10-16. Exclusive Windows runner lease recorded in main registry.
 Retry native after verified Windows checkout bug fix.
+Retry exact native after UnityEngine.Application compile fix and live-main Windows claim check; prior runs 38955241572 and 38955695709 blocked pre-scene.
