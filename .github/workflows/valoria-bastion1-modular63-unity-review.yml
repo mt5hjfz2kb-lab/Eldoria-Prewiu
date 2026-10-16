@@ -28,7 +28,7 @@ jobs:
           assert d['base_63']['expected_count']==63
           assert d['constraints']['no_new_meshes'] and d['constraints']['source_assets_immutable']
           assert not d['constraints']['gameplay_publication']
-          assert len(d['selected'])==8 and len({x['id'] for x in d['selected']})==7
+          assert len(d['selected'])==8 and len({x['id'] for x in d['selected']})==8
           assert all(re.fullmatch('[a-f0-9]{64}',x['sha256']) for x in d['selected'])
           assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'wall_panel_regular_4m','tower_square_short','merlon_tall'}
           assert not any(x['id']=='mortar_joint_recess' for x in d['selected'])
