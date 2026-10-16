@@ -49,6 +49,29 @@ jobs:
           New-Item -ItemType Directory -Force docs/evidence/valoria63-clean-scene-20261016 | Out-Null
           Copy-Item $log docs/evidence/valoria63-clean-scene-20261016/native.log
           if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA63_CLEAN_SCENE_COMPLETE' -Quiet)){throw 'Native Unity build failed'}
+      - name: Reopen saved native scene in a FRESH Unity process and validate persistence
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria63-native-reopen.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.Valoria63.Editor.Valoria63CleanSceneBuilder.Validate','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          New-Item -ItemType Directory -Force docs/evidence/valoria63-clean-scene-20261016 | Out-Null
+          if(Test-Path $log){Copy-Item $log docs/evidence/valoria63-clean-scene-20261016/native-reopen.log;Get-Content $log -Tail 100}
+          if($p.ExitCode -ne 0 -or -not(Test-Path $log) -or -not(Select-String $log -Pattern 'VALORIA63_CLEAN_SCENE_REOPEN_VALIDATED' -Quiet)){throw 'Saved scene failed independent reopening/mesh+material+collision validation'}
+      - name: Require genuine saved scene, source coverage and Unity PNG evidence
+        shell: powershell
+        run: |
+          $dir='docs/evidence/valoria63-clean-scene-20261016'
+          foreach($f in @('assembly-evidence.json','valoria63-clean-landscape.png','valoria63-clean-wide.png','valoria63-clean-portrait.png')){
+            if(-not(Test-Path "$dir/$f")){throw "Missing required real Unity evidence $f"}
+          }
+          $saved='Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity'
+          if(-not(Test-Path $saved)){throw 'Real Unity .unity scene not saved'}
+          $report=Get-Content "$dir/assembly-evidence.json" -Raw|ConvertFrom-Json
+          if($report.source_count -ne 63 -or $report.distinct_sources -ne 63 -or $report.module_instances -lt 120 -or $report.art_approved){
+            throw '63-source coverage, native composition or art honesty gate failed'
+          }
+          Write-Host "VALORIA63_NATIVE_PERSISTENCE_AND_CAPTURE_PASS instances=$($report.module_instances)"
       - name: Commit isolated scene and screenshots
         shell: powershell
         run: |
@@ -56,9 +79,14 @@ jobs:
           git config user.email 'valoria63@users.noreply.github.com'
           git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated
           git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity
+          git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity.meta
           git add -f docs/evidence/valoria63-clean-scene-20261016
-          git commit -m 'build: native Valoria clean scene and evidence'
+          git diff --cached --quiet
+          if($LASTEXITCODE -eq 0){throw 'Nothing to persist: native scene/captures already tracked or missing'}
+          git commit -m 'build: native Valoria clean scene plus reopen and screenshots'
+          if($LASTEXITCODE -ne 0){throw 'Unable to commit native scene and evidence'}
           git push origin HEAD:experiment/valoria-63-clean-composition-20261016
+          if($LASTEXITCODE -ne 0){throw 'Remote branch moved; preserve artifacts and reconcile before retry'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
