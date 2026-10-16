@@ -84,7 +84,7 @@ export function validateArtistOutput(outputDir,plan,registry,ids){
 }
 export function verifySourceRevision(plan,filename){
  const content=fs.readFileSync(filename);
- const real=crypto.createHash('sha1').update(Buffer.from('blob '+content.length+'\\0')).update(content).digest('hex');
+ const real=crypto.createHash('sha1').update(Buffer.from('blob '+content.length+String.fromCharCode(0))).update(content).digest('hex');
  fail(plan.source_git_blob_sha1===real,'source changed without per-asset feedback review: '+plan.source_file);
  return real;
 }
