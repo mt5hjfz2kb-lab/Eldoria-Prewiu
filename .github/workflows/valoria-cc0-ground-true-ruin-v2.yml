@@ -1,0 +1,89 @@
+name: "[ART V2 GROUND] Real CC0 photo grass and dirt plus authentic ruined masonry"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-cc0-ground-true-ruin-v2.yml'
+      - 'tools/valoria-modular-fortress/rebuild_cc0_grounds_and_true_ruin_v2.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-cc0-ground-real-photo-and-ruin-v2
+  cancel-in-progress: false
+jobs:
+  real-ground-repair:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 100
+    steps:
+      - name: Native installed Git and Blender
+        shell: powershell
+        id: app
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No local Git'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'No local Blender'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/natural_v3
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-certified-cc0-ground-photography-38870945019
+          run-id: 38870945019
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/official_photo_soil
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-4m-wall-artisan-capstone-v6-38865543613
+          run-id: 38865543613
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/full_stone_wall_donor
+      - name: Native Blender 4 independent modular A-B GLB under-six proof
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'natural_v3\eldoria-upgrade63\glb'
+          $maps=Join-Path $env:RUNNER_TEMP 'official_photo_soil'
+          $donor=Join-Path $env:RUNNER_TEMP 'full_stone_wall_donor\eldoria-4m-wall-architectural-v6\glb\wall_panel_regular_4m_warm_limestone_bright.glb'
+          $dst=Join-Path $env:RUNNER_TEMP 'eldoria-real-soil-grass-ruinedwall'
+          foreach($p in @((Join-Path $base 'dirt_ground_patch.glb'),(Join-Path $maps 'grass_ground_diffuse.jpg'),$donor)){
+            if(-not(Test-Path $p)){throw "Required source not found: $p"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/rebuild_cc0_grounds_and_true_ruin_v2.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned code not found'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-ground-ruin-v2.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-ground-ruin-v2.log';$err=Join-Path $env:RUNNER_TEMP 'eldoria-ground-ruin-v2.err'
+          $proc=Start-Process -FilePath "${{ steps.app.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$maps,$donor,$dst) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 130 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "CC0 four-ground Blender error $($proc.ExitCode)"}
+          foreach($fld in @('before','after','glb')){
+            $cnt=(Get-ChildItem (Join-Path $dst $fld) -File).Count
+            if($cnt -ne 4){throw "Expected 4 real assets in $fld, got $cnt"}
+          }
+          $data=Get-Content (Join-Path $dst 'reports\four_cc0_sculpted_ground_ruins.json') -Raw|ConvertFrom-Json
+          if($data.assets.Count -ne 4 -or @($data.assets|Where-Object {$_.technical -ne 'PASS_PENDING_VISUAL'}).Count -ne 0){throw 'Incomplete artistic evidence'}
+      - name: Archive real GLBs and true paired studio screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-4-cc0-natural-ground-and-ruin-v2-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-real-soil-grass-ruinedwall/**
+            ${{ runner.temp }}/eldoria-ground-ruin-v2.log
+            ${{ runner.temp }}/eldoria-ground-ruin-v2.err
+          retention-days: 30
+          if-no-files-found: warn
