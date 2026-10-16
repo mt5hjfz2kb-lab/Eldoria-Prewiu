@@ -1,0 +1,56 @@
+{
+  "schema": "eldoria.bastion1.native_unity_ab_independent_review.v1",
+  "run_id": 38899136195,
+  "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38899136195",
+  "artifact_id": 12045579490,
+  "engine": "Unity 6000.3.23f1",
+  "reviewed_from": "genuine native Unity before/after PNG downloaded and inspected 2026-10-16",
+  "selection_manifest": "MODULAR63_SELECTED_VERSIONS_20261016.json",
+  "camera_locked": true,
+  "shadow_profile_same": true,
+  "source_scene_unchanged": true,
+  "gameplay_changed": false,
+  "new_3d_models": 0,
+  "placements_verified": [
+    "PineReviewed0:grounded",
+    "PineReviewed1:grounded",
+    "ScannedCliffReviewed0:grounded"
+  ],
+  "pixel_change_for_diagnostic_only": {
+    "landscape": {
+      "width": 1440,
+      "height": 1000,
+      "mean_absolute_rgb": 0.11333,
+      "fraction_with_any_rgb_delta_gt_10": 0.00345347
+    },
+    "mobile": {
+      "width": 780,
+      "height": 520,
+      "mean_absolute_rgb": 0.10912,
+      "fraction_with_any_rgb_delta_gt_10": 0.00337032
+    },
+    "portrait": {
+      "width": 390,
+      "height": 844,
+      "mean_absolute_rgb": 0.04369,
+      "fraction_with_any_rgb_delta_gt_10": 0.00133066
+    }
+  },
+  "review": {
+    "classification": "ART_REJECTED_PLACEMENT_ONLY",
+    "asset_source_quality_unchanged": "provisional, not certified",
+    "summary": "The two reused pine instances and neutral scanned cliff are peripheral and nearly invisible at the actual strategic camera. Their placement does not materially improve the original large dark courtyard, squared cliff silhouettes, or distant backdrop relative to the supplied reference.",
+    "primary_visible_failures": [
+      "dominant flat/dark terrain remains",
+      "cliff-cut silhouette still blocky and unresolved",
+      "existing perimeter trees mask new pines",
+      "distant background remains faceted/no atmosphere",
+      "castle frontage still lacks consistent architectural finish"
+    ],
+    "art_approved": false,
+    "scene_8_out_of_10_claim": false,
+    "recommendation": "Preserve original gameplay/native scene, reject these three trial placements as an artistic change. Test Unity-only terrain material and light intervention separately, then revise high-screen-area architecture and cliff composition using only existing artist assets. Compare identical camera before/after and require independent judgment."
+  },
+  "publication_allowed": false,
+  "paid_euros": 0
+}
