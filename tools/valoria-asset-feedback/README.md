@@ -28,4 +28,31 @@ Candidate example:
 ```
 For a module with corrections, provide one `decisions` entry per correction: `{"id":"...", "disposition":"scene_only | preserved_assembly | applied | pending_review", "evidence_url":"https://...", "validation_ab_url":"https://... for applied"}`. `pending_review` means artist may keep iterating but **must not mark ready_for_unity**. An approved Unity review additionally records `unity` with `same_camera=true`, exact `run_id`, `artifact_id`, `before_url`, `after_url`, `art_approved=false` or `art_approved=true` with visual_review=PASS; the guard verifies *provenance metadata*, not aesthetic judgment.
 
-**Integration into both working branches (not automatic merely from a GitHub issue):** at the next version selection in `art/valoria-63-individual-quality-uplift-20261015`, artist must import current `main:tools/valoria-asset-feedback` (not stale own branch), generate one candidate JSON per changed GLB, call `check artist` before selecting a new best. At the next Unity selection in `integration/valoria-bastion1-player-scene-20261012`, owner must import same current main registry, call `check unity` per imported candidate with pinned SHA and native A/B evidence before declaring adoption. Missing/unacknowledged corrections must fail the gate. When new defects are confirmed, add unique correction to registry and append ID only to its asset; never rewrite Blender originals based on scene-only feedback. This bridge is independent of the running Windows runner, no paid services, and must honor active owners.
+## Deployed workstream gates — 2026-10-16
+
+**Both active workstreams now read the canonical `main` registry at execution time**, not stale branch copies. This closes the previous gap where Bastion I code and Blender asset upgrades could silently ignore each other's recorded failures.
+
+1. Artist branch `art/valoria-63-individual-quality-uplift-20261015`: its original `.github/workflows/valoria-63-individual-quality.yml` now has an **Ubuntu feedback preflight before the Windows/Blender job**. On a successful 63-asset render it has an additional Ubuntu artifact receipt gate verifying **63 GLBs by hash and both PNG views** for each, using the latest `main` registry. A separate light runner workflow `.github/workflows/valoria-63-feedback-preflight.yml` certifies the owner's current acknowledgment file without launching Blender.
+2. Bastion I branch `integration/valoria-bastion1-player-scene-20261012`: its existing `.github/workflows/valoria-bastion1-modular63-unity-review.yml` now blocks the Windows/Unity stage unless the **8 selected SHA-256s and all current feedback** agree. The postflight runs again against current `main` and checks actual native A/B image files. `.github/workflows/valoria-bastion1-feedback-preflight.yml` separately tests the owner's acknowledgment on Ubuntu.
+3. Owner-specific append-only review files are **not** global corrections, and must be revised deliberately:
+   - Artist: `docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json`
+   - Unity: `docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json`
+4. Each acknowledgment pins a **Git blob SHA-1 of the actual authoring script** and every version selected for Unity. If a script changes, its document must be reviewed and its source hash refreshed; if an asset version changes, its corresponding SHA-256 in the selection/acknowledgment must match. If new corrections are added to `main:registry.json`, BOTH workstreams must acknowledge them before their next guarded production run.
+5. Corrections are typed per piece: `ASSET_GLOBAL` can only become `applied` with authentic A/B; `ASSEMBLY_CONTRACT` must be explicitly preserved; `SCENE_LOCAL` may not become an automatic Blender model-wide change. `pending_review` allows isolated *experiments* but **blocks promotion**, and a technical CI PASS never gives `ART_APPROVED`.
+
+**Evidence of connection**:
+- Central guard verified in [main feedback run](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38936619284).
+- Artist-side preflight [run](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38936564156).
+- Unity-side preflight [run](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38936577642).
+- Unit tests include intentional failures for a missing correction, globalized scene-local adjustment, altered GLB selection, unsupported promotion, and changed authoring source.
+
+**Known boundaries:** This is automated **coordination and rejection**, not an AI that diagnoses new model defects on its own. A Bastion owner discovering a new issue must write the verified correction under the appropriate single asset in canonical `registry.json` (and cross-reference [#78](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/78)); the next controlled production preflight will then fail closed until the artist and Unity workstreams explicitly evaluate it. Jobs already running before this change still use their own pinned workflow commit and do not retroactively gain gates. The feedback guard neither certifies aesthetics nor alters a GLB, Unity scene, gameplay, release target or paid resource.
+
+For an explicit recheck in a branch checkout, use the dedicated Ubuntu preflight workflow or:
+```bash
+node path/to/current/main/tools/valoria-asset-feedback/workstream-sync.mjs artist \
+  docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json '' \
+  path/to/current/main/tools/valoria-asset-feedback/registry.json \
+  path/to/current/main/tools/valoria-asset-feedback/asset-ids.json \
+  tools/valoria-modular-fortress/individual_quality_uplift.py
+```
