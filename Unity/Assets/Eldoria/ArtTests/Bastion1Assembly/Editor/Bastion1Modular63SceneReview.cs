@@ -271,22 +271,37 @@ namespace Eldoria.EditorTools
                Mathf.Abs(aggregate.max.x-oldBounds.max.x)>.075f)
                 throw new Exception("New modular wall does not cover historic wall span");
 
-            // End-tower socket: overlap the final bay INSIDE the tower footprint,
-            // like a real junction. Tower is never squashed into a planar prop.
+            // Choose the OUTBOARD socket from the actual historical gate centre.
+            // The old always-max-X rule put the kit tower on top of the existing
+            // defended gate tower for negative-X wings, an observed ART FAIL.
+            var gate=FindNode(original,"LowerGate");
+            var gateBounds=Bounds(gate.gameObject);
+            float wingDelta=oldBounds.center.x-gateBounds.center.x;
+            if(Mathf.Abs(wingDelta)<.25f)
+                throw new Exception("Unable to determine outboard tower socket from gate");
+            bool outboardNegativeX=wingDelta<0f;
             var watch=CopyOn(tower,replacement.transform,"BUILT_SHORT_SQUARE_WATCHTOWER");
             RebindNeutralLimestone(watch);
             var tb=Bounds(watch);
             float towerOverlap=Mathf.Min(.48f,tb.size.x*.12f);
-            Centre(watch,new Vector3(aggregate.max.x+tb.size.x*.5f-towerOverlap,
+            float outboardCentreX=outboardNegativeX
+                ? aggregate.min.x-tb.size.x*.5f+towerOverlap
+                : aggregate.max.x+tb.size.x*.5f-towerOverlap;
+            Centre(watch,new Vector3(outboardCentreX,
                 wallBase+tb.size.y*.5f,aggregate.center.z));
             tb=Bounds(watch);
+            float socketIntersection=outboardNegativeX
+                ? tb.max.x-aggregate.min.x : aggregate.max.x-tb.min.x;
+            float gateClearance=outboardNegativeX
+                ? gateBounds.min.x-tb.max.x : tb.min.x-gateBounds.max.x;
             if(tb.size.x<3f||tb.size.z<3f||tb.size.y<4f||
                Mathf.Abs(tb.min.y-wallBase)>.05f ||
-               tb.min.x>aggregate.max.x-.2f ||
-               Mathf.Abs(tb.center.z-aggregate.center.z)>.05f)
-                throw new Exception("Freestanding tower not properly socketed to masonry");
-            var gate=FindNode(original,"LowerGate");
-            var gateBounds=Bounds(gate.gameObject);
+               socketIntersection<.20f || socketIntersection>.6f ||
+               Mathf.Abs(tb.center.z-aggregate.center.z)>.05f ||
+               gateClearance<.15f)
+                throw new Exception("Kit tower is not connected outboard, or invades historic gate: socket="+
+                    socketIntersection+" gateClearance="+gateClearance);
+            notes.Add("OUTBOARD_TOWER_SOCKET_"+(outboardNegativeX?"MIN_X":"MAX_X"));
             float horizontalGap=Mathf.Max(0f,Mathf.Max(gateBounds.min.x-aggregate.max.x,
                 aggregate.min.x-gateBounds.max.x));
             float depthGap=Mathf.Max(0f,Mathf.Max(gateBounds.min.z-aggregate.max.z,
