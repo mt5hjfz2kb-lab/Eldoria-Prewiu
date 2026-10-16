@@ -29,4 +29,5 @@ jobs:
             docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json \
             'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json' \
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
-            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs
