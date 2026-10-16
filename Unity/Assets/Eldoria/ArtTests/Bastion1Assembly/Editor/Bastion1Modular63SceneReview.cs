@@ -48,35 +48,22 @@ namespace Eldoria.EditorTools
                 if (originalRoot == null) throw new Exception("Original bastion assembly missing");
                 var group = new GameObject("Modular63_VISUAL_CANDIDATE_NO_GAMEPLAY");
                 var evidence = new List<string>();
-                MakeGroundContactProbes(originalRoot);
-                try
-                {
-                    // No gate, wall, road or stairs replacement before their scale
-                    // and contact have been separately checked in Unity.
-                    var pine = await Import("pine_medium");
-                    var rock = await Import("cliff_rock_column");
-                    int pinePlaced = 0, rockPlaced = 0;
-                    foreach (var point in new[] {new Vector2(29f, -4f), new Vector2(-29f, -10f), new Vector2(30f, 14f)})
-                        if (pinePlaced < 2 && TryPlace(pine, point, 11f, group.transform,
-                            "PineReviewed" + pinePlaced, out var state))
-                        {
-                            pinePlaced++;
-                            evidence.Add(state);
-                        }
-                    foreach (var point in new[] {new Vector2(32f, -21f), new Vector2(-32f, 19f), new Vector2(32f, 5f)})
-                        if (rockPlaced < 1 && TryPlace(rock, point, 7f, group.transform,
-                            "ScannedCliffReviewed" + rockPlaced, out var state))
-                        {
-                            rockPlaced++;
-                            evidence.Add(state);
-                        }
-                    if (pinePlaced < 1 || rockPlaced < 1)
-                        throw new Exception("No valid grass contact for pine or rock: no model was promoted");
-                    // The imported templates are never renderable scene instances.
-                    UnityEngine.Object.DestroyImmediate(pine);
-                    UnityEngine.Object.DestroyImmediate(rock);
-                }
-                finally { RemoveGroundContactProbes(); }
+                // STRUCTURAL FIRST: wall and gate elements are in the original
+                // main composition, not scattered props at the image corners.
+                // Historical renderer, trigger and collider ownership stays intact.
+                var wall=await Import("wall_panel_regular_4m");
+                var ironLarge=await Import("portcullis_large");
+                var ironSmall=await Import("portcullis_small");
+                var oak=await Import("reinforced_oak_gate");
+                var cliff=await Import("cliff_rock_column");
+                foreach(var wing in new[]{"UpperLeftWing","UpperRightWing","LowerGateRightWing"})
+                    MountWallFace(originalRoot,wall,group.transform,wing,evidence);
+                GateLower(originalRoot,ironLarge,oak,group.transform,evidence);
+                GateUpper(ironSmall,group.transform,evidence);
+                FrontCliff(cliff,group.transform,evidence);
+                foreach(var unused in new[]{wall,ironLarge,ironSmall,oak,cliff})
+                    UnityEngine.Object.DestroyImmediate(unused);
+                if(evidence.Count<12)throw new Exception("Structural main-composition coverage insufficient: "+evidence.Count);
                 CollectOwnedAssets(group);
                 PersistOwnedAssets();
                 if (!EditorSceneManager.SaveScene(scene, Candidate, true))
@@ -172,6 +159,105 @@ namespace Eldoria.EditorTools
             Bastion1MaterialBindings.Apply(root, importer, file);
             root.SetActive(false);
             return root;
+        }
+
+
+        // Always target true historical Unity renderer bounds, rather than
+        // blindly guessing the size/position of a new modular asset.
+        static Transform FindNode(GameObject original,string name)
+        {
+            foreach(var tr in original.GetComponentsInChildren<Transform>(true))
+                if(tr.name==name)return tr;
+            throw new Exception("Existing historic node is missing: "+name);
+        }
+        static GameObject CopyOn(GameObject template,Transform parent,string name)
+        {
+            var copy=UnityEngine.Object.Instantiate(template,parent);
+            copy.name=name; copy.SetActive(true); return copy;
+        }
+        static void MatchWidth(GameObject copy,float metres)
+        {
+            var bounds=Bounds(copy);
+            if(bounds.size.x<.01f)throw new Exception("Invalid source width "+copy.name);
+            float s=metres/bounds.size.x;
+            if(s<.2f || s>4.5f)throw new Exception("Implausible structural module scale "+copy.name+" "+s);
+            copy.transform.localScale*=s;
+        }
+        static void Centre(GameObject copy,Vector3 target)
+        {
+            copy.transform.position+=target-Bounds(copy).center;
+        }
+        static void MountWallFace(GameObject original,GameObject module,Transform parent,
+                                  string wing,List<string> notes)
+        {
+            var node=FindNode(original,wing);
+            var bounds=Bounds(node.gameObject);
+            if(bounds.size.x<3.4f || bounds.size.x>15f || bounds.size.y<1.5f)
+                throw new Exception("Unexpected historic masonry bounds: "+wing+" "+bounds);
+            int segments=Mathf.CeilToInt(bounds.size.x/3.8f);
+            if(segments<1 || segments>4)throw new Exception("Invalid authored wall-module count");
+            float width=bounds.size.x/segments;
+            for(int i=0;i<segments;i++)
+            {
+                var copy=CopyOn(module,parent,"NEW_V6_WALL_"+wing+"_"+i);
+                MatchWidth(copy,width);
+                var b=Bounds(copy);
+                // Original crenellations stay above the new front-facing photo
+                // masonry, preserving silhouette and all gameplay colliders.
+                Vector3 at=new Vector3(bounds.min.x+(i+.5f)*width,
+                    bounds.min.y+b.size.y*.5f,
+                    bounds.max.z+b.size.z*.5f+.065f);
+                Centre(copy,at);
+                notes.Add("authored_wall_V6_"+wing+"_"+i);
+            }
+        }
+        static Bounds OldGateLeaves(GameObject original)
+        {
+            var gate=FindNode(original,"LowerGate");
+            foreach(var renderer in gate.GetComponentsInChildren<Renderer>(true))
+                if(renderer.name.StartsWith("hero_gate_v3_material_group_11",StringComparison.Ordinal))
+                    return renderer.bounds;
+            throw new Exception("Historic lower gate oak-reference bounds missing");
+        }
+        static void GateLower(GameObject original,GameObject iron,GameObject oak,
+                              Transform parent,List<string> notes)
+        {
+            var opening=OldGateLeaves(original);
+            if(opening.size.x<1.8f || opening.size.x>6.0f)
+                throw new Exception("Historical gate protection envelope mismatch");
+            var newIron=CopyOn(iron,parent,"NEW_CHARCOAL_LARGE_GATE_RASTRILLO");
+            MatchWidth(newIron,Mathf.Min(opening.size.x,3.1f));
+            Centre(newIron,new Vector3(opening.center.x,opening.min.y+1.6f,opening.max.z+.45f));
+            notes.Add("authored_black_iron_lower_rastrillo");
+            var newOak=CopyOn(oak,parent,"NEW_AUTHENTIC_OAK_GATE_V1");
+            MatchWidth(newOak,2.45f);
+            Centre(newOak,new Vector3(opening.center.x,opening.min.y+1.55f,opening.center.z-.16f));
+            notes.Add("authored_oak_lower_gate_V1");
+        }
+        static void GateUpper(GameObject iron,Transform parent,List<string> notes)
+        {
+            var newIron=CopyOn(iron,parent,"NEW_CHARCOAL_SMALL_UPPER_RASTRILLO");
+            MatchWidth(newIron,2.6f);
+            // Exact upper citadel portal location is pinned in the original GLB;
+            // use visible front, not the blocked central transit corridor.
+            Centre(newIron,new Vector3(0f,5.2f,-21.0f));
+            notes.Add("authored_black_iron_upper_rastrillo");
+        }
+        static void FrontCliff(GameObject cliff,Transform parent,List<string> notes)
+        {
+            var points=new[]{new Vector3(-19,-6,26),new Vector3(-12,-7,27),
+                             new Vector3(12,-7,27),new Vector3(19,-6,26)};
+            for(int i=0;i<points.Length;i++)
+            {
+                var copy=CopyOn(cliff,parent,"NEW_NEUTRAL_PHOTO_SCAN_FRONT_SCARP_"+i);
+                var b=Bounds(copy);
+                if(b.size.y<.1f)throw new Exception("Scanned geological asset height invalid");
+                float s=5.4f/b.size.y;
+                if(s<.25f||s>3f)throw new Exception("Scanned cliff scale unacceptable");
+                copy.transform.localScale*=s;
+                Centre(copy,points[i]);
+                notes.Add("real_scanned_cliff_front_"+i);
+            }
         }
 
         static bool TryPlace(GameObject original, Vector2 anchor, float desiredHeight, Transform parent,
