@@ -62,7 +62,7 @@ for idx,n in enumerate(names):
   camera(mesh);shoot(out/'before'/(n+'.png'))
   lo,hi=bbox(mesh);center=(lo+hi)*.5;d=hi-lo
   rng=random.Random(543+idx*18)
-  blades=46 if idx==0 else 55
+  blades=70 if idx==0 else 78
   vertices=[];faces=[];material_idx=[]
   for k in range(blades):
    angle=rng.uniform(0,2*math.pi)
@@ -70,9 +70,9 @@ for idx,n in enumerate(names):
    x=float(center.x)+math.cos(angle)*rbase
    y=float(center.y)+math.sin(angle)*rbase
    z=float(lo.z)
-   length=float(d.z)*rng.uniform(.55,.98)
+   length=float(d.z)*rng.uniform(.47,.99)
    tilt=rng.uniform(.20,.48)*length
-   w=rng.uniform(.014,.031)
+   w=rng.uniform(.007,.016)
    direction=angle+rng.uniform(-.6,.6)
    origin=len(vertices)
    segments=6
@@ -80,7 +80,7 @@ for idx,n in enumerate(names):
     u=t/segments
     tip=tilt*(u**1.6)
     dx=math.cos(direction)*tip;dy=math.sin(direction)*tip
-    ww=w*max(.04,1-u**1.35)
+    ww=w*max(.015,1-u**1.7)
     vertices.extend([(x+dx-ww*math.sin(direction),y+dy+ww*math.cos(direction),z+length*u),
                      (x+dx+ww*math.sin(direction),y+dy-ww*math.cos(direction),z+length*u)])
    for t in range(segments):
