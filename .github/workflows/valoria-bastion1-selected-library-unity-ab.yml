@@ -1,0 +1,173 @@
+name: "Bastion I | selected 63-library GLBs | isolated Unity A/B"
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths:
+      - '.github/workflows/valoria-bastion1-selected-library-unity-ab.yml'
+      - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1SelectedAssetOverlay.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ReferenceCapture.cs'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-bastion1-selected-library-native-unity-exclusive
+  cancel-in-progress: false
+jobs:
+  syntax-and-frozen-input-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prevent creative model generation and verify all immutables
+        shell: bash
+        run: |
+          set -eu
+          test -f Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1SelectedAssetOverlay.cs
+          grep -F 'BASTION1_LIBRARY_PHASE' Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1SelectedAssetOverlay.cs
+          grep -F 'await Bastion1SelectedAssetOverlay.Apply(root);' Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ReferenceCapture.cs
+          grep -F 'Sha256' Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1SelectedAssetOverlay.cs
+          echo 'STATIC_SCOPE_PASS: existing SHA-pinned GLB imports only, no modelling, no publication'
+  native-unity-before-after:
+    needs: syntax-and-frozen-input-contract
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - name: Source checkout
+        uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Resolve installed Python and Unity without starting Blender
+        shell: powershell
+        run: |
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Configured Unity 6000.3.23f1 executable missing'}
+          $python=Get-Command python.exe -ErrorAction SilentlyContinue
+          if(-not $python){
+            $dirs=@(Get-ChildItem 'C:\Program Files\Blender Foundation' -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending)
+            foreach($dir in $dirs){
+              $py=Get-ChildItem $dir.FullName -Recurse -Filter python.exe -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+              if($py){break}
+            }
+            if(-not $py){throw 'Installed Python interpreter not found'}
+            "BASTION_PYTHON=$py"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          }else{
+            "BASTION_PYTHON=$($python.Source)"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          }
+          Write-Host "UNITY_EDITOR=$env:UNITY_EDITOR_PATH"
+      - name: Recover exact historical Bastion I player scene source (not rebuild)
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38419031491
+          name: bastion1-player-integration-38419031491
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1PreviousPlayer
+      - name: Recover selected verified medium pine GLB (not latest by default)
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38877895047
+          name: valoria-one-full-medium-pine-38877895047
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1SelectedPine
+      - name: Recover selected verified photographic stone-chip GLB
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38878576444
+          name: valoria-scanned-sibling-real-chip-38878576444
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/Bastion1SelectedChip
+      - name: Stage only existing GLBs and validate immutable identities
+        shell: powershell
+        run: |
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedSource'
+          $selected=Join-Path $dest 'SelectedAssets'
+          New-Item -ItemType Directory -Force $selected | Out-Null
+          $source=@(Get-ChildItem (Join-Path $env:RUNNER_TEMP 'Bastion1PreviousPlayer') -Recurse -Filter 'Bastion1ReferenceAssembly.glb' -File | Where-Object {$_.Directory.Name -eq 'Bastion1ReferenceSource'})
+          if($source.Count -ne 1){throw "Historical player GLB source ambiguous: $($source.Count)"}
+          $items=@(
+            @($source[0].FullName,(Join-Path $dest 'Bastion1ReferenceAssembly.glb'),'b0a5a5314591bba54a4eb85a5f9acddf4440b325873500f097298b4fbb71d5ea'),
+            @((Join-Path $env:GITHUB_WORKSPACE 'art-source/valoria/production/road-family-v1/RoadFamilyV1.glb'),(Join-Path $dest 'RoadFamilyV1.glb'),'683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67')
+          )
+          foreach($number in 0..2){
+            $n="SawmillState$($number)V1"
+            $src=Join-Path $env:GITHUB_WORKSPACE "art-source/valoria/production/sawmill-family-v1/state$number/$n.glb"
+            $items+=,@($src,(Join-Path $dest "$n.glb"),'')
+          }
+          $items+=,@((Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb'),(Join-Path $dest 'Valoria_Cuartel_AP2_v1.glb'),'')
+          $pine=@(Get-ChildItem (Join-Path $env:RUNNER_TEMP 'Bastion1SelectedPine') -Recurse -Filter 'pine_medium.glb' -File)
+          $chip=@(Get-ChildItem (Join-Path $env:RUNNER_TEMP 'Bastion1SelectedChip') -Recurse -Filter 'cliff_stone_chip.glb' -File)
+          if($pine.Count -ne 1 -or $chip.Count -ne 1){throw 'Artist source artifact ambiguous or missing'}
+          $items+=,@($pine[0].FullName,(Join-Path $selected 'pine_medium.glb'),'003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e')
+          $items+=,@($chip[0].FullName,(Join-Path $selected 'cliff_stone_chip.glb'),'95c2f4e809a1c8c466f29f2d83cff2c3229956b5c772bdd8be21ac317de22fc5')
+          foreach($item in $items){
+            $src=[string]$item[0];$dst=[string]$item[1];$expected=[string]$item[2]
+            if(-not(Test-Path $src)){throw "Existing asset not found $src"}
+            $actual=(Get-FileHash -Algorithm SHA256 $src).Hash.ToLowerInvariant()
+            if($expected -and $expected -ne $actual){throw "SHA mismatch: $src"}
+            Copy-Item $src $dst -Force
+            & $env:BASTION_PYTHON tools/valoria-bastion1-assembly/materials.py $dst
+            if($LASTEXITCODE -ne 0){throw "Material metadata generation failed $dst"}
+            Write-Host "STAGED_EXISTING_ASSET $dst sha256=$actual"
+          }
+          $proof=@{library_source_run=38813966671;original_player_run=38419031491;selected_pine_run=38877895047;selected_chip_run=38878576444;models_created=0;asset_visual_approval=$false}
+          $proof | ConvertTo-Json | Set-Content -Encoding UTF8 (Join-Path $env:RUNNER_TEMP 'Bastion1-staged-source-proof.json')
+      - name: Restore incomplete glTFast PackageCache only if needed
+        shell: powershell
+        run: |
+          $cache=Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/PackageCache'
+          foreach($pkg in @(Get-ChildItem $cache -Directory -Filter 'com.unity.cloud.gltfast@*' -ErrorAction SilentlyContinue)){
+            if(-not @(Get-ChildItem (Join-Path $pkg.FullName 'Runtime/Shader') -File -Filter 'glTF-pbrMetallicRoughness*.shadergraph' -ErrorAction SilentlyContinue).Count){
+              Remove-Item $pkg.FullName -Recurse -Force
+              Write-Host 'Re-resolve corrupted local glTFast shader cache'
+            }
+          }
+      - name: Render untouched historical source in native Unity
+        shell: powershell
+        run: |
+          $env:BASTION1_LIBRARY_PHASE='off'
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-selected-library-before-unity.log'
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList @('-batchmode','-force-d3d11','-quit','-projectPath',(Join-Path $env:GITHUB_WORKSPACE 'Unity'),'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log) -PassThru -Wait
+          Get-Content $log -Tail 75 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'BASTION1_REFERENCE_CAPTURE_COMPLETE' -Quiet)){throw "Native BEFORE failed: $($p.ExitCode)"}
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Bastion1SelectedLibraryAB/before'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'Unity/Bastion1ReferenceCaptures/*') $dest -Force
+      - name: Render 2 existing asset types, 4 grounded instances, same real Unity camera
+        shell: powershell
+        run: |
+          $env:BASTION1_LIBRARY_PHASE='after'
+          $log=Join-Path $env:RUNNER_TEMP 'Bastion1-selected-library-after-unity.log'
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList @('-batchmode','-force-d3d11','-quit','-projectPath',(Join-Path $env:GITHUB_WORKSPACE 'Unity'),'-executeMethod','Eldoria.EditorTools.Bastion1ReferenceCapture.Capture','-logFile',$log) -PassThru -Wait
+          Get-Content $log -Tail 80 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'BASTION1_SELECTED_ARTIST_GLBS_IMPORTED count=4' -Quiet) -or -not(Select-String -Path $log -Pattern 'BASTION1_PLAYER_SCENE_COMPLETE' -Quiet)){throw "Native AFTER failed: $($p.ExitCode)"}
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'Bastion1SelectedLibraryAB/after'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'Unity/Bastion1ReferenceCaptures/*') $dest -Force
+      - name: Require exact same camera and two original PNGs, never self-certify art
+        shell: powershell
+        run: |
+          $root=Join-Path $env:GITHUB_WORKSPACE 'Bastion1SelectedLibraryAB'
+          foreach($name in @('bastion1-unity-landscape.png','bastion1-player-initial.png','bastion1-unity-mobile-landscape.png')){
+            $a=Join-Path $root "before/$name";$b=Join-Path $root "after/$name"
+            if(-not(Test-Path $a) -or -not(Test-Path $b)){throw "Missing authentic paired frame: $name"}
+            if((Get-Item $a).Length -lt 25000 -or (Get-Item $b).Length -lt 25000){throw "Too small screenshot: $name"}
+            $cam="$name.camera.json"
+            $before=(Get-Content (Join-Path $root "before/$cam") -Raw | ConvertFrom-Json)
+            $after=(Get-Content (Join-Path $root "after/$cam") -Raw | ConvertFrom-Json)
+            foreach($k in @('position','rotation','orthographicSize','width','height','colorSpace')){
+              if(($before.$k|ConvertTo-Json -Compress) -ne ($after.$k|ConvertTo-Json -Compress)){throw "Camera drift in $name $k"}
+            }
+            if((Get-FileHash $a).Hash -eq (Get-FileHash $b).Hash){throw "Imported assets invisible from player camera: $name"}
+          }
+          Write-Host 'BASTION1_NATIVE_UNITY_AB_EVIDENCE_PASS art_approved=false build_published=false gameplay_must_be_reverified=true'
+      - name: Upload authentic A/B, scene evidence and logs even when rejected
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion1-selected-library-unity-ab-${{ github.run_id }}
+          path: |
+            Bastion1SelectedLibraryAB/**
+            ${{ runner.temp }}/Bastion1-staged-source-proof.json
+            ${{ runner.temp }}/Bastion1-selected-library-before-unity.log
+            ${{ runner.temp }}/Bastion1-selected-library-after-unity.log
+          if-no-files-found: warn
+          retention-days: 30
