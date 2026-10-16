@@ -1,0 +1,16 @@
+{
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity",
+    "source_sha256": "5ca919b52a979fd6ad6b5a6a35acc8da2ab07236d45f0a75dd0e1d48a81741c1",
+    "status": "UNITY_NATIVE_TERRAIN_GEOMETRY_PASS",
+    "art_status": "REVIEW_REQUIRED",
+    "gameplay_status": "NOT_CERTIFIED",
+    "camera_authority": "LEGACY_QA_NOT_SHARP",
+    "original_colliders_retained": true,
+    "original_plots_retained": true,
+    "bridge_variant_retained": true,
+    "public_scene_modified": false,
+    "source_triangles": 16164,
+    "source_renderers": 5,
+    "bridge_rays": 5,
+    "stair_rays": 12
+}

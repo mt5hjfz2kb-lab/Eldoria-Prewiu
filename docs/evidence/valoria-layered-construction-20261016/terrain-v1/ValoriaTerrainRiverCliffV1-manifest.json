@@ -1,0 +1,31 @@
+{
+  "source_certified_layout": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json",
+  "layout_footprints": 22,
+  "stair_steps_protected": 12,
+  "unity_route_and_colliders_unmodified": true,
+  "mesh_count": 5,
+  "triangles": 16164,
+  "source_blend_sha256": "e7df10a075e3b0c08a73952d91f75cd8e889d8fe6b18c1e3416a8427afb9d50f",
+  "export_glb_sha256": "5ca919b52a979fd6ad6b5a6a35acc8da2ab07236d45f0a75dd0e1d48a81741c1",
+  "world_unity_x_extent": [
+    -32,
+    32
+  ],
+  "world_unity_z_extent": [
+    -29,
+    30
+  ],
+  "river_z_center": -16,
+  "river_water_y": -1.87,
+  "upper_landing_y": 2.55,
+  "min_mesh_y": -2.474904775619507,
+  "max_mesh_y": 2.619655132293701,
+  "classification": "VISUAL TERRAIN SOURCE CANDIDATE — not ART_APPROVED nor runtime gameplay certified",
+  "source_objects": [
+    "VALORIA_LOWER_REAL_TERRAIN_NATIVE_HEIGHTFIELD",
+    "VALORIA_LOWER_TO_UPPER_FACETED_STONE_FLANK_-1",
+    "VALORIA_LOWER_TO_UPPER_FACETED_STONE_FLANK_1",
+    "VALORIA_RIVER_CONTINUOUS_RIPPLED_WATER",
+    "VALORIA_RIVERBANK_AUTHOR_ROCKS"
+  ]
+}
