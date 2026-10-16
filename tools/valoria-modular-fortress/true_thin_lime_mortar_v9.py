@@ -74,19 +74,16 @@ im_candidates=[i for i in bpy.data.images if 'mortar' in i.name.lower() or 'plas
 mat=bpy.data.materials.new('Valoria_CC0_inspired_aged_matte_lime_mortar')
 mat.use_nodes=True
 nd=mat.node_tree.nodes;nd.clear();lk=mat.node_tree.links
-noise=nd.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=160
-noise.inputs['Detail'].default_value=3
-ramp=nd.new('ShaderNodeValToRGB')
-ramp.color_ramp.elements[0].position=.27
-ramp.color_ramp.elements[0].color=(.21,.19,.165,1)
-ramp.color_ramp.elements[1].position=.79
-ramp.color_ramp.elements[1].color=(.41,.365,.31,1)
+atlaspath=src.parent/'atlas'/'real_photo_lime_mortar_aged_muted_1k.png'
+if not atlaspath.is_file():raise RuntimeError('CC0 corrected lime albedo source missing')
+tex=nd.new('ShaderNodeTexImage')
+tex.image=bpy.data.images.load(str(atlaspath),check_existing=True)
+tex.extension='REPEAT'
 bs=nd.new('ShaderNodeBsdfPrincipled');bs.inputs['Roughness'].default_value=.99
-lk.new(noise.outputs['Fac'],ramp.inputs['Fac'])
-lk.new(ramp.outputs['Color'],bs.inputs['Base Color'])
-bump=nd.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.25
-bump.inputs['Distance'].default_value=.007
-lk.new(noise.outputs['Fac'],bump.inputs['Height'])
+lk.new(tex.outputs['Color'],bs.inputs['Base Color'])
+bump=nd.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.19
+bump.inputs['Distance'].default_value=.002
+lk.new(tex.outputs['Color'],bump.inputs['Height'])
 lk.new(bump.outputs['Normal'],bs.inputs['Normal'])
 outnode=nd.new('ShaderNodeOutputMaterial')
 lk.new(bs.outputs['BSDF'],outnode.inputs['Surface'])
@@ -117,7 +114,7 @@ for k in range(43):
 shoot(out/'after'/'mortar_joint_recess.png')
 cam.location=Vector((float(lo.x)+W*.5,-1.2,.48))
 cam.rotation_euler=(Vector((float(lo.x)+W*.5,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()
-cd.ortho_scale=1.75
+cd.ortho_scale=.65
 shoot(out/'after'/'mortar_joint_recess_macro.png')
 bpy.ops.object.select_all(action='DESELECT')
 for o in details:o.select_set(True)
@@ -131,6 +128,6 @@ report={
  'length_m':W,'embedded_grit':len(details)-1,'source_rejection':'Old model was a 38cm high masonry photo plate, not a mortar line.',
  'modular_use':'Reusable narrow recessed joint between hand-dressed stones',
  'no_scene':True,'art_approved':False,'unity_approved':False,
- 'constraint':'Node noise must be baked or ported to Unity Shader Graph; do not promote as finalized PBR GLB on material alone.'}
+ 'constraint':'Photo albedo is embedded in GLB; roughness and stone contact still need Unity validation.'}
 (out/'reports'/'mortar_geometry_redefinition_v9.json').write_text(json.dumps(report,indent=2))
 print('TRUE_THIN_MORTAR_LINE_NOT_BRICK_WALL',len(details),flush=True)
