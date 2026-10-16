@@ -1,0 +1,34 @@
+name: "[ART WOOD CC0] Genuine deeply weathered timber photographic texture"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-download-rough-timber-cc0.yml'
+      - 'tools/valoria-modular-fortress/download_cc0_rough_wood_one.py'
+permissions:
+  contents: read
+jobs:
+  licensed-weathered-wood-atlas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download verified genuine Poly Haven CC0 1K aged deep grain and normal
+        run: python3 tools/valoria-modular-fortress/download_cc0_rough_wood_one.py "$RUNNER_TEMP/eldoria-weathered-wood-cc0"
+      - name: Verify public-domain diffuse source
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,os
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-weathered-wood-cc0'
+          d=json.loads((p/'source_manifest.json').read_text())
+          assert d['license']=='CC0 1.0' and d['cost_eur']==0
+          assert 'rough_wood' in d['maps']
+          assert any(k.lower()=='diffuse' for k in d['maps']['rough_wood']['maps'])
+          print('REAL_CC0_ROUGH_AGED_TIMBER_PHOTOGRAPHS_VERIFIED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-real-rough-wood-cc0-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-weathered-wood-cc0/**
+          if-no-files-found: error
+          retention-days: 30
