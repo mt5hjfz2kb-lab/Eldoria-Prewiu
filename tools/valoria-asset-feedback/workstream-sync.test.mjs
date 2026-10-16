@@ -10,7 +10,7 @@ const selected={
   {id:'tower_square_short',sha256:'a'.repeat(64),usage:'candidate_in_scene'},
   {id:'wall_panel_regular_4m',sha256:'b'.repeat(64),usage:'candidate_in_scene'}]};
 function plan(workstream){
- return {schema:'eldoria.valoria63.workstream-feedback.v1',workstream,phase:'EXPERIMENT_ONLY',art_approved:false,
+ return {schema:'eldoria.valoria63.workstream-feedback.v1',workstream,phase:'EXPERIMENT_ONLY',art_approved:false,source_file:'test/fixed-source',source_git_blob_sha1:'a'.repeat(40),
   source_asset_count:63,
   corrections:registry.corrections.map(c=>({id:c.id,rationale:'Record exact context and keep local adjustments local to each scene.',
    evidence_url:c.proof,disposition:c.scope==='SCENE_LOCAL'?'scene_only':c.scope==='ASSEMBLY_CONTRACT'?'preserved_assembly':'pending_review'})),
