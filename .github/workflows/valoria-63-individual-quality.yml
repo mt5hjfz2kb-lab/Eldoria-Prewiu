@@ -32,7 +32,8 @@ jobs:
             docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json \
             '' \
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
-            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
+            tools/valoria-modular-fortress/individual_quality_uplift.py
   upgrade-and-capture-each:
     needs: feedback-preflight
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -135,7 +136,8 @@ jobs:
             docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json \
             "$directory" \
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
-            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
+            tools/valoria-modular-fortress/individual_quality_uplift.py
       - name: Save feedback receipt without promoting art
         if: always()
         uses: actions/upload-artifact@v4
