@@ -1,0 +1,73 @@
+name: "[ART CUT STONE V9] Four authentic physically dressed independent arch wedges"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-arch-stonecutter-four-v9.yml'
+      - 'tools/valoria-modular-fortress/arch_stonecutter_four_v9.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-stonecutter-four-isolated-v9
+  cancel-in-progress: false
+jobs:
+  physically-finish-four-modular-arch-stones:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 95
+    steps:
+      - name: Find already installed Git and Blender
+        shell: powershell
+        id: deps
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-four-true-photocropped-single-stones-38902465156
+          run-id: 38902465156
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/v8-authentic-dressed-single-stone
+      - name: Native Blender 4 independent in-envelope cutstone pieces and matched PNGs
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'v8-authentic-dressed-single-stone\valoria-four-clean-real-sillars-v8\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-four-stonecutter-v9'
+          if(-not(Test-Path (Join-Path $old 'arch_keystone_major.glb'))){throw 'No source real stone found'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/arch_stonecutter_four_v9.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned stone sculpt code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-stonecutter-four-v9.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-stonecutter-four-v9.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-stonecutter-four-v9.err'
+          $process=Start-Process -FilePath "${{ steps.deps.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 105 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($process.ExitCode -ne 0){throw "Stone cutter Blender failed $($process.ExitCode)"}
+          foreach($dir in @('glb','before','after','atlas')){
+            if((Get-ChildItem (Join-Path $out $dir) -File).Count -ne 4){throw "Expected 4 files in $dir"}
+          }
+          $report=Get-Content (Join-Path $out 'reports\four_wedges_cutstone_v9.json') -Raw | ConvertFrom-Json
+          if(@($report.assets|Where-Object {$_.technical -ne 'PASS_PENDING_HUMAN_ART' -or !$_.within_previous_fit_envelope}).Count -ne 0){throw 'Fit or study failed'}
+      - name: Archive A/B GLBs, authentic PBR and stone envelopes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-four-individual-cutstone-v9-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-four-stonecutter-v9/**
+            ${{ runner.temp }}/eldoria-stonecutter-four-v9.log
+            ${{ runner.temp }}/eldoria-stonecutter-four-v9.err
+          retention-days: 30
+          if-no-files-found: warn
