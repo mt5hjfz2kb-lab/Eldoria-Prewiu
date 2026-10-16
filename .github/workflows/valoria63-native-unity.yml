@@ -72,6 +72,18 @@ jobs:
             throw '63-source coverage, native composition or art honesty gate failed'
           }
           Write-Host "VALORIA63_NATIVE_PERSISTENCE_AND_CAPTURE_PASS instances=$($report.module_instances)"
+      - name: Build gate art-direction microtest from real modular assets
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-gate-art-microtest.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.Valoria63.Editor.Valoria63CleanSceneBuilder.BuildGateQualityMicrotest','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if(Test-Path $log){Copy-Item $log docs/evidence/valoria63-clean-scene-20261016/gate-microtest-native.log;Get-Content $log -Tail 100}
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_GATE_MICROTEST_SAVED' -Quiet)){throw 'Art-direction microtest failed to build'}
+          foreach($file in @('gate-microtest-evidence.json','valoria-gate-microtest-wide.png','valoria-gate-microtest-detail.png')){
+            if(-not(Test-Path "docs/evidence/valoria63-clean-scene-20261016/$file")){throw "Missing real microtest $file"}
+          }
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_Gate_ArtDirection_Microtest.unity')){throw 'Microtest scene missing'}
       - name: Commit isolated scene and screenshots
         shell: powershell
         run: |
@@ -80,6 +92,8 @@ jobs:
           git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated
           git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity
           git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity.meta
+          git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_Gate_ArtDirection_Microtest.unity
+          git add -f Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_Gate_ArtDirection_Microtest.unity.meta
           git add -f docs/evidence/valoria63-clean-scene-20261016
           git diff --cached --quiet
           if($LASTEXITCODE -eq 0){throw 'Nothing to persist: native scene/captures already tracked or missing'}
