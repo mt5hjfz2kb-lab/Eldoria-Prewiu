@@ -1,0 +1,41 @@
+{
+  "schema": "eldoria.bastion1.native-unity-material-finish-independent-v1",
+  "date": "2026-10-16",
+  "native_run": 38904014713,
+  "artifact_id": 12047533042,
+  "source_branch": "integration/valoria-bastion1-player-scene-20261012",
+  "screenshot_before_sha256": "213e32bf4e26a44205540a05c26e5a5e7cbb2c9f1faba38227efc74f7f1fcad0",
+  "screenshot_after_sha256": "f5f164661c165a0e0722abf15ef89963b8de6667183154bc4ad9fffaaceb8520",
+  "camera": "locked native Unity 1440x1000/780x520/390x844 same settings",
+  "native_proof": {
+    "mesh_filters_preserved": 909,
+    "material_bindings_retinted": 95,
+    "material_variants_cloned": 18,
+    "new_models": 0,
+    "gameplay_code_modified": false,
+    "original_scene_saved_over": false
+  },
+  "pixel_change_is_not_quality": {
+    "landscape_fraction_rgb_delta_gt10": 0.7846041666666667,
+    "landscape_RGB_mae": 16.728546527777777,
+    "portrait_fraction_rgb_delta_gt10": 0.6971412079231984
+  },
+  "independent_inspection": {
+    "positives": [
+      "Warmer stone colors closer to an evening fortress",
+      "Grass and courtyard read with more ambient separation",
+      "Original arch/camera/road/progression preserved in an isolated native scene"
+    ],
+    "negatives": [
+      "Large dark cliff remains visually unresolved",
+      "Artificial straight topological edges and geometric valleys still dominate",
+      "Very schematic triangular distant hills/backdrop; far from approved reference",
+      "Brighter blue-gray backdrop exposes faceting; stone can appear too pink"
+    ],
+    "conclusion": "VISUAL_UPLIFT_CANDIDATE_ONLY",
+    "no_formal_art_pass": true,
+    "no_new_gameplay_qa": true,
+    "score_8_10_not_achieved": true
+  },
+  "next": "Prefer a selective, reversible same-camera material/normal finishing pass on existing distant mountain without producing new models; do not publish or merge until visual and player QA pass."
+}
