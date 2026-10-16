@@ -1,0 +1,32 @@
+name: "[CONTRACT] Valoria 63 unity live feedback preflight"
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths:
+      - 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json'
+      - '.github/workflows/valoria-bastion1-feedback-preflight.yml'
+      - 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json'
+permissions:
+  contents: read
+jobs:
+  check-current-feedback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: .valoria-feedback
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check current main registry and owner's explicit per-asset acknowledgments
+        shell: bash
+        run: |
+          node .valoria-feedback/tools/valoria-asset-feedback/workstream-sync.mjs unity \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACKNOWLEDGMENT.json \
+            'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json' \
+            .valoria-feedback/tools/valoria-asset-feedback/registry.json \
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
