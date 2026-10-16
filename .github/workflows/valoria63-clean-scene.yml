@@ -1,0 +1,80 @@
+name: "[VALORIA63] Isolated source manifest and 63 GLB validation"
+on:
+  push:
+    branches: [experiment/valoria-63-clean-composition-20261016]
+    paths:
+      - 'tools/valoria63-clean-scene/**'
+      - '.github/workflows/valoria63-clean-scene.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax and inventory contract
+        shell: bash
+        run: |
+          python3 -m py_compile tools/valoria63-clean-scene/stage_assets.py
+          python3 - <<'PY'
+          import sys
+          sys.path.insert(0,'tools/valoria63-clean-scene')
+          import stage_assets as s
+          assert len(s.NAMES)==63 and len(set(s.NAMES))==63
+          assert set(s.PREFERRED).issubset(set(s.NAMES))
+          assert len(s.PREFERRED)==6
+          print('VALORIA63_SOURCE_CONTRACT_PASS')
+          PY
+      - name: Restore archived immutable source pack
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38813966671
+          name: valoria-individual-quality-63-38813966671
+          github-token: ${{ github.token }}
+          path: archived/base63
+      - name: Stage preferred source candidates
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38858438155
+          name: valoria-one-authentic-gate-38858438155
+          github-token: ${{ github.token }}
+          path: archived/gate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38860266981
+          name: valoria-two-charcoal-gothic-gates-38860266981
+          github-token: ${{ github.token }}
+          path: archived/iron
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38865543613
+          name: valoria-4m-wall-artisan-capstone-v6-38865543613
+          github-token: ${{ github.token }}
+          path: archived/wall
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38877895047
+          name: valoria-one-full-medium-pine-38877895047
+          github-token: ${{ github.token }}
+          path: archived/pine
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38826318218
+          name: valoria-real-rock-02-palette-38826318218
+          github-token: ${{ github.token }}
+          path: archived/cliff
+      - name: Check 63 actual GLBs, hash pins, glTF mesh and material metadata
+        shell: bash
+        run: |
+          python3 tools/valoria63-clean-scene/stage_assets.py --artifact-root archived --project-root .
+      - name: Preserve reusable exact inputs for Unity scene assembly
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria63-clean-sources-${{ github.run_id }}
+          path: |
+            Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/**
+            docs/evidence/valoria63-clean-scene-20261016/source-manifest.json
+          if-no-files-found: error
+          retention-days: 30
