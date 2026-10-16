@@ -90,11 +90,13 @@
         ".github/workflows/valoria63-clean-scene.yml",
         "docs/evidence/valoria63-clean-scene-20261016/**"
       ],
-      "resources": [],
-      "dependency": "SceneBreakthrough owns windows-runner-heavy. Source-only preparation; do not dispatch native Unity while claim active. Stage original immutable 63 source pack from run 38813966671 with pinned preferable existing versions. Must separately claim runner after handoff.",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "dependency": "Native Unity build authorized for isolated 63 scene; sibling SceneBreakthrough completed and released runner; no modification of frozen production branches.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
-      "phase": "Preparation and asset source validation; Unity runner blocked by active sibling experiment"
+      "phase": "Native Unity execution pending, resource claimed"
     }
   ],
   "history": [
