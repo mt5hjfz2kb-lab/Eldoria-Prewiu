@@ -10,6 +10,7 @@ sources={
  "stairs":("art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",ref),
  "wall":("art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/wall_straight.glb",ref),
  "cabin":("art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb","HEAD"),
+ "cabinpainted":("Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb","HEAD"),
  "tower":("art-source/valoria/production/asset-family-v2/quality-v3/watchtower/watchtower.glb",ref),
  "camp":("art-source/valoria/production/camp-family-v1/CampFamilyV1.glb","HEAD")}
 manifest=[]

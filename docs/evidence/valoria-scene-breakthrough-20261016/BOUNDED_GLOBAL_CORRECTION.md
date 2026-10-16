@@ -1,0 +1,7 @@
+# Bounded full-frame correction
+
+Previous complete comparison: run 38950499990, artifact 12069366014, source fc248404, persisted 2a0e680. Both candidate variants were still visually insufficient; 2.5D worked technically after a separate-process culling-layer RGB bake. No ART_APPROVED.
+
+Current image-inspected causes: legacy cliff instances retained because actual names contain (Clone); distant model bases positioned far above the orthographic frame (incorrect sign reasoning in composition); oversized upper keep; bridge improperly fitted by world bbox rather than its original authored pivot. A/B images also exposed material changes lost at checkout after the interrupted process. These require root corrections before any verdict.
+
+One coherent correction: destroy all SOURCE_cliff* nodes and assert zero remain; correct actual distant placement with a frustum assertion; uniformly fit keep/portal by height; restore same cloned per-scene materials and dark forest value; reuse already owned completed textured cabin; use the original authored bridge's documented Y180/origin and real support. Preserve complete 3D playable foreground in both variants; verify exact foreground equality and actual camera matrices, portrait pan/read, native PNG hashes and portable .meta GUIDs. No new asset family/artist/memory system. Existing local Qwen vision is advisory peer review only, never an art approval or device measurement.

@@ -113,10 +113,11 @@ public static partial class SceneCapture {
    Debug.Log("BREAKTHROUGH_CAPTURE_COMPLETE");GraphicsSettings.defaultRenderPipeline=old;QualitySettings.renderPipeline=oldQ;EditorApplication.Exit(0);
   }catch(Exception e){Debug.LogException(e);GraphicsSettings.defaultRenderPipeline=old;QualitySettings.renderPipeline=oldQ;EditorApplication.Exit(1);}
  }
+ [Serializable] class FrameEvidence {public string source_commit,engine,pipeline,color_space;public int width,height;public float orthographic_size;public Vector3 position;public Quaternion rotation;public Matrix4x4 view,projection;}
  static void Capture(string name,int width,int height) {
    cam.aspect=(float)width/height;var rt=new RenderTexture(width,height,24){antiAliasing=4};var prior=RenderTexture.active;var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
    bool previous=ShaderUtil.allowAsyncCompilation;ShaderUtil.allowAsyncCompilation=false;
-   try{cam.targetTexture=rt;cam.Render();cam.Render();cam.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Evidence+"/"+name+".png",tex.EncodeToPNG());File.WriteAllBytes(Evidence+"/"+name+".jpg",tex.EncodeToJPG(82));}
+   try{cam.targetTexture=rt;cam.Render();cam.Render();cam.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Evidence+"/"+name+".png",tex.EncodeToPNG());File.WriteAllBytes(Evidence+"/"+name+".jpg",tex.EncodeToJPG(82));File.WriteAllText(Evidence+"/camera-"+name+".json",JsonUtility.ToJson(new FrameEvidence{source_commit=Environment.GetEnvironmentVariable("GITHUB_SHA"),engine=UnityEngine.Application.unityVersion,pipeline=GraphicsSettings.currentRenderPipeline!=null?GraphicsSettings.currentRenderPipeline.name:"Built-in",color_space=QualitySettings.activeColorSpace.ToString(),width=width,height=height,orthographic_size=cam.orthographicSize,position=cam.transform.position,rotation=cam.transform.rotation,view=cam.worldToCameraMatrix,projection=cam.projectionMatrix},true));}
    finally{ShaderUtil.allowAsyncCompilation=previous;cam.targetTexture=null;RenderTexture.active=prior;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(tex);}
  }
 }

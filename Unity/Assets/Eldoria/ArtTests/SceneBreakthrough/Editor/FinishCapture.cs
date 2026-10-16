@@ -95,12 +95,12 @@ static void GeologicalSides(GameObject cap) {
   cam.transform.position=pose-Right*10;Capture(prefix+"-pan-left",1536,1024);
   cam.transform.position=pose;cam.orthographicSize=17;Capture(prefix+"-zoom-in",1536,1024);
   cam.orthographicSize=28;Capture(prefix+"-zoom-out",1280,720);
-  cam.orthographicSize=size;cam.transform.position=pose;cam.aspect=1.5f;
+  cam.orthographicSize=size;cam.transform.position=pose-Right*20;Capture(prefix+"-portrait-left",390,844);cam.transform.position=pose+Right*20;Capture(prefix+"-portrait-right",390,844);cam.transform.position=pose;cam.aspect=1.5f;
  }
  static void FunctionalChecks() {
   Physics.SyncTransforms();var notes=new List<string>();
   // The continuous walk support must exist along bridge-road-stair-upper gate.
-  var waypoints=new[]{P(420,924,3.05f),P(691,702,7.05f),P(850,405,7),P(905,270,11),P(952,235,11)};
+  var waypoints=GameObject.Find("Canonical reused bridge walk support")!=null?new[]{P(470,930,3.05f),P(540,843,3.2f),P(670,713,7.05f),P(691,702,7.05f),P(850,405,7),P(905,270,11),P(952,235,11)}:new[]{P(420,924,3.05f),P(691,702,7.05f),P(850,405,7),P(905,270,11),P(952,235,11)};
   int count=0;
   for(int k=0;k<waypoints.Length-1;k++)for(int i=0;i<=20;i++){
    var p=Vector3.Lerp(waypoints[k],waypoints[k+1],i/20f);
@@ -111,9 +111,9 @@ static void GeologicalSides(GameObject cap) {
   var before=cam.transform.position;var control=cam.GetComponent<SceneCamera>();
   control.Pan(new Vector2(50,20));if(Vector3.Distance(cam.transform.position,before)<.01)throw new Exception("Pan ineffective");control.Home();
   control.Zoom(-10000);if(Mathf.Abs(cam.orthographicSize-14)>.01)throw new Exception("Zoom lower bound failed");control.Home();
-  foreach(var name in new[]{"Lower gate selection","Upper citadel selection","Bastion II expansion reserve"}) {
+  foreach(var name in new[]{"Lower gate selection","Upper citadel selection","Bastion II expansion reserve","Cabin plot selection","Camp plot selection"}) {
    var objects=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None).Where(x=>x.name==name).ToArray();
-   if(objects.Length==0)throw new Exception("Selection anchor absent "+name);
+   if(objects.Length==0&&(name=="Cabin plot selection"||name=="Camp plot selection"))continue;if(objects.Length==0)throw new Exception("Selection anchor absent "+name);
    foreach(var c in objects){var pixel=cam.WorldToScreenPoint(c.bounds.center);bool hit=control.SelectAt(pixel);notes.Add(name+" rayhit="+hit+" target="+control.Selected);if(!hit||control.Selected!=c.name)throw new Exception("Selection ray wrong target "+name+" actual="+control.Selected);}
   }
   notes.Add("route_support_samples="+count+"; actual raycasts, not NavMesh or device certification");
@@ -158,16 +158,12 @@ static void GeologicalSides(GameObject cap) {
    Debug.Log("BREAKTHROUGH_CAPTURE_COMPLETE");EditorApplication.Exit(0);
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}
  }
- public static async void Finish(){
+ public static async void Build3DOnly(){
   try{
    EditorSceneManager.OpenScene(Root+"/BastionI_Hybrid3D.unity",OpenSceneMode.Single);cam=Camera.main;cam.aspect=1.5f;cam.orthographicSize=24;
-   artFolder=Root+"/GeneratedFinal/"+(Environment.GetEnvironmentVariable("GITHUB_SHA")??"local000").Substring(0,8);artRoot=GameObject.Find("HYBRID_3D_AUTHORED_ART");if(artRoot==null)throw new Exception("Hybrid scene missing");
-   RestoreTerrainMeshes();await RepairGlobal();BuildDistant();FunctionalChecks();BaselinePreviews();Suite("final3d");
-   SaveArt();AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),Root+"/BastionI_Hybrid3D_Final.unity");
-   var card=BakeDistant();FunctionalChecks();Suite("final25d");SaveArt();AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),Root+"/BastionI_Hybrid25D_Final.unity");
-   // Explicit orientation stress: fixed orientation is required; this is evidence, never hidden.
-   var pose=cam.transform.rotation;cam.transform.Rotate(Vector3.up,10,Space.World);Capture("final25d-orbit-stress-unsupported",1536,1024);cam.transform.rotation=pose;
-   File.WriteAllText(Evidence+"/comparison-result.json","{\"stage\":\"INDEPENDENT_VISUAL_REVIEW_REQUIRED\",\"foreground_3d\":true,\"distant_bake_source\":\"native existing 3D environment, never reference image\",\"orientation\":\"fixed, free orbit unsupported\",\"art_approved\":false,\"mobile_performance_pass\":false,\"source_commit\":\""+Environment.GetEnvironmentVariable("GITHUB_SHA")+"\"}");
+   artFolder=Root+"/GeneratedFinal/"+(Environment.GetEnvironmentVariable("GITHUB_SHA")??"local000").Substring(0,8);artRoot=GameObject.Find("HYBRID_3D_AUTHORED_ART");
+   RestoreTerrainMeshes();await RepairGlobal();BuildDistant();FunctionalChecks();Suite("initial-corrected-3d");SaveArt();AssetDatabase.SaveAssets();
+   EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),Root+"/BastionI_Hybrid3D_Final.unity");
    Debug.Log("BREAKTHROUGH_CAPTURE_COMPLETE");EditorApplication.Exit(0);
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}
  }

@@ -14,6 +14,7 @@ public static partial class SceneCapture {
    if(cam==null)throw new Exception("Frozen orthographic player camera missing");
    foreach(var ui in UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))ui.gameObject.SetActive(false);
    Capture("frozen-authentic-main",1536,1024);
+   foreach(var t in UnityEngine.Object.FindObjectsByType<Transform>(UnityEngine.FindObjectsInactive.Include,FindObjectsSortMode.None))GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);
    var originalPose=cam.transform.position;float oldSize=cam.orthographicSize;var rotation=cam.transform.rotation;
    Transform gate=null;foreach(var t in UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))if(t.name=="LowerGate"){gate=t;break;}
    if(gate==null)throw new Exception("Frozen lower gate semantic node missing");

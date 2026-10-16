@@ -6,7 +6,7 @@ public sealed class SceneCamera:MonoBehaviour {
  Camera view;Vector3 home;Vector3 offset;float baseSize;Vector2 pressAt;string selected="";bool ownsPress;
  public string Selected=>selected;
  void Awake(){view=GetComponent<Camera>();home=transform.position;baseSize=view.orthographicSize;}
- public void Pan(Vector2 pixels){if(view==null)Awake();float unit=2*view.orthographicSize/Mathf.Max(1,view.pixelHeight);offset-=Vector3.ProjectOnPlane(transform.right*pixels.x+transform.up*pixels.y,Vector3.up)*unit;offset.x=Mathf.Clamp(offset.x,-12,12);offset.z=Mathf.Clamp(offset.z,-12,12);transform.position=home+offset;}
+ public void Pan(Vector2 pixels){if(view==null)Awake();float unit=2*view.orthographicSize/Mathf.Max(1,view.pixelHeight);offset-=Vector3.ProjectOnPlane(transform.right*pixels.x+transform.up*pixels.y,Vector3.up)*unit;offset.x=Mathf.Clamp(offset.x,-20,20);offset.z=Mathf.Clamp(offset.z,-20,20);transform.position=home+offset;}
  public void Zoom(float d){if(view==null)Awake();view.orthographicSize=Mathf.Clamp(view.orthographicSize+d,14,28);}
  public void Home(){if(view==null)Awake();offset=Vector3.zero;transform.position=home;view.orthographicSize=baseSize;}
  public bool SelectAt(Vector2 pixel){if(view==null)Awake();var hits=Physics.RaycastAll(view.ScreenPointToRay(pixel),400,~0,QueryTriggerInteraction.Collide);System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));foreach(var h in hits)if(h.collider.isTrigger&&(h.collider.name.Contains("selection")||h.collider.name.Contains("reserve"))){selected=h.collider.name;return true;}if(hits.Length>0){selected=hits[0].collider.name;return true;}selected="";return false;}

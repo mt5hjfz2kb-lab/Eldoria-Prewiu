@@ -55,7 +55,7 @@ public static partial class SceneCapture {
    var filter=o.GetComponent<MeshFilter>();if(filter==null)return;
    var mesh=UnityEngine.Object.Instantiate(filter.sharedMesh);mesh.name=o.name+" metric UV";
    var uv=new Vector2[mesh.vertexCount];var verts=mesh.vertices;
-   for(int i=0;i<uv.Length;i++){var p=o.transform.TransformPoint(verts[i]);uv[i]=new Vector2(p.x/tile,p.z/tile);}
+   for(int i=0;i<uv.Length;i++){var p=o.transform.TransformPoint(verts[i]);var normal=o.transform.TransformDirection(mesh.normals[i]);uv[i]=Mathf.Abs(normal.y)>.6f?new Vector2(p.x/tile,p.z/tile):Mathf.Abs(normal.x)>Mathf.Abs(normal.z)?new Vector2(p.z/tile,p.y/tile):new Vector2(p.x/tile,p.y/tile);}
    mesh.uv=uv;filter.sharedMesh=mesh;
  }
  static void PersistArt(UnityEngine.Object obj){
