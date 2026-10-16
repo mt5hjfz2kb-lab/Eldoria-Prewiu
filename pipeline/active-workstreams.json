@@ -101,28 +101,6 @@
         "integration/valoria-bastion1-player-scene-20261012",
         "art/valoria-63-individual-quality-uplift-20261015"
       ]
-    },
-    {
-      "id": "valoria-scene-method-breakthrough-20261016",
-      "title": "Clean Bastion I composition: hybrid 3D and bounded 2.5D comparison",
-      "owner": "chat-breakthrough-visual-20261016",
-      "branch": "experiment/valoria-scene-breakthrough-20261016",
-      "scope": [
-        "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**",
-        "tools/valoria-scene-breakthrough/**",
-        ".github/workflows/valoria-scene-breakthrough.yml",
-        "docs/evidence/valoria-scene-breakthrough-20261016/**"
-      ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-16T18:23:00Z",
-      "base_main_sha": "81b1f7622e1e77b142ae5b062138662dac4fe454",
-      "art_production_routing": "isolated-lookdev-only-no-promotion",
-      "authorization": "Explicit owner mission 2026-10-16. Protected Bastion and 63 workstreams remain paused. No publication, paid credits or source overwrite.",
-      "phase": "Recover frozen baseline and reference; build complete clean-scene blockout",
-      "next": "Create isolated experimental branch, scene and same-camera native captures."
     }
   ],
   "history": [
@@ -5157,6 +5135,36 @@
         "branch_retained_for_read_only_history": "prototype/reference-first-zero-budget-visual-pilot-20261015",
         "authorizations_revoked_for_future_pilot_work": true,
         "windows_runner_lease_released": true
+      }
+    },
+    {
+      "id": "valoria-scene-method-breakthrough-20261016",
+      "title": "Clean Bastion I composition: hybrid 3D and bounded 2.5D comparison",
+      "owner": "chat-breakthrough-visual-20261016",
+      "branch": "experiment/valoria-scene-breakthrough-20261016",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**",
+        "tools/valoria-scene-breakthrough/**",
+        ".github/workflows/valoria-scene-breakthrough.yml",
+        "docs/evidence/valoria-scene-breakthrough-20261016/**"
+      ],
+      "resources": [],
+      "status": "cancelled",
+      "claimed_at": "2026-10-16T18:23:00Z",
+      "base_main_sha": "81b1f7622e1e77b142ae5b062138662dac4fe454",
+      "art_production_routing": "isolated-lookdev-only-no-promotion",
+      "authorization": "Explicit owner mission 2026-10-16. Protected Bastion and 63 workstreams remain paused. No publication, paid credits or source overwrite.",
+      "phase": "Recover frozen baseline and reference; build complete clean-scene blockout",
+      "next": "Create isolated experimental branch, scene and same-camera native captures.",
+      "closed_at": "2026-10-16T18:28:00Z",
+      "terminal_phase": "DUPLICATE CONCURRENT SESSION — relinquished to earlier same-scope workstream",
+      "result": {
+        "canonical_experiment_branch": "experiment/valoria-scene-method-breakthrough-20261016",
+        "canonical_running_unity": 38946722924,
+        "duplicate_queued_run": 38946864201,
+        "duplicate_run_cancellation": "Required; connector has no cancel tool. Do not infer cancelled from registry.",
+        "source_preserved": "860db02c51966bb9903371bfb88fcaf8dde13160",
+        "no_art_approval": true
       }
     }
   ],
