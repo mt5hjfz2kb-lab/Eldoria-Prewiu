@@ -34,7 +34,7 @@ namespace Eldoria.Valoria63.Editor
     static Material limestone,soil,rock,water,grass,road;
     static Camera view;
     static int nativeCounter;
-    static string Repo=>Path.GetFullPath(Path.Combine(UnityEngine.UnityEngine.Application.dataPath,"..",".."));
+    static string Repo=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",".."));
     static string Evidence=>Path.Combine(Repo,"docs/evidence/valoria63-clean-scene-20261016");
 
     [MenuItem("Eldoria/Art/Build clean Valoria from 63 actual GLBs")]
@@ -80,6 +80,7 @@ namespace Eldoria.Valoria63.Editor
       if(unused.Length!=0)throw new Exception("Not all 63 sources in scene: "+String.Join(",",unused));
       int moduleCount=counts.Values.Sum();
       if(moduleCount<120)throw new Exception("Insufficiently assembled module placement "+moduleCount);
+      Physics.SyncTransforms();
       foreach(var c in new[]{new Vector3(0,0,-40),new Vector3(0,0,-6),
                                new Vector3(2,6,32),new Vector3(0,6,49)})
          if(!Physics.Raycast(c+Vector3.up*45,Vector3.down,100,~0,QueryTriggerInteraction.Ignore))
@@ -101,7 +102,7 @@ namespace Eldoria.Valoria63.Editor
       RenderFrame("valoria63-clean-landscape",1536,1024);
       RenderFrame("valoria63-clean-wide",1280,720);
       RenderFrame("valoria63-clean-portrait",390,844);
-      var manifest=new CompositionReport{unity=UnityEngine.UnityEngine.Application.unityVersion,scene=Output,source_count=63,
+      var manifest=new CompositionReport{unity=UnityEngine.Application.unityVersion,scene=Output,source_count=63,
         module_instances=moduleCount,distinct_sources=counts.Count,used_existing_glbs=true,
         new_modeling=false,art_approved=false,gameplay_certified=false,mobile_certified=false,
         camera_position=view.transform.position,camera_rotation=view.transform.eulerAngles,
@@ -455,6 +456,7 @@ namespace Eldoria.Valoria63.Editor
         int missing=present.Count(r=>r.GetComponent<MeshFilter>()==null || r.GetComponent<MeshFilter>().sharedMesh==null ||
                                         r.sharedMaterials.Any(m=>m==null));
         if(missing>0)throw new Exception("Broken mesh/material persistence count="+missing);
+        Physics.SyncTransforms();
         foreach(var c in new[]{new Vector3(0,0,-40),new Vector3(0,0,0),new Vector3(2,6,35)})
           if(!Physics.Raycast(c+Vector3.up*40,Vector3.down,100,~0,QueryTriggerInteraction.Ignore))
             throw new Exception("Broken saved-scene collision at "+c);
