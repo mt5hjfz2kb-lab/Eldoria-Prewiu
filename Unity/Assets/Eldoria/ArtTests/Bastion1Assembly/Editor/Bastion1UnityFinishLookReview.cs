@@ -114,6 +114,17 @@ namespace Eldoria.EditorTools
             return null;
         }
 
+        static int GroupIndex(string node)
+        {
+            const string token="_material_group_";
+            int k=node.IndexOf(token,StringComparison.Ordinal);
+            if(k<0)return -1;
+            string tail=node.Substring(k+token.Length);
+            int dot=tail.IndexOf('.');
+            if(dot>=0)tail=tail.Substring(0,dot);
+            return int.TryParse(tail,out int i)?i:-1;
+        }
+
         static void RetintOriginalMaterials(out int instances,out int unique)
         {
             instances=0;
@@ -130,16 +141,38 @@ namespace Eldoria.EditorTools
                     var material=source[i];
                     if(material==null)continue;
                     float r=1,g=1,b=1;
-                    string name=material.name.ToLowerInvariant();
-                    if(name.Contains("schist dark fractured cliff"))
-                    { r=1.25f;g=1.27f;b=1.31f; }
-                    else if(name.Contains("terrace earth olive grass") ||
-                            name.Contains("forested valley ground"))
-                    { r=1.06f;g=1.13f;b=1.035f; }
-                    else if(name.Contains("limestone") || name.Contains("carved_limestone"))
-                    { r=1.055f;g=.965f;b=.89f; }
-                    else if(name.Contains("family soil portable"))
-                    { r=1.04f;g=1.075f;b=1.025f; }
+                    // Saved Unity materials are named 0000.asset, 0001.asset, etc.
+                    // Material.name no longer identifies historical GLB families.
+                    // Classify by original renderer/mesh node names and its
+                    // canonical glTF primitive material ordering instead.
+                    string node=renderer.gameObject.name.ToLowerInvariant();
+                    int group=GroupIndex(node);
+                    if(node.Contains("natural playable hilltop and rock scarps"))
+                    {
+                        if(i==0){r=1.06f;g=1.13f;b=1.035f;} // terrace grass
+                        else if(i==1){r=1.25f;g=1.27f;b=1.31f;} // schist cliffs
+                        else if(i==2){r=1.06f;g=1.13f;b=1.035f;} // valley earth
+                        else continue;
+                    }
+                    else if(node.Contains("lower valley continuous terrain"))
+                    {r=1.06f;g=1.13f;b=1.035f;}
+                    else if(node.StartsWith("wall_straight_material_group_") ||
+                            node.StartsWith("wall_connections_material_group_") ||
+                            node.StartsWith("wall_corner_material_group_"))
+                    {
+                        if(group<0 || (group>5 && group!=7))continue;
+                        r=1.055f;g=.965f;b=.89f; // dressed limestone, not dark joints
+                    }
+                    else if(node.StartsWith("watchtower_material_group_"))
+                    {
+                        if(!((group>=4&&group<=9)||group==11))continue;
+                        r=1.055f;g=.965f;b=.89f; // do not retint blue banner or iron
+                    }
+                    else if(node.StartsWith("hero_gate_v3_material_group_"))
+                    {
+                        if(group<0||group>6)continue;
+                        r=1.055f;g=.965f;b=.89f; // keep fire, banners, wood intact
+                    }
                     else continue;
                     if(!material.HasProperty("_BaseColor"))continue;
                     if(!map.TryGetValue(material,out var clone))

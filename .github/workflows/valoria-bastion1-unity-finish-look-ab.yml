@@ -11,7 +11,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-bastion1-unity-only-lookdev-exclusive
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   validate-scope:
     runs-on: ubuntu-latest
