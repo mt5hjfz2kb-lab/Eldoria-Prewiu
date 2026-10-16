@@ -15,9 +15,13 @@ concurrency:
 jobs:
   capture:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 25
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/breakthrough-work
     steps:
       - name: Expose installed Git
+        working-directory: ${{ github.workspace }}
         shell: powershell
         run: |
           if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
@@ -28,6 +32,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           clean: false
+          path: breakthrough-work
           fetch-depth: 1
       - name: Verify own scope and no existing Unity or Blender process
         shell: powershell
@@ -41,7 +46,7 @@ jobs:
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Breakthrough-Unity.log'
-          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Run','-logFile',$log)
+          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Run','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Unity exit $($process.ExitCode)"}
@@ -61,7 +66,7 @@ jobs:
         with:
           name: scene-breakthrough-${{ github.run_id }}
           path: |
-            Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**
-            docs/evidence/valoria-scene-breakthrough-20261016/**
+            breakthrough-work/Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**
+            breakthrough-work/docs/evidence/valoria-scene-breakthrough-20261016/**
             ${{ runner.temp }}/Breakthrough-Unity.log
           retention-days: 30
