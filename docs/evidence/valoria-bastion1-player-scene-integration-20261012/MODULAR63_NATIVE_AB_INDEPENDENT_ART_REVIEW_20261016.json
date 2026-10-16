@@ -1,0 +1,44 @@
+{
+  "schema": "eldoria.bastion1.independent_unity_ab_visual_review.v1",
+  "date": "2026-10-16",
+  "inspected_native_run": 38899136195,
+  "artifact_id": 12045579490,
+  "artifact_name": "bastion1-modular63-unity-review-38899136195",
+  "reviewer": "GPT-6 independent of GLB producing pilot",
+  "baseline_png": "Bastion1Modular63Review/before-landscape.png",
+  "candidate_png": "Bastion1Modular63Review/after-landscape.png",
+  "camera": "same pose/resolution/illumination native Unity 6000.3.23f1",
+  "image_metrics": {
+    "landscape_1440x1000": {
+      "rgb_mae": 0.1133298611,
+      "changed_fraction_rgb_delta_gt_10": 0.00345347222,
+      "original_sha256": "3a8471fbb38444471c4f8386470dcfac0ab08efcd27ed25cd450de0cd3d0a2af",
+      "candidate_sha256": "889788d753da69c81a1ee6b9eb2685a3708b27fe27d040720a1d715965a9f955"
+    },
+    "mobile_780x520": {
+      "rgb_mae": 0.1091181788,
+      "changed_fraction_rgb_delta_gt_10": 0.00337031558
+    },
+    "portrait_390x844": {
+      "rgb_mae": 0.0436869607,
+      "changed_fraction_rgb_delta_gt_10": 0.00133065986
+    }
+  },
+  "placed_meshes": [
+    "pine_medium instance 1",
+    "pine_medium instance 2",
+    "cliff_rock_column neutral scan instance 1"
+  ],
+  "conclusion": "ART_REJECTED_FOR_FULL_FRAME_PROMOTION",
+  "rationale": [
+    "Unity source, import and material bindings technically work without gameplay changes.",
+    "Changes occur mainly at scene corners and cover just 0.35% of the landscape image; visually negligible for the approved reference.",
+    "Main visual blockers remain broad polygonal/rectangular terrace cuts, overly dark cliff mass, schematic distant backdrop and insufficient warmth and terrain microvariation.",
+    "No evidence the 8/10 target is closer by a meaningful margin, and original artist GLBs are not rejected as reusable individual resources."
+  ],
+  "new_meshes": 0,
+  "original_gameplay_preserved": true,
+  "formal_art_approved": false,
+  "webgl_published": false,
+  "next_action": "Run isolated same-camera Unity material/lighting pass on original playable mesh with no new geometry; inspect before/after before any promotion."
+}
