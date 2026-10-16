@@ -211,6 +211,68 @@ namespace Eldoria.Valoria63.Editor
       o.AddComponent<MeshFilter>().sharedMesh=mesh;
       o.AddComponent<MeshRenderer>().sharedMaterial=name.StartsWith("Upper")?grass:soil;
       o.AddComponent<MeshCollider>().sharedMesh=mesh;
+      // Physical plateau remains untouched; a sculpted exterior skirt makes the
+      // visible landform a continuous rocky volume instead of sheer flat walls.
+      AddRockySkirt(name,shape,top,baseHeight,parent);
+    }
+    static void AddRockySkirt(string name,Vector2[] outline,float top,float foot,Transform parent)
+    {
+      const int perEdge=7,ringCount=5;
+      int around=outline.Length*perEdge;
+      Vector2 center=Vector2.zero;
+      foreach(var q in outline)center+=q;
+      center/=outline.Length;
+      float depth=Mathf.Max(0.1f,top-foot);
+      var vertices=new List<Vector3>(around*ringCount);
+      var uv=new List<Vector2>(around*ringCount);
+      for(int ring=0;ring<ringCount;ring++)
+      {
+        float t=ring/(float)(ringCount-1);
+        for(int i=0;i<around;i++)
+        {
+          int edge=i/perEdge;
+          float alpha=(i%perEdge)/(float)perEdge;
+          var p=Vector2.Lerp(outline[edge],outline[(edge+1)%outline.Length],alpha);
+          Vector2 radial=(p-center).normalized;
+          // Continuous noise, no unattached cliffs or mirrored floating shards.
+          float noise=(Mathf.PerlinNoise((p.x+97f)*.17f,(p.y+131f)*.17f)-.5f)*2f;
+          float spread=t*(depth*.49f+2.1f)+noise*t*1.15f;
+          float vertical=top+(foot-top)*t+noise*t*(1f-t)*1.1f;
+          vertices.Add(new Vector3(p.x+radial.x*spread,vertical,p.y+radial.y*spread));
+          uv.Add(new Vector2(i*.37f,t*depth*.42f));
+        }
+      }
+      var triangles=new List<int>();
+      for(int ring=0;ring<ringCount-1;ring++)
+      for(int i=0;i<around;i++)
+      {
+        int next=(i+1)%around;
+        int a=ring*around+i,b=ring*around+next;
+        int c=(ring+1)*around+i,d=(ring+1)*around+next;
+        triangles.AddRange(new[]{a,c,b,b,c,d});
+      }
+      var cliff=new Mesh{name=name+" coherent stratified cliff"};
+      cliff.indexFormat=IndexFormat.UInt32;
+      cliff.SetVertices(vertices);
+      cliff.SetTriangles(triangles,0);
+      cliff.SetUVs(0,uv);
+      cliff.RecalculateBounds();
+      cliff.RecalculateNormals();
+      Vector3 outward=new Vector3(vertices[0].x-center.x,0,vertices[0].z-center.y);
+      if(Vector3.Dot(cliff.normals[0],outward)<0f)
+      {
+        for(int i=0;i<triangles.Count;i+=3)
+        {
+          int temp=triangles[i+1];triangles[i+1]=triangles[i+2];triangles[i+2]=temp;
+        }
+        cliff.SetTriangles(triangles,0);
+        cliff.RecalculateNormals();
+      }
+      toPersist.Add(cliff);
+      var shell=new GameObject(name+" - sculpted contiguous cliff shell");
+      shell.transform.SetParent(parent,false);
+      shell.AddComponent<MeshFilter>().sharedMesh=cliff;
+      shell.AddComponent<MeshRenderer>().sharedMaterial=rock;
     }
     static void BuildLandform()
     {
@@ -222,7 +284,7 @@ namespace Eldoria.Valoria63.Editor
       Deck("Upper citadel ridge",new[]{
         new Vector2(-29,27),new Vector2(-27,40),new Vector2(-23,57),new Vector2(-13,61),
         new Vector2(25,59),new Vector2(33,53),new Vector2(30,33),new Vector2(20,25)},6,0,ground);
-      Cube("Below bridge flowing river",new Vector3(0,-13.8f,-45),new Vector3(120,.25f,24),water,ground);
+      Cube("Continuous coastal water - island contact",new Vector3(0,-14.0f,-37),new Vector3(245,.25f,215),water,ground);
       Cube("Bridge shore beyond river",new Vector3(0,-14,-64),new Vector3(70,9,18),rock,ground);
       Cube("Bridge far end walkable surface",new Vector3(0,-8.6f,-59),new Vector3(14,.3f,8),soil,ground);
       var parcels=Group("INTERACTION RESERVES - Bastion I to Bastion II");
@@ -348,21 +410,21 @@ namespace Eldoria.Valoria63.Editor
       }
       for(int i=0;i<34;i++)
       {
-        float z=-34+(i%17)*6.2f;
+        float z=-30+(i%15)*4.15f;
         float side=i%2==0?-1:1;
-        float x=side*(43+(i%6)*2.2f);
+        float x=side*(30+(i%4)*2.3f);
         string kind=i%3==0?"pine_tall":(i%3==1?"pine_medium":"pine_small");
         Place(kind,nature,new Vector3(x,0,z),i%3==0?5.5f:3.2f,(i*43)%360);
       }
       for(int i=0;i<18;i++)
       {
-        float x=-35+i*4.3f,z=55+(i%3)*3.2f;
+        float x=-21+i*2.25f,z=47+(i%3)*3.2f;
         Place(i%3==0?"pine_tall":(i%3==1?"pine_medium":"pine_small"),
           nature,new Vector3(x,6,z),i%2==0?4.3f:3.3f,i*37);
       }
       for(int i=0;i<42;i++)
       {
-        float x=(float)rng.NextDouble()*86-43,z=(float)rng.NextDouble()*72-30;
+        float x=(float)rng.NextDouble()*78-39,z=(float)rng.NextDouble()*58-28;
         if(Mathf.Abs(x)<9 && z<23)continue; // road and expansion reserved
         Place("shrub_"+(i%3+1),nature,new Vector3(x,0,z),.7f+(i%3)*.2f,i*47);
         if(i%2==0)Place("grass_tuft_"+(i%2+1),nature,new Vector3(x+1.2f,0,z+.7f),.7f);
