@@ -1,0 +1,9 @@
+# Duplicate session retired — 2026-10-16
+
+This branch is NOT the active experiment. An earlier concurrent session owns exactly the same scene scope and Windows resource in `experiment/valoria-scene-method-breakthrough-20261016`, active native run 38946722924, job 117127603357, runner DESKTOP-R10PE55. Its live registry claim is authoritative. Do not reclaim or continue this duplicate branch.
+
+This session read main 81b1f7622e1e77b142ae5b062138662dac4fe454, required manuals and owner pauses, verified reference SHA-256 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689, inspected baseline artifact 12062799612 from run 38940426182 and the existing blockout. Source preparation was committed at 860db02c51966bb9903371bfb88fcaf8dde13160. No native captures were produced by this branch. No scene/art/gameplay/mobile acceptance is claimed.
+
+Race: initial branch/runner discovery preceded the other session's claim and native job. A fresh main/Actions read exposed two identical-scope claims. This session removed only its claim (main 5077a56ae682c8a68a7756048941d1e38f19752f), disabled its own workflow (7f05f5303c813ae809adfbc7169ac6ed5834cad1) and used its own disabled-workflow concurrency at d4680594213de6d9a3a3ecb2be21b27c6ef60d65 to cancel pending duplicate run 38946864201 without using Windows or requiring UI credentials. Verify the cancellation status in Actions; a registry entry alone does not cancel a job.
+
+Active next step belongs to the earlier session: inspect its native complete blockout, correct composition, then prepare 3D hybrid and bounded distant-only 2.5D, preserve true camera/pan/zoom evidence and functional checks. Do not create another experiment or restart paused Bastion/63 sources. Do not overwrite the active session's files or handoff. No publication and zero paid credits.
