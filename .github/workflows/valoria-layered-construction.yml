@@ -117,13 +117,65 @@ jobs:
             $v.art_status -ne 'NOT_APPROVED'){throw 'Native topological gate fails'}
           if([math]::Abs($v.bridge_deck_top-$v.bank_top) -gt .001){throw 'Bridge-banking discontinuity'}
           Write-Host 'VALORIA_LAYERED_NATIVE_TECH_PASS (not ART_APPROVED)'
+      - name: Restore only six previously hash-pinned GLBs from archived isolated experiment
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38965212132
+          name: valoria63-clean-sources-38965212132
+          github-token: ${{ github.token }}
+          path: ${{ github.workspace }}/valoria-layered-source
+      - name: Copy selected immutable source files into OWN isolated staging folder
+        shell: powershell
+        run: |
+          $src='Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources'
+          $dst='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Sources'
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          foreach($id in @('tower_square_short','wall_panel_crenellated_4m','arch_complete_major',
+            'portcullis_large','reinforced_oak_gate','banner_royal_blue')){
+            if(-not(Test-Path "$src/$id.glb")){throw "Missing archived source $id"}
+            Copy-Item "$src/$id.glb" "$dst/$id.glb" -Force
+          }
+          Write-Host 'VALORIA_LAYER_D_SELECTED_SOURCE_READY: six existing GLBs'
+      - name: Import and assemble modular lower gate on preserved ABC scene (Unity real)
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-layered-modular-D.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",
+            '-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaModularGateLayerD.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Layer D Unity import timeout'
+          }
+          Get-Content $log -Tail 120
+          Copy-Item $log docs/evidence/valoria-layered-construction-20261016/native-layer-D.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_LAYERED_AUTHENTIC_GATE_D_COMPLETE' -Quiet)){
+            throw "Real gate layer D failed exit=$($p.ExitCode)"
+          }
+      - name: Validate saved D ensemble prefab and real A/B captures
+        shell: powershell
+        run: |
+          $root='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
+          $dir='docs/evidence/valoria-layered-construction-20261016'
+          foreach($f in @("$root/Valoria_MasterPlan_Layers_ABCD.unity",
+            "$root/GeneratedD/LowerGate_Real6_Modular.prefab","$dir/lower-gate-D-evidence.json",
+            "$dir/master-gate-D-home-12.png","$dir/master-gate-D-home-19.png","$dir/master-gate-D-portrait-12.png")){
+            if(-not(Test-Path $f)){throw "Missing real layer D output $f"}
+          }
+          $d=Get-Content "$dir/lower-gate-D-evidence.json" -Raw|ConvertFrom-Json
+          if($d.genuine_glb_types -ne 6 -or $d.module_instances -ne 11 -or $d.full_scene_visual_pass -or $d.is_canonical){
+            throw 'Layer D claimed unverified art or incorrect actual modules'
+          }
+          Write-Host 'VALORIA_LAYER_D_REAL_SOURCE_TECH_PASS; ART_QUALITY_NOT_APPROVED'
       - name: Persist new isolated scene and evidence to own branch only
         shell: powershell
         run: |
           git config user.name 'Valoria layered native builder'
           git config user.email 'valoria-layered@users.noreply.github.com'
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD/
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity
           git add -f -- docs/evidence/valoria-layered-construction-20261016/
           if(-not(git diff --cached --quiet)){
             git commit -m 'evidence: native Valoria master-plan ABC with physical route checks'
@@ -136,6 +188,8 @@ jobs:
           name: valoria-layered-native-${{ github.run_id }}
           path: |
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/**
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD/**
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity
             valoria-layered-source/docs/evidence/valoria-layered-construction-20261016/**
           if-no-files-found: warn
