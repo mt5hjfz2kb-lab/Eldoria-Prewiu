@@ -1,0 +1,38 @@
+{
+    "stage": "NATIVE_UNITY_V16_FOUR_REAL_TRANSITION_DONORS_UNAPPROVED",
+    "reference": "Canonical owner supplied fortified plateau image 1513x1039",
+    "revision": "2a01dde9df4047757e607645554a23f2efd4e251",
+    "sources": [
+        "Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+        "Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+    ],
+    "positions": [
+        "A left front",
+        "B right front",
+        "C left rear",
+        "D right rear"
+    ],
+    "frames": [
+        "33-rock-transition-oblique.png",
+        "34-rock-transition-high.png"
+    ],
+    "renderers": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalLongestDimensions": [
+        0.9799115657806397,
+        0.9792413115501404,
+        0.9699085354804993,
+        0.32435736060142519
+    ],
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
