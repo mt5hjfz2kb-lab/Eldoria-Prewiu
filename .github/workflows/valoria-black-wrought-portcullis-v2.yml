@@ -1,0 +1,82 @@
+name: "[ART IRON V2] CC0 slate-black wrought gothic portcullises"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-black-wrought-portcullis-v2.yml'
+      - 'tools/valoria-modular-fortress/black_iron_gate_two_v2.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-two-dark-iron-arched-gates
+  cancel-in-progress: false
+jobs:
+  iron-art-finish:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Use local Git/Blender; never download executables
+        shell: powershell
+        id: pc
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-handforged-gates-38859885125
+          run-id: 38859885125
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/wrought-gate-bronze-source
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-38823501643
+          run-id: 38823501643
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/iron-photo-cc0-maps
+      - name: Grade two true iron grilles, unchanged GLB geometry and 4 genuine PNGs
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'wrought-gate-bronze-source\eldoria-forged-arched-portcullis\glb'
+          $maps=Join-Path $env:RUNNER_TEMP 'iron-photo-cc0-maps'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-black-forged-two'
+          if(-not(Test-Path (Join-Path $base 'portcullis_large.glb'))){throw 'Original arched gates missing'}
+          if(-not(Test-Path (Join-Path $maps 'rusty_metal_05_diffuse.jpg'))){throw 'Licensed metal photo missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/black_iron_gate_two_v2.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned color finisher missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-black-iron-v2-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-black-iron-v2.log'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-black-iron-v2.err'
+          $proc=Start-Process -FilePath "${{ steps.pc.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$maps,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Black iron correction failed $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($count -ne 2){throw "Expected 2 in $folder, got $count"}
+          }
+      - name: Save correct and baseline artwork, do not approve automatically
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-two-charcoal-gothic-gates-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-black-forged-two/**
+            ${{ runner.temp }}/valoria-black-iron-v2.log
+            ${{ runner.temp }}/valoria-black-iron-v2.err
+          if-no-files-found: warn
+          retention-days: 30
