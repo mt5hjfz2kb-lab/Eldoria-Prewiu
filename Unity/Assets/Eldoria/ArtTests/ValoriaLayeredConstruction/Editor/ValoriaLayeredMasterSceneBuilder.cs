@@ -52,7 +52,7 @@ namespace Eldoria.ValoriaLayered.Editor
         [Serializable] sealed class Result
         {
             public string scene, unity, classification, source_layout, camera_authority, visual_authority;
-            public string bridge_status, gameplay_status, art_status;
+            public string bridge_status, gameplay_status, art_status, landing_transition_status;
             public bool source_topology_preserved, bridge_continuous_geometry, is_canonical, physical_mobile_tested;
             public int footprints, stairs, gate_greybox_parts, raycasts_passed;
             public float bridge_deck_top, bank_top, entry_road_top, stair_first_top, stair_last_top, upper_floor_top;
@@ -165,6 +165,7 @@ namespace Eldoria.ValoriaLayered.Editor
                 source_layout=LayoutPath,camera_authority="HISTORICAL_ORTHOGRAPHIC_QA_NOT_SHARP",
                 visual_authority=ReferenceSha,bridge_status="PROVISIONAL_NOT_CERTIFIED",
                 gameplay_status="NOT_TESTED_NO_FAKE_HOTSPOTS",art_status="NOT_APPROVED",
+                landing_transition_status="REVERSIBLE_SPLIT_L1_COLLIDER_PRESERVES_EXACT_ENVELOPE",
                 source_topology_preserved=true,bridge_continuous_geometry=true,
                 is_canonical=false,physical_mobile_tested=false,
                 footprints=zoneCount,stairs=stairCount,gate_greybox_parts=gatePartCount,
@@ -193,7 +194,31 @@ namespace Eldoria.ValoriaLayered.Editor
                 else if(f.kind.StartsWith("route")){parent=layerB;m=road;}
                 else if(f.kind.StartsWith("plot")){parent=support;trigger=true;m=plot;}
                 else if(f.kind.StartsWith("reserve")){parent=support;trigger=true;m=f.kind=="reserve_upper"?upper:reserve;}
-                else if(f.kind=="floor_upper"){m=upper;}
+                else if(f.kind=="floor_upper")
+                {
+                    // Reversible collider cut-out: the certified bounding footprint is retained,
+                    // but a solid 7m slab would cover three of the twelve certified stair treads.
+                    // Preserve its EXACT XYZ/scale as an inactive-solid/trigger-only source marker,
+                    // and split the walkable deck around the staircase ending at Z=6.165.
+                    Box("SUPPORT exact certified L1 footprint (trigger-only envelope)",
+                        V(f.center),V(f.size),upper,support,false,true);
+                    const float clearStairWidth=3.5f;
+                    float wingWidth=(f.size[0]-clearStairWidth)*.5f;
+                    float wingOffset=clearStairWidth*.5f+wingWidth*.5f;
+                    for(int side=-1;side<=1;side+=2)
+                        Box("GREYBOX L1 landing split wing "+side,
+                            new Vector3(side*wingOffset,f.center[1],f.center[2]),
+                            new Vector3(wingWidth,f.size[1],f.size[2]),upper,layerA);
+                    float stairExit=plan.stair.first_center[2]+
+                                    (plan.stair.count-1)*plan.stair.run+plan.stair.step_depth*.5f;
+                    float back=f.center[2]+f.size[2]*.5f;
+                    Check(back>stairExit,"Landing has no receiving deck behind top stair");
+                    Box("GREYBOX L1 rear landing - stair throat visibly clear",
+                        new Vector3(f.center[0],f.center[1],(back+stairExit)*.5f),
+                        new Vector3(f.size[0],f.size[1],back-stairExit),upper,layerA);
+                    zoneCount++;
+                    continue;
+                }
                 Box((trigger?"SUPPORT/RESERVE ":"GREYBOX ")+f.id,V(f.center),V(f.size),m,parent,visible,trigger);
                 zoneCount++;
             }
