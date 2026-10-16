@@ -66,9 +66,6 @@ jobs:
             .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs
   review-on-unity:
-    # Skip the Windows editor for feedback-only workflow wiring verification commits.
-    if: >-
-      ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'infra feedback gate') }}
     # Owner-authorized structural reuse, never launch Blender here.
     # GitHub serializes this on the sole self-hosted Windows runner; the
     # job itself rejects Blender/Unity processes found outside Actions.
