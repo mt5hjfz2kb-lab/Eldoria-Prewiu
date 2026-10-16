@@ -1,0 +1,21 @@
+name: Valoria 63 live feedback gate test
+on:
+  push:
+    branches: [infra/valoria-feedback-active-gates-20261016]
+    paths:
+      - 'tools/valoria-asset-feedback/**'
+      - '.github/workflows/valoria-feedback-live-gate-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  feedback-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test per-asset regression prevention
+        run: |
+          node tools/valoria-asset-feedback/guard.mjs validate
+          python3 -m unittest discover -s tools/valoria-asset-feedback -p 'test_gate.py' -v
+          node --test tools/valoria-asset-feedback/guard.test.mjs
