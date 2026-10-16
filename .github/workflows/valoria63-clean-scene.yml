@@ -1,5 +1,6 @@
 name: "[VALORIA63] Isolated source manifest and 63 GLB validation"
 on:
+  workflow_dispatch:
   push:
     branches: [experiment/valoria-63-clean-composition-20261016]
     paths:
@@ -77,4 +78,122 @@ jobs:
             Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/**
             docs/evidence/valoria63-clean-scene-20261016/source-manifest.json
           if-no-files-found: error
+          retention-days: 30
+
+  native-scene:
+    # The source-stage job can run on GitHub-hosted Ubuntu immediately.
+    # The single Windows runner is still owned by SceneBreakthrough and must
+    # be transferred in the canonical workstream registry before dispatch.
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate-source
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    defaults:
+      run:
+        working-directory: valoria63-clean
+    steps:
+      - name: Expose installed GitHub Desktop git.exe
+        shell: powershell
+        working-directory: .
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $g=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Existing GitHub Desktop Git not found'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria63-clean
+          clean: false
+      - name: Check exclusive Windows claim and native Unity location
+        shell: powershell
+        run: |
+          $registered=Get-Content pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $own=@($registered.active|Where-Object {$_.id -eq 'valoria63-clean-modular-assembly-20261016'})
+          $other=@($registered.active|Where-Object {
+            $_.id -ne 'valoria63-clean-modular-assembly-20261016' -and
+            $_.resources -contains 'windows-runner-heavy'
+          })
+          if($own.Count -ne 1){throw 'Missing owner workstream claim'}
+          if($other.Count){throw "Runner is still reserved by $($other[0].id)"}
+          if(Get-Process Unity,blender -ErrorAction SilentlyContinue){throw 'Other native program in progress'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor missing on PC'}
+          $hash=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Approved reference mismatch'}
+      - name: Download this run's 63 genuine verified source models
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria63-clean-sources-${{ github.run_id }}
+          path: ${{ github.workspace }}/valoria63-clean
+      - name: Build new scene inside existing Unity project (no other scene opened)
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria63-native-build.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria63-clean/Unity",
+            '-executeMethod','Eldoria.Valoria63.Editor.Valoria63CleanSceneBuilder.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Unity 63 native assembly timed out'
+          }
+          Get-Content $log -Tail 125
+          Copy-Item $log docs/evidence/valoria63-clean-scene-20261016/native-build.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA63_CLEAN_SCENE_COMPLETE' -Quiet)){
+            throw "Native scene builder failed exit=$($p.ExitCode)"
+          }
+      - name: Reopen persisted Unity scene and verify 63 visible models
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria63-native-reopen.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria63-clean/Unity",
+            '-executeMethod','Eldoria.Valoria63.Editor.Valoria63CleanSceneBuilder.Validate','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1200000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Unity scene reopened timeout'
+          }
+          Get-Content $log -Tail 100
+          Copy-Item $log docs/evidence/valoria63-clean-scene-20261016/native-reopen.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA63_CLEAN_SCENE_REOPEN_VALIDATED' -Quiet)){
+            throw 'Saved Unity scene has missing meshes/materials/collision'
+          }
+      - name: Check all 63 placements and actual Unity evidence frames
+        shell: powershell
+        run: |
+          $dir='docs/evidence/valoria63-clean-scene-20261016'
+          foreach($required in @('source-manifest.json','assembly-evidence.json',
+            'valoria63-clean-landscape.png','valoria63-clean-wide.png','valoria63-clean-portrait.png')){
+            if(-not(Test-Path "$dir/$required")){throw "Missing native evidence $required"}
+          }
+          $m=Get-Content "$dir/assembly-evidence.json" -Raw|ConvertFrom-Json
+          if($m.source_count -ne 63 -or $m.distinct_sources -ne 63 -or $m.module_instances -lt 120 -or $m.art_approved){
+            throw 'Invalid actual native module coverage evidence'
+          }
+          Write-Host "VALORIA63_FULL_SOURCE_ASSEMBLY_PASS modules=$($m.module_instances) art_approved=false"
+      - name: Preserve isolated native scene (never change existing playable city)
+        if: always()
+        shell: powershell
+        run: |
+          git config user.name 'Eldoria Valoria63 native assembly'
+          git config user.email 'valoria63@users.noreply.github.com'
+          git add -f -- Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity
+          git add -f -- docs/evidence/valoria63-clean-scene-20261016/
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'evidence: actual clean Valoria scene composed from 63 existing GLBs'
+            git push origin HEAD:experiment/valoria-63-clean-composition-20261016
+            if($LASTEXITCODE){throw 'Remote source branch moved: preserve artifact, never overwrite'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria63-clean-native-${{ github.run_id }}
+          path: |
+            valoria63-clean/Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/**
+            valoria63-clean/Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_BastionI_Modular63_Clean.unity
+            valoria63-clean/docs/evidence/valoria63-clean-scene-20261016/**
+          if-no-files-found: warn
           retention-days: 30
