@@ -30,9 +30,9 @@ jobs:
           assert not d['constraints']['gameplay_publication']
           assert len(d['selected'])==6 and len({x['id'] for x in d['selected']})==6
           assert all(re.fullmatch('[a-f0-9]{64}',x['sha256']) for x in d['selected'])
-          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'pine_medium','cliff_rock_column'}
+          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'wall_panel_regular_4m','reinforced_oak_gate','portcullis_large','portcullis_small','cliff_rock_column'}
           assert not any(x['id']=='mortar_joint_recess' for x in d['selected'])
-          print('BASTION63_PINNED_SELECTION_VALID candidate_only=true')
+          print('BASTION63_STRUCTURAL5_SELECTION_VALID review_only=true')
           PY
   review-on-unity:
     # Single-runner protection: original scene Unity terrain/material lookdev

@@ -1,6 +1,6 @@
 {
   "schema": "eldoria.bastion1.modular63.version_selection.v1",
-  "note": "Review-only selection. No ART_APPROVED, no canonical publication, no new models. Historical 63 are a fallback inventory, not automatically 'best'.",
+  "note": "Structural first native Unity trial: wall V6, oak V1, two iron grilles and neutral rock replace/decorate large central architectural surfaces. Pine retained as source-only, earlier edge-only Unity trial was artistically rejected. NOT ART_APPROVED; references and source unmodified.",
   "base_63": {
     "run_id": 38813966671,
     "artifact_id": 12010106460,
@@ -17,7 +17,7 @@
       "file": "eldoria-cc0-real-gate-ab/glb/reinforced_oak_gate.glb",
       "sha256": "6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
       "provisional_score": 7.4,
-      "usage": "staged_only",
+      "usage": "candidate_in_scene",
       "rationale": "V1 real CC0 preferred; V2 and V3 artistically rejected"
     },
     {
@@ -27,7 +27,7 @@
       "file": "valoria-black-forged-two/glb/portcullis_large.glb",
       "sha256": "09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
       "provisional_score": 7,
-      "usage": "staged_only",
+      "usage": "candidate_in_scene",
       "rationale": "Blue-black iron preferred to orange bronze"
     },
     {
@@ -37,7 +37,7 @@
       "file": "valoria-black-forged-two/glb/portcullis_small.glb",
       "sha256": "f74af38088acb53ee6561699c9fd610fd836687185cbbe1558e57e50b4d55809",
       "provisional_score": 6.9,
-      "usage": "staged_only",
+      "usage": "candidate_in_scene",
       "rationale": "Blue-black iron preferred to orange bronze"
     },
     {
@@ -47,7 +47,7 @@
       "file": "eldoria-4m-wall-architectural-v6/glb/wall_panel_regular_4m_warm_limestone.glb",
       "sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
       "provisional_score": 7.1,
-      "usage": "staged_only",
+      "usage": "candidate_in_scene",
       "rationale": "V6 warm limestone confirmed visually superior to V8 microchips"
     },
     {
@@ -57,7 +57,7 @@
       "file": "eldoria-one-full-medium-pine/glb/pine_medium.glb",
       "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
       "provisional_score": 6.5,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "Physical branch structure, reviewed; no Unity art approval"
     },
     {
@@ -103,6 +103,7 @@
     "road_and_stairs_preserved": true,
     "visual_approval_required": true,
     "gameplay_publication": false,
-    "paid_spend_eur": 0
+    "paid_spend_eur": 0,
+    "art_approved": false
   }
 }
