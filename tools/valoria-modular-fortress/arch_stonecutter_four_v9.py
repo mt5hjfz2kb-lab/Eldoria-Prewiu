@@ -85,7 +85,7 @@ for i,name in enumerate(names):
   bevel=m.modifiers.new('visible_stonecutter_bevel','BEVEL')
   bevel.width=min(.034,(hi-lo).length*.013)
   bevel.segments=2;bevel.limit_method='ANGLE'
-  bevel.angle_limit=math.radians(34)
+  bevel.angle_limit=math.radians(0.6)  # retain only noncoplanar edges, imported wedge triangle normals vary below 34 degrees
   bpy.context.view_layer.objects.active=m
   bpy.ops.object.modifier_apply(modifier=bevel.name)
   # Check physical envelope after Blender baked bevel; cannot break modular fit.
