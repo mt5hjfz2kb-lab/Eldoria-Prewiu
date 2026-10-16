@@ -1,0 +1,88 @@
+name: "[ART SOIL FLOOR6] Two genuine mixed terrain CC0 ground tiles"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-soil-meadow-natural-v4.yml'
+      - 'tools/valoria-modular-fortress/ground_photo_blend_scattered_v4.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-soil-meadow-studio-v4
+  cancel-in-progress: false
+jobs:
+  natural-ground-tiles:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Use installed Git and Blender
+        shell: powershell
+        id: deps
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-4-cc0-natural-ground-and-ruin-v2-38871626493
+          run-id: 38871626493
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/real_soil_from_v2
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-three-natural-corrections-v3-38872475510
+          run-id: 38872475510
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/real_grass_v3
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-certified-cc0-ground-photography-38870945019
+          run-id: 38870945019
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/actual_CC0_soil_photos
+      - name: Two physical CC0 mixed grounds, meadow and real earth, same-camera A-B
+        shell: powershell
+        run: |
+          $dirt=Join-Path $env:RUNNER_TEMP 'real_soil_from_v2\eldoria-real-soil-grass-ruinedwall\glb'
+          $grass=Join-Path $env:RUNNER_TEMP 'real_grass_v3\valoria-3-natural-art-v3\glb'
+          $cc0=Join-Path $env:RUNNER_TEMP 'actual_CC0_soil_photos'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-two-natural-ground-v4'
+          foreach($p in @((Join-Path $dirt 'dirt_ground_patch.glb'),(Join-Path $grass 'grass_ground_patch.glb'),(Join-Path $cc0 'grass_ground_diffuse.jpg'))){
+            if(-not(Test-Path $p)){throw "Needed source unavailable: $p"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/ground_photo_blend_scattered_v4.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned natural-ground code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-terrain-v4-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-ground-v4.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-ground-v4.stderr'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$dirt,$grass,$cc0,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 110 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Two real nature CC0 tiles failed $($proc.ExitCode)"}
+          foreach($folder in @('before','after','glb','atlas')){
+            $count=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($count -ne 2){throw "Expected 2 real $folder outputs, got $count"}
+          }
+      - name: Archive two independent earth and meadow modules, no Unity composition
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-two-authentic-mixed-grounds-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-two-natural-ground-v4/**
+            ${{ runner.temp }}/eldoria-ground-v4.stdout
+            ${{ runner.temp }}/eldoria-ground-v4.stderr
+          if-no-files-found: warn
+          retention-days: 30
