@@ -11,18 +11,20 @@ using UnityEngine.Rendering;
 namespace Eldoria.Breakthrough {
 public static partial class SceneCapture {
  static readonly HashSet<UnityEngine.Object> savedArt=new HashSet<UnityEngine.Object>();
+ static string artFolder=Root+"/GeneratedArt";
  static readonly List<string> importFacts=new List<string>();
  static GameObject artRoot;
  static Bounds BoundsOf(GameObject g){var rr=g.GetComponentsInChildren<Renderer>(true);if(rr.Length==0)throw new Exception("Empty source "+g.name);var b=rr[0].bounds;foreach(var r in rr)b.Encapsulate(r.bounds);return b;}
  static async Task<GameObject> Source(string key) {
-  string file=Path.GetFullPath(Root+"/Sources/"+key+"/"+key+".glb");
+  string file=Path.GetFullPath(Root+"/Sources/"+(key=="portal"?"gate":key)+"/"+(key=="portal"?"gate":key)+".glb");
   var loader=new GltfImport(null,new UninterruptedDeferAgent());
   if(!await loader.Load(new Uri(file).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=2}))throw new Exception("Import failed "+key);
   var group=new GameObject("Authored source "+key);
   if(!await loader.InstantiateMainSceneAsync(group.transform))throw new Exception("Instantiate failed "+key);
   SceneMaterials.Apply(group,loader,file);
+  if(key=="portal"){var prefixes=new[]{"Portal ","Continuous vaulted portal","Load-bearing carved voussoir","Recessed vault stone","Arch ","Iron portcullis","Forged pointed portcullis","Portcullis crossbar","Open oak gate leaf","Forged oak hinge strap"};int kept=0;foreach(var r in group.GetComponentsInChildren<MeshRenderer>()){r.enabled=prefixes.Any(p=>r.name.StartsWith(p,StringComparison.Ordinal));if(r.enabled)kept++;}if(kept<4)throw new Exception("Portal source subset absent");}
   // Preserve immutable authored geometry, combine only render partitions by material.
-  var original=group.GetComponentsInChildren<MeshRenderer>(true);var bins=new Dictionary<Material,List<CombineInstance>>();
+  var original=group.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();var bins=new Dictionary<Material,List<CombineInstance>>();
   foreach(var r in original) {
    var filter=r.GetComponent<MeshFilter>();if(filter==null||filter.sharedMesh==null)continue;
    var m=r.sharedMaterials;for(int i=0;i<Math.Min(m.Length,filter.sharedMesh.subMeshCount);i++){
@@ -42,7 +44,7 @@ public static partial class SceneCapture {
    var b=BoundsOf(g);float s=depth>0?depth/b.size.y:width/b.size.x;g.transform.localScale*=s;
    b=BoundsOf(g);g.transform.position-=new Vector3(b.center.x,b.min.y,b.center.z);
    var parent=new GameObject(g.name+" placement");g.transform.SetParent(parent.transform,true);
-   parent.transform.rotation=Facing*Quaternion.Euler(0,180,0);parent.transform.position=foot;
+   parent.transform.rotation=Quaternion.Euler(0,180,0);parent.transform.position=foot;
    parent.transform.SetParent(artRoot.transform,true);g.SetActive(true);
  }
  static void RemoveVisualPrefix(params string[] prefixes) {
@@ -58,11 +60,11 @@ public static partial class SceneCapture {
  }
  static void PersistArt(UnityEngine.Object obj){
    if(obj==null||AssetDatabase.Contains(obj)||savedArt.Contains(obj))return;savedArt.Add(obj);
-   string file=Root+"/GeneratedArt/"+savedArt.Count.ToString("D4")+".asset";AssetDatabase.CreateAsset(obj,file);
+   string file=artFolder+"/"+savedArt.Count.ToString("D4")+".asset";AssetDatabase.CreateAsset(obj,file);
  }
  static void SaveArt() {
-  Directory.CreateDirectory(Root+"/GeneratedArt");
-  foreach(var f in artRoot.GetComponentsInChildren<MeshFilter>(true))PersistArt(f.sharedMesh);
+  Directory.CreateDirectory(artFolder);
+  foreach(var f in UnityEngine.Object.FindObjectsByType<MeshFilter>(FindObjectsInactive.Include,FindObjectsSortMode.None))PersistArt(f.sharedMesh);
   foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None))foreach(var m in r.sharedMaterials) {
    if(m==null)continue;foreach(var p in m.GetTexturePropertyNames())PersistArt(m.GetTexture(p));PersistArt(m);
   }

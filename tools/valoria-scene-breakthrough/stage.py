@@ -9,7 +9,8 @@ sources={
  "bridge":("art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb","HEAD"),
  "stairs":("art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",ref),
  "wall":("art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/wall_straight.glb",ref),
- "cabin":("art-source/valoria/production/sawmill-family-v1/state1/SawmillState1V1.glb","HEAD"),
+ "cabin":("art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb","HEAD"),
+ "tower":("art-source/valoria/production/asset-family-v2/quality-v3/watchtower/watchtower.glb",ref),
  "camp":("art-source/valoria/production/camp-family-v1/CampFamilyV1.glb","HEAD")}
 manifest=[]
 for key,(path,commit) in sources.items():
@@ -31,7 +32,8 @@ for key,relative,expected in [
  ("pine","eldoria-one-full-medium-pine/glb/pine_medium.glb","003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e"),
  ("cliff","eldoria-rockface-palette-02/glb/cliff_rock_column_stone_neutral.glb","614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447")]:
  base=pathlib.Path(__import__("os").environ["RUNNER_TEMP"])/("breakthrough-"+key)
- found=list(base.rglob(pathlib.Path(relative).name))
+ existing=out/key/(key+".glb")
+ found=[existing] if existing.exists() and hashlib.sha256(existing.read_bytes()).hexdigest()==expected else list(base.rglob(pathlib.Path(relative).name))
  if len(found)!=1:raise RuntimeError("Natural source ambiguous "+key)
  data=found[0].read_bytes()
  if hashlib.sha256(data).hexdigest()!=expected:raise RuntimeError("Natural source hash mismatch "+key)

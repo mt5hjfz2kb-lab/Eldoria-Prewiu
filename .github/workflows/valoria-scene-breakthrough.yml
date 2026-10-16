@@ -45,16 +45,10 @@ jobs:
           node tools/eldoria-agent-preflight.mjs
       - uses: actions/download-artifact@v4
         with:
-          run-id: 38877895047
-          name: valoria-one-full-medium-pine-38877895047
+          run-id: 38940426182
+          name: bastion1-modular63-unity-review-38940426182
           github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/breakthrough-pine
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 38826318218
-          name: valoria-real-rock-02-palette-38826318218
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/breakthrough-cliff
+          path: ${{ runner.temp }}/breakthrough-baseline
       - name: Stage exact existing art without changing sources
         shell: powershell
         run: |
@@ -66,7 +60,7 @@ jobs:
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Breakthrough-Unity.log'
-          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Hybrid','-logFile',$log)
+          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Finish','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Unity exit $($process.ExitCode)"}
