@@ -124,6 +124,24 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
       "phase": "Preparation and asset source validation; Unity runner blocked by active sibling experiment"
+    },
+    {
+      "id": "valoria-63-clean-assembly-20261016",
+      "title": "Valoria 63 clean modular assembly",
+      "owner": "chat-valoria-63-clean-assembly-20261016",
+      "branch": "experiment/valoria-63-clean-assembly-20261016",
+      "status": "active",
+      "claimed_at": "2026-10-16",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/Valoria63Clean/**",
+        "tools/valoria-63-clean/**",
+        ".github/workflows/valoria-63-clean.yml",
+        "docs/evidence/valoria-63-clean/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "dependency": "Use archived 63 original GLB artifact; no runner until existing breakthrough releases windows-runner-heavy",
+      "phase": "source and assembly implementation"
     }
   ],
   "history": [
