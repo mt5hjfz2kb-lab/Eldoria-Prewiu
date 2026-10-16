@@ -1,6 +1,6 @@
 {
   "schema": "eldoria.bastion1.modular63.version_selection.v1",
-  "note": "Candidate comparison of BASE 63 light-limestone square tower and merlons, preserving V6 regular wall. All same geometric dimensions; pick on Unity visual proof rather than version age. No artistic or gameplay approval.",
+  "note": "Independent modular recipe B: original 63 full-volume pre-crenellated masonry bays with two grounded buttresses and outboard tower, same unchanged source playable scene. V6 panel and loose merlon kept staged only, NOT ART_APPROVED.",
   "base_63": {
     "run_id": 38813966671,
     "artifact_id": 12010106460,
@@ -47,7 +47,7 @@
       "file": "eldoria-4m-wall-architectural-v6/glb/wall_panel_regular_4m_warm_limestone.glb",
       "sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
       "provisional_score": 7.1,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "V6 warm limestone confirmed visually superior to V8 microchips"
     },
     {
@@ -87,7 +87,7 @@
       "file": "eldoria-upgrade63/glb/merlon_tall.glb",
       "sha256": "022bf407bcfeeb7e717874b0a27def4e3f9831bb0c6edfb1933bc99f4f447bb9",
       "provisional_score": null,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "A/B lighter original stone crenel matches baseline tower palette; true top-supported individual modules; art proof pending"
     },
     {
@@ -99,6 +99,16 @@
       "provisional_score": null,
       "usage": "candidate_in_scene",
       "rationale": "Physically projecting volumetric support pier connected to real wall at matching foundation, not overlay; visually unapproved until same-camera Unity A/B"
+    },
+    {
+      "id": "wall_panel_crenellated_4m",
+      "artifact_run": 38813966671,
+      "artifact": "valoria-individual-quality-63-38813966671",
+      "file": "eldoria-upgrade63/glb/wall_panel_crenellated_4m.glb",
+      "sha256": "476d4cd3bb9d220845489833b3386311c1994b6db55ab3353571cf564a6dd05f",
+      "provisional_score": null,
+      "usage": "candidate_in_scene",
+      "rationale": "Architectural full-depth 4m crenellated wall substitutes whole V6 bay; no loose duplicate merlons; exact visual Unity A/B required"
     }
   ],
   "rejected_or_pending": [

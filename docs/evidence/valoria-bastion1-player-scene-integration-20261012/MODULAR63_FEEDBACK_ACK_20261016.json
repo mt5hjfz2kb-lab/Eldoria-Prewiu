@@ -90,6 +90,12 @@
       "sha256": "f4d4d325106eae4f5c3e5c9a5e3f1433eecb8ca6bb063bd812ccd73101a53d64",
       "art_approved": false,
       "decisions": []
+    },
+    {
+      "id": "wall_panel_crenellated_4m",
+      "sha256": "476d4cd3bb9d220845489833b3386311c1994b6db55ab3353571cf564a6dd05f",
+      "art_approved": false,
+      "decisions": []
     }
   ]
 }
