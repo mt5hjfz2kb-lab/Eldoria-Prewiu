@@ -127,6 +127,34 @@ namespace Eldoria.EditorTools
                     torchCount++;
                 }
             }
+            // Separate candidate C: photographic warm limestone grading, by
+            // cloned per-render materials; never changes the source GLBs, the
+            // previously captured geometry-only B, or the preserved A scene.
+            var modular=GameObject.Find("Modular63_VISUAL_CANDIDATE_NO_GAMEPLAY");
+            if(modular==null)throw new Exception("Golden lookdev cannot find modular construction");
+            int graded=0;
+            foreach(var renderer in modular.GetComponentsInChildren<Renderer>(true))
+            {
+                var materials=renderer.sharedMaterials;
+                bool touched=false;
+                for(int i=0;i<materials.Length;i++)
+                {
+                    var original=materials[i];
+                    if(original==null||!original.HasProperty("_BaseColor"))continue;
+                    var tint=new Material(original){name="V6_golden_hour_view_only"};
+                    var baseColor=tint.GetColor("_BaseColor");
+                    tint.SetColor("_BaseColor",new Color(
+                        Mathf.Clamp01(baseColor.r*1.25f),
+                        Mathf.Clamp01(baseColor.g*1.00f),
+                        Mathf.Clamp01(baseColor.b*.80f),baseColor.a));
+                    materials[i]=tint;
+                    touched=true;
+                    graded++;
+                }
+                if(touched)renderer.sharedMaterials=materials;
+            }
+            if(graded==0)throw new Exception("Golden lookdev did not find tintable masonry materials");
+            Debug.Log("BASTION1_GOLDEN_C_ONLY_MATERIALS "+graded);
             if (sunCount != 1)
                 throw new Exception("Expected exactly one original Bastion I directional sun, got " + sunCount);
             RenderSettings.ambientSkyColor = new Color(.47f, .52f, .59f);
@@ -311,6 +339,9 @@ namespace Eldoria.EditorTools
                 throw new Exception("Unable to determine outboard tower socket from gate");
             bool outboardNegativeX=wingDelta<0f;
             var watch=CopyOn(tower,replacement.transform,"BUILT_SHORT_SQUARE_WATCHTOWER");
+            // A bounded, uniform scale keeps the architecture volumetric while
+            // reducing the observed overbearing outer tower silhouette.
+            watch.transform.localScale*=.86f;
             RebindNeutralLimestone(watch);
             var tb=Bounds(watch);
             float towerOverlap=Mathf.Min(.48f,tb.size.x*.12f);
