@@ -1,7 +1,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {validateWorkstream} from './workstream-sync.mjs';
+import {validateWorkstream,verifySourceRevision} from './workstream-sync.mjs';
+import os from 'node:os';
+import path from 'node:path';
+import crypto from 'node:crypto';
 const registry=JSON.parse(fs.readFileSync(new URL('./registry.json',import.meta.url)));
 const ids=JSON.parse(fs.readFileSync(new URL('./asset-ids.json',import.meta.url)));
 const selected={
@@ -23,3 +26,19 @@ test('scene-specific resize never becomes global asset fix',()=>{const p=plan('a
 test('Unity GLB swapped without feedback refresh rejected',()=>{const p=plan('unity');p.selected_versions[0].sha256='f'.repeat(64);assert.throws(()=>validateWorkstream('unity',p,registry,ids,selected),/SHA changed/)});
 test('unfinished experimental art cannot claim promotion',()=>{const p=plan('artist');p.phase='PROMOTION_REVIEW';assert.throws(()=>validateWorkstream('artist',p,registry,ids),/unreviewed correction/)});
 test('art approval is not inferred from technical success',()=>{const p=plan('unity');p.art_approved=true;assert.throws(()=>validateWorkstream('unity',p,registry,ids,selected),/ART_APPROVED/)});
+
+test('identical authored source Git blob hash passes',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'eldoria-feedback-'));
+ try{
+  const file=path.join(dir,'source.py');const content=Buffer.from('irreversible change protection\\n','utf8');
+  fs.writeFileSync(file,content);
+  const sha=crypto.createHash('sha1').update(Buffer.from('blob '+content.length+String.fromCharCode(0))).update(content).digest('hex');
+  assert.equal(verifySourceRevision({source_file:'source.py',source_git_blob_sha1:sha},file),sha);
+ }finally{fs.rmSync(dir,{recursive:true,force:true})}
+});
+test('changed authored source without updated feedback is rejected',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'eldoria-feedback-'));
+ try{const file=path.join(dir,'source.py');fs.writeFileSync(file,'new geometry');
+  assert.throws(()=>verifySourceRevision({source_file:'source.py',source_git_blob_sha1:'0'.repeat(40)},file),/source changed without per-asset feedback review/);
+ }finally{fs.rmSync(dir,{recursive:true,force:true})}
+});
