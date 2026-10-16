@@ -3,7 +3,7 @@
     "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity",
     "base_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity",
     "classification": "AUTHORED 3D SOURCE CANDIDATE / REMAINING GREYBOX",
-    "visual_status": "NOT_APPROVED_FULL_SCENE_MUST_BE_REVIEWED",
+    "visual_status": "TEMPORARY_SUPPORT_RETAINED_E1_VISUAL_REJECT_REVIEW_E2_REQUIRED",
     "gameplay_status": "NOT_CERTIFIED",
     "actual_glbs": true,
     "original_colliders_preserved": true,
