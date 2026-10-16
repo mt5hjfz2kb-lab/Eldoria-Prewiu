@@ -57,7 +57,13 @@ def make_image(name,kind,index):
  crop=ar[:,indices,:].copy()
  # Dark warm oak while retaining authentic old-plank knots and grazed fibers.
  if kind=='diffuse':
-  crop[:,:,:3]=np.clip(crop[:,:,:3]*np.array([1.05,.99,.94],dtype=np.float32),.02,.91)
+  rgb=crop[:,:,:3]
+  lum=rgb[:,:,0]*.30+rgb[:,:,1]*.59+rgb[:,:,2]*.11
+  median=float(np.median(lum))
+  # Source was too nearly black in V4. Normalize cropped REAL wood detail
+  # around warm medium-brown; preserve photographed cracks and knot variation.
+  warm=np.clip(.52+(lum-median)*.44,.20,.85)
+  crop[:,:,:3]=np.clip(warm[:,:,None]*np.array([.99,.80,.64],dtype=np.float32)[None,None,:],.03,.86)
  photo=bpy.data.images.new('Valoria_real_wood_'+name+'_'+kind,1024,1024,alpha=True)
  photo.pixels.foreach_set(crop.reshape(-1));photo.update()
  if kind=='nor_gl':photo.colorspace_settings.name='Non-Color'
