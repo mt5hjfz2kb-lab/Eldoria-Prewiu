@@ -29,4 +29,5 @@ jobs:
             docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json \
             '' \
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
-            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
+            tools/valoria-modular-fortress/individual_quality_uplift.py
