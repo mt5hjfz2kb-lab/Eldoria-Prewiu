@@ -5,7 +5,6 @@ on:
       - art/valoria-63-individual-quality-uplift-20261015
     paths:
       - 'tools/valoria-modular-fortress/individual_quality_uplift.py'
-      - '.github/workflows/valoria-63-individual-quality.yml'
 permissions:
   contents: read
   actions: read
@@ -13,7 +12,29 @@ concurrency:
   group: valoria-individual-63-blender-uplift
   cancel-in-progress: false
 jobs:
+  feedback-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: .valoria-feedback
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reject ignored or incorrectly generalized Bastion feedback before Blender
+        shell: bash
+        run: |
+          node .valoria-feedback/tools/valoria-asset-feedback/workstream-sync.mjs artist \
+            docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json \
+            '' \
+            .valoria-feedback/tools/valoria-asset-feedback/registry.json \
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
   upgrade-and-capture-each:
+    needs: feedback-preflight
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 115
     steps:
@@ -84,5 +105,42 @@ jobs:
             ${{ runner.temp }}/eldoria-upgrade63/**
             ${{ runner.temp }}/eldoria-individual-uplift.log
             ${{ runner.temp }}/eldoria-individual-uplift.stderr.log
+          if-no-files-found: warn
+          retention-days: 30
+  feedback-artifact-review:
+    needs: upgrade-and-capture-each
+    if: ${{ needs.upgrade-and-capture-each.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: .valoria-feedback
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-${{ github.run_id }}
+          path: candidate
+      - name: Verify every produced GLB hash, 126 previews and live integration feedback
+        shell: bash
+        run: |
+          directory="$(dirname "$(find candidate -type f -name individual_quality_status.json -print -quit)")"
+          test -n "$directory" && test "$directory" != "."
+          node .valoria-feedback/tools/valoria-asset-feedback/workstream-sync.mjs artist-output \
+            docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json \
+            "$directory" \
+            .valoria-feedback/tools/valoria-asset-feedback/registry.json \
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
+      - name: Save feedback receipt without promoting art
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria63-feedback-receipt-${{ github.run_id }}
+          path: candidate/**/asset_feedback_receipt.json
           if-no-files-found: warn
           retention-days: 30
