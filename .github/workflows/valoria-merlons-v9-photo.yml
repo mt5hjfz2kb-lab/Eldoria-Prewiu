@@ -1,0 +1,79 @@
+name: "[ART MERLON V9] Two independently dressed photographed-stone parapet modules"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-merlons-v9-photo.yml'
+      - 'tools/valoria-modular-fortress/merlons_real_stone_v9.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-merlons-art-v9
+  cancel-in-progress: false
+jobs:
+  real-merlons:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Make installed Git available
+        shell: powershell
+        run: |
+          $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          if(-not $git){throw 'Git missing'}
+          Add-Content $env:GITHUB_PATH (Split-Path $git)
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-modular-fortress/merlons_real_stone_v9.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-eleven-under6-masonry-a-b-38871632375
+          run-id: 38871632375
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/original_merlons
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-twelve-limestone-cc0-38825364463
+          run-id: 38825364463
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/stone_photo
+      - name: Native Blender generation of separate limestone courses
+        shell: powershell
+        run: |
+          $exe=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $exe){throw 'Blender is not installed'}
+          $old=Join-Path $env:RUNNER_TEMP 'original_merlons\eldoria-eleven-architecture-pbr\glb'
+          $donor=Join-Path $env:RUNNER_TEMP 'stone_photo\eldoria-twelve-limestone\glb\stone_ashlar_04.glb'
+          $dest=Join-Path $env:RUNNER_TEMP 'eldoria-merlons-v9'
+          if(-not(Test-Path $donor)){throw 'Real source donor missing'}
+          $blob="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/merlons_real_stone_v9.py'
+          $content=& git show $blob
+          if($LASTEXITCODE -ne 0 -or -not $content){throw 'Pinned Python source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'merlons_pin_v9.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$content,[System.Text.UTF8Encoding]::new($false))
+          $stdout=Join-Path $env:RUNNER_TEMP 'merlons_v9.stdout'
+          $stderr=Join-Path $env:RUNNER_TEMP 'merlons_v9.stderr'
+          $job=Start-Process -FilePath $exe -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$donor,$dest) -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 55 -ErrorAction SilentlyContinue
+          if($job.ExitCode -ne 0){throw "Real Blender failed $($job.ExitCode)"}
+          foreach($name in @('merlon_low','merlon_tall')){
+            foreach($relative in @('before','after','glb','reports')){
+              $extension=if($relative -eq 'glb'){'glb'}elseif($relative -eq 'reports'){'json'}else{'png'}
+              if(-not(Test-Path (Join-Path $dest "$relative\$name.$extension"))){throw "Missing evidence $relative $name"}
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-stone-merlons-v9-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-merlons-v9/**
+            ${{ runner.temp }}/merlons_v9.stdout
+            ${{ runner.temp }}/merlons_v9.stderr
+          retention-days: 30
+          if-no-files-found: warn
