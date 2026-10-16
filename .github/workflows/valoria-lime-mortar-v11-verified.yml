@@ -1,0 +1,81 @@
+name: "[ART LAST FLOOR6] One verified CC0 photographed historic lime mortar"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-lime-mortar-v11-verified.yml'
+      - 'tools/valoria-modular-fortress/true_lime_mortar_v11_explicit_cc0.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-physical-lime-alone-v11
+  cancel-in-progress: false
+jobs:
+  authentic-lime-stone-seam:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Find existing Git and Blender without installation
+        shell: powershell
+        id: deps
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $dir=Split-Path $git;Add-Content $env:GITHUB_PATH $dir;$env:PATH="$dir;$env:PATH"
+          }
+          $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Native installed Blender missing'}
+          "exe=$blender" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-corrected-2cm-mortar-38895731036
+          run-id: 38895731036
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_mortar_v9
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-dark-lime-mortar-cc0-38894488570
+          run-id: 38894488570
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_cc0_licensed_mortar_photo
+      - name: Generate real 26mm mortar with complete official photo PBR and macro/standard A-B
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'exact_mortar_v9\valoria-true-lime-seam-v9\glb'
+          $photo=Join-Path $env:RUNNER_TEMP 'exact_cc0_licensed_mortar_photo\eldoria-mortar-lime-v8\atlas\real_photo_lime_mortar_aged_muted_1k.png'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-lime-grout-v11'
+          if(-not(Test-Path (Join-Path $src 'mortar_joint_recess.glb'))){throw 'Source 26mm seam missing'}
+          if(-not(Test-Path $photo)){throw 'Verified Poly Haven CC0 photo absent'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/true_lime_mortar_v11_explicit_cc0.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Version pinned artisan source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-lime-v11-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-lime-v11.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-lime-v11.stderr'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$photo,$out) -Wait -PassThru -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 65 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Rebuilt original CC0 mortar failed $($proc.ExitCode)"}
+          foreach($file in @('before\mortar_joint_recess.png','before\mortar_joint_recess_macro.png','after\mortar_joint_recess.png','after\mortar_joint_recess_macro.png','atlas\fine_lime_grout_CC0.png','atlas\fine_lime_grout_normal.png','glb\mortar_joint_recess.glb','reports\true_lime_mortar_v10.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "No artistic evidence: $file"}
+          }
+          $report=Get-Content (Join-Path $out 'reports\true_lime_mortar_v10.json') -Raw|ConvertFrom-Json
+          if($report.removed_floating_pebbles -lt 20 -or $report.actual_height_m -gt .06){throw 'Inadequate physically seated grout'}
+      - name: Archive 1 authentic CC0 asset, macro and full-size A-B; NO AUTO-APPROVAL
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-visible-true-lime-v11-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-lime-grout-v11/**
+            ${{ runner.temp }}/valoria-lime-v11.stdout
+            ${{ runner.temp }}/valoria-lime-v11.stderr
+          if-no-files-found: warn
+          retention-days: 30
