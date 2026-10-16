@@ -1,0 +1,78 @@
+name: "[ART WALL] One true photo-relief repeatable 4m medieval stone panel"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-photosculpt-medieval-wall.yml'
+      - 'tools/valoria-modular-fortress/photosculpt_medieval_wall.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-one-reusable-stone-wall-photo-geometry
+  cancel-in-progress: false
+jobs:
+  real-cc0-4m-wall-visual-trial:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Locate existing local Git and Blender
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Missing Git'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Missing Blender'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/photo-wall-source
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-3-real-medieval-wall-pbr-38860976002
+          run-id: 38860976002
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/photo-wall-cc0
+      - name: Make and compare one repeated module with preserved 3D source
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'photo-wall-source\eldoria-upgrade63\glb\wall_panel_regular_4m.glb'
+          $cc0=Join-Path $env:RUNNER_TEMP 'photo-wall-cc0'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-4m-photo-wall-trial'
+          if(-not(Test-Path $src)){throw 'Frozen original 4m wall missing'}
+          if(-not(Test-Path (Join-Path $cc0 'medieval_blocks_03_diffuse.jpg'))){throw '1K scanned stone CC0 missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/photosculpt_medieval_wall.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned photo-relief source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-photo-sculpted-stone-pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-one-photo-wall.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-one-photo-wall.err'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$cc0,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 110 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Native Blender photo-relief failed $($proc.ExitCode)"}
+          foreach($x in @('glb\wall_panel_regular_4m.glb','before\wall_panel_regular_4m.png','after\wall_panel_regular_4m.png','reports\real_medieval_cc0_single_wall.json')){
+            if(-not(Test-Path (Join-Path $out $x))){throw "Missing result: $x"}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-medieval-masonry-4m-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-4m-photo-wall-trial/**
+            ${{ runner.temp }}/eldoria-one-photo-wall.log
+            ${{ runner.temp }}/eldoria-one-photo-wall.err
+          if-no-files-found: warn
+          retention-days: 30
