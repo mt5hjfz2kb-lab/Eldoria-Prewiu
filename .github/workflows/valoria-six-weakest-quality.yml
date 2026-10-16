@@ -1,0 +1,82 @@
+name: "[ART QUALITY 6] Six weakest individual Valoria assets native Blender"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-six-weakest-quality.yml'
+      - 'tools/valoria-modular-fortress/uplift_six_weakest_20261016.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-six-weakest-shape-first
+  cancel-in-progress: false
+jobs:
+  sculpt-six-independent-assets:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 100
+    steps:
+      - name: Validate local Git and Blender
+        shell: powershell
+        id: exes
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Installed Blender unavailable'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+          & $b --version | Select-Object -First 2
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/weakest-original-63
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-cc0-real-stone-materials-38823501643
+          run-id: 38823501643
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/weakest-polyhaven-cc0
+      - name: Model, render and export six highest-priority independent pieces
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'weakest-original-63\eldoria-upgrade63\glb'
+          $cc0=Join-Path $env:RUNNER_TEMP 'weakest-polyhaven-cc0'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-six-weakest-candidates'
+          foreach($f in @((Join-Path $base 'mortar_joint_recess.glb'),(Join-Path $cc0 'rock_3_diffuse.jpg'),(Join-Path $cc0 'oak_veneer_05_diffuse.jpg'))) {
+            if(-not(Test-Path $f)){throw "Source missing: $f"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/uplift_six_weakest_20261016.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned six-asset code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-six-weakest.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-six-weakest.stdout.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-six-weakest.stderr.log'
+          $p=Start-Process -FilePath "${{ steps.exes.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$cc0,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 120 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "Blender independent six batch failed $($p.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($count -ne 6){throw "Expected six $folder, got $count"}
+          }
+      - name: Preserve all real native A-B and individual GLBs, no ART_APPROVED
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-six-weakest-native-ab-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-six-weakest-candidates/**
+            ${{ runner.temp }}/eldoria-six-weakest.stdout.log
+            ${{ runner.temp }}/eldoria-six-weakest.stderr.log
+          if-no-files-found: warn
+          retention-days: 30
