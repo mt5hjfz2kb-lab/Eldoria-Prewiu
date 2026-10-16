@@ -129,20 +129,34 @@ static void GeologicalSides(GameObject cap) {
   }
  }
  static GameObject BakeDistant() {
-  var hidden=new List<Renderer>();foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-   if(!r.transform.IsChildOf(distant.transform)&&r.enabled){r.enabled=false;hidden.Add(r);}
-  var oldSize=cam.orthographicSize;var oldAspect=cam.aspect;var oldColor=cam.backgroundColor;cam.orthographicSize=48;cam.aspect=16f/9;cam.backgroundColor=Color.clear;
-  var rt=new RenderTexture(2048,1152,24,RenderTextureFormat.ARGB32){antiAliasing=4};var tex=new Texture2D(2048,1152,TextureFormat.RGBA32,false);var previous=RenderTexture.active;
-  bool async=ShaderUtil.allowAsyncCompilation;ShaderUtil.allowAsyncCompilation=false;
-  try{cam.targetTexture=rt;cam.Render();cam.Render();cam.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,2048,1152),0,0);tex.Apply();
-   Directory.CreateDirectory(Root+"/Horizon");File.WriteAllBytes(Root+"/Horizon/native-distant-bake.png",tex.EncodeToPNG());}
-  finally{ShaderUtil.allowAsyncCompilation=async;cam.targetTexture=null;RenderTexture.active=previous;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(tex);cam.orthographicSize=oldSize;cam.aspect=oldAspect;cam.backgroundColor=oldColor;foreach(var r in hidden)r.enabled=true;}
+  var oldMask=cam.cullingMask;var oldSize=cam.orthographicSize;var oldAspect=cam.aspect;
+  var layers=new System.Collections.Generic.Dictionary<GameObject,int>();
+  foreach(var t in distant.GetComponentsInChildren<Transform>(true)){layers[t.gameObject]=t.gameObject.layer;t.gameObject.layer=30;}
+  cam.cullingMask=1<<30;cam.orthographicSize=48;cam.aspect=16f/9;
+  // Separate fresh process, same proven RGB capture path; no alpha/MSAA allocation or live renderer disable cycle.
+  try{Capture("distant-native-source",2048,1152);}
+  finally{cam.cullingMask=oldMask;cam.orthographicSize=oldSize;cam.aspect=oldAspect;foreach(var item in layers)item.Key.layer=item.Value;}
+  Directory.CreateDirectory(Root+"/Horizon");File.Copy(Evidence+"/distant-native-source.png",Root+"/Horizon/native-distant-bake.png",true);
   AssetDatabase.ImportAsset(Root+"/Horizon/native-distant-bake.png",ImportAssetOptions.ForceSynchronousImport);
-  var settings=(TextureImporter)AssetImporter.GetAtPath(Root+"/Horizon/native-distant-bake.png");settings.mipmapEnabled=true;settings.alphaIsTransparency=true;settings.wrapMode=TextureWrapMode.Clamp;settings.SaveAndReimport();
+  var settings=(TextureImporter)AssetImporter.GetAtPath(Root+"/Horizon/native-distant-bake.png");settings.mipmapEnabled=true;settings.maxTextureSize=2048;settings.wrapMode=TextureWrapMode.Clamp;settings.SaveAndReimport();
   var card=GameObject.CreatePrimitive(PrimitiveType.Quad);card.name="2.5D distant native bake - never reference";UnityEngine.Object.DestroyImmediate(card.GetComponent<Collider>());
   card.transform.position=cam.transform.position+cam.transform.forward*240;card.transform.rotation=cam.transform.rotation;card.transform.localScale=new Vector3(96*16/9,96,1);
   var material=new Material(Shader.Find("Eldoria/Breakthrough/NativeDistantBake"));material.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Horizon/native-distant-bake.png"));card.GetComponent<Renderer>().sharedMaterial=material;
   distant.SetActive(false);return card;
+ }
+ public static void BakeOnly(){
+  try{
+   EditorSceneManager.OpenScene(Root+"/BastionI_Hybrid3D_Final.unity",OpenSceneMode.Single);cam=Camera.main;cam.aspect=1.5f;cam.orthographicSize=24;
+   artRoot=GameObject.Find("HYBRID_3D_AUTHORED_ART");distant=GameObject.Find("DISTANT_3D_ENVIRONMENT_NONINTERACTIVE");
+   if(artRoot==null||distant==null)throw new Exception("Saved successful 3D checkpoint absent");
+   artFolder=Root+"/Generated25D/"+(Environment.GetEnvironmentVariable("GITHUB_SHA")??"local000").Substring(0,8);
+   File.Copy(Evidence+"/functional-checks.txt",Evidence+"/functional-checks-3d.txt",true);
+   BakeDistant();FunctionalChecks();File.Copy(Evidence+"/functional-checks.txt",Evidence+"/functional-checks-25d.txt",true);
+   Suite("final25d");SaveArt();AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),Root+"/BastionI_Hybrid25D_Final.unity");
+   var rotation=cam.transform.rotation;cam.transform.Rotate(Vector3.up,10,Space.World);Capture("final25d-orbit-stress-unsupported",1536,1024);cam.transform.rotation=rotation;
+   File.WriteAllText(Evidence+"/comparison-result.json","{\"foreground_3d\":true,\"distant_source\":\"native 3D environment, never reference image\",\"fixed_orientation_required\":true,\"art_approved\":false,\"mobile_performance_pass\":false}");
+   Debug.Log("BREAKTHROUGH_CAPTURE_COMPLETE");EditorApplication.Exit(0);
+  }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}
  }
  public static async void Finish(){
   try{

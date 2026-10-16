@@ -43,28 +43,51 @@ jobs:
           $hash=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLowerInvariant()
           if($hash -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference mismatch'}
           node tools/eldoria-agent-preflight.mjs
+      - name: Preserve successful 3D checkpoint left by the interrupted distant bake
+        shell: powershell
+        run: |
+          $file='Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid3D_Final.unity'
+          if(-not(Test-Path $file)){throw 'Saved 3D checkpoint not on runner; recover exact prior artifact before continuing'}
+          git config user.name "Eldoria scene experiment"
+          git config user.email "scene-experiment@users.noreply.github.com"
+          git add -f -- Unity/Assets/Eldoria/ArtTests/SceneBreakthrough docs/evidence/valoria-scene-breakthrough-20261016
+          git diff --cached --quiet
+          if($LASTEXITCODE -ne 0){git commit -m "checkpoint: successful 3D scene and captures before native distant-bake crash";git push origin HEAD:experiment/valoria-scene-method-breakthrough-20261016;if($LASTEXITCODE -ne 0){throw 'Checkpoint push rejected'}}
       - uses: actions/download-artifact@v4
         with:
           run-id: 38940426182
           name: bastion1-modular63-unity-review-38940426182
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/breakthrough-baseline
-      - name: Stage exact existing art without changing sources
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38419031491
+          name: bastion1-player-integration-38419031491
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/breakthrough-original
+      - name: Recover immutable original baseline into the study
         shell: powershell
         run: |
           $python=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter python.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
-          if(-not $python){throw 'Existing Blender Python unavailable'}
-          & $python tools/valoria-scene-breakthrough/stage.py
-          if($LASTEXITCODE -ne 0){throw 'Immutable source staging failed'}
+          & $python tools/valoria-scene-breakthrough/stage-baseline.py
+          if($LASTEXITCODE -ne 0){throw 'Frozen baseline recovery failed'}
       - name: Construct and capture clean isolated scene
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Breakthrough-Unity.log'
-          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Finish','-logFile',$log)
+          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.BakeOnly','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
           if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own Unity process timed out'}
           if($process.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Unity exit $($process.ExitCode)"}
           if(-not(Select-String -Path $log -Pattern 'BREAKTHROUGH_CAPTURE_COMPLETE' -Quiet)){Get-Content $log -Tail 120;throw 'Completion absent'}
+      - name: Render frozen baseline with declared frame normalization and compose evidence grid
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Breakthrough-Compare.log'
+          $arguments=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/breakthrough-work/Unity",'-executeMethod','Eldoria.Breakthrough.SceneCapture.Compare','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
+          if(-not $process.WaitForExit(900000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw 'Own comparison process timed out'}
+          if($process.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'Native baseline comparison failed'}
       - name: Persist exact experimental scene and review frames in own branch
         shell: powershell
         run: |
@@ -82,5 +105,5 @@ jobs:
           path: |
             breakthrough-work/Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**
             breakthrough-work/docs/evidence/valoria-scene-breakthrough-20261016/**
-            ${{ runner.temp }}/Breakthrough-Unity.log
+            ${{ runner.temp }}/Breakthrough-*.log
           retention-days: 30
