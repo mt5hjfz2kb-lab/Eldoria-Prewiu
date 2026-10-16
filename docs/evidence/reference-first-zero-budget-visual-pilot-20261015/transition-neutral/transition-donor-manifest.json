@@ -1,0 +1,51 @@
+{
+    "stage": "NATIVE_UNITY_V17_NEUTRAL_GEOMETRY_MATERIAL_IMPORT_DIAGNOSTIC",
+    "reference": "Canonical owner supplied fortified plateau image 1513x1039",
+    "revision": "b4703e90556a5d785a5c10d348d1da45ddc901ab",
+    "sources": [
+        "Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+        "Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+    ],
+    "positions": [
+        "A left front",
+        "B right front",
+        "C left rear",
+        "D right rear"
+    ],
+    "frames": [
+        "35-neutral-transition-oblique.png",
+        "36-neutral-transition-high.png"
+    ],
+    "renderers": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalMaterialSlotCounts": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalShaderNames": [
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness"
+    ],
+    "allRendererMaterialsReplacedInSceneOnly": true,
+    "originalLongestDimensions": [
+        0.9799115657806397,
+        0.9792413115501404,
+        0.9699085354804993,
+        0.32435736060142519
+    ],
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
