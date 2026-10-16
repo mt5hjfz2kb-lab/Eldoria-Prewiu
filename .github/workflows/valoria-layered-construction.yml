@@ -167,6 +167,48 @@ jobs:
             throw 'Layer D claimed unverified art or incorrect actual modules'
           }
           Write-Host 'VALORIA_LAYER_D_REAL_SOURCE_TECH_PASS; ART_QUALITY_NOT_APPROVED'
+      - name: Stage only 3 existing hash-pinned bridge GLBs into isolated model folder
+        shell: powershell
+        run: |
+          $src='Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources'
+          $dst='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Sources'
+          foreach($id in @('bridge_span_4m','arch_bridge_support','stone_slab_cap')){
+            if(-not(Test-Path "$src/$id.glb")){throw "Missing original source $id"}
+            Copy-Item "$src/$id.glb" "$dst/$id.glb" -Force
+          }
+          Write-Host 'VALORIA_BRIDGE_THREE_ARCHIVED_GLB_SHA_PINNED_INPUTS'
+      - name: Reopen scene ABCD and build authentic modular bridge E without gameplay changes
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-bridge-E.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",
+            '-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaAuthenticBridgeLayerE.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Bridge E import timed out'
+          }
+          Get-Content $log -Tail 100
+          Copy-Item $log docs/evidence/valoria-layered-construction-20261016/native-bridge-E.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_LAYERED_REAL_BRIDGE_E_COMPLETE' -Quiet)){
+            throw "Actual Unity bridge layer E failed exit=$($p.ExitCode)"
+          }
+      - name: Verify authentic bridge prefab, continuity and official before-after images
+        shell: powershell
+        run: |
+          $root='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
+          $ev='docs/evidence/valoria-layered-construction-20261016'
+          foreach($p in @("$root/Valoria_MasterPlan_Layers_ABCDE.unity",
+            "$root/GeneratedE/RealBridge_3SourceTypes.prefab","$ev/real-bridge-E-evidence.json",
+            "$ev/master-bridge-E-home-12.png","$ev/master-bridge-E-home-19.png","$ev/master-bridge-E-portrait-12.png")){
+            if(-not(Test-Path $p)){throw "Missing native E deliverable: $p"}
+          }
+          $d=Get-Content "$ev/real-bridge-E-evidence.json" -Raw|ConvertFrom-Json
+          if($d.sources -ne 3 -or $d.instances -ne 14 -or -not $d.original_colliders_preserved -or
+             $d.art_approved -or [math]::Abs($d.collision_deck_top-$d.shore_top) -gt .001){
+            throw 'Bridge E source/geometry/authority gate red'
+          }
+          Write-Host 'VALORIA_REAL_BRIDGE_E_TECH_PASS (visual independent review required)'
       - name: Persist new isolated scene and evidence to own branch only
         shell: powershell
         run: |
@@ -174,8 +216,10 @@ jobs:
           git config user.email 'valoria-layered@users.noreply.github.com'
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE/
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity
           git add -f -- docs/evidence/valoria-layered-construction-20261016/
           if(-not(git diff --cached --quiet)){
             git commit -m 'evidence: native Valoria master-plan ABC with physical route checks'
@@ -189,7 +233,9 @@ jobs:
           path: |
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/**
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD/**
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE/**
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity
             valoria-layered-source/docs/evidence/valoria-layered-construction-20261016/**
           if-no-files-found: warn
