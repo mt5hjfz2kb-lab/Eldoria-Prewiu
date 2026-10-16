@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-10-14",
+  "reviewed_at": "2026-10-17",
   "purpose": "Navigation and lifecycle only. Not a substitute for live workstream/commit/evidence checks.",
   "authority": "AGENTS.md",
   "unreviewed_policy": "Unreviewed documents never grant operational authority.",
@@ -1008,6 +1008,30 @@
       "domain": "operations",
       "status": "current",
       "note": "Control de continuidad automática y recuperación de misiones sin atribución de VISUAL PASS"
+    },
+    {
+      "path": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Mandato exclusivo actual: Valoria por capas; consultar registro vivo; no reactivar otras ramas."
+    },
+    {
+      "path": "docs/VALORIA_SCENE_METHOD_BREAKTHROUGH_BRIEF_20261016.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Informe de metodología histórica; no orden independiente de producción ni validación visual."
+    },
+    {
+      "path": "docs/VALORIA_TWO_WORKSTREAMS_OWNER_PAUSE_20261016.md",
+      "domain": "operations",
+      "status": "reference",
+      "note": "Pausa histórica de dos ramas, supersedida por la prioridad exclusiva de Valoria; protecciones continúan."
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "14 alternativas de coste 0, pruebas A/B, criterios de pivote; reserva informativa sin autorizar ejecución."
     }
   ]
 }
