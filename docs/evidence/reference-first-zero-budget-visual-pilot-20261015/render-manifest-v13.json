@@ -1,0 +1,23 @@
+{
+    "stage": "REAL_UNITY_V13_CAMERA_GROUNDED_SKY_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V13/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V13/Imported/LowerGateFamilyV1.glb",
+    "revision": "7cdbae8118d4e911a954fadf133af1ed821bdfc0",
+    "frames": [
+        "25-actual-sky-overview.png",
+        "26-actual-sky-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 37,
+    "distantTreeInstances": 16,
+    "pavingStoneInstances": 78,
+    "mountainSourceInstances": 6,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
