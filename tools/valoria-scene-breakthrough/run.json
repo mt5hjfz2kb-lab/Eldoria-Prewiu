@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "status": "DUPLICATE_RETIRED",
+  "canonical_branch": "experiment/valoria-scene-method-breakthrough-20261016",
+  "reason": "Cancel only this duplicate pending workflow via its own concurrency; all jobs disabled."
+}

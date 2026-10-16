@@ -10,7 +10,7 @@ permissions:
   actions: read
 concurrency:
   group: valoria-scene-breakthrough
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   native-capture:
     if: ${{ false }} # Duplicate session retired; existing queued run still requires cancellation.
