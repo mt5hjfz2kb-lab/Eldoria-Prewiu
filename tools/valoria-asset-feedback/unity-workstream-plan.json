@@ -85,5 +85,7 @@
       "usage": "candidate_in_scene"
     }
   ],
-  "note": "Illustrative synchronized baseline; working owner branch must reacknowledge future pins and main corrections. This candidate has ART_FAIL pending, no promotion."
+  "note": "Illustrative synchronized baseline; working owner branch must reacknowledge future pins and main corrections. This candidate has ART_FAIL pending, no promotion.",
+  "source_file": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs",
+  "source_git_blob_sha1": "a4182af229e971eada3ce2e927857dc5a2cc302c"
 }
