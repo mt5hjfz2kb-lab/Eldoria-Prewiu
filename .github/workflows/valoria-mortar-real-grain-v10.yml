@@ -38,11 +38,19 @@ jobs:
           run-id: 38895731036
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ runner.temp }}/actual_thin_mortar_v9
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-dark-lime-mortar-cc0-38894488570
+          run-id: 38894488570
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/photo_mortar_original_v8
       - name: Blender independent 2.6cm grout, photo atlas and macro visual proof
         shell: powershell
         run: |
           $base=Join-Path $env:RUNNER_TEMP 'actual_thin_mortar_v9\valoria-true-lime-seam-v9\glb'
           $out=Join-Path $env:RUNNER_TEMP 'eldoria-handpacked-lime-v10'
+          $photo=Join-Path $env:RUNNER_TEMP 'photo_mortar_original_v8\eldoria-mortar-lime-v8\atlas\real_photo_lime_mortar_aged_muted_1k.png'
+          if(-not(Test-Path $photo)){throw 'Licensed real grout CC0 photo unavailable'}
           if(-not(Test-Path (Join-Path $base 'mortar_joint_recess.glb'))){throw 'Physically correct source joint missing'}
           $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/mortar_real_grain_v10.py'
           $lines=& git show $spec
@@ -51,7 +59,7 @@ jobs:
           [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-mortar-v10.stdout'
           $err=Join-Path $env:RUNNER_TEMP 'eldoria-mortar-v10.stderr'
-          $proc=Start-Process -FilePath "${{ steps.deps.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$photo,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
           Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
           Get-Content $err -Tail 45 -ErrorAction SilentlyContinue
           if($proc.ExitCode -ne 0){throw "Lime grit and historical grout Blender error $($proc.ExitCode)"}
