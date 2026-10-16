@@ -1,0 +1,34 @@
+name: "[ART MORTAR CC0] Real historic masonry joint photos PBR"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-real-mortar-cc0-source.yml'
+      - 'tools/valoria-modular-fortress/download_cc0_real_mortar_pbr.py'
+permissions:
+  contents: read
+jobs:
+  one-real-mortar-material:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source only Poly Haven public domain CC0 plaster with actual mortar aggregates
+        run: python3 tools/valoria-modular-fortress/download_cc0_real_mortar_pbr.py "$RUNNER_TEMP/cc0_real_mortar_1k"
+      - name: Require diffuse texture from true CC0 provider
+        run: |
+          python3 - <<'PY'
+          import os,json,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'cc0_real_mortar_1k'
+          data=json.loads((p/'source_manifest.json').read_text())
+          assert data['license']=='CC0 1.0' and data['cost_eur']==0
+          assert 'plaster_stone_wall_02' in data['maps']
+          assert 'Diffuse' in data['maps']['plaster_stone_wall_02']['maps']
+          print('OFFICIAL_CC0_PBR_MORTAR_TEXTURE_RETRIEVED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-mortar-true-polyhaven-PBR-${{ github.run_id }}
+          path: ${{ runner.temp }}/cc0_real_mortar_1k/**
+          retention-days: 30
+          if-no-files-found: error
