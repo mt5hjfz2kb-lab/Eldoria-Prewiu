@@ -1,0 +1,456 @@
+{
+  "schema": "eldoria.valoria63.asset_feedback.v1",
+  "created_on": "2026-10-16",
+  "source_reference": "tools/valoria-modular-fortress/build_blender.py",
+  "source_reference_branch": "art/valoria-63-individual-quality-uplift-20261015",
+  "coordinate_issue": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/78",
+  "policy": "Comments/observations are NOT blanket changes; distinguish ASSET_GLOBAL / ASSEMBLY_CONTRACT / SCENE_LOCAL. 'accepted' means reviewed proof only, not ART_APPROVED.",
+  "assets": [
+    {
+      "id": "arch_bridge_support",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arch_complete_major",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arch_complete_minor",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arch_keystone_major",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arch_keystone_minor",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arch_voussoir_major",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arch_voussoir_minor",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "arrow_slit_frame",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "banner_royal_blue",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "banner_small",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "boulder_1",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "boulder_2",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "boulder_3",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "brazier_pedestal",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "bridge_span_4m",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "cliff_rock_column",
+      "preferred_version": {
+        "sha256": "614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447",
+        "run_id": 38826318218,
+        "artifact_name": "valoria-real-rock-02-palette-38826318218",
+        "status": "STAGED_ONLY",
+        "score_provisional": 7.3
+      },
+      "correction_ids": []
+    },
+    {
+      "id": "cliff_stone_chip",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "cobble_pebbles",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "dirt_ground_patch",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "grass_ground_patch",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "grass_tuft_1",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "grass_tuft_2",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "merlon_low",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "merlon_tall",
+      "preferred_version": {
+        "sha256": "96541f0fac4ca8b4856c3b897ff2552ebec5560b2251df9b33b875efd06f7820",
+        "run_id": 38871632375,
+        "artifact_name": "valoria-eleven-under6-masonry-a-b-38871632375",
+        "status": "IN_SCENE_TRIAL",
+        "score_provisional": null
+      },
+      "correction_ids": [
+        "B1-MERLON-GROUND-006"
+      ]
+    },
+    {
+      "id": "mortar_joint_recess",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "parapet_walk_4m",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "paver_flagstone",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "paver_rect_long",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "paver_rect_short",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "pine_medium",
+      "preferred_version": {
+        "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
+        "run_id": 38877895047,
+        "artifact_name": "valoria-one-full-medium-pine-38877895047",
+        "status": "STAGED_ONLY",
+        "score_provisional": 6.5
+      },
+      "correction_ids": []
+    },
+    {
+      "id": "pine_small",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "pine_tall",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "portcullis_large",
+      "preferred_version": {
+        "sha256": "09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
+        "run_id": 38860266981,
+        "artifact_name": "valoria-two-charcoal-gothic-gates-38860266981",
+        "status": "STAGED_ONLY",
+        "score_provisional": 7
+      },
+      "correction_ids": []
+    },
+    {
+      "id": "portcullis_small",
+      "preferred_version": {
+        "sha256": "f74af38088acb53ee6561699c9fd610fd836687185cbbe1558e57e50b4d55809",
+        "run_id": 38860266981,
+        "artifact_name": "valoria-two-charcoal-gothic-gates-38860266981",
+        "status": "STAGED_ONLY",
+        "score_provisional": 6.9
+      },
+      "correction_ids": []
+    },
+    {
+      "id": "reinforced_oak_gate",
+      "preferred_version": {
+        "sha256": "6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
+        "run_id": 38858438155,
+        "artifact_name": "valoria-one-authentic-gate-38858438155",
+        "status": "STAGED_ONLY",
+        "score_provisional": 7.4
+      },
+      "correction_ids": []
+    },
+    {
+      "id": "river_foam_line",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "river_water_tile",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "scaffold_small",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "scaffold_watch_platform",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "shrub_1",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "shrub_2",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "shrub_3",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stair_step",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "staircase_flight_12",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_ashlar_01",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_ashlar_02",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_ashlar_03",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_ashlar_04",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_corner_quoin",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_half_block",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "stone_slab_cap",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "timber_beam_1",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "timber_beam_2",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "timber_brace_X",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "torch_wall",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "tower_square_short",
+      "preferred_version": {
+        "sha256": "73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1",
+        "run_id": 38871632375,
+        "artifact_name": "valoria-eleven-under6-masonry-a-b-38871632375",
+        "status": "IN_SCENE_TRIAL",
+        "score_provisional": null
+      },
+      "correction_ids": [
+        "B1-TOWER-SCALE-001",
+        "B1-TOWER-PALETTE-002",
+        "B1-TOWER-SOCKET-003"
+      ]
+    },
+    {
+      "id": "tower_square_tall",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "wall_buttress",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "wall_corner_90",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "wall_course_4m",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "wall_panel_crenellated_4m",
+      "preferred_version": null,
+      "correction_ids": []
+    },
+    {
+      "id": "wall_panel_regular_4m",
+      "preferred_version": {
+        "sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
+        "run_id": 38865543613,
+        "artifact_name": "valoria-4m-wall-artisan-capstone-v6-38865543613",
+        "status": "IN_SCENE_TRIAL",
+        "score_provisional": 7.1
+      },
+      "correction_ids": [
+        "B1-WALL-DEPTH-004",
+        "B1-WALL-SILHOUETTE-005"
+      ]
+    },
+    {
+      "id": "wall_panel_ruined_4m",
+      "preferred_version": null,
+      "correction_ids": []
+    }
+  ],
+  "corrections": [
+    {
+      "id": "B1-TOWER-SCALE-001",
+      "asset_id": "tower_square_short",
+      "scope": "SCENE_LOCAL",
+      "state": "TRIAL_PENDING",
+      "summary": "Outboard watchtower overbearing; apply scale 0.86 only in Bastion I trial, NOT globally in Blender.",
+      "source_sha256": "73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1",
+      "commit": "7f11977097a66596ab7932488d5fd63230e0bc04",
+      "unity_run_id": 38929353461,
+      "proof": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/7f11977097a66596ab7932488d5fd63230e0bc04",
+      "regression": "A/B/C from same pinned camera; tower not dominating/obscuring Hero V3, and preserve gameplay contacts."
+    },
+    {
+      "id": "B1-TOWER-PALETTE-002",
+      "asset_id": "tower_square_short",
+      "scope": "ASSET_GLOBAL",
+      "state": "OBSERVED_NEEDS_REVIEW",
+      "summary": "PBR trial stone noticeably too dark relative to Hero V3; base-63 geometry matches PBR within floating-point tolerance. Try lighter limestone as a candidate, not an approved global material.",
+      "source_sha256": "73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1",
+      "commit": "bb9b7b26ecdb44f1ee1dbfa19fe74b32abaad6cc",
+      "unity_run_id": 38927157638,
+      "proof": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md",
+      "regression": "Same-camera A/B comparing actual brighter base material versus PBR; independent judgement and image evidence; geometry/sockets unchanged."
+    },
+    {
+      "id": "B1-TOWER-SOCKET-003",
+      "asset_id": "tower_square_short",
+      "scope": "SCENE_LOCAL",
+      "state": "STRUCTURE_VERIFIED",
+      "summary": "The tower must attach at outward wall end, not gate-facing end, to avoid obscuring the historic entrance.",
+      "source_sha256": "73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1",
+      "commit": "58089c800764ad6a9f45e1ab649b447da47e17f6",
+      "unity_run_id": 38924698349,
+      "proof": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/58089c800764ad6a9f45e1ab649b447da47e17f6",
+      "regression": "Keep gate/portal silhouette unobscured when replacing any tower in Bastion I."
+    },
+    {
+      "id": "B1-WALL-DEPTH-004",
+      "asset_id": "wall_panel_regular_4m",
+      "scope": "ASSEMBLY_CONTRACT",
+      "state": "STRUCTURE_VERIFIED",
+      "summary": "Replacement must use full-depth masonry bays and disable eight historic wing renderers rather than cladding old wall faces. Structural proof is NOT artistic approval.",
+      "source_sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
+      "commit": "58089c800764ad6a9f45e1ab649b447da47e17f6",
+      "unity_run_id": 38924698349,
+      "proof": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md",
+      "regression": "Verify no duplicate wall faces; structural continuity and load-bearing wall volumes; revalidate colliders separately."
+    },
+    {
+      "id": "B1-WALL-SILHOUETTE-005",
+      "asset_id": "wall_panel_regular_4m",
+      "scope": "SCENE_LOCAL",
+      "state": "OBSERVED_NEEDS_REVIEW",
+      "summary": "New segment looked visually flatter than original right curtain even when structurally correct.",
+      "source_sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
+      "commit": "bb9b7b26ecdb44f1ee1dbfa19fe74b32abaad6cc",
+      "unity_run_id": 38927157638,
+      "proof": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md",
+      "regression": "Compare after against before in same camera. Don't accept a technically correct but artistically weaker parapet."
+    },
+    {
+      "id": "B1-MERLON-GROUND-006",
+      "asset_id": "merlon_tall",
+      "scope": "ASSEMBLY_CONTRACT",
+      "state": "STRUCTURE_VERIFIED",
+      "summary": "Six independent merlons actually rest on two NEW full-volume wall panels; not copied onto an old facade.",
+      "source_sha256": "96541f0fac4ca8b4856c3b897ff2552ebec5560b2251df9b33b875efd06f7820",
+      "commit": "cc15c8bd6bf075e22af9189045a5a44e97e3dcbc",
+      "unity_run_id": 38927157638,
+      "proof": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38927157638",
+      "regression": "Bounds prove merlon base meets new-wall top within tolerance; no floating teeth, gap or panel overlap."
+    }
+  ]
+}
