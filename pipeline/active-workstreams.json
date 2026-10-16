@@ -11,7 +11,31 @@
     "resumption": "Other workstreams require a fresh explicit owner instruction. Do not automatically resume artist, World4X, Region 1, Bastion I, 63-asset branches or deployments.",
     "note": "Exclusive new construction line is authorized by latest owner order; original previously paused branches remain paused. No publication, production-scene overwrites, paid credits or automatic runner appropriation. Repo pause does not cancel running chats or GitHub jobs. See docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md"
   },
-  "active": [],
+  "active": [
+    {
+      "id": "valoria-master-plan-layered-construction-20261016",
+      "title": "Valoria: recovered master plan and Unity layered construction",
+      "owner": "chat-gpt6-exclusive-valoria-layered-20261016",
+      "branch": "construction/valoria-master-plan-layers-20261016",
+      "status": "active",
+      "claimed_at": "2026-10-16",
+      "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
+        "tools/valoria-layered-construction/**",
+        ".github/workflows/valoria-layered-construction.yml",
+        "docs/evidence/valoria-layered-construction-20261016/**"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
+      "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
+      "phase": "Owner instructed immediate construction; recover certified skeleton and camera, deliver verified master-plan map and initial actual Unity layer scene.",
+      "next": "Build isolated Unity layers A/B/C from existing real plan, continuity gates and full-scene native captures; no promotion of experimental quality."
+    }
+  ],
   "history": [
     {
       "id": "valoria-scene-method-breakthrough-20261016",
