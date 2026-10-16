@@ -1,0 +1,197 @@
+name: "[BASTION I] Pinned modular 63 Unity-only same-camera review"
+on:
+  push:
+    branches: [integration/valoria-bastion1-player-scene-20261012]
+    paths:
+      - '.github/workflows/valoria-bastion1-modular63-unity-review.yml'
+      - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs'
+      - 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-single-bastion-modular63-unity-review
+  cancel-in-progress: false
+jobs:
+  validate-selection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject unreviewed promotions and missing immutable pins
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,re
+          p='docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json'
+          d=json.load(open(p,encoding='utf8'))
+          assert d['base_63']['expected_count']==63
+          assert d['constraints']['no_new_meshes'] and d['constraints']['source_assets_immutable']
+          assert not d['constraints']['gameplay_publication']
+          assert len(d['selected'])==6 and len({x['id'] for x in d['selected']})==6
+          assert all(re.fullmatch('[a-f0-9]{64}',x['sha256']) for x in d['selected'])
+          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'pine_medium','cliff_rock_column'}
+          assert not any(x['id']=='mortar_joint_recess' for x in d['selected'])
+          print('BASTION63_PINNED_SELECTION_VALID candidate_only=true')
+          PY
+  review-on-unity:
+    needs: validate-selection
+    # All heavy local jobs target the same single self-hosted Windows runner;
+    # never start a separate Blender process. Fail rather than overlap an
+    # artist launched outside GitHub Actions.
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Refuse to overlap locally running Blender or other Unity
+        shell: powershell
+        run: |
+          $blender=@(Get-Process blender -ErrorAction SilentlyContinue)
+          $unity=@(Get-Process Unity -ErrorAction SilentlyContinue)
+          if($blender.Count -gt 0 -or $unity.Count -gt 0){
+            throw "ARTIST_OR_EDITOR_BUSY blender=$($blender.Count) unity=$($unity.Count); deferred rather than overlapping."
+          }
+          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Verified installed Unity path unavailable'}
+          Write-Host 'EXCLUSIVE_NATIVE_UNITY_RESOURCE_READY'
+      - name: Download immutable previously playable Bastion I Unity scene and assets
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38419031491
+          name: bastion1-player-integration-38419031491
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/bastion_original
+      - name: Download frozen 63-source asset census
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38813966671
+          name: valoria-individual-quality-63-38813966671
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/base63
+      - name: Download visually preferred original medieval oak gate V1
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38858438155
+          name: valoria-one-authentic-gate-38858438155
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/gate
+      - name: Download reviewed dark iron portcullises
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38860266981
+          name: valoria-two-charcoal-gothic-gates-38860266981
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/iron
+      - name: Download preferred V6 stone wall instead of rejected V8
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38865543613
+          name: valoria-4m-wall-artisan-capstone-v6-38865543613
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/wall
+      - name: Download reviewed medium pine
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38877895047
+          name: valoria-one-full-medium-pine-38877895047
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/pine
+      - name: Download neutral photographed cliff column
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38826318218
+          name: valoria-real-rock-02-palette-38826318218
+          github-token: \${{ github.token }}
+          path: \${{ runner.temp }}/cliff
+      - name: Restore ONLY isolated historical player scene and import candidates by immutable hash
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $unzip=Join-Path $env:RUNNER_TEMP 'bastion_original'
+          $files=@(Get-ChildItem -LiteralPath $unzip -Recurse -Filter 'Valoria.unity' -File |
+            Where-Object { $_.FullName.Replace('\','/') -match '/ProductionSlice/Runtime/Valoria\.unity$' })
+          if($files.Count -ne 1){throw "Expected exactly one historic playable scene; found $($files.Count)"}
+          $unityRoot=$files[0].FullName -replace '[\\/]Assets[\\/]Eldoria[\\/]ProductionSlice[\\/]Runtime[\\/]Valoria\.unity$',''
+          $source=Join-Path $unityRoot 'Assets/Eldoria'
+          $target=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria'
+          foreach($relative in @(
+            'ArtTests/Bastion1Assembly/Generated',
+            'ArtTests/Bastion1Assembly/GeneratedNormals',
+            'ArtTests/Bastion1Assembly/Bastion1ReferenceAssembly.unity',
+            'ProductionSlice/Runtime/Valoria.unity'
+          )){
+            $src=Join-Path $source $relative
+            $dst=Join-Path $target $relative
+            if(-not(Test-Path $src)){throw "Historic source missing: $relative"}
+            New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
+            if(Test-Path $dst){Remove-Item -LiteralPath $dst -Recurse -Force}
+            Copy-Item -LiteralPath $src -Destination $dst -Recurse -Force
+            if(Test-Path ($src+'.meta')){Copy-Item -LiteralPath ($src+'.meta') -Destination ($dst+'.meta') -Force}
+          }
+          $base=Get-ChildItem (Join-Path $env:RUNNER_TEMP 'base63') -Filter '*.glb' -Recurse -File
+          if(@($base).Count -ne 63){throw "63 original meshes expected; found $(@($base).Count)"}
+          $dest=Join-Path $target 'ArtTests/Bastion1Assembly/GeneratedSource/Modular63'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          $manifestPath=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json'
+          $manifest=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+          foreach($asset in $manifest.selected){
+            $dir=switch($asset.id){
+              'reinforced_oak_gate' {'gate'}
+              'portcullis_large' {'iron'}
+              'portcullis_small' {'iron'}
+              'wall_panel_regular_4m' {'wall'}
+              'pine_medium' {'pine'}
+              'cliff_rock_column' {'cliff'}
+              default {throw "Unrecognized source: $($asset.id)"}
+            }
+            $relative=$asset.file.Replace('/',[IO.Path]::DirectorySeparatorChar)
+            $src=Join-Path (Join-Path $env:RUNNER_TEMP $dir) $relative
+            if(-not(Test-Path -LiteralPath $src)){throw "Missing exact pinned candidate $($asset.id): $src"}
+            $real=(Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($real -ne $asset.sha256){throw "Pinned hash mismatch for $($asset.id) $real"}
+            Copy-Item -LiteralPath $src -Destination (Join-Path $dest ($asset.id+'.glb')) -Force
+            Write-Host "BASTION63_PINNED_GLTF $($asset.id) run=$($asset.artifact_run) sha=$real"
+          }
+          $python=(Get-Command python.exe -ErrorAction SilentlyContinue).Source
+          if(-not $python){
+            $python=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter python.exe -Recurse -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $python){throw 'Existing Python for glTF metadata missing (Blender not launched)'}
+          foreach($asset in $manifest.selected){
+            & $python tools/valoria-bastion1-assembly/materials.py (Join-Path $dest ($asset.id+'.glb'))
+            if($LASTEXITCODE -ne 0){throw "Failed to extract glTF metadata $($asset.id)"}
+          }
+          New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review') | Out-Null
+          Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review/selection.json')
+          Write-Host 'BASTION63_REUSE_ONLY 63 inventoried, 6 pinned, 2 active scene trials, no new mesh'
+      - name: Render identical-camera before and after with original player scene preserved
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'bastion63-unity-review.log'
+          $args=@('-batchmode','-force-d3d11','-quit','-projectPath',"$env:GITHUB_WORKSPACE/Unity",
+            '-executeMethod','Eldoria.EditorTools.Bastion1Modular63SceneReview.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          Get-Content $log -Tail 125 -ErrorAction SilentlyContinue
+          Copy-Item -LiteralPath $log -Destination (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review/Unity.log') -Force
+          if($p.ExitCode -ne 0){throw "Native Unity importer/camera review failed: exit=$($p.ExitCode)"}
+          $dir=Join-Path $env:GITHUB_WORKSPACE 'Unity/Bastion1Modular63Review'
+          foreach($required in @('before-landscape.png','after-landscape.png',
+              'before-mobile.png','after-mobile.png','before-portrait.png',
+              'after-portrait.png','modular63-scene-review.json')){
+            if(-not(Test-Path (Join-Path $dir $required))){throw "Unity evidence missing: $required"}
+          }
+          Copy-Item -Path "$dir/*" -Destination (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review') -Force
+          Write-Host 'BASTION63_NATIVE_UNITY_PROOF_COMPLETE; ART_APPROVED remains false'
+      - name: Preserve exact candidate and review evidence, never publish
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bastion1-modular63-unity-review-\${{ github.run_id }}
+          path: |
+            Bastion1Modular63Review/**
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1Modular63Candidate.unity*
+            Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/GeneratedModular63/**
+          if-no-files-found: warn
+          retention-days: 14
