@@ -1,0 +1,108 @@
+{
+  "schema": "eldoria.bastion1.modular63.version_selection.v1",
+  "note": "Review-only selection. No ART_APPROVED, no canonical publication, no new models. Historical 63 are a fallback inventory, not automatically 'best'.",
+  "base_63": {
+    "run_id": 38813966671,
+    "artifact_id": 12010106460,
+    "artifact_name": "valoria-individual-quality-63-38813966671",
+    "source_glob": "eldoria-upgrade63/glb/*.glb",
+    "expected_count": 63,
+    "review": "Fallback only; not asserted newest/best"
+  },
+  "selected": [
+    {
+      "id": "reinforced_oak_gate",
+      "artifact_run": 38858438155,
+      "artifact": "valoria-one-authentic-gate-38858438155",
+      "file": "eldoria-cc0-real-gate-ab/glb/reinforced_oak_gate.glb",
+      "sha256": "6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
+      "provisional_score": 7.4,
+      "usage": "staged_only",
+      "rationale": "V1 real CC0 preferred; V2 and V3 artistically rejected"
+    },
+    {
+      "id": "portcullis_large",
+      "artifact_run": 38860266981,
+      "artifact": "valoria-two-charcoal-gothic-gates-38860266981",
+      "file": "valoria-black-forged-two/glb/portcullis_large.glb",
+      "sha256": "09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
+      "provisional_score": 7,
+      "usage": "staged_only",
+      "rationale": "Blue-black iron preferred to orange bronze"
+    },
+    {
+      "id": "portcullis_small",
+      "artifact_run": 38860266981,
+      "artifact": "valoria-two-charcoal-gothic-gates-38860266981",
+      "file": "valoria-black-forged-two/glb/portcullis_small.glb",
+      "sha256": "f74af38088acb53ee6561699c9fd610fd836687185cbbe1558e57e50b4d55809",
+      "provisional_score": 6.9,
+      "usage": "staged_only",
+      "rationale": "Blue-black iron preferred to orange bronze"
+    },
+    {
+      "id": "wall_panel_regular_4m",
+      "artifact_run": 38865543613,
+      "artifact": "valoria-4m-wall-artisan-capstone-v6-38865543613",
+      "file": "eldoria-4m-wall-architectural-v6/glb/wall_panel_regular_4m_warm_limestone.glb",
+      "sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
+      "provisional_score": 7.1,
+      "usage": "staged_only",
+      "rationale": "V6 warm limestone confirmed visually superior to V8 microchips"
+    },
+    {
+      "id": "pine_medium",
+      "artifact_run": 38877895047,
+      "artifact": "valoria-one-full-medium-pine-38877895047",
+      "file": "eldoria-one-full-medium-pine/glb/pine_medium.glb",
+      "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
+      "provisional_score": 6.5,
+      "usage": "candidate_in_scene",
+      "rationale": "Physical branch structure, reviewed; no Unity art approval"
+    },
+    {
+      "id": "cliff_rock_column",
+      "artifact_run": 38826318218,
+      "artifact": "valoria-real-rock-02-palette-38826318218",
+      "file": "eldoria-rockface-palette-02/glb/cliff_rock_column_stone_neutral.glb",
+      "sha256": "614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447",
+      "provisional_score": 7.3,
+      "usage": "candidate_in_scene",
+      "rationale": "Neutral scan best; no modular rock-contact approval"
+    }
+  ],
+  "rejected_or_pending": [
+    {
+      "id": "mortar_joint_recess",
+      "reason": "V7/V8 ART_REJECTED; V9 real grout completed but independent A/B quality not validated; preserve earlier until review",
+      "latest_candidate_run": 38895731036
+    },
+    {
+      "id": "arch_voussoir_major",
+      "reason": "V5 module exceeded envelope or invisible, not selected",
+      "latest_failed_run": 38893762353
+    },
+    {
+      "id": "grass_ground_patch",
+      "reason": "V6 new candidate not independently reviewed at checkpoint",
+      "latest_candidate_run": 38895090036
+    },
+    {
+      "id": "timber_beam_1",
+      "reason": "V5 apparent color change without credible improvement; keep prior"
+    },
+    {
+      "id": "river_foam_line",
+      "reason": "5.5/10 candidate not acceptable for Unity promotion"
+    }
+  ],
+  "constraints": {
+    "no_new_meshes": true,
+    "source_assets_immutable": true,
+    "buildable_parcels_preserved": true,
+    "road_and_stairs_preserved": true,
+    "visual_approval_required": true,
+    "gameplay_publication": false,
+    "paid_spend_eur": 0
+  }
+}
