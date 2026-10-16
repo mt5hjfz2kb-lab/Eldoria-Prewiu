@@ -45,6 +45,7 @@ namespace Eldoria.Valoria63.Editor
     }
     static async Task BuildAndSave()
     {
+      if(AssetDatabase.IsValidFolder(Generated))AssetDatabase.DeleteAsset(Generated);
       Directory.CreateDirectory(Generated);Directory.CreateDirectory(Evidence);
       if(All.Length!=63 || All.Distinct().Count()!=63)throw new Exception("Invalid 63 source IDs");
       foreach(string id in All)if(!File.Exists(Staged+"/"+id+".glb"))throw new FileNotFoundException("Original 63 GLB input missing",id);
@@ -171,13 +172,14 @@ namespace Eldoria.Valoria63.Editor
       return o;
     }
     static Transform Group(string name){var g=new GameObject(name).transform;g.SetParent(sceneRoot,false);return g;}
-    static void Cube(string name,Vector3 center,Vector3 size,Material m,Transform parent)
+    static GameObject Cube(string name,Vector3 center,Vector3 size,Material m,Transform parent)
     {
       // Unity scene-level surface only; not a new library asset.
       var obj=GameObject.CreatePrimitive(PrimitiveType.Cube);
       obj.name=name;obj.transform.SetParent(parent,false);
       obj.transform.position=center;obj.transform.localScale=size;
       obj.GetComponent<Renderer>().sharedMaterial=m;
+      return obj;
     }
     static void Deck(string name,Vector2[] shape,float top,float baseHeight,Transform parent)
     {
@@ -190,6 +192,12 @@ namespace Eldoria.Valoria63.Editor
       for(int i=0;i<n;i++){int j=(i+1)%n;tris.AddRange(new[]{i,i+n,j,i+n,j+n,j});}
       var mesh=new Mesh{name=name};mesh.indexFormat=IndexFormat.UInt32;
       mesh.SetVertices(vertices);mesh.SetTriangles(tris,0);mesh.RecalculateBounds();mesh.RecalculateNormals();
+      // Geometry is authored from a clockwise x/z perimeter; guarantee that
+      // upper-face normal points +Y (raycast, shading and collision depend on it).
+      if(mesh.normals.Length>0 && mesh.normals[0].y<0){
+        for(int i=0;i<tris.Count;i+=3){var temp=tris[i+1];tris[i+1]=tris[i+2];tris[i+2]=temp;}
+        mesh.SetTriangles(tris,0);mesh.RecalculateNormals();
+      }
       toPersist.Add(mesh);
       var o=new GameObject(name);o.transform.SetParent(parent,false);
       o.AddComponent<MeshFilter>().sharedMesh=mesh;
@@ -220,6 +228,9 @@ namespace Eldoria.Valoria63.Editor
     static void BuildBridgeAndOuterGate()
     {
       var bridge=Group("02 LOWER BRIDGE - structural kit");
+      var bridgeCollider=Cube("Continuous walkable bridge deck collider",new Vector3(0,-.1f,-46),
+        new Vector3(6.0f,.3f,35),road,bridge);
+      bridgeCollider.GetComponent<Renderer>().enabled=false;
       for(int z=-60;z<=-32;z+=4)
       {
         Place("bridge_span_4m",bridge,new Vector3(0,-.15f,z),6.1f,90);
