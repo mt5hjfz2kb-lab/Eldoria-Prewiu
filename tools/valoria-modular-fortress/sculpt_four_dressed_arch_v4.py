@@ -65,7 +65,9 @@ for j,name in enumerate(names):
   rng=random.Random(20161016+j*57)
   after_bevel_lo,after_bevel_hi=bbox(meshes)
   cuts=[]
-  for ix,iy,iz in [(0,0,1),(1,0,1),(0,1,1)]:
+  # Open-top voussoir source topology yields off-envelope Boolean spikes; avoid destructive operation.
+  # Architectural keystones retain the already validated chisel method.
+  for ix,iy,iz in ([(0,0,1),(1,0,1),(0,1,1)] if 'keystone' in name else []):
    p=Vector([after_bevel_lo.x if ix==0 else after_bevel_hi.x,
              after_bevel_lo.y if iy==0 else after_bevel_hi.y,
              after_bevel_lo.z if iz==0 else after_bevel_hi.z])
