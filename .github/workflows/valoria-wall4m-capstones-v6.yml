@@ -1,0 +1,76 @@
+name: "[ART WALL V6] True capstones and two warm limestone grades"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-wall4m-capstones-v6.yml'
+      - 'tools/valoria-modular-fortress/wall_capstones_v6.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-wall4m-top-capstone-V6
+  cancel-in-progress: false
+jobs:
+  repair-wall-top-and-color:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - name: Find local installed Git and Blender
+        shell: powershell
+        id: binaries
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-individual-4m-wall-v5-38864740080
+          run-id: 38864740080
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/photo_stone_4m_v5
+      - name: Rebuild masonry capstones and render 2 stone palettes with untouched core
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'photo_stone_4m_v5\eldoria-handlaid-wall4m-v5\glb\wall_panel_regular_4m.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-4m-wall-architectural-v6'
+          if(-not(Test-Path $old)){throw "Missing 84 physically individual source stones $old"}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/wall_capstones_v6.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned artist source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-wall-capstone-v6.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $stdout=Join-Path $env:RUNNER_TEMP 'eldoria-wall-capstone-v6.log'
+          $stderr=Join-Path $env:RUNNER_TEMP 'eldoria-wall-capstone-v6.err'
+          $proc=Start-Process -FilePath "${{ steps.binaries.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$out) -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 70 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Individual stone wall cap correction failed $($proc.ExitCode)"}
+          $j=Get-Content (Join-Path $out 'reports\two_capstone_palette_studies.json') -Raw|ConvertFrom-Json
+          if($j.variants.Count -ne 2 -or $j.real_capstone_count -lt 4){throw 'Missing REAL capstones and two A/B graded stones'}
+          foreach($typ in @('glb','after')){
+            $c=(Get-ChildItem (Join-Path $out $typ) -File).Count
+            if($c -ne 2){throw "Missing 2 $typ variants, got $c"}
+          }
+      - name: Preserve authentic isolated GLBs/visual previews with no art approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-4m-wall-artisan-capstone-v6-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-4m-wall-architectural-v6/**
+            ${{ runner.temp }}/eldoria-wall-capstone-v6.log
+            ${{ runner.temp }}/eldoria-wall-capstone-v6.err
+          if-no-files-found: warn
+          retention-days: 30
