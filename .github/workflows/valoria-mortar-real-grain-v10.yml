@@ -1,0 +1,71 @@
+name: "[ART MORTAR V10] Physically granular photographed historic lime joint"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-mortar-real-grain-v10.yml'
+      - 'tools/valoria-modular-fortress/mortar_real_grain_v10.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-mortar-granular-minerals-only
+  cancel-in-progress: false
+jobs:
+  photograph-embedded-lime-grains:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Locate native Git and Blender
+        id: deps
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-corrected-2cm-mortar-38895731036
+          run-id: 38895731036
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/actual_thin_mortar_v9
+      - name: Blender independent 2.6cm grout, photo atlas and macro visual proof
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'actual_thin_mortar_v9\valoria-true-lime-seam-v9\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-handpacked-lime-v10'
+          if(-not(Test-Path (Join-Path $base 'mortar_joint_recess.glb'))){throw 'Physically correct source joint missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/mortar_real_grain_v10.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned mortar code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-mortar-real-v10.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-mortar-v10.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-mortar-v10.stderr'
+          $proc=Start-Process -FilePath "${{ steps.deps.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 45 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Lime grit and historical grout Blender error $($proc.ExitCode)"}
+          foreach($file in @('before\mortar_joint_recess.png','after\mortar_joint_recess.png','after\mortar_joint_recess_macro.png','glb\mortar_joint_recess.glb','reports\historical_calcareous_mortar_v10.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "Missing $file"}
+          }
+      - name: Keep evidence without promoting Unity scene, no false art approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-true-lime-mortar-grain-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-handpacked-lime-v10/**
+            ${{ runner.temp }}/eldoria-mortar-v10.stdout
+            ${{ runner.temp }}/eldoria-mortar-v10.stderr
+          retention-days: 30
+          if-no-files-found: warn
