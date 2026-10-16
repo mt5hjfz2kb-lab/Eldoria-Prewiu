@@ -1,0 +1,38 @@
+name: "[CONTRACT] Live Valoria 63 branch-to-branch selection proof"
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/valoria-asset-feedback/**'
+      - '.github/workflows/valoria-feedback-cross-branch-proof.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prove-pinned-unity-selection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout current canonical feedback rules from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: feedback-main
+          sparse-checkout: tools/valoria-asset-feedback
+          persist-credentials: false
+      - name: Checkout current Bastion I asset selection and correction ledger only
+        uses: actions/checkout@v4
+        with:
+          ref: integration/valoria-bastion1-player-scene-20261012
+          path: bastion-selection
+          sparse-checkout: docs/evidence/valoria-bastion1-player-scene-integration-20261012
+          persist-credentials: false
+      - name: Test cross-branch exact-SHA and per-piece correction agreement
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 feedback-main/tools/valoria-asset-feedback/gate.py selection \
+            bastion-selection/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json \
+            bastion-selection/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACK_20261016.json
+          python3 -m unittest discover -s feedback-main/tools/valoria-asset-feedback -p test_gate.py -v
+          echo "CROSS_BRANCH_FEEDBACK_PROOF_PASS no_blender_unity_or_paid_runner"
