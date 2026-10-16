@@ -88,6 +88,19 @@ for i,name in enumerate(names):
   bevel.angle_limit=math.radians(0.6)  # retain only noncoplanar edges, imported wedge triangle normals vary below 34 degrees
   bpy.context.view_layer.objects.active=m
   bpy.ops.object.modifier_apply(modifier=bevel.name)
+  # Blender's bevel expands some already-triangulated outside points. Carve
+  # those few mm back INTO the known V8 envelope, do not weaken fit check.
+  inv=m.matrix_world.inverted_safe()
+  before_clamp=0
+  for vert in m.data.vertices:
+   world_position=m.matrix_world@vert.co
+   inside=world_position.copy()
+   for axis in range(3):
+    inside[axis]=max(lo[axis]+.0003,min(hi[axis]-.0003,world_position[axis]))
+   if (inside-world_position).length>.00001:
+    vert.co=inv@inside
+    before_clamp+=1
+  m.data.update()
   # Check physical envelope after Blender baked bevel; cannot break modular fit.
   newlo,newhi=bounds(meshes)
   if any(newlo[k]<lo[k]-.006 or newhi[k]>hi[k]+.006 for k in range(3)):
@@ -104,7 +117,7 @@ for i,name in enumerate(names):
    'before_faces':polygons_before,'after_vertices':len(m.data.vertices),'after_faces':len(m.data.polygons),
    'source_sha':sha(src),'candidate_sha':sha(dest),
    'source_box_min':[round(float(v),4) for v in lo],'source_box_max':[round(float(v),4) for v in hi],
-   'within_previous_fit_envelope':True,'real_cutstone_photos':changed,
+   'within_previous_fit_envelope':True,'beveled_vertices_reclamped':before_clamp,'real_cutstone_photos':changed,
    'intent':'Eliminate unconvincing wood-grain directional photo and physically bevel arrises'})
   print('CUT_LIMESTONE_REAL_BEVELS',name,record['after_faces'],flush=True)
  except Exception as ex:
