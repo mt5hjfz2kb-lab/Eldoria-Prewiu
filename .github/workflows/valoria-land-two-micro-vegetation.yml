@@ -1,0 +1,86 @@
+name: "[ART LAND FLOOR6] True photo grass dirt with real scattered 3D leaves"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-land-two-micro-vegetation.yml'
+      - 'tools/valoria-modular-fortress/terrain_photo_with_real_grass_two.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-real-soil-and-grass-lone-two
+  cancel-in-progress: false
+jobs:
+  two-ground-studies:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 90
+    steps:
+      - name: Locate installed native Git and Blender
+        shell: powershell
+        id: pc
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Local Git unavailable'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Native Blender unavailable'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-4-cc0-natural-ground-and-ruin-v2-38871626493
+          run-id: 38871626493
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/dirt_photo_source
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-three-natural-corrections-v3-38872475510
+          run-id: 38872475510
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/grass_photo_source
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-five-true-vegetation-v5-38873081731
+          run-id: 38873081731
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/actual_grass_leaves
+      - name: Blender scatter true Quaternius grass geometry and soil pebbles in independent tiles
+        shell: powershell
+        run: |
+          $dirt=Join-Path $env:RUNNER_TEMP 'dirt_photo_source\eldoria-real-soil-grass-ruinedwall\glb\dirt_ground_patch.glb'
+          $grass=Join-Path $env:RUNNER_TEMP 'grass_photo_source\valoria-3-natural-art-v3\glb\grass_ground_patch.glb'
+          $tuft=Join-Path $env:RUNNER_TEMP 'actual_grass_leaves\valoria-five-real-olive-foliage\glb\grass_tuft_1.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-two-natural-ground-kit'
+          foreach($f in @($dirt,$grass,$tuft)){if(-not(Test-Path $f)){throw "Missing photo source or real CC0 grass: $f"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/terrain_photo_with_real_grass_two.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned soil script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-natural-two-ground.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-natural-ground-two.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-natural-ground-two.err'
+          $p=Start-Process -FilePath "${{ steps.pc.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$dirt,$grass,$tuft,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 85 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 65 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "2 landscape assets failed $($p.ExitCode)"}
+          foreach($dir in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $out $dir) -File).Count
+            if($count -ne 2){throw "Expected 2 actual ground $dir got $count"}
+          }
+      - name: Archive visually inspectable native Blender A-B, no automatic art promotion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-two-natural-soil-and-grass-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-two-natural-ground-kit/**
+            ${{ runner.temp }}/eldoria-natural-ground-two.log
+            ${{ runner.temp }}/eldoria-natural-ground-two.err
+          if-no-files-found: warn
+          retention-days: 30
