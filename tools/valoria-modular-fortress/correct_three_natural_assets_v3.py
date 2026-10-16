@@ -135,11 +135,14 @@ def water(meshes,low,high):
    vtx.co.z*=.33
  return meshes,{'type':'irregular_baked_albedo_normal_and_low_wave_geometry','limitation':'Unity Shader Graph for final river transparency'}
 def ruin(meshes):
- before=len(meshes);removed=[]
+ before=len(meshes);removed=[];keep=[]
  for o in list(meshes):
   if 'loose_ruin_broken_stone' in o.name.lower():
-   bpy.data.objects.remove(o,do_unlink=True);removed.append(o.name)
- keep=[o for o in meshes if o.name not in removed]
+   identity=o.name
+   bpy.data.objects.remove(o,do_unlink=True)
+   removed.append(identity)
+  else:
+   keep.append(o)
  if len(removed)<5:raise RuntimeError('No actual unsupported floating debris found, preserve V2')
  return keep,{'deleted_floating_debris':len(removed),'remaining_individual_stones':len(keep)}
 records=[]
