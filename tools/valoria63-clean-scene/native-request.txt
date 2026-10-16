@@ -7,3 +7,5 @@ DIRECT TAKEOVER retry after real Unity compiler failures #38956747071: fixed Uni
 Retry after real #38958379486 source-rotation scaling failure: source wall_panel_ruined_4m is actually 4.064m along local X; global X after yaw90 was 0.717m. Correct universal local-axis measurement before yaw, preserving uniform scaling and fail-closed guard. Offline reviewed original geometric bounds of ALL 63 GLBs.
 
 2026-10-16: run real gate+two-towers art-direction microtest; preserve full scene; capture real Unity screenshots for 7/10 review.
+
+Owner-direct full-scene visual rebuild 2026-10-16 after run 38962837092. Includes separate Generated/GateMicrotestOnly persistence, sculpted contiguous cliff shells for both terraces, better coastal water continuity and existing tree/shrub placements physically grounded on plateaus. Reopen preserved full scene, 63-GLB contract, run isolated gate comparison, archive actual Unity three-view screenshots; do not promote ART_APPROVED by CI.
