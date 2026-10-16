@@ -16,6 +16,8 @@ export function validateWorkstream(workstream,plan,registry,ids,selected=null){
  fail(plan.workstream===workstream,'workstream mismatch');
  fail(['EXPERIMENT_ONLY','PROMOTION_REVIEW'].includes(plan.phase),'invalid phase');
  fail(plan.art_approved===false,'ART_APPROVED must not be inferred from CI');
+ fail(/^[0-9a-f]{40}$/.test(plan.source_git_blob_sha1||''),'exact source file blob identity not acknowledged');
+ fail(typeof plan.source_file==='string'&&plan.source_file.length>15,'missing tracked Blender/Unity source path');
  fail(Array.isArray(plan.corrections),'missing explicit corrections');
  const byId=new Map(registry.corrections.map(c=>[c.id,c]));
  const seen=new Set();
@@ -80,15 +82,23 @@ export function validateArtistOutput(outputDir,plan,registry,ids){
  fs.writeFileSync(path.join(outputDir,'asset_feedback_receipt.json'),JSON.stringify(report,null,2));
  return {asset_count:receipt.length,corrections:r.feedback_count,art_approved:false};
 }
+export function verifySourceRevision(plan,filename){
+ const content=fs.readFileSync(filename);
+ const real=crypto.createHash('sha1').update(Buffer.from('blob '+content.length+'\\0')).update(content).digest('hex');
+ fail(plan.source_git_blob_sha1===real,'source changed without per-asset feedback review: '+plan.source_file);
+ return real;
+}
 const invoked=process.argv[1]&&path.resolve(process.argv[1])===path.resolve(fileURLToPath(import.meta.url));
 if(invoked)try{
- const [mode,planFile,selectionFile,registryFile,idsFile]=process.argv.slice(2);
+ const [mode,planFile,selectionFile,registryFile,idsFile,sourceFile]=process.argv.slice(2);
  fail(['artist','unity','artist-output'].includes(mode),'mode must be artist|unity|artist-output');
  fail(!!planFile,'feedback plan file required');
  const registry=read(registryFile||path.join(root,'registry.json'));
  const ids=read(idsFile||path.join(root,'asset-ids.json'));
  const plan=read(planFile);
+ fail(!!sourceFile,'exact authored Blender/Unity source file is required');
+ const source_blob_sha=verifySourceRevision(plan,sourceFile);
  const report=mode==='artist-output'?validateArtistOutput(selectionFile,plan,registry,ids):
    validateWorkstream(mode,plan,registry,ids,mode==='unity'?read(selectionFile):null);
- process.stdout.write('VALORIA63_FEEDBACK_GATE_PASS '+JSON.stringify(report)+'\n');
+ process.stdout.write('VALORIA63_FEEDBACK_GATE_PASS '+JSON.stringify({...report,source_blob_sha})+'\n');
 }catch(e){console.error('VALORIA63_FEEDBACK_GATE_REJECT',e.message);process.exitCode=1}
