@@ -1,0 +1,89 @@
+{
+  "schema": "eldoria.valoria63.selection-feedback-ack.v1",
+  "reference_registry": "main:tools/valoria-asset-feedback/registry.json",
+  "selection_file": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json",
+  "note": "Initial explicit historical issue mapping per exact selected SHA. PENDING_REVIEW remains unresolved, not ART approved; new feedback in main invalidates this mapping until reviewed. Scene-specific corrections must never be baked into all Blender modules.",
+  "selected_feedback": [
+    {
+      "id": "reinforced_oak_gate",
+      "sha256": "6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
+      "art_approved": false,
+      "decisions": []
+    },
+    {
+      "id": "portcullis_large",
+      "sha256": "09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
+      "art_approved": false,
+      "decisions": []
+    },
+    {
+      "id": "portcullis_small",
+      "sha256": "f74af38088acb53ee6561699c9fd610fd836687185cbbe1558e57e50b4d55809",
+      "art_approved": false,
+      "decisions": []
+    },
+    {
+      "id": "wall_panel_regular_4m",
+      "sha256": "928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3",
+      "art_approved": false,
+      "decisions": [
+        {
+          "id": "B1-WALL-DEPTH-004",
+          "disposition": "preserved_assembly",
+          "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md"
+        },
+        {
+          "id": "B1-WALL-SILHOUETTE-005",
+          "disposition": "pending_review",
+          "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md"
+        }
+      ]
+    },
+    {
+      "id": "pine_medium",
+      "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
+      "art_approved": false,
+      "decisions": []
+    },
+    {
+      "id": "cliff_rock_column",
+      "sha256": "614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447",
+      "art_approved": false,
+      "decisions": []
+    },
+    {
+      "id": "tower_square_short",
+      "sha256": "a514d97fc3241477f4b98b7e4d04b1213d75a1718e53d662fca9e83be8dfd4ac",
+      "art_approved": false,
+      "decisions": [
+        {
+          "id": "B1-TOWER-SCALE-001",
+          "disposition": "pending_review",
+          "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/7f11977097a66596ab7932488d5fd63230e0bc04"
+        },
+        {
+          "id": "B1-TOWER-PALETTE-002",
+          "disposition": "pending_review",
+          "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md"
+        },
+        {
+          "id": "B1-TOWER-SOCKET-003",
+          "disposition": "scene_only",
+          "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/58089c800764ad6a9f45e1ab649b447da47e17f6"
+        }
+      ]
+    },
+    {
+      "id": "merlon_tall",
+      "sha256": "022bf407bcfeeb7e717874b0a27def4e3f9831bb0c6edfb1933bc99f4f447bb9",
+      "art_approved": false,
+      "decisions": [
+        {
+          "id": "B1-MERLON-GROUND-006",
+          "disposition": "preserved_assembly",
+          "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38927157638"
+        }
+      ]
+    }
+  ]
+}
