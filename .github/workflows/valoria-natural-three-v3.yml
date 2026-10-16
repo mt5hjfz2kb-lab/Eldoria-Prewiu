@@ -1,0 +1,81 @@
+name: "[ART NATURAL V3] Green grass, honest river water, supported ruin stones"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-natural-three-v3.yml'
+      - 'tools/valoria-modular-fortress/correct_three_natural_assets_v3.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-nature-three-independent-art-v3
+  cancel-in-progress: false
+jobs:
+  fixed-three-blender:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 95
+    steps:
+      - name: Locate installed local Git and Blender
+        id: local
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git not found'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender not found'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-4-cc0-natural-ground-and-ruin-v2-38871626493
+          run-id: 38871626493
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/natural_v2
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-certified-cc0-ground-photography-38870945019
+          run-id: 38870945019
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/real_photo_source
+      - name: 3 independently photographed A-B quality repairs; geometry and texture
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'natural_v2\eldoria-real-soil-grass-ruinedwall\glb'
+          $phot=Join-Path $env:RUNNER_TEMP 'real_photo_source'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-3-natural-art-v3'
+          foreach($file in @((Join-Path $src 'grass_ground_patch.glb'),(Join-Path $src 'wall_panel_ruined_4m.glb'),(Join-Path $phot 'grass_ground_diffuse.jpg'))){
+            if(-not(Test-Path $file)){throw "Missing original evidence: $file"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/correct_three_natural_assets_v3.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Version-pinned script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-natural-three-v3.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-natural-three-v3.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-natural-three-v3.stderr'
+          $proc=Start-Process -FilePath "${{ steps.local.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$phot,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 120 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 80 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Valoria natural art V3 failed: $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $num=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($num -ne 3){throw "Expected three results in $folder, got $num"}
+          }
+      - name: Archive actual independent visual evidence, not Unity approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-three-natural-corrections-v3-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-3-natural-art-v3/**
+            ${{ runner.temp }}/valoria-natural-three-v3.stdout
+            ${{ runner.temp }}/valoria-natural-three-v3.stderr
+          if-no-files-found: warn
+          retention-days: 30
