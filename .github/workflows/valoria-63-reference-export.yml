@@ -1,0 +1,37 @@
+name: "[ART CATALOG] Recover exact approved Valoria reference for 63 individual comparisons"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-63-reference-export.yml'
+permissions:
+  contents: read
+jobs:
+  export-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            docs/evidence/valoria-modular-63-individual-quality/VALORACION_VISUAL_GPT6_BASELINE_63.csv
+            docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md
+          sparse-checkout-cone-mode: false
+      - name: Validate genuine source reference
+        shell: bash
+        run: |
+          test -s references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+          test -s docs/evidence/valoria-modular-63-individual-quality/VALORACION_VISUAL_GPT6_BASELINE_63.csv
+          sha256sum references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg > reference.sha256
+          file references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+      - name: Preserve authoritative unchanged inputs for individual comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-original-approved-reference-63-${{ github.run_id }}
+          path: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            reference.sha256
+            docs/evidence/valoria-modular-63-individual-quality/VALORACION_VISUAL_GPT6_BASELINE_63.csv
+          if-no-files-found: error
+          retention-days: 30
