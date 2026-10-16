@@ -1,0 +1,78 @@
+name: "[ART GRASS V7] Real CC0 olive meadow interspersed with earth"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-meadow-real-loam-v7.yml'
+      - 'tools/valoria-modular-fortress/meadow_real_soil_patches_v7.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-ground-photos-real-dirt-patches-v7
+  cancel-in-progress: false
+jobs:
+  render-natural-meadow-two-materials:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Locate existing Blender and Git
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No git'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'No Blender'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-one-meadow-visible-leaves-38895090036
+          run-id: 38895090036
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/best_3d_meadow_v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-certified-cc0-ground-photography-38870945019
+          run-id: 38870945019
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/free_original_dirt
+      - name: Blend photo soil patches with real green grass material and view same A-B camera
+        shell: powershell
+        run: |
+          $grass=Join-Path $env:RUNNER_TEMP 'best_3d_meadow_v6\valoria-true-curved-meadow-v6\glb'
+          $dirt=Join-Path $env:RUNNER_TEMP 'free_original_dirt'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-grass-real-loam-v7'
+          foreach($f in @((Join-Path $grass 'grass_ground_patch.glb'),(Join-Path $dirt 'dirt_diffuse.jpg'))){if(-not(Test-Path $f)){throw "Missing CC0 source $f"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/meadow_real_soil_patches_v7.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned artist script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-real-dirt-photo-v7.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-real-dirt-v7.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-real-dirt-v7.stderr'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$grass,$dirt,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 55 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Grass true-earth studio failed $($proc.ExitCode)"}
+          foreach($file in @('glb\grass_ground_patch.glb','before\grass_ground_patch.png','after\grass_ground_patch.png','reports\meadow_real_loam_study.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "Output missing $file"}
+          }
+      - name: Archive genuine CC0 source and isolated 3D turf GLB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-real-meadow-soil-photo-v7-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-grass-real-loam-v7/**
+            ${{ runner.temp }}/valoria-real-dirt-v7.stdout
+            ${{ runner.temp }}/valoria-real-dirt-v7.stderr
+          if-no-files-found: warn
+          retention-days: 30
