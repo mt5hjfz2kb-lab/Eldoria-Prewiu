@@ -1,0 +1,78 @@
+name: "[ART COBBLES V11] 28 unique genuine CC0 photo-scanned stones on ground"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-cobble-real-scan-v11.yml'
+      - 'tools/valoria-modular-fortress/cobble_real_scan_v11.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-cobble-real-scan-v11
+  cancel-in-progress: false
+jobs:
+  stone-pebbles:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 48
+    steps:
+      - name: Locate already-installed Git without installing or claiming unrelated resources
+        shell: powershell
+        run: |
+          $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          if(-not $git){throw 'Original Git unavailable'}
+          Add-Content $env:GITHUB_PATH (Split-Path $git)
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-modular-fortress/cobble_real_scan_v11.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-six-weakest-native-ab-38870003255
+          run-id: 38870003255
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/old_cobbles_source
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-scanned-sibling-real-chip-38878576444
+          run-id: 38878576444
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/real_chip_donor
+      - name: Execute native Blender for 28 individual photographed stones with genuine UV, geometry and fixed A/B
+        shell: powershell
+        run: |
+          $exe=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $exe){throw 'Native Blender is missing'}
+          $old=Join-Path $env:RUNNER_TEMP 'old_cobbles_source\eldoria-six-weakest-candidates\glb\cobble_pebbles.glb'
+          $donor=Join-Path $env:RUNNER_TEMP 'real_chip_donor\eldoria-real-fractured-chip\glb\cliff_stone_chip.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-real-cobbles-v11'
+          if(-not(Test-Path $old) -or -not(Test-Path $donor)){throw 'Exact original GLBs unavailable'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/cobble_real_scan_v11.py'
+          $scriptLines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $scriptLines){throw 'Pinned artist code not found'}
+          $py=Join-Path $env:RUNNER_TEMP 'cobble_scan_v11_pinned.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$scriptLines,[System.Text.UTF8Encoding]::new($false))
+          $std=Join-Path $env:RUNNER_TEMP 'real_cobbles_v11.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'real_cobbles_v11.stderr'
+          $job=Start-Process -FilePath $exe -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$donor,$out) -Wait -PassThru -RedirectStandardOutput $std -RedirectStandardError $err
+          Get-Content $std -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 55 -ErrorAction SilentlyContinue
+          if($job.ExitCode -ne 0){throw "Native Blender cobbles failed $($job.ExitCode)"}
+          foreach($file in @('before\cobble_pebbles.png','after\cobble_pebbles.png','after\cobble_pebbles_macro.png','glb\cobble_pebbles.glb','reports\cobble_scanned_real_stone_v11.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "Missing real source/render $file"}
+          }
+          $report=Get-Content (Join-Path $out 'reports\cobble_scanned_real_stone_v11.json') -Raw|ConvertFrom-Json
+          if(-not $report.real_3d_stones -or $report.studio_floor_exported -or $report.art_approved){throw 'Disallowed visual auto-promotion'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-28-real-pebbles-v11-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-real-cobbles-v11/**
+            ${{ runner.temp }}/real_cobbles_v11.stdout
+            ${{ runner.temp }}/real_cobbles_v11.stderr
+          retention-days: 30
+          if-no-files-found: warn
