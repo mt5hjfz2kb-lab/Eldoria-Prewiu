@@ -1,0 +1,81 @@
+name: "[ART TIMBER FLOOR6] Genuine CC0 hand-worn old oak and joinery"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-true-weathered-timber-v6.yml'
+      - 'tools/valoria-modular-fortress/three_true_weathered_timber_v6.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-three-real-weathered-oak-v6
+  cancel-in-progress: false
+jobs:
+  study-three-authentic-timber-components:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 90
+    steps:
+      - name: Installed Git and Blender
+        id: executables
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git absent'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender absent'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-three-balanced-oak-photo-38890199991
+          run-id: 38890199991
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/last_good_joinery
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-real-rough-wood-cc0-38898657461
+          run-id: 38898657461
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/official_photo_wood_cc0
+      - name: Real individual wooden beams and joined cross brace in Blender
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'last_good_joinery\valoria-three-natural-chestnut-v5\glb'
+          $photo=Join-Path $env:RUNNER_TEMP 'official_photo_wood_cc0'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-true-weathered-timbers-v6'
+          foreach($p in @((Join-Path $old 'timber_beam_1.glb'),(Join-Path $photo 'rough_wood_diffuse.jpg'))){
+            if(-not(Test-Path $p)){throw "Missing original CC0 real-wood source $p"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/three_true_weathered_timber_v6.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned timber authoring script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-authentic-oak-v6.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $stdout=Join-Path $env:RUNNER_TEMP 'valoria-authentic-oak.stdout'
+          $stderr=Join-Path $env:RUNNER_TEMP 'valoria-authentic-oak.stderr'
+          $p=Start-Process -FilePath "${{ steps.executables.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$photo,$out) -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Get-Content $stdout -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $stderr -Tail 80 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "Blender 3 aged timbers failed $($p.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $out $folder) -File).Count
+            if($count -ne 3){throw "Expected 3 authentic $folder models, got $count"}
+          }
+      - name: Preserve real single GLBs and before-after evidence, no Unity modifications
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-three-authentic-weathered-timber-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-true-weathered-timbers-v6/**
+            ${{ runner.temp }}/valoria-authentic-oak.stdout
+            ${{ runner.temp }}/valoria-authentic-oak.stderr
+          if-no-files-found: warn
+          retention-days: 30
