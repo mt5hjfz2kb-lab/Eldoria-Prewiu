@@ -1,0 +1,74 @@
+name: "[ART ASHLAR V4] Four true hand-cut arch stones in Blender"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-chiseled-four-v4.yml'
+      - 'tools/valoria-modular-fortress/sculpt_four_dressed_arch_v4.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-four-chiseled-visible-stones-v4
+  cancel-in-progress: false
+jobs:
+  isolate-four-hand-dressed-stones:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    steps:
+      - name: Find existing Git and Blender
+        shell: powershell
+        id: binaries
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Native Blender unavailable'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-four-artisan-worn-arch-stones-38879660792
+          run-id: 38879660792
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/true-dovelas-v3
+      - name: Native true 4 limestone stone physical chisel edits and A-B renders
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'true-dovelas-v3\valoria-chiseled-four-arch-v3\glb'
+          $dst=Join-Path $env:RUNNER_TEMP 'eldoria-four-dovelas-chisel-v4'
+          if(-not(Test-Path (Join-Path $src 'arch_keystone_major.glb'))){throw "Missing original physically tapered arch stones"}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/sculpt_four_dressed_arch_v4.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Version pinned sculpture code missing'}
+          $script=Join-Path $env:RUNNER_TEMP 'valoria-four-real-cut-stones.py'
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-four-chisel-v4.log'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-four-chisel-v4.err'
+          $process=Start-Process -FilePath "${{ steps.binaries.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$src,$dst) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 100 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 75 -ErrorAction SilentlyContinue
+          if($process.ExitCode -ne 0){throw "Four actually dressed limestone pieces failed: $($process.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            $count=(Get-ChildItem (Join-Path $dst $folder) -File).Count
+            if($count -ne 4){throw "Need 4 independently rendered in $folder; got $count"}
+          }
+          $r=Get-Content (Join-Path $dst 'reports\stone_chisel_arch_four_v4.json') -Raw|ConvertFrom-Json
+          if($r.rows.Count -ne 4 -or @($r.rows|Where-Object {$_.technical -ne 'PASS_PENDING_VISUAL'}).Count){throw 'A/B visual/mesh audit not complete'}
+      - name: Archive physically sculpted CC0 limestone and unaltered baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-four-bold-hand-dressed-arch-v4-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-four-dovelas-chisel-v4/**
+            ${{ runner.temp }}/valoria-four-chisel-v4.log
+            ${{ runner.temp }}/valoria-four-chisel-v4.err
+          if-no-files-found: warn
+          retention-days: 30
