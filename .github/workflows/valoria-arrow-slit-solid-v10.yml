@@ -1,0 +1,71 @@
+name: "[ART ARROW SLIT V10] Give two hollow medieval arrow-slit reveals genuine physical thickness"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-arrow-slit-solid-v10.yml'
+      - 'tools/valoria-modular-fortress/arrow_slit_solid_reveal_v10.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-arrow-slit-solid-v10
+  cancel-in-progress: false
+jobs:
+  arrow-slit:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Enable already-installed GitHub Desktop Git
+        shell: powershell
+        run: |
+          $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+          if(-not $git){throw 'Existing Git missing'}
+          Add-Content $env:GITHUB_PATH (Split-Path $git)
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-modular-fortress/arrow_slit_solid_reveal_v10.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-single-real-CC0-stone-arrow-slit-38866656756
+          run-id: 38866656756
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/exact_arrow_slit_source
+      - name: Create physical 20mm stone reveal and validate clear hollow aperture in Blender
+        shell: powershell
+        run: |
+          $exe=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $exe){throw 'Local native Blender missing'}
+          $original=Join-Path $env:RUNNER_TEMP 'exact_arrow_slit_source\valoria-true-medieval-arrow-slit\glb\arrow_slit_frame.glb'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-arrow-slit-v10'
+          if(-not(Test-Path $original)){throw 'Exact original hollow arrow slit GLB missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/arrow_slit_solid_reveal_v10.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned source script missing'}
+          $script=Join-Path $env:RUNNER_TEMP 'arrow_slit_v10_pinned.py'
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $std=Join-Path $env:RUNNER_TEMP 'arrow_slit_v10.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'arrow_slit_v10.stderr'
+          $proc=Start-Process -FilePath $exe -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$original,$out) -Wait -PassThru -RedirectStandardOutput $std -RedirectStandardError $err
+          Get-Content $std -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 55 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Real Blender arrow slit failed $($proc.ExitCode)"}
+          foreach($rel in @('before\arrow_slit_frame.png','after\arrow_slit_frame.png','after\arrow_slit_frame_macro.png','after\arrow_slit_frame_rear.png','glb\arrow_slit_frame.glb','reports\true_3d_splayed_slit_v10.json')){
+            if(-not(Test-Path (Join-Path $out $rel))){throw "Missing actual A/B evidence: $rel"}
+          }
+          $report=Get-Content (Join-Path $out 'reports\true_3d_splayed_slit_v10.json') -Raw|ConvertFrom-Json
+          if(-not $report.center_hole_unobstructed -or $report.studio_backdrop_exported -or $report.art_approved){throw 'Art safety gates failed'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-arrow-slit-real-reveal-v10-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-arrow-slit-v10/**
+            ${{ runner.temp }}/arrow_slit_v10.stdout
+            ${{ runner.temp }}/arrow_slit_v10.stderr
+          if-no-files-found: warn
+          retention-days: 30
