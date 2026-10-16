@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Eldoria.Presentation;
 using GLTFast;
@@ -24,6 +25,7 @@ namespace Eldoria.EditorTools
         static readonly List<MeshCollider> ContactColliders = new List<MeshCollider>();
         static readonly List<UnityEngine.Object> Pending = new List<UnityEngine.Object>();
         static readonly HashSet<UnityEngine.Object> Seen = new HashSet<UnityEngine.Object>();
+        static readonly List<string> SourceManifest = new List<string>();
 
         [MenuItem("Eldoria/Art/Bastion I verify reviewed 63 sources on playable scene")]
         public static async void Capture()
@@ -32,6 +34,7 @@ namespace Eldoria.EditorTools
             {
                 if (!File.Exists(Original)) throw new FileNotFoundException("Preserved playable scene missing", Original);
                 Directory.CreateDirectory(Evidence);
+                SourceManifest.Clear();
                 var scene = EditorSceneManager.OpenScene(Original, OpenSceneMode.Single);
                 var presentation = UnityEngine.Object.FindFirstObjectByType<ValoriaParcelPresentation>();
                 if (presentation == null || !presentation.MeshMode || presentation.ProductionCamera == null ||
@@ -85,6 +88,7 @@ namespace Eldoria.EditorTools
                     "  \"runtime_gameplay_modified\": false,\n  \"art_approved\": false,\n" +
                     "  \"mobile_performance_approved\": false,\n  \"placements\": [" +
                     String.Join(",", evidence.ConvertAll(e => "\"" + e + "\"")) + "]\n}\n");
+                File.WriteAllLines(Path.Combine(Evidence, "source-glb-sha256.txt"), SourceManifest);
                 Debug.Log("BASTION1_MODULAR63_AB_CAPTURE_COMPLETE new_scene=" + Candidate +
                           " placements=" + evidence.Count + " approval=REVIEW_REQUIRED");
                 EditorApplication.Exit(0);
@@ -148,6 +152,9 @@ namespace Eldoria.EditorTools
         {
             string file = Path.GetFullPath(Inputs + "/" + assetName + ".glb");
             if (!File.Exists(file)) throw new FileNotFoundException("Pinned approved-for-study GLB unavailable", file);
+            using (var sha = SHA256.Create())
+            using (var stream = File.OpenRead(file))
+                SourceManifest.Add(assetName + " " + BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant());
             var importer = new GltfImport(null, new UninterruptedDeferAgent());
             if (!await importer.Load(new Uri(file).AbsoluteUri,
                     new ImportSettings { GenerateMipMaps = true, AnisotropicFilterLevel = 2 }))
