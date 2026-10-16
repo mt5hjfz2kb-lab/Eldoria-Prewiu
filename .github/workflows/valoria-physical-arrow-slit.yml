@@ -1,0 +1,80 @@
+name: "[ART ARCH] Physical through-hole medieval arrow slit CC0 limestone"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-physical-arrow-slit.yml'
+      - 'tools/valoria-modular-fortress/real_arrow_slit_stone.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-one-physical-arrow-slit
+  cancel-in-progress: false
+jobs:
+  carve-the-single-stone-arrow-slit:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Discover existing git and native Blender
+        id: binary
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git not installed'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/original-arrow-slit-v3
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-3-real-medieval-wall-pbr-38860976002
+          run-id: 38860976002
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/official-medieval-cc0-stones
+      - name: Blender real individual recessed arrow slit with physical open space and splay
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'original-arrow-slit-v3\eldoria-upgrade63\glb\arrow_slit_frame.glb'
+          $map=Join-Path $env:RUNNER_TEMP 'official-medieval-cc0-stones'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-true-medieval-arrow-slit'
+          foreach($p in @($old,(Join-Path $map 'medieval_blocks_03_diffuse.jpg'))){if(-not(Test-Path $p)){throw "Missing fixed source $p"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/real_arrow_slit_stone.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned source code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'real-arrow-slit.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-arrow-slit.log'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-arrow-slit.err'
+          $proc=Start-Process -FilePath "${{ steps.binary.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$map,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 80 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Physical arrow slit Blender failure $($proc.ExitCode)"}
+          foreach($required in @('before\arrow_slit_frame.png','after\arrow_slit_frame.png','glb\arrow_slit_frame.glb','reports\real_medieval_arrow_slit.json')){
+            if(-not(Test-Path (Join-Path $out $required))){throw "Missing real individual output $required"}
+          }
+      - name: Archive a real CC0 stone architectural component, not a game scene
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-single-real-CC0-stone-arrow-slit-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-true-medieval-arrow-slit/**
+            ${{ runner.temp }}/valoria-arrow-slit.log
+            ${{ runner.temp }}/valoria-arrow-slit.err
+          retention-days: 30
+          if-no-files-found: warn
