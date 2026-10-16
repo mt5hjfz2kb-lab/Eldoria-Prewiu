@@ -5,3 +5,5 @@ Retry exact native after UnityEngine.Application compile fix and live-main Windo
 DIRECT TAKEOVER retry after real Unity compiler failures #38956747071: fixed UnityEngine.Application tokens (source 91f89b14), added Physics.SyncTransforms before raycasts, and mandatory separate Unity reopen/three PNG/63 actual GLB gate (workflow 6f4efcb4). No other active run at request creation.
 
 Retry after real #38958379486 source-rotation scaling failure: source wall_panel_ruined_4m is actually 4.064m along local X; global X after yaw90 was 0.717m. Correct universal local-axis measurement before yaw, preserving uniform scaling and fail-closed guard. Offline reviewed original geometric bounds of ALL 63 GLBs.
+
+2026-10-16: run real gate+two-towers art-direction microtest; preserve full scene; capture real Unity screenshots for 7/10 review.
