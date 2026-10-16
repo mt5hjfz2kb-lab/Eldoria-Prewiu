@@ -157,16 +157,21 @@ namespace Eldoria.Valoria63.Editor
       var o=UnityEngine.Object.Instantiate(t,parent);
       o.name=id+"__"+(counts.ContainsKey(id)?counts[id]+1:1);
       o.SetActive(true);
-      o.transform.rotation=Quaternion.Euler(0,yaw,0);
+      // glTF asset contract: desiredWidth measures the source's original LOCAL X
+      // facade/span width, not post-yaw world X (which becomes wall thickness at
+      // 90 degrees). A real 4.064m wall was wrongly scaled 5.574x in run
+      // 38958379486 solely because yaw 90 mapped its 0.717m depth into X.
+      // Measure before final placement rotation, then apply a uniform scale.
+      o.transform.rotation=Quaternion.identity;
       o.transform.position=at;
       if(desiredWidth>0)
       {
         var b=Extents(o);
-        // Never flatten or stretch a three-dimensional architectural module.
         float factor=desiredWidth/Mathf.Max(.03f,b.size.x);
-        if(factor<.22f||factor>5.2f)throw new Exception("Implausible module scaling "+id+" factor="+factor);
+        if(factor<.22f||factor>5.2f)throw new Exception("Implausible LOCAL module scaling "+id+" factor="+factor+" authoredX="+b.size.x+" requested="+desiredWidth);
         o.transform.localScale*=factor;
       }
+      o.transform.rotation=Quaternion.Euler(0,yaw,0);
       var fit=Extents(o);
       o.transform.position+=new Vector3(at.x-fit.center.x,at.y-fit.min.y,at.z-fit.center.z);
       counts[id]=counts.ContainsKey(id)?counts[id]+1:1;
