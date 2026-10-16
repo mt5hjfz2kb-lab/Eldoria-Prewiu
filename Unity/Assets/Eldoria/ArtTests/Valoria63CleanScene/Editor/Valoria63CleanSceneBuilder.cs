@@ -34,7 +34,7 @@ namespace Eldoria.Valoria63.Editor
     static Material limestone,soil,rock,water,grass,road;
     static Camera view;
     static int nativeCounter;
-    static string Repo=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",".."));
+    static string Repo=>Path.GetFullPath(Path.Combine(UnityEngine.UnityEngine.Application.dataPath,"..",".."));
     static string Evidence=>Path.Combine(Repo,"docs/evidence/valoria63-clean-scene-20261016");
 
     [MenuItem("Eldoria/Art/Build clean Valoria from 63 actual GLBs")]
@@ -101,7 +101,7 @@ namespace Eldoria.Valoria63.Editor
       RenderFrame("valoria63-clean-landscape",1536,1024);
       RenderFrame("valoria63-clean-wide",1280,720);
       RenderFrame("valoria63-clean-portrait",390,844);
-      var manifest=new CompositionReport{unity=UnityEngine.Application.unityVersion,scene=Output,source_count=63,
+      var manifest=new CompositionReport{unity=UnityEngine.UnityEngine.Application.unityVersion,scene=Output,source_count=63,
         module_instances=moduleCount,distinct_sources=counts.Count,used_existing_glbs=true,
         new_modeling=false,art_approved=false,gameplay_certified=false,mobile_certified=false,
         camera_position=view.transform.position,camera_rotation=view.transform.eulerAngles,
