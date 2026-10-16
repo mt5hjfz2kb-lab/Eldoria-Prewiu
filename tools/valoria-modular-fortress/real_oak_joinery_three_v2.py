@@ -44,8 +44,8 @@ woodim=bpy.data.images.load(str(photos/'oak_veneer_05_diffuse.jpg'),check_existi
 wood=bpy.data.materials.new('Valoria_CC0_real_warm_aged_oak_grain')
 wood.use_nodes=True;nd=wood.node_tree.nodes;nd.clear();link=wood.node_tree.links
 im=nd.new('ShaderNodeTexImage');im.image=woodim
-tint=nd.new('ShaderNodeMixRGB');tint.blend_type='MULTIPLY';tint.inputs[0].default_value=.32
-tint.inputs[2].default_value=(.58,.43,.31,1)
+tint=nd.new('ShaderNodeMixRGB');tint.blend_type='MULTIPLY';tint.inputs[0].default_value=.76
+tint.inputs[2].default_value=(.58,.39,.27,1)
 link.new(im.outputs['Color'],tint.inputs[1])
 bs=nd.new('ShaderNodeBsdfPrincipled');bs.inputs['Roughness'].default_value=.83
 link.new(tint.outputs['Color'],bs.inputs['Base Color'])
