@@ -19,10 +19,16 @@ jobs:
           if(-not $git){throw 'GitHub Desktop Git missing'}
           Add-Content $env:GITHUB_PATH (Split-Path $git)
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria63-live-claim
+          sparse-checkout: pipeline/active-workstreams.json
+          persist-credentials: false
       - name: Check resource claim and Unity availability
         shell: powershell
         run: |
-          $state=Get-Content pipeline/active-workstreams.json -Raw | ConvertFrom-Json
+          $state=Get-Content valoria63-live-claim/pipeline/active-workstreams.json -Raw | ConvertFrom-Json
           $owners=@($state.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($owners.Count -ne 1 -or $owners[0].id -ne 'valoria63-clean-modular-assembly-20261016'){throw 'No exclusive runner lease'}
           if(Get-Process Unity -ErrorAction SilentlyContinue){throw 'Unity already active'}
