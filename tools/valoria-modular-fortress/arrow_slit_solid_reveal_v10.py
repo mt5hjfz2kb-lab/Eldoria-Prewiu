@@ -109,7 +109,11 @@ capture(out/'after'/'arrow_slit_frame_macro.png')
 cam.matrix_world=front;camdata.ortho_scale=orthoscale
 cam.location=mid+Vector((.65,1.7,.85)).normalized()*3
 cam.rotation_euler=(mid-cam.location).to_track_quat('-Z','Y').to_euler()
+# Backing sheet is for front-hole contrast only; it would obscure the actual
+# posterior geometry. Hide it for genuine reverse/oblique verification.
+back.hide_render=True
 capture(out/'after'/'arrow_slit_frame_rear.png')
+back.hide_render=False
 # Export ONLY the 13 true 3D objects. NEVER export the study sheet.
 bpy.ops.object.select_all(action='DESELECT')
 for ob in solid:ob.select_set(True)
