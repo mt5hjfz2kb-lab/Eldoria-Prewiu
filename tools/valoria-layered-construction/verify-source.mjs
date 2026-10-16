@@ -29,7 +29,13 @@ for(const f of data.footprints){
  const fragment=src.slice(pos,pos+345);
  const vecs=[...fragment.matchAll(/new Vector3\(([^)]+)\)/g)].slice(0,2);
  assert(vecs.length>=2,'Missing actual center/size pair for '+f.id);
- const got=vecs.map(x=>x[1].split(',').map(Number.parseFloat));
+ // VisualWorld uses the certified local float l1=2.55f in upper parcel centres.
+function scalar(expr){
+ const tokens=expr.trim().replace(/\bl1\b/g,'2.55').replace(/f\b/g,'').replace(/([+-])/g,' $1').trim().split(/\s+/);
+ assert(tokens.every(t=>/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(t)),'Invalid scalar expression '+expr);
+ return tokens.reduce((sum,t)=>sum+Number(t),0);
+}
+const got=vecs.map(x=>x[1].split(',').map(scalar));
  assert(got.every(v=>v.length===3&&v.every(Number.isFinite)),'Unparseable source Vector3 '+f.id);
  const expected=[f.center,f.size];
  for(let j=0;j<2;j++)for(let k=0;k<3;k++){
