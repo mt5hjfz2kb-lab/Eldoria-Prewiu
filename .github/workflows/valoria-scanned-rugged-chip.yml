@@ -1,0 +1,71 @@
+name: "[ART CHIP FLOOR6] Real fractured small stone from CC0 scanned geology"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-scanned-rugged-chip.yml'
+      - 'tools/valoria-modular-fortress/boulder_sibling_small_chip.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-real-rugged-chip-alone
+  cancel-in-progress: false
+jobs:
+  sculpt-true-sibling-chip:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Discover installed native Blender and Git
+        id: deps
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-two-photo-grey-real-rocks-38875141612
+          run-id: 38875141612
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/real_scanned_stone_siblings
+      - name: Transform denser sibling into unique rocky chip using actual CC0 scan
+        shell: powershell
+        run: |
+          $base=Join-Path $env:RUNNER_TEMP 'real_scanned_stone_siblings\eldoria-two-grey-real-rocks\glb'
+          $dst=Join-Path $env:RUNNER_TEMP 'eldoria-real-fractured-chip'
+          foreach($f in @('cliff_stone_chip.glb','boulder_2.glb')){if(-not(Test-Path (Join-Path $base $f))){throw "Source $f missing"}}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/boulder_sibling_small_chip.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned small rock sculpt code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-true-small-stone.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-true-small-stone.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-true-small-stone.err'
+          $p=Start-Process -FilePath "${{ steps.deps.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$base,$dst) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 80 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 40 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "Actual small geological chip failed: $($p.ExitCode)"}
+          foreach($f in @('glb\cliff_stone_chip.glb','before\cliff_stone_chip.png','after\cliff_stone_chip.png')){
+            if(-not(Test-Path (Join-Path $dst $f))){throw "Missing $f"}
+          }
+      - name: Archive genuine individual stone photos and single GLB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-scanned-sibling-real-chip-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-real-fractured-chip/**
+            ${{ runner.temp }}/eldoria-true-small-stone.log
+            ${{ runner.temp }}/eldoria-true-small-stone.err
+          retention-days: 30
+          if-no-files-found: warn
