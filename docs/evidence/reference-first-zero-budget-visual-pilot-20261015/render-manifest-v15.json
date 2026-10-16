@@ -1,0 +1,23 @@
+{
+    "stage": "REAL_UNITY_V15_GROUNDED_GATE_ROCKS_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V15/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V15/Imported/LowerGateFamilyV1.glb",
+    "revision": "5754dd444c6153dcd58d7d0040da43c34e552d9f",
+    "frames": [
+        "29-grounded-gate-overview.png",
+        "30-grounded-gate-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 53,
+    "distantTreeInstances": 16,
+    "pavingStoneInstances": 78,
+    "mountainSourceInstances": 6,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
