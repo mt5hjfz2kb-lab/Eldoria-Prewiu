@@ -1,0 +1,39 @@
+name: "[VALORIA] Inspect original approved Blender bridge family"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - '.github/workflows/valoria-layered-bridge-source-inspection.yml'
+permissions:
+  contents: read
+jobs:
+  inspect-source-readonly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install FREE Blender from Ubuntu packages (no Windows runner)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1-mesa-dri
+      - name: Inspect original editable bridge, source SHA-256 and actual world vertex geometry
+        run: |
+          mkdir -p docs/evidence/valoria-layered-construction-20261016/blender-inspection
+          blender -b -t 2 --python docs/evidence/valoria-layered-construction-20261016/inspect-BridgeFamilyV1.py -- \
+            art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.blend \
+            docs/evidence/valoria-layered-construction-20261016/blender-inspection
+          python3 - <<'PY'
+          import json
+          p="docs/evidence/valoria-layered-construction-20261016/blender-inspection/BridgeFamilyV1-original-geometry.json"
+          j=json.load(open(p))
+          assert j["source_is_original_unchanged"]
+          assert j["mesh_count"]>0
+          assert j["total_triangles"]>0
+          print("SOURCE_GEOMETRY",j["bounds_size"],[(o["name"],o["dimensions_world"]) for o in j["objects"][:16]])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-approved-bridge-source-inspection-${{ github.run_id }}
+          path: docs/evidence/valoria-layered-construction-20261016/blender-inspection/
+          if-no-files-found: warn
