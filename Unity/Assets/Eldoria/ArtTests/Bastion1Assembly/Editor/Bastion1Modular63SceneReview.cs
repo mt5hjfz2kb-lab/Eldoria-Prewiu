@@ -187,6 +187,36 @@ namespace Eldoria.EditorTools
         {
             copy.transform.position+=target-Bounds(copy).center;
         }
+        static readonly Dictionary<Material,Material> StoneTone=new Dictionary<Material,Material>();
+        static void RebindNeutralLimestone(GameObject wall)
+        {
+            foreach(var render in wall.GetComponentsInChildren<Renderer>(true))
+            {
+                var materials=render.sharedMaterials;
+                bool changed=false;
+                for(int i=0;i<materials.Length;i++)
+                {
+                    var original=materials[i];
+                    if(original==null)continue;
+                    if(!StoneTone.TryGetValue(original,out var tinted))
+                    {
+                        // Only isolated Unity copies; never change the artist's
+                        // GLB, texture/PBR normal maps or original city materials.
+                        tinted=new Material(original){name="V6_neutral_limestone_candidate"};
+                        if(tinted.HasProperty("_BaseColor"))
+                        {
+                            var c=tinted.GetColor("_BaseColor");
+                            tinted.SetColor("_BaseColor",
+                                new Color(c.r*.88f,c.g*1.045f,c.b*1.16f,c.a));
+                        }
+                        StoneTone.Add(original,tinted);
+                    }
+                    materials[i]=tinted;changed=true;
+                }
+                if(changed)render.sharedMaterials=materials;
+            }
+        }
+
         static void MountWallFace(GameObject original,GameObject module,Transform parent,
                                   string wing,List<string> notes)
         {
@@ -201,12 +231,16 @@ namespace Eldoria.EditorTools
             {
                 var copy=CopyOn(module,parent,"NEW_V6_WALL_"+wing+"_"+i);
                 MatchWidth(copy,width);
+                // The first Unity render found entire freestanding masonry slabs.
+                // Reuse exactly the same 91-mesh V6 source as a thin, aligned
+                // facing course, embedded into the original battlement wall.
+                copy.transform.localScale=new Vector3(copy.transform.localScale.x,
+                    copy.transform.localScale.y,copy.transform.localScale.z*.16f);
+                RebindNeutralLimestone(copy);
                 var b=Bounds(copy);
-                // Original crenellations stay above the new front-facing photo
-                // masonry, preserving silhouette and all gameplay colliders.
                 Vector3 at=new Vector3(bounds.min.x+(i+.5f)*width,
                     bounds.min.y+b.size.y*.5f,
-                    bounds.max.z+b.size.z*.5f+.065f);
+                    bounds.max.z+b.size.z*.5f+.018f);
                 Centre(copy,at);
                 notes.Add("authored_wall_V6_"+wing+"_"+i);
             }
@@ -245,14 +279,17 @@ namespace Eldoria.EditorTools
         }
         static void FrontCliff(GameObject cliff,Transform parent,List<string> notes)
         {
-            var points=new[]{new Vector3(-19,-6,26),new Vector3(-12,-7,27),
-                             new Vector3(12,-7,27),new Vector3(19,-6,26)};
+            // Original A/B: white boulder columns dangled in front of dark
+            // scarp. This candidate embeds the same real scans deeper and
+            // lower, exposing only natural relief along the original rock.
+            var points=new[]{new Vector3(-19,-8,23),new Vector3(-12,-9,24),
+                             new Vector3(12,-9,24),new Vector3(19,-8,23)};
             for(int i=0;i<points.Length;i++)
             {
                 var copy=CopyOn(cliff,parent,"NEW_NEUTRAL_PHOTO_SCAN_FRONT_SCARP_"+i);
                 var b=Bounds(copy);
                 if(b.size.y<.1f)throw new Exception("Scanned geological asset height invalid");
-                float s=5.4f/b.size.y;
+                float s=4.35f/b.size.y;
                 if(s<.25f||s>3f)throw new Exception("Scanned cliff scale unacceptable");
                 copy.transform.localScale*=s;
                 Centre(copy,points[i]);

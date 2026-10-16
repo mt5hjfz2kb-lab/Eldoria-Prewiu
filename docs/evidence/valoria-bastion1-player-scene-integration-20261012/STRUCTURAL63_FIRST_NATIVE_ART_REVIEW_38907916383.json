@@ -1,0 +1,24 @@
+{
+  "schema": "eldoria.bastion1.structural63.native_visual_review.v1",
+  "run_id": 38907916383,
+  "artifact_id": 12050110950,
+  "engine": "Unity 6000.3.23f1",
+  "camera_control": "exact same 1440x1000 strategic camera and screenshot parameters",
+  "placements": 13,
+  "source_glb_count": 5,
+  "changed_fraction_abs_rgb_delta_gt_10": 0.03834375,
+  "changed_fraction_abs_rgb_delta_gt_30": 0.02007639,
+  "art_acceptance": "REJECT_AS_COMPOSITION_NOT_AS_ASSET",
+  "observations": [
+    "New 4m wall modules visibly look like rectangular masonry slabs protruding beyond the original wings.",
+    "Four neutral photo-scanned rocks look disconnected, dangling off the front cliff, despite improved microgeometry.",
+    "Black wrought iron grilles have coherent color and can remain candidate; V1 oak gate contribution is poorly visible from default camera.",
+    "The original citadel towers remain visually stronger; preserve rather than automatically replace with the 63-library tower modules.",
+    "The distant horizon and cut-planar hilltop remain main blockers against the approved visual target."
+  ],
+  "next_candidate": "reuse identical selected artist GLB source; compress and align facing V6 wall course against existing masonry; embed scanned rocks into original escarpment; cooler neutral limestone material duplicates",
+  "original_gameplay_untouched": true,
+  "models_created": 0,
+  "art_approved": false,
+  "published": false
+}
