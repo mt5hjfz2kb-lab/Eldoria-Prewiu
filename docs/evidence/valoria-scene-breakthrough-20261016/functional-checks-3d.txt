@@ -1,0 +1,5 @@
+Lower gate selection rayhit=True target=Lower gate selection
+Upper citadel selection rayhit=True target=Upper citadel selection
+Bastion II expansion reserve rayhit=True target=Bastion II expansion reserve
+Bastion II expansion reserve rayhit=True target=Bastion II expansion reserve
+route_support_samples=84; actual raycasts, not NavMesh or device certification
