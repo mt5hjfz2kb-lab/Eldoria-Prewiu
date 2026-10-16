@@ -21,7 +21,7 @@ jobs:
       - name: Install Blender zero spend
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq blender libegl1 libgl1-mesa-dri
+          sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1-mesa-dri
       - name: Derive genuine editable bridge mesh from locked original
         run: |
           mkdir -p docs/evidence/valoria-layered-construction-20261016/bridge-v1
