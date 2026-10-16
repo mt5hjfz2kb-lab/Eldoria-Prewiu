@@ -16,3 +16,10 @@ Evidencia nativa Unity recuperada de Actions `38914488098` (SUCCESS técnico), a
 **Criterio de aceptación:** ambas caras del muro con volumen creíble, almenas/rebates coherentes, torre conectada sin invadir el torreón de la puerta, apoyo sobre terreno, elementos funcionales verificados. Si un módulo no sirve, conservar la geometría visual anterior mientras se trabaja una sustitución mejor. Los otros 61 módulos no se declaran revisados por esta prueba.
 
 No alterar `main`, otros pilotos, GLBs del artista ni publicar gameplay a partir de esta evidencia.
+
+## 2026-10-16 — Exact Unity A/B for outboard correction (run 38924698349)
+
+- Source `58089c800764ad6a9f45e1ab649b447da47e17f6`, Windows Unity Actions run `38924698349` succeeded, artifact `12056707431`. Before/after/lookdev landscape (1440×1000), mobile (780×520), portrait (390×844) exist. Same-camera files verified. This proves actual engine composition, not published gameplay.
+- New recorded socket is `OUTBOARD_TOWER_SOCKET_MIN_X`, with two full-depth masonry bays, eight historical wing renderers disabled, no colliders in this wing (zero retained); imported source digests match selected V6 wall `928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3` and tower `73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1`.
+- **STRUCTURAL ADVANCE**: tower no longer obscures the entrance's historic tower. The masonry bay meets the tower footprint instead of using a front-surface decal.
+- **ART FAIL, deliberately not promoted**: wall parapet is visibly flat/too low and new dark tower is stylistically disconnected from older gate. None of the 8/10 target, final game playability, or mobile performance is approved by these captures. Next experiment: true separate merlons on the top of the new wall, not a coincident wall face. Trial source `de6f94ed` had a cheap static assertion error (`len(unique)==7` with eight sources), fixed in `cc15c8bd` without using Windows. Validate the exact new run before judging.
