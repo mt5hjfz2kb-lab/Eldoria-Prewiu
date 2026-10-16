@@ -25,9 +25,9 @@ def lamp(n,p,pos,col):
  d=bpy.data.lights.new(n,'AREA');d.energy=p;d.color=col;d.size=10;d.shape='DISK'
  o=bpy.data.objects.new(n,d);bpy.context.collection.objects.link(o)
  o.location=pos;o.rotation_euler=(-o.location).to_track_quat('-Z','Y').to_euler()
-lamp('soft late afternoon',( -7,-9,12),1900,(1,.86,.70))
-lamp('cold fill',(8,3,13),1550,(.72,.83,1))
-lamp('geology rim',(0,9,11),800,(.95,.97,1))
+lamp('soft late afternoon',1900,(-7,-9,12),(1,.86,.70))
+lamp('cold fill',1550,(8,3,13),(.72,.83,1))
+lamp('geology rim',800,(0,9,11),(.95,.97,1))
 ca=bpy.data.cameras.new('common ground A B');cam=bpy.data.objects.new('common ground A B',ca)
 bpy.context.collection.objects.link(cam);sc.camera=cam;ca.type='ORTHO'
 rig=set(bpy.data.objects)
