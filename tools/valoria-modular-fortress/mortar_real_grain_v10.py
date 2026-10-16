@@ -8,8 +8,8 @@ import numpy as np
 from pathlib import Path
 from mathutils import Vector
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
-if len(args)!=2:raise RuntimeError('V9 mortar GLB folder, output')
-src,out=map(Path,args)
+if len(args)!=3:raise RuntimeError('V9 mortar GLB folder, source CC0 photographed V8 albedo, output')
+src,photo_source,out=map(Path,args)
 for d in ('before','after','glb','atlas','reports'):(out/d).mkdir(parents=True,exist_ok=True)
 base=src/'mortar_joint_recess.glb'
 if not base.exists():raise RuntimeError('Expected V9 physical lime seam')
@@ -61,7 +61,18 @@ for m in body.data.materials:
  for node in m.node_tree.nodes:
   if node.type=='TEX_IMAGE' and node.image and node.image.colorspace_settings.name!='Non-Color':
    diffuse=node.image
-if diffuse is None:raise RuntimeError('Original licensed CC0 photographed lime mortar texture missing')
+if diffuse is None:
+ # GLB V9 contains a Blender Bump photo node that glTF export can omit.
+ # Recover VERIFIED CC0 V8 photo rather than fabricating a cement material.
+ if not photo_source.is_file():raise RuntimeError('Original CC0 photographed lime grout atlas missing')
+ diffuse=bpy.data.images.load(str(photo_source),check_existing=True)
+ primary=nmats[0]
+ nodes=primary.node_tree.nodes
+ bs=nodes.get('Principled BSDF')
+ if bs is None:raise RuntimeError('No Principled PBR surface on grout mesh')
+ imnode=nodes.new('ShaderNodeTexImage');imnode.image=diffuse
+ for oldlink in list(bs.inputs['Base Color'].links):primary.node_tree.links.remove(oldlink)
+ primary.node_tree.links.new(imnode.outputs['Color'],bs.inputs['Base Color'])
 width,height=diffuse.size
 pixels=np.empty(width*height*4,dtype=np.float32)
 diffuse.pixels.foreach_get(pixels)
