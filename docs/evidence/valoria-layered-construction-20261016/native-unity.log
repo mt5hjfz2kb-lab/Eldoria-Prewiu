@@ -5,8 +5,8 @@ OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-16T22:11:07Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 36540)
+Date: 2026-10-16T22:17:30Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 41288)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -56,29 +56,29 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [7072]  Target information:
+Player connection [42292]  Target information:
 
-Player connection [7072]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 2633140827 [EditorId] 2633140827 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [42292]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 972151316 [EditorId] 972151316 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [7072] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [7072] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [42292] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [42292] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-16T22:11:07.3369282Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 36540, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-16T22:17:31.1213822Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 41288, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
-[Package Manager] Connected to IPC stream "Upm-36912" after 0.2 seconds.
+[Package Manager] Connected to IPC stream "Upm-42904" after 0.2 seconds.
 [Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              f7b59a5eeef747b7abe10cdf5e245add
-  Correlation Id:          e4d728595dbcab703ae89e5a6f5f9285
-  External correlation Id: 372990274703599687
+  Session Id:              5c05151e85384d3aa60fe6ecfd4ddc2f
+  Correlation Id:          3405a0e8a3a882e637f5be8ad78fba65
+  External correlation Id: 6905558137494092773
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
 [Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.26s, validation: 0.09s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-16T22:11:07.4451736Z"
-[Licensing::Module] Connected to LicensingClient (PId: 36540, launch time: 0.00, total connection time: 0.37s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-16T22:17:31.238202Z"
+[Licensing::Module] Connected to LicensingClient (PId: 41288, launch time: 0.00, total connection time: 0.38s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -88,7 +88,7 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 0.40s
+[Licensing::Module] Licensing Background thread has ended after 0.41s
 [Licensing::Module] Licensing is initialized (took 0.07s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
@@ -99,7 +99,7 @@ FMOD initialized on nosound output
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Refreshing native plugins compatible for Editor in 1.78 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 1.85 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -116,7 +116,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56912
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56904
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -129,44 +129,44 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.005566 seconds.
-- Loaded All Assemblies, in  0.396 seconds
+Registered in 0.006170 seconds.
+- Loaded All Assemblies, in  0.398 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 Package Manager log level set to [2]
-ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.380 seconds
+- Finished resetting the current domain, in  0.378 seconds
 Domain Reload Profiling: 774ms
 	BeginReloadAssembly (126ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (14ms)
-	RebuildCommonClasses (35ms)
+		CreateAndSetChildDomain (13ms)
+	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (13ms)
 	initialDomainReloadingComplete (47ms)
-	LoadAllAssembliesAndSetupDomain (173ms)
-		LoadAssemblies (111ms)
+	LoadAllAssembliesAndSetupDomain (176ms)
+		LoadAssemblies (112ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (170ms)
-			TypeCache.Refresh (168ms)
-				TypeCache.ScanAssembly (155ms)
+		AnalyzeDomain (172ms)
+			TypeCache.Refresh (171ms)
+				TypeCache.ScanAssembly (157ms)
 			BuildScriptInfoCaches (0ms)
-			ResolveRequiredComponents (0ms)
-	FinalizeReload (380ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (378ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (344ms)
+		SetupLoadedEditorAssemblies (342ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (63ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (82ms)
-			ProcessInitializeOnLoadAttributes (121ms)
-			ProcessInitializeOnLoadMethodAttributes (74ms)
+			BeforeProcessingInitializeOnLoad (80ms)
+			ProcessInitializeOnLoadAttributes (122ms)
+			ProcessInitializeOnLoadMethodAttributes (73ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -209,7 +209,7 @@ Application.AssetDatabase Initial Refresh Start
     com.arloopa.unitysplats@https://github.com/arloopa/UnitySplats.git (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.arloopa.unitysplats@6c0258189a2b)
 [Subsystems] No new subsystems found in resolved package list.
 [Package Manager] Done registering packages in 0.01 seconds
-[Package Manager] Done resolving packages in 4.36 seconds
+[Package Manager] Done resolving packages in 4.51 seconds
 [Licensing::Client] Successfully resolved entitlement details
 [Package Manager] Lock file was modified
 [Package Manager] Registered 27 packages:
@@ -251,16 +251,16 @@ A meta data file (.meta) exists but its asset 'Assets/EmaceArt/Slavic World Free
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 4 Duration: 0s179ms
-Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
-[622/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-*** Tundra requires additional run (0.16 seconds), 1 items updated, 621 evaluated
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
-ExitCode: 0 Duration: 1s187ms
+ExitCode: 4 Duration: 0s160ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[622/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra requires additional run (0.14 seconds), 1 items updated, 621 evaluated
+ExitCode: 0 Duration: 0s507ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
-ExitCode: 0 Duration: 3s782ms
+ExitCode: 0 Duration: 3s761ms
 Finished compiling graph: 798 nodes, 13656 flattened edges (11070 ToBuild, 122 ToUse), maximum node priority 882
 [458/794    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.rsp
 [621/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
@@ -275,163 +275,163 @@ running Unity.Jobs.CodeGen.JobsILPostProcessor
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
 [792/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
 [793/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (3.77 seconds), 6 items updated, 794 evaluated
-AssetDatabase: script compilation time: 5.494693s
+*** Tundra build success (3.74 seconds), 6 items updated, 794 evaluated
+AssetDatabase: script compilation time: 4.777576s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  1.566 seconds
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0117824 seconds
-Refreshing native plugins compatible for Editor in 8.14 ms, found 4 plugins.
+- Loaded All Assemblies, in  1.521 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0109323 seconds
+Refreshing native plugins compatible for Editor in 7.30 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  2.521 seconds
-Domain Reload Profiling: 4083ms
-	BeginReloadAssembly (333ms)
+- Finished resetting the current domain, in  2.505 seconds
+Domain Reload Profiling: 4022ms
+	BeginReloadAssembly (294ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (26ms)
+		DisableScriptedObjects (24ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (179ms)
+		CreateAndSetChildDomain (141ms)
 	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (24ms)
-	LoadAllAssembliesAndSetupDomain (1157ms)
-		LoadAssemblies (1096ms)
+	initialDomainReloadingComplete (25ms)
+	LoadAllAssembliesAndSetupDomain (1150ms)
+		LoadAssemblies (1088ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (149ms)
-			TypeCache.Refresh (101ms)
-				TypeCache.ScanAssembly (90ms)
-			BuildScriptInfoCaches (36ms)
-			ResolveRequiredComponents (9ms)
-	FinalizeReload (2522ms)
+		AnalyzeDomain (151ms)
+			TypeCache.Refresh (102ms)
+				TypeCache.ScanAssembly (91ms)
+			BuildScriptInfoCaches (37ms)
+			ResolveRequiredComponents (10ms)
+	FinalizeReload (2506ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (2373ms)
+		SetupLoadedEditorAssemblies (2356ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (36ms)
+			InitializePlatformSupportModulesInManaged (35ms)
 			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (145ms)
-			ProcessInitializeOnLoadAttributes (2038ms)
-			ProcessInitializeOnLoadMethodAttributes (146ms)
-			AfterProcessingInitializeOnLoad (6ms)
+			BeforeProcessingInitializeOnLoad (143ms)
+			ProcessInitializeOnLoadAttributes (2027ms)
+			ProcessInitializeOnLoadMethodAttributes (143ms)
+			AfterProcessingInitializeOnLoad (5ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (17ms)
+		AwakeInstancesAfterBackupRestoration (18ms)
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Refreshing native plugins compatible for Editor in 5.94 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 6.02 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=cf0159745c5779d4388b7a0f5973a2fd): Total: 14.833 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=f6859f4034f82184c8295f513d3d058c): Total: 14.223 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=1 (actual=1, local cache=0, cache server=0)
-		Asset DB Process Time: managed=3 ms, native=2945 ms
-		Asset DB Callback time: managed=244 ms, native=4535 ms
-		Scripting: domain reloads=1, domain reload time=1566 ms, compile time=5498 ms, other=39 ms
-		Project Asset Count: scripts=1141, non-scripts=3501
+		Asset DB Process Time: managed=3 ms, native=2931 ms
+		Asset DB Callback time: managed=265 ms, native=4676 ms
+		Scripting: domain reloads=1, domain reload time=1521 ms, compile time=4783 ms, other=40 ms
+		Project Asset Count: scripts=1145, non-scripts=4044
 		Asset File Changes: new=1, changed=2, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.002ms
-	InvokePackagesCallback: 4393.367ms
-	ApplyChangesToAssetFolders: 0.464ms
-	Scan: 90.561ms
-	OnSourceAssetsModified: 0.549ms
-	CategorizeAssetsWithTransientArtifact: 21.579ms
-	ProcessAssetsWithTransientArtifactChanges: 46.292ms
-	CategorizeAssets: 92.390ms
-	ImportOutOfDateAssets: 2560.572ms (-2953.616ms without children)
-		ImportManagerImport: 13.067ms (1.072ms without children)
-			ImportInProcess: 11.982ms
-			UpdateCategorizedAssets: 0.013ms
-		CompileScripts: 5497.923ms
-		ReloadNativeAssets: 0.048ms
-		UnloadImportedAssets: 0.789ms
+	InvokePackagesCallback: 4528.407ms
+	ApplyChangesToAssetFolders: 0.520ms
+	Scan: 98.977ms
+	OnSourceAssetsModified: 0.558ms
+	CategorizeAssetsWithTransientArtifact: 21.526ms
+	ProcessAssetsWithTransientArtifactChanges: 44.042ms
+	CategorizeAssets: 95.857ms
+	ImportOutOfDateAssets: 2542.490ms (-2256.301ms without children)
+		ImportManagerImport: 12.135ms (1.032ms without children)
+			ImportInProcess: 11.088ms
+			UpdateCategorizedAssets: 0.016ms
+		CompileScripts: 4783.477ms
+		ReloadNativeAssets: 0.042ms
+		UnloadImportedAssets: 0.905ms
 		ReloadImportedAssets: 0.000ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.155ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.183ms
 		InitializingProgressBar: 0.001ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 1.204ms
-	PostProcessAllAssets: 420.452ms
-	Hotreload: 7.717ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.223ms
-	UnloadStreamsBegin: 3.078ms
-	PersistCurrentRevisions: 0.327ms
+		OnDemandSchedulerStart: 1.047ms
+	PostProcessAllAssets: 446.171ms
+	Hotreload: 7.678ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.254ms
+	UnloadStreamsBegin: 3.386ms
+	PersistCurrentRevisions: 0.346ms
 	UnloadStreamsEnd: 0.003ms
-	GenerateScriptTypeHashes: 4.848ms
-	Untracked: 7194.996ms
+	GenerateScriptTypeHashes: 3.825ms
+	Untracked: 6432.387ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 2.870ms
+Scanning for USB devices : 2.920ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Unity
 Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4255 unused Assets / (5.0 MB). Loaded Objects now: 5168.
-Memory consumption went from 197.6 MB to 192.5 MB.
-Total: 9.487100 ms (FindLiveObjects: 0.502000 ms CreateObjectMapping: 0.470800 ms MarkObjects: 6.531000 ms  DeleteObjects: 1.982800 ms)
+Unloading 4256 unused Assets / (5.1 MB). Loaded Objects now: 5171.
+Memory consumption went from 203.4 MB to 198.2 MB.
+Total: 10.410900 ms (FindLiveObjects: 0.491700 ms CreateObjectMapping: 0.466800 ms MarkObjects: 7.080300 ms  DeleteObjects: 2.371400 ms)
 
-Refreshing native plugins compatible for Editor in 5.80 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 5.79 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=bf633b2934145cd4989b1702ef64111c): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated using Guid(1786ec91d40008443a5ffcc975a363d0) (DefaultImporter) -> (artifact id: 'dec77d0be560326a1113c90aa59e384a') in 0.0069477 seconds
-Refreshing native plugins compatible for Editor in 6.03 ms, found 4 plugins.
+Asset Pipeline Refresh (id=7e63df9bfe36ea249ab8468371ddb687): Total: 0.077 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated using Guid(1786ec91d40008443a5ffcc975a363d0) (DefaultImporter) -> (artifact id: 'dec77d0be560326a1113c90aa59e384a') in 0.0070405 seconds
+Refreshing native plugins compatible for Editor in 6.14 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=deda6e0177a9f6345b94c4bb3b92de10): Total: 0.063 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=4d9e70daccd320b4c8bff4448465bcfc): Total: 0.068 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 50 unused Assets / (1.0 KB). Loaded Objects now: 5168.
-Memory consumption went from 175.4 MB to 175.4 MB.
-Total: 6.027200 ms (FindLiveObjects: 0.168500 ms CreateObjectMapping: 0.085900 ms MarkObjects: 5.747300 ms  DeleteObjects: 0.025000 ms)
+Unloading 50 unused Assets / (1.0 KB). Loaded Objects now: 5171.
+Memory consumption went from 180.8 MB to 180.8 MB.
+Total: 5.750600 ms (FindLiveObjects: 0.178400 ms CreateObjectMapping: 0.086200 ms MarkObjects: 5.461300 ms  DeleteObjects: 0.024100 ms)
 
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/ground_greybox.mat using Guid(3910b520ebee5f941922fc9aa5e79cf8) (NativeFormatImporter) -> (artifact id: '9937591cdcbf332ba307c93f852d951e') in 0.0017696 seconds
-Refreshing native plugins compatible for Editor in 5.78 ms, found 4 plugins.
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/ground_greybox.mat using Guid(3910b520ebee5f941922fc9aa5e79cf8) (NativeFormatImporter) -> (artifact id: '9937591cdcbf332ba307c93f852d951e') in 0.0015746 seconds
+Refreshing native plugins compatible for Editor in 5.87 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=221b662107cc8ce4a9bc3db9aa70806d): Total: 0.063 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/road_greybox.mat using Guid(851345a1ef3b00e4bb1d34a8d04c81f3) (NativeFormatImporter) -> (artifact id: 'c7b34b18c00b8ba5eddd475837fdbecc') in 0.0016845 seconds
-Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=8cf109715f66ae74bb109d1ba4f164ca): Total: 0.041 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/plot_reserves_greybox.mat using Guid(cc0af685d33cbe74fa923c5eef7f93d5) (NativeFormatImporter) -> (artifact id: '2ce41a9202f552bd12929d8ea945185a') in 0.0017111 seconds
-Refreshing native plugins compatible for Editor in 5.99 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=9b56bfab176b093498824bf7b5e21209): Total: 0.041 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/upper_terrace_greybox.mat using Guid(58bf8c45f5462464aa7575e4c49f8a5e) (NativeFormatImporter) -> (artifact id: 'b340b63fafe8b2827c4bbb8c15a79f26') in 0.0015406 seconds
-Refreshing native plugins compatible for Editor in 6.05 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=d65e7df245ca83e4588bb3bb9b898c2f): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/stone_volume_greybox.mat using Guid(4370da3a9030d38419445f8b99a8e9b6) (NativeFormatImporter) -> (artifact id: 'b0ac50a7c553f20fed61f7ff33b07ea6') in 0.0016711 seconds
-Refreshing native plugins compatible for Editor in 6.12 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ca419cbe1341bdd47a0337709ccae803): Total: 0.041 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/future_reserve_greybox.mat using Guid(6ccdf0f112e5afd4e9db099be437cead) (NativeFormatImporter) -> (artifact id: '7e9258a20e30288a55b0ad7419ce4535') in 0.0016976 seconds
+Asset Pipeline Refresh (id=8218c57ec91a91f45954cd2fab88e26a): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/road_greybox.mat using Guid(851345a1ef3b00e4bb1d34a8d04c81f3) (NativeFormatImporter) -> (artifact id: 'c7b34b18c00b8ba5eddd475837fdbecc') in 0.0016529 seconds
 Refreshing native plugins compatible for Editor in 6.08 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=b12fefaa1a2fda046bd768c13bad5cff): Total: 0.041 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/river_provisional.mat using Guid(ccfe3b38ac048154298571cc9dca207e) (NativeFormatImporter) -> (artifact id: '5109f92523a0623af5804472f7f33c78') in 0.0015829 seconds
-Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
+Asset Pipeline Refresh (id=6f7d13486b700de44b9e7f80f2bf136e): Total: 0.042 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/plot_reserves_greybox.mat using Guid(cc0af685d33cbe74fa923c5eef7f93d5) (NativeFormatImporter) -> (artifact id: '2ce41a9202f552bd12929d8ea945185a') in 0.0014147 seconds
+Refreshing native plugins compatible for Editor in 6.15 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=bd8d3da8324d94542acbd7b67c9f8ae6): Total: 0.041 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/timber_greybox.mat using Guid(ff61f0197760f2940bb5df91cfb95b83) (NativeFormatImporter) -> (artifact id: '7ce83054e8fbe9636b0a94e84bee100d') in 0.0015781 seconds
+Asset Pipeline Refresh (id=b179ac43671d8054dbe8eeaaf8b75452): Total: 0.041 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/upper_terrace_greybox.mat using Guid(58bf8c45f5462464aa7575e4c49f8a5e) (NativeFormatImporter) -> (artifact id: 'b340b63fafe8b2827c4bbb8c15a79f26') in 0.0016736 seconds
+Refreshing native plugins compatible for Editor in 6.07 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=fccae624344ce4d4284a99e9435b22a6): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/stone_volume_greybox.mat using Guid(4370da3a9030d38419445f8b99a8e9b6) (NativeFormatImporter) -> (artifact id: 'b0ac50a7c553f20fed61f7ff33b07ea6') in 0.0017038 seconds
 Refreshing native plugins compatible for Editor in 6.13 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=82831d81f93a14449bedb7fc8e63cee7): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0022934 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/stone_volume_greybox.mat using Guid(4370da3a9030d38419445f8b99a8e9b6) (NativeFormatImporter) -> (artifact id: '8b65b266ea5b6afac50120629cf43107') in 0.0011136 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/road_greybox.mat using Guid(851345a1ef3b00e4bb1d34a8d04c81f3) (NativeFormatImporter) -> (artifact id: 'c622af4835728dd36de82be77a4609c5') in 0.0010935 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/upper_terrace_greybox.mat using Guid(58bf8c45f5462464aa7575e4c49f8a5e) (NativeFormatImporter) -> (artifact id: 'cab3b45e3dd602e62b9ea65cfd0beb2c') in 0.0009946 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/ground_greybox.mat using Guid(3910b520ebee5f941922fc9aa5e79cf8) (NativeFormatImporter) -> (artifact id: 'b2d1f6e16c7c82d6131c3c6bc2d18cf8') in 0.0009817 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/future_reserve_greybox.mat using Guid(6ccdf0f112e5afd4e9db099be437cead) (NativeFormatImporter) -> (artifact id: 'd2170d038b77db8d26a6ab769892e228') in 0.0009998 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/plot_reserves_greybox.mat using Guid(cc0af685d33cbe74fa923c5eef7f93d5) (NativeFormatImporter) -> (artifact id: 'f0556e0cf92eac2aca06019b3df8e3a6') in 0.0009809 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/river_provisional.mat using Guid(ccfe3b38ac048154298571cc9dca207e) (NativeFormatImporter) -> (artifact id: '5529ca54531428bf0df318febf08191f') in 0.0009724 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/timber_greybox.mat using Guid(ff61f0197760f2940bb5df91cfb95b83) (NativeFormatImporter) -> (artifact id: '48b7f0abecb48b03080a951642bf6ed7') in 0.0009826 seconds
-Refreshing native plugins compatible for Editor in 6.06 ms, found 4 plugins.
+Asset Pipeline Refresh (id=6896b306eaaace547b2ae9663549b5e3): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/future_reserve_greybox.mat using Guid(6ccdf0f112e5afd4e9db099be437cead) (NativeFormatImporter) -> (artifact id: '7e9258a20e30288a55b0ad7419ce4535') in 0.0017258 seconds
+Refreshing native plugins compatible for Editor in 6.15 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=8f0f13b67bad69e4b8bf9a83c48465ff): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity using Guid(b15fd20c7bb35af4b99b41bf4bf64226) (DefaultImporter) -> (artifact id: '563fcb88ebf579e0674e6b15952311a1') in 0.0008821 seconds
-Refreshing native plugins compatible for Editor in 6.10 ms, found 4 plugins.
+Asset Pipeline Refresh (id=c9004b3b805f09a488aac6354a45bfa5): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/river_provisional.mat using Guid(ccfe3b38ac048154298571cc9dca207e) (NativeFormatImporter) -> (artifact id: '5109f92523a0623af5804472f7f33c78') in 0.0014179 seconds
+Refreshing native plugins compatible for Editor in 6.09 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=823db1e6e84500e4eaecdb2ebcd203ab): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=bd97943c509a5a040927f289ab9abf2d): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/timber_greybox.mat using Guid(ff61f0197760f2940bb5df91cfb95b83) (NativeFormatImporter) -> (artifact id: '7ce83054e8fbe9636b0a94e84bee100d') in 0.0016988 seconds
+Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=ea23f29d73dbf934490900c4fe2910f1): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0024095 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/stone_volume_greybox.mat using Guid(4370da3a9030d38419445f8b99a8e9b6) (NativeFormatImporter) -> (artifact id: '86e6a3c1fcdc84d39fd3b4ae64f1b7b9') in 0.0011418 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/road_greybox.mat using Guid(851345a1ef3b00e4bb1d34a8d04c81f3) (NativeFormatImporter) -> (artifact id: '8497d90c705bc08cfd23d754b97070b8') in 0.0010449 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/upper_terrace_greybox.mat using Guid(58bf8c45f5462464aa7575e4c49f8a5e) (NativeFormatImporter) -> (artifact id: 'a998d7787232c33f0fb4152298292de7') in 0.0009702 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/ground_greybox.mat using Guid(3910b520ebee5f941922fc9aa5e79cf8) (NativeFormatImporter) -> (artifact id: 'c633f4390cd19efc370f78df813dc91b') in 0.0010141 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/future_reserve_greybox.mat using Guid(6ccdf0f112e5afd4e9db099be437cead) (NativeFormatImporter) -> (artifact id: 'a17ed84c9bdc7902f8a7182ad84cbcbe') in 0.001062 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/plot_reserves_greybox.mat using Guid(cc0af685d33cbe74fa923c5eef7f93d5) (NativeFormatImporter) -> (artifact id: '61d67fba8523a7c171f0277d9ebc2c04') in 0.0009996 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/river_provisional.mat using Guid(ccfe3b38ac048154298571cc9dca207e) (NativeFormatImporter) -> (artifact id: 'f837dde6ba30f6ac594847bf5f382221') in 0.0010781 seconds
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated/timber_greybox.mat using Guid(ff61f0197760f2940bb5df91cfb95b83) (NativeFormatImporter) -> (artifact id: 'e751af96076d8e3c31a18163baca4c1b') in 0.0010044 seconds
+Refreshing native plugins compatible for Editor in 6.05 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=6093935ed2cfccf46acada6197610bd7): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity using Guid(b15fd20c7bb35af4b99b41bf4bf64226) (DefaultImporter) -> (artifact id: '7d8b452fae364a3dbd40eed63c4d401f') in 0.0009167 seconds
+Refreshing native plugins compatible for Editor in 6.13 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=ca8696c6a2ae2d54c8a0446e28f15238): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 VALORIA_LAYERED_ABC_NATIVE_SOURCE zones=22 stairs=12 rays=19 upper=2,7 first=0,48 last=2,46
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -455,7 +455,7 @@ Eldoria.ValoriaLayered.Editor.ValoriaLayeredMasterSceneBuilder:Build () (at Asse
 
 (Filename: Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs Line: 66)
 
-Killing ADB server in 2,035859 seconds.
+Killing ADB server in 2,0704694 seconds.
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -468,4 +468,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792188689642,"processId":36912,"allocatedMemory":15497823,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67651},{"Thread":4230384},{"Manager":821136},{"VertexData":200},{"Geometry":816},{"Texture":160},{"Shader":81701},{"Material":24},{"GfxDevice":56016},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":9779},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":23747},{"DynamicArray":102854},{"HashMap":77146},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":8320},{"WebRequest":589},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108332},{"VersionControl":4},{"Undo":947},{"AssetDatabase":4844138},{"EditorGi":328},{"UnityConnect":29208},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792189073429,"processId":42904,"allocatedMemory":15497823,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67651},{"Thread":4230384},{"Manager":821136},{"VertexData":200},{"Geometry":816},{"Texture":160},{"Shader":81701},{"Material":24},{"GfxDevice":56016},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":9779},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":23747},{"DynamicArray":102854},{"HashMap":77146},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":8320},{"WebRequest":589},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108332},{"VersionControl":4},{"Undo":947},{"AssetDatabase":4844138},{"EditorGi":328},{"UnityConnect":29208},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
