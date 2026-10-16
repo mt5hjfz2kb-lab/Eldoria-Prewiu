@@ -51,6 +51,7 @@ jobs:
         with:
           ref: main
           path: .valoria-feedback
+          sparse-checkout: tools/valoria-asset-feedback
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
