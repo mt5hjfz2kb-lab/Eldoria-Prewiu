@@ -17,8 +17,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 3
     localAABB:
-      m_Center: {x: -0.04802511, y: 0.08254384, z: 1.9482971}
-      m_Extent: {x: 0.02688171, y: 0.08254384, z: 0.110185266}
+      m_Center: {x: -1.2918576, y: 0.08956717, z: -1.4855366}
+      m_Extent: {x: 0.014999986, y: 0.08956717, z: 0.047149956}
   m_Shapes:
     vertices: []
     shapes: []
@@ -97,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 152
-    _typelessdata: eb34adbc000000004047eb3f0000008074e04cbf627f193f000080bf00000000000000000000803fbd7b51bd000000004047eb3f0000008074e04cbf627f193f000080bf00000000000000000000803fbf6899bdbf0c293e2dbe03400000008074e04cbf627f193f000080bf00000000000000000000803f0000000000000000ec6a793c8066a9bff9d3163d8066a9bfc1e85c3db0b5bdbf
+    _typelessdata: 1270a3bf000000000e1db8bf00000080cc7cee3e4b88623f000080bf0000000000000000000080bf1c47a7bf000000000e1db8bf00000080cc7cee3e4b88623f000080bf0000000000000000000080bfdc23a5bffe6e373e132fc4bf00000080cc7cee3e4b88623f000080bf0000000000000000000080bf0000000000000000b4596b3f0000000047e1703f000000003dcd6d3f7812043e
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -151,8 +151,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: -0.04802511, y: 0.08254384, z: 1.9482971}
-    m_Extent: {x: 0.02688171, y: 0.08254384, z: 0.110185266}
+    m_Center: {x: -1.2918576, y: 0.08956717, z: -1.4855366}
+    m_Extent: {x: 0.014999986, y: 0.08956717, z: 0.047149956}
   m_MeshUsageFlags: 0
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 

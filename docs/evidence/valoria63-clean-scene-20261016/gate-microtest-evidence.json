@@ -1,0 +1,23 @@
+{
+    "scene": "Assets/Eldoria/ArtTests/Valoria63CleanScene/Valoria_Gate_ArtDirection_Microtest.unity",
+    "unique_real_sources": 13,
+    "instances": 56,
+    "art_score": 0,
+    "art_approved": false,
+    "scores_are_pending_human_visual_review": true,
+    "source_placements": [
+        "arch_complete_major:1",
+        "banner_royal_blue:2",
+        "boulder_1:4",
+        "brazier_pedestal:2",
+        "cliff_rock_column:8",
+        "paver_flagstone:15",
+        "pine_medium:6",
+        "portcullis_large:1",
+        "reinforced_oak_gate:1",
+        "shrub_1:6",
+        "torch_wall:2",
+        "tower_square_short:2",
+        "wall_panel_crenellated_4m:6"
+    ]
+}

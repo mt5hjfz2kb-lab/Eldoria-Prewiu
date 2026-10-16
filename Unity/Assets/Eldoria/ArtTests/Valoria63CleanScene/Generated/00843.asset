@@ -17,7 +17,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 6
     localAABB:
-      m_Center: {x: -0.03222119, y: 3.3351536, z: -0.3336974}
+      m_Center: {x: -0.01619768, y: 3.3584943, z: -0.1677506}
       m_Extent: {x: 0.008534262, y: 0.06886196, z: 0.088384725}
   m_Shapes:
     vertices: []
@@ -97,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 288
-    _typelessdata: 4a49e4bcec0a5140cbc393beb3d07ebf00000000a9cec43da8cec4bdae6039b5b2d07ebf000080bf4a49e4bcec0a5140cbc393beb3d07e3f00000000a9cec4bda8cec4bd9f2b96b7b2d07ebf0000803f848b07bd65fc54408178afbeb3d07e3f00000000a9cec4bda8cec4bd9f2b96b7b2d07ebf0000803f31ef26bd64db5940261bd8beb3d07ebf00000000a9cec43da8cec4bdae6039b5b2d07ebf000080bf31ef26bd64db5940261bd8beb3d07e3f00000000a9cec4bda8cec4bd9f2b96b7b2d07ebf0000803f180bc2bc89ae55403f337bbeb3d07ebf00000000a9cec43da8cec4bdae6039b5b2d07ebf000080bf06c8543ebe82164006c8543ebe82164087ad7c3e90591940ab989b3e67db1c40ab989b3e67db1c4038dd343ed3d91940
+    _typelessdata: 180b42bc568952404033fbbdb3d07ebf00000000a9cec43da8cec4bd1cc06035b2d07ebf000080bf180b42bc568952404033fbbdb3d07e3f00000000a9cec4bda8cec4bd64550d37b2d07ebf0000803f4ad38bbccf7a56400c0335beb3d07e3f00000000a9cec4bda8cec4bd64550d37b2d07ebf0000803fa49acabcce595b402b2483beb3d07ebf00000000a9cec43da8cec4bd1cc06035b2d07ebf000080bfa49acabcce595b402b2483beb3d07e3f00000000a9cec4bda8cec4bd64550d37b2d07ebf0000803f691dfbbbf32c5740928aa2bdb3d07ebf00000000a9cec43da8cec4bd1cc06035b2d07ebf000080bf38ddb43d1596174038ddb43d159617401d54023ee76c1a40ecd73c3ebdee1d40ecd73c3ebdee1d40390f6a3d2aed1a40
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -151,7 +151,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: -0.03222119, y: 3.3351536, z: -0.3336974}
+    m_Center: {x: -0.01619768, y: 3.3584943, z: -0.1677506}
     m_Extent: {x: 0.008534262, y: 0.06886196, z: 0.088384725}
   m_MeshUsageFlags: 0
   m_CookingOptions: 30

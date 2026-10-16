@@ -17,8 +17,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 6
     localAABB:
-      m_Center: {x: 0.95728314, y: 1.2464559, z: 1.6665659}
-      m_Extent: {x: 0.25355065, y: 0.3947758, z: 0.44141477}
+      m_Center: {x: 0.4812288, y: 1.3802643, z: 0.83778715}
+      m_Extent: {x: 0.25355068, y: 0.3947758, z: 0.44141477}
   m_Shapes:
     vertices: []
     shapes: []
@@ -97,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 288
-    _typelessdata: 9af2533fb6075a3f4d7eb83f3bfb5dbf000000001308ff3e1308ffbedc1f2b353bfb5dbf000080bf9af2533fb6075a3f4d7eb83f3bfb5d3f000000001308ffbe1308ffbef4378c333bfb5dbf0000803f17b07b3f2f3a9a3ffc15db3f3bfb5dbf000000001308ff3e1308ffbedc1f2b353bfb5dbf000080bf9afc9a3fe213d23f28e906403bfb5dbf000000001308ff3e1308ffbedc1f2b353bfb5dbf000080bf9afc9a3fe213d23f28e906403bfb5d3f000000001308ffbe1308ffbef4378c333bfb5dbf0000803fd027343fb634a23fc1d19c3f3bfb5d3f000000001308ffbe1308ffbef4378c333bfb5dbf0000803fd1d584bf50fb1c3fd1d584bf50fb1c3fe9bd9dbf58165e3f8145c2bf8441973f8145c2bf8441973fe3d161bf9593693f
+    _typelessdata: cf27b43ef8487c3fc1d11c3f3bfb5dbf000000001308ff3e1308ffbed48d51b53bfb5dbf000080bfcf27b43ef8487c3fc1d11c3f3bfb5d3f000000001308ffbe1308ffbef23302b43bfb5dbf0000803f64d1013fd05aab3f1e01623f3bfb5dbf000000001308ff3e1308ffbed48d51b53bfb5dbf000080bf821a3c3f8334e33fe4bca33f3bfb5dbf000000001308ff3e1308ffbed48d51b53bfb5dbf000080bf821a3c3f8334e33fe4bca33f3bfb5d3f000000001308ffbe1308ffbef23302b43bfb5dbf0000803f7424693e5755b33f53f1ca3e3bfb5d3f000000001308ffbe1308ffbef23302b43bfb5dbf0000803fe3d1e1be2da5353fe3d1e1be2da5353f20b922bf36c0763f53c86bbf7396a33f53c86bbf7396a33f651e92beba1e813f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -151,8 +151,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 0.95728314, y: 1.2464559, z: 1.6665659}
-    m_Extent: {x: 0.25355065, y: 0.3947758, z: 0.44141477}
+    m_Center: {x: 0.4812288, y: 1.3802643, z: 0.83778715}
+    m_Extent: {x: 0.25355068, y: 0.3947758, z: 0.44141477}
   m_MeshUsageFlags: 0
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
