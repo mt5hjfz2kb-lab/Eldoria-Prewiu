@@ -1,0 +1,1 @@
+Native clean scene build requested 2026-10-16. Exclusive Windows runner lease recorded in main registry.
