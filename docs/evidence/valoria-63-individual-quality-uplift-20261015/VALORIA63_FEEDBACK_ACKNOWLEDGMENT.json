@@ -43,5 +43,7 @@
   ],
   "acknowledged_by": "valoria-63-asset-feedback-contract-20261016",
   "art_approved": false,
-  "source_asset_count": 63
+  "source_asset_count": 63,
+  "source_file": "tools/valoria-modular-fortress/individual_quality_uplift.py",
+  "source_git_blob_sha1": "2e7a2107b620b807a41d92e2dc01e99042c43de2"
 }
