@@ -1,0 +1,32 @@
+name: "[CONTRACT] Valoria 63 artist live feedback preflight"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - 'docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json'
+      - '.github/workflows/valoria-63-feedback-preflight.yml'
+      
+permissions:
+  contents: read
+jobs:
+  check-current-feedback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: .valoria-feedback
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check current main registry and owner's explicit per-asset acknowledgments
+        shell: bash
+        run: |
+          node .valoria-feedback/tools/valoria-asset-feedback/workstream-sync.mjs artist \
+            docs/evidence/valoria-63-individual-quality-uplift-20261015/VALORIA63_FEEDBACK_ACKNOWLEDGMENT.json \
+            '' \
+            .valoria-feedback/tools/valoria-asset-feedback/registry.json \
+            .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
