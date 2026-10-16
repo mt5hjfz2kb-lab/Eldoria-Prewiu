@@ -1,0 +1,34 @@
+name: "[ART PBR GROUND] Official 1K grass soil forest CC0 phototextures"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-three-real-ground-source.yml'
+      - 'tools/valoria-modular-fortress/collect_ground_photos_1k.py'
+permissions:
+  contents: read
+jobs:
+  photos-official-zero-euro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Save certified 1K diffuse/normal/rough source maps
+        run: python3 tools/valoria-modular-fortress/collect_ground_photos_1k.py "$RUNNER_TEMP/eldoria-three-ground-cc0"
+      - name: Verify authorship and public-domain budget
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-three-ground-cc0'
+          x=json.loads((p/'source_manifest.json').read_text())
+          assert x['cost_eur']==0 and x['license']=='CC0 1.0'
+          assert set(x['maps'])=={'grass_ground','dirt','forest_ground_04'}
+          for v in x['maps'].values():assert any(k.lower()=='diffuse' for k in v['maps'])
+          print('REAL_GROUND_CC0_SOURCES_OK')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-certified-cc0-ground-photography-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-three-ground-cc0/**
+          retention-days: 30
+          if-no-files-found: error
