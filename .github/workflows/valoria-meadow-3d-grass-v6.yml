@@ -1,0 +1,71 @@
+name: "[ART GRASS FLOOR6 V6] Actually visible curled 3D olive meadow blades"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-meadow-3d-grass-v6.yml'
+      - 'tools/valoria-modular-fortress/meadow_visible_3d_grass_v6.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-grass-ground-deep-visible-leaf-v6
+  cancel-in-progress: false
+jobs:
+  artist-meadow-only:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Existing Blender and Git
+        id: bins
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No local git'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'No Blender installed'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-green-photographic-real-meadow-38889135999
+          run-id: 38889135999
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/best_green_meadow_v5
+      - name: Sculpt 110 3D grass clusters and render same-photo A/B
+        shell: powershell
+        run: |
+          $src=Join-Path $env:RUNNER_TEMP 'best_green_meadow_v5\eldoria-real-green-olive-meadow-v5\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-true-curved-meadow-v6'
+          if(-not(Test-Path (Join-Path $src 'grass_ground_patch.glb'))){throw 'Source real meadow GLB missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/meadow_visible_3d_grass_v6.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned artist code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-meadow-visible-v6.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-meadow-v6.stdout'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-meadow-v6.stderr'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$src,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Meadow visible leaf sculpt error $($proc.ExitCode)"}
+          foreach($file in @('glb\grass_ground_patch.glb','before\grass_ground_patch.png','after\grass_ground_patch.png','reports\real_meadow_addition.json')){
+            if(-not(Test-Path (Join-Path $out $file))){throw "Missing output $file"}
+          }
+      - name: Preserve original vs physically enhanced grass and origin
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-one-meadow-visible-leaves-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-true-curved-meadow-v6/**
+            ${{ runner.temp }}/eldoria-meadow-v6.stdout
+            ${{ runner.temp }}/eldoria-meadow-v6.stderr
+          retention-days: 30
+          if-no-files-found: warn
