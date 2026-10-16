@@ -36,3 +36,16 @@
 Quedan **34** bajo 6 en la revisión estricta actual. Priorizar `merlon_low`, `arrow_slit_frame` (el panel negro de estudio no se exportó), `merlon_tall`, `brazier_pedestal` y `mortar_joint_recess` con mejoras geométricas/materiales reales y PNG A/B de la misma cámara. La comparación individual en Unity URP sigue fuera del alcance de esta orden de biblioteca y no se debe afirmar como completada.
 
 **Hito pendiente, no alcanzado:** 63/63 >=6 provisional, luego acercarse a 8; ninguna modificación a Unity ni promoción a main.
+
+
+## Adenda de continuación posterior — pruebas individuales adicionales, 16/10/2026
+
+**Estado del inventario recalculado desde 63 GLB reales:** **31/63 candidatos de estudio >=6/10; 32/63 siguen por debajo; 0 ART_APPROVED.** Este cálculo sustituye expresamente la frase histórica de 34 pendientes escrita arriba. La discrepancia se resolvió al recuperar físicamente los dos GLB de merlones que el Excel anterior aún no tenía. El umbral sigue siendo provisional en Blender, no certifica Unity. Se conserva cada SHA del modelo ganador y las versiones antiguas por run.
+
+- `merlon_low` y `merlon_tall`: **run 38938952286**, artefacto **12063370353**. Modelos físicos de piedra fotografiada, un bloque bajo/tres cursos para alto; puntuaciones visuales provisionales **6.0, 6.0**; no confundir sucesos TECH_PASS con aprobación.
+- `wall_course_4m`: **run 38940413584**, artefacto **12062837704**, GLB SHA256 `413a32ef6b6024c1757e34fbc472b93400e89874818f8b6cfdda54832c116a58`. Cinco sillares independientes y misma cámara. La textura del mismo donante repetida cinco veces todavía se detecta; solo **5.9 provisional**, no subir a 6.
+- `arrow_slit_frame`: los dos primeros intradós eran caras de grosor 0 pese a contar con un hueco real. **run 38941311902** generó V10 con intradós de 20mm sólidos, 13 mallas, envelope invariable y 3 rayos libres; **run 38943106847** corrigió el render de la vista posterior, que antes ocultaba una lámina del estudio. A/B frontal mejora poco: **NO promocionar todavía a 6 ni declararlo ART_APPROVED**; preservar versión anterior 5.2 de run 38866656756 y V10 como candidato técnico de trabajo.
+- `cobble_pebbles`: nueva propuesta V11 con **28 piedras fotogramétricas decimadas y orientadas independientemente**, preservando su distribución y comprobando contactos; source en `tools/valoria-modular-fortress/cobble_real_scan_v11.py`, workflow `.github/workflows/valoria-cobble-real-scan-v11.yml`, **run 38943488120** inicialmente QUEUED por runner Windows compartido con Bastión I. Nunca atribuirle puntuación ni GLB hasta comprobar conclusión, PNG originales y SHA del artefacto.
+- Se generó fuera del repositorio una versión **reconciliada** del Excel, de la galería PDF y del ZIP con 63 GLB, sus vistas originales/actuales y recortes contextuales de la referencia; la evidencia pública reproducible de cada cambio son los runs y artefactos. No subir copias de modelos pesados al repositorio ni publicarlos en main.
+
+**Siguientes pasos autorizados:** finalizar V11 de guijarros, inspeccionar su A/B, conservar la mejor versión, actualizar manifest/Excel solo si de verdad hay mejora; luego trabajar las piezas restantes por impacto (arquitectura y naturaleza, no color superficial repetido). Unity/Bastión I no pertenecen a este chat.
