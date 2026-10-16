@@ -1,0 +1,76 @@
+name: "[ART GROUND V3] Genuine CC0 grass dirt forest floor A-B materials"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-authentic-ground-pbr.yml'
+      - 'tools/valoria-modular-fortress/authentic_ground_photographs.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-cc0-photo-grass-dirt-module
+  cancel-in-progress: false
+jobs:
+  compare-two-real-photo-families:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    steps:
+      - name: Existing Blender Git only
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Missing Git'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender unavailable'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/true-ground-baseline
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-certified-cc0-ground-photography-38870945019
+          run-id: 38870945019
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/true-ground-images
+      - name: Blender four options for two independent preserved terrain modules
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'true-ground-baseline\eldoria-upgrade63\glb'
+          $photos=Join-Path $env:RUNNER_TEMP 'true-ground-images'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-true-photographed-ground'
+          if(-not(Test-Path (Join-Path $photos 'grass_ground_diffuse.jpg'))){throw 'CC0 grass albedo missing'}
+          if(-not(Test-Path (Join-Path $old 'grass_ground_patch.glb'))){throw 'Native source grass missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/authentic_ground_photographs.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned native source unavailable'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-ground-true-photo.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-ground-photo.log';$err=Join-Path $env:RUNNER_TEMP 'valoria-ground-photo.err'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$photos,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 110 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 55 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Grass/dirt real CC0 source Blender failure $($proc.ExitCode)"}
+          if((Get-ChildItem (Join-Path $out 'glb') -Filter '*.glb').Count -ne 4){throw 'Four photo ground variations required'}
+      - name: Retain actual GLB outputs and all 6 studio PNGs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-authentic-ground-photo-candidates-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-true-photographed-ground/**
+            ${{ runner.temp }}/valoria-ground-photo.log
+            ${{ runner.temp }}/valoria-ground-photo.err
+          if-no-files-found: warn
+          retention-days: 30
