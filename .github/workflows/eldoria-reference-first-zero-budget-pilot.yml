@@ -71,7 +71,7 @@ jobs:
       - name: Stage existing fortress/gate GLB sources only inside isolated Unity pilot
         shell: powershell
         run: |
-          $dst='Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/V10/Imported'
+          $dst='Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/V11/Imported'
           New-Item -ItemType Directory -Force $dst | Out-Null
           Copy-Item 'art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb' "$dst/BastionFamilyV1.glb" -Force
           Copy-Item 'art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb' "$dst/LowerGateFamilyV1.glb" -Force
@@ -82,10 +82,10 @@ jobs:
         shell: powershell
         run: |
           $log = Join-Path $env:RUNNER_TEMP 'reference-first-pilot-unity.log'
-          $out = Join-Path (Get-Location) 'artifacts/reference-first-composition-v10'
+          $out = Join-Path (Get-Location) 'artifacts/reference-first-composition-v11'
           if (Test-Path $out) { Remove-Item $out -Recurse -Force }
           $unityProject = Join-Path (Get-Location) 'Unity'
-          $unityArgs = @('-batchmode','-force-d3d11','-quit','-projectPath',$unityProject,'-executeMethod','Eldoria.EditorTools.ReferenceFirstPilot.ReferenceFirstCompositionV10Capture.Capture','-logFile',$log)
+          $unityArgs = @('-batchmode','-force-d3d11','-quit','-projectPath',$unityProject,'-executeMethod','Eldoria.EditorTools.ReferenceFirstPilot.ReferenceFirstCompositionV11Capture.Capture','-logFile',$log)
           $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArgs -PassThru
           if (-not $p.WaitForExit(1800000)) {
             & taskkill.exe /PID $p.Id /T /F | Out-Null
@@ -96,24 +96,24 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Tail 220 }
             throw "Unity failed with exit code $($p.ExitCode)"
           }
-          if (-not (Select-String -Path $log -Pattern 'REFERENCE_FIRST_V10_RENDERED:' -Quiet)) {
+          if (-not (Select-String -Path $log -Pattern 'REFERENCE_FIRST_V11_RENDERED:' -Quiet)) {
             Get-Content $log -Tail 180
             throw 'No genuine render completion marker'
           }
           $frames = @(Get-ChildItem $out -Filter '*.png')
           if ($frames.Count -ne 2) { throw "Expected 2 PNGs, found $($frames.Count)" }
           foreach ($png in $frames) { if ($png.Length -lt 80000) { throw "Suspiciously small Unity render: $($png.Name)" } }
-          $manifest = Get-Content (Join-Path $out 'render-manifest-v10.json') -Raw | ConvertFrom-Json
+          $manifest = Get-Content (Join-Path $out 'render-manifest-v11.json') -Raw | ConvertFrom-Json
           if ($manifest.artApproved -ne $false) { throw 'Pilot must remain explicitly UNAPPROVED' }
-          if ($manifest.architectureInstances -lt 20 -or $manifest.forestInstances -lt 35 -or $manifest.rockInstances -lt 20) { throw 'Real source reuse count below V10 minimum' }
-          Get-Content (Join-Path $out 'render-manifest-v10.json')
+          if ($manifest.architectureInstances -lt 20 -or $manifest.forestInstances -lt 35 -or $manifest.rockInstances -lt 20) { throw 'Real source reuse count below V11 minimum' }
+          Get-Content (Join-Path $out 'render-manifest-v11.json')
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: reference-first-real-unity-${{ github.run_id }}
           path: |
-            reference-first-isolated-checkout/artifacts/reference-first-composition-v10/**
-            reference-first-isolated-checkout/Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/V9/ReferenceFirstCompositionV10.unity
+            reference-first-isolated-checkout/artifacts/reference-first-composition-v11/**
+            reference-first-isolated-checkout/Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/V9/ReferenceFirstCompositionV11.unity
             ${{ runner.temp }}/reference-first-pilot-unity.log
           retention-days: 14
           if-no-files-found: warn
@@ -145,7 +145,7 @@ jobs:
           set -euo pipefail
           dst=docs/evidence/reference-first-zero-budget-visual-pilot-20261015
           mkdir -p "$dst"
-          for name in 19-natural-valley-overview.png 20-natural-valley-close.png render-manifest-v10.json; do
+          for name in 21-misty-valley-overview.png 22-misty-valley-close.png render-manifest-v11.json; do
             path=$(find proof -type f -name "$name" -print -quit)
             test -n "$path" || { echo "Missing original Unity evidence: $name"; exit 1; }
             cp "$path" "$dst/$name"
@@ -153,22 +153,22 @@ jobs:
           python3 - <<'PY'
           import struct, pathlib, json
           root=pathlib.Path('docs/evidence/reference-first-zero-budget-visual-pilot-20261015')
-          for name in ('19-natural-valley-overview.png','20-natural-valley-close.png'):
+          for name in ('21-misty-valley-overview.png','22-misty-valley-close.png'):
               data=(root/name).read_bytes()
               assert data[:8] == b'\x89PNG\r\n\x1a\n' and len(data)>80000, name
               assert struct.unpack('>II', data[16:24]) == (1536,1024), name
-          e=json.loads((root/'render-manifest-v10.json').read_text())
+          e=json.loads((root/'render-manifest-v11.json').read_text())
           assert e['artApproved'] is False and e['productionModified'] is False
           assert e['architectureInstances']>=20 and e['forestInstances']>=35
-          print('REAL_UNITY_V10_EVIDENCE_VERIFIED_NOT_ART_APPROVED')
+          print('REAL_UNITY_V11_EVIDENCE_VERIFIED_NOT_ART_APPROVED')
           PY
       - name: Commit only exact visual evidence to pilot branch
         shell: bash
         run: |
           set -euo pipefail
-          git add -- docs/evidence/reference-first-zero-budget-visual-pilot-20261015/19-natural-valley-overview.png docs/evidence/reference-first-zero-budget-visual-pilot-20261015/20-natural-valley-close.png docs/evidence/reference-first-zero-budget-visual-pilot-20261015/render-manifest-v10.json
+          git add -- docs/evidence/reference-first-zero-budget-visual-pilot-20261015/21-misty-valley-overview.png docs/evidence/reference-first-zero-budget-visual-pilot-20261015/22-misty-valley-close.png docs/evidence/reference-first-zero-budget-visual-pilot-20261015/render-manifest-v11.json
           git diff --cached --quiet && exit 0
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: native Unity V10 continuous valley and distant rooted forest proof [skip ci]'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'evidence: native Unity V11 lower valley below real azure atmospheric sky [skip ci]'
           git fetch origin prototype/reference-first-zero-budget-visual-pilot-20261015
           git rebase origin/prototype/reference-first-zero-budget-visual-pilot-20261015
           git push origin HEAD:prototype/reference-first-zero-budget-visual-pilot-20261015
