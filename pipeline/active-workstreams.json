@@ -77,35 +77,6 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
     },
     {
-      "id": "valoria-scene-method-breakthrough-20261016",
-      "title": "Bastion I clean-scene whole-frame 3D versus bounded 2.5D experiment",
-      "owner": "chat-breakthrough-visual-20261016",
-      "branch": "experiment/valoria-scene-method-breakthrough-20261016",
-      "status": "active",
-      "claimed_at": "2026-10-16",
-      "base_main_sha": "81b1f7622e1e77b142ae5b062138662dac4fe454",
-      "scope": [
-        "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**",
-        "tools/valoria-scene-breakthrough/**",
-        ".github/workflows/valoria-scene-breakthrough.yml",
-        "docs/evidence/valoria-scene-breakthrough-20261016/**"
-      ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Explicit isolated experimental scene; no promotion or production replacement; current owner authorization supersedes prior scene pause only for this scope.",
-      "phase": "Native blockout, authored 3D and distant-bake variants created; global correction run 38952589240 has passed native candidate capture; exact comparison/evidence checks and advisory independent critique in progress",
-      "next": "Inspect the latest corrected native frames; verify matching foreground/camera and portable scene references; record experimental visual winner or NO VISUAL WIN. Never promote or resume protected branches.",
-      "protected_branches": [
-        "integration/valoria-bastion1-player-scene-20261012",
-        "art/valoria-63-individual-quality-uplift-20261015"
-      ],
-      "last_source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb",
-      "last_native_run": 38952589240,
-      "art_approved": false
-    },
-    {
       "id": "valoria63-clean-modular-assembly-20261016",
       "title": "Valoria first scene from all 63 existing modular GLBs, isolated Unity composition",
       "owner": "chat-owner-clean63-20261016",
@@ -127,6 +98,48 @@
     }
   ],
   "history": [
+    {
+      "id": "valoria-scene-method-breakthrough-20261016",
+      "title": "Bastion I clean-scene whole-frame 3D versus bounded 2.5D experiment",
+      "owner": "chat-breakthrough-visual-20261016",
+      "branch": "experiment/valoria-scene-method-breakthrough-20261016",
+      "status": "completed",
+      "claimed_at": "2026-10-16",
+      "base_main_sha": "81b1f7622e1e77b142ae5b062138662dac4fe454",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**",
+        "tools/valoria-scene-breakthrough/**",
+        ".github/workflows/valoria-scene-breakthrough.yml",
+        "docs/evidence/valoria-scene-breakthrough-20261016/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Explicit isolated experimental scene; no promotion or production replacement; current owner authorization supersedes prior scene pause only for this scope.",
+      "phase": "Closed owner-defined negative experiment outcome; playable baseline preserved, no art approval or promotion",
+      "next": "Do not resume this rejected candidate automatically. A new owner-authorized scene method requires a fresh safe claim; frozen Bastion I and Valoria 63 remain paused.",
+      "protected_branches": [
+        "integration/valoria-bastion1-player-scene-20261012",
+        "art/valoria-63-individual-quality-uplift-20261015"
+      ],
+      "last_source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb",
+      "last_native_run": 38952589240,
+      "art_approved": false,
+      "final_verdict": "NO_VISUAL_WIN",
+      "completed_at": "2026-10-16T19:26:13.376Z",
+      "released_resources": [
+        "windows-runner-heavy"
+      ],
+      "final_source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb",
+      "final_evidence_commit": "43f0db08a3e9b597f0943be6e3503f1e90dc5894",
+      "final_documentation_commit": "cdb68f9e38b32a86af994d33a0435cd0df4dc8c8",
+      "final_run_id": 38952589240,
+      "final_artifact_id": 12068214908,
+      "mobile_performance_approved": false,
+      "full_gameplay_approved": false,
+      "bounded_support_and_selection_probes_pass": true,
+      "baseline_retained": true,
+      "completion_basis": "Owner explicitly permits NO VISUAL WIN after authentic native comparison; completed experiment is not successful art production."
+    },
     {
       "id": "valoria-63-individual-quality-uplift-20261015",
       "title": "Valoria 63 modular art — independent individual-quality uplift",
