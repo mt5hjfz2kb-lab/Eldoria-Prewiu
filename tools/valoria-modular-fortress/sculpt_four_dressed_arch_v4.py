@@ -54,7 +54,8 @@ for j,name in enumerate(names):
   # High-quality explicitly sculpted arris at ALL dressed-stone edges.
   # Bevel must change silhouette visibly, unlike barely perceptible V3 chips.
   bevel=obj.modifiers.new('wide_hand_chiseled_arris_3_5cm','BEVEL')
-  bevel.width=.035 if 'major' in name else .027
+  bevel_amount=.035 if 'major' in name else .027
+  bevel.width=bevel_amount
   bevel.segments=2;bevel.limit_method='ANGLE';bevel.angle_limit=math.radians(24)
   bpy.ops.object.select_all(action='DESELECT')
   obj.select_set(True);bpy.context.view_layer.objects.active=obj
@@ -97,7 +98,7 @@ for j,name in enumerate(names):
   bpy.ops.export_scene.gltf(filepath=str(target),export_format='GLB',use_selection=True,export_apply=True)
   if target.stat().st_size<40000:raise RuntimeError('Empty exported photostone')
   row.update({'technical':'PASS_PENDING_VISUAL','original_sha256':sha(path),'candidate_sha256':sha(target),
-    'cutting':cuts,'bevel_m':bevel.width,'vertices':len(obj.data.vertices),
+    'cutting':cuts,'bevel_m':bevel_amount,'vertices':len(obj.data.vertices),
     'source_run':38879660792,'material':'Preserved original CC0 PBR limestone',
     'no_assembly':True})
   print('REAL_VISIBLE_DRESSED_STONE',name,len(obj.data.vertices),flush=True)
