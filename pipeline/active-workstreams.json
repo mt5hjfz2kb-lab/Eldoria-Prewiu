@@ -32,8 +32,33 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "Owner instructed immediate construction; recover certified skeleton and camera, deliver verified master-plan map and initial actual Unity layer scene.",
-      "next": "Build isolated Unity layers A/B/C from existing real plan, continuity gates and full-scene native captures; no promotion of experimental quality."
+      "phase": "Actual isolated Unity ABC and ABCD validated; bridge E1 and E2 TECH PASS but visual rejected as production replacement; latest independent verdict in bridge-E-visual-verdict-and-recovery.md. Continue with previously certified editable BridgeFamilyV1 source and real topology/camera mapping before expanding layers.",
+      "next": "Validate one existing owner-approved Blender BridgeFamilyV1.glb (historical 37298002864, GLB SHA 92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c) against actual ABCD deck interfaces without warping scale/camera; do not run same rejected 3-GLB bridge placement strategy. Replace giant upper block and terrain slabs with coherent 3D production source, preserve SHARP runtime/PlayerState compatibility, complete A/B and gameplay tests before promotion.",
+      "last_verified": {
+        "source_topology_status": "SOURCE_TOPOLOGY_PASS",
+        "source_footprints": 22,
+        "physical_stairs": 12,
+        "route_raycast_passes": 19,
+        "unity_editor": "6000.3.23f1",
+        "initial_native_unity_run": 38973389617,
+        "initial_scene_commit": "02db3fbd99baaea3424eadbac95d48836cd4b1ab",
+        "modular_gate_native_run": 38974099294,
+        "modular_gate_scene_commit": "faaea9fa97934207665251c2ba8919e19c583d38",
+        "genuine_gate_glb_types": 6,
+        "genuine_gate_instances": 11,
+        "gate_renderer_count": 757,
+        "first_bridge_native_run": 38974760523,
+        "recovered_bridge_native_run": 38975101937,
+        "latest_native_success_run": 38975101937,
+        "best_technical_art_stage": "ABCD",
+        "best_visual_art_status": "NO_FULL_SCENE_PASS",
+        "e1_bridgedeck_verdict": "VISUAL_REJECTED",
+        "e2_bridgedeck_verdict": "VISUAL_REJECTED_AS_PRODUCTION_ART_SUPPORT_RESTORED",
+        "latest_branch_head": "4a366f5ceef3208da547de160d6028126bc44e58",
+        "actual_player_runtime_integrated": false,
+        "mobile_physical_tested": false,
+        "art_approved": false
+      }
     }
   ],
   "history": [
