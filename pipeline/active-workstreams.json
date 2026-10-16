@@ -104,6 +104,26 @@
       "last_source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb",
       "last_native_run": 38952589240,
       "art_approved": false
+    },
+    {
+      "id": "valoria63-clean-modular-assembly-20261016",
+      "title": "Valoria first scene from all 63 existing modular GLBs, isolated Unity composition",
+      "owner": "chat-owner-clean63-20261016",
+      "branch": "experiment/valoria-63-clean-composition-20261016",
+      "status": "active",
+      "claimed_at": "2026-10-16",
+      "base_main_sha": "main",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/**",
+        "tools/valoria63-clean-scene/**",
+        ".github/workflows/valoria63-clean-scene.yml",
+        "docs/evidence/valoria63-clean-scene-20261016/**"
+      ],
+      "resources": [],
+      "dependency": "SceneBreakthrough owns windows-runner-heavy. Source-only preparation; do not dispatch native Unity while claim active. Stage original immutable 63 source pack from run 38813966671 with pinned preferable existing versions. Must separately claim runner after handoff.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
+      "phase": "Preparation and asset source validation; Unity runner blocked by active sibling experiment"
     }
   ],
   "history": [
