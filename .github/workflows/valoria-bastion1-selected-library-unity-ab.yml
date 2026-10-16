@@ -12,7 +12,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-bastion1-selected-library-native-unity-exclusive
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   syntax-and-frozen-input-contract:
     runs-on: ubuntu-latest
@@ -28,6 +28,10 @@ jobs:
           grep -F 'Sha256' Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1SelectedAssetOverlay.cs
           echo 'STATIC_SCOPE_PASS: existing SHA-pinned GLB imports only, no modelling, no publication'
   native-unity-before-after:
+    # Redundant experiment suspended: another reviewed candidate already owns
+    # the single Windows Unity runner. The scanned chip costs 66,122 triangles
+    # per small instance; never auto-promote it before mobile profiling.
+    if: ${{ false }}
     needs: syntax-and-frozen-input-contract
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 85
