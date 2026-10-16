@@ -1,0 +1,14 @@
+# Valoria — muro de 4 metros, revisión artística independiente (16-10-2026)
+
+**Encargo:** 63 módulos individuales, umbral 8/10 contra la referencia canónica. No componer la fortaleza ni alterar escenas Unity.
+
+## Evidencia y decisiones
+
+- **V3 origen:** `wall_panel_regular_4m`, del lote 63 [38813966671](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38813966671). La imagen A/B mostraba bloques claros/oscuros excesivamente cuadriculados y superficies irregulares; valoración propia previamente conservada **5,6/10**.
+- **V4, relieve desde fotografía CC0:** [38861363176](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38861363176), artefacto **12030195260**, [fuentes CC0 38860976002](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38860976002). Fotografía real `medieval_blocks_03` y normal map; crea una placa continua en vez de piedras sueltas. Inspección de los PNG originales en cámara: cara frontal gana detalle, pero **textura muy estirada en laterales y arriba** y escasa lectura de juntas. **6,1/10 provisional; no aprobar ni promocionar**. Comparación local: `eldoria_resume_20261016/wall4m_comparacion.jpg`.
+- **V5, geometría independiente, no placa:** [38864740080](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38864740080), artefacto **12030478721**. Native Blender 5.2, `stone_course_wall_v5.py`: **84 sillares físicos** con hiladas alternas, 8232 caras y 84 proyecciones UV, núcleo de mortero hundido y atlas de interiores de los sillares CC0. A/B auténtico. Mejora de juntas y UV lateral clara. Inspección GPT-6: queda un **remate superior plano de color pálido** y piedra globalmente demasiado oscura; insuficiente para 8/10. Estado `BLENDER_VISUAL_REVIEW_REQUIRED`, **ninguna aprobación formal**. Comparación: `eldoria_resume_20261016/wall4m_stones_v5_ab.jpg`.
+- **V6, corrección de causas:** [38865233327](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38865233327), `wall_capstones_v6.py`; coloca **remates superiores independientes UV-proyectados** que cubren el mortero visto, preserva las 84 piedras y produce dos tratamientos tonales con la misma cámara para escoger la mejor si realmente mejora. Pendiente inspección visual, **no confiar en su SUCCESS técnico**.
+
+**Criterio:** misma cámara, fidelidad a Valoria (caliza cálida, juntas arquitectónicas profundas, cantos labrados, lados/superficie correctos), geometría modular con piedras físicamente separadas, sin regresiones graves. Evaluar V6 individualmente y conservar V5 o V4 si no mejora. No instalar nada pagado ni trabajar en composiciones.
+
+**Limitación del contrato:** los renders Blender no certifican Unity ni `ART_APPROVED`. La aprobación final exige A/B Unity, juez independiente y el contrato de `main/docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md`.
