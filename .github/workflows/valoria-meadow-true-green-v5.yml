@@ -1,0 +1,71 @@
+name: "[ART MEADOW FLOOR6] Real green terrain plus botanical curved 3D grass"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-meadow-true-green-v5.yml'
+      - 'tools/valoria-modular-fortress/olive_green_real_tufts_ground_v5.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-one-green-grass-patch-v5
+  cancel-in-progress: false
+jobs:
+  real-ground-green-refinement:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Use existing Windows Blender and Git
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Installed Blender missing'}
+          "blender=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-three-natural-corrections-v3-38872475510
+          run-id: 38872475510
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/best_CC0_real_green
+      - name: Render honest standalone green grass before and 47 clustered tufts after
+        shell: powershell
+        run: |
+          $source=Join-Path $env:RUNNER_TEMP 'best_CC0_real_green\valoria-3-natural-art-v3\glb\grass_ground_patch.glb'
+          $dst=Join-Path $env:RUNNER_TEMP 'eldoria-real-green-olive-meadow-v5'
+          if(-not(Test-Path $source)){throw 'Missing best photo CC0 green source'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/olive_green_real_tufts_ground_v5.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned botanical source missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-curved-meadow-v5.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-curved-meadow-v5.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-curved-meadow-v5.err'
+          $p=Start-Process -FilePath "${{ steps.bins.outputs.blender }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$source,$dst) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 80 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 55 -ErrorAction SilentlyContinue
+          if($p.ExitCode -ne 0){throw "Real botanical grass patch failed: $($p.ExitCode)"}
+          foreach($expected in @('glb\grass_ground_patch.glb','before\grass_ground_patch.png','after\grass_ground_patch.png','reports\real_green_olive_meadow_v5.json')){
+            if(-not(Test-Path (Join-Path $dst $expected))){throw "Missing $expected"}
+          }
+      - name: Archive green photo CC0 meadow and exact A/B; no Unity scene
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-green-photographic-real-meadow-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-real-green-olive-meadow-v5/**
+            ${{ runner.temp }}/eldoria-curved-meadow-v5.log
+            ${{ runner.temp }}/eldoria-curved-meadow-v5.err
+          if-no-files-found: warn
+          retention-days: 30
