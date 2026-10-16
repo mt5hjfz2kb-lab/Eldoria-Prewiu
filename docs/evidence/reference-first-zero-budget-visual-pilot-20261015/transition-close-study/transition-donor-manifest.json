@@ -1,0 +1,61 @@
+{
+    "stage": "NATIVE_UNITY_V19_INDIVIDUAL_A_AND_D_GEOMETRY_DETAILS",
+    "reference": "Canonical owner supplied fortified plateau image 1513x1039",
+    "revision": "46df086c4d827bbb897d42a4822f4d7e26e32910",
+    "sources": [
+        "Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+        "Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+        "Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+    ],
+    "positions": [
+        "A left front",
+        "B right front",
+        "C left rear",
+        "D right rear"
+    ],
+    "frames": [
+        "39-seam-filler-detail.png",
+        "40-rock-to-wall-detail.png"
+    ],
+    "renderers": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalMaterialSlotCounts": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "originalShaderNames": [
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness",
+        "Shader Graphs/glTF-pbrMetallicRoughness"
+    ],
+    "allRendererMaterialsReplacedInSceneOnly": false,
+    "focusA": "A RockTerrainSeamFiller with restored URP project rock texture",
+    "focusD": "D RockToWallTransition imported PBR unchanged",
+    "rockTexture": "Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png",
+    "limestoneTexture": "Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png",
+    "materialPolicy": [
+        "A: original GLB geometry, URP Lit project rock texture",
+        "B: original GLB geometry, URP Lit project limestone texture",
+        "C: original GLB geometry, URP Lit project limestone texture",
+        "D: original GLB materials unchanged, baseline reference"
+    ],
+    "originalLongestDimensions": [
+        0.9799115657806397,
+        0.9792413115501404,
+        0.9699085354804993,
+        0.32435736060142519
+    ],
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false
+}
