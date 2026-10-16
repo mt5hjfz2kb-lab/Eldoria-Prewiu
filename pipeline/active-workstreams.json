@@ -95,12 +95,15 @@
       ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Explicit isolated experimental scene; no promotion or production replacement; current owner authorization supersedes prior scene pause only for this scope.",
-      "phase": "Reference studied; full composition blockout first; preserved paused branches read-only",
-      "next": "Create clean Unity blockout, capture exact camera suite, review before detailed assembly",
+      "phase": "Native blockout, authored 3D and distant-bake variants created; global correction run 38952589240 has passed native candidate capture; exact comparison/evidence checks and advisory independent critique in progress",
+      "next": "Inspect the latest corrected native frames; verify matching foreground/camera and portable scene references; record experimental visual winner or NO VISUAL WIN. Never promote or resume protected branches.",
       "protected_branches": [
         "integration/valoria-bastion1-player-scene-20261012",
         "art/valoria-63-individual-quality-uplift-20261015"
-      ]
+      ],
+      "last_source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb",
+      "last_native_run": 38952589240,
+      "art_approved": false
     }
   ],
   "history": [
