@@ -42,6 +42,21 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 85
     steps:
+      - name: Expose installed GitHub Desktop Git BEFORE checkout
+        shell: powershell
+        run: |
+          $existing=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $existing){
+            $root=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $found=Get-ChildItem $root -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $found){throw 'Existing GitHub Desktop Git not found; refuse REST archive fallback'}
+            $dir=Split-Path $found
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          & git.exe --version
       - uses: actions/checkout@v4
         with:
           clean: false
@@ -60,50 +75,50 @@ jobs:
         with:
           run-id: 38419031491
           name: bastion1-player-integration-38419031491
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/bastion_original
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/bastion_original
       - name: Download frozen 63-source asset census
         uses: actions/download-artifact@v4
         with:
           run-id: 38813966671
           name: valoria-individual-quality-63-38813966671
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/base63
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/base63
       - name: Download visually preferred original medieval oak gate V1
         uses: actions/download-artifact@v4
         with:
           run-id: 38858438155
           name: valoria-one-authentic-gate-38858438155
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/gate
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/gate
       - name: Download reviewed dark iron portcullises
         uses: actions/download-artifact@v4
         with:
           run-id: 38860266981
           name: valoria-two-charcoal-gothic-gates-38860266981
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/iron
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/iron
       - name: Download preferred V6 stone wall instead of rejected V8
         uses: actions/download-artifact@v4
         with:
           run-id: 38865543613
           name: valoria-4m-wall-artisan-capstone-v6-38865543613
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/wall
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/wall
       - name: Download reviewed medium pine
         uses: actions/download-artifact@v4
         with:
           run-id: 38877895047
           name: valoria-one-full-medium-pine-38877895047
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/pine
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/pine
       - name: Download neutral photographed cliff column
         uses: actions/download-artifact@v4
         with:
           run-id: 38826318218
           name: valoria-real-rock-02-palette-38826318218
-          github-token: \${{ github.token }}
-          path: \${{ runner.temp }}/cliff
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/cliff
       - name: Restore ONLY isolated historical player scene and import candidates by immutable hash
         shell: powershell
         run: |
@@ -188,7 +203,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bastion1-modular63-unity-review-\${{ github.run_id }}
+          name: bastion1-modular63-unity-review-${{ github.run_id }}
           path: |
             Bastion1Modular63Review/**
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1Modular63Candidate.unity*
