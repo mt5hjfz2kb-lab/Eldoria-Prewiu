@@ -13,6 +13,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   feedback-preflight:
+    # OWNER_PAUSE_20261016 — explicit user freeze; preserve script for later authorized resume.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
