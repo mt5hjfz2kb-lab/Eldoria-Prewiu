@@ -1,0 +1,77 @@
+name: "[ART GATE V3] Single CC0 door graded wood, no added hardware"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-castle-gate-color-only-v3.yml'
+      - 'tools/valoria-modular-fortress/door_color_only_v3.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-gate-source-untouched-color-v3
+  cancel-in-progress: false
+jobs:
+  original-door-material-only:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Installed Git and Blender
+        id: exe
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Missing Git'}
+            $dir=Split-Path $git;Add-Content $env:GITHUB_PATH $dir;$env:PATH="$dir;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Missing Blender'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-one-authentic-gate-38858438155
+          run-id: 38858438155
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/untouched-door-v1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-single-gate-art-finish-38858928588
+          run-id: 38858928588
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/rejected-hardware-v2
+      - name: Native Blender only material A-B and 3 untouched geometry checks
+        shell: powershell
+        run: |
+          $source=Join-Path $env:RUNNER_TEMP 'untouched-door-v1\eldoria-cc0-real-gate-ab\glb\reinforced_oak_gate.glb'
+          $atlas=Join-Path $env:RUNNER_TEMP 'rejected-hardware-v2\eldoria-single-oak-gate-v2\atlas\warm_art_direction_large_castle_door_diff_1k.png'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-door-v3'
+          if(-not(Test-Path $source)){throw 'Immutable source V1 unavailable'}
+          if(-not(Test-Path $atlas)){throw 'Baked photo-albedo unavailable'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/door_color_only_v3.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned door script unavailable'}
+          $script=Join-Path $env:RUNNER_TEMP 'eldoria-door-v3.py'
+          [System.IO.File]::WriteAllLines($script,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-door-v3.log';$err=Join-Path $env:RUNNER_TEMP 'eldoria-door-v3.err'
+          $proc=Start-Process -FilePath "${{ steps.exe.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$script,'--',$source,$atlas,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 70 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 35 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender gate V3 failed $($proc.ExitCode)"}
+          foreach($x in @('glb\reinforced_oak_gate.glb','before\reinforced_oak_gate.png','after\reinforced_oak_gate.png','reports\wood_color_only_v3.json')){
+            if(-not(Test-Path (Join-Path $out $x))){throw "Missing $x"}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-gate-no-float-v3-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-door-v3/**
+            ${{ runner.temp }}/eldoria-door-v3.log
+            ${{ runner.temp }}/eldoria-door-v3.err
+          if-no-files-found: warn
+          retention-days: 30
