@@ -1,0 +1,34 @@
+name: "[ART CC0 WOOD] Authentic cracked old timber PBR 1K"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-old-cracked-plank-cc0-source.yml'
+      - 'tools/valoria-modular-fortress/download_old_planks_wood_cc0.py'
+permissions:
+  contents: read
+jobs:
+  fetch-aged-wood:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve photographed old medieval-style timber grain and normals without subscriptions
+        run: python3 tools/valoria-modular-fortress/download_old_planks_wood_cc0.py "$RUNNER_TEMP/eldoria-cracked-oak-cc0"
+      - name: Verify official CC0 texture and lack of paid sources
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,os
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-cracked-oak-cc0'
+          d=json.loads((p/'source_manifest.json').read_text())
+          assert d['license']=='CC0 1.0' and d['cost_eur']==0
+          assert 'old_planks_02' in d['maps']
+          assert any(k.lower()=='diffuse' for k in d['maps']['old_planks_02']['maps'])
+          print('AUTHENTIC_CRACKED_TIMBER_SOURCE_OK')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-CC0-photographed-aged-oak-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-cracked-oak-cc0/**
+          if-no-files-found: error
+          retention-days: 30
