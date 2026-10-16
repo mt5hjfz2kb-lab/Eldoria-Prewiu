@@ -79,7 +79,7 @@
     {
       "id": "valoria63-clean-modular-assembly-20261016",
       "title": "Valoria first scene from all 63 existing modular GLBs, isolated Unity composition",
-      "owner": "chat-owner-clean63-20261016",
+      "owner": "chat-gpt6-valoria63-direct-takeover-20261016",
       "branch": "experiment/valoria-63-clean-composition-20261016",
       "status": "active",
       "claimed_at": "2026-10-16",
@@ -96,7 +96,10 @@
       "dependency": "Native Unity build authorized for isolated 63 scene; sibling SceneBreakthrough completed and released runner; no modification of frozen production branches.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated clean-scene assembly experiment. No Blender authoring, no original production scene promotion.",
-      "phase": "Native Unity execution pending, resource claimed"
+      "phase": "Direct owner-authorized takeover: native Unity construction, re-open persistence, real capture and visual verdict. Active run #38956747071 checked; no duplicate starts until it finishes.",
+      "previous_owner": "chat-owner-clean63-20261016",
+      "next": "Inspect first native run logs and artifact; repair real compiler/import failures, retry one exclusive run, verify saved Unity scene and original 63 source coverage; inspect camera-matched PNGs and decide visually.",
+      "takeover_authority": "Direct user instruction 2026-10-16: assume work and finish; retain isolated branch, ownership and Windows runner lease, no production merges."
     }
   ],
   "history": [
