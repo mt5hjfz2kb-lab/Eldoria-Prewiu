@@ -28,3 +28,12 @@ Se ha revisado la imagen `dirt_ground_patch.png` antes/después. El sustrato fot
 Las corridas A/B no modifican la escena, no alteran Main, no instalan herramientas pagadas ni reclaman exclusividad del runner Windows (Bastión I está en otro flujo). Las cuatro cuñas y el suelo se archivan por run ID sin sustitución silenciosa. Fotografías y mallas GLB verificadas; `TECH_PASS != ART_PASS`.
 
 **Recuento de seguimiento conservador:** último libro consolidado 56/63 >=6 provisional, 7/63 bajo 6. Tierra V10 puede pasar a 6,0 sujeto a revisión del propietario; no consolidar en el libro maestro sin decisión confirmada. Persisten mortero, agua y las cuatro cuñas por debajo del mínimo. **Objetivo: 63/63 a 6 y después 8 + Unity.**
+
+
+## Incidencia sobrevenida — cantería V9 #38905895962
+
+Revisión de los logs y artifact **12047807616**: la tanda V9 falló **4 de 4** al aplicar bevel a la cuña fotográfica, provocando la excepción `Wedge no longer fits original source envelope`. No hay cuatro GLB finales exportados y por tanto no se promociona ninguna piedra de esa ejecución. La mejor evidencia válida sigue siendo V8 #38902465156. La intervención pendiente debe cortar las aristas **hacia dentro** del envelope original, sin alterar los anchos intradós/extradós 0,59/0,53, y volver a renderizar todas las cuñas. La corrección debe incluir comprobación matemática del volumen **antes y después** del bisel, no aumentar arbitrariamente la tolerancia hasta aceptar piezas incompatibles.
+
+## Mortero — nueva preparación sin ejecución forzada
+
+`tools/valoria-modular-fortress/true_lime_mortar_v10_staged.py` commit b691e339c5: conserva el perfil físico de 2,6 cm y plantea corregir granos blancos sueltos, fotografía de cal con PBR normal embebida, misma cámara overview/macro. Código **preparado pero no ejecutado**, y no sirve como prueba artística mientras no termine Blender. Los datos originales V9 siguen siendo el mejor candidato en producción aislada, 5,7 provisional. Otra intervención artística de mortero del mismo repositorio debe coordinarse para evitar trabajo duplicado. 
