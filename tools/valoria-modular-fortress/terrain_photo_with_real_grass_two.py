@@ -58,7 +58,7 @@ for name,path in names:
   if not models:raise RuntimeError('No photographic CC0 ground GLB')
   low,high=bbox(models)
   dim=high-low
-  if not 3.5<dim.x<5.5 or not 3.5<dim.y<5.5:raise RuntimeError('Not a 4x4m terrain module')
+  if not 3.0<dim.x<5.5 or not 3.0<dim.y<5.5:raise RuntimeError('Terrain tile footprint outside actual original 3.4m-4.1m range')
   setcam(models);shoot(out/'before'/(name+'.png'))
   rng=random.Random(161010 if 'dirt' in name else 161011)
   tufts=[]
