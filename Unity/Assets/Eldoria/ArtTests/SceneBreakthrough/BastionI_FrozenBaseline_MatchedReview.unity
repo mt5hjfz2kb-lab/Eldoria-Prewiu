@@ -13430,7 +13430,7 @@ Transform:
   - {fileID: 1442883425}
   - {fileID: 692366248}
   - {fileID: 78835840}
-  m_Father: {fileID: 462698435}
+  m_Father: {fileID: 2096911856}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &210828718
 GameObject:
@@ -20123,7 +20123,7 @@ Transform:
   m_Children:
   - {fileID: 1887813043}
   - {fileID: 543585451}
-  m_Father: {fileID: 462698435}
+  m_Father: {fileID: 2096911856}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &328134930
 GameObject:
@@ -27844,40 +27844,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 460876716}
   m_Mesh: {fileID: 4300000, guid: d71e9f26484ec7a4da5dfc2b11cae13b, type: 2}
---- !u!1 &462698434
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 462698435}
-  m_Layer: 0
-  m_Name: FROZEN_SOURCE_FRAME_NORMALIZATION_ONLY
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &462698435
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 462698434}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
-  m_LocalPosition: {x: 5.338222, y: 7, z: -9.527483}
-  m_LocalScale: {x: 0.9230769, y: 0.9230769, z: 0.9230769}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 325162687}
-  - {fileID: 210802111}
-  - {fileID: 1525612998}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &465042893
 GameObject:
   m_ObjectHideFlags: 0
@@ -90462,7 +90428,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1895563875}
-  m_Father: {fileID: 462698435}
+  m_Father: {fileID: 2096911856}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1528309235
 GameObject:
@@ -123889,6 +123855,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092845295}
   m_Mesh: {fileID: 4300000, guid: e5a141220e41411498701d0dabdb9db2, type: 2}
+--- !u!1 &2096911855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2096911856}
+  m_Layer: 0
+  m_Name: FROZEN_SOURCE_FRAME_NORMALIZATION_ONLY
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2096911856
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096911855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: 5.338222, y: 7, z: -9.527483}
+  m_LocalScale: {x: 0.9230769, y: 0.9230769, z: 0.9230769}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 325162687}
+  - {fileID: 210802111}
+  - {fileID: 1525612998}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2097827298
 GameObject:
   m_ObjectHideFlags: 0
@@ -127078,4 +127078,4 @@ SceneRoots:
   - {fileID: 636964067}
   - {fileID: 1444981041}
   - {fileID: 1906625670}
-  - {fileID: 462698435}
+  - {fileID: 2096911856}

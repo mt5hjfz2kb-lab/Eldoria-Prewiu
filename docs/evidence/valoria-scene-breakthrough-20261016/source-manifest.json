@@ -36,10 +36,24 @@
   },
   {
     "id": "cabin",
-    "path": "art-source/valoria/production/sawmill-family-v1/state1/SawmillState1V1.glb",
+    "path": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb",
     "ref": "HEAD",
-    "sha256": "4b67cdf984d5d8be7872e08572c3ba4fd4f6a95e971f013ab7eede60f5c04f95",
-    "bytes": 2201420
+    "sha256": "abe163c09de3690fbeabf39f126663349f7e6f8e2565c0ce204f824a366ef026",
+    "bytes": 2530824
+  },
+  {
+    "id": "cabinpainted",
+    "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+    "ref": "HEAD",
+    "sha256": "1932e36c7fdf972c2ffb209ed7b3679fd7f0243d0f8e713e0f4643146fa9ad0e",
+    "bytes": 11134796
+  },
+  {
+    "id": "tower",
+    "path": "art-source/valoria/production/asset-family-v2/quality-v3/watchtower/watchtower.glb",
+    "ref": "0abf13870d21725c30acf3f3e3a8c86385470073",
+    "sha256": "534af063ab7ca81016e01b9feb80d66a398ca2450658216c7d5ca92927b8202d",
+    "bytes": 21550804
   },
   {
     "id": "camp",

@@ -1,0 +1,222 @@
+{
+  "schema": "eldoria.visual-breakthrough.exact-evidence.v1",
+  "native_pngs": [
+    {
+      "name": "final3d-main",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "abcf418d3f0cdd7018a530ea4c9fd452304215f3895e0edf4c43674142faa035",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-main",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "88a8b615a965534ab1f31104b3bbcffc284b04e1b71ab6c0b1175a371260f082",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-main",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "27c8c1b65f1067e2915510445015eabbabb2f66315668d8b151b45b21a8330c0",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-landscape",
+      "width": 1280,
+      "height": 720,
+      "sha256": "6af280ff8be84bfd9fbb945bb6e4f637772ca0f3598c825094ea71bf66dd5630",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-landscape",
+      "width": 1280,
+      "height": 720,
+      "sha256": "7aa968654319e972ed592a243e42a8165a4e6e2786bb6dfbc2d6002c12273990",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-landscape",
+      "width": 1280,
+      "height": 720,
+      "sha256": "322726911626daddb294a3a6c3656e4bab57f21d916f1885372b30fdb16a56bf",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-portrait",
+      "width": 390,
+      "height": 844,
+      "sha256": "848357a8c0ace08a25a667d7faac2015ea3fad7948e1d6232ea4035addaf4681",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-portrait",
+      "width": 390,
+      "height": 844,
+      "sha256": "0b1d62a1be7b56590fd7d188ed708cd4550200952adc78de535d0f067578e2b6",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-portrait",
+      "width": 390,
+      "height": 844,
+      "sha256": "69f7a4e849d0ad3d6d4b9af6022e20e6cb45cde09a9ed185a0e16d20f12e49c4",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-pan-left",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "995b9ba85573a1382804c0034c891dc65a62cd147c475fc5668b3cd58d470b61",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-pan-left",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "52d69b06df75fa750d0bced221c9ebcc314f868bfe1902712a31ecc0e787ce0d",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-pan-left",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "9d72ba4bbf22fb60a54238f6d78a054bf5b5785f8072d301716a738002759a90",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-pan-right",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "27f49057f19a9999e36c676f273471b0d9d86c0290f5a36ad28390c0cae8fee8",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-pan-right",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "7d43dba71e228ed1efea6cc476491f2994e24b4f4dc7a7a7368424592fade868",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-pan-right",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "2aad908487142473392e010eb36dcece8a5d26762540b864ef2855b87ec93fd6",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-zoom-in",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "121ee63c9f3b0ca19ca536bcefbe5ef464cd213d9f1ecb6d094ecc85d4d26d6a",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-zoom-in",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "b71c7420b745a491ba58aa91c603216426dce1f20de0643db917e0995c9c06cb",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-zoom-in",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "66d56c132786321eb8f45e461ada32029e5fabdfecf3a17e1b0c74d201e9c9a2",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-zoom-out",
+      "width": 1280,
+      "height": 720,
+      "sha256": "ad1e8494ba9b262d1b0ea181654050fd0c1b63245bcc061fe421ff276b6f7c45",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-zoom-out",
+      "width": 1280,
+      "height": 720,
+      "sha256": "3913839124c9b1654aef7743b02cce636e11df6e7e55a4226a4673f954121798",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-zoom-out",
+      "width": 1280,
+      "height": 720,
+      "sha256": "f37c81665c525356e7c272362cea8768434a612163b377c7cf718004c9d624b1",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-portrait-left",
+      "width": 390,
+      "height": 844,
+      "sha256": "41e07fcfb2495c1d5817437601a78e70f69d110fa30fd50cc63dd7f198a73f98",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-portrait-left",
+      "width": 390,
+      "height": 844,
+      "sha256": "4efdaddd19e2c6b956ce21ea925d9fe4f8322ccb0686afaa897b6887cc651a05",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-portrait-left",
+      "width": 390,
+      "height": 844,
+      "sha256": "1b197a31c0ab79b0097804308bac76b39e275fb1a0841d0433d73539e241610f",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final3d-portrait-right",
+      "width": 390,
+      "height": 844,
+      "sha256": "143409eabed5f96e1305395aa627a5d4b8848b4b1d628aba795d654940d763d4",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "final25d-portrait-right",
+      "width": 390,
+      "height": 844,
+      "sha256": "eab7154f918c8de79330a34a5efc80d23e1885a01cf718750a1c5e7dd20bd532",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    },
+    {
+      "name": "baseline-matched-portrait-right",
+      "width": 390,
+      "height": 844,
+      "sha256": "daa15cb59083f737cbfe7253426d67aeebb8fa8de97ff5d48f9f529b38cc0ce1",
+      "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb"
+    }
+  ],
+  "scenes": [
+    {
+      "file": "BastionI_Blockout.unity",
+      "sha256": "36a8b181a423d6d2c0f4be80f86b089140e21d82b11150a2689a7f002cde3e80",
+      "asset_guids_resolved": true
+    },
+    {
+      "file": "BastionI_Hybrid3D_Final.unity",
+      "sha256": "df90d6727b8bbe18104c2fa47767230edf42d3d3dcbb9745fdad1cec6a161229",
+      "asset_guids_resolved": true
+    },
+    {
+      "file": "BastionI_Hybrid25D_Final.unity",
+      "sha256": "d71bcf27aafc05894a61bca1feab84aa96096edcdb5033e154f4e31cfdc4482f",
+      "asset_guids_resolved": true
+    },
+    {
+      "file": "BastionI_FrozenBaseline_MatchedReview.unity",
+      "sha256": "ea68b49cf6ab023367a34f51fc3c39bc9f6cc38527302765ea9e1c6b72843e0a",
+      "asset_guids_resolved": true
+    }
+  ],
+  "identical_a_b_foreground": true,
+  "foreground_fingerprint_sha256": "4293f22eb81e3a3cee37ff4c55427267aaa5323cbd20da0efeb3e13797f118ab",
+  "same_a_b_camera_and_pipeline": true,
+  "art_approved": false,
+  "physical_mobile_performance_measured": false,
+  "paid_credits": 0
+}
