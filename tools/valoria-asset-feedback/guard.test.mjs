@@ -4,7 +4,26 @@ import fs from 'node:fs';
 import {validateRegistry,checkCandidate} from './guard.mjs';
 const reg=JSON.parse(fs.readFileSync(new URL('./registry.json',import.meta.url),'utf8'));
 const ids=JSON.parse(fs.readFileSync(new URL('./asset-ids.json',import.meta.url),'utf8'));
-function candidate(id){return {asset_id:id,sha256:'f'.repeat(64),commit:'a'.repeat(40),blender_ab_url:'https://example.org/blender-a-b',ready_for_unity:false,decisions:reg.assets.find(a=>a.id===id).correction_ids.map(c=>{const issue=reg.corrections.find(x=>x.id===c);return {id:c,disposition:issue.scope==='ASSEMBLY_CONTRACT'?'preserved_assembly':issue.scope==='SCENE_LOCAL'?'scene_only':'pending_review',evidence_url:'https://example.org/evidence'}})}}}
+function candidate(id) {
+  const asset = reg.assets.find(a => a.id === id);
+  return {
+    asset_id: id,
+    sha256: 'f'.repeat(64),
+    commit: 'a'.repeat(40),
+    blender_ab_url: 'https://example.org/blender-a-b',
+    ready_for_unity: false,
+    decisions: asset.correction_ids.map(correctionId => {
+      const correction = reg.corrections.find(x => x.id === correctionId);
+      return {
+        id: correctionId,
+        disposition: correction.scope === 'ASSEMBLY_CONTRACT'
+          ? 'preserved_assembly'
+          : correction.scope === 'SCENE_LOCAL' ? 'scene_only' : 'pending_review',
+        evidence_url: 'https://example.org/evidence'
+      };
+    })
+  };
+}
 test('full original inventory, corrections and provenance',()=>assert.deepEqual(validateRegistry(reg,ids),{assets:63,corrections:6}));
 test('all individual records exist including ones without issues',()=>assert.equal(checkCandidate('artist',candidate('pine_small'),reg,ids).corrections_checked,0));
 test('tower candidate explicitly acknowledges all 3 issues without blindly scaling asset',()=>assert.equal(checkCandidate('artist',candidate('tower_square_short'),reg,ids).corrections_checked,3));
