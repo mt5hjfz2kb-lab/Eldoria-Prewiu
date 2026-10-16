@@ -51,19 +51,18 @@ namespace Eldoria.EditorTools
                 // STRUCTURAL FIRST: wall and gate elements are in the original
                 // main composition, not scattered props at the image corners.
                 // Historical renderer, trigger and collider ownership stays intact.
+                // ONE architectural section. The authentic original gate and its
+                // integrated towers remain visible, rather than duplicating iron/oak
+                // on top of the Hero V3 entrance. Rebuild the right wing as a
+                // freestanding FULL-DEPTH masonry volume and attach a real kit tower.
                 var wall=await Import("wall_panel_regular_4m");
-                var ironLarge=await Import("portcullis_large");
-                var ironSmall=await Import("portcullis_small");
-                var oak=await Import("reinforced_oak_gate");
-                var cliff=await Import("cliff_rock_column");
-                foreach(var wing in new[]{"UpperLeftWing","UpperRightWing","LowerGateRightWing"})
-                    MountWallFace(originalRoot,wall,group.transform,wing,evidence);
-                GateLower(originalRoot,ironLarge,oak,group.transform,evidence);
-                GateUpper(ironSmall,group.transform,evidence);
-                FrontCliff(cliff,group.transform,evidence);
-                foreach(var unused in new[]{wall,ironLarge,ironSmall,oak,cliff})
-                    UnityEngine.Object.DestroyImmediate(unused);
-                if(evidence.Count<12)throw new Exception("Structural main-composition coverage insufficient: "+evidence.Count);
+                var tower=await Import("tower_square_short");
+                RebuildGateWingWithTower(originalRoot,wall,tower,group.transform,
+                                         "LowerGateRightWing",evidence);
+                UnityEngine.Object.DestroyImmediate(wall);
+                UnityEngine.Object.DestroyImmediate(tower);
+                if(evidence.Count<4)
+                    throw new Exception("The complete modular wall+tower proof is incomplete");
                 CollectOwnedAssets(group);
                 PersistOwnedAssets();
                 if (!EditorSceneManager.SaveScene(scene, Candidate, true))
@@ -217,34 +216,89 @@ namespace Eldoria.EditorTools
             }
         }
 
-        static void MountWallFace(GameObject original,GameObject module,Transform parent,
-                                  string wing,List<string> notes)
+        // World-space socket reconstruction: one built masonry volume replaces
+        // the old visual wall. No 0.16 depth scaling and no front-surface decals.
+        // Old renderer state only is disabled; colliders/triggers/transforms live on.
+        static void RebuildGateWingWithTower(GameObject original,GameObject wall,
+                                            GameObject tower,Transform parent,
+                                            string wing,List<string> notes)
         {
-            var node=FindNode(original,wing);
-            var bounds=Bounds(node.gameObject);
-            if(bounds.size.x<3.4f || bounds.size.x>15f || bounds.size.y<1.5f)
-                throw new Exception("Unexpected historic masonry bounds: "+wing+" "+bounds);
-            int segments=Mathf.CeilToInt(bounds.size.x/3.8f);
-            if(segments<1 || segments>4)throw new Exception("Invalid authored wall-module count");
-            float width=bounds.size.x/segments;
+            var historical=FindNode(original,wing);
+            var oldBounds=Bounds(historical.gameObject);
+            var originals=historical.GetComponentsInChildren<Renderer>(true);
+            if(originals.Length==0 || oldBounds.size.x<3.4f ||
+               oldBounds.size.x>15f || oldBounds.size.y<1.5f)
+                throw new Exception("Unsafe historical section bounds: "+wing+" "+oldBounds);
+            int originalColliders=historical.GetComponentsInChildren<Collider>(true).Length;
+            int segments=Mathf.CeilToInt(oldBounds.size.x/3.8f);
+            if(segments<1||segments>4)throw new Exception("Unsupported wall span");
+            float bayWidth=oldBounds.size.x/segments;
+            var replacement=new GameObject("BUILT_SECTION_"+wing+"_full_volume");
+            replacement.transform.SetParent(parent,false);
+            Bounds aggregate=new Bounds();
+            bool first=true;
+            float rightEdge=0f,wallBase=oldBounds.min.y;
             for(int i=0;i<segments;i++)
             {
-                var copy=CopyOn(module,parent,"NEW_V6_WALL_"+wing+"_"+i);
-                MatchWidth(copy,width);
-                // The first Unity render found entire freestanding masonry slabs.
-                // Reuse exactly the same 91-mesh V6 source as a thin, aligned
-                // facing course, embedded into the original battlement wall.
-                copy.transform.localScale=new Vector3(copy.transform.localScale.x,
-                    copy.transform.localScale.y,copy.transform.localScale.z*.16f);
-                RebindNeutralLimestone(copy);
-                var b=Bounds(copy);
-                Vector3 at=new Vector3(bounds.min.x+(i+.5f)*width,
-                    bounds.min.y+b.size.y*.5f,
-                    bounds.max.z+b.size.z*.5f+.018f);
-                Centre(copy,at);
-                notes.Add("authored_wall_V6_"+wing+"_"+i);
+                var piece=CopyOn(wall,replacement.transform,"BUILT_MASONRY_BAY_"+i);
+                MatchWidth(piece,bayWidth);
+                RebindNeutralLimestone(piece);
+                var size=Bounds(piece).size;
+                if(size.z<.35f||size.z>4.5f)
+                    throw new Exception("Masonry has no credible wall thickness: "+size.z);
+                if(size.y<oldBounds.size.y*.55f||size.y>oldBounds.size.y*2.2f)
+                    throw new Exception("New wall height mismatches old functional envelope");
+                Centre(piece,new Vector3(oldBounds.min.x+(i+.5f)*bayWidth,
+                    wallBase+size.y*.5f,oldBounds.center.z));
+                var actual=Bounds(piece);
+                if(Mathf.Abs(actual.min.y-wallBase)>.05f ||
+                   Mathf.Abs(actual.center.z-oldBounds.center.z)>.05f)
+                    throw new Exception("Misaligned full-volume wall: "+i);
+                if(i>0 && Mathf.Abs(actual.min.x-rightEdge)>.075f)
+                    throw new Exception("Wall bay joint leaves a visible gap at "+i);
+                rightEdge=actual.max.x;
+                if(first){aggregate=actual;first=false;}else aggregate.Encapsulate(actual);
+                notes.Add("BUILT_FULL_DEPTH_BAY_"+i);
             }
+            if(Mathf.Abs(aggregate.min.x-oldBounds.min.x)>.075f ||
+               Mathf.Abs(aggregate.max.x-oldBounds.max.x)>.075f)
+                throw new Exception("New modular wall does not cover historic wall span");
+
+            // End-tower socket: overlap the final bay INSIDE the tower footprint,
+            // like a real junction. Tower is never squashed into a planar prop.
+            var watch=CopyOn(tower,replacement.transform,"BUILT_SHORT_SQUARE_WATCHTOWER");
+            RebindNeutralLimestone(watch);
+            var tb=Bounds(watch);
+            float towerOverlap=Mathf.Min(.48f,tb.size.x*.12f);
+            Centre(watch,new Vector3(aggregate.max.x+tb.size.x*.5f-towerOverlap,
+                wallBase+tb.size.y*.5f,aggregate.center.z));
+            tb=Bounds(watch);
+            if(tb.size.x<3f||tb.size.z<3f||tb.size.y<4f||
+               Mathf.Abs(tb.min.y-wallBase)>.05f ||
+               tb.min.x>aggregate.max.x-.2f ||
+               Mathf.Abs(tb.center.z-aggregate.center.z)>.05f)
+                throw new Exception("Freestanding tower not properly socketed to masonry");
+            var gate=FindNode(original,"LowerGate");
+            var gateBounds=Bounds(gate.gameObject);
+            float horizontalGap=Mathf.Max(0f,Mathf.Max(gateBounds.min.x-aggregate.max.x,
+                aggregate.min.x-gateBounds.max.x));
+            float depthGap=Mathf.Max(0f,Mathf.Max(gateBounds.min.z-aggregate.max.z,
+                aggregate.min.z-gateBounds.max.z));
+            if(horizontalGap>1f||depthGap>2.8f)
+                throw new Exception("Rebuilt wall is not connected to defended entrance");
+            notes.Add("BUILT_SOCKETED_TOWER_tower_square_short");
+            notes.Add("CONNECTED_TO_EXISTING_LOWER_GATE_and_HERO_V3");
+
+            // Renderer-level reversible replacement. Deliberately do not call
+            // SetActive(false), destroy meshes, or change historical colliders.
+            foreach(var renderer in originals)renderer.enabled=false;
+            if(historical.GetComponentsInChildren<Collider>(true).Length!=originalColliders ||
+               Array.Exists(originals,x=>x.enabled))
+                throw new Exception("Old functional geometry changed or old wall still visible");
+            notes.Add("HISTORICAL_WING_RENDERERS_DISABLED_"+originals.Length);
+            notes.Add("FUNCTIONAL_COLLIDERS_PRESERVED_"+originalColliders);
         }
+
         static Bounds OldGateLeaves(GameObject original)
         {
             var gate=FindNode(original,"LowerGate");
