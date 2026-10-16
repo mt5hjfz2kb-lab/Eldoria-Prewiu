@@ -1,0 +1,73 @@
+name: "[ART STONE SCULPT V10] Four individually relief-carved photoreal limestone wedges"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-sculpt-four-arch-faces-v10.yml'
+      - 'tools/valoria-modular-fortress/physically_sculpt_arch_faces_v10.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-four-sculpted-single-arch-stones-v10
+  cancel-in-progress: false
+jobs:
+  four-scanned-limestone-arch-blocks:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 110
+    steps:
+      - name: Use installed Git and Blender, no installer
+        shell: powershell
+        id: exe
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git absent'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender absent'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-four-individual-cutstone-v9-38906155308
+          run-id: 38906155308
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/v9_actual_handcut_limestone
+      - name: Physically inset chisel sculpt four standalone CC0-PBR arch blocks, locked-camera A-B
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'v9_actual_handcut_limestone\valoria-four-stonecutter-v9\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'valoria-4-real-arch-chisels-v10'
+          if(-not(Test-Path (Join-Path $old 'arch_keystone_major.glb'))){throw 'Stone GLB source missing'}
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/physically_sculpt_arch_faces_v10.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned artistic code missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'eldoria-individual-stone-sculpt-v10.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-sculpt-four-stones.log'
+          $err=Join-Path $env:RUNNER_TEMP 'eldoria-sculpt-four-stones.err'
+          $proc=Start-Process -FilePath "${{ steps.exe.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 90 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 50 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Four stone face sculpt failed $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            if((Get-ChildItem (Join-Path $out $folder) -File).Count -ne 4){throw "Missing four $folder outputs"}
+          }
+          $r=Get-Content (Join-Path $out 'reports\four_actually_sculpted_faces_v10.json') -Raw | ConvertFrom-Json
+          if(@($r.assets|Where-Object {$_.technical -ne 'PASS_PENDING_ART' -or !$_.contact_envelope_unchanged}).Count -ne 0){throw 'Scalp/chisel lost envelope'}
+      - name: Preserve true separate module A/B proof and imported PBR
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-four-sculpted-arch-faces-v10-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-4-real-arch-chisels-v10/**
+            ${{ runner.temp }}/eldoria-sculpt-four-stones.log
+            ${{ runner.temp }}/eldoria-sculpt-four-stones.err
+          retention-days: 30
+          if-no-files-found: warn
