@@ -445,6 +445,114 @@ namespace Eldoria.Valoria63.Editor
         RenderTexture.active=prior;rt.Release();UnityEngine.Object.DestroyImmediate(rt);
         UnityEngine.Object.DestroyImmediate(image);}
     }
+
+    // Art-direction microtest: isolate the gate, two towers and adjacent wall,
+    // without authoring a new model or altering the full 63-piece scene.
+    // Use the exact imported modules and the existing approved visual reference.
+    [MenuItem("Eldoria/Art/Build Valoria gate quality microtest")]
+    public static async void BuildGateQualityMicrotest()
+    {
+      try
+      {
+        Directory.CreateDirectory(Generated);
+        Directory.CreateDirectory(Evidence);
+        templates=new Dictionary<string,GameObject>();
+        counts=new Dictionary<string,int>();
+        hashes=new List<string>();
+        toPersist=new List<UnityEngine.Object>();
+        persisted=new HashSet<int>();
+        nativeCounter=0;
+        var ids=new[]{"tower_square_short","wall_panel_crenellated_4m",
+          "arch_complete_major","portcullis_large","reinforced_oak_gate",
+          "banner_royal_blue","brazier_pedestal","torch_wall",
+          "cliff_rock_column","boulder_1","pine_medium","shrub_1","paver_flagstone"};
+        foreach(var id in ids)
+          if(!File.Exists(Staged+"/"+id+".glb"))
+            throw new FileNotFoundException("Real asset missing",id);
+        EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+        sceneRoot=new GameObject("VALORIA GATE QUALITY MICROTEST - REAL MODULAR ASSETS").transform;
+        var sources=Group("_REAL_GLTF_SOURCE_TEMPLATES");
+        foreach(var id in ids)await Import(id,sources);
+        sources.gameObject.SetActive(false);
+        limestone=Mat("Warm limestone microtest",new Color(.62f,.56f,.47f));
+        soil=Mat("Earth microtest",new Color(.35f,.34f,.23f));
+        grass=Mat("Grass microtest",new Color(.37f,.42f,.24f));
+        rock=Mat("Rock microtest",new Color(.27f,.29f,.34f));
+        road=Mat("Paving microtest",new Color(.54f,.48f,.39f));
+        water=Mat("Water microtest",new Color(.04f,.18f,.26f));
+        var land=Group("01 - UNITY TERRAIN CONTACT - ART TEST ONLY");
+        Deck("Upper hill",new[]{new Vector2(-21,-10),new Vector2(-20,13),
+          new Vector2(20,13),new Vector2(21,-10)},0,-9,land);
+        var gate=Group("02 - GATE + EXACTLY TWO TOWERS + MODULAR WALL");
+        Place("tower_square_short",gate,new Vector3(-6,0,1),6);
+        Place("tower_square_short",gate,new Vector3(6,0,1),6);
+        Place("arch_complete_major",gate,new Vector3(0,0,1),5.4f);
+        Place("portcullis_large",gate,new Vector3(0,.05f,-.9f),3.5f);
+        Place("reinforced_oak_gate",gate,new Vector3(0,0,2.5f),3.4f);
+        foreach(int side in new[]{-1,1})
+        {
+          for(int i=0;i<3;i++)
+            Place("wall_panel_crenellated_4m",gate,
+              new Vector3(side*(11+i*4),0,1),4);
+          Place("banner_royal_blue",gate,new Vector3(side*5.6f,5,-2),1.2f);
+          Place("brazier_pedestal",gate,new Vector3(side*4.1f,0,-4.6f),.85f);
+          Place("torch_wall",gate,new Vector3(side*3.3f,2.2f,-2.4f),.38f);
+        }
+        var nature=Group("03 - CLIFF AND PLANTED CONTACT");
+        for(int i=0;i<8;i++)
+        {
+          float x=-18+i*5;
+          Place("cliff_rock_column",nature,new Vector3(x,-9,-10),3.2f);
+          if(i%2==0)Place("boulder_1",nature,new Vector3(x,0,-7),1.1f);
+        }
+        for(int i=0;i<6;i++)
+        {
+          float x=-18+i*7;
+          Place("pine_medium",nature,new Vector3(x,0,10),3.2f,i*49);
+          Place("shrub_1",nature,new Vector3(x+2,0,7),.9f,i*29);
+        }
+        for(int z=-9;z<=-1;z+=2)
+          for(int x=-2;x<=2;x+=2)
+            Place("paver_flagstone",gate,new Vector3(x,.02f,z),1.75f);
+        SetLightingAndCamera();
+        view.transform.position=new Vector3(28,28,-36);
+        view.transform.LookAt(new Vector3(0,2,1));
+        view.orthographicSize=21;
+        Physics.SyncTransforms();
+        foreach(var obj in toPersist)Persist(obj);
+        foreach(var rend in sceneRoot.GetComponentsInChildren<Renderer>(true))
+          foreach(var mat in rend.sharedMaterials)
+          {
+            if(mat==null)continue;
+            foreach(var prop in mat.GetTexturePropertyNames())Persist(mat.GetTexture(prop));
+            Persist(mat);
+          }
+        foreach(var mf in sceneRoot.GetComponentsInChildren<MeshFilter>(true))Persist(mf.sharedMesh);
+        foreach(var sm in sceneRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true))Persist(sm.sharedMesh);
+        AssetDatabase.SaveAssets();
+        const string output=Root+"/Valoria_Gate_ArtDirection_Microtest.unity";
+        if(!EditorSceneManager.SaveScene(SceneManager.GetActiveScene(),output,true))
+          throw new Exception("Microtest native scene save failed");
+        RenderFrame("valoria-gate-microtest-wide",1280,720);
+        RenderFrame("valoria-gate-microtest-detail",1536,1024);
+        var report=new GateTestReport{scene=output,unique_real_sources=counts.Count,
+          instances=counts.Values.Sum(),art_score=0,art_approved=false,
+          scores_are_pending_human_visual_review=true,
+          source_placements=counts.OrderBy(k=>k.Key).Select(k=>k.Key+":"+k.Value).ToArray()};
+        File.WriteAllText(Path.Combine(Evidence,"gate-microtest-evidence.json"),JsonUtility.ToJson(report,true));
+        Debug.Log("VALORIA_GATE_MICROTEST_SAVED "+output+" real_sources="+counts.Count);
+        EditorApplication.Exit(0);
+      }
+      catch(Exception e){Debug.LogError("VALORIA_GATE_MICROTEST_FAILED "+e);EditorApplication.Exit(1);}
+    }
+    [Serializable] class GateTestReport
+    {
+      public string scene;
+      public int unique_real_sources,instances,art_score;
+      public bool art_approved,scores_are_pending_human_visual_review;
+      public string[] source_placements;
+    }
+
     [MenuItem("Eldoria/Art/Validate isolated 63 scene opens")]
     public static void Validate()
     {
