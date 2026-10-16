@@ -1,0 +1,41 @@
+{
+  "source_original_sha256": "801fd7d393c8c151c3036e793e62ff1aad88cd22b636598194b7c47e1ba2eed4",
+  "generated_source_sha256": "44423997651b05c839da833cdef1914a433058f903db37a9427d66d173b889d0",
+  "generated_glb_sha256": "98faacaa0cb0ad599260bb054ea1ffe08c54c2fe61780c708df008a472387d5b",
+  "generated_scene_classification": "ART CANDIDATE NOT_APPROVED",
+  "source_provenance": "BridgeFamilyV1 editable original plus newly authored bridge geometry, original preserved",
+  "unity_bounds_min": [
+    -2.6500000953674316,
+    -2.2200000286102295,
+    -19.649999618530273
+  ],
+  "unity_bounds_max": [
+    2.6499998569488525,
+    1.5600000619888306,
+    -9.350000381469727
+  ],
+  "target_road_y": 0.38,
+  "deck_walkway_y": 0.38,
+  "bridge_z_limits": [
+    -19.65,
+    -9.35
+  ],
+  "authored_triangles": 6916,
+  "objects_after_join": 10,
+  "pavers": 52,
+  "arch_sections": 56,
+  "source_original_unchanged": true,
+  "new_objects": [
+    "VALORIA_DECK_CORE",
+    "VALORIA_PAVING",
+    "VALORIA_KERBS",
+    "VALORIA_PARAPETS",
+    "VALORIA_COPING",
+    "VALORIA_END_PIERS",
+    "VALORIA_END_CAPS",
+    "VALORIA_ARCH_SPANDRELS",
+    "VALORIA_ARCH_FOOTINGS",
+    "VALORIA_ABUTMENTS"
+  ],
+  "projection": "native metres Unity XYZ; no mesh warping, no import scale tricks"
+}

@@ -1,0 +1,17 @@
+{
+    "source_sha256": "98faacaa0cb0ad599260bb054ea1ffe08c54c2fe61780c708df008a472387d5b",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity",
+    "base_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity",
+    "visual_status": "CANDIDATE_A_B_REVIEW_PENDING",
+    "gameplay_status": "NOT_CERTIFIED",
+    "camera_status": "LEGACY_ORTHOGRAPHIC_NOT_CANONICAL_SHARP",
+    "source_hash_verified": true,
+    "unity_scale_one": true,
+    "deck_collision_original_preserved": true,
+    "bbox_width": 5.299999713897705,
+    "bbox_length": 10.299999237060547,
+    "walk_surface_y": 0.3799999952316284,
+    "deck_collider_y": 0.3799999952316284,
+    "actual_mesh_renderers": 10,
+    "triangle_count": 6916
+}
