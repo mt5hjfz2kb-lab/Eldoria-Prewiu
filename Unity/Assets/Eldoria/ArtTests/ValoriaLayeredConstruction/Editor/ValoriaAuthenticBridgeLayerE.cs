@@ -109,12 +109,14 @@ namespace Eldoria.ValoriaLayered.Editor
       Gate(deck!=null&&deck.GetComponent<BoxCollider>()!=null,"Original bridge collider missing");
       var collider=deck.GetComponent<BoxCollider>();
       Gate(Mathf.Abs(deck.position.y+deck.localScale.y*.5f-top)<.001f,"Collider grade drift");
-      // Hide primitive faces but keep the physical collision contract and the original model for reversibility.
-      deck.GetComponent<Renderer>().enabled=false;
+      // Visual A/B E1 was rejected: the source bridge modules left open gaps between spans.
+      // Keep the proven continuous greybox deck AND parapet visibly intact as TEMPORARY
+      // until a real structural bridge fully replaces them without missing deck area.
+      deck.GetComponent<Renderer>().enabled=true;
       var paras=UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsSortMode.None)
           .Where(x=>x.name.StartsWith("GREYBOX bridge parapet")).ToArray();
       Gate(paras.Length==2,"Original parapets missing");
-      foreach(var p in paras)p.GetComponent<Renderer>().enabled=false;
+      foreach(var p in paras)p.GetComponent<Renderer>().enabled=true;
       if(AssetDatabase.IsValidFolder(Generated))AssetDatabase.DeleteAsset(Generated);
       Directory.CreateDirectory(Generated);Directory.CreateDirectory(Evidence);AssetDatabase.Refresh();
       var templates=new GameObject("HIDDEN ORIGINAL BRIDGE GLB INPUTS").transform;
@@ -168,7 +170,7 @@ namespace Eldoria.ValoriaLayered.Editor
       Shot("master-bridge-E-portrait-12",12,390,844);
       var manifest=new Manifest{unity=UnityEngine.Application.unityVersion,scene=OutScene,
         base_scene=InScene,classification="AUTHORED 3D SOURCE CANDIDATE / REMAINING GREYBOX",
-        visual_status="NOT_APPROVED_FULL_SCENE_MUST_BE_REVIEWED",gameplay_status="NOT_CERTIFIED",
+        visual_status="TEMPORARY_SUPPORT_RETAINED_E1_VISUAL_REJECT_REVIEW_E2_REQUIRED",gameplay_status="NOT_CERTIFIED",
         actual_glbs=true,original_colliders_preserved=true,real_bridge_placed=true,
         art_approved=false,physical_mobile_tested=false,sources=Ids.Length,instances=instances.Count,
         renderer_count=assembly.GetComponentsInChildren<Renderer>(true).Length,
