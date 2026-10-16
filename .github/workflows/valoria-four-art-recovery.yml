@@ -1,0 +1,80 @@
+name: "[ART RECOVERY] Four previously under-six candidates real A-B"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-four-art-recovery.yml'
+      - 'tools/valoria-modular-fortress/recover_four_weak_ab.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-art-recovery-four-individuals
+  cancel-in-progress: false
+jobs:
+  rebuild-failed-art-approaches:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 90
+    steps:
+      - name: Use installed local Git and Blender
+        shell: powershell
+        id: bins
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing'}
+            $d=Split-Path $git;Add-Content $env:GITHUB_PATH $d;$env:PATH="$d;$env:PATH"
+          }
+          $b=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $b){throw 'Blender missing'}
+          "exe=$b" | Out-File $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-individual-quality-63-38813966671
+          run-id: 38813966671
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/artrecovery-old-v3
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-six-weakest-native-ab-38870003255
+          run-id: 38870003255
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/artrecovery-current-six
+      - name: Native Blender recover four individual 3D assets with fixed A-B
+        shell: powershell
+        run: |
+          $old=Join-Path $env:RUNNER_TEMP 'artrecovery-old-v3\eldoria-upgrade63\glb'
+          $current=Join-Path $env:RUNNER_TEMP 'artrecovery-current-six\eldoria-six-weakest-candidates\glb'
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-four-art-recovery'
+          foreach($p in @((Join-Path $old 'river_foam_line.glb'),(Join-Path $current 'torch_wall.glb'))){
+            if(-not(Test-Path $p)){throw "Immutable source missing $p"}
+          }
+          $spec="$env:GITHUB_SHA"+':tools/valoria-modular-fortress/recover_four_weak_ab.py'
+          $lines=& git show $spec
+          if($LASTEXITCODE -ne 0 -or -not $lines){throw 'Pinned script missing'}
+          $py=Join-Path $env:RUNNER_TEMP 'valoria-four-recovery.py'
+          [System.IO.File]::WriteAllLines($py,[string[]]$lines,[System.Text.UTF8Encoding]::new($false))
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-four-recovery.log'
+          $err=Join-Path $env:RUNNER_TEMP 'valoria-four-recovery.err'
+          $proc=Start-Process -FilePath "${{ steps.bins.outputs.exe }}" -ArgumentList @('--background','--python-exit-code','1','--python',$py,'--',$old,$current,$out) -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          Get-Content $log -Tail 110 -ErrorAction SilentlyContinue
+          Get-Content $err -Tail 60 -ErrorAction SilentlyContinue
+          if($proc.ExitCode -ne 0){throw "Blender art recovery failed $($proc.ExitCode)"}
+          foreach($folder in @('glb','before','after')){
+            if((Get-ChildItem (Join-Path $out $folder) -File).Count -ne 4){throw "Expected 4 $folder models"}
+          }
+      - name: Archive four truthful individual candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-four-weak-art-recovery-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-four-art-recovery/**
+            ${{ runner.temp }}/valoria-four-recovery.log
+            ${{ runner.temp }}/valoria-four-recovery.err
+          retention-days: 30
+          if-no-files-found: warn
