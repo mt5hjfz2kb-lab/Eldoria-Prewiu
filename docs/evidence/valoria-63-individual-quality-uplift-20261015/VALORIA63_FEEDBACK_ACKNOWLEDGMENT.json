@@ -1,0 +1,47 @@
+{
+  "schema": "eldoria.valoria63.workstream-feedback.v1",
+  "workstream": "artist",
+  "phase": "EXPERIMENT_ONLY",
+  "source_branch": "art/valoria-63-individual-quality-uplift-20261015",
+  "corrections": [
+    {
+      "id": "B1-TOWER-SCALE-001",
+      "disposition": "scene_only",
+      "rationale": "Bastion I scale 0.86 is a local composition experiment, never baked into the global tower asset.",
+      "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/7f11977097a66596ab7932488d5fd63230e0bc04"
+    },
+    {
+      "id": "B1-TOWER-PALETTE-002",
+      "disposition": "pending_review",
+      "rationale": "Darker PBR stone may clash with the historic gate; no global visual correction is accepted before matched A/B.",
+      "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md"
+    },
+    {
+      "id": "B1-TOWER-SOCKET-003",
+      "disposition": "scene_only",
+      "rationale": "Outboard socket placement is specific to the gate wing and must not change generic tower geometry.",
+      "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/58089c800764ad6a9f45e1ab649b447da47e17f6"
+    },
+    {
+      "id": "B1-WALL-DEPTH-004",
+      "disposition": "preserved_assembly",
+      "rationale": "Two genuine full-depth wall bays replace, not cover, old geometry; preserve viable masonry contact.",
+      "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md"
+    },
+    {
+      "id": "B1-WALL-SILHOUETTE-005",
+      "disposition": "scene_only",
+      "rationale": "Bastion I right-curtain composition needs specific richer parapet silhouette; do not alter every wall variant.",
+      "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/integration/valoria-bastion1-player-scene-20261012/docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_VISUAL_GATE_20261016.md"
+    },
+    {
+      "id": "B1-MERLON-GROUND-006",
+      "disposition": "preserved_assembly",
+      "rationale": "Merlons must rest on the actual new wall upper plane; preserve safe joints and full-volume geometry.",
+      "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38927157638"
+    }
+  ],
+  "acknowledged_by": "valoria-63-asset-feedback-contract-20261016",
+  "art_approved": false,
+  "source_asset_count": 63
+}
