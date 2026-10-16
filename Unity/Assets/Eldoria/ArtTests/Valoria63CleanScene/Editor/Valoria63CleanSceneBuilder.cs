@@ -22,6 +22,7 @@ namespace Eldoria.Valoria63.Editor
     const string Root="Assets/Eldoria/ArtTests/Valoria63CleanScene";
     const string Staged=Root+"/Sources";
     const string Generated=Root+"/Generated";
+    static string persistDirectory=Generated;
     const string Output=Root+"/Valoria_BastionI_Modular63_Clean.unity";
     const string Names=@"arch_bridge_support arch_complete_major arch_complete_minor arch_keystone_major arch_keystone_minor arch_voussoir_major arch_voussoir_minor arrow_slit_frame banner_royal_blue banner_small boulder_1 boulder_2 boulder_3 brazier_pedestal bridge_span_4m cliff_rock_column cliff_stone_chip cobble_pebbles dirt_ground_patch grass_ground_patch grass_tuft_1 grass_tuft_2 merlon_low merlon_tall mortar_joint_recess parapet_walk_4m paver_flagstone paver_rect_long paver_rect_short pine_medium pine_small pine_tall portcullis_large portcullis_small reinforced_oak_gate river_foam_line river_water_tile scaffold_small scaffold_watch_platform shrub_1 shrub_2 shrub_3 stair_step staircase_flight_12 stone_ashlar_01 stone_ashlar_02 stone_ashlar_03 stone_ashlar_04 stone_corner_quoin stone_half_block stone_slab_cap timber_beam_1 timber_beam_2 timber_brace_X torch_wall tower_square_short tower_square_tall wall_buttress wall_corner_90 wall_course_4m wall_panel_crenellated_4m wall_panel_regular_4m wall_panel_ruined_4m";
     static string[] All=>Names.Split(new[]{' ','\n','\r','\t'},StringSplitOptions.RemoveEmptyEntries);
@@ -45,6 +46,7 @@ namespace Eldoria.Valoria63.Editor
     }
     static async Task BuildAndSave()
     {
+      persistDirectory=Generated;
       if(AssetDatabase.IsValidFolder(Generated))AssetDatabase.DeleteAsset(Generated);
       Directory.CreateDirectory(Generated);Directory.CreateDirectory(Evidence);
       if(All.Length!=63 || All.Distinct().Count()!=63)throw new Exception("Invalid 63 source IDs");
@@ -423,7 +425,7 @@ namespace Eldoria.Valoria63.Editor
       if(asset==null || AssetDatabase.Contains(asset) || !persisted.Add(asset.GetInstanceID()))return;
       if(!(asset is Mesh) && !(asset is Material) && !(asset is Texture2D))return;
       string ext=asset is Material?".mat":".asset";
-      string path=Generated+"/"+(nativeCounter++).ToString("D5")+ext;
+      string path=persistDirectory+"/"+(nativeCounter++).ToString("D5")+ext;
       AssetDatabase.CreateAsset(asset,path);
     }
     static void RenderFrame(string id,int width,int height)
@@ -455,6 +457,10 @@ namespace Eldoria.Valoria63.Editor
       try
       {
         Directory.CreateDirectory(Generated);
+        persistDirectory=Generated+"/GateMicrotestOnly";
+        if(AssetDatabase.IsValidFolder(persistDirectory))AssetDatabase.DeleteAsset(persistDirectory);
+        Directory.CreateDirectory(persistDirectory);
+        AssetDatabase.Refresh();
         Directory.CreateDirectory(Evidence);
         templates=new Dictionary<string,GameObject>();
         counts=new Dictionary<string,int>();
