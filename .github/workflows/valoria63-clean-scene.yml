@@ -7,7 +7,7 @@ on:
       - 'tools/valoria63-clean-scene/**'
       - '.github/workflows/valoria63-clean-scene.yml'
 permissions:
-  contents: read
+  contents: write
   actions: read
 jobs:
   validate-source:
@@ -108,10 +108,16 @@ jobs:
         with:
           path: valoria63-clean
           clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria63-governance-main
+          sparse-checkout: pipeline/active-workstreams.json
+          persist-credentials: false
       - name: Check exclusive Windows claim and native Unity location
         shell: powershell
         run: |
-          $registered=Get-Content pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $registered=Get-Content "$env:GITHUB_WORKSPACE/valoria63-governance-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
           $own=@($registered.active|Where-Object {$_.id -eq 'valoria63-clean-modular-assembly-20261016'})
           $other=@($registered.active|Where-Object {
             $_.id -ne 'valoria63-clean-modular-assembly-20261016' -and
@@ -174,7 +180,6 @@ jobs:
           }
           Write-Host "VALORIA63_FULL_SOURCE_ASSEMBLY_PASS modules=$($m.module_instances) art_approved=false"
       - name: Preserve isolated native scene (never change existing playable city)
-        if: always()
         shell: powershell
         run: |
           git config user.name 'Eldoria Valoria63 native assembly'
