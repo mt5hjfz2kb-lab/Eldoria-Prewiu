@@ -168,8 +168,8 @@ jobs:
               'wall_panel_regular_4m' {'wall'}
               'pine_medium' {'pine'}
               'cliff_rock_column' {'cliff'}
-              'tower_square_short' {'masonry'}
-              'merlon_tall' {'masonry'}
+              'tower_square_short' {'base63'}
+              'merlon_tall' {'base63'}
               default {throw "Unrecognized source: $($asset.id)"}
             }
             $relative=$asset.file.Replace('/',[IO.Path]::DirectorySeparatorChar)
