@@ -1,6 +1,6 @@
 {
   "schema": "eldoria.bastion1.modular63.version_selection.v1",
-  "note": "Structural first native Unity trial: wall V6, oak V1, two iron grilles and neutral rock replace/decorate large central architectural surfaces. Pine retained as source-only, earlier edge-only Unity trial was artistically rejected. NOT ART_APPROVED; references and source unmodified.",
+  "note": "Phase-1 full-geometry joint: wall V6 and authentic full-volume masonry tower, with historical lower gate/Hero V3 retained. Prior four overlay/prop alternatives staged only, avoiding duplicate faces and wooden/iron gates. Captures A/B/C required; NOT ART_APPROVED.",
   "base_63": {
     "run_id": 38813966671,
     "artifact_id": 12010106460,
@@ -17,7 +17,7 @@
       "file": "eldoria-cc0-real-gate-ab/glb/reinforced_oak_gate.glb",
       "sha256": "6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
       "provisional_score": 7.4,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "V1 real CC0 preferred; V2 and V3 artistically rejected"
     },
     {
@@ -27,7 +27,7 @@
       "file": "valoria-black-forged-two/glb/portcullis_large.glb",
       "sha256": "09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
       "provisional_score": 7,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "Blue-black iron preferred to orange bronze"
     },
     {
@@ -37,7 +37,7 @@
       "file": "valoria-black-forged-two/glb/portcullis_small.glb",
       "sha256": "f74af38088acb53ee6561699c9fd610fd836687185cbbe1558e57e50b4d55809",
       "provisional_score": 6.9,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "Blue-black iron preferred to orange bronze"
     },
     {
@@ -67,8 +67,18 @@
       "file": "eldoria-rockface-palette-02/glb/cliff_rock_column_stone_neutral.glb",
       "sha256": "614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447",
       "provisional_score": 7.3,
-      "usage": "candidate_in_scene",
+      "usage": "staged_only",
       "rationale": "Neutral scan best; no modular rock-contact approval"
+    },
+    {
+      "id": "tower_square_short",
+      "artifact_run": 38871632375,
+      "artifact": "valoria-eleven-under6-masonry-a-b-38871632375",
+      "file": "eldoria-eleven-architecture-pbr/glb/tower_square_short.glb",
+      "sha256": "73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1",
+      "provisional_score": null,
+      "usage": "candidate_in_scene",
+      "rationale": "Real masonry PBR successor to 63-base tower, correct 4.715 x 6.43 x 4.717m mass; not yet artistically approved in Unity"
     }
   ],
   "rejected_or_pending": [
