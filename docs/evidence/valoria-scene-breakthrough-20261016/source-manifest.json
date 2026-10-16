@@ -1,0 +1,63 @@
+[
+  {
+    "id": "gate",
+    "path": "art-source/valoria/production/first-hero-gate-v1/quality-v3/ValoriaHeroGate.glb",
+    "ref": "0abf13870d21725c30acf3f3e3a8c86385470073",
+    "sha256": "81e63b7269bef3180648b636ad7341a4373e800afd05527e8e8aa95d88d35e2f",
+    "bytes": 21490744
+  },
+  {
+    "id": "upper",
+    "path": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
+    "ref": "HEAD",
+    "sha256": "3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477",
+    "bytes": 5014860
+  },
+  {
+    "id": "bridge",
+    "path": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
+    "ref": "HEAD",
+    "sha256": "92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c",
+    "bytes": 2440332
+  },
+  {
+    "id": "stairs",
+    "path": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
+    "ref": "0abf13870d21725c30acf3f3e3a8c86385470073",
+    "sha256": "442fe2d2796c0db01760bd8b13bcdf28b3e5aa214108b0095e484309f6950c88",
+    "bytes": 1541480
+  },
+  {
+    "id": "wall",
+    "path": "art-source/valoria/production/asset-family-v2/quality-v3/wall_straight/wall_straight.glb",
+    "ref": "0abf13870d21725c30acf3f3e3a8c86385470073",
+    "sha256": "99ec144ae332c1deb58b57b2d22516dd49a2a87a17723c400f1970c29a52337c",
+    "bytes": 18745476
+  },
+  {
+    "id": "cabin",
+    "path": "art-source/valoria/production/sawmill-family-v1/state1/SawmillState1V1.glb",
+    "ref": "HEAD",
+    "sha256": "4b67cdf984d5d8be7872e08572c3ba4fd4f6a95e971f013ab7eede60f5c04f95",
+    "bytes": 2201420
+  },
+  {
+    "id": "camp",
+    "path": "art-source/valoria/production/camp-family-v1/CampFamilyV1.glb",
+    "ref": "HEAD",
+    "sha256": "34152243c51717149ed0cb1faf316178b77ffc5d30626f0e8c802554fe03832b",
+    "bytes": 725676
+  },
+  {
+    "id": "pine",
+    "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
+    "file": "eldoria-one-full-medium-pine/glb/pine_medium.glb",
+    "provenance": "existing reviewed natural source, no reauthoring"
+  },
+  {
+    "id": "cliff",
+    "sha256": "614b2f1db74d66cfc6c3ffc759dbc62083e434de107806b7ee47f2669df70447",
+    "file": "eldoria-rockface-palette-02/glb/cliff_rock_column_stone_neutral.glb",
+    "provenance": "existing reviewed natural source, no reauthoring"
+  }
+]

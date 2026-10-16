@@ -1,0 +1,19 @@
+gate bounds=Center: (0.000, 3.802, 0.168), Extents: (5.790, 3.825, 2.262)
+gate authored_renderers=1037 combined=55
+upper bounds=Center: (-0.226, 3.800, -0.249), Extents: (15.062, 3.800, 4.510)
+upper authored_renderers=9 combined=9
+cabin bounds=Center: (-0.488, 2.186, 0.000), Extents: (3.188, 2.176, 1.850)
+cabin authored_renderers=6 combined=6
+camp bounds=Center: (0.388, 1.513, 0.482), Extents: (3.963, 1.438, 2.743)
+camp authored_renderers=6 combined=7
+wall bounds=Center: (0.000, 2.716, 0.209), Extents: (4.002, 2.724, 0.976)
+wall authored_renderers=8 combined=8
+wall bounds=Center: (0.000, 2.716, 0.209), Extents: (4.002, 2.724, 0.976)
+wall authored_renderers=8 combined=8
+bridge bounds=Center: (0.046, 0.959, 0.032), Extents: (6.980, 4.159, 3.826)
+bridge authored_renderers=4 combined=3
+pine bounds=Center: (0.000, 3.958, 0.000), Extents: (2.932, 3.998, 2.841)
+pine authored_renderers=3 combined=2
+cliff bounds=Center: (1.670, 2.022, -0.230), Extents: (2.500, 2.279, 1.961)
+cliff authored_renderers=1 combined=1
+instances_triangles=2114180 shared_meshes=99 shared_materials=99 art_renderers=242
