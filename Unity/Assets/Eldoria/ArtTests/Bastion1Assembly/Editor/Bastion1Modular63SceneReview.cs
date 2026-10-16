@@ -85,6 +85,14 @@ namespace Eldoria.EditorTools
                     Mathf.Abs(sourceSize - camera.orthographicSize) > .0001f)
                     throw new Exception("Gameplay camera pose changed during review");
                 RenderSet(camera, "after", sourceSize);
+                // Second, independently labelled A/B: Unity-only lighting trial
+                // on this disposable candidate. Geometry and material sources
+                // remain unchanged; the original playable scene stays preserved.
+                ApplyGoldenHourLookdev();
+                RenderSet(camera, "lookdev", sourceSize);
+                if (sourcePose != camera.transform.position || sourceRotation != camera.transform.rotation ||
+                    Mathf.Abs(sourceSize - camera.orthographicSize) > .0001f)
+                    throw new Exception("Golden-hour comparison changed protected player camera");
                 File.WriteAllText(Path.Combine(Evidence, "modular63-scene-review.json"),
                     "{\n  \"schema\": \"eldoria-modular63-scene-review-v1\",\n" +
                     "  \"original_scene_unchanged\": true,\n  \"models_created\": 0,\n" +
@@ -101,6 +109,44 @@ namespace Eldoria.EditorTools
                 Debug.LogError("BASTION1_MODULAR63_AB_REJECT " + exception);
                 EditorApplication.Exit(1);
             }
+        }
+
+        static void ApplyGoldenHourLookdev()
+        {
+            // Edit light and atmosphere parameters only. Never generate meshes,
+            // textures, gameplay hotspots, cameras or new material assets.
+            int sunCount = 0, torchCount = 0;
+            foreach (var light in UnityEngine.Object.FindObjectsByType<Light>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (light.type == LightType.Directional)
+                {
+                    light.color = new Color(1f, .83f, .69f);
+                    light.intensity = Mathf.Min(light.intensity * 1.10f, 1.55f);
+                    light.shadows = LightShadows.Soft;
+                    sunCount++;
+                }
+                else if (light.type == LightType.Point &&
+                         light.name.IndexOf("amber", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    light.color = new Color(1f, .48f, .20f);
+                    light.intensity *= 1.12f;
+                    light.range = Mathf.Max(light.range, 7.5f);
+                    torchCount++;
+                }
+            }
+            if (sunCount != 1)
+                throw new Exception("Expected exactly one original Bastion I directional sun, got " + sunCount);
+            RenderSettings.ambientSkyColor = new Color(.47f, .52f, .59f);
+            RenderSettings.ambientEquatorColor = new Color(.43f, .41f, .37f);
+            RenderSettings.ambientGroundColor = new Color(.36f, .31f, .24f);
+            // Keep existing natural atmospheric depth, avoid old over-fogging.
+            RenderSettings.fogColor = new Color(.34f, .40f, .45f);
+            RenderSettings.fogDensity = .0026f;
+            Debug.Log("BASTION1_GOLDEN_UNITY_LOOKDEV_ACTIVE sun=" + sunCount +
+                      " torches=" + torchCount +
+                      " geometry_modified=false source_materials_modified=false gameplay_modified=false " +
+                      "status=ART_REVIEW_REQUIRED");
         }
 
         static void RenderSet(Camera camera, string phase, float originalSize)
