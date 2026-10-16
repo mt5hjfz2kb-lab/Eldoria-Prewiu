@@ -5162,9 +5162,11 @@
         "canonical_experiment_branch": "experiment/valoria-scene-method-breakthrough-20261016",
         "canonical_running_unity": 38946722924,
         "duplicate_queued_run": 38946864201,
-        "duplicate_run_cancellation": "Required; connector has no cancel tool. Do not infer cancelled from registry.",
+        "duplicate_run_cancellation": "VERIFIED_CANCELLED: run 38946864201 completed/cancelled; disabled concurrency run 38947498066 completed/skipped; no duplicate Windows execution.",
         "source_preserved": "860db02c51966bb9903371bfb88fcaf8dde13160",
-        "no_art_approval": true
+        "no_art_approval": true,
+        "retirement_commit": "f8a9d3ec03784386b396c79d985f5180825a59fb",
+        "continuity": "docs/evidence/valoria-scene-breakthrough-20261016/DUPLICATE_SESSION_HANDOFF.md"
       }
     }
   ],
