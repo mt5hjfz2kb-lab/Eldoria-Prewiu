@@ -30,3 +30,17 @@ No alterar `main`, otros pilotos, GLBs del artista ni publicar gameplay a partir
 - Full-volume masonry bays 2; separate individually grounded crenellation merlons **6**, full-volume outboard tower 1; active material+GLB provenance verified: V6 stone wall `928630408d47a1789a2d0e5080e40348979dc8338f4cc91ea8a3a64ba93257f3`, square short tower `73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1`, merlon `96541f0fac4ca8b4856c3b897ff2552ebec5560b2251df9b33b875efd06f7820`.
 - Actual images inspected: merlons correctly rise from top of **new wall**, not front-cladding the old wall; external tower no longer overlaps Hero V3 entrance. **ART_FAIL remains** because the tower appears disproportionately tall, dark and bare versus the gate; original lower-right curtain has richer detailing. Scene-wide still far below 8/10 Valoria reference. Structural proof ≠ global art pass.
 - Follow-up current branch source `7f11977097a66596ab7932488d5fd63230e0bc04`: uniform tower reduction to 0.86 and isolated C-only warm PBR grading without changing A/B source; Unity run `38929353461` pending exact visual inspection. Keep original entrance; no publication while art rejected. No changes to 63-asset artist and no paid credits.
+
+## 2026-10-16 — Independent mesh-identity check of 63-base vs later PBR tower family
+
+Fetched actual original-63 artifact `12010106460` (run `38813966671`) and successor PBR artifact `12033234180` (run `38871632375`), inspected GLBs directly with trimesh/NumPy on decoded world-space geometry (not rendered pixel assumptions):
+
+| Module | Faces base/PBR | Vertices base/PBR | Face indices | Maximum vertex-position delta |
+|---|---:|---:|---|---:|
+| `tower_square_short` | 25,164/25,164 | 50,328/50,328 | identical | 7.58e-8 m |
+| `wall_panel_crenellated_4m` | 4,968/4,968 | 9,936/9,936 | identical | 1.49e-9 m |
+| `merlon_tall` | 324/324 | 648/648 | identical | 3.42e-10 m |
+
+**Result:** base and later PBR candidates have matching geometry to floating-point precision; the artistically relevant contrast is chiefly their materials and rendering, not size or assembly sockets. The base-63 tower and merlon previews show distinctly **lighter limestone**; later PBR previews show darker weathered stone. Neither wins on timestamp alone. An isolated SAME-CAMERA Unity swap can decide which palette integrates better with Hero V3 and the approved Valoria visual target, without changing gameplay/collision geometry.
+
+Exact alternative base-63 hashes: tower `a514d97fc3241477f4b98b7e4d04b1213d75a1718e53d662fca9e83be8dfd4ac`; crenellated wall `476d4cd3bb9d220845489833b3386311c1994b6db55ab3353571cf564a6dd05f`; tall merlon `022bf407bcfeeb7e717874b0a27def4e3f9831bb0c6edfb1933bc99f4f447bb9`. This is a geometry/evidence statement, **not** artistic approval.
