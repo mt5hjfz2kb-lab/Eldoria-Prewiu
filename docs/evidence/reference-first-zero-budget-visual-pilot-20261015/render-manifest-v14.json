@@ -1,0 +1,23 @@
+{
+    "stage": "REAL_UNITY_V14_FOREGROUND_GATE_ROCKWORK_UNAPPROVED",
+    "reference": "USER CANONICAL 1513x1039 SHA256 de476e0516f744f9cd899419404971fa5e8d42bd49f2f7db7670d1cb325f8a4f",
+    "upperFortress": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V14/Imported/BastionFamilyV1.glb",
+    "lowerGate": "Assets/Eldoria/ArtTests/ReferenceFirstPilot/V14/Imported/LowerGateFamilyV1.glb",
+    "revision": "64b97f4f1c34f9b4a214af6746d1a36f83ab194c",
+    "frames": [
+        "27-enhanced-lower-gate-overview.png",
+        "28-enhanced-lower-gate-close.png"
+    ],
+    "architectureInstances": 26,
+    "forestInstances": 56,
+    "rockInstances": 61,
+    "distantTreeInstances": 16,
+    "pavingStoneInstances": 78,
+    "mountainSourceInstances": 6,
+    "width": 1536,
+    "height": 1024,
+    "artApproved": false,
+    "licenseVerified": false,
+    "productionModified": false,
+    "publication": false
+}
