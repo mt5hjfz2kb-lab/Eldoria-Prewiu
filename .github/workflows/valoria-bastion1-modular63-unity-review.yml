@@ -41,9 +41,9 @@ jobs:
           assert d['base_63']['expected_count']==63
           assert d['constraints']['no_new_meshes'] and d['constraints']['source_assets_immutable']
           assert not d['constraints']['gameplay_publication']
-          assert len(d['selected'])==8 and len({x['id'] for x in d['selected']})==8
+          assert len(d['selected'])==9 and len({x['id'] for x in d['selected']})==9
           assert all(re.fullmatch('[a-f0-9]{64}',x['sha256']) for x in d['selected'])
-          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'wall_panel_regular_4m','tower_square_short','merlon_tall'}
+          assert {x['id'] for x in d['selected'] if x['usage']=='candidate_in_scene'}=={'wall_panel_regular_4m','tower_square_short','merlon_tall','wall_buttress'}
           assert not any(x['id']=='mortar_joint_recess' for x in d['selected'])
           print('BASTION63_TRUE_VOLUME_WALL_TOWER_SELECTION_VALID review_only=true')
           PY
@@ -222,6 +222,7 @@ jobs:
               'cliff_rock_column' {'cliff'}
               'tower_square_short' {'base63'}
               'merlon_tall' {'base63'}
+              'wall_buttress' {'base63'}
               default {throw "Unrecognized source: $($asset.id)"}
             }
             $relative=$asset.file.Replace('/',[IO.Path]::DirectorySeparatorChar)
@@ -251,7 +252,7 @@ jobs:
           }
           New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review') | Out-Null
           Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $env:GITHUB_WORKSPACE 'Bastion1Modular63Review/selection.json')
-          Write-Host 'BASTION63_REUSE_ONLY 63 inventoried, 8 pinned, 3 structurally assembled and old wall visually disabled, no new mesh'
+          Write-Host 'BASTION63_REUSE_ONLY 63 inventoried, 9 pinned, 4 structurally assembled and old wall visually disabled, no new mesh'
       - name: Render identical-camera before and after with original player scene preserved
         shell: powershell
         run: |
@@ -310,6 +311,6 @@ jobs:
             .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json \
             Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs
           for file in before-landscape.png after-landscape.png before-mobile.png after-mobile.png before-portrait.png after-portrait.png modular63-scene-review.json; do
-            test -s "review/$file" || { echo "MISSING_REAL_NATIVE_FRAME $file"; exit 1; }
+            test -s "review/Bastion1Modular63Review/$file" || { echo "MISSING_REAL_NATIVE_FRAME $file"; exit 1; }
           done
           echo 'BASTION63_FEEDBACK_RECHECK_PASS non-promoted trial; aesthetic review still independent'

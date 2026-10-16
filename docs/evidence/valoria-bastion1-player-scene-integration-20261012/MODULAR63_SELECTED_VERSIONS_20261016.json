@@ -89,6 +89,16 @@
       "provisional_score": null,
       "usage": "candidate_in_scene",
       "rationale": "A/B lighter original stone crenel matches baseline tower palette; true top-supported individual modules; art proof pending"
+    },
+    {
+      "id": "wall_buttress",
+      "artifact_run": 38813966671,
+      "artifact": "valoria-individual-quality-63-38813966671",
+      "file": "eldoria-upgrade63/glb/wall_buttress.glb",
+      "sha256": "f4d4d325106eae4f5c3e5c9a5e3f1433eecb8ca6bb063bd812ccd73101a53d64",
+      "provisional_score": null,
+      "usage": "candidate_in_scene",
+      "rationale": "Physically projecting volumetric support pier connected to real wall at matching foundation, not overlay; visually unapproved until same-camera Unity A/B"
     }
   ],
   "rejected_or_pending": [

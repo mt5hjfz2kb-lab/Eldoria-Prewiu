@@ -61,11 +61,15 @@ namespace Eldoria.EditorTools
                 var wall=await Import("wall_panel_regular_4m");
                 var tower=await Import("tower_square_short");
                 var merlon=await Import("merlon_tall");
-                RebuildGateWingWithTower(originalRoot,wall,tower,merlon,group.transform,
+                var buttress=await Import("wall_buttress");
+                MakeGroundContactProbes(originalRoot);
+                RebuildGateWingWithTower(originalRoot,wall,tower,merlon,buttress,group.transform,
                                          "LowerGateRightWing",evidence);
+                RemoveGroundContactProbes();
                 UnityEngine.Object.DestroyImmediate(wall);
                 UnityEngine.Object.DestroyImmediate(tower);
                 UnityEngine.Object.DestroyImmediate(merlon);
+                UnityEngine.Object.DestroyImmediate(buttress);
                 if(evidence.Count<4)
                     throw new Exception("The complete modular wall+tower proof is incomplete");
                 CollectOwnedAssets(group);
@@ -113,7 +117,7 @@ namespace Eldoria.EditorTools
             {
                 if (light.type == LightType.Directional)
                 {
-                    light.color = new Color(1f, .83f, .69f);
+                    light.color = new Color(1f, .90f, .81f);
                     light.intensity = Mathf.Min(light.intensity * 1.10f, 1.55f);
                     light.shadows = LightShadows.Soft;
                     sunCount++;
@@ -144,9 +148,9 @@ namespace Eldoria.EditorTools
                     var tint=new Material(original){name="V6_golden_hour_view_only"};
                     var baseColor=tint.GetColor("_BaseColor");
                     tint.SetColor("_BaseColor",new Color(
-                        Mathf.Clamp01(baseColor.r*1.25f),
-                        Mathf.Clamp01(baseColor.g*1.00f),
-                        Mathf.Clamp01(baseColor.b*.80f),baseColor.a));
+                        Mathf.Clamp01(baseColor.r*1.055f),
+                        Mathf.Clamp01(baseColor.g*1.02f),
+                        Mathf.Clamp01(baseColor.b*.99f),baseColor.a));
                     materials[i]=tint;
                     touched=true;
                     graded++;
@@ -157,9 +161,9 @@ namespace Eldoria.EditorTools
             Debug.Log("BASTION1_GOLDEN_C_ONLY_MATERIALS "+graded);
             if (sunCount != 1)
                 throw new Exception("Expected exactly one original Bastion I directional sun, got " + sunCount);
-            RenderSettings.ambientSkyColor = new Color(.47f, .52f, .59f);
-            RenderSettings.ambientEquatorColor = new Color(.43f, .41f, .37f);
-            RenderSettings.ambientGroundColor = new Color(.36f, .31f, .24f);
+            RenderSettings.ambientSkyColor = new Color(.39f, .48f, .59f);
+            RenderSettings.ambientEquatorColor = new Color(.42f, .43f, .46f);
+            RenderSettings.ambientGroundColor = new Color(.32f, .34f, .39f);
             // Keep existing natural atmospheric depth, avoid old over-fogging.
             RenderSettings.fogColor = new Color(.34f, .40f, .45f);
             RenderSettings.fogDensity = .0026f;
@@ -257,7 +261,7 @@ namespace Eldoria.EditorTools
         // the old visual wall. No 0.16 depth scaling and no front-surface decals.
         // Old renderer state only is disabled; colliders/triggers/transforms live on.
         static void RebuildGateWingWithTower(GameObject original,GameObject wall,
-                                            GameObject tower,GameObject merlon,Transform parent,
+                                            GameObject tower,GameObject merlon,GameObject buttress,Transform parent,
                                             string wing,List<string> notes)
         {
             var historical=FindNode(original,wing);
@@ -323,6 +327,30 @@ namespace Eldoria.EditorTools
                         throw new Exception("Merlon neither socketed nor truly supported: "+cap.name);
                     notes.Add("BUILT_REAL_MERLON_BAY_"+i+"_"+tooth);
                 }
+                // A physical projecting pier with structural wall penetration,
+                // seated at the same historical foundation as the new wall.
+                // This is not a face-on duplicate masonry panel.
+                var pier=CopyOn(buttress,replacement.transform,"BUILT_CONNECTED_BUTTRESS_"+i);
+                RebindNeutralLimestone(pier);
+                var pb=Bounds(pier);
+                float buttressScale=(size.y*.94f)/pb.size.y;
+                if(buttressScale<.35f||buttressScale>1.5f)
+                    throw new Exception("Unsupported buttress physical scale");
+                pier.transform.localScale*=buttressScale;
+                pb=Bounds(pier);
+                float penetration=Mathf.Min(.24f,actual.size.z*.40f);
+                Centre(pier,new Vector3(actual.center.x,wallBase+pb.size.y*.5f,
+                    actual.max.z+pb.size.z*.5f-penetration));
+                pb=Bounds(pier);
+                if(pb.min.x<actual.min.x+.1f || pb.max.x>actual.max.x-.1f ||
+                   Mathf.Abs(pb.min.y-wallBase)>.04f ||
+                   pb.min.z>actual.max.z-.15f || pb.max.z<actual.max.z+.3f)
+                    throw new Exception("Buttress is floating, disconnected or obstructs wall junction");
+                if(!TryGroundY(new Vector2(pb.center.x,pb.max.z-.16f),out float supportY) ||
+                   Mathf.Abs(supportY-wallBase)>.45f)
+                    throw new Exception("Buttress has no verified terrain foundation support: "+
+                        pier.name+" target="+wallBase+" actual="+supportY);
+                notes.Add("BUILT_CONNECTED_BUTTRESS_GROUND_VERIFIED_BAY_"+i);
                 notes.Add("BUILT_FULL_DEPTH_BAY_"+i);
             }
             if(Mathf.Abs(aggregate.min.x-oldBounds.min.x)>.075f ||

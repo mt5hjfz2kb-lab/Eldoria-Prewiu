@@ -84,6 +84,12 @@
           "evidence_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/38927157638"
         }
       ]
+    },
+    {
+      "id": "wall_buttress",
+      "sha256": "f4d4d325106eae4f5c3e5c9a5e3f1433eecb8ca6bb063bd812ccd73101a53d64",
+      "art_approved": false,
+      "decisions": []
     }
   ]
 }

@@ -83,10 +83,15 @@
       "id": "merlon_tall",
       "sha256": "022bf407bcfeeb7e717874b0a27def4e3f9831bb0c6edfb1933bc99f4f447bb9",
       "usage": "candidate_in_scene"
+    },
+    {
+      "id": "wall_buttress",
+      "sha256": "f4d4d325106eae4f5c3e5c9a5e3f1433eecb8ca6bb063bd812ccd73101a53d64",
+      "usage": "candidate_in_scene"
     }
   ],
   "selection_readiness": "EXPERIMENT_ONLY_NOT_ART_APPROVED",
-  "selection_change_note": "Confirmed 2026-10-16 comparison swaps tower/merlon to lighter exact base-63 GLBs; no general Blender correction implied; pending palette feedback remains pending.",
+  "selection_change_note": "Candidate with one truly projecting wall buttress per bay, exact foot contact raycasts on preserved terrain, palette-matched base63 tower and merlons, and less saturated C lookdev. No art promotion until real Unity images.",
   "source_file": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs",
-  "source_git_blob_sha1": "a4182af229e971eada3ce2e927857dc5a2cc302c"
+  "source_git_blob_sha1": "b3da18790f2a8d7f6f3fdb7ee8b5adedeb923839"
 }
