@@ -75,6 +75,32 @@
       "art_production_routing": "required",
       "phase": "Owner-authorized SINGLE professional Blender artist line: geometric authoring plus verified cross-cycle memory, independent visual A-B; no Unity game editing",
       "art_production_request": "pipeline/art-production-requests/eldoria-full-blender-artist-studio-20261014.json"
+    },
+    {
+      "id": "valoria-scene-method-breakthrough-20261016",
+      "title": "Bastion I clean-scene whole-frame 3D versus bounded 2.5D experiment",
+      "owner": "chat-breakthrough-visual-20261016",
+      "branch": "experiment/valoria-scene-method-breakthrough-20261016",
+      "status": "active",
+      "claimed_at": "2026-10-16",
+      "base_main_sha": "81b1f7622e1e77b142ae5b062138662dac4fe454",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**",
+        "tools/valoria-scene-breakthrough/**",
+        ".github/workflows/valoria-scene-breakthrough.yml",
+        "docs/evidence/valoria-scene-breakthrough-20261016/**"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Explicit isolated experimental scene; no promotion or production replacement; current owner authorization supersedes prior scene pause only for this scope.",
+      "phase": "Reference studied; full composition blockout first; preserved paused branches read-only",
+      "next": "Create clean Unity blockout, capture exact camera suite, review before detailed assembly",
+      "protected_branches": [
+        "integration/valoria-bastion1-player-scene-20261012",
+        "art/valoria-63-individual-quality-uplift-20261015"
+      ]
     }
   ],
   "history": [
