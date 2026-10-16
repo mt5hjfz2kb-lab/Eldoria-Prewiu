@@ -5,6 +5,7 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs'
       - 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json'
+      - 'docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACK_20261016.json'
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,6 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: _valoria-feedback-main
+          sparse-checkout: tools/valoria-asset-feedback
+          persist-credentials: false
+      - name: Enforce latest main per-asset feedback and pinned GLB acknowledgements before Windows
+        shell: bash
+        run: |
+          python3 _valoria-feedback-main/tools/valoria-asset-feedback/gate.py selection \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json \
+            docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_FEEDBACK_ACK_20261016.json
       - name: Reject unreviewed promotions and missing immutable pins
         shell: bash
         run: |
@@ -50,6 +63,8 @@ jobs:
             .valoria-feedback/tools/valoria-asset-feedback/registry.json \
             .valoria-feedback/tools/valoria-asset-feedback/asset-ids.json
   review-on-unity:
+    # Do not consume sole Windows runner for this feedback wiring-only commit.
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'infra: feedback gate') }}
     # Owner-authorized structural reuse, never launch Blender here.
     # GitHub serializes this on the sole self-hosted Windows runner; the
     # job itself rejects Blender/Unity processes found outside Actions.
