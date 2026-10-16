@@ -76,13 +76,14 @@
     },
     {
       "id": "tower_square_short",
-      "sha256": "73b99c2c8ec5a5f2c1a81467b3217acaf11e3e8e28d3ffa66315f572e60bf5f1",
+      "sha256": "a514d97fc3241477f4b98b7e4d04b1213d75a1718e53d662fca9e83be8dfd4ac",
       "usage": "candidate_in_scene"
     },
     {
       "id": "merlon_tall",
-      "sha256": "96541f0fac4ca8b4856c3b897ff2552ebec5560b2251df9b33b875efd06f7820",
+      "sha256": "022bf407bcfeeb7e717874b0a27def4e3f9831bb0c6edfb1933bc99f4f447bb9",
       "usage": "candidate_in_scene"
     }
-  ]
+  ],
+  "note": "Illustrative synchronized baseline; working owner branch must reacknowledge future pins and main corrections. This candidate has ART_FAIL pending, no promotion."
 }
