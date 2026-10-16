@@ -1,0 +1,35 @@
+name: "[ART ROCK SCANS] Two genuine Poly Haven boulder and rock CC0 1K models"
+on:
+  push:
+    branches: [art/valoria-63-individual-quality-uplift-20261015]
+    paths:
+      - '.github/workflows/valoria-two-scanned-stones-source.yml'
+      - 'tools/valoria-modular-fortress/collect_cc0_two_rock_scans.py'
+permissions:
+  contents: read
+jobs:
+  source-two-real-photogrammetry-models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve two licensed 1K true rock scans and all model dependencies
+        run: python3 tools/valoria-modular-fortress/collect_cc0_two_rock_scans.py "$RUNNER_TEMP/eldoria-rocks-cc0"
+      - name: Verify exactly two authorized no-cost CC0 geometries
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-rocks-cc0'
+          m=json.loads((p/'official_cc0_models.json').read_text())
+          assert m['cost_eur']==0 and m['license']=='CC0'
+          assert set(m['models'])=={'boulder_01','rock_07'}
+          for v in m['models'].values():
+            assert any(z['name'].endswith(('.gltf','.glb')) for z in v['files'])
+          print('TWO_PHOTOGRAMMETRIC_CC0_ROCK_MESHES_VERIFIED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-two-real-stone-photogrammetry-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-rocks-cc0/**
+          if-no-files-found: error
+          retention-days: 30
