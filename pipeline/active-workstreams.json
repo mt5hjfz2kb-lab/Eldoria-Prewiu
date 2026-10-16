@@ -101,6 +101,28 @@
         "integration/valoria-bastion1-player-scene-20261012",
         "art/valoria-63-individual-quality-uplift-20261015"
       ]
+    },
+    {
+      "id": "valoria-scene-method-breakthrough-20261016",
+      "title": "Clean Bastion I composition: hybrid 3D and bounded 2.5D comparison",
+      "owner": "chat-breakthrough-visual-20261016",
+      "branch": "experiment/valoria-scene-breakthrough-20261016",
+      "scope": [
+        "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/**",
+        "tools/valoria-scene-breakthrough/**",
+        ".github/workflows/valoria-scene-breakthrough.yml",
+        "docs/evidence/valoria-scene-breakthrough-20261016/**"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-16T18:23:00Z",
+      "base_main_sha": "81b1f7622e1e77b142ae5b062138662dac4fe454",
+      "art_production_routing": "isolated-lookdev-only-no-promotion",
+      "authorization": "Explicit owner mission 2026-10-16. Protected Bastion and 63 workstreams remain paused. No publication, paid credits or source overwrite.",
+      "phase": "Recover frozen baseline and reference; build complete clean-scene blockout",
+      "next": "Create isolated experimental branch, scene and same-camera native captures."
     }
   ],
   "history": [
