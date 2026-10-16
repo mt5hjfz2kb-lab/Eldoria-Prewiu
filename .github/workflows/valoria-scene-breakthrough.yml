@@ -1,12 +1,7 @@
 name: "[BREAKTHROUGH] Clean scene blockout and comparative capture"
 on:
-  push:
-    branches: [experiment/valoria-scene-method-breakthrough-20261016]
-    paths:
-      - 'Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/**'
-      - 'Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/SceneCamera.cs'
-      - 'tools/valoria-scene-breakthrough/**'
-      - '.github/workflows/valoria-scene-breakthrough.yml'
+  workflow_dispatch:
+# Experimental scope closed NO VISUAL WIN. Reclaim ownership before a new manual run.
 permissions:
   contents: write
   actions: read

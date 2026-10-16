@@ -28,7 +28,7 @@ public static partial class SceneCapture {
    RenderSettings.ambientMode=AmbientMode.Trilight;RenderSettings.ambientSkyColor=new Color(.48f,.55f,.65f);RenderSettings.ambientEquatorColor=new Color(.4f,.42f,.38f);RenderSettings.ambientGroundColor=new Color(.24f,.23f,.2f);RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=145;RenderSettings.fogEndDistance=310;RenderSettings.fogColor=new Color(.28f,.37f,.46f);
    Suite("baseline-matched");
    EditorSceneManager.SaveScene(s,Root+"/BastionI_FrozenBaseline_MatchedReview.unity");
-   File.WriteAllText(Evidence+"/baseline-camera-normalization.json","{\"source_orthographic_size\":"+oldSize+",\"uniform_scale\":"+(24/oldSize)+",\"source_yaw_conversion\":180,\"anchor\":\"LowerGate renderer foot aligned to (691,702) on approved 1536x1024 framing\",\"geometry_and_material_sources_unchanged\":true,\"lighting\":\"same single sun, ambient, fog and pipeline as experiments\",\"original_native_view_preserved\":true}");
+   File.WriteAllText(Evidence+"/baseline-camera-normalization.json","{\"source_orthographic_size\":"+oldSize.ToString(System.Globalization.CultureInfo.InvariantCulture)+",\"uniform_scale\":"+(24/oldSize).ToString("R",System.Globalization.CultureInfo.InvariantCulture)+",\"source_yaw_conversion\":180,\"anchor\":\"LowerGate renderer foot aligned to (691,702) on approved 1536x1024 framing\",\"geometry_and_material_sources_unchanged\":true,\"lighting\":\"same single sun, ambient, fog and pipeline as experiments\",\"original_native_view_preserved\":true}");
    Composite();Debug.Log("BREAKTHROUGH_CAPTURE_COMPLETE");EditorApplication.Exit(0);
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}
  }

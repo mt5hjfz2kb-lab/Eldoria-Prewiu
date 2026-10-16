@@ -1,0 +1,92 @@
+{
+  "schema": "eldoria.scene-method-breakthrough.review.v1",
+  "verdict": "NO_VISUAL_WIN",
+  "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "source_commit": "bda7305f5674b09505ac52de800f3e22943cdadb",
+  "evidence_commit": "43f0db08a3e9b597f0943be6e3503f1e90dc5894",
+  "run_id": 38952589240,
+  "artifact_id": 12068214908,
+  "artifact_digest": "bd95fec9787435c041b4b61a4aa484946df76d154fc3dc68f9367036ab32fdc4",
+  "weights": {
+    "composition": 0.2,
+    "architecture": 0.2,
+    "landscape": 0.2,
+    "materials": 0.15,
+    "lighting": 0.15,
+    "mobile_read": 0.1
+  },
+  "scores": {
+    "baseline": {
+      "composition": 5.2,
+      "architecture": 5.6,
+      "landscape": 4.5,
+      "materials": 4.8,
+      "lighting": 4.5,
+      "mobile_read": 5.5
+    },
+    "hybrid3d": {
+      "composition": 5.6,
+      "architecture": 5.8,
+      "landscape": 3,
+      "materials": 3.8,
+      "lighting": 3.6,
+      "mobile_read": 5.5
+    },
+    "hybrid25d": {
+      "composition": 5.6,
+      "architecture": 5.8,
+      "landscape": 3,
+      "materials": 3.8,
+      "lighting": 3.5,
+      "mobile_read": 5.4
+    }
+  },
+  "weighted_visual_scores": {
+    "baseline": 5,
+    "hybrid3d": 4.5,
+    "hybrid25d": 4.5
+  },
+  "scoring_precision": "subjective approximate judgments, uncertainty around half a point; not device measurements",
+  "reviewer": "Root GPT direct native-image inspection; assembly author, not a blinded human independent evaluator",
+  "independent_peer": {
+    "model": "qwen3-vl:8b-instruct-q4_K_M",
+    "verdict": "NO VISUAL WIN",
+    "three_d": 5.5,
+    "hybrid25d": 5,
+    "baseline_score": 9,
+    "limitations": "The peer's baseline 9/10 and inferred A/B lighting differences are not supported by inspected images and exact foreground/camera equality. Raw response retained; scores are not copied as acceptance."
+  },
+  "functional": {
+    "camera_pan_zoom_home": "PASS_API_PROBES",
+    "selection_anchors_each_variant": 6,
+    "support_samples_each_variant": 126,
+    "navmesh_or_player_traversal_certified": false,
+    "bastion_i_to_ii_gameplay_certified": false,
+    "expansion_reserve_count": 2,
+    "expansion_reserve_size_m": [
+      9,
+      9
+    ],
+    "device_performance_measured": false
+  },
+  "technical": {
+    "portable_scenes": 4,
+    "verified_native_pngs": 27,
+    "same_a_b_camera": true,
+    "same_a_b_foreground": true,
+    "foreground_fingerprint_sha256": "4293f22eb81e3a3cee37ff4c55427267aaa5323cbd20da0efeb3e13797f118ab"
+  },
+  "art_approved": false,
+  "calibration_validated": false,
+  "production_scalable": false,
+  "paid_spend": 0,
+  "paid_credits": 0,
+  "main_art_promoted": false,
+  "protected_branches_modified": false,
+  "root_failures": [
+    "Uniform ground loses convincing material and organic transitions",
+    "Cliff faces remain schematic with visible seams and weak foundation contacts; some tree placement lacks support",
+    "Lighting and distant environment fail to establish the reference's depth and inhabited atmosphere; isolated quality does not create whole-scene coherence"
+  ],
+  "decision": "Keep frozen existing playable baseline. Preserve both experimental scenes and negative evidence. Do not integrate or scale this candidate into Bastion II."
+}
