@@ -74,7 +74,7 @@ jobs:
           $f=Join-Path $dir 'bastion-source-world-bounds.json'
           if(-not(Test-Path $f)){throw 'Native geometric proof not saved'}
           $x=Get-Content $f -Raw|ConvertFrom-Json
-          if($x.status -ne 'NATIVE_WORLD_SURVEY_READ_ONLY' -or $x.families.Count -lt 3){throw 'Invalid real-source bastion survey'}
+          if($x.status -ne 'NATIVE_WORLD_SURVEY_READ_ONLY' -or @($x.families.PSObject.Properties).Count -ne 3){throw 'Invalid real-source bastion survey'}
           Write-Host 'REAL_BASTION_FAMILY_WORLD_SURVEY_PASS'
       - name: Preserve read-only source family evidence, no scene mutation
         shell: powershell
