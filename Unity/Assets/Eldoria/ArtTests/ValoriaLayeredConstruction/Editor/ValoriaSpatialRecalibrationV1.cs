@@ -128,6 +128,8 @@ namespace Eldoria.ValoriaLayered.Editor {
    var upperStart=new Vector3(last.x,2.7f,last.z+steps.Last().localScale.z*.5f);
    var upperEnd=new Vector3(newHero.x,2.7f,newHero.z-2.5f);
    Segment(landing,upperStart,upperEnd,10f,.5f);
+   Segment(Find("SUPPORT civic link underfill"),upperStart,upperEnd,9.8f,2.6f);
+   Segment(Find("GREYBOX VPD · master upper civic link"),upperStart,upperEnd,3.8f,.12f);
    // Native contacts: all seven targets are real source geometry; test rays against actual colliders.
    var points=new[]{
     ("Bridge",Find("TEMPORARY bridge / continuous deck and collider")),
