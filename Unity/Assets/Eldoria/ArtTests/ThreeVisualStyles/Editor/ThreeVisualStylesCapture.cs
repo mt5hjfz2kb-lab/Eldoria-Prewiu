@@ -48,7 +48,8 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                 {
                     Open(name);
                     string file = Path.Combine(output, name + "_UNITY_REAL.png");
-                    var camera = Camera.main;
+                    var root = GeneratedRoot();
+                    var camera = root.GetComponentInChildren<Camera>(true);
                     if (camera == null) throw new InvalidOperationException(name + " missing main camera");
                     Render(camera, file);
                     var result = new TrialResult {
@@ -57,10 +58,10 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                         pipeline = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null ?
                                    UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline.name : "builtin",
                         screenshot = file,
-                        meshRenderers = Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None).Length,
-                        meshes = Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None).Length,
+                        meshRenderers = root.GetComponentsInChildren<MeshRenderer>(true).Length,
+                        meshes = root.GetComponentsInChildren<MeshFilter>(true).Length,
                         hasCamera = true,
-                        hasBastion = GameObject.Find("Bastion main hall") != null,
+                        hasBastion = ContainsChild(root, "Bastion main hall"),
                         containsGameplayIntegration = false,
                         certifiedMobile = false,
                         status = "UNITY_EDITOR_CAPTURE_ONLY__ART_AND_DEVICE_NOT_APPROVED"
@@ -109,7 +110,24 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             var generator = Object.FindFirstObjectByType<ValoriaThreeStylesScene>();
             if (generator == null) throw new InvalidOperationException("Generator missing: " + name);
             generator.Build();
-            if (Camera.main == null) throw new InvalidOperationException("No generated camera: " + name);
+            if (GeneratedRoot().GetComponentInChildren<Camera>(true) == null)
+                throw new InvalidOperationException("No generated camera: " + name);
+        }
+
+        private static Transform GeneratedRoot()
+        {
+            var generator = Object.FindFirstObjectByType<ValoriaThreeStylesScene>();
+            if (generator == null) throw new InvalidOperationException("No art trial root");
+            var root = generator.transform.Find("__LOOK_DEV_GENERATED_NOT_SAVED");
+            if (root == null) throw new InvalidOperationException("No generated trial geometry");
+            return root;
+        }
+
+        private static bool ContainsChild(Transform root, string childName)
+        {
+            foreach (var item in root.GetComponentsInChildren<Transform>(true))
+                if (item.name == childName) return true;
+            return false;
         }
 
         private static void BakeCurrent(string name)
