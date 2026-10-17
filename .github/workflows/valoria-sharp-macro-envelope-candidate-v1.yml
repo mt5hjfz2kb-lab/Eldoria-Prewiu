@@ -38,6 +38,23 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
+      - name: Safely recover stale rebase left by prior same-workstream attempt (isolated checkout only)
+        shell: powershell
+        run: |
+          if((Test-Path '.git/rebase-merge') -or (Test-Path '.git/rebase-apply')){
+            Write-Host 'Existing cached checkout has interrupted rebase from prior V18 same-owner workflow'
+            git rebase --abort
+            if($LASTEXITCODE){throw 'Cannot safely abort interrupted local rebase'}
+            git reset --hard $env:GITHUB_SHA
+            if($LASTEXITCODE){throw 'Cannot reset isolated runner checkout to exact triggering SHA'}
+          }
+          $head=(git rev-parse HEAD).Trim()
+          if($head -ne $env:GITHUB_SHA){throw "Runner checkout is not triggering commit HEAD=$head expected=$env:GITHUB_SHA"}
+          $art='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
+          foreach($p in @("$art/GeneratedEntryV18","$art/Valoria_SHARP_EntryZoneV18_CANDIDATE.unity","$art/Valoria_SHARP_EntryZoneV18_CANDIDATE.unity.meta")){
+            if(Test-Path $p){Remove-Item $p -Recurse -Force}
+          }
+          Write-Host 'RECOVERED_ONLY_ISOLATED_STALE_UNITY_V18_OUTPUTS_AND_OWN_REBASE'
       - name: Existing exclusive owner, certified source, cleaned V13 gameplay substrate
         shell: powershell
         run: |
