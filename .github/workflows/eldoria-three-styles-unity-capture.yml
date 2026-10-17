@@ -5,6 +5,7 @@ on:
       - experiment/eldoria-three-visual-styles-20261017
     paths:
       - .github/workflows/eldoria-three-styles-unity-capture.yml
+      - Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/**
   workflow_dispatch:
 
 permissions:
