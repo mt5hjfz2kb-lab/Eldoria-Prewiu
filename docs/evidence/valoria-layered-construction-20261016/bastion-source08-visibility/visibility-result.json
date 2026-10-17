@@ -1,0 +1,23 @@
+{
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_BastionVisibility_CANDIDATE.unity",
+    "method": "Same copied real playable-V3 scene, SHARP player camera, only nine original Bastion renderer enabled flags flipped; same lighting and resolution",
+    "source_prefab": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/EntryZoneV1.prefab",
+    "source_player_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_PlayableV3.unity",
+    "verdict": "SOURCE08_BASTION_VISIBLE_IN_COPIED_PLAYER_CAMERA_NOT_ART_APPROVED",
+    "bastion_renderers": 9,
+    "disabled_previous_v12_roots": 1,
+    "changed_pixels": 27623,
+    "changed_pixels_upper_band": 27623,
+    "changed_pixels_roi": 27623,
+    "width": 1536,
+    "height": 1024,
+    "pixel_bbox_min_x": 744,
+    "pixel_bbox_min_y": 798,
+    "pixel_bbox_max_x": 1144,
+    "pixel_bbox_max_y": 911,
+    "fov": 44.42280960083008,
+    "same_presenter_camera": true,
+    "canonical_modified": false,
+    "mobile_device_certified": false,
+    "art_approved": false
+}
