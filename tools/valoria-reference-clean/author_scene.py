@@ -622,6 +622,40 @@ for side in [-1,1]:
    sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(meadow_leaf))
  tuft_mesh=sh.finish(0)
  assert sum(len(p.vertices) for p in tuft_mesh.data.polygons)<65000, 'Tuft mesh exceeds flat-normal export vertex budget'
+# Multi-scale shoreline pockets: authored, closed pebbles and tapered sedge blades.
+# A separate RNG leaves every validated building, tree and large boulder unchanged.
+shore_finish=request.get('shore_finish');shingle_count=0;sedge_blades=0
+if shore_finish in ['zone_shingle','all_shingle']:
+ sr=random.Random(4418);bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1)
+ template=bpy.context.object;pv=[v.co.copy() for v in template.data.vertices];pf=[tuple(f.vertices) for f in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
+ shingle=Mesh('River_shingle_pockets');sedge=Mesh('River_sedge_pockets');sedge_mat=mat('Shore sedge olive blades',(.055,.115,.028))
+ for side in [-1,1]:
+  for pocket in range(23):
+   X=-63+pocket*5.7+sr.uniform(-1.3,1.3)
+   if shore_finish=='zone_shingle' and not (side==1 and 8<X<28):continue
+   for j in range(sr.randint(12,22)):
+    x=X+sr.uniform(-2.2,2.2);margin=sr.uniform(.10,2.3);y=river_center(x)+side*(river_width(x)+margin)
+    if abs(x-road_x(y))<6:continue
+    if any((x-bx)**2+(y-by)**2<(bs*.72)**2 for bx,by,bs in rock_positions):continue
+    radius=sr.uniform(.10,.38)*(1.35 if j<3 else 1);rx=radius*sr.uniform(.8,1.6);ry=radius*sr.uniform(.7,1.2);rz=radius*sr.uniform(.42,.85);angle=sr.uniform(-pi,pi)
+    shape=[]
+    for v in pv:
+     f=1+.15*sin(v.x*9+v.y*7+v.z*5+pocket+j);a=v.x*rx*f;b=v.y*ry*f;shape.append((x+a*cos(angle)-b*sin(angle),y+a*sin(angle)+b*cos(angle),v.z*rz*f))
+    low=min(q[2] for q in shape);ground=terrain_height(x,y)-.04
+    shingle.add([(a,b,c-low+ground) for a,b,c in shape],pf,rock_surface if rock_surface else rocks[2]);shingle_count+=1
+   for clump in range(sr.randint(1,3)):
+    x=X+sr.uniform(-1.7,1.7);y=river_center(x)+side*(river_width(x)+sr.uniform(2.0,3.6));z=terrain_height(x,y)
+    if abs(x-road_x(y))<6:continue
+    for blade in range(7):
+     angle=sr.uniform(-pi,pi);height=sr.uniform(.25,.65);width=sr.uniform(.025,.05);cx=x+sr.uniform(-.13,.13);cy=y+sr.uniform(-.13,.13)
+     verts=[(cx-width*cos(angle),cy-width*sin(angle),z),(cx+width*cos(angle),cy+width*sin(angle),z),(cx+.03*cos(angle+pi/2),cy+.03*sin(angle+pi/2),z+.03),(cx+.17*cos(angle),cy+.17*sin(angle),z+height)]
+     sedge.add(verts,[(0,1,2),(0,3,1),(1,3,2),(2,3,0)],sedge_mat);sedge_blades+=1
+ if shingle.v:
+  ob=shingle.finish(0)
+  for face in ob.data.polygons:face.use_smooth=True
+  for uv in ob.data.uv_layers.active.data:uv.uv*=3.5/1.5
+ if sedge.v:sedge.finish(0)
+
 # Seat actual low foot vertices against exactly the terrain equation used by Unity.
 for o in bpy.context.scene.objects:
  if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_','Ruin_')):continue
@@ -685,5 +719,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'baked_ao_loops':canopy_ao_loops,'bounds_preserved':True,'zone':'right foreground trees only','method':'rejected41 vertex colors removed; proven40 donor shading restored'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'shore_profile':{'mode':request.get('shore_treatment'),'waterline_preserved':True,'bridge_gate_support_protected':True,'native_terrain_equation_matched':True},'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'baked_ao_loops':canopy_ao_loops,'bounds_preserved':True,'zone':'right foreground trees only','method':'rejected41 vertex colors removed; proven40 donor shading restored'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'shore_finish':{'mode':shore_finish,'closed_pebbles':shingle_count,'closed_sedge_blades':sedge_blades,'placement_rng_isolated':True},'shore_profile':{'mode':request.get('shore_treatment'),'waterline_preserved':True,'bridge_gate_support_protected':True,'native_terrain_equation_matched':True},'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')
