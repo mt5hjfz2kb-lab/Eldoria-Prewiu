@@ -1,10 +1,10 @@
-name: "[VALORIA] Native Source08 facade orientation vs actual SHARP player-camera"
+name: "[VALORIA] V19 original Source08 facade turns toward real SHARP player | native Blender source"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionFacingProbe.cs'
+      - 'tools/valoria-layered-construction/reorient-original-bastion-v19.blender.py'
 permissions:
   contents: write
   actions: read
@@ -12,20 +12,21 @@ concurrency:
   group: valoria-macro-envelope-one-native-run
   cancel-in-progress: false
 jobs:
-  real-player-facing:
+  source-player-facing:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 45
+    timeout-minutes: 55
     defaults:
       run:
         working-directory: valoria-macro-envelope-v1
     steps:
-      - name: Locate Git installed with GitHub Desktop
+      - name: Locate native GitHub Desktop Git
         shell: powershell
         working-directory: .
         run: |
           if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
-            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue|Sort-Object Name -Descending|ForEach-Object{Join-Path $_.FullName 'resources/app/git/cmd/git.exe'}|Where-Object{Test-Path $_}|Select-Object -First 1
-            if(-not $git){throw 'Git unavailable'};Add-Content $env:GITHUB_PATH (Split-Path $git)
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter "app-*" -ErrorAction SilentlyContinue|Sort-Object Name -Descending|ForEach-Object{Join-Path $_.FullName 'resources/app/git/cmd/git.exe'}|Where-Object{Test-Path $_}|Select-Object -First 1
+            if(-not $g){throw 'Installed git not found'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
           }
       - uses: actions/checkout@v4
         with:
@@ -38,68 +39,74 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
-      - name: Same-owner runner preflight and interrupted worktree recovery
+      - name: Verify original exclusive owner, source SHA, actual camera proof and free runner
         shell: powershell
         run: |
           if((Test-Path '.git/rebase-merge') -or (Test-Path '.git/rebase-apply')){
             git rebase --abort
-            if($LASTEXITCODE){throw 'Interrupted local rebase cannot be recovered'}
+            if($LASTEXITCODE){throw 'Failed to abort own prior interrupted rebase'}
             git reset --hard $env:GITHUB_SHA
-            if($LASTEXITCODE){throw 'Failed to recover exact triggered commit'}
+            if($LASTEXITCODE){throw 'Failed to reset isolated checkout'}
           }
-          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Unexpected source HEAD after worktree recovery'}
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Not at triggering branch HEAD'}
           $a=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
           $b=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           foreach($r in @($a,$b)){
-            if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'chatgpt-normal-valoria-construction-20261017' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Same workstream exclusive claim no longer valid'}
-            if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Incompatible runner claim'}
+            if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'chatgpt-normal-valoria-construction-20261017' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Original exclusive workstream owner not confirmed'}
+            if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Another runner owner present'}
           }
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor/modeler in use'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity unavailable'}
-          $s='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV18_CANDIDATE.unity'
-          if(-not(Test-Path $s)){throw 'Actual native V18 SHARP art candidate unavailable'}
-          $e='docs/evidence/valoria-layered-construction-20261016/entry-zone-v18/entry-native.json'
-          $report=Get-Content $e -Raw|ConvertFrom-Json
-          if($report.canonical_modified -or $report.route_passes -ne 28 -or $report.source_target_matches -ne 7){throw 'V18 source baseline is not safe'}
-      - name: Real exact renderable triangle normals and material alignment to SHARP camera
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native shared renderer busy'}
+          $ev='docs/evidence/valoria-layered-construction-20261016/entry-zone-v18'
+          if((Get-FileHash "$ev/ValoriaEntryZoneV18.blend" -Algorithm SHA256).Hash.ToLower() -ne '20b15b7d0c944666c6d9885e4b7366c76d826136a0c1742d6c7768db3b527aa1'){throw 'Source V18 identity mismatched'}
+          $orient=Get-Content "$ev/actual-player-bastion-facing.json" -Raw|ConvertFrom-Json
+          if(-not $orient.same_picking_camera -or $orient.canonical_modified -or $orient.source_geometry_modified){throw 'Native player-camera diagnostic not established'}
+          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Visual reference changed'}
+      - name: Native Blender BMesh per-module exact-envelope facade reversal and source previews
         shell: powershell
         run: |
-          $ev='docs/evidence/valoria-layered-construction-20261016/entry-zone-v18'
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-facing-real-player-camera.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaBastionFacingProbe.Build','-logFile',$log)
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(2100000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Actual SHARP facing diagnostics timeout'}
-          Get-Content $log -Tail 75
-          Copy-Item $log "$ev/actual-player-bastion-facing-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_V18_REAL_FACADE_FACING_DIAGNOSTIC_COMPLETE' -Quiet)){throw 'Real player-camera diagnosis not verified'}
-          $s=Get-Content "$ev/actual-player-bastion-facing.json" -Raw|ConvertFrom-Json
-          if(-not $s.same_picking_camera -or $s.canonical_modified -or $s.source_geometry_modified){throw 'Read-only diagnostic changed camera or art'}
-          Write-Host "ACTUAL_NATIVE_FACADE_ORIENTATION=$($s.verdict) bannerFront=$($s.heraldry_front) bannerBack=$($s.heraldry_back) frustum=$($s.heraldry_in_frustum)"
-      - name: Save ONLY read-only camera evidence on same branch
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){
+            foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
+              if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName}
+              if($blender){break}
+            }
+          }
+          if(-not $blender){throw 'Native Blender unavailable'}
+          $ev='docs/evidence/valoria-layered-construction-20261016/entry-zone-v19'
+          New-Item -ItemType Directory -Force $ev|Out-Null
+          & $blender --version|Out-File "$ev/blender-version.txt" -Encoding utf8
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/reorient-original-bastion-v19.blender.py
+          if($LASTEXITCODE){throw 'Professional Blender face-orientation operation failed'}
+          $m=Get-Content "$ev/entry-source.json" -Raw|ConvertFrom-Json
+          if($m.module_count -ne 9 -or $m.triangles -ne 374118 -or -not $m.all_original_module_bounds_preserved -or -not $m.player_camera_unchanged -or -not $m.module_mesh_vertex_triangle_material_counts_unchanged -or $m.banner_front_normal_y_sum_before*$m.banner_front_normal_y_sum_after -ge 0){throw 'Real geometry/source identity regression'}
+          if((Get-FileHash "$ev/ValoriaEntryZoneV19.blend" -Algorithm SHA256).Hash.ToLower() -ne $m.result_blend_sha256 -or (Get-FileHash "$ev/ValoriaEntryZoneV19.glb" -Algorithm SHA256).Hash.ToLower() -ne $m.result_glb_sha256){throw 'Source/GLB HASH fail'}
+          foreach($n in @('SOURCE19-player-facing-full-bastion.png','SOURCE19-player-facing-keep-detail.png')){
+            if(-not(Test-Path "$ev/$n") -or (Get-Item "$ev/$n").Length -lt 15000){throw "Missing real native Blender preview: $n"}
+          }
+          Write-Host 'BESHAPE_V19_NATIVE_BLENDER_SOURCE_TECH_PASS_DOES_NOT_EQUAL_ART_APPROVAL'
+      - name: Archive editable original-source V19 and source renders, keep main untouched
         if: always()
         shell: powershell
         run: |
           git config user.name 'Valoria native builder'
           git config user.email 'valoria-builder@users.noreply.github.com'
-          $e='docs/evidence/valoria-layered-construction-20261016/entry-zone-v18'
-          foreach($p in @("$e/actual-player-bastion-facing.json","$e/actual-player-bastion-facing-unity.log")){if(Test-Path $p){git add -f -- "$p"}}
+          $ev='docs/evidence/valoria-layered-construction-20261016/entry-zone-v19'
+          if(Test-Path $ev){git add -f -- "$ev/"}
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): actual SHARP player-facing Source08 facade normals and banner submeshes'
-            if($LASTEXITCODE){throw 'Cannot save native camera evidence'}
+            git commit -m 'evidence(valoria): player-facing real Blender V19 original-family mesh and source images'
+            if($LASTEXITCODE){throw 'Unable to commit V19 source evidence'}
             git reset --hard HEAD
-            if($LASTEXITCODE){throw 'Runner checkout cannot be cleaned'}
+            if($LASTEXITCODE){throw 'Cannot clean isolated checkout'}
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Cannot fetch owner branch'}
+            if($LASTEXITCODE){throw 'Failed to fetch exclusive branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent version, evidence preserved in artifact'}
+            if($LASTEXITCODE){throw 'Concurrent owner conflict; preserve action artifacts and no force'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Could not persist isolated proof'}
+            if($LASTEXITCODE){throw 'Cannot persist isolated V19 art source; artifact preserved'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-actual-SHARP-facade-normals-diagnostic
-          path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v18/actual-player-bastion-facing.json
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v18/actual-player-bastion-facing-unity.log
+          name: valoria-v19-true-reoriented-bastion-source-studio
+          path: valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v19/**
           if-no-files-found: warn
