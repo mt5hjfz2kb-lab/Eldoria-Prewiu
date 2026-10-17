@@ -1,0 +1,89 @@
+{
+  "stage": "V17 RECOVER original SOURCE08 nine-material semantic hierarchy (no new building/geometry)",
+  "input_v13_blend_sha256": "1023443ef9eb3137a5157188b16194ff6245b08003f4c388377610d15811a1cf",
+  "original_family_blend_sha256": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+  "source_texture_generator": "tools/author-environment-family.py",
+  "source_texture_generator_sha256": "24a03161fe61b856659ac177bba1d69a1bda1cf6198f9d6000aff4b43712b0c7",
+  "texture_provenance": "Actual source image_data/surface_maps numpy + generated banner, all generated in Eldoria and packed; no third-party texture relied upon for the Bastion",
+  "reused_real_professional_model": true,
+  "bastion_module_count": 9,
+  "material_roles": {
+    "BastionCurtainEast": [
+      "Eldoria_bastion_base.001",
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_warm.001"
+    ],
+    "BastionCurtainWest": [
+      "Eldoria_bastion_base.001",
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_warm.001"
+    ],
+    "BastionEastTower": [
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_hero_masonry.001",
+      "Eldoria_bastion_trim.001",
+      "Eldoria_bastion_warm.001",
+      "Eldoria_banner_blue.001"
+    ],
+    "BastionFarWestBlock": [
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_hero_masonry.001",
+      "Eldoria_bastion_warm.001",
+      "Eldoria_bastion_trim.001"
+    ],
+    "BastionGateLintel": [
+      "Eldoria_bastion_hero_masonry.001"
+    ],
+    "BastionKeep": [
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_face.001",
+      "Eldoria_bastion_warm.001",
+      "Eldoria_bastion_hero_masonry.001",
+      "Eldoria_banner_blue.001",
+      "Eldoria_bastion_trim.001",
+      "Eldoria_bastion_metal.001"
+    ],
+    "BastionLeftWing": [
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_base.001",
+      "Eldoria_bastion_warm.001",
+      "Eldoria_bastion_trim.001",
+      "Eldoria_bastion_timber.001"
+    ],
+    "BastionRightGatePillar": [
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_warm.001",
+      "Eldoria_bastion_trim.001"
+    ],
+    "BastionWestTower": [
+      "Eldoria_bastion_shadow.001",
+      "Eldoria_bastion_base.001",
+      "Eldoria_bastion_trim.001",
+      "Eldoria_bastion_warm.001"
+    ]
+  },
+  "original_image_names": [
+    "banner_heraldry.002",
+    "hero_masonry_albedo.001",
+    "hero_masonry_normal.001",
+    "stone_grain_albedo.003",
+    "stone_grain_normal.003",
+    "timber_albedo.001",
+    "timber_normal.001"
+  ],
+  "source_previews_sha256": {
+    "source-clay-threequarter.png": "8e62201ed8fc5c9d9f44ff6be1c036ab1d22a00186e9b7e4f91b65f0320f5e22",
+    "source-source08-material-threequarter.png": "244e2da220785a5cc11bb6426e35c2366b4b1ac219737caf510c31cda844ffa4"
+  },
+  "input_v13_geometry_unchanged": true,
+  "result_blend_sha256": "0a2c1ccb74f9ffa95aa100505a5b6f9ce440b5d9bb6253562e4fd613dfadab7c",
+  "result_glb_sha256": "5e35de3d8fd8afe5378545d40d7c54c107d6d0cffaa2b692a7d6654adb5d49e8",
+  "triangles": 374064,
+  "budget_eur": 0,
+  "status": "BLENDER_SOURCE_CANDIDATE_REQUIRES_TRUE_UNITY_AB",
+  "source_art_production_pass_in_2026_10_05_does_not_certify_new_SHARP_scene": true,
+  "art_approved": false,
+  "full_frame_art_pass": false,
+  "gameplay_pass": false,
+  "mobile_pass": false
+}
