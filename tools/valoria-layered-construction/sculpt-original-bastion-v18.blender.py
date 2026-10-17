@@ -121,6 +121,50 @@ raw=open(glb,'rb').read()
 gltf=json.loads(raw[20:20+struct.unpack_from("<I",raw,12)[0]])
 tris=sum(gltf['accessors'][p['indices']]['count']//3 for n in gltf['nodes'] if 'mesh' in n for p in gltf['meshes'][n['mesh']]['primitives'])
 assert 370000<tris<410000 and tris!=374064,tris
+# These are genuine native Blender visual gates, not AI reference images.
+# No camera change is made to Unity. Source studios are diagnostic only.
+from mathutils import Vector
+for obj in bpy.data.objects:
+ if obj.type=='MESH' and obj not in bastion.values():obj.hide_render=True
+allpts=[obj.matrix_world@v.co for obj in bastion.values() for v in obj.data.vertices]
+mn=Vector([min(p[i] for p in allpts) for i in range(3)])
+mx=Vector([max(p[i] for p in allpts) for i in range(3)])
+focus=(mn+mx)*.5
+camdata=bpy.data.cameras.new("SOURCE_V18_STUDIO_FRONT_CAMERA")
+camera=bpy.data.objects.new("SOURCE_V18_STUDIO_FRONT_CAMERA",camdata)
+bpy.context.scene.collection.objects.link(camera)
+bpy.context.scene.camera=camera
+camdata.type="ORTHO";camdata.ortho_scale=45
+camera.location=focus+Vector((16,-37,24))
+camera.rotation_euler=(focus-camera.location).to_track_quat("-Z","Y").to_euler()
+for name,offset,power,size in [
+ ("SOURCE18 STUDIO SOFT KEY",Vector((-12,-14,22)),3200,26),
+ ("SOURCE18 STUDIO FILL",Vector((15,7,13)),2400,25)
+]:
+ lightdata=bpy.data.lights.new(name,"AREA");lightdata.energy=power;lightdata.shape="DISK";lightdata.size=size
+ light=bpy.data.objects.new(name,lightdata);bpy.context.scene.collection.objects.link(light)
+ light.location=focus+offset;light.rotation_euler=(focus-light.location).to_track_quat("-Z","Y").to_euler()
+sc=bpy.context.scene
+sc.render.engine="CYCLES";sc.cycles.samples=12
+sc.render.threads_mode="FIXED";sc.render.threads=4
+sc.render.resolution_x=1024;sc.render.resolution_y=700;sc.render.resolution_percentage=100
+sc.render.image_settings.file_format="PNG"
+if sc.world is not None:
+ sc.world.use_nodes=True
+ bg=sc.world.node_tree.nodes.get("Background")
+ if bg:bg.inputs["Strength"].default_value=.75
+sc.render.filepath=os.path.join(out,"SOURCE-front-original-V13-masonry-plus-edited-V18-keep.png")
+bpy.ops.render.render(write_still=True)
+camdata.ortho_scale=13
+kf=[keep.matrix_world@v.co for v in keep.data.vertices]
+kfocus=Vector([sum(v[i] for v in kf)/len(kf) for i in range(3)])
+camera.location=kfocus+Vector((7,-19,10))
+camera.rotation_euler=(kfocus-camera.location).to_track_quat("-Z","Y").to_euler()
+sc.render.filepath=os.path.join(out,"SOURCE-keep-architectural-closeup-V18.png")
+bpy.ops.render.render(write_still=True)
+source_images={n:sha(os.path.join(out,n)) for n in [
+ "SOURCE-front-original-V13-masonry-plus-edited-V18-keep.png",
+ "SOURCE-keep-architectural-closeup-V18.png"]}
 result={'stage':'V18 genuine Blender architectural deep-void cutting + correct source-authored blue/gold heraldry on approved V13 geometry',
  'parent_v13_sha256':sha(src),'original_source08_sha256':sha(donor),
  'original_unchanged_modules':list(frozen),'sculpted_existing_module':'BastionKeep',
@@ -132,6 +176,7 @@ result={'stage':'V18 genuine Blender architectural deep-void cutting + correct s
  'other_scenes_untouched':True,'triangles':tris,'total_export_triangles':tris,
  'result_blend_sha256':sha(blend),'result_glb_sha256':sha(glb),
  'source_visual_status':'REQUIRES_TRUE_BLENDER_CAMERA_REVIEW',
+ 'genuine_blender_source_images_sha256':source_images,
  'unity_art_status':'NOT_APPROVED','full_frame_art_pass':False,'mobile_qa':False,'zero_euro':True}
 open(os.path.join(out,'entry-source.json'),'w',encoding='utf8').write(json.dumps(result,indent=2)+"\n")
 print("VALORIA_V18_ACTUAL_KEEP_MESH_SCULPT_AND_HERALDRY_COMPLETE",json.dumps({'cuts':len(cuts),'tris':tris,'source_sha':result['result_blend_sha256'],'glb':result['result_glb_sha256']}))
