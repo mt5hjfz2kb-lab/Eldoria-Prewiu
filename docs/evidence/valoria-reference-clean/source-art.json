@@ -1,5 +1,5 @@
 {
-  "source_sha": "7d67a90ace292fd72865c8ebc3ec13c957c8c55d",
+  "source_sha": "0c5b2e5922cd448bac751ff37778f7027b69f393",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -50,6 +50,12 @@
     "asset": "rock_3",
     "method": "post-sculpt Smart UV physical scale",
     "all_banks": true
+  },
+  "shore_profile": {
+    "mode": "all_profile",
+    "waterline_preserved": true,
+    "bridge_gate_support_protected": true,
+    "native_terrain_equation_matched": true
   },
   "external_downloads": [
     {
@@ -199,10 +205,10 @@
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
     "Meadow_tufts_east": 12780,
-    "River_shore_foam": 2176
+    "River_shore_foam": 2554
   },
   "mesh_objects": 32,
-  "triangles": 629102,
-  "blend_sha256": "5a2882adbe6e737cea374c5bf79b0fb9a3d14149924c370ad15bc4b37fd1f472",
-  "glb_sha256": "0686468a26dc853379d4f8eff38fbf2326b716165bdc13d959bdc681f4a06b0e"
+  "triangles": 629480,
+  "blend_sha256": "9f72588ae4d50554f858e0277fe47cb5d246ecffb1f61ded46a46e9435114a12",
+  "glb_sha256": "91397c22b48d1842a51867005a6646e9adf04674329127204fb68ceb595cc166"
 }

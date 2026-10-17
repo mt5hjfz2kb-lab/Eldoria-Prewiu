@@ -1,11 +1,11 @@
 {
-    "baseline_source": "d6d258f5c87d0ede7c7452645a1e73e6afdf2c27",
-    "baseline_glb_sha256": "9ec31c2553992213e35b48214bec416f582a3b3deb4d6a4e00ad57c73fc1fd0b",
-    "source_sha": "7d67a90ace292fd72865c8ebc3ec13c957c8c55d",
-    "scope": "Right inland shoreline only: native terrain profile and physically reseated bank rocks, foam, reeds and tufts; current tree shading shared between both captures",
+    "baseline_source": "21fb61e7646a5dcfaa54acd2e3420aea38941296",
+    "baseline_glb_sha256": "0686468a26dc853379d4f8eff38fbf2326b716165bdc13d959bdc681f4a06b0e",
+    "source_sha": "0c5b2e5922cd448bac751ff37778f7027b69f393",
+    "scope": "Expanded gentle shoreline with bridge/gate support protection: previous42 zonal terrain heights and exact previous Blender nature meshes versus new full-bank profile/reseated meshes; materials, camera, light and architecture fixed",
     "same_camera": true,
     "same_lighting": true,
     "baseline_hash_verified": true,
-    "before_triangles": 95098,
-    "after_triangles": 95082
+    "before_triangles": 273408,
+    "after_triangles": 273786
 }
