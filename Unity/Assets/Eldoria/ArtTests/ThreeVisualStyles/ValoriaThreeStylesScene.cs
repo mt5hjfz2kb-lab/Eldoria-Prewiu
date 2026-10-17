@@ -43,7 +43,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         {
             if (transform.Find(Container) != null) return;
 #if UNITY_EDITOR
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
             {
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
@@ -62,7 +62,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             Transform existing = transform.Find(Container);
             if (existing != null)
             {
-                if (Application.isPlaying) Destroy(existing.gameObject);
+                if (UnityEngine.Application.isPlaying) Destroy(existing.gameObject);
                 else DestroyImmediate(existing.gameObject);
             }
             palette.Clear();
@@ -121,7 +121,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             g.transform.localScale = scale;
             g.GetComponent<Renderer>().sharedMaterial = Mat(c);
             var collider = g.GetComponent<Collider>();
-            if (collider != null) { if (Application.isPlaying) Destroy(collider); else DestroyImmediate(collider); }
+            if (collider != null) { if (UnityEngine.Application.isPlaying) Destroy(collider); else DestroyImmediate(collider); }
             objectCount++;
             return g;
         }
@@ -150,7 +150,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             var renderers = inst.GetComponentsInChildren<Renderer>(true);
             if (renderers.Length == 0)
             {
-                if (Application.isPlaying) Destroy(inst);
+                if (UnityEngine.Application.isPlaying) Destroy(inst);
                 else DestroyImmediate(inst);
                 return false;
             }
@@ -604,7 +604,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
 
         private void OnGUI()
         {
-            if (!Application.isPlaying || !showTrialTitle) return;
+            if (!UnityEngine.Application.isPlaying || !showTrialTitle) return;
             var name=artDirection==ArtDirection.FantasyStrategy?"01 / FANTASIA 3D ESTRATEGIA":
                      artDirection==ArtDirection.DetailedMedieval?"02 / MEDIEVAL ESTILIZADO DETALLADO":
                      "03 / MEDIEVAL COLORIDO";
