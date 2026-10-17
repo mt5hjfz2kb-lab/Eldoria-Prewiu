@@ -19,7 +19,7 @@ try:
  memory=(root/'tools/art-direction/ARTIST_LEARNING_JOURNAL.md').read_text('utf8')[:2600]
  prompt=('Four TRUE images: approved artistic reference; saved Unity V7 with the approved AFTER light; '
  'V7 immediately before V10 import from the same scene/camera; V10 in Unity with the SAME light, lens and viewport. '
- 'Judge whether V10 visibly creates organic, naturally textured CURVED access spurs that branch from the real central road and reach the actual west/east parcel targets, compared to rejected V10's prior straight strips and hidden beige greyboxes (source colliders preserved); '
+ 'Judge whether V10 visibly creates organic, naturally textured CURVED access spurs that branch from the real central road and reach the actual west/east parcel targets, rather than the rejected V8 dotted stones, V9 painted stripes, or original beige greyboxes (source colliders preserved); '
  'whether earth-based side tracks and the lower apron are visible, connected and do not look like painted stripes; color and shape of river; protected bridge, tower, paved stairs and terrain. '
  'Look for new road texture alignment, inverted terrain faces, clipping at original routes, tile-like procedural repetition and unrelated improvements. '
  'Original bridge geometry and colliders were intentionally not moved; never assert physical collision PASS from images. '
