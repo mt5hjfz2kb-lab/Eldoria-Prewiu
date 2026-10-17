@@ -38,10 +38,10 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         [MenuItem("Eldoria/Art tests/Three visual styles/Capture all three PNGs")]
         public static void CaptureAll()
         {
-            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if (!UnityEngine.Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
             string previous = SceneManager.GetActiveScene().path;
-            string output = Path.GetFullPath(Path.Combine(Application.dataPath,
+            string output = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
                 "../../docs/evidence/eldoria-three-visual-styles-20261017"));
             Directory.CreateDirectory(output);
             try
@@ -58,7 +58,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                     if (camera == null) throw new InvalidOperationException(name + " missing main camera");
                     Render(camera, file);
                     var result = new TrialResult {
-                        engine = Application.unityVersion,
+                        engine = UnityEngine.Application.unityVersion,
                         scene = name,
                         pipeline = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null ?
                                    UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline.name : "builtin",
@@ -90,7 +90,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         [MenuItem("Eldoria/Art tests/Three visual styles/Bake three editable Unity scenes")]
         public static void BakeAll()
         {
-            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if (!UnityEngine.Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
             string previous = SceneManager.GetActiveScene().path;
             try
