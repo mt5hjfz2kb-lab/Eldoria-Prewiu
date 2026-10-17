@@ -18,7 +18,7 @@ namespace Eldoria.ValoriaLayered.Editor
  public static class ValoriaTerrainRiverCliffV3Integration
  {
    const string Root="Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/";
-   const string Input=Root+"Valoria_SHARP_SemanticContact_IsolatedV1.unity";
+   const string Input=Root+"Valoria_SHARP_RiverCliffV2_CANDIDATE.unity";
    const string Output=Root+"Valoria_SHARP_RiverCliffV3_CANDIDATE.unity";
    const string Source=Root+"Sources/ValoriaTerrainRiverCliffV3.glb";
    const string Resources=Root+"GeneratedTerrainV3";
@@ -29,8 +29,8 @@ namespace Eldoria.ValoriaLayered.Editor
    static int resourceIndex;
    [Serializable] class InputManifest{
       public string source_glb_v3_sha256,original_v2_source_sha256;
-      public bool source_and_canonical_unmodified,original_collider_changes;
-      public int triangles,mesh_count;
+      public bool source_and_canonical_unmodified,original_collider_changes,seamless_at_bridge_endpoints;
+      public int triangles,source_mesh_count;
    }
    [Serializable] class Result{
       public string source_scene,candidate_scene,glb_sha256,visual_gate,gameplay_gate;
@@ -70,7 +70,7 @@ namespace Eldoria.ValoriaLayered.Editor
      Req(File.Exists(Source)&&File.Exists(manifestPath),"Missing edited V3 Blender source or lineage manifest");
      var meta=JsonUtility.FromJson<InputManifest>(File.ReadAllText(manifestPath));
      Req(meta.source_and_canonical_unmodified && !meta.original_collider_changes &&
-        meta.mesh_count>=8 && meta.triangles>=13000,"Source provenance/mesh checks missing");
+        meta.seamless_at_bridge_endpoints && meta.source_mesh_count==9 && meta.triangles>=10000,"Source provenance/mesh checks missing");
      using(var stream=File.OpenRead(Source))using(var hash=SHA256.Create()){
        string got=BitConverter.ToString(hash.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
        Req(got==meta.source_glb_v3_sha256,"Edited source SHA changed after Blender");
@@ -89,8 +89,17 @@ namespace Eldoria.ValoriaLayered.Editor
           .SingleOrDefault(t=>t.name.StartsWith("DIAGNOSTIC / native 3D rigid world-to-SHARP"));
      Req(frame!=null,"Previous source geometry calibration frame not found");
      Directory.CreateDirectory(Evidence);
+     // Capture the existing V2 untouched as the direct A/B baseline; then hide ONLY
+     // V2 art renderers. Keep original collision, gameplay identities and all source meshes.
+     var oldTerrain=UnityEngine.Object.FindObjectsByType<Transform>(
+       FindObjectsInactive.Include,FindObjectsSortMode.None)
+       .SingleOrDefault(t=>t.name=="LAYER V2 - EDITABLE TERRAIN/RIVER/CLIFF EXPERIMENT / ART NOT APPROVED");
+     Req(oldTerrain!=null,"Native V2 source baseline missing");
+     var oldRenderers=oldTerrain.GetComponentsInChildren<Renderer>(true);
+     Req(oldRenderers.Length==9,"Source V2 real renderers changed");
      Capture(camera,"terrain-v3-BEFORE-home",W,H);
      Capture(camera,"terrain-v3-BEFORE-portrait",390,844);
+     foreach(var renderer in oldRenderers)renderer.enabled=false;
      var gltf=new GltfImport(null,new UninterruptedDeferAgent());
      Req(await gltf.Load(new Uri(Path.GetFullPath(Source)).AbsoluteUri,
           new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=2}),
