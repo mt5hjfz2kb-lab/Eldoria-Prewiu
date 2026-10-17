@@ -2,7 +2,7 @@
   "role": "AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE",
   "art_approved": false,
   "new_model_downloads": 0,
-  "source_sha": "8cb5fb4a52a7d7ad5ff3dbd9f0d2b2dfa36e1614",
+  "source_sha": "ec6f8ed74fc78832459cdc7135427a3b0a6a3841",
   "installed_models": [
     "qwen3:14b",
     "qwen3-vl:8b-instruct-q4_K_M",
@@ -17,23 +17,23 @@
     },
     {
       "path": "playmode-home.png",
-      "sha256": "2fa4b7f1d08bd0b22372b9f89e91b029a7a0b5d50fd8f54659d64433cb8ff502"
+      "sha256": "c893d4319c88b0b3e4d86bf03d72e24f5137ba75ac096869bd775edca3c69578"
     },
     {
       "path": "detail-bastion.png",
-      "sha256": "0dc064efe4b4c105778effe33f61e90f35422241b76001becdb16399b5ba4eae"
+      "sha256": "8fd2a350dcc157f9623d198de77af0fc4074e298271efe20dac04ff8103b2fdb"
     },
     {
       "path": "detail-gate-bridge.png",
-      "sha256": "fc467d75db80d359335935f779943aa284acb17f51ccfff9a4f14e3d71e6a1ab"
+      "sha256": "6d6a3e89646ebbae2f4b316b5dafa69a86184972db9e31f05f7cb35561f213ed"
     }
   ],
   "native_scene_facts": {
-    "source_sha": "8cb5fb4a52a7d7ad5ff3dbd9f0d2b2dfa36e1614",
+    "source_sha": "ec6f8ed74fc78832459cdc7135427a3b0a6a3841",
     "directional_lights": 1,
     "native_terrain_resolution": 257,
-    "triangles": 541110,
-    "renderers": 30,
+    "triangles": 574552,
+    "renderers": 32,
     "source_roof_triangles": 31416,
     "source_bridge_geometry": {
       "method": "closed_profile_extrusion",
@@ -43,28 +43,28 @@
   },
   "status": "REAL_LOCAL_CRITIQUE_RECORDED",
   "model": "qwen3-vl:8b-instruct-q4_K_M",
-  "elapsed_seconds": 40.58,
+  "elapsed_seconds": 40.05,
   "review": {
     "visible_strengths": [
-      "The overall composition is well-balanced with a clear focal point (the main keep) and a logical flow from the bridge to the gate and keep.",
-      "The architecture proportions are generally consistent with medieval castle aesthetics, including the arched bridge and gatehouse.",
-      "The terrain and river integration are visually coherent, with natural-looking shorelines and vegetation placement."
+      "The overall composition is coherent, with the main keep, bridge, and four plots forming a recognizable medieval settlement layout.",
+      "The architecture proportions are generally consistent with the reference image, including the keep's height and the bridge's scale.",
+      "The terrain and vegetation are appropriately integrated, with the river flowing naturally and trees placed to suggest a forested environment."
     ],
     "highest_impact_defects": [
       {
-        "observation": "The player camera (Image 2) suffers from severe perspective distortion and low resolution, making the layout and architectural details illegible. The bridge appears unnaturally wide and the gatehouse is misaligned with the keep's perspective, creating a disjointed visual experience.",
-        "correction": "In Unity, use a camera with a higher resolution and a more appropriate field of view (e.g., 60-70 degrees) to preserve architectural fidelity. Ensure the camera is positioned to maintain correct perspective alignment with the main keep and bridge. Avoid using a camera that is too zoomed in or too far away without proper scaling."
+        "observation": "The bridge's arch is visually inconsistent with the rest of the structure. The arch appears too shallow and lacks the structural definition of a true arch, making it look like a simple flat span. This breaks the architectural integrity and reduces legibility.",
+        "correction": "In Unity, use a proper arch geometry for the bridge. Replace the current flat span with a true arch by adjusting the bridge's mesh to include a curved underside. Use a 'closed_profile_extrusion' method with a proper arch profile to ensure the arch is structurally and visually correct."
       },
       {
-        "observation": "The lighting and material separation are poor. The blue roof tiles and stone textures blend together under the single directional light, lacking distinct material boundaries. This reduces visual clarity and realism.",
-        "correction": "In Unity, increase the number of directional lights or use a more complex lighting setup (e.g., multiple point lights or a volumetric light) to enhance material separation. Adjust the material shaders to increase specular highlights and roughness to improve texture distinction. Use a higher resolution texture for the roof tiles to enhance detail."
+        "observation": "The lighting on the bridge and keep is inconsistent. The bridge's surface is overly bright and lacks the warm, directional lighting that illuminates the keep's walls and the river's surface. This creates a visual disconnect and reduces the scene's realism.",
+        "correction": "In Unity, adjust the directional light to cast consistent shadows and highlights across the entire scene. Ensure the light direction and intensity match the reference image. Use a light probe or additional spotlights to enhance the bridge's illumination without overexposing it."
       },
       {
-        "observation": "The vegetation and terrain integration is inconsistent. The trees are uniformly placed and lack natural variation in size and density, and the terrain appears overly flat with minimal elevation changes, reducing the sense of depth and realism.",
-        "correction": "In Unity, use a more varied vegetation system with randomized tree placement, scale, and rotation. Add subtle terrain elevation using a heightmap or displacement map to create natural undulations. Use a more detailed terrain shader to enhance the realism of the grass and soil textures."
+        "observation": "The material separation between the bridge and the surrounding terrain is poor. The bridge's stone texture blends too seamlessly with the ground, making it difficult to distinguish the bridge from the terrain. This reduces the scene's legibility and visual hierarchy.",
+        "correction": "In Unity, apply a distinct material to the bridge that contrasts with the terrain. Use a stone texture with a higher roughness value and a different color tint to make the bridge stand out. Add a subtle edge or highlight to the bridge's base to improve its separation from the ground."
       }
     ],
-    "reference_similarity_estimate_0_to_10": 6.5,
-    "uncertainty": "The player camera's perspective and resolution make it difficult to fully assess the architectural and material details. The lighting and vegetation are also affected by the camera's limitations, which may not be fully visible in the detail cameras."
+    "reference_similarity_estimate_0_to_10": 7.5,
+    "uncertainty": 0.1
   }
 }
