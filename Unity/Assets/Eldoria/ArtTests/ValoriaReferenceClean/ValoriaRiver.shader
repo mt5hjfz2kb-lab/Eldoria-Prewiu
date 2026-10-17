@@ -24,7 +24,7 @@ Shader "Eldoria/ReferenceClean/River" {
     float edge=abs(i.uv.y*2-1);float2 flow=i.world.xz*float2(.34,.57)+float2(-t*.07,t*.02);float n=noise21(flow)+noise21(flow*2.17)*.40+noise21(flow*5.23)*.16;half3 c=lerp(_BaseColor.rgb,_ShallowColor.rgb,saturate(edge*edge*.8+n*.20));c*=.80+n*.30;
     float3 normal=normalize(float3(w*.10,1,w2*.08));float3 view=GetWorldSpaceNormalizeViewDir(i.world);Light light=GetMainLight(TransformWorldToShadowCoord(i.world));
     float spec=pow(saturate(dot(normal,normalize(light.direction+view))),80);c+=light.color*spec*.22;
-    float ripple=pow(saturate(noise21(flow*7+float2(t*.1,0))),7)*.18;c+=ripple;c*=lerp(.60,1,light.shadowAttenuation);
+    float ripple=pow(saturate(noise21(flow*7+float2(t*.1,0))),7)*.075;c+=ripple;c*=lerp(.60,1,light.shadowAttenuation);
     float foam=smoothstep(.945,.995,edge+(noise21(flow*3)-.5)*.05)*smoothstep(.32,.72,noise21(flow*1.5));c=lerp(c,half3(.50,.70,.66),foam*.70);
     return half4(c,1);
    }

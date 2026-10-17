@@ -33,6 +33,13 @@ trim=mat('Carved limestone',(.41,.355,.275));mortar=mat('Recessed stone joints',
 blue=[mat('Blue slate %d'%i,(.014+i*.005,.045+i*.009,.11+i*.017),.62) for i in range(5)]
 cloth=mat('Royal blue cloth',(.018,.11,.45))
 soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.135+i*.023,.13+i*.023,.115+i*.022)) for i in range(5)]
+# Original low-contrast surface pigmentation is baked to packed raster maps for glTF.
+sy,sx=np.mgrid[0:256,0:256]/256;grng=np.random.default_rng(715)
+grain=grng.random((256,256));weather=.94+.065*np.sin(sx*19+np.sin(sy*11))+.045*np.sin(sy*31+sx*9)+grain*.045
+for material in stone+[trim]:
+ rgba=np.ones((256,256,4),dtype=np.float32);base=np.array(material.diffuse_color[:3]);rgba[:,:,:3]=weather[:,:,None]*base[None,None,:]
+ flecks=grain>.984;rgba[flecks,:3]*=.76
+ image=bpy.data.images.new(material.name+' original weathered albedo',width=256,height=256);image.pixels.foreach_set(rgba.reshape(-1));image.pack();node=material.node_tree.nodes.new('ShaderNodeTexImage');node.image=image;material.node_tree.links.new(node.outputs['Color'],material.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
 flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
 # Real baked texture detail from existing original project source; no external downloads.
 npath=os.path.join(ROOT,'art-source/valoria/production/lower-gate-family-v1/stone_grain_normal.png')
@@ -58,7 +65,7 @@ class Mesh:
   for X,Y,Z in [(-a,-b,-c),(-a,-b,c),(-a,b,-c),(-a,b,c),(a,-b,-c),(a,-b,c),(a,b,-c),(a,b,c)]:v.append((x+X*cos(angle)-Y*sin(angle),y+X*sin(angle)+Y*cos(angle),z+Z))
   self.add(v,[(0,4,6,2),(1,3,7,5),(0,1,5,4),(2,6,7,3),(0,2,3,1),(4,5,7,6)],m)
  def finish(self,bevel=.035):
-  me=bpy.data.meshes.new(self.n);me.from_pydata(self.v,[],self.f);me.update();bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free();o=bpy.data.objects.new(self.n,me);bpy.context.collection.objects.link(o)
+  me=bpy.data.meshes.new(self.n);me.from_pydata(self.v,[],self.f);me.update();bm=bmesh.new();bm.from_mesh(me);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free();o=bpy.data.objects.new(self.n,me);bpy.context.collection.objects.link(o)
   for m in self.ms:me.materials.append(m)
   for p,i in zip(me.polygons,self.mi):p.material_index=i
   # Explicit per-face metric UVs; no zero-UV inherited layers.
@@ -120,10 +127,12 @@ def portal(g,x,y,z,w,h):
 def roof(g,x,y,z,w,d,rise):
  # Thick gable roof with overlapping slate courses rather than a blue cuboid.
  for side in [-1,1]:
-  for row in range(9):
-   t0=row/9;t1=(row+1.12)/9;Y0=y+side*(d/2+.45)*(1-t0);Y1=y+side*(d/2+.45)*(1-t1);Z0=z+rise*t0;Z1=z+rise*t1
-   for col in range(18):
-    X0=x-w/2-.4+col*(w+.8)/18+.015;X1=X0+(w+.8)/18-.03
+  rows=max(4,round(d*1.15));cols=max(6,round(w*1.6))
+  for row in range(rows):
+   t0=row/rows;t1=min(1.025,(row+1.12)/rows);Y0=y+side*(d/2+.45)*(1-t0);Y1=y+side*(d/2+.45)*(1-t1);lift=random.uniform(-.016,.016);Z0=z+rise*t0+lift;Z1=z+rise*t1+lift
+   for col in range(cols+1):
+    X0=max(x-w/2-.4,x-w/2-.4+(col-.5*(row%2))*(w+.8)/cols)+.012;X1=min(x+w/2+.4,x-w/2-.4+(col+1-.5*(row%2))*(w+.8)/cols)-.012
+    if X1-X0<.03:continue
     v=[(X0,Y0,Z0),(X1,Y0,Z0),(X1,Y1,Z1),(X0,Y1,Z1),(X0,Y0,Z0-.13),(X1,Y0,Z0-.13),(X1,Y1,Z1-.13),(X0,Y1,Z1-.13)]
     g.add(v,[(0,1,2,3),(4,7,6,5),(0,4,5,1),(3,2,6,7),(0,3,7,4),(1,5,6,2)],random.choice(blue))
   # timber bargeboards along sloping gable silhouette
@@ -160,7 +169,7 @@ def torch(g,x,y,z):
 g=Mesh('Bastion_I');courses(g,0,32,.38,17,10,5.4);roof(g,0,32,5.9,17,10,3.1)
 # Gables close the two roof ends.
 for X in [-8.5,8.5]:g.add([(X,27,5.75),(X,37,5.75),(X,32,8.95)],[(0,1,2)],stone[3])
-courses(g,0,28.2,.38,4.8,4.4,10.3);crown(g,0,28.2,10.8,4.8,4.4)
+courses(g,0,28.2,.38,4.8,4.4,10.3);crown(g,0,28.2,10.8,4.8,4.4);roof(g,0,28.2,10.85,3.2,2.8,.65)
 for x in [-8.4,8.4]:courses(g,x,29.5,.38,3.5,5.2,6.8);crown(g,x,29.5,7.3,3.5,5.2);banner(g,x,26.75,6.6,1.15,2.5)
 # Deliberately narrow dark window with stone moulding on the main tower.
 g.box((0,25.89,7.8),(.8,.08,1.8),wood);arch(g,0,25.78,8.25,.4,.18,.2,trim,segments=7)
@@ -171,8 +180,16 @@ for X in [-4.8,4.8]:
 for X in [-5.8,5.8]:courses(g,X,26.7,1.5,.7,.8,3.7)
 # Entrance terrace and physically nested six stair treads.
 courses(g,0,25,.38,18,5,1.15)
+for row in range(7):
+ for col in range(22):
+  x=-8.85+(col+.5)*17.7/22;y=22.64+(row+.5)*4.7/7
+  g.box((x,y,1.565),(17.7/22-.025,4.7/7-.025,.075),random.choice(stone))
 for i in range(6):g.box((0,20.25+i*.46,.38+(i+1)*.095),(6.0,.49,(i+1)*.19),trim)
 for x in [-3.6,3.6]:courses(g,x,22,.38,1.2,3.4,.9);torch(g,x,22.9,1.3)
+for x in [-2.6,2.6]:
+ line(g,(x,25.7,2.7),(x,25.1,3.05),.08,iron);line(g,(x,25.1,2.95),(x,25.1,3.8),.10,wood)
+ for j in range(3):
+  a=j*2*pi/3;line(g,(x+.12*cos(a),25.1+.12*sin(a),3.7),(x+.035*cos(a+.4),25.1+.035*sin(a+.4),4.2),.09,flame)
 line(g,(0,28.2,11.35),(0,28.2,17),.075,wood);banner(g,1.2,28.2,16.6,2.4,1.5)
 bastion=g.finish();bastion.location.y=5.5
 # Reuse original gate geometry and original in-project procedural material sources.
@@ -272,7 +289,10 @@ for i,(x,y,size) in enumerate(rock_positions):
  faces=[tuple(range(segments-1,-1,-1)),tuple(3*segments+j for j in range(segments))]
  faces += [(ring*segments+j,ring*segments+(j+1)%segments,(ring+1)*segments+(j+1)%segments,(ring+1)*segments+j) for ring in range(3) for j in range(segments)]
  # Different tones on fracture planes give volume without a noisy texture stamp.
- for face in faces:crag.add(verts,[face],random.choice(rocks))
+ crag.add(verts,faces,rocks[2])
+ for material in rocks:
+  if material not in crag.ms:crag.ms.append(material)
+ crag.mi=[crag.ms.index(random.choice(rocks)) for face in faces]
  crag.finish(.045)
 # Grounded irregular stones around woodland and ruins give the open land scale cues.
 for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
@@ -307,7 +327,18 @@ for X,Y in [(-10,32),(10,32),(-10.8,35),(10.8,36),(-8,39),(8,39),(-6,29),(6,29),
   for k in range(3):
    cx=x+random.uniform(-.35,.35);cy=y+random.uniform(-.3,.3);cz=z+scale*.55+k*.13
    verts=[(cx+v.x*scale,cy+v.y*scale,cz+v.z*scale*.85) for v in iv]
-   for face in iff:sh.add(verts,[face],random.choice(leaf))
+   sh.add(verts,iff,random.choice(leaf))
+   for material in leaf:
+    if material not in sh.ms:sh.ms.append(material)
+   sh.mi[-len(iff):]=[sh.ms.index(random.choice(leaf)) for face in iff]
+# Sparse closed tapered reeds in shoreline pockets, not a uniform band.
+for side in [-1,1]:
+ for X in [-55,-34,-18,16,32,49]:
+  for j in range(8):
+   x=X+random.uniform(-1.2,1.2);y=river_center(x)+side*(river_width(x)+random.uniform(.7,1.6));z=terrain_height(x,y)-.05
+   h=random.uniform(.45,.95);a=random.random()*2*pi;r=.055
+   verts=[(x+r*cos(a+k*2*pi/3),y+r*sin(a+k*2*pi/3),z) for k in range(3)]+[(x+cos(a)*h*.3,y+sin(a)*h*.3,z+h)]
+   sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(leaf))
 # Sporadic low clumps break broad grass fields without invading the construction areas.
 for i in range(350):
  x=random.uniform(-60,60);y=random.uniform(-48,65)

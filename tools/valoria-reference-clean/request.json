@@ -1,10 +1,10 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 17,
+  "revision": 18,
   "budget_eur": 0,
-  "validated_runtime_source": "d102f3895b39918e4d5480a734a21ee8c497e114",
-  "validated_run": 39064889290,
+  "validated_runtime_source": "58f4c7d2f7011f659641e86dc92e6f4434394fce",
+  "validated_run": 39065831434,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Continue unfinished mission: replace parallel river banks and uniform rock rails with variable-width meandering banks and irregular boulder clusters; deepen existing pine foliage, warmer varied meadow, darker masonry, grounded foundation shrubs, organic flowing water. Same scene and camera. Observe real Unity before accepting."
+  "art_correction": "Inspect revision17 native render: natural bank distribution retained; repair disconnected-face normals on crags and shrubs, add isolated URP SSAO contact shadows with same-camera off diagnostic, packed original limestone weathering, staggered slate, central tower roof, paved terrace and door sconces. Preserve layout/camera; native PlayMode required."
 }
