@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-17T21:16:46.687Z",
+  "updated_at": "2026-10-17T21:33:35.653Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BRIDGE_APPROACH_AND_ARTISTIC_BANK_FINISHING",
-      "next": "Inspect native revision 27 bridge approach and real PlayMode continuity; continue riverbank art. Physical mobile device absence blocks physical profiling only.",
+      "phase": "REFERENCE_CLEAN_NATIVE_ART30_GATE_COLLISION_AND_HEADROOM_THEN_ANDROID_BUILD",
+      "next": "Inspect native30 shoreline geometry and solid gate/capsule clearance. Then compile isolated ARM64 Android APK using existing native project procedure; continue visual corrections if necessary. No physical device profiling or ART8 certificate claimed.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -90,9 +90,9 @@
         "canonical_save_touched": false,
         "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md",
         "reference_clean": {
-          "source_commit": "6706be67b15c5261e021e161a35519d249dc6251",
-          "output_commit": "0376d113c86111e082f7eb05dcffa9fe01622410",
-          "native_run": 39069411367,
+          "source_commit": "ec6f8ed74fc78832459cdc7135427a3b0a6a3841",
+          "output_commit": "1313b37bbfad134f3a257e0baf26c6c1fca69cb0",
+          "native_run": 39070960389,
           "native_run_result": "success",
           "scene": "Valoria_Reference_Clean.unity",
           "route_passes": 96,
@@ -101,21 +101,17 @@
           "active_scene_cameras": 1,
           "exceptions": 0,
           "canonical_save_untouched": true,
-          "art_triangles": 541670,
+          "art_triangles": 574552,
           "art_approved": false,
           "art_8_of_10_certified": false,
           "physical_android_devices": 0,
           "physical_mobile_profiled": false,
           "runner_released": false,
-          "last_inspected_source": "edaf817239565f6aafe7c6e2a01c6f514f6860fb",
-          "last_inspected_output": "431d67f4f526bac7477d2a68745ec28fa76755e6",
-          "last_inspected_run": 39066988473,
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
-          "playmode_visual_regression": "FIXED_REV23_AND_PNG_EDITOR_PLAY_PARITY_PASS_THROUGH_REV26",
-          "current_fix_source": "4124bcd6da297d06bbd4b22b72236daf6e0e0c15",
-          "current_run": 39070081590,
-          "current_source": "3d2c4c5f58967c9125c568374c6477eb2684ce71"
+          "playmode_visual_regression": "FIXED_REV23; NATIVE_PNG_EDITOR_PLAY_PARITY_PASS_THROUGH_REV29",
+          "current_run": 39071438210,
+          "current_source": "201d8aba0a21eda5a410a0b2132ffba75847a120"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
