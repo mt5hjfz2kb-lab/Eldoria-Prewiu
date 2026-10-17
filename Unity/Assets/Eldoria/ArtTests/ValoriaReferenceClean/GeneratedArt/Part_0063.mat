@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Meadow blade 2
+  m_Name: Meadow blade 0
   m_Shader: {fileID: -6465566751694194690, guid: b9d29dfa1474148e792ac720cbd45122, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -106,7 +106,7 @@ Material:
     - roughnessFactor: 0.8
     - transmissionFactor: 0
     m_Colors:
-    - baseColorFactor: {r: 0.35419902, g: 0.43534437, b: 0.1755816, a: 1}
+    - baseColorFactor: {r: 0.303532, g: 0.3885728, b: 0.14282566, a: 1}
     - baseColorTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
     - emissiveFactor: {r: 0, g: 0, b: 0, a: 1}
     - emissiveTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
@@ -115,7 +115,7 @@ Material:
     - occlusionTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &1983803180760120023
+--- !u!114 &1122621546901944751
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.ShaderGraph.Editor::UnityEditor.Rendering.BuiltIn.AssetVersion
   version: 0
---- !u!114 &5641768724664804049
+--- !u!114 &5319150275291117626
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

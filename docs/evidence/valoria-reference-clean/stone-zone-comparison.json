@@ -1,5 +1,5 @@
 {
-    "source_sha": "e39f77151ff08d2d8020d8286312376bb9e92dc6",
+    "source_sha": "6c1fbc14efc431d87f51b6656e6e26c3f5d3ab04",
     "scope": "Authored limestone material slots only; same geometry and original UV0 retained. Reused gate material stays fixed during this comparison.",
     "before_main_camera": "{\"position\":{\"x\":46.0,\"y\":77.0,\"z\":-104.0},\"rotation\":{\"x\":0.27516937255859377,\"y\":-0.16492974758148194,\"z\":0.04797792434692383,\"w\":0.9459271430969238},\"orthographic_size\":34.0,\"aspect\":1.3333333730697632}",
     "after_main_camera": "{\"position\":{\"x\":46.0,\"y\":77.0,\"z\":-104.0},\"rotation\":{\"x\":0.27516937255859377,\"y\":-0.16492974758148194,\"z\":0.04797792434692383,\"w\":0.9459271430969238},\"orthographic_size\":34.0,\"aspect\":1.3333333730697632}",

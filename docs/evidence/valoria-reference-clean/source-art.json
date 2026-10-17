@@ -1,5 +1,5 @@
 {
-  "source_sha": "e39f77151ff08d2d8020d8286312376bb9e92dc6",
+  "source_sha": "6c1fbc14efc431d87f51b6656e6e26c3f5d3ab04",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -38,6 +38,16 @@
     "original_uv0_preserved": true,
     "new_uv_channel": "ScannedStoneUV",
     "lighting_changed": false
+  },
+  "canopy_trial": {
+    "modified_trees": 4,
+    "bounds_preserved": true,
+    "zone": "right foreground trees only"
+  },
+  "rock_surface": {
+    "asset": "rock_3",
+    "method": "post-sculpt Smart UV physical scale",
+    "all_banks": true
   },
   "external_downloads": [
     {
@@ -156,7 +166,7 @@
   ],
   "art_approved": false,
   "per_mesh_triangles": {
-    "Bastion_I": 132320,
+    "Bastion_I": 132304,
     "Gate_LowerGate_WestWing": 726,
     "Gate_LowerGate_WestTower": 4419,
     "Gate_LowerGate_EastWing": 726,
@@ -180,17 +190,17 @@
     "Ruin_-25_0": 10824,
     "Ruin_46_-1": 21076,
     "Fir_tree_group": 136986,
-    "River_bank_rocks": 25330,
+    "River_bank_rocks": 67582,
     "Woodland_ground_rocks": 3600,
     "Shrub_group": 20700,
     "Foundation_shrubs_and_groundcover": 17040,
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
     "Meadow_tufts_east": 12780,
-    "River_shore_foam": 1162
+    "River_shore_foam": 2192
   },
   "mesh_objects": 32,
-  "triangles": 585852,
-  "blend_sha256": "db8f59e8de3c080e0123e0d416804351ee5d12597722051b1a25c66f9793ac99",
-  "glb_sha256": "a7c4cc0b29bdf6d658d66526db73a24649d3b41191c642811e4776e6c74cd098"
+  "triangles": 629118,
+  "blend_sha256": "351152f710ce585912fd9d1b623c107b732902b294cc23c52755244c6b803e32",
+  "glb_sha256": "575842c6bec46847a9c809e787306970373f83e2c8282398e9bc83829f3d97e4"
 }
