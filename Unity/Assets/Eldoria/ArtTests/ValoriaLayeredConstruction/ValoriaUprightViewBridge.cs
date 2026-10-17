@@ -15,6 +15,10 @@ namespace Eldoria.ValoriaLayered {
       NativeRotation*CanonicalInput.transform.rotation);
    RenderCamera.fieldOfView=CanonicalInput.fieldOfView;
    RenderCamera.orthographic=false;
+   // Existing SlicePresenter reads this camera for projection/picking while its
+   // transform continues to hold canonical pan input coordinates.
+   CanonicalInput.aspect=RenderCamera.aspect;
+   CanonicalInput.worldToCameraMatrix=RenderCamera.worldToCameraMatrix;
   }
   void LateUpdate(){Sync();}
  }
