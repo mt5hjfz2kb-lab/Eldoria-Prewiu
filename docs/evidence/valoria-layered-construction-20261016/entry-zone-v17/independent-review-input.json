@@ -1,0 +1,39 @@
+{
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "prompt_sha256": "49f1785de8118e18dd4dece9e4e16a76e47fcf6b8d52474aabf6b636fcbb4182",
+  "images": [
+    {
+      "path": "references\\VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+      "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689"
+    },
+    {
+      "path": "docs\\evidence\\valoria-layered-construction-20261016\\entry-zone-v17\\entry-BEFORE-home.png",
+      "sha256": "b2c0824d33ccf8c7efdb671afab7bd1e695fcf46d44562c555143e200142cafd"
+    },
+    {
+      "path": "docs\\evidence\\valoria-layered-construction-20261016\\entry-zone-v17\\entry-AFTER-home.png",
+      "sha256": "94d11f97daba5367946332d4fb7e77665a6f11b4e163ad469be44e1b25f58f56"
+    },
+    {
+      "path": "docs\\evidence\\valoria-layered-construction-20261016\\entry-zone-v17\\source-source08-material-threequarter.png",
+      "sha256": "244e2da220785a5cc11bb6426e35c2366b4b1ac219737caf510c31cda844ffa4"
+    }
+  ],
+  "visible_pixel_difference": {
+    "comparison": "V13 versus V17 real Unity same HOME-camera BEFORE and AFTER 1536x1024; source unchanged except restored Bastion material roles; threshold sum abs RGB >= 30/255",
+    "before_png_sha256": "b2c0824d33ccf8c7efdb671afab7bd1e695fcf46d44562c555143e200142cafd",
+    "after_png_sha256": "94d11f97daba5367946332d4fb7e77665a6f11b4e163ad469be44e1b25f58f56",
+    "pixels_changed": 19054,
+    "pixels_changed_upper": 19054,
+    "pixels_changed_bastion_reference_roi": 19054,
+    "pixels_changed_outside_reference_roi": 0,
+    "pixel_bbox_yx": [
+      799,
+      745,
+      910,
+      1143
+    ],
+    "color_change_is_not_artistic_quality": true,
+    "art_approved": false
+  }
+}

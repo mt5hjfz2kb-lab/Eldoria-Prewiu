@@ -1,0 +1,54 @@
+{
+  "role": "INDEPENDENT_LOCAL_VISUAL_CRITIQUE_AND_GENUINE_UNITY_DIFF_V17",
+  "automatic_art_approval": false,
+  "new_models_downloaded": false,
+  "candidate": "V17",
+  "baseline": "V13",
+  "genuine_unity_pixel_diff": {
+    "comparison": "V13 versus V17 real Unity same HOME-camera BEFORE and AFTER 1536x1024; source unchanged except restored Bastion material roles; threshold sum abs RGB >= 30/255",
+    "before_png_sha256": "b2c0824d33ccf8c7efdb671afab7bd1e695fcf46d44562c555143e200142cafd",
+    "after_png_sha256": "94d11f97daba5367946332d4fb7e77665a6f11b4e163ad469be44e1b25f58f56",
+    "pixels_changed": 19054,
+    "pixels_changed_upper": 19054,
+    "pixels_changed_bastion_reference_roi": 19054,
+    "pixels_changed_outside_reference_roi": 0,
+    "pixel_bbox_yx": [
+      799,
+      745,
+      910,
+      1143
+    ],
+    "color_change_is_not_artistic_quality": true,
+    "art_approved": false
+  },
+  "status": "REAL_LOCAL_MODEL_CRITIQUE_RECORDED",
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "elapsed_seconds": 42.08,
+  "review": {
+    "verdict": "NO_VISIBLE_IMPROVEMENT",
+    "scores_v13": {
+      "geometry_silhouette": 7,
+      "architecture_contact": 6,
+      "materials_detail": 4,
+      "Valoria_style": 6,
+      "gameplay_readability": 7
+    },
+    "scores_v17": {
+      "geometry_silhouette": 7,
+      "architecture_contact": 6,
+      "materials_detail": 4,
+      "Valoria_style": 6,
+      "gameplay_readability": 7
+    },
+    "positives": [],
+    "regressions": [],
+    "outstanding_defects": [
+      "Materials on the upper Bastion remain flat and lack the nuanced lighting and texture variation of the approved target. The blue/gold flags appear as flat, low-poly decals with no surface detail or material hierarchy.",
+      "The lower fortification and upper Bastion do not visually harmonize; the upper section appears as a generic blockout with no architectural integration or lighting consistency with the lower section.",
+      "The entire scene suffers from excessive flatness and a lack of premium-authored architectural detail. The ground plane is uniformly green with no terrain variation or vegetation hierarchy.",
+      "The lighting is generic and does not create believable shadows or highlights on the stone and wood materials. The materials look like plastic or low-resolution textures."
+    ],
+    "next_artistic_modelling_action": "Reassign materials to the upper Bastion using the approved target's material hierarchy. Add architectural detail to the upper Bastion to harmonize with the lower fortification. Improve lighting to create believable shadows and highlights. Add terrain variation and vegetation hierarchy to the ground plane.",
+    "uncertainty": "The materials on the upper Bastion are not visibly improved from the approved target. The geometry and camera are unchanged. The materials remain flat and lack the nuanced lighting and texture variation of the approved target."
+  }
+}
