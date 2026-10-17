@@ -1,0 +1,92 @@
+name: "[VALORIA] Recover genuine V3 Unity native evidence without rerunning heavy build"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - ".github/workflows/valoria-v3-recover-native-artifact.yml"
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-v3-native-evidence-reconciliation-only
+  cancel-in-progress: false
+jobs:
+  recover-existing-successful-native-result:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reuse PREVIOUS exact V3 native Unity result (no runner, no Blender)
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 39020795868
+          name: valoria-real-sharp-terrain-v3-native-39020795868
+          github-token: ${{ github.token }}
+          path: _recover_valoria_v3
+      - name: Verify artifact lineage, real Unity outputs, 0.38m support and immutable scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          root=pathlib.Path('_recover_valoria_v3')
+          ev=root/'docs/evidence/valoria-layered-construction-20261016/terrain-v3'
+          art=ev/'ValoriaTerrainRiverCliffV3-manifest.json'
+          native=ev/'terrain-v3-native.json'
+          assert art.is_file() and native.is_file()
+          a=json.loads(art.read_text());n=json.loads(native.read_text())
+          def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+          assert a['source_and_canonical_unmodified'] and not a['original_collider_changes']
+          assert a['seamless_at_bridge_endpoints'] and a['source_mesh_count']==9
+          assert a['shore_world_heights_y']=={'-19.65':a['shore_world_heights_y']['-19.65'],'-9.35':a['shore_world_heights_y']['-9.35']}
+          assert all(abs(h-0.38)<1e-6 for h in a['shore_world_heights_y'].values())
+          assert a['source_blend_v3_sha256']==sha(ev/'ValoriaTerrainRiverCliffV3.blend')
+          assert a['source_glb_v3_sha256']==sha(ev/'ValoriaTerrainRiverCliffV3.glb')
+          assert n['glb_sha256']==a['source_glb_v3_sha256']
+          assert n['all_semantic_clicks']==7 and n['stair_treads_untouched']==12
+          assert n['colliders_unchanged'] and n['actual_player_camera_unchanged']
+          assert not n['canonical_modified'] and n['visual_gate']=='PENDING_ACTUAL_AB_INSPECTION'
+          required=['terrain-v3-BEFORE-home.png','terrain-v3-AFTER-home.png',
+             'terrain-v3-BEFORE-portrait.png','terrain-v3-AFTER-portrait.png',
+             'terrain-v3-AFTER-pan-left.png','terrain-v3-AFTER-pan-right.png',
+             'terrain-v3-AFTER-zoom-in.png','terrain-v3-AFTER-zoom-out.png']
+          assert all((ev/x).stat().st_size>10000 for x in required)
+          scene=root/'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity'
+          prefab=root/'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3/ValoriaTerrainRiverCliffV3.prefab'
+          assert scene.stat().st_size>20000 and prefab.stat().st_size>1000
+          print('VALORIA_V3_EXISTING_NATIVE_RESULT_VERIFIED; ART NOT APPROVED; original/canonical unchanged')
+          PY
+      - name: Import only OWN isolated authored source, prefab, scene and true A/B captures
+        shell: bash
+        run: |
+          set -euo pipefail
+          ev=docs/evidence/valoria-layered-construction-20261016/terrain-v3
+          art=Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction
+          mkdir -p "$ev" "$art/GeneratedTerrainV3"
+          cp -a "_recover_valoria_v3/$ev/." "$ev/"
+          cp -a "_recover_valoria_v3/$art/GeneratedTerrainV3/." "$art/GeneratedTerrainV3/"
+          cp -a "_recover_valoria_v3/$art/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity" "$art/"
+          test -f "$art/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity"
+          test -f "$art/Valoria_SHARP_SemanticContact_IsolatedV1.unity"
+          echo "VALORIA_V3_EXPERIMENT_RESTORED_WITHOUT_TOUCHING_CANONICAL_SCENE"
+      - name: Reconcile V3 native artifact to current exclusive branch without force or rebuilding
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Valoria V3 Native Evidence Recovery"
+          git config user.email "valoria-v3-recovery@users.noreply.github.com"
+          ev=docs/evidence/valoria-layered-construction-20261016/terrain-v3
+          art=Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction
+          git add -f -- "$ev/" "$art/GeneratedTerrainV3/" "$art/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity"
+          git diff --cached --quiet && { echo "Evidence already reconciled"; exit 0; }
+          git commit -m "evidence(valoria): recover original real V3 Blender/Unity visual A-B and independent scene"
+          git fetch origin construction/valoria-master-plan-layers-20261016
+          if test "$(git rev-parse HEAD^)" != "$(git rev-parse origin/construction/valoria-master-plan-layers-20261016)"; then
+            git rebase origin/construction/valoria-master-plan-layers-20261016 || {
+              git rebase --abort
+              echo "Concurrent editor collision: do not overwrite"; exit 1;
+            }
+          fi
+          git push origin HEAD:construction/valoria-master-plan-layers-20261016
