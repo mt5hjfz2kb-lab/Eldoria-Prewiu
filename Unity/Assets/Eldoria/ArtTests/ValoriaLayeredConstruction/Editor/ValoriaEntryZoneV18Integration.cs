@@ -24,7 +24,8 @@ namespace Eldoria.ValoriaLayered.Editor {
   static void Picture(string name,int w=1536,int h=1024){
    var prev=camera.targetTexture;var active=RenderTexture.active;float aspect=camera.aspect;
    var rt=new RenderTexture(w,h,24){antiAliasing=4};var tex=new Texture2D(w,h,TextureFormat.RGB24,false);
-   try{camera.aspect=(float)w/h;camera.targetTexture=rt;camera.Render();camera.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,w,h),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name+".png"),tex.EncodeToPNG());}
+   try{camera.aspect=(float)w/h;camera.targetTexture=rt;camera.Render();camera.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,w,h),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name+".png"),tex.EncodeToPNG());
+    if(name=="entry-BEFORE-home"||name=="entry-AFTER-home"||name=="entry-AFTER-zoom-in"||name=="entry-AFTER-portrait")File.WriteAllBytes(Path.Combine(Ev,name+".jpg"),tex.EncodeToJPG(91));}
    finally{camera.targetTexture=prev;camera.aspect=aspect;RenderTexture.active=active;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(tex);}
   }
   static async Task<GameObject> Import(string path,Transform parent,string name){
