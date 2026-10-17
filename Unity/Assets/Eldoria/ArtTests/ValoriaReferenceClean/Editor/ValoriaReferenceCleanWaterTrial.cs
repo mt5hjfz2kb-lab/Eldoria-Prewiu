@@ -7,7 +7,7 @@ public static class ValoriaReferenceCleanWaterTrial {
  static string Stamp(Camera c)=>c.transform.position.ToString("R")+c.transform.rotation.ToString("R")+c.orthographicSize+"/"+c.aspect;
  public static void Capture(Camera cam,Renderer water,Light sun){
   if(!File.ReadAllText("../tools/valoria-reference-clean/request.json").Contains("\"water_treatment\": \"flow_surface\""))return;
-  var shader=Shader.Find("Eldoria/ReferenceClean/Comparison/RiverBefore");if(!shader)throw new Exception("Baseline river shader missing");var before=new Material(shader);before.color=new Color(.018f,.25f,.38f);var after=water.sharedMaterial;
+  var shader=Shader.Find("Eldoria/ReferenceClean/Comparison/RiverBefore");if(!shader)throw new Exception("Baseline river shader missing");var before=new Material(shader);before.color=new Color(.030f,.34f,.57f);var after=water.sharedMaterial;
   var ev=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));var pos=cam.transform.position;var rot=cam.transform.rotation;var zoom=cam.orthographicSize;var home=Stamp(cam);var light=sun.transform.rotation.ToString("R")+sun.color.ToString("R")+sun.intensity;var mesh=water.GetComponent<MeshFilter>().sharedMesh.GetInstanceID();
   try{
    water.sharedMaterial=before;ValoriaReferenceCleanBuilder.Capture(cam,ev+"/water-before-main.png",1448,1086);cam.orthographicSize=17;cam.transform.position=new Vector3(25,25,-48);cam.transform.LookAt(new Vector3(-3,0,-20));var close=Stamp(cam);ValoriaReferenceCleanBuilder.Capture(cam,ev+"/water-before-detail.png",1448,1086);

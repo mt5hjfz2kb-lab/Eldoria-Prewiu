@@ -4,6 +4,7 @@ Design: compact blue-gabled keep, lower access gate, two-arch bridge, four empty
 """
 import bpy, bmesh, math, os, json, random, hashlib, urllib.request, socket, numpy as np
 from mathutils import Vector,Matrix
+from mathutils.bvhtree import BVHTree
 from math import sin,cos,pi
 random.seed(817)
 def smoothstep(a,b,v):
@@ -37,8 +38,22 @@ except Exception as e:tools['ollama_error']=str(e)
 try:
  with socket.create_connection(('127.0.0.1',9876),timeout=2):tools['blendermcp_socket']='TCP_REACHABLE_NOT_PROTOCOL_VALIDATED'
 except Exception as e:tools['blendermcp_error']=str(e)
+# Read-only discovery inside this already-authorized artistic job; never enable an addon.
+import addon_utils
+try:
+ modules=[m for m in addon_utils.modules() if 'mcp' in m.__name__.lower()]
+ tools['blendermcp_addons']=[{'module':m.__name__,'path':m.__file__,'loaded':addon_utils.check(m.__name__)[1],'sha256':hashlib.sha256(open(m.__file__,'rb').read()).hexdigest()} for m in modules if m.__file__ and os.path.isfile(m.__file__)]
+ tools['execution_scope']={'isolated_scene':True,'exclusive_lease_checked_by_workflow':True,'transport':'native reviewed bpy recipe','arbitrary_model_python':False,'addon_enabled_or_installed_by_job':False,'mcp_required_for_this_surface_operation':False}
+except Exception as e:tools['blendermcp_addon_discovery_error']=str(e)
 json.dump(tools,open(os.path.join(EV,'native-tool-check.json'),'w'),indent=2)
 bpy.ops.wm.read_factory_settings(use_empty=True)
+# Authored periodic normal/height surface: two animated sampling scales in Unity.
+N=512;fy,fx=np.mgrid[0:N,0:N]/N
+wave_height=.50*np.sin(2*pi*(3*fx+fy)+.8*np.sin(2*pi*(fx+2*fy)))+.28*np.sin(2*pi*(-2*fx+5*fy)+1.3)+.15*np.sin(2*pi*(7*fx+3*fy)+.7)+.07*np.sin(2*pi*(4*fx-9*fy)+2.1)
+dx=(np.roll(wave_height,1,axis=1)-np.roll(wave_height,-1,axis=1))*8;dy=(np.roll(wave_height,1,axis=0)-np.roll(wave_height,-1,axis=0))*8;length=np.sqrt(dx*dx+dy*dy+1)
+wave_pixels=np.ones((N,N,4),dtype=np.float32);wave_pixels[:,:,0]=dx/length*.5+.5;wave_pixels[:,:,1]=dy/length*.5+.5;wave_pixels[:,:,2]=(wave_height-wave_height.min())/(wave_height.max()-wave_height.min())
+wave=bpy.data.images.new('Valoria authored periodic flow normal and height',width=N,height=N);wave.colorspace_settings.name='Non-Color';wave.pixels.foreach_set(wave_pixels.reshape(-1));wave.use_fake_user=True
+wave.filepath_raw=os.path.join(OUT,'MaterialInputs','ValoriaFlowNormal.png');os.makedirs(os.path.dirname(wave.filepath_raw),exist_ok=True);wave.file_format='PNG';wave.save();wave.pack()
 def mat(n,c,rough=.8,metal=0):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;return m
 stone=[mat('Warm limestone %d'%i,(.265+i*.020,.235+i*.018,.185+i*.016)) for i in range(6)]
@@ -427,6 +442,30 @@ for material in tree.data.materials:
   pixels=np.array(im.pixels[:],dtype=np.float32).reshape((-1,4));pixels[:,:3]*=np.array([.40,.61,.37]);im.pixels.foreach_set(pixels.reshape(-1));im.pack();node.image=im
 # Representative canopy shading uses real mesh normals, not a global color filter.
 canopy_count=0
+canopy_ao_loops=0
+# Neutral colors on every instance prevent missing attributes becoming black on join.
+neutral=tree.data.color_attributes.new(name='CanopyAO',type='BYTE_COLOR',domain='CORNER')
+for item in neutral.data:item.color=(1,1,1,1)
+def bake_canopy_ao(o):
+ global canopy_ao_loops
+ me=o.data;me.update();leaf_indices=[i for i,m in enumerate(me.materials) if m and any(k in m.name.lower() for k in ['leaf','leav','needle'])]
+ if not leaf_indices:leaf_indices=[i for i,m in enumerate(me.materials) if m and not any(k in m.name.lower() for k in ['bark','trunk','wood'])]
+ bvh=BVHTree.FromPolygons([v.co.copy() for v in me.vertices],[tuple(f.vertices) for f in me.polygons],all_triangles=False)
+ rays=[Vector(v).normalized() for v in [(0,0,1),(.6,0,.8),(-.6,0,.8),(0,.6,.8),(0,-.6,.8),(.45,.45,.8),(-.45,.45,.8),(.45,-.45,.8)]]
+ colors=me.color_attributes.get('CanopyAO');cached={}
+ for face in me.polygons:
+  if face.material_index not in leaf_indices:continue
+  for li in face.loop_indices:
+   vi=me.loops[li].vertex_index
+   if vi not in cached:
+    vertex=me.vertices[vi];opened=0
+    for direction in rays:
+     origin=vertex.co+vertex.normal*height*.001+direction*height*.0005
+     if bvh.ray_cast(origin,direction,height*.22)[0] is None:opened+=1
+    radial=min(1,math.hypot(vertex.co.x,vertex.co.y)/max(.01,height*.28));tone=.62+.32*opened/len(rays)+.06*radial
+    cached[vi]=(tone*.98,tone,tone*.99,1)
+   colors.data[li].color=cached[vi];canopy_ao_loops+=1
+ assert cached, 'No actual leaf surface received baked canopy occlusion'
 def soften_canopy(o):
  global canopy_count
  before=[(min(v.co[i] for v in o.data.vertices),max(v.co[i] for v in o.data.vertices)) for i in range(3)]
@@ -442,7 +481,7 @@ def soften_canopy(o):
  canopy_count+=1
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
- if request.get('tree_treatment')=='canopy_zone' and 15<=x<=27 and y<-35:soften_canopy(o)
+ if request.get('tree_treatment')=='canopy_ao_zone' and 15<=x<=27 and y<-35:soften_canopy(o);bake_canopy_ao(o)
 for idx,(x,y) in enumerate([(-10,18),(8,14),(-13,34),(14,38)]):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_Sapling_%02d'%idx;o.location=(x,y,.3);sc=(2.7+random.random()*.8)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
  bpy.context.view_layer.objects.active=o;mod=o.modifiers.new('Sapling strategic LOD','DECIMATE');mod.ratio=.42;bpy.ops.object.modifier_apply(modifier=mod.name)
@@ -663,7 +702,18 @@ for o in bpy.context.scene.objects:
       except Exception:pass
 bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
-bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
+color_options={}
+export_properties=bpy.ops.export_scene.gltf.get_rna_type().properties
+if 'export_vertex_color' in export_properties:
+ modes=[item.identifier for item in export_properties['export_vertex_color'].enum_items]
+ if 'ACTIVE' in modes:color_options['export_vertex_color']='ACTIVE'
+if 'export_all_vertex_colors' in export_properties:color_options['export_all_vertex_colors']=True
+bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT',**color_options)
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'bounds_preserved':True,'zone':'right foreground trees only'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+import struct
+with open(os.path.join(OUT,'Valoria_Reference_Clean.glb'),'rb') as f:
+ f.seek(12);chunk_length=struct.unpack('<I',f.read(4))[0];f.read(4);exported=json.loads(f.read(chunk_length))
+fir_nodes=[n for n in exported.get('nodes',[]) if n.get('name','').startswith('Fir_tree_group')]
+assert fir_nodes and any('COLOR_0' in primitive['attributes'] for node in fir_nodes for primitive in exported['meshes'][node['mesh']]['primitives']), 'Canopy vertex colors did not reach the GLB'
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'baked_ao_loops':canopy_ao_loops,'bounds_preserved':True,'zone':'right foreground trees only','method':'BVH hemisphere visibility baked into neutral-by-default vertex colors; no added triangles'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

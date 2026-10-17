@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-10-17",
+  "verified_at": "2026-10-18",
   "cost_eur": 0,
   "new_downloads": 11,
   "assets": [
@@ -32,7 +32,7 @@
       "changes": "Existing atlas reused for grass detail, rotated broad-scale meadow and loam, generated matching terrain normal; no external downloads"
     },
     {
-      "name": "Bastion, arched bridge, paving, plots, broken wall corners, closed lofted bank crags, original weathered masonry, grass clumps, river and rock-intersection foam shaders",
+      "name": "Bastion, arched bridge, paving, plots, broken wall corners, closed lofted bank crags, original weathered masonry, grass clumps, river and rock-intersection foam shaders, closed lofted orange/gold flames, authored periodic flow normal-height texture",
       "author": "Codex reference-directed new Eldoria authored sources",
       "external_assets": []
     },
@@ -43,7 +43,7 @@
       "license_url": "https://polyhaven.com/license",
       "asset_url": "https://polyhaven.com/a/sandstone_blocks_05",
       "source_manifest": "tools/valoria-reference-clean/stone-inputs.json",
-      "changes": "Only right Bastion flank; per-stone crop UV1, original UV0 retained for genuine same-camera/light Unity A/B; original raw 1k files retained. Not globally extended before visual inspection."
+      "changes": "Raw1k inputs retained; graded low-contrast limestone at runtime512, original UV0 preserved and new stone crop UV1. Matched Unity studies35/36 inspected before extending to keep, gate, bridge and ruins37."
     },
     {
       "name": "leafy_grass representative ground study",
@@ -52,7 +52,7 @@
       "license_url": "https://polyhaven.com/license",
       "asset_url": "https://polyhaven.com/a/leafy_grass",
       "source_manifest": "tools/valoria-reference-clean/ground-inputs.json",
-      "changes": "Bounded terrain material sample; albedo/normal maps at max1k, no terrain height changes; matched native Unity A/B required. Raw sources retained."
+      "changes": "Raw1k inputs retained; matched bounded Unity studies36/37 inspected and corrected before four-layer terrain extension38/39; organic olive/gold meadow and bare soil, unchanged terrain heights."
     },
     {
       "name": "sparse_grass representative ground study",
@@ -61,17 +61,7 @@
       "license_url": "https://polyhaven.com/license",
       "asset_url": "https://polyhaven.com/a/sparse_grass",
       "source_manifest": "tools/valoria-reference-clean/ground-inputs.json",
-      "changes": "Bounded terrain material sample; albedo/normal maps at max1k, no terrain height changes; matched native Unity A/B required. Raw sources retained."
-    },
-    {
-      "name": "Recovered mineral surface for bounded boulder sculpture",
-      "original_author": "Poly Haven rock_face_02",
-      "license": "CC0-1.0",
-      "license_url": "https://polyhaven.com/license",
-      "asset_url": "https://polyhaven.com/a/rock_face_02",
-      "existing_source": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb",
-      "sha256": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae",
-      "changes": "Only material images recovered and cropped onto closed, sculpted Eldoria boulders. No open scan geometry reused; no new download. Native same-camera/light A-B required."
+      "changes": "Raw1k inputs retained; matched bounded Unity studies36/37 inspected and corrected before four-layer terrain extension38/39; organic olive/gold meadow and bare soil, unchanged terrain heights."
     },
     {
       "name": "Seamless mineral surface for post-sculpt UV study",
@@ -80,7 +70,7 @@
       "license_url": "https://polyhaven.com/license",
       "asset_url": "https://polyhaven.com/a/rock_3",
       "source_manifest": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/license-manifest.json",
-      "changes": "1k albedo/GL normal/roughness, official MD5 verified and SHA256 pinned, raw inputs retained. Smart UV projection after real Blender closed-boulder sculpture; physically scaled seamless mapping. Native same-camera trial before extension."
+      "changes": "Raw1k albedo/GL normal/roughness with official MD5 and pinned SHA256 retained. Closed Blender sculpted boulders, Smart UV after deformation, physical scale; bounded Unity39 accepted before bank-wide extension40. Runtime normals/roughness512."
     }
   ],
   "not_certified": {
@@ -90,7 +80,7 @@
   "rejected_candidates": [
     {
       "asset": "Open rock_face_02 scan fitted as river boulders",
-      "reason": "Open scan geometry rejected as repeated sheets; remains rejected. Revision38 recovers only verified CC0 surface images from the existing donor for new closed boulder meshes."
+      "reason": "Open scan sheets rejected. Existing rock_face_02 atlas-only trial38 also rejected for visible distortion; neither is used in current scene."
     },
     {
       "asset": "Unique rock_face_02 atlas crops on new closed boulders, revision38",
