@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "camera_authority": "ValoriaParcelPresentation.Home(), SHARP perspective",
+  "camera_fov_degrees": 44.42281,
+  "camera_identity_pose": true,
+  "aspect_ratio": 1.455621301775148,
+  "source_data": [
+    "certified-legacy-skeleton.json",
+    "BridgeLevelAccessV1-manifest.json",
+    "production-slice-evidence.json"
+  ],
+  "excluded_unmatched_semantics": [
+    "UpperWalls",
+    "TerrainCliffSupport"
+  ],
+  "world_layout_modification": false,
+  "rigid_transform_scale": 1,
+  "global_fit": {
+    "quaternion_xyzw": [
+      -0.2131735888095783,
+      0.11960948466978771,
+      -0.023283500225818245,
+      0.9693856151337852
+    ],
+    "translation_xyz": [
+      0.7078953089423574,
+      1.7408091500415828,
+      23.467500846546958
+    ],
+    "world_canonical_coordinate_method": "R(world)*1 + T, Unity +Z perspective, FOV 44.42281",
+    "max_residual_px": 81.023,
+    "rms_residual_px": 57.386,
+    "anchors": [
+      {
+        "id": "Bridge",
+        "legacy_world_xyz": [
+          0.0,
+          0.38,
+          -14.5
+        ],
+        "sharp_approved_normalized": [
+          0.288618,
+          0.1005919
+        ],
+        "fitted_viewport": [
+          0.276485253274506,
+          0.05553040134356335
+        ],
+        "residual_px": 40.897
+      },
+      {
+        "id": "LowerGate",
+        "legacy_world_xyz": [
+          0.0,
+          1.05,
+          -9.25
+        ],
+        "sharp_approved_normalized": [
+          0.394309,
+          0.319527
+        ],
+        "fitted_viewport": [
+          0.4132314033071323,
+          0.41137120632287405
+        ],
+        "residual_px": 81.023
+      },
+      {
+        "id": "MainRoad",
+        "legacy_world_xyz": [
+          0.0,
+          0.3,
+          -3.0
+        ],
+        "sharp_approved_normalized": [
+          0.46748,
+          0.508876
+        ],
+        "fitted_viewport": [
+          0.4992145507278273,
+          0.5467345203994312
+        ],
+        "residual_px": 50.468
+      },
+      {
+        "id": "CentralStair",
+        "legacy_world_xyz": [
+          0.0,
+          1.38,
+          3.0100000000000002
+        ],
+        "sharp_approved_normalized": [
+          0.534959,
+          0.673373
+        ],
+        "fitted_viewport": [
+          0.5470258350023125,
+          0.7023845282640488
+        ],
+        "residual_px": 28.658
+      },
+      {
+        "id": "Bastion",
+        "legacy_world_xyz": [
+          0.0,
+          3.0,
+          7.25
+        ],
+        "sharp_approved_normalized": [
+          0.604878,
+          0.842604
+        ],
+        "fitted_viewport": [
+          0.5718874861299882,
+          0.817788454628592
+        ],
+        "residual_px": 45.676
+      },
+      {
+        "id": "LeftCabinParcel",
+        "legacy_world_xyz": [
+          -7.0,
+          0.31,
+          -2.8
+        ],
+        "sharp_approved_normalized": [
+          0.203252,
+          0.627219
+        ],
+        "fitted_viewport": [
+          0.24630488317365812,
+          0.584831668474567
+        ],
+        "residual_px": 63.931
+      },
+      {
+        "id": "RightCampParcel",
+        "legacy_world_xyz": [
+          7.0,
+          0.31,
+          -4.0
+        ],
+        "sharp_approved_normalized": [
+          0.8536589,
+          0.519527
+        ],
+        "fitted_viewport": [
+          0.8008462523931998,
+          0.48112069574269223
+        ],
+        "residual_px": 72.615
+      }
+    ]
+  },
+  "spine_fit": {
+    "max_holdout_error_px": 364.376,
+    "anchors": [
+      {
+        "id": "Bridge",
+        "legacy_world_xyz": [
+          0.0,
+          0.38,
+          -14.5
+        ],
+        "sharp_approved_normalized": [
+          0.288618,
+          0.1005919
+        ],
+        "fitted_viewport": [
+          0.2917345846217677,
+          0.09916301623176632
+        ],
+        "residual_px": 4.019
+      },
+      {
+        "id": "LowerGate",
+        "legacy_world_xyz": [
+          0.0,
+          1.05,
+          -9.25
+        ],
+        "sharp_approved_normalized": [
+          0.394309,
+          0.319527
+        ],
+        "fitted_viewport": [
+          0.391211709567685,
+          0.3221630663444047
+        ],
+        "residual_px": 4.413
+      },
+      {
+        "id": "MainRoad",
+        "legacy_world_xyz": [
+          0.0,
+          0.3,
+          -3.0
+        ],
+        "sharp_approved_normalized": [
+          0.46748,
+          0.508876
+        ],
+        "fitted_viewport": [
+          0.46289530708801113,
+          0.5080797660800659
+        ],
+        "residual_px": 5.679
+      },
+      {
+        "id": "CentralStair",
+        "legacy_world_xyz": [
+          0.0,
+          1.38,
+          3.0100000000000002
+        ],
+        "sharp_approved_normalized": [
+          0.534959,
+          0.673373
+        ],
+        "fitted_viewport": [
+          0.5394847116245268,
+          0.6729136805296914
+        ],
+        "residual_px": 5.58
+      },
+      {
+        "id": "Bastion",
+        "legacy_world_xyz": [
+          0.0,
+          3.0,
+          7.25
+        ],
+        "sharp_approved_normalized": [
+          0.604878,
+          0.842604
+        ],
+        "fitted_viewport": [
+          0.5986717703536214,
+          0.789453110562357
+        ],
+        "residual_px": 45.557
+      },
+      {
+        "id": "LeftCabinParcel",
+        "legacy_world_xyz": [
+          -7.0,
+          0.31,
+          -2.8
+        ],
+        "sharp_approved_normalized": [
+          0.203252,
+          0.627219
+        ],
+        "fitted_viewport": [
+          0.3114392758496504,
+          0.6988048619046953
+        ],
+        "residual_px": 146.174
+      },
+      {
+        "id": "RightCampParcel",
+        "legacy_world_xyz": [
+          7.0,
+          0.31,
+          -4.0
+        ],
+        "sharp_approved_normalized": [
+          0.8536589,
+          0.519527
+        ],
+        "fitted_viewport": [
+          0.5945301726878371,
+          0.3105522970991033
+        ],
+        "residual_px": 364.376
+      }
+    ]
+  },
+  "camera_to_world_mapping_pass": false,
+  "threshold_all_anchors_px": 12.0,
+  "validation_scope": "DIAGNOSTIC_ONLY_NOT_GAMEPLAY_CERTIFIED",
+  "recommended_next_step": "Implement native Unity player camera perspective plus semantic plot tests; if failed, use an isolated independently authored 3D layout compatible with certified topology, not unverified arbitrary point shifts"
+}
