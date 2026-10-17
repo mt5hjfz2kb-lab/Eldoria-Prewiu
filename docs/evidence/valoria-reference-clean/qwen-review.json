@@ -2,7 +2,7 @@
   "role": "AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE",
   "art_approved": false,
   "new_model_downloads": 0,
-  "source_sha": "7da5124e209bf801d5052a3247f441d94758b9cd",
+  "source_sha": "6706be67b15c5261e021e161a35519d249dc6251",
   "installed_models": [
     "qwen3:14b",
     "qwen3-vl:8b-instruct-q4_K_M",
@@ -17,41 +17,54 @@
     },
     {
       "path": "playmode-home.png",
-      "sha256": "1bdd79f9c3885bfaa6d77b1d387e8a616476012271df811f385ccf5667e2ed09"
+      "sha256": "7692c6114fc4a9bdbcae9095f6dc0a91927125254c5c6fe47d5b6fa5a31739cc"
+    },
+    {
+      "path": "detail-bastion.png",
+      "sha256": "411a0a8e9a1524eeeadf80ec525f53a3e702d859e8c01ec9aabc7d1619422f49"
+    },
+    {
+      "path": "detail-gate-bridge.png",
+      "sha256": "455d039c0e7009f96cf043bf9291faa21200bf9f1d4b48ac84c4664b66eada8a"
     }
   ],
   "native_scene_facts": {
-    "source_sha": "7da5124e209bf801d5052a3247f441d94758b9cd",
+    "source_sha": "6706be67b15c5261e021e161a35519d249dc6251",
     "directional_lights": 1,
     "native_terrain_resolution": 257,
-    "blue_roof_materials": 0,
-    "triangles": 531200,
-    "renderers": 28
+    "triangles": 541670,
+    "renderers": 30,
+    "source_roof_triangles": 31416,
+    "source_bridge_geometry": {
+      "method": "closed_profile_extrusion",
+      "opening_rays_passed": 8,
+      "pier_rays_passed": 2
+    }
   },
   "status": "REAL_LOCAL_CRITIQUE_RECORDED",
   "model": "qwen3-vl:8b-instruct-q4_K_M",
-  "elapsed_seconds": 37.01,
+  "elapsed_seconds": 43.18,
   "review": {
     "visible_strengths": [
-      "The overall layout correctly matches the reference: one main keep, one lower gate, a river bridge, four empty plots, and sparse broken walls.",
-      "The directional lighting is present and creates consistent shadows across the scene.",
-      "The terrain resolution is adequate for the scale, with visible shorelines and rock placement."
+      "The overall composition is well-structured with clear visual hierarchy: the main keep is the focal point, the bridge provides a strong leading line, and the four plots create a balanced grid.",
+      "The architecture proportions are generally sound, with the keep and bridge maintaining a consistent scale relative to the terrain.",
+      "The lighting is directional and creates a clear sense of time of day, casting believable shadows that define form and depth."
     ],
     "highest_impact_defects": [
       {
-        "observation": "The main keep's roof is rendered as a flat, uniform blue surface with no visible individual slate geometry or texture detail, making it appear untextured and unrealistic compared to the reference image.",
-        "correction": "In Unity, assign a high-resolution, physically-based material (e.g., 'Slate Roof' with normal and roughness maps) to the roof mesh. Ensure the material is applied to individual faces or use a procedural tile system to simulate individual slate geometry. This will restore the 'physically authored individual slate' detail mentioned in the verified facts."
+        "observation": "The river bridge's arch is visually inconsistent with the rest of the structure. The arch appears to be a simple, flat extrusion rather than a true arch, and its geometry does not match the detailed, physically authored slate roof tiles seen in the detail cameras. The bridge pier geometry is also simplified and lacks the detailed texture and lighting seen in the detail view.",
+        "correction": "In Unity, re-extrude the bridge arch using a true arch profile (e.g., using a Bezier curve or a custom arch mesh) and apply the same physically authored slate material and lighting as the roof. Ensure the pier geometry matches the detail camera's complexity by adding more vertices and subdividing the mesh for a more realistic curvature and surface detail."
       },
       {
-        "observation": "The river bridge's arch is visually inconsistent with the reference. The bridge appears to be a single, flat, low-poly structure with no visible arch curvature or structural detail, making it look like a simple ramp rather than a true arched bridge.",
-        "correction": "In Unity, rebuild the bridge geometry to include a proper arch shape. Use a curved mesh or a series of connected arch segments. Add appropriate collision and visual detail (e.g., stone texture, edge caps) to make it structurally and visually accurate to the reference."
+        "observation": "The main keep's roof tiles are not clearly visible or readable due to the low-resolution texture and the lack of detailed normal mapping. The blue color appears flat and lacks the subtle variations and specular highlights that would make the slate tiles appear realistic.",
+        "correction": "In Unity, increase the resolution of the roof tile texture and add a detailed normal map to simulate the roughness and curvature of slate. Use a physically based material (PBR) with appropriate roughness and metallic values to enhance the tile's realism and ensure it reflects light in a way that matches the directional lighting."
       },
       {
-        "observation": "The vegetation (trees) is poorly distributed and lacks natural variation. The trees are uniformly placed and appear as simple, low-poly objects with no variation in size, species, or density, making the scene look artificial and unbalanced.",
-        "correction": "In Unity, use a more sophisticated vegetation system (e.g., Unity's Landscape Vegetation System or a custom script) to place trees with randomized scale, rotation, and species. Add more trees in clusters and vary their density to create a more natural, organic look that matches the reference image."
+        "observation": "The terrain and shore integration is poor. The riverbank appears as a flat, uniform green strip with no variation in height or texture, and the water's edge does not naturally transition into the terrain. The rocks are placed in a way that looks artificial and does not follow the natural flow of the river.",
+        "correction": "In Unity, use a heightmap or displacement map to create a more varied and natural-looking riverbank. Add a detailed shoreline texture that transitions smoothly from the water to the grass. Place the rocks using a procedural placement system or manually position them to follow the river's natural curvature and depth, ensuring they cast realistic shadows and interact with the water's reflection."
       }
     ],
-    "reference_similarity_estimate_0_to_10": 6.5,
-    "uncertainty": "The scene's lighting and material rendering are consistent with the reference, but the lack of detailed roof geometry and bridge structure significantly reduces visual fidelity. The vegetation is the most noticeable deviation from the reference's natural appearance."
+    "reference_similarity_estimate_0_to_10": 7.5,
+    "uncertainty": "The player camera's perspective and lighting are consistent with the detail cameras, but the visual fidelity of the bridge and roof tiles is lower than expected. The terrain and shore integration could be improved with more detailed textures and procedural placement. The overall composition is strong, but the visual defects in the bridge and roof tiles are the most impactful and require immediate correction."
   }
 }
