@@ -9,7 +9,8 @@
     "com.unity.modules.unitywebrequest": "1.0.0",
     "com.unity.modules.unitywebrequesttexture": "1.0.0",
     "com.unity.mathematics": "1.3.2",
-    "com.arloopa.unitysplats": "https://github.com/arloopa/UnitySplats.git"
+    "com.arloopa.unitysplats": "https://github.com/arloopa/UnitySplats.git",
+    "com.unity.modules.terrainphysics": "1.0.0"
   },
   "scopedRegistries": [
     {

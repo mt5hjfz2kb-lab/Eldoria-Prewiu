@@ -65,7 +65,7 @@ jobs:
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
           Copy-Item $log docs/evidence/valoria-reference-clean/native-unity.log
-          Select-String $log -Pattern "Exception:|error CS|Shader error|^Error" -Context 1,2
+          Select-String $log -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
           if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
@@ -75,7 +75,7 @@ jobs:
             $play=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $playArgs -PassThru
             if(-not $play.WaitForExit(600000)){& taskkill.exe /PID $play.Id /T /F|Out-Null;throw 'Own PlayMode validation timed out'}
             Copy-Item $playLog docs/evidence/valoria-reference-clean/playmode-native.log
-            Select-String $playLog -Pattern "Exception:|error CS|Shader error|^Error" -Context 1,2
+            Select-String $playLog -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
             Get-Content $playLog -Tail 80
             if($play.ExitCode -ne 0 -or -not(Select-String $playLog -Pattern 'VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE' -Quiet)){throw 'Actual PlayMode validation failed'}
           }
@@ -98,6 +98,7 @@ jobs:
           git config user.name 'Valoria reference clean builder'
           git config user.email 'valoria-clean@users.noreply.github.com'
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ docs/evidence/valoria-reference-clean/
+          git add -- Unity/Packages/packages-lock.json
           if(-not(git diff --cached --quiet)){
             git commit -m 'art(valoria): native independent reference scene and genuine Unity evidence'
             if($LASTEXITCODE){throw 'Commit failed'}

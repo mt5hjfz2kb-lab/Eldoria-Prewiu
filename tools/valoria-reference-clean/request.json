@@ -1,7 +1,9 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 14,
+  "revision": 15,
   "budget_eur": 0,
-  "correction": "Terrain collision still misses four seam samples after explicit TerrainCollider binding. Initialize complete solid holes mask on new TerrainData and sync; print exact terrain collider, holes, bounds and direct ray if unresolved. Preserve passed isolation, save, selection and stairs checks."
+  "cause_verified": "Native Play log line 511: TerrainCollider component deleted: Component belongs to a disabled built-in package.",
+  "correction": "Enable bundled com.unity.modules.terrainphysics 1.0.0, keep Unity/URP/glTFast versions unchanged, persist generated lockfile and retest real heightfield collision.",
+  "official_docs": "https://docs.unity3d.com/6000.0/Documentation/Manual/com.unity.modules.terrainphysics.html"
 }
