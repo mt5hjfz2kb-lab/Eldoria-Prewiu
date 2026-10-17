@@ -6,7 +6,8 @@ try:
  tags=json.load(urllib.request.urlopen('http://127.0.0.1:11434/api/tags',timeout=10))
  installed=[x['name'] for x in tags.get('models',[])];result['installed_models']=installed
  model=next(x for x in ['qwen3-vl:8b-instruct-q4_K_M','qwen3-vl:4b-instruct'] if x in installed)
- paths=[ev/'reference-target.jpeg',ev/'playmode-home.png',ev/'detail-bastion.png',ev/'detail-gate-bridge.png'];result['original_images']=[{'path':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]
+ request_config=json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf8'));shore_review=request_config.get('review_scope')=='shore'
+ paths=[ev/'reference-target.jpeg',ev/'playmode-home.png',ev/'shore-zone-before-detail.png',ev/'shore-zone-after-detail.png'] if shore_review else [ev/'reference-target.jpeg',ev/'playmode-home.png',ev/'detail-bastion.png',ev/'detail-gate-bridge.png'];result['original_images']=[{'path':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]
  images=[]
  # Small inspection copies avoid the known historical image-context overflow.
  with tempfile.TemporaryDirectory(prefix='valoria-native-review-') as scratch:
@@ -23,6 +24,7 @@ try:
  'Do not recommend adding more towers or permanent buildings to the empty plots. '
  'Return valid JSON with keys visible_strengths, highest_impact_defects (three items with observation and correction), '
  'reference_similarity_estimate_0_to_10, uncertainty. This estimate is advisory and cannot issue ART_APPROVED or MOBILE_PASS.')
+ if shore_review:prompt=('Image1 is the owner reference; image2 is the ACTUAL CURRENT UNITY player view. Images3 and4 are actual same-camera, same-light Unity shore BEFORE and AFTER views, original bank geometry and physically reseated candidate. Image3 is before, image4 after; judge only visible bank contact, slope, exposed soil, rocks and water. Do not claim changes in castle or camera in this pair. The owner requires a clearly visible artistic improvement, not more details or higher pixel counts. Identify any floating foliage/rocks or exposed cuts; uncertainty is allowed. '+prompt.replace('Images 3 and 4 are genuine Unity detail-camera views of that same keep and bridge, not concept art.','Images3 and4 show the same fixed shore camera before/after.'))
  request={'model':model,'stream':False,'format':'json','messages':[{'role':'user','content':prompt,'images':images}],
  'options':{'temperature':.1,'num_ctx':8192,'num_predict':1100},'keep_alive':'0s'}
  start=time.monotonic();raw=json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(request).encode(),headers={'Content-Type':'application/json'}),timeout=240))
@@ -31,3 +33,4 @@ try:
 except Exception as exc:result.update(status='AUXILIARY_UNAVAILABLE_NOT_AN_ART_PASS',error=str(exc))
 (ev/'qwen-review.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf8')
 print('VALORIA_REFERENCE_QWEN_AUXILIARY',result['status'])
+
