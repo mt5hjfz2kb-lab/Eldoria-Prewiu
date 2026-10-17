@@ -1,12 +1,10 @@
-name: "[VALORIA] V16 licensed stone PBR finish | real Unity V12/16 A/B"
+name: "[VALORIA] Source08 Bastion SHARP player-visibility gate"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'tools/valoria-layered-construction/author-entry-zone-v16.blender.py'
-      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v16.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV16Integration.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs'
 permissions:
   contents: write
   actions: read
@@ -14,20 +12,20 @@ concurrency:
   group: valoria-macro-envelope-one-native-run
   cancel-in-progress: false
 jobs:
-  actual-sharp-native:
+  native-bastion-visibility:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 70
+    timeout-minutes: 55
     defaults:
       run:
         working-directory: valoria-macro-envelope-v1
     steps:
-      - name: Resolve existing GitHub Desktop git
-        working-directory: .
+      - name: Resolve GitHub Desktop git on installed Windows host
         shell: powershell
+        working-directory: .
         run: |
           if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
             $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter "app-*" -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName "resources/app/git/cmd/git.exe"} | Where-Object {Test-Path $_} | Select-Object -First 1
-            if(-not $g){throw 'Git is unavailable'}
+            if(-not $g){throw 'Git unavailable'}
             Add-Content $env:GITHUB_PATH (Split-Path $g)
           }
       - uses: actions/checkout@v4
@@ -41,103 +39,62 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
-      - name: Exclusive live owner, idle renderer and frozen V7 source gate
+      - name: Verify same live owner, locked game, and free native runner
         shell: powershell
         run: |
-          $a=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
-          $b=Get-Content "pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
-          $id='valoria-master-plan-layered-construction-20261016'
-          $owner='chatgpt-normal-valoria-construction-20261017'
+          $a=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw | ConvertFrom-Json
+          $b=Get-Content "pipeline/active-workstreams.json" -Raw | ConvertFrom-Json
           foreach($r in @($a,$b)){
-            if(@($r.active|Where-Object {$_.id -eq $id -and $_.owner -eq $owner -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Exclusive ownership lease not confirmed'}
-            if(@($r.active|Where-Object {$_.id -ne $id -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Incompatible Windows owner'}
+            $matching=@($r.active | Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'chatgpt-normal-valoria-construction-20261017' -and $_.resources -contains 'windows-runner-heavy'})
+            if($matching.Count -ne 1){throw 'Original workstream exclusive owner mismatch'}
+            if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Another Windows owner'}
           }
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native Unity/Blender processes busy'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity editor unavailable'}
-          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference mismatch'}
-          $old='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/ValoriaEntryZoneV7.blend'
-          if(-not(Test-Path $old) -or (Get-FileHash $old -Algorithm SHA256).Hash.ToLower() -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381'){throw 'Saved V7 BLEND identity mismatch'}
-          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity')){throw 'Genuine V7 Unity scene absent'}
-      - name: Native Blender V16 real CC0 three-channel photographic PBR material on existing masonry
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native renderer busy'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity 6000 editor not available'}
+          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Approved target identity changed'}
+          foreach($p in @('Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/EntryZoneV1.prefab','Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_PlayableV3.unity')){
+            if(-not(Test-Path $p)){throw "Missing existing original source: $p"}
+          }
+      - name: Actual same-camera ON/OFF nine-mesh proof on untouched playable V3 copy
         shell: powershell
         run: |
-          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
-          if(-not $blender){
-            foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
-              if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
-              if($blender){break}
-            }
-          }
-          if(-not $blender){throw 'Native Blender missing; no paid or new downloads allowed'}
-          "VALORIA_ENTRY_BLENDER=$blender" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v16'
-          New-Item -ItemType Directory -Force $dir|Out-Null
-          & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
-          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v16.blender.py
-          if($LASTEXITCODE){throw 'Native V16 Blender source authoring failed'}
-          $x=Get-Content "$dir/entry-source.json" -Raw|ConvertFrom-Json
-          if($x.source_v12_blend_sha256 -ne '21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de' -or $x.architecture_mesh_count -ne 12 -or $x.changed_masonry_material_slots -lt 20 -or -not $x.mesh_geometry_unchanged -or -not $x.preserved_heraldry_trim_metal -or $x.result_glb_sha256 -ne (Get-FileHash "$dir/ValoriaEntryZoneV16.glb" -Algorithm SHA256).Hash.ToLower()){throw 'V16 native output identity failed'}
-      - name: Genuine Unity fixed-camera V12-before V16-after, route and proportion gates
-        shell: powershell
-        run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v16'
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-v16-native-unity.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV16Integration.Build','-logFile',$log)
+          $e='docs/evidence/valoria-layered-construction-20261016/bastion-source08-visibility'
+          New-Item -ItemType Directory -Force $e|Out-Null
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-bastion-source08-visibility.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaBastionVisibilityGate.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Unity V16 timeout'}
-          Get-Content $log -Tail 90
-          Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V16_NATIVE_COMPLETE' -Quiet)){throw "Native Unity V16 failed exit=$($p.ExitCode)"}
-          $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
-          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7 -or $x.route_passes -ne 28 -or -not $x.pedestrian_clear -or -not $x.gate_macro_proportions_pass){throw 'V16 protected technical gate failed'}
-          if([math]::Abs($x.home_fov-44.4228096) -gt .0001){throw 'Camera lens changed'}
-          foreach($img in @('entry-BEFORE-home.png','entry-AFTER-home.png','light-AFTER-home.png','light-AFTER-portrait.png')){
-            if(-not(Test-Path "$dir/$img")){throw "Missing true Unity $img"}
-          }
-          Write-Host 'NATIVE_V16_TECH_PASS_NOT_ART_APPROVAL'
-      - name: Independent local Qwen critical review with approved reference; no art self-approval
-        if: success()
-        shell: powershell
-        run: |
-          $started=$null
-          try{
-            try{Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5|Out-Null}catch{
-              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
-              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
-              if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
-            }
-            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v16.py
-          }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
-      - name: Preserve only isolated V16 evidence and scene; normal fetch/rebase/push
-        if: success()
+          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity renderer gate timeout'}
+          Get-Content $log -Tail 70
+          Copy-Item $log "$e/native-unity.log"
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_BASTION_SOURCE08_VISIBILITY_NATIVE_COMPLETE' -Quiet)){throw "Bastion visibility not proven; no art approval; Unity exit=$($p.ExitCode)"}
+          $j=Get-Content "$e/visibility-result.json" -Raw|ConvertFrom-Json
+          if($j.bastion_renderers -ne 9 -or $j.changed_pixels_upper_band -lt 150 -or -not $j.same_presenter_camera -or $j.art_approved){throw 'Real SHARP visibility gate failed'}
+          Write-Host "SOURCE08_REAL_RENDER_VISIBILITY_CONFIRMED_PIXELS=$($j.changed_pixels) TOP=$($j.changed_pixels_upper_band); NOT ART APPROVAL"
+      - name: Preserve real evidence and isolated player candidate, never main
+        if: always()
         shell: powershell
         run: |
           git config user.name 'Valoria native builder'
           git config user.email 'valoria-builder@users.noreply.github.com'
-          $base='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v16/
-          git add -f -- "$base/Valoria_SHARP_EntryZoneV16_CANDIDATE.unity" "$base/GeneratedEntryV16/"
-          foreach($meta in @('Editor/ValoriaEntryZoneV16Integration.cs.meta','GeneratedEntryV16.meta','Valoria_SHARP_EntryZoneV16_CANDIDATE.unity.meta')){
-            $p="$base/$meta"
-            if(Test-Path $p){git add -f -- $p}
-          }
+          $e='docs/evidence/valoria-layered-construction-20261016/bastion-source08-visibility'
+          $c='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_BastionVisibility_CANDIDATE.unity'
+          if(Test-Path $e){git add -f -- "$e/"}
+          if(Test-Path $c){git add -f -- "$c"; if(Test-Path "$c.meta"){git add -f -- "$c.meta"}}
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): actual Blender/Unity V16 candidate with independent visual review'
-            git reset --hard HEAD
+            git commit -m 'evidence(valoria): native SHARP Source08 nine-renderer player-frame visibility proof'
+            if($LASTEXITCODE){throw 'Evidence commit failed'}
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Cannot fetch latest owner branch'}
+            if($LASTEXITCODE){throw 'Cannot fetch owner branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve artifact, never force'}
+            if($LASTEXITCODE){throw 'Concurrent branch change; never force push'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent push failed; preserve artifact, never force'}
+            if($LASTEXITCODE){throw 'Evidence push blocked; archive retained'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-entry-zone-v16-native-evidence
+          name: valoria-bastion-source08-visible-player-frame
           path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v16/**
-            valoria-macro-envelope-v1/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV16_CANDIDATE.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV16/**
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/bastion-source08-visibility/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_BastionVisibility_CANDIDATE.unity
           if-no-files-found: warn
