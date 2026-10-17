@@ -128,7 +128,7 @@ namespace Eldoria.ValoriaLayered.Editor
      foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))Save(filter.sharedMesh);
      foreach(var s in root.GetComponentsInChildren<SkinnedMeshRenderer>(true))Save(s.sharedMesh);
      AssetDatabase.SaveAssets();
-     PrefabUtility.SaveAsPrefabAsset(root,Resources+"ValoriaTerrainRiverCliffV2.prefab");
+     PrefabUtility.SaveAsPrefabAsset(root,Resources+"/ValoriaTerrainRiverCliffV2.prefab");
      Physics.SyncTransforms();
      // Verify physical contact of all seven current source semantics has not changed.
      string[] labels={"Bridge","LowerGate","MainRoad","CentralStair","Bastion","LeftCabinParcel","RightCampParcel"};
