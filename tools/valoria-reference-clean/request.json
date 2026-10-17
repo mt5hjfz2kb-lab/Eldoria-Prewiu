@@ -1,7 +1,8 @@
 {
   "stage": "art",
-  "revision": 9,
+  "revision": 10,
   "budget_eur": 0,
-  "reason": "Use actually recovered 63-asset textured Quaternius pine/shrub and CC0 meadow photographic detail; adjust keep depth and flag to attached reference while keeping clear growth space. Prior scene ff89a2a preserved. Final art review and PlayMode pending.",
-  "compile_correction": "Distinct sampleV identifier for grass sampling, separate from water vertex list"
+  "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
+  "previous_candidate": "959cdc0883dd0b80ddae7d1007f770b2ae8a301b",
+  "independent_review": "REAL UNITY: compact keep/gate differentiated, four plots and bridge clear, textured nature improves style, shadows verified. Surface rework: over-bright coping/paving, uniform lawn edges, overly parallel river ripples. Directed final surface/ruin/scatter pass and texture cap 1024; physical device profiling not claimed."
 }

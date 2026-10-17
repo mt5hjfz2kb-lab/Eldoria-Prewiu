@@ -19,8 +19,8 @@ json.dump(tools,open(os.path.join(EV,'native-tool-check.json'),'w'),indent=2)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 def mat(n,c,rough=.8,metal=0):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;return m
-stone=[mat('Warm limestone %d'%i,(.52+i*.025,.45+i*.022,.35+i*.021)) for i in range(6)]
-trim=mat('Carved limestone',(.70,.61,.47));mortar=mat('Recessed stone joints',(.31,.28,.22));wood=mat('Oak',(.23,.105,.036));iron=mat('Forged iron',(.075,.065,.045),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
+stone=[mat('Warm limestone %d'%i,(.40+i*.025,.36+i*.022,.30+i*.021)) for i in range(6)]
+trim=mat('Carved limestone',(.55,.49,.40));mortar=mat('Recessed stone joints',(.31,.28,.22));wood=mat('Oak',(.23,.105,.036));iron=mat('Forged iron',(.075,.065,.045),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
 blue=[mat('Blue slate %d'%i,(.014+i*.005,.045+i*.009,.11+i*.017),.62) for i in range(5)]
 soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.20+i*.023,.215+i*.025,.22+i*.022)) for i in range(4)]
 flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
@@ -154,7 +154,7 @@ courses(g,0,28.2,.38,4.8,4.4,10.3);crown(g,0,28.2,10.8,4.8,4.4)
 for x in [-8.4,8.4]:courses(g,x,29.5,.38,3.5,5.2,6.8);crown(g,x,29.5,7.3,3.5,5.2);banner(g,x,26.75,6.6,1.15,2.5)
 # Deliberately narrow dark window with stone moulding on the main tower.
 g.box((0,25.89,7.8),(.8,.08,1.8),wood);arch(g,0,25.78,8.25,.4,.18,.2,trim,segments=7)
-portal(g,0,25.86,1.5,2.6,3.7)
+portal(g,0,25.86,1.5,3.2,4.1)
 for X in [-4.8,4.8]:
  g.box((X,26.84,3.7),(.65,.10,1.45),wood);arch(g,X,26.73,4.05,.33,.17,.24,trim,segments=7)
  for S in [-1,1]:g.box((X+S*.42,26.70,3.6),(.17,.3,1.1),trim)
@@ -208,7 +208,7 @@ for x,y in [(-23,28),(-19,9),(29,32),(28,12)]:
    for xx in [-8.5,8.5]:p.box((x+xx,y-6+(j+.5)*12/18,.47),(.31,.59,.22),random.choice(stone))
   p.finish(.025)
 # Ruins are intentionally small, with stepped broken silhouettes and fallen blocks.
-for x,y in [(-27,54),(30,58),(-33,2),(38,-5)]:
+for x,y in [(-22,46),(26,52),(-25,0),(46,-1)]:
  r=Mesh('Ruin_'+str(x)+'_'+str(y))
  for i in range(8):
   h=max(.6,3.5-i*.45+random.uniform(-.35,.35));courses(r,x-3+i*.85,y,.3,.83,1.15,h)
@@ -227,8 +227,8 @@ M=tree.matrix_world.copy();ps=[M@v.co for v in tree.data.vertices];lo=Vector([mi
 for v,q in zip(tree.data.vertices,ps):v.co=q-ct
 tree.matrix_world=Matrix.Identity(4)
 mod=tree.modifiers.new('Strategic pine face budget','DECIMATE');mod.ratio=.80;bpy.ops.object.modifier_apply(modifier=mod.name)
-positions=[(-53,-39),(-47,-38),(-57,-32),(-38,-43),(26,-42),(39,-43),(47,-39),(-48,-15),(-44,3),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(25,53),(39,49),(48,29),(46,2),(42,-12)]
-positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(26,53),(30,55),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
+positions=[(-53,-39),(-47,-38),(-57,-32),(-38,-43),(26,-42),(39,-43),(47,-39),(-48,-15),(-44,3),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(39,49),(48,29),(46,2),(42,-12)]
+positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
 bpy.data.objects.remove(tree,do_unlink=True)
@@ -237,13 +237,21 @@ for i in range(115):
  x=-65+(i%58)*2.25+random.uniform(-.7,.7);bank=-23+1.5*sin(x*.065);y=bank+(-1 if i<58 else 1)*(7.6+random.uniform(-.3,.5))
  if abs(x)<4.5:continue
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,-.25));o=bpy.context.object;o.name='River_Rock';o.scale=(random.uniform(.6,1.8),random.uniform(.6,1.5),random.uniform(.65,1.5));o.rotation_euler=(random.random()*.3,random.random()*.3,random.random()*pi);o.data.materials.append(random.choice(rocks));bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+# Grounded irregular stones around woodland and ruins give the open land scale cues.
+for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
+ for j in range(3):
+  x=X+random.uniform(-2,2);y=Y+random.uniform(-1.8,1.8)
+  if any(abs(x-px)<9 and abs(y-py)<6.5 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,0));o=bpy.context.object;o.name='Ground_Rock'
+  for v in o.data.vertices:v.co*=1+.13*sin(v.co.x*7+v.co.y*9+v.co.z*3+i)
+  o.scale=(random.uniform(.4,.9),random.uniform(.35,.7),random.uniform(.4,.85));o.rotation_euler.z=random.uniform(-pi,pi);o.data.materials.append(random.choice(rocks));bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
 # Dense, small ornamental shrubs keep architecture grounded and plots free.
 leaf=[mat('Shrub leaf '+str(i),(.16+i*.035,.25+i*.035,.045+i*.012)) for i in range(4)]
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1)
 template=bpy.context.object;iv=[v.co.copy() for v in template.data.vertices];iff=[tuple(p.vertices) for p in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
 sh=Mesh('Foundation_shrubs_and_groundcover')
 centers=[(-10,31.5),(10,31.5),(-10,39.5),(10,39.5),(-5,-11),(5,-11),(-11,-9),(11,-9)]
-centers+=positions+[(-27,54),(30,58),(-33,2),(38,-5)]
+centers+=positions+[(-22,46),(26,52),(-25,0),(46,-1)]
 shrub_path=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/shrub_1.glb')
 assert hashlib.sha256(open(shrub_path,'rb').read()).hexdigest()=='5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0'
 before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=shrub_path);shrubs=[o for o in bpy.data.objects if o not in before and o.type=='MESH'];assert shrubs
@@ -267,13 +275,13 @@ sh.finish(0)
 # Snap bottom of each reused/generated tree, bush-root centre and river boulder
 # to the identical analytic terrain used by Unity, never the source object pivot.
 for o in bpy.context.scene.objects:
- if o.type!='MESH' or not o.name.startswith(('River_Rock','Reused_Fir_','Reused_Shrub_')):continue
+ if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_')):continue
  pts=[o.matrix_world@v.co for v in o.data.vertices];x=sum(p.x for p in pts)/len(pts);y=sum(p.y for p in pts)/len(pts)
  t=max(0,min(1,(abs(y-(-23+1.5*sin(x*.065)))-5.2)/3.8));bank=t*t*(3-2*t)
  h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+(max(0,y-40)*.045)-4.9*(1-bank)
  o.location.z+=h-min(p.z for p in pts)-.14
 # Shared static environmental meshes reduce material submissions; source islands stay editable.
-for prefix,label in [('River_Rock','River_bank_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
+for prefix,label in [('River_Rock','River_bank_rocks'),('Ground_Rock','Woodland_ground_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
  group=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith(prefix)]
  bpy.ops.object.select_all(action='DESELECT')
  for o in group:o.select_set(True)
@@ -285,6 +293,10 @@ for o in bpy.context.scene.objects:
  center=Vector(((min(p.x for p in points)+max(p.x for p in points))/2,(min(p.y for p in points)+max(p.y for p in points))/2,min(p.z for p in points)))
  for v,p in zip(o.data.vertices,points):v.co=p-center
  o.matrix_world=Matrix.Translation(center)
+# Texture copies are sized for this strategic camera; original donor files stay unchanged.
+for image in bpy.data.images:
+ if image.size[0]>1024 or image.size[1]>1024:
+  factor=1024/max(image.size);image.scale(max(1,int(image.size[0]*factor)),max(1,int(image.size[1]*factor)));image.pack()
 # Source hashes and editability are evidence, never an artistic approval.
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
