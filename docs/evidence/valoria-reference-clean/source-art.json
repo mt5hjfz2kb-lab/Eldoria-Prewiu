@@ -33,17 +33,18 @@
     "Plot_-19_9": 3828,
     "Plot_29_32": 3828,
     "Plot_28_12": 3828,
-    "Ruin_-27_54": 11704,
-    "Ruin_30_58": 11352,
-    "Ruin_-33_2": 11000,
-    "Ruin_38_-5": 11352,
-    "Fir_tree_group": 154050,
-    "River_bank_rocks": 8560,
-    "Shrub_group": 23400,
-    "Foundation_shrubs_and_groundcover": 690
+    "Ruin_-22_46": 11704,
+    "Ruin_26_52": 11352,
+    "Ruin_-25_0": 11000,
+    "Ruin_46_-1": 11352,
+    "Fir_tree_group": 142200,
+    "River_bank_rocks": 8640,
+    "Woodland_ground_rocks": 3840,
+    "Shrub_group": 21600,
+    "Foundation_shrubs_and_groundcover": 687
   },
-  "mesh_objects": 23,
-  "triangles": 423078,
-  "blend_sha256": "4e99e58ce38a25aaa844d4cac5f11852bf15254cc46bbd52b2589d084ba5eb5c",
-  "glb_sha256": "44761faaf3f1566a113b7a1eac8a1b2b264ea97455b6522be75273812eb5d1a8"
+  "mesh_objects": 24,
+  "triangles": 413345,
+  "blend_sha256": "d10699637003babc529c27140ae3539011b8657dbdc1a9c14d4709e197247c20",
+  "glb_sha256": "90d688c0f15d574411691824c2327d3e84d40f9ca3e3b665033bbe674c0c7bd4"
 }
