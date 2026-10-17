@@ -1,0 +1,70 @@
+name: "[VALORIA] Recover verified V3 Unity source and captures (no rerender)"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths: ['.github/workflows/valoria-v3-recover-verified-artifact.yml']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-v3-evidence-recovery-no-windows
+  cancel-in-progress: false
+jobs:
+  preserve-native-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download EXACT native Unity V3 artifact already generated on Windows
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 39020795868
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          name: valoria-real-sharp-terrain-v3-native-39020795868
+          path: .
+      - name: Verify genuine editable Blender and Unity files and eight captures
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json
+          p=pathlib.Path('docs/evidence/valoria-layered-construction-20261016/terrain-v3')
+          j=json.loads((p/'ValoriaTerrainRiverCliffV3-manifest.json').read_text())
+          n=json.loads((p/'terrain-v3-native.json').read_text())
+          assert j['original_v2_source_sha256']=='6cf867a57bdb801693a20c03558d4eaffca204d5f46e49046d7cf9edb3b65de0'
+          assert j['source_mesh_count']==9 and j['triangles']==16780
+          assert j['source_and_canonical_unmodified'] and j['seamless_at_bridge_endpoints']
+          assert all(abs(y-.38)<1e-5 for y in j['shore_world_heights_y'].values())
+          for ext,key in [('blend','source_blend_v3_sha256'),('glb','source_glb_v3_sha256')]:
+            assert hashlib.sha256((p/('ValoriaTerrainRiverCliffV3.'+ext)).read_bytes()).hexdigest()==j[key]
+          assert n['glb_sha256']==j['source_glb_v3_sha256']
+          assert n['source_triangles']==16780 and n['real_mesh_renderers']==9
+          assert n['all_semantic_clicks']==7 and n['stair_treads_untouched']==12
+          assert n['original_scenes_untouched'] and n['colliders_unchanged']
+          assert n['actual_player_camera_unchanged'] and not n['canonical_modified']
+          assert n['visual_gate']=='PENDING_ACTUAL_AB_INSPECTION'
+          for image in ('terrain-v3-BEFORE-home.png','terrain-v3-BEFORE-portrait.png',
+             'terrain-v3-AFTER-home.png','terrain-v3-AFTER-portrait.png',
+             'terrain-v3-AFTER-pan-left.png','terrain-v3-AFTER-pan-right.png',
+             'terrain-v3-AFTER-zoom-in.png','terrain-v3-AFTER-zoom-out.png'):
+             assert (p/image).stat().st_size>50000,image
+          root=pathlib.Path('Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction')
+          assert (root/'Valoria_SHARP_RiverCliffV3_CANDIDATE.unity').stat().st_size>500000
+          assert (root/'GeneratedTerrainV3/ValoriaTerrainRiverCliffV3.prefab').stat().st_size>10000
+          print('VALORIA_V3_NATIVE_HASH_CONTACT_CAMERA_AND_SHARP_CAPTURES_PASS_ART_APPROVAL_SEPARATE')
+          PY
+      - name: Persist only isolated scene and assets, reconcile GitHub fast-forward only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Valoria V3 evidence recovery'
+          git config user.email 'valoria-v3-evidence@users.noreply.github.com'
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/terrain-v3/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity
+          if ! git diff --cached --quiet; then
+            git commit -m 'evidence(valoria): recover true V3 Blender and Unity scene/captures without rerender'
+            git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
+            git rebase origin/construction/valoria-master-plan-layers-20261016
+            git push origin HEAD:construction/valoria-master-plan-layers-20261016
+          fi
