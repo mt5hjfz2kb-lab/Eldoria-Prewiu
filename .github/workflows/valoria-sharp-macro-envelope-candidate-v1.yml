@@ -1,12 +1,12 @@
-name: "[VALORIA] Isolated native V11 roads, river, true Unity A/B, independent visual review"
+name: "[VALORIA] V12 existing WallFamily gate flanks | Blender + Unity A/B and independent review"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'tools/valoria-layered-construction/author-entry-zone-v11.blender.py'
-      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v11.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV11Integration.cs'
+      - 'tools/valoria-layered-construction/author-entry-zone-v12.blender.py'
+      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v12.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV12Integration.cs'
 permissions:
   contents: write
   actions: read
@@ -58,7 +58,7 @@ jobs:
           $old='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/ValoriaEntryZoneV7.blend'
           if(-not(Test-Path $old) -or (Get-FileHash $old -Algorithm SHA256).Hash.ToLower() -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381'){throw 'Saved V7 BLEND identity mismatch'}
           if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity')){throw 'Genuine V7 Unity scene absent'}
-      - name: Native Blender V11 edits on protected V7 copy, source hash and stone count
+      - name: Native Blender V12 edits on protected V7 copy, source hash and stone count
         shell: powershell
         run: |
           $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
@@ -70,31 +70,31 @@ jobs:
           }
           if(-not $blender){throw 'Native Blender missing; no paid or new downloads allowed'}
           "VALORIA_ENTRY_BLENDER=$blender" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v11'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v12'
           New-Item -ItemType Directory -Force $dir|Out-Null
           & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
-          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v11.blender.py
-          if($LASTEXITCODE){throw 'Native V11 Blender source authoring failed'}
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v12.blender.py
+          if($LASTEXITCODE){throw 'Native V12 Blender source authoring failed'}
           $x=Get-Content "$dir/entry-source.json" -Raw|ConvertFrom-Json
-          if($x.source_v7_blend_sha256 -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381' -or $x.sculpted_bank_vertices -lt 10 -or $x.upward_normals -lt 0.78 -or $x.result_glb_sha256 -ne (Get-FileHash "$dir/ValoriaEntryZoneV11.glb" -Algorithm SHA256).Hash.ToLower()){throw 'V11 native output identity failed'}
-      - name: Genuine Unity fixed-camera V7-before V11-after, route and proportion gates
+          if($x.source_v7_blend_sha256 -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381' -or $x.reused_wall_meshes.Count -ne 6 -or -not $x.original_source_geometry_unchanged -or -not $x.existing_v7_road_PBR_reused -or $x.result_glb_sha256 -ne (Get-FileHash "$dir/ValoriaEntryZoneV12.glb" -Algorithm SHA256).Hash.ToLower()){throw 'V12 native output identity failed'}
+      - name: Genuine Unity fixed-camera V7-before V12-after, route and proportion gates
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v11'
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-v11-native-unity.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV11Integration.Build','-logFile',$log)
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v12'
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-v12-native-unity.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV12Integration.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Unity V11 timeout'}
+          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Unity V12 timeout'}
           Get-Content $log -Tail 90
           Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V11_NATIVE_COMPLETE' -Quiet)){throw "Native Unity V11 failed exit=$($p.ExitCode)"}
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V12_NATIVE_COMPLETE' -Quiet)){throw "Native Unity V12 failed exit=$($p.ExitCode)"}
           $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
-          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7 -or $x.route_passes -ne 28 -or -not $x.pedestrian_clear -or -not $x.gate_macro_proportions_pass){throw 'V11 protected technical gate failed'}
+          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7 -or $x.route_passes -ne 28 -or -not $x.pedestrian_clear -or -not $x.gate_macro_proportions_pass){throw 'V12 protected technical gate failed'}
           if([math]::Abs($x.home_fov-44.4228096) -gt .0001){throw 'Camera lens changed'}
           foreach($img in @('entry-BEFORE-home.png','entry-AFTER-home.png','light-AFTER-home.png','light-AFTER-portrait.png')){
             if(-not(Test-Path "$dir/$img")){throw "Missing true Unity $img"}
           }
-          Write-Host 'NATIVE_V11_TECH_PASS_NOT_ART_APPROVAL'
+          Write-Host 'NATIVE_V12_TECH_PASS_NOT_ART_APPROVAL'
       - name: Independent local Qwen critical review with approved reference; no art self-approval
         if: success()
         shell: powershell
@@ -106,23 +106,23 @@ jobs:
               if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
               if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
             }
-            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v11.py
+            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v12.py
           }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
-      - name: Preserve only isolated V11 evidence and scene; normal fetch/rebase/push
+      - name: Preserve only isolated V12 evidence and scene; normal fetch/rebase/push
         if: success()
         shell: powershell
         run: |
           git config user.name 'Valoria native builder'
           git config user.email 'valoria-builder@users.noreply.github.com'
           $base='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v11/
-          git add -f -- "$base/Valoria_SHARP_EntryZoneV11_CANDIDATE.unity" "$base/GeneratedEntryV11/"
-          foreach($meta in @('Editor/ValoriaEntryZoneV11Integration.cs.meta','GeneratedEntryV11.meta','Valoria_SHARP_EntryZoneV11_CANDIDATE.unity.meta')){
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v12/
+          git add -f -- "$base/Valoria_SHARP_EntryZoneV12_CANDIDATE.unity" "$base/GeneratedEntryV12/"
+          foreach($meta in @('Editor/ValoriaEntryZoneV12Integration.cs.meta','GeneratedEntryV12.meta','Valoria_SHARP_EntryZoneV12_CANDIDATE.unity.meta')){
             $p="$base/$meta"
             if(Test-Path $p){git add -f -- $p}
           }
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): actual Blender/Unity V11 candidate with independent visual review'
+            git commit -m 'evidence(valoria): actual Blender/Unity V12 candidate with independent visual review'
             git reset --hard HEAD
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
             if($LASTEXITCODE){throw 'Cannot fetch latest owner branch'}
@@ -134,10 +134,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-entry-zone-v11-native-evidence
+          name: valoria-entry-zone-v12-native-evidence
           path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v11/**
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v12/**
             valoria-macro-envelope-v1/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV11_CANDIDATE.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV12_CANDIDATE.unity
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/**
           if-no-files-found: warn
