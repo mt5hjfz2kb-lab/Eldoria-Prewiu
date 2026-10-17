@@ -1,0 +1,34 @@
+{
+  "original_v2_source_sha256": "6cf867a57bdb801693a20c03558d4eaffca204d5f46e49046d7cf9edb3b65de0",
+  "original_v2_glb_sha256": "c4a3c7d2082e93e89006b6cd4810525828a4f3671426be778babb69514b36ce0",
+  "source_blend_v3_sha256": "768a08535f066a40c707fd52901a0c16efad91ec06ce91f35ca31cf625b5792f",
+  "source_glb_v3_sha256": "ae1677ee624aa69248b98011fd320c8b7a9d892b4b14c7ed06d36d348c0f54ea",
+  "source_and_canonical_unmodified": true,
+  "original_collider_changes": false,
+  "seamless_at_bridge_endpoints": true,
+  "shore_world_heights_y": {
+    "-19.65": 0.3799999999999999,
+    "-9.35": 0.38
+  },
+  "native_bridge_walk_height_y": 0.38,
+  "bridge_endpoint_z": [
+    -19.65,
+    -9.35
+  ],
+  "stair_clearance_halfwidth_x": 2.05,
+  "source_mesh_count": 9,
+  "triangles": 16780,
+  "source_objects": [
+    "V3_V2_VALORIA_LOWER_REAL_TERRAIN_NATIVE_HEIGHTFIELD",
+    "V3_V2_VALORIA_RIVER_CONTINUOUS_RIPPLED_WATER",
+    "V3_V2_VALORIA_RIVERBANK_AUTHOR_ROCKS",
+    "V3_VALORIA_V2_REAL_BRIDGE_BANK_STONE_-1_-19",
+    "V3_VALORIA_V2_REAL_BRIDGE_BANK_STONE_-1_-9",
+    "V3_VALORIA_V2_REAL_BRIDGE_BANK_STONE_1_-19",
+    "V3_VALORIA_V2_REAL_BRIDGE_BANK_STONE_1_-9",
+    "VALORIA_V3_IRREGULAR_RETERRACED_CLIFF_-1",
+    "VALORIA_V3_IRREGULAR_RETERRACED_CLIFF_1"
+  ],
+  "art_gate": "CANDIDATE_NOT_APPROVED_BY_COMPILATION",
+  "description": "Grounded real bridge ends, asymmetric stratified rock facade, retained V2 organic river"
+}
