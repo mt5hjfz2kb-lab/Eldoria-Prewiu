@@ -1,10 +1,10 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 19,
+  "revision": 20,
   "budget_eur": 0,
-  "validated_runtime_source": "f457a5df383da413cdf757920260710fd84f5c43",
-  "validated_run": 39066105455,
+  "validated_runtime_source": "074e852048e21ee2184c9534beb037ab718e23ba",
+  "validated_run": 39066408916,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Native revision18 inspected: normals repaired and SSAO influence verified; correct generated albedo sRGB encoding that darkened masonry, widen two through bridge arches and reduce central pier, add real spandrel courses, stagger roadway paving, smoother closed foundation shrubs and sparse ground clumps. Same camera/layout; preserve native interaction and route gates."
+  "art_correction": "Native close-up shows arch cutter depth9 misses outer dressed veneer. Extend to depth12 and verify evaluated mesh opening/pier with independent Blender rays before Unity. Refine shared terrain equation with blended flat building pads and gentle outer relief, meadow normal texture, warmer patch variation, closed grass tufts and moderated shrub greens. Same scene/camera; native visual and PlayMode recheck."
 }

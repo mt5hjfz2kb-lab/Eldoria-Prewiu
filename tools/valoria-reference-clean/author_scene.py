@@ -12,8 +12,11 @@ def river_center(x):return -23+1.5*sin(x*.065)+.85*sin(x*.19+.4)*smoothstep(6,17
 def river_width(x):return 7.1+.75*sin(x*.095+.7)+.48*sin(x*.23)
 def terrain_height(x,y):
  t=smoothstep(river_width(x)-2,river_width(x)+2,abs(y-river_center(x)))
- h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+max(0,y-40)*.045
- if (abs(x)<11 and -45<y<45) or any(abs(x-px)<9 and abs(y-py)<6.5 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):h=.35
+ h=.35+.65*sin(x*.08)*sin(y*.09)+.24*sin(x*.25+y*.17)+max(0,y-40)*.045
+ flatten=1-smoothstep(0,2.5,max(abs(x)-11,-45-y,y-45))
+ for px,py in [(-23,28),(-19,9),(29,32),(28,12)]:flatten=max(flatten,1-smoothstep(0,2,max(abs(x-px)-9,abs(y-py)-6.5)))
+ h=h*(1-flatten)+.35*flatten
+ natural=smoothstep(river_width(x)+1,river_width(x)+4,abs(y-river_center(x)));h=.35+(h-.35)*natural
  return h-4.9*(1-t)
 ROOT=os.getcwd(); OUT=os.path.join(ROOT,'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources');EV=os.path.join(ROOT,'docs/evidence/valoria-reference-clean')
 os.makedirs(OUT,exist_ok=True);os.makedirs(EV,exist_ok=True)
@@ -36,7 +39,7 @@ soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%
 # Original low-contrast surface pigmentation is baked to packed raster maps for glTF.
 sy,sx=np.mgrid[0:256,0:256]/256;grng=np.random.default_rng(715)
 grain=grng.random((256,256));weather=.94+.065*np.sin(sx*19+np.sin(sy*11))+.045*np.sin(sy*31+sx*9)+grain*.045
-for material in stone+[trim]:
+for material in stone+[trim]+rocks:
  rgba=np.ones((256,256,4),dtype=np.float32);base=np.array(material.diffuse_color[:3]);rgba[:,:,:3]=weather[:,:,None]*base[None,None,:]
  flecks=grain>.984;rgba[flecks,:3]*=.76
  # Packed generated image bytes are sampled as sRGB in glTF: encode the linear palette.
@@ -210,9 +213,13 @@ b=Mesh('Bridge_Masonry');b.box((0,-23,.10),(9,24,.70),stone[3])
 for X in [-4.12,4.12]:
  side=Mesh('Bridge_ArchSpandrel');courses(side,X,-23,-3.675,.75,24,3.65,stone_size=.95);ob=side.finish(.025)
  for Y in [-27.25,-18.75]:
-  bpy.ops.mesh.primitive_cylinder_add(vertices=48,radius=3.7,depth=9,location=(0,Y,-3.75),rotation=(0,pi/2,0));cut=bpy.context.object
+  bpy.ops.mesh.primitive_cylinder_add(vertices=48,radius=3.7,depth=12,location=(0,Y,-3.75),rotation=(0,pi/2,0));cut=bpy.context.object
   mod=ob.modifiers.new('Structural through arch','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cut;bpy.context.view_layer.objects.active=ob;bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cut,do_unlink=True)
   arch(b,X,Y,-3.75,3.7,.48,.95,trim,axis='x',segments=19)
+ # Independent rays through the evaluated spandrel catch any uncut veneer layer.
+ bpy.context.view_layer.update()
+ for Y in [-27.25,-18.75]:assert not ob.ray_cast(Vector((-7,Y,-1.2)),Vector((1,0,0)),distance=14)[0], 'Bridge arch is obstructed by actual mesh'
+ assert ob.ray_cast(Vector((-7,-23,-1.2)),Vector((1,0,0)),distance=14)[0], 'Bridge central pier missing'
  for y in range(-34,-10,2):courses(b,X,y,.45,.7,1.96,.85)
  b.box((X,-23,1.36),(.93,24,.21),trim)
 for X in [-4.2,4.2]:
@@ -285,7 +292,7 @@ for side in [-1,1]:
    if any((x-px)**2+(y-py)**2 < (.68*(size+ps))**2 for px,py,ps in rock_positions):continue
    rock_positions.append((x,y,size))
 for i,(x,y,size) in enumerate(rock_positions):
- crag=Mesh('River_Rock_%03d'%i);verts=[];segments=7;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(.9,1.65);angle=random.uniform(-pi,pi)
+ crag=Mesh('River_Rock_%03d'%i);verts=[];segments=9;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(.9,1.65);angle=random.uniform(-pi,pi)
  for ring,(z,radius) in enumerate([(-.5,.58),(-.24,.94),(.22,1.0),(.5,.5)]):
   phase=random.uniform(-.10,.10)
   for j in range(segments):
@@ -297,7 +304,7 @@ for i,(x,y,size) in enumerate(rock_positions):
  crag.add(verts,faces,rocks[2])
  for material in rocks:
   if material not in crag.ms:crag.ms.append(material)
- crag.mi=[crag.ms.index(random.choice(rocks)) for face in faces]
+ tone=random.randrange(len(rocks));crag.mi=[crag.ms.index(rocks[max(0,min(len(rocks)-1,tone+random.choice([-1,0,0,0,1])))]) for face in faces]
  crag.finish(.045)
 # Grounded irregular stones around woodland and ruins give the open land scale cues.
 for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
@@ -308,7 +315,7 @@ for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
   for v in o.data.vertices:v.co*=1+.13*sin(v.co.x*7+v.co.y*9+v.co.z*3+i)
   o.scale=(random.uniform(.4,.9),random.uniform(.35,.7),random.uniform(.4,.85));o.rotation_euler.z=random.uniform(-pi,pi);o.data.materials.append(random.choice(rocks));bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
 # Dense, small ornamental shrubs keep architecture grounded and plots free.
-leaf=[mat('Shrub leaf '+str(i),(.16+i*.035,.25+i*.035,.045+i*.012)) for i in range(4)]
+leaf=[mat('Shrub leaf '+str(i),(.11+i*.028,.18+i*.031,.028+i*.01)) for i in range(4)]
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1)
 template=bpy.context.object;iv=[v.co.copy() for v in template.data.vertices];iff=[tuple(p.vertices) for p in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
 sh=Mesh('Foundation_shrubs_and_groundcover')
@@ -349,11 +356,10 @@ for i in range(800):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
  if abs(y-river_center(x))<river_width(x)+2 or abs(x)<11 and -40<y<42:continue
  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
- h=.3+random.random()*.25
- for k in range(3):
-  a=random.random()*pi;w=.07
-  z=terrain_height(x,y)+.02
-  sh.add([(x-w*cos(a),y-w*sin(a),z),(x+w*cos(a),y+w*sin(a),z),(x+random.uniform(-.2,.2),y+random.uniform(-.2,.2),z+h)],[(0,1,2)],random.choice(leaf))
+ for k in range(5):
+  a=random.random()*2*pi;w=random.uniform(.045,.075);h=random.uniform(.18,.40);cx=x+random.uniform(-.22,.22);cy=y+random.uniform(-.22,.22);z=terrain_height(cx,cy)+.01
+  verts=[(cx+w*cos(a+j*2*pi/3),cy+w*sin(a+j*2*pi/3),z) for j in range(3)]+[(cx+.12*cos(a),cy+.12*sin(a),z+h)]
+  sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(leaf))
 sh.finish(0)
 # Seat actual low foot vertices against exactly the terrain equation used by Unity.
 for o in bpy.context.scene.objects:
