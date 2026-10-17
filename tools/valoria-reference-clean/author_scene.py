@@ -6,6 +6,73 @@ import bpy, bmesh, math, os, json, random, hashlib, urllib.request, socket, nump
 from mathutils import Vector,Matrix
 from mathutils.bvhtree import BVHTree
 from math import sin,cos,pi
+# Existing project transport, verbatim function from frozen studio6e11bf2; verified runs38612645467/38766521237.
+import sys,time,pathlib
+RejectedPlan=RuntimeError
+def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+def execute_via_blendermcp(operations, perform, addon_file, pinned_hash):
+    """Optional, genuinely executed BlenderMCP transport with pinned local addon.
+
+    MCP receives only a call to a pre-validated local action identifier;
+    the model is never permitted to supply arbitrary executable Python.
+    """
+    import importlib.util, socket, threading
+    if not addon_file or not addon_file.is_file():
+        raise RejectedPlan("Verified BlenderMCP addon required")
+    if not pinned_hash or digest(addon_file)!=pinned_hash:
+        raise RejectedPlan("BlenderMCP addon SHA-256 mismatch")
+    spec=importlib.util.spec_from_file_location("eldoria_full_artist_verified_mcp",str(addon_file.resolve()))
+    addon=importlib.util.module_from_spec(spec)
+    sys.modules[spec.name]=addon
+    spec.loader.exec_module(addon)
+    for provider in ("polyhaven","hyper3d","sketchfab","polypizza","hunyuan3d","tripo"):
+        key="blendermcp_use_"+provider
+        if not hasattr(bpy.types.Scene,key):
+            setattr(bpy.types.Scene,key,bpy.props.BoolProperty(default=False))
+    by_id={a["id"]:a for a in operations}
+    def execute_known_artwork(identifier):
+        if identifier not in by_id:
+            raise RejectedPlan("Unapproved BlenderMCP action identifier")
+        perform(by_id[identifier])
+    bpy.app.driver_namespace["eldoria_full_artist_known_action"]=execute_known_artwork
+    server=addon.BlenderMCPServer(host="127.0.0.1",port=0)
+    server.socket=socket.socket()
+    server.socket.bind(("127.0.0.1",0))
+    port=server.socket.getsockname()[1]
+    server.socket.listen(1)
+    server.running=True
+    server.server_thread=threading.Thread(target=server._server_loop,daemon=True)
+    server.server_thread.start()
+    try:
+        for action in operations:
+            replies=[];errors=[]
+            def client():
+                try:
+                    with socket.create_connection(("127.0.0.1",port),timeout=20) as sock:
+                        sock.settimeout(150)
+                        command='import bpy\nbpy.app.driver_namespace["eldoria_full_artist_known_action"]('+repr(action["id"])+')'
+                        sock.sendall(json.dumps({"type":"execute_code","params":{"code":command}}).encode())
+                        data=b""
+                        while len(data)<2000000:
+                            chunk=sock.recv(65536)
+                            if not chunk:raise RuntimeError("MCP socket disconnected")
+                            data+=chunk
+                            try:replies.append(json.loads(data));return
+                            except json.JSONDecodeError:pass
+                except Exception as exc:errors.append(str(exc))
+            thread=threading.Thread(target=client,daemon=True)
+            thread.start();deadline=time.monotonic()+155
+            while thread.is_alive() and time.monotonic()<deadline:
+                server._drain_command_queue()
+                time.sleep(.04)
+            thread.join(timeout=1)
+            if errors or not replies or replies[0].get("status")!="success":
+                raise RuntimeError("BlenderMCP operation failed without bypass: "+str(errors or replies))
+    finally:
+        server.stop()
+        bpy.app.driver_namespace.pop("eldoria_full_artist_known_action",None)
+
+
 random.seed(817)
 def smoothstep(a,b,v):
  t=max(0,min(1,(v-a)/(b-a)));return t*t*(3-2*t)
@@ -656,6 +723,58 @@ if shore_finish in ['zone_shingle','all_shingle']:
   for uv in ob.data.uv_layers.active.data:uv.uv*=3.5/1.5
  if sedge.v:sedge.finish(0)
 
+# Review-directed real model operation over the recovered pinned MCP transport.
+waterline_count=0;waterline_proof={'status':'NOT_REQUESTED'}
+if request.get('waterline_finish') in ['zone_talus','all_talus']:
+ action={'id':'valoria-waterline-talus-reviewed-v1','op':'author_closed_waterline_stones','mode':request['waterline_finish'],'target_prefix':'River_shingle','bounded_side':'right inland' if request['waterline_finish']=='zone_talus' else 'both banks','owner_scope':'ValoriaReferenceClean only'}
+ operation={'started':False,'completed':False};before_objects=set(bpy.data.objects)
+ protected={o.name:tuple(v for row in o.matrix_world for v in row) for o in before_objects}
+ def perform_waterline(act):
+  global waterline_count
+  if act!=action or act['op']!='author_closed_waterline_stones' or act['mode'] not in ['zone_talus','all_talus']:raise RuntimeError('Unvalidated shoreline action')
+  operation['started']=True;waterline_count=0
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1);template=bpy.context.object
+  verts=[v.co.copy() for v in template.data.vertices];faces=[tuple(f.vertices) for f in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
+  talus=Mesh('River_shingle_waterline_additions')
+  for side in [-1,1]:
+   for pocket in range(23):
+    wr=random.Random(4533+pocket*197+(side+1)*100003);X=-63+pocket*5.7+wr.uniform(-.8,.8)
+    if act['mode']=='zone_talus' and not (side==1 and 8<X<28):continue
+    for j in range(wr.randint(14,20)):
+     x=X+wr.uniform(-1.8,1.8);margin=wr.uniform(-.05,.70);y=river_center(x)+side*(river_width(x)+margin)
+     if act['mode']=='zone_talus' and not 8<x<28:continue
+     radius=wr.uniform(.24,.57)*(1.18 if j<3 else 1)
+     if abs(x-road_x(y))<6+radius:continue
+     if any((x-bx)**2+(y-by)**2<(bs*.70)**2 for bx,by,bs in rock_positions):continue
+     rx=radius*wr.uniform(.9,1.45);ry=radius*wr.uniform(.75,1.15);rz=radius*wr.uniform(.45,.75);angle=wr.uniform(-pi,pi);shape=[]
+     for v in verts:
+      f=1+.13*sin(v.x*9+v.y*7+v.z*5+pocket+j);a=v.x*rx*f;b=v.y*ry*f;shape.append((x+a*cos(angle)-b*sin(angle),y+a*sin(angle)+b*cos(angle),v.z*rz*f))
+     low=min(v[2] for v in shape);ground=terrain_height(x,y)-.07
+     talus.add([(a,b,c-low+ground) for a,b,c in shape],faces,rock_surface);waterline_count+=1
+  if waterline_count<8:raise RuntimeError('Waterline operation produced too little visible geometry')
+  obj=talus.finish(0)
+  for face in obj.data.polygons:face.use_smooth=True
+  for uv in obj.data.uv_layers.active.data:uv.uv*=3.5/1.5
+  for old in before_objects:
+   if tuple(v for row in old.matrix_world for v in row)!=protected[old.name]:raise RuntimeError('Protected object moved during shoreline authoring')
+  operation['completed']=True
+ addon=next((m for m in tools.get('blendermcp_addons',[]) if m['module']=='blender_mcp'),None)
+ waterline_proof={'source_sha':os.environ.get('GITHUB_SHA'),'transport_function_origin':'6e11bf237e6009b7eb8484bcba2f0def35a07b5c:tools/art-direction/full-studio/blender_toolbox.py:execute_via_blendermcp','historic_verified_runs':[38612645467,38766521237],'plan':action,'arbitrary_model_python':False,'paid_providers_enabled':False,'existing_addon':addon,'ephemeral_loopback_server':True}
+ try:
+  if not addon:raise RuntimeError('Installed addon discovery unavailable')
+  execute_via_blendermcp([action],perform_waterline,pathlib.Path(addon['path']),'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5')
+  waterline_proof['status']='ACTUAL_PINNED_BLENDERMCP_ACTION_EXECUTED'
+ except Exception as error:
+  waterline_proof['transport_error']=str(error)
+  if operation['completed']:waterline_proof['status']='ACTION_EXECUTED_MCP_REPLY_UNVERIFIED'
+  else:
+   for obj in set(bpy.data.objects)-before_objects:bpy.data.objects.remove(obj,do_unlink=True)
+   perform_waterline(action);waterline_proof['status']='DIRECT_BLENDER_FALLBACK_AFTER_MCP_UNAVAILABLE'
+ waterline_proof.update(closed_waterline_stones=waterline_count,protected_transforms_unchanged=True,operation_completed=operation['completed'])
+ tools['managed_blendermcp']=waterline_proof
+ json.dump(tools,open(os.path.join(EV,'native-tool-check.json'),'w'),indent=2)
+ json.dump(waterline_proof,open(os.path.join(EV,'blendermcp-art-operation.json'),'w'),indent=2)
+
 # Seat actual low foot vertices against exactly the terrain equation used by Unity.
 for o in bpy.context.scene.objects:
  if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_','Ruin_')):continue
@@ -689,7 +808,7 @@ if foam.f:
  for poly in ob.data.polygons:
   for li in poly.loop_indices:uv.data[li].uv=[(0,0),(0,1),(1,1),(1,0)][ob.data.loops[li].vertex_index%4]
 # Shared static environmental meshes reduce material submissions; source islands stay editable.
-for prefix,label in [('River_Rock','River_bank_rocks'),('Ground_Rock','Woodland_ground_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
+for prefix,label in [('River_shingle','River_shingle_pockets'),('River_Rock','River_bank_rocks'),('Ground_Rock','Woodland_ground_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
  group=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith(prefix)]
  bpy.ops.object.select_all(action='DESELECT')
  for o in group:o.select_set(True)
@@ -719,5 +838,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'baked_ao_loops':canopy_ao_loops,'bounds_preserved':True,'zone':'right foreground trees only','method':'rejected41 vertex colors removed; proven40 donor shading restored'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'shore_finish':{'mode':shore_finish,'closed_pebbles':shingle_count,'closed_sedge_blades':sedge_blades,'placement_rng_isolated':True},'shore_profile':{'mode':request.get('shore_treatment'),'waterline_preserved':True,'bridge_gate_support_protected':True,'native_terrain_equation_matched':True},'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'baked_ao_loops':canopy_ao_loops,'bounds_preserved':True,'zone':'right foreground trees only','method':'rejected41 vertex colors removed; proven40 donor shading restored'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'managed_blendermcp':waterline_proof,'shore_finish':{'waterline_stones':waterline_count,'mode':shore_finish,'closed_pebbles':shingle_count,'closed_sedge_blades':sedge_blades,'placement_rng_isolated':True},'shore_profile':{'mode':request.get('shore_treatment'),'waterline_preserved':True,'bridge_gate_support_protected':True,'native_terrain_equation_matched':True},'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

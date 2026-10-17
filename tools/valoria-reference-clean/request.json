@@ -1,12 +1,12 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 44,
+  "revision": 45,
   "budget_eur": 0,
-  "validated_runtime_source": "9a126364fd7a6372853e19e1db242fa0ff31b510",
-  "validated_run": 39077683118,
+  "validated_runtime_source": "991b6d2fc8286547046c4e751f46553599366f90",
+  "validated_run": 39078150031,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native43 real player/detail and local Qwen8B review inspected. All-bank slope and healthy trees retained;96 paths/headroom,12 corners,5 picks,6stairs/save unchanged. Qwen actual critic identifies remaining artificial bank interface; reject its collider/water and lowering-bridge advice as geometrically invalid (bridge closed supports already below water, tested). Next bounded right-inland shoreline study: true closed mineral pebbles in irregular pockets plus tapered sedge, isolated RNG leaves validated existing scene geometry/positions unchanged. Reuse existing verified CC0 Rock3 PBR, no download. Same-camera/light original43 terrain and hash-verified old nature versus new pockets in Unity. Do not extend if just noise or hides ground/contact. One existing scene/branch/workflow, no new tool system. Android adapter remains next after visual acceptance.",
+  "art_correction": "Native44 real detail inspected: upper-bank40 pebbles/42 sedge blades real but too high on exposed soil to solve the waterline; do not extend this weak detail globally. Retain bounded44 pockets and model new partly submerged closed waterline stones at exact natural crossing, x8..28 only. Recover EXACT existing installed BlenderMCP ephemeral-loopback transport from proven runs38612645467/38766521237 and frozen toolbox6e11bf2; pinned addon SHA matches actual native41/42 discovery. Execute ONE reviewed/typed action to author real mesh/PBR UV, not arbitrary model Python. Claim/free-tools preflight remains; no install/parallel job. If MCP unavailable, clean only new operation objects and fall back to existing native Blender. Native A/B now swaps ONLY shingle mesh, sharing actual current forest/terrain/lighting; avoid unrelated imported-forest shading differences observed in broader44 comparison. Preserve source44 pocket positions using unchanged isolated RNG; new action per-pocket deterministic. Genuine Unity A/B required, no art/mobile claim.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
@@ -15,5 +15,6 @@
   "tree_treatment": "canopy_zone",
   "shore_treatment": "all_profile",
   "review_scope": "shore",
-  "shore_finish": "zone_shingle"
+  "shore_finish": "zone_shingle",
+  "waterline_finish": "zone_talus"
 }

@@ -65,6 +65,7 @@ jobs:
               if($req.tree_treatment -eq 'canopy_ao_zone'){$env:VALORIA_NATURE_TARGET='Fir_tree_group';$env:VALORIA_NATURE_PREFIX='canopy-zone'}
             }
             if($req.shore_treatment -in @('zone_profile','all_profile')){$env:VALORIA_NATURE_TARGET='Shore_profile';$env:VALORIA_NATURE_PREFIX='shore-zone'}
+            if($req.waterline_finish -in @('zone_talus','all_talus')){$env:VALORIA_NATURE_TARGET='River_shingle_pockets';$env:VALORIA_NATURE_PREFIX='waterline-zone'}
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
             if(-not $blender){throw 'Blender unavailable'}
