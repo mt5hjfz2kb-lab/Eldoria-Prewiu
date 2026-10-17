@@ -85,7 +85,7 @@ for sign,rows,width in tracks:
    cells.append(point(nx,nz,y))
   if previous is not None:
    for k in range(8):
-    face((previous[k],previous[k+1],cells[k+1],cells[k]),0)
+    face((cells[k],cells[k+1],previous[k+1],previous[k]) if sign>0 else (previous[k],previous[k+1],cells[k+1],cells[k]),0)
   previous=cells
 # Individual irregular cobblestones touch the real surface; one unified mesh.
 # No colliders are moved or manufactured, and the protected gate is untouched.
