@@ -8,12 +8,30 @@ on:
       - 'tools/valoria-layered-construction/author-entry-zone-v6.blender.py'
 permissions:
   contents: write
-  actions: read
-concurrency:
-  group: valoria-macro-envelope-one-native-run
-  cancel-in-progress: true
+  actions: write
 jobs:
+  recover-own-superseded-runs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Cancel only the two exact superseded runs of this owner and wait for cleanup
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const selected=[{id:39028168817,sha:'29ad831555bdada1cdbbb806632ff3d8859061aa'},{id:39028512389,sha:'c92e403c2fa40934c18a905dc64d4d3676adbd57'}];
+            for(const item of selected){
+              const args={...context.repo,run_id:item.id};const r=(await github.rest.actions.getWorkflowRun(args)).data;
+              if(r.head_sha!==item.sha||r.head_branch!=='construction/valoria-master-plan-layers-20261016'||r.path!=='.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml')throw new Error('Superseded-run identity mismatch');
+              if(r.status!=='completed'){await github.rest.actions.cancelWorkflowRun(args);core.info('Requested cancellation of own exact run '+item.id);}
+              let complete=false;
+              for(let i=0;i<40;i++){const current=(await github.rest.actions.getWorkflowRun(args)).data;if(current.status==='completed'){complete=true;core.info(item.id+' '+current.conclusion);break;}await new Promise(resolve=>setTimeout(resolve,3000));}
+              if(!complete)throw new Error('Old native process cleanup not finished; do not start another Windows job');
+            }
   actual-sharp-native:
+    needs: recover-own-superseded-runs
+    concurrency:
+      group: valoria-macro-envelope-one-native-run
+      cancel-in-progress: false
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 70
     defaults:
