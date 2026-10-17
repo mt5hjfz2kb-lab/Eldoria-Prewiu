@@ -39,7 +39,7 @@ assert len(keep.data.polygons)==len(original.data.polygons)
 assert len(keep.data.materials)==len(original.data.materials)
 heraldry=[]
 for slot,mat in enumerate(original.data.materials):
- if mat and mat.name=="Eldoria_banner_blue":
+ if mat and mat.name.startswith("Eldoria_banner_blue"):
   assert mat.use_nodes
   images=[n.image for n in mat.node_tree.nodes if n.type=="TEX_IMAGE" and n.image]
   assert len(images)==1 and images[0].name.startswith("banner_heraldry"),[x.name for x in images]
