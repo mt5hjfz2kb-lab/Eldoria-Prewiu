@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-17T22:01:02.843Z",
+  "updated_at": "2026-10-17T22:10:16.343Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_ARTISTIC_JUMP_STONE_PBR_ZONE_SAME_CAMERA_LIGHT_AB",
-      "next": "Owner 23:48 reinforces perceptible artistic jump: natural stone and lighting first, then organic terrain, river/nature, architecture. Native34 uses Blender-authored per-stone scanned CC0 PBR UV1 only on right Bastion flank; original UV0 retained. Inspect genuine same-run Unity old/new material A/B with asserted identical cameras/lights/mesh before extending. Technical33 validated; APK deferred behind art priority.",
+      "phase": "REFERENCE_CLEAN_STONE_STYLE_CORRECTION_AND_ORGANIC_GROUND_ZONE_AB",
+      "next": "Native35 complete and genuine same-camera/light/mesh stone A/B inspected: visible but too coarse/contrasty, not approved for global extension. Native36 source8768077a38217bc764e37dfb8f6f2e0dd54d4dbf run39073920387 adapts scanned stone palette/normal in Blender and tests bounded organic meadow textures, with real matched camera/light before-after. Preserve current layout/gameplay; extend only after visual inspection. APK deferred behind owner art priority.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -110,10 +110,15 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "FIXED_BY_ALL_ART_STATIC_FLAGS_FALSE_REV31; PNG_PARITY_PASS_THROUGH_REV33",
-          "current_run": 39073262529,
-          "current_source": "cde0458c9e9ecb34a31bda17ab418543fee4f8bb",
+          "current_run": 39073920387,
+          "current_source": "8768077a38217bc764e37dfb8f6f2e0dd54d4dbf",
           "headroom_passes": 96,
-          "mobile_frame_ground_hits": 12
+          "mobile_frame_ground_hits": 12,
+          "source_sha": "5e3dea5a24e664f2851c282d34040d0fd2a9272f",
+          "output_sha": "101365c3c8c944df27908cb3527b91cbf2fcf1af",
+          "run_id": 39073536686,
+          "stone_zone_camera_light_geometry_identity": true,
+          "stone35_visual_review": "CLEAR CHANGE BUT TOO COARSE; DO NOT EXTEND YET"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
