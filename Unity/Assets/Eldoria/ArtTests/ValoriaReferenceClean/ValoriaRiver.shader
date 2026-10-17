@@ -1,5 +1,5 @@
 Shader "Eldoria/ReferenceClean/River" {
- Properties { _BaseColor("Deep blue",Color)=(.018,.21,.34,1) _ShallowColor("Shore blue",Color)=(.045,.36,.47,1) }
+ Properties { [MainColor] _BaseColor("Deep blue",Color)=(.018,.21,.34,1) _ShallowColor("Shore blue",Color)=(.045,.36,.47,1) }
  SubShader {
   Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry"}
   Pass {
