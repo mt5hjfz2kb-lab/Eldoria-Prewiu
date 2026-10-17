@@ -1,0 +1,97 @@
+name: "[ISOLATED] Eldoria real Unity gate and wall composition"
+on:
+  push:
+    branches:
+      - experiment/eldoria-three-visual-styles-20261017
+    paths:
+      - .github/workflows/eldoria-gate-wall-showcase-unity.yml
+      - Unity/Assets/Eldoria/ArtTests/GateWallShowcase/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-isolated-gate-wall-20261017
+  cancel-in-progress: false
+jobs:
+  gate-wall-real-unity:
+    if: \${{ vars.UNITY_RUNNER_READY == 'true' }}
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Find Git from GitHub Desktop on Windows
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop = "$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found' }
+            $dir = Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/eldoria-three-visual-styles-20261017
+          clean: false
+          fetch-depth: 1
+      - name: Check branch and installed Unity
+        shell: powershell
+        run: |
+          if ((git rev-parse --abbrev-ref HEAD).Trim() -ne 'experiment/eldoria-three-visual-styles-20261017') { throw 'Wrong checkout' }
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'Unity Editor not installed at UNITY_EDITOR_PATH' }
+          if (-not (Test-Path 'Unity\Assets\Eldoria\Resources\Valoria\ProductionArt\StoneDefensiveFamilyV2\Valoria_MainGate_StoneDefV2.glb')) { throw 'Original gate absent' }
+          if (-not (Test-Path 'Unity\Assets\Eldoria\Resources\Valoria\ProductionArt\StoneDefensiveFamilyV2\Valoria_WallSegment_StoneDefV2.glb')) { throw 'Original wall absent' }
+          if (-not (Test-Path 'Unity\Assets\Eldoria\Resources\Valoria\ProductionArt\StoneDefensiveFamilyV2\Valoria_Tower_StoneDefV2.glb')) { throw 'Original tower absent' }
+          git rev-parse HEAD
+      - name: Build source geometry and take three actual Unity frames
+        shell: powershell
+        run: |
+          $out="$env:GITHUB_WORKSPACE\docs\evidence\eldoria-gate-wall-showcase-20261017"
+          $log="$env:RUNNER_TEMP\EldoriaGateWallUnity.log"
+          Remove-Item $out -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11',
+                  '-projectPath',"$env:GITHUB_WORKSPACE\Unity",
+                  '-executeMethod','Eldoria.ArtTests.GateWallShowcase.GateWallShowcaseCapture.Capture',
+                  '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $p.WaitForExit(1800000)) {
+             & taskkill.exe /PID $p.Id /T /F | Out-Null
+             if (Test-Path $log) { Get-Content $log -Tail 180 }
+             throw 'Unity timed out before real captures'
+          }
+          if ($p.ExitCode -ne 0) {
+             if (Test-Path $log) { Get-Content $log -Tail 220 }
+             throw "Unity failed (exit $($p.ExitCode))"
+          }
+          if (-not (Select-String $log -Pattern 'ELDORIA_GATE_WALL_REAL_UNITY_CAPTURE_COMPLETE' -Quiet)) { throw 'Missing actual native capture completion proof' }
+          foreach($n in @('01_hero_three_quarter_REAL_UNITY.png','02_frontal_gate_REAL_UNITY.png','03_wall_connection_REAL_UNITY.png','evidence.json')){
+            $file=Join-Path $out $n
+            if (-not (Test-Path $file)) { throw "No proof file $file" }
+          }
+          $json=Get-Content (Join-Path $out 'evidence.json') -Raw | ConvertFrom-Json
+          if ($json.source_instances -lt 7) {throw 'Failed original architecture source instance gate'}
+          $scene='Unity\Assets\Eldoria\ArtTests\GateWallShowcase\Generated\GateWallShowcase_REAL_UNITY.unity'
+          if (-not (Test-Path $scene)) {throw 'Native Unity scene not saved'}
+          Get-Content (Join-Path $out 'evidence.json')
+      - name: Preserve Unity logs and exact commit
+        if: always()
+        shell: powershell
+        run: |
+          $out="$env:GITHUB_WORKSPACE\docs\evidence\eldoria-gate-wall-showcase-20261017"
+          New-Item $out -ItemType Directory -Force | Out-Null
+          (git rev-parse HEAD).Trim() | Set-Content (Join-Path $out 'checkout_sha.txt')
+          if (Test-Path "$env:RUNNER_TEMP\EldoriaGateWallUnity.log") {
+             Copy-Item "$env:RUNNER_TEMP\EldoriaGateWallUnity.log" (Join-Path $out 'UnityNativeGateWall.log') -Force
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-gate-wall-real-Unity-\${{ github.run_id }}
+          path: |
+            docs/evidence/eldoria-gate-wall-showcase-20261017/**
+            Unity/Assets/Eldoria/ArtTests/GateWallShowcase/Generated/**
+          retention-days: 30
+          if-no-files-found: warn
