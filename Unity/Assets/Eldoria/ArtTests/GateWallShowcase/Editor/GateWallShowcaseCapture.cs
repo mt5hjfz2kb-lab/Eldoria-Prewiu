@@ -71,9 +71,9 @@ namespace Eldoria.ArtTests.GateWallShowcase
                 throw new IOException("Unable to save real native Unity gate-wall scene");
             string outDir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,OutputRelative));
             Directory.CreateDirectory(outDir);
-            SaveView(camera,Path.Combine(outDir,"01_hero_three_quarter_REAL_UNITY.png"),new Vector3(25,18,-39),new Vector3(0,8,1),46f);
-            SaveView(camera,Path.Combine(outDir,"02_frontal_gate_REAL_UNITY.png"),new Vector3(0,13,-32),new Vector3(0,7,0),46f);
-            SaveView(camera,Path.Combine(outDir,"03_wall_connection_REAL_UNITY.png"),new Vector3(-26,16,-30),new Vector3(-8,7,1),44f);
+            SaveView(camera,Path.Combine(outDir,"01_hero_three_quarter_REAL_UNITY.png"),new Vector3(17,12,-26),new Vector3(0,6,0),48f);
+            SaveView(camera,Path.Combine(outDir,"02_frontal_gate_REAL_UNITY.png"),new Vector3(0,11,-26),new Vector3(0,6,0),48f);
+            SaveView(camera,Path.Combine(outDir,"03_wall_connection_REAL_UNITY.png"),new Vector3(-19,13,-24),new Vector3(-8,7,1),46f);
             string evidence="{\n"+
                 "  \"kind\": \"genuine_Unity_editor_scene\",\n"+
                 "  \"engine\": \""+UnityEngine.Application.unityVersion+"\",\n"+
@@ -236,12 +236,7 @@ namespace Eldoria.ArtTests.GateWallShowcase
             SourceModel("Valoria_Tower_StoneDefV2.glb","right flanking watchtower",22.2f,0,5.2f,.14f);
             SourceModel("Valoria_WallSegment_StoneDefV2.glb","left outer rampart",-30.0f,0,10.1f,.14f);
             SourceModel("Valoria_WallSegment_StoneDefV2.glb","right outer rampart",30.0f,0,10.1f,.14f);
-            // Landscape supports drawn from Eldoria's own textured rock source.
-            string rock="Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb";
-            SourceModel(rock,"left cliff wall contact",-40f,5f,12f,-1.0f);
-            SourceModel(rock,"right cliff wall contact",40f,5f,12f,-1.0f);
-            SourceModel(rock,"rear west bedrock",-35f,15f,14f,-2.1f);
-            SourceModel(rock,"rear east bedrock",35f,15f,14f,-2.1f);
+
         }
 
         private static void CreateRoadAndBridges()
@@ -311,21 +306,6 @@ namespace Eldoria.ArtTests.GateWallShowcase
                 Block("Valoria flagstaff",x,8.3f,-3f,.13f,9f,.13f,wood);
                 Block("Valoria dark blue heraldic banner",x+s*.46f,10.25f,-3.1f,.9f,3.6f,.11f,blue);
                 Block("Gold royal heraldic charge",x+s*.46f,10.5f,-3.19f,.25f,.72f,.07f,gold);
-                for(int j=0;j<2;j++)
-                {
-                    float z=-8f-j*11.0f;
-                    Block("Carved roadside limestone brazier",s*4.3f,1.4f,z,1.1f,2.8f,1.1f,torchStone);
-                    Primitive("Wrought iron fire bowl",PrimitiveType.Cylinder,
-                        new Vector3(s*4.3f,3.0f,z),new Vector3(.73f,.18f,.73f),iron);
-                    Primitive("Amber flame globe",PrimitiveType.Sphere,
-                        new Vector3(s*4.3f,3.5f,z),new Vector3(.5f,.85f,.5f),fire);
-                    var point=new GameObject("Warm fire reflection point lamp");
-                    point.transform.SetParent(root,false);
-                    point.transform.position=new Vector3(s*4.3f,3.75f,z);
-                    var l=point.AddComponent<Light>();
-                    l.type=LightType.Point; l.range=9; l.intensity=2.1f;
-                    l.color=C(0xffb66c);l.shadows=LightShadows.None;
-                }
             }
             // Heavy double-leaf oak doors are recessed BEHIND the original arch.
             var oak=Mat("oak_gate_leaf",C(0x453529));
