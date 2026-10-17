@@ -147,8 +147,12 @@ jobs:
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity
           if(-not(git diff --cached --quiet)){
             git commit -m 'evidence(valoria): Blender terrain V3 native SHARP player A/B scene and renders'
+            git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Unable to fetch current shared branch. Never force.'}
+            git rebase origin/construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Shared branch changed with conflicting files; preserve artifacts, never force'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent owner branch changed; preserve artifacts, no force'}
+            if($LASTEXITCODE){throw 'Branch changed during push; preserve artifacts, never force'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
