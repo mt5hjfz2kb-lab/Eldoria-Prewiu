@@ -123,7 +123,9 @@ for original_name,label,cx,cy,zmin,mirror in plan:
  new_objects.append(obj)
 # Do not export inspection-only original donors; they never enter the visible scene.
 for o in pieces.values():bpy.data.objects.remove(o,do_unlink=True)
-assert set(bpy.data.objects.keys())-source_scene_names==set(o.name for o in new_objects)
+actual_new=set(bpy.data.objects.keys())-source_scene_names
+expected_new=set(o.name for o in new_objects)|{v7_terrain.name}
+assert actual_new==expected_new,('Unexpected new objects',sorted(actual_new-expected_new),sorted(expected_new-actual_new))
 for image in bpy.data.images:
  if image.source=='FILE' and not image.packed_file:
   if os.path.isfile(bpy.path.abspath(image.filepath)):image.pack()
