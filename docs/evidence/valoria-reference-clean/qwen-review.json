@@ -2,7 +2,7 @@
   "role": "AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE",
   "art_approved": false,
   "new_model_downloads": 0,
-  "source_sha": "7e9424d94a6abc6f4232dd671e178adeacbea70f",
+  "source_sha": "7da5124e209bf801d5052a3247f441d94758b9cd",
   "installed_models": [
     "qwen3:14b",
     "qwen3-vl:8b-instruct-q4_K_M",
@@ -17,33 +17,41 @@
     },
     {
       "path": "playmode-home.png",
-      "sha256": "75dc098a095a01a832e94236245b18f387bc22b2dac1d73d717d9f1021f28c65"
+      "sha256": "1bdd79f9c3885bfaa6d77b1d387e8a616476012271df811f385ccf5667e2ed09"
     }
   ],
+  "native_scene_facts": {
+    "source_sha": "7da5124e209bf801d5052a3247f441d94758b9cd",
+    "directional_lights": 1,
+    "native_terrain_resolution": 257,
+    "blue_roof_materials": 0,
+    "triangles": 531200,
+    "renderers": 28
+  },
   "status": "REAL_LOCAL_CRITIQUE_RECORDED",
   "model": "qwen3-vl:8b-instruct-q4_K_M",
-  "elapsed_seconds": 36.08,
+  "elapsed_seconds": 37.01,
   "review": {
     "visible_strengths": [
-      "The overall composition is symmetrical and balanced, with the main keep centered and the bridge leading to the gate.",
-      "The architecture proportions are generally consistent with the first image, including the arched bridge and the main gate structure.",
-      "The terrain and river integration are acceptable, with the river flowing naturally around the bridge and the shorelines are mostly defined."
+      "The overall layout correctly matches the reference: one main keep, one lower gate, a river bridge, four empty plots, and sparse broken walls.",
+      "The directional lighting is present and creates consistent shadows across the scene.",
+      "The terrain resolution is adequate for the scale, with visible shorelines and rock placement."
     ],
     "highest_impact_defects": [
       {
-        "observation": "The main keep's roof is incorrectly rendered as a flat, solid blue surface, lacking the detailed tile texture and shadowing seen in the reference image. This breaks material separation and visual realism.",
-        "correction": "In Unity, replace the current flat blue material with a detailed tile texture asset. Use a normal map and specular map to add surface detail and lighting response. Adjust the UV mapping to match the reference's roof geometry."
+        "observation": "The main keep's roof is rendered as a flat, uniform blue surface with no visible individual slate geometry or texture detail, making it appear untextured and unrealistic compared to the reference image.",
+        "correction": "In Unity, assign a high-resolution, physically-based material (e.g., 'Slate Roof' with normal and roughness maps) to the roof mesh. Ensure the material is applied to individual faces or use a procedural tile system to simulate individual slate geometry. This will restore the 'physically authored individual slate' detail mentioned in the verified facts."
       },
       {
-        "observation": "The lower gate structure is visually inconsistent with the main keep. The gate's arch is too narrow and lacks the proper scale and detail, making it appear disconnected from the main structure.",
-        "correction": "In Unity, scale the gate's arch to match the reference's proportions. Add proper lighting and shadowing to the gate to integrate it with the main keep. Use the same material and texture set as the main keep for visual consistency."
+        "observation": "The river bridge's arch is visually inconsistent with the reference. The bridge appears to be a single, flat, low-poly structure with no visible arch curvature or structural detail, making it look like a simple ramp rather than a true arched bridge.",
+        "correction": "In Unity, rebuild the bridge geometry to include a proper arch shape. Use a curved mesh or a series of connected arch segments. Add appropriate collision and visual detail (e.g., stone texture, edge caps) to make it structurally and visually accurate to the reference."
       },
       {
-        "observation": "The vegetation is sparse and lacks the natural density and variation seen in the reference image. The trees are uniformly placed and lack the organic randomness of a real landscape.",
-        "correction": "In Unity, use a procedural tree placement system or manually adjust tree positions to create a more natural distribution. Add variation in tree species, size, and orientation. Use a foliage shader to enhance the visual realism of the vegetation."
+        "observation": "The vegetation (trees) is poorly distributed and lacks natural variation. The trees are uniformly placed and appear as simple, low-poly objects with no variation in size, species, or density, making the scene look artificial and unbalanced.",
+        "correction": "In Unity, use a more sophisticated vegetation system (e.g., Unity's Landscape Vegetation System or a custom script) to place trees with randomized scale, rotation, and species. Add more trees in clusters and vary their density to create a more natural, organic look that matches the reference image."
       }
     ],
     "reference_similarity_estimate_0_to_10": 6.5,
-    "uncertainty": "The lighting and material rendering are the most significant sources of discrepancy. The current image's lighting appears flat and lacks the warm, directional lighting of the reference. The material textures are also less detailed, which affects the overall visual fidelity."
+    "uncertainty": "The scene's lighting and material rendering are consistent with the reference, but the lack of detailed roof geometry and bridge structure significantly reduces visual fidelity. The vegetation is the most noticeable deviation from the reference's natural appearance."
   }
 }
