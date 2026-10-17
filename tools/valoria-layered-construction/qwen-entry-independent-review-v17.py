@@ -41,6 +41,19 @@ im=bpy.data.images.new("Native_Unity_V13_Left_V17_Right",width=1536,height=512,a
 im.pixels.foreach_set(side.ravel())
 im.filepath_raw=str(ev/"V13-left_V17-right-true-Unity.png");im.file_format="PNG";im.save()
 bpy.data.images.remove(im)
+# Smaller true-image inspection copies, not generated concept art or revised Unity frames.
+for src,name in [
+ (before,"V13-authentic-home-visual-review.jpg"),
+ (after,"V17-authentic-home-visual-review.jpg"),
+ (root/"docs/evidence/valoria-layered-construction-20261016/entry-zone-v13/entry-AFTER-zoom-in.png","V13-authentic-zoom-visual-review.jpg"),
+ (ev/"entry-AFTER-zoom-in.png","V17-authentic-zoom-visual-review.jpg")
+]:
+ if not src.is_file():continue
+ im=bpy.data.images.load(str(src),check_existing=False)
+ im.scale(1024,683)
+ im.filepath_raw=str(ev/name);im.file_format="JPEG"
+ im.save()
+ bpy.data.images.remove(im)
 result={"role":"INDEPENDENT_LOCAL_VISUAL_CRITIQUE_AND_GENUINE_UNITY_DIFF_V17",
  "automatic_art_approval":False,"new_models_downloaded":False,"candidate":"V17","baseline":"V13",
  "genuine_unity_pixel_diff":diff_report}
