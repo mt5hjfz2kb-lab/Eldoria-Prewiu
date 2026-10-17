@@ -1,5 +1,5 @@
 {
-  "source_sha": "5e3dea5a24e664f2851c282d34040d0fd2a9272f",
+  "source_sha": "8768077a38217bc764e37dfb8f6f2e0dd54d4dbf",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -79,6 +79,46 @@
       "bytes": 1113869,
       "license": "CC0-1.0",
       "asset_url": "https://polyhaven.com/a/sandstone_blocks_05"
+    },
+    {
+      "channel": "Diffuse",
+      "file": "leafy_grass_diff_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_diff_1k.png",
+      "md5": "7639691afa92caa8034236e6a0687bfe",
+      "sha256": "2a4356e6aef5db70bb803a31fa265321b733b1f77c7c80ac26ae9aa0552f345d",
+      "bytes": 5913007,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/leafy_grass"
+    },
+    {
+      "channel": "nor_gl",
+      "file": "leafy_grass_nor_gl_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_nor_gl_1k.png",
+      "md5": "a98f306f4dafb1e956d562b78503e174",
+      "sha256": "7cba8d8a3cbd14663fd974b73ecebcbb42e0cc258d912867e9dd67a5582ca4d9",
+      "bytes": 6111876,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/leafy_grass"
+    },
+    {
+      "channel": "Diffuse",
+      "file": "sparse_grass_diff_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sparse_grass/sparse_grass_diff_1k.png",
+      "md5": "e4c7593acc6bd6b937e43351fadc41aa",
+      "sha256": "ab60bc2f607801de291b826514cd13615397a903e861f0974c61c67849b7eb2d",
+      "bytes": 5697636,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/sparse_grass"
+    },
+    {
+      "channel": "nor_gl",
+      "file": "sparse_grass_nor_gl_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sparse_grass/sparse_grass_nor_gl_1k.png",
+      "md5": "a09e4b0ea1cbec68992cfae5b00c2607",
+      "sha256": "6b46042ca4b8890067a1f930b40580b9f21a5096d7e9ecd883fa4af223dc1b3a",
+      "bytes": 6096327,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/sparse_grass"
     }
   ],
   "art_approved": false,
@@ -118,6 +158,6 @@
   },
   "mesh_objects": 32,
   "triangles": 576504,
-  "blend_sha256": "9aaa09c81a549b1e04c4c54ceec7bc00fb24b29d53cc89c45054c493b4a51b67",
-  "glb_sha256": "4009de4be1b2d7f011e8247f2da0db8074f6318914e28714dc27ebfae29d8746"
+  "blend_sha256": "094c52754ce4de19578d862d689a3a446c1cf6202eea4782a556d9be63c27d68",
+  "glb_sha256": "1ac6ee97b3716eb3b668de6416b174e0a999d04ea6becc8cc813ae755a415728"
 }

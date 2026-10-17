@@ -1,0 +1,27 @@
+{
+  "asset": "sparse_grass",
+  "author": "Poly Haven",
+  "asset_url": "https://polyhaven.com/a/sparse_grass",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "cost_eur": 0,
+  "resolution": "1k",
+  "files": [
+    {
+      "channel": "Diffuse",
+      "file": "sparse_grass_diff_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sparse_grass/sparse_grass_diff_1k.png",
+      "md5": "e4c7593acc6bd6b937e43351fadc41aa",
+      "sha256": "ab60bc2f607801de291b826514cd13615397a903e861f0974c61c67849b7eb2d",
+      "bytes": 5697636
+    },
+    {
+      "channel": "nor_gl",
+      "file": "sparse_grass_nor_gl_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sparse_grass/sparse_grass_nor_gl_1k.png",
+      "md5": "a09e4b0ea1cbec68992cfae5b00c2607",
+      "sha256": "6b46042ca4b8890067a1f930b40580b9f21a5096d7e9ecd883fa4af223dc1b3a",
+      "bytes": 6096327
+    }
+  ]
+}
