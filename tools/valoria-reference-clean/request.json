@@ -1,15 +1,16 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 39,
+  "revision": 40,
   "budget_eur": 0,
-  "validated_runtime_source": "452a36c639801c9c7f32baf16499193cf12795b8",
-  "validated_run": 39074798245,
+  "validated_runtime_source": "6c6400f0eedf526907e5fc79079123e55139d7a5",
+  "validated_run": 39075566911,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native38 actual same-camera nature trial revealed distorted unique-atlas texture crops; REJECTED for extension. Keep sculpture bounded at right-bank X8..28. Rev39 replaces that failed mapping with a seamless CC0 Rock3 surface, verified against official MD5 and pinned SHA256 on first import, Smart UV projection AFTER subdivision/erosion and decimation at physical texture scale. Retest native previous-GLB comparison before extension. Global terrain38 had organic detail but too much pale brown/blue; bring its grade toward reference olive/gold while keeping four layers and heightfield/layout. River surface brighter azure with broader flow: same-camera/light/mesh A/B against actual previous shader. Native Capture also emits direct Unity JPEG base64 previews (raw PNGs retained) so visual inspection continues despite local terminal disconnection. Preserve gameplay, budget0 and prior outputs; no art score by workflow.",
+  "art_correction": "Native39 actual same-camera captures inspected: seamless post-sculpt UVs eliminate failed atlas distortion, organic stone shapes/texture are a clear improvement. Extend to banks, retain exact boulder centers and road clearance; cool scan gently, runtime normals/roughness512, pinned original1k inputs. Native39 terrain/water finish observed, preserve palette/layout/gameplay. Correct fluorescent cylindrical torches with actual closed lofted orange envelope/gold core meshes in Blender. Only right-foreground pine normals are welded/smoothed with sharp-angle preservation, unchanged bounds; native previous-GLB Fir group A/B at fixed cameras/light before any forest-wide extension. Keep raw PNG plus native JPEG previews. No final score or physical phone claim.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
-  "nature_treatment": "bank_zone",
-  "water_treatment": "flow_surface"
+  "nature_treatment": "all_banks",
+  "water_treatment": "flow_surface",
+  "tree_treatment": "canopy_zone"
 }

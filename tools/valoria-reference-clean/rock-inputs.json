@@ -1,0 +1,38 @@
+{
+  "asset": "rock_3",
+  "author": "Rob Tuytel / Poly Haven",
+  "asset_url": "https://polyhaven.com/a/rock_3",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "cost_eur": 0,
+  "real_tile_width": 1.5,
+  "files": [
+    {
+      "size": 2326862,
+      "md5": "5c0111a5da0dfcc307869a6450e94397",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_3/rock_3_diff_1k.png",
+      "channel": "Diffuse",
+      "file": "rock_3_diff_1k.png",
+      "sha256": "649a4794c36923a94c3d9e996e674585fff5a7fea26f32ba5158da5da5acbcfb",
+      "bytes": 2326862
+    },
+    {
+      "size": 2289911,
+      "md5": "f93e14e6d9f51d395da6e6f6c1fc3740",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_3/rock_3_nor_gl_1k.png",
+      "channel": "nor_gl",
+      "file": "rock_3_nor_gl_1k.png",
+      "sha256": "2d9512adb2cbe2667755d70367bb000ba434a08edb349f84d920a570e38f3d92",
+      "bytes": 2289911
+    },
+    {
+      "size": 1890368,
+      "md5": "a77e8670377021fc5324016042371404",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_3/rock_3_rough_1k.png",
+      "channel": "Rough",
+      "file": "rock_3_rough_1k.png",
+      "sha256": "8b3c0f938682f7818aac2a979a9c80e242e6589e78b8981b6492d0d728f63f1e",
+      "bytes": 1890368
+    }
+  ]
+}

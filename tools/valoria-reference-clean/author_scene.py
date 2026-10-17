@@ -55,7 +55,8 @@ for material in stone+[trim]+rocks+blue:
  # Packed generated image bytes are sampled as sRGB in glTF: encode the linear palette.
  rgba[:,:,:3]=np.where(rgba[:,:,:3]<=.0031308,rgba[:,:,:3]*12.92,1.055*np.maximum(rgba[:,:,:3],0)**(1/2.4)-.055)
  image=bpy.data.images.new(material.name+' original weathered albedo',width=256,height=256);image.pixels.foreach_set(rgba.reshape(-1));image.pack();node=material.node_tree.nodes.new('ShaderNodeTexImage');node.image=image;material.node_tree.links.new(node.outputs['Color'],material.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
-flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
+flame=mat('Torch golden core',(1,.25,.004));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.18,.002,1);p.inputs['Emission Strength'].default_value=1.6
+ember=mat('Torch orange envelope',(.9,.05,.001));p=ember.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(.9,.035,.001,1);p.inputs['Emission Strength'].default_value=1.1
 # Real baked texture detail from existing original project source; no external downloads.
 npath=os.path.join(ROOT,'art-source/valoria/production/lower-gate-family-v1/stone_grain_normal.png')
 if os.path.isfile(npath):
@@ -241,10 +242,18 @@ def banner(g,x,y,z,w=1,h=2.1):
  line(g,(x,y-.2,z-.35),(x,y-.2,z-1.3),.045,gold)
  for side in [-1,1]:line(g,(x,y-.2,z-1),(x+side*.22,y-.2,z-.6),.06,gold)
  g.box((x,y-.21,z-1.05),(.52,.025,.065),gold)
+def flame_shape(g,x,y,z,w,h,material,phase=0):
+ vertices=[];sides=6
+ for ring,(height,radius) in enumerate([(0,.55),(.22,1),(.62,.55),(1,.025)]):
+  for side in range(sides):
+   a=side*2*pi/sides+phase;vertices.append((x+w*radius*cos(a)+h*.16*height**2,y+w*radius*sin(a),z+h*height))
+ faces=[tuple(range(sides-1,-1,-1)),tuple(3*sides+j for j in range(sides))]
+ faces +=[(ring*sides+j,ring*sides+(j+1)%sides,(ring+1)*sides+(j+1)%sides,(ring+1)*sides+j) for ring in range(3) for j in range(sides)]
+ g.add(vertices,faces,material)
 def torch(g,x,y,z,scale=1):
  courses(g,x,y,z,.85*scale,.85*scale,scale);g.box((x,y,z+1.05*scale),(scale,scale,.15*scale),trim)
- for i in range(3):
-  a=i*2*pi/3;line(g,(x+cos(a)*.19*scale,y+sin(a)*.19*scale,z+1.16*scale),(x+cos(a+.4)*.09*scale,y+sin(a+.4)*.09*scale,z+1.8*scale),.12*scale,flame)
+ flame_shape(g,x,y,z+1.15*scale,.23*scale,.8*scale,ember)
+ flame_shape(g,x,y-.14*scale,z+1.15*scale,.12*scale,.52*scale,flame,phase=.4)
 
 # Compact main keep: one central tower, a gabled hall, two small flanks.
 g=Mesh('Bastion_I');courses(g,0,32,.38,17,10,5.4);roof(g,0,32,5.9,17,10,3.1)
@@ -269,8 +278,7 @@ for i in range(6):g.box((0,20.25+i*.46,.38+(i+1)*.095),(6.0,.49,(i+1)*.19),trim)
 for x in [-3.6,3.6]:courses(g,x,22,.38,1.2,3.4,.9);torch(g,x,22.9,1.3)
 for x in [-2.6,2.6]:
  line(g,(x,25.7,2.7),(x,25.1,3.05),.08,iron);line(g,(x,25.1,2.95),(x,25.1,3.8),.10,wood)
- for j in range(3):
-  a=j*2*pi/3;line(g,(x+.12*cos(a),25.1+.12*sin(a),3.7),(x+.035*cos(a+.4),25.1+.035*sin(a+.4),4.2),.09,flame)
+ flame_shape(g,x,25.1,3.7,.16,.6,ember);flame_shape(g,x,25.0,3.7,.075,.4,flame,phase=.4)
 line(g,(0,28.2,11.35),(0,28.2,17),.075,wood);banner(g,1.2,28.2,16.6,2.4,1.5)
 bastion=g.finish();bastion.location.y=5.5
 # Reuse original gate geometry and original in-project procedural material sources.
@@ -417,22 +425,35 @@ for material in tree.data.materials:
   if node.type!='TEX_IMAGE' or not node.image:continue
   im=node.image.copy();im.name='Valoria deep pine '+im.name
   pixels=np.array(im.pixels[:],dtype=np.float32).reshape((-1,4));pixels[:,:3]*=np.array([.40,.61,.37]);im.pixels.foreach_set(pixels.reshape(-1));im.pack();node.image=im
+# Representative canopy shading uses real mesh normals, not a global color filter.
+canopy_count=0
+def soften_canopy(o):
+ global canopy_count
+ before=[(min(v.co[i] for v in o.data.vertices),max(v.co[i] for v in o.data.vertices)) for i in range(3)]
+ bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.00008)
+ leaves=[i for i,m in enumerate(o.data.materials) if m and any(k in m.name.lower() for k in ['leaf','leav','needle'])]
+ if not leaves:leaves=[i for i,m in enumerate(o.data.materials) if m and not any(k in m.name.lower() for k in ['bark','trunk','wood'])]
+ for face in bm.faces:face.smooth=face.material_index in leaves
+ for edge in bm.edges:
+  if edge.is_manifold:edge.smooth=edge.calc_face_angle()<math.radians(55)
+ bm.to_mesh(o.data);bm.free();o.data.update()
+ after=[(min(v.co[i] for v in o.data.vertices),max(v.co[i] for v in o.data.vertices)) for i in range(3)]
+ assert max(abs(before[i][j]-after[i][j]) for i in range(3) for j in range(2))<.001, 'Canopy bounds changed'
+ canopy_count+=1
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
+ if request.get('tree_treatment')=='canopy_zone' and 15<=x<=27 and y<-35:soften_canopy(o)
 for idx,(x,y) in enumerate([(-10,18),(8,14),(-13,34),(14,38)]):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_Sapling_%02d'%idx;o.location=(x,y,.3);sc=(2.7+random.random()*.8)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
  bpy.context.view_layer.objects.active=o;mod=o.modifiers.new('Sapling strategic LOD','DECIMATE');mod.ratio=.42;bpy.ops.object.modifier_apply(modifier=mod.name)
 bpy.data.objects.remove(tree,do_unlink=True)
 # Seamless scanned surface replaces rejected atlas crops; retain verified raw files.
-rock_trial=request.get('nature_treatment')=='bank_zone'
+rock_trial=request.get('nature_treatment') in ['bank_zone','all_banks']
 rock_surface=None
 if rock_trial:
  asset='rock_3';source_dir=os.path.join(OUT,'MaterialInputs',asset);os.makedirs(source_dir,exist_ok=True)
  manifest_path=os.path.join(source_dir,'license-manifest.json')
- if os.path.isfile(manifest_path):manifest=json.load(open(manifest_path))
- else:
-  meta=json.load(urllib.request.urlopen(urllib.request.Request('https://api.polyhaven.com/files/'+asset,headers={'User-Agent':'Eldoria-Valoria-Authoring/1.0'}),timeout=60))
-  manifest={'asset':asset,'author':'Rob Tuytel / Poly Haven','asset_url':'https://polyhaven.com/a/'+asset,'license':'CC0-1.0','license_url':'https://polyhaven.com/license','cost_eur':0,'real_tile_width':1.5,'files':[dict(meta[ch]['1k']['png'],channel=ch,file=meta[ch]['1k']['png']['url'].split('/')[-1]) for ch in ['Diffuse','nor_gl','Rough']]}
+ manifest=json.load(open(os.path.join(ROOT,'tools/valoria-reference-clean/rock-inputs.json')))
  images={}
  for entry in manifest['files']:
   dest=os.path.join(source_dir,entry['file'])
@@ -448,6 +469,11 @@ if rock_trial:
   if entry['channel']!='Diffuse':im.colorspace_settings.name='Non-Color'
   im.pack();images[entry['channel']]=im;external_inputs.append(dict(entry,license=manifest['license'],asset_url=manifest['asset_url']))
  json.dump(manifest,open(manifest_path,'w'),indent=2)
+ # Preserve raw1k originals; cool the warm scan gently and use smaller runtime normals.
+ adapted=images['Diffuse'].copy();adapted.name='Valoria cool mineral albedo'
+ pixels=np.array(adapted.pixels[:],dtype=np.float32).reshape((-1,4));pixels[:,:3]*=np.array([.94,1,1.12]);adapted.pixels.foreach_set(pixels.reshape(-1));adapted.pack();images['Diffuse']=adapted
+ for channel in ['nor_gl','Rough']:
+  adapted=images[channel].copy();adapted.name='Valoria mineral '+channel+' mobile';adapted.scale(512,512);adapted.pack();images[channel]=adapted
  rock_surface=mat('Seamless mineral boulder surface',(.5,.5,.5))
  nodes=rock_surface.node_tree.nodes;links=rock_surface.node_tree.links;p=nodes.get('Principled BSDF')
  for channel,socket_name in [('Diffuse','Base Color'),('Rough','Roughness')]:
@@ -488,7 +514,7 @@ for i,(x,y,size) in enumerate(rock_positions):
  for material in rocks:
   if material not in crag.ms:crag.ms.append(material)
  tone=random.randrange(len(rocks));crag.mi=[crag.ms.index(rocks[max(0,min(len(rocks)-1,tone+random.choice([-1,0,0,0,1])))]) for face in faces]
- trial=rock_trial and 8<x<28
+ trial=rock_trial and (request.get('nature_treatment')=='all_banks' or 8<x<28)
  if trial:
   if rock_surface not in crag.ms:crag.ms.append(rock_surface)
   crag.mi=[crag.ms.index(rock_surface)]*len(crag.f)
@@ -639,5 +665,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'canopy_trial':{'modified_trees':canopy_count,'bounds_preserved':True,'zone':'right foreground trees only'},'rock_surface':{'asset':'rock_3','method':'post-sculpt Smart UV physical scale','all_banks':request.get('nature_treatment')=='all_banks'} if rock_trial else None,'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')
