@@ -1,0 +1,8 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "blender_executed": true,
+  "ollama": "NOT_REACHABLE",
+  "blendermcp_socket": "NOT_REACHABLE",
+  "ollama_error": "<urlopen error [WinError 10061] No se puede establecer una conexi\u00f3n ya que el equipo de destino deneg\u00f3 expresamente dicha conexi\u00f3n>",
+  "blendermcp_error": "timed out"
+}

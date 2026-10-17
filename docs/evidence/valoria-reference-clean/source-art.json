@@ -1,0 +1,20 @@
+{
+  "author": "Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively",
+  "donors": [
+    {
+      "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.blend",
+      "sha256": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf"
+    },
+    {
+      "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.blend",
+      "sha256": "33081945236e4b88667a5d311f30a04861edbf2577018241b806064e8842e54a"
+    }
+  ],
+  "scene_new_empty": true,
+  "external_downloads": [],
+  "art_approved": false,
+  "mesh_objects": 147,
+  "triangles": 797955,
+  "blend_sha256": "dd05bab28c77d13d31fbfc0770c84dd521872099e5e54106c2f9583b45df2ce9",
+  "glb_sha256": "d1d285c0c4fa7c8b5a78f3742442bd600dc7063d4f1da911f1501cb651aed267"
+}
