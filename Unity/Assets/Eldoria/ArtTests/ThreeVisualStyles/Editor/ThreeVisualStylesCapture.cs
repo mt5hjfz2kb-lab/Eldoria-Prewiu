@@ -80,6 +80,13 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                     var camera = root.GetComponentInChildren<Camera>(true);
                     if (camera == null) throw new InvalidOperationException(name + " missing main camera");
                     Render(camera, file);
+                    // A closer true Unity perspective is necessary to evaluate model
+                    // quality instead of judging only a far-away strategic overview.
+                    float previousSize = camera.orthographicSize;
+                    string closeFile = Path.Combine(output, name + "_UNITY_CLOSE.png");
+                    camera.orthographicSize = 30f;
+                    try { Render(camera, closeFile); }
+                    finally { camera.orthographicSize = previousSize; }
                     var result = new TrialResult {
                         engine = UnityEngine.Application.unityVersion,
                         scene = name,
