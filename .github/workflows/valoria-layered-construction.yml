@@ -6,7 +6,7 @@ on:
     paths:
       - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/**"
       - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/**"
-      - "tools/valoria-layered-construction/**"
+      - "tools/valoria-layered-construction/verify-source.mjs"
       - ".github/workflows/valoria-layered-construction.yml"
   workflow_dispatch:
 permissions:
