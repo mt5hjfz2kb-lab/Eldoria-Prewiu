@@ -1,17 +1,17 @@
-name: "[VALORIA] Refine actual bank mesh, authored road and independent visual critique V5"
+name: "[VALORIA] Refine actual bank mesh, authored road and independent visual critique V6"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs'
-      - 'tools/valoria-layered-construction/author-entry-zone-v5.blender.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV6Integration.cs'
+      - 'tools/valoria-layered-construction/author-entry-zone-v6.blender.py'
 permissions:
   contents: write
   actions: read
 concurrency:
   group: valoria-macro-envelope-one-native-run
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   actual-sharp-native:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -57,7 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/inputs'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6/inputs'
           New-Item -ItemType Directory -Force $dir|Out-Null
           $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json'}
           foreach($item in @(@{id=12061076273;name='cliff_rock_column.glb';sha='5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae'},@{id=12044316857;name='meadow_grass_and_real_loam_CC0_1k.png';sha='d528215ccc37271a505c99773c454c224c024f12a619b03c47c154f733081d32'})){
@@ -83,20 +83,20 @@ jobs:
           }
           if(-not $blender){throw 'Native Blender not found on owner PC'}
           "VALORIA_ENTRY_BLENDER=$blender" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6'
           New-Item -ItemType Directory -Force $dir|Out-Null
           & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
-          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v5.blender.py
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v6.blender.py
           if($LASTEXITCODE){throw 'Source-derived Blender entry authoring failed'}
-          & $blender -b -t 2 --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$dir/ValoriaEntryZoneV5.blend" --inspect --inspect-target-object ValoriaEntryTerrainV5 --out "$dir/inspect"
+          & $blender -b -t 2 --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$dir/ValoriaEntryZoneV6.blend" --inspect --inspect-target-object ValoriaEntryTerrainV6 --out "$dir/inspect"
           if($LASTEXITCODE){throw 'Source geometry inspection failed'}
       - name: Import actual Blender entry zone and capture comparable player-camera A/B
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6'
           New-Item -ItemType Directory -Force -Path $dir|Out-Null
           $log=Join-Path $env:RUNNER_TEMP 'valoria-spatial-v1.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV5Integration.Build','-logFile',$log)
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV6Integration.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(2400000)){
             & taskkill.exe /PID $p.Id /T /F|Out-Null
@@ -104,7 +104,7 @@ jobs:
           }
           Get-Content $log -Tail 90
           Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V5_NATIVE_COMPLETE' -Quiet)){
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V6_NATIVE_COMPLETE' -Quiet)){
             throw "Native 3D SHARP macro diagnostic failed exit=$($p.ExitCode)"
           }
       - name: Independent local vision critique of GPT-authored geometry, no automatic approval
@@ -117,12 +117,12 @@ jobs:
               if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
               if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
             }
-            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review.py
+            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v6.py
           }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
       - name: Require genuine native source identity and seven real targets without artistic self-approval
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6'
           $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
           if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7){throw 'Entry source integrity failed'}
           if([math]::Abs($x.home_fov-44.42281) -gt 0.0001){throw 'Player lens changed'}
@@ -132,10 +132,10 @@ jobs:
         run: |
           git config user.name 'Valoria native macro'
           git config user.email 'valoria-macro@users.noreply.github.com'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/
-          foreach($meta in @('Editor/ValoriaEntryZoneV5Integration.cs.meta','GeneratedEntryV5.meta','Valoria_SHARP_EntryZoneV5_CANDIDATE.unity.meta')){
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v6/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV6_CANDIDATE.unity
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV6/
+          foreach($meta in @('Editor/ValoriaEntryZoneV6Integration.cs.meta','GeneratedEntryV6.meta','Valoria_SHARP_EntryZoneV6_CANDIDATE.unity.meta')){
             $mp="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/$meta"
             if(Test-Path $mp){git add -f -- $mp}
           }
@@ -152,9 +152,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-entry-zone-v5-${{ github.run_id }}
+          name: valoria-entry-zone-v6-${{ github.run_id }}
           path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/**
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/**
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v6/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV6_CANDIDATE.unity
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV6/**
           if-no-files-found: warn
