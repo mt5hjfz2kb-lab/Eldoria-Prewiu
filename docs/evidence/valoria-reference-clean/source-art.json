@@ -6,8 +6,12 @@
       "sha256": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf"
     },
     {
-      "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.blend",
-      "sha256": "33081945236e4b88667a5d311f30a04861edbf2577018241b806064e8842e54a"
+      "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/pine_medium.glb",
+      "sha256": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e"
+    },
+    {
+      "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/shrub_1.glb",
+      "sha256": "5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0"
     }
   ],
   "scene_new_empty": true,
@@ -24,21 +28,22 @@
     "Bridge_ArchSpandrel": 228,
     "Bridge_ArchSpandrel.001": 228,
     "Bridge_Masonry": 26756,
-    "Axial_Paving": 23716,
+    "Axial_Paving": 25476,
     "Plot_-23_28": 3828,
     "Plot_-19_9": 3828,
     "Plot_29_32": 3828,
     "Plot_28_12": 3828,
-    "Ruin_-27_54": 11088,
-    "Ruin_30_58": 10736,
-    "Ruin_-33_2": 11088,
-    "Ruin_38_-5": 11704,
-    "Fir_tree_group": 239772,
-    "River_bank_rocks": 8400,
-    "Foundation_shrubs_and_groundcover": 7887
+    "Ruin_-27_54": 11704,
+    "Ruin_30_58": 11352,
+    "Ruin_-33_2": 11000,
+    "Ruin_38_-5": 11352,
+    "Fir_tree_group": 154050,
+    "River_bank_rocks": 8560,
+    "Shrub_group": 23400,
+    "Foundation_shrubs_and_groundcover": 690
   },
-  "mesh_objects": 22,
-  "triangles": 489885,
-  "blend_sha256": "cdd21c3e8f613fb5df775514e76b99eeaeab9cf5ee205505e621edb596694209",
-  "glb_sha256": "3c9d3983fa9be56f82818dbfe488296532ff18cfb606ab0a4e218aeb0a83ca54"
+  "mesh_objects": 23,
+  "triangles": 423078,
+  "blend_sha256": "4e99e58ce38a25aaa844d4cac5f11852bf15254cc46bbd52b2589d084ba5eb5c",
+  "glb_sha256": "44761faaf3f1566a113b7a1eac8a1b2b264ea97455b6522be75273812eb5d1a8"
 }
