@@ -1,5 +1,5 @@
 {
-  "source_sha": "d920b3686ea3cb91beb9f4db563ae7d2a12b36e9",
+  "source_sha": "e39f77151ff08d2d8020d8286312376bb9e92dc6",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -119,6 +119,39 @@
       "bytes": 6096327,
       "license": "CC0-1.0",
       "asset_url": "https://polyhaven.com/a/sparse_grass"
+    },
+    {
+      "size": 2326862,
+      "md5": "5c0111a5da0dfcc307869a6450e94397",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_3/rock_3_diff_1k.png",
+      "channel": "Diffuse",
+      "file": "rock_3_diff_1k.png",
+      "sha256": "649a4794c36923a94c3d9e996e674585fff5a7fea26f32ba5158da5da5acbcfb",
+      "bytes": 2326862,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/rock_3"
+    },
+    {
+      "size": 2289911,
+      "md5": "f93e14e6d9f51d395da6e6f6c1fc3740",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_3/rock_3_nor_gl_1k.png",
+      "channel": "nor_gl",
+      "file": "rock_3_nor_gl_1k.png",
+      "sha256": "2d9512adb2cbe2667755d70367bb000ba434a08edb349f84d920a570e38f3d92",
+      "bytes": 2289911,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/rock_3"
+    },
+    {
+      "size": 1890368,
+      "md5": "a77e8670377021fc5324016042371404",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_3/rock_3_rough_1k.png",
+      "channel": "Rough",
+      "file": "rock_3_rough_1k.png",
+      "sha256": "8b3c0f938682f7818aac2a979a9c80e242e6589e78b8981b6492d0d728f63f1e",
+      "bytes": 1890368,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/rock_3"
     }
   ],
   "art_approved": false,
@@ -147,17 +180,17 @@
     "Ruin_-25_0": 10824,
     "Ruin_46_-1": 21076,
     "Fir_tree_group": 136986,
-    "River_bank_rocks": 35152,
+    "River_bank_rocks": 25330,
     "Woodland_ground_rocks": 3600,
     "Shrub_group": 20700,
     "Foundation_shrubs_and_groundcover": 17040,
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
     "Meadow_tufts_east": 12780,
-    "River_shore_foam": 1214
+    "River_shore_foam": 1162
   },
   "mesh_objects": 32,
-  "triangles": 595726,
-  "blend_sha256": "0ffb6008cba433feb46fd001c7febd9e448fbdf06489c09879c5abc28996878a",
-  "glb_sha256": "8cec9ac895ad9747d13fb80a9e589a21c50e04861e547f648cb27d39516830a5"
+  "triangles": 585852,
+  "blend_sha256": "db8f59e8de3c080e0123e0d416804351ee5d12597722051b1a25c66f9793ac99",
+  "glb_sha256": "a7c4cc0b29bdf6d658d66526db73a24649d3b41191c642811e4776e6c74cd098"
 }
