@@ -1,5 +1,5 @@
 {
-    "source_sha": "4ce057dfcb92ad9bb2c5ccdbf525de547940608c",
+    "source_sha": "7d67a90ace292fd72865c8ebc3ec13c957c8c55d",
     "scope": "River surface shader and palette only; actual previous shader for native A-B, geometry and lights fixed",
     "same_camera": true,
     "same_lighting": true,

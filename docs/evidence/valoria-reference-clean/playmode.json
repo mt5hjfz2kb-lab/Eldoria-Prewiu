@@ -1,11 +1,11 @@
 {
     "performance_note": "Native Windows camera render plus GPU readback wall time; not mobile FPS. UnityStats frame counters unavailable in batch mode.",
-    "camera_render_readback_ms_960x540": 26.8211,
+    "camera_render_readback_ms_960x540": 24.004237500000003,
     "scene_texture_native_bytes": 121822558,
     "mobile_frame_ground_hits": 12,
     "mobile_frame_ground_probes": 12,
     "runtime_meshes_checked": 33,
-    "scene_mesh_triangles": 629558,
+    "scene_mesh_triangles": 629542,
     "scene_renderers": 33,
     "scene_material_slots": 161,
     "canonical_save_untouched": true,

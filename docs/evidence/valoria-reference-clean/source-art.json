@@ -1,5 +1,5 @@
 {
-  "source_sha": "4ce057dfcb92ad9bb2c5ccdbf525de547940608c",
+  "source_sha": "7d67a90ace292fd72865c8ebc3ec13c957c8c55d",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -41,10 +41,10 @@
   },
   "canopy_trial": {
     "modified_trees": 4,
-    "baked_ao_loops": 36636,
+    "baked_ao_loops": 0,
     "bounds_preserved": true,
     "zone": "right foreground trees only",
-    "method": "BVH hemisphere visibility baked into neutral-by-default vertex colors; no added triangles"
+    "method": "rejected41 vertex colors removed; proven40 donor shading restored"
   },
   "rock_surface": {
     "asset": "rock_3",
@@ -199,10 +199,10 @@
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
     "Meadow_tufts_east": 12780,
-    "River_shore_foam": 2192
+    "River_shore_foam": 2176
   },
   "mesh_objects": 32,
-  "triangles": 629118,
-  "blend_sha256": "ec26f8bda39e6a67592adf037811ecebc451edd770ad99a78ab95987a3ca6d68",
-  "glb_sha256": "9ec31c2553992213e35b48214bec416f582a3b3deb4d6a4e00ad57c73fc1fd0b"
+  "triangles": 629102,
+  "blend_sha256": "5a2882adbe6e737cea374c5bf79b0fb9a3d14149924c370ad15bc4b37fd1f472",
+  "glb_sha256": "0686468a26dc853379d4f8eff38fbf2326b716165bdc13d959bdc681f4a06b0e"
 }

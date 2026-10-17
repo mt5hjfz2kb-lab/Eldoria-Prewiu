@@ -1,0 +1,11 @@
+{
+    "baseline_source": "d6d258f5c87d0ede7c7452645a1e73e6afdf2c27",
+    "baseline_glb_sha256": "9ec31c2553992213e35b48214bec416f582a3b3deb4d6a4e00ad57c73fc1fd0b",
+    "source_sha": "7d67a90ace292fd72865c8ebc3ec13c957c8c55d",
+    "scope": "Right inland shoreline only: native terrain profile and physically reseated bank rocks, foam, reeds and tufts; current tree shading shared between both captures",
+    "same_camera": true,
+    "same_lighting": true,
+    "baseline_hash_verified": true,
+    "before_triangles": 95098,
+    "after_triangles": 95082
+}
