@@ -184,6 +184,19 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             for (int i = 1; i < renderers.Length; i++) b.Encapsulate(renderers[i].bounds);
             inst.transform.position += new Vector3(x - b.center.x,
                 H(x, z) + yOffset - b.min.y, z - b.center.z);
+            if (Bright && relative.StartsWith("Kenney/castle/"))
+            {
+                Color tint = relative.Contains("roof") ? RGB(.48f,.64f,.98f) :
+                             relative.Contains("wall") ? RGB(.90f,.83f,.69f) :
+                             RGB(.94f,.86f,.76f);
+                foreach (var renderer in renderers)
+                {
+                    var block = new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(block);
+                    block.SetColor("_BaseColor",tint);
+                    renderer.SetPropertyBlock(block);
+                }
+            }
             objectCount += renderers.Length;
             authenticSourceInstances++;
             return true;
@@ -252,7 +265,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             c.nearClipPlane = .1f;
             c.farClipPlane = 300f;
             c.clearFlags = CameraClearFlags.SolidColor;
-            c.backgroundColor = Rich ? RGB(.67f,.74f,.80f) : Bright ? RGB(.62f,.74f,.85f) : RGB(.69f,.79f,.83f);
+            c.backgroundColor = Rich ? RGB(.43f,.50f,.60f) : Bright ? RGB(.53f,.74f,.88f) : RGB(.69f,.79f,.83f);
             var sun = new GameObject("Afternoon sun / shadows");
             sun.transform.SetParent(built, false);
             sun.transform.rotation = Quaternion.Euler(46f, -38f, 0f);
@@ -393,8 +406,21 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             float width=Rich?24f:Bright?18f:21f;
             float depth=Rich?18f:Bright?16f:16f;
             Cuboid("BASTION I — fortified footprint, not Bastion II",0,y+.36f,z,width+2f,.7f,depth+2f,DarkStone);
-            Cuboid("Bastion main hall",0,y+5.6f,z+2f,width*.63f,11.1f,depth*.63f,Stone);
-            Cuboid("Bastion upper stone cornice",0,y+11.5f,z+2f,width*.67f,.9f,depth*.67f,Trim);
+            // In the Quaternius route the upper keep MUST be recognizable as a
+            // source-art strategy building, not a huge untextured placeholder box.
+            bool sourceKeep = artDirection == ArtDirection.FantasyStrategy &&
+                Vendor("QuaterniusRTS/TownCenter_FirstAge_Level3.gltf",0,z+2f,19f,19f);
+            if(!sourceKeep)
+            {
+                Cuboid("Bastion main hall",0,y+5.6f,z+2f,width*.63f,11.1f,depth*.63f,Stone);
+                Cuboid("Bastion upper stone cornice",0,y+11.5f,z+2f,width*.67f,.9f,depth*.67f,Trim);
+            }
+            else
+            {
+                var marker = new GameObject("Bastion main hall");
+                marker.transform.SetParent(built,false);
+                marker.transform.position = new Vector3(0,y+6,z+2f);
+            }
             for(int s=-1;s<=1;s+=2)for(int t=-1;t<=1;t+=2)
             {
                 float tx=s*(width*.5f),tz=z+t*(depth*.5f);
@@ -802,7 +828,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                 marker.transform.SetParent(built,false);
                 marker.transform.position=new Vector3(kx,ky+10,kz);
             }
-            for(int i=0;i<5;i++)
+            if (!hero) for(int i=0;i<5;i++)
             {
                 Cuboid("Heavy stone buttress",kx-7f+i*3.5f,ky+7.9f,kz-6.92f,.95f,14.8f,1.5f,trim);
                 if(i>0&&i<4)
