@@ -115,7 +115,11 @@ if scene.world is not None:
 neutral=bpy.data.materials.new("SOURCE08_V17_SOURCE_CLAY_DIAGNOSTIC")
 neutral.diffuse_color=(.66,.67,.68,1)
 neutral.use_nodes=True
-bsdf=neutral.node_tree.nodes.get("Principled BSDF")
+nodes=neutral.node_tree.nodes
+nodes.clear()
+bsdf=nodes.new("ShaderNodeBsdfPrincipled")
+output=nodes.new("ShaderNodeOutputMaterial")
+neutral.node_tree.links.new(bsdf.outputs["BSDF"],output.inputs["Surface"])
 bsdf.inputs["Base Color"].default_value=(.66,.67,.68,1)
 bsdf.inputs["Roughness"].default_value=.88
 scene.view_layers[0].material_override=neutral
