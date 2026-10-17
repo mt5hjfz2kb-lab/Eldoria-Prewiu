@@ -12,7 +12,9 @@ try:
  with tempfile.TemporaryDirectory(prefix='valoria-native-review-') as scratch:
   for index,path in enumerate(paths):
    im=bpy.data.images.load(str(path),check_existing=False);im.scale(640,480);out=pathlib.Path(scratch)/(str(index)+'.jpg');im.filepath_raw=str(out);im.file_format='JPEG';im.save();bpy.data.images.remove(im);images.append(base64.b64encode(out.read_bytes()).decode())
- prompt=('Image 1 is the owner target for Valoria. Image 2 is the ACTUAL CURRENT UNITY CAMERA, not generated concept art. '
+ facts=json.loads((ev/'unity-art.json').read_text('utf8'));result['native_scene_facts']={k:facts.get(k) for k in ['source_sha','directional_lights','native_terrain_resolution','blue_roof_materials','triangles','renderers']}
+ prompt=('Verified native scene facts: '+json.dumps(result['native_scene_facts'])+'. The roof has physically authored individual slate geometry. Do not falsely claim there is no directional light, no native terrain, or no modeled roof tiles; you may criticize their visible appearance and readability. '
+ 'Image 1 is the owner target for Valoria. Image 2 is the ACTUAL CURRENT UNITY CAMERA, not generated concept art. '
  'Review the second image against the first. Its layout must contain one compact main keep, one distinct lower gate, '
  'a real arched river bridge, four empty building plots and sparse broken walls. '
  'Give the THREE highest-impact remaining visual defects and a concrete Blender or Unity correction for each. '

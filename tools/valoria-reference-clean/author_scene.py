@@ -310,6 +310,9 @@ for material in tree.data.materials:
   pixels=np.array(im.pixels[:],dtype=np.float32).reshape((-1,4));pixels[:,:3]*=np.array([.40,.61,.37]);im.pixels.foreach_set(pixels.reshape(-1));im.pack();node.image=im
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
+for idx,(x,y) in enumerate([(-10,18),(8,14),(-13,34),(14,38)]):
+ o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_Sapling_%02d'%idx;o.location=(x,y,.3);sc=(2.7+random.random()*.8)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
+ bpy.context.view_layer.objects.active=o;mod=o.modifiers.new('Sapling strategic LOD','DECIMATE');mod.ratio=.42;bpy.ops.object.modifier_apply(modifier=mod.name)
 bpy.data.objects.remove(tree,do_unlink=True)
 # Closed authored crags replace the rejected open scan face. Four irregular lofted rings,
 # broad fractured planes, bevels and metric UVs; no repeated spheres or cliff stamps.
@@ -393,7 +396,7 @@ for side in [-1,1]:
 # Sporadic low clumps break broad grass fields without invading the construction areas.
 for i in range(800):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
- if abs(y-river_center(x))<river_width(x)+2 or abs(x)<11 and -40<y<42:continue
+ if abs(y-river_center(x))<river_width(x)+2 or (abs(x)<3.5 and -58<y<26) or (abs(x)<11 and 25<y<45):continue
  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
  for k in range(5):
   a=random.random()*2*pi;w=random.uniform(.045,.075);h=random.uniform(.18,.40);cx=x+random.uniform(-.22,.22);cy=y+random.uniform(-.22,.22);z=terrain_height(cx,cy)+.01
@@ -409,6 +412,30 @@ for o in bpy.context.scene.objects:
  foot=[p for p in pts if p.z<=low+(high-low)*fraction]
  offsets=sorted(terrain_height(p.x,p.y)-p.z for p in foot)
  o.location.z+=offsets[len(offsets)//2]-.10
+# Actual water/rock intersection contours produce sparse foam bands, not circular decals.
+bpy.context.view_layer.update()
+foam_material=mat('River edge foam',(.55,.78,.76));foam_material.node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.52
+foam=Mesh('River_shore_foam');water_level=-2.05
+for rock in [o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith('River_Rock')]:
+ world=[rock.matrix_world@v.co for v in rock.data.vertices];intersections={}
+ for edge in rock.data.edges:
+  a,b=[world[i] for i in edge.vertices]
+  if (a.z-water_level)*(b.z-water_level)>=0:continue
+  p=a+(b-a)*((water_level-a.z)/(b.z-a.z));intersections[(round(p.x,3),round(p.y,3))]=Vector((p.x,p.y,water_level+.022))
+ points=list(intersections.values())
+ if len(points)<4:continue
+ center=sum(points,Vector())/len(points);points.sort(key=lambda p:math.atan2(p.y-center.y,p.x-center.x))
+ if max((p-center).length for p in points)<.22:continue
+ for j,a in enumerate(points):
+  if random.random()<.22:continue
+  b=points[(j+1)%len(points)]
+  if (a-b).length<.035:continue
+  ra=(a-center).normalized();rb=(b-center).normalized();width=random.uniform(.07,.15)
+  foam.add([tuple(a+ra*.02),tuple(a+ra*width),tuple(b+rb*width),tuple(b+rb*.02)],[(0,1,2,3)],foam_material)
+if foam.f:
+ ob=foam.finish(0);uv=ob.data.uv_layers.active
+ for poly in ob.data.polygons:
+  for li in poly.loop_indices:uv.data[li].uv=[(0,0),(0,1),(1,1),(1,0)][ob.data.loops[li].vertex_index%4]
 # Shared static environmental meshes reduce material submissions; source islands stay editable.
 for prefix,label in [('River_Rock','River_bank_rocks'),('Ground_Rock','Woodland_ground_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
  group=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith(prefix)]

@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 24,
+  "revision": 25,
   "budget_eur": 0,
-  "validated_runtime_source": "d25e8f4e4f31eddd9ed492a410631884bb781cc3",
-  "validated_run": 39067835806,
+  "validated_runtime_source": "1c40facee6ac71af9b04bcd9c28bfdd8e5364432",
+  "validated_run": 39068190391,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Native23 actual PlayMode is clean and editor/play upper-field parity passed (141 of 952128 pixels >24). Preserve foliage batching exclusions, bounded source meshes and all geometry gates. Add broad green/loam variation using existing CC0 meadow in the existing fourth terrain layer (no extra terrain pass), move off-camera foreground-left pines into reference framing, correct front banner normals, extend flat ground to outer paving and fill paving through gate. Reinspect actual Unity and auxiliary local critique of this clean candidate.",
+  "art_correction": "Refine clean native24: strengthen irregular meadow earth blending, add four scaled/decimated donor saplings outside plots, keep grass off full paved corridor, author thin broken foam ribbons from actual rock/water intersection contours with transparent URP shader. Preserve all source bridge and PlayMode render-parity guards. Ground auxiliary critique in measured native light/terrain/material facts; no artificial art certification.",
   "auxiliary_review": true
 }
