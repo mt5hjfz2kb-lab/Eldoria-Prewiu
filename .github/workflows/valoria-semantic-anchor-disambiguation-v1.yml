@@ -1,0 +1,34 @@
+name: "[VALORIA] Distinguish SHARP anchors from real physical footprint contact"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - "tools/valoria-layered-construction/check-semantic-geometry-contacts.py"
+      - ".github/workflows/valoria-semantic-anchor-disambiguation-v1.yml"
+permissions:
+  contents: read
+jobs:
+  exact-source-contact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free SciPy rigid physical ray-to-box intersection; no original edits
+        run: |
+          python3 -m pip install -q numpy scipy
+          python3 tools/valoria-layered-construction/check-semantic-geometry-contacts.py
+          python3 - <<'PY'
+          import json
+          p="docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/semantic-geometry-contacts.json"
+          x=json.load(open(p))
+          assert x["geometry_not_moved"] and x["canonical_not_modified"]
+          assert x["all7_screen_bbox_inside"] is True
+          assert len(x["anchor_results"])==7
+          assert x["tech_screen_correspondence_approved"] is False
+          print("SEMANTIC_COLLIDER_AUDIT_PASS",x["source_semantic_ray_contacts"],"out of 7")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-semantic-physical-ray-evidence-${{ github.run_id }}
+          path: docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/semantic-geometry-contacts.json
+          if-no-files-found: error
