@@ -22,22 +22,14 @@ terrain_vertices_before=len(terrain.data.vertices)
 tex=next(img for img in bpy.data.images if img.name.startswith('Entry_Geographic_CC0_MeadowSoil_2k'))
 N=tex.size[0];assert N==tex.size[1]==2048
 pixels=np.array(tex.pixels[:],dtype=np.float32).reshape(N,N,4)
-# Source atlas is packed in the Blender original; never download a new texture.
-soil=next((im for im in bpy.data.images if im.name.endswith('ground_albedo.png')),None)
-assert soil is not None,'Original ground albedo source missing from frozen Blender scene'
-sw,sh=soil.size
-soilpx=np.array(soil.pixels[:],dtype=np.float32).reshape(sh,sw,4)
-# The V7 geographic UV is computed BEFORE native X is reflected for glTFast,
-# therefore baked bitmap world XX retains the NATIVE Unity X coordinate.
+# The frozen .blend contains the final uniquely baked CC0 meadow image but not
+# the disconnected external ground_albedo reference. Use the existing packed
+# pixel detail itself to create photographed soil wear with organic grading.
 xx=np.linspace(-44.8,44.8,N,dtype=np.float32)[None,:]
 zz=np.linspace(-31.3,86.2,N,dtype=np.float32)[:,None]
-ux=np.broadcast_to(np.mod(xx*.147+zz*.026,1),(N,N))
-uz=np.broadcast_to(np.mod(zz*.152-xx*.031,1),(N,N))
-sx=(ux*(sw-1)).astype(np.int32);sy=(uz*(sh-1)).astype(np.int32)
-earth=soilpx[sy,sx,:3].copy()
-# Ground's earthy loam is shaded and partially intermixed with its own CC0
-# meadow. A blended geographic scar has NO gap or hover above the source terrain.
-earth=np.clip(earth*np.array([.83,.87,.76],dtype=np.float32)+.025,0,1)
+original=pixels[:,:,:3].copy()
+earth=np.clip(original*np.array([1.16,.55,.80],dtype=np.float32)
+              +np.array([.070,.017,.021],dtype=np.float32),0,1)
 weather=.22*np.sin(xx*.51+zz*.37)+.11*np.sin(xx*1.29-zz*.71)
 wear=np.zeros((N,N),dtype=np.float32)
 def smoother(x):
