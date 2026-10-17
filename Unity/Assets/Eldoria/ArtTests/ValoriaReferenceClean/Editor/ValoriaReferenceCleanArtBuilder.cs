@@ -1,0 +1,55 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine.Rendering;
+using GLTFast;
+namespace Eldoria.ReferenceClean.Editor {
+public static class ValoriaReferenceCleanArtBuilder {
+ const string Root="Assets/Eldoria/ArtTests/ValoriaReferenceClean";
+ static string Ev=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
+ static int index;static HashSet<int> saved=new HashSet<int>();
+ static void Persist(UnityEngine.Object o){if(!o||AssetDatabase.Contains(o)||!saved.Add(o.GetInstanceID()))return;if(!(o is Mesh)&&!(o is Material)&&!(o is Texture2D))return;AssetDatabase.CreateAsset(o,Root+"/GeneratedArt/Part_"+(index++).ToString("D4")+(o is Material?".mat":".asset"));}
+ public static async void Build(){try{await Run();Debug.Log("VALORIA_REFERENCE_CLEAN_ART_COMPLETE");EditorApplication.Exit(0);}catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
+ static async Task Run(){
+ Directory.CreateDirectory(Root+"/GeneratedArt");Directory.CreateDirectory(Root+"/Prefabs");Directory.CreateDirectory(Ev);AssetDatabase.Refresh();
+ var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);new GameObject("Isolated scene render settings").AddComponent<ValoriaReferenceCleanRenderSettings>();
+ var td=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<TerrainData>(Root+"/Generated/Ground.asset"));if(!td)throw new Exception("Reviewed blockout TerrainData missing");
+ // Refine river bed while keeping flat building sites from the reviewed plan.
+ var hh=td.GetHeights(0,0,257,257);for(int z=0;z<257;z++)for(int x=0;x<257;x++){float wx=x/256f*140-70,wz=z/256f*150-55;float center=-23+1.5f*Mathf.Sin(wx*.065f);float bank=Mathf.SmoothStep(0,1,Mathf.InverseLerp(5.2f,9,Mathf.Abs(wz-center)));float h=.35f+.12f*Mathf.Sin(wx*.12f)*Mathf.Sin(wz*.1f);if(wz>40)h+=(wz-40)*.045f;if((Mathf.Abs(wx)<11&&wz>-45&&wz<39)||(Mathf.Abs(Mathf.Abs(wx)-21)<9&&((Mathf.Abs(wz-2)<6.5f)||(Mathf.Abs(wz-22)<6.5f))))h=.35f;hh[z,x]=(5+h-4.9f*(1-bank))/18;}
+ td.size=new Vector3(140,18,150);td.SetHeights(0,0,hh);AssetDatabase.CreateAsset(td,Root+"/GeneratedArt/Ground.asset");var terrain=Terrain.CreateTerrainGameObject(td);terrain.name="Valoria continuous sculpted terrain";terrain.transform.position=new Vector3(-70,-5,-55);terrain.GetComponent<Terrain>().materialTemplate=AssetDatabase.LoadAssetAtPath<Material>(Root+"/Generated/Terrain.mat");
+ var tex=new Texture2D(512,512,TextureFormat.RGB24,true);for(int y=0;y<512;y++)for(int x=0;x<512;x++){float a=Mathf.PerlinNoise(x*.06f,y*.06f),b=Mathf.PerlinNoise(x*.3f+19,y*.3f);tex.SetPixel(x,y,Color.Lerp(new Color(.22f,.29f,.085f),new Color(.43f,.47f,.15f),a)*(.88f+b*.22f));}tex.Apply();tex.wrapMode=TextureWrapMode.Repeat;Persist(tex);var layer=new TerrainLayer {diffuseTexture=tex,tileSize=new Vector2(12,12)};AssetDatabase.CreateAsset(layer,Root+"/GeneratedArt/Grass.terrainlayer");td.terrainLayers=new[]{layer};
+ var loader=new GltfImport(null,new UninterruptedDeferAgent());var path=Path.GetFullPath(Root+"/Sources/Valoria_Reference_Clean.glb");if(!await loader.Load(new Uri(path).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4}))throw new Exception("GLB load failed");
+ var art=new GameObject("Valoria authored architecture and environment");if(!await loader.InstantiateMainSceneAsync(art.transform))throw new Exception("GLB instantiate failed");art.transform.rotation=Quaternion.Euler(0,180,0);
+ var meshes=art.GetComponentsInChildren<MeshFilter>(true);var keep=meshes.FirstOrDefault(f=>f.name.StartsWith("Bastion_I"));if(!keep)throw new Exception("Bastion mesh missing");var kb=keep.GetComponent<Renderer>().bounds;if(kb.center.z<20)throw new Exception("Blender/Unity inland axis incorrect: "+kb.center);
+ foreach(var r in art.GetComponentsInChildren<Renderer>(true)){foreach(var m in r.sharedMaterials){if(!m)continue;foreach(var p in m.GetTexturePropertyNames())Persist(m.GetTexture(p));Persist(m);}r.gameObject.isStatic=true;}
+ foreach(var mf in meshes){Persist(mf.sharedMesh);if(mf.name.StartsWith("Bridge_")||mf.name.StartsWith("Axial_Paving")||mf.name.StartsWith("Bastion_I")){var col=mf.gameObject.AddComponent<MeshCollider>();col.sharedMesh=mf.sharedMesh;}}
+ // True shaped water surface follows the cut river bed; no horizon-sized plane.
+ var waterMat=new Material(Shader.Find("Universal Render Pipeline/Lit"));waterMat.name="Blue river";waterMat.color=new Color(.018f,.25f,.38f);waterMat.SetFloat("_Smoothness",.83f);waterMat.SetFloat("_Metallic",.30f);Persist(waterMat);
+ var v=new List<Vector3>();var tri=new List<int>();for(int i=0;i<=140;i++){float x=i-70,center=-23+1.5f*Mathf.Sin(x*.065f);v.Add(new Vector3(x,-2.05f,center-6.1f));v.Add(new Vector3(x,-2.05f,center+6.1f));if(i<140){int a=i*2;tri.AddRange(new[]{a,a+1,a+2,a+1,a+3,a+2});}}
+ var wm=new Mesh();wm.SetVertices(v);wm.SetTriangles(tri,0);wm.RecalculateNormals();Persist(wm);var water=new GameObject("River water");water.AddComponent<MeshFilter>().sharedMesh=wm;water.AddComponent<MeshRenderer>().sharedMaterial=waterMat;
+ var sun=new GameObject("Warm afternoon sun").AddComponent<Light>();sun.type=LightType.Directional;sun.transform.rotation=Quaternion.Euler(47,-38,0);sun.intensity=1.3f;sun.color=new Color(1,.89f,.73f);sun.shadows=LightShadows.Soft;sun.shadowBias=.035f;sun.shadowNormalBias=.15f;RenderSettings.sun=sun;RenderSettings.ambientMode=AmbientMode.Trilight;RenderSettings.ambientSkyColor=new Color(.32f,.38f,.45f);RenderSettings.ambientEquatorColor=new Color(.24f,.26f,.22f);RenderSettings.ambientGroundColor=new Color(.15f,.13f,.10f);RenderSettings.fog=false;QualitySettings.shadowDistance=180;QualitySettings.shadows=ShadowQuality.All;
+ var cam=new GameObject("PlayerCamera").AddComponent<Camera>();cam.tag="MainCamera";cam.orthographic=true;cam.orthographicSize=34;cam.transform.position=new Vector3(46,77,-104);cam.transform.LookAt(new Vector3(5,0,10));cam.farClipPlane=400;cam.backgroundColor=new Color(.35f,.46f,.5f);cam.clearFlags=CameraClearFlags.SolidColor;
+ ValoriaReferenceCleanBuilder.Capture(cam,Ev+"/B-architecture.png",1448,1086);
+ // Warm torch lights stay local; decorative meshes do not receive selection layers.
+ foreach(var p in new[]{new Vector3(-3.6f,2.9f,22.9f),new Vector3(3.6f,2.9f,22.9f),new Vector3(-3.2f,2,-34),new Vector3(3.2f,2,-34),new Vector3(-3.2f,2,-12),new Vector3(3.2f,2,-12)}){var l=new GameObject("Torch glow").AddComponent<Light>();l.type=LightType.Point;l.transform.position=p;l.color=new Color(1,.36f,.04f);l.intensity=3;l.range=4;l.shadows=LightShadows.None;}
+ var interaction=new GameObject("Scene interactions").AddComponent<ValoriaReferenceCleanInteraction>();interaction.playerCamera=cam;interaction.homePosition=cam.transform.position;interaction.homeRotation=cam.transform.rotation;interaction.homeZoom=34;
+ GameObject Selectable(string label,Vector3 p,Vector3 size){var o=new GameObject(label);o.layer=8;o.transform.position=p;o.AddComponent<BoxCollider>().size=size;return o;}
+ Selectable("Bastión I",new Vector3(0,5,31),new Vector3(20,10,13));int plot=0;foreach(float x in new[]{-21f,21f})foreach(float z in new[]{2f,22f})Selectable("Parcela "+(++plot),new Vector3(x,.65f,z),new Vector3(17,.4f,12));
+ Physics.SyncTransforms();int picking=0;foreach(var c in UnityEngine.Object.FindObjectsByType<BoxCollider>(FindObjectsSortMode.None).Where(c=>c.gameObject.layer==8)){if(Physics.Raycast(cam.ScreenPointToRay(cam.WorldToScreenPoint(c.bounds.center)),out var hit,500,1<<8)&&hit.collider==c)picking++;}if(picking!=5)throw new Exception("Selection projection failed: "+picking);
+ interaction.Select("Parcela 4");if(interaction.plot!=4)throw new Exception("Plot state failed");interaction.Select("Bastión I");
+ PrefabUtility.SaveAsPrefabAsset(art,Root+"/Prefabs/ValoriaArchitecture.prefab");AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene,Root+"/Valoria_Reference_Clean.unity");
+ ValoriaReferenceCleanBuilder.Capture(cam,Ev+"/C-art-scene.png",1448,1086);ValoriaReferenceCleanBuilder.Capture(cam,Ev+"/D-final.png",1448,1086);
+ cam.orthographicSize=18;cam.transform.position=new Vector3(24,31,-8);cam.transform.LookAt(new Vector3(0,4,30));ValoriaReferenceCleanBuilder.Capture(cam,Ev+"/detail-bastion.png",1448,1086);
+ cam.orthographicSize=17;cam.transform.position=new Vector3(25,25,-48);cam.transform.LookAt(new Vector3(0,0,-19));ValoriaReferenceCleanBuilder.Capture(cam,Ev+"/detail-gate-bridge.png",1448,1086);
+ cam.transform.SetPositionAndRotation(interaction.homePosition,interaction.homeRotation);cam.orthographicSize=34;
+ var report=new Report {scene=Root+"/Valoria_Reference_Clean.unity",selection_tests=picking,triangles=meshes.Sum(f=>f.sharedMesh.triangles.Length/3),renderers=art.GetComponentsInChildren<Renderer>().Length,art_status="PENDING_INDEPENDENT_VISUAL_REVIEW",physical_mobile_tested=false,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA")};File.WriteAllText(Ev+"/unity-art.json",JsonUtility.ToJson(report,true));
+ EditorSceneManager.SaveScene(scene,Root+"/Valoria_Reference_Clean.unity");
+ }
+ [Serializable]class Report{public string scene,source_sha,art_status;public int selection_tests,triangles,renderers;public bool physical_mobile_tested;}
+}
+}
