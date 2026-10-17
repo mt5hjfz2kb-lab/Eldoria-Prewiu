@@ -1,12 +1,12 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.3/staging' branch; Version is '6000.3.23f1 (09d2ecc7fb28) revision 643820'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
-[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-17T20:15:04Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 38728)
+Date: 2026-10-17T20:18:53Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 37732)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -56,29 +56,29 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [38440]  Target information:
+Player connection [33660]  Target information:
 
-Player connection [38440]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 955374981 [EditorId] 955374981 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [33660]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 3888970979 [EditorId] 3888970979 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [38440] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [38440] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [33660] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [33660] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-17T20:15:04.2789077Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 38728, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-17T20:18:53.5949825Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 37732, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
-[Package Manager] Connected to IPC stream "Upm-35472" after 0.2 seconds.
+[Package Manager] Connected to IPC stream "Upm-38300" after 0.2 seconds.
 [Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              8b06ac35c9bf4dce9cd4ad4c9a25c12b
-  Correlation Id:          6e6e67c60a82cb72f42fa42680a3e314
-  External correlation Id: 3406865759415275865
+  Session Id:              fb1aefd22aa6416482b40a36210d774f
+  Correlation Id:          5ce4a9223f51de2c53cc2505dc323664
+  External correlation Id: 7987031383357567079
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.25s, validation: 0.05s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-17T20:15:04.3493493Z"
-[Licensing::Module] Connected to LicensingClient (PId: 38728, launch time: 0.00, total connection time: 0.32s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.25s, validation: 0.06s, handshake: 0.02s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-17T20:18:53.6738233Z"
+[Licensing::Module] Connected to LicensingClient (PId: 37732, launch time: 0.00, total connection time: 0.32s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -88,7 +88,7 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 0.35s
+[Licensing::Module] Licensing Background thread has ended after 0.36s
 [Licensing::Module] Licensing is initialized (took 0.04s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
@@ -98,8 +98,8 @@ Library Redirect Path: Library/
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Artifact Garbage Collection - Removed 78 unused hashed content files
-Refreshing native plugins compatible for Editor in 1.78 ms, found 0 plugins.
+Artifact Garbage Collection - Removed 66 unused hashed content files
+Refreshing native plugins compatible for Editor in 1.87 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -116,7 +116,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56472
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56300
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -129,8 +129,8 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.005959 seconds.
-- Loaded All Assemblies, in  0.398 seconds
+Registered in 0.005806 seconds.
+- Loaded All Assemblies, in  0.388 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -138,35 +138,35 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.379 seconds
-Domain Reload Profiling: 775ms
-	BeginReloadAssembly (125ms)
+- Finished resetting the current domain, in  0.381 seconds
+Domain Reload Profiling: 767ms
+	BeginReloadAssembly (117ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (13ms)
+		CreateAndSetChildDomain (5ms)
 	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (13ms)
 	initialDomainReloadingComplete (47ms)
-	LoadAllAssembliesAndSetupDomain (176ms)
+	LoadAllAssembliesAndSetupDomain (175ms)
 		LoadAssemblies (111ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (172ms)
-			TypeCache.Refresh (171ms)
-				TypeCache.ScanAssembly (158ms)
+		AnalyzeDomain (171ms)
+			TypeCache.Refresh (170ms)
+				TypeCache.ScanAssembly (156ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (379ms)
+	FinalizeReload (381ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (343ms)
+		SetupLoadedEditorAssemblies (344ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (61ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (80ms)
-			ProcessInitializeOnLoadAttributes (125ms)
-			ProcessInitializeOnLoadMethodAttributes (73ms)
+			BeforeProcessingInitializeOnLoad (81ms)
+			ProcessInitializeOnLoadAttributes (124ms)
+			ProcessInitializeOnLoadMethodAttributes (74ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -213,88 +213,88 @@ Application.AssetDatabase Initial Refresh Start
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 0s175ms
+ExitCode: 0 Duration: 0s177ms
 [622/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
 *** Tundra build success (0.15 seconds), 1 items updated, 794 evaluated
-AssetDatabase: script compilation time: 0.517583s
+AssetDatabase: script compilation time: 0.544103s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  0.715 seconds
-Refreshing native plugins compatible for Editor in 6.32 ms, found 4 plugins.
+- Loaded All Assemblies, in  0.682 seconds
+Refreshing native plugins compatible for Editor in 6.14 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  2.580 seconds
-Domain Reload Profiling: 3292ms
-	BeginReloadAssembly (315ms)
+- Finished resetting the current domain, in  2.571 seconds
+Domain Reload Profiling: 3250ms
+	BeginReloadAssembly (286ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (24ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (174ms)
+		CreateAndSetChildDomain (144ms)
 	RebuildCommonClasses (35ms)
 	RebuildNativeTypeToScriptingClass (14ms)
 	initialDomainReloadingComplete (24ms)
-	LoadAllAssembliesAndSetupDomain (323ms)
-		LoadAssemblies (258ms)
+	LoadAllAssembliesAndSetupDomain (320ms)
+		LoadAssemblies (256ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (152ms)
+		AnalyzeDomain (151ms)
 			TypeCache.Refresh (102ms)
 				TypeCache.ScanAssembly (92ms)
-			BuildScriptInfoCaches (38ms)
+			BuildScriptInfoCaches (37ms)
 			ResolveRequiredComponents (10ms)
-	FinalizeReload (2581ms)
+	FinalizeReload (2571ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (2344ms)
+		SetupLoadedEditorAssemblies (2332ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (32ms)
 			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (138ms)
-			ProcessInitializeOnLoadAttributes (2003ms)
-			ProcessInitializeOnLoadMethodAttributes (162ms)
+			BeforeProcessingInitializeOnLoad (139ms)
+			ProcessInitializeOnLoadAttributes (1999ms)
+			ProcessInitializeOnLoadMethodAttributes (154ms)
 			AfterProcessingInitializeOnLoad (5ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (27ms)
-Asset Pipeline Refresh (id=e5c735f11a74a9c42871e38a14ecf9cd): Total: 4.256 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+		AwakeInstancesAfterBackupRestoration (30ms)
+Asset Pipeline Refresh (id=51d2a6d29c97dfb41b42451e0c987441): Total: 4.225 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=2945 ms
-		Asset DB Callback time: managed=26 ms, native=9 ms
-		Scripting: domain reloads=1, domain reload time=715 ms, compile time=519 ms, other=40 ms
-		Project Asset Count: scripts=1184, non-scripts=5559
+		Asset DB Process Time: managed=0 ms, native=2923 ms
+		Asset DB Callback time: managed=23 ms, native=9 ms
+		Scripting: domain reloads=1, domain reload time=682 ms, compile time=546 ms, other=39 ms
+		Project Asset Count: scripts=1184, non-scripts=5572
 		Asset File Changes: new=0, changed=0, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 10.840ms
-	ApplyChangesToAssetFolders: 0.474ms
-	Scan: 62.597ms
+	InvokePackagesCallback: 10.597ms
+	ApplyChangesToAssetFolders: 0.388ms
+	Scan: 62.565ms
 	OnSourceAssetsModified: 0.002ms
-	CategorizeAssetsWithTransientArtifact: 21.605ms
-	ProcessAssetsWithTransientArtifactChanges: 44.947ms
-	CategorizeAssets: 77.892ms
-	ImportOutOfDateAssets: 2603.767ms (2082.148ms without children)
-		CompileScripts: 519.151ms
-		ReloadNativeAssets: 0.024ms
-		UnloadImportedAssets: 0.645ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.837ms
+	CategorizeAssetsWithTransientArtifact: 21.592ms
+	ProcessAssetsWithTransientArtifactChanges: 45.247ms
+	CategorizeAssets: 76.022ms
+	ImportOutOfDateAssets: 2593.942ms (2045.867ms without children)
+		CompileScripts: 545.614ms
+		ReloadNativeAssets: 0.023ms
+		UnloadImportedAssets: 0.635ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.849ms
 		InitializingProgressBar: 0.000ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
-		OnDemandSchedulerStart: 0.962ms
-	PostProcessAllAssets: 26.428ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.003ms
-	UnloadStreamsBegin: 3.312ms
-	PersistCurrentRevisions: 0.238ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
+		OnDemandSchedulerStart: 0.953ms
+	PostProcessAllAssets: 23.823ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.002ms
+	UnloadStreamsBegin: 3.199ms
+	PersistCurrentRevisions: 0.218ms
 	UnloadStreamsEnd: 0.001ms
-	GenerateScriptTypeHashes: 8.004ms
-	Untracked: 1404.157ms
+	GenerateScriptTypeHashes: 8.100ms
+	Untracked: 1387.457ms
 
 Application.AssetDatabase Initial Refresh End
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Scanning for USB devices : 2.862ms
+Scanning for USB devices : 2.946ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
@@ -396,21 +396,21 @@ UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
 Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4298 unused Assets / (4.9 MB). Loaded Objects now: 5211.
-Memory consumption went from 206.6 MB to 201.7 MB.
-Total: 10.214300 ms (FindLiveObjects: 0.534800 ms CreateObjectMapping: 0.555800 ms MarkObjects: 6.995200 ms  DeleteObjects: 2.127900 ms)
+Unloading 4298 unused Assets / (5.4 MB). Loaded Objects now: 5211.
+Memory consumption went from 206.9 MB to 201.5 MB.
+Total: 9.652900 ms (FindLiveObjects: 0.540600 ms CreateObjectMapping: 0.539000 ms MarkObjects: 6.212700 ms  DeleteObjects: 2.359800 ms)
 
 Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
-	Deserialize:            4.964 ms
-	Integration:            557.362 ms
-	Integration of assets:  0.067 ms
-	Thread Wait Time:       0.005 ms
-	Total Operation Time:   562.398 ms
-Unloading 1 unused Assets / (0.5 KB). Loaded Objects now: 5420.
-Memory consumption went from 254.2 MB to 254.2 MB.
-Total: 5.931600 ms (FindLiveObjects: 0.321500 ms CreateObjectMapping: 0.206100 ms MarkObjects: 5.387800 ms  DeleteObjects: 0.015300 ms)
+	Deserialize:            5.406 ms
+	Integration:            597.433 ms
+	Integration of assets:  0.332 ms
+	Thread Wait Time:       0.006 ms
+	Total Operation Time:   603.177 ms
+Unloading 1 unused Assets / (0.5 KB). Loaded Objects now: 5428.
+Memory consumption went from 260.9 MB to 260.9 MB.
+Total: 5.569100 ms (FindLiveObjects: 0.327300 ms CreateObjectMapping: 0.194200 ms MarkObjects: 5.029500 ms  DeleteObjects: 0.017500 ms)
 
 Unity is not designed to run with Administrator privileges.
 
@@ -418,396 +418,396 @@ With elevated access, scripts in your project can modify system files, registry 
 This could make your system unstable or unbootable.
 
 Restart as a standard user for the safest experience.
-[Project] Loading completed in 8.468 seconds
-	Project init time: 				6.286 seconds
+[Project] Loading completed in 8.413 seconds
+	Project init time: 				6.194 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.257 seconds
-		Asset Database init time: 		0.246 seconds
+		Package Manager init time: 		0.263 seconds
+		Asset Database init time: 		0.184 seconds
 		Global illumination init time: 	0.002 seconds
-		Assemblies load time: 			0.794 seconds
-		Unity extensions init time: 	0.027 seconds
-		Asset Database refresh time: 	4.256 seconds
-	Scene opening time: 			2.074 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792268112478,"processId":35472,"projectLoad":8.467853400000001,"projectInit":6.285739,"templateInit":0.0,"packageManagerInit":0.2573442,"assetDatabaseInit":0.2456554,"globalIlluminationInit":0.0019526,"assembliesLoad":0.7937968,"unityExtensionsInit":0.0271825,"assetDatabaseRefresh":4.2563642,"sceneOpening":2.073923}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792268112478,"processId":35472,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
+		Assemblies load time: 			0.786 seconds
+		Unity extensions init time: 	0.022 seconds
+		Asset Database refresh time: 	4.225 seconds
+	Scene opening time: 			2.110 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792268341740,"processId":38300,"projectLoad":8.412954899999999,"projectInit":6.194406,"templateInit":0.0,"packageManagerInit":0.2626758,"assetDatabaseInit":0.1844193,"globalIlluminationInit":0.0018889,"assembliesLoad":0.786482,"unityExtensionsInit":0.0216436,"assetDatabaseRefresh":4.2251586,"sceneOpening":2.10996}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792268341740,"processId":38300,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
 Reloading assemblies for play mode.
 Reloading assemblies after forced synchronous recompile.
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  0.533 seconds
-Refreshing native plugins compatible for Editor in 6.65 ms, found 4 plugins.
+- Loaded All Assemblies, in  0.553 seconds
+Refreshing native plugins compatible for Editor in 6.53 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.684 seconds
-Domain Reload Profiling: 1215ms
-	BeginReloadAssembly (307ms)
+- Finished resetting the current domain, in  0.681 seconds
+Domain Reload Profiling: 1233ms
+	BeginReloadAssembly (329ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (22ms)
+		DisableScriptedObjects (21ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (170ms)
+		CreateAndSetChildDomain (188ms)
 	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (14ms)
 	initialDomainReloadingComplete (23ms)
-	LoadAllAssembliesAndSetupDomain (151ms)
-		LoadAssemblies (114ms)
+	LoadAllAssembliesAndSetupDomain (150ms)
+		LoadAssemblies (115ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (122ms)
-			TypeCache.Refresh (6ms)
+		AnalyzeDomain (121ms)
+			TypeCache.Refresh (5ms)
 				TypeCache.ScanAssembly (0ms)
-			BuildScriptInfoCaches (89ms)
+			BuildScriptInfoCaches (88ms)
 			ResolveRequiredComponents (25ms)
-	FinalizeReload (684ms)
+	FinalizeReload (681ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (448ms)
+		SetupLoadedEditorAssemblies (445ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (32ms)
 			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (139ms)
+			BeforeProcessingInitializeOnLoad (136ms)
 			ProcessInitializeOnLoadAttributes (194ms)
-			ProcessInitializeOnLoadMethodAttributes (74ms)
+			ProcessInitializeOnLoadMethodAttributes (76ms)
 			AfterProcessingInitializeOnLoad (5ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
 		AwakeInstancesAfterBackupRestoration (30ms)
-Asset Pipeline Refresh (id=316cebfd88207b843b6e7d2161477769): Total: 1.375 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+Asset Pipeline Refresh (id=9fbacf25d06cf8a49b8585a313470f06): Total: 1.394 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=806 ms
+		Asset DB Process Time: managed=0 ms, native=805 ms
 		Asset DB Callback time: managed=23 ms, native=0 ms
-		Scripting: domain reloads=1, domain reload time=543 ms, compile time=1 ms, other=0 ms
-		Project Asset Count: scripts=1184, non-scripts=5559
+		Scripting: domain reloads=1, domain reload time=564 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=1184, non-scripts=5572
 		Asset File Changes: new=0, changed=0, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 1.198ms
-	ApplyChangesToAssetFolders: 0.151ms
-	Scan: 0.001ms
+	InvokePackagesCallback: 1.200ms
+	ApplyChangesToAssetFolders: 0.159ms
+	Scan: 0.000ms
 	OnSourceAssetsModified: 0.002ms
-	CategorizeAssetsWithTransientArtifact: 0.002ms
-	ProcessAssetsWithTransientArtifactChanges: 2.339ms
-	CategorizeAssets: 67.039ms
-	ImportOutOfDateAssets: 707.195ms (701.431ms without children)
+	CategorizeAssetsWithTransientArtifact: 0.003ms
+	ProcessAssetsWithTransientArtifactChanges: 2.374ms
+	CategorizeAssets: 68.760ms
+	ImportOutOfDateAssets: 703.667ms (698.206ms without children)
 		CompileScripts: 1.097ms
-		CollectScriptTypesHashes: 1.505ms
-		ReloadNativeAssets: 1.168ms
-		UnloadImportedAssets: 0.068ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.151ms
+		CollectScriptTypesHashes: 1.528ms
+		ReloadNativeAssets: 1.067ms
+		UnloadImportedAssets: 0.061ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.262ms
 		InitializingProgressBar: 0.001ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.773ms
-	PostProcessAllAssets: 23.807ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.307ms
-	UnloadStreamsBegin: 0.153ms
-	PersistCurrentRevisions: 0.225ms
-	UnloadStreamsEnd: 0.001ms
-	GenerateScriptTypeHashes: 4.608ms
-	Untracked: 572.386ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
+		OnDemandSchedulerStart: 0.444ms
+	PostProcessAllAssets: 23.613ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.313ms
+	UnloadStreamsBegin: 0.152ms
+	PersistCurrentRevisions: 0.290ms
+	UnloadStreamsEnd: 0.002ms
+	GenerateScriptTypeHashes: 4.597ms
+	Untracked: 593.792ms
 
 Loaded scene 'Temp/__Backupscenes/0.backup'
-	Deserialize:            174.151 ms
-	Integration:            180.785 ms
-	Integration of assets:  63.458 ms
-	Thread Wait Time:       -0.008 ms
-	Total Operation Time:   418.386 ms
+	Deserialize:            188.814 ms
+	Integration:            178.176 ms
+	Integration of assets:  64.482 ms
+	Thread Wait Time:       -0.003 ms
+	Total Operation Time:   431.469 ms
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 Start Indexing on Editor startup
 [Indexing] Starting Initial Indexing for Assets
-Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [10.340 - 10.353]
+Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [10.318 - 10.330]
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Client] Successfully resolved entitlement details
-Unloading 52 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 58 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Temp/__Backupscenes/0.backup'
-	Deserialize:            1.127 ms
-	Integration:            134.562 ms
+	Deserialize:            1.136 ms
+	Integration:            134.359 ms
 	Integration of assets:  0.001 ms
-	Thread Wait Time:       0.034 ms
-	Total Operation Time:   135.724 ms
-Unloading 58 unused Assets / (3.7 MB). Loaded Objects now: 5486.
-Memory consumption went from 287.2 MB to 283.4 MB.
-Total: 6.801400 ms (FindLiveObjects: 0.325200 ms CreateObjectMapping: 0.179700 ms MarkObjects: 6.220800 ms  DeleteObjects: 0.075200 ms)
+	Thread Wait Time:       0.033 ms
+	Total Operation Time:   135.530 ms
+Unloading 58 unused Assets / (10.6 KB). Loaded Objects now: 5500.
+Memory consumption went from 296.2 MB to 296.2 MB.
+Total: 7.319500 ms (FindLiveObjects: 0.365100 ms CreateObjectMapping: 0.197300 ms MarkObjects: 6.700300 ms  DeleteObjects: 0.056100 ms)
 
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '88898b853bb2b9985c668c59c95fc4b3') in 0.0061057 seconds
-Refreshing native plugins compatible for Editor in 5.90 ms, found 4 plugins.
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '88898b853bb2b9985c668c59c95fc4b3') in 0.0063182 seconds
+Refreshing native plugins compatible for Editor in 5.92 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=30c32bfce5c4b9e48a2a35e1a42d8f4b): Total: 0.195 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5b1af49ca09555f449ff96f637aaea64): Total: 0.196 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Starting new worker id: 0 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker0.log
 Starting new worker id: 1 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker1.log
 Worker ready: AssetImportWorker1 1
 Worker ready: AssetImportWorker0 0
-[Worker1] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0033.asset using Guid(c9e8440e016659147a3ea06b389bb42c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker1] (PreviewImporter)
-[Worker1]  -> (artifact id: '43cbb803f2504ce982c5a5b9a3718743') in 0.1204674 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0033.asset using Guid(c9e8440e016659147a3ea06b389bb42c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6d82cfa833a154930768d5c1db858faa') in 0.1576924 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0081.asset using Guid(75d829c45c2742c46b92a552d2faffa2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd3929a8eaa9dac5823486f56bf46fc3a') in 0.1177242 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0058.asset using Guid(e5b67ccfaa249044dac59175e7948786) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '31a5459338c47add587a571067b2a3fc') in 0.1759454 seconds
+[Worker0]  -> (artifact id: 'e5470a5d9ac7cc653a90cee32b78e351') in 0.0055314 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0076.asset using Guid(10986b1b59e7e644c92c30c5e17a3b92) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '34a7ca52d770dc7077849961a42b61d0') in 0.0212337 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0079.asset using Guid(bb82e90bc6bbd9d4b80a9ddb29022299) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '2513cdb3e57efb9ef95f2767a571ef54') in 0.0163282 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0071.asset using Guid(67dcfbae256c6824ead5acbd57cacb92) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'bbfe0f586395b0a17a5927ece65d4c41') in 0.020556 seconds
+[Worker0]  -> (artifact id: '5d4af086da3e65407a515cd87e44b148') in 0.0127054 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0014.mat using Guid(b09a05106e8ff2042b63043a7b26e2c7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '5574beded12a756f83ac948caf013c61') in 0.4328182 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0050.asset using Guid(975cf5e57da14c440bfcdcf0100905e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '39ca792f61f7c22dbad0f16dad1bcd14') in 0.5661041 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0027.mat using Guid(e0f786305e0611347a30084b319dbaf4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '0b3a75c614b7ebb5c35140fe9c14d09e') in 0.0259495 seconds
+[Worker0]  -> (artifact id: 'd5703345978f01ea47168df8bf1810ce') in 0.0131379 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0061.asset using Guid(4f84abd769750d346b11cfedb2371735) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'c50ba140f2503ef2d9e8e62d94eb4f99') in 0.0091177 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0000.asset using Guid(1eb4e71d298661d488c696d57ac9079b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '8be5fa156e7afa06ce7f0012187c3507') in 0.0247787 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0036.asset using Guid(3cc34c226cff64043b8dd18d49b18739) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '9bf5f7077990a60560b91f2a620acb34') in 0.0180022 seconds
+[Worker0]  -> (artifact id: 'c3b38cd7bcfa19a7dafbd5e735b9ec9f') in 0.150485 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0049.mat using Guid(1ece68393ad47a0438ecfb4b211f35d3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '7bcd7ab27085ca65c5d0120d512ff8b0') in 0.063688 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0011.mat using Guid(2c4bcd3f9f754254fac20e90c4644874) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: 'ca2858c52b4d31fb7dc129c6e56b6378') in 0.0211981 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0005.asset using Guid(b6d2261279be85d4eb85972333543012) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '90dfc3beef75d090d0a178c76955acb8') in 0.0120485 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0041.asset using Guid(1e81fcd3ca2ea554ca3355046f131b9f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: 'e9af45d2a32a7db89ced2759cdbf8744') in 0.0185929 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0048.mat using Guid(0156b213bd0cfae40a42092bfb3b7d81) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '631efaa299a36fbe80152abcda629c30') in 0.0181716 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Bank.terrainlayer using Guid(024a73cc69cfe474582e4c50e15a4963) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '3f3cf0311e9058fa6f13a410c0de211b') in 0.0176118 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0051.asset using Guid(f4076f7921bd71643ade6d8fe2b826f0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'aa90baa6655fb784ea7b21b5d04164af') in 0.0939041 seconds
+[Worker0]  -> (artifact id: '9004f645e86240e7d5be753dd8144a2d') in 0.021385 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0054.asset using Guid(edc4b024b3af07b4d817130f2f8f1532) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '0f104e3821dd75064e08814c04f31b20') in 0.0258407 seconds
+[Worker0]  -> (artifact id: '094d7888732ad87fe75599da58544fac') in 0.0408676 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0072.asset using Guid(5468508da2769b2469a103d45bb837d8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '9b3b40d787f3d075cfdd55891a0f0a34') in 0.0215791 seconds
+[Worker0]  -> (artifact id: 'ee68dce0f754d0f5645138b08c3b1856') in 0.0081341 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0019.mat using Guid(601b4af448454574fbf86c047cfa0ab8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'd1bf775432cc5c4b358db329a3af1420') in 0.0124512 seconds
+[Worker0]  -> (artifact id: 'caebf5317a2b5ab354d060bcf080757d') in 0.0251918 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/ReferenceSceneURP.asset using Guid(a76ffc8e59c649a45bfba571b16f033a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '552af6bac39ca1a2ffdfece9d89436c6') in 0.0007148 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0064.asset using Guid(7e0c36f14f39b4c4994cdfd2b10ffec5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '1157c93370bd0c7a9b1b7420c46ec47a') in 0.008219 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0024.asset using Guid(0228b53113efa6e46895f7424ad417ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '06478e2614ed96ef4eac1c72e493cc9f') in 0.0430051 seconds
+[Worker0]  -> (artifact id: 'd0ad2526dbd4baf992d9701e8fff1b41') in 0.0061733 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0070.asset using Guid(62c27249d8b7b0441b87de3aeddb2f08) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '5706daabeafb2677639653623785c66e') in 0.0136754 seconds
+[Worker0]  -> (artifact id: 'c0be0045c53eb3f5c6f3dc976c801a85') in 0.0078262 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0032.mat using Guid(8c1012a1af7dde3479c570f14bed8f43) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '2a9098df695bd302034e2ba167c72c2b') in 0.011953 seconds
+[Worker0]  -> (artifact id: 'b60ab05691507d56f22522b1314d554b') in 0.1037735 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0037.mat using Guid(30432466a3b39b646b34e4db9ebe3457) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'ca73af8b087b8e7f9c89d62cc16d4475') in 0.032016 seconds
+[Worker0]  -> (artifact id: '8cf32e6485b6ea3a1b709054e6c726a3') in 0.0124669 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0007.asset using Guid(3f562bff6ce1b874887ef86aa94478db) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'a3972bf485578093f4b619d8ae18d49b') in 0.0120615 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0038.mat using Guid(81d8741f2a3658544b4ccf02fd75ed45) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'e3349f32a697a679905394b41b7f6791') in 0.0120409 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0003.asset using Guid(288f702eacfb1b044b202b4bd0c14898) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '7009245dae75efb7aa830744d880f6a7') in 0.0106377 seconds
+[Worker0]  -> (artifact id: '4fed81237608e5d9856ebcd5bef95118') in 0.0122416 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0066.asset using Guid(4c62ccaee4deec4489a19084f0e48797) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'a36266d7a40bccf295a28568ae307ff0') in 0.0125098 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/SunDryGrass.terrainlayer using Guid(ccb3724e5505d0a48bad642fbcd40a61) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '415949bc91359a4166765c21eba1da59') in 0.1412903 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0031.mat using Guid(118de141ead7ca44689fcb7568b2272d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '1877f51a5565ae01248fdf2e98cf472b') in 0.0119992 seconds
+[Worker0]  -> (artifact id: '9ca47007e179a1e33a6bd4e1c31e6f64') in 0.0063337 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0063.asset using Guid(8961cebe43c0d8143b98ab93b0f96c24) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'a8968d13087e3295abe400f0be2a7fb5') in 0.0080866 seconds
+[Worker0]  -> (artifact id: 'a6f4b38303a2f0014d2bcbb5dd872b33') in 0.0143557 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0047.asset using Guid(e38850052a5b2134bbeafac96b2e0bd7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3afade66a242ad466f78c006ab7627f6') in 0.0180722 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0036.mat using Guid(402ef4b8ace65074a95140e176dd0011) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '126f1f3d89b8ccf512296563222cd74c') in 0.0123716 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaRiver.shader using Guid(6bf850294f4226743a614b1b04b0d182) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'e277604459383860ae090f0608a786ba') in 0.0006626 seconds
+[Worker0]  -> (artifact id: '434b663376b28005a83f0f01fca2ff5a') in 0.0006706 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0073.asset using Guid(f59e571f8592faa4291156aa0d9b5a60) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '6afa17331e657d361d48681a1048f75f') in 0.0134975 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0001.asset using Guid(9291f03f5f1918e40a19c7ecefd7a1a3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '6d2d52b16765c6a6453508bb64679699') in 0.0280753 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0045.asset using Guid(12d0a6754c66ed44e9bc757f80a5e0ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'ddca87d73b61f08936087afdf71cced3') in 0.016762 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0042.mat using Guid(d720594de7495ef4e80f67d87a563ab8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'c1db24d2d0da21adc2b1ea0182633478') in 0.0237387 seconds
+[Worker0]  -> (artifact id: '020f102e83390aed79a19e257f8c5a77') in 0.0119347 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Ruins.prefab using Guid(c746bfe12561a944198586e15c1ed736) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '028a70d6709fa4a744181d019211ff08') in 0.0856394 seconds
+[Worker0]  -> (artifact id: '85a0c5d4e68dedb1c2db8d3a21c22beb') in 0.0913175 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0044.mat using Guid(d2fb3b1e0ad3b734790f8864fd7c2578) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '529671a3e724a88ffe96c0b0de12aa09') in 0.0221644 seconds
+[Worker0]  -> (artifact id: '556d880922095d22cd84c84ba0fbf281') in 0.0159993 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0028.mat using Guid(fd046a2038f57254dbbb35e4b75ecbd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '8a3c68b0dbfa6e2a65148f908cabfd24') in 0.044771 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0034.asset using Guid(f93745689c05543478d8399a8c5b6ee4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '0e177e77d1d7adb79e9ee245469b1701') in 0.0127666 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0025.mat using Guid(e3c8f43d7c0c83f4d83197aea6042eb9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '17f536acdacfb2a002fba07449c3c990') in 0.0181751 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0009.mat using Guid(dcd1fed5362982b44856ef0eec09d912) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '00b2d5a2c35875e21f1452d0410397be') in 0.0207368 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0006.mat using Guid(6c3b8d8268172e340abf8a39a6d59eb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '989e93027a7ab1c27fcbb21810d7aee2') in 0.0206882 seconds
+[Worker0]  -> (artifact id: '8336cf789e18f3f877c02e8c570da34c') in 0.0142284 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0016.mat using Guid(5c1ed12e93fe4774689232f0a77bbe74) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'aa3b6cb0d9929cc2fb9c6cf0d165a269') in 0.0119526 seconds
+[Worker0]  -> (artifact id: '2df10ddcccef48dd6a5c9b35b1a7fdff') in 0.0234 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0006.mat using Guid(6c3b8d8268172e340abf8a39a6d59eb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '1a648b5a325de639f6a3ae823a8c9b9c') in 0.0232685 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0017.mat using Guid(0a69261fdae191549b1ef9db5bdc3039) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '2272a584ae672e438103edec8f6e67ba') in 0.012392 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0040.mat using Guid(c05a354cc9dc4f649b1d54fe6b16f49f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: 'dca73acb454774f65c8fad0578307492') in 0.0124264 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0055.mat using Guid(65152b7b2acb39347b514b1d65ebe132) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '287ac47316aa8144088eba00223dfb07') in 0.0144302 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0053.asset using Guid(af5082b9fc53529459d6e3a2192e2390) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '603e99baf0d56ca2160c46ef985968ba') in 0.0452531 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0052.mat using Guid(23423469c782238458a89c57f6d8801e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '55621846336e483e0d564fafa6b16fab') in 0.0057152 seconds
+[Worker0]  -> (artifact id: 'ee7d68a8a3bb103c040bd1c8026cd640') in 0.0208122 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0015.asset using Guid(328ec9a7ab2bfa24dae1d0df41ddd565) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4db1de03776c9981b58640db7bb20075') in 0.0120248 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0010.mat using Guid(a7537f21fed459f4381b103bb2481e13) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '20154e8860f6075a2db0904c234ddac6') in 0.0218383 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0045.mat using Guid(771628f836e8f194481765907960c6ea) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: 'eae83db12e31c973f5a5201896544886') in 0.0232742 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0051.mat using Guid(8d429d06058140e4698921cda4719086) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'c3cff44b73dbd1e1e1cd74f62d17559f') in 0.0203957 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0005.mat using Guid(ebbacd4d110a00741a7f60d3bbf332d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '02f4879c45b9aba964c890f013659642') in 0.0218792 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0011.asset using Guid(7f27888b54343244b88d9bfc85b30f4d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'fa3eaf525d885ad729d54361f059eadc') in 0.020759 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0018.mat using Guid(693891b4a4c38b747aa1052861aad7a6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '03d2102efb50e1addb91a585e356470c') in 0.0122341 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0050.mat using Guid(b3f7d045be2d57440bb160b8946c6c58) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'e681c12ea6a70bbe66ddda3ab54b2eea') in 0.0119711 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0007.mat using Guid(7b6623c86622c0d4d9d71cb967281126) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: 'efea4672a3cc99ef93465d336159c7b8') in 0.0275089 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0030.asset using Guid(f318446631ace77499de17788dac067f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '083a2960f92ea68896ab7c1aae959f98') in 0.020724 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0047.mat using Guid(d0b92a03b5150cf4bbf83ff37d8f4f60) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '225b9ed6451f26f2dbf8322e8be7075b') in 0.0202882 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0074.mat using Guid(1fddcc5c039d97f4797b0c00d7af2fb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '3270e0f2cdd5f271b8b7a91526c49ce3') in 0.0195741 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/ReferenceLook.asset using Guid(283063c6a09225041952e23bfe86842c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'f205a695e107518140e572197dd601b8') in 0.0010048 seconds
+[Worker0]  -> (artifact id: '2569da86e3a446700ef94ca226f4c3c9') in 0.043696 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0021.mat using Guid(f2d35f988f3f49c47a660d845572a45b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '9d74ada8d0cda9556b8fc9bac2110f35') in 0.0120317 seconds
+[Worker0]  -> (artifact id: '66e2499c3b259da7f0877e1959ccb40b') in 0.01342 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/ReferenceLook.asset using Guid(283063c6a09225041952e23bfe86842c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'cc5ef4d948ebeb62ad8b523f69c1dbb3') in 0.0010198 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0040.asset using Guid(4ce31a72fa2cb6745a099e57ca19161c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '27994c963d0c118c95d38cfaeb725a4a') in 0.0182991 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0053.mat using Guid(06a94345bf5734246a0c3e2a13c24005) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'fca2f9a2ff00f589e9edccec8dc0abe1') in 0.0218287 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/ReferenceRenderer.asset using Guid(9ccd1442b96259741ae3e53ec6f1adab) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '393c0744a824d5873100d9074929a91b') in 0.0008385 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0023.mat using Guid(c72f328a5ec21db4c8db4d949459b4f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'fbd6753f1e5d44419ea5c284129108ff') in 0.0204022 seconds
+[Worker0]  -> (artifact id: 'ad16d6cdbb0b4e2d3aa4bb4056d26275') in 0.0121524 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab using Guid(ee75939cc989a824e84545fdf93f8d72) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '42f4d2bd64c65c1b56e5b703342bd024') in 0.0435396 seconds
+[Worker0]  -> (artifact id: '82c43602471a9845a70bf7a3bd69bd8e') in 0.0547794 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0065.asset using Guid(d1f6a4cf35626ab43a0efabe47a82ba4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '2807dab3f4c93215a9e10630a3788e82') in 0.0082614 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Grass.terrainlayer using Guid(f74de9efa30ebd84086ffdcca3e309e5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: '5a4e45d896f316ab37ac93540cb54642') in 0.0091616 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0018.asset using Guid(344e78d773eedc746992e8df755cd6b9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '33daa133328917c40492e671a82fab1e') in 0.0163146 seconds
+[Worker0]  -> (artifact id: '003151ced7feca0a3108a5c9767b1725') in 0.0119153 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0075.asset using Guid(72919febff466784999fd67aa6a7e6c8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'f21d0ac658927a23f9a3445b4a24b7a0') in 0.0101466 seconds
+[Worker0]  -> (artifact id: '9884afe5a262f58195e5ee2763a1398d') in 0.0174229 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'e1864700e0771fafbe0be1d061484a8a') in 0.0004635 seconds
+[Worker0]  -> (artifact id: 'afd22fc5dc331142bb82651d6dc29ed9') in 0.0004505 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Bastion_I.prefab using Guid(6d2943a9fbf7a224b85b95df7dc32b52) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'ec9ed85a83bcc5bc945658527d9ff10f') in 0.1187205 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0027.asset using Guid(e420c3d274ecb4f4780028d0ad5c11db) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'd8c92c85fed8320657dab6bfac4daf87') in 0.0420356 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0052.asset using Guid(744c8b19541731c4cbcbcd356d8d3c0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'ee883f2d7267a867873d82311c5f157d') in 0.0058295 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0055.asset using Guid(c849310f1c690ad4ba327a7a271fc54d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '4ac3bd80664e77a8e98d6c9046c0164a') in 0.1335048 seconds
+[Worker0]  -> (artifact id: '8d112b289fd096bb1fe76358dd33e948') in 0.1516382 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0004.asset using Guid(54a5c802cdad5c546b9f7ae197a93005) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'cfc85aa88d84af73c5452ddeb238dd5e') in 0.0182575 seconds
+[Worker0]  -> (artifact id: 'ed44facb5e93ce460be69aabe2acd9ac') in 0.0125543 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0059.asset using Guid(4d5036268990b8b4a94a666eb89b3dbf) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'addbb9ca41c3041f67792206aa72ed9d') in 0.0091663 seconds
+[Worker0]  -> (artifact id: '8808abf2099cd1ef78a97ded4a017612') in 0.0059186 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0013.asset using Guid(aa22dbeced2d05141b1ddbd567988e11) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7ddff1ee42c97337aa02fb9fbc5b1374') in 0.012244 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0041.mat using Guid(d6ceed8319bc814419798801a16c47ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '15245225b895300c31e1a3be1af26911') in 0.0317698 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0026.mat using Guid(89ff0df2980e31646b167b995c1b1e78) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'f3d485f32b21dbde5e20366605c8b57a') in 0.0863523 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0029.mat using Guid(3afd6a32ed33e3d45aee007d88ac8587) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0]  -> (artifact id: 'de99dc53643f0e9185b06ff078839c38') in 0.0121804 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0074.asset using Guid(e2efdf6b545171047bf33c0a5f0fb5d7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '21d3ae543e7e416766bb3da5bca398f5') in 0.012086 seconds
+[Worker0]  -> (artifact id: '5672a617de2d4110d2203d2ef2f90e76') in 0.0178093 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0069.asset using Guid(acba33bbd479db1429393806724a7389) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '635efafe26e45418a6bde0b12801d74c') in 0.0135427 seconds
+[Worker0]  -> (artifact id: '9cfa1a1e8a0f221e9de0c663cb5fcfc0') in 0.0080687 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0029.mat using Guid(3afd6a32ed33e3d45aee007d88ac8587) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f97636af7697c6a62f5450718b2b011c') in 0.0126378 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0020.mat using Guid(711678d8cff625a43bcf164bad8e6c62) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'fcd6f95eaa2652b957a6c15c54419cea') in 0.0118903 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0013.mat using Guid(e7616a370ac18e94387a721bf204d9d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '4843bd9704c281776cbdf607afca62f3') in 0.0120763 seconds
+[Worker0]  -> (artifact id: '8c59e913a1c24f70c27b41519aa75ce5') in 0.0126715 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0062.asset using Guid(417b461e534bbf24d87b32dfeb1bd728) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '0e7f47949b2d665c0cd864d81cd108c1') in 0.0063766 seconds
+[Worker0]  -> (artifact id: '7dd94d145b724c335bad7a6d9e6a0899') in 0.0140417 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0056.asset using Guid(b655701b2197d2840aa5cd34320628e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '659981dcd73e37667eb542a972d072b2') in 0.0127801 seconds
+[Worker0]  -> (artifact id: 'cdb555384b12c0ebd6c4523acbbbaba2') in 0.0261612 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0008.mat using Guid(46252a88ceeb4bb41b451d60ae4a11ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '8a0ecbdfd942eba541090cffc8abe8aa') in 0.0221387 seconds
+[Worker0]  -> (artifact id: 'eda6dfb208ae54d9533e8515e99c63ee') in 0.0238892 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0077.asset using Guid(8eb98f5f70d82d945a4de8547b4640d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3fb0878d1011cd0a7897b8169fc521e4') in 0.0181679 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0035.mat using Guid(0c60d7ba4c5c15d468dfd4002086b4a7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '776912f3ca6d013ef54656ede9e45b51') in 0.029919 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0025.asset using Guid(7272fa4fb1c6de146a4e8cfb79d52d05) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '39fc24b7db06c9b0a4ac65697c4dcf05') in 0.0433296 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0015.mat using Guid(0b0a4689b83477c49813e41cb1cc7b9a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'a258ffa07db61beb5e1f07ae57dee3d9') in 0.0119893 seconds
+[Worker0]  -> (artifact id: '33db51b45c127492e9a29fd9655713fe') in 0.0121075 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0043.mat using Guid(e35a7606e610c694089ffa6a197a11e2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'b5eae1969b9e55b84c440eb50248cb25') in 0.0208332 seconds
+[Worker0]  -> (artifact id: 'd5f75c91e13512808b68399604b4a928') in 0.0290874 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0042.asset using Guid(9c2fbc4659b293d45bd0a282ea1b8b42) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3cd22718366ddc13571c5f90bb38fdac') in 0.0184406 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0080.mat using Guid(9c14a4908b3d16c42b3947a7aeccd167) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '49b05e80215042410f6f1f208fe703e5') in 0.0195813 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0012.mat using Guid(d737d06185e6b6349ad4e6182a523d2f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '26a60660f8312b359881a830d8c6cae6') in 0.0205314 seconds
+[Worker0]  -> (artifact id: 'abbf7fb87461470f849a476c881333d9') in 0.0244189 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0024.mat using Guid(7237c853450792b4493764fb5df263f3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '77081f08ddca2ff9515ab9539d8ff49c') in 0.0119765 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Ground.asset using Guid(7a05f30f39882fa48bb0f42409cc4e5a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '65e32f91f6d28977cfdbbb7a7d8a3d48') in 0.0116314 seconds
+[Worker0]  -> (artifact id: 'fe101877a3b9802a1ba3aea5214d03a8') in 0.011689 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab using Guid(44e652bb0869b404eb1cf0bb3a3e40b3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'c62741755cbc34a34c563e4a7372a2af') in 0.0670968 seconds
+[Worker0]  -> (artifact id: 'ad496c06866f30b922fd1d8a1dbf0181') in 0.0636321 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0057.asset using Guid(1a8e805bcb8315e4f9d01fc16d0b84e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'd5d0f4c536586ca01d9dd8db31097350') in 0.0144186 seconds
+[Worker0]  -> (artifact id: 'b301f237b79cfb07aeec9dc1b00bd9fc') in 0.104113 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0031.asset using Guid(ba86d75be3e9c5947bf5e5d1484f1abc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '609a3921d2230e04b6cde24ebce3d9c2') in 0.0431468 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab using Guid(fffb610f044e39b43bb86fe9dc6c876e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '5e35fa9846b6eed1289d3d5421333117') in 0.0420199 seconds
+[Worker0]  -> (artifact id: '4f141d3ac9637825a94a6676cc6fd976') in 0.0592711 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0060.asset using Guid(c251465a74ee09d469c8d6e4e978440f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '43c79ea7ddf46b6678bcbaa37dade8fb') in 0.010804 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/DryEarth.terrainlayer using Guid(6dd1191509b588640bd962614bace01c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '7563f8701acf988c2a1b1dc45eaec63c') in 0.0102535 seconds
+[Worker0]  -> (artifact id: '8857e1dad1d40ba8d8b3e16725344584') in 0.0301795 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0039.asset using Guid(c20c6952cec22e84e83d563f9dfca020) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '1c35f1f7a8b340c26b0b9c2fc8de90fb') in 0.0135169 seconds
+[Worker0]  -> (artifact id: 'cd18821bc4e9486935c781489f80e506') in 0.0182007 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0067.asset using Guid(f5bd85988f840eb41b3770a010932cbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '07def6dd864fd9053896e84e80af479a') in 0.0156006 seconds
+[Worker0]  -> (artifact id: 'bc297ab7d177b65d5db57a3c1b792f28') in 0.009257 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0022.mat using Guid(7e9a0a052808c9a47aff814835d4ea3d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '85ce90be3465b142e14f395e947e166c') in 0.0076484 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0002.asset using Guid(cab60183194def94ba8e8a4d8fd4e47f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'bf73393405ae1caf50e5dbd71d349311') in 0.0106571 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0048.asset using Guid(5ad244606678c7143adc465840a185c8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '66a2f19dbb8ab8a240e5dda819745294') in 0.0427441 seconds
-[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0030.mat using Guid(52d3cc3eb5b557f4382dd8f46031dfcd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
-[Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '0710ac66b8c06095e0fa0493fa901bfe') in 0.0123681 seconds
+[Worker0]  -> (artifact id: '837429df855508ead089f3e9727e5c17') in 0.012164 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0068.asset using Guid(7cf0eaa94c7192a4fbe1a4544f3aaf73) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: '99b0c219a429c599c9174ab02eaa672e') in 0.013554 seconds
+[Worker0]  -> (artifact id: '4928664f54a57d61d53b20aaf81c2caa') in 0.0062513 seconds
 [Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0046.mat using Guid(4565651971d2c0a4181ebce10ad768d6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
 [Worker0] (PreviewImporter)
-[Worker0]  -> (artifact id: 'a88024ac87860ad8c37efe8ab68be5c3') in 0.0208624 seconds
+[Worker0]  -> (artifact id: '896b39b04c327ce3f88596e24ec3d117') in 0.0146007 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0078.asset using Guid(fec84146b60f2024391398da43aa4246) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '61ea82fe7f6155d7017ab1ece3c76772') in 0.0270495 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0034.mat using Guid(34bec663a494d3341bf4b800b2f20015) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '69b94e27fd2a557195f13a4e3b82f4be') in 0.046046 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0009.asset using Guid(77032c91bef4eba41b4b0ee95c4967d4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f3714b137472f225b93051fa43155e37') in 0.0121341 seconds
 VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -820,7 +820,7 @@ UnityEditor.EditorApplication:Internal_PlayModeStateChanged (UnityEditor.PlayMod
 
 (Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanPlayProbe.cs Line: 16)
 
-Killing ADB server in 2,0595576 seconds.
+Killing ADB server in 2,0784545 seconds.
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -833,4 +833,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792268147977,"processId":35472,"allocatedMemory":20010304,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":68195},{"Thread":4230344},{"Manager":821757},{"VertexData":1448},{"Geometry":816},{"Texture":296},{"Shader":81717},{"Material":24},{"GfxDevice":56952},{"Animation":392},{"Audio":2664},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":3953},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":24708},{"DynamicArray":109262},{"HashMap":74261},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":5341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":9760},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108571},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9778},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792268380322,"processId":38300,"allocatedMemory":20010302,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":68195},{"Thread":4230344},{"Manager":821757},{"VertexData":1448},{"Geometry":816},{"Texture":296},{"Shader":81717},{"Material":24},{"GfxDevice":56952},{"Animation":392},{"Audio":2664},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":3953},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":24706},{"DynamicArray":109262},{"HashMap":74261},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":5341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":9760},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108571},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9778},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

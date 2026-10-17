@@ -18,7 +18,7 @@
   "external_downloads": [],
   "art_approved": false,
   "per_mesh_triangles": {
-    "Bastion_I": 107140,
+    "Bastion_I": 132320,
     "Gate_LowerGate_WestWing": 726,
     "Gate_LowerGate_WestTower": 4419,
     "Gate_LowerGate_EastWing": 726,
@@ -33,18 +33,18 @@
     "Plot_-19_9": 3828,
     "Plot_29_32": 3828,
     "Plot_28_12": 3828,
-    "Ruin_-22_46": 11704,
-    "Ruin_26_52": 11352,
-    "Ruin_-25_0": 11000,
-    "Ruin_46_-1": 11352,
+    "Ruin_-22_46": 11088,
+    "Ruin_26_52": 11088,
+    "Ruin_-25_0": 11704,
+    "Ruin_46_-1": 10824,
     "Fir_tree_group": 142200,
-    "River_bank_rocks": 8684,
+    "River_bank_rocks": 27774,
     "Woodland_ground_rocks": 3840,
     "Shrub_group": 21600,
-    "Foundation_shrubs_and_groundcover": 4419
+    "Foundation_shrubs_and_groundcover": 5244
   },
   "mesh_objects": 24,
-  "triangles": 417121,
-  "blend_sha256": "e7bb86b6c3f6daa748ecf04d9938ed9aa9f6563c53e5a53d13bb53c219e8db12",
-  "glb_sha256": "5053975c4e15d80f38e26fcb4e3c346f155498f6d0c619c92c3f2f729f184f54"
+  "triangles": 461512,
+  "blend_sha256": "ff8b746a9b4ebfc21d7e78846e15b417cfe938d27dc9d6d7b8bc169e04e4ad19",
+  "glb_sha256": "8a8166093f5bab0b529a018bdf0345fda1d475a38a522538a4185fdd7ec1b09b"
 }
