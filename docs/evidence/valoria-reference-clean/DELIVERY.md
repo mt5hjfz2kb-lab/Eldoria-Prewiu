@@ -1,37 +1,35 @@
-# Valoria Reference Clean — entrega reproducible
+# Valoria Reference Clean — escena real y fuentes editables
 
-Escena independiente construida y probada con Unity 6000.3.23f1 y Blender 5.2.2 LTS. Candidata funcional; no se declara ART_APPROVED ni objetivo artístico 8/10 alcanzado.
+Abrir el proyecto Unity existente desde la rama `construction/valoria-master-plan-layers-20261016` y la escena `Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity`. Unity6000.3.23f1, URP17.3.0, glTFast6.14.1. Las escenas anteriores se conservan; esta escena es independiente y contiene una sola representación activa de cada estructura.
 
-## Abrir y editar
+## Contenido editable
 
-Usar la rama `construction/valoria-master-plan-layers-20261016` y abrir:
-`Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity`.
+- TerrainData real y cauce continuo, río con profundidad visual, transparencia somera y espuma de contacto; puente con arcos y apoyos cerrados.
+- Bastión compacto, puerta de acceso diferente, camino continuo, cuatro parcelas vacías y fragmentos de muralla; vegetación, rocas, banderas y antorchas modeladas.
+- Prefabs en `Prefabs/`, mallas/materiales/TerrainLayers/pipeline URP en `GeneratedArt/`, shaders y componentes de cámara/selección dentro de la misma carpeta de escena.
+- GLB en `Sources/Valoria_Reference_Clean.glb`; fuente Blender empaquetada en `docs/evidence/valoria-reference-clean/Valoria_Reference_Clean.blend`; paquete de intercambio `Valoria_Reference_Clean.unitypackage` junto a este documento. Preferir el proyecto completo: el paquete requiere las dependencias del proyecto y Terrain Physics habilitado.
+- Selección del Bastión y cuatro parcelas, arrastre/zoom/encuadre de cámara con soporte táctil y límites de terreno. Preparación para futuras construcciones; no se ha sustituido el sistema económico ni el guardado canónico.
 
-En esta carpeta están materiales, TerrainData, TerrainLayers, prefabs, GLB, shader y componentes de selección/cámara. Fuente editable empaquetada: `docs/evidence/valoria-reference-clean/Valoria_Reference_Clean.blend`. Paquete de intercambio: `Valoria_Reference_Clean.unitypackage`, junto a este documento. Preferir el proyecto completo: el paquete no sustituye Packages/manifest.json y requiere Terrain Physics habilitado, URP 17.3.0 y glTFast 6.14.1.
+## Última validación visual y jugable
 
-Se construyó desde una escena vacía, sin heredar geometría de escenas anteriores. Bastión compacto nuevo, puerta modular recuperada, puente con arcos reales, terreno Unity, río, cuatro parcelas vacías, ruinas y ambientación. Un único conjunto activo. Selección del Bastión y parcelas; arrastre y zoom de cámara; parcelas preparadas para futuras construcciones. No implementa un nuevo sistema completo de economía/construcción.
+Fuente ejecutada `f9cc6a6999626d5e0067960a7fa2c80675e07dd4`; salida nativa `2c3d6174fe78ea5cf4031a4611dfb228d60019ac`; [ejecución Unity/Blender46](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39079638661).
 
-## Evidencia real
+Las capturas `A-blockout.png`, `B-architecture.png`, `C-art-scene.png`, `D-final.png`, `detail-bastion.png`, `detail-gate-bridge.png` y `playmode-home/pan/zoom.png` proceden del render real de Unity. `water-before/after-main/detail.png` y `water-comparison.json` demuestran el último cambio manteniendo cámara, iluminación y malla. Las pruebas de piedra, terreno, orilla y vegetación permanecen en el historial Git; los candidatos rechazados no se promocionaron automáticamente.
 
-- Código ejecutado: `aef30f5e2aa46920311bec2794f4de5d4f3fd9cc`.
-- Salida nativa versionada: `d102f3895b39918e4d5480a734a21ee8c497e114`.
-- GitHub Actions: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39064889290 — completado con éxito.
-- A-blockout.png; B-architecture.png; C-art-scene.png; D-final.png.
-- playmode-home.png, playmode-pan.png, playmode-zoom.png: renderizados auténticos de la cámara Unity durante Play Mode.
-- detail-bastion.png y detail-gate-bridge.png: acercamientos nativos.
-- playmode.json: 5 objetivos seleccionables, 76/76 comprobaciones del recorrido, 6 escalones, una cámara, pan/zoom verificados, cero excepciones y huella del guardado canónico intacta.
-- unity-art.json: 421536 triángulos de arte importado, 24 renderers de arte. Los contadores de UnityStats no están disponibles en batch y sus ceros no significan cero draw calls.
-- Medida Windows de render de cámara más lectura GPU a 960×540: 17.90 ms (8 muestras). No representa FPS móvil ni del juego completo. Memoria nativa de objetos Texture de la escena: 62183433 bytes.
-- mobile-availability.json: ADB instalado, cero dispositivos Android autorizados. No se ha realizado perfilado físico Android/iOS.
+`playmode.json`:96/96 recorridos y gálibos,6 escalones,5 selecciones,una cámara,cero excepciones,zoom/pan/home reales y guardado canónico intacto;12/12 rayos de las esquinas de cámara sobre Terrain en formato panorámico móvil. Se conservan las protecciones contra geometría corrupta en Play: sin static batching sobre las mallas glTF y comparación estricta Editor/Play.
 
-## Integración mínima necesaria
+La escena contiene635048 triángulos de malla,35 renderers y163 slots de material. Texturas referenciadas:121822558 bytes de memoria nativa en Windows. Render de cámara más lectura GPU a960×540:25.76ms. Estas medidas no son FPS ni memoria de un teléfono; los ceros de UnityStats en batch no significan cero draw calls.
 
-SliceBoot omite su arranque automático solamente cuando la escena activa se llama Valoria_Reference_Clean; evita duplicar cámara, mundo e interfaz antiguos. Se habilitó el módulo integrado gratuito com.unity.modules.terrainphysics 1.0.0: el registro nativo demostró que Unity eliminaba TerrainCollider al entrar en Play Mode mientras estaba deshabilitado. No se actualizó Unity, URP ni glTFast. Pipeline URP específico de esta escena persistido como asset; escenas anteriores conservadas.
+## Herramientas y procedencias verificadas
 
-## Fuentes y continuidad
+Blender5.2.2 LTS realmente ejecutado. En46 BlenderMCP ejecutó una acción tipada que modeló22 cantos cerrados junto al agua, usando el complemento ya instalado y su hash verificado `eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5`. Se reutilizó el transporte histórico de38612645467/38766521237, con servidor temporal local y cierre al terminar, sin instalar ni habilitar servicios de pago. Evidencia: `blendermcp-art-operation.json` y `native-tool-check.json`. La ausencia de un servicio permanente en9876 no describe esta vía temporal.
 
-Procedencias/licencias y candidatos rechazados: resource-licenses.json y source-art.json. Coste 0 €, sin modelos de pago ni imágenes generadas. Biblioteca modular y procesos previos recuperados; pinos/arbustos y atlas existentes reutilizados y transformados; arquitectura nueva modelada con bpy. BlenderMCP y Ollama no respondieron en esta ejecución; Blender nativo sí produjo las fuentes reales.
+El cerebro existente Qwen3-VL8B revisó cuatro imágenes auténticas en43; `qwen-review.json` conserva imágenes/hashes/modelo/inferencia y crítica con incertidumbre. Es una ayuda, no aprobación artística. Las decisiones de esta escena y recetas de modelado se atribuyen a Codex; no se declara una autoría Qwen inexistente ni entrenamiento de pesos.
 
-Pendiente antes de considerar terminada toda la misión: perfilado real Android/iOS y continuar elevando el acabado respecto a la referencia (naturalidad de orillas y rocas, variación de superficies, vegetación y detalle ornamental). La composición y las estructuras son verificables, pero el parecido artístico no queda certificado por las pruebas funcionales. No se promueve esta candidata a escena canónica ni se reanudan otros trabajos pausados.
+Coste de recursos externos0€. Quaternius CC0 recuperado y transformado; cuatro materiales Poly Haven CC0 verificados, originales conservados y derivados adaptados. Procedencias, licencias y rechazos en `resource-licenses.json`, manifiestos de MaterialInputs y `source-art.json`. No hay imágenes generadas presentadas como Unity.
 
-Reproducción automatizada: tools/valoria-reference-clean/author_scene.py y .github/workflows/valoria-reference-clean.yml. Antes de cualquier nueva ejecución nativa, recuperar una reserva exclusiva real de windows-runner-heavy y comprobar la actividad del PC; reserva liberada tras el último trabajo completado. No quedan tareas propias en segundo plano.
+## Validación móvil y reproducción
+
+La compilación aislada ARM64/IL2CPP se solicita en47 con el adaptador Android existente; el resultado definitivo quedará en `android-build.json` y el APK en el artefacto de esa ejecución, sin versionar el binario en Git. Hasta leer ese resultado, no declarar APK compilado. ADB está disponible pero no hay dispositivos Android autorizados; tampoco se ha perfilado un dispositivo iOS. No se certifica rendimiento físico, objetivo8/10 ni `ART_APPROVED`.
+
+Reproducción: receta `tools/valoria-reference-clean/author_scene.py` y workflow `.github/workflows/valoria-reference-clean.yml`, solo con claim exclusivo real y herramientas del PC libres. El workstream conserva la reserva durante la compilación47. No se modifica el arte de main ni se reanudan trabajos pausados.
