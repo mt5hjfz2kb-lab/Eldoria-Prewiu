@@ -137,9 +137,12 @@ namespace Eldoria.ValoriaLayered.Editor {
       var result=new Record();
       result.source_colliders_before=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length;
       Shot("entry-BEFORE-home");Shot("entry-BEFORE-portrait",390,844);
-      var roadMat=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
-        .SelectMany(r=>r.sharedMaterials).FirstOrDefault(m=>m!=null&&m.name.Contains("ENTRY_road_masonry_PBR"));
-      Require(roadMat!=null,"Existing source PBR stone material not found");
+      var nativeRenderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+      var authoredRoad=nativeRenderers.FirstOrDefault(r=>r.name.Contains("ENTRY_AUTHORED_STONE_ROAD_AND_TWELVE_TREADS"));
+      var roadMat=(authoredRoad!=null?authoredRoad.sharedMaterial:null) ??
+        nativeRenderers.SelectMany(r=>r.sharedMaterials).FirstOrDefault(m=>m!=null&&(m.name.Contains("road_masonry")||m.name.Contains("Eldoria_stone")));
+      if(roadMat==null)Debug.LogError("VALORIA_V8_STONE_DIAG "+string.Join(" | ",nativeRenderers.Select(r=>r.name+"="+string.Join(",",r.sharedMaterials.Where(m=>m!=null).Select(m=>m.name))).Take(90)));
+      Require(roadMat!=null,"Existing V7 stone road material not found");
       string[] routes={"GREYBOX VPD · master east route","GREYBOX VPD · master west route"};
       foreach(string name in routes){
         var t=original.Single(x=>x.name==name);
