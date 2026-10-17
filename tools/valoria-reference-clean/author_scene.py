@@ -6,6 +6,15 @@ import bpy, bmesh, math, os, json, random, hashlib, urllib.request, socket, nump
 from mathutils import Vector,Matrix
 from math import sin,cos,pi
 random.seed(817)
+def smoothstep(a,b,v):
+ t=max(0,min(1,(v-a)/(b-a)));return t*t*(3-2*t)
+def river_center(x):return -23+1.5*sin(x*.065)+.85*sin(x*.19+.4)*smoothstep(6,17,abs(x))
+def river_width(x):return 7.1+.75*sin(x*.095+.7)+.48*sin(x*.23)
+def terrain_height(x,y):
+ t=smoothstep(river_width(x)-2,river_width(x)+2,abs(y-river_center(x)))
+ h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+max(0,y-40)*.045
+ if (abs(x)<11 and -45<y<45) or any(abs(x-px)<9 and abs(y-py)<6.5 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):h=.35
+ return h-4.9*(1-t)
 ROOT=os.getcwd(); OUT=os.path.join(ROOT,'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources');EV=os.path.join(ROOT,'docs/evidence/valoria-reference-clean')
 os.makedirs(OUT,exist_ok=True);os.makedirs(EV,exist_ok=True)
 tools={'blender_version':bpy.app.version_string,'blender_executed':True,'ollama':'NOT_REACHABLE','blendermcp_socket':'NOT_REACHABLE'}
@@ -19,11 +28,11 @@ json.dump(tools,open(os.path.join(EV,'native-tool-check.json'),'w'),indent=2)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 def mat(n,c,rough=.8,metal=0):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;return m
-stone=[mat('Warm limestone %d'%i,(.40+i*.025,.36+i*.022,.30+i*.021)) for i in range(6)]
-trim=mat('Carved limestone',(.55,.49,.40));mortar=mat('Recessed stone joints',(.31,.28,.22));wood=mat('Oak',(.23,.105,.036));iron=mat('Forged iron',(.075,.065,.045),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
+stone=[mat('Warm limestone %d'%i,(.265+i*.020,.235+i*.018,.185+i*.016)) for i in range(6)]
+trim=mat('Carved limestone',(.41,.355,.275));mortar=mat('Recessed stone joints',(.155,.135,.10));wood=mat('Oak',(.14,.060,.019));iron=mat('Forged iron',(.035,.031,.025),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
 blue=[mat('Blue slate %d'%i,(.014+i*.005,.045+i*.009,.11+i*.017),.62) for i in range(5)]
 cloth=mat('Royal blue cloth',(.018,.11,.45))
-soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.20+i*.023,.215+i*.025,.22+i*.022)) for i in range(4)]
+soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.135+i*.023,.13+i*.023,.115+i*.022)) for i in range(5)]
 flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
 # Real baked texture detail from existing original project source; no external downloads.
 npath=os.path.join(ROOT,'art-source/valoria/production/lower-gate-family-v1/stone_grain_normal.png')
@@ -230,15 +239,31 @@ tree.matrix_world=Matrix.Identity(4)
 mod=tree.modifiers.new('Strategic pine face budget','DECIMATE');mod.ratio=.80;bpy.ops.object.modifier_apply(modifier=mod.name)
 positions=[(-53,-39),(-47,-38),(-57,-32),(-38,-43),(26,-42),(39,-43),(47,-39),(-48,-15),(-44,3),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(39,49),(48,29),(46,2),(42,-12)]
 positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
+# Preserve the donor mesh but deepen the pale source foliage into forest-green pine.
+for material in tree.data.materials:
+ if not material or not material.use_nodes or 'Leaves' not in material.name:continue
+ for node in material.node_tree.nodes:
+  if node.type!='TEX_IMAGE' or not node.image:continue
+  im=node.image.copy();im.name='Valoria deep pine '+im.name
+  pixels=np.array(im.pixels[:],dtype=np.float32).reshape((-1,4));pixels[:,:3]*=np.array([.40,.61,.37]);im.pixels.foreach_set(pixels.reshape(-1));im.pack();node.image=im
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
 bpy.data.objects.remove(tree,do_unlink=True)
 # Closed authored crags replace the rejected open scan face. Four irregular lofted rings,
 # broad fractured planes, bevels and metric UVs; no repeated spheres or cliff stamps.
-for i in range(108):
- x=-65+(i%54)*2.45+random.uniform(-.8,.8);bank=-23+1.5*sin(x*.065);y=bank+(-1 if i<54 else 1)*(7.6+random.uniform(-.3,.7))
- if abs(x)<5:continue
- crag=Mesh('River_Rock_%03d'%i);verts=[];segments=7;rx=random.uniform(.85,1.5);ry=random.uniform(.65,1.15);height=random.uniform(1.25,2.05);angle=random.uniform(-pi,pi)
+rock_positions=[]
+for side in [-1,1]:
+ for cluster in range(17):
+  cx=random.uniform(-65,65)
+  if abs(cx)<6:continue
+  for j in range(random.randint(3,7)):
+   x=cx+random.uniform(-3.3,3.3)
+   if abs(x)<5.4:continue
+   y=river_center(x)+side*(river_width(x)+random.uniform(-.85,1.65))
+   size=random.uniform(.38,.8) if j>2 else random.uniform(.95,1.65)
+   rock_positions.append((x,y,size))
+for i,(x,y,size) in enumerate(rock_positions):
+ crag=Mesh('River_Rock_%03d'%i);verts=[];segments=7;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(.9,1.65);angle=random.uniform(-pi,pi)
  for ring,(z,radius) in enumerate([(-.5,.58),(-.24,.94),(.22,1.0),(.5,.5)]):
   phase=random.uniform(-.10,.10)
   for j in range(segments):
@@ -246,7 +271,9 @@ for i in range(108):
    verts.append((x+cos(t)*rx*r,y+sin(t)*ry*r,height*z+random.uniform(-.07,.07)))
  faces=[tuple(range(segments-1,-1,-1)),tuple(3*segments+j for j in range(segments))]
  faces += [(ring*segments+j,ring*segments+(j+1)%segments,(ring+1)*segments+(j+1)%segments,(ring+1)*segments+j) for ring in range(3) for j in range(segments)]
- crag.add(verts,faces,random.choice(rocks));crag.finish(.065)
+ # Different tones on fracture planes give volume without a noisy texture stamp.
+ for face in faces:crag.add(verts,[face],random.choice(rocks))
+ crag.finish(.045)
 # Grounded irregular stones around woodland and ruins give the open land scale cues.
 for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
  for j in range(3):
@@ -272,22 +299,27 @@ for idx,(x,y) in enumerate(centers[::2]):
   for v,q in zip(o.data.vertices,ps):v.co=(q-ct)*sc+Vector((x,y,.32))
   o.matrix_world=Matrix.Identity(4)
 for o in shrubs:bpy.data.objects.remove(o,do_unlink=True)
+# Small overlapping three-lobed bushes mass around foundations, never over plots/stairs.
+for X,Y in [(-10,32),(10,32),(-10.8,35),(10.8,36),(-8,39),(8,39),(-6,29),(6,29),(-11,-10),(11,-10),(-22,46),(26,52),(-25,0),(46,-1)]:
+ for j in range(random.randint(3,6)):
+  x=X+random.uniform(-1.3,1.3);y=Y+random.uniform(-1,1);z=terrain_height(x,y)
+  scale=random.uniform(.40,.85)
+  for k in range(3):
+   cx=x+random.uniform(-.35,.35);cy=y+random.uniform(-.3,.3);cz=z+scale*.55+k*.13
+   verts=[(cx+v.x*scale,cy+v.y*scale,cz+v.z*scale*.85) for v in iv]
+   for face in iff:sh.add(verts,[face],random.choice(leaf))
 # Sporadic low clumps break broad grass fields without invading the construction areas.
 for i in range(350):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
- if abs(y+23-1.5*sin(x*.065))<9 or abs(x)<11 and -40<y<42:continue
+ if abs(y-river_center(x))<river_width(x)+2 or abs(x)<11 and -40<y<42:continue
  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
  h=.3+random.random()*.25
  for k in range(3):
   a=random.random()*pi;w=.07
-  sh.add([(x-w*cos(a),y-w*sin(a),.37),(x+w*cos(a),y+w*sin(a),.37),(x+random.uniform(-.2,.2),y+random.uniform(-.2,.2),.37+h)],[(0,1,2)],random.choice(leaf))
+  z=terrain_height(x,y)+.02
+  sh.add([(x-w*cos(a),y-w*sin(a),z),(x+w*cos(a),y+w*sin(a),z),(x+random.uniform(-.2,.2),y+random.uniform(-.2,.2),z+h)],[(0,1,2)],random.choice(leaf))
 sh.finish(0)
 # Seat actual low foot vertices against exactly the terrain equation used by Unity.
-def terrain_height(x,y):
- t=max(0,min(1,(abs(y-(-23+1.5*sin(x*.065)))-5.2)/3.8));bank=t*t*(3-2*t)
- h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+(max(0,y-40)*.045)
- if (abs(x)<11 and -45<y<45) or any(abs(x-px)<9 and abs(y-py)<6.5 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):h=.35
- return h-4.9*(1-bank)
 for o in bpy.context.scene.objects:
  if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_')):continue
  pts=[o.matrix_world@v.co for v in o.data.vertices];low=min(p.z for p in pts);high=max(p.z for p in pts)
