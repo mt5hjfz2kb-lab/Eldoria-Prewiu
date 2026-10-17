@@ -1,11 +1,12 @@
 {
-  "source_sha": "3d2c4c5f58967c9125c568374c6477eb2684ce71",
+  "source_sha": "8cb5fb4a52a7d7ad5ff3dbd9f0d2b2dfa36e1614",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
     "bridge_angle_degrees": -14,
     "main_camera_unchanged": true,
-    "building_plots_unchanged": true
+    "building_plots_unchanged": true,
+    "bank_finish": "clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs"
   },
   "blue_slate_triangles": 31416,
   "bridge_geometry": {
@@ -43,7 +44,7 @@
     "Bridge_ArchSpandrel_DressedCourses": 22928,
     "Bridge_ArchSpandrel.001": 1628,
     "Bridge_ArchSpandrel_DressedCourses.001": 22928,
-    "Bridge_Masonry": 27460,
+    "Bridge_Masonry": 29572,
     "Outer_Road": 18128,
     "Bridge_Paving": 14212,
     "Axial_Paving": 17160,
@@ -51,20 +52,20 @@
     "Plot_-19_9": 3828,
     "Plot_29_32": 3828,
     "Plot_28_12": 3828,
-    "Ruin_-22_46": 11088,
-    "Ruin_26_52": 11968,
-    "Ruin_-25_0": 11088,
-    "Ruin_46_-1": 11704,
+    "Ruin_-22_46": 11264,
+    "Ruin_26_52": 11088,
+    "Ruin_-25_0": 11440,
+    "Ruin_46_-1": 10648,
     "Fir_tree_group": 136986,
-    "River_bank_rocks": 16212,
+    "River_bank_rocks": 15284,
     "Woodland_ground_rocks": 3600,
     "Shrub_group": 20700,
-    "Foundation_shrubs_and_groundcover": 14400,
-    "Meadow_tufts_and_bank_reeds": 11364,
-    "River_shore_foam": 466
+    "Foundation_shrubs_and_groundcover": 16560,
+    "Meadow_tufts_and_bank_reeds": 11424,
+    "River_shore_foam": 470
   },
   "mesh_objects": 30,
-  "triangles": 539110,
-  "blend_sha256": "f08288eda6ca6f683fed513ba76f9dfed7dad16232520cf0711e314506870d73",
-  "glb_sha256": "27c1d851f4a9b9db27dc52bdbc767fcf00f574476810f435acba54dff5c0d29f"
+  "triangles": 541110,
+  "blend_sha256": "013af42a0821536c39db61d84a1880757a4ec07e8c29f2e3d4ad059534a868bd",
+  "glb_sha256": "6e15d6335a691c51e9d107826c958284074c454235f50c5c3ddb8a169a9547e0"
 }
