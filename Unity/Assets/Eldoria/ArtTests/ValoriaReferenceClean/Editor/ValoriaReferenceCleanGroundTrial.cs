@@ -14,7 +14,7 @@ public static class ValoriaReferenceCleanGroundTrial {
  }
  static Texture2D AdaptGround(string asset){
   var t=new Texture2D(2,2,TextureFormat.RGBA32,true);t.LoadImage(File.ReadAllBytes(Root+"/Sources/MaterialInputs/"+asset+"/"+asset+"_diff_1k.png"));var px=t.GetPixels();
-  for(int i=0;i<px.Length;i++){var c=px[i];float green=Mathf.SmoothStep(0,1,Mathf.InverseLerp(.90f,1.10f,c.g/Mathf.Max(.01f,c.r)));px[i]=c*Color.Lerp(new Color(.90f,.86f,.78f,1),new Color(.95f,.98f,.85f,1),green);}
+  for(int i=0;i<px.Length;i++){var c=px[i];float green=Mathf.SmoothStep(0,1,Mathf.InverseLerp(.90f,1.10f,c.g/Mathf.Max(.01f,c.r)));px[i]=c*Color.Lerp(new Color(.90f,.86f,.78f,1),new Color(.95f,.98f,.85f,1),green)*new Color(.95f,.95f,.62f,1);}
   t.SetPixels(px);t.Apply();t.name="Valoria "+asset+" adapted albedo";t.wrapMode=TextureWrapMode.Repeat;t.anisoLevel=4;AssetDatabase.CreateAsset(t,Root+"/GeneratedArt/"+asset+"_adapted.asset");return t;
  }
  static TerrainLayer Layer(string asset,string name,float tile){Input(asset,"_diff_1k.png",false);var l=new TerrainLayer{name=name,diffuseTexture=AdaptGround(asset),normalMapTexture=Input(asset,"_nor_gl_1k.png",true),normalScale=.65f,tileSize=new Vector2(tile,tile),smoothness=.02f,metallic=0};AssetDatabase.CreateAsset(l,Root+"/GeneratedArt/"+name+".terrainlayer");return l;}

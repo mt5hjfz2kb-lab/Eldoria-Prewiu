@@ -1,7 +1,7 @@
 {
   "verified_at": "2026-10-17",
   "cost_eur": 0,
-  "new_downloads": 8,
+  "new_downloads": 11,
   "assets": [
     {
       "name": "Fortified gate",
@@ -72,6 +72,15 @@
       "existing_source": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb",
       "sha256": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae",
       "changes": "Only material images recovered and cropped onto closed, sculpted Eldoria boulders. No open scan geometry reused; no new download. Native same-camera/light A-B required."
+    },
+    {
+      "name": "Seamless mineral surface for post-sculpt UV study",
+      "original_author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "asset_url": "https://polyhaven.com/a/rock_3",
+      "source_manifest": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/license-manifest.json",
+      "changes": "1k albedo/GL normal/roughness, official MD5 verified and SHA256 pinned, raw inputs retained. Smart UV projection after real Blender closed-boulder sculpture; physically scaled seamless mapping. Native same-camera trial before extension."
     }
   ],
   "not_certified": {
@@ -82,7 +91,11 @@
     {
       "asset": "Open rock_face_02 scan fitted as river boulders",
       "reason": "Open scan geometry rejected as repeated sheets; remains rejected. Revision38 recovers only verified CC0 surface images from the existing donor for new closed boulder meshes."
+    },
+    {
+      "asset": "Unique rock_face_02 atlas crops on new closed boulders, revision38",
+      "reason": "Actual matched native Unity captures show padding/stretch artifacts; rejected for extension. New seamless Rock3 plus post-sculpt UVs tested in39."
     }
   ],
-  "new_external_material_assets": 3
+  "new_external_material_assets": 4
 }

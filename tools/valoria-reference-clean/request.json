@@ -1,14 +1,15 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 38,
+  "revision": 39,
   "budget_eur": 0,
-  "validated_runtime_source": "cb672f779b29ef16bb71855e3022e51906b9a16b",
-  "validated_run": 39074406414,
+  "validated_runtime_source": "452a36c639801c9c7f32baf16499193cf12795b8",
+  "validated_run": 39074798245,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native37 inspected in real main/detail captures: mapped limestone visibly defines Bastion/gate/ruins. Ground detail now readable, but the sharp pixel palette branch exaggerates green patches. Rev38 removes that discontinuity with continuous gentle grading and extends actual leaf/loam surfaces, reducing broad blurry layer contribution; FOUR final terrain layers, unchanged heightfield/building layout/gameplay. In same run only right-bank boulders X8..28 get Blender subdivision/erosion sculpture and cropped scanned mineral PBR recovered from existing CC0 rock_face_02 donor; rejected open donor geometry is NOT reused. Genuine same-run nature A/B loads exact previous native GLB from runner temporary storage, verifies its SHA against source report, toggles only bank renderers at identical cameras/lights and deletes temporary baseline before save. Inspect before extending rocks. Zero new downloads/spend.",
+  "art_correction": "Native38 actual same-camera nature trial revealed distorted unique-atlas texture crops; REJECTED for extension. Keep sculpture bounded at right-bank X8..28. Rev39 replaces that failed mapping with a seamless CC0 Rock3 surface, verified against official MD5 and pinned SHA256 on first import, Smart UV projection AFTER subdivision/erosion and decimation at physical texture scale. Retest native previous-GLB comparison before extension. Global terrain38 had organic detail but too much pale brown/blue; bring its grade toward reference olive/gold while keeping four layers and heightfield/layout. River surface brighter azure with broader flow: same-camera/light/mesh A/B against actual previous shader. Native Capture also emits direct Unity JPEG base64 previews (raw PNGs retained) so visual inspection continues despite local terminal disconnection. Preserve gameplay, budget0 and prior outputs; no art score by workflow.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
-  "nature_treatment": "bank_zone"
+  "nature_treatment": "bank_zone",
+  "water_treatment": "flow_surface"
 }
