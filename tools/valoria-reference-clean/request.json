@@ -1,6 +1,7 @@
 {
   "stage": "art",
-  "revision": 8,
+  "revision": 9,
   "budget_eur": 0,
-  "reason": "Use actually recovered 63-asset textured Quaternius pine/shrub and CC0 meadow photographic detail; adjust keep depth and flag to attached reference while keeping clear growth space. Prior scene ff89a2a preserved. Final art review and PlayMode pending."
+  "reason": "Use actually recovered 63-asset textured Quaternius pine/shrub and CC0 meadow photographic detail; adjust keep depth and flag to attached reference while keeping clear growth space. Prior scene ff89a2a preserved. Final art review and PlayMode pending.",
+  "compile_correction": "Distinct sampleV identifier for grass sampling, separate from water vertex list"
 }
