@@ -26,8 +26,9 @@ def terrain_height(x,y):
 ROOT=os.getcwd(); OUT=os.path.join(ROOT,'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources');EV=os.path.join(ROOT,'docs/evidence/valoria-reference-clean')
 os.makedirs(OUT,exist_ok=True);os.makedirs(EV,exist_ok=True)
 request=json.load(open(os.path.join(ROOT,'tools/valoria-reference-clean/request.json')))
-stone_trial=request.get('stone_treatment')=='zone_pbr'
-surface_trial_stats={'scope':'right Bastion flank only','mapped_boxes':0,'original_uv0_preserved':True,'new_uv_channel':'ScannedStoneUV','lighting_changed':False}
+stone_trial=request.get('stone_treatment') in ['zone_pbr','all_pbr']
+stone_global=request.get('stone_treatment')=='all_pbr'
+surface_trial_stats={'scope':'authored architecture and reused gate' if stone_global else 'right Bastion flank only','mapped_boxes':0,'original_uv0_preserved':True,'new_uv_channel':'ScannedStoneUV','lighting_changed':False}
 external_inputs=[]
 tools={'blender_version':bpy.app.version_string,'blender_executed':True,'ollama':'NOT_REACHABLE','blendermcp_socket':'NOT_REACHABLE'}
 try:
@@ -128,7 +129,7 @@ class Mesh:
    n=px*17.31+py*31.17+pz*11.73
    jitter=lambda k:((sin(n+k)*43758.5453)%1)*2-1
    v.append((px+wear*jitter(1.3),py+wear*jitter(2.7),pz+wear*jitter(4.1)))
-  zone=stone_trial and self.n=='Bastion_I' and 6.3<x<10.6 and 26.5<y<32.5 and z<7.6 and m in stone
+  zone=stone_trial and m in stone and ((stone_global and (self.n=='Bastion_I' or self.n.startswith(('Bridge_Masonry','Ruin_')))) or (not stone_global and self.n=='Bastion_I' and 6.3<x<10.6 and 26.5<y<32.5 and z<7.6))
   if zone:
    m=trial_stone[stone.index(m)];patch=stone_patches[int(abs(x*137+y*251+z*317)*100)%len(stone_patches)]
    for face_index in range(len(self.f),len(self.f)+6):self.surface_rects[face_index]=patch
@@ -282,6 +283,21 @@ for o in objs:
  m=o.matrix_world.copy();o.parent=None
  for v in o.data.vertices:v.co=(m@v.co-ctr)*scale+Vector((0,-10,.35))
  o.matrix_world=Matrix.Identity(4);o.name='Gate_'+o.name
+# Reuse the gate's editable geometry; its continuous stone core needs full
+# masonry mapping rather than the individual-ashlar crop used by the keep.
+if stone_global:
+ gate_stone=trial_stone[3].copy();gate_stone.name='Gate scanned limestone'
+ for o in objs:
+  old_uv=o.data.uv_layers[0]
+  while len(o.data.uv_layers)>1:o.data.uv_layers.remove(o.data.uv_layers[-1])
+  scan=o.data.uv_layers.new(name='ScannedStoneUV')
+  for face in o.data.polygons:
+   axis=max(range(3),key=lambda i:abs(face.normal[i]));axes=[i for i in range(3) if i!=axis]
+   for li in face.loop_indices:
+    q=o.data.vertices[o.data.loops[li].vertex_index].co;scan.data[li].uv=(q[axes[0]]/3.5,q[axes[1]]/3.5)
+  o.data.uv_layers.active_index=0;old_uv.active_render=True
+  for index,m in enumerate(o.data.materials):
+   if m and m.name.replace('_',' ').startswith('Eldoria stone'):o.data.materials[index]=gate_stone
 # Bridge with genuine through arches, solid spandrels and voussoir bands.
 b=Mesh('Bridge_Masonry');b.box((0,-23,.10),(9,24,.70),stone[3])
 # Side walls boolean cuts are applied below, retaining editable blend geometry.

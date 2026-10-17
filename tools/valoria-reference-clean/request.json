@@ -1,13 +1,13 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 36,
+  "revision": 37,
   "budget_eur": 0,
-  "validated_runtime_source": "101365c3c8c944df27908cb3527b91cbf2fcf1af",
-  "validated_run": 39073536686,
+  "validated_runtime_source": "4244d2bda6bfbead472d114a6c44afad9524080d",
+  "validated_run": 39073920387,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native35 actual same-camera/light/mesh stone A/B inspected: visible but too coarse and contrasty for reference, NOT approved for global extension. Rev36 adapts scanned albedo to a controlled limestone palette, reduces coarse normal strength, 512px runtime stone copies, raw CC0 originals preserved. Retest same representative flank. In parallel only a bounded meadow sample beside path uses real Leafy Grass / Sparse Grass CC0 albedo and normal surfaces; existing terrain heights, road/plots untouched. Matched native main/detail before-after for both studies, do not globally extend before visual inspection.",
+  "art_correction": "Native36 inspected genuine stone and meadow A/B. Adapted stone retains natural visible grain with less contrast; extend that actual Blender UV/PBR treatment to authored Bastion, bridge main masonry, ruins; reused gate continuous core uses full scan UV1, preserve silhouette/sourceUV0 and trim/wood/flags. Stone A/B scope explicitly excludes gate which is fixed in both images. Meadow36 is too pale and small-scale from main camera, NOT approved globally. Rev37 reworks bounded meadow sample with physically recognizable leaf/soil details scaled for strategic view and vegetation-aware warm-green adaptation, raw originals retained. Same camera/lights/heights before-after; preserve paths/plots/gameplay. No final art approval by automation.",
   "auxiliary_review": false,
-  "stone_treatment": "zone_pbr",
+  "stone_treatment": "all_pbr",
   "ground_treatment": "zone_surface"
 }

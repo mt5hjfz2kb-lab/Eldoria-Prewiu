@@ -12,11 +12,16 @@ public static class ValoriaReferenceCleanGroundTrial {
   AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
   var imp=(TextureImporter)AssetImporter.GetAtPath(path);imp.textureType=normal?TextureImporterType.NormalMap:TextureImporterType.Default;imp.sRGBTexture=!normal;imp.maxTextureSize=1024;imp.mipmapEnabled=true;imp.wrapMode=TextureWrapMode.Repeat;imp.anisoLevel=4;imp.SaveAndReimport();return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
  }
- static TerrainLayer Layer(string asset,string name,float tile){var l=new TerrainLayer{name=name,diffuseTexture=Input(asset,"_diff_1k.png",false),normalMapTexture=Input(asset,"_nor_gl_1k.png",true),normalScale=.65f,tileSize=new Vector2(tile,tile),smoothness=.02f,metallic=0};AssetDatabase.CreateAsset(l,Root+"/GeneratedArt/"+name+".terrainlayer");return l;}
+ static Texture2D AdaptGround(string asset){
+  var t=new Texture2D(2,2,TextureFormat.RGBA32,true);t.LoadImage(File.ReadAllBytes(Root+"/Sources/MaterialInputs/"+asset+"/"+asset+"_diff_1k.png"));var px=t.GetPixels();
+  for(int i=0;i<px.Length;i++){var c=px[i];bool green=c.g>c.r*.93f;px[i]=c*(green?new Color(.92f,1.08f,.60f,1):new Color(.85f,.80f,.65f,1));}
+  t.SetPixels(px);t.Apply();t.name="Valoria "+asset+" adapted albedo";t.wrapMode=TextureWrapMode.Repeat;t.anisoLevel=4;AssetDatabase.CreateAsset(t,Root+"/GeneratedArt/"+asset+"_adapted.asset");return t;
+ }
+ static TerrainLayer Layer(string asset,string name,float tile){Input(asset,"_diff_1k.png",false);var l=new TerrainLayer{name=name,diffuseTexture=AdaptGround(asset),normalMapTexture=Input(asset,"_nor_gl_1k.png",true),normalScale=.65f,tileSize=new Vector2(tile,tile),smoothness=.02f,metallic=0};AssetDatabase.CreateAsset(l,Root+"/GeneratedArt/"+name+".terrainlayer");return l;}
  [Serializable]class Report{public string scope,source_sha;public bool same_camera,same_lighting,same_heights;public int changed_cells,source_texture_cap;}
  public static void Capture(Terrain terrain,Camera cam,Light sun,ValoriaReferenceCleanInteraction interaction){
   var input=Path.Combine("../tools/valoria-reference-clean/request.json");if(!File.ReadAllText(input).Contains("\"ground_treatment\": \"zone_surface\""))return;
-  var td=terrain.terrainData;var oldLayers=td.terrainLayers;var n=td.alphamapResolution;var old=td.GetAlphamaps(0,0,n,n);var layers=oldLayers.Concat(new[]{Layer("leafy_grass","ScannedLeafMeadow",4),Layer("sparse_grass","ScannedWornSoil",4)}).ToArray();var next=new float[n,n,layers.Length];int changed=0;
+  var td=terrain.terrainData;var oldLayers=td.terrainLayers;var n=td.alphamapResolution;var old=td.GetAlphamaps(0,0,n,n);var layers=oldLayers.Concat(new[]{Layer("leafy_grass","ScannedLeafMeadow",12),Layer("sparse_grass","ScannedWornSoil",8)}).ToArray();var next=new float[n,n,layers.Length];int changed=0;
   for(int z=0;z<n;z++)for(int x=0;x<n;x++){
    float wx=terrain.transform.position.x+x/(float)(n-1)*td.size.x,wz=terrain.transform.position.z+z/(float)(n-1)*td.size.z;
    float mx=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(11,15,Mathf.Abs(wx+1))),mz=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(9,13,Mathf.Abs(wz-14)));

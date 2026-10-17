@@ -21,7 +21,7 @@ public static class ValoriaReferenceCleanStoneTrial {
   var meshIds=art.GetComponentsInChildren<MeshFilter>().Select(f=>f.sharedMesh.GetInstanceID()).ToArray();
   var ev=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
   void Set(bool newSurface){for(int i=0;i<zone.Length;i++)zone[i].sharedMaterials=newSurface?after[i]:before[i];}
-  var light=LightStamp(sun);var report=new Report{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scope="Right Bastion defensive flank only; same geometry, original UV0 and all other materials retained",lighting=light,zone_renderers=zone.Length,zone_material_slots=after.Sum(a=>a.Count(m=>Name(m).StartsWith(Prefix,StringComparison.Ordinal))),material_mapping=mapping.OrderBy(s=>s).ToArray(),original_uv0_preserved=true};
+  var light=LightStamp(sun);var report=new Report{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scope="Authored limestone material slots only; same geometry and original UV0 retained. Reused gate material stays fixed during this comparison.",lighting=light,zone_renderers=zone.Length,zone_material_slots=after.Sum(a=>a.Count(m=>Name(m).StartsWith(Prefix,StringComparison.Ordinal))),material_mapping=mapping.OrderBy(s=>s).ToArray(),original_uv0_preserved=true};
   try{
    Set(false);report.before_main_camera=CameraStamp(cam);ValoriaReferenceCleanBuilder.Capture(cam,ev+"/stone-zone-before-main.png",1448,1086);
    cam.orthographicSize=18;cam.transform.position=new Vector3(24,31,-8);cam.transform.LookAt(new Vector3(0,4,35.5f));report.before_detail_camera=CameraStamp(cam);ValoriaReferenceCleanBuilder.Capture(cam,ev+"/stone-zone-before-detail.png",1448,1086);
