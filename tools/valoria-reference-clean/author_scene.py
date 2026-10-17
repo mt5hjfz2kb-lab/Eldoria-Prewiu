@@ -549,9 +549,9 @@ if rock_trial:
    with open(dest,'wb') as f:f.write(data)
   data=open(dest,'rb').read()
   assert hashlib.md5(data).hexdigest()==entry['md5'], 'Official CC0 rock checksum mismatch'
-  digest=hashlib.sha256(data).hexdigest()
-  if 'sha256' in entry:assert digest==entry['sha256'], 'Pinned CC0 rock hash mismatch'
-  entry['sha256']=digest;entry['bytes']=len(data)
+  rock_input_digest=hashlib.sha256(data).hexdigest()
+  if 'sha256' in entry:assert rock_input_digest==entry['sha256'], 'Pinned CC0 rock hash mismatch'
+  entry['sha256']=rock_input_digest;entry['bytes']=len(data)
   im=bpy.data.images.load(dest,check_existing=True);im.use_fake_user=True
   if entry['channel']!='Diffuse':im.colorspace_settings.name='Non-Color'
   im.pack();images[entry['channel']]=im;external_inputs.append(dict(entry,license=manifest['license'],asset_url=manifest['asset_url']))
@@ -765,7 +765,8 @@ if request.get('waterline_finish') in ['zone_talus','all_talus']:
   execute_via_blendermcp([action],perform_waterline,pathlib.Path(addon['path']),'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5')
   waterline_proof['status']='ACTUAL_PINNED_BLENDERMCP_ACTION_EXECUTED'
  except Exception as error:
-  waterline_proof['transport_error']=str(error)
+  import traceback
+  waterline_proof['transport_error']=str(error);waterline_proof['transport_traceback']=traceback.format_exc(limit=8)
   if operation['completed']:waterline_proof['status']='ACTION_EXECUTED_MCP_REPLY_UNVERIFIED'
   else:
    for obj in set(bpy.data.objects)-before_objects:bpy.data.objects.remove(obj,do_unlink=True)
