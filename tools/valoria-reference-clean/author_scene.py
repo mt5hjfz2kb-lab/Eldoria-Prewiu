@@ -22,7 +22,7 @@ def mat(n,c,rough=.8,metal=0):
 stone=[mat('Warm limestone %d'%i,(.52+i*.025,.45+i*.022,.35+i*.021)) for i in range(6)]
 trim=mat('Carved limestone',(.70,.61,.47));mortar=mat('Recessed stone joints',(.31,.28,.22));wood=mat('Oak',(.23,.105,.036));iron=mat('Forged iron',(.075,.065,.045),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
 blue=[mat('Blue slate %d'%i,(.014+i*.005,.045+i*.009,.11+i*.017),.62) for i in range(5)]
-soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.32+i*.045,.32+i*.039,.28+i*.029)) for i in range(4)]
+soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.20+i*.023,.215+i*.025,.22+i*.022)) for i in range(4)]
 flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
 # Real baked texture detail from existing original project source; no external downloads.
 npath=os.path.join(ROOT,'art-source/valoria/production/lower-gate-family-v1/stone_grain_normal.png')
@@ -155,6 +155,10 @@ for x in [-8.4,8.4]:courses(g,x,29.5,.38,3.5,5.2,6.8);crown(g,x,29.5,7.3,3.5,5.2
 # Deliberately narrow dark window with stone moulding on the main tower.
 g.box((0,25.89,7.8),(.8,.08,1.8),wood);arch(g,0,25.78,8.25,.4,.18,.2,trim,segments=7)
 portal(g,0,25.86,1.5,2.6,3.7)
+for X in [-4.8,4.8]:
+ g.box((X,26.84,3.7),(.65,.10,1.45),wood);arch(g,X,26.73,4.05,.33,.17,.24,trim,segments=7)
+ for S in [-1,1]:g.box((X+S*.42,26.70,3.6),(.17,.3,1.1),trim)
+for X in [-5.8,5.8]:courses(g,X,26.7,1.5,.7,.8,3.7)
 # Entrance terrace and physically nested six stair treads.
 courses(g,0,25,.38,18,5,1.15)
 for i in range(6):g.box((0,20.25+i*.46,.38+(i+1)*.095),(6.0,.49,(i+1)*.19),trim)
@@ -215,6 +219,13 @@ for x,y in [(-27,54),(30,58),(-33,2),(38,-5)]:
 vegd=os.path.join(ROOT,'art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.blend')
 with bpy.data.libraries.load(vegd,link=False) as (s,d):d.objects=[n for n in s.objects if n.startswith('Tree_')]
 trees=[o for o in d.objects if o and o.type=='MESH'];assert trees,'Existing tree donor missing'
+foliage_colors={'light':(.12,.24,.115,1),'mid':(.045,.135,.07,1),'dark':(.018,.065,.045,1)}
+for tree in trees:
+ for material in tree.data.materials:
+  if not material:continue
+  for key,color in foliage_colors.items():
+   if 'foliage_'+key in material.name:
+    material.diffuse_color=color;material.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=color
 # Exclude trees from city plots, axial road and main architecture.
 positions=[(-53,-39),(-47,-38),(-57,-32),(-38,-43),(26,-42),(39,-43),(47,-39),(-48,-15),(-44,3),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(25,53),(39,49),(48,29),(46,2),(42,-12)]
 positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(26,53),(30,55),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
@@ -250,7 +261,7 @@ for x,y in centers:
   X=x+random.uniform(-1.6,1.6);Y=y+random.uniform(-1.4,1.4);r=random.uniform(.28,.65)
   sh.add([(X+v.x*r,Y+v.y*r,.38+r*.6+v.z*r*.8) for v in iv],iff,random.choice(leaf))
 # Sporadic low clumps break broad grass fields without invading the construction areas.
-for i in range(1000):
+for i in range(350):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
  if abs(y+23-1.5*sin(x*.065))<9 or abs(x)<11 and -40<y<42:continue
  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue

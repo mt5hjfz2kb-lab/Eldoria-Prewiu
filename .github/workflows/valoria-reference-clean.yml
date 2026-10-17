@@ -65,6 +65,7 @@ jobs:
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
           Copy-Item $log docs/evidence/valoria-reference-clean/native-unity.log
+          Select-String $log -Pattern "Exception:|error CS|Shader error|^Error" -Context 1,2
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
           if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
