@@ -1,5 +1,5 @@
 {
-  "source_sha": "4317b2e4e3cced7bfa824e8f7ad1a358a40f54fa",
+  "source_sha": "5e3dea5a24e664f2851c282d34040d0fd2a9272f",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -32,7 +32,55 @@
     }
   ],
   "scene_new_empty": true,
-  "external_downloads": [],
+  "surface_trial": {
+    "scope": "right Bastion flank only",
+    "mapped_boxes": 378,
+    "original_uv0_preserved": true,
+    "new_uv_channel": "ScannedStoneUV",
+    "lighting_changed": false
+  },
+  "external_downloads": [
+    {
+      "channel": "Diffuse",
+      "file": "sandstone_blocks_05_diff_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sandstone_blocks_05/sandstone_blocks_05_diff_1k.png",
+      "sha256": "c6087f35bf30efeb895d12f5da098e7fca4026429b8a17da1b50e11626e73ef2",
+      "md5": "e4448184944b17835634afb04de6b629",
+      "bytes": 2146552,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/sandstone_blocks_05"
+    },
+    {
+      "channel": "nor_gl",
+      "file": "sandstone_blocks_05_nor_gl_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sandstone_blocks_05/sandstone_blocks_05_nor_gl_1k.png",
+      "sha256": "a8937bd775fba9d9b1b1010b20b4906c9e4a9d6d368aaef8fd45d72afca4d88a",
+      "md5": "ed87eb548e8780464a431b6107ed5c41",
+      "bytes": 2276305,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/sandstone_blocks_05"
+    },
+    {
+      "channel": "Rough",
+      "file": "sandstone_blocks_05_rough_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sandstone_blocks_05/sandstone_blocks_05_rough_1k.png",
+      "sha256": "812023994fcc024cf3de8166421be7a9b50248c825372c956132555c3a2cbc4d",
+      "md5": "daf58982f0497b6ceebb32499e673a68",
+      "bytes": 1797776,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/sandstone_blocks_05"
+    },
+    {
+      "channel": "AO",
+      "file": "sandstone_blocks_05_ao_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sandstone_blocks_05/sandstone_blocks_05_ao_1k.png",
+      "sha256": "a5bab3d1f7ecc5b9ce8b875d968334e03378b38c51c55078814a33dc430ef0b6",
+      "md5": "574e07c738b9fa42ba6221fef29ee0a7",
+      "bytes": 1113869,
+      "license": "CC0-1.0",
+      "asset_url": "https://polyhaven.com/a/sandstone_blocks_05"
+    }
+  ],
   "art_approved": false,
   "per_mesh_triangles": {
     "Bastion_I": 132320,
@@ -70,6 +118,6 @@
   },
   "mesh_objects": 32,
   "triangles": 576504,
-  "blend_sha256": "d732b145dafefb4ff9e325fe3064e36e8026f7d7c9946ca3237f9b2bc3cea227",
-  "glb_sha256": "39c5b61d2ee054bfb36aa51f920ef619270f50f8a6a468d43c419e877dcebbe2"
+  "blend_sha256": "9aaa09c81a549b1e04c4c54ceec7bc00fb24b29d53cc89c45054c493b4a51b67",
+  "glb_sha256": "4009de4be1b2d7f011e8247f2da0db8074f6318914e28714dc27ebfae29d8746"
 }

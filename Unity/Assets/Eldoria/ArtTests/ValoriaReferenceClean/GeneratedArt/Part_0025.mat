@@ -1,6 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5279557712939309546
+--- !u!114 &-7346296197369934229
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
+--- !u!114 &-1483111970160063553
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,12 +33,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Blue slate 0
+  m_Name: Trial sandstone 5
   m_Shader: {fileID: -6465566751694194690, guid: b9d29dfa1474148e792ac720cbd45122, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _UV_CHANNEL_SELECT
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -40,7 +54,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - baseColorTexture:
-        m_Texture: {fileID: 2800000, guid: 0228b53113efa6e46895f7424ad417ab, type: 2}
+        m_Texture: {fileID: 2800000, guid: a4024ea8f2fae63419d3e116fe1c1ec9, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - emissiveTexture:
@@ -48,11 +62,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - metallicRoughnessTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: cab50a04779bb9340b4acfba039d2a61, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - normalTexture:
-        m_Texture: {fileID: 2800000, guid: 3f562bff6ce1b874887ef86aa94478db, type: 2}
+        m_Texture: {fileID: 2800000, guid: b0617d9a4acb1b94984f3ad182e18616, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - occlusionTexture:
@@ -107,16 +121,16 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     - alphaCutoff: 0
-    - baseColorTexture_texCoord: 0
+    - baseColorTexture_texCoord: 1
     - emissiveExposureWeight: 0
     - emissiveTexture_texCoord: 0
     - metallicFactor: 0
-    - metallicRoughnessTexture_texCoord: 0
-    - normalTexture_scale: 0.22
-    - normalTexture_texCoord: 0
+    - metallicRoughnessTexture_texCoord: 1
+    - normalTexture_scale: 0.8
+    - normalTexture_texCoord: 1
     - occlusionTexture_strength: 1
     - occlusionTexture_texCoord: 0
-    - roughnessFactor: 0.66
+    - roughnessFactor: 1
     - transmissionFactor: 0
     m_Colors:
     - baseColorFactor: {r: 1, g: 1, b: 1, a: 1}
@@ -128,16 +142,3 @@ Material:
     - occlusionTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &4691008296277150656
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
-  version: 10
