@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
       - 'tools/valoria-layered-construction/restore-source08-bastion-v17.blender.py'
+      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v17.py'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV17Integration.cs'
 permissions:
   contents: write
@@ -64,6 +65,16 @@ jobs:
       - name: Native Blender source restore exact nine semantic materials and genuine two studio renders
         shell: powershell
         run: |
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
+          if(Test-Path "$dir/entry-source.json"){
+            $prior=Get-Content "$dir/entry-source.json" -Raw | ConvertFrom-Json
+            if($prior.result_glb_sha256 -eq '5e35de3d8fd8afe5378545d40d7c54c107d6d0cffaa2b692a7d6654adb5d49e8' -and $prior.result_blend_sha256 -eq '0a2c1ccb74f9ffa95aa100505a5b6f9ce440b5d9bb6253562e4fd613dfadab7c' -and (Test-Path "$dir/ValoriaEntryZoneV17.blend") -and (Test-Path "$dir/ValoriaEntryZoneV17.glb") -and (Test-Path "$dir/source-clay-threequarter.png") -and (Test-Path "$dir/source-source08-material-threequarter.png")){
+              if((Get-FileHash "$dir/ValoriaEntryZoneV17.blend" -Algorithm SHA256).Hash.ToLower() -eq $prior.result_blend_sha256 -and (Get-FileHash "$dir/ValoriaEntryZoneV17.glb" -Algorithm SHA256).Hash.ToLower() -eq $prior.result_glb_sha256){
+                Write-Host 'Exact validated original-source V17 Blender output already exists; reuse rather than regenerate.'
+                exit 0
+              }
+            }
+          }
           $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
           if(-not $blender){
             foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
@@ -87,6 +98,14 @@ jobs:
         shell: powershell
         run: |
           $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
+          if(Test-Path "$dir/entry-native.json"){
+            $prior=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
+            $sc='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV17_CANDIDATE.unity'
+            if($prior.glb_sha256 -eq '5e35de3d8fd8afe5378545d40d7c54c107d6d0cffaa2b692a7d6654adb5d49e8' -and $prior.source_triangles -eq 374064 -and $prior.route_passes -eq 28 -and $prior.source_target_matches -eq 7 -and -not $prior.canonical_modified -and (Test-Path $sc) -and (Test-Path "$dir/entry-BEFORE-home.png") -and (Test-Path "$dir/entry-AFTER-home.png")){
+              Write-Host 'V13/V17 genuine Unity import and fixed-camera frames verified previously: reuse, no unnecessary heavy rerun.'
+              exit 0
+            }
+          }
           $log=Join-Path $env:RUNNER_TEMP 'valoria-bastion-source08-v17-unity.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV17Integration.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
@@ -101,6 +120,35 @@ jobs:
             if(-not(Test-Path "$dir/$img") -or (Get-Item "$dir/$img").Length -lt 20000){throw "Genuine V17 Unity screenshot missing: $img"}
           }
           Write-Host 'V17_NATIVE_BLENDER_UNITY_TECH_PASS_NOT_ART_APPROVED'
+      - name: Measured genuine Unity PNG difference plus independent local Qwen art critique
+        if: success()
+        shell: powershell
+        run: |
+          $started=$null
+          try{
+            try{Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5|Out-Null}catch{
+              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
+              if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
+            }
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){
+              foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
+                if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+                if($blender){break}
+              }
+            }
+            if(-not $blender){throw 'Existing native Blender Python interpreter unavailable'}
+            & $blender -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v17.py
+            if($LASTEXITCODE){throw 'Actual PNG image difference or Qwen review command failed'}
+            $ev='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
+            $m=Get-Content "$ev/genuine-unity-material-difference.json" -Raw|ConvertFrom-Json
+            $r=Get-Content "$ev/independent-review-status.json" -Raw|ConvertFrom-Json
+            Write-Host "GENUINE_V13_V17_PIXEL_CHANGE=$($m.pixels_changed) BASTION_ROI=$($m.pixels_changed_bastion_reference_roi) OTHER=$($m.pixels_changed_outside_reference_roi)"
+            Write-Host "INDEPENDENT_QWEN_REVIEW=$($r.status) ART_APPROVED=FALSE"
+          }finally{
+            if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}
+          }
       - name: Persist isolated authentic evidence and candidate without modifying main
         if: always()
         shell: powershell
