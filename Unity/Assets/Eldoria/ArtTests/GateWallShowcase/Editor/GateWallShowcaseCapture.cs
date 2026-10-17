@@ -20,7 +20,7 @@ namespace Eldoria.ArtTests.GateWallShowcase
     {
         private const string AssetsFolder = "Assets/Eldoria/ArtTests/GateWallShowcase/Generated";
         private const string Source = "Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/";
-        private const string OutputRelative = "../docs/evidence/eldoria-gate-wall-showcase-20261017";
+        private const string OutputRelative = "../../docs/evidence/eldoria-gate-wall-showcase-20261017";
         private static readonly Dictionary<string,Material> materials = new Dictionary<string,Material>();
         private static readonly List<string> modelDescriptions = new List<string>();
         private static Transform root;
