@@ -4,10 +4,11 @@ on:
     branches:
       - construction/valoria-master-plan-layers-20261016
     paths:
-      - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/**"
+      - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs"
+      - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaModularGateLayerD.cs"
+      - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaAuthenticBridgeLayerE.cs"
       - "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/**"
       - "tools/valoria-layered-construction/verify-source.mjs"
-      - ".github/workflows/valoria-layered-construction.yml"
   workflow_dispatch:
 permissions:
   contents: write

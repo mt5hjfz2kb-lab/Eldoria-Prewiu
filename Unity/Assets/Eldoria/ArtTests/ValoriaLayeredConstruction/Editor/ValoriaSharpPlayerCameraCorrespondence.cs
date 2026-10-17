@@ -87,7 +87,7 @@ namespace Eldoria.ValoriaLayered.Editor
    }
    static void BuildCore(){
       Check(File.Exists(InputScene),"Preserved BridgeV1 scene missing");
-      var path=Path.GetFullPath(Filename);
+      var path=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..",Filename));
       Check(File.Exists(path),"Missing Python real-anchor camera fit, cannot guess it");
       var cal=JsonUtility.FromJson<Calibration>(File.ReadAllText(path));
       Check(cal!=null&&cal.global_fit!=null&&cal.global_fit.anchors!=null&&
