@@ -1,0 +1,23 @@
+{
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "prompt_sha256": "9d8acb0862b959fcbde2aad585fc64ac45d87b283dee86510261ab918e8841d2",
+  "images": [
+    {
+      "path": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+      "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689"
+    },
+    {
+      "path": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/light-AFTER-home.png",
+      "sha256": "3f39d335a08891d0648dddf668bc909222117495dafa4d00532d2db3f0c1bc4f"
+    },
+    {
+      "path": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v10/entry-BEFORE-home.png",
+      "sha256": "c5a3652f9d67a23a190fa9a0cc033fd6984880a26cbc926f97f30c9c4111d5dd"
+    },
+    {
+      "path": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v10/light-AFTER-home.png",
+      "sha256": "aafcb5ed20ae53085348b20c0e4cc55f1cbb057c5a4a0379929fb1aae13417d4"
+    }
+  ],
+  "memory_sha256": "1f86951390dfbcffa92f1451ce2bd6df09fc5dd2864e6cac64364a84a93b7caf"
+}

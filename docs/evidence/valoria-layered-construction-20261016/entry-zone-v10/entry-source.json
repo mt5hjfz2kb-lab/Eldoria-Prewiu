@@ -1,0 +1,26 @@
+{
+  "art_status": "CANDIDATE_NO_AUTOMATIC_APPROVAL",
+  "author": "GPT isolated continuation",
+  "blender": "5.2.2 LTS",
+  "source_v7_blend_sha256": "24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381",
+  "result_blend_sha256": "afcdf07a1f78bae8e6954a139b6efbe91a514289fda3fb12d4c54f3bb2459d2e",
+  "result_glb_sha256": "bd4dccfa81a53aca5babe25ef8f233c8110156c957337d9b80a0a8a7fe8b4d35",
+  "triangles": 342006,
+  "terrain_vertex_count_unchanged": 106733,
+  "geographic_bake_dimensions": [
+    2048,
+    2048
+  ],
+  "native_route_painted_pixels": 61392,
+  "max_paint_mask": 0.8999999761581421,
+  "updated_diffuse_nodes": 1,
+  "source_gate_bridge_stairs_unchanged": true,
+  "actual_unity_colliders_unchanged": true,
+  "protected_sources_unchanged": true,
+  "operations": [
+    "genuine curvilinear axial-road-to-parcel circulation baked into original geographic CC0 texture",
+    "graded native lower apron in same terrain material",
+    "muted river material and micro ripples"
+  ],
+  "rejected_previous": "V8 disconnected stones and V9 isolated brown strips; frozen V7 chosen intentionally"
+}
