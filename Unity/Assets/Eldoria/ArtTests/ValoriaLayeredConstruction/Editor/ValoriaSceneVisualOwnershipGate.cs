@@ -32,6 +32,8 @@ namespace Eldoria.ValoriaLayered.Editor {
    public int transforms,renderers,active_visible,active_hidden,colliders,hotspots,original_stair_colliders;
    public int original_interaction_hits,clean_interaction_hits,route_probes,original_route_passes,clean_route_passes;
    public int same_image_changed_pixels,visually_identical_duplicates,unresolved_overlap_hints,source_bastion_renderers;
+   public int provisional_greybox_removed_pixels,provisional_greybox_changed_outside_bastion_roi;
+   public bool provisional_greybox_renderer_disabled,provisional_greybox_collider_preserved;
    public bool camera_preserved,source_scene_modified,canonical_modified,gameplay_v3_probe_rerun,physical_mobile_tested,art_approved;
    public float camera_fov;public Item[] inventory;public Group[] groups;public Duplicate[] disabled_duplicates;
    public string[] overlap_review_hints;
@@ -91,6 +93,8 @@ namespace Eldoria.ValoriaLayered.Editor {
     c.aspect=(float)w/h;c.targetTexture=rt;c.Render();c.Render();RenderTexture.active=rt;
     img.ReadPixels(new Rect(0,0,w,h),0,0);img.Apply();
     File.WriteAllBytes(System.IO.Path.Combine(Ev,file),img.EncodeToPNG());
+    if(file=="BEFORE-home.png"||file=="AFTER-home.png"||file=="PROVISIONAL_OFF_CANDIDATE.png")
+      File.WriteAllBytes(System.IO.Path.Combine(Ev,System.IO.Path.GetFileNameWithoutExtension(file)+".jpg"),img.EncodeToJPG(92));
     return img.GetPixels32();
    }finally{
     c.targetTexture=oldT;c.aspect=aspect;RenderTexture.active=oldA;rt.Release();
@@ -192,6 +196,34 @@ namespace Eldoria.ValoriaLayered.Editor {
     gs.Add(group);
    }
    report.groups=gs.ToArray();
+   // Real observed case from previous complete inventory: visible obsolete
+   // placeholder block behind the actual nine Bastion meshes. Keep the entire
+   // GameObject and collider; remove only this renderer from an isolated V13 copy.
+   var oldProxy=all.Single(t=>t.name=="GREYBOX upper fortified entry reservation");
+   var proxyRenderer=oldProxy.GetComponent<MeshRenderer>();
+   var proxyCollider=oldProxy.GetComponent<Collider>();
+   var proxyMesh=oldProxy.GetComponent<MeshFilter>();
+   Req(proxyRenderer!=null&&proxyRenderer.enabled&&oldProxy.gameObject.activeInHierarchy,
+    "Observed obsolete Bastion placeholder no longer present as expected");
+   Req(proxyCollider!=null&&proxyCollider.enabled&&proxyMesh!=null
+     &&proxyMesh.sharedMesh!=null&&proxyMesh.sharedMesh.triangles.Length==36,
+     "Provisional block identity no longer exact; do not automatically delete");
+   Req(oldProxy.GetComponent<WorldHotspot>()==null,"Original placeholder now owns hotspot; do not hide");
+   proxyRenderer.enabled=false;
+   var proxyOff=Picture(camera,"PROVISIONAL_OFF_CANDIDATE.png");
+   report.provisional_greybox_removed_pixels=PixelDelta(baseline,proxyOff);
+   int outside=0;
+   for(int y=0;y<1024;y++)for(int x=0;x<1536;x++){
+     int p=y*1536+x;
+     int delta=Mathf.Abs(baseline[p].r-proxyOff[p].r)+Mathf.Abs(baseline[p].g-proxyOff[p].g)+Mathf.Abs(baseline[p].b-proxyOff[p].b);
+     if(delta>=30 && !(x>=608&&x<=1265&&y>=744))outside++;
+   }
+   report.provisional_greybox_changed_outside_bastion_roi=outside;
+   Req(report.provisional_greybox_removed_pixels>=30&&report.provisional_greybox_removed_pixels<=4000&&outside<=4,
+      "Removing upper placeholder unexpectedly changes protected frame outside Bastion region: "+outside+" pixels");
+   report.provisional_greybox_renderer_disabled=true;
+   report.provisional_greybox_collider_preserved=proxyCollider.enabled;
+   Req(report.provisional_greybox_collider_preserved,"Provisional block collision accidentally removed");
    // Zero visual changes are not proof of duplication by themselves; only full
    // same-space same-material same-mesh pairs may be automatically disabled.
    var activeList=objects.Where(r=>r.enabled&&r.gameObject.activeInHierarchy).ToArray();
@@ -203,7 +235,7 @@ namespace Eldoria.ValoriaLayered.Editor {
     bool currentA=ar=="AUTHORITATIVE_V13_COMPOSITE",currentB=br=="AUTHORITATIVE_V13_COMPOSITE";
     var keep=currentB&&!currentA?b:a;var older=keep==a?b:a;
     older.enabled=false;
-    var pixels=PixelDelta(baseline,Picture(camera,"EXACT_DUPLICATE_TEST.png"));
+    var pixels=PixelDelta(proxyOff,Picture(camera,"EXACT_DUPLICATE_TEST.png"));
     // If removing an exact overlap changes appearance (including shadows), restore.
     if(pixels>8){older.enabled=true;continue;}
     pairs.Add(new Duplicate{kept=PathName(keep.transform),disabled=PathName(older.transform),
@@ -226,15 +258,16 @@ namespace Eldoria.ValoriaLayered.Editor {
    foreach(var g in gs.Where(g=>g.group=="GREYBOX_SUPPORT"||g.group=="TEMPORARY"||g.group=="SUPPORT_OR_LAYER"))
     if(g.visible>0&&g.changed_pixels_if_hidden>8)hints.Add(g.group+" genuinely contributes "+g.changed_pixels_if_hidden+" pixels; not automatically removed because may be intentional visible technical support");
    report.overlap_review_hints=hints.ToArray();report.unresolved_overlap_hints=hints.Count;
-   if(pairs.Count>0){
-    Req(report.same_image_changed_pixels<=8,"Cleaned candidate not identical to verified best artistic frame; refuse destructive promotion");
+   if(pairs.Count>0||report.provisional_greybox_renderer_disabled){
+    Req(report.same_image_changed_pixels<=4000&&report.provisional_greybox_changed_outside_bastion_roi<=4,
+     "Source artistic frame changed beyond isolated old Bastion proxy; refuse promotion");
     Req(EditorSceneManager.SaveScene(scene,Candidate,true),"Failed to save isolated clean candidate");
-    report.candidate_scene=Candidate;report.verdict="EXACT_DUPLICATES_DISABLED_IN_ISOLATED_COPY_ONLY_NOT_ART_APPROVED";
+    report.candidate_scene=Candidate;report.verdict="OLD_UPPER_BASTION_GREYBOX_RENDERER_DISABLED_COLLIDER_RETAINED_IN_ISOLATED_COPY_NOT_ART_APPROVED";
    } else {
     report.candidate_scene="NO_SCENE_WRITTEN_BEST_V13_REMAINS_UNCHANGED";
     report.verdict=activeHiddenOld.Length>0?"LEGACY_VISIBLE_NEEDS_RENDERER_SPECIFIC_ART_REVIEW":"NO_PROVEN_EXACT_DUPLICATES_OR_EXTRA_LEGACY_RENDERERS";
    }
-   Req(report.same_image_changed_pixels<=8,"No visual regressions accepted");
+   Req(report.same_image_changed_pixels<=4000&&report.provisional_greybox_changed_outside_bastion_roi<=4,"No changes permitted outside former Bastion placeholder");
    File.WriteAllText(System.IO.Path.Combine(Ev,"visual-ownership-native.json"),JsonUtility.ToJson(report,true));
    Debug.Log("VALORIA_OWNERSHIP_REPORT "+report.verdict+" visible="+report.active_visible+" exact_removed="+pairs.Count+
      " unresolved_hints="+hints.Count+" interactions="+report.clean_interaction_hits+" routes="+report.clean_route_passes);
