@@ -1,0 +1,27 @@
+{
+  "original_source_blend_sha256": "e7df10a075e3b0c08a73952d91f75cd8e889d8fe6b18c1e3416a8427afb9d50f",
+  "original_source_glb_sha256": "5ca919b52a979fd6ad6b5a6a35acc8da2ab07236d45f0a75dd0e1d48a81741c1",
+  "source_blend_v2_sha256": "6cf867a57bdb801693a20c03558d4eaffca204d5f46e49046d7cf9edb3b65de0",
+  "source_glb_v2_sha256": "c4a3c7d2082e93e89006b6cd4810525828a4f3671426be778babb69514b36ce0",
+  "original_preserved": true,
+  "edited_original_scene": false,
+  "river_center_function": "-16+1.23sin(0.13x)+0.40sin(0.39x)",
+  "mesh_types": [
+    "V2_VALORIA_LOWER_REAL_TERRAIN_NATIVE_HEIGHTFIELD",
+    "V2_VALORIA_RIVER_CONTINUOUS_RIPPLED_WATER",
+    "V2_VALORIA_RIVERBANK_AUTHOR_ROCKS",
+    "VALORIA_V2_TERRACED_LIMESTONE_CLIFF_-1",
+    "VALORIA_V2_TERRACED_LIMESTONE_CLIFF_1",
+    "VALORIA_V2_REAL_BRIDGE_BANK_STONE_-1_-19",
+    "VALORIA_V2_REAL_BRIDGE_BANK_STONE_-1_-9",
+    "VALORIA_V2_REAL_BRIDGE_BANK_STONE_1_-19",
+    "VALORIA_V2_REAL_BRIDGE_BANK_STONE_1_-9"
+  ],
+  "mesh_count": 9,
+  "triangles": 19020,
+  "bridge_visual_overlap_only": true,
+  "original_collider_changes": false,
+  "stair_throat_open_width": 4.1,
+  "classification": "PRODUCTION SOURCE CANDIDATE / ART NOT APPROVED",
+  "beauty_runtime": "Actual SHARP camera required before promotion"
+}
