@@ -152,7 +152,7 @@ feetbounds=records['ENTRY_SUPPORTED_VALORIA_ARCH_FOOTINGS']
 bridge_min=feetbounds['world_min_xyz'][2]
 design['existing_bridge_feet_bottom_z']=bridge_min
 design['bridge_original_world_bounds']=feetbounds
-assert len(objects)==6 and courses==27 and len(samples)==9
+assert len(objects)==6 and courses==30 and len(samples)==10
 # UV/geometry and normals are real. Preserve original .blend and contact colliders.
 assert set(bpy.data.objects)-old_names=={x.name for x in objects}|{terrain.name}
 for img in bpy.data.images:
