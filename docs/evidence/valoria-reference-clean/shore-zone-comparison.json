@@ -1,11 +1,11 @@
 {
-    "baseline_source": "21fb61e7646a5dcfaa54acd2e3420aea38941296",
-    "baseline_glb_sha256": "0686468a26dc853379d4f8eff38fbf2326b716165bdc13d959bdc681f4a06b0e",
-    "source_sha": "0c5b2e5922cd448bac751ff37778f7027b69f393",
-    "scope": "Expanded gentle shoreline with bridge/gate support protection: previous42 zonal terrain heights and exact previous Blender nature meshes versus new full-bank profile/reseated meshes; materials, camera, light and architecture fixed",
+    "baseline_source": "9a126364fd7a6372853e19e1db242fa0ff31b510",
+    "baseline_glb_sha256": "91397c22b48d1842a51867005a6646e9adf04674329127204fb68ceb595cc166",
+    "source_sha": "593d1b68f3c37526e176fede19a524daa7c95a8d",
+    "scope": "Multiscale closed shingle and sedge shoreline pockets; identical all-bank43 terrain heights, exact previous43 nature meshes versus candidate, same materials/camera/light/architecture; existing large boulder and tree coordinates unchanged",
     "same_camera": true,
     "same_lighting": true,
     "baseline_hash_verified": true,
-    "before_triangles": 273408,
-    "after_triangles": 273786
+    "before_triangles": 273786,
+    "after_triangles": 277154
 }
