@@ -1,9 +1,10 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 15,
+  "revision": 16,
   "budget_eur": 0,
-  "cause_verified": "Native Play log line 511: TerrainCollider component deleted: Component belongs to a disabled built-in package.",
-  "correction": "Enable bundled com.unity.modules.terrainphysics 1.0.0, keep Unity/URP/glTFast versions unchanged, persist generated lockfile and retest real heightfield collision.",
-  "official_docs": "https://docs.unity3d.com/6000.0/Documentation/Manual/com.unity.modules.terrainphysics.html"
+  "validated_runtime_source": "6dd95306b39eacb39fd98488793269dfd8e6f741",
+  "validated_run": 39064468920,
+  "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
+  "art_correction": "Reject open scan sheets after actual screenshot review. Replace with closed individually lofted fractured boulders, correct cloth royal blue. Revalidate actual candidate and record native camera/readback cost; no connected authorized Android device, no physical mobile FPS claim."
 }

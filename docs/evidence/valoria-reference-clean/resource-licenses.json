@@ -35,21 +35,16 @@
       "name": "Bastion, bridge, paving, plots, ruins, bank rocks, river shader",
       "author": "Codex reference-directed new Eldoria authored sources",
       "external_assets": []
-    },
-    {
-      "name": "River bank natural rocks",
-      "author": "Poly Haven",
-      "source": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb",
-      "source_sha256": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae",
-      "original_asset": "rock_face_02",
-      "license": "CC0-1.0",
-      "license_url": "https://polyhaven.com/license",
-      "project_provenance": "cliff_real_scan_v7.json",
-      "changes": "Undo documented old nonuniform cliff fit, decimate copy for strategic view, uniform scale/rotation variants, seat real source mesh in banks; replace spherical prototypes"
     }
   ],
   "not_certified": {
     "physical_android_ios_performance": true,
     "art_8_of_10": true
-  }
+  },
+  "rejected_candidates": [
+    {
+      "asset": "Open rock_face_02 scan fitted as river boulders",
+      "reason": "Actual native Unity view reads as repeated open sheets instead of closed boulders; rejected and replaced by individually lofted closed crag meshes, no scan textures retained."
+    }
+  ]
 }

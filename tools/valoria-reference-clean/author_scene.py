@@ -22,6 +22,7 @@ def mat(n,c,rough=.8,metal=0):
 stone=[mat('Warm limestone %d'%i,(.40+i*.025,.36+i*.022,.30+i*.021)) for i in range(6)]
 trim=mat('Carved limestone',(.55,.49,.40));mortar=mat('Recessed stone joints',(.31,.28,.22));wood=mat('Oak',(.23,.105,.036));iron=mat('Forged iron',(.075,.065,.045),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
 blue=[mat('Blue slate %d'%i,(.014+i*.005,.045+i*.009,.11+i*.017),.62) for i in range(5)]
+cloth=mat('Royal blue cloth',(.018,.11,.45))
 soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.20+i*.023,.215+i*.025,.22+i*.022)) for i in range(4)]
 flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
 # Real baked texture detail from existing original project source; no external downloads.
@@ -136,7 +137,7 @@ def banner(g,x,y,z,w=1,h=2.1):
    X=-w/2+i*w/6;Z=z-j*h/7
    if j==7:Z-=.25*(1-abs(X)/(w/2))
    v.append((x+X,y-.07-.09*sin(i*pi/3+j*.4),Z))
- g.add(v,[(j*7+i,j*7+i+1,(j+1)*7+i+1,(j+1)*7+i) for j in range(7) for i in range(6)],blue[3])
+ g.add(v,[(j*7+i,j*7+i+1,(j+1)*7+i+1,(j+1)*7+i) for j in range(7) for i in range(6)],cloth)
  # Three-leaf heraldic device, actual gold mesh on cloth.
  line(g,(x,y-.2,z-.35),(x,y-.2,z-1.3),.045,gold)
  for side in [-1,1]:line(g,(x,y-.2,z-1),(x+side*.22,y-.2,z-.6),.06,gold)
@@ -232,24 +233,20 @@ positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41)
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
 bpy.data.objects.remove(tree,do_unlink=True)
-# Reuse the actual CC0 rock_face_02 scan from the 63-asset archive, undoing its old cliff fit.
-rock_source=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb')
-assert hashlib.sha256(open(rock_source,'rb').read()).hexdigest()=='5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae'
-before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=rock_source);parts=[o for o in bpy.data.objects if o not in before and o.type=='MESH'];assert parts
-bpy.ops.object.select_all(action='DESELECT')
-for o in parts:o.select_set(True)
-bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();rock_template=bpy.context.object
-M=rock_template.matrix_world.copy();pts=[]
-for v in rock_template.data.vertices:
- q=M@v.co;pts.append(Vector((q.x/.7556536793708801,q.y/.5851455926895142,q.z/1.4367778301239014)))
-lo=Vector([min(q[i] for q in pts) for i in range(3)]);hi=Vector([max(q[i] for q in pts) for i in range(3)]);center=(lo+hi)/2;rockheight=hi.z-lo.z
-for v,q in zip(rock_template.data.vertices,pts):v.co=q-center
-rock_template.matrix_world=Matrix.Identity(4);mod=rock_template.modifiers.new('Strategic photographic rock budget','DECIMATE');mod.ratio=.018;bpy.ops.object.modifier_apply(modifier=mod.name)
+# Closed authored crags replace the rejected open scan face. Four irregular lofted rings,
+# broad fractured planes, bevels and metric UVs; no repeated spheres or cliff stamps.
 for i in range(108):
  x=-65+(i%54)*2.45+random.uniform(-.8,.8);bank=-23+1.5*sin(x*.065);y=bank+(-1 if i<54 else 1)*(7.6+random.uniform(-.3,.7))
  if abs(x)<5:continue
- o=rock_template.copy();o.data=rock_template.data.copy();bpy.context.collection.objects.link(o);o.name='River_Rock_%03d'%i;o.location=(x,y,0);sc=random.uniform(1.4,2.7)/rockheight;o.scale=(sc,sc,sc);o.rotation_euler=(random.uniform(-.24,.24),random.uniform(-.24,.24),random.uniform(-pi,pi))
-bpy.data.objects.remove(rock_template,do_unlink=True)
+ crag=Mesh('River_Rock_%03d'%i);verts=[];segments=7;rx=random.uniform(.85,1.5);ry=random.uniform(.65,1.15);height=random.uniform(1.25,2.05);angle=random.uniform(-pi,pi)
+ for ring,(z,radius) in enumerate([(-.5,.58),(-.24,.94),(.22,1.0),(.5,.5)]):
+  phase=random.uniform(-.10,.10)
+  for j in range(segments):
+   t=angle+j*2*pi/segments+phase;r=radius*random.uniform(.86,1.13)
+   verts.append((x+cos(t)*rx*r,y+sin(t)*ry*r,height*z+random.uniform(-.07,.07)))
+ faces=[tuple(range(segments-1,-1,-1)),tuple(3*segments+j for j in range(segments))]
+ faces += [(ring*segments+j,ring*segments+(j+1)%segments,(ring+1)*segments+(j+1)%segments,(ring+1)*segments+j) for ring in range(3) for j in range(segments)]
+ crag.add(verts,faces,random.choice(rocks));crag.finish(.065)
 # Grounded irregular stones around woodland and ruins give the open land scale cues.
 for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
  for j in range(3):
@@ -328,5 +325,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path,rock_source]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')
