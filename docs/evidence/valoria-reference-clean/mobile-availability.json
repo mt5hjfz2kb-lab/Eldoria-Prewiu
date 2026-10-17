@@ -1,0 +1,7 @@
+﻿{
+    "windows_host":  true,
+    "android_adb_available":  true,
+    "physical_android_profile_performed":  false,
+    "physical_ios_profile_performed":  false,
+    "authorized_android_devices":  0
+}

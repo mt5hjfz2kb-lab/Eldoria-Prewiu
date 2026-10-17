@@ -12,6 +12,10 @@
     {
       "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/shrub_1.glb",
       "sha256": "5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0"
+    },
+    {
+      "path": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb",
+      "sha256": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae"
     }
   ],
   "scene_new_empty": true,
@@ -38,13 +42,13 @@
     "Ruin_-25_0": 11000,
     "Ruin_46_-1": 11352,
     "Fir_tree_group": 142200,
-    "River_bank_rocks": 8640,
+    "River_bank_rocks": 53200,
     "Woodland_ground_rocks": 3840,
     "Shrub_group": 21600,
-    "Foundation_shrubs_and_groundcover": 687
+    "Foundation_shrubs_and_groundcover": 696
   },
   "mesh_objects": 24,
-  "triangles": 413345,
-  "blend_sha256": "d10699637003babc529c27140ae3539011b8657dbdc1a9c14d4709e197247c20",
-  "glb_sha256": "90d688c0f15d574411691824c2327d3e84d40f9ca3e3b665033bbe674c0c7bd4"
+  "triangles": 457914,
+  "blend_sha256": "831b54e2b667f3b0df4462cf2e7aba15a4d3460d978e9f8d25f1768ca60e3d78",
+  "glb_sha256": "50d9dd52667b4593e2fbb877f9673b4177b3b1e09e513861138905164c3c9285"
 }
