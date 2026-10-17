@@ -1,0 +1,16 @@
+{
+  "asset": "grass_ground_patch",
+  "technical": "PASS_PENDING_VISUAL",
+  "source_sha": "7327b7113fa8e65e17241fc6133bb9f283db72374880e8873dbfc3f9aceb584f",
+  "new_sha": "01ed503c3160e9fc10465684b3c1a85d6907555a29a696d9b399fe96ec78aba9",
+  "cc0_image_sha": "d528215ccc37271a505c99773c454c224c024f12a619b03c47c154f733081d32",
+  "fraction_of_pixels_loam_visible": 0.1186532974243164,
+  "old_grass_mesh_count": 4,
+  "geometry_unchanged": true,
+  "target_floor": 6,
+  "license": "Poly Haven dirt and grass both CC0",
+  "art_approved": false,
+  "unity_approved": false,
+  "no_scene_assembly": true,
+  "warning": "Subjective artistic scoring required, especially nonrepeating dirt border and grass density."
+}

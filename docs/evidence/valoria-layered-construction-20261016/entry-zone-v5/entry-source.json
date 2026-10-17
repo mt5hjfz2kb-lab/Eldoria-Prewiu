@@ -1,0 +1,42 @@
+{
+  "author": "GPT current-session art direction; Qwen auxiliary remains separately recorded",
+  "blender_version": "5.2.2 LTS",
+  "source_blend_sha256": "768a08535f066a40c707fd52901a0c16efad91ec06ce91f35ca31cf625b5792f",
+  "source_gate_blend_sha256": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf",
+  "result_blend_sha256": "9d50bc09c90519e42e9805d3ba80dfd72accc2883daebd4ac36c8e28966f462c",
+  "result_glb_sha256": "2d86f8984fb4289ed64e3247b37e74442cf46ff923e9c5928244e085c815e74c",
+  "original_sources_unchanged": true,
+  "canonical_modified": false,
+  "terrain_target": "ValoriaEntryTerrainV5",
+  "gate_uniform_scale": 0.75,
+  "source_gate_already_origin_normalized": true,
+  "cc0_meadow_unique_bake_dimensions": [
+    2048,
+    2048
+  ],
+  "bank_hypothesis": "smoothed sculpted banks, real-scan displacement and slope-blended CC0 photographic surface; incompatible face stamps removed",
+  "original_v1_rejected_for_double_origin": true,
+  "stair_contact_native": [
+    -0.9788936972618103,
+    1.2899999618530273,
+    28.131494522094727
+  ],
+  "bridge_contact_y": {
+    "-19.65": 0.38,
+    "-9.35": 0.38
+  },
+  "recovered_cc0_rock_asset_sha256": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae",
+  "recovered_cc0_meadow_sha256": "d528215ccc37271a505c99773c454c224c024f12a619b03c47c154f733081d32",
+  "source_bridge_blend_sha256": "44423997651b05c839da833cdef1914a433058f903db37a9427d66d173b889d0",
+  "mesh_objects": 19,
+  "triangles": 301578,
+  "editable_source_triangles": 243594,
+  "art_status": "CANDIDATE_REQUIRES_GENUINE_UNITY_AB",
+  "operations": [
+    "source-topology shore subdivision",
+    "direct source vertex reprofile",
+    "world-scale UV",
+    "existing PBR texture maps",
+    "reuse original Blender gate with uniform transform"
+  ]
+}
