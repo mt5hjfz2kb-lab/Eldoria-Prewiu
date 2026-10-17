@@ -1,0 +1,360 @@
+{
+  "author": "GPT handoff continuation",
+  "stage": "V8 isolated visual candidate",
+  "source_v7_blend_sha256": "24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381",
+  "result_blend_sha256": "59a6ab2c2810f385d3c7cde38d831d3088cd1ae66e6dd51d5f0eb430bb124856",
+  "result_glb_sha256": "b6d0d58139977534dda991c6a18ff47be5fe8c0e55c7c8b0697f20a10bedf48d",
+  "triangles": 349121,
+  "source_triangles": 342006,
+  "new_organic_route_stones": 297,
+  "new_route_faces": 3112,
+  "footing_terrain_samples_count": 48,
+  "footing_terrain_samples": [
+    {
+      "native_x": 2.547,
+      "native_z": -18.163,
+      "footing_y": -4.35,
+      "terrain_y": -2.656,
+      "gap_above_terrain": -1.694
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -18.12,
+      "footing_y": -4.307,
+      "terrain_y": -2.719,
+      "gap_above_terrain": -1.588
+    },
+    {
+      "native_x": 2.59,
+      "native_z": -18.163,
+      "footing_y": -4.307,
+      "terrain_y": -2.63,
+      "gap_above_terrain": -1.677
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -18.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.139,
+      "gap_above_terrain": -3.211
+    },
+    {
+      "native_x": 2.59,
+      "native_z": -18.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.13,
+      "gap_above_terrain": -3.177
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -18.88,
+      "footing_y": -4.307,
+      "terrain_y": -1.004,
+      "gap_above_terrain": -3.303
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -18.163,
+      "footing_y": -4.35,
+      "terrain_y": -3.077,
+      "gap_above_terrain": -1.273
+    },
+    {
+      "native_x": 1.81,
+      "native_z": -18.163,
+      "footing_y": -4.307,
+      "terrain_y": -3.092,
+      "gap_above_terrain": -1.215
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -18.12,
+      "footing_y": -4.307,
+      "terrain_y": -3.124,
+      "gap_above_terrain": -1.183
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -18.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.324,
+      "gap_above_terrain": -3.026
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -18.88,
+      "footing_y": -4.307,
+      "terrain_y": -1.143,
+      "gap_above_terrain": -3.164
+    },
+    {
+      "native_x": 1.81,
+      "native_z": -18.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.329,
+      "gap_above_terrain": -2.978
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -10.163,
+      "footing_y": -4.35,
+      "terrain_y": -0.893,
+      "gap_above_terrain": -3.457
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -10.12,
+      "footing_y": -4.307,
+      "terrain_y": -0.785,
+      "gap_above_terrain": -3.522
+    },
+    {
+      "native_x": 2.59,
+      "native_z": -10.163,
+      "footing_y": -4.307,
+      "terrain_y": -0.906,
+      "gap_above_terrain": -3.401
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -10.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.889,
+      "gap_above_terrain": -2.461
+    },
+    {
+      "native_x": 2.59,
+      "native_z": -10.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.887,
+      "gap_above_terrain": -2.42
+    },
+    {
+      "native_x": 2.547,
+      "native_z": -10.88,
+      "footing_y": -4.307,
+      "terrain_y": -1.924,
+      "gap_above_terrain": -2.383
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -10.163,
+      "footing_y": -4.35,
+      "terrain_y": -0.731,
+      "gap_above_terrain": -3.619
+    },
+    {
+      "native_x": 1.81,
+      "native_z": -10.163,
+      "footing_y": -4.307,
+      "terrain_y": -0.727,
+      "gap_above_terrain": -3.58
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -10.12,
+      "footing_y": -4.307,
+      "terrain_y": -0.608,
+      "gap_above_terrain": -3.699
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -10.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.977,
+      "gap_above_terrain": -2.373
+    },
+    {
+      "native_x": 1.853,
+      "native_z": -10.88,
+      "footing_y": -4.307,
+      "terrain_y": -2.016,
+      "gap_above_terrain": -2.291
+    },
+    {
+      "native_x": 1.81,
+      "native_z": -10.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.973,
+      "gap_above_terrain": -2.334
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -18.163,
+      "footing_y": -4.35,
+      "terrain_y": -3.623,
+      "gap_above_terrain": -0.727
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -18.12,
+      "footing_y": -4.307,
+      "terrain_y": -3.665,
+      "gap_above_terrain": -0.642
+    },
+    {
+      "native_x": -1.81,
+      "native_z": -18.163,
+      "footing_y": -4.307,
+      "terrain_y": -3.608,
+      "gap_above_terrain": -0.699
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -18.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.682,
+      "gap_above_terrain": -2.668
+    },
+    {
+      "native_x": -1.81,
+      "native_z": -18.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.672,
+      "gap_above_terrain": -2.635
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -18.88,
+      "footing_y": -4.307,
+      "terrain_y": -1.467,
+      "gap_above_terrain": -2.84
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -18.163,
+      "footing_y": -4.35,
+      "terrain_y": -3.606,
+      "gap_above_terrain": -0.744
+    },
+    {
+      "native_x": -2.59,
+      "native_z": -18.163,
+      "footing_y": -4.307,
+      "terrain_y": -3.593,
+      "gap_above_terrain": -0.714
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -18.12,
+      "footing_y": -4.307,
+      "terrain_y": -3.656,
+      "gap_above_terrain": -0.651
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -18.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.777,
+      "gap_above_terrain": -2.573
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -18.88,
+      "footing_y": -4.307,
+      "terrain_y": -1.597,
+      "gap_above_terrain": -2.71
+    },
+    {
+      "native_x": -2.59,
+      "native_z": -18.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.779,
+      "gap_above_terrain": -2.528
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -10.163,
+      "footing_y": -4.35,
+      "terrain_y": -0.113,
+      "gap_above_terrain": -4.237
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -10.12,
+      "footing_y": -4.307,
+      "terrain_y": -0.052,
+      "gap_above_terrain": -4.255
+    },
+    {
+      "native_x": -1.81,
+      "native_z": -10.163,
+      "footing_y": -4.307,
+      "terrain_y": -0.112,
+      "gap_above_terrain": -4.195
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -10.837,
+      "footing_y": -4.35,
+      "terrain_y": -0.905,
+      "gap_above_terrain": -3.445
+    },
+    {
+      "native_x": -1.81,
+      "native_z": -10.837,
+      "footing_y": -4.307,
+      "terrain_y": -0.889,
+      "gap_above_terrain": -3.418
+    },
+    {
+      "native_x": -1.853,
+      "native_z": -10.88,
+      "footing_y": -4.307,
+      "terrain_y": -0.945,
+      "gap_above_terrain": -3.362
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -10.163,
+      "footing_y": -4.35,
+      "terrain_y": -0.181,
+      "gap_above_terrain": -4.169
+    },
+    {
+      "native_x": -2.59,
+      "native_z": -10.163,
+      "footing_y": -4.307,
+      "terrain_y": -0.185,
+      "gap_above_terrain": -4.122
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -10.12,
+      "footing_y": -4.307,
+      "terrain_y": -0.119,
+      "gap_above_terrain": -4.188
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -10.837,
+      "footing_y": -4.35,
+      "terrain_y": -1.019,
+      "gap_above_terrain": -3.331
+    },
+    {
+      "native_x": -2.547,
+      "native_z": -10.88,
+      "footing_y": -4.307,
+      "terrain_y": -1.058,
+      "gap_above_terrain": -3.249
+    },
+    {
+      "native_x": -2.59,
+      "native_z": -10.837,
+      "footing_y": -4.307,
+      "terrain_y": -1.014,
+      "gap_above_terrain": -3.293
+    }
+  ],
+  "source_bridge_transforms_unchanged": true,
+  "original_unity_colliders_unchanged": true,
+  "materials_origin": "existing V7 CC0 PBR stone/shore plus procedural original diffuse earth and muted river",
+  "operations": [
+    "organic native-grade east and west parcel tracks",
+    "graded apron",
+    "genuine river material and micro-displacement"
+  ],
+  "art_status": "REQUIRES_INDEPENDENT_GENUINE_UNITY_AB",
+  "full_frame_art_pass": false
+}
