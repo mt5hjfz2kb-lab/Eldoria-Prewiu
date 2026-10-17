@@ -1,7 +1,7 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 13,
+  "revision": 14,
   "budget_eur": 0,
-  "correction": "Real PlayMode now proves isolation/no old presenter or camera; remaining route failures at z=-10,-9,-8,14 expose missing terrain collision beneath paving seams. Explicitly bind enabled TerrainCollider to actual sculpted TerrainData, preserve visual geometry; rerun all route/selection/stairs."
+  "correction": "Terrain collision still misses four seam samples after explicit TerrainCollider binding. Initialize complete solid holes mask on new TerrainData and sync; print exact terrain collider, holes, bounds and direct ray if unresolved. Preserve passed isolation, save, selection and stairs checks."
 }
