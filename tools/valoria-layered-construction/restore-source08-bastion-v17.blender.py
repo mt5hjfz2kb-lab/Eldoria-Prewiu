@@ -78,6 +78,56 @@ gltf=json.loads(raw[20:20+struct.unpack_from("<I",raw,12)[0]])
 tris=sum(gltf["accessors"][p["indices"]]["count"]//3
  for node in gltf["nodes"] if "mesh" in node for p in gltf["meshes"][node["mesh"]]["primitives"])
 assert tris==374064,("V13_GEOMETRY_CHANGED",tris)
+# Two honest SOURCE diagnostic renders, not claims about final Unity lighting.
+# The original authored 9-mesh silhouette/materials are kept identical.
+from mathutils import Vector
+sitepoints=[o.matrix_world @ v.co for o in copies.values() for v in o.data.vertices]
+bboxlo=Vector((min(v.x for v in sitepoints),min(v.y for v in sitepoints),min(v.z for v in sitepoints)))
+bboxhi=Vector((max(v.x for v in sitepoints),max(v.y for v in sitepoints),max(v.z for v in sitepoints)))
+focus=(bboxlo+bboxhi)*.5
+for o in bpy.data.objects:
+ if o.type=="MESH" and o not in list(copies.values()):o.hide_render=True
+cam_data=bpy.data.cameras.new("SOURCE08_V17_STUDIO_DIAGNOSTIC_CAMERA")
+cam=bpy.data.objects.new("SOURCE08_V17_STUDIO_DIAGNOSTIC_CAMERA",cam_data)
+bpy.context.scene.collection.objects.link(cam)
+cam.location=focus+Vector((22,39,22))
+cam.rotation_euler=(focus-cam.location).to_track_quat("-Z","Y").to_euler()
+cam_data.type="ORTHO";cam_data.ortho_scale=48
+bpy.context.scene.camera=cam
+for name,offset,power,size in [
+ ("Source08 Studio Key",Vector((-18,15,36)),3000,28),
+ ("Source08 Studio Fill",Vector((20,12,14)),1700,28)
+]:
+ ld=bpy.data.lights.new(name,"AREA");ld.energy=power;ld.shape="DISK";ld.size=size
+ light=bpy.data.objects.new(name,ld);bpy.context.scene.collection.objects.link(light)
+ light.location=focus+offset
+ light.rotation_euler=(focus-light.location).to_track_quat("-Z","Y").to_euler()
+scene=bpy.context.scene
+scene.render.engine="CYCLES"
+scene.cycles.samples=12
+scene.render.threads_mode="FIXED";scene.render.threads=4
+scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
+scene.render.image_settings.file_format="PNG"
+if scene.world is not None:
+ scene.world.use_nodes=True
+ bg=scene.world.node_tree.nodes.get("Background")
+ if bg is not None:bg.inputs["Strength"].default_value=.6
+neutral=bpy.data.materials.new("SOURCE08_V17_SOURCE_CLAY_DIAGNOSTIC")
+neutral.diffuse_color=(.66,.67,.68,1)
+neutral.use_nodes=True
+bsdf=neutral.node_tree.nodes.get("Principled BSDF")
+bsdf.inputs["Base Color"].default_value=(.66,.67,.68,1)
+bsdf.inputs["Roughness"].default_value=.88
+scene.view_layers[0].material_override=neutral
+scene.render.filepath=os.path.join(OUT,"source-clay-threequarter.png")
+bpy.ops.render.render(write_still=True)
+scene.view_layers[0].material_override=None
+scene.render.filepath=os.path.join(OUT,"source-source08-material-threequarter.png")
+bpy.ops.render.render(write_still=True)
+source_previews={
+ "source-clay-threequarter.png":sha(os.path.join(OUT,"source-clay-threequarter.png")),
+ "source-source08-material-threequarter.png":sha(os.path.join(OUT,"source-source08-material-threequarter.png"))
+}
 report={
  "stage":"V17 RECOVER original SOURCE08 nine-material semantic hierarchy (no new building/geometry)",
  "input_v13_blend_sha256":sha(input_blend),"original_family_blend_sha256":sha(donor_path),
@@ -85,7 +135,7 @@ report={
  "source_texture_generator_sha256":sha(generator_path),
  "texture_provenance":"Actual source image_data/surface_maps numpy + generated banner, all generated in Eldoria and packed; no third-party texture relied upon for the Bastion",
  "reused_real_professional_model":True,"bastion_module_count":len(copies),
- "material_roles":material_map,"original_image_names":sorted(images),
+ "material_roles":material_map,"original_image_names":sorted(images),"source_previews_sha256":source_previews,
  "input_v13_geometry_unchanged":after==before,
  "result_blend_sha256":sha(blend),"result_glb_sha256":sha(glb),"triangles":tris,
  "budget_eur":0,"status":"BLENDER_SOURCE_CANDIDATE_REQUIRES_TRUE_UNITY_AB",
