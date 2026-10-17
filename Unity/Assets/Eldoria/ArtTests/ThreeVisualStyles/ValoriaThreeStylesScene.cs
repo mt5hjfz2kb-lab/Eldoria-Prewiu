@@ -34,7 +34,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         private Color Roof => Rich ? RGB(0.20f, 0.28f, 0.40f) : Bright ? RGB(0.26f, 0.49f, 0.74f) : RGB(0.28f, 0.34f, 0.46f);
         private Color Wood => Rich ? RGB(0.31f, 0.23f, 0.18f) : Bright ? RGB(0.57f, 0.38f, 0.24f) : RGB(0.39f, 0.29f, 0.21f);
         private Color Green => Rich ? RGB(0.29f, 0.39f, 0.30f) : Bright ? RGB(0.40f, 0.65f, 0.37f) : RGB(0.32f, 0.48f, 0.32f);
-        private Color Grass => Rich ? RGB(0.39f, 0.48f, 0.32f) : Bright ? RGB(0.52f, 0.72f, 0.42f) : RGB(0.41f, 0.56f, 0.35f);
+        private Color Grass => Rich ? RGB(0.39f, 0.48f, 0.32f) : Bright ? RGB(0.36f, 0.58f, 0.33f) : RGB(0.41f, 0.56f, 0.35f);
         private Color Gold => RGB(0.94f, 0.69f, 0.24f);
         private Color Blue => Rich ? RGB(0.11f, 0.23f, 0.46f) : Bright ? RGB(0.17f, 0.40f, 0.76f) : RGB(0.13f, 0.32f, 0.53f);
         private static Color RGB(float r, float g, float b) => new Color(r, g, b, 1f);
@@ -234,18 +234,18 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             c.nearClipPlane = .1f;
             c.farClipPlane = 300f;
             c.clearFlags = CameraClearFlags.SolidColor;
-            c.backgroundColor = Rich ? RGB(.67f,.74f,.80f) : Bright ? RGB(.61f,.81f,.94f) : RGB(.69f,.79f,.83f);
+            c.backgroundColor = Rich ? RGB(.67f,.74f,.80f) : Bright ? RGB(.62f,.74f,.85f) : RGB(.69f,.79f,.83f);
             var sun = new GameObject("Afternoon sun / shadows");
             sun.transform.SetParent(built, false);
             sun.transform.rotation = Quaternion.Euler(46f, -38f, 0f);
             var light = sun.AddComponent<Light>();
             light.type = LightType.Directional;
             light.color = RGB(1f,.94f,.82f);
-            light.intensity = Rich ? 1.35f : 1.5f;
+            light.intensity = Rich ? 1.15f : Bright ? 1.05f : 1.22f;
             light.shadows = LightShadows.Soft;
             light.shadowStrength = .65f;
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = Rich ? RGB(.44f,.48f,.56f) : RGB(.59f,.61f,.59f);
+            RenderSettings.ambientLight = Rich ? RGB(.35f,.39f,.44f) : Bright ? RGB(.41f,.43f,.40f) : RGB(.48f,.51f,.50f);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = c.backgroundColor;
@@ -300,7 +300,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         private void RiverAndBridge()
         {
             var water=Rich?RGB(.19f,.43f,.53f):Bright?RGB(.19f,.64f,.82f):RGB(.22f,.48f,.61f);
-            Cuboid("Creek flowing west to east",-0f,-1.48f,-30f,106f,.12f,8.2f,water);
+            Cuboid("Creek flowing west to east",-0f,-1.48f,-30f,96f,.12f,8.2f,water);
             for(int i=0;i<32;i++)
             {
                 float x=-48+i*3.1f;
@@ -563,11 +563,12 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                 rock.transform.localRotation=Quaternion.Euler(0,(float)rng.NextDouble()*170f,13f);
             }
             // A few silhouettes in the distance make the geography believable.
-            for(int i=0;i<8;i++)
+            // Keep focus on the reachable town rather than huge white cone mountains.
+            for(int i=0;i<6;i++)
             {
-                float x=-53+i*15.2f,z=56f;
-                Cone("Distant mountain ridgeline",new Vector3(x,H(x,52)+1f,z),
-                     12f+(i%3)*4f,23f+i%3*4f,DarkStone);
+                float x=-48+i*19.2f,z=57f;
+                Cone("Distant alpine silhouette",new Vector3(x,H(x,52)-2f,z),
+                     Rich ? 13f : 9f,Rich ? 19f : 12f,DarkStone);
             }
         }
 
