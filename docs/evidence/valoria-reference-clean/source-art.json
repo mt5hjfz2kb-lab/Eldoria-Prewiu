@@ -38,13 +38,13 @@
     "Ruin_-25_0": 11000,
     "Ruin_46_-1": 11352,
     "Fir_tree_group": 142200,
-    "River_bank_rocks": 16828,
+    "River_bank_rocks": 8684,
     "Woodland_ground_rocks": 3840,
     "Shrub_group": 21600,
-    "Foundation_shrubs_and_groundcover": 690
+    "Foundation_shrubs_and_groundcover": 4419
   },
   "mesh_objects": 24,
-  "triangles": 421536,
-  "blend_sha256": "8d66450d8f4dafd2b207e38f01f272ea1ff79cc5e6b247447d1277da244acd49",
-  "glb_sha256": "d6bbaa5426560cb9b357039a158664403b29b317db835dfe54878727c8e7a5db"
+  "triangles": 417121,
+  "blend_sha256": "e7bb86b6c3f6daa748ecf04d9938ed9aa9f6563c53e5a53d13bb53c219e8db12",
+  "glb_sha256": "5053975c4e15d80f38e26fcb4e3c346f155498f6d0c619c92c3f2f729f184f54"
 }

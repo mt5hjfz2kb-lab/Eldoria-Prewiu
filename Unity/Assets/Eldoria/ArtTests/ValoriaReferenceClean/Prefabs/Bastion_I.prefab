@@ -73,7 +73,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9057695350642265392}
-  m_Mesh: {fileID: 4300000, guid: 6066800508f833b40a8e1e4908309ac2, type: 2}
+  m_Mesh: {fileID: 4300000, guid: f4076f7921bd71643ade6d8fe2b826f0, type: 2}
 --- !u!23 &4112447484136482951
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -99,14 +99,13 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a7537f21fed459f4381b103bb2481e13, type: 2}
-  - {fileID: 2100000, guid: 6c3b8d8268172e340abf8a39a6d59eb0, type: 2}
-  - {fileID: 2100000, guid: dcd1fed5362982b44856ef0eec09d912, type: 2}
-  - {fileID: 2100000, guid: bac85d5499a012d4ba30cefd1b43ef7f, type: 2}
-  - {fileID: 2100000, guid: ebbacd4d110a00741a7f60d3bbf332d2, type: 2}
-  - {fileID: 2100000, guid: 7b6623c86622c0d4d9d71cb967281126, type: 2}
-  - {fileID: 2100000, guid: 46252a88ceeb4bb41b451d60ae4a11ab, type: 2}
   - {fileID: 2100000, guid: 2c4bcd3f9f754254fac20e90c4644874, type: 2}
+  - {fileID: 2100000, guid: 7b6623c86622c0d4d9d71cb967281126, type: 2}
+  - {fileID: 2100000, guid: a7537f21fed459f4381b103bb2481e13, type: 2}
+  - {fileID: 2100000, guid: ebbacd4d110a00741a7f60d3bbf332d2, type: 2}
+  - {fileID: 2100000, guid: 6c3b8d8268172e340abf8a39a6d59eb0, type: 2}
+  - {fileID: 2100000, guid: 46252a88ceeb4bb41b451d60ae4a11ab, type: 2}
+  - {fileID: 2100000, guid: dcd1fed5362982b44856ef0eec09d912, type: 2}
   - {fileID: 2100000, guid: d737d06185e6b6349ad4e6182a523d2f, type: 2}
   - {fileID: 2100000, guid: e7616a370ac18e94387a721bf204d9d1, type: 2}
   - {fileID: 2100000, guid: b09a05106e8ff2042b63043a7b26e2c7, type: 2}
@@ -117,6 +116,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: 601b4af448454574fbf86c047cfa0ab8, type: 2}
   - {fileID: 2100000, guid: 711678d8cff625a43bcf164bad8e6c62, type: 2}
   - {fileID: 2100000, guid: f2d35f988f3f49c47a660d845572a45b, type: 2}
+  - {fileID: 2100000, guid: 7e9a0a052808c9a47aff814835d4ea3d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -161,4 +161,4 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 6066800508f833b40a8e1e4908309ac2, type: 2}
+  m_Mesh: {fileID: 4300000, guid: f4076f7921bd71643ade6d8fe2b826f0, type: 2}
