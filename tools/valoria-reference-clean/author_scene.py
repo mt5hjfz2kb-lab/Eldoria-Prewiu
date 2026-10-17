@@ -81,11 +81,33 @@ if stone_trial:
   image.pack();images[entry['channel']]=image
   external_inputs.append(dict(entry,license=manifest['license'],asset_url=manifest['asset_url']))
  json.dump(manifest,open(os.path.join(source_dir,'license-manifest.json'),'w'),indent=2)
+ # Adapt a photographic scan to the stylized palette, rather than pasting its
+ # baked dark crevices onto every small ashlar. Raw CC0 files stay untouched.
+ raw=images['Diffuse'];raw_pixels=np.array(raw.pixels[:],dtype=np.float32).reshape((-1,4));median=np.median(raw_pixels[:,:3],axis=0)
+ relative=np.clip(raw_pixels[:,:3]/np.maximum(median,.001)-1,-.8,.8)
+ graded=np.ones_like(raw_pixels);graded[:,:3]=np.array([.62,.57,.49])*(1+.42*relative)
+ adapted=bpy.data.images.new('Valoria sandstone scan palette adapted',width=raw.size[0],height=raw.size[1]);adapted.pixels.foreach_set(graded.reshape(-1));adapted.scale(512,512);adapted.pack();images['Diffuse']=adapted
+ for channel in ['nor_gl','Rough']:
+  adapted=images[channel].copy();adapted.name='Valoria sandstone '+channel+' mobile';adapted.scale(512,512);adapted.pack();images[channel]=adapted
  for i in range(6):
   m=mat('Trial sandstone '+str(i),(1,1,1));nodes=m.node_tree.nodes;links=m.node_tree.links;p=nodes.get('Principled BSDF');uvnode=nodes.new('ShaderNodeUVMap');uvnode.uv_map='ScannedStoneUV'
   for channel,socket_name in [('Diffuse','Base Color'),('Rough','Roughness')]:
    node=nodes.new('ShaderNodeTexImage');node.image=images[channel];links.new(uvnode.outputs['UV'],node.inputs['Vector']);links.new(node.outputs['Color'],p.inputs[socket_name])
-  node=nodes.new('ShaderNodeTexImage');node.image=images['nor_gl'];links.new(uvnode.outputs['UV'],node.inputs['Vector']);normal=nodes.new('ShaderNodeNormalMap');normal.uv_map='ScannedStoneUV';normal.inputs['Strength'].default_value=.8;links.new(node.outputs['Color'],normal.inputs['Color']);links.new(normal.outputs['Normal'],p.inputs['Normal']);trial_stone.append(m)
+  node=nodes.new('ShaderNodeTexImage');node.image=images['nor_gl'];links.new(uvnode.outputs['UV'],node.inputs['Vector']);normal=nodes.new('ShaderNodeNormalMap');normal.uv_map='ScannedStoneUV';normal.inputs['Strength'].default_value=.35;links.new(node.outputs['Color'],normal.inputs['Color']);links.new(normal.outputs['Normal'],p.inputs['Normal']);trial_stone.append(m)
+# Ground study sources are retained and packed, while Unity paints only a bounded trial.
+if request.get('ground_treatment')=='zone_surface':
+ for manifest in json.load(open(os.path.join(ROOT,'tools/valoria-reference-clean/ground-inputs.json'))):
+  source_dir=os.path.join(OUT,'MaterialInputs',manifest['asset']);os.makedirs(source_dir,exist_ok=True)
+  for entry in manifest['files']:
+   dest=os.path.join(source_dir,entry['file'])
+   if not os.path.isfile(dest) or hashlib.sha256(open(dest,'rb').read()).hexdigest()!=entry['sha256']:
+    data=urllib.request.urlopen(urllib.request.Request(entry['url'],headers={'User-Agent':'Eldoria-Valoria-Authoring/1.0'}),timeout=60).read()
+    assert hashlib.sha256(data).hexdigest()==entry['sha256'], 'Ground CC0 source hash mismatch'
+    with open(dest,'wb') as f:f.write(data)
+   im=bpy.data.images.load(dest,check_existing=True);im.use_fake_user=True
+   if entry['channel']!='Diffuse':im.colorspace_settings.name='Non-Color'
+   im.pack();external_inputs.append(dict(entry,license=manifest['license'],asset_url=manifest['asset_url']))
+  json.dump(manifest,open(os.path.join(source_dir,'license-manifest.json'),'w'),indent=2)
 # Bake weathered earth patches with irregular cell boundaries, rather than a flat brown fill.
 N=512;yy,xx=np.mgrid[0:N,0:N]/N;rng=np.random.default_rng(892)
 dists=[]

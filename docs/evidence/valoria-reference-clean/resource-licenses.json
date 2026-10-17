@@ -1,7 +1,7 @@
 {
   "verified_at": "2026-10-17",
   "cost_eur": 0,
-  "new_downloads": 4,
+  "new_downloads": 8,
   "assets": [
     {
       "name": "Fortified gate",
@@ -44,6 +44,24 @@
       "asset_url": "https://polyhaven.com/a/sandstone_blocks_05",
       "source_manifest": "tools/valoria-reference-clean/stone-inputs.json",
       "changes": "Only right Bastion flank; per-stone crop UV1, original UV0 retained for genuine same-camera/light Unity A/B; original raw 1k files retained. Not globally extended before visual inspection."
+    },
+    {
+      "name": "leafy_grass representative ground study",
+      "original_author": "Charlotte Baglioni / Poly Haven",
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "asset_url": "https://polyhaven.com/a/leafy_grass",
+      "source_manifest": "tools/valoria-reference-clean/ground-inputs.json",
+      "changes": "Bounded terrain material sample; albedo/normal maps at max1k, no terrain height changes; matched native Unity A/B required. Raw sources retained."
+    },
+    {
+      "name": "sparse_grass representative ground study",
+      "original_author": "Poly Haven",
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "asset_url": "https://polyhaven.com/a/sparse_grass",
+      "source_manifest": "tools/valoria-reference-clean/ground-inputs.json",
+      "changes": "Bounded terrain material sample; albedo/normal maps at max1k, no terrain height changes; matched native Unity A/B required. Raw sources retained."
     }
   ],
   "not_certified": {
@@ -56,5 +74,5 @@
       "reason": "Actual native Unity view reads as repeated open sheets instead of closed boulders; rejected and replaced by individually lofted closed crag meshes, no scan textures retained."
     }
   ],
-  "new_external_material_assets": 1
+  "new_external_material_assets": 3
 }

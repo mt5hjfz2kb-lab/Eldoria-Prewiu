@@ -1,0 +1,56 @@
+[
+  {
+    "asset": "leafy_grass",
+    "author": "Charlotte Baglioni / Poly Haven",
+    "asset_url": "https://polyhaven.com/a/leafy_grass",
+    "license": "CC0-1.0",
+    "license_url": "https://polyhaven.com/license",
+    "cost_eur": 0,
+    "resolution": "1k",
+    "files": [
+      {
+        "channel": "Diffuse",
+        "file": "leafy_grass_diff_1k.png",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_diff_1k.png",
+        "md5": "7639691afa92caa8034236e6a0687bfe",
+        "sha256": "2a4356e6aef5db70bb803a31fa265321b733b1f77c7c80ac26ae9aa0552f345d",
+        "bytes": 5913007
+      },
+      {
+        "channel": "nor_gl",
+        "file": "leafy_grass_nor_gl_1k.png",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_nor_gl_1k.png",
+        "md5": "a98f306f4dafb1e956d562b78503e174",
+        "sha256": "7cba8d8a3cbd14663fd974b73ecebcbb42e0cc258d912867e9dd67a5582ca4d9",
+        "bytes": 6111876
+      }
+    ]
+  },
+  {
+    "asset": "sparse_grass",
+    "author": "Poly Haven",
+    "asset_url": "https://polyhaven.com/a/sparse_grass",
+    "license": "CC0-1.0",
+    "license_url": "https://polyhaven.com/license",
+    "cost_eur": 0,
+    "resolution": "1k",
+    "files": [
+      {
+        "channel": "Diffuse",
+        "file": "sparse_grass_diff_1k.png",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sparse_grass/sparse_grass_diff_1k.png",
+        "md5": "e4c7593acc6bd6b937e43351fadc41aa",
+        "sha256": "ab60bc2f607801de291b826514cd13615397a903e861f0974c61c67849b7eb2d",
+        "bytes": 5697636
+      },
+      {
+        "channel": "nor_gl",
+        "file": "sparse_grass_nor_gl_1k.png",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/sparse_grass/sparse_grass_nor_gl_1k.png",
+        "md5": "a09e4b0ea1cbec68992cfae5b00c2607",
+        "sha256": "6b46042ca4b8890067a1f930b40580b9f21a5096d7e9ecd883fa4af223dc1b3a",
+        "bytes": 6096327
+      }
+    ]
+  }
+]
