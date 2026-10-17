@@ -32,11 +32,11 @@ namespace Eldoria.ValoriaLayered.Editor {
   }
   static GameObject Empty(Transform parent,string name){var o=new GameObject(name);o.transform.SetParent(parent,false);return o;}
   static Collider Hotspot(Transform[] ts,string source,string name,string id){var t=ts.Single(x=>x.name==source);var c=t.GetComponent<Collider>();Req(c!=null,"Missing real source contact "+source);t.name=name;var h=t.GetComponent<WorldHotspot>()??t.gameObject.AddComponent<WorldHotspot>();h.Id=id;return c;}
-  [MenuItem("Eldoria/Valoria/Build isolated existing-system playable entry")]
+  [MenuItem("Eldoria/Valoria/Build isolated V12 existing-system playable V3")]
   public static async void Build(){try{await Run();Debug.Log("VALORIA_ENTRY_PLAYABLE_SCENE_COMPLETE");EditorApplication.Exit(0);}catch(Exception e){Debug.LogError(e);EditorApplication.Exit(1);}}
   static async Task Run(){
    Directory.CreateDirectory(Ev);Directory.CreateDirectory(AssetsPath);AssetDatabase.Refresh();
-   string source=Root+"Valoria_SHARP_EntryZoneV8_CANDIDATE.unity";Req(File.Exists(source),"V8 source missing");
+   string source=Root+"Valoria_SHARP_EntryZoneV12_CANDIDATE.unity";Req(File.Exists(source),"V12 source missing");
    var scene=EditorSceneManager.OpenScene(source,OpenSceneMode.Single);
    var ts=UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None);
    var frame=ts.Single(t=>t.name.StartsWith("EXPERIMENTAL / upright native-metre"));
