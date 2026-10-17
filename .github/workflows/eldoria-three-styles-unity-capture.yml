@@ -1,0 +1,117 @@
+name: "[ISOLATED] Eldoria 3 visual styles - genuine Unity capture"
+on:
+  push:
+    branches:
+      - experiment/eldoria-three-visual-styles-20261017
+    paths:
+      - .github/workflows/eldoria-three-styles-unity-capture.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: eldoria-three-styles-native-unity-20261017
+  cancel-in-progress: false
+
+jobs:
+  three-native-scenes:
+    if: ${{ vars.UNITY_RUNNER_READY == 'true' }}
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Find existing Git for Windows
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop = "$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git for Windows not found' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/eldoria-three-visual-styles-20261017
+          fetch-depth: 1
+          clean: false
+
+      - name: Verify isolated checkout, engine and resource identity
+        shell: powershell
+        run: |
+          $head=(git rev-parse HEAD).Trim()
+          $branch=(git rev-parse --abbrev-ref HEAD).Trim()
+          if ($branch -ne 'experiment/eldoria-three-visual-styles-20261017') {
+            throw "Wrong branch: $branch"
+          }
+          if (-not (Test-Path "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ThreeVisualStyles\01_FantasyStrategy.unity")) {
+            throw 'Missing first isolated Unity scene'
+          }
+          if (-not (Test-Path "$env:UNITY_EDITOR_PATH")) {
+            throw "UNITY_EDITOR_PATH missing or not installed"
+          }
+          Write-Host "EXPERIMENT_BRANCH=$branch SHA=$head"
+          Get-Content "$env:GITHUB_WORKSPACE\Unity\ProjectSettings\ProjectVersion.txt" -TotalCount 2
+          Write-Host "No canonical Valoria source, branch, workflow, or scene is promoted by this job."
+
+      - name: Capture three REAL Unity camera frames - 1600x900
+        shell: powershell
+        run: |
+          $out="$env:GITHUB_WORKSPACE\docs\evidence\eldoria-three-visual-styles-20261017"
+          $log="$env:RUNNER_TEMP\ThreeStylesUnityNative.log"
+          if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+          $args=@('-batchmode','-quit','-force-d3d11',
+                  '-projectPath',"$env:GITHUB_WORKSPACE\Unity",
+                  '-executeMethod','Eldoria.ArtTests.ThreeVisualStyles.ThreeVisualStylesCapture.CaptureAll',
+                  '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $p.WaitForExit(2400000)) {
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 250 }
+            throw 'Unity capture timed out, no frames certified'
+          }
+          if ($p.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 330 }
+            throw "Unity failed to compile or capture: exit $($p.ExitCode)"
+          }
+          $scenes=@('01_FantasyStrategy','02_DetailedMedieval','03_ColorfulCastle')
+          foreach ($name in $scenes) {
+            $png=Join-Path $out ($name + '_UNITY_REAL.png')
+            $json=Join-Path $out ($name + '.json')
+            if (-not (Test-Path $png) -or -not (Test-Path $json)) { throw "Missing native capture $name" }
+            $state=Get-Content $json -Raw | ConvertFrom-Json
+            if (-not $state.vendorArtPass -or -not $state.hasCamera -or -not $state.hasBastion) {
+              throw "Authentic art trial gate failed for $name"
+            }
+            if ((Get-Item $png).Length -lt 10000) { throw "Empty/native PNG is implausibly small for $name" }
+            Write-Host "UNITY_NATIVE_CAPTURE_OK=$name renderers=$($state.meshRenderers) authentic=$($state.authenticSourceInstances)"
+          }
+          Copy-Item $log (Join-Path $out 'UnityNativeCapture.log') -Force
+          Write-Host "ELDORIA_THREE_REAL_SCENES_CAPTURED"
+
+      - name: Save source metadata
+        if: always()
+        shell: powershell
+        run: |
+          $out="$env:GITHUB_WORKSPACE\docs\evidence\eldoria-three-visual-styles-20261017"
+          New-Item -Path $out -ItemType Directory -Force | Out-Null
+          (git rev-parse HEAD).Trim() | Set-Content (Join-Path $out 'checkout_sha.txt')
+          if (Test-Path "$env:RUNNER_TEMP\ThreeStylesUnityNative.log") {
+            Copy-Item "$env:RUNNER_TEMP\ThreeStylesUnityNative.log" (Join-Path $out 'UnityNativeCapture.log') -Force
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-three-style-REAL-unity-captures-${{ github.run_id }}
+          path: |
+            docs/evidence/eldoria-three-visual-styles-20261017/**
+          retention-days: 30
+          if-no-files-found: warn
