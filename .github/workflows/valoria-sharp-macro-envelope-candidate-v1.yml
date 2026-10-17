@@ -1,10 +1,12 @@
-name: "[VALORIA] V13 existing bastion family WORLD-scale survey (no scene mutation)"
+name: "[VALORIA] V13 existing upper BastionFamily assembly | native Blender/Unity A/B"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'tools/valoria-layered-construction/inspect-existing-bastion-source-v13.blender.py'
+      - 'tools/valoria-layered-construction/author-entry-zone-v13.blender.py'
+      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v13.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV13Integration.cs'
 permissions:
   contents: write
   actions: read
@@ -56,7 +58,7 @@ jobs:
           $old='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/ValoriaEntryZoneV7.blend'
           if(-not(Test-Path $old) -or (Get-FileHash $old -Algorithm SHA256).Hash.ToLower() -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381'){throw 'Saved V7 BLEND identity mismatch'}
           if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity')){throw 'Genuine V7 Unity scene absent'}
-      - name: Inspect existing fortification source meshes in Blender WORLD before assembly
+      - name: Native Blender V13 edits on protected V7 copy, source hash and stone count
         shell: powershell
         run: |
           $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
@@ -66,35 +68,76 @@ jobs:
               if($blender){break}
             }
           }
-          if(-not $blender){throw 'Native Blender missing'}
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v13-survey'
+          if(-not $blender){throw 'Native Blender missing; no paid or new downloads allowed'}
+          "VALORIA_ENTRY_BLENDER=$blender" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v13'
           New-Item -ItemType Directory -Force $dir|Out-Null
-          & $blender -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/inspect-existing-bastion-source-v13.blender.py
-          if($LASTEXITCODE){throw 'Native source family WORLD survey failed'}
-          $f=Join-Path $dir 'bastion-source-world-bounds.json'
-          if(-not(Test-Path $f)){throw 'Native geometric proof not saved'}
-          $x=Get-Content $f -Raw|ConvertFrom-Json
-          if($x.status -ne 'NATIVE_WORLD_SURVEY_READ_ONLY' -or @($x.families.PSObject.Properties).Count -ne 3){throw 'Invalid real-source bastion survey'}
-          Write-Host 'REAL_BASTION_FAMILY_WORLD_SURVEY_PASS'
-      - name: Preserve read-only source family evidence, no scene mutation
+          & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v13.blender.py
+          if($LASTEXITCODE){throw 'Native V13 Blender source authoring failed'}
+          $x=Get-Content "$dir/entry-source.json" -Raw|ConvertFrom-Json
+          if($x.source_v12_blend_sha256 -ne '21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de' -or $x.reused_bastion_mesh_count -ne 9 -or -not $x.old_v12_geometry_unchanged -or -not $x.donor_textures_excluded -or $x.result_glb_sha256 -ne (Get-FileHash "$dir/ValoriaEntryZoneV13.glb" -Algorithm SHA256).Hash.ToLower()){throw 'V13 native output identity failed'}
+      - name: Genuine Unity fixed-camera V7-before V13-after, route and proportion gates
+        shell: powershell
+        run: |
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v13'
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-v13-native-unity.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV13Integration.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Unity V13 timeout'}
+          Get-Content $log -Tail 90
+          Copy-Item $log "$dir/native-unity.log"
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V13_NATIVE_COMPLETE' -Quiet)){throw "Native Unity V13 failed exit=$($p.ExitCode)"}
+          $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
+          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7 -or $x.route_passes -ne 28 -or -not $x.pedestrian_clear -or -not $x.gate_macro_proportions_pass){throw 'V13 protected technical gate failed'}
+          if([math]::Abs($x.home_fov-44.4228096) -gt .0001){throw 'Camera lens changed'}
+          foreach($img in @('entry-BEFORE-home.png','entry-AFTER-home.png','light-AFTER-home.png','light-AFTER-portrait.png')){
+            if(-not(Test-Path "$dir/$img")){throw "Missing true Unity $img"}
+          }
+          Write-Host 'NATIVE_V13_TECH_PASS_NOT_ART_APPROVAL'
+      - name: Independent local Qwen critical review with approved reference; no art self-approval
+        if: success()
+        shell: powershell
+        run: |
+          $started=$null
+          try{
+            try{Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5|Out-Null}catch{
+              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
+              if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
+            }
+            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v13.py
+          }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
+      - name: Preserve only isolated V13 evidence and scene; normal fetch/rebase/push
+        if: success()
         shell: powershell
         run: |
           git config user.name 'Valoria native builder'
           git config user.email 'valoria-builder@users.noreply.github.com'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v13-survey/bastion-source-world-bounds.json
+          $base='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v13/
+          git add -f -- "$base/Valoria_SHARP_EntryZoneV13_CANDIDATE.unity" "$base/GeneratedEntryV13/"
+          foreach($meta in @('Editor/ValoriaEntryZoneV13Integration.cs.meta','GeneratedEntryV13.meta','Valoria_SHARP_EntryZoneV13_CANDIDATE.unity.meta')){
+            $p="$base/$meta"
+            if(Test-Path $p){git add -f -- $p}
+          }
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): verified existing bastion family native world bounds for V13'
+            git commit -m 'evidence(valoria): actual Blender/Unity V13 candidate with independent visual review'
             git reset --hard HEAD
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
             if($LASTEXITCODE){throw 'Cannot fetch latest owner branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve source evidence, never force'}
+            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve artifact, never force'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent push failed; preserve result in artifact'}
+            if($LASTEXITCODE){throw 'Concurrent push failed; preserve artifact, never force'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-bastion-family-world-bounds-${{ github.run_id }}
-          path: valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v13-survey/bastion-source-world-bounds.json
+          name: valoria-entry-zone-v13-native-evidence
+          path: |
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v13/**
+            valoria-macro-envelope-v1/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV13_CANDIDATE.unity
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/**
           if-no-files-found: warn
