@@ -13,7 +13,7 @@ def river_width(x):return 7.1+.75*sin(x*.095+.7)+.48*sin(x*.23)
 def terrain_height(x,y):
  t=smoothstep(river_width(x)-2,river_width(x)+2,abs(y-river_center(x)))
  h=.35+.65*sin(x*.08)*sin(y*.09)+.24*sin(x*.25+y*.17)+max(0,y-40)*.045
- flatten=1-smoothstep(0,2.5,max(abs(x)-11,-58-y,y-45))
+ flatten=1-smoothstep(0,2.5,max(abs(x)-11,-78-y,y-45))
  for px,py in [(-23,28),(-19,9),(29,32),(28,12)]:flatten=max(flatten,1-smoothstep(0,2,max(abs(x-px)-9,abs(y-py)-6.5)))
  h=h*(1-flatten)+.35*flatten
  natural=smoothstep(river_width(x)+1,river_width(x)+4,abs(y-river_center(x)));h=.35+(h-.35)*natural
@@ -33,13 +33,13 @@ def mat(n,c,rough=.8,metal=0):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;return m
 stone=[mat('Warm limestone %d'%i,(.265+i*.020,.235+i*.018,.185+i*.016)) for i in range(6)]
 trim=mat('Carved limestone',(.41,.355,.275));mortar=mat('Recessed stone joints',(.155,.135,.10));wood=mat('Oak',(.14,.060,.019));iron=mat('Forged iron',(.035,.031,.025),.55,.6);gold=mat('Heraldic gold',(.94,.61,.10),.45,.25)
-blue=[mat('Blue slate %d'%i,(.014+i*.005,.045+i*.009,.11+i*.017),.62) for i in range(5)]
+blue=[mat('Blue slate %d'%i,(.010+i*.004,.055+i*.011,.18+i*.023),.66) for i in range(5)]
 cloth=mat('Royal blue cloth',(.018,.11,.45))
 soil=mat('Warm cultivated earth',(.40,.255,.125));rocks=[mat('River granite %d'%i,(.135+i*.023,.13+i*.023,.115+i*.022)) for i in range(5)]
 # Original low-contrast surface pigmentation is baked to packed raster maps for glTF.
 sy,sx=np.mgrid[0:256,0:256]/256;grng=np.random.default_rng(715)
 grain=grng.random((256,256));weather=.94+.065*np.sin(sx*19+np.sin(sy*11))+.045*np.sin(sy*31+sx*9)+grain*.045
-for material in stone+[trim]+rocks:
+for material in stone+[trim]+rocks+blue:
  rgba=np.ones((256,256,4),dtype=np.float32);base=np.array(material.diffuse_color[:3]);rgba[:,:,:3]=weather[:,:,None]*base[None,None,:]
  flecks=grain>.984;rgba[flecks,:3]*=.76
  # Packed generated image bytes are sampled as sRGB in glTF: encode the linear palette.
@@ -50,7 +50,7 @@ flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Princi
 npath=os.path.join(ROOT,'art-source/valoria/production/lower-gate-family-v1/stone_grain_normal.png')
 if os.path.isfile(npath):
  im=bpy.data.images.load(npath,check_existing=True);im.colorspace_settings.name='Non-Color';im.pack()
- for m in stone+[trim]+rocks:
+ for m in stone+[trim]+rocks+blue:
   n=m.node_tree.nodes.new('ShaderNodeTexImage');n.image=im;nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=.22;m.node_tree.links.new(n.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],m.node_tree.nodes.get('Principled BSDF').inputs['Normal'])
 # Bake weathered earth patches with irregular cell boundaries, rather than a flat brown fill.
 N=512;yy,xx=np.mgrid[0:N,0:N]/N;rng=np.random.default_rng(892)
@@ -65,9 +65,13 @@ class Mesh:
   off=len(self.v);self.v.extend(v);self.f.extend([tuple(off+i for i in q) for q in f]);
   if m not in self.ms:self.ms.append(m)
   self.mi.extend([self.ms.index(m)]*len(f))
- def box(self,p,s,m,angle=0):
+ def box(self,p,s,m,angle=0,wear=0):
   x,y,z=p;a,b,c=[i/2 for i in s];v=[]
-  for X,Y,Z in [(-a,-b,-c),(-a,-b,c),(-a,b,-c),(-a,b,c),(a,-b,-c),(a,-b,c),(a,b,-c),(a,b,c)]:v.append((x+X*cos(angle)-Y*sin(angle),y+X*sin(angle)+Y*cos(angle),z+Z))
+  for X,Y,Z in [(-a,-b,-c),(-a,-b,c),(-a,b,-c),(-a,b,c),(a,-b,-c),(a,-b,c),(a,b,-c),(a,b,c)]:
+   px=x+X*cos(angle)-Y*sin(angle);py=y+X*sin(angle)+Y*cos(angle);pz=z+Z
+   n=px*17.31+py*31.17+pz*11.73
+   jitter=lambda k:((sin(n+k)*43758.5453)%1)*2-1
+   v.append((px+wear*jitter(1.3),py+wear*jitter(2.7),pz+wear*jitter(4.1)))
   self.add(v,[(0,4,6,2),(1,3,7,5),(0,1,5,4),(2,6,7,3),(0,2,3,1),(4,5,7,6)],m)
  def finish(self,bevel=.035):
   me=bpy.data.meshes.new(self.n);me.from_pydata(self.v,[],self.f);me.update();bm=bmesh.new();bm.from_mesh(me);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free();o=bpy.data.objects.new(self.n,me);bpy.context.collection.objects.link(o)
@@ -95,7 +99,7 @@ def courses(g,x,y,z,w,d,h,stone_size=1):
    for a,b in zip(cuts,cuts[1:]):
     if side in ('front','back'):p=(x+(a+b)/2,C,zz);s=(b-a-.035,.18,rh-.035)
     else:p=(C,y+(a+b)/2,zz);s=(.18,b-a-.035,rh-.035)
-    g.box(p,s,random.choice(stone))
+    g.box(p,s,random.choice(stone),wear=.012)
  # foundation and continuous top coping
  g.box((x,y,z+.16),(w+.22,d+.22,.32),trim)
  g.box((x,y,z+h-.1),(w+.24,d+.24,.22),trim)
@@ -259,8 +263,8 @@ for X in [-4.2,4.2]:
  for Y in [-34,-12]:torch(b,X,Y,.5)
 b.finish(.035)
 # Paving has real seams, slight stone variation, follows continuous deck/ground levels.
-p=Mesh('Axial_Paving')
-for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-11,25.6,5,.40)]:
+for name,ya,yb,w,z in [('Outer_Road',-74,-35,5,.40),('Bridge_Paving',-35,-11,7.4,.49),('Axial_Paving',-11,25.6,5,.40)]:
+ p=Mesh(name)
  y=ya;row=0
  while y<yb:
   n=9 if w>5 else 7
@@ -268,7 +272,7 @@ for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-11,25.6,5,.40)]:
    xa=max(-w/2,-w/2+(i-.5*(row%2))*w/n)+.015;xb=min(w/2,-w/2+(i+1-.5*(row%2))*w/n)-.015
    if xb-xa>.04:p.box(((xa+xb)/2,y+.35,z+random.uniform(-.008,.008)),(xb-xa,.66,.10),random.choice(stone))
   y+=.71;row+=1
-p.finish(.025)
+ p.finish(.025)
 # Four empty construction plots, true ground plane and dressed stone kerbs.
 for x,y in [(-23,28),(-19,9),(29,32),(28,12)]:
  if True:
@@ -466,5 +470,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

@@ -6,15 +6,15 @@ try:
  tags=json.load(urllib.request.urlopen('http://127.0.0.1:11434/api/tags',timeout=10))
  installed=[x['name'] for x in tags.get('models',[])];result['installed_models']=installed
  model=next(x for x in ['qwen3-vl:8b-instruct-q4_K_M','qwen3-vl:4b-instruct'] if x in installed)
- paths=[ev/'reference-target.jpeg',ev/'playmode-home.png'];result['original_images']=[{'path':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]
+ paths=[ev/'reference-target.jpeg',ev/'playmode-home.png',ev/'detail-bastion.png',ev/'detail-gate-bridge.png'];result['original_images']=[{'path':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]
  images=[]
  # Small inspection copies avoid the known historical image-context overflow.
  with tempfile.TemporaryDirectory(prefix='valoria-native-review-') as scratch:
   for index,path in enumerate(paths):
    im=bpy.data.images.load(str(path),check_existing=False);im.scale(640,480);out=pathlib.Path(scratch)/(str(index)+'.jpg');im.filepath_raw=str(out);im.file_format='JPEG';im.save();bpy.data.images.remove(im);images.append(base64.b64encode(out.read_bytes()).decode())
- facts=json.loads((ev/'unity-art.json').read_text('utf8'));result['native_scene_facts']={k:facts.get(k) for k in ['source_sha','directional_lights','native_terrain_resolution','blue_roof_materials','triangles','renderers']}
+ facts=json.loads((ev/'unity-art.json').read_text('utf8'));result['native_scene_facts']={k:facts.get(k) for k in ['source_sha','directional_lights','native_terrain_resolution','triangles','renderers']};source_facts=json.loads((ev/'source-art.json').read_text('utf8'));result['native_scene_facts']['source_roof_triangles']=source_facts.get('blue_slate_triangles');result['native_scene_facts']['source_bridge_geometry']=source_facts.get('bridge_geometry')
  prompt=('Verified native scene facts: '+json.dumps(result['native_scene_facts'])+'. The roof has physically authored individual slate geometry. Do not falsely claim there is no directional light, no native terrain, or no modeled roof tiles; you may criticize their visible appearance and readability. '
- 'Image 1 is the owner target for Valoria. Image 2 is the ACTUAL CURRENT UNITY CAMERA, not generated concept art. '
+ 'Image 1 is the owner target. Image 2 is the ACTUAL CURRENT UNITY PLAYER CAMERA. Images 3 and 4 are genuine Unity detail-camera views of that same keep and bridge, not concept art. Critique player-camera legibility, but do not claim geometry is absent when the detail cameras show it. '
  'Review the second image against the first. Its layout must contain one compact main keep, one distinct lower gate, '
  'a real arched river bridge, four empty building plots and sparse broken walls. '
  'Give the THREE highest-impact remaining visual defects and a concrete Blender or Unity correction for each. '

@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 25,
+  "revision": 26,
   "budget_eur": 0,
-  "validated_runtime_source": "1c40facee6ac71af9b04bcd9c28bfdd8e5364432",
-  "validated_run": 39068190391,
+  "validated_runtime_source": "7399ce7c8c62ae572ade26d0022cdf702477d0df",
+  "validated_run": 39068739793,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Refine clean native24: strengthen irregular meadow earth blending, add four scaled/decimated donor saplings outside plots, keep grass off full paved corridor, author thin broken foam ribbons from actual rock/water intersection contours with transparent URP shader. Preserve all source bridge and PlayMode render-parity guards. Ground auxiliary critique in measured native light/terrain/material facts; no artificial art certification.",
+  "art_correction": "Inspect clean native25 and keep geometry. Improve slate royal-blue pigment, packed weathering/normal detail and moderate original ashlar corner wear. Increase hemispheric fill for readable shadow materials. Extend exterior road beyond camera and flatten its real support; separate paving meshes so bridge prefab includes its own paving and Paths prefab is reusable. Extend route probes to 96. Preserve semantic asset names and remove only unused owned generated assets by actual scene/prefab dependency graph. Supply actual Unity detail views plus source roof/bridge facts to auxiliary review.",
   "auxiliary_review": true
 }
