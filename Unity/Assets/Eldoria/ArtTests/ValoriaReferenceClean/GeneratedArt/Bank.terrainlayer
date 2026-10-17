@@ -7,7 +7,7 @@ TerrainLayer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Bank
-  m_DiffuseTexture: {fileID: 2800000, guid: 288f702eacfb1b044b202b4bd0c14898, type: 2}
+  m_DiffuseTexture: {fileID: 2800000, guid: 54a5c802cdad5c546b9f7ae197a93005, type: 2}
   m_NormalMapTexture: {fileID: 0}
   m_MaskMapTexture: {fileID: 0}
   m_TileSize: {x: 5, y: 5}

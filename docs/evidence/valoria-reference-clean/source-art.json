@@ -1,5 +1,5 @@
 {
-  "source_sha": "4f9c9a2eef3595180ef7dc9c4e36591cafd1d387",
+  "source_sha": "7e9424d94a6abc6f4232dd671e178adeacbea70f",
   "bridge_geometry": {
     "method": "closed_profile_extrusion",
     "opening_rays_passed": 8,
@@ -36,24 +36,24 @@
     "Bridge_ArchSpandrel.001": 1628,
     "Bridge_ArchSpandrel_DressedCourses.001": 22928,
     "Bridge_Masonry": 27460,
-    "Axial_Paving": 38940,
+    "Axial_Paving": 40260,
     "Plot_-23_28": 3828,
     "Plot_-19_9": 3828,
     "Plot_29_32": 3828,
     "Plot_28_12": 3828,
-    "Ruin_-22_46": 11088,
-    "Ruin_26_52": 10736,
-    "Ruin_-25_0": 10472,
-    "Ruin_46_-1": 10736,
-    "Fir_tree_group": 142200,
-    "River_bank_rocks": 15880,
-    "Woodland_ground_rocks": 3840,
-    "Shrub_group": 21600,
-    "Foundation_shrubs_and_groundcover": 15360,
-    "Meadow_tufts_and_bank_reeds": 11024
+    "Ruin_-22_46": 11176,
+    "Ruin_26_52": 11352,
+    "Ruin_-25_0": 11088,
+    "Ruin_46_-1": 11704,
+    "Fir_tree_group": 130350,
+    "River_bank_rocks": 16406,
+    "Woodland_ground_rocks": 3600,
+    "Shrub_group": 20700,
+    "Foundation_shrubs_and_groundcover": 14640,
+    "Meadow_tufts_and_bank_reeds": 10864
   },
   "mesh_objects": 27,
-  "triangles": 531910,
-  "blend_sha256": "b0263af31289c8d30e0344f12dfe56e533d81a90b4b25b9321a15417a4916e36",
-  "glb_sha256": "90bd64967a1076a58e8f26e682e7f2f38f7bbbf9126e6179446d05aa71dd0561"
+  "triangles": 522174,
+  "blend_sha256": "bdc550606966024aafb932c3b7c9a2efd1e9c416f5d86545ba49b99c188066bb",
+  "glb_sha256": "d777a02887c67f246a36ac99687ed45109c2c8bc63f265d0e943c440cc1eb913"
 }
