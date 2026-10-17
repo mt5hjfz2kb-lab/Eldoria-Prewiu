@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-10-17",
+  "cost_eur": 0,
+  "new_downloads": 0,
+  "assets": [
+    {
+      "name": "Fortified gate",
+      "source": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.blend",
+      "author": "Eldoria original authored mesh/materials",
+      "changes": "Uniform scale, base-centre pivots, isolated composition"
+    },
+    {
+      "name": "Pine and shrub",
+      "source": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/",
+      "original_author": "Quaternius",
+      "license": "CC0-1.0",
+      "publisher_license_page": "https://quaternius.com/packs/stylizednaturemegakit.html",
+      "project_provenance": [
+        "v4_individual_manifest.json",
+        "medium_with_full_tall_branches.json"
+      ],
+      "changes": "Blender import, regrouped foliage source, controlled decimation, varied uniform scales/rotations, grounded placement"
+    },
+    {
+      "name": "Meadow grass",
+      "source": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/meadow_grass_and_real_loam_CC0_1k.png",
+      "sha256": "d528215ccc37271a505c99773c454c224c024f12a619b03c47c154f733081d32",
+      "original_author": "Poly Haven; existing Eldoria grass/loam atlas",
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "project_provenance": "meadow_real_loam_study.json",
+      "changes": "Green corner sampled at two rotations; no repeated loam circles"
+    },
+    {
+      "name": "Bastion, bridge, paving, plots, ruins, bank rocks, river shader",
+      "author": "Codex reference-directed new Eldoria authored sources",
+      "external_assets": []
+    }
+  ],
+  "not_certified": {
+    "physical_android_ios_performance": true,
+    "art_8_of_10": true
+  }
+}

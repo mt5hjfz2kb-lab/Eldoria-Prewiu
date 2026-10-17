@@ -1,6 +1,6 @@
 {
   "stage": "art",
-  "revision": 7,
+  "revision": 8,
   "budget_eur": 0,
-  "correction": "Persist dedicated scene URP asset: transient QualitySettings override was lost during AssetDatabase refresh, causing missing shadows and null report. Preserve actual model2 result, stronger foliage/stone palette and ACES. No visual approval claimed."
+  "reason": "Use actually recovered 63-asset textured Quaternius pine/shrub and CC0 meadow photographic detail; adjust keep depth and flag to attached reference while keeping clear growth space. Prior scene ff89a2a preserved. Final art review and PlayMode pending."
 }

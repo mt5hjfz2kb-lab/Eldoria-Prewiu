@@ -163,8 +163,8 @@ for X in [-5.8,5.8]:courses(g,X,26.7,1.5,.7,.8,3.7)
 courses(g,0,25,.38,18,5,1.15)
 for i in range(6):g.box((0,20.25+i*.46,.38+(i+1)*.095),(6.0,.49,(i+1)*.19),trim)
 for x in [-3.6,3.6]:courses(g,x,22,.38,1.2,3.4,.9);torch(g,x,22.9,1.3)
-line(g,(0,28.2,11.35),(0,28.2,14),.075,wood);banner(g,.9,28.2,13.6,1.65,1.1)
-g.finish()
+line(g,(0,28.2,11.35),(0,28.2,17),.075,wood);banner(g,1.2,28.2,16.6,2.4,1.5)
+bastion=g.finish();bastion.location.y=5.5
 # Reuse original gate geometry and original in-project procedural material sources.
 donor=os.path.join(ROOT,'art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.blend')
 with bpy.data.libraries.load(donor,link=False) as (s,d):d.objects=list(s.objects)
@@ -191,7 +191,7 @@ for X in [-4.2,4.2]:
 b.finish(.035)
 # Paving has real seams, slight stone variation, follows continuous deck/ground levels.
 p=Mesh('Axial_Paving')
-for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-8,20.1,5,.40)]:
+for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-8,25.6,5,.40)]:
  y=ya;row=0
  while y<yb:
   n=6 if w>5 else 5
@@ -216,34 +216,22 @@ for x,y in [(-27,54),(30,58),(-33,2),(38,-5)]:
  r.finish(.06)
 # Reuse editable tree source family. Fit each donor to a tree-scale silhouette,
 # preserve source topology and materials, reusing linked copies for instances.
-vegd=os.path.join(ROOT,'art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.blend')
-with bpy.data.libraries.load(vegd,link=False) as (s,d):d.objects=[n for n in s.objects if n.startswith('Tree_')]
-trees=[o for o in d.objects if o and o.type=='MESH'];assert trees,'Existing tree donor missing'
-foliage_colors={'light':(.12,.24,.115,1),'mid':(.045,.135,.07,1),'dark':(.018,.065,.045,1)}
-for tree in trees:
- for material in tree.data.materials:
-  if not material:continue
-  for key,color in foliage_colors.items():
-   if 'foliage_'+key in material.name:
-    material.diffuse_color=color;material.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=color
-# Exclude trees from city plots, axial road and main architecture.
+vegd=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/pine_medium.glb')
+assert hashlib.sha256(open(vegd,'rb').read()).hexdigest()=='003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e'
+before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=vegd)
+parts=[o for o in bpy.data.objects if o not in before and o.type=='MESH']
+bpy.ops.object.select_all(action='DESELECT')
+for o in parts:o.select_set(True)
+bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();tree=bpy.context.object;tree.name='CC0_Pine_Template'
+M=tree.matrix_world.copy();ps=[M@v.co for v in tree.data.vertices];lo=Vector([min(q[i] for q in ps) for i in range(3)]);hi=Vector([max(q[i] for q in ps) for i in range(3)]);ct=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z));height=hi.z-lo.z
+for v,q in zip(tree.data.vertices,ps):v.co=q-ct
+tree.matrix_world=Matrix.Identity(4)
+mod=tree.modifiers.new('Strategic pine face budget','DECIMATE');mod.ratio=.80;bpy.ops.object.modifier_apply(modifier=mod.name)
 positions=[(-53,-39),(-47,-38),(-57,-32),(-38,-43),(26,-42),(39,-43),(47,-39),(-48,-15),(-44,3),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(25,53),(39,49),(48,29),(46,2),(42,-12)]
 positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(26,53),(30,55),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
 for idx,(x,y) in enumerate(positions):
- src=trees[idx%len(trees)];matr=src.matrix_world.copy();ps=[matr@v.co for v in src.data.vertices];lo=Vector([min(q[i] for q in ps) for i in range(3)]);hi=Vector([max(q[i] for q in ps) for i in range(3)]);ct=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z));sc=(6+random.random()*3)/(hi.z-lo.z)
- o=src.copy();o.data=src.data.copy();bpy.context.collection.objects.link(o);o.parent=None;o.name='Reused_Fir_%02d'%idx
- for v,q in zip(o.data.vertices,ps):v.co=(q-ct)*sc+Vector((x,y,.30))
- o.matrix_world=Matrix.Identity(4)
- # Enrich the existing sparse foliage mesh, preserving its one trunk and donor identity.
- bm=bmesh.new();bm.from_mesh(o.data)
- foliage=[f for f in bm.faces if 'foliage' in o.data.materials[f.material_index].name.lower()]
- copied=bmesh.ops.duplicate(bm,geom=foliage)['geom'];verts=[v for v in copied if isinstance(v,bmesh.types.BMVert)]
- bmesh.ops.rotate(bm,verts=verts,cent=Vector((x,y,.3)),matrix=Matrix.Rotation(.62,3,'Z'))
- bmesh.ops.translate(bm,verts=verts,vec=Vector((0,0,-.16)))
- bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(o.data);bm.free()
-# Decimate each editable tree copy moderately before export; preserve its silhouette.
-for tree in [o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith('Reused_Fir_')]:
- bpy.context.view_layer.objects.active=tree;mod=tree.modifiers.new('Strategic foliage face budget','DECIMATE');mod.ratio=.48;bpy.ops.object.modifier_apply(modifier=mod.name)
+ o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
+bpy.data.objects.remove(tree,do_unlink=True)
 # Natural river rock belt, faceted asymmetry; grouped meshes rather than repeated cubes.
 for i in range(115):
  x=-65+(i%58)*2.25+random.uniform(-.7,.7);bank=-23+1.5*sin(x*.065);y=bank+(-1 if i<58 else 1)*(7.6+random.uniform(-.3,.5))
@@ -254,12 +242,18 @@ leaf=[mat('Shrub leaf '+str(i),(.16+i*.035,.25+i*.035,.045+i*.012)) for i in ran
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1)
 template=bpy.context.object;iv=[v.co.copy() for v in template.data.vertices];iff=[tuple(p.vertices) for p in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
 sh=Mesh('Foundation_shrubs_and_groundcover')
-centers=[(-10,26),(10,26),(-10,34),(10,34),(-5,-11),(5,-11),(-11,-9),(11,-9)]
+centers=[(-10,31.5),(10,31.5),(-10,39.5),(10,39.5),(-5,-11),(5,-11),(-11,-9),(11,-9)]
 centers+=positions+[(-27,54),(30,58),(-33,2),(38,-5)]
-for x,y in centers:
- for i in range(7):
-  X=x+random.uniform(-1.6,1.6);Y=y+random.uniform(-1.4,1.4);r=random.uniform(.28,.65)
-  sh.add([(X+v.x*r,Y+v.y*r,.38+r*.6+v.z*r*.8) for v in iv],iff,random.choice(leaf))
+shrub_path=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/shrub_1.glb')
+assert hashlib.sha256(open(shrub_path,'rb').read()).hexdigest()=='5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0'
+before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=shrub_path);shrubs=[o for o in bpy.data.objects if o not in before and o.type=='MESH'];assert shrubs
+for idx,(x,y) in enumerate(centers[::2]):
+ for donor_shrub in shrubs:
+  o=donor_shrub.copy();o.data=donor_shrub.data.copy();bpy.context.collection.objects.link(o);o.parent=None;o.name='Reused_Shrub_%02d'%idx
+  M=donor_shrub.matrix_world.copy();ps=[M@v.co for v in donor_shrub.data.vertices];lo=Vector([min(q[i] for q in ps) for i in range(3)]);hi=Vector([max(q[i] for q in ps) for i in range(3)]);ct=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z));sc=.75/max(.1,hi.z-lo.z)
+  for v,q in zip(o.data.vertices,ps):v.co=(q-ct)*sc+Vector((x,y,.32))
+  o.matrix_world=Matrix.Identity(4)
+for o in shrubs:bpy.data.objects.remove(o,do_unlink=True)
 # Sporadic low clumps break broad grass fields without invading the construction areas.
 for i in range(350):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
@@ -273,13 +267,13 @@ sh.finish(0)
 # Snap bottom of each reused/generated tree, bush-root centre and river boulder
 # to the identical analytic terrain used by Unity, never the source object pivot.
 for o in bpy.context.scene.objects:
- if o.type!='MESH' or not o.name.startswith(('River_Rock','Reused_Fir_')):continue
+ if o.type!='MESH' or not o.name.startswith(('River_Rock','Reused_Fir_','Reused_Shrub_')):continue
  pts=[o.matrix_world@v.co for v in o.data.vertices];x=sum(p.x for p in pts)/len(pts);y=sum(p.y for p in pts)/len(pts)
  t=max(0,min(1,(abs(y-(-23+1.5*sin(x*.065)))-5.2)/3.8));bank=t*t*(3-2*t)
  h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+(max(0,y-40)*.045)-4.9*(1-bank)
  o.location.z+=h-min(p.z for p in pts)-.14
 # Shared static environmental meshes reduce material submissions; source islands stay editable.
-for prefix,label in [('River_Rock','River_bank_rocks'),('Reused_Fir_','Fir_tree_group')]:
+for prefix,label in [('River_Rock','River_bank_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
  group=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith(prefix)]
  bpy.ops.object.select_all(action='DESELECT')
  for o in group:o.select_set(True)
@@ -303,5 +297,5 @@ for o in bpy.context.scene.objects:
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')
