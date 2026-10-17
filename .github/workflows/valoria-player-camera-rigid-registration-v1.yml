@@ -1,0 +1,150 @@
+name: "[VALORIA] Real SHARP camera x certified master 3D registration"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - '.github/workflows/valoria-player-camera-rigid-registration-v1.yml'
+      - 'tools/valoria-layered-construction/calibrate-sharp-player-frame.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpPlayerCameraCorrespondence.cs'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: exclusive-valoria-layered-player-camera-v1
+  cancel-in-progress: false
+jobs:
+  calibrate-actual-sharp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free deterministic scipy 3D camera solver
+        run: python3 -m pip install --quiet numpy scipy
+      - name: Fit exact 3D source to seven measured real SHARP viewport anchors, refuse false pass
+        run: |
+          mkdir -p docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping
+          python3 tools/valoria-layered-construction/calibrate-sharp-player-frame.py --out \
+            docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping
+          python3 - <<'PY'
+          import json
+          p='docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/sharp-camera-rigid-calibration.json'
+          x=json.load(open(p))
+          assert x['camera_authority']=='ValoriaParcelPresentation.Home(), SHARP perspective'
+          assert x['camera_fov_degrees']==44.42281
+          assert len(x['global_fit']['anchors'])==7
+          assert x['world_layout_modification'] is False
+          assert x['rigid_transform_scale']==1
+          assert x['global_fit']['max_residual_px']>=0
+          assert x['validation_scope']=='DIAGNOSTIC_ONLY_NOT_GAMEPLAY_CERTIFIED'
+          print('VALORIA_SHARP_CAMERA_SOLVER_REAL_SOURCE_PASS',
+                'mapping_certified=',x['camera_to_world_mapping_pass'],
+                'max_semantic_misalignment_px=',x['global_fit']['max_residual_px'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-player-sharp-camera-source-${{ github.run_id }}
+          path: docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/
+          if-no-files-found: error
+          retention-days: 30
+  calibrate-in-actual-unity:
+    needs: calibrate-actual-sharp
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    defaults:
+      run:
+        working-directory: valoria-sharp-camera-v1
+    steps:
+      - name: Recover existing GitHub Desktop git
+        shell: powershell
+        working-directory: .
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter "app-*" -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName "resources/app/git/cmd/git.exe"} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Existing GitHub Desktop git.exe unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-sharp-camera-v1
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-sharp-camera-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Assert actual lease, installed Unity, no incompatible PC use and approved visual hash
+        shell: powershell
+        run: |
+          $reg=Get-Content "$env:GITHUB_WORKSPACE/valoria-sharp-camera-main/pipeline/active-workstreams.json" -Raw | ConvertFrom-Json
+          $id="valoria-master-plan-layered-construction-20261016"
+          if(@($reg.active|Where-Object {$_.id -eq $id}).Count -ne 1){throw 'Missing valid exclusive workstream claim'}
+          $conflict=@($reg.active|Where-Object {$_.id -ne $id -and $_.resources -contains "windows-runner-heavy"})
+          if($conflict.Count){throw 'Windows resource owned by incompatible workstream'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC busy with Unity or Blender'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Actual Unity 6000.3.23f1 not installed'}
+          $ref=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($ref -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference hash mismatch'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-player-sharp-camera-source-${{ github.run_id }}
+          path: ${{ github.workspace }}/valoria-sharp-camera-v1/docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping
+      - name: Invoke EXACT player camera component on existing native 3D scene, capture true FOV and pan
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-sharp-camera-rigid.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-sharp-camera-v1/Unity",
+            '-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaSharpPlayerCameraCorrespondence.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2700000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Real player camera Unity diagnostic timed out'
+          }
+          Get-Content $log -Tail 130
+          Copy-Item $log docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/native-unity.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_REAL_PLAYER_CAMERA_RIGID_DIAGNOSTIC_COMPLETE' -Quiet)){
+            throw "Native SHARP player camera invocation FAILED exit=$($p.ExitCode)"
+          }
+      - name: Native numeric camera proof + six screenshots exist, do not confuse residual with approval
+        shell: powershell
+        run: |
+          $folder="docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping"
+          $scene="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity"
+          if(-not(Test-Path $scene)){throw "Real Unity camera scene missing"}
+          foreach($name in @("sharp-camera-rigid-calibration.json","sharp-rigid-reprojection-A-B.svg",
+            "sharp-camera-native-evidence.json","sharp-perspective-home-1230x845.png",
+            "sharp-perspective-pan-left.png","sharp-perspective-pan-right.png",
+            "sharp-perspective-zoom-in.png","sharp-perspective-zoom-out.png","sharp-perspective-portrait-390x844.png")){
+            if(-not(Test-Path "$folder/$name")){throw "Actual camera test file missing: $name"}
+          }
+          $j=Get-Content "$folder/sharp-camera-native-evidence.json" -Raw | ConvertFrom-Json
+          if($j.semantic_anchors_measured -ne 7 -or -not $j.actual_player_camera_component -or
+             $j.maximum_python_unity_delta_px -gt .75 -or $j.visual_approval -or $j.canonical_scene_changed){
+            throw "Camera numeric/composition validation wrong or falsely approved"
+          }
+          Write-Host "VALORIA_REAL_PLAYER_CAMERA_TECH_PASS: SHARP perspective with 7 source anchors, mapping approval remains separate"
+      - name: Preserve camera calibration data and Unity captures in OWN branch, never main
+        shell: powershell
+        run: |
+          git config user.name 'Valoria camera calibration worker'
+          git config user.email 'valoria-camera@users.noreply.github.com'
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'evidence(valoria): native actual player SHARP perspective and 3D-anchor residuals'
+            git push origin HEAD:construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Concurrent branch changed, keep artifact and reconcile, NEVER force'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-player-sharp-unity-diagnostic-${{ github.run_id }}
+          path: |
+            valoria-sharp-camera-v1/docs/evidence/valoria-layered-construction-20261016/sharp-camera-mapping/**
+            valoria-sharp-camera-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity
+          if-no-files-found: warn
+          retention-days: 30
