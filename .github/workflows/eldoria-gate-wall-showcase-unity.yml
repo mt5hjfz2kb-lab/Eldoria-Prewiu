@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   gate-wall-real-unity:
-    if: \${{ vars.UNITY_RUNNER_READY == 'true' }}
+    if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 45
     steps:
@@ -89,7 +89,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-gate-wall-real-Unity-\${{ github.run_id }}
+          name: eldoria-gate-wall-source-models-and-real-Unity-frames
           path: |
             docs/evidence/eldoria-gate-wall-showcase-20261017/**
             Unity/Assets/Eldoria/ArtTests/GateWallShowcase/Generated/**
