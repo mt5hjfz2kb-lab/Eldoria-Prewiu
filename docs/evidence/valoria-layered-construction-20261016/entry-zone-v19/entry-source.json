@@ -1,0 +1,89 @@
+{
+  "stage": "V19 reorient existing nine genuine SOURCE08 Bastion meshes to original certified SHARP player viewing side",
+  "geometry_operation": "BMesh reflected all vertices about each MODULE's own Y midpoint, reversed face winding; no additional geometry, exact envelope and triangle preservation",
+  "parent_v18_blend_sha256": "20b15b7d0c944666c6d9885e4b7366c76d826136a0c1742d6c7768db3b527aa1",
+  "source_v18_tris": 374118,
+  "module_count": 9,
+  "module_transformations": [
+    {
+      "module": "BastionCurtainEast",
+      "mirror_world_y": -55.251075744628906,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionCurtainWest",
+      "mirror_world_y": -59.13019371032715,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionEastTower",
+      "mirror_world_y": -54.401065826416016,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionFarWestBlock",
+      "mirror_world_y": -57.08027267456055,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionGateLintel",
+      "mirror_world_y": -57.22545623779297,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionRightGatePillar",
+      "mirror_world_y": -56.23944091796875,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionWestTower",
+      "mirror_world_y": -60.32153129577637,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionKeep",
+      "mirror_world_y": -56.84095573425293,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    },
+    {
+      "module": "BastionLeftWing",
+      "mirror_world_y": -56.88886642456055,
+      "native_camera_side": "+Blender-Y maps to lower Unity world Z / player south",
+      "world_bounds_preserved": true
+    }
+  ],
+  "original_heraldry_material": [
+    [
+      4,
+      "Eldoria_banner_blue.001",
+      216
+    ]
+  ],
+  "banner_front_normal_y_sum_before": -0.02262836552290537,
+  "banner_front_normal_y_sum_after": 0.022628665065894893,
+  "all_original_module_bounds_preserved": true,
+  "base_ground_road_gate_scene_geometry_unchanged": true,
+  "module_mesh_vertex_triangle_material_counts_unchanged": true,
+  "player_camera_unchanged": true,
+  "gameplay_scripts_unchanged": true,
+  "triangles": 374118,
+  "result_blend_sha256": "ecd8a47ca4b0c04301bfa6aca7eef96f742958aba0bbeafe1fa6bad69f76699d",
+  "result_glb_sha256": "67fb6c10aef5988bc5be682c70653edb9b21bbc1f10b83fc362cb11300fa1bc4",
+  "blender_player_facing_previews_sha256": {
+    "SOURCE19-player-facing-full-bastion.png": "72600df57fcce58e292484207dcb8d11fc9bae3f137e47e24a4b6464fd47a838",
+    "SOURCE19-player-facing-keep-detail.png": "9d2c249a8d52b5cad05355b85709d485f570f805d941ca16034d6eef1b49ba4b"
+  },
+  "art_source_status": "CANDIDATE_NEEDS_TRUE_UNITY_MATCHED_PLAYER_CAMERA_AB",
+  "unity_local_art_pass": false,
+  "full_frame_art_pass": false,
+  "mobile_device_certified": false,
+  "zero_euro": true
+}
