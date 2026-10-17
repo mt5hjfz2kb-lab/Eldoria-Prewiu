@@ -15,7 +15,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Valoria: recovered master plan and Unity layered construction",
-      "owner": "chat-gpt6-exclusive-valoria-layered-20261016",
+      "owner": "chatgpt-work-valoria-takeover-20261017",
       "branch": "construction/valoria-master-plan-layers-20261016",
       "status": "active",
       "claimed_at": "2026-10-16",
@@ -32,8 +32,36 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "Owner instructed immediate construction; recover certified skeleton and camera, deliver verified master-plan map and initial actual Unity layer scene.",
-      "next": "Build isolated Unity layers A/B/C from existing real plan, continuity gates and full-scene native captures; no promotion of experimental quality."
+      "phase": "Work takeover: repair verified CS0234 at 52b03eeb and execute existing native SHARP macro validation, then isolated spatial correction.",
+      "next": "Qualify UnityEngine.Application.dataPath, run one existing macro candidate workflow, inspect genuine Unity captures and trials; no canonical edits.",
+      "last_verified": {
+        "source_topology_status": "SOURCE_TOPOLOGY_PASS",
+        "source_footprints": 22,
+        "physical_stairs": 12,
+        "route_raycast_passes": 19,
+        "unity_editor": "6000.3.23f1",
+        "initial_native_unity_run": 38973389617,
+        "initial_scene_commit": "02db3fbd99baaea3424eadbac95d48836cd4b1ab",
+        "modular_gate_native_run": 38974099294,
+        "modular_gate_scene_commit": "faaea9fa97934207665251c2ba8919e19c583d38",
+        "genuine_gate_glb_types": 6,
+        "genuine_gate_instances": 11,
+        "gate_renderer_count": 757,
+        "first_bridge_native_run": 38974760523,
+        "recovered_bridge_native_run": 38975101937,
+        "latest_native_success_run": 38975101937,
+        "best_technical_art_stage": "ABCD",
+        "best_visual_art_status": "NO_FULL_SCENE_PASS",
+        "e1_bridgedeck_verdict": "VISUAL_REJECTED",
+        "e2_bridgedeck_verdict": "VISUAL_REJECTED_AS_PRODUCTION_ART_SUPPORT_RESTORED",
+        "latest_branch_head": "4a366f5ceef3208da547de160d6028126bc44e58",
+        "actual_player_runtime_integrated": false,
+        "mobile_physical_tested": false,
+        "art_approved": false
+      },
+      "previous_owner": "chat-gpt6-exclusive-valoria-layered-20261016",
+      "takeover_at": "2026-10-17T10:27:31.824Z",
+      "takeover_authorization": "Owner explicitly transferred the same workstream and branch to ChatGPT Work on 2026-10-17; no second production."
     }
   ],
   "history": [
