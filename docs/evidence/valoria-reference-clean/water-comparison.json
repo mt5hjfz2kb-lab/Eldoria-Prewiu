@@ -1,6 +1,6 @@
 {
-    "source_sha": "7f7916042f4353b0aeac6dff78a2af942d615e29",
-    "scope": "River surface shader and palette only; actual previous shader for native A-B, geometry and lights fixed",
+    "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
+    "scope": "Native water depth/absorption and terrain-rock contact foam versus exact previous45 flow shader; inherited wave texture/palette, geometry/camera/lights fixed",
     "same_camera": true,
     "same_lighting": true,
     "same_geometry": true
