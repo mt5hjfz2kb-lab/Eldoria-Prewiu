@@ -1,0 +1,191 @@
+{
+    "source_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity",
+    "candidate_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SpatialRecalibrationV1.unity",
+    "classification": "SPATIAL_BLOCKOUT_WITH_EXISTING_ARCHITECTURE_NOT_FINAL_ART",
+    "gameplay_status": "SOURCE_GEOMETRY_AND_CAMERA_CONTROLS_ONLY_NO_PLAYERSTATE_PROGRESSION_CERTIFICATION",
+    "art_status": "REQUIRES_GENUINE_UNITY_VISUAL_REVIEW",
+    "canonical_modified": false,
+    "source_meshes_modified": false,
+    "world_y_up": true,
+    "original_controller_code_unchanged": true,
+    "home_fov": 44.42280960083008,
+    "coordinate_conversion_max_projection_error_px": 0.00016504904488101602,
+    "original_gate_envelope": [
+        0.12133071571588516,
+        0.25195425748825076,
+        0.6923744678497315,
+        0.698721170425415
+    ],
+    "candidate_gate_envelope": [
+        0.35983502864837649,
+        0.3009187877178192,
+        0.5531749129295349,
+        0.4640437662601471
+    ],
+    "target_gate_envelope": [
+        0.3678385317325592,
+        0.2802734375,
+        0.5455729365348816,
+        0.486328125
+    ],
+    "frame_translation": [
+        0.11414533853530884,
+        -2.071690797805786,
+        50.123748779296878
+    ],
+    "physical_stairs": 12,
+    "source_footprints": 22,
+    "preserved_colliders": 64,
+    "route_probes": 32,
+    "route_passes": 32,
+    "contacts": [
+        {
+            "id": "Bridge",
+            "collider": "TEMPORARY bridge / continuous deck and collider",
+            "native_xyz": [
+                0.0,
+                0.23999999463558198,
+                -14.5
+            ],
+            "viewport": [
+                0.4256383776664734,
+                0.24475717544555665
+            ],
+            "hit": true
+        },
+        {
+            "id": "LowerGate",
+            "collider": "SUPPORT/RESERVE Puerta · ir al mundo",
+            "native_xyz": [
+                0.0,
+                1.0499999523162842,
+                -9.25
+            ],
+            "viewport": [
+                0.45816296339035036,
+                0.35585853457450869
+            ],
+            "hit": true
+        },
+        {
+            "id": "MainRoad",
+            "collider": "GREYBOX VPD · L0 main street",
+            "native_xyz": [
+                -0.48944705724716189,
+                0.24000072479248048,
+                8.268245697021485
+            ],
+            "viewport": [
+                0.5232804417610169,
+                0.5333676934242249
+            ],
+            "hit": true
+        },
+        {
+            "id": "CentralStair",
+            "collider": "GREYBOX certified stair step 6",
+            "native_xyz": [
+                -0.9788936972618103,
+                1.2899999618530274,
+                28.131494522094728
+            ],
+            "viewport": [
+                0.565241277217865,
+                0.6751074194908142
+            ],
+            "hit": true
+        },
+        {
+            "id": "Bastion",
+            "collider": "GREYBOX Bastion hero reservation, silhouette only",
+            "native_xyz": [
+                -0.08004951477050781,
+                4.480001449584961,
+                57.211299896240237
+            ],
+            "viewport": [
+                0.6145833134651184,
+                0.814453125
+            ],
+            "hit": true
+        },
+        {
+            "id": "LeftCabinParcel",
+            "collider": "SUPPORT/RESERVE VPD · L0 west plot",
+            "native_xyz": [
+                -22.45021629333496,
+                0.3100004196166992,
+                19.204490661621095
+            ],
+            "viewport": [
+                0.306640625,
+                0.6396484375
+            ],
+            "hit": true
+        },
+        {
+            "id": "RightCampParcel",
+            "collider": "SUPPORT/RESERVE VPD · L0 east plot",
+            "native_xyz": [
+                20.10544776916504,
+                0.31000375747680666,
+                16.934078216552736
+            ],
+            "viewport": [
+                0.8203125,
+                0.564453125
+            ],
+            "hit": true
+        }
+    ],
+    "camera_states": [
+        {
+            "id": "home",
+            "visible": 7,
+            "hits": 7,
+            "fov": 44.42280960083008
+        },
+        {
+            "id": "pan-left",
+            "visible": 7,
+            "hits": 7,
+            "fov": 44.42280960083008
+        },
+        {
+            "id": "pan-right",
+            "visible": 7,
+            "hits": 7,
+            "fov": 44.42280960083008
+        },
+        {
+            "id": "pan-down",
+            "visible": 7,
+            "hits": 7,
+            "fov": 44.42280960083008
+        },
+        {
+            "id": "pan-up",
+            "visible": 7,
+            "hits": 7,
+            "fov": 44.42280960083008
+        },
+        {
+            "id": "zoom-in",
+            "visible": 7,
+            "hits": 7,
+            "fov": 42.42280960083008
+        },
+        {
+            "id": "zoom-out",
+            "visible": 7,
+            "hits": 7,
+            "fov": 46.42280960083008
+        },
+        {
+            "id": "portrait",
+            "visible": 5,
+            "hits": 5,
+            "fov": 44.42280960083008
+        }
+    ]
+}
