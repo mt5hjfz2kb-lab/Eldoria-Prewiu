@@ -1,11 +1,12 @@
-name: "[VALORIA] V8 isolated entrance finish, native bridge contact and original camera tests"
+name: "[VALORIA] Isolated native V8 roads, river, true Unity A/B, independent visual review"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity'
+      - 'tools/valoria-layered-construction/author-entry-zone-v8.blender.py'
+      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v8.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV8Integration.cs'
 permissions:
   contents: write
   actions: read
@@ -40,71 +41,100 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
-      - name: Check exclusive workstream, free Unity editor and owner-approved reference
+      - name: Exclusive live owner, idle renderer and frozen V7 source gate
         shell: powershell
         run: |
-          $r=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
-          $owner='valoria-master-plan-layered-construction-20261016'
-          if(@($r.active|Where-Object {$_.id -eq $owner -and $_.owner -eq 'chatgpt-normal-valoria-construction-20261017'}).Count -ne 1){throw 'Lease missing or owner mismatch'}
-          if(@($r.active|Where-Object {$_.id -ne $owner -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Runner claimed by incompatible owner'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender busy'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
-          $h=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower()
-          if($h -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Art reference mismatch'}
-          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity')){throw '7-contact source scene missing'}
-      - name: Improve only the isolated V7 gate-area scene, record genuine native Unity A/B and contacts
+          $a=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          $b=Get-Content "pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          $id='valoria-master-plan-layered-construction-20261016'
+          $owner='chatgpt-normal-valoria-construction-20261017'
+          foreach($r in @($a,$b)){
+            if(@($r.active|Where-Object {$_.id -eq $id -and $_.owner -eq $owner -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Exclusive ownership lease not confirmed'}
+            if(@($r.active|Where-Object {$_.id -ne $id -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Incompatible Windows owner'}
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native Unity/Blender processes busy'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity editor unavailable'}
+          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference mismatch'}
+          $old='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/ValoriaEntryZoneV7.blend'
+          if(-not(Test-Path $old) -or (Get-FileHash $old -Algorithm SHA256).Hash.ToLower() -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381'){throw 'Saved V7 BLEND identity mismatch'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity')){throw 'Genuine V7 Unity scene absent'}
+      - name: Native Blender V8 edits on protected V7 copy, source hash and stone count
+        shell: powershell
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){
+            foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
+              if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+              if($blender){break}
+            }
+          }
+          if(-not $blender){throw 'Native Blender missing; no paid or new downloads allowed'}
+          "VALORIA_ENTRY_BLENDER=$blender" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v8'
+          New-Item -ItemType Directory -Force $dir|Out-Null
+          & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v8.blender.py
+          if($LASTEXITCODE){throw 'Native V8 Blender source authoring failed'}
+          $x=Get-Content "$dir/entry-source.json" -Raw|ConvertFrom-Json
+          if($x.source_v7_blend_sha256 -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381' -or $x.new_organic_route_stones -lt 100 -or $x.result_glb_sha256 -ne (Get-FileHash "$dir/ValoriaEntryZoneV8.glb" -Algorithm SHA256).Hash.ToLower()){throw 'V8 native output identity failed'}
+      - name: Genuine Unity fixed-camera V7-before V8-after, route and proportion gates
         shell: powershell
         run: |
           $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v8'
-          New-Item -ItemType Directory -Force -Path $dir|Out-Null
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-v8-unity.log'
-          $args=@('-batchmode','-force-d3d11','-screen-width','1536','-screen-height','1024','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryFinishV8.Build','-logFile',$log)
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-v8-native-unity.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(2400000)){
-            & taskkill.exe /PID $p.Id /T /F|Out-Null
-            throw 'Native Unity entry V8 timeout'
-          }
-          Get-Content $log -Tail 130
+          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Unity V8 timeout'}
+          Get-Content $log -Tail 90
           Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_FINISH_V8_NATIVE_COMPLETE' -Quiet)){
-            throw "Native Unity V8 failed exit=$($p.ExitCode)"
-          }
-      - name: Prove non-destructive V8 source contacts and camera, no automatic art approval
-        shell: powershell
-        run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v8'
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V8_NATIVE_COMPLETE' -Quiet)){throw "Native Unity V8 failed exit=$($p.ExitCode)"}
           $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
-          if(-not $x.gate_lens_preserved -or -not $x.water_adjusted -or $x.disabled_beige_renderers -lt 2 -or
-             $x.certified_steps -ne 12 -or $x.source_targets -ne 7 -or $x.route_probes -ne 28 -or $x.route_passes -ne 28 -or
-             -not $x.pedestrian_clear -or $x.source_colliders_before -ne $x.source_colliders_after -or
-             $x.canonical_modified -or $x.bridge_footings_changed -or $x.footings_samples -lt 1){throw 'V8 native local integrity gate failed'}
-          Write-Host 'V8_LOCAL_TECH_PASS; FULL_FRAME_ART_NOT_APPROVED'
-      - name: Commit isolated V8 evidence and scene without overwriting V7 or any real gameplay
+          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7 -or $x.route_passes -ne 28 -or -not $x.pedestrian_clear -or -not $x.gate_macro_proportions_pass){throw 'V8 protected technical gate failed'}
+          if([math]::Abs($x.home_fov-44.4228096) -gt .0001){throw 'Camera lens changed'}
+          foreach($img in @('entry-BEFORE-home.png','entry-AFTER-home.png','light-AFTER-home.png','light-AFTER-portrait.png')){
+            if(-not(Test-Path "$dir/$img")){throw "Missing true Unity $img"}
+          }
+          Write-Host 'NATIVE_V8_TECH_PASS_NOT_ART_APPROVAL'
+      - name: Independent local Qwen critical review with approved reference; no art self-approval
+        if: success()
         shell: powershell
         run: |
-          git config user.name 'Valoria native macro'
-          git config user.email 'valoria-macro@users.noreply.github.com'
+          $started=$null
+          try{
+            try{Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5|Out-Null}catch{
+              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
+              if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
+            }
+            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v8.py
+          }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
+      - name: Preserve only isolated V8 evidence and scene; normal fetch/rebase/push
+        if: success()
+        shell: powershell
+        run: |
+          git config user.name 'Valoria native builder'
+          git config user.email 'valoria-builder@users.noreply.github.com'
+          $base='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
           git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v8/
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV8_CANDIDATE.unity
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/
-          foreach($meta in @('Editor/ValoriaEntryFinishV8.cs.meta','GeneratedEntryV8.meta','Valoria_SHARP_EntryZoneV8_CANDIDATE.unity.meta')){
-            $mp="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/$meta"
-            if(Test-Path $mp){git add -f -- $mp}
+          git add -f -- "$base/Valoria_SHARP_EntryZoneV8_CANDIDATE.unity" "$base/GeneratedEntryV8/"
+          foreach($meta in @('Editor/ValoriaEntryZoneV8Integration.cs.meta','GeneratedEntryV8.meta','Valoria_SHARP_EntryZoneV8_CANDIDATE.unity.meta')){
+            $p="$base/$meta"
+            if(Test-Path $p){git add -f -- $p}
           }
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): isolated V8 original-camera entrance finish and measured bridge contacts'
+            git commit -m 'evidence(valoria): actual Blender/Unity V8 candidate with independent visual review'
             git reset --hard HEAD
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Cannot fetch latest owner HEAD'}
+            if($LASTEXITCODE){throw 'Cannot fetch latest owner branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent owner branch conflict; preserve artifact, never force'}
+            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve artifact, never force'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent push, preserve artifact, never force'}
+            if($LASTEXITCODE){throw 'Concurrent push failed; preserve artifact, never force'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-entry-zone-v8-${{ github.run_id }}
+          name: valoria-entry-zone-v8-native-evidence
           path: |
             valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v8/**
             valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV8_CANDIDATE.unity
