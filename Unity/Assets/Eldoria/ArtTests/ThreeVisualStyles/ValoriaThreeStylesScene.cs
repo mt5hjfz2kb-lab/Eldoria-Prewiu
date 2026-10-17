@@ -125,6 +125,50 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         private GameObject Cuboid(string n, float x, float y, float z, float sx, float sy, float sz, Color c)
             => Shape(PrimitiveType.Cube, n, new Vector3(x, y, z), new Vector3(sx, sy, sz), c);
 
+        // Real creator-authored CC0 meshes; imported through Eldoria's existing glTFast.
+        // NEVER call editor APIs in a player build. Runtime look-dev uses safe
+        // procedural fallbacks; editor bake creates persistent native references.
+        private bool Vendor(string relative, float x, float z, float width, float height,
+                            float yOffset = 0f)
+        {
+#if UNITY_EDITOR
+            string path = "Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/" + relative;
+            if (relative.StartsWith("EldoriaProduction/"))
+                path = "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/" +
+                       relative.Substring("EldoriaProduction/".Length);
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (prefab == null) return false;
+            var inst = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            if (inst == null) return false;
+            inst.name = "AUTHENTIC SOURCE — " + System.IO.Path.GetFileNameWithoutExtension(path);
+            inst.transform.SetParent(built, false);
+            inst.transform.position = new Vector3(x, H(x, z), z);
+            var renderers = inst.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                if (Application.isPlaying) Destroy(inst);
+                else DestroyImmediate(inst);
+                return false;
+            }
+            Bounds b = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) b.Encapsulate(renderers[i].bounds);
+            float horizontal = Mathf.Max(.01f, b.size.x, b.size.z);
+            float vertical = Mathf.Max(.01f, b.size.y);
+            float factor = Mathf.Min(width / horizontal, height / vertical);
+            if (float.IsNaN(factor) || float.IsInfinity(factor) || factor <= 0) return false;
+            inst.transform.localScale *= factor;
+            // Recalculate world bounds after applying uniform scale.
+            b = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) b.Encapsulate(renderers[i].bounds);
+            inst.transform.position += new Vector3(x - b.center.x,
+                H(x, z) + yOffset - b.min.y, z - b.center.z);
+            objectCount += renderers.Length;
+            return true;
+#else
+            return false;
+#endif
+        }
+
         private void Cone(string n, Vector3 p, float radius, float height, Color c, int sides = 8)
         {
             if (conicalMesh == null)
@@ -302,7 +346,11 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                 Battlements(side*13.3f,y+6.1f,z,11f,true);
             }
             Cuboid("Gate lintel",0,y+9f,z,6.8f,3f,2.8f,Stone);
-            Cuboid("Raised wooden portcullis",0,y+4f,z-.28f,5f,6.4f,.32f,Wood);
+            bool gateModel = Bright
+                ? Vendor("Kenney/castle/gate.glb", 0, z-1.7f, 5.7f, 6.9f)
+                : Rich && Vendor("EldoriaProduction/Valoria_MainGate_v1.glb", 0, z-1.7f, 6f, 8.7f);
+            if (!gateModel)
+                Cuboid("Raised wooden portcullis",0,y+4f,z-.28f,5f,6.4f,.32f,Wood);
             for(int i=0;i<6;i++)
                 Cuboid("Portcullis vertical timber",-2.15f+i*.85f,y+4f,z-.57f,.16f,6.4f,.28f,DarkStone);
             Banner(-5.5f,y+8f,z-1.95f);
@@ -351,9 +399,13 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         private void Tower(float x,float z,float foundation,float height,float radius,string prefix)
         {
             float center=foundation+height*.5f;
-            Shape(Rich?PrimitiveType.Cylinder:PrimitiveType.Cube,prefix+" tower masonry",
-                  new Vector3(x,center,z),
-                  Rich?new Vector3(radius,height*.5f,radius):new Vector3(radius*2f,height,radius*2f),Stone);
+            bool genuineKenney = Bright && Vendor("Kenney/castle/tower-square-base.glb",
+                                      x,z,radius*2f,height*.85f);
+            if (!genuineKenney)
+                Shape(Rich?PrimitiveType.Cylinder:PrimitiveType.Cube,prefix+" tower masonry",
+                      new Vector3(x,center,z),
+                      Rich?new Vector3(radius,height*.5f,radius):
+                           new Vector3(radius*2f,height,radius*2f),Stone);
             Shape(PrimitiveType.Cylinder,prefix+" parapet rim",
                   new Vector3(x,foundation+height+.12f,z),
                   new Vector3(radius*1.15f,.26f,radius*1.15f),Trim);
@@ -411,10 +463,32 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
 
         private void WorkDistricts()
         {
-            House(-17f,6f,5.8f,1,"ASERRADERO (art-only location)");
-            House(17f,6f,6.3f,2,"CUARTEL (art-only location)");
-            House(-22f,19f,4.5f,3,"Civilian house under repair");
-            House(22f,21f,4.4f,4,"Stone mason workshop");
+            if (!(artDirection == ArtDirection.FantasyStrategy &&
+                  Vendor("QuaterniusRTS/Storage_FirstAge_Leve3.gltf",-17f,6f,9f,8f)))
+                House(-17f,6f,5.8f,1,"ASERRADERO (art-only location)");
+            if (!(artDirection == ArtDirection.FantasyStrategy &&
+                  Vendor("QuaterniusRTS/Barracks_FirstAge_Level3.gltf",17f,6f,11f,9f)))
+                House(17f,6f,6.3f,2,"CUARTEL (art-only location)");
+            if (!(artDirection == ArtDirection.FantasyStrategy &&
+                  Vendor("QuaterniusRTS/Houses_SecondAge_1_Level3.gltf",-22f,19f,7f,7f)) &&
+                !(Rich && Vendor("EldoriaProduction/Valoria_CivicHouse_v1.glb",-22f,19f,7f,7f)))
+                House(-22f,19f,4.5f,3,"Civilian house under repair");
+            if (!(artDirection == ArtDirection.FantasyStrategy &&
+                  Vendor("QuaterniusRTS/Market_FirstAge_Level3.gltf",22f,21f,9f,7f)) &&
+                !(Rich && Vendor("EldoriaProduction/Valoria_Workshop_v1.glb",22f,21f,8f,7f)))
+                House(22f,21f,4.4f,4,"Stone mason workshop");
+            if (artDirection == ArtDirection.FantasyStrategy)
+            {
+                Vendor("QuaterniusRTS/Houses_SecondAge_2_Level3.gltf",-27f,29f,8f,8f);
+                Vendor("QuaterniusRTS/TownCenter_FirstAge_Level3.gltf",23f,35f,10f,9f);
+                Vendor("QuaterniusRTS/Windmill_FirstAge.gltf",-34f,-2f,8f,11f);
+            }
+            if (Bright)
+            {
+                Vendor("Kenney/fantasy-town/fountain-square.glb",-17f,-15f,5f,4f);
+                Vendor("Kenney/fantasy-town/cart.glb",13f,-26f,4f,3f);
+                Vendor("Kenney/castle/bridge-straight.glb",10f,-30f,5f,3f);
+            }
             if(Rich)
             {
                 House(-29f,10f,4.7f,5,"Upper artisan house");
@@ -450,6 +524,8 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                 if(Mathf.Abs(x)<6f && z<-24f)continue;
                 float y=H(x,z);
                 float height=2.5f+(float)rng.NextDouble()*3.7f;
+                if (Bright && i < 18 && Vendor("Kenney/castle/tree-small.glb",x,z,height*1.5f,height*1.8f))
+                    continue;
                 Shape(PrimitiveType.Cylinder,"Pine trunk",new Vector3(x,y+height*.27f,z),
                       new Vector3(.25f,height*.29f,.25f),Wood);
                 for(int t=0;t<2;t++)
