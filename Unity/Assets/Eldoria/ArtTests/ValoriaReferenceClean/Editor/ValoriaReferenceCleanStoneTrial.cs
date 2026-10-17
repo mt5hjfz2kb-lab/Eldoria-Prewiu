@@ -19,7 +19,7 @@ public static class ValoriaReferenceCleanStoneTrial {
   var byName=materials.GroupBy(Name).ToDictionary(g=>g.Key,g=>g.First());var after=zone.Select(r=>r.sharedMaterials).ToArray();var before=new List<Material[]>();var mapping=new HashSet<string>();
   foreach(var array in after){var baseline=(Material[])array.Clone();for(int j=0;j<array.Length;j++){var n=Name(array[j]);if(!n.StartsWith(Prefix,StringComparison.Ordinal))continue;var original="Warm limestone "+n.Substring(Prefix.Length);if(!byName.TryGetValue(original,out var m))throw new Exception("Missing actual baseline material "+original);baseline[j]=m;mapping.Add(n+" -> "+original);}before.Add(baseline);}
   var meshIds=art.GetComponentsInChildren<MeshFilter>().Select(f=>f.sharedMesh.GetInstanceID()).ToArray();
-  var ev=Path.GetFullPath(Path.Combine(Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
+  var ev=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
   void Set(bool newSurface){for(int i=0;i<zone.Length;i++)zone[i].sharedMaterials=newSurface?after[i]:before[i];}
   var light=LightStamp(sun);var report=new Report{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scope="Right Bastion defensive flank only; same geometry, original UV0 and all other materials retained",lighting=light,zone_renderers=zone.Length,zone_material_slots=after.Sum(a=>a.Count(m=>Name(m).StartsWith(Prefix,StringComparison.Ordinal))),material_mapping=mapping.OrderBy(s=>s).ToArray(),original_uv0_preserved=true};
   try{
