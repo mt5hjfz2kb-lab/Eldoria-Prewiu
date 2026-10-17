@@ -279,10 +279,11 @@ for x,y in [(-23,28),(-19,9),(29,32),(28,12)]:
    for xx in [-8.5,8.5]:p.box((x+xx,y-6+(j+.5)*12/18,.47),(.31,.59,.22),random.choice(stone))
   p.finish(.025)
 # Ruins are intentionally small, with stepped broken silhouettes and fallen blocks.
-for x,y in [(-22,46),(26,52),(-25,0),(46,-1)]:
+for ruin_index,(x,y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]):
  r=Mesh('Ruin_'+str(x)+'_'+str(y))
  for i in range(8):
-  h=max(.6,3.5-i*.45+random.uniform(-.35,.35));courses(r,x-3+i*.85,y,.3,.83,1.15,h)
+  profile=7-i if ruin_index%2 else i
+  h=max(.6,3.5-profile*.45+random.uniform(-.35,.35));courses(r,x-3+i*.85,y,.3,.83,1.15,h)
  for i in range(8):r.box((x+random.uniform(-4,4),y+random.uniform(-2,2),.5),(random.uniform(.4,.8),.6,.65),random.choice(stone),random.random())
  r.finish(.06)
 # Reuse editable tree source family. Fit each donor to a tree-scale silhouette,
@@ -315,13 +316,14 @@ bpy.data.objects.remove(tree,do_unlink=True)
 rock_positions=[]
 for side in [-1,1]:
  for cluster in range(17):
-  cx=random.uniform(-65,65)
+  cx=-64+cluster*8+random.uniform(-1.8,1.8)
   if abs(cx)<6:continue
   for j in range(random.randint(3,7)):
    x=cx+random.uniform(-3.3,3.3)
    if abs(x)<5.4:continue
    y=river_center(x)+side*(river_width(x)+random.uniform(-.85,1.65))
    size=random.uniform(.38,.8) if j>2 else random.uniform(.95,1.65)
+   if j==0 and cluster%3==0:size=random.uniform(1.7,2.15)
    if any((x-px)**2+(y-py)**2 < (.68*(size+ps))**2 for px,py,ps in rock_positions):continue
    rock_positions.append((x,y,size))
 for i,(x,y,size) in enumerate(rock_positions):
@@ -432,5 +434,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

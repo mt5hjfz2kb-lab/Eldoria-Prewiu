@@ -1,10 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 21,
+  "revision": 22,
   "budget_eur": 0,
-  "validated_runtime_source": "074e852048e21ee2184c9534beb037ab718e23ba",
-  "validated_run": 39066408916,
+  "validated_runtime_source": "431d67f4f526bac7477d2a68745ec28fa76755e6",
+  "validated_run": 39066988473,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Revision20 actual Blender ray guard rejected boolean spandrel geometry; no promotion. Replace overlapping-solid CSG with one closed extrusion of a sampled arch profile and analytically clipped dressed stone courses. Retain evaluated opening/pier ray guards before export. Keep the pending terrain/grass refinement and all native PlayMode gates."
+  "art_correction": "Native21 bridge profiles are genuinely open and source ray checks pass. Reject PlayMode-only stretched groundcover triangles absent from the editor capture: normalize >65535 vertex UInt16/baseVertex meshes to absolute UInt32 before static batching and inspect runtime buffers for scene-spanning triangles. Improve broken-wall direction and irregular bank-rock coverage. Invoke previously installed local vision model via recovered ephemeral Ollama procedure, auxiliary only, no downloads or automatic approval.",
+  "auxiliary_review": true
 }

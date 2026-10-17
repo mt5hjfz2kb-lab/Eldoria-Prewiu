@@ -79,6 +79,37 @@ jobs:
             Get-Content $playLog -Tail 80
             if($play.ExitCode -ne 0 -or -not(Select-String $playLog -Pattern 'VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE' -Quiet)){throw 'Actual PlayMode validation failed'}
           }
+      - name: Review real capture with previously installed local vision model
+        continue-on-error: true
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if(-not $req.auxiliary_review){return}
+          $server=$null
+          try {
+            $o=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+            if(-not(Test-Path $o)){$o=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue|ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'}|Where-Object {Test-Path $_}|Select-Object -First 1}
+            if(-not $o){throw 'Previously installed Ollama not found'}
+            $env:OLLAMA_HOST='127.0.0.1:11434'
+            $modelsRoot=Join-Path $env:USERPROFILE '.ollama/models'
+            if(-not(Test-Path $modelsRoot)){$modelsRoot=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue|ForEach-Object {Join-Path $_.FullName '.ollama/models'}|Where-Object {Test-Path $_}|Select-Object -First 1}
+            if($modelsRoot){$env:OLLAMA_MODELS=$modelsRoot}
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process $o -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $env:RUNNER_TEMP 'valoria-ollama-out.log') -RedirectStandardError (Join-Path $env:RUNNER_TEMP 'valoria-ollama-err.log')
+              for($i=0;$i -lt 30;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+            }
+            if(-not $ready){throw 'Local Ollama did not become ready'}
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Verified Blender unavailable for review adapter'}
+            & $blender -b -t 2 --python-exit-code 1 --python tools/valoria-reference-clean/review_capture.py
+          } catch {
+            @{status='AUXILIARY_UNAVAILABLE_NOT_AN_ART_PASS';error=$_.Exception.Message;art_approved=$false;new_model_downloads=0}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/qwen-review.json -Encoding utf8
+          } finally {
+            if($server){& taskkill.exe /PID $server.Id /T /F|Out-Null}
+          }
       - name: Record physical mobile test availability for gameplay validation
         shell: powershell
         run: |
