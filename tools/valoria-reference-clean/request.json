@@ -1,7 +1,7 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 12,
+  "revision": 13,
   "budget_eur": 0,
-  "correction": "Actual PlayMode exposed global SliceBoot injecting old VisualWorld/WorldRegion1 and old HUD into independent scene. Add exact-scene opt-out only, retain canonical boot unchanged. Assert one camera/no SlicePresenter/no legacy camera, canonical save fingerprint unchanged, real physical route + stairs. Also seat low foot vertices against identical Unity terrain equation."
+  "correction": "Real PlayMode now proves isolation/no old presenter or camera; remaining route failures at z=-10,-9,-8,14 expose missing terrain collision beneath paving seams. Explicitly bind enabled TerrainCollider to actual sculpted TerrainData, preserve visual geometry; rerun all route/selection/stairs."
 }
