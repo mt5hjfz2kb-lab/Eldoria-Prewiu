@@ -1,12 +1,10 @@
-name: "[VALORIA] Restore approved Source08 Bastion nine materials | native Blender and Unity V13/V17 A/B"
+name: "[VALORIA] Native V13 visual ownership inventory and safe duplicate cleanup"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'tools/valoria-layered-construction/restore-source08-bastion-v17.blender.py'
-      - 'tools/valoria-layered-construction/qwen-entry-independent-review-v17.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV17Integration.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSceneVisualOwnershipGate.cs'
 permissions:
   contents: write
   actions: read
@@ -14,14 +12,14 @@ concurrency:
   group: valoria-macro-envelope-one-native-run
   cancel-in-progress: false
 jobs:
-  real-source08-bastion-recovery:
+  native-visual-ownership:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 70
+    timeout-minutes: 55
     defaults:
       run:
         working-directory: valoria-macro-envelope-v1
     steps:
-      - name: Expose existing Windows GitHub Desktop git
+      - name: Resolve installed GitHub Desktop git
         shell: powershell
         working-directory: .
         run: |
@@ -41,145 +39,65 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
-      - name: Real exclusive owner, original source SHA and visible SHARP player camera preflight
+      - name: Exclusive owner and native rendering preflight
         shell: powershell
         run: |
           $a=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
           $b=Get-Content "pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
           foreach($r in @($a,$b)){
-            if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'chatgpt-normal-valoria-construction-20261017' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Original owner lease mismatch'}
-            if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Other Windows owner'}
+            if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'chatgpt-normal-valoria-construction-20261017' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Existing workstream ownership not certified'}
+            if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Another workstream owns Windows runner'}
           }
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity or Blender already in use'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity 6000 not reachable'}
-          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Approved reference changed'}
-          $original='art-source/valoria/production/bastion-family-v1/BastionFamilyV1.blend'
-          if((Get-FileHash $original -Algorithm SHA256).Hash.ToLower() -ne '5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893'){throw 'Original approved Source08 family changed'}
-          $input='docs/evidence/valoria-layered-construction-20261016/entry-zone-v13/ValoriaEntryZoneV13.blend'
-          if((Get-FileHash $input -Algorithm SHA256).Hash.ToLower() -ne '1023443ef9eb3137a5157188b16194ff6245b08003f4c388377610d15811a1cf'){throw 'V13 copied professional geometry changed'}
-          $visibility='docs/evidence/valoria-layered-construction-20261016/bastion-source08-visibility/visibility-result.json'
-          if(-not(Test-Path $visibility)){throw 'Prior genuinely rendered player visibility proof missing'}
-          $v=Get-Content $visibility -Raw|ConvertFrom-Json
-          if($v.bastion_renderers -ne 9 -or $v.changed_pixels_upper_band -lt 150 -or -not $v.same_presenter_camera -or $v.art_approved){throw 'Prior SHARP camera visible/actual player proof failed'}
-          Write-Host "ELDORIA_SOURCE08_REAL_PLAYER_RENDERER_VISIBILITY_CONFIRMED=$($v.changed_pixels) pixels. Not an art pass."
-      - name: Native Blender source restore exact nine semantic materials and genuine two studio renders
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity or Blender is already in use'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity 6000.3.23f1 unavailable'}
+          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference changed'}
+          $root='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
+          foreach($n in @('Valoria_SHARP_EntryZoneV13_CANDIDATE.unity','Valoria_SHARP_Entry_PlayableV3.unity')){
+            if(-not(Test-Path "$root/$n")){throw "Missing protected scene $n"}
+          }
+          Write-Host 'WORKSTREAM_EXCLUSIVE_SOURCE_SCENES_FROZEN_NATIVE_CLEANUP_PERMITTED'
+      - name: Execute true camera V13 source-wide renderer census and reversible duplicate proof
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
-          if(Test-Path "$dir/entry-source.json"){
-            $prior=Get-Content "$dir/entry-source.json" -Raw | ConvertFrom-Json
-            if($prior.result_glb_sha256 -eq '5e35de3d8fd8afe5378545d40d7c54c107d6d0cffaa2b692a7d6654adb5d49e8' -and $prior.result_blend_sha256 -eq '0a2c1ccb74f9ffa95aa100505a5b6f9ce440b5d9bb6253562e4fd613dfadab7c' -and (Test-Path "$dir/ValoriaEntryZoneV17.blend") -and (Test-Path "$dir/ValoriaEntryZoneV17.glb") -and (Test-Path "$dir/source-clay-threequarter.png") -and (Test-Path "$dir/source-source08-material-threequarter.png")){
-              if((Get-FileHash "$dir/ValoriaEntryZoneV17.blend" -Algorithm SHA256).Hash.ToLower() -eq $prior.result_blend_sha256 -and (Get-FileHash "$dir/ValoriaEntryZoneV17.glb" -Algorithm SHA256).Hash.ToLower() -eq $prior.result_glb_sha256){
-                Write-Host 'Exact validated original-source V17 Blender output already exists; reuse rather than regenerate.'
-                exit 0
-              }
-            }
-          }
-          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
-          if(-not $blender){
-            foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
-              if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
-              if($blender){break}
-            }
-          }
-          if(-not $blender){throw 'Native Blender unavailable; no external paid tools allowed'}
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
+          $dir='docs/evidence/valoria-layered-construction-20261016/visual-ownership-cleanup'
           New-Item -ItemType Directory -Force $dir|Out-Null
-          & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
-          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/restore-source08-bastion-v17.blender.py
-          if($LASTEXITCODE){throw 'Actual native Blender V17 material recovery failed'}
-          $s=Get-Content "$dir/entry-source.json" -Raw|ConvertFrom-Json
-          if($s.bastion_module_count -ne 9 -or $s.triangles -ne 374064 -or -not $s.input_v13_geometry_unchanged -or $s.art_approved -or $s.result_glb_sha256 -ne (Get-FileHash "$dir/ValoriaEntryZoneV17.glb" -Algorithm SHA256).Hash.ToLower()){throw 'Restored professional source identities or geometry not verified'}
-          foreach($file in @('source-clay-threequarter.png','source-source08-material-threequarter.png')){
-            if(-not(Test-Path "$dir/$file") -or (Get-Item "$dir/$file").Length -lt 20000){throw "True Blender source render missing: $file"}
-          }
-          Write-Host "SOURCE08_RESTORED_REAL_EDITABLE_SOURCE_AND_ORIGINAL_HIERARCHY_NOT_YET_ART_APPROVED"
-      - name: Real Unity V13-before V17-after same-camera visual and original interactions
-        shell: powershell
-        run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
-          if(Test-Path "$dir/entry-native.json"){
-            $prior=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
-            $sc='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV17_CANDIDATE.unity'
-            if($prior.glb_sha256 -eq '5e35de3d8fd8afe5378545d40d7c54c107d6d0cffaa2b692a7d6654adb5d49e8' -and $prior.source_triangles -eq 374064 -and $prior.route_passes -eq 28 -and $prior.source_target_matches -eq 7 -and -not $prior.canonical_modified -and (Test-Path $sc) -and (Test-Path "$dir/entry-BEFORE-home.png") -and (Test-Path "$dir/entry-AFTER-home.png")){
-              Write-Host 'V13/V17 genuine Unity import and fixed-camera frames verified previously: reuse, no unnecessary heavy rerun.'
-              exit 0
-            }
-          }
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-bastion-source08-v17-unity.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV17Integration.Build','-logFile',$log)
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-visual-ownership-native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaSceneVisualOwnershipGate.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'V17 Unity import timeout'}
-          Get-Content $log -Tail 90
+          if(-not $p.WaitForExit(2100000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Unity V13 census timeout'}
+          Get-Content $log -Tail 100
           Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V17_NATIVE_COMPLETE' -Quiet)){throw "V17 Unity import/visual gate failed exit=$($p.ExitCode)"}
-          $n=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
-          if($n.canonical_modified -or $n.original_sources_modified -or $n.source_triangles -ne 374064 -or $n.physical_stairs -ne 12 -or $n.route_passes -ne 28 -or $n.route_probes -ne 28 -or $n.source_target_matches -ne 7 -or -not $n.gate_macro_proportions_pass -or -not $n.pedestrian_clear){throw 'Original Unity interactions or topology regressed'}
-          if([math]::Abs($n.home_fov-44.4228096) -gt .0001){throw 'Camera changed in V17; real comparison invalid'}
-          foreach($img in @('entry-BEFORE-home.png','entry-AFTER-home.png','light-AFTER-home.png','entry-AFTER-portrait.png')){
-            if(-not(Test-Path "$dir/$img") -or (Get-Item "$dir/$img").Length -lt 20000){throw "Genuine V17 Unity screenshot missing: $img"}
-          }
-          Write-Host 'V17_NATIVE_BLENDER_UNITY_TECH_PASS_NOT_ART_APPROVED'
-      - name: Measured genuine Unity PNG difference plus independent local Qwen art critique
-        if: success()
-        shell: powershell
-        run: |
-          $started=$null
-          try{
-            try{Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5|Out-Null}catch{
-              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
-              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
-              if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
-            }
-            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
-            if(-not $blender){
-              foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
-                if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
-                if($blender){break}
-              }
-            }
-            if(-not $blender){throw 'Existing native Blender Python interpreter unavailable'}
-            & $blender -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v17.py
-            if($LASTEXITCODE){throw 'Actual PNG image difference or Qwen review command failed'}
-            $ev='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
-            $m=Get-Content "$ev/genuine-unity-material-difference.json" -Raw|ConvertFrom-Json
-            $r=Get-Content "$ev/independent-review-status.json" -Raw|ConvertFrom-Json
-            Write-Host "GENUINE_V13_V17_PIXEL_CHANGE=$($m.pixels_changed) BASTION_ROI=$($m.pixels_changed_bastion_reference_roi) OTHER=$($m.pixels_changed_outside_reference_roi)"
-            Write-Host "INDEPENDENT_QWEN_REVIEW=$($r.status) ART_APPROVED=FALSE"
-          }finally{
-            if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}
-          }
-      - name: Persist isolated authentic evidence and candidate without modifying main
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_VISUAL_OWNERSHIP_CLEANUP_NATIVE_COMPLETE' -Quiet)){throw "Real Unity visual ownership audit failed, exit $($p.ExitCode)"}
+          $r=Get-Content "$dir/visual-ownership-native.json" -Raw|ConvertFrom-Json
+          if($r.original_interaction_hits -ne 7 -or $r.clean_interaction_hits -ne 7 -or $r.original_route_passes -ne 28 -or $r.clean_route_passes -ne 28 -or $r.original_stair_colliders -ne 12 -or $r.source_bastion_renderers -ne 9 -or $r.same_image_changed_pixels -gt 8 -or $r.source_scene_modified -or $r.canonical_modified -or -not $r.camera_preserved){throw 'Visual cleanup baseline quality/gameplay gate failed'}
+          Write-Host "REAL_NATIVE_VISUAL_OWNERSHIP_PASS: $($r.verdict); original visible=$($r.active_visible); exact duplicates removed=$($r.visually_identical_duplicates); non-automatic review hints=$($r.unresolved_overlap_hints)"
+      - name: Preserve evidence and candidate only when actual fix occurs
         if: always()
         shell: powershell
         run: |
           git config user.name 'Valoria native builder'
           git config user.email 'valoria-builder@users.noreply.github.com'
-          $e='docs/evidence/valoria-layered-construction-20261016/entry-zone-v17'
-          $base='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction'
-          if(Test-Path $e){git add -f -- "$e/"}
-          foreach($path in @("$base/Valoria_SHARP_EntryZoneV17_CANDIDATE.unity","$base/Valoria_SHARP_EntryZoneV17_CANDIDATE.unity.meta","$base/GeneratedEntryV17.meta","$base/Editor/ValoriaEntryZoneV17Integration.cs.meta")){
-            if(Test-Path $path){git add -f -- "$path"}
-          }
-          if(Test-Path "$base/GeneratedEntryV17"){git add -f -- "$base/GeneratedEntryV17/"}
+          $dir='docs/evidence/valoria-layered-construction-20261016/visual-ownership-cleanup'
+          $scene='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV13_VISUAL_CLEAN_CANDIDATE.unity'
+          if(Test-Path $dir){git add -f -- "$dir/"}
+          if(Test-Path $scene){git add -f -- "$scene"; if(Test-Path "$scene.meta"){git add -f -- "$scene.meta"}}
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): authentic Source08 material-restored Blender and Unity V17 A/B'
-            if($LASTEXITCODE){throw 'Cannot commit real Source08 evidence'}
+            git commit -m 'evidence(valoria): full native V13 renderer ownership and safe visual cleanup'
+            if($LASTEXITCODE){throw 'Cannot save actual native evidence'}
             git reset --hard HEAD
-            if($LASTEXITCODE){throw 'Cannot clean Unity-generated working files'}
+            if($LASTEXITCODE){throw 'Failed to clear Unity-generated checkout changes'}
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Cannot inspect concurrent branch changes'}
+            if($LASTEXITCODE){throw 'Cannot fetch owner branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent branch changes conflict, preserve output and do not force push'}
+            if($LASTEXITCODE){throw 'Concurrent owner change prevents safe rebase; no force push'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Evidence-only push failed, preserve artifact'}
+            if($LASTEXITCODE){throw 'Cannot save evidence to owner branch; retained as artifact'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-source08-bastion-restored-v17-real-blender-unity
+          name: valoria-v13-visible-ownership-real-unity
           path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v17/**
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV17_CANDIDATE.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/**
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/visual-ownership-cleanup/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV13_VISUAL_CLEAN_CANDIDATE.unity
           if-no-files-found: warn
