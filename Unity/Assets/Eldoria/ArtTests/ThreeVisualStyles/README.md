@@ -39,8 +39,8 @@ sharing the canonical Valoria Windows session.
 ## What IS and IS NOT proved
 
 - This is a real C# Unity scene implementation. **It has not yet been executed or photographed in Unity**. There are no claimed real Unity screenshots, no FPS benchmark, and no art acceptance.
-- The current geometry is **original procedural Unity mesh/primitives**, not the actual Quaternius or Kenney pack models. Thus it is a **first architectural and terrain trial** for each aesthetic, not a fair final judgment on the three commercial-quality asset families.
-- Next artistic step (not yet done) is to import a legally verified free kit per style, replace building and fortification facades with authentic meshes, ensure source texture/material/pivot compatibility, and rerender all three under consistent camera review.
+- The three scene generators combine **genuine selected Quaternius (11 .gltf) and Kenney (21 .glb) creator-authored CC0 meshes**, placed through Eldoria's installed glTFast importer in the Unity Editor, **with procedural Unity terrain/fortifications/roofs as fallback and surrounding blockout**. This is an actual source-mesh integration, not yet a visually certified, fully art-directed scene. Original source meshes will only appear once Unity has successfully imported them. Selected editor-only placement paths have an intentional procedural fallback if importer/models cannot load.
+- Next artistic step is to open/bake the scenes on a real Unity installation, inspect the actual import/material/pivot/scale results, replace remaining temporary blocks with further coherent CC0 parts and then capture the three genuine camera views for comparison. Option 2 additionally uses already-existing Eldoria Source Family GLBs (read-only source).
 - The lower gate, riverside connection, Bastion I, production buildings and reconstruction motifs preserve narrative roles. They are LOOK DEV ONLY; no invented power/economy, no save state, no fake claims about Sir Aldric, Breach events, cards or narrative progression.
 - No original `PlayerState`, `LocalGateway`, scene, build settings, `main` or active workstream is modified. Current gameplay remains in the real established project. These scenes are not standalone gameplay slices.
 - `GameObject` materials and procedural preview geometry are not persistent until explicitly baked. Mobile QA and Unity CI are **NOT RUN**.
@@ -58,8 +58,12 @@ Do not embed Internet-sourced previews or AI artwork into the Unity scenes.
 
 1. Unity import and compile succeeds for all three isolated scene files on the specified engine.
 2. Three genuine `_UNITY_REAL.png` files, consistent resolution/lighting and camera provenance.
-3. Original CC0 model assets installed with source and license notes; one unified family per scene, no mixed visual sources unless deliberately approved.
+3. Confirm imported Quaternius/Kenney source meshes show correctly in Unity (not fallback-only); licensing and sources recorded in `VENDOR_LICENSES.md`; visually coherent family per scene.
 4. Readable mobile strategic view and visually continuous terrain/bridge/gate/Bastion.
 5. Verify zero changes to canonical workstream. Device QA only when a runner/device becomes available without interfering with the existing constructor.
 
 **Do not mark ART PASS before those gates.**
+
+## Current concrete branch implementation
+
+The 32 vendored models are copied byte-for-byte from public repositories already documenting CC0 original authorship; Git object digests were checked while importing. Detailed source and model names are in `VENDOR_LICENSES.md`. The vendor asset files are **not** generated AI images. Scene 01 places Quaternius RTS functional buildings and residences; scene 02 optionally instantiates existing Eldoria production art; scene 03 places Kenney Castle towers/gates/trees and Fantasy Town props. These are preview assemblies, not integrated player scenes.
