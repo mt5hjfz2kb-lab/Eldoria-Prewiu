@@ -1,9 +1,9 @@
 {
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
-    "source_sha": "79f622fdf78e460c93f34c62b682a7571988de61",
+    "source_sha": "efd1da2f793eda7bbac850b3e9a8af2caa2047fb",
     "art_status": "PENDING_INDEPENDENT_VISUAL_REVIEW",
     "selection_tests": 5,
-    "triangles": 797955,
-    "renderers": 147,
+    "triangles": 489885,
+    "renderers": 22,
     "physical_mobile_tested": false
 }
