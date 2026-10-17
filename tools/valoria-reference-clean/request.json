@@ -1,11 +1,11 @@
 {
   "stage": "integration",
   "validate_play": true,
-  "revision": 32,
+  "revision": 33,
   "budget_eur": 0,
-  "validated_runtime_source": "bd4853fe39bf418ac27182104a50cedd01841bb4",
-  "validated_run": 39071838004,
+  "validated_runtime_source": "211e299b4e7d188b1daa23dc007582ac78009cc4",
+  "validated_run": 39072169693,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native31 visually inspected CLEAN in actual PlayMode after removing static recombination: 96 floor + 96 capsule + 6 stairs + 5 selection + player camera operations + save hash + all 33 mesh buffers pass. Final terrain colour correction against the attached reference: prior median sampled grass RGB about .380/.447/.173 versus reference .565/.490/.153; make existing detail/macro meadow texture derivative warmer and lighter with controlled channel factors (1.40R,1.07G,.90B relative). These are palette measurements, not an artistic score. Reuse actual Blender31 GLB and editable blend unchanged; rebuild empty independent Unity scene/materials, verify actual rendering/physics again. Do not regenerate geometry or invoke auxiliary model for this colour-only finish. Android compilation follows.",
+  "art_correction": "Actual Unity32 warm meadow finish visually inspected and stable, geometry31 unchanged. Close mobile camera integration: initial terrain160x180 and fixed max zoom65 allow seeing outside map at wide phone aspect/extreme pan. Extend only peripheral real terrain to200x220 and river span; preserve all architecture, original world height equation, framing and plots. Player pan/zoom/home now fit the real terrain projection with margin, and adapt to aspect changes. Native Play probe renders 2340x1080 phone home/boundary and traces actual TerrainCollider at all 4 corners for home, max zoom and extreme pan (12 hits), alongside existing image parity, 96 floor/headroom, stairs, picking and camera API checks. No device/FPS certification. Android APK follows this verified framing.",
   "auxiliary_review": false
 }
