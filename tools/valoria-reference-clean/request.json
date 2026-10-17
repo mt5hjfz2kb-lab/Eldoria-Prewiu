@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 23,
+  "revision": 24,
   "budget_eur": 0,
-  "validated_runtime_source": "431d67f4f526bac7477d2a68745ec28fa76755e6",
-  "validated_run": 39066988473,
+  "validated_runtime_source": "d25e8f4e4f31eddd9ed492a410631884bb781cc3",
+  "validated_run": 39067835806,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "REJECT native22: UInt32 normalization does not fix PlayMode-only giant foliage triangles; editor capture remains clean. Roll back conversion. Split bushes and meadow into two bounded source meshes and disable static batching for these two affected renderers. Keep geometry and all authored art. Add actual editor-vs-Play PNG upper-field consistency gate because functional route checks alone missed this corruption. No artistic approval.",
-  "auxiliary_review": false
+  "art_correction": "Native23 actual PlayMode is clean and editor/play upper-field parity passed (141 of 952128 pixels >24). Preserve foliage batching exclusions, bounded source meshes and all geometry gates. Add broad green/loam variation using existing CC0 meadow in the existing fourth terrain layer (no extra terrain pass), move off-camera foreground-left pines into reference framing, correct front banner normals, extend flat ground to outer paving and fill paving through gate. Reinspect actual Unity and auxiliary local critique of this clean candidate.",
+  "auxiliary_review": true
 }

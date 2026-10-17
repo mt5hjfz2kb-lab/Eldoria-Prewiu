@@ -13,7 +13,7 @@ def river_width(x):return 7.1+.75*sin(x*.095+.7)+.48*sin(x*.23)
 def terrain_height(x,y):
  t=smoothstep(river_width(x)-2,river_width(x)+2,abs(y-river_center(x)))
  h=.35+.65*sin(x*.08)*sin(y*.09)+.24*sin(x*.25+y*.17)+max(0,y-40)*.045
- flatten=1-smoothstep(0,2.5,max(abs(x)-11,-45-y,y-45))
+ flatten=1-smoothstep(0,2.5,max(abs(x)-11,-58-y,y-45))
  for px,py in [(-23,28),(-19,9),(29,32),(28,12)]:flatten=max(flatten,1-smoothstep(0,2,max(abs(x-px)-9,abs(y-py)-6.5)))
  h=h*(1-flatten)+.35*flatten
  natural=smoothstep(river_width(x)+1,river_width(x)+4,abs(y-river_center(x)));h=.35+(h-.35)*natural
@@ -160,7 +160,7 @@ def banner(g,x,y,z,w=1,h=2.1):
    X=-w/2+i*w/6;Z=z-j*h/7
    if j==7:Z-=.25*(1-abs(X)/(w/2))
    v.append((x+X,y-.07-.09*sin(i*pi/3+j*.4),Z))
- g.add(v,[(j*7+i,j*7+i+1,(j+1)*7+i+1,(j+1)*7+i) for j in range(7) for i in range(6)],cloth)
+ g.add(v,[(j*7+i,(j+1)*7+i,(j+1)*7+i+1,j*7+i+1) for j in range(7) for i in range(6)],cloth)
  # Three-leaf heraldic device, actual gold mesh on cloth.
  line(g,(x,y-.2,z-.35),(x,y-.2,z-1.3),.045,gold)
  for side in [-1,1]:line(g,(x,y-.2,z-1),(x+side*.22,y-.2,z-.6),.06,gold)
@@ -260,7 +260,7 @@ for X in [-4.2,4.2]:
 b.finish(.035)
 # Paving has real seams, slight stone variation, follows continuous deck/ground levels.
 p=Mesh('Axial_Paving')
-for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-8,25.6,5,.40)]:
+for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-11,25.6,5,.40)]:
  y=ya;row=0
  while y<yb:
   n=9 if w>5 else 7
@@ -299,8 +299,8 @@ M=tree.matrix_world.copy();ps=[M@v.co for v in tree.data.vertices];lo=Vector([mi
 for v,q in zip(tree.data.vertices,ps):v.co=q-ct
 tree.matrix_world=Matrix.Identity(4)
 mod=tree.modifiers.new('Strategic pine face budget','DECIMATE');mod.ratio=.80;bpy.ops.object.modifier_apply(modifier=mod.name)
-positions=[(-53,-39),(-47,-38),(-57,-32),(-38,-43),(26,-42),(39,-43),(47,-39),(-48,-15),(-44,3),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(39,49),(48,29),(46,2),(42,-12)]
-positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
+positions=[(-24,-39),(-19,-37),(-27,-34),(-15,-43),(26,-42),(39,-43),(47,-39),(-36,-14),(-33,2),(-39,29),(-40,40),(-45,44),(-32,49),(-5,54),(5,57),(39,49),(48,29),(46,2),(42,-12)]
+positions += [(-23,-43),(15,-42),(20,-44),(24,-41),(-29,49),(-25,53),(-31,52),(32,59),(44,28),(48,22),(43,20),(-37,31),(-39,36),(-34,40)]
 # Preserve the donor mesh but deepen the pale source foliage into forest-green pine.
 for material in tree.data.materials:
  if not material or not material.use_nodes or 'Leaves' not in material.name:continue
