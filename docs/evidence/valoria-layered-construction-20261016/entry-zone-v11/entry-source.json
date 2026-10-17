@@ -1,0 +1,31 @@
+{
+  "art_status": "CANDIDATE_REQUIRES_VISUAL_REVIEW",
+  "author": "GPT continuation via native Blender",
+  "blender": "5.2.2 LTS",
+  "source_v7_blend_sha256": "24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381",
+  "result_blend_sha256": "c890d2dbbf1b4c3ce35b229d7a8b89b8a62e3ab6314fd31b29553f240d1d1af4",
+  "result_glb_sha256": "1b175f2e88900ff84e3dded8d07bcbde40c5e98829737156045cc0917be7affd",
+  "triangles": 342006,
+  "source_vertices": 106733,
+  "sculpted_bank_vertices": 9248,
+  "max_bank_shift_m": 0.16287852532626027,
+  "upward_normals": 0.9387192164292244,
+  "photographic_bank_pixels": 272867,
+  "scan_diff_sha256": "f759d2471cb6a4b3b37d0a5a249adbad1d4d48d67825f37622a603dac8d9bb22",
+  "scan_disp_sha256": "3f080f5bec4b092ad4a7a6324c727010905c0f10b900a36bdeab4b2ef741147c",
+  "photographic_bake_dimensions": [
+    2048,
+    2048
+  ],
+  "updated_diffuse_nodes": 1,
+  "gate_bridge_stairs_source_unchanged": true,
+  "colliders_unchanged": true,
+  "paid_spend_eur": 0,
+  "license": "CC0-1.0",
+  "source_url": "https://polyhaven.com/a/aerial_rocks_02",
+  "operations": [
+    "archived Poly Haven CC0 photo-scan riverbank micro-sculpt and naturally blended PBR",
+    "darker physically rough water with 3D micro-ripples"
+  ],
+  "rejected_previous": "V8 scattered stones, V9 flat slabs, V10 painted branching roads; V7 immutable baseline"
+}
