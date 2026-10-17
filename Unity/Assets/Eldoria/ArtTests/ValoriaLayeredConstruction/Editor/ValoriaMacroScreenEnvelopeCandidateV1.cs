@@ -15,7 +15,7 @@ namespace Eldoria.ValoriaLayered.Editor {
    const string Input=Root+"Valoria_SHARP_SemanticContact_IsolatedV1.unity";
    const string Output=Root+"Valoria_SHARP_MacroEnvelope_CANDIDATE.unity";
    const int W=1536,H=1024,SW=1230,SH=845;
-   static readonly string E=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",
+   static readonly string E=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..",
       "docs","evidence","valoria-layered-construction-20261016","macro-envelope"));
    [Serializable] class A{public string id; public float[] sharp_approved_normalized;}
    [Serializable] class F{public A[] anchors;}
@@ -122,7 +122,7 @@ namespace Eldoria.ValoriaLayered.Editor {
    }
    static void BuildCore(){
        Check(File.Exists(Input),"No preserved SHARP source 7-click scene");
-       var source=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",
+       var source=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..",
           "docs","evidence","valoria-layered-construction-20261016","sharp-camera-mapping",
           "sharp-camera-rigid-calibration.json"));
        Check(File.Exists(source),"No certified source anchors");
