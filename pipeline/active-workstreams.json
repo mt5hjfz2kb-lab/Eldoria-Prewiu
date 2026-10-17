@@ -14,10 +14,10 @@
   "active": [
     {
       "id": "valoria-master-plan-layered-construction-20261016",
-      "title": "Valoria: recovered master plan and Unity layered construction",
+      "title": "Valoria: independent reference clean scene — native functional candidate",
       "owner": "codex-work-valoria-reference-clean-20261017",
       "branch": "construction/valoria-master-plan-layers-20261016",
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-16",
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
@@ -34,14 +34,12 @@
         "Unity/Packages/manifest.json",
         "Unity/Packages/packages-lock.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ENABLE_MISSING_BUILTIN_TERRAIN_PHYSICS_FOUND_IN_NATIVE_PLAY_LOG",
-      "next": "Native log explicitly deletes TerrainCollider because built-in terrainphysics is disabled; enable bundled 1.0.0 module, preserve engine/URP/glTFast versions and retest 76 route points.",
+      "phase": "NATIVE_REFERENCE_CLEAN_FUNCTIONAL_CANDIDATE_SAVED_MOBILE_QA_AND_ART_TARGET_PENDING",
+      "next": "Profile real Android/iOS when an authorized device is available; continue reference-directed artistic refinement from the saved independent scene. Reclaim exclusive runner before execution; preserve all paused tracks.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -88,12 +86,31 @@
         "v12_donor_unverified_textures_excluded": true,
         "physical_mobile_profiled": false,
         "canonical_save_touched": false,
-        "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md"
+        "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md",
+        "reference_clean": {
+          "source_commit": "aef30f5e2aa46920311bec2794f4de5d4f3fd9cc",
+          "output_commit": "d102f3895b39918e4d5480a734a21ee8c497e114",
+          "native_run": 39064889290,
+          "native_run_result": "success",
+          "scene": "Valoria_Reference_Clean.unity",
+          "route_passes": 76,
+          "stairs_passes": 6,
+          "selectable_targets": 5,
+          "active_scene_cameras": 1,
+          "exceptions": 0,
+          "canonical_save_untouched": true,
+          "art_triangles": 421536,
+          "art_approved": false,
+          "art_8_of_10_certified": false,
+          "physical_android_devices": 0,
+          "physical_mobile_profiled": false,
+          "runner_released": true
+        }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
-      "handoff_source": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_HANDOFF_20261017.md",
+      "handoff_source": "docs/evidence/valoria-reference-clean/DELIVERY.md",
       "last_session_reclaim": {
         "date": "2026-10-17",
         "session": "chatgpt-normal-valoria-bastion-source08-recovery-20261017",
@@ -5370,8 +5387,8 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Valoria — recuperar plano maestro y construir por capas",
-    "status": "active_owner_claimed",
-    "owner": "chatgpt-normal-valoria-construction-20261017",
+    "status": "handoff_candidate_saved_mobile_and_art_validation_pending",
+    "owner": "codex-work-valoria-reference-clean-20261017",
     "authorized_on": "2026-10-16",
     "instructions": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
     "priority": "ABSOLUTE",
