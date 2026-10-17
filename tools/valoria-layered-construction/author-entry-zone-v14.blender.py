@@ -19,7 +19,7 @@ assert sha(source)=='21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99
 report=json.load(open(measures,encoding='utf8'))
 assert report['source_v12_sha256']==sha(source)
 bpy.ops.wm.open_mainfile(filepath=source)
-old_names=set(bpy.data.objects)
+old_names={o.name for o in bpy.data.objects}
 terrain=next(o for o in bpy.data.objects if o.type=='MESH' and o.name.startswith('ValoriaEntryTerrainV12'))
 stone=next(m for m in bpy.data.materials if m.name.startswith('ENTRY_road_masonry_PBR'))
 assert stone.use_nodes and any(n.type=='TEX_IMAGE' and n.image for n in stone.node_tree.nodes)
@@ -155,9 +155,9 @@ design['bridge_original_world_bounds']=feetbounds
 assert len(objects)==6 and courses==30 and len(samples)==10
 # UV/geometry and normals are real. Preserve original .blend and contact colliders.
 expected={x.name for x in objects}|{terrain.name}
-new_names=set(bpy.data.objects)-old_names
+new_names={o.name for o in bpy.data.objects}-old_names
 assert new_names==expected,('FOUNDATION_OBJECT_SET_MISMATCH',sorted(new_names),sorted(expected),
-                               'ORIGINAL_LOST',sorted(old_names-set(bpy.data.objects)))
+                               'ORIGINAL_LOST',sorted(old_names-{o.name for o in bpy.data.objects}))
 for img in bpy.data.images:
  if img.source=='FILE' and not img.packed_file and os.path.isfile(bpy.path.abspath(img.filepath)):img.pack()
 for o in bpy.data.objects:o.select_set(o.type=='MESH' and not o.hide_render)
