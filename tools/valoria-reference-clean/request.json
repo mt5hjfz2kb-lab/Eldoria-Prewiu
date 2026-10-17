@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 29,
+  "revision": 30,
   "budget_eur": 0,
-  "validated_runtime_source": "9ea527ec7a49a9dabbe8f2a4beb75b63ec23505e",
-  "validated_run": 39070518268,
+  "validated_runtime_source": "1313b37bbfad134f3a257e0baf26c6c1fca69cb0",
+  "validated_run": 39070960389,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Observed actual Unity28: bridge/gate connection clear, darker shrubs and stronger banks improve the frame; open meadow remains too uniform. Add two broad low rear terrain hills using identical Blender/Unity height equations, true seated corner ruins (only two), richer sparse west/east grass clumps bounded below flat-normal UInt16 export ceiling, and less uniform dark wear around Bastion. Slightly taller closed shore crags. Do not move main architecture/camera/plots. Grass casts no tiny expensive shadows. Also fix pinch dragging and responsive touch controls, exercise actual public zoom/pan/reset player functions in native PlayMode, and compile a scoped Android build adapter reused from existing project process; Android execution follows visual validation.",
+  "art_correction": "Actual Unity29 reviewed: meadow and corner ruins improve; tallest bank crags still stand too far above water. Correct geometry/contact cause: put principal crag centres just inside waterline, broaden foot, use coherent fracture planes and asymmetric canted crowns. Keep terrain/camera/buildings/plots fixed. Integrate real MeshColliders on existing Gate meshes; floor probes now start at pedestrian height below overhead arch, and 96 capsule headroom checks must pass alongside floor/stairs/picking and actual player camera operations. Android adapter explicitly uses this scene URP at build time and restores Project/Graphics/Quality settings after its future native process. No Android device result or ART8 certification implied.",
   "auxiliary_review": true
 }

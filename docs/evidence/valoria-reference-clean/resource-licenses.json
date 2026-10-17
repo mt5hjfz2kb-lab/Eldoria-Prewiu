@@ -7,7 +7,7 @@
       "name": "Fortified gate",
       "source": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.blend",
       "author": "Eldoria original authored mesh/materials",
-      "changes": "Uniform scale, base-centre pivots, isolated composition"
+      "changes": "Uniform scale .95, base-centre pivots, independent scene; reference access shifted -1.5m without changing the original donor source"
     },
     {
       "name": "Pine and shrub",
@@ -19,7 +19,7 @@
         "v4_individual_manifest.json",
         "medium_with_full_tall_branches.json"
       ],
-      "changes": "Blender import, regrouped foliage source, controlled decimation, varied uniform scales/rotations, grounded placement"
+      "changes": "Blender import, forest-green packed texture derivative for pine, controlled decimation and sapling LOD, varied scales/rotations, real terrain-grounded placement; original donor files unchanged"
     },
     {
       "name": "Meadow grass",
@@ -29,10 +29,10 @@
       "license": "CC0-1.0",
       "license_url": "https://polyhaven.com/license",
       "project_provenance": "meadow_real_loam_study.json",
-      "changes": "Green corner sampled at two rotations; no repeated loam circles"
+      "changes": "Existing atlas reused for grass detail, rotated broad-scale meadow and loam, generated matching terrain normal; no external downloads"
     },
     {
-      "name": "Bastion, bridge, paving, plots, ruins, bank rocks, river shader",
+      "name": "Bastion, arched bridge, paving, plots, broken wall corners, closed lofted bank crags, original weathered masonry, grass clumps, river and rock-intersection foam shaders",
       "author": "Codex reference-directed new Eldoria authored sources",
       "external_assets": []
     }

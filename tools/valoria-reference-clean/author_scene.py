@@ -349,7 +349,9 @@ for side in [-1,1]:
   cx=-64+cluster*8+random.uniform(-1.8,1.8)
   for j in range(random.randint(5,8)):
    x=cx+random.uniform(-3.3,3.3)
-   y=river_center(x)+side*(river_width(x)+random.uniform(-.85,1.65))
+   margin=random.uniform(-.85,1.65)
+   if j==0:margin=-.9+(margin+.85)*.3
+   y=river_center(x)+side*(river_width(x)+margin)
    size=random.uniform(.38,.85) if j>2 else random.uniform(1.05,1.85)
    if j==0:size=random.uniform(1.95,2.65)
    # Clearance includes each boulder's possible horizontal radius and bevel.
@@ -358,11 +360,15 @@ for side in [-1,1]:
    rock_positions.append((x,y,size))
 for i,(x,y,size) in enumerate(rock_positions):
  crag=Mesh('River_Rock_%03d'%i);verts=[];segments=9;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(1.15,1.9);angle=random.uniform(-pi,pi)
- for ring,(z,radius) in enumerate([(-.5,.58),(-.24,.94),(.22,1.0),(.5,.5)]):
+ for ring,(z,radius) in enumerate([(-.5,.72),(-.24,.98),(.22,.91),(.5,.57)]):
   phase=random.uniform(-.10,.10)
   for j in range(segments):
-   t=angle+j*2*pi/segments+phase;r=radius*random.uniform(.86,1.13)
-   verts.append((x+cos(t)*rx*r,y+sin(t)*ry*r,height*z+random.uniform(-.07,.07)))
+   t=angle+j*2*pi/segments+phase
+   # Coherent fracture planes and a canted crown avoid repeated rounded ring forms.
+   r=radius*(.92+.14*sin(j*2.71+i*.87))*random.uniform(.96,1.04)
+   tilt=(.12*cos(t-angle+.6)+.045*sin((t-angle)*2)) if ring==3 else (.025*sin(t*2+i) if ring else 0)
+   shift=(ring/3)**2*.18
+   verts.append((x+cos(t)*rx*r+cos(angle+.7)*rx*shift,y+sin(t)*ry*r+sin(angle+.7)*ry*shift,height*(z+tilt)+random.uniform(-.07,.07)))
  faces=[tuple(range(segments-1,-1,-1)),tuple(3*segments+j for j in range(segments))]
  faces += [(ring*segments+j,ring*segments+(j+1)%segments,(ring+1)*segments+(j+1)%segments,(ring+1)*segments+j) for ring in range(3) for j in range(segments)]
  # Different tones on fracture planes give volume without a noisy texture stamp.
@@ -500,5 +506,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

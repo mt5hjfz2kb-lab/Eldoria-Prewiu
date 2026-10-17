@@ -53,6 +53,7 @@ jobs:
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
+          if($req.stage -eq 'integration'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'}
           if($req.stage -eq 'art'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
@@ -64,12 +65,13 @@ jobs:
           $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
-          $settingsBefore=[IO.File]::ReadAllBytes($settingsPath)
+          $settingsBefore=@{}
+          foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android','-nographics')}
           try{
             $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
             if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
-          }finally{if($req.stage -eq 'android'){[IO.File]::WriteAllBytes($settingsPath,$settingsBefore)}}
+          }finally{if($req.stage -eq 'android'){foreach($q in $settingsBefore.Keys){[IO.File]::WriteAllBytes($q,$settingsBefore[$q])}}}
           $nativeLog='native-unity.log';if($req.stage -eq 'android'){$nativeLog='android-native.log'}
           Copy-Item $log (Join-Path 'docs/evidence/valoria-reference-clean' $nativeLog)
           Select-String $log -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2

@@ -20,6 +20,8 @@ public static class ValoriaReferenceCleanAndroidBuild {
    if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android,BuildTarget.Android))throw new Exception("Installed editor lacks Android Build Support");
    EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
    if(!UnityEngine.Object.FindFirstObjectByType<ValoriaReferenceCleanInteraction>())throw new Exception("Independent scene interaction missing");
+   var rendering=UnityEngine.Object.FindFirstObjectByType<ValoriaReferenceCleanRenderSettings>();if(!rendering||!rendering.scenePipeline)throw new Exception("Isolated scene URP asset missing");
+   GraphicsSettings.defaultRenderPipeline=rendering.scenePipeline;QualitySettings.renderPipeline=rendering.scenePipeline;
    PlayerSettings.companyName="Eldoria";PlayerSettings.productName="Valoria Reference Clean";
    PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,result.package_id);
    PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android,ScriptingImplementation.IL2CPP);
