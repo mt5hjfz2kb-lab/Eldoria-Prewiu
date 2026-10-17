@@ -10,7 +10,7 @@ public class ValoriaReferenceCleanRenderSettings:MonoBehaviour {
   var source=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
   if(!source)return;
   local=Instantiate(source);local.name="Valoria isolated scene URP";local.hideFlags=HideFlags.HideAndDontSave;
-  local.shadowDistance=180;local.shadowCascadeCount=2;local.msaaSampleCount=4;
+  local.supportsSoftShadows=true;local.shadowDistance=180;local.shadowCascadeCount=2;local.msaaSampleCount=4;
   QualitySettings.renderPipeline=local;
  }
  void OnDisable(){if(local){QualitySettings.renderPipeline=previous;if(UnityEngine.Application.isPlaying)Destroy(local);else DestroyImmediate(local);}}
