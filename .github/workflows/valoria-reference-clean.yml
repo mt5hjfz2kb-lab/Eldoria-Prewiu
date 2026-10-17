@@ -69,6 +69,29 @@ jobs:
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
           if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
+          if($req.validate_play){
+            $playLog=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean-play.log'
+            $playArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build','-logFile',$playLog)
+            $play=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $playArgs -PassThru
+            if(-not $play.WaitForExit(600000)){& taskkill.exe /PID $play.Id /T /F|Out-Null;throw 'Own PlayMode validation timed out'}
+            Copy-Item $playLog docs/evidence/valoria-reference-clean/playmode-native.log
+            Select-String $playLog -Pattern "Exception:|error CS|Shader error|^Error" -Context 1,2
+            Get-Content $playLog -Tail 80
+            if($play.ExitCode -ne 0 -or -not(Select-String $playLog -Pattern 'VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE' -Quiet)){throw 'Actual PlayMode validation failed'}
+          }
+      - name: Record physical mobile test availability for gameplay validation
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if($req.stage -eq 'play' -or $req.validate_play){
+            $editorDir=Split-Path $env:UNITY_EDITOR_PATH
+            $adb=Join-Path $editorDir 'Data/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb.exe'
+            if(-not(Test-Path $adb) -and $env:ANDROID_HOME){$adb=Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'}
+            $available=Test-Path $adb
+            $count=0
+            if($available){$priorPreference=$ErrorActionPreference;$ErrorActionPreference='Continue';$listing=@(& $adb devices 2>&1);$ErrorActionPreference=$priorPreference;$count=@($listing|Where-Object {$_.ToString() -match '\sdevice$'}).Count}
+            @{windows_host=$true;android_adb_available=$available;authorized_android_devices=$count;physical_android_profile_performed=$false;physical_ios_profile_performed=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/mobile-availability.json -Encoding utf8
+          }
       - name: Persist independent scene, models, prefabs and actual captures on construction branch
         shell: powershell
         run: |

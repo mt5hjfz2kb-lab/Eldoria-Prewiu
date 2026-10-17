@@ -232,11 +232,24 @@ positions += [(-48,-38),(-45,-41),(-42,-43),(-40,-37),(15,-42),(20,-44),(24,-41)
 for idx,(x,y) in enumerate(positions):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_%02d'%idx;o.location=(x,y,.3);o.scale=(1,1,1);sc=(6+random.random()*3)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
 bpy.data.objects.remove(tree,do_unlink=True)
-# Natural river rock belt, faceted asymmetry; grouped meshes rather than repeated cubes.
-for i in range(115):
- x=-65+(i%58)*2.25+random.uniform(-.7,.7);bank=-23+1.5*sin(x*.065);y=bank+(-1 if i<58 else 1)*(7.6+random.uniform(-.3,.5))
- if abs(x)<4.5:continue
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,-.25));o=bpy.context.object;o.name='River_Rock';o.scale=(random.uniform(.6,1.8),random.uniform(.6,1.5),random.uniform(.65,1.5));o.rotation_euler=(random.random()*.3,random.random()*.3,random.random()*pi);o.data.materials.append(random.choice(rocks));bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+# Reuse the actual CC0 rock_face_02 scan from the 63-asset archive, undoing its old cliff fit.
+rock_source=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb')
+assert hashlib.sha256(open(rock_source,'rb').read()).hexdigest()=='5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae'
+before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=rock_source);parts=[o for o in bpy.data.objects if o not in before and o.type=='MESH'];assert parts
+bpy.ops.object.select_all(action='DESELECT')
+for o in parts:o.select_set(True)
+bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();rock_template=bpy.context.object
+M=rock_template.matrix_world.copy();pts=[]
+for v in rock_template.data.vertices:
+ q=M@v.co;pts.append(Vector((q.x/.7556536793708801,q.y/.5851455926895142,q.z/1.4367778301239014)))
+lo=Vector([min(q[i] for q in pts) for i in range(3)]);hi=Vector([max(q[i] for q in pts) for i in range(3)]);center=(lo+hi)/2;rockheight=hi.z-lo.z
+for v,q in zip(rock_template.data.vertices,pts):v.co=q-center
+rock_template.matrix_world=Matrix.Identity(4);mod=rock_template.modifiers.new('Strategic photographic rock budget','DECIMATE');mod.ratio=.018;bpy.ops.object.modifier_apply(modifier=mod.name)
+for i in range(108):
+ x=-65+(i%54)*2.45+random.uniform(-.8,.8);bank=-23+1.5*sin(x*.065);y=bank+(-1 if i<54 else 1)*(7.6+random.uniform(-.3,.7))
+ if abs(x)<5:continue
+ o=rock_template.copy();o.data=rock_template.data.copy();bpy.context.collection.objects.link(o);o.name='River_Rock_%03d'%i;o.location=(x,y,0);sc=random.uniform(1.4,2.7)/rockheight;o.scale=(sc,sc,sc);o.rotation_euler=(random.uniform(-.24,.24),random.uniform(-.24,.24),random.uniform(-pi,pi))
+bpy.data.objects.remove(rock_template,do_unlink=True)
 # Grounded irregular stones around woodland and ruins give the open land scale cues.
 for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
  for j in range(3):
@@ -306,8 +319,9 @@ for o in bpy.context.scene.objects:
      if n.type=='TEX_IMAGE' and n.image and not n.image.packed_file:
       try:n.image.pack()
       except Exception:pass
+bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path,rock_source]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

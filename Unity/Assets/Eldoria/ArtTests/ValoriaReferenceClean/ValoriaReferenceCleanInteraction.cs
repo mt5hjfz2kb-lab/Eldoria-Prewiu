@@ -6,9 +6,10 @@ public class ValoriaReferenceCleanInteraction:MonoBehaviour {
  void Awake(){if(!playerCamera)playerCamera=Camera.main;}
  void Update(){
   if(!playerCamera)return;
+  if(Input.mousePosition.x<295 && Input.mousePosition.y>Screen.height-125 && Input.touchCount<2)return;
   float scroll=Input.mouseScrollDelta.y;if(Mathf.Abs(scroll)>.01f)playerCamera.orthographicSize=Mathf.Clamp(playerCamera.orthographicSize-scroll*2,14,65);
   if(Input.GetMouseButtonDown(0)){last=Input.mousePosition;dragged=false;}
-  if(Input.GetMouseButton(0)){var delta=Input.mousePosition-last;if(delta.sqrMagnitude>9)dragged=true;if(dragged){var right=playerCamera.transform.right;right.y=0;var forward=Vector3.Cross(right,Vector3.up);playerCamera.transform.position-=right*delta.x*playerCamera.orthographicSize/Screen.height*2+forward*delta.y*playerCamera.orthographicSize/Screen.height*2;}last=Input.mousePosition;}
+  if(Input.GetMouseButton(0)){var delta=Input.mousePosition-last;if(delta.sqrMagnitude>9)dragged=true;if(dragged){var right=playerCamera.transform.right;right.y=0;var forward=Vector3.Cross(right,Vector3.up);playerCamera.transform.position-=right*delta.x*playerCamera.orthographicSize/Screen.height*2+forward*delta.y*playerCamera.orthographicSize/Screen.height*2;}last=Input.mousePosition;var p=playerCamera.transform.position;p.x=Mathf.Clamp(p.x,homePosition.x-45,homePosition.x+45);p.z=Mathf.Clamp(p.z,homePosition.z-45,homePosition.z+45);playerCamera.transform.position=p;}
   if(Input.touchCount==2){var a=Input.GetTouch(0);var b=Input.GetTouch(1);var previous=(a.position-a.deltaPosition)-(b.position-b.deltaPosition);playerCamera.orthographicSize=Mathf.Clamp(playerCamera.orthographicSize+(previous.magnitude-(a.position-b.position).magnitude)*.035f,14,65);}
   if(Input.GetMouseButtonUp(0)&&!dragged){if(Physics.Raycast(playerCamera.ScreenPointToRay(Input.mousePosition),out var hit,500,1<<8))Select(hit.collider.name);}
  }

@@ -1,8 +1,8 @@
 {
   "stage": "art",
-  "revision": 10,
+  "validate_play": true,
+  "revision": 11,
   "budget_eur": 0,
-  "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
-  "previous_candidate": "959cdc0883dd0b80ddae7d1007f770b2ae8a301b",
-  "independent_review": "REAL UNITY: compact keep/gate differentiated, four plots and bridge clear, textured nature improves style, shadows verified. Surface rework: over-bright coping/paving, uniform lawn edges, overly parallel river ripples. Directed final surface/ruin/scatter pass and texture cap 1024; physical device profiling not claimed."
+  "previous_candidate": "d7741960733cebaf182125686a042f94fa67eaf4",
+  "independent_review": "Actual Unity art5 reviewed: composition close and hierarchy coherent, source/model materials grounded. Last polish replaces spherical bank prototypes with actual existing CC0 rock scan edited in Blender; then mandatory live PlayMode 5 selections, camera pan/zoom, physical road and stairs probes. No mobile hardware or art8/10 claim."
 }
