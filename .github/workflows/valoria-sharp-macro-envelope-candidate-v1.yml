@@ -1,34 +1,16 @@
-name: "[VALORIA] Refine actual bank mesh, authored road and independent visual critique V6"
+name: "[VALORIA] Refine actual bank mesh, authored road and independent visual critique V7"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV6Integration.cs'
-      - 'tools/valoria-layered-construction/author-entry-zone-v6.blender.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV7Integration.cs'
+      - 'tools/valoria-layered-construction/author-entry-zone-v7.blender.py'
 permissions:
   contents: write
-  actions: write
+  actions: read
 jobs:
-  recover-own-superseded-runs:
-    runs-on: ubuntu-latest
-    timeout-minutes: 4
-    steps:
-      - name: Cancel only the two exact superseded runs of this owner and wait for cleanup
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const selected=[{id:39028168817,sha:'29ad831555bdada1cdbbb806632ff3d8859061aa'},{id:39028512389,sha:'c92e403c2fa40934c18a905dc64d4d3676adbd57'}];
-            for(const item of selected){
-              const args={...context.repo,run_id:item.id};const r=(await github.rest.actions.getWorkflowRun(args)).data;
-              if(r.head_sha!==item.sha||r.head_branch!=='construction/valoria-master-plan-layers-20261016'||r.path!=='.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml')throw new Error('Superseded-run identity mismatch');
-              if(r.status!=='completed'){await github.rest.actions.cancelWorkflowRun(args);core.info('Requested cancellation of own exact run '+item.id);}
-              let complete=false;
-              for(let i=0;i<40;i++){const current=(await github.rest.actions.getWorkflowRun(args)).data;if(current.status==='completed'){complete=true;core.info(item.id+' '+current.conclusion);break;}await new Promise(resolve=>setTimeout(resolve,3000));}
-              if(!complete)throw new Error('Old native process cleanup not finished; do not start another Windows job');
-            }
   actual-sharp-native:
-    needs: recover-own-superseded-runs
     concurrency:
       group: valoria-macro-envelope-one-native-run
       cancel-in-progress: false
@@ -69,13 +51,35 @@ jobs:
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
           $h=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower()
           if($h -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Art reference mismatch'}
-          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV4_CANDIDATE.unity')){throw '7-contact source scene missing'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV6_CANDIDATE.unity')){throw '7-contact source scene missing'}
+      - name: Preserve exact interrupted V5 evidence and recover only two selected CC0 nature assets
+        shell: powershell
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json'}
+          $zip=Join-Path $env:RUNNER_TEMP "valoria-preserved-v5-$env:GITHUB_RUN_ID.zip"
+          Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/12099487251/zip" -Headers $headers -OutFile $zip -MaximumRedirection 10
+          if((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne '57403924609a5c14893005fab7671095ec8f24e8ec784b25bcfa08be768110c4'){throw 'Interrupted V5 archive changed'}
+          Expand-Archive -LiteralPath $zip -DestinationPath (Get-Location).Path -Force
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs'
+          New-Item -ItemType Directory -Force $dir|Out-Null
+          foreach($item in @(@{id=12035633500;name='pine_medium.glb';sha='003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e'},@{id=12012128470;name='shrub_1.glb';sha='5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0'})){
+            $target=Join-Path $env:RUNNER_TEMP "valoria-selected-nature-$($item.id)-$env:GITHUB_RUN_ID"
+            $archive="$target.zip"
+            Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$($item.id)/zip" -Headers $headers -OutFile $archive -MaximumRedirection 10
+            Expand-Archive -LiteralPath $archive -DestinationPath $target -Force
+            $file=@(Get-ChildItem $target -Recurse -File | Where-Object {$_.Name -eq $item.name})
+            if($file.Count -ne 1 -or (Get-FileHash $file[0].FullName -Algorithm SHA256).Hash.ToLower() -ne $item.sha){throw 'Selected CC0 nature identity mismatch'}
+            Copy-Item $file[0].FullName (Join-Path $dir $item.name) -Force
+            Get-ChildItem $target -Recurse -File -Filter '*.json' | ForEach-Object {Copy-Item $_.FullName (Join-Path $dir $_.Name) -Force}
+          }
       - name: Recover only verified CC0 rock and meadow from paused asset evidence
         shell: powershell
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6/inputs'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs'
           New-Item -ItemType Directory -Force $dir|Out-Null
           $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json'}
           foreach($item in @(@{id=12061076273;name='cliff_rock_column.glb';sha='5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae'},@{id=12044316857;name='meadow_grass_and_real_loam_CC0_1k.png';sha='d528215ccc37271a505c99773c454c224c024f12a619b03c47c154f733081d32'})){
@@ -101,20 +105,20 @@ jobs:
           }
           if(-not $blender){throw 'Native Blender not found on owner PC'}
           "VALORIA_ENTRY_BLENDER=$blender" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7'
           New-Item -ItemType Directory -Force $dir|Out-Null
           & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
-          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v6.blender.py
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v7.blender.py
           if($LASTEXITCODE){throw 'Source-derived Blender entry authoring failed'}
-          & $blender -b -t 2 --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$dir/ValoriaEntryZoneV6.blend" --inspect --inspect-target-object ValoriaEntryTerrainV6 --out "$dir/inspect"
+          & $blender -b -t 2 --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$dir/ValoriaEntryZoneV7.blend" --inspect --inspect-target-object ValoriaEntryTerrainV7 --out "$dir/inspect"
           if($LASTEXITCODE){throw 'Source geometry inspection failed'}
       - name: Import actual Blender entry zone and capture comparable player-camera A/B
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7'
           New-Item -ItemType Directory -Force -Path $dir|Out-Null
           $log=Join-Path $env:RUNNER_TEMP 'valoria-spatial-v1.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV6Integration.Build','-logFile',$log)
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(2400000)){
             & taskkill.exe /PID $p.Id /T /F|Out-Null
@@ -122,7 +126,7 @@ jobs:
           }
           Get-Content $log -Tail 90
           Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V6_NATIVE_COMPLETE' -Quiet)){
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V7_NATIVE_COMPLETE' -Quiet)){
             throw "Native 3D SHARP macro diagnostic failed exit=$($p.ExitCode)"
           }
       - name: Independent local vision critique of GPT-authored geometry, no automatic approval
@@ -135,14 +139,14 @@ jobs:
               if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
               if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
             }
-            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v6.py
+            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review-v7.py
           }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
       - name: Require genuine native source identity and seven real targets without artistic self-approval
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v6'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7'
           $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
-          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7){throw 'Entry source integrity failed'}
+          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7 -or $x.route_passes -ne 28 -or -not $x.pedestrian_clear -or -not $x.gate_macro_proportions_pass){throw 'Entry source integrity failed'}
           if([math]::Abs($x.home_fov-44.42281) -gt 0.0001){throw 'Player lens changed'}
           Write-Host 'SOURCE_IMPORT_AND_TARGETS_TECH_PASS; ART_REVIEW_AND_FULL_GAMEPLAY_PENDING'
       - name: Save only isolated results, no forced push or superseding original scenes
@@ -150,10 +154,12 @@ jobs:
         run: |
           git config user.name 'Valoria native macro'
           git config user.email 'valoria-macro@users.noreply.github.com'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v6/
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV6_CANDIDATE.unity
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV6/
-          foreach($meta in @('Editor/ValoriaEntryZoneV6Integration.cs.meta','GeneratedEntryV6.meta','Valoria_SHARP_EntryZoneV6_CANDIDATE.unity.meta')){
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/
+          foreach($meta in @('Editor/ValoriaEntryZoneV7Integration.cs.meta','GeneratedEntryV7.meta','Valoria_SHARP_EntryZoneV7_CANDIDATE.unity.meta')){
             $mp="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/$meta"
             if(Test-Path $mp){git add -f -- $mp}
           }
@@ -170,9 +176,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-entry-zone-v6-${{ github.run_id }}
+          name: valoria-entry-zone-v7-${{ github.run_id }}
           path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v6/**
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV6_CANDIDATE.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV6/**
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/**
           if-no-files-found: warn
