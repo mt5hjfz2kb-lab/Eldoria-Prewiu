@@ -96,7 +96,7 @@ if stone_trial:
    node=nodes.new('ShaderNodeTexImage');node.image=images[channel];links.new(uvnode.outputs['UV'],node.inputs['Vector']);links.new(node.outputs['Color'],p.inputs[socket_name])
   node=nodes.new('ShaderNodeTexImage');node.image=images['nor_gl'];links.new(uvnode.outputs['UV'],node.inputs['Vector']);normal=nodes.new('ShaderNodeNormalMap');normal.uv_map='ScannedStoneUV';normal.inputs['Strength'].default_value=.35;links.new(node.outputs['Color'],normal.inputs['Color']);links.new(normal.outputs['Normal'],p.inputs['Normal']);trial_stone.append(m)
 # Ground study sources are retained and packed, while Unity paints only a bounded trial.
-if request.get('ground_treatment')=='zone_surface':
+if request.get('ground_treatment') in ['zone_surface','all_surface']:
  for manifest in json.load(open(os.path.join(ROOT,'tools/valoria-reference-clean/ground-inputs.json'))):
   source_dir=os.path.join(OUT,'MaterialInputs',manifest['asset']);os.makedirs(source_dir,exist_ok=True)
   for entry in manifest['files']:
@@ -135,7 +135,7 @@ class Mesh:
    for face_index in range(len(self.f),len(self.f)+6):self.surface_rects[face_index]=patch
    surface_trial_stats['mapped_boxes']+=1
   self.add(v,[(0,4,6,2),(1,3,7,5),(0,1,5,4),(2,6,7,3),(0,2,3,1),(4,5,7,6)],m)
- def finish(self,bevel=.035):
+ def finish(self,bevel=.035,segments=1):
   me=bpy.data.meshes.new(self.n);me.from_pydata(self.v,[],self.f);me.update();bm=bmesh.new();bm.from_mesh(me);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free();o=bpy.data.objects.new(self.n,me);bpy.context.collection.objects.link(o)
   for m in self.ms:me.materials.append(m)
   for p,i in zip(me.polygons,self.mi):p.material_index=i
@@ -156,7 +156,7 @@ class Mesh:
      q=me.vertices[me.loops[li].vertex_index].co;u=(q[axes[0]]-lo[0])/max(1e-6,hi[0]-lo[0]);v=(q[axes[1]]-lo[1])/max(1e-6,hi[1]-lo[1]);scan_uv.data[li].uv=((x0+(x1-x0)*u)/1024,1-y1/1024+(y1-y0)*v/1024)
   me.uv_layers.active_index=0;me.uv_layers['MetricUV'].active_render=True
   if bevel:
-   mod=o.modifiers.new('Light-catching dressed edges','BEVEL');mod.width=bevel;mod.segments=1;mod.limit_method='ANGLE';bpy.context.view_layer.objects.active=o
+   mod=o.modifiers.new('Light-catching dressed edges','BEVEL');mod.width=bevel;mod.segments=segments;mod.limit_method='ANGLE';bpy.context.view_layer.objects.active=o
    bpy.ops.object.modifier_apply(modifier=mod.name)
   return o
 
@@ -423,6 +423,20 @@ for idx,(x,y) in enumerate([(-10,18),(8,14),(-13,34),(14,38)]):
  o=tree.copy();o.data=tree.data.copy();bpy.context.collection.objects.link(o);o.name='Reused_Fir_Sapling_%02d'%idx;o.location=(x,y,.3);sc=(2.7+random.random()*.8)/height;o.scale=(sc,sc,sc);o.rotation_euler.z=random.uniform(-pi,pi)
  bpy.context.view_layer.objects.active=o;mod=o.modifiers.new('Sapling strategic LOD','DECIMATE');mod.ratio=.42;bpy.ops.object.modifier_apply(modifier=mod.name)
 bpy.data.objects.remove(tree,do_unlink=True)
+# Recover the useful scan surface from an existing donor, not its rejected open mesh.
+rock_trial=request.get('nature_treatment')=='bank_zone'
+rock_donor=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb')
+rock_surface=None
+rock_patches=[(75,35,155,165),(190,20,250,160),(390,35,500,120),(300,245,405,330),(555,270,645,390),(20,520,125,650),(160,630,250,745),(340,745,415,875)]
+if rock_trial:
+ assert hashlib.sha256(open(rock_donor,'rb').read()).hexdigest()=='5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae'
+ previous=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=rock_donor);imported=[o for o in bpy.data.objects if o not in previous]
+ original=next(m for o in imported if o.type=='MESH' for m in o.data.materials if m)
+ rock_surface=original.copy();rock_surface.name='Recovered scanned mineral boulder surface';nodes=rock_surface.node_tree.nodes;links=rock_surface.node_tree.links;uvnode=nodes.new('ShaderNodeUVMap');uvnode.uv_map='ScannedStoneUV'
+ for node in nodes:
+  if node.type=='TEX_IMAGE':links.new(uvnode.outputs['UV'],node.inputs['Vector'])
+  if node.type=='NORMAL_MAP':node.uv_map='ScannedStoneUV';node.inputs['Strength'].default_value=.4
+ for o in imported:bpy.data.objects.remove(o,do_unlink=True)
 # Closed authored crags replace the rejected open scan face. Four irregular lofted rings,
 # broad fractured planes, bevels and metric UVs; no repeated spheres or cliff stamps.
 rock_positions=[]
@@ -458,7 +472,19 @@ for i,(x,y,size) in enumerate(rock_positions):
  for material in rocks:
   if material not in crag.ms:crag.ms.append(material)
  tone=random.randrange(len(rocks));crag.mi=[crag.ms.index(rocks[max(0,min(len(rocks)-1,tone+random.choice([-1,0,0,0,1])))]) for face in faces]
- crag.finish(.045)
+ trial=rock_trial and 8<x<28
+ if trial:
+  if rock_surface not in crag.ms:crag.ms.append(rock_surface)
+  crag.mi=[crag.ms.index(rock_surface)]*len(crag.f)
+  for fi in range(len(crag.f)):crag.surface_rects[fi]=rock_patches[(i*7+fi*3)%len(rock_patches)]
+ ob=crag.finish(.08 if trial else .045,segments=2 if trial else 1)
+ if trial:
+  bpy.context.view_layer.objects.active=ob
+  mod=ob.modifiers.new('Weather-rounded closed boulder sculpture','SUBSURF');mod.levels=1;bpy.ops.object.modifier_apply(modifier=mod.name)
+  texture=bpy.data.textures.new('Mineral erosion volume '+str(i),type='CLOUDS');texture.noise_scale=.65;texture.noise_depth=1
+  mod=ob.modifiers.new('Low-amplitude mineral erosion','DISPLACE');mod.texture=texture;mod.strength=size*.09;mod.mid_level=.5;bpy.ops.object.modifier_apply(modifier=mod.name)
+  for face in ob.data.polygons:face.use_smooth=True
+
 # Grounded irregular stones around woodland and ruins give the open land scale cues.
 for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
  for j in range(3):

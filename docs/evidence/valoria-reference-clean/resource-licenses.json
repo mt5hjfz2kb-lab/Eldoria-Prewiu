@@ -62,6 +62,16 @@
       "asset_url": "https://polyhaven.com/a/sparse_grass",
       "source_manifest": "tools/valoria-reference-clean/ground-inputs.json",
       "changes": "Bounded terrain material sample; albedo/normal maps at max1k, no terrain height changes; matched native Unity A/B required. Raw sources retained."
+    },
+    {
+      "name": "Recovered mineral surface for bounded boulder sculpture",
+      "original_author": "Poly Haven rock_face_02",
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "asset_url": "https://polyhaven.com/a/rock_face_02",
+      "existing_source": "docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/cliff_rock_column.glb",
+      "sha256": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae",
+      "changes": "Only material images recovered and cropped onto closed, sculpted Eldoria boulders. No open scan geometry reused; no new download. Native same-camera/light A-B required."
     }
   ],
   "not_certified": {
@@ -71,7 +81,7 @@
   "rejected_candidates": [
     {
       "asset": "Open rock_face_02 scan fitted as river boulders",
-      "reason": "Actual native Unity view reads as repeated open sheets instead of closed boulders; rejected and replaced by individually lofted closed crag meshes, no scan textures retained."
+      "reason": "Open scan geometry rejected as repeated sheets; remains rejected. Revision38 recovers only verified CC0 surface images from the existing donor for new closed boulder meshes."
     }
   ],
   "new_external_material_assets": 3
