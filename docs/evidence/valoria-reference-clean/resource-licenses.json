@@ -1,7 +1,7 @@
 {
   "verified_at": "2026-10-17",
   "cost_eur": 0,
-  "new_downloads": 0,
+  "new_downloads": 4,
   "assets": [
     {
       "name": "Fortified gate",
@@ -35,6 +35,15 @@
       "name": "Bastion, arched bridge, paving, plots, broken wall corners, closed lofted bank crags, original weathered masonry, grass clumps, river and rock-intersection foam shaders",
       "author": "Codex reference-directed new Eldoria authored sources",
       "external_assets": []
+    },
+    {
+      "name": "Representative sandstone material study",
+      "original_author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "asset_url": "https://polyhaven.com/a/sandstone_blocks_05",
+      "source_manifest": "tools/valoria-reference-clean/stone-inputs.json",
+      "changes": "Only right Bastion flank; per-stone crop UV1, original UV0 retained for genuine same-camera/light Unity A/B; original raw 1k files retained. Not globally extended before visual inspection."
     }
   ],
   "not_certified": {
@@ -46,5 +55,6 @@
       "asset": "Open rock_face_02 scan fitted as river boulders",
       "reason": "Actual native Unity view reads as repeated open sheets instead of closed boulders; rejected and replaced by individually lofted closed crag meshes, no scan textures retained."
     }
-  ]
+  ],
+  "new_external_material_assets": 1
 }

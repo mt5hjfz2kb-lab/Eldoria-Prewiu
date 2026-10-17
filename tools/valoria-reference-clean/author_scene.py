@@ -25,6 +25,10 @@ def terrain_height(x,y):
  return h-4.9*(1-t)
 ROOT=os.getcwd(); OUT=os.path.join(ROOT,'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources');EV=os.path.join(ROOT,'docs/evidence/valoria-reference-clean')
 os.makedirs(OUT,exist_ok=True);os.makedirs(EV,exist_ok=True)
+request=json.load(open(os.path.join(ROOT,'tools/valoria-reference-clean/request.json')))
+stone_trial=request.get('stone_treatment')=='zone_pbr'
+surface_trial_stats={'scope':'right Bastion flank only','mapped_boxes':0,'original_uv0_preserved':True,'new_uv_channel':'ScannedStoneUV','lighting_changed':False}
+external_inputs=[]
 tools={'blender_version':bpy.app.version_string,'blender_executed':True,'ollama':'NOT_REACHABLE','blendermcp_socket':'NOT_REACHABLE'}
 try:
  with urllib.request.urlopen('http://127.0.0.1:11434/api/tags',timeout=3) as r:tools['ollama']=json.load(r)
@@ -57,6 +61,31 @@ if os.path.isfile(npath):
  im=bpy.data.images.load(npath,check_existing=True);im.colorspace_settings.name='Non-Color';im.pack()
  for m in stone+[trim]+rocks+blue:
   n=m.node_tree.nodes.new('ShaderNodeTexImage');n.image=im;nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=.22;m.node_tree.links.new(n.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],m.node_tree.nodes.get('Principled BSDF').inputs['Normal'])
+# One representative material intervention before any scene-wide replacement.
+# Original metric UV0 and geometry stay intact, allowing genuine same-run A/B in Unity.
+trial_stone=[]
+stone_patches=[(42,28,215,150),(252,27,405,150),(445,28,640,150),(685,25,995,150),(42,190,280,308),(324,192,510,308),(552,190,760,308),(810,192,978,308),(165,347,310,467),(343,347,500,466),(545,347,674,466),(707,350,918,466),(220,510,345,617),(388,510,615,617),(665,510,900,617),(65,673,180,742),(238,675,350,742),(393,674,514,742),(554,672,700,742),(760,674,990,742)]
+if stone_trial:
+ manifest=json.load(open(os.path.join(ROOT,'tools/valoria-reference-clean/stone-inputs.json')))
+ source_dir=os.path.join(OUT,'MaterialInputs',manifest['asset']);os.makedirs(source_dir,exist_ok=True)
+ images={}
+ for entry in manifest['files']:
+  dest=os.path.join(source_dir,entry['file'])
+  valid=os.path.isfile(dest) and hashlib.sha256(open(dest,'rb').read()).hexdigest()==entry['sha256']
+  if not valid:
+   data=urllib.request.urlopen(urllib.request.Request(entry['url'],headers={'User-Agent':'Eldoria-Valoria-Authoring/1.0'}),timeout=60).read()
+   assert hashlib.sha256(data).hexdigest()==entry['sha256'], 'CC0 source hash mismatch'
+   with open(dest,'wb') as f:f.write(data)
+  image=bpy.data.images.load(dest,check_existing=True);image.name='Poly Haven sandstone05 '+entry['channel'];image.use_fake_user=True
+  if entry['channel']!='Diffuse':image.colorspace_settings.name='Non-Color'
+  image.pack();images[entry['channel']]=image
+  external_inputs.append(dict(entry,license=manifest['license'],asset_url=manifest['asset_url']))
+ json.dump(manifest,open(os.path.join(source_dir,'license-manifest.json'),'w'),indent=2)
+ for i in range(6):
+  m=mat('Trial sandstone '+str(i),(1,1,1));nodes=m.node_tree.nodes;links=m.node_tree.links;p=nodes.get('Principled BSDF');uvnode=nodes.new('ShaderNodeUVMap');uvnode.uv_map='ScannedStoneUV'
+  for channel,socket_name in [('Diffuse','Base Color'),('Rough','Roughness')]:
+   node=nodes.new('ShaderNodeTexImage');node.image=images[channel];links.new(uvnode.outputs['UV'],node.inputs['Vector']);links.new(node.outputs['Color'],p.inputs[socket_name])
+  node=nodes.new('ShaderNodeTexImage');node.image=images['nor_gl'];links.new(uvnode.outputs['UV'],node.inputs['Vector']);normal=nodes.new('ShaderNodeNormalMap');normal.uv_map='ScannedStoneUV';normal.inputs['Strength'].default_value=.8;links.new(node.outputs['Color'],normal.inputs['Color']);links.new(normal.outputs['Normal'],p.inputs['Normal']);trial_stone.append(m)
 # Bake weathered earth patches with irregular cell boundaries, rather than a flat brown fill.
 N=512;yy,xx=np.mgrid[0:N,0:N]/N;rng=np.random.default_rng(892)
 dists=[]
@@ -65,7 +94,7 @@ a=np.sort(np.stack(dists),axis=0);edge=np.clip((np.sqrt(a[1])-np.sqrt(a[0]))*90,
 noise=rng.random((N,N))*.09;value=.79+.15*edge+noise;rgba=np.ones((N,N,4),dtype=np.float32);rgba[:,:,:3]=value[:,:,None]*np.array([.53,.345,.18]);image=bpy.data.images.new('Valoria original cracked earth',width=N,height=N);image.pixels.foreach_set(rgba.reshape(-1));image.pack();n=soil.node_tree.nodes.new('ShaderNodeTexImage');n.image=image;soil.node_tree.links.new(n.outputs['Color'],soil.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
 # Shared mesh builders consolidate masonry by semantic structure, not thousands of GameObjects.
 class Mesh:
- def __init__(self,n):self.n=n;self.v=[];self.f=[];self.mi=[];self.ms=[]
+ def __init__(self,n):self.n=n;self.v=[];self.f=[];self.mi=[];self.ms=[];self.surface_rects={}
  def add(self,v,f,m):
   off=len(self.v);self.v.extend(v);self.f.extend([tuple(off+i for i in q) for q in f]);
   if m not in self.ms:self.ms.append(m)
@@ -77,6 +106,11 @@ class Mesh:
    n=px*17.31+py*31.17+pz*11.73
    jitter=lambda k:((sin(n+k)*43758.5453)%1)*2-1
    v.append((px+wear*jitter(1.3),py+wear*jitter(2.7),pz+wear*jitter(4.1)))
+  zone=stone_trial and self.n=='Bastion_I' and 6.3<x<10.6 and 26.5<y<32.5 and z<7.6 and m in stone
+  if zone:
+   m=trial_stone[stone.index(m)];patch=stone_patches[int(abs(x*137+y*251+z*317)*100)%len(stone_patches)]
+   for face_index in range(len(self.f),len(self.f)+6):self.surface_rects[face_index]=patch
+   surface_trial_stats['mapped_boxes']+=1
   self.add(v,[(0,4,6,2),(1,3,7,5),(0,1,5,4),(2,6,7,3),(0,2,3,1),(4,5,7,6)],m)
  def finish(self,bevel=.035):
   me=bpy.data.meshes.new(self.n);me.from_pydata(self.v,[],self.f);me.update();bm=bmesh.new();bm.from_mesh(me);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free();o=bpy.data.objects.new(self.n,me);bpy.context.collection.objects.link(o)
@@ -88,6 +122,16 @@ class Mesh:
    n=p.normal;axis=max(range(3),key=lambda i:abs(n[i]));axes=[i for i in range(3) if i!=axis]
    for li in p.loop_indices:
     q=me.vertices[me.loops[li].vertex_index].co;uv.data[li].uv=(q[axes[0]]/3.5,q[axes[1]]/3.5)
+  if self.surface_rects:
+   scan_uv=me.uv_layers.new(name='ScannedStoneUV')
+   for p in me.polygons:
+    if p.index not in self.surface_rects:
+     for li in p.loop_indices:scan_uv.data[li].uv=me.uv_layers['MetricUV'].data[li].uv
+     continue
+    x0,y0,x1,y1=self.surface_rects[p.index];axis=max(range(3),key=lambda i:abs(p.normal[i]));axes=[i for i in range(3) if i!=axis];points=[me.vertices[i].co for i in p.vertices];lo=[min(q[a] for q in points) for a in axes];hi=[max(q[a] for q in points) for a in axes]
+    for li in p.loop_indices:
+     q=me.vertices[me.loops[li].vertex_index].co;u=(q[axes[0]]-lo[0])/max(1e-6,hi[0]-lo[0]);v=(q[axes[1]]-lo[1])/max(1e-6,hi[1]-lo[1]);scan_uv.data[li].uv=((x0+(x1-x0)*u)/1024,1-y1/1024+(y1-y0)*v/1024)
+  me.uv_layers.active_index=0;me.uv_layers['MetricUV'].active_render=True
   if bevel:
    mod=o.modifiers.new('Light-catching dressed edges','BEVEL');mod.width=bevel;mod.segments=1;mod.limit_method='ANGLE';bpy.context.view_layer.objects.active=o
    bpy.ops.object.modifier_apply(modifier=mod.name)
@@ -494,6 +538,7 @@ for image in bpy.data.images:
  if image.size[0]>1024 or image.size[1]>1024:
   factor=1024/max(image.size);image.scale(max(1,int(image.size[0]*factor)),max(1,int(image.size[1]*factor)));image.pack()
 # Source hashes and editability are evidence, never an artistic approval.
+if stone_trial:assert surface_trial_stats['mapped_boxes']>=50, 'Representative stone zone was not actually mapped'
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   for slot in o.material_slots:
@@ -506,5 +551,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain','crag_refinement':'main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'surface_trial':surface_trial_stats if stone_trial else None,'external_downloads':external_inputs,'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

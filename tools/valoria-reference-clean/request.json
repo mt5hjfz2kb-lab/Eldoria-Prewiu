@@ -1,11 +1,12 @@
 {
-  "stage": "integration",
+  "stage": "art",
   "validate_play": true,
-  "revision": 33,
+  "revision": 34,
   "budget_eur": 0,
-  "validated_runtime_source": "211e299b4e7d188b1daa23dc007582ac78009cc4",
-  "validated_run": 39072169693,
+  "validated_runtime_source": "1f99b02c11b55e9fda453152de429b8091582fe9",
+  "validated_run": 39072509572,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Actual Unity32 warm meadow finish visually inspected and stable, geometry31 unchanged. Close mobile camera integration: initial terrain160x180 and fixed max zoom65 allow seeing outside map at wide phone aspect/extreme pan. Extend only peripheral real terrain to200x220 and river span; preserve all architecture, original world height equation, framing and plots. Player pan/zoom/home now fit the real terrain projection with margin, and adapt to aspect changes. Native Play probe renders 2340x1080 phone home/boundary and traces actual TerrainCollider at all 4 corners for home, max zoom and extreme pan (12 hits), alongside existing image parity, 96 floor/headroom, stairs, picking and camera API checks. No device/FPS certification. Android APK follows this verified framing.",
-  "auxiliary_review": false
+  "art_correction": "Owner reinforced ARTISTIC PRIORITY at 23:48: preserve current composition/gameplay, seek perceptible jump in materials/lighting first, then organic terrain, river/nature and architecture. Native33 technical closure passed 96 floor/headroom, 12 wide-frame terrain corner hits, 5 picks, 6 stairs, camera operations and image parity. Begin substantive representative stone intervention only on right Bastion flank: inspect existing flat material atlas, use verified CC0 Poly Haven Sandstone Blocks05 raw1k diffuse/GL normal/roughness (sources+hashes retained), author per-stone cropped atlas UV1 in Blender to avoid doubled mortar joints; preserve original UV0 and every vertex/silhouette. Keep carved trim/roof/other scene materials unchanged. Native Unity SAME-RUN A/B switches only zone material arrays back to actual original Warm limestone materials using UV0, and forward to scanned UV1 PBR, capturing matched main and hero cameras under identical unchanged lights. Assert camera/light/mesh identity in stone-zone-comparison.json. Inspect these actual images critically before any extension. No ART approval by script and no APK priority over art.",
+  "auxiliary_review": false,
+  "stone_treatment": "zone_pbr"
 }
