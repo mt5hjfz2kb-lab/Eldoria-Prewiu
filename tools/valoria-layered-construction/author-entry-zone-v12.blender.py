@@ -55,7 +55,13 @@ for name,obj in pieces.items():
    if node.type=='TEX_IMAGE' and node.image:
     names.append(node.image.name)
  donor_images[name]=names
-assert not any(donor_images.values()),'WallFamily has externally sourced textures; review licensing before import'
+# Source donor texture provenance is not certified. Explicitly DISCARD every
+# imported donor material, retaining only vertex/face geometry and UVs.
+# Replace every slot with license-checked original V7 PBR/trim references.
+# This never exports donor textures or modifies the original donor .blend.
+v7rock=next(m for m in bpy.data.materials if m.name.startswith('ENTRY_existing_rock_PBR'))
+v7trim=next((m for m in bpy.data.materials if m.name=='Eldoria_trim'),roadstone)
+
 # Geometry only from the actual modular source. Foundation alignments keyed to
 # the frozen LowerGate V7 WORLD bounds (on this Blender Z-up landscape).
 gate=report['gate_world_bounds']
@@ -97,10 +103,14 @@ for original_name,label,cx,cy,zmin,mirror in plan:
  if mirror:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
  bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
  bm.to_mesh(obj.data);bm.free();obj.data.update()
- # Use existing PBR on masonry faces while keeping structural caps and shadows.
+ # Replace ALL unverified donor material slots. The only image-bearing
+ # maps exported are the already packed, licensed V7 photographic materials.
  for idx,m in enumerate(obj.data.materials):
-  if m and (m.name.endswith('wall_face') or m.name.endswith('wall_base')):
-   obj.data.materials[idx]=roadstone
+  label=m.name if m else ''
+  if label.endswith('wall_cap'):obj.data.materials[idx]=v7trim
+  elif label.endswith('wall_shadow'):obj.data.materials[idx]=v7rock
+  else:obj.data.materials[idx]=roadstone
+ assert all(m in (roadstone,v7trim,v7rock) for m in obj.data.materials)
  b=[v.co for v in obj.data.vertices]
  actual_min=Vector([min(p[i] for p in b) for i in range(3)])
  actual_max=Vector([max(p[i] for p in b) for i in range(3)])
@@ -133,9 +143,9 @@ result={'stage':'V12 genuine selective existing WallFamily architectural extensi
  'triangles':triangles,'source_triangles':342006,'donor_texture_nodes':donor_images,
  'reused_wall_meshes':placements,'existing_models_reused':True,
  'EastPartialWall_not_used':'Original source diagonal world bounds would not join the gate without unacceptable anisotropic deformation',
- 'existing_v7_road_PBR_reused':True,
+ 'existing_v7_road_PBR_reused':True,'uncertified_donor_materials_discarded':True,
  'original_source_geometry_unchanged':True,'gameplay_colliders_unchanged':True,
- 'license_scope':'Existing project-authored WallFamily + packed verified V7 PBR map only',
+ 'license_scope':'Existing project-authored WallFamily GEOMETRY only; every imported donor texture/material discarded; packed verified V7 PBR and gate trim only',
  'payment_eur':0,'physical_mobile_tested':False,'full_frame_art_pass':False}
 open(os.path.join(out,'entry-source.json'),'w',encoding='utf8').write(json.dumps(result,indent=2)+'\n')
 print('VALORIA_ENTRY_V12_SOURCE_COMPLETE',json.dumps(result))
