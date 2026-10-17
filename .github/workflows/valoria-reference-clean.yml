@@ -1,0 +1,90 @@
+name: '[VALORIA] Clean reference reconstruction / native Unity'
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths: ['tools/valoria-reference-clean/request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-reference-clean-native
+  cancel-in-progress: false
+jobs:
+  native:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    defaults:
+      run:
+        working-directory: valoria-layered-source
+    steps:
+      - name: Recover installed Git
+        working-directory: .
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-layered-source
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-clean-live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Check live exclusive lease and actual native tools
+        shell: powershell
+        run: |
+          $r=Get-Content "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-work-valoria-reference-clean-20261017'}).Count -ne 1){throw 'Current clean-scene claim missing'}
+          if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Runner reserved by another workstream'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
+          New-Item -ItemType Directory -Force docs/evidence/valoria-reference-clean|Out-Null
+      - name: Execute requested stage in native Unity
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
+          if($req.stage -eq 'art'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_scene.py
+            if($LASTEXITCODE){throw 'Blender authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'
+          }
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
+          Copy-Item $log docs/evidence/valoria-reference-clean/native-unity.log
+          Get-Content $log -Tail 100
+          if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
+          if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
+      - name: Persist independent scene, models, prefabs and actual captures on construction branch
+        shell: powershell
+        run: |
+          git config user.name 'Valoria reference clean builder'
+          git config user.email 'valoria-clean@users.noreply.github.com'
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ docs/evidence/valoria-reference-clean/
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'art(valoria): native independent reference scene and genuine Unity evidence'
+            if($LASTEXITCODE){throw 'Commit failed'}
+            git push origin HEAD:construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Concurrent branch change; preserve artifacts without force push'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-reference-clean-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/**
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**
+            ${{ runner.temp }}/valoria-reference-clean.log
+          if-no-files-found: warn
