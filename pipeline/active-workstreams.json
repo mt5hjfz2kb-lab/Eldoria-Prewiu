@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-17T22:10:16.343Z",
+  "updated_at": "2026-10-17T22:25:31.587Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_STONE_STYLE_CORRECTION_AND_ORGANIC_GROUND_ZONE_AB",
-      "next": "Native35 complete and genuine same-camera/light/mesh stone A/B inspected: visible but too coarse/contrasty, not approved for global extension. Native36 source8768077a38217bc764e37dfb8f6f2e0dd54d4dbf run39073920387 adapts scanned stone palette/normal in Blender and tests bounded organic meadow textures, with real matched camera/light before-after. Preserve current layout/gameplay; extend only after visual inspection. APK deferred behind owner art priority.",
+      "phase": "REFERENCE_CLEAN_LIMESTONE_EXTENDED_ORGANIC_MEADOW_AND_SCULPTED_BANK_AB",
+      "next": "Native37 genuine main/detail images inspected: limestone visibly applied to compact keep, gate and ruins; silhouettes/layout/gameplay unchanged. Organic ground study now readable; native38 extends continuously graded leaf/loam in four terrain layers. Native38 also sculpts only right-bank boulders using a recovered existing CC0 mineral surface, with same-run previous-GLB native A/B and hash verification before any extension. Windows retained; no physical device certification; continue art and river finish.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -90,9 +90,9 @@
         "canonical_save_touched": false,
         "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md",
         "reference_clean": {
-          "source_commit": "b5b11ceca6a624917a71392d944053b0fe736444",
-          "output_commit": "1f99b02c11b55e9fda453152de429b8091582fe9",
-          "native_run": 39072509572,
+          "source_commit": "5145d312b07089ab9617166a99cc22c7949d791e",
+          "output_commit": "cb672f779b29ef16bb71855e3022e51906b9a16b",
+          "native_run": 39074406414,
           "native_run_result": "success",
           "scene": "Valoria_Reference_Clean.unity",
           "route_passes": 96,
@@ -109,16 +109,16 @@
           "runner_released": false,
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
-          "playmode_visual_regression": "FIXED_BY_ALL_ART_STATIC_FLAGS_FALSE_REV31; PNG_PARITY_PASS_THROUGH_REV33",
-          "current_run": 39073920387,
-          "current_source": "8768077a38217bc764e37dfb8f6f2e0dd54d4dbf",
+          "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV37",
+          "current_run": 39074798245,
+          "current_source": "d920b3686ea3cb91beb9f4db563ae7d2a12b36e9",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
-          "source_sha": "5e3dea5a24e664f2851c282d34040d0fd2a9272f",
-          "output_sha": "101365c3c8c944df27908cb3527b91cbf2fcf1af",
-          "run_id": 39073536686,
+          "source_sha": "5145d312b07089ab9617166a99cc22c7949d791e",
+          "output_sha": "cb672f779b29ef16bb71855e3022e51906b9a16b",
+          "run_id": 39074406414,
           "stone_zone_camera_light_geometry_identity": true,
-          "stone35_visual_review": "CLEAR CHANGE BUT TOO COARSE; DO NOT EXTEND YET"
+          "stone35_visual_review": "Superseded by revised36 palette and native37 extension; comparison evidence preserved"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
