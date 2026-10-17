@@ -54,7 +54,7 @@ namespace Eldoria.ValoriaLayered {
 #endif
   }
   void OnDestroy(){if(!ownsRuntime)return;active=null;SceneManager.sceneLoaded-=Loaded;SliceContentProfiles.SetRuntimeProfileOverride(priorProfile);}
-  [Serializable] sealed class ProbeResult {public string status,scene,profile,clock_mode,save_scope,error;public bool ui_build_sawmill,ui_build_barracks,bastion_i_ii,persistence,existing_presenter_picking,canonical_save_touched;public int revision,sawmill,barracks,bastion;}
+  [Serializable] sealed class ProbeResult {public string status,scene,profile,clock_mode,save_scope,error;public bool ui_build_sawmill,ui_build_barracks,bastion_i_ii,persistence,existing_presenter_picking,canonical_save_touched;public long revision;public int sawmill,barracks,bastion;}
   static void Check(bool ok,string why){if(!ok)throw new Exception("ENTRY_GAMEPLAY: "+why);}
   IEnumerator Probe(){
    yield return null;yield return null;
@@ -88,7 +88,15 @@ namespace Eldoria.ValoriaLayered {
    }catch(Exception e){result.status="FAIL";result.error=e.ToString();Debug.LogError(e);}
    string dir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..","docs/evidence/valoria-layered-construction-20261016/playable-entry-v1"));Directory.CreateDirectory(dir);
    File.WriteAllText(Path.Combine(dir,"gameplay-playmode.json"),JsonUtility.ToJson(result,true));
-   if(result.status!="FAIL")ScreenCapture.CaptureScreenshot(Path.Combine(dir,"playmode-built-i-ii.png"));
+   if(result.status!="FAIL"){
+    // Genuine playmode geometry capture; overlay HUD is verified through actual UI
+    // commands above, but is not composited into this Camera.Render evidence.
+    var view=UnityEngine.Object.FindFirstObjectByType<ValoriaUprightViewBridge>();view.Sync();var c=view.RenderCamera;
+    var prev=c.targetTexture;var active=RenderTexture.active;float aspect=c.aspect;
+    var rt=new RenderTexture(1536,1024,24){antiAliasing=4};var tex=new Texture2D(1536,1024,TextureFormat.RGB24,false);
+    try{c.aspect=1.5f;c.targetTexture=rt;c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,1536,1024),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(dir,"playmode-built-i-ii-geometry.png"),tex.EncodeToPNG());}
+    finally{c.targetTexture=prev;c.aspect=aspect;RenderTexture.active=active;rt.Release();Destroy(rt);Destroy(tex);}
+   }
    yield return new WaitForSecondsRealtime(2);
 #if UNITY_EDITOR
    Debug.Log("VALORIA_ENTRY_PLAYMODE_PROBE_COMPLETE "+result.status);UnityEditor.EditorApplication.Exit(result.status=="FAIL"?1:0);
