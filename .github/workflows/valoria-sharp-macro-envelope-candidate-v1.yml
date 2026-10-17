@@ -1,11 +1,10 @@
-name: "[VALORIA] V12 fortification integrated in preserved V3 gameplay I-II proof"
+name: "[VALORIA] V13 existing bastion family WORLD-scale survey (no scene mutation)"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryPlayableV3.cs'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntimeV3.cs'
+      - 'tools/valoria-layered-construction/inspect-existing-bastion-source-v13.blender.py'
 permissions:
   contents: write
   actions: read
@@ -40,7 +39,7 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
-      - name: Check exclusive workstream, free Unity editor and owner-approved reference
+      - name: Exclusive live owner, idle renderer and frozen V7 source gate
         shell: powershell
         run: |
           $a=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
@@ -48,74 +47,54 @@ jobs:
           $id='valoria-master-plan-layered-construction-20261016'
           $owner='chatgpt-normal-valoria-construction-20261017'
           foreach($r in @($a,$b)){
-            if(@($r.active|Where-Object {$_.id -eq $id -and $_.owner -eq $owner -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Exclusive owner mismatch'}
-            if(@($r.active|Where-Object {$_.id -ne $id -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Incompatible runner owner'}
+            if(@($r.active|Where-Object {$_.id -eq $id -and $_.owner -eq $owner -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Exclusive ownership lease not confirmed'}
+            if(@($r.active|Where-Object {$_.id -ne $id -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Incompatible Windows owner'}
           }
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender busy'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
-          $h=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower()
-          if($h -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Art reference mismatch'}
-          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV12_CANDIDATE.unity')){throw 'V12 source scene missing'}
-      - name: Import actual Blender entry zone and capture comparable player-camera A/B
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native Unity/Blender processes busy'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity editor unavailable'}
+          if((Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower() -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Reference mismatch'}
+          $old='docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/ValoriaEntryZoneV7.blend'
+          if(-not(Test-Path $old) -or (Get-FileHash $old -Algorithm SHA256).Hash.ToLower() -ne '24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381'){throw 'Saved V7 BLEND identity mismatch'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV7_CANDIDATE.unity')){throw 'Genuine V7 Unity scene absent'}
+      - name: Inspect existing fortification source meshes in Blender WORLD before assembly
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/playable-entry-v3'
-          New-Item -ItemType Directory -Force -Path $dir|Out-Null
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-spatial-v1.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV3.Build','-logFile',$log)
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(2400000)){
-            & taskkill.exe /PID $p.Id /T /F|Out-Null
-            throw 'Macro screen-space validation timeout'
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){
+            foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
+              if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+              if($blender){break}
+            }
           }
-          Get-Content $log -Tail 90
-          Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_PLAYABLE_SCENE_COMPLETE' -Quiet)){
-            throw "Native 3D SHARP macro diagnostic failed exit=$($p.ExitCode)"
-          }
-      - name: Play actual scene with existing UI, LocalGateway, I-II rules and temporary save
-        shell: powershell
-        env:
-          VALORIA_ENTRY_PROBE: '1'
-        run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/playable-entry-v3'
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-gameplay.log'
-          $args=@('-batchmode','-force-d3d11','-screen-width','1536','-screen-height','1024','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV3.PlayProbe','-logFile',$log)
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(900000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Playmode timeout'}
-          Get-Content $log -Tail 100
-          Copy-Item $log "$dir/playmode-unity.log"
-          if($p.ExitCode -ne 0){throw 'Existing-system gameplay probe failed'}
-          $x=Get-Content "$dir/gameplay-playmode.json" -Raw|ConvertFrom-Json
-          if($x.status -eq 'FAIL' -or -not $x.persistence -or -not $x.ui_build_sawmill -or -not $x.ui_build_barracks -or -not $x.bastion_i_ii -or -not $x.recruit_ui -or -not $x.march_ui -or -not $x.chapter_ii_complete -or -not $x.world_navigation -or -not $x.return_to_entry -or -not $x.isolated_reset -or $x.canonical_save_touched){throw 'Progression and isolated persistence gate failed'}
-      - name: Save only isolated results, no forced push or superseding original scenes
+          if(-not $blender){throw 'Native Blender missing'}
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v13-survey'
+          New-Item -ItemType Directory -Force $dir|Out-Null
+          & $blender -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/inspect-existing-bastion-source-v13.blender.py
+          if($LASTEXITCODE){throw 'Native source family WORLD survey failed'}
+          $f=Join-Path $dir 'bastion-source-world-bounds.json'
+          if(-not(Test-Path $f)){throw 'Native geometric proof not saved'}
+          $x=Get-Content $f -Raw|ConvertFrom-Json
+          if($x.status -ne 'NATIVE_WORLD_SURVEY_READ_ONLY' -or $x.families.Count -lt 3){throw 'Invalid real-source bastion survey'}
+          Write-Host 'REAL_BASTION_FAMILY_WORLD_SURVEY_PASS'
+      - name: Preserve read-only source family evidence, no scene mutation
         shell: powershell
         run: |
-          git config user.name 'Valoria native macro'
-          git config user.email 'valoria-macro@users.noreply.github.com'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_PlayableV3.unity
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV3/
-          foreach($meta in @('Editor/ValoriaEntryPlayableV3.cs.meta','ValoriaEntryExperimentalRuntimeV3.cs.meta','GeneratedPlayableEntryV3.meta','Valoria_SHARP_Entry_PlayableV3.unity.meta')){
-            $mp="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/$meta"
-            if(Test-Path $mp){git add -f -- $mp}
-          }
+          git config user.name 'Valoria native builder'
+          git config user.email 'valoria-builder@users.noreply.github.com'
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v13-survey/bastion-source-world-bounds.json
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): isolated playable scene and real UI I-II progression evidence'
+            git commit -m 'evidence(valoria): verified existing bastion family native world bounds for V13'
             git reset --hard HEAD
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Cannot fetch latest owner HEAD'}
+            if($LASTEXITCODE){throw 'Cannot fetch latest owner branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve artifact, never force'}
+            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve source evidence, never force'}
             git push origin HEAD:construction/valoria-master-plan-layers-20261016
-            if($LASTEXITCODE){throw 'Concurrent push, preserve artifact, never force'}
+            if($LASTEXITCODE){throw 'Concurrent push failed; preserve result in artifact'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-playable-entry-v3-${{ github.run_id }}
-          path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/**
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_PlayableV3.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV3/**
+          name: valoria-bastion-family-world-bounds-${{ github.run_id }}
+          path: valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v13-survey/bastion-source-world-bounds.json
           if-no-files-found: warn
