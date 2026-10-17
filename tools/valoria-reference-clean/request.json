@@ -1,10 +1,10 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 20,
+  "revision": 21,
   "budget_eur": 0,
   "validated_runtime_source": "074e852048e21ee2184c9534beb037ab718e23ba",
   "validated_run": 39066408916,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Native close-up shows arch cutter depth9 misses outer dressed veneer. Extend to depth12 and verify evaluated mesh opening/pier with independent Blender rays before Unity. Refine shared terrain equation with blended flat building pads and gentle outer relief, meadow normal texture, warmer patch variation, closed grass tufts and moderated shrub greens. Same scene/camera; native visual and PlayMode recheck."
+  "art_correction": "Revision20 actual Blender ray guard rejected boolean spandrel geometry; no promotion. Replace overlapping-solid CSG with one closed extrusion of a sampled arch profile and analytically clipped dressed stone courses. Retain evaluated opening/pier ray guards before export. Keep the pending terrain/grass refinement and all native PlayMode gates."
 }

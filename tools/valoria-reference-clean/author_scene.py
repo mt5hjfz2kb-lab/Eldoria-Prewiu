@@ -210,16 +210,49 @@ for o in objs:
 # Bridge with genuine through arches, solid spandrels and voussoir bands.
 b=Mesh('Bridge_Masonry');b.box((0,-23,.10),(9,24,.70),stone[3])
 # Side walls boolean cuts are applied below, retaining editable blend geometry.
+def arch_lower(y):
+ return max([ -3.675 ]+[ -3.75+math.sqrt(max(0,3.7**2-(y-c)**2)) for c in [-27.25,-18.75] if abs(y-c)<=3.7 ])
+def extrude_yz(g,x,depth,poly,material):
+ n=len(poly);verts=[(x+side*depth/2,y,z) for side in [-1,1] for y,z in poly]
+ g.add(verts,[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]+[(i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n)],material)
 for X in [-4.12,4.12]:
- side=Mesh('Bridge_ArchSpandrel');courses(side,X,-23,-3.675,.75,24,3.65,stone_size=.95);ob=side.finish(.025)
- for Y in [-27.25,-18.75]:
-  bpy.ops.mesh.primitive_cylinder_add(vertices=48,radius=3.7,depth=12,location=(0,Y,-3.75),rotation=(0,pi/2,0));cut=bpy.context.object
-  mod=ob.modifiers.new('Structural through arch','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cut;bpy.context.view_layer.objects.active=ob;bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cut,do_unlink=True)
-  arch(b,X,Y,-3.75,3.7,.48,.95,trim,axis='x',segments=19)
- # Independent rays through the evaluated spandrel catch any uncut veneer layer.
+ # Closed profile extrusion: no overlapping-solid boolean solver or residual veneer.
+ samples=sorted(set([-35,-11,-30.95,-23.55,-22.45,-15.05]+[c+3.7*cos(i*pi/48) for c in [-27.25,-18.75] for i in range(49)]))
+ side=Mesh('Bridge_ArchSpandrel');vertices=[]
+ for y in samples:vertices.extend([(X-.375,y,arch_lower(y)),(X+.375,y,arch_lower(y)),(X+.375,y,-.025),(X-.375,y,-.025)])
+ faces=[(3,2,1,0),tuple((len(samples)-1)*4+i for i in range(4))]
+ for j in range(len(samples)-1):
+  for k in range(4):faces.append((j*4+k,j*4+(k+1)%4,(j+1)*4+(k+1)%4,(j+1)*4+k))
+ side.add(vertices,faces,stone[2]);ob=side.finish(.015)
+ skin=Mesh('Bridge_ArchSpandrel_DressedCourses')
+ for row in range(8):
+  z0=-3.675+row*3.65/8+.016;z1=-3.675+(row+1)*3.65/8-.016
+  for j in range(27):
+   ya=-35+(j-.5*(row%2))*24/26+.016;yb=min(-11,-35+(j+1-.5*(row%2))*24/26)-.016;ya=max(-35,ya)
+   if yb<=ya:continue
+   pieces=[(ya,yb)]
+   # Analytically subtract the arch void at the top of this row. Remaining polygons
+   # follow the arch curve at their lower edge instead of stamping a closed block over it.
+   for center in [-27.25,-18.75]:
+    d=math.sqrt(max(0,3.7**2-(z1+3.75)**2));lo=center-d;hi=center+d;remaining=[]
+    for a,c in pieces:
+     if hi<=a or lo>=c:remaining.append((a,c))
+     else:
+      if lo>a:remaining.append((a,lo-.002))
+      if hi<c:remaining.append((hi+.002,c))
+    pieces=remaining
+   for ya,yb in pieces:
+    if yb-ya<.025:continue
+    lower=[(ya+(yb-ya)*k/6,max(z0,arch_lower(ya+(yb-ya)*k/6))) for k in range(7)]
+    if any(z>=z1 for y,z in lower):continue
+    poly=lower+[(yb,z1),(ya,z1)]
+    for side_sign in [-1,1]:extrude_yz(skin,X+side_sign*.40,.12,poly,random.choice(stone))
+ veneer=skin.finish(.012)
  bpy.context.view_layer.update()
- for Y in [-27.25,-18.75]:assert not ob.ray_cast(Vector((-7,Y,-1.2)),Vector((1,0,0)),distance=14)[0], 'Bridge arch is obstructed by actual mesh'
+ for test in [ob,veneer]:
+  for Y in [-27.25,-18.75]:assert not test.ray_cast(Vector((-7,Y,-1.2)),Vector((1,0,0)),distance=14)[0], 'Profile bridge arch is obstructed'
  assert ob.ray_cast(Vector((-7,-23,-1.2)),Vector((1,0,0)),distance=14)[0], 'Bridge central pier missing'
+ for Y in [-27.25,-18.75]:arch(b,X,Y,-3.75,3.7,.48,.95,trim,axis='x',segments=19)
  for y in range(-34,-10,2):courses(b,X,y,.45,.7,1.96,.85)
  b.box((X,-23,1.36),(.93,24,.21),trim)
 for X in [-4.2,4.2]:
