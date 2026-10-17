@@ -40,14 +40,19 @@ for v in foot.data.vertices:
   except AssertionError:pass
 # Real contact measurement is reported, never substituted with cosmetic water.
 # A broad irregular dirt scar replaces each old clean-edged beige route renderer.
-def make_dirt_material():
- m=bpy.data.materials.new('ENTRY_V8_earth_organic_route_CC0_derived')
+def flat_material(name,color,roughness,metallic=0.):
+ m=bpy.data.materials.new(name)
  m.use_nodes=True
- p=m.node_tree.nodes.get('Principled BSDF')
- p.inputs['Base Color'].default_value=(.25,.21,.155,1)
- p.inputs['Roughness'].default_value=.98
+ nodes=m.node_tree.nodes
+ links=m.node_tree.links
+ p=next((node for node in nodes if node.type=='BSDF_PRINCIPLED'),None) or nodes.new('ShaderNodeBsdfPrincipled')
+ output=next((node for node in nodes if node.type=='OUTPUT_MATERIAL'),None) or nodes.new('ShaderNodeOutputMaterial')
+ if not p.outputs['BSDF'].is_linked:links.new(p.outputs['BSDF'],output.inputs['Surface'])
+ p.inputs['Base Color'].default_value=color
+ p.inputs['Roughness'].default_value=roughness
+ p.inputs['Metallic'].default_value=metallic
  return m
-dirt=make_dirt_material()
+dirt=flat_material('ENTRY_V8_earth_organic_route_CC0_derived',(.25,.21,.155,1),.98)
 # Use existing licensed PBR stone/shore materials, no new asset downloads.
 materials=[dirt,roadmat,shoremat]
 verts=[];faces=[];mats=[]
@@ -135,12 +140,7 @@ for v in water.data.vertices:
  x,y=v.co.x,v.co.y
  v.co.z+=.020*math.sin(x*.87+y*.58)+.013*math.sin(x*1.91-y*.83)
 wat.update()
-watermat=bpy.data.materials.new('ENTRY_V8_ColdMutedRiver')
-watermat.use_nodes=True
-pr=watermat.node_tree.nodes.get('Principled BSDF')
-pr.inputs['Base Color'].default_value=(.066,.145,.152,1)
-pr.inputs['Metallic'].default_value=.13
-pr.inputs['Roughness'].default_value=.47
+watermat=flat_material('ENTRY_V8_ColdMutedRiver',(.066,.145,.152,1),.47,.13)
 water.data.materials.clear();water.data.materials.append(watermat)
 # Export all genuine source scene meshes as a full replacement, not additive
 # duplicates. Unity V8 scene disables old V7 artwork before importing this GLB.
