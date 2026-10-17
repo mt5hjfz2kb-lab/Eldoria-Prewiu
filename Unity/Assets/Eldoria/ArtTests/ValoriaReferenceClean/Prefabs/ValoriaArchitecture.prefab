@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 9219943618886416879}
   - component: {fileID: 6511569816402036546}
   - component: {fileID: 7877009249026186153}
+  - component: {fileID: 6695089090367389188}
   m_Layer: 0
   m_Name: Gate_LowerGate_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &9219943618886416879
 Transform:
@@ -90,6 +91,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6695089090367389188
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246767426474962243}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 8358699a13883c1488118bce2dd24af0, type: 2}
 --- !u!1 &396230220260081818
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +193,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8512871027567112611
 Transform:
@@ -288,7 +311,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7844620884050633814
 Transform:
@@ -400,7 +423,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7445175618641447620
 Transform:
@@ -498,7 +521,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8981927043075773005
 Transform:
@@ -638,7 +661,7 @@ Transform:
   m_GameObject: {fileID: 2034874022553352691}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.037237, y: -0.47167912, z: -8.49987}
+  m_LocalPosition: {x: 30.037237, y: -0.5161201, z: -8.49987}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -677,9 +700,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 65152b7b2acb39347b514b1d65ebe132, type: 2}
-  - {fileID: 2100000, guid: 6193b7c8c5c392e4fae0a09008cae3f4, type: 2}
   - {fileID: 2100000, guid: 984d9b10654167e40bc28f141b7d748b, type: 2}
+  - {fileID: 2100000, guid: 6193b7c8c5c392e4fae0a09008cae3f4, type: 2}
+  - {fileID: 2100000, guid: 65152b7b2acb39347b514b1d65ebe132, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -719,7 +742,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3313548251499867954
 Transform:
@@ -816,7 +839,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &9036276528816778717
 Transform:
@@ -944,7 +967,7 @@ Transform:
   m_GameObject: {fileID: 3113414805475682572}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.142589, y: -0.11231853, z: -21.457684}
+  m_LocalPosition: {x: -10.715303, y: -0.10699234, z: -20.581276}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1027,7 +1050,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1645279040216203404
 Transform:
@@ -1139,7 +1162,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4121719039095723811
 Transform:
@@ -1236,7 +1259,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6209422747828687834
 Transform:
@@ -1328,7 +1351,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6602353338620791118
 Transform:
@@ -1440,12 +1463,13 @@ GameObject:
   - component: {fileID: 3459738770588717806}
   - component: {fileID: 6388141601422450612}
   - component: {fileID: 7221068469013404873}
+  - component: {fileID: 1540043216635379678}
   m_Layer: 0
   m_Name: Gate_LowerGate_EastTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3459738770588717806
 Transform:
@@ -1521,6 +1545,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1540043216635379678
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3726694906826688230}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 851358f8d816e964fa1f317eb0010e3d, type: 2}
 --- !u!1 &3746054669123619952
 GameObject:
   m_ObjectHideFlags: 0
@@ -1569,7 +1615,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8063741807302300489
 Transform:
@@ -1659,7 +1705,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6104764798542191774
 Transform:
@@ -1750,12 +1796,13 @@ GameObject:
   - component: {fileID: 2106140713766432260}
   - component: {fileID: 8382724846215252741}
   - component: {fileID: 5615263420713403107}
+  - component: {fileID: 2409905602895141983}
   m_Layer: 0
   m_Name: Gate_LowerGate_WestTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2106140713766432260
 Transform:
@@ -1831,6 +1878,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2409905602895141983
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4564713089282053057}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 57f1faa20e4987a42a93618972bd25e3, type: 2}
 --- !u!1 &4566608029754476660
 GameObject:
   m_ObjectHideFlags: 0
@@ -1858,7 +1927,7 @@ Transform:
   m_GameObject: {fileID: 4566608029754476660}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.7494469, y: -0.90905726, z: 22.796492}
+  m_LocalPosition: {x: 3.0294647, y: -0.9083386, z: 22.702309}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1897,8 +1966,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d720594de7495ef4e80f67d87a563ab8, type: 2}
   - {fileID: 2100000, guid: e35a7606e610c694089ffa6a197a11e2, type: 2}
+  - {fileID: 2100000, guid: d720594de7495ef4e80f67d87a563ab8, type: 2}
   - {fileID: 2100000, guid: 771628f836e8f194481765907960c6ea, type: 2}
   - {fileID: 2100000, guid: d2fb3b1e0ad3b734790f8864fd7c2578, type: 2}
   m_StaticBatchInfo:
@@ -1951,7 +2020,7 @@ Transform:
   m_GameObject: {fileID: 6280888558223610311}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -29.949076, y: -0.51689667, z: -8.511887}
+  m_LocalPosition: {x: -29.949076, y: -0.4924418, z: -8.574541}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2032,7 +2101,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5665305361229794941
 Transform:
@@ -2124,12 +2193,13 @@ GameObject:
   - component: {fileID: 8718179685047205597}
   - component: {fileID: 114595027387001448}
   - component: {fileID: 7858837650293493085}
+  - component: {fileID: 8571176983644516280}
   m_Layer: 0
   m_Name: Gate_LowerGate_WestWing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8718179685047205597
 Transform:
@@ -2204,6 +2274,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8571176983644516280
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6380151577379109497}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 4e19cc95d50dd3f4f870cb980d64257a, type: 2}
 --- !u!1 &6430094545774151873
 GameObject:
   m_ObjectHideFlags: 0
@@ -2231,7 +2323,7 @@ Transform:
   m_GameObject: {fileID: 6430094545774151873}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7086525, y: -3.7975318, z: 23.167212}
+  m_LocalPosition: {x: 0.61740875, y: -4.016219, z: 23.019455}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2314,7 +2406,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6352239807690672018
 Transform:
@@ -2411,7 +2503,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5014430635457185011
 Transform:
@@ -2422,7 +2514,7 @@ Transform:
   m_GameObject: {fileID: 7111290181311714662}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3130455, y: -2.028, z: 22.426472}
+  m_LocalPosition: {x: 0.030132294, y: -2.028, z: 22.953373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2496,12 +2588,13 @@ GameObject:
   - component: {fileID: 855994820464654432}
   - component: {fileID: 7335948232820327183}
   - component: {fileID: 6403342007673422690}
+  - component: {fileID: 8346848330649188085}
   m_Layer: 0
   m_Name: Gate_LowerGate_EastWing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &855994820464654432
 Transform:
@@ -2576,6 +2669,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8346848330649188085
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7165421411804922026}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 9441efcd2e920954481db6225f88fd95, type: 2}
 --- !u!1 &7169293682085102721
 GameObject:
   m_ObjectHideFlags: 0
@@ -2593,7 +2708,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8571626049579006155
 Transform:
@@ -2714,7 +2829,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6111710782037761998
 Transform:
@@ -2831,7 +2946,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5135288567184466404
 Transform:
@@ -2928,7 +3043,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3986897021195530002
 Transform:
@@ -3045,7 +3160,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3740976837799852754
 Transform:
@@ -3056,7 +3171,7 @@ Transform:
   m_GameObject: {fileID: 8775632233025428246}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.1146812, y: -0.22122645, z: -4.0090218}
+  m_LocalPosition: {x: -4.2460327, y: -0.24042547, z: -4.513832}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3095,10 +3210,10 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1569ad3ca7ec08e4bbfd94a9c63a2703, type: 2}
-  - {fileID: 2100000, guid: ce6876f9bb2f356459e99065b36a289e, type: 2}
   - {fileID: 2100000, guid: e888610c505307f4f94cfaa042abe2f4, type: 2}
   - {fileID: 2100000, guid: 7ab4193f9c259b943bddf62c3bfa27b8, type: 2}
+  - {fileID: 2100000, guid: ce6876f9bb2f356459e99065b36a289e, type: 2}
+  - {fileID: 2100000, guid: 1569ad3ca7ec08e4bbfd94a9c63a2703, type: 2}
   - {fileID: 2100000, guid: 925b3bdf1d099b244a46e31faaa99db8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -3139,7 +3254,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7373933497716555152
 Transform:
@@ -3230,12 +3345,13 @@ GameObject:
   - component: {fileID: 8962938744525654336}
   - component: {fileID: 4579009021102660519}
   - component: {fileID: 4909143008206919107}
+  - component: {fileID: 4189108872122721629}
   m_Layer: 0
   m_Name: Gate_LowerGate_Arch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8962938744525654336
 Transform:
@@ -3311,3 +3427,25 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4189108872122721629
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8900795642299782379}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 98fcdefa5db5a714f865126df0364b76, type: 2}

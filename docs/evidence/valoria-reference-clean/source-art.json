@@ -1,5 +1,5 @@
 {
-  "source_sha": "ec6f8ed74fc78832459cdc7135427a3b0a6a3841",
+  "source_sha": "4317b2e4e3cced7bfa824e8f7ad1a358a40f54fa",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -7,7 +7,8 @@
     "main_camera_unchanged": true,
     "building_plots_unchanged": true,
     "bank_finish": "clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs",
-    "landscape_finish": "broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain"
+    "landscape_finish": "broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain",
+    "crag_refinement": "main bank crags seated inside waterline with broader feet, coherent fracture planes and canted asymmetric crowns"
   },
   "blue_slate_triangles": 31416,
   "bridge_geometry": {
@@ -58,17 +59,17 @@
     "Ruin_-25_0": 10824,
     "Ruin_46_-1": 21076,
     "Fir_tree_group": 136986,
-    "River_bank_rocks": 16734,
+    "River_bank_rocks": 16192,
     "Woodland_ground_rocks": 3600,
     "Shrub_group": 20700,
-    "Foundation_shrubs_and_groundcover": 14880,
+    "Foundation_shrubs_and_groundcover": 17040,
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
-    "Meadow_tufts_east": 12800,
-    "River_shore_foam": 598
+    "Meadow_tufts_east": 12780,
+    "River_shore_foam": 952
   },
   "mesh_objects": 32,
-  "triangles": 574552,
-  "blend_sha256": "c1e8f358a9302d5f19cff95b16af46914fdeaaaf18929acc499622892b5fdaff",
-  "glb_sha256": "c162bd7f16ee78df385a5ea07d979a324791fd458661419a08f75767ad1ed819"
+  "triangles": 576504,
+  "blend_sha256": "d732b145dafefb4ff9e325fe3064e36e8026f7d7c9946ca3237f9b2bc3cea227",
+  "glb_sha256": "39c5b61d2ee054bfb36aa51f920ef619270f50f8a6a468d43c419e877dcebbe2"
 }
