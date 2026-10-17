@@ -79,7 +79,7 @@ for o in chosen:
 # Continuous world-scale UVs and existing PBR maps, never a color-only final claim.
 surface='art-source/valoria/lookdev/golden-slice-v1/surface-v2'
 def pbr(label,family,rough):
- m=bpy.data.materials.new(label);m.use_nodes=True;n=m.node_tree.nodes;l=m.node_tree.links;p=n.get('Principled BSDF');p.inputs['Roughness'].default_value=rough
+ m=bpy.data.materials.new(label);m.use_nodes=True;n=m.node_tree.nodes;l=m.node_tree.links;p=next((x for x in n if x.type=='BSDF_PRINCIPLED'),None) or n.new('ShaderNodeBsdfPrincipled');output=next((x for x in n if x.type=='OUTPUT_MATERIAL'),None) or n.new('ShaderNodeOutputMaterial');l.new(p.outputs['BSDF'],output.inputs['Surface']);p.inputs['Roughness'].default_value=rough
  for kind,socket in [('albedo','Base Color'),('normal','Normal')]:
   path=os.path.abspath(f'{surface}/{family}_{kind}.png');tex=n.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(path,check_existing=True)
   if kind=='normal':
