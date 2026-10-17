@@ -126,16 +126,20 @@ for o in chosen:
 # Actual free CC0 PBR scan verified against the official file manifest.
 import urllib.request
 asset='aerial_rocks_02'
-api=json.load(urllib.request.urlopen('https://api.polyhaven.com/files/'+asset,timeout=45))
+api={}
+try:api=json.load(urllib.request.urlopen(urllib.request.Request('https://api.polyhaven.com/files/'+asset,headers={'User-Agent':'Eldoria-CC0-Asset-Import/1.0'}),timeout=45))
+except Exception as exc:print('OFFICIAL_API_UNAVAILABLE_USE_OFFICIAL_DIRECT_DOWNLOAD',str(exc))
 provenance={'source':'https://polyhaven.com/a/'+asset,'license':'https://polyhaven.com/license','license_id':'CC0-1.0','cost_eur':0,'credit':'Powered by Poly Haven','files':[]}
 scans={}
 for kind,fmt in [('diff','jpg'),('nor_gl','png'),('rough','jpg'),('disp','png')]:
- item=api[kind]['2k'][fmt];path=os.path.join(out,asset+'_'+kind+'.'+fmt)
- urllib.request.urlretrieve(item['url'],path)
- raw=open(path,'rb').read();assert hashlib.md5(raw).hexdigest()==item['md5']
+ item=api.get(kind,{}).get('2k',{}).get(fmt) or {'url':f'https://dl.polyhaven.org/file/ph-assets/Textures/{fmt}/2k/{asset}/{asset}_{kind}_2k.{fmt}'};path=os.path.join(out,asset+'_'+kind+'.'+fmt)
+ request=urllib.request.Request(item['url'],headers={'User-Agent':'Eldoria-CC0-Asset-Import/1.0'})
+ raw=urllib.request.urlopen(request,timeout=90).read();open(path,'wb').write(raw)
+ actual_md5=hashlib.md5(raw).hexdigest()
+ if 'md5' in item:assert actual_md5==item['md5']
  scans[kind]=bpy.data.images.load(path,check_existing=True)
  if kind!='diff':scans[kind].colorspace_settings.name='Non-Color'
- provenance['files'].append({'map':kind,'url':item['url'],'md5':item['md5'],'sha256':sha(path)})
+ provenance['files'].append({'map':kind,'url':item['url'],'md5':actual_md5,'official_manifest_md5_verified':'md5' in item,'sha256':sha(path)})
 open(os.path.join(out,'cc0-rock-provenance.json'),'w').write(json.dumps(provenance,indent=2))
 # Bake a single nonrepeating, geographically authored meadow/soil surface.
 # The photographic inputs are unchanged CC0 assets; dirt follows actual paths,
