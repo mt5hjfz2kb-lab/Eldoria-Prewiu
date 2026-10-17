@@ -13,6 +13,7 @@ const host=load('Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs');
 const qa=load('Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs');
 const native=JSON.parse(load('docs/evidence/valoria-layered-construction-20261016/terrain-v1/terrain-v1-unity.json'));
 const certified=JSON.parse(load('docs/evidence/valoria-visual-authority-reset-v1/review.json'));
+const resetBlockout=JSON.parse(load('docs/evidence/valoria-art-production-reset-v1/target-spec.json'));
 const approvalSha='8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689';
 check(sha('references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg')===approvalSha,'approved art reference changed');
 check(layout.classification==='LEGACY_QA_CERTIFIED_TOPOLOGY_NOT_CANONICAL_SHARP_GEOMETRY','historical topology mislabeled');
@@ -27,6 +28,12 @@ check(host.includes('GetComponentInChildren<ValoriaParcelPresentation>'),'SliceP
 check(host.includes('productionParcels.Home()'),'player Home invocation changed');
 check(qa.includes('camera.orthographic=true') && qa.includes('new Vector3(18.2f,14.6f,-25.8f)'),'historical orthographic position changed');
 check(certified.reference_authority_sha256===approvalSha && certified.criteria.COMPOSITION==='PASS' && certified.interaction.raycasts_pass===45,'previous certified SHARP reference no longer matches');
+check(resetBlockout.reference.sha256===approvalSha &&
+      resetBlockout.camera.projection==='orthographic' &&
+      resetBlockout.camera.orthographic_size===24 &&
+      resetBlockout.camera.yaw===20 && resetBlockout.camera.pitch===35,
+      'Approved third art blockout camera source changed');
+check(Object.keys(resetBlockout.target_landmarks).length>=8,'Art target original semantic anchors missing');
 check(native.camera_authority==='LEGACY_QA_NOT_SHARP' && native.gameplay_status==='NOT_CERTIFIED','native terrain screenshot falsely claims player camera');
 check(native.art_status==='REVIEW_REQUIRED' && native.bridge_rays===5 && native.stair_rays===12,'native terrain evidence changed');
 const output={
@@ -67,6 +74,16 @@ check(anchorEvidence.camera.fov===44.42281,'Source screen-space reference FOV ch
 check(anchorEvidence.camera.width===1230&&anchorEvidence.camera.height===845,'Source crop dimensions changed');
 check(anchorEvidence.home_anchors.every(a=>Number.isFinite(a.x)&&Number.isFinite(a.y) &&
   a.x>=0&&a.x<=1&&a.y>=0&&a.y<=1),'Player source anchors invalid');
+output.approved_reset_art_camera={
+   source:'docs/evidence/valoria-art-production-reset-v1/target-spec.json',
+   projection:'orthographic',yaw_degrees:resetBlockout.camera.yaw,
+   pitch_degrees:resetBlockout.camera.pitch,
+   orthographic_size:resetBlockout.camera.orthographic_size,
+   vertical_span:resetBlockout.camera.vertical_span,
+   reference_resolution:resetBlockout.reference.dimensions,
+   target_landmarks:Object.entries(resetBlockout.target_landmarks).map(([name,data])=>({name,anchor:data.anchor,bbox:data.bbox})),
+   equivalent_to_historical_qa:false,equivalent_to_player_SHARP:false
+ };
 output.actual_player.semantic_anchors=anchorEvidence.home_anchors;
 output.anchor_comparison={
   method:'two independent coordinate spaces only; NO fitted 3D-to-SHARP transform',
