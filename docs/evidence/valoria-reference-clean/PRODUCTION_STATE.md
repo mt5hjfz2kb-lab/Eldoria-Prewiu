@@ -11,3 +11,5 @@ Recuperación técnica conservada: perfiles de arco extruidos, sin CSG solapado;
 Ollama fue recuperado con la instalación/modelos existentes y Qwen3-VL-8B emitió críticas reales de capturas; son auxiliares y a veces contradictorias con lo observado y medido. BlenderMCP no respondió, Blender nativo produjo geometría y fuentes reales. ADB: cero dispositivos autorizados; Android/iOS físicos sin certificar.
 
 DELIVERY.md conserva por ahora la entrega parcial histórica de revisión 16; actualizarlo al cierre real. No usarlo para inferir la versión actual ni el estado del recurso Windows.
+
+Revision 30 REJECTED: run 39071438210, source 201d8aba0a21eda5a410a0b2132ffba75847a120, diagnostic artifact 12115317779. Editor clean; Play corrupts Fir_tree_group into scene-spanning triangles, PNG difference 48.17 percent. Floor/headroom checks passed before the render rejection. No native output push. Revision31 removes static batching from ALL art renderers; semantic source batching and SRP batching remain. Regenerate the same source GLB30, retain strict image and physics checks. APK not compiled yet; run it after real validation passes.
