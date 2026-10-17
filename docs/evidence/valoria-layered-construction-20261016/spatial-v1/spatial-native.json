@@ -36,8 +36,8 @@
     "physical_stairs": 12,
     "source_footprints": 22,
     "preserved_colliders": 64,
-    "route_probes": 32,
-    "route_passes": 32,
+    "route_probes": 28,
+    "route_passes": 28,
     "contacts": [
         {
             "id": "Bridge",
@@ -71,13 +71,13 @@
             "id": "MainRoad",
             "collider": "GREYBOX VPD · L0 main street",
             "native_xyz": [
-                -0.48944705724716189,
-                0.24000072479248048,
+                -0.48944711685180666,
+                0.2800006866455078,
                 8.268245697021485
             ],
             "viewport": [
-                0.5232804417610169,
-                0.5333676934242249
+                0.5232838988304138,
+                0.5341523289680481
             ],
             "hit": true
         },
