@@ -102,15 +102,21 @@ namespace Eldoria.ValoriaLayered.Editor {
    Vector3 centre=steps.Select(Native).Aggregate(Vector3.zero,(a,b)=>a+b)/12;
    var desired=At(869f/W,1f-330f/H,centre.y);var stairDelta=desired-centre;stairDelta.y=0;
    foreach(var t in steps)SetNative(t,Native(t)+stairDelta);
-   foreach(var t in objects.Where(t=>t.name.Contains("L1 landing")||t.name=="SUPPORT exact certified L1 footprint (trigger-only envelope)"))SetNative(t,Native(t)+stairDelta);
-   Vector3 roadStart=new Vector3(0,.30f,-8.7f);
+   foreach(var t in objects.Where(t=>t.name.Contains("L1 landing")||t.name.Contains("VPD · L1 ")||t.name=="SUPPORT exact certified L1 footprint (trigger-only envelope)"))SetNative(t,Native(t)+stairDelta);
+   Vector3 roadStart=new Vector3(0,.38f,-8.7f);
    var first=Native(steps.First());var last=Native(steps.Last());
+   var centreSupport=Find("GREYBOX VPD · L1 support centre");
+   var sp=Native(centreSupport);sp.z=last.z+steps.Last().localScale.z*.5f+2.2f;
+   SetNative(centreSupport,sp);centreSupport.localScale=new Vector3(7.2f,2.35f,4.2f);
    var roadEnd=new Vector3(first.x,.30f,first.z-steps.First().localScale.z*.5f);
    Segment(Find("GREYBOX VPD · L0 main street"),roadStart,roadEnd,3.7f,.12f);
    var hero=Find("GREYBOX Bastion hero reservation, silhouette only");
    var oldHero=Native(hero);var newHero=At(944f/W,1f-190f/H,oldHero.y);
    SetNative(hero,newHero);var heroDelta=newHero-oldHero;heroDelta.y=0;
    foreach(var t in objects.Where(t=>t.name.Contains("upper fortified entry reservation")||t.name.Contains("upper civic")||t.name.Contains("upper gate")))SetNative(t,Native(t)+heroDelta);
+   // Move the obsolete future reserve outside the new road rather than leaving a second floor mid-route.
+   var future=Find("SUPPORT/RESERVE VPD · master future reserve");
+   var futureAt=Native(future);futureAt.z=newHero.z+20;SetNative(future,futureAt);
    foreach(var pair in new[]{("SUPPORT/RESERVE VPD · L0 west plot",471f/W,1f-369f/H),("SUPPORT/RESERVE VPD · L0 east plot",1260f/W,1f-446f/H)}){
     var t=Find(pair.Item1);SetNative(t,At(pair.Item2,pair.Item3,Native(t).y));}
    // The provisional ground is explicitly blockout; a subsequent Blender pass must author geology.
@@ -119,8 +125,8 @@ namespace Eldoria.ValoriaLayered.Editor {
    SetNative(substrate,new Vector3(0,-.37f,(rear-13)/2));substrate.localScale=new Vector3(80,.86f,rear+13);
    // Extend upper receiving deck and existing civic link as spaces, never distort architectural assets.
    var landing=Find("GREYBOX L1 rear landing - stair throat visibly clear");
-   var upperStart=new Vector3(last.x,2.8f,last.z+steps.Last().localScale.z*.5f);
-   var upperEnd=new Vector3(newHero.x,2.8f,newHero.z-2.5f);
+   var upperStart=new Vector3(last.x,2.7f,last.z+steps.Last().localScale.z*.5f);
+   var upperEnd=new Vector3(newHero.x,2.7f,newHero.z-2.5f);
    Segment(landing,upperStart,upperEnd,10f,.5f);
    // Native contacts: all seven targets are real source geometry; test rays against actual colliders.
    var points=new[]{
@@ -162,12 +168,16 @@ namespace Eldoria.ValoriaLayered.Editor {
    control.Home();control.Zoom(-2);Assess("zoom-in",W,H);control.Home();control.Zoom(2);Assess("zoom-out",W,H);
    control.Home();Assess("portrait",390,844);control.Home();bridge.Sync();cam.aspect=(float)W/H;
    Check(contacts.All(c=>c.hit)&&states.All(s=>s.visible==s.hits),"Real geometry picking failed");
-   int passes=0,total=0;var probePoints=new List<Vector3>();
-   for(int i=0;i<=12;i++)probePoints.Add(Vector3.Lerp(roadStart,roadEnd,i/12f));
-   foreach(var t in steps)probePoints.Add(t.position+Vector3.up*t.localScale.y*.5f);
-   for(int i=0;i<=6;i++)probePoints.Add(Vector3.Lerp(new Vector3(0,.38f,-19.65f),new Vector3(0,.38f,-9.35f),i/6f));
-   foreach(var p in probePoints){total++;if(Physics.Raycast(p+Vector3.up*.1f,Vector3.down,out var hit,.4f,~0,QueryTriggerInteraction.Ignore))passes++;}
-   Check(passes==total,"Circulation surface gap");
+   int passes=0,total=0;
+   void Probe(Vector3 p,string expected){total++;
+    if(Physics.Raycast(p+Vector3.up*.10f,Vector3.down,out var hit,.22f,~0,QueryTriggerInteraction.Ignore)&&hit.collider.name==expected)passes++;}
+   for(int i=1;i<12;i++)Probe(Vector3.Lerp(roadStart,roadEnd,i/12f),"GREYBOX VPD · L0 main street");
+   foreach(var t in steps)Probe(t.position+Vector3.up*t.localScale.y*.5f,t.name);
+   for(int i=1;i<6;i++)Probe(Vector3.Lerp(new Vector3(0,.38f,-19.65f),new Vector3(0,.38f,-9.35f),i/6f),"TEMPORARY bridge / continuous deck and collider");
+   Check(passes==total,"Specific route/step/bridge surface missing or masked by another collider: "+passes+"/"+total);
+   var walk=roadEnd-roadStart;
+   Check(!Physics.SphereCast(roadStart+Vector3.up*.8f,.30f,walk.normalized,out var obstruction,walk.magnitude,~0,QueryTriggerInteraction.Ignore),
+    "Main road obstructed at pedestrian height: "+(obstruction.collider!=null?obstruction.collider.name:"unknown"));
    Check(frame.GetComponentsInChildren<Collider>(true).Length==originalColliders,"Physical collider lost");
    Check(EditorSceneManager.SaveScene(scene,Output,true),"Cannot save isolated scene");
    var report=new Report{source_scene=Input,candidate_scene=Output,classification="SPATIAL_BLOCKOUT_WITH_EXISTING_ARCHITECTURE_NOT_FINAL_ART",
