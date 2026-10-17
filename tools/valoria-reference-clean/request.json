@@ -1,1 +1,8 @@
-{"stage":"art","revision":3,"budget_eur":0,"blockout_reviewed_sha":"37bcc64582568f1bfc40530e82d34c8e91d8685c","blockout_verdict":"Composition and four grounded plots accepted as blockout; proceed to native Blender detailed architecture and Unity integration"}
+{
+  "stage": "art",
+  "revision": 4,
+  "budget_eur": 0,
+  "blockout_reviewed_sha": "37bcc64582568f1bfc40530e82d34c8e91d8685c",
+  "blockout_verdict": "Composition and four grounded plots accepted as blockout; proceed to native Blender detailed architecture and Unity integration",
+  "correction": "Remove unsupported assignment to read-only URP property; native Blender authoring succeeded"
+}
