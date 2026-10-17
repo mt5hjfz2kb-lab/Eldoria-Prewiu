@@ -2,7 +2,7 @@
   "role": "AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE",
   "art_approved": false,
   "new_model_downloads": 0,
-  "source_sha": "6706be67b15c5261e021e161a35519d249dc6251",
+  "source_sha": "3d2c4c5f58967c9125c568374c6477eb2684ce71",
   "installed_models": [
     "qwen3:14b",
     "qwen3-vl:8b-instruct-q4_K_M",
@@ -17,22 +17,22 @@
     },
     {
       "path": "playmode-home.png",
-      "sha256": "7692c6114fc4a9bdbcae9095f6dc0a91927125254c5c6fe47d5b6fa5a31739cc"
+      "sha256": "c824e51168e0646e963bb0168fbe5bda7419c07b1d86ce00125f78c83dbc67d6"
     },
     {
       "path": "detail-bastion.png",
-      "sha256": "411a0a8e9a1524eeeadf80ec525f53a3e702d859e8c01ec9aabc7d1619422f49"
+      "sha256": "5edcaec72a00c99daa8a4f9bed3ba5fa77e1096bf3227229a18e7a3b7f8efe41"
     },
     {
       "path": "detail-gate-bridge.png",
-      "sha256": "455d039c0e7009f96cf043bf9291faa21200bf9f1d4b48ac84c4664b66eada8a"
+      "sha256": "3ebb4347d0e3900718dc869dc3a4aafba6a7865f4f098ef4f4653610939d35c5"
     }
   ],
   "native_scene_facts": {
-    "source_sha": "6706be67b15c5261e021e161a35519d249dc6251",
+    "source_sha": "3d2c4c5f58967c9125c568374c6477eb2684ce71",
     "directional_lights": 1,
     "native_terrain_resolution": 257,
-    "triangles": 541670,
+    "triangles": 539110,
     "renderers": 30,
     "source_roof_triangles": 31416,
     "source_bridge_geometry": {
@@ -43,28 +43,28 @@
   },
   "status": "REAL_LOCAL_CRITIQUE_RECORDED",
   "model": "qwen3-vl:8b-instruct-q4_K_M",
-  "elapsed_seconds": 43.18,
+  "elapsed_seconds": 42.73,
   "review": {
     "visible_strengths": [
-      "The overall composition is well-structured with clear visual hierarchy: the main keep is the focal point, the bridge provides a strong leading line, and the four plots create a balanced grid.",
-      "The architecture proportions are generally sound, with the keep and bridge maintaining a consistent scale relative to the terrain.",
-      "The lighting is directional and creates a clear sense of time of day, casting believable shadows that define form and depth."
+      "The overall composition is well-structured with clear visual hierarchy: the main keep is the focal point, the bridge provides a strong leading line, and the four plots create a balanced, symmetrical layout.",
+      "The architecture proportions are generally correct for a medieval keep, with the main building and bridge maintaining plausible scale relationships.",
+      "The terrain and river integration are competent, with the river's edge and shore rocks appearing naturally placed relative to the bridge and keep foundations."
     ],
     "highest_impact_defects": [
       {
-        "observation": "The river bridge's arch is visually inconsistent with the rest of the structure. The arch appears to be a simple, flat extrusion rather than a true arch, and its geometry does not match the detailed, physically authored slate roof tiles seen in the detail cameras. The bridge pier geometry is also simplified and lacks the detailed texture and lighting seen in the detail view.",
-        "correction": "In Unity, re-extrude the bridge arch using a true arch profile (e.g., using a Bezier curve or a custom arch mesh) and apply the same physically authored slate material and lighting as the roof. Ensure the pier geometry matches the detail camera's complexity by adding more vertices and subdividing the mesh for a more realistic curvature and surface detail."
+        "observation": "The player camera (Image 2) suffers from severe perspective distortion and clipping artifacts. The bridge's arch is visually compressed and appears to intersect with the riverbed, while the gatehouse is misaligned with the bridge's geometry, creating an unnatural and unplayable visual.",
+        "correction": "In Unity, use the 'Camera > Projection' settings to switch from 'Orthographic' to 'Perspective' and adjust the 'Field of View' to a realistic 50-60 degrees. Then, reposition the camera to a higher, more centered viewpoint to avoid clipping and ensure the bridge's arch is rendered correctly without intersecting the riverbed."
       },
       {
-        "observation": "The main keep's roof tiles are not clearly visible or readable due to the low-resolution texture and the lack of detailed normal mapping. The blue color appears flat and lacks the subtle variations and specular highlights that would make the slate tiles appear realistic.",
-        "correction": "In Unity, increase the resolution of the roof tile texture and add a detailed normal map to simulate the roughness and curvature of slate. Use a physically based material (PBR) with appropriate roughness and metallic values to enhance the tile's realism and ensure it reflects light in a way that matches the directional lighting."
+        "observation": "The lighting is inconsistent and lacks directional clarity. The player camera (Image 2) shows flat, uniform illumination with no discernible light source direction, while the detail cameras (Images 3 and 4) show warm, directional lighting that creates believable shadows and highlights. This makes the scene appear flat and unengaging.",
+        "correction": "In Unity, assign a single, strong directional light to the scene. Set its 'Intensity' to 1.5-2.0 and position it at a 45-degree angle above the horizon to cast realistic shadows. Ensure the light's 'Color' is warm (e.g., 2000K-3000K) to match the torch-like glow seen in the detail views."
       },
       {
-        "observation": "The terrain and shore integration is poor. The riverbank appears as a flat, uniform green strip with no variation in height or texture, and the water's edge does not naturally transition into the terrain. The rocks are placed in a way that looks artificial and does not follow the natural flow of the river.",
-        "correction": "In Unity, use a heightmap or displacement map to create a more varied and natural-looking riverbank. Add a detailed shoreline texture that transitions smoothly from the water to the grass. Place the rocks using a procedural placement system or manually position them to follow the river's natural curvature and depth, ensuring they cast realistic shadows and interact with the water's reflection."
+        "observation": "The vegetation and terrain textures are overly simplified and lack detail. The trees are uniform in size and shape, and the grass and dirt textures are flat, creating a low-fidelity appearance that contrasts with the detailed architecture. This reduces the scene's visual richness and immersion.",
+        "correction": "In Unity, increase the 'Detail' level of the terrain and vegetation assets. Use a higher-resolution texture for the grass and dirt, and add more varied tree models with different heights and foliage densities. Consider using Unity's 'Terrain > Detail > Vegetation' system to add more naturalistic, randomized vegetation."
       }
     ],
-    "reference_similarity_estimate_0_to_10": 7.5,
-    "uncertainty": "The player camera's perspective and lighting are consistent with the detail cameras, but the visual fidelity of the bridge and roof tiles is lower than expected. The terrain and shore integration could be improved with more detailed textures and procedural placement. The overall composition is strong, but the visual defects in the bridge and roof tiles are the most impactful and require immediate correction."
+    "reference_similarity_estimate_0_to_10": 6.5,
+    "uncertainty": "The player camera's perspective and lighting are the most significant issues, but the underlying geometry and layout are consistent with the reference scene. The vegetation and terrain textures are the least critical, as they are easily adjustable without affecting core gameplay or structure."
   }
 }
