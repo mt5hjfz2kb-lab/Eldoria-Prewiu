@@ -1,0 +1,118 @@
+{
+    "SchemaVersion": 1,
+    "RulesVersion": 1,
+    "Revision": 18,
+    "PlayerId": "player-local",
+    "RealmId": "valoria-local",
+    "WorldId": "world-local",
+    "Resources": {
+        "Wood": 1030,
+        "Stone": 995,
+        "Food": 0
+    },
+    "BastionLevel": 2,
+    "MissionPower": 300,
+    "SawmillLevel": 1,
+    "BarracksLevel": 1,
+    "CorruptionDiscovered": true,
+    "ScoutDefeated": true,
+    "JourneyComplete": true,
+    "EngendroDefeated": true,
+    "Available": {
+        "ArcherT1": 56,
+        "ArcherT2": 0,
+        "ArcherT3": 0
+    },
+    "Wounded": {
+        "ArcherT1": 0,
+        "ArcherT2": 0,
+        "ArcherT3": 0
+    },
+    "March": {
+        "MarchId": "march-main",
+        "OwnerId": "player-local",
+        "TargetId": "",
+        "HeroId": "aldric",
+        "Troops": {
+            "ArcherT1": 0,
+            "ArcherT2": 0,
+            "ArcherT3": 0
+        },
+        "Phase": "idle",
+        "PhaseEndsUtcTicks": 0,
+        "PendingWood": 0,
+        "PendingStone": 0
+    },
+    "MarchConfigured": true,
+    "PreparedHeroId": "aldric",
+    "PreparedTroops": {
+        "ArcherT1": 56,
+        "ArcherT2": 0,
+        "ArcherT3": 0
+    },
+    "ForestRemaining": 530,
+    "QuarryRemaining": 4500,
+    "BuildingCompletesUtcTicks": 0,
+    "BuildingTaskId": "",
+    "RecruitmentCompletesUtcTicks": 0,
+    "RecruitmentTaskId": "",
+    "PendingRecruitArchers": 0,
+    "LastBattleReason": "La nueva línea de arqueros sostuvo el frente y Aldric rompió la defensa del Engendro.",
+    "LastBattleReport": {
+        "TargetId": "engendro-valoria",
+        "HeroId": "aldric",
+        "Troops": 56,
+        "PlayerPower": 2716,
+        "EnemyPower": 0,
+        "Won": true,
+        "Rounds": 4,
+        "RemainingHealth": 661,
+        "RewardWood": 120,
+        "RewardStone": 100,
+        "Reason": "La nueva línea de arqueros sostuvo el frente y Aldric rompió la defensa del Engendro."
+    },
+    "ChapterProgress": {
+        "GatheredWood": 720,
+        "GatheredStone": 700,
+        "TrainedArchers": 20,
+        "ConfirmedExpeditionPower": 2716,
+        "RouteCleared": true,
+        "BastionTwoReached": true,
+        "MarchConfirmed": true,
+        "EngendroDefeated": true,
+        "GrantedRewards": [
+            "c1-sawmill",
+            "c1-wood",
+            "c1-stone",
+            "c1-route",
+            "c1-bastion",
+            "chapter-1",
+            "c2-barracks",
+            "c2-train",
+            "c2-power",
+            "c2-spawnling"
+        ]
+    },
+    "CompletedCommandIds": [
+        "27797fc9be5d40efa82b7d5e9bc21690",
+        "a638a79b443e4961a882ae93e86d8bbb",
+        "2dc82a11bec6419a873924263db42fd0",
+        "7441e2147c8f488097ed6f0e3e9c47b6",
+        "b3e3f5d065454b12bb54205ddab4a318",
+        "2b6868245f304d24af82bd44a81f8b99",
+        "e81b7d2d438a4f53bbeddc38f0fe6855",
+        "4fa9d4ebdf09469ca28456f3d72aa942",
+        "da050f9fdca046e48b81410f7f8219d4",
+        "1116506eba3a47f9934935fd007dcc4a"
+    ],
+    "CompletedTaskIds": [
+        "sawmill:27797fc9be5d40efa82b7d5e9bc21690",
+        "return:march-main:639278400522641491",
+        "return:march-main:639278401722641491",
+        "return:march-main:639278402922641491",
+        "return:march-main:639278404072641491",
+        "barracks:e81b7d2d438a4f53bbeddc38f0fe6855",
+        "recruit:4fa9d4ebdf09469ca28456f3d72aa942",
+        "return:march-main:639278405442641491"
+    ]
+}
