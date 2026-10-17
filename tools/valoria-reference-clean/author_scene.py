@@ -14,6 +14,7 @@ def road_x(y):return -1.5+math.tan(math.radians(14))*(y+10) if y<-10 else -1.5*m
 def terrain_height(x,y):
  t=smoothstep(river_width(x)-2,river_width(x)+2,abs(y-river_center(x)))
  h=.35+.65*sin(x*.08)*sin(y*.09)+.24*sin(x*.25+y*.17)+max(0,y-40)*.045
+ h+=3.1*math.exp(-((x+48)/23)**2-((y-61)/19)**2)+3.8*math.exp(-((x-49)/25)**2-((y-63)/19)**2)
  road=1-smoothstep(0,2,max(abs(x-road_x(y))-4.5,-78-y,y-26))
  keep=1-smoothstep(0,2.5,max(abs(x)-11,25-y,y-45))
  gate=1-smoothstep(0,2,max(abs(x+1.5)-14,abs(y+10)-4))
@@ -303,7 +304,13 @@ for ruin_index,(x,y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]):
  r=Mesh('Ruin_'+str(x)+'_'+str(y))
  for i in range(8):
   profile=7-i if ruin_index%2 else i
-  h=max(.6,3.5-profile*.45+random.uniform(-.35,.35));courses(r,x-3+i*.85,y,.3,.83,1.15,h)
+  h=max(.6,(4.2 if ruin_index%2 else 3.5)-profile*.45+random.uniform(-.35,.35));courses(r,x-3+i*.85,y,.3,.83,1.15,h)
+  if profile<2:r.box((x-3+i*.85,y,.3+h+.22),(.50,1.08,.44),stone[3])
+ if ruin_index%2:
+  # Two surviving wall corners, never a complete enclosure. Preserve later scatter seed.
+  saved=random.getstate()
+  for j in range(3):courses(r,x+2.95,y+.9+j*.7,.3,1.15,.68,3.6-j*.7)
+  random.setstate(saved)
  for i in range(8):r.box((x+random.uniform(-4,4),y+random.uniform(-2,2),.5),(random.uniform(.4,.8),.6,.65),random.choice(stone),random.random())
  r.finish(.06)
 # Reuse editable tree source family. Fit each donor to a tree-scale silhouette,
@@ -350,7 +357,7 @@ for side in [-1,1]:
    if any((x-px)**2+(y-py)**2 < (.68*(size+ps))**2 for px,py,ps in rock_positions):continue
    rock_positions.append((x,y,size))
 for i,(x,y,size) in enumerate(rock_positions):
- crag=Mesh('River_Rock_%03d'%i);verts=[];segments=9;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(.9,1.65);angle=random.uniform(-pi,pi)
+ crag=Mesh('River_Rock_%03d'%i);verts=[];segments=9;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(1.15,1.9);angle=random.uniform(-pi,pi)
  for ring,(z,radius) in enumerate([(-.5,.58),(-.24,.94),(.22,1.0),(.5,.5)]):
   phase=random.uniform(-.10,.10)
   for j in range(segments):
@@ -413,20 +420,27 @@ for side in [-1,1]:
    h=random.uniform(.45,.95);a=random.random()*2*pi;r=.055
    verts=[(x+r*cos(a+k*2*pi/3),y+r*sin(a+k*2*pi/3),z) for k in range(3)]+[(x+cos(a)*h*.3,y+sin(a)*h*.3,z+h)]
    sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(leaf))
-# Sporadic low clumps break broad grass fields without invading the construction areas.
-for i in range(800):
- x=random.uniform(-60,60);y=random.uniform(-48,65)
- if abs(y-river_center(x))<river_width(x)+2 or (abs(x-road_x(y))<3.5 and -78<y<26) or (abs(x)<11 and 25<y<45):continue
- if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
- for k in range(5):
-  a=random.random()*2*pi;w=random.uniform(.045,.075);h=random.uniform(.18,.40);cx=x+random.uniform(-.22,.22);cy=y+random.uniform(-.22,.22);z=terrain_height(cx,cy)+.01
-  verts=[(cx+w*cos(a+j*2*pi/3),cy+w*sin(a+j*2*pi/3),z) for j in range(3)]+[(cx+.12*cos(a),cy+.12*sin(a),z+h)]
-  sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(leaf))
-tuft_mesh=sh.finish(0)
-assert sum(len(p.vertices) for p in tuft_mesh.data.polygons)<65000, 'Tuft mesh exceeds flat-normal export vertex budget'
+# Bank reeds and each half meadow use separate bounded meshes, not one overflowing
+# 16-bit multi-material primitive. Ground remains available for future construction.
+reeds=sh.finish(0)
+assert sum(len(p.vertices) for p in reeds.data.polygons)<65000
+meadow_leaf=[mat('Meadow blade '+str(i),(.075+i*.014,.125+i*.017,.018+i*.004)) for i in range(3)]
+for side in [-1,1]:
+ sh=Mesh('Meadow_tufts_'+('west' if side<0 else 'east'))
+ for i in range(1100):
+  x=random.uniform(-60,0) if side<0 else random.uniform(0,60);y=random.uniform(-48,65)
+  if sin(x*.31+y*.21)*sin(y*.43-x*.13)<-.25 and random.random()<.65:continue
+  if abs(y-river_center(x))<river_width(x)+2 or (abs(x-road_x(y))<3.5 and -78<y<26) or (abs(x)<11 and 25<y<45):continue
+  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
+  for k in range(5):
+   a=random.random()*2*pi;w=random.uniform(.045,.075);h=random.uniform(.22,.48);cx=x+random.uniform(-.25,.25);cy=y+random.uniform(-.25,.25);z=terrain_height(cx,cy)+.01
+   verts=[(cx+w*cos(a+j*2*pi/3),cy+w*sin(a+j*2*pi/3),z) for j in range(3)]+[(cx+.12*cos(a),cy+.12*sin(a),z+h)]
+   sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(meadow_leaf))
+ tuft_mesh=sh.finish(0)
+ assert sum(len(p.vertices) for p in tuft_mesh.data.polygons)<65000, 'Tuft mesh exceeds flat-normal export vertex budget'
 # Seat actual low foot vertices against exactly the terrain equation used by Unity.
 for o in bpy.context.scene.objects:
- if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_')):continue
+ if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_','Ruin_')):continue
  pts=[o.matrix_world@v.co for v in o.data.vertices];low=min(p.z for p in pts);high=max(p.z for p in pts)
  fraction=.15 if o.name.startswith(('River_Rock','Ground_Rock')) else .035
  foot=[p for p in pts if p.z<=low+(high-low)*fraction]
@@ -486,5 +500,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs','landscape_finish':'broad low rear hills, bounded west/east meadow tuft meshes, two surviving wall corners seated on real terrain'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

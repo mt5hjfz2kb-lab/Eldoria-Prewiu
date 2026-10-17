@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 28,
+  "revision": 29,
   "budget_eur": 0,
-  "validated_runtime_source": "b9d6df580c57c5fac13cee57c337e553c2753d09",
-  "validated_run": 39070081590,
+  "validated_runtime_source": "9ea527ec7a49a9dabbe8f2a4beb75b63ec23505e",
+  "validated_run": 39070518268,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Observed actual Unity27 main view: angled bridge exposes real arches and 96 route samples pass. Finish river banks with larger varied closed lofted crag clusters, radius-aware clear approach, darker forest-green authored bushes, and proportionate 1.5x bridge-only brazier pedestals. Keep composition/camera/keep/gate/plots fixed. Preserve true rock/water intersection foam, UV and packed editable source. Exclude aggregate river rocks from static batching to avoid known native UInt16 multi-primitive regression. Compare native main/detail captures and PlayMode parity.",
+  "art_correction": "Observed actual Unity28: bridge/gate connection clear, darker shrubs and stronger banks improve the frame; open meadow remains too uniform. Add two broad low rear terrain hills using identical Blender/Unity height equations, true seated corner ruins (only two), richer sparse west/east grass clumps bounded below flat-normal UInt16 export ceiling, and less uniform dark wear around Bastion. Slightly taller closed shore crags. Do not move main architecture/camera/plots. Grass casts no tiny expensive shadows. Also fix pinch dragging and responsive touch controls, exercise actual public zoom/pan/reset player functions in native PlayMode, and compile a scoped Android build adapter reused from existing project process; Android execution follows visual validation.",
   "auxiliary_review": true
 }
