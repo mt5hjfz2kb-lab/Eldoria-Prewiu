@@ -404,18 +404,32 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         private void Tower(float x,float z,float foundation,float height,float radius,string prefix)
         {
             float center=foundation+height*.5f;
-            bool genuineKenney = Bright && Vendor("Kenney/castle/tower-square-base.glb",
-                                      x,z,radius*2f,height*.85f);
-            if (!genuineKenney)
+            bool hexagonal = prefix.StartsWith("BASTION", StringComparison.Ordinal);
+            string family = hexagonal ? "tower-hexagon" : "tower-square";
+            float baseOffset = foundation - H(x, z);
+            bool genuineKenney = Bright && Vendor("Kenney/castle/" + family + "-base.glb",
+                                      x,z,radius*2f,height*.45f,baseOffset);
+            if (genuineKenney)
+            {
+                // Actual same-author tower modules, stacked at intentional world heights.
+                Vendor("Kenney/castle/" + (hexagonal ? "tower-hexagon-mid" : "tower-square-mid-windows") +
+                       ".glb",x,z,radius*2f,height*.48f,baseOffset+height*.42f);
+                Vendor("Kenney/castle/" + (hexagonal ? "tower-hexagon-roof" : "tower-square-top-roof") +
+                       ".glb",x,z,radius*2.35f,height*.24f,baseOffset+height*.86f);
+            }
+            else
                 Shape(Rich?PrimitiveType.Cylinder:PrimitiveType.Cube,prefix+" tower masonry",
                       new Vector3(x,center,z),
                       Rich?new Vector3(radius,height*.5f,radius):
                            new Vector3(radius*2f,height,radius*2f),Stone);
-            Shape(PrimitiveType.Cylinder,prefix+" parapet rim",
-                  new Vector3(x,foundation+height+.12f,z),
-                  new Vector3(radius*1.15f,.26f,radius*1.15f),Trim);
-            Cone(prefix+" stylized roof",new Vector3(x,foundation+height+.34f,z),
-                 radius*(Bright?1.55f:1.2f),Rich?4f:Bright?3.9f:2.6f,Roof);
+            if (!genuineKenney)
+            {
+                Shape(PrimitiveType.Cylinder,prefix+" parapet rim",
+                      new Vector3(x,foundation+height+.12f,z),
+                      new Vector3(radius*1.15f,.26f,radius*1.15f),Trim);
+                Cone(prefix+" stylized roof",new Vector3(x,foundation+height+.34f,z),
+                     radius*(Bright?1.55f:1.2f),Rich?4f:Bright?3.9f:2.6f,Roof);
+            }
             Cuboid(prefix+" arrow slit",x,foundation+height*.61f,z-radius-0.09f,.3f,1.3f,.15f,DarkStone);
             if(Rich)
             {
