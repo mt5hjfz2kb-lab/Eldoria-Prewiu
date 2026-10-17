@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 27,
+  "revision": 28,
   "budget_eur": 0,
-  "validated_runtime_source": "0376d113c86111e082f7eb05dcffa9fe01622410",
-  "validated_run": 39069411367,
-  "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Native26 inspected and validated. Match reference bridge approach: one rigid -14 degree bridge/exterior-road transform and gate shift -1.5m; continuously reflow axial paving and real flat support using shared RoadX, keep Bastion/camera/four plots unchanged. Update bridge lights, reusable prefab pivots and 96 physical route samples to actual road centre. Exclude bank rocks from the new bridge footprint. Compare genuine main/detail Unity cameras; retain all render parity guards.",
+  "validated_runtime_source": "b9d6df580c57c5fac13cee57c337e553c2753d09",
+  "validated_run": 39070081590,
+  "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
+  "art_correction": "Observed actual Unity27 main view: angled bridge exposes real arches and 96 route samples pass. Finish river banks with larger varied closed lofted crag clusters, radius-aware clear approach, darker forest-green authored bushes, and proportionate 1.5x bridge-only brazier pedestals. Keep composition/camera/keep/gate/plots fixed. Preserve true rock/water intersection foam, UV and packed editable source. Exclude aggregate river rocks from static batching to avoid known native UInt16 multi-primitive regression. Compare native main/detail captures and PlayMode parity.",
   "auxiliary_review": true
 }

@@ -173,10 +173,10 @@ def banner(g,x,y,z,w=1,h=2.1):
  line(g,(x,y-.2,z-.35),(x,y-.2,z-1.3),.045,gold)
  for side in [-1,1]:line(g,(x,y-.2,z-1),(x+side*.22,y-.2,z-.6),.06,gold)
  g.box((x,y-.21,z-1.05),(.52,.025,.065),gold)
-def torch(g,x,y,z):
- courses(g,x,y,z,.85,.85,1.0);g.box((x,y,z+1.05),(1,1,.15),trim)
+def torch(g,x,y,z,scale=1):
+ courses(g,x,y,z,.85*scale,.85*scale,scale);g.box((x,y,z+1.05*scale),(scale,scale,.15*scale),trim)
  for i in range(3):
-  a=i*2*pi/3;line(g,(x+cos(a)*.19,y+sin(a)*.19,z+1.16),(x+cos(a+.4)*.09,y+sin(a+.4)*.09,z+1.8),.12,flame)
+  a=i*2*pi/3;line(g,(x+cos(a)*.19*scale,y+sin(a)*.19*scale,z+1.16*scale),(x+cos(a+.4)*.09*scale,y+sin(a+.4)*.09*scale,z+1.8*scale),.12*scale,flame)
 
 # Compact main keep: one central tower, a gabled hall, two small flanks.
 g=Mesh('Bastion_I');courses(g,0,32,.38,17,10,5.4);roof(g,0,32,5.9,17,10,3.1)
@@ -264,7 +264,7 @@ for X in [-4.12,4.12]:
  for y in range(-34,-10,2):courses(b,X,y,.45,.7,1.96,.85)
  b.box((X,-23,1.36),(.93,24,.21),trim)
 for X in [-4.2,4.2]:
- for Y in [-34,-12]:torch(b,X,Y,.5)
+ for Y in [-34,-12]:torch(b,X,Y,.5,scale=1.5)
 b.finish(.035)
 # Paving has real seams, slight stone variation, follows continuous deck/ground levels.
 for name,ya,yb,w,z in [('Outer_Road',-74,-35,5,.40),('Bridge_Paving',-35,-11,7.4,.49),('Axial_Paving',-11,25.6,5,.40)]:
@@ -340,12 +340,13 @@ rock_positions=[]
 for side in [-1,1]:
  for cluster in range(17):
   cx=-64+cluster*8+random.uniform(-1.8,1.8)
-  for j in range(random.randint(3,7)):
+  for j in range(random.randint(5,8)):
    x=cx+random.uniform(-3.3,3.3)
    y=river_center(x)+side*(river_width(x)+random.uniform(-.85,1.65))
-   if -37<y<-8 and abs(x-road_x(y))<6.2:continue
-   size=random.uniform(.38,.8) if j>2 else random.uniform(.95,1.65)
-   if j==0 and cluster%3==0:size=random.uniform(1.7,2.15)
+   size=random.uniform(.38,.85) if j>2 else random.uniform(1.05,1.85)
+   if j==0:size=random.uniform(1.95,2.65)
+   # Clearance includes each boulder's possible horizontal radius and bevel.
+   if -39<y<-6 and abs(x-road_x(y))<4.8+size*1.8:continue
    if any((x-px)**2+(y-py)**2 < (.68*(size+ps))**2 for px,py,ps in rock_positions):continue
    rock_positions.append((x,y,size))
 for i,(x,y,size) in enumerate(rock_positions):
@@ -372,7 +373,7 @@ for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
   for v in o.data.vertices:v.co*=1+.13*sin(v.co.x*7+v.co.y*9+v.co.z*3+i)
   o.scale=(random.uniform(.4,.9),random.uniform(.35,.7),random.uniform(.4,.85));o.rotation_euler.z=random.uniform(-pi,pi);o.data.materials.append(random.choice(rocks));bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
 # Dense, small ornamental shrubs keep architecture grounded and plots free.
-leaf=[mat('Shrub leaf '+str(i),(.11+i*.028,.18+i*.031,.028+i*.01)) for i in range(4)]
+leaf=[mat('Shrub leaf '+str(i),(.041+i*.012,.091+i*.019,.018+i*.005)) for i in range(4)]
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1)
 template=bpy.context.object;iv=[v.co.copy() for v in template.data.vertices];iff=[tuple(p.vertices) for p in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
 sh=Mesh('Foundation_shrubs_and_groundcover')
@@ -485,5 +486,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True,'bank_finish':'clustered closed lofted crags with radius-aware route clearance; forest-green authored shrubs'},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')
