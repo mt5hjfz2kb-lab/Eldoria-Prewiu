@@ -198,13 +198,13 @@ namespace Eldoria.ArtTests.GateWallShowcase
 
         private static GameObject SourceModel(string filename,string name,float x,float z,float targetWidth,float yOffset=0)
         {
-            var path=Source+filename;
+            var path=filename.StartsWith("Assets/") ? filename : Source+filename;
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if(prefab==null) throw new FileNotFoundException("Authentic Valoria source prefab failed import: "+path);
             var obj=PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             if(obj==null) throw new InvalidOperationException("Unable to instantiate "+path);
             obj.transform.SetParent(root,true);
-            obj.name="ORIGINAL STONE FAMILY / "+name;
+            obj.name="AUTHENTIC ELDORIA MODEL / "+name;
             obj.transform.rotation=Quaternion.identity;
             obj.transform.localScale=Vector3.one;
             obj.transform.position=Vector3.zero;
@@ -236,6 +236,12 @@ namespace Eldoria.ArtTests.GateWallShowcase
             SourceModel("Valoria_Tower_StoneDefV2.glb","right flanking watchtower",22.2f,0,5.2f,.14f);
             SourceModel("Valoria_WallSegment_StoneDefV2.glb","left outer rampart",-30.0f,0,10.1f,.14f);
             SourceModel("Valoria_WallSegment_StoneDefV2.glb","right outer rampart",30.0f,0,10.1f,.14f);
+            // Landscape supports drawn from Eldoria's own textured rock source.
+            string rock="Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb";
+            SourceModel(rock,"left cliff wall contact",-40f,5f,12f,-1.0f);
+            SourceModel(rock,"right cliff wall contact",40f,5f,12f,-1.0f);
+            SourceModel(rock,"rear west bedrock",-35f,15f,14f,-2.1f);
+            SourceModel(rock,"rear east bedrock",35f,15f,14f,-2.1f);
         }
 
         private static void CreateRoadAndBridges()
@@ -321,14 +327,20 @@ namespace Eldoria.ArtTests.GateWallShowcase
                     l.color=C(0xffb66c);l.shadows=LightShadows.None;
                 }
             }
-            // Gate interior: doors set BEHIND the actual imported carved arch;
-            // avoid covering any authentic source stone surface.
+            // Heavy double-leaf oak doors are recessed BEHIND the original arch.
             var oak=Mat("oak_gate_leaf",C(0x453529));
-            Block("Inset oak gate leaf behind source arch",0,2.2f,1.5f,3.0f,4.1f,.24f,oak);
-            for(int i=-2;i<=2;i++)
-                Block("Wrought gate iron strap",i*.56f,2.2f,1.32f,.12f,4.0f,.14f,iron);
-            Block("Lower door cross-bracing",0,1.27f,1.30f,3.25f,.13f,.17f,iron);
-            Block("Upper door cross-bracing",0,3.20f,1.30f,3.25f,.13f,.17f,iron);
+            Block("Heavy oak original-gate double leaves",0,3.8f,1.9f,5.4f,7.15f,.28f,oak);
+            Block("Center door meeting strip",0,3.8f,1.64f,.12f,7.15f,.18f,iron);
+            for(int i=-4;i<=4;i++)
+                Block("Vertical wrought iron gate rib",i*.61f,3.8f,1.68f,.13f,7.0f,.14f,iron);
+            for(int j=0;j<3;j++)
+                Block("Heavy horizontal iron braces",0,1.3f+j*2.35f,1.64f,5.45f,.20f,.17f,iron);
+            var boss=Mat("gate_iron_nail_boss",C(0x978267),.25f);
+            for(int i=-4;i<=4;i++)
+                for(int j=0;j<3;j++)
+                    Primitive("Gate iron fastening boss",PrimitiveType.Sphere,
+                        new Vector3(i*.61f,1.3f+j*2.35f,1.50f),
+                        new Vector3(.11f,.11f,.09f),boss);
             // Lighting stays anchored to the architectural asset, no painted-in detailing.
         }
 
