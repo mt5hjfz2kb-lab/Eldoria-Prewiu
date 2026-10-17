@@ -48,6 +48,11 @@ for v,n in zip(terrain.data.vertices,normals):
 terrain.data.update()
 import bmesh
 bm=bmesh.new();bm.from_mesh(terrain.data);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+# Open heightfield: face winding has no topological outside; preserve V7 up side.
+bm.normal_update()
+if sum(face.normal.z*face.calc_area() for face in bm.faces)<0:
+ bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
+ bm.normal_update()
 bm.to_mesh(terrain.data);bm.free();terrain.data.update()
 normals_up=sum(v.normal.z for v in terrain.data.vertices)/len(terrain.data.vertices)
 assert normals_up>.78,'V7 SOURCE NORMALS INVERTED'
