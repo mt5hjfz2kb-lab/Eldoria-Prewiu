@@ -26,6 +26,8 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             public string screenshot;
             public int meshRenderers;
             public int meshes;
+            public int authenticSourceInstances;
+            public bool vendorArtPass;
             public bool hasCamera;
             public bool hasBastion;
             public bool containsGameplayIntegration;
@@ -49,6 +51,9 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                     Open(name);
                     string file = Path.Combine(output, name + "_UNITY_REAL.png");
                     var root = GeneratedRoot();
+                    var generator = root.GetComponentInParent<ValoriaThreeStylesScene>();
+                    int genuine = generator != null ? generator.AuthenticSourceInstances : 0;
+                    int required = name == "02_DetailedMedieval" ? 2 : 3;
                     var camera = root.GetComponentInChildren<Camera>(true);
                     if (camera == null) throw new InvalidOperationException(name + " missing main camera");
                     Render(camera, file);
@@ -60,6 +65,8 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                         screenshot = file,
                         meshRenderers = root.GetComponentsInChildren<MeshRenderer>(true).Length,
                         meshes = root.GetComponentsInChildren<MeshFilter>(true).Length,
+                        authenticSourceInstances = genuine,
+                        vendorArtPass = genuine >= required,
                         hasCamera = true,
                         hasBastion = ContainsChild(root, "Bastion main hall"),
                         containsGameplayIntegration = false,
@@ -68,7 +75,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                     };
                     File.WriteAllText(Path.Combine(output, name + ".json"),
                         JsonUtility.ToJson(result, true));
-                    if (!result.hasBastion || result.meshRenderers < 100)
+                    if (!result.hasBastion || result.meshRenderers < 100 || !result.vendorArtPass)
                         throw new InvalidOperationException(name + " failed content assertions");
                     Debug.Log("[ELDORIA LOOK DEV] Real Unity output: " + file);
                 }
@@ -91,6 +98,11 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
                 foreach (var name in SceneNames)
                 {
                     Open(name);
+                    var generator = Object.FindFirstObjectByType<ValoriaThreeStylesScene>();
+                    int required = name == "02_DetailedMedieval" ? 2 : 3;
+                    if (generator.AuthenticSourceInstances < required)
+                        throw new InvalidOperationException(name + " lacks imported genuine models (found " +
+                            generator.AuthenticSourceInstances + ", expected " + required + ")");
                     BakeCurrent(name);
                 }
                 AssetDatabase.SaveAssets();
