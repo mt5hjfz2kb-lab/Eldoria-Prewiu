@@ -1,0 +1,30 @@
+{
+  "asset": "cliff_rock_column",
+  "source_run": 38825223115,
+  "donor_run": 38825975637,
+  "donor": "Poly Haven rock_face_02 real photogrammetry CC0",
+  "original_sha": "11e79155eaa15b98b60754505bd47f1c762c5fb8722e99b6eef622eb418a9b7f",
+  "source_donor_sha": "df4ee2f91f02549337fe6043ed8c345267ced1023353e080badc3b6c6e7aa20f",
+  "candidate_sha": "5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae",
+  "target_dimensions_m": [
+    3.778268337249756,
+    2.2949819564819336,
+    6.550000190734863
+  ],
+  "candidate_dimensions_m": [
+    3.778268337249756,
+    2.2949819564819336,
+    6.5500006675720215
+  ],
+  "fit_error_m": 4.76837158203125e-07,
+  "relative_axis_scale": [
+    0.7556536793708801,
+    0.5851455926895142,
+    1.4367778301239014
+  ],
+  "same_camera": true,
+  "real_blender_glb": true,
+  "art_approved": false,
+  "unity_validated": false,
+  "status": "TECH_PASS_PENDING_INDEPENDENT_VISUAL"
+}
