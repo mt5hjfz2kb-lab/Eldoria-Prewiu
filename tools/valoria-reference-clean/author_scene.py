@@ -39,6 +39,8 @@ grain=grng.random((256,256));weather=.94+.065*np.sin(sx*19+np.sin(sy*11))+.045*n
 for material in stone+[trim]:
  rgba=np.ones((256,256,4),dtype=np.float32);base=np.array(material.diffuse_color[:3]);rgba[:,:,:3]=weather[:,:,None]*base[None,None,:]
  flecks=grain>.984;rgba[flecks,:3]*=.76
+ # Packed generated image bytes are sampled as sRGB in glTF: encode the linear palette.
+ rgba[:,:,:3]=np.where(rgba[:,:,:3]<=.0031308,rgba[:,:,:3]*12.92,1.055*np.maximum(rgba[:,:,:3],0)**(1/2.4)-.055)
  image=bpy.data.images.new(material.name+' original weathered albedo',width=256,height=256);image.pixels.foreach_set(rgba.reshape(-1));image.pack();node=material.node_tree.nodes.new('ShaderNodeTexImage');node.image=image;material.node_tree.links.new(node.outputs['Color'],material.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
 flame=mat('Torch golden flame',(1,.39,.025));p=flame.node_tree.nodes.get('Principled BSDF');p.inputs['Emission Color'].default_value=(1,.24,.005,1);p.inputs['Emission Strength'].default_value=2
 # Real baked texture detail from existing original project source; no external downloads.
@@ -206,11 +208,11 @@ for o in objs:
 b=Mesh('Bridge_Masonry');b.box((0,-23,.10),(9,24,.70),stone[3])
 # Side walls boolean cuts are applied below, retaining editable blend geometry.
 for X in [-4.12,4.12]:
- side=Mesh('Bridge_ArchSpandrel');side.box((X,-23,-1.85),(.75,24,3.65),stone[2]);ob=side.finish(.03)
- for Y in [-28.7,-17.3]:
-  bpy.ops.mesh.primitive_cylinder_add(vertices=32,radius=2.55,depth=9,location=(0,Y,-2.7),rotation=(0,pi/2,0));cut=bpy.context.object
+ side=Mesh('Bridge_ArchSpandrel');courses(side,X,-23,-3.675,.75,24,3.65,stone_size=.95);ob=side.finish(.025)
+ for Y in [-27.25,-18.75]:
+  bpy.ops.mesh.primitive_cylinder_add(vertices=48,radius=3.7,depth=9,location=(0,Y,-3.75),rotation=(0,pi/2,0));cut=bpy.context.object
   mod=ob.modifiers.new('Structural through arch','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cut;bpy.context.view_layer.objects.active=ob;bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cut,do_unlink=True)
-  arch(b,X,-0+Y,-2.7,2.55,.48,.95,trim,axis='x',segments=15)
+  arch(b,X,Y,-3.75,3.7,.48,.95,trim,axis='x',segments=19)
  for y in range(-34,-10,2):courses(b,X,y,.45,.7,1.96,.85)
  b.box((X,-23,1.36),(.93,24,.21),trim)
 for X in [-4.2,4.2]:
@@ -221,8 +223,10 @@ p=Mesh('Axial_Paving')
 for ya,yb,w,z in [(-54,-35,5,.40),(-35,-11,7.4,.49),(-8,25.6,5,.40)]:
  y=ya;row=0
  while y<yb:
-  n=6 if w>5 else 5
-  for i in range(n):p.box((-w/2+(i+.5)*w/n,y+.35,z),(w/n-.035,.66,.10),random.choice(stone))
+  n=9 if w>5 else 7
+  for i in range(n+1):
+   xa=max(-w/2,-w/2+(i-.5*(row%2))*w/n)+.015;xb=min(w/2,-w/2+(i+1-.5*(row%2))*w/n)-.015
+   if xb-xa>.04:p.box(((xa+xb)/2,y+.35,z+random.uniform(-.008,.008)),(xb-xa,.66,.10),random.choice(stone))
   y+=.71;row+=1
 p.finish(.025)
 # Four empty construction plots, true ground plane and dressed stone kerbs.
@@ -278,6 +282,7 @@ for side in [-1,1]:
    if abs(x)<5.4:continue
    y=river_center(x)+side*(river_width(x)+random.uniform(-.85,1.65))
    size=random.uniform(.38,.8) if j>2 else random.uniform(.95,1.65)
+   if any((x-px)**2+(y-py)**2 < (.68*(size+ps))**2 for px,py,ps in rock_positions):continue
    rock_positions.append((x,y,size))
 for i,(x,y,size) in enumerate(rock_positions):
  crag=Mesh('River_Rock_%03d'%i);verts=[];segments=7;rx=size*random.uniform(.8,1.5);ry=size*random.uniform(.65,1.05);height=size*random.uniform(.9,1.65);angle=random.uniform(-pi,pi)
@@ -304,7 +309,7 @@ for i,(X,Y) in enumerate([(-22,46),(26,52),(-25,0),(46,-1)]+positions[::3]):
   o.scale=(random.uniform(.4,.9),random.uniform(.35,.7),random.uniform(.4,.85));o.rotation_euler.z=random.uniform(-pi,pi);o.data.materials.append(random.choice(rocks));bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
 # Dense, small ornamental shrubs keep architecture grounded and plots free.
 leaf=[mat('Shrub leaf '+str(i),(.16+i*.035,.25+i*.035,.045+i*.012)) for i in range(4)]
-bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1)
+bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1)
 template=bpy.context.object;iv=[v.co.copy() for v in template.data.vertices];iff=[tuple(p.vertices) for p in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
 sh=Mesh('Foundation_shrubs_and_groundcover')
 centers=[(-10,31.5),(10,31.5),(-10,39.5),(10,39.5),(-5,-11),(5,-11),(-11,-9),(11,-9)]
@@ -340,7 +345,7 @@ for side in [-1,1]:
    verts=[(x+r*cos(a+k*2*pi/3),y+r*sin(a+k*2*pi/3),z) for k in range(3)]+[(x+cos(a)*h*.3,y+sin(a)*h*.3,z+h)]
    sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(leaf))
 # Sporadic low clumps break broad grass fields without invading the construction areas.
-for i in range(350):
+for i in range(800):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
  if abs(y-river_center(x))<river_width(x)+2 or abs(x)<11 and -40<y<42:continue
  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue

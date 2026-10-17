@@ -1,10 +1,10 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 18,
+  "revision": 19,
   "budget_eur": 0,
-  "validated_runtime_source": "58f4c7d2f7011f659641e86dc92e6f4434394fce",
-  "validated_run": 39065831434,
+  "validated_runtime_source": "f457a5df383da413cdf757920260710fd84f5c43",
+  "validated_run": 39066105455,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Inspect revision17 native render: natural bank distribution retained; repair disconnected-face normals on crags and shrubs, add isolated URP SSAO contact shadows with same-camera off diagnostic, packed original limestone weathering, staggered slate, central tower roof, paved terrace and door sconces. Preserve layout/camera; native PlayMode required."
+  "art_correction": "Native revision18 inspected: normals repaired and SSAO influence verified; correct generated albedo sRGB encoding that darkened masonry, widen two through bridge arches and reduce central pier, add real spandrel courses, stagger roadway paving, smoother closed foundation shrubs and sparse ground clumps. Same camera/layout; preserve native interaction and route gates."
 }
