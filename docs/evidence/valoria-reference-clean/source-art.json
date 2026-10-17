@@ -1,5 +1,5 @@
 {
-  "source_sha": "5145d312b07089ab9617166a99cc22c7949d791e",
+  "source_sha": "d920b3686ea3cb91beb9f4db563ae7d2a12b36e9",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -147,17 +147,17 @@
     "Ruin_-25_0": 10824,
     "Ruin_46_-1": 21076,
     "Fir_tree_group": 136986,
-    "River_bank_rocks": 16192,
+    "River_bank_rocks": 35152,
     "Woodland_ground_rocks": 3600,
     "Shrub_group": 20700,
     "Foundation_shrubs_and_groundcover": 17040,
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
     "Meadow_tufts_east": 12780,
-    "River_shore_foam": 952
+    "River_shore_foam": 1214
   },
   "mesh_objects": 32,
-  "triangles": 576504,
-  "blend_sha256": "af9f7718cd7e0f5f432e13e5cb2986dc9653dadb43dd5e0b9f449ba476218570",
-  "glb_sha256": "046f3039fae1a85acfd1f5d307cf227be87a519cb84d0c79e6aebf2d1058635a"
+  "triangles": 595726,
+  "blend_sha256": "0ffb6008cba433feb46fd001c7febd9e448fbdf06489c09879c5abc28996878a",
+  "glb_sha256": "8cec9ac895ad9747d13fb80a9e589a21c50e04861e547f648cb27d39516830a5"
 }
