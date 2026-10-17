@@ -1,11 +1,11 @@
-name: "[VALORIA] Integrate existing gameplay in isolated Valoria entry and verify real UI progression"
+name: "[VALORIA] Refine actual bank mesh, authored road and independent visual critique V5"
 on:
   push:
     branches: [construction/valoria-master-plan-layers-20261016]
     paths:
       - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryPlayableV1.cs'
-      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntime.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs'
+      - 'tools/valoria-layered-construction/author-entry-zone-v5.blender.py'
 permissions:
   contents: write
   actions: read
@@ -52,13 +52,51 @@ jobs:
           $h=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower()
           if($h -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Art reference mismatch'}
           if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV4_CANDIDATE.unity')){throw '7-contact source scene missing'}
+      - name: Recover only verified CC0 rock and meadow from paused asset evidence
+        shell: powershell
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/inputs'
+          New-Item -ItemType Directory -Force $dir|Out-Null
+          $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json'}
+          foreach($item in @(@{id=12061076273;name='cliff_rock_column.glb';sha='5a3fa128f87a51851aaf98b7269461db23536d31302e79b6ba7d2beb7bc761ae'},@{id=12044316857;name='meadow_grass_and_real_loam_CC0_1k.png';sha='d528215ccc37271a505c99773c454c224c024f12a619b03c47c154f733081d32'})){
+            $target=Join-Path $env:RUNNER_TEMP "valoria-entry-v2-$($item.id)-$env:GITHUB_RUN_ID"
+            $zip="$target.zip"
+            Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$($item.id)/zip" -Headers $headers -OutFile $zip -MaximumRedirection 10
+            Expand-Archive -LiteralPath $zip -DestinationPath $target -Force
+            $file=@(Get-ChildItem $target -Recurse -File | Where-Object {$_.Name -eq $item.name})
+            if($file.Count -ne 1){throw 'Selected asset evidence ambiguous or missing'}
+            if((Get-FileHash $file[0].FullName -Algorithm SHA256).Hash.ToLower() -ne $item.sha){throw 'Selected asset SHA mismatch'}
+            Copy-Item $file[0].FullName (Join-Path $dir $item.name) -Force
+            Get-ChildItem $target -Recurse -File -Filter '*.json' | ForEach-Object {Copy-Item $_.FullName (Join-Path $dir $_.Name) -Force}
+          }
+      - name: Locate installed native Blender and reauthor existing editable sources
+        shell: powershell
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){
+            foreach($base in @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")){
+              if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+              if($blender){break}
+            }
+          }
+          if(-not $blender){throw 'Native Blender not found on owner PC'}
+          "VALORIA_ENTRY_BLENDER=$blender" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5'
+          New-Item -ItemType Directory -Force $dir|Out-Null
+          & $blender --version | Out-File "$dir/blender-version.txt" -Encoding utf8
+          & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/author-entry-zone-v5.blender.py
+          if($LASTEXITCODE){throw 'Source-derived Blender entry authoring failed'}
+          & $blender -b -t 2 --python-exit-code 1 --python tools/art-direction/ai-authoring/execute_artist_plan.py -- --source "$dir/ValoriaEntryZoneV5.blend" --inspect --inspect-target-object ValoriaEntryTerrainV5 --out "$dir/inspect"
+          if($LASTEXITCODE){throw 'Source geometry inspection failed'}
       - name: Import actual Blender entry zone and capture comparable player-camera A/B
         shell: powershell
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/playable-entry-v1'
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5'
           New-Item -ItemType Directory -Force -Path $dir|Out-Null
           $log=Join-Path $env:RUNNER_TEMP 'valoria-spatial-v1.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV1.Build','-logFile',$log)
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV5Integration.Build','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(2400000)){
             & taskkill.exe /PID $p.Id /T /F|Out-Null
@@ -66,38 +104,43 @@ jobs:
           }
           Get-Content $log -Tail 90
           Copy-Item $log "$dir/native-unity.log"
-          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_PLAYABLE_SCENE_COMPLETE' -Quiet)){
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_ENTRY_ZONE_V5_NATIVE_COMPLETE' -Quiet)){
             throw "Native 3D SHARP macro diagnostic failed exit=$($p.ExitCode)"
           }
-      - name: Play actual scene with existing UI, LocalGateway, I-II rules and temporary save
+      - name: Independent local vision critique of GPT-authored geometry, no automatic approval
         shell: powershell
-        env:
-          VALORIA_ENTRY_PROBE: '1'
         run: |
-          $dir='docs/evidence/valoria-layered-construction-20261016/playable-entry-v1'
-          $log=Join-Path $env:RUNNER_TEMP 'valoria-entry-gameplay.log'
-          $args=@('-batchmode','-force-d3d11','-screen-width','1536','-screen-height','1024','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV1.PlayProbe','-logFile',$log)
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(900000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Playmode timeout'}
-          Get-Content $log -Tail 100
-          Copy-Item $log "$dir/playmode-unity.log"
-          if($p.ExitCode -ne 0){throw 'Existing-system gameplay probe failed'}
-          $x=Get-Content "$dir/gameplay-playmode.json" -Raw|ConvertFrom-Json
-          if($x.status -eq 'FAIL' -or -not $x.persistence -or -not $x.ui_build_sawmill -or -not $x.ui_build_barracks -or -not $x.bastion_i_ii -or $x.canonical_save_touched){throw 'Progression and isolated persistence gate failed'}
+          $started=$null
+          try{
+            try{Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5|Out-Null}catch{
+              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
+              if(Test-Path $ollama){$started=Start-Process $ollama -ArgumentList 'serve' -PassThru -WindowStyle Hidden;Start-Sleep -Seconds 4}
+            }
+            & $env:VALORIA_ENTRY_BLENDER -b -t 2 --python-exit-code 1 --python tools/valoria-layered-construction/qwen-entry-independent-review.py
+          }finally{if($started -and -not $started.HasExited){Stop-Process -Id $started.Id -ErrorAction SilentlyContinue}}
+      - name: Require genuine native source identity and seven real targets without artistic self-approval
+        shell: powershell
+        run: |
+          $dir='docs/evidence/valoria-layered-construction-20261016/entry-zone-v5'
+          $x=Get-Content "$dir/entry-native.json" -Raw|ConvertFrom-Json
+          if($x.canonical_modified -or $x.original_sources_modified -or $x.physical_stairs -ne 12 -or $x.source_target_matches -ne 7){throw 'Entry source integrity failed'}
+          if([math]::Abs($x.home_fov-44.42281) -gt 0.0001){throw 'Player lens changed'}
+          Write-Host 'SOURCE_IMPORT_AND_TARGETS_TECH_PASS; ART_REVIEW_AND_FULL_GAMEPLAY_PENDING'
       - name: Save only isolated results, no forced push or superseding original scenes
         shell: powershell
         run: |
           git config user.name 'Valoria native macro'
           git config user.email 'valoria-macro@users.noreply.github.com'
-          git add -f -- docs/evidence/valoria-layered-construction-20261016/playable-entry-v1/
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_PlayableV1.unity
-          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV1/
-          foreach($meta in @('Editor/ValoriaEntryPlayableV1.cs.meta','ValoriaEntryExperimentalRuntime.cs.meta','GeneratedPlayableEntryV1.meta','Valoria_SHARP_Entry_PlayableV1.unity.meta')){
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/
+          foreach($meta in @('Editor/ValoriaEntryZoneV5Integration.cs.meta','GeneratedEntryV5.meta','Valoria_SHARP_EntryZoneV5_CANDIDATE.unity.meta')){
             $mp="Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/$meta"
             if(Test-Path $mp){git add -f -- $mp}
           }
           if(-not(git diff --cached --quiet)){
-            git commit -m 'evidence(valoria): isolated playable scene and real UI I-II progression evidence'
+            git commit -m 'evidence(valoria): native Blender entry sources, genuine Unity A/B and auxiliary model evidence'
             git reset --hard HEAD
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
             if($LASTEXITCODE){throw 'Cannot fetch latest owner HEAD'}
@@ -109,9 +152,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-playable-entry-v1-${{ github.run_id }}
+          name: valoria-entry-zone-v5-${{ github.run_id }}
           path: |
-            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/playable-entry-v1/**
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Entry_PlayableV1.unity
-            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV1/**
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/entry-zone-v5/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/**
           if-no-files-found: warn
