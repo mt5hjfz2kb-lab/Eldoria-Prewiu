@@ -1,7 +1,8 @@
 {
   "stage": "art",
-  "revision": 5,
+  "revision": 6,
   "budget_eur": 0,
   "previous_candidate": "f64fe7278b30c9c64096f19ff76d780820dbd80a",
-  "independent_visual_review": "REAL UNITY REVIEW: readable keep, road, four plots and bridge. REWORK: gate underscaled; high-frequency grass; no visible shadows; uniform boulder rows; flat water. Directed geometry/URP/terrain/river correction, no ART_APPROVED."
+  "independent_visual_review": "REAL UNITY REVIEW: readable keep, road, four plots and bridge. REWORK: gate underscaled; high-frequency grass; no visible shadows; uniform boulder rows; flat water. Directed geometry/URP/terrain/river correction, no ART_APPROVED.",
+  "compile_fix": "Explicit UnityEngine.ShadowQuality required alongside URP namespace"
 }
