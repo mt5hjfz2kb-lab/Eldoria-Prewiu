@@ -1,8 +1,1 @@
-{
-  "stage": "blockout",
-  "revision": 1,
-  "reference": "6F7B48F0-D630-4996-9BA1-D1418E0597AA(1).jpeg",
-  "budget_eur": 0,
-  "scene": "Valoria_Reference_Clean",
-  "owner_authorized": true
-}
+{"stage":"blockout","revision":2,"budget_eur":0,"reason":"Actual A reviewed: zoom too far, plot terrain occlusion; tighter camera and flat buildable pads"}
