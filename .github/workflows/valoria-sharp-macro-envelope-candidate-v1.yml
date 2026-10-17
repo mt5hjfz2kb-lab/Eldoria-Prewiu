@@ -1,0 +1,106 @@
+name: "[VALORIA] Measure macro gate proportion and physical semantic rays in real Unity SHARP"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - '.github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaMacroScreenEnvelopeCandidateV1.cs'
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-macro-envelope-one-native-run
+  cancel-in-progress: false
+jobs:
+  actual-sharp-native:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    defaults:
+      run:
+        working-directory: valoria-macro-envelope-v1
+    steps:
+      - name: Resolve existing GitHub Desktop git
+        working-directory: .
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter "app-*" -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName "resources/app/git/cmd/git.exe"} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Git is unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-macro-envelope-v1
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-macro-envelope-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Check exclusive workstream, free Unity editor and owner-approved reference
+        shell: powershell
+        run: |
+          $r=Get-Content "$env:GITHUB_WORKSPACE/valoria-macro-envelope-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          $owner='valoria-master-plan-layered-construction-20261016'
+          if(@($r.active|Where-Object {$_.id -eq $owner}).Count -ne 1){throw 'Lease missing'}
+          if(@($r.active|Where-Object {$_.id -ne $owner -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Runner claimed by incompatible owner'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender busy'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
+          $h=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLower()
+          if($h -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Art reference mismatch'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity')){throw '7-contact source scene missing'}
+      - name: Execute 250 actual SHARP player-camera 3D trials and source physical contact rays
+        shell: powershell
+        run: |
+          $dir='docs/evidence/valoria-layered-construction-20261016/macro-envelope'
+          New-Item -ItemType Directory -Force -Path $dir|Out-Null
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-sharp-macro-envelope.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-macro-envelope-v1/Unity",'-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaMacroScreenEnvelopeCandidateV1.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            throw 'Macro screen-space validation timeout'
+          }
+          Get-Content $log -Tail 90
+          Copy-Item $log "$dir/native-unity.log"
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_MACRO_SCREEN_CANDIDATES_NATIVE_COMPLETE' -Quiet)){
+            throw "Native 3D SHARP macro diagnostic failed exit=$($p.ExitCode)"
+          }
+      - name: Require genuine Unity scene, screenshots and unmodified player authority
+        shell: powershell
+        run: |
+          $dir='docs/evidence/valoria-layered-construction-20261016/macro-envelope'
+          $sc='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity'
+          foreach($p in @("$dir/macro-screen-envelope-trials.json","$dir/macro-source-home.png","$dir/macro-candidate-home.png","$dir/macro-candidate-portrait.png",$sc)){if(-not(Test-Path $p)){throw "Missing native proof $p"}}
+          $x=Get-Content "$dir/macro-screen-envelope-trials.json" -Raw|ConvertFrom-Json
+          if($x.total_trials -ne 250 -or -not $x.original_camera_untouched -or -not $x.source_geometry_untouched -or $x.canonical_modified -or $x.spatially_upright){throw 'Geometry or authority falsely approved'}
+          Write-Host "PASS 250 source-backed macro placement trials, seven-contact candidates=$($x.seven_contacts_count)"
+          Write-Host "Actual gate width fraction=$($x.baseline.gate_width_percent), reference fraction=$($x.approved_gate_width_percent)"
+          Write-Host "No gameplay/visual approval is inferred from this geometric measurement"
+      - name: Save only isolated results, no forced push or superseding original scenes
+        shell: powershell
+        run: |
+          git config user.name 'Valoria native macro'
+          git config user.email 'valoria-macro@users.noreply.github.com'
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/macro-envelope/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'evidence(valoria): native macro camera/gate bounding evidence and reversible spatial candidate'
+            git reset --hard HEAD
+            git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Cannot fetch latest owner HEAD'}
+            git rebase origin/construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Concurrent branch conflict; preserve artifact, never force'}
+            git push origin HEAD:construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Concurrent push, preserve artifact, never force'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-true-sharp-macro-screenproof-${{ github.run_id }}
+          path: |
+            valoria-macro-envelope-v1/docs/evidence/valoria-layered-construction-20261016/macro-envelope/**
+            valoria-macro-envelope-v1/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity
+          if-no-files-found: warn
