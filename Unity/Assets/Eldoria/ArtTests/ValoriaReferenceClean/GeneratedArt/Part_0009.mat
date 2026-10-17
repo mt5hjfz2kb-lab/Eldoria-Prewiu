@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8239394707634610855
+--- !u!114 &-8555352207310685807
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
   version: 10
---- !u!114 &-2624747487726599179
+--- !u!114 &-7889306504461719447
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53,7 +53,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - baseColorTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 871f011d929793f44aa8496a7bcd34dd, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - emissiveTexture:
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - normalTexture:
-        m_Texture: {fileID: 2800000, guid: 54a5c802cdad5c546b9f7ae197a93005, type: 2}
+        m_Texture: {fileID: 2800000, guid: d0696769f1fd2f4429414679404a7294, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - occlusionTexture:
@@ -132,7 +132,7 @@ Material:
     - roughnessFactor: 0.8
     - transmissionFactor: 0
     m_Colors:
-    - baseColorFactor: {r: 0.55165, g: 0.5220286, b: 0.46728474, a: 1}
+    - baseColorFactor: {r: 1, g: 1, b: 1, a: 1}
     - baseColorTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
     - emissiveFactor: {r: 0, g: 0, b: 0, a: 1}
     - emissiveTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}

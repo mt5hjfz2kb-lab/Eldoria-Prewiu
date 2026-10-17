@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6377938837568868792
+--- !u!114 &-4731193118576434796
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,7 +40,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - baseColorTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 191658204d1614f43abf42b734b1bde5, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - emissiveTexture:
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - normalTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d0696769f1fd2f4429414679404a7294, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - occlusionTexture:
@@ -112,14 +112,14 @@ Material:
     - emissiveTexture_texCoord: 0
     - metallicFactor: 0
     - metallicRoughnessTexture_texCoord: 0
-    - normalTexture_scale: 1
+    - normalTexture_scale: 0.22
     - normalTexture_texCoord: 0
     - occlusionTexture_strength: 1
     - occlusionTexture_texCoord: 0
-    - roughnessFactor: 0.62
+    - roughnessFactor: 0.8
     - transmissionFactor: 0
     m_Colors:
-    - baseColorFactor: {r: 0.20285088, g: 0.3152154, b: 0.45895773, a: 1}
+    - baseColorFactor: {r: 1, g: 1, b: 1, a: 1}
     - baseColorTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
     - emissiveFactor: {r: 0, g: 0, b: 0, a: 1}
     - emissiveTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
@@ -128,7 +128,7 @@ Material:
     - occlusionTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &4999404444050127879
+--- !u!114 &1177650782883489311
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

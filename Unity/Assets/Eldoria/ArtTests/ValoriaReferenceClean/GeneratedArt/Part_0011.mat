@@ -1,19 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5835769807079758396
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
-  version: 10
---- !u!114 &-1832435798111071311
+--- !u!114 &-6267625567826767261
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -26,6 +13,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.ShaderGraph.Editor::UnityEditor.Rendering.BuiltIn.AssetVersion
   version: 0
+--- !u!114 &-4144737117209544300
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -53,7 +53,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - baseColorTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: a619d202db424864ab0d348c74646092, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - emissiveTexture:
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - normalTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d0696769f1fd2f4429414679404a7294, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - occlusionTexture:
@@ -125,14 +125,14 @@ Material:
     - emissiveTexture_texCoord: 0
     - metallicFactor: 0
     - metallicRoughnessTexture_texCoord: 0
-    - normalTexture_scale: 1
+    - normalTexture_scale: 0.22
     - normalTexture_texCoord: 0
     - occlusionTexture_strength: 1
     - occlusionTexture_texCoord: 0
     - roughnessFactor: 0.8
     - transmissionFactor: 0
     m_Colors:
-    - baseColorFactor: {r: 0.43016627, g: 0.40302745, b: 0.34919015, a: 1}
+    - baseColorFactor: {r: 1, g: 1, b: 1, a: 1}
     - baseColorTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
     - emissiveFactor: {r: 0, g: 0, b: 0, a: 1}
     - emissiveTexture_Rotation: {r: 0, g: 0, b: 0, a: 0}
