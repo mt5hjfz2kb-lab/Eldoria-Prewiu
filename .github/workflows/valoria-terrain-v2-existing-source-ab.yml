@@ -1,0 +1,162 @@
+name: "[VALORIA] Sculpt existing river/cliff V2 + real player-camera Unity A/B"
+on:
+  push:
+    branches: [construction/valoria-master-plan-layers-20261016]
+    paths:
+      - '.github/workflows/valoria-terrain-v2-existing-source-ab.yml'
+      - 'tools/valoria-layered-construction/refine-existing-terrain-v2.blender.py'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV2Integration.cs'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: exclusive-valoria-existing-terrain-v2
+  cancel-in-progress: false
+jobs:
+  sculpt-existing-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install entirely free Blender + NumPy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1-mesa-dri
+      - name: Open hash-pinned TerrainV1 .blend, sculpt V2, save editable .blend and GLB
+        run: |
+          mkdir -p docs/evidence/valoria-layered-construction-20261016/terrain-v2
+          blender -b -t 2 --python tools/valoria-layered-construction/refine-existing-terrain-v2.blender.py -- \
+            docs/evidence/valoria-layered-construction-20261016/terrain-v1/ValoriaTerrainRiverCliffV1.blend \
+            docs/evidence/valoria-layered-construction-20261016/terrain-v1/ValoriaTerrainRiverCliffV1-manifest.json \
+            docs/evidence/valoria-layered-construction-20261016/terrain-v2
+          python3 - <<'PY'
+          import json,os
+          p='docs/evidence/valoria-layered-construction-20261016/terrain-v2'
+          x=json.load(open(p+'/ValoriaTerrainRiverCliffV2-manifest.json'))
+          assert x['original_preserved'] and not x['original_collider_changes']
+          assert x['mesh_count']>=8 and 13000<x['triangles']<40000
+          assert os.path.getsize(p+'/ValoriaTerrainRiverCliffV2.blend')>50000
+          assert os.path.getsize(p+'/ValoriaTerrainRiverCliffV2.glb')>20000
+          print('VALORIA_TERRAIN_V2_SOURCE_EDITABLE_PASS',x['mesh_count'],x['triangles'],x['source_glb_v2_sha256'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-terrain-v2-editable-art-source-${{ github.run_id }}
+          path: docs/evidence/valoria-layered-construction-20261016/terrain-v2/**
+          if-no-files-found: error
+          retention-days: 30
+  unity-native-ab:
+    needs: sculpt-existing-source
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    defaults:
+      run:
+        working-directory: valoria-terrain-v2
+    steps:
+      - name: Resolve installed GitHub Desktop git
+        working-directory: .
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter "app-*" -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName "resources/app/git/cmd/git.exe"} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'GitHub Desktop git missing'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-terrain-v2
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-terrain-v2-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify owner claim, free PC, installed Unity and original reference
+        shell: powershell
+        run: |
+          $reg=Get-Content "$env:GITHUB_WORKSPACE/valoria-terrain-v2-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          $owner='valoria-master-plan-layered-construction-20261016'
+          $own=@($reg.active|Where-Object {$_.id -eq $owner})
+          $conflicts=@($reg.active|Where-Object {$_.id -ne $owner -and $_.resources -contains 'windows-runner-heavy'})
+          if($own.Count -ne 1 -or $conflicts.Count){throw 'Invalid Windows runner claim'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC occupied'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity 6000.3.23f1 absent'}
+          $hash=(Get-FileHash references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -ne '8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689'){throw 'Owner visual reference changed'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-terrain-v2-editable-art-source-${{ github.run_id }}
+          path: ${{ github.workspace }}/valoria-terrain-v2/docs/evidence/valoria-layered-construction-20261016/terrain-v2
+      - name: Stage only authentic V2 source into own isolated test folder
+        shell: powershell
+        run: |
+          $p='docs/evidence/valoria-layered-construction-20261016/terrain-v2/ValoriaTerrainRiverCliffV2.glb'
+          if(-not(Test-Path $p)){throw 'No new genuine Blender terrain source'}
+          $target='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Sources'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Copy-Item $p "$target/ValoriaTerrainRiverCliffV2.glb"
+      - name: Compare real Unity before-after from SAME actual SHARP player camera
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-terrain-v2-native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-terrain-v2/Unity",
+            '-executeMethod','Eldoria.ValoriaLayered.Editor.ValoriaTerrainRiverCliffV2Integration.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2700000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Real camera terrain V2 Unity timed out'
+          }
+          Get-Content $log -Tail 110
+          Copy-Item $log docs/evidence/valoria-layered-construction-20261016/terrain-v2/native-unity.log
+          if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_TERRAIN_V2_REAL_PLAYER_FRAME_CANDIDATE_COMPLETE' -Quiet)){
+            throw "Unity V2 import/camera A/B failed exit=$($p.ExitCode)"
+          }
+      - name: Do not conflate source/compilation with artistic approval
+        shell: powershell
+        run: |
+          $ev='docs/evidence/valoria-layered-construction-20261016/terrain-v2'
+          $scene='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity'
+          $prefab='Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2/ValoriaTerrainRiverCliffV2.prefab'
+          if(-not(Test-Path $scene) -or -not(Test-Path $prefab)){throw 'Real Unity V2 scene or prefab missing'}
+          foreach($name in @('terrain-v2-native.json','terrain-v2-BEFORE-home.png',
+            'terrain-v2-BEFORE-portrait.png','terrain-v2-AFTER-home.png',
+            'terrain-v2-AFTER-portrait.png','terrain-v2-AFTER-pan-left.png',
+            'terrain-v2-AFTER-pan-right.png','terrain-v2-AFTER-zoom-in.png',
+            'terrain-v2-AFTER-zoom-out.png')){
+            if(-not(Test-Path "$ev/$name")){throw "Missing native A/B proof $name"}
+          }
+          $x=Get-Content "$ev/terrain-v2-native.json" -Raw|ConvertFrom-Json
+          if($x.all_semantic_clicks -ne 7 -or $x.stair_treads_untouched -ne 12 -or
+            -not $x.colliders_unchanged -or -not $x.actual_player_camera_unchanged -or
+            $x.canonical_modified -or $x.visual_gate -ne 'PENDING_ACTUAL_AB_INSPECTION'){
+            throw 'Improperly changed source authority or wrongly approved art'
+          }
+          Write-Host 'VALORIA_TERRAIN_V2_REAL_CAMERA_NATIVE_TECH_PASS, A/B INSPECTION STILL REQUIRED'
+      - name: Persist separate Blender .blend, source GLB, scene, prefab and real A/B frames
+        shell: powershell
+        run: |
+          git config user.name 'Valoria V2 terrain art worker'
+          git config user.email 'valoria-terrain-v2@users.noreply.github.com'
+          git add -f -- docs/evidence/valoria-layered-construction-20261016/terrain-v2/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2/
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'evidence(valoria): Blender terrain V2 native SHARP player A/B scene and renders'
+            git push origin HEAD:construction/valoria-master-plan-layers-20261016
+            if($LASTEXITCODE){throw 'Concurrent owner branch changed; preserve artifacts, no force'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-sharp-terrain-v2-native-${{ github.run_id }}
+          path: |
+            valoria-terrain-v2/docs/evidence/valoria-layered-construction-20261016/terrain-v2/**
+            valoria-terrain-v2/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2/**
+            valoria-terrain-v2/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity
+          if-no-files-found: warn
+          retention-days: 30
