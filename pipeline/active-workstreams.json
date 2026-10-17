@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "CONTINUE_REFERENCE_CLEAN_ART_FINISHING_AFTER_PREMATURE_HANDOFF",
-      "next": "Correct river bank geometry, clustered rocks and terrain/material finish; inspect authentic Unity camera before advancing.",
+      "phase": "REFERENCE_CLEAN_ART_FINISHING_BRIDGE_PROFILE_PASS_PLAYMODE_BATCH_INDEX_FIX_IN_PROGRESS",
+      "next": "Inspect actual Unity run 39067373524 after UInt32 index normalization; reject any PlayMode geometry corruption. Continue bank/terrain art and auxiliary existing local model critique; no physical device requirement may stop remaining art production.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -106,7 +106,15 @@
           "art_8_of_10_certified": false,
           "physical_android_devices": 0,
           "physical_mobile_profiled": false,
-          "runner_released": true
+          "runner_released": false,
+          "last_inspected_source": "edaf817239565f6aafe7c6e2a01c6f514f6860fb",
+          "last_inspected_output": "431d67f4f526bac7477d2a68745ec28fa76755e6",
+          "last_inspected_run": 39066988473,
+          "bridge_method": "closed_profile_extrusion",
+          "bridge_openings_visually_observed": true,
+          "playmode_visual_regression": "REJECTED_SCENE_SPANNING_GROUNDCOVER_TRIANGLES_EDITOR_CAPTURE_CLEAN",
+          "current_fix_source": "4124bcd6da297d06bbd4b22b72236daf6e0e0c15",
+          "current_run": 39067373524
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
