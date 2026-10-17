@@ -15,7 +15,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Valoria: recovered master plan and Unity layered construction",
-      "owner": "chatgpt-normal-valoria-construction-20261017",
+      "owner": "codex-work-valoria-reference-clean-20261017",
       "branch": "construction/valoria-master-plan-layers-20261016",
       "status": "active",
       "claimed_at": "2026-10-16",
@@ -25,7 +25,11 @@
         "tools/valoria-layered-construction/**",
         ".github/workflows/valoria-layered-construction.yml",
         "docs/evidence/valoria-layered-construction-20261016/**",
-        ".github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml"
+        ".github/workflows/valoria-sharp-macro-envelope-candidate-v1.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**",
+        "tools/valoria-reference-clean/**",
+        ".github/workflows/valoria-reference-clean.yml",
+        "docs/evidence/valoria-reference-clean/**"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -33,8 +37,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "V12 genuine WallFamily gate-flank extension generated and native Unity validated; independent Qwen negative/unreliable versus visible new silhouette; playable V3 I→II complete (all existing UI/navigation/persistence), no mobile device QA, art not approved.",
-      "next": "Recover original Source08 semantic Bastion materials with verified provenance; first measure visible/hidden Bastion on player-aligned Unity camera and isolate runtime SHARP visibility; then Blender professional source edit + true local A/B only if justified. Preserve best V12, V13, playable V3 and all scene/camera/gameplay locks; zero spend.",
+      "phase": "OWNER_AUTHORIZED_NEW_EMPTY_UNITY_SCENE_REFERENCE_CLEAN",
+      "next": "Construct new independent Valoria_Reference_Clean scene from attached 2026-10-17 reference, nine stages; preserve every previous scene and source; real Unity captures required.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -83,9 +87,9 @@
         "canonical_save_touched": false,
         "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md"
       },
-      "previous_owner": "chatgpt-work-valoria-takeover-20261017",
+      "previous_owner": "chatgpt-normal-valoria-construction-20261017",
       "takeover_at": "2026-10-17",
-      "takeover_authorization": "Owner's explicit 2026-10-17 transfer from exhausted Work session to normal ChatGPT; same branch, same workstream, no competing live runs.",
+      "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_HANDOFF_20261017.md",
       "last_session_reclaim": {
         "date": "2026-10-17",
