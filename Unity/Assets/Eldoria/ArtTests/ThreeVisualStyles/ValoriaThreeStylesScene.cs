@@ -22,6 +22,8 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         private readonly Dictionary<Color32, Material> palette = new Dictionary<Color32, Material>();
         private Mesh conicalMesh;
         private int objectCount;
+        private int authenticSourceInstances;
+        public int AuthenticSourceInstances => authenticSourceInstances;
 
         private bool Rich => artDirection == ArtDirection.DetailedMedieval;
         private bool Bright => artDirection == ArtDirection.ColorfulCastle;
@@ -72,6 +74,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         {
             if (transform.Find(Container) != null) return;
             objectCount = 0;
+            authenticSourceInstances = 0;
             var holder = new GameObject(Container);
             // Recreate on every open. Generated meshes/materials do not pollute the Git repo
             // or accidentally become permanent/canonical Unity art.
@@ -89,6 +92,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             RuinsAndLife();
             Debug.Log("[ELDORIA THREE LOOKS] Built isolated " + artDirection +
                 " scene; generated GameObjects=" + objectCount +
+                " | genuine source model instances=" + authenticSourceInstances +
                 " | no production game files modified.");
         }
 
@@ -163,6 +167,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             inst.transform.position += new Vector3(x - b.center.x,
                 H(x, z) + yOffset - b.min.y, z - b.center.z);
             objectCount += renderers.Length;
+            authenticSourceInstances++;
             return true;
 #else
             return false;
