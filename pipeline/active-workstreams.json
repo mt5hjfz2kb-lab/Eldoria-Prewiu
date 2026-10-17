@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_DEPTH_WATER_AND_ACTUAL_MCP_VERIFIED_ANDROID_COMPILING",
-      "next": "Native46 fixed-camera/light/mesh Unity water A/B inspected and retained: depth-aware shallow absorption/contact improves shore and bridge integration. Existing installed pinned BlenderMCP ACTUALLY EXECUTED reviewed mesh-authoring action,22 waterline stones, protected scene transforms unchanged; no installation/paid providers. Existing local Qwen critique43 preserved. Native47 compiles exact46 scene through existing isolated Android adapter; no art changes and no physical device claim. Windows retained until build completes.",
+      "phase": "REFERENCE_CLEAN_NATIVE_UNITY_BAKED_LIGHTING_IN_PRODUCTION",
+      "next": "Owner prioritizes native Unity lighting: existing46 scene preserved, native48 opens it without rebuild, authentic fixed-camera before/after, ProgressiveCPU baked GI, independent ContributeGI flags never BatchingStatic, light/reflection probes and URP postprocess. Inspect genuine outputs before art acceptance. Android47 failed Player compilation, separate bounded diagnosis; no APK/device performance claim. Windows exclusive claim retained.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV46",
-          "current_run": 39080003395,
-          "current_source": "0483910cc65205e50461c41c3ed30cce2b826a45",
+          "current_run": 0,
+          "current_source": "de30f88f4e81a65cb061a738e921918339999bbf",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
@@ -133,7 +133,7 @@
             "art_approved": false
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "COMPILATION_IN_PROGRESS_NOT_DEVICE_VALIDATED"
+          "android_apk_status": "NATIVE47_PLAYER_BUILD_FAILED_DIAGNOSIS_PENDING"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
