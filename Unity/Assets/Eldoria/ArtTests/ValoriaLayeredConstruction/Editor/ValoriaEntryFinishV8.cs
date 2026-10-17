@@ -102,7 +102,7 @@ namespace Eldoria.ValoriaLayered.Editor {
       control.Home();camera.aspect=1.5f;bridge.Sync();
       foreach(var name in names){
         var t=source.Single(x=>x.name==name);var c=t.GetComponent<Collider>();Require(c!=null,"Source collider lost "+name);
-        var p=camera.WorldToViewportPoint(c.bounds.center),pc=control.ProductionCamera.WorldToViewportPoint(c.bounds.center);
+        Vector3 p=camera.WorldToViewportPoint(c.bounds.center),pc=control.ProductionCamera.WorldToViewportPoint(c.bounds.center);
         Require(p.z>0&&p.x>0&&p.x<1&&p.y>0&&p.y<1,"Target leaves home camera "+name);
         Require(Vector2.Distance(p,pc)<.0001f,"Picking camera mismatch "+name);
         Require(Physics.RaycastAll(control.ProductionCamera.ViewportPointToRay(pc),500,~0,QueryTriggerInteraction.Collide).Any(h=>h.collider==c),"Lost original target "+name);
