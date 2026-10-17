@@ -35,6 +35,28 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             public string status;
         }
 
+        // Imported CC0 Kenney GLBs reference sibling Textures/colormap.png.
+        // Previous failed importer cache results must be invalidated explicitly
+        // after the original external texture files are restored.
+        private static void RefreshKenneyDependencies()
+        {
+            const string relative = "Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney";
+            string root = Path.Combine(UnityEngine.Application.dataPath,
+                "Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney");
+            if (!Directory.Exists(root))
+                throw new DirectoryNotFoundException(root);
+            int attempted = 0;
+            foreach (string full in Directory.GetFiles(root, "*.glb", SearchOption.AllDirectories))
+            {
+                string path = "Assets/" + Path.GetRelativePath(UnityEngine.Application.dataPath, full)
+                    .Replace('\\','/');
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate |
+                                                ImportAssetOptions.ForceSynchronousImport);
+                attempted++;
+            }
+            Debug.Log("[ELDORIA LOOK DEV] Kenney GLB force-reimports completed: " + attempted);
+        }
+
         [MenuItem("Eldoria/Art tests/Three visual styles/Capture all three PNGs")]
         public static void CaptureAll()
         {
@@ -46,6 +68,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             Directory.CreateDirectory(output);
             try
             {
+                RefreshKenneyDependencies();
                 foreach (string name in SceneNames)
                 {
                     Open(name);
@@ -95,6 +118,7 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             string previous = SceneManager.GetActiveScene().path;
             try
             {
+                RefreshKenneyDependencies();
                 foreach (var name in SceneNames)
                 {
                     Open(name);
