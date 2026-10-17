@@ -1,6 +1,6 @@
 {
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
-    "source_sha": "593d1b68f3c37526e176fede19a524daa7c95a8d",
+    "source_sha": "7f7916042f4353b0aeac6dff78a2af942d615e29",
     "art_status": "PENDING_INDEPENDENT_VISUAL_REVIEW",
     "ambient_probe_l0": {
         "x": 0.10427740961313248,
@@ -11,7 +11,7 @@
     "native_terrain_resolution": 257,
     "blue_roof_materials": 5,
     "selection_tests": 5,
-    "triangles": 632848,
+    "triangles": 634608,
     "renderers": 34,
     "physical_mobile_tested": false
 }

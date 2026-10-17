@@ -1,6 +1,6 @@
 {
     "scope": "Extend inspected meadow and soil surfaces; four terrain layers, unchanged heightfield and plots/circulation",
-    "source_sha": "593d1b68f3c37526e176fede19a524daa7c95a8d",
+    "source_sha": "7f7916042f4353b0aeac6dff78a2af942d615e29",
     "same_camera": true,
     "same_lighting": true,
     "same_heights": true,

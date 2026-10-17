@@ -1,5 +1,5 @@
 {
-  "source_sha": "593d1b68f3c37526e176fede19a524daa7c95a8d",
+  "source_sha": "7f7916042f4353b0aeac6dff78a2af942d615e29",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -51,7 +51,38 @@
     "method": "post-sculpt Smart UV physical scale",
     "all_banks": true
   },
+  "managed_blendermcp": {
+    "source_sha": "7f7916042f4353b0aeac6dff78a2af942d615e29",
+    "transport_function_origin": "6e11bf237e6009b7eb8484bcba2f0def35a07b5c:tools/art-direction/full-studio/blender_toolbox.py:execute_via_blendermcp",
+    "historic_verified_runs": [
+      38612645467,
+      38766521237
+    ],
+    "plan": {
+      "id": "valoria-waterline-talus-reviewed-v1",
+      "op": "author_closed_waterline_stones",
+      "mode": "zone_talus",
+      "target_prefix": "River_shingle",
+      "bounded_side": "right inland",
+      "owner_scope": "ValoriaReferenceClean only"
+    },
+    "arbitrary_model_python": false,
+    "paid_providers_enabled": false,
+    "existing_addon": {
+      "module": "blender_mcp",
+      "path": "C:\\Users\\crist\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\scripts\\addons\\blender_mcp.py",
+      "loaded": false,
+      "sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5"
+    },
+    "ephemeral_loopback_server": true,
+    "transport_error": "'str' object is not callable",
+    "status": "DIRECT_BLENDER_FALLBACK_AFTER_MCP_UNAVAILABLE",
+    "closed_waterline_stones": 22,
+    "protected_transforms_unchanged": true,
+    "operation_completed": true
+  },
   "shore_finish": {
+    "waterline_stones": 22,
     "mode": "zone_shingle",
     "closed_pebbles": 40,
     "closed_sedge_blades": 42,
@@ -211,12 +242,12 @@
     "Meadow_tufts_and_bank_reeds": 384,
     "Meadow_tufts_west": 12160,
     "Meadow_tufts_east": 12780,
-    "River_shingle_pockets": 3200,
+    "River_shingle_pockets": 4960,
     "River_sedge_pockets": 168,
     "River_shore_foam": 2554
   },
   "mesh_objects": 34,
-  "triangles": 632848,
-  "blend_sha256": "019820d38cc1291096048be2984d2551efd1865c3d1274035434de2970a38282",
-  "glb_sha256": "487ffb7ac54718db426631368d965556585511e7e9e7b8bc992675f6fc127cf8"
+  "triangles": 634608,
+  "blend_sha256": "590fa386d62012a5c9bdfb8477a0c74bbfc5ca123d99199af283b74c31e8f4c9",
+  "glb_sha256": "c4f786e4d147f26b5320d6fa0e042b2e8c32d5520e9b915c479178bfbdd8dd5f"
 }
