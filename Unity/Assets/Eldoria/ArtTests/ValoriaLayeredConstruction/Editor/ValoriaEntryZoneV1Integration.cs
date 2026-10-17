@@ -70,8 +70,15 @@ namespace Eldoria.ValoriaLayered.Editor {
    int Test(){int hit=0;foreach(string name in targets){var c=transforms.Single(t=>t.name==name).GetComponent<Collider>();var vp=camera.WorldToViewportPoint(c.bounds.center);
     if(vp.z<0||vp.x<0||vp.x>1||vp.y<0||vp.y>1)continue;
     if(Physics.RaycastAll(camera.ViewportPointToRay(vp),500,~0,QueryTriggerInteraction.Collide).Any(r=>r.collider==c))hit++;}return hit;}
-   camera.aspect=1.5f;sourceMatches=Test();Req(sourceMatches==7,"Source seven interactions failed");
-   int matches=0;void Capture(string name,int w=1536,int h=1024){bridge.Sync();camera.aspect=(float)w/h;matches+=Test();Picture(name,w,h);}
+   camera.aspect=1.5f;bridge.Sync();sourceMatches=Test();Req(sourceMatches==7,"Source seven interactions failed");
+   // Test the exact camera property consumed by existing SlicePresenter, not just rendered camera.
+   foreach(string name in targets){
+    var col=transforms.Single(t=>t.name==name).GetComponent<Collider>();var vp=camera.WorldToViewportPoint(col.bounds.center);
+    var inputVp=control.ProductionCamera.WorldToViewportPoint(col.bounds.center);
+    Req(Vector2.Distance(vp,inputVp)<.0001f,"Existing presenter projects a different point");
+    Req(Physics.RaycastAll(control.ProductionCamera.ViewportPointToRay(vp),500,~0,QueryTriggerInteraction.Collide).Any(r=>r.collider==col),"Existing presenter ray differs from physical rendered ray");
+   }
+   int matches=0;void Capture(string name,int w=1536,int h=1024){camera.aspect=(float)w/h;bridge.Sync();matches+=Test();Picture(name,w,h);}
    control.Home();Capture("entry-AFTER-home");control.Pan(new Vector2(41.6667f,0));Capture("entry-AFTER-pan-left");
    control.Home();control.Pan(new Vector2(-41.6667f,0));Capture("entry-AFTER-pan-right");
    control.Home();control.Zoom(-2);Capture("entry-AFTER-zoom-in");control.Home();control.Zoom(2);Capture("entry-AFTER-zoom-out");
