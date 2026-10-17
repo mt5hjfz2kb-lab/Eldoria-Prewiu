@@ -285,14 +285,19 @@ for i in range(350):
   a=random.random()*pi;w=.07
   sh.add([(x-w*cos(a),y-w*sin(a),.37),(x+w*cos(a),y+w*sin(a),.37),(x+random.uniform(-.2,.2),y+random.uniform(-.2,.2),.37+h)],[(0,1,2)],random.choice(leaf))
 sh.finish(0)
-# Snap bottom of each reused/generated tree, bush-root centre and river boulder
-# to the identical analytic terrain used by Unity, never the source object pivot.
+# Seat actual low foot vertices against exactly the terrain equation used by Unity.
+def terrain_height(x,y):
+ t=max(0,min(1,(abs(y-(-23+1.5*sin(x*.065)))-5.2)/3.8));bank=t*t*(3-2*t)
+ h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+(max(0,y-40)*.045)
+ if (abs(x)<11 and -45<y<45) or any(abs(x-px)<9 and abs(y-py)<6.5 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):h=.35
+ return h-4.9*(1-bank)
 for o in bpy.context.scene.objects:
  if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_')):continue
- pts=[o.matrix_world@v.co for v in o.data.vertices];x=sum(p.x for p in pts)/len(pts);y=sum(p.y for p in pts)/len(pts)
- t=max(0,min(1,(abs(y-(-23+1.5*sin(x*.065)))-5.2)/3.8));bank=t*t*(3-2*t)
- h=.35+.35*sin(x*.08)*sin(y*.09)+.15*sin(x*.25+y*.17)+(max(0,y-40)*.045)-4.9*(1-bank)
- o.location.z+=h-min(p.z for p in pts)-.14
+ pts=[o.matrix_world@v.co for v in o.data.vertices];low=min(p.z for p in pts);high=max(p.z for p in pts)
+ fraction=.15 if o.name.startswith(('River_Rock','Ground_Rock')) else .035
+ foot=[p for p in pts if p.z<=low+(high-low)*fraction]
+ offsets=sorted(terrain_height(p.x,p.y)-p.z for p in foot)
+ o.location.z+=offsets[len(offsets)//2]-.10
 # Shared static environmental meshes reduce material submissions; source islands stay editable.
 for prefix,label in [('River_Rock','River_bank_rocks'),('Ground_Rock','Woodland_ground_rocks'),('Reused_Fir_','Fir_tree_group'),('Reused_Shrub_','Shrub_group')]:
  group=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith(prefix)]
