@@ -10,10 +10,14 @@ def smoothstep(a,b,v):
  t=max(0,min(1,(v-a)/(b-a)));return t*t*(3-2*t)
 def river_center(x):return -23+1.5*sin(x*.065)+.85*sin(x*.19+.4)*smoothstep(6,17,abs(x))
 def river_width(x):return 7.1+.75*sin(x*.095+.7)+.48*sin(x*.23)
+def road_x(y):return -1.5+math.tan(math.radians(14))*(y+10) if y<-10 else -1.5*max(0,min(1,(25.6-y)/35.6))
 def terrain_height(x,y):
  t=smoothstep(river_width(x)-2,river_width(x)+2,abs(y-river_center(x)))
  h=.35+.65*sin(x*.08)*sin(y*.09)+.24*sin(x*.25+y*.17)+max(0,y-40)*.045
- flatten=1-smoothstep(0,2.5,max(abs(x)-11,-78-y,y-45))
+ road=1-smoothstep(0,2,max(abs(x-road_x(y))-4.5,-78-y,y-26))
+ keep=1-smoothstep(0,2.5,max(abs(x)-11,25-y,y-45))
+ gate=1-smoothstep(0,2,max(abs(x+1.5)-14,abs(y+10)-4))
+ flatten=max(road,keep,gate)
  for px,py in [(-23,28),(-19,9),(29,32),(28,12)]:flatten=max(flatten,1-smoothstep(0,2,max(abs(x-px)-9,abs(y-py)-6.5)))
  h=h*(1-flatten)+.35*flatten
  natural=smoothstep(river_width(x)+1,river_width(x)+4,abs(y-river_center(x)));h=.35+(h-.35)*natural
@@ -273,6 +277,18 @@ for name,ya,yb,w,z in [('Outer_Road',-74,-35,5,.40),('Bridge_Paving',-35,-11,7.4
    if xb-xa>.04:p.box(((xa+xb)/2,y+.35,z+random.uniform(-.008,.008)),(xb-xa,.66,.10),random.choice(stone))
   y+=.71;row+=1
  p.finish(.025)
+# Reference bridge is angled relative to the city axis, exposing its real arched side.
+# Apply one rigid transform to bridge/exterior road and one continuous axial road reflow.
+theta=math.radians(-14);ct=cos(theta);st=sin(theta)
+for ob in list(bpy.context.scene.objects):
+ if ob.type!='MESH':continue
+ if ob.name.startswith(('Bridge_','Outer_Road')):
+  for v in ob.data.vertices:
+   x=v.co.x;y=v.co.y+10;v.co.x=-1.5+x*ct-y*st;v.co.y=x*st+y*ct-10
+ elif ob.name.startswith('Gate_'):
+  for v in ob.data.vertices:v.co.x-=1.5
+ elif ob.name.startswith('Axial_Paving'):
+  for v in ob.data.vertices:v.co.x+=road_x(v.co.y)
 # Four empty construction plots, true ground plane and dressed stone kerbs.
 for x,y in [(-23,28),(-19,9),(29,32),(28,12)]:
  if True:
@@ -324,11 +340,10 @@ rock_positions=[]
 for side in [-1,1]:
  for cluster in range(17):
   cx=-64+cluster*8+random.uniform(-1.8,1.8)
-  if abs(cx)<6:continue
   for j in range(random.randint(3,7)):
    x=cx+random.uniform(-3.3,3.3)
-   if abs(x)<5.4:continue
    y=river_center(x)+side*(river_width(x)+random.uniform(-.85,1.65))
+   if -37<y<-8 and abs(x-road_x(y))<6.2:continue
    size=random.uniform(.38,.8) if j>2 else random.uniform(.95,1.65)
    if j==0 and cluster%3==0:size=random.uniform(1.7,2.15)
    if any((x-px)**2+(y-py)**2 < (.68*(size+ps))**2 for px,py,ps in rock_positions):continue
@@ -361,7 +376,7 @@ leaf=[mat('Shrub leaf '+str(i),(.11+i*.028,.18+i*.031,.028+i*.01)) for i in rang
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1)
 template=bpy.context.object;iv=[v.co.copy() for v in template.data.vertices];iff=[tuple(p.vertices) for p in template.data.polygons];bpy.data.objects.remove(template,do_unlink=True)
 sh=Mesh('Foundation_shrubs_and_groundcover')
-centers=[(-10,31.5),(10,31.5),(-10,39.5),(10,39.5),(-5,-11),(5,-11),(-11,-9),(11,-9)]
+centers=[(-10,31.5),(10,31.5),(-10,39.5),(10,39.5),(-6.5,-11),(3.5,-11),(-12.5,-9),(9.5,-9)]
 centers+=positions+[(-22,46),(26,52),(-25,0),(46,-1)]
 shrub_path=os.path.join(ROOT,'docs/evidence/valoria-layered-construction-20261016/entry-zone-v7/inputs/shrub_1.glb')
 assert hashlib.sha256(open(shrub_path,'rb').read()).hexdigest()=='5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0'
@@ -374,7 +389,7 @@ for idx,(x,y) in enumerate(centers[::2]):
   o.matrix_world=Matrix.Identity(4)
 for o in shrubs:bpy.data.objects.remove(o,do_unlink=True)
 # Small overlapping three-lobed bushes mass around foundations, never over plots/stairs.
-for X,Y in [(-10,32),(10,32),(-10.8,35),(10.8,36),(-8,39),(8,39),(-6,29),(6,29),(-11,-10),(11,-10),(-22,46),(26,52),(-25,0),(46,-1)]:
+for X,Y in [(-10,32),(10,32),(-10.8,35),(10.8,36),(-8,39),(8,39),(-6,29),(6,29),(-12.5,-10),(9.5,-10),(-22,46),(26,52),(-25,0),(46,-1)]:
  for j in range(random.randint(3,6)):
   x=X+random.uniform(-1.3,1.3);y=Y+random.uniform(-1,1);z=terrain_height(x,y)
   scale=random.uniform(.40,.85)
@@ -400,7 +415,7 @@ for side in [-1,1]:
 # Sporadic low clumps break broad grass fields without invading the construction areas.
 for i in range(800):
  x=random.uniform(-60,60);y=random.uniform(-48,65)
- if abs(y-river_center(x))<river_width(x)+2 or (abs(x)<3.5 and -58<y<26) or (abs(x)<11 and 25<y<45):continue
+ if abs(y-river_center(x))<river_width(x)+2 or (abs(x-road_x(y))<3.5 and -78<y<26) or (abs(x)<11 and 25<y<45):continue
  if any(abs(x-px)<9.3 and abs(y-py)<7 for px,py in [(-23,28),(-19,9),(29,32),(28,12)]):continue
  for k in range(5):
   a=random.random()*2*pi;w=random.uniform(.045,.075);h=random.uniform(.18,.40);cx=x+random.uniform(-.22,.22);cy=y+random.uniform(-.22,.22);z=terrain_height(cx,cy)+.01
@@ -470,5 +485,5 @@ bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(EV,'Valoria_Reference_Clean.blend'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,'Valoria_Reference_Clean.glb'),export_format='GLB',export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 sha=lambda p:hashlib.sha256(open(p,'rb').read()).hexdigest()
-json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
+json.dump({'source_sha':os.environ.get('GITHUB_SHA'),'layout_refinement':{'gate_x':-1.5,'gate_y':-10,'bridge_angle_degrees':-14,'main_camera_unchanged':True,'building_plots_unchanged':True},'blue_slate_triangles':sum(len(p.vertices)-2 for o in bpy.context.scene.objects if o.type=='MESH' for p in o.data.polygons if p.material_index<len(o.data.materials) and o.data.materials[p.material_index] and o.data.materials[p.material_index].name.startswith('Blue slate')),'bridge_geometry':{'method':'closed_profile_extrusion','opening_rays_passed':8,'pier_rays_passed':2},'author':'Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively','donors':[{'path':p,'sha256':sha(p)} for p in [donor,vegd,shrub_path]],'scene_new_empty':True,'external_downloads':[],'art_approved':False,'per_mesh_triangles':{o.name:sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'},'mesh_objects':len([o for o in bpy.context.scene.objects if o.type=='MESH']),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH'),'blend_sha256':sha(os.path.join(EV,'Valoria_Reference_Clean.blend')),'glb_sha256':sha(os.path.join(OUT,'Valoria_Reference_Clean.glb'))},open(os.path.join(EV,'source-art.json'),'w'),indent=2)
 print('VALORIA_REFERENCE_CLEAN_BLENDER_COMPLETE')

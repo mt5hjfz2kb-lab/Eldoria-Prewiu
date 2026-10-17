@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 26,
+  "revision": 27,
   "budget_eur": 0,
-  "validated_runtime_source": "7399ce7c8c62ae572ade26d0022cdf702477d0df",
-  "validated_run": 39068739793,
+  "validated_runtime_source": "0376d113c86111e082f7eb05dcffa9fe01622410",
+  "validated_run": 39069411367,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Inspect clean native25 and keep geometry. Improve slate royal-blue pigment, packed weathering/normal detail and moderate original ashlar corner wear. Increase hemispheric fill for readable shadow materials. Extend exterior road beyond camera and flatten its real support; separate paving meshes so bridge prefab includes its own paving and Paths prefab is reusable. Extend route probes to 96. Preserve semantic asset names and remove only unused owned generated assets by actual scene/prefab dependency graph. Supply actual Unity detail views plus source roof/bridge facts to auxiliary review.",
+  "art_correction": "Native26 inspected and validated. Match reference bridge approach: one rigid -14 degree bridge/exterior-road transform and gate shift -1.5m; continuously reflow axial paving and real flat support using shared RoadX, keep Bastion/camera/four plots unchanged. Update bridge lights, reusable prefab pivots and 96 physical route samples to actual road centre. Exclude bank rocks from the new bridge footprint. Compare genuine main/detail Unity cameras; retain all render parity guards.",
   "auxiliary_review": true
 }
