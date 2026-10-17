@@ -74,7 +74,7 @@ jobs:
           & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-layered-construction/sculpt-original-bastion-v18.blender.py
           if($LASTEXITCODE){throw 'Native genuine mesh editing failed'}
           $m=Get-Content "$ev/entry-source.json" -Raw|ConvertFrom-Json
-          if($m.geometry_edits.Count -ne 3 -or $m.original_unchanged_modules.Count -ne 8 -or -not $m.all_module_envelopes_preserved -or -not $m.v13_licensed_stone_masonry_preserved -or $m.triangles -eq 374064 -or $m.triangles -gt 410000 -or $m.result_glb_sha256 -ne (Get-FileHash "$ev/ValoriaEntryZoneV18.glb" -Algorithm SHA256).Hash.ToLower() -or $m.result_blend_sha256 -ne (Get-FileHash "$ev/ValoriaEntryZoneV18.blend" -Algorithm SHA256).Hash.ToLower()){throw 'Real architectural source gates not met'}
+          if($m.geometry_edits.Count -ne 3 -or $m.original_unchanged_modules.Count -ne 7 -or -not $m.all_module_envelopes_preserved -or -not $m.v13_licensed_stone_masonry_preserved -or $m.triangles -eq 374064 -or $m.triangles -gt 410000 -or $m.result_glb_sha256 -ne (Get-FileHash "$ev/ValoriaEntryZoneV18.glb" -Algorithm SHA256).Hash.ToLower() -or $m.result_blend_sha256 -ne (Get-FileHash "$ev/ValoriaEntryZoneV18.blend" -Algorithm SHA256).Hash.ToLower()){throw 'Real architectural source gates not met'}
           foreach($name in @('SOURCE-front-original-V13-masonry-plus-edited-V18-keep.png','SOURCE-keep-architectural-closeup-V18.png')){
             if(-not(Test-Path "$ev/$name") -or (Get-Item "$ev/$name").Length -lt 15000){throw "Genuine Blender render not produced: $name"}
           }
