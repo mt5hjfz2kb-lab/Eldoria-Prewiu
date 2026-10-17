@@ -105,6 +105,8 @@ now_extent=extent(keep)
 assert max(abs(now_extent[j][i]-original_extent[j][i]) for j in range(2) for i in range(3))<.0001,("ORIGINAL_ENVELOPE_DRIFT",now_extent,original_extent)
 assert {n:(digest(o),len(o.data.polygons),len(o.data.vertices)) for n,o in bastion.items() if n!="BastionKeep"}==frozen
 keep.name="ENTRY_V18_SCULPTED_BASTION_BastionKeep"
+terrain=next(o for o in bpy.data.objects if o.type=="MESH" and o.name=="ValoriaEntryTerrainV13")
+terrain.name="ValoriaEntryTerrainV18"
 # preserve original V13 masonry on every other surface, avoid V17 flatness
 assert len([o for o in bpy.data.objects if o.type=='MESH' and "BASTION" in o.name.upper()])>=1
 for img in bpy.data.images:
@@ -127,7 +129,7 @@ result={'stage':'V18 genuine Blender architectural deep-void cutting + correct s
  'all_module_envelopes_preserved':True,'v13_licensed_stone_masonry_preserved':True,
  'source08_original_banner_only_restored':heraldry,
  'textures_from_project_generator':sha(gener),
- 'other_scenes_untouched':True,'total_export_triangles':tris,
+ 'other_scenes_untouched':True,'triangles':tris,'total_export_triangles':tris,
  'result_blend_sha256':sha(blend),'result_glb_sha256':sha(glb),
  'source_visual_status':'REQUIRES_TRUE_BLENDER_CAMERA_REVIEW',
  'unity_art_status':'NOT_APPROVED','full_frame_art_pass':False,'mobile_qa':False,'zero_euro':True}
