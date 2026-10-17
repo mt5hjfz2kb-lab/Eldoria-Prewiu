@@ -83,13 +83,25 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             built = holder.transform;
             CameraAndLighting();
             Terrain();
-            RiverAndBridge();
-            CentralRoad();
-            LowerGate();
-            UpperBastion();
-            WorkDistricts();
+            if (Rich)
+            {
+                BuildAshenHighlands();
+            }
+            else if (Bright)
+            {
+                BuildSunlitRingTown();
+            }
+            else
+            {
+                RiverAndBridge();
+                CentralRoad();
+                LowerGate();
+                UpperBastion();
+                WorkDistricts();
+                EnrichStrategyValley();
+            }
             VegetationAndRocks();
-            RuinsAndLife();
+            if (!Rich && !Bright) RuinsAndLife();
             Debug.Log("[ELDORIA THREE LOOKS] Built isolated " + artDirection +
                 " scene; generated GameObjects=" + objectCount +
                 " | genuine source model instances=" + authenticSourceInstances +
@@ -601,6 +613,284 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         {
             Shape(PrimitiveType.Cylinder,"Brazier",new Vector3(x,y,z),new Vector3(.44f,.31f,.44f),DarkStone);
             Cone("Warm fire",new Vector3(x,y+.27f,z),.32f,.9f,Gold);
+        }
+
+
+        // DIFFERENT GEOGRAPHIES AND BUILDING GRAMMARS.
+        // These are actual editor-created mesh objects for Unity previews, not mock-up images.
+        // Never touch the canon world, state machine, timeline or progression graph.
+        private void Walkway(string name, Vector3 start, Vector3 end, float width, Color color, int subdivisions=24)
+        {
+            for (int i=0;i<subdivisions;i++)
+            {
+                float t0=(float)i/subdivisions, t1=(float)(i+1)/subdivisions;
+                Vector3 a=Vector3.Lerp(start,end,t0), b=Vector3.Lerp(start,end,t1);
+                a.y=H(a.x,a.z)+.23f; b.y=H(b.x,b.z)+.23f;
+                Vector3 mid=(a+b)*.5f;
+                var stone=Shape(PrimitiveType.Cube,name+" "+i,mid,
+                    new Vector3(width,.22f,Vector3.Distance(a,b)*1.065f),
+                    (i%5==0)?Stone:color);
+                stone.transform.rotation=Quaternion.LookRotation((b-a).normalized,Vector3.up);
+            }
+        }
+
+        private void Curtain(string name,Vector2 a, Vector2 b,float height,float thick,Color color)
+        {
+            Vector2 delta=b-a;
+            Vector2 mid=(a+b)*.5f;
+            float y=(H(a.x,a.y)+H(b.x,b.y))*.5f;
+            var go=Cuboid(name,mid.x,y+height*.5f,mid.y,delta.magnitude,height,thick,color);
+            go.transform.rotation=Quaternion.Euler(0,-Mathf.Atan2(delta.y,delta.x)*Mathf.Rad2Deg,0);
+            // Clamping the footing to a continuous terrain mesh; corner pilasters conceal slopes.
+            for(int i=0;i<=4;i++)
+            {
+                Vector2 p=Vector2.Lerp(a,b,i*.25f);
+                float h=H(p.x,p.y);
+                Shape(PrimitiveType.Cube,name+" stepped stone foot",new Vector3(p.x,h+.45f,p.y),
+                    new Vector3(thick*1.22f,.9f,thick*1.22f),DarkStone);
+            }
+        }
+
+        private void CarvedCliff(float x,float z,float width,float height,float depth,Color color)
+        {
+            float y=H(x,z);
+            var piece=Cuboid("Alpine rock escarpment",x,y+height*.42f,z,width,height,depth,color);
+            piece.transform.rotation=Quaternion.Euler(0,0,((int)(x+z)%3-1)*4f);
+            for (int i=0;i<3;i++)
+                Cuboid("Broken rock layer",x-width*.30f+i*width*.28f,y+height*.76f,z-depth*.42f,
+                    width*.24f,.7f,depth*.32f,i%2==0?DarkStone:Stone);
+        }
+
+        private void SetBanner(float x,float z,float h,Color banner)
+        {
+            float y=H(x,z);
+            Cuboid("Reconstruction flagstaff",x,y+h*.55f,z,.16f,h,.16f,Wood);
+            Cuboid("Valoria blue-and-gold banner",x+.61f,y+h-.85f,z,1.12f,1.55f,.12f,banner);
+            Cuboid("Heraldic sun crest",x+.61f,y+h-.65f,z-.07f,.24f,.50f,.10f,Gold);
+        }
+
+        private void RidgeTower(float x,float z,float height,float r,Color masonry,Color roof)
+        {
+            float y=H(x,z);
+            Shape(PrimitiveType.Cylinder,"Ridge watchtower • masonry",new Vector3(x,y+height*.5f,z),
+                new Vector3(r,height*.5f,r),masonry);
+            Shape(PrimitiveType.Cylinder,"Ridge machicolation",new Vector3(x,y+height-.18f,z),
+                new Vector3(r*1.17f,.33f,r*1.17f),Stone);
+            Cone("Slate conical tower cap",new Vector3(x,y+height+.12f,z),r*1.36f,r*1.10f,roof);
+            for(int k=0;k<4;k++)
+            {
+                float a=k*Mathf.PI*.5f;
+                Cuboid("Vertical arrow embrasure",x+Mathf.Sin(a)*r,y+height*.64f,z+Mathf.Cos(a)*r,
+                    .20f,1.8f,.22f,RGB(.15f,.16f,.19f));
+            }
+        }
+
+        private void HighlandHall(float x,float z,float w,float length,int seed)
+        {
+            float y=H(x,z);
+            Color wall=seed%2==0?RGB(.49f,.49f,.50f):RGB(.40f,.41f,.44f);
+            Cuboid("Highland masonry civilian hall",x,y+3.8f,z,w,7.6f,length,wall);
+            for (int side=-1;side<=1;side+=2)
+            {
+                var roof=Cuboid("Steep slate hall roofing",x+side*w*.26f,y+8.8f,z,
+                    w*.58f,.52f,length+1f,Roof);
+                roof.transform.rotation=Quaternion.Euler(0,0,side*47f);
+                Cuboid("Buttressed hall stone",x+side*w*.44f,y+2.9f,z,
+                    .7f,5.8f,length*.92f,DarkStone);
+            }
+            Cuboid("Recessed oak entrance",x,y+1.6f,z-length*.51f,1.25f,3.2f,.22f,Wood);
+            for(int i=-1;i<=1;i+=2)
+                Cuboid("Warm amber slit lantern",x+i*w*.30f,y+4.9f,z-length*.52f,.50f,1.05f,.12f,Gold);
+        }
+
+        private void BuildAshenHighlands()
+        {
+            // An asymmetric defensive capital perched on a cold mountain ridge.
+            // No river-axis plan: zig-zag ascent, stronghold wall, stepped military district.
+            Color cliff=RGB(.36f,.38f,.41f);
+            Color masonry=RGB(.45f,.47f,.51f);
+            Color trim=RGB(.66f,.64f,.61f);
+            Color slate=RGB(.19f,.26f,.33f);
+            Color path=RGB(.57f,.55f,.54f);
+            for(int i=0;i<10;i++)
+            {
+                float x=(i<5?-47f:36f)+(i%5)*3.4f;
+                float z=4f+(i%5)*7.1f;
+                CarvedCliff(x,z,5f+(i%3)*2f,7f+(i%4)*2f,7f,cliff);
+            }
+            Walkway("Serpentine military ascent",new Vector3(34,0,-39),new Vector3(16,0,-15),4.1f,path);
+            Walkway("Mountain switchback lower",new Vector3(16,0,-15),new Vector3(-15,0,5),4.2f,path);
+            Walkway("Mountain switchback upper",new Vector3(-15,0,5),new Vector3(-6,0,29),4.8f,path);
+            // Staggered curtain walls with a large open entry facing the southern approach.
+            Curtain("Heavy east defensive curtain",new Vector2(26,-5),new Vector2(28,19),9f,2.7f,masonry);
+            Curtain("Heavy upper defensive curtain",new Vector2(28,19),new Vector2(20,42),10f,2.8f,masonry);
+            Curtain("North fortress rampart",new Vector2(20,42),new Vector2(-22,42),11f,2.8f,masonry);
+            Curtain("West high rampart",new Vector2(-22,42),new Vector2(-27,18),9f,2.8f,masonry);
+            RidgeTower(27f,-5f,17f,3.3f,masonry,slate);
+            RidgeTower(28f,19f,19f,3.7f,masonry,slate);
+            RidgeTower(20f,42f,22f,3.2f,masonry,slate);
+            RidgeTower(-22f,42f,20f,3.2f,masonry,slate);
+            RidgeTower(-27f,18f,16f,3.0f,masonry,slate);
+            float gy=H(13f,-5f);
+            Cuboid("MOUNTAIN GATEHOUSE",13f,gy+7.2f,-5f,13.2f,14.4f,7.2f,masonry);
+            Cuboid("Heavy slate gatehouse roof",13f,gy+14.6f,-5f,14f,1.25f,8f,slate);
+            Cuboid("Mountain gate opening",13f,gy+3f,-8.7f,5f,6f,.38f,Wood);
+            for(int i=-2;i<=2;i++)
+                Cuboid("Iron gate bar",13f+i*.87f,gy+3f,-8.95f,.19f,5.8f,.21f,DarkStone);
+            for(int side=-1;side<=1;side+=2)
+                Cuboid("Gate entrance buttress",13f+side*5.5f,gy+6f,-9.0f,1.6f,12f,2.2f,trim);
+            SetBanner(8,-8,13f,Blue);
+            // Dominant tall keep, timber halls, ground-level courtyard and stepped foundations.
+            float kx=-5f,kz=30f,ky=H(kx,kz);
+            Cuboid("BASTION I granite plinth",kx,ky+1.15f,kz,22f,2.3f,19f,cliff);
+            Cuboid("Bastion main hall",kx,ky+10.5f,kz,15.5f,17.2f,13f,masonry);
+            Cuboid("Inner high stone cornice",kx,ky+19.7f,kz,16.4f,1.2f,14.1f,trim);
+            Cuboid("High keep secondary tower",kx-3.2f,ky+23f,kz+2f,8f,8f,8f,masonry);
+            var highRoof=Cuboid("Keep dark ridgeline",kx-3.2f,ky+27.9f,kz+2f,10f,1.15f,9.9f,slate);
+            for(int i=0;i<5;i++)
+            {
+                Cuboid("Heavy stone buttress",kx-7f+i*3.5f,ky+7.9f,kz-6.92f,.95f,14.8f,1.5f,trim);
+                if(i>0&&i<4)
+                    Cuboid("Keep narrow murder hole",kx-7f+i*3.5f,ky+12f,kz-7.77f,.36f,2.35f,.21f,RGB(.10f,.12f,.16f));
+            }
+            for(int i=-1;i<=1;i+=2)
+            {
+                RidgeTower(kx+i*10.2f,kz-5f,20f,3.1f,masonry,slate);
+                RidgeTower(kx+i*10.2f,kz+7.5f,16f,2.8f,masonry,slate);
+            }
+            Cuboid("Bastion oak gate",kx,ky+3.6f,kz-7.17f,3.2f,7f,.40f,Wood);
+            Cuboid("Bastion blue crest",kx,ky+11.0f,kz-7.26f,3.2f,3.0f,.18f,Blue);
+            SetBanner(-12f,34f,16f,Blue);
+            // Two civilian production functions retained as physical scene locations.
+            if (!Vendor("EldoriaProduction/Valoria_Workshop_v1.glb",28,3,8,7))
+                HighlandHall(28,3,7f,8f,0);
+            if (!Vendor("EldoriaProduction/Valoria_CivicHouse_v1.glb",-18,-3,8,7))
+                HighlandHall(-18,-3,7.4f,7f,1);
+            HighlandHall(20f,26f,8f,8f,3);
+            HighlandHall(-29f,3f,7.5f,7f,4);
+            HighlandHall(-13f,14f,6.8f,7f,5);
+            for(int i=0;i<8;i++)
+            {
+                float x=-12f+i*2.1f,z=18f;
+                Cuboid("Rebuilding stockpile",x,H(x,z)+.55f,z,1.6f,1.1f,1.4f,i%3==0?Wood:DarkStone);
+            }
+        }
+
+        private void SunlitTower(float x,float z,float height,float width)
+        {
+            float y=H(x,z);
+            bool ok=Vendor("Kenney/castle/tower-square-base.glb",x,z,width,height*.38f);
+            ok=Vendor("Kenney/castle/tower-square-mid.glb",x,z,width,height*.42f,height*.30f)||ok;
+            ok=Vendor("Kenney/castle/tower-square-top-roof.glb",x,z,width*1.22f,height*.30f,height*.75f)||ok;
+            if(!ok)
+            {
+                Cuboid("Colored tower base",x,y+height*.45f,z,width,height*.9f,width,Stone);
+                Cone("Blue roof cap",new Vector3(x,y+height*.93f,z),width*.88f,height*.35f,Roof);
+            }
+        }
+
+        private void BuildSunlitRingTown()
+        {
+            // Luminous hill town with a circular plaza and compact blue-roof Bastion,
+            // instead of an axial walled medieval fortress / dark ridge.
+            Color pale=RGB(.89f,.76f,.53f), blue=RGB(.21f,.54f,.86f);
+            Color lawn=RGB(.31f,.62f,.39f), lake=RGB(.21f,.66f,.79f);
+            float px=15f,pz=-2f,py=H(px,pz);
+            Shape(PrimitiveType.Cylinder,"Civic plaza ochre paved circle",
+                new Vector3(px,py+.12f,pz),new Vector3(15,.16f,15),pale);
+            Shape(PrimitiveType.Cylinder,"Civic plaza outer border",
+                new Vector3(px,py+.16f,pz),new Vector3(12.5f,.14f,12.5f),Stone);
+            Shape(PrimitiveType.Cylinder,"Civic plaza cobbled center",
+                new Vector3(px,py+.24f,pz),new Vector3(10.1f,.09f,10.1f),Trim);
+            if(!Vendor("Kenney/fantasy-town/fountain-square.glb",px,pz,5.1f,4.2f))
+            {
+                Shape(PrimitiveType.Cylinder,"Ornamental central fountain",new Vector3(px,py+.7f,pz),
+                     new Vector3(2.7f,.62f,2.7f),blue);
+            }
+            // Oval lagoon and sand quays are deliberately WEST, not a crossing along a central road.
+            float wx=-31f,wz=-23f,waterY=H(wx,wz);
+            Shape(PrimitiveType.Cylinder,"Golden lake beach",new Vector3(wx,waterY+.11f,wz),
+                new Vector3(19f,.10f,15f),pale);
+            Shape(PrimitiveType.Cylinder,"Turquoise mountain lagoon",new Vector3(wx,waterY+.20f,wz),
+                new Vector3(16.8f,.095f,12.9f),lake);
+            Shape(PrimitiveType.Cylinder,"Lagoon shallow rim",new Vector3(-17f,H(-17,-21)+.20f,-21),
+                new Vector3(5.0f,.1f,6f),RGB(.40f,.77f,.75f));
+            // Beautiful radial trade town with garden blocks and no monumental southern barbican.
+            for(int i=0;i<9;i++)
+            {
+                float angle=(i*40f+20f)*Mathf.Deg2Rad;
+                float x=px+Mathf.Cos(angle)*24.5f,z=pz+Mathf.Sin(angle)*24.5f;
+                if(x< -10 && z>9)continue;
+                House(x,z,i%2==0?4.2f:5.1f,i+1,"COLORFUL LIVELY TOWN HOUSE");
+                if(i%2==0)SetBanner(x+4,z,3.8f,blue);
+            }
+            Walkway("Garden road from market",new Vector3(14,0,-32),new Vector3(px,0,-11),4.8f,pale);
+            Walkway("Garden road toward Bastion",new Vector3(px-11,0,pz+6),new Vector3(-21,0,20),4.5f,pale);
+            for(int i=0;i<11;i++)
+            {
+                float a=i*2*Mathf.PI/11f;
+                float x=px+Mathf.Cos(a)*11.3f,z=pz+Mathf.Sin(a)*11.3f;
+                Shape(PrimitiveType.Cube,"Civic flower and hedgerow",new Vector3(x,H(x,z)+.54f,z),
+                    new Vector3(1.3f,1.05f,1.3f),i%2==0?Green:lawn);
+            }
+            // A compact, bright hill Bastion assembled from the genuine Kenney modular family.
+            float bx=-23f,bz=23f,by=H(bx,bz);
+            Shape(PrimitiveType.Cylinder,"BASTION I circular natural hilltop terrace",
+                new Vector3(bx,by+1f,bz),new Vector3(13.8f,1.25f,13.8f),pale);
+            Shape(PrimitiveType.Cylinder,"Bastion I inner landscaped terrace",
+                new Vector3(bx,by+2.18f,bz),new Vector3(10.8f,.10f,10.8f),Grass);
+            for(int j=0;j<7;j++)
+            {
+                float a=j*(Mathf.PI*2f/7f);
+                float x=bx+Mathf.Cos(a)*11.6f,z=bz+Mathf.Sin(a)*11.6f;
+                SunlitTower(x,z,10f,3.9f);
+                int k=(j+1)%7;
+                float na=k*Mathf.PI*2f/7f;
+                Vector2 from=new Vector2(x,z),to=new Vector2(bx+Mathf.Cos(na)*11.6f,bz+Mathf.Sin(na)*11.6f);
+                if(j!=4)Curtain("Low bright garden curtain",from,to,3.7f,1.1f,Stone);
+            }
+            if(!Vendor("Kenney/castle/tower-square.glb",bx,bz,9.5f,16.3f))
+                Cuboid("Bright compact keep",bx,by+8.2f,bz,9f,15f,9f,Stone);
+            // Marker retained for native capture contract.
+            var marker=new GameObject("Bastion main hall");
+            marker.transform.SetParent(built,false);
+            marker.transform.position=new Vector3(bx,by+8,bz);
+            SetBanner(bx-5,bz+1,9f,Blue);
+            if(!Vendor("Kenney/castle/gate.glb",bx-2,bz-11,5.7f,6.4f))
+                Cuboid("Low bright Bastion gate",bx-2,by+3,bz-12,5f,6f,1.1f,Wood);
+            Walkway("Bastion hill footpath",new Vector3(-21,0,12),new Vector3(-21,0,20),4f,pale,18);
+            // Civil development reuses the known barracks/lumber/logistic roles.
+            House(34,17,6.2f,2,"CUARTEL ROLE: BLUE ROOFS");
+            House(38,-16,6.5f,1,"ASERRADERO ROLE: WARM TIMBER");
+            Vendor("Kenney/fantasy-town/cart.glb",29f,-12f,4f,2.8f);
+            Vendor("Kenney/castle/bridge-straight.glb",-9f,-25f,5f,3f);
+            for(int i=0;i<8;i++)
+            {
+                float x=36f+(i%4)*1.6f,z=15f+(i/4)*2f;
+                Cuboid("Sawmill stacked cut timber",x,H(x,z)+.25f,z,1.3f,.48f,2.7f,Wood);
+            }
+        }
+
+        private void EnrichStrategyValley()
+        {
+            // Stable Quaternius RTS is a growing valley settlement, visually different
+            // from cold mountain barracks and compact circular Kenney town.
+            Vendor("QuaterniusRTS/Farm_SecondAge_Level3.gltf",-33,-11,11f,7f);
+            Vendor("QuaterniusRTS/Houses_SecondAge_2_Level3.gltf",-21,29,9f,8f);
+            Vendor("QuaterniusRTS/Market_FirstAge_Level3.gltf",23,-18,9f,7f);
+            Vendor("QuaterniusRTS/TownCenter_FirstAge_Level3.gltf",0,33,12f,11f);
+            for(int i=0;i<8;i++)
+            {
+                float x=-40f+i*1.7f,z=-18f;
+                Cuboid("Terraced farm plot",x,H(x,z)+.12f,z,1.38f,.17f,8.2f,
+                    (i%2==0)?RGB(.65f,.59f,.29f):RGB(.74f,.66f,.35f));
+            }
+            for(int i=0;i<5;i++)
+            {
+                float x=-40+i*4.1f,z=3f;
+                Shape(PrimitiveType.Sphere,"Apple orchard foliage",new Vector3(x,H(x,z)+2.1f,z),
+                    new Vector3(2.9f,3.7f,2.9f),RGB(.28f,.52f,.31f));
+            }
         }
 
         private void OnGUI()
