@@ -59,7 +59,7 @@ namespace Eldoria.ArtTests.GateWallShowcase
             CreateTerrain();
             CreateSourceFortifications();
             CreateRoadAndBridges();
-            CreateRocksAndPines();
+            CreateNaturalRockVerge();
             CreateArchitectureDetails();
             if (sourceInstances < 7)
                 throw new InvalidOperationException("Model import gate FAILED: only "+sourceInstances+" authentic architectural GLB instances");
@@ -71,9 +71,9 @@ namespace Eldoria.ArtTests.GateWallShowcase
                 throw new IOException("Unable to save real native Unity gate-wall scene");
             string outDir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,OutputRelative));
             Directory.CreateDirectory(outDir);
-            SaveView(camera,Path.Combine(outDir,"01_hero_three_quarter_REAL_UNITY.png"),new Vector3(34,24,-52),new Vector3(0,10,1),43f);
-            SaveView(camera,Path.Combine(outDir,"02_frontal_gate_REAL_UNITY.png"),new Vector3(0,16,-40),new Vector3(0,10,0),45f);
-            SaveView(camera,Path.Combine(outDir,"03_wall_connection_REAL_UNITY.png"),new Vector3(-38,19,-28),new Vector3(-9,10,1),42f);
+            SaveView(camera,Path.Combine(outDir,"01_hero_three_quarter_REAL_UNITY.png"),new Vector3(25,18,-39),new Vector3(0,8,1),46f);
+            SaveView(camera,Path.Combine(outDir,"02_frontal_gate_REAL_UNITY.png"),new Vector3(0,13,-32),new Vector3(0,7,0),46f);
+            SaveView(camera,Path.Combine(outDir,"03_wall_connection_REAL_UNITY.png"),new Vector3(-26,16,-30),new Vector3(-8,7,1),44f);
             string evidence="{\n"+
                 "  \"kind\": \"genuine_Unity_editor_scene\",\n"+
                 "  \"engine\": \""+UnityEngine.Application.unityVersion+"\",\n"+
@@ -229,32 +229,32 @@ namespace Eldoria.ArtTests.GateWallShowcase
         {
             // Front axis: +Z is interior, -Z is player approach.
             // Composition stays modular: outer tower | wall | gate | wall | tower.
-            SourceModel("Valoria_MainGate_StoneDefV2.glb","main double-height gate",0,0,13.8f,.32f);
-            SourceModel("Valoria_WallSegment_StoneDefV2.glb","left curtain",-13.3f,0,13.9f,.20f);
-            SourceModel("Valoria_WallSegment_StoneDefV2.glb","right curtain",13.3f,0,13.9f,.20f);
-            SourceModel("Valoria_Tower_StoneDefV2.glb","left flanking watchtower",-22.2f,0,7.1f,.16f);
-            SourceModel("Valoria_Tower_StoneDefV2.glb","right flanking watchtower",22.2f,0,7.1f,.16f);
-            SourceModel("Valoria_WallSegment_StoneDefV2.glb","left outer rampart",-32.7f,0,14.0f,.18f);
-            SourceModel("Valoria_WallSegment_StoneDefV2.glb","right outer rampart",32.7f,0,14.0f,.18f);
+            SourceModel("Valoria_MainGate_StoneDefV2.glb","main double-height gate",0,0,17.0f,.24f);
+            SourceModel("Valoria_WallSegment_StoneDefV2.glb","left curtain",-14.0f,0,11.0f,.18f);
+            SourceModel("Valoria_WallSegment_StoneDefV2.glb","right curtain",14.0f,0,11.0f,.18f);
+            SourceModel("Valoria_Tower_StoneDefV2.glb","left flanking watchtower",-22.2f,0,5.2f,.14f);
+            SourceModel("Valoria_Tower_StoneDefV2.glb","right flanking watchtower",22.2f,0,5.2f,.14f);
+            SourceModel("Valoria_WallSegment_StoneDefV2.glb","left outer rampart",-30.0f,0,10.1f,.14f);
+            SourceModel("Valoria_WallSegment_StoneDefV2.glb","right outer rampart",30.0f,0,10.1f,.14f);
         }
 
         private static void CreateRoadAndBridges()
         {
-            var cobble=Mat("paving_ashlar",C(0xa19b85));
-            var pale=Mat("paving_aged_edge",C(0xb4ab95));
-            var dark=Mat("paving_shadow",C(0x777466));
-            var earth=Mat("road_underlay",C(0x4b4a42));
-            Block("Road base continuous - no floating approach",0,.08f,-19,7.6f,.2f,39f,earth);
+            var cobble=Mat("paving_ashlar",C(0x858478));
+            var pale=Mat("paving_aged_edge",C(0x979184));
+            var dark=Mat("paving_shadow",C(0x77786f));
+            var earth=Mat("road_underlay",C(0x52534b));
+            Block("Road base continuous - no floating approach",0,.07f,-15.8f,6.9f,.18f,32f,earth);
             var random=new System.Random(1432);
-            for(int row=0;row<43;row++)
+            for(int row=0;row<32;row++)
             {
-                float z=-37.5f+row*.85f;
-                for(int col=0;col<6;col++)
+                float z=-30.8f+row*.94f;
+                for(int col=0;col<5;col++)
                 {
-                    float x=(col-2.5f)*1.13f;
+                    float x=(col-2f)*1.26f;
                     float jitter=(float)(random.NextDouble()-.5)*.12f;
                     Block("Uneven cut limestone paving",x+jitter,Ground(x,z)+.22f,z,
-                        1.04f+(float)random.NextDouble()*.07f,.17f,.78f,
+                        1.12f+(float)random.NextDouble()*.08f,.14f,.85f,
                         (row+col)%6==0?pale:(row+col)%5==0?dark:cobble);
                 }
             }
@@ -268,49 +268,26 @@ namespace Eldoria.ArtTests.GateWallShowcase
             }
         }
 
-        private static void CreateRocksAndPines()
+        private static void CreateNaturalRockVerge()
         {
-            var moss=Mat("moss_on_stone",C(0x596b51));
-            var slate=Mat("mountain_slate",C(0x54595d));
-            var pale=Mat("mountain_warm_stone",C(0x74746e));
-            var wood=Mat("pine_trunk",C(0x514737));
-            var needles=Mat("pine_green",C(0x2f483b));
-            var tops=Mat("pine_highlights",C(0x496151));
+            // Restrained foreground study: no low-poly cylinder trees masking the
+            // authentic source models, and no decorative blobs in front of the gate.
+            var basalt=Mat("mountain_slate",C(0x555956));
+            var sandstone=Mat("mountain_warm_stone",C(0x77786c));
+            var lichen=Mat("moss_on_stone",C(0x626d56));
             var random=new System.Random(271828);
-            for(int i=0;i<80;i++)
+            for(int i=0;i<105;i++)
             {
-                float x=(float)(random.NextDouble()*130-65);
-                float z=(float)(random.NextDouble()*96-35);
-                // Protect entrance readability and the main fortification mass.
-                if(Mathf.Abs(x)<40 && z>-7 && z<15)continue;
-                if(Mathf.Abs(x)<9 && z<-3)continue;
+                float x=(float)(random.NextDouble()*128-64);
+                float z=(float)(random.NextDouble()*94-33);
+                if(Mathf.Abs(x)<37 && z>-11f && z<17f)continue;
+                if(Mathf.Abs(x)<10 && z<-4f)continue;
                 float y=Ground(x,z);
-                float rx=1.2f+(float)random.NextDouble()*3.6f;
-                var rock=Primitive("Individual mountain outcrop",PrimitiveType.Sphere,
-                    new Vector3(x,y+.4f,z),new Vector3(rx,rx*.43f,rx*.77f),
-                    i%4==0?moss:i%4==1?slate:pale);
-                rock.transform.rotation=Quaternion.Euler((float)random.NextDouble()*10,
-                   (float)random.NextDouble()*360,(float)random.NextDouble()*15);
-            }
-            for(int i=0;i<65;i++)
-            {
-                float x=(float)(random.NextDouble()*135-67);
-                float z=(float)(random.NextDouble()*104-45);
-                if(Mathf.Abs(x)<39 && z>-8 && z<14)continue;
-                if(Mathf.Abs(x)<13 && z<-8)continue;
-                float y=Ground(x,z);
-                float h=2.8f+(float)random.NextDouble()*5.9f;
-                Primitive("Pine tree bark",PrimitiveType.Cylinder,new Vector3(x,y+h*.32f,z),
-                    new Vector3(.20f,h*.39f,.20f),wood);
-                for(int layer=0;layer<3;layer++)
-                {
-                    var go=Primitive("Pine woodland canopy",PrimitiveType.Cylinder,
-                        new Vector3(x,y+h*(.34f+.19f*layer),z),
-                        new Vector3(1.05f-layer*.20f, h*.18f,1.05f-layer*.20f),
-                        layer==0?needles:tops);
-                    // Trees are intentionally understated background cues; no giant cones.
-                    go.transform.rotation=Quaternion.Euler(0,layer*9,0);
-                }
+                float r=.35f+(float)random.NextDouble()*1.10f;
+                var rock=Primitive("Distant subdued highland rock",PrimitiveType.Sphere,
+                    new Vector3(x,y+.12f,z),new Vector3(r*1.3f,r*.51f,r*1.05f),
+                    i%6==0?lichen:(i%3==0?basalt:sandstone));
+                rock.transform.rotation=Quaternion.Euler(0,(float)random.NextDouble()*360,7f);
             }
         }
 
@@ -344,6 +321,14 @@ namespace Eldoria.ArtTests.GateWallShowcase
                     l.color=C(0xffb66c);l.shadows=LightShadows.None;
                 }
             }
+            // Gate interior: doors set BEHIND the actual imported carved arch;
+            // avoid covering any authentic source stone surface.
+            var oak=Mat("oak_gate_leaf",C(0x453529));
+            Block("Inset oak gate leaf behind source arch",0,2.2f,1.5f,3.0f,4.1f,.24f,oak);
+            for(int i=-2;i<=2;i++)
+                Block("Wrought gate iron strap",i*.56f,2.2f,1.32f,.12f,4.0f,.14f,iron);
+            Block("Lower door cross-bracing",0,1.27f,1.30f,3.25f,.13f,.17f,iron);
+            Block("Upper door cross-bracing",0,3.20f,1.30f,3.25f,.13f,.17f,iron);
             // Lighting stays anchored to the architectural asset, no painted-in detailing.
         }
 
@@ -354,13 +339,13 @@ namespace Eldoria.ArtTests.GateWallShowcase
             sunGO.transform.rotation=Quaternion.Euler(39,-48,-9);
             var sun=sunGO.AddComponent<Light>();
             sun.type=LightType.Directional;
-            sun.intensity=1.35f;
+            sun.intensity=1.52f;
             sun.color=C(0xfff0d6);
             sun.shadows=LightShadows.Soft;
             sun.shadowStrength=.64f;
             RenderSettings.sun=sun;
             RenderSettings.ambientMode=AmbientMode.Flat;
-            RenderSettings.ambientLight=C(0x8d97a1);
+            RenderSettings.ambientLight=C(0x75818a);
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=C(0x99aab3);
