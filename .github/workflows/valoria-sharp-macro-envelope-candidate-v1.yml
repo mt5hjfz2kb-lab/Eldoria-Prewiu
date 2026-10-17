@@ -83,6 +83,8 @@ jobs:
           if(-not(git diff --cached --quiet)){
             git commit -m 'evidence(valoria): native SHARP Source08 nine-renderer player-frame visibility proof'
             if($LASTEXITCODE){throw 'Evidence commit failed'}
+            git reset --hard HEAD
+            if($LASTEXITCODE){throw 'Cannot clear Unity-generated checkout changes'}
             git fetch --no-tags origin construction/valoria-master-plan-layers-20261016
             if($LASTEXITCODE){throw 'Cannot fetch owner branch'}
             git rebase origin/construction/valoria-master-plan-layers-20261016

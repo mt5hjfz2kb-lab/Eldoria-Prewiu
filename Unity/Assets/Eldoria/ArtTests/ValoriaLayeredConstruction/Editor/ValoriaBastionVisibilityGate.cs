@@ -12,7 +12,7 @@ namespace Eldoria.ValoriaLayered.Editor {
     const string Root="Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/";
     const string Candidate=Root+"Valoria_SHARP_Entry_BastionVisibility_CANDIDATE.unity";
     const string Prefab=Root+"GeneratedEntryV13/EntryZoneV1.prefab";
-    static readonly string Evidence=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",
+    static readonly string Evidence=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..",
       "docs/evidence/valoria-layered-construction-20261016/bastion-source08-visibility"));
     [Serializable] public class EvidenceResult {
       public string scene,method,source_prefab,source_player_scene,verdict;
