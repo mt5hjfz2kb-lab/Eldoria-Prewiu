@@ -1,0 +1,31 @@
+{
+  "author": "GPT current-session art direction; Qwen auxiliary remains separately recorded",
+  "blender_version": "5.2.2 LTS",
+  "source_blend_sha256": "768a08535f066a40c707fd52901a0c16efad91ec06ce91f35ca31cf625b5792f",
+  "source_gate_blend_sha256": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf",
+  "result_blend_sha256": "349bfa60282f8d31462997571d657df8063c55f84d7c2533a70c074863590d6a",
+  "result_glb_sha256": "227a32e90276b92beedab278093391c6c3255fc5d5641883cf1cdc9089765549",
+  "original_sources_unchanged": true,
+  "canonical_modified": false,
+  "terrain_target": "ValoriaEntryTerrainV1",
+  "gate_uniform_scale": 0.75,
+  "stair_contact_native": [
+    -0.9788936972618103,
+    1.2899999618530273,
+    28.131494522094727
+  ],
+  "bridge_contact_y": {
+    "-19.65": 0.38,
+    "-9.35": 0.38
+  },
+  "mesh_objects": 15,
+  "triangles": 64910,
+  "art_status": "CANDIDATE_REQUIRES_GENUINE_UNITY_AB",
+  "operations": [
+    "source-topology shore subdivision",
+    "direct source vertex reprofile",
+    "world-scale UV",
+    "existing PBR texture maps",
+    "reuse original Blender gate with uniform transform"
+  ]
+}
