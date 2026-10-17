@@ -13,7 +13,7 @@ namespace Eldoria.ValoriaLayered.Editor {
  public static class ValoriaEntryZoneV17Integration {
   const string Root="Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/";
   const string Resources=Root+"GeneratedEntryV17";
-  static readonly string Ev=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..","docs/evidence/valoria-layered-construction-20261016/entry-zone-v13"));
+  static readonly string Ev=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..","docs/evidence/valoria-layered-construction-20261016/entry-zone-v17"));
   static Camera camera;static HashSet<int> saved=new HashSet<int>();static int index;
   [Serializable] class Manifest {public string result_glb_sha256;public int triangles;}
   [Serializable] class Result {public string scene,glb_sha256,art_status,gameplay_status;public int route_probes,route_passes;public float gate_width_percent,gate_height_percent,gate_center_error_px,walls_width_percent;public bool gate_macro_proportions_pass,pedestrian_clear;public int source_triangles,visible_renderers,physical_stairs,source_target_matches,camera_state_matches;public bool canonical_modified,physical_mobile_profiled,original_sources_modified;public float home_fov;}
