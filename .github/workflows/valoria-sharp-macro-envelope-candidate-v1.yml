@@ -69,7 +69,7 @@ jobs:
           Copy-Item $log "$dir/native-unity.log"
           if($p.ExitCode -ne 0 -or -not(Select-String $log -Pattern 'VALORIA_VISUAL_OWNERSHIP_CLEANUP_NATIVE_COMPLETE' -Quiet)){throw "Real Unity visual ownership audit failed, exit $($p.ExitCode)"}
           $r=Get-Content "$dir/visual-ownership-native.json" -Raw|ConvertFrom-Json
-          if($r.original_interaction_hits -ne 7 -or $r.clean_interaction_hits -ne 7 -or $r.original_route_passes -ne 28 -or $r.clean_route_passes -ne 28 -or $r.original_stair_colliders -ne 12 -or $r.source_bastion_renderers -ne 9 -or $r.same_image_changed_pixels -gt 8 -or $r.source_scene_modified -or $r.canonical_modified -or -not $r.camera_preserved){throw 'Visual cleanup baseline quality/gameplay gate failed'}
+          if($r.original_interaction_hits -ne 7 -or $r.clean_interaction_hits -ne 7 -or $r.original_route_passes -ne 28 -or $r.clean_route_passes -ne 28 -or $r.original_stair_colliders -ne 12 -or $r.source_bastion_renderers -ne 9 -or $r.same_image_changed_pixels -gt 4000 -or $r.provisional_greybox_changed_outside_bastion_roi -gt 4 -or -not $r.provisional_greybox_renderer_disabled -or -not $r.provisional_greybox_collider_preserved -or $r.source_scene_modified -or $r.canonical_modified -or -not $r.camera_preserved){throw 'Visual cleanup baseline quality/gameplay gate failed'}
           Write-Host "REAL_NATIVE_VISUAL_OWNERSHIP_PASS: $($r.verdict); original visible=$($r.active_visible); exact duplicates removed=$($r.visually_identical_duplicates); non-automatic review hints=$($r.unresolved_overlap_hints)"
       - name: Preserve evidence and candidate only when actual fix occurs
         if: always()
