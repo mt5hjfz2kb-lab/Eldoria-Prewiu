@@ -1,0 +1,222 @@
+{
+  "status": "V15_PHYSICAL_TERRAIN_TO_WALL_CONTACT_COPY_UNAPPROVED",
+  "art_hypothesis": "correct actual bank geometry at six measured architectural sockets, rather than overlaying free-standing masonry props",
+  "source_v12_blend_sha256": "21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de",
+  "result_blend_sha256": "1485cc6921dc18441c729ac07224ab409e35a5093f7bf8c3743ced535e921e6c",
+  "result_glb_sha256": "10d91e8a196008ed991eb10b6be0adb9d15a3dd244dc03ef6c959109514788ff",
+  "triangles": 351374,
+  "modified_actual_terrain_vertices": 377,
+  "max_actual_terrain_displacement_m": 0.5129569266049594,
+  "sum_positive_displacement_m": 27.372942100989537,
+  "terrain_normal_up_average": 0.9385143460200535,
+  "preserved_gate_axis_vertices": 22223,
+  "source_gate_and_bridge_geometry_untouched": true,
+  "source_twelve_stairs_untouched": true,
+  "source_six_walls_and_towers_untouched": true,
+  "source_pbr_photogrammetry_unchanged": true,
+  "source_colliders_unchanged": true,
+  "additional_mesh_objects": 0,
+  "contact_measurements": [
+    {
+      "part": "ENTRY_V12_REUSED_WALLFAMILY_EastFlankWall",
+      "measurements": [
+        {
+          "sample_world_xy": [
+            -13.5,
+            7.2097633361816404
+          ],
+          "measured_terrain_z": 0.3481569290161133,
+          "masonry_bottom_z": 0.375,
+          "gap": 0.02684307098388672
+        },
+        {
+          "sample_world_xy": [
+            -13.5,
+            7.750000953674316
+          ],
+          "measured_terrain_z": 0.32938098907470703,
+          "masonry_bottom_z": 0.375,
+          "gap": 0.04561901092529297
+        },
+        {
+          "sample_world_xy": [
+            -13.5,
+            8.290238571166991
+          ],
+          "measured_terrain_z": 0.2782106399536133,
+          "masonry_bottom_z": 0.375,
+          "gap": 0.09678936004638672
+        }
+      ],
+      "max_middle_base_gap_m": 0.09678936004638672
+    },
+    {
+      "part": "ENTRY_V12_REUSED_WALLFAMILY_EastInnerTower",
+      "measurements": [
+        {
+          "sample_world_xy": [
+            -10.729999542236328,
+            6.830196189880371
+          ],
+          "measured_terrain_z": 0.33893585205078125,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.04106414318084717
+        },
+        {
+          "sample_world_xy": [
+            -10.729999542236328,
+            7.78000020980835
+          ],
+          "measured_terrain_z": 0.32004451751708984,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.059955477714538574
+        },
+        {
+          "sample_world_xy": [
+            -10.729999542236328,
+            8.729804229736327
+          ],
+          "measured_terrain_z": 0.2948789596557617,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.0851210355758667
+        }
+      ],
+      "max_middle_base_gap_m": 0.0851210355758667
+    },
+    {
+      "part": "ENTRY_V12_REUSED_WALLFAMILY_EastOuterTower",
+      "measurements": [
+        {
+          "sample_world_xy": [
+            -16.239999771118164,
+            6.980241107940674
+          ],
+          "measured_terrain_z": 0.34702014923095703,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.03297984600067139
+        },
+        {
+          "sample_world_xy": [
+            -16.239999771118164,
+            7.780000448226929
+          ],
+          "measured_terrain_z": 0.3233919143676758,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.05660808086395264
+        },
+        {
+          "sample_world_xy": [
+            -16.239999771118164,
+            8.579759788513183
+          ],
+          "measured_terrain_z": 0.29134178161621094,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08865821361541748
+        }
+      ],
+      "max_middle_base_gap_m": 0.08865821361541748
+    },
+    {
+      "part": "ENTRY_V12_REUSED_WALLFAMILY_WestFlankWall",
+      "measurements": [
+        {
+          "sample_world_xy": [
+            13.5,
+            7.2097633361816404
+          ],
+          "measured_terrain_z": 0.29224205017089844,
+          "masonry_bottom_z": 0.375,
+          "gap": 0.08275794982910156
+        },
+        {
+          "sample_world_xy": [
+            13.5,
+            7.750000953674316
+          ],
+          "measured_terrain_z": 0.28990650177001953,
+          "masonry_bottom_z": 0.375,
+          "gap": 0.08509349822998047
+        },
+        {
+          "sample_world_xy": [
+            13.5,
+            8.290238571166991
+          ],
+          "measured_terrain_z": 0.2896547317504883,
+          "masonry_bottom_z": 0.375,
+          "gap": 0.08534526824951172
+        }
+      ],
+      "max_middle_base_gap_m": 0.08534526824951172
+    },
+    {
+      "part": "ENTRY_V12_REUSED_WALLFAMILY_WestInnerTower",
+      "measurements": [
+        {
+          "sample_world_xy": [
+            10.729999542236328,
+            7.030258464813232
+          ],
+          "measured_terrain_z": 0.2946462631225586,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08535373210906982
+        },
+        {
+          "sample_world_xy": [
+            10.729999542236328,
+            7.779999017715454
+          ],
+          "measured_terrain_z": 0.29000091552734375,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08999907970428467
+        },
+        {
+          "sample_world_xy": [
+            10.729999542236328,
+            8.529739570617675
+          ],
+          "measured_terrain_z": 0.29277896881103516,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08722102642059326
+        }
+      ],
+      "max_middle_base_gap_m": 0.08999907970428467
+    },
+    {
+      "part": "ENTRY_V12_REUSED_WALLFAMILY_WestOuterTower",
+      "measurements": [
+        {
+          "sample_world_xy": [
+            16.240000247955322,
+            6.930223751068115
+          ],
+          "measured_terrain_z": 0.29754638671875,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08245360851287842
+        },
+        {
+          "sample_world_xy": [
+            16.240000247955322,
+            7.7799999713897705
+          ],
+          "measured_terrain_z": 0.29334068298339844,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08665931224822998
+        },
+        {
+          "sample_world_xy": [
+            16.240000247955322,
+            8.629776191711425
+          ],
+          "measured_terrain_z": 0.29443359375,
+          "masonry_bottom_z": 0.3799999952316284,
+          "gap": 0.08556640148162842
+        }
+      ],
+      "max_middle_base_gap_m": 0.08665931224822998
+    }
+  ],
+  "art_status": "UNAPPROVED_UNITY_AB_REQUIRED",
+  "physical_mobile_tested": false,
+  "paid_spend_eur": 0
+}
