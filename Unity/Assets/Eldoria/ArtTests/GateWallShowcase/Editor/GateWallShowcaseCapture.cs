@@ -129,8 +129,8 @@ namespace Eldoria.ArtTests.GateWallShowcase
             float rear = Mathf.SmoothStep(0,1,Mathf.InverseLerp(12f,48f,z))*8f;
             float ripple = (Mathf.PerlinNoise(x*.075f+14,z*.075f+25)-.5f)*.6f;
             // A consistent flat construction platform beneath ALL source elements.
-            float site = 1f - Mathf.SmoothStep(23f,40f,Mathf.Abs(x));
-            float zsite = 1f - Mathf.SmoothStep(7f,18f,Mathf.Abs(z));
+            float site = 1f - Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(23f,40f,Mathf.Abs(x)));
+            float zsite = 1f - Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(7f,18f,Mathf.Abs(z)));
             return (hills+rear+ripple)*(1f-site*zsite);
         }
 
