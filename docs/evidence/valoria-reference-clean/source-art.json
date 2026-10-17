@@ -1,4 +1,10 @@
 {
+  "source_sha": "4124bcd6da297d06bbd4b22b72236daf6e0e0c15",
+  "bridge_geometry": {
+    "method": "closed_profile_extrusion",
+    "opening_rays_passed": 8,
+    "pier_rays_passed": 2
+  },
   "author": "Reference analysis and spatial/model decisions by Codex; Blender bpy mesh operations executed natively",
   "donors": [
     {
@@ -36,17 +42,17 @@
     "Plot_29_32": 3828,
     "Plot_28_12": 3828,
     "Ruin_-22_46": 11088,
-    "Ruin_26_52": 11000,
-    "Ruin_-25_0": 11000,
-    "Ruin_46_-1": 11088,
+    "Ruin_26_52": 10736,
+    "Ruin_-25_0": 10472,
+    "Ruin_46_-1": 10736,
     "Fir_tree_group": 142200,
-    "River_bank_rocks": 12772,
+    "River_bank_rocks": 15880,
     "Woodland_ground_rocks": 3840,
     "Shrub_group": 21600,
-    "Foundation_shrubs_and_groundcover": 25704
+    "Foundation_shrubs_and_groundcover": 26384
   },
   "mesh_objects": 26,
-  "triangles": 529266,
-  "blend_sha256": "7451a0c5fdc5fa45e1e2c98d926389e8701bff64aec56b462863e1b56bcd2c6c",
-  "glb_sha256": "50466cca9508949bbe876e7c1ff3cba2fec3d3f3c59d2f155e885aef67c64c98"
+  "triangles": 531910,
+  "blend_sha256": "3ee3d34a97efe492e10777313b10be0b50b33f136b3e40ad8751c62f8e9e3b59",
+  "glb_sha256": "62bb06d17b00939201f6df3df2763f65f06dc19142daf7282d7e31bed1a2f4a7"
 }
