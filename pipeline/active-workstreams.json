@@ -29,7 +29,8 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**",
         "tools/valoria-reference-clean/**",
         ".github/workflows/valoria-reference-clean.yml",
-        "docs/evidence/valoria-reference-clean/**"
+        "docs/evidence/valoria-reference-clean/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -37,8 +38,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "OWNER_AUTHORIZED_NEW_EMPTY_UNITY_SCENE_REFERENCE_CLEAN",
-      "next": "Construct new independent Valoria_Reference_Clean scene from attached 2026-10-17 reference, nine stages; preserve every previous scene and source; real Unity captures required.",
+      "phase": "REAL_CLEAN_SCENE_BUILT_PLAYMODE_FOUND_LEGACY_AUTOBOOT_INTERFERENCE_FIXING",
+      "next": "Exact new-scene opt-out from global SliceBoot only; preserve canonical boot; rerun real PlayMode, ray routes and no-legacy-camera checks.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
