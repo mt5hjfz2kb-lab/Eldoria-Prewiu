@@ -1,6 +1,6 @@
 {
-    "source_sha": "8768077a38217bc764e37dfb8f6f2e0dd54d4dbf",
-    "scope": "Right Bastion defensive flank only; same geometry, original UV0 and all other materials retained",
+    "source_sha": "5145d312b07089ab9617166a99cc22c7949d791e",
+    "scope": "Authored limestone material slots only; same geometry and original UV0 retained. Reused gate material stays fixed during this comparison.",
     "before_main_camera": "{\"position\":{\"x\":46.0,\"y\":77.0,\"z\":-104.0},\"rotation\":{\"x\":0.27516937255859377,\"y\":-0.16492974758148194,\"z\":0.04797792434692383,\"w\":0.9459271430969238},\"orthographic_size\":34.0,\"aspect\":1.3333333730697632}",
     "after_main_camera": "{\"position\":{\"x\":46.0,\"y\":77.0,\"z\":-104.0},\"rotation\":{\"x\":0.27516937255859377,\"y\":-0.16492974758148194,\"z\":0.04797792434692383,\"w\":0.9459271430969238},\"orthographic_size\":34.0,\"aspect\":1.3333333730697632}",
     "before_detail_camera": "{\"position\":{\"x\":24.0,\"y\":31.0,\"z\":-8.0},\"rotation\":{\"x\":0.23855708539485932,\"y\":-0.24173519015312196,\"z\":0.06144322082400322,\"w\":0.9385517239570618},\"orthographic_size\":18.0,\"aspect\":1.3333333730697632}",
@@ -10,8 +10,8 @@
     "same_lighting": true,
     "same_geometry": true,
     "original_uv0_preserved": true,
-    "zone_renderers": 1,
-    "zone_material_slots": 6,
+    "zone_renderers": 6,
+    "zone_material_slots": 36,
     "material_mapping": [
         "Trial sandstone 0 -> Warm limestone 0",
         "Trial sandstone 1 -> Warm limestone 1",
