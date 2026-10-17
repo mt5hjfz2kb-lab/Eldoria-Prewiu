@@ -35,11 +35,13 @@ Models copied verbatim (11):
 - Source model format: single-file glTF binary (.glb), already optimized small
   meshes with material data. Imported byte-for-byte (SHA-1 Git blob checked).
 
-Castle Kit (12):
+Castle Kit (17):
 `gate`, `tower-square-base`, `tower-square-mid`,
 `tower-square-top-roof`, `wall`, `wall-corner`,
 `bridge-straight`, `flag-banner-long`, `stairs-stone`,
-`tree-small`, `rocks-large`, `tower-square-top`.
+`tree-small`, `rocks-large`, `tower-square-top`, `tower-hexagon-base`,
+`tower-hexagon-mid`, `tower-hexagon-roof`, `tower-square-mid-windows`,
+`tower-square`.
 
 Fantasy Town Kit (9):
 `fountain-square`, `cart`, `roof-gable`,
@@ -62,3 +64,9 @@ All model imports must be inspected *in Unity* for expected colors, textures,
 origin, bounds, ground contact and renderer scale. Creative Commons permission
 and Git object integrity are **not the same as** a successful Unity render or
 a high-quality scene. Do not interpret these copies as an ART PASS.
+
+**Additional source selection:** The five hex/square tower alternatives were
+introduced into this same isolated branch in commit `fb35845950ffed328e9c5e8e4413423dde7f727c`.
+Their import metadata is now pinned; they originate from the same Kenney
+Castle Kit public CC0 mirror. Total vendored model files: **37** (11 Quaternius,
+17 Kenney Castle, 9 Kenney Fantasy Town).
