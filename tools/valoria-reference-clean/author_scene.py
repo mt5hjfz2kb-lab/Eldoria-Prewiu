@@ -378,6 +378,10 @@ for X,Y in [(-10,32),(10,32),(-10.8,35),(10.8,36),(-8,39),(8,39),(-6,29),(6,29),
    for material in leaf:
     if material not in sh.ms:sh.ms.append(material)
    sh.mi[-len(iff):]=[sh.ms.index(random.choice(leaf)) for face in iff]
+# Keep the two semantic meshes below the 16-bit flat-normal export vertex ceiling.
+bush_mesh=sh.finish(0)
+assert sum(len(p.vertices) for p in bush_mesh.data.polygons)<65000, 'Bush mesh exceeds flat-normal export vertex budget'
+sh=Mesh('Meadow_tufts_and_bank_reeds')
 # Sparse closed tapered reeds in shoreline pockets, not a uniform band.
 for side in [-1,1]:
  for X in [-55,-34,-18,16,32,49]:
@@ -395,7 +399,8 @@ for i in range(800):
   a=random.random()*2*pi;w=random.uniform(.045,.075);h=random.uniform(.18,.40);cx=x+random.uniform(-.22,.22);cy=y+random.uniform(-.22,.22);z=terrain_height(cx,cy)+.01
   verts=[(cx+w*cos(a+j*2*pi/3),cy+w*sin(a+j*2*pi/3),z) for j in range(3)]+[(cx+.12*cos(a),cy+.12*sin(a),z+h)]
   sh.add(verts,[(2,1,0),(0,1,3),(1,2,3),(2,0,3)],random.choice(leaf))
-sh.finish(0)
+tuft_mesh=sh.finish(0)
+assert sum(len(p.vertices) for p in tuft_mesh.data.polygons)<65000, 'Tuft mesh exceeds flat-normal export vertex budget'
 # Seat actual low foot vertices against exactly the terrain equation used by Unity.
 for o in bpy.context.scene.objects:
  if o.type!='MESH' or not o.name.startswith(('River_Rock','Ground_Rock','Reused_Fir_','Reused_Shrub_')):continue

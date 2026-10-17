@@ -1,11 +1,11 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 22,
+  "revision": 23,
   "budget_eur": 0,
   "validated_runtime_source": "431d67f4f526bac7477d2a68745ec28fa76755e6",
   "validated_run": 39066988473,
   "checks": "5 selections / 76 routes / 6 stairs / 1 camera / save untouched / 0 exceptions",
-  "art_correction": "Native21 bridge profiles are genuinely open and source ray checks pass. Reject PlayMode-only stretched groundcover triangles absent from the editor capture: normalize >65535 vertex UInt16/baseVertex meshes to absolute UInt32 before static batching and inspect runtime buffers for scene-spanning triangles. Improve broken-wall direction and irregular bank-rock coverage. Invoke previously installed local vision model via recovered ephemeral Ollama procedure, auxiliary only, no downloads or automatic approval.",
-  "auxiliary_review": true
+  "art_correction": "REJECT native22: UInt32 normalization does not fix PlayMode-only giant foliage triangles; editor capture remains clean. Roll back conversion. Split bushes and meadow into two bounded source meshes and disable static batching for these two affected renderers. Keep geometry and all authored art. Add actual editor-vs-Play PNG upper-field consistency gate because functional route checks alone missed this corruption. No artistic approval.",
+  "auxiliary_review": false
 }
