@@ -84,22 +84,11 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             CameraAndLighting();
             Terrain();
             if (Rich)
-            {
-                BuildAshenHighlands();
-            }
+                BuildModelFirstFrontier();
             else if (Bright)
-            {
                 BuildSunlitRingTown();
-            }
             else
-            {
-                RiverAndBridge();
-                CentralRoad();
-                LowerGate();
-                UpperBastion();
-                WorkDistricts();
-                EnrichStrategyValley();
-            }
+                BuildModelFirstRTSValley();
             VegetationAndRocks();
             if (!Rich && !Bright) RuinsAndLife();
             Debug.Log("[ELDORIA THREE LOOKS] Built isolated " + artDirection +
@@ -681,6 +670,89 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             texture.SetPixels(colors);
             texture.Apply(false,false);
             return texture;
+        }
+
+
+        private void BuildModelFirstRTSValley()
+        {
+            // Authored CC0 Quaternius objects dominate the composition.
+            // Keep only a small stone gate: giant placeholder fortresses were
+            // previously hiding the real art and invalidating visual comparisons.
+            RiverAndBridge();
+            Walkway("Quaternius hill road",new Vector3(0,0,-25),new Vector3(-3,0,19),4f,Stone,36);
+            float fy=H(-4,24);
+            Shape(PrimitiveType.Cylinder,"Bastion I forested command hill",
+                new Vector3(-4,fy+.44f,24),new Vector3(13,.55f,12),DarkStone);
+            bool source=Vendor("QuaterniusRTS/TownCenter_FirstAge_Level3.gltf",-4,24,19f,18f,.6f);
+            if(!source) House(-4,24,9f,1,"Bastion I fallback");
+            var keepMarker=new GameObject("Bastion main hall");
+            keepMarker.transform.SetParent(built,false);
+            keepMarker.transform.localPosition=new Vector3(-4,fy+5,24);
+            Vendor("QuaterniusRTS/Barracks_FirstAge_Level3.gltf",24,14,13.0f,12f);
+            Vendor("QuaterniusRTS/Storage_FirstAge_Leve3.gltf",-25,7,12.0f,11f);
+            Vendor("QuaterniusRTS/Market_FirstAge_Level3.gltf",21,-9,10.5f,9f);
+            Vendor("QuaterniusRTS/Farm_SecondAge_Level3.gltf",-28,-12,12f,10f);
+            Vendor("QuaterniusRTS/Houses_SecondAge_1_Level3.gltf",20,30,12f,11f);
+            Vendor("QuaterniusRTS/Houses_SecondAge_2_Level3.gltf",-22,35,12f,10f);
+            Vendor("QuaterniusRTS/Windmill_FirstAge.gltf",-39,-3,10f,12f);
+            // Fortified early age, but original strategy house and district forms lead.
+            float y=H(0,-14);
+            Curtain("Low frontier east earthwork",new Vector2(8,-13),new Vector2(15,-7),4.3f,1.2f,Stone);
+            Curtain("Low frontier west earthwork",new Vector2(-15,-7),new Vector2(-8,-13),4.3f,1.2f,Stone);
+            Cuboid("Timbered town gateway",0,y+3.25f,-13,5.5f,6.5f,1f,Wood);
+            Cuboid("Gateway cap with blue banner",0,y+6.75f,-13,6.2f,1f,2f,Roof);
+            SetBanner(-6,-13,7.4f,Blue);
+            SetBanner(6,-13,7.4f,Blue);
+            for(int i=0;i<6;i++)
+            {
+                float x=-39f+i*2.7f,z=-21f;
+                Cuboid("Golden grain strip",x,H(x,z)+.12f,z,2.3f,.24f,8f,
+                    i%2==0?RGB(.73f,.60f,.24f):RGB(.82f,.73f,.34f));
+            }
+        }
+
+        private void BuildModelFirstFrontier()
+        {
+            // Actual Eldoria 3D HeroBastion, detailed stone gate and modular wall
+            // source take priority over massive anonymous grey blocks.
+            Color rock=RGB(.35f,.38f,.43f);
+            Color trail=RGB(.63f,.62f,.58f);
+            Walkway("Exposed mountain approach",new Vector3(25,0,-38),new Vector3(13,0,-15),5f,trail,28);
+            Walkway("Windward mountain ramp",new Vector3(13,0,-15),new Vector3(-9,0,10),5f,trail,28);
+            Walkway("Command rampart ascent",new Vector3(-9,0,10),new Vector3(-7,0,29),4.8f,trail,20);
+            for(int i=0;i<10;i++)
+            {
+                float x=i<5?-42+(i%5)*3.5f:27+(i%5)*3.6f;
+                float z=i<5?5+(i%5)*6.5f:6+(i%5)*7f;
+                Shape(PrimitiveType.Sphere,"Rock outcrop on cold mountain ridge",
+                    new Vector3(x,H(x,z)+1.7f,z),
+                    new Vector3(7f,4.0f,5f),i%2==0?rock:DarkStone);
+            }
+            float cx=-7f,cz=32f,cy=H(cx,cz);
+            Shape(PrimitiveType.Cylinder,"BASTION I granite ridge platform",
+                new Vector3(cx,cy+.32f,cz),new Vector3(18f,.45f,18f),rock);
+            bool bastion=Vendor("ValoriaHero/Valoria_HeroBastion_v1.glb",cx,cz,34f,29f,.55f);
+            if(!bastion) HighlandHall(cx,cz,18f,17f,1);
+            var marker=new GameObject("Bastion main hall");
+            marker.transform.SetParent(built,false);
+            marker.transform.localPosition=new Vector3(cx,cy+10,cz);
+            bool gate=Vendor("ValoriaStoneV2/Valoria_MainGate_StoneDefV2.glb",12,-12,18.0f,16.0f);
+            if(!gate) HighlandHall(12,-12,13f,9f,2);
+            Vendor("ValoriaStoneV2/Valoria_Tower_StoneDefV2.glb",25,5,10.5f,17f);
+            Vendor("ValoriaStoneV2/Valoria_Tower_StoneDefV2.glb",-29,20,10.5f,17f);
+            Vendor("ValoriaStoneV2/Valoria_WallSegment_StoneDefV2.glb",29,18,19f,10f);
+            Vendor("ValoriaStoneV2/Valoria_WallSegment_StoneDefV2.glb",-28,33,18f,10f);
+            Vendor("EldoriaProduction/Valoria_Workshop_v1.glb",22,-4,9f,8f);
+            Vendor("EldoriaProduction/Valoria_CivicHouse_v1.glb",-23,3,10f,8f);
+            HighlandHall(27,30,6.5f,7.4f,1);
+            SetBanner(6,-15,12.0f,Blue);
+            SetBanner(-17,29,10.0f,Blue);
+            for(int i=0;i<7;i++)
+            {
+                float x=-14+i*2,z=12f;
+                Cuboid("Winter rebuilding supplies",x,H(x,z)+.5f,z,1.7f,.9f,2.0f,
+                       (i%2==0)?Wood:DarkStone);
+            }
         }
 
         // DIFFERENT GEOGRAPHIES AND BUILDING GRAMMARS.
