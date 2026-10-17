@@ -51,6 +51,7 @@ jobs:
         run: |
           $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
+          if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'art'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}

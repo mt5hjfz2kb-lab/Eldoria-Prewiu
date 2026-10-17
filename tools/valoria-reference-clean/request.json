@@ -1,8 +1,7 @@
 {
   "stage": "art",
-  "revision": 4,
+  "revision": 5,
   "budget_eur": 0,
-  "blockout_reviewed_sha": "37bcc64582568f1bfc40530e82d34c8e91d8685c",
-  "blockout_verdict": "Composition and four grounded plots accepted as blockout; proceed to native Blender detailed architecture and Unity integration",
-  "correction": "Remove unsupported assignment to read-only URP property; native Blender authoring succeeded"
+  "previous_candidate": "f64fe7278b30c9c64096f19ff76d780820dbd80a",
+  "independent_visual_review": "REAL UNITY REVIEW: readable keep, road, four plots and bridge. REWORK: gate underscaled; high-frequency grass; no visible shadows; uniform boulder rows; flat water. Directed geometry/URP/terrain/river correction, no ART_APPROVED."
 }
