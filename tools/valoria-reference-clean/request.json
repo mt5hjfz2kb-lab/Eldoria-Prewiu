@@ -1,11 +1,11 @@
 {
-  "stage": "art",
+  "stage": "integration",
   "validate_play": true,
-  "revision": 31,
+  "revision": 32,
   "budget_eur": 0,
-  "validated_runtime_source": "1313b37bbfad134f3a257e0baf26c6c1fca69cb0",
-  "validated_run": 39070960389,
+  "validated_runtime_source": "bd4853fe39bf418ac27182104a50cedd01841bb4",
+  "validated_run": 39071838004,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native30 rejected by actual PNG parity: Fir_tree_group stretched into scene-spanning triangles by native static batching after gate collider packing changed. Diagnostic artifact 12115317779. Do not deliver that runtime. Semantic source meshes are already combined by structure: disable automatic static batching on ALL imported art renderers, retain SRP batching and all real colliders. Regenerate identical authored30 GLB because rejected output was not pushed. Recheck Play rendering, 96 floor probes, 96 capsule headroom probes, 6 stairs, 5 selections, camera functions and canonical save. Last accepted runtime remains29.",
-  "auxiliary_review": true
+  "art_correction": "Native31 visually inspected CLEAN in actual PlayMode after removing static recombination: 96 floor + 96 capsule + 6 stairs + 5 selection + player camera operations + save hash + all 33 mesh buffers pass. Final terrain colour correction against the attached reference: prior median sampled grass RGB about .380/.447/.173 versus reference .565/.490/.153; make existing detail/macro meadow texture derivative warmer and lighter with controlled channel factors (1.40R,1.07G,.90B relative). These are palette measurements, not an artistic score. Reuse actual Blender31 GLB and editable blend unchanged; rebuild empty independent Unity scene/materials, verify actual rendering/physics again. Do not regenerate geometry or invoke auxiliary model for this colour-only finish. Android compilation follows.",
+  "auxiliary_review": false
 }
