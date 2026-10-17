@@ -31,6 +31,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-player-camera-source-gate-${{ github.run_id }}
-          path: docs/evidence/valoria-layered-construction-20261016/player-camera-authority-gate.json
+          path: |
+            docs/evidence/valoria-layered-construction-20261016/player-camera-authority-gate.json
+            docs/evidence/valoria-layered-construction-20261016/camera-coordinate-authority-comparison.svg
           if-no-files-found: error
           retention-days: 30
