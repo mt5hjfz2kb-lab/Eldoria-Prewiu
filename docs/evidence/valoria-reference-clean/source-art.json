@@ -1,5 +1,5 @@
 {
-  "source_sha": "6c1fbc14efc431d87f51b6656e6e26c3f5d3ab04",
+  "source_sha": "4ce057dfcb92ad9bb2c5ccdbf525de547940608c",
   "layout_refinement": {
     "gate_x": -1.5,
     "gate_y": -10,
@@ -41,8 +41,10 @@
   },
   "canopy_trial": {
     "modified_trees": 4,
+    "baked_ao_loops": 36636,
     "bounds_preserved": true,
-    "zone": "right foreground trees only"
+    "zone": "right foreground trees only",
+    "method": "BVH hemisphere visibility baked into neutral-by-default vertex colors; no added triangles"
   },
   "rock_surface": {
     "asset": "rock_3",
@@ -201,6 +203,6 @@
   },
   "mesh_objects": 32,
   "triangles": 629118,
-  "blend_sha256": "351152f710ce585912fd9d1b623c107b732902b294cc23c52755244c6b803e32",
-  "glb_sha256": "575842c6bec46847a9c809e787306970373f83e2c8282398e9bc83829f3d97e4"
+  "blend_sha256": "ec26f8bda39e6a67592adf037811ecebc451edd770ad99a78ab95987a3ca6d68",
+  "glb_sha256": "9ec31c2553992213e35b48214bec416f582a3b3deb4d6a4e00ad57c73fc1fd0b"
 }

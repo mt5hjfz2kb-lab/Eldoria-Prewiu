@@ -4,5 +4,21 @@
   "ollama": "NOT_REACHABLE",
   "blendermcp_socket": "NOT_REACHABLE",
   "ollama_error": "<urlopen error [WinError 10061] No se puede establecer una conexi\u00f3n ya que el equipo de destino deneg\u00f3 expresamente dicha conexi\u00f3n>",
-  "blendermcp_error": "timed out"
+  "blendermcp_error": "timed out",
+  "blendermcp_addons": [
+    {
+      "module": "blender_mcp",
+      "path": "C:\\Users\\crist\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\scripts\\addons\\blender_mcp.py",
+      "loaded": false,
+      "sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5"
+    }
+  ],
+  "execution_scope": {
+    "isolated_scene": true,
+    "exclusive_lease_checked_by_workflow": true,
+    "transport": "native reviewed bpy recipe",
+    "arbitrary_model_python": false,
+    "addon_enabled_or_installed_by_job": false,
+    "mcp_required_for_this_surface_operation": false
+  }
 }

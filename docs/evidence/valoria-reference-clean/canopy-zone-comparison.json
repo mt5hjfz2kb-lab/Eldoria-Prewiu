@@ -1,8 +1,8 @@
 {
-    "baseline_source": "6c6400f0eedf526907e5fc79079123e55139d7a5",
-    "baseline_glb_sha256": "a7c4cc0b29bdf6d658d66526db73a24649d3b41191c642811e4776e6c74cd098",
-    "source_sha": "6c1fbc14efc431d87f51b6656e6e26c3f5d3ab04",
-    "scope": "Only right foreground pine mesh normals; tree bounds and placement preserved, other surfaces shared",
+    "baseline_source": "78b617b550bfb56f57e82ded747bd5e822a60788",
+    "baseline_glb_sha256": "575842c6bec46847a9c809e787306970373f83e2c8282398e9bc83829f3d97e4",
+    "source_sha": "4ce057dfcb92ad9bb2c5ccdbf525de547940608c",
+    "scope": "Only right foreground pine BVH occlusion vertex colors and mesh normals; bounds and placement preserved, other surfaces shared",
     "same_camera": true,
     "same_lighting": true,
     "baseline_hash_verified": true,
