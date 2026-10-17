@@ -152,6 +152,12 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             if (relative.StartsWith("EldoriaProduction/"))
                 path = "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/" +
                        relative.Substring("EldoriaProduction/".Length);
+            if (relative.StartsWith("ValoriaHero/"))
+                path = "Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/" +
+                       relative.Substring("ValoriaHero/".Length);
+            if (relative.StartsWith("ValoriaStoneV2/"))
+                path = "Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/" +
+                       relative.Substring("ValoriaStoneV2/".Length);
             var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if (prefab == null) return false;
             var inst = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as GameObject;
@@ -297,7 +303,13 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             var go = new GameObject("Continuous terrain (not disconnected cubes)");
             go.transform.SetParent(built,false);
             go.AddComponent<MeshFilter>().sharedMesh=m;
-            go.AddComponent<MeshRenderer>().sharedMaterial=Mat(Grass);
+            var terrainMaterial=new Material(Mat(Color.white));
+            terrainMaterial.name="Isolated terrain painting for " + artDirection;
+            terrainMaterial.hideFlags=HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
+            var texture=GroundTexture();
+            if (terrainMaterial.HasProperty("_BaseMap")) terrainMaterial.SetTexture("_BaseMap",texture);
+            if (terrainMaterial.HasProperty("_MainTex")) terrainMaterial.SetTexture("_MainTex",texture);
+            go.AddComponent<MeshRenderer>().sharedMaterial=terrainMaterial;
             objectCount++;
             // Selective natural bands around the main plateau help show playable space.
             for (int i=0;i<38;i++)
@@ -616,6 +628,35 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
         }
 
 
+        private Texture2D GroundTexture()
+        {
+            const int side=256;
+            var texture=new Texture2D(side,side,TextureFormat.RGBA32,false,false);
+            texture.name="Eldoria isolated palette • terrain";
+            texture.wrapMode=TextureWrapMode.Repeat;
+            texture.filterMode=FilterMode.Bilinear;
+            texture.hideFlags=HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
+            Color low=Rich?RGB(.33f,.37f,.34f):Bright?RGB(.32f,.56f,.31f):RGB(.34f,.51f,.31f);
+            Color high=Rich?RGB(.59f,.59f,.54f):Bright?RGB(.53f,.72f,.42f):RGB(.52f,.62f,.41f);
+            Color soil=Rich?RGB(.37f,.37f,.36f):Bright?RGB(.59f,.53f,.36f):RGB(.55f,.52f,.36f);
+            var colors=new Color[side*side];
+            for(int y=0;y<side;y++)for(int x=0;x<side;x++)
+            {
+                float u=(float)x/side, v=(float)y/side;
+                float broad=Mathf.PerlinNoise(u*4.2f+23.7f,v*4.2f+8.9f);
+                float fine=Mathf.PerlinNoise(u*19.7f+8.1f,v*19.7f+62.3f);
+                float grain=Mathf.PerlinNoise(u*74f+7.6f,v*74f+15.2f);
+                Color c=Color.Lerp(low,high,Mathf.Clamp01(.12f+broad*.68f+fine*.2f));
+                float exposed=Mathf.PerlinNoise(u*9f+17f,v*9f+38f);
+                c=Color.Lerp(c,soil,Mathf.SmoothStep(.48f,.74f,exposed)*(Rich?.42f:.27f));
+                float brightness=.88f+.19f*fine+.06f*grain;
+                colors[y*side+x]=new Color(c.r*brightness,c.g*brightness,c.b*brightness,1);
+            }
+            texture.SetPixels(colors);
+            texture.Apply(false,false);
+            return texture;
+        }
+
         // DIFFERENT GEOGRAPHIES AND BUILDING GRAMMARS.
         // These are actual editor-created mesh objects for Unity previews, not mock-up images.
         // Never touch the canon world, state machine, timeline or progression graph.
@@ -732,21 +773,35 @@ namespace Eldoria.ArtTests.ThreeVisualStyles
             RidgeTower(-22f,42f,20f,3.2f,masonry,slate);
             RidgeTower(-27f,18f,16f,3.0f,masonry,slate);
             float gy=H(13f,-5f);
-            Cuboid("MOUNTAIN GATEHOUSE",13f,gy+7.2f,-5f,13.2f,14.4f,7.2f,masonry);
-            Cuboid("Heavy slate gatehouse roof",13f,gy+14.6f,-5f,14f,1.25f,8f,slate);
-            Cuboid("Mountain gate opening",13f,gy+3f,-8.7f,5f,6f,.38f,Wood);
-            for(int i=-2;i<=2;i++)
-                Cuboid("Iron gate bar",13f+i*.87f,gy+3f,-8.95f,.19f,5.8f,.21f,DarkStone);
+            bool sculptedGate=Vendor("ValoriaStoneV2/Valoria_MainGate_StoneDefV2.glb",13,-5,13f,14.2f);
+            if (!sculptedGate)
+            {
+                Cuboid("MOUNTAIN GATEHOUSE",13f,gy+7.2f,-5f,13.2f,14.4f,7.2f,masonry);
+                Cuboid("Heavy slate gatehouse roof",13f,gy+14.6f,-5f,14f,1.25f,8f,slate);
+                Cuboid("Mountain gate opening",13f,gy+3f,-8.7f,5f,6f,.38f,Wood);
+                for(int i=-2;i<=2;i++)
+                    Cuboid("Iron gate bar",13f+i*.87f,gy+3f,-8.95f,.19f,5.8f,.21f,DarkStone);
+            }
             for(int side=-1;side<=1;side+=2)
                 Cuboid("Gate entrance buttress",13f+side*5.5f,gy+6f,-9.0f,1.6f,12f,2.2f,trim);
             SetBanner(8,-8,13f,Blue);
             // Dominant tall keep, timber halls, ground-level courtyard and stepped foundations.
             float kx=-5f,kz=30f,ky=H(kx,kz);
             Cuboid("BASTION I granite plinth",kx,ky+1.15f,kz,22f,2.3f,19f,cliff);
-            Cuboid("Bastion main hall",kx,ky+10.5f,kz,15.5f,17.2f,13f,masonry);
-            Cuboid("Inner high stone cornice",kx,ky+19.7f,kz,16.4f,1.2f,14.1f,trim);
-            Cuboid("High keep secondary tower",kx-3.2f,ky+23f,kz+2f,8f,8f,8f,masonry);
-            var highRoof=Cuboid("Keep dark ridgeline",kx-3.2f,ky+27.9f,kz+2f,10f,1.15f,9.9f,slate);
+            bool hero=Vendor("ValoriaHero/Valoria_HeroBastion_v1.glb",kx,kz,20f,24f);
+            if (!hero)
+            {
+                Cuboid("Bastion main hall",kx,ky+10.5f,kz,15.5f,17.2f,13f,masonry);
+                Cuboid("Inner high stone cornice",kx,ky+19.7f,kz,16.4f,1.2f,14.1f,trim);
+                Cuboid("High keep secondary tower",kx-3.2f,ky+23f,kz+2f,8f,8f,8f,masonry);
+                Cuboid("Keep dark ridgeline",kx-3.2f,ky+27.9f,kz+2f,10f,1.15f,9.9f,slate);
+            }
+            else
+            {
+                var marker=new GameObject("Bastion main hall");
+                marker.transform.SetParent(built,false);
+                marker.transform.position=new Vector3(kx,ky+10,kz);
+            }
             for(int i=0;i<5;i++)
             {
                 Cuboid("Heavy stone buttress",kx-7f+i*3.5f,ky+7.9f,kz-6.92f,.95f,14.8f,1.5f,trim);
