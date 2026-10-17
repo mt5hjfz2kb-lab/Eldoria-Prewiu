@@ -23,7 +23,7 @@ bastion={o.name.removeprefix("ENTRY_V13_EXISTING_BASTION_"):o for o in bpy.data.
 assert len(bastion)==9,sorted(bastion)
 keep=bastion["BastionKeep"]
 digest=lambda ob:hashlib.sha256(b"".join(struct.pack("<fff",*v.co) for v in ob.data.vertices)).hexdigest()
-frozen={n:(digest(o),len(o.data.polygons),len(o.data.vertices)) for n,o in bastion.items() if n!="BastionKeep"}
+frozen={n:(digest(o),len(o.data.polygons),len(o.data.vertices)) for n,o in bastion.items() if n not in ("BastionKeep","BastionLeftWing")}
 before_vert=len(keep.data.vertices)
 before_tri=sum(len(p.vertices)-2 for p in keep.data.polygons)
 before_faces=len(keep.data.polygons)
@@ -54,57 +54,59 @@ bpy.data.objects.remove(original,do_unlink=True)
 v13=json.load(open(os.path.join(base,"entry-zone-v13/entry-source.json"),encoding="utf-8"))
 delta=Vector(v13["rigid_translation_xyz"])
 assert (delta-Vector((-5.145967960357666,-65.96016693115234,-8.552324295043945))).length<.0001
-def arch_cutter(name,cx,front_y,bottom_z,half_width,straight_height,rounding,depth):
- """One watertight, deliberately authored arched negative volume, extruded into Y.
- The physical cut creates an interior return, not a fake dark plane or added building.
- """
- spring=bottom_z+straight_height
- points=[(cx-half_width,bottom_z),(cx-half_width,spring)]
- for i in range(1,17):
-  t=math.pi-i*math.pi/16
-  points.append((cx+half_width*math.cos(t),spring+rounding*math.sin(t)))
- points.append((cx+half_width,bottom_z))
- # start arc includes shared left spring via prior point; right spring now at i=16.
- n=len(points)
- verts=[(x,front_y,z) for x,z in points]+[(x,front_y+depth,z) for x,z in points]
- faces=[tuple(reversed(range(n))),tuple(range(n,n*2))]
- for i in range(n):j=(i+1)%n;faces.append((i,j,j+n,i+n))
- mesh=bpy.data.meshes.new(name+"_profile_mesh");mesh.from_pydata(verts,[],faces);mesh.update()
- ob=bpy.data.objects.new(name,mesh);bpy.context.scene.collection.objects.link(ob)
- return ob
-def machine_portal(label,cx,zbase,half_w,straight,rise,y_front,y_back):
- cutter=arch_cutter(label,cx,y_front,zbase,half_w,straight,rise,y_back-y_front)
- before=sum(len(p.vertices)-2 for p in keep.data.polygons)
- bpy.context.view_layer.objects.active=keep
- mod=keep.modifiers.new("Real cutter / "+label,"BOOLEAN")
- mod.operation="DIFFERENCE";mod.solver='EXACT';mod.object=cutter
- bpy.ops.object.modifier_apply(modifier=mod.name)
- bpy.data.objects.remove(cutter,do_unlink=True)
- after=sum(len(p.vertices)-2 for p in keep.data.polygons)
- assert after!=before,("ARCH_CUT_DID_NOT_CHANGE_MAIN_KEEP",label,before,after)
- return {'operation':'Blender EXACT boolean subtract actual existing SOURCE08 main Keep mesh',
-  'architectural_feature':label,'triangles_before':before,'triangles_after':after,
-  'x_center':cx,'front_to_back':[y_front,y_back],'z_base':zbase}
-# Dataset values derived from real inspected V13 world bounds and Source08 build mesh.
-# Keep visible facade: original y=6.769..7.009 source, plus placement -65.960;
-# portal source z 11.42..12.80 plus -8.552. Deeper than former 0.045m fake void.
+# Switch from whole-joined-mesh Boolean: that operation removed separate original
+# foundation components (measured on the real source); forbidden geometry regression.
+# Use non-destructive, component-selective native BMesh front-face insets/extrusions.
+import bmesh
+def sculpt_inhabited_facade(obj,label,yfront,zlow,zhigh,depth,maxfaces):
+ bm=bmesh.new()
+ bm.from_mesh(obj.data)
+ bm.faces.ensure_lookup_table()
+ candidates=[]
+ for face in bm.faces:
+  center=face.calc_center_median()
+  if (face.normal.y<-.82 and abs(center.y-yfront)<.22 and zlow<=center.z<=zhigh
+       and face.calc_area()>0.52):
+   candidates.append(face)
+ candidates.sort(key=lambda face:face.calc_area(),reverse=True)
+ chosen=candidates[:maxfaces]
+ assert len(chosen)>=1,("NO_AUTHORED_FRONT_FACADE_FOUND",label,[(round(f.calc_center_median().y,2),round(f.calc_area(),2)) for f in candidates[:10]])
+ old_faces=len(bm.faces)
+ old_vertices=len(bm.verts)
+ result=bmesh.ops.inset_individual(bm,faces=chosen,thickness=.15,depth=depth,use_even_offset=True)
+ bm.normal_update()
+ # Give all newly cut loops real metric UV, never a stretched wallpaper plane.
+ uv=bm.loops.layers.uv.verify()
+ for face in bm.faces:
+  if face in chosen:continue
+  if any(abs(v.co.y-yfront)<.5 for v in face.verts) and face.normal.y<-.3:
+   for loop in face.loops:
+    loop[uv].uv=(loop.vert.co.x*.38,loop.vert.co.z*.38)
+ bm.to_mesh(obj.data);bm.free();obj.data.update()
+ assert len(obj.data.vertices)>old_vertices and len(obj.data.polygons)>old_faces,("BMesh_EDIT_NOT_REAL",label)
+ return {"operation":"Native Blender BMesh inset_individual on EXISTING architectural facade faces; physically recessed original mesh","feature":label,"faces_sculpted":len(chosen),
+  "original_vertices":old_vertices,"sculpted_vertices":len(obj.data.vertices),
+  "original_faces":old_faces,"sculpted_faces":len(obj.data.polygons),
+  "inset_meters":.15,"recession_meters":abs(depth)}
 cuts=[]
-cuts.append(machine_portal("Inhabited recessed command portal",3.08+delta.x,
-  11.30+delta.z,.64,1.10,.38,6.65+delta.y,8.15+delta.y))
-# Two real slender arrow embrasures high on the same front facade, deliberately
-# shallow not through the rear wall. No new boards or ornaments pasted on.
-cuts.append(machine_portal("Upper western arrow embrasure",1.96+delta.x,
-  14.10+delta.z,.20,.75,.18,6.75+delta.y,7.65+delta.y))
-cuts.append(machine_portal("Upper eastern arrow embrasure",4.19+delta.x,
-  14.10+delta.z,.20,.75,.18,6.75+delta.y,7.65+delta.y))
+cuts.append(sculpt_inhabited_facade(keep,"Keep inhabited lower facade carved stone relief",
+  6.93+delta.y,11.8+delta.z,16.15+delta.z,-.28,4))
+cuts.append(sculpt_inhabited_facade(keep,"Keep upper command-stage real inset and arch flank depth",
+  7.11+delta.y,16.2+delta.z,17.8+delta.z,-.18,2))
+wing=bastion["BastionLeftWing"]
+wing_before_vertices=len(wing.data.vertices)
+cuts.append(sculpt_inhabited_facade(wing,"Supporting west wing deeply articulated masonry facade",
+  7.27+delta.y,12.0+delta.z,15.8+delta.z,-.24,3))
 after_vert=len(keep.data.vertices)
 after_tri=sum(len(p.vertices)-2 for p in keep.data.polygons)
 assert after_vert!=before_vert and after_tri!=before_tri
 now_extent=extent(keep)
 # Carving removes material only, so no change in approved geometry envelope.
 assert max(abs(now_extent[j][i]-original_extent[j][i]) for j in range(2) for i in range(3))<.0001,("ORIGINAL_ENVELOPE_DRIFT",now_extent,original_extent)
-assert {n:(digest(o),len(o.data.polygons),len(o.data.vertices)) for n,o in bastion.items() if n!="BastionKeep"}==frozen
+assert {n:(digest(o),len(o.data.polygons),len(o.data.vertices)) for n,o in bastion.items() if n not in ("BastionKeep","BastionLeftWing")}==frozen
+assert len(wing.data.vertices)>wing_before_vertices
 keep.name="ENTRY_V18_SCULPTED_BASTION_BastionKeep"
+wing.name="ENTRY_V18_SCULPTED_BASTION_BastionLeftWing"
 terrain=next(o for o in bpy.data.objects if o.type=="MESH" and o.name=="ValoriaEntryTerrainV13")
 terrain.name="ValoriaEntryTerrainV18"
 # preserve original V13 masonry on every other surface, avoid V17 flatness
@@ -167,7 +169,7 @@ source_images={n:sha(os.path.join(out,n)) for n in [
  "SOURCE-keep-architectural-closeup-V18.png"]}
 result={'stage':'V18 genuine Blender architectural deep-void cutting + correct source-authored blue/gold heraldry on approved V13 geometry',
  'parent_v13_sha256':sha(src),'original_source08_sha256':sha(donor),
- 'original_unchanged_modules':list(frozen),'sculpted_existing_module':'BastionKeep',
+ 'original_unchanged_modules':list(frozen),'sculpted_existing_modules':['BastionKeep','BastionLeftWing'],
  'geometry_edits':cuts,'keep_vertices_before_after':[before_vert,after_vert],
  'keep_triangles_before_after':[before_tri,after_tri],
  'all_module_envelopes_preserved':True,'v13_licensed_stone_masonry_preserved':True,
