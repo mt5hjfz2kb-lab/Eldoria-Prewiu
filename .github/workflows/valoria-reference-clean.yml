@@ -54,8 +54,9 @@ jobs:
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
           if($req.stage -eq 'integration'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'}
+          $env:VALORIA_SHORE_PROFILE=$req.shore_treatment
           if($req.stage -eq 'art'){
-            if($req.nature_treatment -eq 'bank_zone' -or $req.tree_treatment -eq 'canopy_ao_zone'){
+            if($req.nature_treatment -eq 'bank_zone' -or $req.tree_treatment -eq 'canopy_ao_zone' -or $req.shore_treatment -eq 'zone_profile'){
               $env:VALORIA_NATURE_BASELINE_GLB=Join-Path $env:RUNNER_TEMP 'ValoriaReferenceBeforeNature.glb'
               Copy-Item 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/Valoria_Reference_Clean.glb' $env:VALORIA_NATURE_BASELINE_GLB -Force
               $env:VALORIA_NATURE_BASELINE_HASH=(Get-Content 'docs/evidence/valoria-reference-clean/source-art.json' -Raw|ConvertFrom-Json).glb_sha256
@@ -63,6 +64,7 @@ jobs:
               $env:VALORIA_NATURE_TARGET='River_bank_rocks';$env:VALORIA_NATURE_PREFIX='nature-zone'
               if($req.tree_treatment -eq 'canopy_ao_zone'){$env:VALORIA_NATURE_TARGET='Fir_tree_group';$env:VALORIA_NATURE_PREFIX='canopy-zone'}
             }
+            if($req.shore_treatment -eq 'zone_profile'){$env:VALORIA_NATURE_TARGET='Shore_profile';$env:VALORIA_NATURE_PREFIX='shore-zone'}
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
             if(-not $blender){throw 'Blender unavailable'}

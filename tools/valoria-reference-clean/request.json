@@ -1,16 +1,17 @@
 {
   "stage": "art",
   "validate_play": true,
-  "revision": 41,
+  "revision": 42,
   "budget_eur": 0,
-  "validated_runtime_source": "78b617b550bfb56f57e82ded747bd5e822a60788",
-  "validated_run": 39076145162,
+  "validated_runtime_source": "d6d258f5c87d0ede7c7452645a1e73e6afdf2c27",
+  "validated_run": 39076839201,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native40 actual pine normals-only A/B barely perceptible: do not extend it. New bounded hypothesis: real Blender BVH hemisphere visibility baked into neutral-by-default leaf vertex colors on the same four trees, no extra triangles, assert GLB COLOR_0. Native same-camera/light previous-GLB canopy A/B before any extension. Replace river uniform streaks with authored periodic normal-height texture sampled at two animated scales, matched native water A/B against actual39/40 shader. Keep current golden organic terrain, seamless bank rocks, limestone, orange lofted flames, exact composition and gameplay. Read live main AGENTS complementary18Oct BlenderMCP instruction and three referenced documents; recover currently installed addon metadata and socket observation within this existing art job, no installations/enabling/parallel diagnostic. Existing MCP is validated-action transport, not unrestricted Qwen control. Native reviewed Blender authoring remains appropriate for this surface bake. Budget0, formal art/mobile claims remain false.",
+  "art_correction": "Actual41 A/B inspected: authored water eliminates uniform diagonal stripes, retained. Canopy AO vertex color export makes even neutral untouched trees flatter/lighter: VISUAL_REJECTED, completely remove that attribute/export override and restore proven40 donor shading. Change high-impact hypothesis to real shoreline geometry: right inland bank x6..30 only, soften profile from4m to10m across same waterline, keep water elevation/extent, river axis, road and bridge unchanged. Blender re-seats actual rocks/reeds/tufts against identical Unity equation. Same-run previous-GLB bank/foam/tuft renderers plus original Terrain heights give true fixed-camera/light before-after. Do not extend until capture inspection. Native41 all96 paths/headroom,12 corners,5 picks,6stairs,zero exceptions. Installed blender_mcp addon actual SHA recorded, not loaded/socket unavailable; no tool detour or installs. Budget0.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
   "nature_treatment": "all_banks",
   "water_treatment": "flow_surface",
-  "tree_treatment": "canopy_ao_zone"
+  "tree_treatment": "canopy_zone",
+  "shore_treatment": "zone_profile"
 }
