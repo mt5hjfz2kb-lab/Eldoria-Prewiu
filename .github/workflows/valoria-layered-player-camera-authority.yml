@@ -1,0 +1,36 @@
+name: "[VALORIA] Player camera authority and staging guard"
+on:
+  push:
+    branches:
+      - construction/valoria-master-plan-layers-20261016
+    paths:
+      - "tools/valoria-layered-construction/verify-player-camera-authority.mjs"
+      - ".github/workflows/valoria-layered-player-camera-authority.yml"
+permissions:
+  contents: read
+jobs:
+  distinguish-cameras-before-expanding:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source-verify actual SHARP player camera and isolated orthographic QA scope
+        run: |
+          node tools/valoria-layered-construction/verify-player-camera-authority.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const j=JSON.parse(fs.readFileSync('docs/evidence/valoria-layered-construction-20261016/player-camera-authority-gate.json','utf8'));
+          if(j.actual_player.projection!=='perspective'
+            ||j.historical_orthographic.projection!=='orthographic'
+            ||j.stage_gate.stage_2!=='NOT_PASSED_NO_3D_TO_SHARP_MAPPING'
+            ||j.stage_gate.stage_3!=='TECH_PASS_ART_FAIL'
+            ||j.stage_gate.stage_6!=='HOLD_UPPER_FORTIFICATION'
+            ||j.no_promote!==true)throw Error('Camera authority or visual verdict falsely promoted');
+          console.log('VALORIA_PLAYER_CAMERA_SOURCE_TECH_PASS; NO_FALSE_PLAYER_CAMERA_PASS');
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-player-camera-source-gate-${{ github.run_id }}
+          path: docs/evidence/valoria-layered-construction-20261016/player-camera-authority-gate.json
+          if-no-files-found: error
+          retention-days: 30
