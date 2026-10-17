@@ -1,0 +1,168 @@
+{
+    "source_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity",
+    "new_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity",
+    "camera_authority": "Actual ValoriaParcelPresentation Home/Pan/Zoom, SHARP perspective",
+    "tech_gate": "7_SOURCE_SEMANTICS_HOME_PHYSICAL_RAY_PASS",
+    "art_gate": "UNAPPROVED_GREYBOX_SCENE",
+    "gameplay_gate": "SOURCE_COLLIDER_RAY_ONLY_NOT_PLAYERSTATE_OR_GATEWAY",
+    "reference_camera_unmodified": true,
+    "all_source_geometry_unmodified": true,
+    "only_existing_hotspot_extended": true,
+    "all_7_home_physical_semantics_hit": true,
+    "canonical_modified": false,
+    "source_hotspot_depth": 0.5,
+    "updated_hotspot_depth": 1.600000023841858,
+    "hotspot_offset_toward_bridge": 0.800000011920929,
+    "original_rigid_fit_max_centre_error_px": 81.02300262451172,
+    "home_matches": 7,
+    "home_required": 7,
+    "pan_zoom_matches": 39,
+    "pan_zoom_required": 39,
+    "anchors": [
+        {
+            "id": "Bridge",
+            "collider_name": "TEMPORARY bridge / continuous deck and collider",
+            "semantic_hit_after": true,
+            "semantic_hit_before": true,
+            "visible": true,
+            "x": 0.2886179983615875,
+            "y": 0.10059189796447754,
+            "hit_depth": 11.87801742553711,
+            "contact_world_y": -3.5988450050354006
+        },
+        {
+            "id": "LowerGate",
+            "collider_name": "SUPPORT/RESERVE Puerta · ir al mundo",
+            "semantic_hit_after": true,
+            "semantic_hit_before": false,
+            "visible": true,
+            "x": 0.39430901408195498,
+            "y": 0.3195270001888275,
+            "hit_depth": 13.736978530883789,
+            "contact_world_y": -1.9950358867645264
+        },
+        {
+            "id": "MainRoad",
+            "collider_name": "GREYBOX VPD · L0 main street",
+            "semantic_hit_after": true,
+            "semantic_hit_before": true,
+            "visible": true,
+            "x": 0.46748000383377077,
+            "y": 0.5088760256767273,
+            "hit_depth": 19.071693420410158,
+            "contact_world_y": 0.1384989619255066
+        },
+        {
+            "id": "CentralStair",
+            "collider_name": "GREYBOX certified stair step 5",
+            "semantic_hit_after": true,
+            "semantic_hit_before": true,
+            "visible": true,
+            "x": 0.5349590182304382,
+            "y": 0.6733729839324951,
+            "hit_depth": 24.977293014526368,
+            "contact_world_y": 3.5056052207946779
+        },
+        {
+            "id": "Bastion",
+            "collider_name": "GREYBOX Bastion hero reservation, silhouette only",
+            "semantic_hit_after": true,
+            "semantic_hit_before": true,
+            "visible": true,
+            "x": 0.6048780083656311,
+            "y": 0.8426039814949036,
+            "hit_depth": 27.192378997802736,
+            "contact_world_y": 7.2884626388549809
+        },
+        {
+            "id": "LeftCabinParcel",
+            "collider_name": "SUPPORT/RESERVE VPD · L0 west plot",
+            "semantic_hit_after": true,
+            "semantic_hit_before": true,
+            "visible": true,
+            "x": 0.20325200259685517,
+            "y": 0.627219021320343,
+            "hit_depth": 25.89493751525879,
+            "contact_world_y": 2.5301895141601564
+        },
+        {
+            "id": "RightCampParcel",
+            "collider_name": "SUPPORT/RESERVE VPD · L0 east plot",
+            "semantic_hit_after": true,
+            "semantic_hit_before": true,
+            "visible": true,
+            "x": 0.85365891456604,
+            "y": 0.519527018070221,
+            "hit_depth": 20.886943817138673,
+            "contact_world_y": 0.3078116774559021
+        }
+    ],
+    "states": [
+        {
+            "id": "HOME",
+            "fov": 44.42280960083008,
+            "camera_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "visible_targets": 7,
+            "raycast_matches": 7
+        },
+        {
+            "id": "PAN_LEFT",
+            "fov": 44.42280960083008,
+            "camera_position": [
+                -0.5000003576278687,
+                0.0,
+                0.0
+            ],
+            "visible_targets": 7,
+            "raycast_matches": 7
+        },
+        {
+            "id": "PAN_RIGHT",
+            "fov": 44.42280960083008,
+            "camera_position": [
+                0.5000003576278687,
+                0.0,
+                0.0
+            ],
+            "visible_targets": 7,
+            "raycast_matches": 7
+        },
+        {
+            "id": "ZOOM_IN",
+            "fov": 42.42280960083008,
+            "camera_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "visible_targets": 7,
+            "raycast_matches": 7
+        },
+        {
+            "id": "ZOOM_OUT",
+            "fov": 46.42280960083008,
+            "camera_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "visible_targets": 7,
+            "raycast_matches": 7
+        },
+        {
+            "id": "PORTRAIT",
+            "fov": 44.42280960083008,
+            "camera_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "visible_targets": 4,
+            "raycast_matches": 4
+        }
+    ]
+}
