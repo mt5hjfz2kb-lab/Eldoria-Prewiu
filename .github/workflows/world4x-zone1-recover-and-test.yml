@@ -1,0 +1,83 @@
+name: '[WORLD4X] Recover preserved source and run spatial contract'
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths: ['.github/workflows/world4x-zone1-recover-and-test.yml']
+permissions:
+  contents: write
+concurrency:
+  group: world4x-zone1-recover-and-test
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify live authorization, execute existing test and preserve exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show FETCH_HEAD:pipeline/active-workstreams.json > /tmp/world4x-live-claims.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/world4x-live-claims.json'))
+          own=next(x for x in r['active'] if x['id']=='world4x-zone1-isolated-reference-prototype-20261013')
+          assert own['owner']=='chatgpt-world4x-production-20261018', own
+          assert own['status']=='active', own
+          assert own['id'] in r['owner_production_pause']['authorized_workstream_ids']
+          PY
+          mkdir -p docs/world4x-zone1/evidence/recovery-20261018
+          node tools/world4x-zone1/world-spatial-contract.test.mjs | tee docs/world4x-zone1/evidence/recovery-20261018/spatial-test.txt
+          python - <<'PY'
+          import pathlib,json,hashlib,zipfile,os
+          root=pathlib.Path('.')
+          out=root/'docs/world4x-zone1/evidence/recovery-20261018'
+          names=[]
+          allowed={'.cs','.mjs','.py','.json','.md','.yml','.asmdef','.shader','.meta'}
+          for folder in ['tools/world4x-zone1','Unity/Assets/Eldoria/ArtTests/World4XZone1','docs/world4x-zone1']:
+              for p in (root/folder).rglob('*'):
+                  if p.is_file() and p.suffix in allowed and '__pycache__' not in str(p): names.append(p)
+          refs=root/'docs/world4x-zone1/evidence/local-cycle-20261014/references'
+          names.extend(p for p in refs.glob('*') if p.is_file())
+          names.extend(p for p in (root/'Unity/Assets/Eldoria/ArtTests/World4XZone1/Models').rglob('*') if p.is_file() and p.suffix=='.glb')
+          for relative in ['Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb','pipeline/art-production-requests/world4x-zone1-isolated-reference-prototype-20261013.json','tools/art-direction/ai-authoring/execute_artist_plan.py','tools/art-direction/ai-authoring/author_brief.py','tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md']:
+              p=root/relative
+              if p.is_file(): names.append(p)
+          names.extend(p for p in (root/'.github/workflows').glob('world4x-zone1-*.yml'))
+          records=[]
+          with zipfile.ZipFile('/tmp/world4x-preserved-source.zip','w',zipfile.ZIP_DEFLATED) as z:
+              for p in sorted(set(names)):
+                  b=p.read_bytes();z.writestr(str(p),b)
+                  records.append({'path':str(p),'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
+          refs_present=[r for r in records if '/references/' in r['path']]
+          report={'source_commit':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'node_test_executed':True,'node_test_passed':True,'windows_used':False,'unity_executed':False,'art_approved':False,'files':records,'reference_files':refs_present,'archive_sha256':hashlib.sha256(pathlib.Path('/tmp/world4x-preserved-source.zip').read_bytes()).hexdigest()}
+          (out/'recovery.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps({'reference_files':refs_present,'file_count':len(records),'archive_sha256':report['archive_sha256']},indent=2))
+          PY
+      - name: Commit only real test and recovery evidence to own branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Eldoria World4X evidence'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/world4x-zone1/evidence/recovery-20261018
+          if ! git diff --cached --quiet; then
+            git commit -m 'test(world4x): retain executed spatial contract and verified recovery manifest [skip ci]'
+            git push origin HEAD:prototype/world4x-zone1-zoom-reference-20261013
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: world4x-preserved-source-${{ github.run_id }}
+          path: |
+            /tmp/world4x-preserved-source.zip
+            docs/world4x-zone1/evidence/recovery-20261018/
+          retention-days: 30
