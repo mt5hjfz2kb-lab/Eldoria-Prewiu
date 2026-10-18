@@ -1,3 +1,19 @@
+# Estado vigente — actualización privada native111 publicada
+
+18 octubre 2026. Continúa la MISMA misión: elevar la calidad visual de Valoria con su artista IA existente, Royal Gold y Zona1 4X. No reiniciar ni usar Tripo.
+
+- Enlace: https://valoria-city-world.kbkvc5c45n.chatgpt.site (mismo proyecto privado appgprj_6ad4ce602c808191859268d570c93352).
+- Publicación confirmada appgdep_6ad4e341a4488191a25befd593bdfc27, fuente Sites 8500154eeb25e3bdc955cc47d3d9ef7c33e0a68f. Unity native111 39138751241 SUCCESS; fuente 48837605705fed198ec485f2c2726af2ffa5eea9, salida 663acb07f3a2693a70f46b3e94a40340a38ad84f. Web artifact12141221363; revisión artifact12141475371.
+- Nuevo aserradero de Qwen + BlenderMCP instalados, inferencia real105 y reparación107 bajo el mismo plan. GLB6544ce7c993ff8f55b7c0420ebcfa9a93615c47c67e625cbde0e4382f20c4cbd. Tejado azul cerrado, piedra y madera coherentes; frente abierto orientado a cámara. Fuentes originales intactas. A/B nativo con misma cámara/luz; mejora observada, NO aprobación artística global.
+- Parcelas rectangulares ocultas; colisiones/reglas conservadas. Etiquetas de construcción y flecha del objetivo llevan al destino. Mundo se desplaza horizontal y verticalmente. Menús ocultos hasta que existe su mecánica/progreso. Marco UI simplificado.
+- Textos originales de tester-v0265: Narrador/Aldric en inicio, aserradero, hallazgo del bosque y cuartel. Continuar por pulsación real; crónica consultable; marcas de lectura fuera del estado económico. No se anuncian mecánicas futuras ausentes. Ver WEB_DIALOGUE_RESTORATION.md.
+- Native111: recorrido completo I–II, acciones uGUI reales, narrativa resistente a refrescos, diálogo largo cabe en vertical, mismo estado ciudad/mundo, recarga y hashes de guardados canónicos PASS. Captura integration-story-mark.png inspeccionada completa y legible.
+- WebGL exacto empaquetado con CRC ZIP y hashes de todos los archivos, transporte por fragmentos y prueba de bytes/orden/URL/longitud PASS. Publicación succeeded. Navegador físico/iPhone y rendimiento NO verificados.
+- Calidad visual global sigue pendiente: terreno y caminos hacia edificios, integración de apoyos con terreno, vegetación/materiales y mundo prototipo. La prueba minY del aserradero conserva la base anterior; NO demuestra por sí sola contacto físico con el terreno. No certificar 8/10 ni ART_APPROVED.
+- Android97/1.5 intacto. UI/mundo ramas independientes intactas. Próximo trabajo: mejora visual sostenida de ciudad con capturas reales, sin otra reinvención del modelo ni del pipeline. Registro mantiene ownership; runner libre al terminar111.
+
+---
+
 # Valoria continuation: city, Royal Gold UI and Zone 1
 
 Owner explicitly transferred the saturated Valoria chat on 18 October 2026 and requested interface ownership and Zone 1 integration. Same production branch, no restart. Main registry claim 5bb6040587610ddb6f34b30a6a14ceec8775aca0.
