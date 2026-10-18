@@ -108,7 +108,7 @@ jobs:
         timeout-minutes: 15
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
-          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           VALORIA_SOURCE_SHA: 7aeef2e942883fae93a5e033bf9a0a05ebc85e46
           VALORIA_PLAYTEST_TIMEOUT_SECONDS: '480'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
@@ -119,13 +119,13 @@ jobs:
         if: always()
         with:
           name: valoria-windows-chromium-evidence-${{ github.run_id }}
-          path: web-visible-controls-evidence/**
+          path: web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}/**
           if-no-files-found: warn
       - name: Authorize only genuinely passed same-byte private site package
         if: success()
         shell: powershell
         run: |
-          $report=Get-Content 'web-visible-controls-evidence/report.json' -Raw|ConvertFrom-Json
+          $report=Get-Content 'web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}/report.json' -Raw|ConvertFrom-Json
           if($report.status -ne 'PASS' -or -not $report.checks.exact_save_reload.pass){throw 'Real user-facing gameplay incomplete'}
           if(-not $report.dialogue_clip -or @($report.screenshots|Where-Object {$_.extraction_pending}).Count){throw 'Visual evidence incomplete'}
           $verification=Get-Content prepared-site/unity-output-verification.json -Raw|ConvertFrom-Json
