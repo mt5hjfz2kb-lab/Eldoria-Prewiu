@@ -85,7 +85,7 @@ namespace Eldoria.UI.RoyalGold
             top = Row(resultText, top, inside, 21, 100, 10);
             top = Row(Costs, top, inside, 21, 85, 10);
             top = Row(Requirements, top, inside, 21, 110, 12);
-            if (Primary.gameObject.activeSelf)
+            if (Primary.Visible)
             {
                 Position((RectTransform)Primary.transform, 22, top, panelWidth - 44, 64);
                 var label = Primary.Label.rectTransform;
