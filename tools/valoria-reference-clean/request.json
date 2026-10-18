@@ -1,12 +1,12 @@
 {
-  "stage": "bastion_two_integrate",
-  "validate_play": true,
-  "revision": 82,
+  "stage": "android",
+  "validate_play": false,
+  "revision": 83,
   "budget_eur": 0,
-  "validated_runtime_source": "2770507a13b6f3263a5f1f2a54332660fa0fd211",
-  "validated_run": 39117498102,
+  "validated_runtime_source": "faa7a82dd3b5d0e784220b50fed1d8d95c54555b",
+  "validated_run": 39118550767,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native81 actual matched Unity main/detail independently inspected: recognizable II crown raise and inset blue flank roofs, original lower entrance/stairs unchanged. Retain as first playable evolution; probe-lit II has less baked torch glow, recorded limitation, no formal art certification. Integrate reviewed variant then test real UI/resource/timer/reload/exclusive geometry swap plus96routes/6stairs and core rules. Preserve current I and worldGI.",
+  "art_correction": "Native82 integrated and visually reviewed UI I/progress/II. Exact real gameplay swap/save/routes passed plus16/16native rules. Build optimized same-application Android update1.2/code3; original signing identity preserved; phone test pending.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
@@ -17,5 +17,5 @@
   "review_scope": "lighting",
   "shore_finish": "zone_shingle",
   "waterline_finish": "zone_talus",
-  "validate_core_tests": true
+  "validate_core_tests": false
 }

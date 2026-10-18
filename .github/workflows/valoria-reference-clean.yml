@@ -260,9 +260,9 @@ jobs:
           [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-badging.txt'),$badging)
           $expected='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
           if(-not $signed.ToLowerInvariant().Contains($expected)){throw 'APK signing certificate differs from installed-version candidate'}
-          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='2'"){throw 'APK update package/version mismatch'}
+          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='3'"){throw 'APK update package/version mismatch'}
           if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'APK ARM64 missing'}
-          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=2;prior_version_code=1;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
+          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=3;prior_version_code=2;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
       - name: Review real capture with previously installed local vision model
         continue-on-error: true
         shell: powershell
