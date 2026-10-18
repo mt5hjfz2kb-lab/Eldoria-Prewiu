@@ -2,22 +2,25 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 namespace Eldoria.UI.RoyalGold {
+ [RequireComponent(typeof(CanvasGroup))]
  public sealed class RoyalHUD:MonoBehaviour {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
-  IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending;float next;RoyalSection shown;bool modal;
-  public void Bind(IRoyalSession source,IRoyalNavigation navigation=null){session=source??throw new ArgumentNullException(nameof(source));host=navigation;Refresh();}
+  IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending;float next,submitAfter;RoyalSection shown;CanvasGroup group;
+  void Awake(){group=GetComponent<CanvasGroup>();SetBound(session!=null);}
+  void SetBound(bool bound){if(!group)group=GetComponent<CanvasGroup>();group.alpha=bound?1:0;group.interactable=group.blocksRaycasts=bound;}
+  public void Bind(IRoyalSession source,IRoyalNavigation navigation=null){session=source??throw new ArgumentNullException(nameof(source));host=navigation;SetBound(true);Refresh();}
   public void SelectBuilding(string id){selected=id??"";Refresh();}
-  void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);Navigation.Requested+=Open;}
-  void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);Navigation.Requested-=Open;}
+  void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(ShowMarch);Navigation.Requested+=Open;}
+  void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(ShowMarch);Navigation.Requested-=Open;}
   void Update(){if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){if(Modal.gameObject.activeSelf)Modal.Hide();else CloseBuilding();}}
   public void SetEnglish(bool value){english=value;Refresh();if(Modal.gameObject.activeSelf)ShowModal(shown);}
-  void Refresh(){
+  public void Refresh(){
    if(session==null)return;
-   try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current);Navigation.Layout(english,host);Building.Render(current.Building,english,pending);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings)ShowModal(shown,false);}
+   try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current);Navigation.Layout(english,host);Building.Render(current.Building,english,pending||Time.unscaledTime<submitAfter);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings)ShowModal(shown,false);}
    catch(Exception e){Feedback.Put(L("No se pudo actualizar la interfaz: ","Could not refresh UI: ")+e.Message);Building.Primary.Button.interactable=false;}
   }
-  void Submit(){if(session==null||pending||Building.Offer==null)return;var offer=Building.Offer;pending=true;Building.Primary.Button.interactable=false;try{var r=session.Submit(offer);Feedback.Put(r.Message);}catch(Exception e){Feedback.Put(L("Acción no enviada: ","Action not sent: ")+e.Message);}finally{pending=false;Refresh();}}
-  void CloseBuilding(){SelectBuilding("");}void OpenRealm(){Open(RoyalSection.Realm);}void OpenMissions(){Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}
+  void Submit(){if(session==null||pending||Time.unscaledTime<submitAfter||Building.Offer==null)return;var offer=Building.Offer;pending=true;submitAfter=Time.unscaledTime+.35f;Building.Primary.Button.interactable=false;try{var r=session.Submit(offer);Feedback.Put(r.Message);}catch(Exception e){Feedback.Put(L("Acción no enviada: ","Action not sent: ")+e.Message);}finally{pending=false;Refresh();}}
+  void CloseBuilding(){SelectBuilding("");}void OpenRealm(){Open(RoyalSection.Realm);}void OpenMissions(){Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
   void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
   void Extra(){if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
@@ -31,6 +34,7 @@ namespace Eldoria.UI.RoyalGold {
    }
    if(takeFocus)Modal.Show(title,body);else{Modal.Title.Put(title);Modal.Body.Put(body);}
    Modal.Extra.gameObject.SetActive(section==RoyalSection.Army||section==RoyalSection.Settings);Modal.ExtraLabel.Put(section==RoyalSection.Settings?L("Cambiar a inglés","Switch to Spanish"):L("Abrir cuartel","Open barracks"));
+   if(Modal.Secondary){Modal.Secondary.gameObject.SetActive(section==RoyalSection.Army);Modal.SecondaryLabel.Put(L("Preparar marcha","Prepare march"));}
   }
   string L(string es,string en)=>english?en:es;
  }
