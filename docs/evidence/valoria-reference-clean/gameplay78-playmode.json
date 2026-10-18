@@ -1,0 +1,19 @@
+{
+    "source_sha": "cc6b5fc7996aac1ff64372edf8212d67d45fdf07",
+    "status": "EXISTING_UI_RULES_SAVE_I_II_PASS_VISUAL_EVOLUTION_PENDING",
+    "error": "",
+    "save_scope": "Unique temporary FileStateStore; canonical files guarded",
+    "bastion2_visual": "PENDING_AUTHORING",
+    "ui_sawmill": true,
+    "ui_gather": true,
+    "ui_fight": true,
+    "upgrade_started": true,
+    "resources_once": true,
+    "upgrade_persistence": true,
+    "upgrade_offline_completion": true,
+    "unlock": true,
+    "persistence": true,
+    "canonical_save_untouched": true,
+    "one_camera": true,
+    "final_revision": 12
+}
