@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T10:56:16.688Z",
+  "updated_at": "2026-10-18T11:08:52.164Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CHAPTER_II_VERIFIED_ANDROID_V4_BUILD",
-      "next": "Native85 complete real UI/cost/build/train/march/victory/reload PASS, including open-panel completion/countdown and immediate level badges. Android86 builds1.3/code4 and refreshed editable package; same app identity/cert/save. Existing camp model remains functional provisional art. Independent UI/4X untouched.",
+      "phase": "REFERENCE_CLEAN_CHAPTER_II_ANDROID_1_3_DELIVERED",
+      "next": "Native85 real chapterII build/train/confirm march/Engendro/save PASS with open-panel completion/countdown fixed;86 Android1.3/code4 and current editable package independently verified. User instructed to extract APK ZIP and update same app, phone test pending. Camp barracks remains provisional art; coordinate future RoyalGoldUI/4X stable handoffs. No active Valoria job.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -89,7 +89,7 @@
         "best_visual_art_status": "V12_LOCAL_SILHOUETTE_CHANGE_VISIBLE_ART_REVIEW_REQUIRED",
         "e1_bridgedeck_verdict": "VISUAL_REJECTED",
         "e2_bridgedeck_verdict": "VISUAL_REJECTED_AS_PRODUCTION_ART_SUPPORT_RESTORED",
-        "latest_branch_head": "ba13a8e909536ea73d6e096995ed4c15cbeff076",
+        "latest_branch_head": "182b2f38020cd0f2fa1d82ca2da97fd3a35fe76e",
         "actual_player_runtime_integrated": true,
         "mobile_physical_tested": false,
         "art_approved": false,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39121191183,
-          "current_source": "af87f39e6a324d8bbb906ed2a2ef97484a91aa78",
+          "current_run": 0,
+          "current_source": "182b2f38020cd0f2fa1d82ca2da97fd3a35fe76e",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -163,7 +163,7 @@
             "score_not_adopted": true
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "OPTIMIZED_V3_SAME_ID_CERTIFICATE_HASH_CRC_ARM64_VERIFIED_PHONE_UNTESTED",
+          "android_apk_status": "OPTIMIZED_1_3_CODE4_SAME_ID_CERT_HASH_CRC_ARM64_VERIFIED",
           "native48": {
             "run": 39080822196,
             "output": "88d600b2632154c0c03e04c4146cf5ee7690ad1c",
@@ -246,7 +246,7 @@
           "lightprobes": 264,
           "reflection_probes": 4,
           "portable_prefabs": 8,
-          "package_status": "NATIVE82_REAL_PACKAGE_497_ASSETS_HASH_CRC_GZIP_TAR_VERIFIED_IMPORT_UNTESTED",
+          "package_status": "NATIVE86_503_ASSETS_CURRENT_RUNTIME_HASH_CRC_TAR_VERIFIED",
           "native55": {
             "run": 39083545579,
             "source": "b7173bdf751ecd5e9898cd4bf467ecbc558fe734",
@@ -284,7 +284,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE86_ANDROID_V4_BUILD",
+          "current_run_status": "NATIVE86_SUCCESS_DELIVERY_VERIFIED_PHONE_PENDING",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
@@ -435,6 +435,19 @@
             "chapter_two": "REAL_UI_FULL_LOOP_WITH_OPEN_PANEL_COMPLETION_PASS",
             "final_revision": 19,
             "physical_device_tested": false
+          },
+          "native86": {
+            "run": 39121191183,
+            "output": "21b2c42de3d8e196f027fd592f34ead23f270399",
+            "apk_artifact": 12134267369,
+            "apk_sha256": "cfc9c554cecabf3d6825acd4df8c84f568259ee222a80bc2d466c1bbf5068e79",
+            "apk_bytes": 174677573,
+            "package_artifact": 12134192761,
+            "package_sha256": "d8afed994705ff1a5001c86fc22bea18cf24a036216e1f551edc7eddce5005e7",
+            "package_assets": 503,
+            "version_name": "1.3",
+            "version_code": 4,
+            "phone_update_tested": false
           }
         }
       },
