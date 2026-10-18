@@ -47,6 +47,7 @@ jobs:
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
           New-Item -ItemType Directory -Force docs/evidence/valoria-reference-clean|Out-Null
       - name: Read existing Android update certificate identity without changing keys
+        continue-on-error: true
         shell: powershell
         run: |
           $keytool=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/OpenJDK/bin/keytool.exe'
@@ -56,7 +57,8 @@ jobs:
             foreach($user in @(Get-ChildItem "$env:SystemDrive/Users" -Directory -ErrorAction SilentlyContinue)){$p=Join-Path $user.FullName '.android/debug.keystore';if(Test-Path $p){$paths+=$p}}
             $p=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/Tools/debug.keystore';if(Test-Path $p){$paths+=$p}
             foreach($p in @($paths|Select-Object -Unique)){
-              $raw=(& $keytool -J-Duser.language=en -list -v -keystore $p -storepass android 2>&1|Out-String)
+              $savedPreference=$ErrorActionPreference
+              try{$ErrorActionPreference='Continue';$raw=(& $keytool '-J-Duser.language=en' -list -v -keystore $p -storepass android 2>&1|Out-String)}finally{$ErrorActionPreference=$savedPreference}
               $match=[regex]::Match($raw,'SHA256:\s*([0-9A-Fa-f:]+)')
               $sha=$match.Groups[1].Value.Replace(':','').ToLowerInvariant()
               $report.keys+=@{path=$p;certificate_sha256=$sha;matches_original=($sha -eq $report.expected_sha256)}
