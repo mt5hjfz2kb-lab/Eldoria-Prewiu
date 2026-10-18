@@ -1,0 +1,32 @@
+{
+  "source_sha": "0219f79c6812695fe7561e0eeb40b844ac8fc14e",
+  "original_blend_sha256": "7e7f6719806cadfef7a223bc6ef664b820ab17bc66db32fe6b27486d4236fec3",
+  "original_source_preserved": true,
+  "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
+  "memory_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e",
+  "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "plan": {
+    "rationale": "The existing sawmill is incoherent with Valoria's medieval aesthetic. It lacks architectural hierarchy, spatial logic, and material consistency with the Bastion. This new design addresses three core defects: 1) It replaces the flat platform with a coherent masonry foundation that visually integrates with the Bastion. 2) It establishes a clear spatial composition with a front-facing saw bay and rear workshop, creating a functional and visually balanced structure. 3) It uses the correct material palette: dressed limestone piers, oak frame, and blue slate roof matching the Bastion's palette. The design is proportionally scaled (X/Y footprint 8.5m x 6.5m, Z height 6.5m) and oriented with the front facing Y negative, as required. The lean-to roof and log-yard orientation are optional but enhance the workshop's functionality and visual interest.",
+    "width": 8.0,
+    "depth": 6.0,
+    "eave_height": 3.8,
+    "roof_rise": 2.0,
+    "bay_count": 2,
+    "rear_wall_fraction": 0.45,
+    "stone_height": 1.05,
+    "frame_thickness": 0.34,
+    "lean_to": "right",
+    "lean_to_depth": 1.0,
+    "log_yard": "front_left",
+    "log_count": 4,
+    "roof_rows": 10,
+    "timber_tone": "dark_oak",
+    "masonry_tone": "sandstone",
+    "brace_style": "cross_rear"
+  },
+  "glb_sha256": "8d1cdccf3c5146ba1d4e859477c2af5772a8a15e9b0d97f9ff51df9bb591ac81",
+  "blend_sha256": "cedcff3878783354f593ffb762ade3e9a8624d4493b3b8ec33d0f6a082d62bf3",
+  "triangles": 15718,
+  "art_approved": false,
+  "unity_capture_pending": true
+}
