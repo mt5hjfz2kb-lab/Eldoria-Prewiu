@@ -1,12 +1,12 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.3/staging' branch; Version is '6000.3.23f1 (09d2ecc7fb28) revision 643820'; Using compiler version '194234433'; Build Type 'Release'
-[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 MB
+[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-18T01:28:16Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 34980)
+Date: 2026-10-18T01:31:56Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 35424)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -15,7 +15,7 @@ C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
 -projectPath
 C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu/valoria-layered-source/Unity
 -executeMethod
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial.BuildBankPatch
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial.IntegrateBankPatch
 -logFile
 C:\actions-runner-eldoria\_work\_temp\valoria-reference-clean.log
 -buildTarget
@@ -58,27 +58,29 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [27780]  Target information:
+Player connection [41152]  Target information:
 
-Player connection [27780]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 3452914930 [EditorId] 3452914930 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [41152]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 4056490718 [EditorId] 4056490718 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [27780] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [27780] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [41152] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [41152] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T01:28:18.8803175Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 34980, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T01:31:56.8481294Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 35424, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-40040" after 0.2 seconds.
+[Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              dc615a7f97cb4cc1943b97782347d1fd
-  Correlation Id:          429080301814752dfc3182539a586f5e
-  External correlation Id: 4676443654816985471
+  Session Id:              1fd1f7e4f9504f78a6961638f13f22f3
+  Correlation Id:          22b67e8e4c784251cae8a66ceb036eaf
+  External correlation Id: 6589423280799761906
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 1.97s, validation: 0.23s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T01:28:19.1397893Z"
-[Licensing::Module] Connected to LicensingClient (PId: 34980, launch time: 0.00, total connection time: 2.23s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.26s, validation: 0.10s, handshake: 0.02s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T01:31:56.9650989Z"
+[Licensing::Module] Connected to LicensingClient (PId: 35424, launch time: 0.00, total connection time: 0.38s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -88,8 +90,8 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 2.30s
-[Package Manager] Connected to IPC stream "Upm-37920" after 1.1 seconds.
+[Licensing::Module] Licensing Background thread has ended after 0.41s
+[Licensing::Module] Licensing is initialized (took 0.10s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 FMOD initialized on nosound output
@@ -100,7 +102,7 @@ FMOD initialized on nosound output
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
 Targeting platform: Win64
-Refreshing native plugins compatible for Editor in 3.79 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 1.88 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -117,7 +119,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56920
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56040
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -130,8 +132,8 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.023883 seconds.
-- Loaded All Assemblies, in  1.068 seconds
+Registered in 0.005887 seconds.
+- Loaded All Assemblies, in  0.414 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -139,37 +141,37 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.646 seconds
-Domain Reload Profiling: 1712ms
-	BeginReloadAssembly (587ms)
+- Finished resetting the current domain, in  0.377 seconds
+Domain Reload Profiling: 790ms
+	BeginReloadAssembly (143ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (120ms)
-	RebuildCommonClasses (79ms)
+		CreateAndSetChildDomain (22ms)
+	RebuildCommonClasses (35ms)
 	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (92ms)
-	LoadAllAssembliesAndSetupDomain (294ms)
-		LoadAssemblies (474ms)
+	initialDomainReloadingComplete (48ms)
+	LoadAllAssembliesAndSetupDomain (173ms)
+		LoadAssemblies (113ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (282ms)
-			TypeCache.Refresh (278ms)
-				TypeCache.ScanAssembly (251ms)
-			BuildScriptInfoCaches (1ms)
-			ResolveRequiredComponents (2ms)
-	FinalizeReload (647ms)
+		AnalyzeDomain (170ms)
+			TypeCache.Refresh (168ms)
+				TypeCache.ScanAssembly (154ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (378ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (603ms)
+		SetupLoadedEditorAssemblies (342ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (108ms)
+			InitializePlatformSupportModulesInManaged (62ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (83ms)
-			ProcessInitializeOnLoadAttributes (210ms)
-			ProcessInitializeOnLoadMethodAttributes (196ms)
+			BeforeProcessingInitializeOnLoad (80ms)
+			ProcessInitializeOnLoadAttributes (122ms)
+			ProcessInitializeOnLoadMethodAttributes (74ms)
 			AfterProcessingInitializeOnLoad (0ms)
-			EditorAssembliesLoaded (2ms)
+			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
 		AwakeInstancesAfterBackupRestoration (0ms)
 [Licensing::Client] Successfully resolved entitlement details
@@ -210,17 +212,17 @@ Application.AssetDatabase Initial Refresh Start
   Git packages:
     com.arloopa.unitysplats@https://github.com/arloopa/UnitySplats.git (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.arloopa.unitysplats@6c0258189a2b)
 [Subsystems] No new subsystems found in resolved package list.
-[Package Manager] Done registering packages in 0.02 seconds
+[Package Manager] Done registering packages in 0.01 seconds
 A meta data file (.meta) exists but its asset 'Assets/EmaceArt/Slavic World Free/URP_Support/URP/URP_Material.unitypackage' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
 [ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 6s808ms
+ExitCode: 0 Duration: 3s518ms
 [621/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[790/794    3s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[790/794    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-[791/794    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+[791/794    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 323 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -230,126 +232,101 @@ running Unity.Jobs.CodeGen.JobsILPostProcessor
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
 [792/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
 [793/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (6.75 seconds), 5 items updated, 794 evaluated
+*** Tundra build success (3.49 seconds), 5 items updated, 794 evaluated
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-AssetDatabase: script compilation time: 7.798776s
+AssetDatabase: script compilation time: 3.866206s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  1.835 seconds
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0773145 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0195364 seconds
-Refreshing native plugins compatible for Editor in 39.72 ms, found 4 plugins.
+- Loaded All Assemblies, in  1.785 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0110898 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0015755 seconds
+Refreshing native plugins compatible for Editor in 6.17 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  3.308 seconds
-Domain Reload Profiling: 5140ms
-	BeginReloadAssembly (357ms)
+- Finished resetting the current domain, in  2.841 seconds
+Domain Reload Profiling: 4623ms
+	BeginReloadAssembly (757ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (41ms)
+		DisableScriptedObjects (22ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (174ms)
+		CreateAndSetChildDomain (148ms)
 	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (24ms)
-	LoadAllAssembliesAndSetupDomain (1403ms)
-		LoadAssemblies (1313ms)
+	initialDomainReloadingComplete (25ms)
+	LoadAllAssembliesAndSetupDomain (952ms)
+		LoadAssemblies (1343ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (178ms)
-			TypeCache.Refresh (128ms)
-				TypeCache.ScanAssembly (115ms)
-			BuildScriptInfoCaches (38ms)
+		AnalyzeDomain (153ms)
+			TypeCache.Refresh (103ms)
+				TypeCache.ScanAssembly (93ms)
+			BuildScriptInfoCaches (37ms)
 			ResolveRequiredComponents (10ms)
-	FinalizeReload (3308ms)
+	FinalizeReload (2841ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (3126ms)
+		SetupLoadedEditorAssemblies (2644ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (36ms)
+			InitializePlatformSupportModulesInManaged (307ms)
 			SetLoadedEditorAssemblies (3ms)
 			BeforeProcessingInitializeOnLoad (141ms)
-			ProcessInitializeOnLoadAttributes (2574ms)
-			ProcessInitializeOnLoadMethodAttributes (366ms)
-			AfterProcessingInitializeOnLoad (5ms)
-			EditorAssembliesLoaded (1ms)
+			ProcessInitializeOnLoadAttributes (2040ms)
+			ProcessInitializeOnLoadMethodAttributes (146ms)
+			AfterProcessingInitializeOnLoad (6ms)
+			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (22ms)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/RiverBankPatch.glb using Guid(99642811f9a4784458c772b15f0ee5bc) (ScriptedImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
- -> (artifact id: 'ce89d0e51442123fb8dec5b5b4479e77') in 0.8243314 seconds
-Refreshing native plugins compatible for Editor in 6.16 ms, found 4 plugins.
+		AwakeInstancesAfterBackupRestoration (24ms)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Refreshing native plugins compatible for Editor in 6.02 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=e20a3401ec647a1438244e3e56e8d1e5): Total: 22.110 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=e0ef64cd8e879ee4ea220aa5d3ab6d9e): Total: 9.430 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
-		Imports: total=3 (actual=3, local cache=0, cache server=0)
-		Asset DB Process Time: managed=6 ms, native=11088 ms
-		Asset DB Callback time: managed=522 ms, native=816 ms
-		Scripting: domain reloads=1, domain reload time=1835 ms, compile time=7800 ms, other=39 ms
+		Imports: total=2 (actual=2, local cache=0, cache server=0)
+		Asset DB Process Time: managed=3 ms, native=3284 ms
+		Asset DB Callback time: managed=287 ms, native=157 ms
+		Scripting: domain reloads=1, domain reload time=1785 ms, compile time=3868 ms, other=43 ms
 		Project Asset Count: scripts=1192, non-scripts=5598
-		Asset File Changes: new=1, changed=4, moved=0, deleted=0
+		Asset File Changes: new=0, changed=3, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokeCustomDependenciesCallbacks: 0.002ms
-	InvokePackagesCallback: 24.892ms
-	ApplyChangesToAssetFolders: 0.661ms
-	Scan: 5617.997ms
-	OnSourceAssetsModified: 0.567ms
-	CategorizeAssetsWithTransientArtifact: 170.998ms
-	ProcessAssetsWithTransientArtifactChanges: 54.082ms
-	CategorizeAssets: 585.317ms
-	ImportOutOfDateAssets: 4314.987ms (-4419.028ms without children)
-		ImportManagerImport: 928.773ms (4.521ms without children)
-			ImportInProcess: 924.205ms
-			UpdateCategorizedAssets: 0.047ms
-		CompileScripts: 7800.319ms
-		ReloadNativeAssets: 0.039ms
-		UnloadImportedAssets: 0.832ms
-		ReloadImportedAssets: 0.001ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.867ms
-		InitializingProgressBar: 0.006ms
+	InvokeCustomDependenciesCallbacks: 0.001ms
+	InvokePackagesCallback: 11.463ms
+	ApplyChangesToAssetFolders: 0.427ms
+	Scan: 93.991ms
+	OnSourceAssetsModified: 0.543ms
+	CategorizeAssetsWithTransientArtifact: 21.346ms
+	ProcessAssetsWithTransientArtifactChanges: 45.168ms
+	CategorizeAssets: 115.972ms
+	ImportOutOfDateAssets: 2879.748ms (-1006.455ms without children)
+		ImportManagerImport: 14.297ms (1.240ms without children)
+			ImportInProcess: 13.033ms
+			UpdateCategorizedAssets: 0.024ms
+		CompileScripts: 3868.035ms
+		ReloadNativeAssets: 0.040ms
+		UnloadImportedAssets: 0.849ms
+		ReloadImportedAssets: 0.000ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.654ms
+		InitializingProgressBar: 0.001ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 2.176ms
-	PostProcessAllAssets: 1362.195ms
-	Hotreload: 8.746ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.622ms
-	UnloadStreamsBegin: 3.099ms
-	PersistCurrentRevisions: 0.500ms
+		OnDemandSchedulerStart: 1.325ms
+	PostProcessAllAssets: 474.072ms
+	Hotreload: 7.332ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.260ms
+	UnloadStreamsBegin: 3.244ms
+	PersistCurrentRevisions: 0.520ms
 	UnloadStreamsEnd: 0.002ms
-	GenerateScriptTypeHashes: 2.838ms
-	Untracked: 9965.291ms
+	GenerateScriptTypeHashes: 3.832ms
+	Untracked: 5776.117ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 3.676ms
+Scanning for USB devices : 3.107ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Unity
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV6Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV2.Build' because a menu item with the same name already exists.
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build' because a menu item with the same name already exists.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -373,7 +350,55 @@ UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
 UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV4Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV6Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
 Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV1Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV1.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -397,47 +422,23 @@ UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
 UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV4Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV3Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Unloading 36 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4306 unused Assets / (5.3 MB). Loaded Objects now: 5226.
-Memory consumption went from 236.2 MB to 231.0 MB.
-Total: 12.650800 ms (FindLiveObjects: 0.518500 ms CreateObjectMapping: 0.485000 ms MarkObjects: 9.674300 ms  DeleteObjects: 1.972000 ms)
+Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4306 unused Assets / (4.8 MB). Loaded Objects now: 5226.
+Memory consumption went from 211.0 MB to 206.1 MB.
+Total: 9.521000 ms (FindLiveObjects: 0.493300 ms CreateObjectMapping: 0.472900 ms MarkObjects: 6.559000 ms  DeleteObjects: 1.995400 ms)
 
 Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 LightingSettings: switching bake backend from 2 to 1.
 Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
-	Deserialize:            20.953 ms
-	Integration:            2146.506 ms
-	Integration of assets:  0.354 ms
-	Thread Wait Time:       0.055 ms
-	Total Operation Time:   2167.868 ms
-Unloading 4 unused Assets / (5.3 KB). Loaded Objects now: 5560.
-Memory consumption went from 381.6 MB to 381.6 MB.
-Total: 6.433900 ms (FindLiveObjects: 0.360800 ms CreateObjectMapping: 0.191400 ms MarkObjects: 5.829400 ms  DeleteObjects: 0.051800 ms)
+	Deserialize:            7.042 ms
+	Integration:            1071.496 ms
+	Integration of assets:  0.339 ms
+	Thread Wait Time:       0.033 ms
+	Total Operation Time:   1078.910 ms
+Unloading 4 unused Assets / (5.2 KB). Loaded Objects now: 5560.
+Memory consumption went from 364.1 MB to 364.1 MB.
+Total: 6.799600 ms (FindLiveObjects: 0.350700 ms CreateObjectMapping: 0.197200 ms MarkObjects: 6.187500 ms  DeleteObjects: 0.063400 ms)
 
 Unity is not designed to run with Administrator privileges.
 
@@ -445,31 +446,116 @@ With elevated access, scripts in your project can modify system files, registry 
 This could make your system unstable or unbootable.
 
 Restart as a standard user for the safest experience.
-[Project] Loading completed in 43.295 seconds
-	Project init time: 				31.427 seconds
+[Project] Loading completed in 14.205 seconds
+	Project init time: 				11.566 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		1.053 seconds
-		Asset Database init time: 		3.524 seconds
-		Global illumination init time: 	0.019 seconds
-		Assemblies load time: 			1.740 seconds
+		Package Manager init time: 		0.308 seconds
+		Asset Database init time: 		0.496 seconds
+		Global illumination init time: 	0.002 seconds
+		Assemblies load time: 			0.810 seconds
 		Unity extensions init time: 	0.005 seconds
-		Asset Database refresh time: 	22.110 seconds
-	Scene opening time: 			9.464 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792286937917,"processId":37920,"projectLoad":43.2951697,"projectInit":31.4268036,"templateInit":0.0,"packageManagerInit":1.0532399,"assetDatabaseInit":3.5238799,"globalIlluminationInit":0.0190991,"assembliesLoad":1.7403686,"unityExtensionsInit":0.0054229,"assetDatabaseRefresh":22.1104433,"sceneOpening":9.4643375}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792286937919,"processId":37920,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
+		Asset Database refresh time: 	9.430 seconds
+	Scene opening time: 			2.519 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792287130755,"processId":40040,"projectLoad":14.2045572,"projectInit":11.5657873,"templateInit":0.0,"packageManagerInit":0.3077579,"assetDatabaseInit":0.4957474,"globalIlluminationInit":0.0017552,"assembliesLoad":0.8100046,"unityExtensionsInit":0.0054185,"assetDatabaseRefresh":9.4302943,"sceneOpening":2.5186242}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792287130755,"processId":40040,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
 [Licensing::Client] Successfully resolved entitlement details
 Start Indexing on Editor startup
 [Indexing] Starting Initial Indexing for Assets
 [UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.016s, timestamps: [43.309 - 43.325]
-VALORIA_REFERENCE_CLEAN_BANK_PATCH_COMPLETE
+Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.012s, timestamps: [14.208 - 14.220]
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/RiverBankRocks_Native61.asset using Guid(ebf66e5640fccb544a6b2255ccd9276a) (NativeFormatImporter) -> (artifact id: 'f7709ee5b0d7fcd332349279ea19aad4') in 0.0120452 seconds
+Refreshing native plugins compatible for Editor in 5.82 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=1229b2b5f4206b5419f05f8494ef2e75): Total: 0.121 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0023993 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0012664 seconds
+Refreshing native plugins compatible for Editor in 6.15 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=1e02528bdd10e6a43b0496c2b4ca273b): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) (DefaultImporter) -> (artifact id: '59743b92d3fac02599de8e37ecdae967') in 0.0017099 seconds
+Refreshing native plugins compatible for Editor in 6.16 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=8f0855e41268fa4439e3debf089d8f1d): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
+	Deserialize:            3.571 ms
+	Integration:            145.651 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.042 ms
+	Total Operation Time:   149.265 ms
+Unloading 209 unused Assets / (3.8 MB). Loaded Objects now: 5736.
+Memory consumption went from 440.2 MB to 436.4 MB.
+Total: 8.788000 ms (FindLiveObjects: 0.377300 ms CreateObjectMapping: 0.230900 ms MarkObjects: 7.800500 ms  DeleteObjects: 0.378600 ms)
+
+Asset Pipeline Refresh (id=e6e132f30fcce9d4fa3619e545b09ee0): Total: 0.063 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab using Guid(44e652bb0869b404eb1cf0bb3a3e40b3) (PrefabImporter) -> (artifact id: '5cc03b5d8de5e5c593631f78b33d1e27') in 0.0057759 seconds
+Refreshing native plugins compatible for Editor in 5.75 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=f3f65e7b26ba44f40917482900cab653): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab using Guid(fffb610f044e39b43bb86fe9dc6c876e) (PrefabImporter) -> (artifact id: '2194b4f1b4c25f97270022e95989848a') in 0.0029952 seconds
+Refreshing native plugins compatible for Editor in 6.21 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=d3eb19d4ca3627f4e8a0f1bbe68f2aab): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=74f612045620d0043a9bea5f32052a5c): Total: 0.010 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab using Guid(ee75939cc989a824e84545fdf93f8d72) (PrefabImporter) -> (artifact id: 'e0406a0bcb932a4a28e02334881020da') in 0.0027483 seconds
+Refreshing native plugins compatible for Editor in 6.22 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=2cc4f3f2c4cd4684bb032b4ca73bd485): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=dca7ca2d3ff965445ac5f4b2d655024d): Total: 0.011 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=4018720790a4f1f4fa7d1f0955d4279d): Total: 0.010 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/ValoriaArchitecture.prefab using Guid(f7ad1d814e83a3742a18c3c09d6e6417) (PrefabImporter) -> (artifact id: '43e46c76abd6f93c73d2025d49d01895') in 0.0053336 seconds
+Refreshing native plugins compatible for Editor in 6.25 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=93e1041ee3efcbd47b1aec211796f133): Total: 0.059 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.0024862 seconds
+Refreshing native plugins compatible for Editor in 6.56 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=82a53b5593f46b44ca3f2fa5bb8bb475): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) (DefaultImporter) -> (artifact id: '59743b92d3fac02599de8e37ecdae967') in 0.000868 seconds
+Refreshing native plugins compatible for Editor in 6.17 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=40828f597a13e3f41948a0d581cc8bc6): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0022212 seconds
+Refreshing native plugins compatible for Editor in 6.46 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=9c2ebdbd0cc0f354aa06f2fc993fee12): Total: 0.102 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=3a2d0281d61e91444ae45d288d760775): Total: 0.008 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Starting new worker id: 0 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker0.log
+Starting new worker id: 1 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker1.log
+Worker ready: AssetImportWorker0 0
+Worker ready: AssetImportWorker1 1
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/RiverBankRocks_Native61.asset using Guid(ebf66e5640fccb544a6b2255ccd9276a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b5f86e3aeb798556d39e7ec327e7e80a') in 0.2291271 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab using Guid(ee75939cc989a824e84545fdf93f8d72) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '53ea20baefd73e62eb98af7069dc7d6a') in 0.4356949 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'dc3fb4c4d08c4aae71f97d59a74734ea') in 0.000537 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab using Guid(44e652bb0869b404eb1cf0bb3a3e40b3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '5a2cfd292b762ae92e4521f670177e0f') in 0.0937131 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab using Guid(fffb610f044e39b43bb86fe9dc6c876e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'deda28e17a43647d3c3c661d458ccf2c') in 0.2096821 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/ValoriaArchitecture.prefab using Guid(f7ad1d814e83a3742a18c3c09d6e6417) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '22ce3188ab418f4376136ea3359b0118') in 1.1850099 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/RiverBankPatch.glb using Guid(99642811f9a4784458c772b15f0ee5bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '24bf5d50828ae912f82305fe2bd9fef4') in 0.1375267 seconds
+VALORIA_PACKAGE_EXPORT_RETURNED exists=True
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial/<BuildBankPatch>d__4:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanNatureTrial.cs:77)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:ExportExisting () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:59)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:Build () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:26)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial/<BuildBankPatch>d__6:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanNatureTrial.cs:96)
 System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
 System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
 System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
@@ -541,14 +627,1471 @@ UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
 UnityEngine.UnitySynchronizationContext:Exec ()
 UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
 
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanNatureTrial.cs Line: 77)
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs Line: 59)
 
-Killing ADB server in 2,082707 seconds.
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0033553 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0013778 seconds
-Refreshing native plugins compatible for Editor in 5.84 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=6c0ebc2a40bab354baac8ce253e22fef): Total: 0.100 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Starting new worker id: 2 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker2.log
+Starting new worker id: 3 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker3.log
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/cage.fbx using Guid(ed62eafd669825f46a05c35ccf0b9477) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/candle.001.fbx using Guid(b4f2a850d81eb8540b1f9e9d19d0e62b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+TrimDiskCacheJob: Current cache size 331mb
+[Worker0]  -> (artifact id: '03e28f55f479f21c5fc2b1f00a0f0d76') in 1.3075917 seconds
+Worker ready: AssetImportWorker2 2
+Worker ready: AssetImportWorker3 3
+[Worker1]  -> (artifact id: 'b1487e8c670774556182ad7cdc2ff14b') in 2.1178644 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_half_wall.fbx using Guid(489aaee67a7357740832f5e03345be3e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/furnace.fbx using Guid(438ec4b0fc28dff4db684ac15115a153) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1c5ec05ec1e8f8d9d35965ae94ee1fe0') in 0.0245709 seconds
+[Worker1]  -> (artifact id: '5e324dd291cc910f6945a266b457142d') in 0.0411103 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/half_tree.fbx using Guid(2dbd510f8901f5c42bfab460bd7d54d7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/table.004.fbx using Guid(bc0758d33e7f83e4099227d2482d8b71) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '958f80dfbf512c3cc034a3659181ab0e') in 0.0366 seconds
+[Worker0]  -> (artifact id: '586a8fb2bc98dc9c6bfddeeb24dfc51f') in 0.0604235 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.002.fbx using Guid(469019335536b7b4f983756cf2adfc6a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/fence.003.fbx using Guid(1ba612c72616d0f44893f9a30d583f76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '770e836fc29297c40909a3a1198109d5') in 0.0383491 seconds
+[Worker0]  -> (artifact id: 'cee985c0a8cd345f7a77fd03f43609f3') in 0.0375402 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/vase.002.fbx using Guid(f477ea474e1cd4d40af24243669f82d8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_floor.fbx using Guid(c61c6acc30cd03243aa5cb24dfe24207) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '06360a5ace1d1c459d2615bfac5a4ed3') in 0.0210524 seconds
+[Worker1]  -> (artifact id: 'e3a409ffc772b720fa8c977f0c39ccdf') in 0.0336408 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_window.003.fbx using Guid(b80aaed3af693c74d9a66ecc1530bc3d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/pile_of_planks.001.fbx using Guid(0deb1e19ca90406449f6038e9df5a6a0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '4e3fee2ccc6345bc55b79e2a16bdff50') in 0.0353819 seconds
+[Worker0]  -> (artifact id: '78446b535c86513e47662ab0ef88801b') in 0.0382554 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_short.001.fbx using Guid(bb2e115ff97c1e5428effafe25ac320e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stairs_collider.fbx using Guid(30a15a1e3c1b21444846fc46448f2aa6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '29236399dc294fee7262c43d7ee363a6') in 0.020886 seconds
+[Worker0]  -> (artifact id: '599ca2f53fa95cbc1923ad173e7151ea') in 0.0272047 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/pot.fbx using Guid(fa2482d7133229c46b6a0f174825312d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_destroyed.fbx using Guid(cbf949ab38499bd48bfbf4da63f70b8f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '38d027b6225cc5d1bf28d1cc9fa37839') in 0.0259797 seconds
+[Worker0]  -> (artifact id: '3969a2038217a65d00624e63c307447c') in 0.0213337 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/cutting_board.fbx using Guid(3d3c0d4c23e0c7840ae962dea4a7d987) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/well.fbx using Guid(ad1b973661444184e9a50acfec103e8d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '97e022f8799cc58bd5d01df2dd5f0c89') in 0.0202828 seconds
+[Worker0]  -> (artifact id: 'c10766ba85098a397935b924e87ee5cf') in 0.0263041 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.006.fbx using Guid(58a7dcbd51fd27c46b2665b1f651b4ca) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.005.fbx using Guid(97d6a59978bb7d641acaa423f97a3544) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '760f92c79bbdcae467323dcffd219362') in 0.0239752 seconds
+[Worker0]  -> (artifact id: '31d940c2ddde67eca0ddd48eaf7507ec') in 0.0209177 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/fence.004.fbx using Guid(1b8e8ae1e42e80b448d30e25ee47814e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/well.001.fbx using Guid(eb0e251e7a69edc48adaf703b8368ce8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '02a890ae3fb915d895f7a4d1b484223b') in 0.0190667 seconds
+[Worker0]  -> (artifact id: 'b141f101f45c5f3d4aca1a4cec632931') in 0.0288427 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/firewood.fbx using Guid(1aba34b877b08ab468e30582eafc17d3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/crate.001.fbx using Guid(7831ebf437e4ca143ac545dad8d9ef9e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '16a9611237717333e7d5fb7a915b4601') in 0.0204475 seconds
+[Worker0]  -> (artifact id: '203ca4b4842e91dfa7b581ad157ebef0') in 0.0188623 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/candle.003.fbx using Guid(66855ff27e4b6c944ae3c27445928336) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/gabinet.fbx using Guid(30da44ad1861f384786bdca20bb4f493) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '9bd209ccaa256fa577e83c38a490f0a7') in 0.0202009 seconds
+[Worker0]  -> (artifact id: 'f4e3c968ef358e75fbfd519ceb3c88ae') in 0.0192446 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small.fbx using Guid(8ddafc4b5ca1a40449ec51e8003498ca) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_enter.fbx using Guid(c409e530f4aabed4bad488a1c1b0e443) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '412d10d53e5205fefd861cca14d28cbb') in 0.0196169 seconds
+[Worker0]  -> (artifact id: '5b2356fe06b32faf0b67ac1e4059d945') in 0.0208812 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.000.fbx using Guid(c5c821d1091df6c4ab6c1c3e949eb281) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/firewood.001.fbx using Guid(6bd646f0e9bb4e5489ef1d99946e81ea) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '33ce7a78df0ad3d35f36f11daf7f5202') in 0.0206124 seconds
+[Worker0]  -> (artifact id: 'a8f5bffc7459c6cbcb941edb4f0585a9') in 0.0206733 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_bridge.fbx using Guid(cf93f0a1670f7444d94ba7b2db644663) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_half_wall_corner.fbx using Guid(f603af1bb582bce43a632d333f40b8f4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '67af96879cc44f99ac1358e47d7b2850') in 0.0271935 seconds
+[Worker0]  -> (artifact id: '19562e45fdbc402008f43e7bf88feca4') in 0.0209761 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.007.fbx using Guid(365c68b6314546a43938280a7367c393) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/fence_half.000.fbx using Guid(23638cd09901be240b48f50e0e56559a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'd5c2a8504d4ad818e11f064906e2ed62') in 0.0255433 seconds
+[Worker0]  -> (artifact id: '03e70497a3aec6621ff50d18328ed04b') in 0.0193155 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_window.005.fbx using Guid(b1ab97acd38dd7d48a6196e82183417d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_half_wall_bottom.001.fbx using Guid(b397f94ff1edf684b912a4177090c363) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '302c5d1293453a5758e43decc4020574') in 0.0205116 seconds
+[Worker0]  -> (artifact id: 'f9b5b21c4907e7e344711a596c3ed45e') in 0.0206771 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/spoon.fbx using Guid(64704605f89d97f43821f289ee58f53a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_stairs.fbx using Guid(9fa1b87e7a0b9864a9ca1ff787c1b0cc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'd8e79b1c77298c26cf1e5657605208f1') in 0.0192612 seconds
+[Worker0]  -> (artifact id: '4dd0829a9638f4d1714c6d46113cd734') in 0.01946 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower.fbx using Guid(a4f5548c5b6f28940b363b3c91913bbc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_bridge_connector.fbx using Guid(aca0fee4e412aca42bbce7d2ea006550) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '30a0cae2895746cbc5be572be57b839d') in 0.0200713 seconds
+[Worker0]  -> (artifact id: '3e2c2303138570620cf058d2af653cb0') in 0.0204664 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/chair.005.fbx using Guid(b658c30a296d2e74eb493e835498692f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.004.fbx using Guid(100d55b4778366f4599f73020977278f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '0053894dbbd664b5bf1eca61eedea6c5') in 0.0461745 seconds
+[Worker0]  -> (artifact id: 'e0772a14060d9b8addb1e51af5730a06') in 0.0385539 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_quarter_wall.fbx using Guid(092219fc9014cd64286e3d02c1002d31) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_half_gate.fbx using Guid(4739f2b2df0e3a74fbf722c2197004c2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '797875e7817e989c9a930a0901a5ca8e') in 0.0332231 seconds
+[Worker1]  -> (artifact id: 'daf54049a21322113d28509197e0670f') in 0.0355643 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_half_gate.001.fbx using Guid(edf02d38e9bcf344b86b4911edd57e9e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/canvas_on_wall.003.fbx using Guid(45c5d6f461f8b8749834aa3dd9a14016) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'ba006be3d2b9a9dfd79eadb1aa4a3cbf') in 0.0403007 seconds
+[Worker1]  -> (artifact id: '93cff21c8b3e3837f2118df59f9da528') in 0.0467691 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/fence_half.003.fbx using Guid(165bb34e8e0fdc6429bddb2fe511399e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small.001.fbx using Guid(99b51ae0f8000f44eb95754b02aaf18f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_stairs.fbx using Guid(1679e71049dd8c645b07dbcbc2787372) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_window.001.fbx using Guid(46f174c8fe102e84a9758c50d20faf5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '5f051d6effe276be72a1bb92aa56d36c') in 0.032693 seconds
+[Worker1]  -> (artifact id: '447071a043f634854e812e09f02f9e4e') in 0.0361323 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/canvas_on_wall.001.fbx using Guid(517c31265a551554ebd526079e155cba) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_enter.fbx using Guid(11a76e6e49aa2634bb926e23b494a953) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd22958f0090a733c57e0f7c9733cb6e2') in 0.0333614 seconds
+[Worker1]  -> (artifact id: '1a8c9497c6e778c4e56bcddc539bcfc4') in 0.0392501 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/table.003.fbx using Guid(c9fb5e609c85fdb4eb0ce0b199981fa9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_stairs_support.fbx using Guid(646f801aaf702c24d84f52bba763f765) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'e1f457925a6962c9cd4f654ded7c095b') in 0.2594325 seconds
+[Worker0]  -> (artifact id: '3025a1d1f13d94fb4e68aa3ecf068fe7') in 0.0376438 seconds
+[Worker1]  -> (artifact id: 'f52d810b49d39dfb52e53876562240b2') in 0.0370023 seconds
+[Worker3]  -> (artifact id: 'e0648e6ecf60b566a172b1af4a4e02fb') in 0.2666709 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/platform.003.fbx using Guid(2d34af1f94388b649b0d4cfca24ddad0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.002.fbx using Guid(b1f146e7d453a3e4ca3419e085deaba8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_destroyed.fbx using Guid(ee27ad6119335c94987b197793602b95) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'f3155f0cd878207276322bff1f923042') in 0.0371275 seconds
+[Worker0]  -> (artifact id: '27eaac9391327262aa6defb0cf561a85') in 0.0384926 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.015.fbx using Guid(9ce52e1b74319ee41b84820d0ebc2941) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'a70e353bda0d4f8b8cd941614a2d1308') in 0.0349031 seconds
+[Worker3]  -> (artifact id: '975cad0b5d7afc4b2ed643610f9e1cf7') in 0.0343059 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.004.fbx using Guid(d7b5a015e85bd4f41b4e79c786630d51) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.009.fbx using Guid(c0baf38d9acca5542a5b65311ee027fd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.002.fbx using Guid(65fc57942a6923c47afb6186caf91b61) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '47715e8a006b25e0411782cc73efb3fe') in 0.0380441 seconds
+[Worker0]  -> (artifact id: '01d4ce38454ffbed65282208639725a1') in 0.0337588 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.011.fbx using Guid(512ccb0f966ac134598fc8e117c1a235) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '3fad60ca4a3d111e4a9e57380be15547') in 0.0401302 seconds
+[Worker3]  -> (artifact id: 'f6af55e5bc6001e7d6b0b4e5e3a26bfa') in 0.0372153 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.007.fbx using Guid(3e76a8a360b338541b603bdb38359b67) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.018.fbx using Guid(32955392b5f22614a8ab4aab9442b8cd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/vase.001.fbx using Guid(5d3afa9b95e7efe4b96367de291eba7d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'baf6963daea9ea3555740db4eeb414cd') in 0.032216 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/cupboard.001.fbx using Guid(faf06b3544156e7498367ca2c9e95040) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: '9bf23547e620685032519224ed0bdc86') in 0.0362673 seconds
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'db6ac5dd31539d04b45b56d87eb17901') in 0.030221 seconds
+[Worker3]  -> (artifact id: '25eb5e2cbf6d01435908130f9b666dab') in 0.0278748 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/stairs_collider_tower.fbx using Guid(dc6fbddac9d46194f8be2f6afac4511b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.021.fbx using Guid(d557956c4b7d5eb43a3748398bd39c1f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/chair.004.fbx using Guid(735fa55e746bf674bb9b2bb9d03eacbc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'e530a65beaf4f173f35119c6cca62dbe') in 0.0220697 seconds
+[Worker0]  -> (artifact id: '47467d338b10c4576cb378ed56dc0d9b') in 0.0220009 seconds
+[Worker1]  -> (artifact id: 'b933e708d92a914ad360a53dbab200fe') in 0.0220494 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak_expensive.003.fbx using Guid(3424801e9c6b6b04fbc0a1ec63968a31) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '92650a63e47ee3dff10514bcbd77715f') in 0.0191344 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak_expensive.fbx using Guid(d194048773bcce445a56113acb3d1a08) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/fence.002.fbx using Guid(2723fd94e0972da4d9df156956774cd5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_bridge_column.fbx using Guid(263a4cbaba8ad6741b4e2580a3740059) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'df16ed02471eda7988dbe84cf71e4112') in 0.0214398 seconds
+[Worker0]  -> (artifact id: '3c95365c12fb0f0db96578b303c3d3e9') in 0.0200166 seconds
+[Worker1]  -> (artifact id: 'c853370a23d85bca586137dde1884337') in 0.0200355 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/cupboard.002.fbx using Guid(f9367e1aca8f0f14b8490b12dc75e0b2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'ea6b0758436d0a58efc13231804e2e13') in 0.0187825 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/fence.fbx using Guid(a70f7ceb3a07c0e4c822d07bfa8aeb8b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/pot.001.fbx using Guid(4da8f1f713bb4b74d9abf3e52073640f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/chair_canvas.fbx using Guid(f47807d1df4a44044bc2bff0dca48c6e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'edbf94fa37d4a6ca8032ffe0c6571424') in 0.0195125 seconds
+[Worker0]  -> (artifact id: 'd6ea9cdc5a0bd8c8ba46e3babdd3fe23') in 0.019777 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_window.001.fbx using Guid(65b667a0189be3c489a37c11777e6c0c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '44e3682959ee4bd054e9e1e9d28c325f') in 0.0201255 seconds
+[Worker3]  -> (artifact id: '7ad945efe71fc72aa30d789f08642bf2') in 0.021878 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.006.fbx using Guid(9293f045d058c1d41973fc86b8045adc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/firewood_single.fbx using Guid(70e95b1800ece4e4dbc6e3b7bec606ad) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '03e44bec4e103e45b2e22993dcc9d21d') in 0.0185634 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/pile_of_planks.fbx using Guid(c50f159a15546294282661e06b0b8fa8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '623bc4674970e0e20a4385cc5bf007fa') in 0.0229153 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_wall_detailed_corner.001.fbx using Guid(e7e769be1c221e7418da8f68c701dce6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '0d43a3fe0580795a2cbad82b86f35e64') in 0.0200357 seconds
+[Worker3]  -> (artifact id: '81d1003a4f01b0ecb049ca61a7dc2d64') in 0.0210854 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.002.fbx using Guid(2d7d69a01495bd94da0cbe49a00ab2a7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.001.fbx using Guid(bc3db637d19884044a8d5ca83e0cf45d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '2d726b69069353679e8af73596a59b38') in 0.0202602 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/rack_for_weapons.001.fbx using Guid(dace15093a49b0940902cd768cd3b541) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6e49699a7ea2a84529c66652617aaf41') in 0.0195052 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.fbx using Guid(1ff8b328a8ea38a49a2bd3e61f236342) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '9aefffe2e2a193657e7d2316f9525f63') in 0.0199841 seconds
+[Worker3]  -> (artifact id: 'd64f39a8118673908911c052817401c5') in 0.0205839 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak_expensive.001.fbx using Guid(1c1e90b9a3e15d247a70010ef3fd453b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_destroyed.001.fbx using Guid(a4b5eb9f2f961d949afa52c3a0113c28) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '37159eea20c6f75e35c5c7815af429fa') in 0.0198999 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_floor_small.fbx using Guid(7905e10e93d95a747a406a43dbf194d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '5d23336f4352c41ce90a26b1d44a9f41') in 0.0199796 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/platform.004.fbx using Guid(26424d34dab6a804ea49c995402b01da) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '6cb945afc3ac678a91276e24984e6b30') in 0.0193713 seconds
+[Worker3]  -> (artifact id: 'ec206a56c5fd7949527d0c06d0263b2b') in 0.0197294 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak.002.fbx using Guid(25f410027406d364daf5df268c59aa86) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.005.fbx using Guid(d3aedc0c316425f4da97c6058168cb16) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/fence_half.001.fbx using Guid(18516a93656798240b99ccdbcb6c81b9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'f46918478c0079f40ca6e71dc2868af9') in 0.0257183 seconds
+[Worker0]  -> (artifact id: '0fd5e413053b7a98c3512748dd5e013f') in 0.0202246 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.003.fbx using Guid(3e6fcab08f24a724ca73f46bef4e726a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '8732c8e8f8a5d6f5c7ae25d512df0326') in 0.0182693 seconds
+[Worker1]  -> (artifact id: 'dd5bbc02bd177511e4b376444f69cd40') in 0.0369663 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/canvas_on_wall.fbx using Guid(88bc95e8e98377a41b1db89be3e28cb4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_window.000.fbx using Guid(1560dff051510ec42aec30514022295e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/vase.fbx using Guid(23cd3c3400c33734288b53d8ddb79846) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.005.fbx using Guid(4dceb898cb157384d82739b6797ff8af) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'e62891f549108498bb647c44b9362ff5') in 0.0206694 seconds
+[Worker0]  -> (artifact id: '5ae76fdea84186cf4839d03b7fe302e7') in 0.0235025 seconds
+[Worker3]  -> (artifact id: '459df1204e48bb40ba5faf87fc35bddf') in 0.021234 seconds
+[Worker1]  -> (artifact id: '11babb0f3bf9b965b161bf72cb662300') in 0.018755 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/mug.fbx using Guid(37d17dfa176850c45a85a208ca314b33) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/carpet.fbx using Guid(e2a8e210fce5ca942bcf577bb0b303f9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.009.fbx using Guid(f83bc9ea9b5e34f41b3881b8fd9a0a41) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/chair.fbx using Guid(93a521334bc9ba64abc5084cfe713fcb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'b2c8469a5423086066ae4accf65726e0') in 0.0197658 seconds
+[Worker0]  -> (artifact id: 'ebdcdb9f8fe65cc06850bcdf50acc977') in 0.0197007 seconds
+[Worker3]  -> (artifact id: '797deceff324fd32046ac7c8e08e7506') in 0.0213455 seconds
+[Worker1]  -> (artifact id: '4006c36cba1249ac3616426e73009293') in 0.0188947 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.011.fbx using Guid(417b4034a5fe5df4cb87a5a844f0dd51) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_window.005.fbx using Guid(5b45f3e9210dc9b4a8ee050936d55107) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/fence.001.fbx using Guid(f87072992d160b543873a751af85596e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.016.fbx using Guid(f329a10e2b371294da89624f0dde810b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '2178bbf4517021aa4caa05c68338dc59') in 0.0198758 seconds
+[Worker0]  -> (artifact id: '829cf253d82ac0619b38524ed3605af3') in 0.0196179 seconds
+[Worker3]  -> (artifact id: '48bd3570feef5e66d0cf9337cb9e22c9') in 0.022059 seconds
+[Worker1]  -> (artifact id: '29e1346cf46fdfe7050306dfa1830037') in 0.0198403 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak.fbx using Guid(f30c5ded026ca1f4da016d61f9ccfe74) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.013.fbx using Guid(87702aeef205f8f4686beac5aa389f1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/hood.fbx using Guid(bb839d66eaf423244a7ab4471fe7d459) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/scroll.fbx using Guid(9fad38ab673e5aa47a08b7b438256715) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '05a41711e8eb4c4bec6eee534a953661') in 0.0233608 seconds
+[Worker0]  -> (artifact id: '86a91ef25e25d139cb92f6699a957c6c') in 0.0243458 seconds
+[Worker3]  -> (artifact id: 'feaec251cb964a3875e4f41493340f5f') in 0.0198116 seconds
+[Worker1]  -> (artifact id: '13083b2b6b5be8c25d16f4b538e75e08') in 0.022679 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.007.fbx using Guid(72b809b5790b54540a5f0b1bda7d8984) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/platform.001.fbx using Guid(b52cb38476a4ab247819bd6fc72d6cc1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.012.fbx using Guid(49d24e48edae9ff48bda890ac39ec8ca) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.007.fbx using Guid(7ec77cb11305cae47b803cf734a41e70) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '50c7152e568bcd666abd38011e39ffb8') in 0.0207178 seconds
+[Worker0]  -> (artifact id: '7aed0183c47309574500b72083079d3f') in 0.0208008 seconds
+[Worker1]  -> (artifact id: 'bbeddc446b56c615265814132d36b56c') in 0.0209979 seconds
+[Worker3]  -> (artifact id: 'ad6eac4fd92d679ddee3790c127e553e') in 0.0240934 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/timber_2_fixed_d.mat using Guid(4bc52937c3c17274f942302c482c69ac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/timber_1_fixed_dark.mat using Guid(79b6bc15374199f4c90b61b8c09d3d4a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_dark_d.mat using Guid(7b081be773367574e95bd41658134e7a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/string.mat using Guid(da27f5b7bdd1f3d4da0ab822cb7d1408) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '57881d5591425582a14e271c33bf10d1') in 0.0949978 seconds
+[Worker2]  -> (artifact id: '8d0affbc946c97d40e158a2d0e809b30') in 0.1058245 seconds
+[Worker0]  -> (artifact id: '9eb1bf5d947e4d39acf69e36299544d9') in 0.1236752 seconds
+[Worker3]  -> (artifact id: 'e7537330a581cee2785cd6419f28fa31') in 0.119949 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/dark_iron.mat using Guid(92c80c0d26945b34a9d0c7d295afeb60) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/canvas_poor_d.mat using Guid(00d2fb0ba59dca84fb06f1e87df7b18a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/bark_1_d.mat using Guid(916e2ecc63e6c994db2a3f8ca486b069) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/trunk_2_d.mat using Guid(1d98a65002eda714d83f003d768ffc76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '4726acb765b2c45041f62ef24babddf2') in 0.0870363 seconds
+[Worker1]  -> (artifact id: '20c96189c69e25faa9b9260373f796cc') in 0.1017088 seconds
+[Worker2]  -> (artifact id: '123f3448f1111359902b6be9de27a0a5') in 0.1078921 seconds
+[Worker3]  -> (artifact id: '995af99f5864da5a1276cac95badc066') in 0.1187872 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/stone_wall_3_d.mat using Guid(1fe0bf56d0e15604689d9bae86d0c047) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.003.fbx using Guid(43528bc2438a2b648add87b062030631) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'bb3f928331d5a55ddf047d5630fae969') in 0.0203894 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/charcoal_1_d.mat using Guid(edae9c3fda9266046a7f482926164cec) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/dark.mat using Guid(8653c28f8f9110f43a0fb41a118f1af3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '3c22bb4d3be81b63f38188c5830d90be') in 0.0647764 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/books_paper_d.mat using Guid(cfe94b7c6014b1245b56c46d35cd406e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/stone_wall_1_d.mat using Guid(e1489ba25dfb7ab4585967216604488d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '07d5fbd12754655b9a3df63ddec3a67e') in 0.0947337 seconds
+[Worker1]  -> (artifact id: '491d3609853ebd181f729eb6ed1faa05') in 0.0561013 seconds
+[Worker0]  -> (artifact id: '80b19e7343441e5bffa43586924473c7') in 0.0622446 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/gold.mat using Guid(fd5793c2b2982d541a06c2303351d8eb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/fabric_bag_2_d.mat using Guid(8723e51378391314f9970fb4ddb11004) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/stone_wall_2_d.mat using Guid(dbc2b493531c5344f85864c5688265b9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'fc48580cbac8cff82754f7b383d3ce47') in 0.0524362 seconds
+[Worker3]  -> (artifact id: '78f5b64365a8702694ebe13cdebca95a') in 0.2052611 seconds
+[Worker1]  -> (artifact id: '3379ed1469afbdf60a5fece4e27ba82e') in 0.0758019 seconds
+[Worker0]  -> (artifact id: '6d0d5ba69c2ad74fcba0c78a5b657242') in 0.0698261 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/timber_1_fixed_d.mat using Guid(2536f1f630d08f441b76cba76e8cf597) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.004.fbx using Guid(e23cdbb8726cbb441a2dbbcdc8142b84) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '9b1a9ed08995a8cee84c7d70039bd58b') in 0.0109288 seconds
+[Worker3]  -> (artifact id: 'b76ca79e79de83f44bad3227a5f56ce2') in 0.020197 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/fabric_2_d.mat using Guid(18a635f73de55b64e8204aaf6d8d55c9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.006.fbx using Guid(621076d56d980a84ba538c9dc919c67b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/dirt_1_fixed_d.mat using Guid(da2d7a7a842064e4cb761293c37a9035) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/wall_brick_1_d.mat using Guid(d688b73caa629f344b206ac58bb4f813) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9d1d8fdd236ed8b24c730a45e0a5d4db') in 0.0263386 seconds
+[Worker1]  -> (artifact id: '2d4acc2e9a0af93c01dd3e03806ba60b') in 0.0806299 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/spice.mat using Guid(d634f695d7fc3b2479eaec83bc044d20) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '21a69495c2b460b7b05719c18c413474') in 0.0888736 seconds
+[Worker3]  -> (artifact id: '925e9f18f3763d869fb3e4f468ba4311') in 0.0845844 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.fbx using Guid(46116c3664d32414d83f89a487e6d0dd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'e1f0c6716604d0c5be7c7903fec332a0') in 0.0193039 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.005.fbx using Guid(eb116010079ad5241bce706a487c93d6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/silver.mat using Guid(fa9f24e782fcaa248a1becba50e640d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'e07f806f9c3b5391f781603c0ccaf3df') in 0.0545262 seconds
+[Worker2]  -> (artifact id: 'c2718f8e1c834b24c1d6c7c394886c5c') in 0.0204398 seconds
+[Worker3]  -> (artifact id: '6eaf718c58a06a39697030b7f94ba4ba') in 0.0171515 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.017.fbx using Guid(1af03aa8c17dada4bac6e9946648dae7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/fabric_3_d.mat using Guid(ab65d633a3d9fb24dbd4aee2445f2869) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: 'dde14529c98ecefbd84e5f22675d25d7') in 0.0216949 seconds
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.001.fbx using Guid(46ccc9853d2ca354d98c8019a74f692e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.001.fbx using Guid(b593d803310cb7b4dacc7453687a649d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '14429fed57bfa2f6ea549eb212299561') in 0.0196226 seconds
+[Worker2]  -> (artifact id: '81889ac1b44adeadd40ae1894e88ed10') in 0.0249514 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_white_d.mat using Guid(aa9711915b138974ba65f2c8cb5333a5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '188c89c27c3be5a3f9a18bc50d4490c8') in 0.010788 seconds
+[Worker0]  -> (artifact id: 'e393af3d64dbbaa21c207ce2cfb19e53') in 0.0628822 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/fabric_1_d.mat using Guid(b6eb2c31fb903b94c82e9e2c182bc388) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.002.fbx using Guid(2280c7ca47b45f048a9af76238c3d4e3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '331e075747cc49508ad5dbe2ab28e89d') in 0.0114052 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/cobblestone_wall_1_fixed_d.mat using Guid(f08005055adb6774b8d7cd4b19858a9e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/wax.mat using Guid(f98fac1cf2116764bb0b3f63b9fd4050) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '3ffcb79c475678317f0d9c798c690331') in 0.0368878 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/trunk_1_d.mat using Guid(c8bc57404c7970e4c98325aafd294396) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6f9cc57ff8769103380b9ab9e96c82d2') in 0.0458845 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/dark_wood.mat using Guid(02f0f69994ce7d34a86b5fbb2a3127fe) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b22aea0c1b6c1149aff0cc938b0d7975') in 0.0821674 seconds
+[Worker2]  -> (artifact id: '6aa12b4d179548736c1cd65949d4b31a') in 0.0297214 seconds
+[Worker3]  -> (artifact id: 'a8736517d85143ee5860734f7e14ddd3') in 0.0705334 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/cobblestone_wall_1_fixed_s.png using Guid(90828a0aa87f9134bb09b0c3ac19da45) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/wood_3_d.mat using Guid(941f25881004d8f44ba7da0f339c7967) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/cobblestone_wall_1_fixed_h.png using Guid(bf2882a64b72592428087977647d839e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_2_d.png using Guid(db71fc685a4160444a64a6a35c79b6ee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '18db51d718ff2158c6cc021e9a5f829d') in 0.0585119 seconds
+[Worker0]  -> (artifact id: 'abae5c0afd4e30fc4a75aa800517ed91') in 0.0846922 seconds
+[Worker2]  -> (artifact id: 'fd877a1b6e220865623b77a28a9ca0d3') in 0.0743629 seconds
+[Worker3]  -> (artifact id: '56ddfb9619654884596706aece7cb14f') in 0.0734468 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_2_o.png using Guid(79f2173925ae4be4cb30a812b9f9feff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/clay_1_n.png using Guid(d10b2655cd3be244d976d050610545b1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/charcoal_1_n.png using Guid(2627e3196f3da114c9b8bc0021f0fbaf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f3f49d1d2313aca004faf970ff6476db') in 0.0120484 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/books_paper_d.png using Guid(6200a5a5f6dedc141b38494271bde2b6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '7b043e765f2a5a3f861a234857b07203') in 0.014376 seconds
+[Worker3]  -> (artifact id: '4c4e6487570aff697b13ffcc856ab832') in 0.0129218 seconds
+[Worker1]  -> (artifact id: 'f46ead1922f3f2a7227ad6339741a88b') in 0.0493896 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/clay_1_o.png using Guid(21cae62b71868374d85285604ab3f022) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/books_paper_n.png using Guid(01784687c00cdb54385ebcc0c4bb12ea) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: '549a03501c7a5ab6bc9c66c6540cf452') in 0.0114151 seconds
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/wood_2_d.mat using Guid(982cbc10ad3c2114ca283c1b759605a1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'da682d3d7430d905517982ad902f8152') in 0.0116494 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/canvas_d.png using Guid(ca86548749c430647a0f4503aa1957bc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ae70b46ec34a3d011c55ad1eced0a0d2') in 0.0142069 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_1_s.png using Guid(1287ed30e653af04fb5a889b8f29348a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'b3a4b227b00d14c0f392aa31e4631fe9') in 0.0114106 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/books_paper_s.png using Guid(9e592871dce9a9640a40e2978fcb392e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'bb43d30fbddbd8c8965e6e54755e2941') in 0.0693035 seconds
+[Worker2]  -> (artifact id: '771a35dcd87c88f0e4fbeed916df95a6') in 0.0125045 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_2_n.png using Guid(f03ee5c31a543524eb0c660be00174c7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/dirt_1_fixed_n.png using Guid(1d04d1434c2f2fa42b90e272b2c6c434) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'aff2074e5c1120a6d2cc6cce66b48b00') in 0.0236167 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/books_paper_o.png using Guid(779f2579799dc664cbfb1a574b782f02) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/charcoal_1_d.png using Guid(ab44e980c775d324c8a0b1bfc5b35c05) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '79372ea25f51d8f00849c51ab9bc87b1') in 0.0143614 seconds
+[Worker3]  -> (artifact id: '05637cab01bfe8d5d873704453d75075') in 0.0125536 seconds
+[Worker2]  -> (artifact id: 'bcf57c9a0ffabfe7984b5be0f98d044b') in 0.0127829 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_1_d.png using Guid(112b19311e128794384e6e8e2947a707) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '05fd7412460a9332cfcf009c0f5af2e9') in 0.0111894 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/wood_burned.mat using Guid(2ac921ccf4efe38459a2bae33d0b058a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/granite_1_d.mat using Guid(965224637509ca24787fde060eea6f06) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/chair.002.fbx using Guid(cdde8be27303d8b4d9121e24be5a73bd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a2f1d4b5987a069d6fa3f9fd83fff11e') in 0.0113893 seconds
+[Worker0]  -> (artifact id: '902e686520a4170c8f0778e62c383e00') in 0.0219576 seconds
+[Worker2]  -> (artifact id: '6d7c2443947fb6aa59358e94a19740f0') in 0.0194869 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_column.fbx using Guid(3c9735499aa667a48b999ef393352b86) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/shelf.001.fbx using Guid(24f2f26bd68b8004b9bb85c4a5b82adf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: 'e6512b48d4f178854fcba756e1d5cbac') in 0.0226294 seconds
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/trunk.fbx using Guid(268b970db8fdf0c4a9bec9d1df53b6e5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/chest_top.fbx using Guid(e129cb2f91e2663438d9b61f3cf6dea8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'b09dda628c70ca05f4516418d5066669') in 0.0212352 seconds
+[Worker0]  -> (artifact id: '2f7ba4615423d6e0891900dd5c955b91') in 0.0221295 seconds
+[Worker2]  -> (artifact id: '9f69d13d687254b92a7c943e41673ab2') in 0.0221801 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.001.fbx using Guid(128ea3dfe2e7a6a47bd230e294158cd4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b89f41df7c8dfcbbfbf0f551b208cefe') in 0.0198085 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/torch.fbx using Guid(80b08148bd1b80d47aeb3043fe86d434) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_window.004.fbx using Guid(fe0083228423edf4cb481e2804ab7c45) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/table.005.fbx using Guid(f9716e096f518fb4fb2a8df53aa3b2c0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '553df45360c3d21e3499e4ac4f076616') in 0.022115 seconds
+[Worker0]  -> (artifact id: '6921cda85f4e4792102972c9f2559558') in 0.0214604 seconds
+[Worker2]  -> (artifact id: 'f82f495f53164d92b57de59765d81481') in 0.02226 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/half_tree.001.fbx using Guid(eb368e2d1b5d2dd4a818c04e3083e64c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/cauldron.fbx using Guid(37dc65af55103f640a067d624e0b5303) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/crate.fbx using Guid(ad065811ebfe69144af6fbbce3cfd220) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'a1e9c4f8285bdb7092bbe8a515b37b87') in 0.0259982 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/platform.002.fbx using Guid(3432c014954080e458c3dff43e4927f9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '0602c9a0031b371d2d4c8a658d687f9a') in 0.0208599 seconds
+[Worker0]  -> (artifact id: '5da239b0eb0cb2af0f6c0355558317de') in 0.021384 seconds
+[Worker2]  -> (artifact id: '56e0d2c09b7d265fa222d95ac6aecb6c') in 0.0195478 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/canvas_o.png using Guid(db249f86694c46a44b21056adda1a515) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'd61095ea64f23f9996b2196e79c5d523') in 0.012244 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.fbx using Guid(9de89c6bc8b97734ab0d9c5d0c8c7348) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_wall.fbx using Guid(4b87d04480274ae49a51f1ae71ec61af) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_2_s.png using Guid(c544aef97ece5df41bb8ec816976ee0d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'ee4b9e1fe3b8b3ad50fc217808e9c0da') in 0.0181981 seconds
+[Worker0]  -> (artifact id: '110ad416ae361f77c273a02f21c4437f') in 0.020095 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/cobblestone_wall_1_fixed_n.png using Guid(2f331f63be217eb43a90590185f57030) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2]  -> (artifact id: '798f8694cbf431f2062db6d92a703bdb') in 0.0256827 seconds
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'd23c88d998729354cfb25b709ccc3c18') in 0.0116386 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/clay_1_s.png using Guid(9ad666310a93eb540b788c4e4ae0a39f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/granite_2_d.mat using Guid(76a83259762614141892c40ea34bc15d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/canvas_book_2_d.mat using Guid(e5e845b6ac5f8dc429a548e827f4fb22) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9eb0e8d491aa4188213e0ad889e8db73') in 0.0245797 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/dirt.mat using Guid(e5a38c857a4489d4698c66b2c7368895) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '3413a087a511fe99dcdd14662af2f8f3') in 0.0197884 seconds
+[Worker1]  -> (artifact id: 'f134f227ebb83b7fbf49ea99e4aded33') in 0.0161131 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_wall_detailed.fbx using Guid(32e9f0be76da7e0449d0622028aa1899) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c08eaffa1b9aa45c0bae8b9e6a90fafc') in 0.0635471 seconds
+[Worker3]  -> (artifact id: '405a2d6429739895fc1b2cc6b8d5a21b') in 0.0199807 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.009.fbx using Guid(15ba8f0af4a656e4a841dfa5372f403f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'da81b6d1e5d58293a4efc3a5dbe3fb22') in 0.0188711 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/cupboard.fbx using Guid(8a0c0e48293f85741aff53030eac23d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/chair.001.fbx using Guid(d0bab24775481a74cb692671fee2d09d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.019.fbx using Guid(0687893a81b855d47841dfebd2ba9148) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '06b1649f935da224079bff57b754b3c4') in 0.0190602 seconds
+[Worker0]  -> (artifact id: '8c7df42567dfe071db19b191bb345508') in 0.0210878 seconds
+[Worker3]  -> (artifact id: 'db3535c2230762facfee0f300d7a9d73') in 0.019646 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/table.001.fbx using Guid(5eb22b4477e6d7f43aea3d12e5d95a04) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '43674af1d448a13e5ca1c00b7f43edef') in 0.0190464 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower.007.fbx using Guid(6ce56d375d138d84e929cc320a3753b6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_1_n.png using Guid(cf69270cca6309c48976da7a53b065fc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.010.fbx using Guid(80dc34846f7fd904ba096d6a666bbefc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'daad05400c3044790452de512be6f6ac') in 0.0116945 seconds
+[Worker1]  -> (artifact id: '10f17f734688880688d3b6bec9a24722') in 0.0218759 seconds
+[Worker3]  -> (artifact id: '1d6569fb87831cbcb8fae0d42870684c') in 0.0186786 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.008.fbx using Guid(c5c2f519bdcd09044b2a4908bd847e5d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '5f774efa0d1b12879002eaad0332eaf4') in 0.0188379 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.003.fbx using Guid(fd89c30888f581a4e9909206f194f69b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/canvas_d.mat using Guid(8ea231131c0ecc64ca078b074ddd7129) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/paper.mat using Guid(8e19c3cbe5e52e44c8eb38cba192482e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '40c50c1530f2894f08abd51fc72116ef') in 0.0110379 seconds
+[Worker0]  -> (artifact id: 'e76696730b4de48e5b395bba175f3d58') in 0.0203916 seconds
+[Worker3]  -> (artifact id: '938fb01b948cf862c513d6865ef2a84d') in 0.0112998 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/cobblestone_wall_1_fixed_o.png using Guid(8f2216e1f2b76d44eac28335cd000071) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '76b62554ea98ad1bf3166483074d9c8b') in 0.0122187 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/bark_1_o.png using Guid(98afe903d9f3a3d499a1a5f623891540) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_gate.fbx using Guid(565a7c796f3a0c54e992080c5f3daa20) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/sawing_wood.fbx using Guid(481f3c49bab8cb147b9063e6cde9e858) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '9f98850e93a609293a1864f89a0b4bba') in 0.0110526 seconds
+[Worker0]  -> (artifact id: '80805efcd297e915ede25aaacf9c6fed') in 0.0204457 seconds
+[Worker3]  -> (artifact id: '0e70751f5cf88ee9a315a7b9d732fa34') in 0.0247515 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.002.fbx using Guid(e4c1478afa5fde545a56b911de996bf9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/scrolls.fbx using Guid(87eae56dfd6732740981e5602d04797f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '9c406959b4b4cc80b6ca4eaf2d64a533') in 0.0192106 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_1_s.png using Guid(b72cc422c6701124e8c37a235e329c95) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/shingle_1_n.png using Guid(309ad13e54929b14991d24ef16e0491a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: '6ad12968ba066cf020c8de28c2a30c77') in 0.0202926 seconds
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'a80bfa38843e137e06f77dfaaea01988') in 0.0115827 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_1_n.png using Guid(8f544e1a138154d45bdca4c2a6fe7354) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9e610ceab8f081674bd7f07993d5085a') in 0.0241752 seconds
+[Worker2]  -> (artifact id: '807042547c507c81838de3d39f5c6bb3') in 0.0147625 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_1_s.png using Guid(bfc8039060da10c47b136fec7a4da377) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_1_o.png using Guid(ead91c9e2e89c3047b680b4f7a86ece2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '3223da8321cfc1018a28a8b16a1fdf05') in 0.0109744 seconds
+[Worker1]  -> (artifact id: 'db3f1a5d7319c0f76740b316719e8130') in 0.0125354 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_2_n.png using Guid(3c45a38ed76fb7e4aa57efcdcf6439b8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_2_o.png using Guid(373effa1c09fc0046a6b09564f84270b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a4dab8e749badef5b14be7aa3d6a85a1') in 0.0140701 seconds
+[Worker2]  -> (artifact id: '542f92fff33b7493e755302a744ab868') in 0.0123273 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/dirt_1_fixed_r.png using Guid(e48a3996f8d8da345a761269ab01ac10) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_1_s.png using Guid(7aa37b175730e4f4ba64da5204d04874) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'e76ffe061424520f477ffd1e8aae2576') in 0.0114059 seconds
+[Worker0]  -> (artifact id: 'be7f7a32734714ebc906bc695db2aaa4') in 0.0210913 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/grass_1_fixed_o.png using Guid(2b395747bd0394e4eabb11400151d6a0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/spice_n.png using Guid(d015b62b6de5ff04cae7a2d3eb38e19b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '3d1412dfc3fd59781078320a1770fe59') in 0.0211546 seconds
+[Worker2]  -> (artifact id: '25fcc78820460e8d23e289a5cda59de7') in 0.0115133 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/shingle_1_o.png using Guid(35f4ef340df0ee245b455a60429001a8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/silver_1_fixed_s.png using Guid(7ef30b157753360449f5721ff6cc6b15) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'c7fa8396a6155221acaf5586c421e4b6') in 0.021239 seconds
+[Worker0]  -> (artifact id: '64e9b7ecf2fc59d4b93c9cd644234da3') in 0.0157221 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_2_n.png using Guid(de74305004299d944ba827a077a8a6b0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/shingle_1_s.png using Guid(b43773e2e8269a443bd631c110da2fad) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_1_n.png using Guid(2713630b2e1e4ec48a76ffbedca77c25) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_1_fixed_n.png using Guid(e154b43ed5b29c5479be24683831377e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'f397bf2fd4bf580f2b230e6179d18311') in 0.011491 seconds
+[Worker0]  -> (artifact id: '05d29360199fb05054b71f25ca81369d') in 0.0110393 seconds
+[Worker2]  -> (artifact id: '58bb932c94e9b4b743bfee4911b90478') in 0.0435375 seconds
+[Worker3]  -> (artifact id: '03af8c9abda1983c5afb69822186a5a4') in 0.0472378 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/shingle_1_d.png using Guid(f690b7d08f97f7f46afe867d7a007cd1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/grass_1_fixed_s.png using Guid(2d1bbd27ae737e946a3984db5830fec5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_1_o.png using Guid(4bb7682f0931b6b4e90089c7203e0c0b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_1_s.png using Guid(f81c7eef0d1f8e14ca8b28e759738cb3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a90e111d5be5598ce122c301eae304dc') in 0.0119229 seconds
+[Worker2]  -> (artifact id: 'a6a41855ef78bf3b399736eb3092a688') in 0.0120393 seconds
+[Worker1]  -> (artifact id: 'd0ed3891f18bc57159b5cdc4b706c052') in 0.0288197 seconds
+[Worker0]  -> (artifact id: 'c28564bc0bfb64dac36b88143362481b') in 0.0277651 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_2_s.png using Guid(1a8220d76d4067549a2bd9238efe7eae) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_3_s.png using Guid(74974fe0480c7a9418e382363130114e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_1_d.png using Guid(75fa49711bad5374490b498557592d30) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_1_d.png using Guid(dbf550463e281604c82894eabee62a52) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'd007c0fcf6b61948502a8b9504d4671e') in 0.0124949 seconds
+[Worker0]  -> (artifact id: '3b91d2c317a32a6eda12d41c9992b035') in 0.0112308 seconds
+[Worker1]  -> (artifact id: '29ffa46e6f77b1b774757e5a67b3920a') in 0.0120397 seconds
+[Worker2]  -> (artifact id: '62e93d19c6b2ca06220abf1b79e2c7c7') in 0.0259816 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_2_o.png using Guid(ef518a5968b92f34781f6a19feaa035c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_3_s.png using Guid(768afd8565d26824d8dfde4c49b17c04) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/silver_1_fixed_d.png using Guid(75d3b4f9685dda840a8e1da8802ef7f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6ab9a72616413b9bf5b53f0eb9e8644b') in 0.0141591 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_2_d.png using Guid(e4f7457916988484fa050910866fabce) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: 'df7701c31a56717aa300582248ee0b95') in 0.0109629 seconds
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '072ed91d16a1554ad893f406ed1e853a') in 0.0236484 seconds
+[Worker2]  -> (artifact id: '48588c3761d55d018056781bb87cb80d') in 0.0117502 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/silver_1_fixed_n.png using Guid(1321fd5e874915d428e63b64130a64cb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/silver_1_fixed_o.png using Guid(d1e7d5640f41b8247be31acc7508a398) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/grass_1_fixed_r.png using Guid(e0cc03dd48a092144a02237abf783829) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_3_o.png using Guid(a75b900ef6ea4cf46b9bc3df7866fb52) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: '04852f2f3fd46cf625633a126f7f7c34') in 0.0130644 seconds
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '1c30d340f2ebc16aae02d39a4ccd2ad8') in 0.0118608 seconds
+[Worker2]  -> (artifact id: '6295e2af3325d98b1b23876ec5a5fc14') in 0.011696 seconds
+[Worker3]  -> (artifact id: 'f1958643ed6ce24ebb6e899de114810e') in 0.023115 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_3_d.png using Guid(6375475255f0dcd4fa6418cf6f02ec40) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_3_n.png using Guid(d086909fd9d2c8446810e64f5ba75b42) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/grass_1_fixed_d.png using Guid(835a7aff717b53546a6daf63e49f7683) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f75b15d6c9aa9ab8bf0f3ed8467d768e') in 0.0136005 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_1_n.png using Guid(00b247345d100a24eb17a7146d9efec7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'decc9e6bab49b80fd6b5489c15bcc04e') in 0.012595 seconds
+[Worker2]  -> (artifact id: 'de5f6a9fabe35d98cdea0bcb16e48ec1') in 0.0151906 seconds
+[Worker3]  -> (artifact id: '41a14ad0100698e14d1cdad2c55ac677') in 0.0136819 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_2_s.png using Guid(ef0c0d9358c05b54ca28bc71f60cb3fd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_3_o.png using Guid(8b97f495abba4e5478f0190bfd1ffb7d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/dirt_1_fixed_s.png using Guid(9703423c0774572449ac6179676463c5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: 'd71e728925bc73b50841d96e0ad1a2c7') in 0.0116674 seconds
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'f9b396665a81793674b2c000aec722b7') in 0.0123205 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/dirt_1_fixed_o.png using Guid(faeb98d1d3620904b97ad3b228f2dfc0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '7aa8fb3501ebad9fab18cb7ca1b01d9c') in 0.011965 seconds
+[Worker3]  -> (artifact id: 'a103a38675ef702fec2d205909efd7f7') in 0.0113177 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_1_d.png using Guid(a67cfa46fb86f2f44806f9661907b3c5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_1_o.png using Guid(1a8ae923225b5084b9e2397d5734663c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'fa28b70c61993d6e757518108270772d') in 0.0116804 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_2_d.png using Guid(d6ab04ae9acf1044e8f706ae00e788bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '40e1832dbd5e6496b3fe36996af578a4') in 0.0120392 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_2_o.png using Guid(a53243f4e96990245b76fd038dbbbf83) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '444cb8c4587733168024a076953ffc2a') in 0.0134443 seconds
+[Worker3]  -> (artifact id: '7e1c2b81fca13359dd145631128b4600') in 0.0131261 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_2_n.png using Guid(d070d48846f4d1d4e96c8a9f8a2b194d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/spice_s.png using Guid(c2c1394432648a54abce3cb3f05bb922) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'b37ca27069ac61c3301544d2a36b6f90') in 0.0114448 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_3_d.png using Guid(e54f1edd64a14eb478f9e020a1ca26be) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '4024840c382e0a142556a1cd814dde47') in 0.0134003 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/candle.002.fbx using Guid(6a0a701acff80a7459be73abcec8129a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2]  -> (artifact id: '8d36203964b13d16c2cd701fd3236a48') in 0.0121185 seconds
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '56938eb3bebb1cdb0da97f50490390f9') in 0.0208865 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/fork.fbx using Guid(c211297da2aa52240910f6c34eaf709f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.fbx using Guid(376030b52df25cb44b5babc51cc39285) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_1_d.png using Guid(da420663885e2d946a069fd6b6c6a40a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: '215de56b609eb26d4636f9d9d6e3e9f3') in 0.0192445 seconds
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'f6075df4cb6e2ddd96c2b8b78bc9d7c4') in 0.0204082 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/bark_2_d.mat using Guid(c308058fe19e91945b8a535cbaeec91d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'c3442e6eceb0d9f42dee6528ec4835a9') in 0.0218435 seconds
+[Worker3]  -> (artifact id: 'f8dc99d6f8ca895e55f96dc6bb9ccfff') in 0.0112025 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.004.fbx using Guid(3269832dc471d0c40a8b5c49e8d067e6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/silver_1_fixed_d.mat using Guid(de5c208fe468c25458b2bb5e0b909a5e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'ffc91f880bcc8867021ac56a88525523') in 0.0201623 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_column.001.fbx using Guid(37258561c5b9a5f4b9acdb8f67c8b075) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'c791383bdc0ac7ad7b3e72bdf71cebf5') in 0.0167265 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.001.fbx using Guid(18ec0187061ee31419a804e157067c69) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'ab48f10cb36d27804156f93f93884505') in 0.01931 seconds
+[Worker3]  -> (artifact id: '546d3d53646e015c9412bcd6e537073c') in 0.0207 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/shingle_1_d.mat using Guid(aa92370f24b71d4428525f91cfb88005) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'be1c54bf2ed2f6934836c9e45e52be62') in 0.0110279 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/spice_d.png using Guid(ad39b4756e9a5c943b0d53406b231b27) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/chest.fbx using Guid(3ef5a1a2da5be7f4582c3a39af5635e5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'cffebace7f6b874f26f78c2ac62a514d') in 0.0124057 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/canvas_book_1_d.mat using Guid(19b610a59115b3544a25976b65817e4e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '399382d02e6372c341ae22c78535d8a4') in 0.0113763 seconds
+[Worker2]  -> (artifact id: '911cf1b72e85503f903c6fabc07caac1') in 0.0221385 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_window.002.fbx using Guid(266fe229294ac294ea2417024d065035) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.001.fbx using Guid(4c535b67cafc5ac40bd0f3ede940d10d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '519b9d6e547bf79a2a5b9cd0adc76d9f') in 0.0195251 seconds
+[Worker1]  -> (artifact id: '3b56bad42dea82819ed3536c3525c600') in 0.0191334 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_window.004.fbx using Guid(1d5c483232c2597458ec53f441cfcc70) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/gabinet.001.fbx using Guid(0a0720718b522814fab84572692ff8ae) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'e4364c1782448b6f665481849313bc6c') in 0.0187617 seconds
+[Worker3]  -> (artifact id: '9397a5ebc3c8b232cbd7e33c21dcd308') in 0.0193194 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_short_no_side.fbx using Guid(f0f4a930095f99a43966dc253580281c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/spice_bag.fbx using Guid(fe3199330e5c5514bbb23aa44c07ed2f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '762b6ece2952d7889e3f4c71e46ed8f5') in 0.0189308 seconds
+[Worker1]  -> (artifact id: 'd96a1e023827f3d273c9102971a4f4b3') in 0.0196766 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.006.fbx using Guid(d7a6647841b0ab34d901780e434dc264) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/pile_of_planks.002.fbx using Guid(273480739e8492e4391274509d36196c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_window.003.fbx using Guid(7eaa9a6b969339d47bdbe918452d906b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2]  -> (artifact id: '013ec47d04f497053073995562c9615b') in 0.0194545 seconds
+[Worker3]  -> (artifact id: '0783fa72f30386f916e9740b0815f45c') in 0.0194513 seconds
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.014.fbx using Guid(bd97669d51f5a43498ab4ea2cdbf72df) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '0aa72bdf90d341d8ea003cd0aa9c8000') in 0.0204663 seconds
+[Worker1]  -> (artifact id: '3507747b1a8fd9370af89cf8c170e0fc') in 0.0193199 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/platform.fbx using Guid(a3df8d195cffbc14baca97db6d48a84a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_2_o.png using Guid(9ea68d206b56f1e4db53dd3779072c78) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '13183a9a489bc81b72fdbce9cfa14dc1') in 0.0111588 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush04.prefab using Guid(d15b44addf30da74f946086ec0aa993c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2]  -> (artifact id: 'c194f1c1f8b31b5ffb53490d38874a69') in 0.0203036 seconds
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_3_n.png using Guid(18c5ebd78c7b46d49bedb11593159f18) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '59535ef4624d080abd617abb8462e886') in 0.0113416 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_m.png using Guid(25886862f9ea8c840a6bdc05af256981) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_2_d.png using Guid(b5460e0b555a9b84d95a47465c8345d9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3]  -> (artifact id: 'b6802b422439e284c6f5515065f27b9e') in 0.0112611 seconds
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'dad906ddaa72780aaf8a9366de791cf9') in 0.0122095 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wicker_1_d.png using Guid(178f896f39c9eb443856e9f75a7a26fa) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/trunks_1_n.png using Guid(140248fce50fca9478df6ae412153a8e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '33f1ff8710a19a0710261d680849e1c7') in 0.0256193 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_2_n.png using Guid(2b35083a07d5e264ab78521dee08979d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '927ecec2a1b1ef2422884144654d12f5') in 0.01172 seconds
+[Worker3]  -> (artifact id: 'f79743c0eba3cce7a17b6e832d7e9956') in 0.0279268 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_n.png using Guid(b75cf78b01f621544a2d77e808e3fb5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b70b88ac90a1b593cc1ffc8b3901086b') in 0.0119917 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_1_s.png using Guid(168deda3ca813254684422296a8cf4ae) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush02.prefab using Guid(ec78ebca7517fb745a45a931cb06d2bd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '5c68bae049de3f2a9c0ace8535fbd14c') in 0.0253371 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Animations/Main Camera.controller using Guid(85adcab9e891c3d4ea49d5de4b88ec85) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/bush05.prefab using Guid(bb660abd3b29d9f44866fd79795dbca4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c155f4f35142e16dc7b0aac1939c132c') in 0.2405555 seconds
+[Worker1]  -> (artifact id: '5ed41a29eefbe28126021d5708213c43') in 0.0841746 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_1_o.png using Guid(39e55e973b4d6a843ada4349d8534b19) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '814587aab2acfc3c585c6016b87ec539') in 0.0125882 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_2_d.png using Guid(a1c43bcf46ad13341a2ca40976ca38d8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '77f8b74c1c163ab56fbb598050967b7e') in 0.013578 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Materials/branch01.mat using Guid(18ff38cc93a44014c90e92f3baa1c69e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_white_d.png using Guid(22cbc727ed19f9b4980deeebffb34d87) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'c6ef6ad34c74710ca90fa6ad6505e9c4') in 0.1995868 seconds
+[Worker1]  -> (artifact id: 'b54db5a3934b33dfdc036820d38dd96c') in 0.0119014 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_1_n.png using Guid(acb529c08f1b4094f8b03183a24371e1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_1_fixed_s.png using Guid(ca0e3b3431e77d640b671dc29b73aa1b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'cb6dce5fd81433f7a4a91bb4803d9513') in 0.0149983 seconds
+[Worker2]  -> (artifact id: '47890d01ba859a4440ab38c84dc534f1') in 0.2053806 seconds
+[Worker0]  -> (artifact id: '29408e0ace9ebe28bb1cd15c48360961') in 0.0901283 seconds
+[Worker3]  -> (artifact id: 'aad745f651f3dc1e9e71412e5d8cc56b') in 0.0275267 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/tree01.prefab using Guid(393b236c42954a640b513d46de90ac38) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/trunks_1_s.png using Guid(fe3f28d284a574841ab030d4ba1418bb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush06.prefab using Guid(f62058cb710fd1745a24102fff0edd46) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wicker_1_s.png using Guid(0795fdee8e84a1c4abed3f64d50ef5e2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '5c8f76840ee53bdf6ebc0689eaf68836') in 0.0384843 seconds
+[Worker3]  -> (artifact id: '70147650254b258e48818cf73a783bb0') in 0.0358581 seconds
+[Worker0]  -> (artifact id: '567885a22e98c3f2fef02ea0e050f817') in 0.0547743 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_2_n.png using Guid(ef3ac87026c777649a713106686f19b5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_1_o.png using Guid(999b70b7198931a4a8532947fd1e2a1b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'b223ef5717797f8a5db78e85c5975b9a') in 0.0139049 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_h.png using Guid(83717351c7e00764d84c3e125a819dca) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a70bfbacb9d934583784aecdc0653fed') in 0.0210031 seconds
+[Worker0]  -> (artifact id: '3e035a02ddefa180be741cab4c34a56a') in 0.0220434 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_2_fixed_n.png using Guid(e581eff92bdd7734fa96495689b8cfc6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '1ca15f30ae6a22a6534ddc1bc987c16b') in 0.0135003 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_r.png using Guid(9a9dc43c023cfa04588525bc3ef5805f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wicker_1_n.png using Guid(d974bdc2a95885248bcc927493a1713c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: '08c37a63ee7cc72cffe1eac8c485a452') in 0.0226203 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_1_s.png using Guid(8f06317fde580c4459f4996da42b9464) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '2011161189d5351cbc1d809205725a86') in 0.0263883 seconds
+[Worker2]  -> (artifact id: 'a251e76ffc6d1177e2a483ea66a4d2e6') in 0.0118182 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/tree04.prefab using Guid(aae542b8a65f39b49b008fa689ce9804) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Animations/cameraanim.anim using Guid(7789fd8934a705745a05db5f410316ba) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '9173c312bc687e4e906d01e90d675db7') in 0.2228996 seconds
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/tree02.prefab using Guid(c63ea781a273235439e583799176c846) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '37efecace1ce330bd7cce07f9eac010d') in 0.0448175 seconds
+[Worker0]  -> (artifact id: 'c540f4231875e08857562c47d5e7a4c6') in 0.0339866 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_1_d.png using Guid(5646978a55c1ee445b5cf4f3ff6d4a02) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '4b3c9d84073cd8ece98257881ad34adb') in 0.0410764 seconds
+[Worker1]  -> (artifact id: 'ca9d9c3ca1f9504c2f11322fe7685832') in 0.0110873 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_4_o.png using Guid(c1e587088febefd44b74ce55fad45b00) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_4_s.png using Guid(cfb5d86d72346184fb8a335da94819f4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_d.png using Guid(76c07ad07c4fd874ab42a06015def50f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/NatureStarterKit2/Materials/bark02.mat using Guid(aa9fcb8764ab3324aa575a948d139c3a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '44c3f2f900e2e12ddfb2313b6737873f') in 0.0137162 seconds
+[Worker2]  -> (artifact id: '56e6570249839b6a8b9a3dd54fbf92ff') in 0.0426183 seconds
+[Worker3]  -> (artifact id: '815c096ce71decf5ccabcd3443683a26') in 0.0446669 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_2_s.png using Guid(abb33692c380de043977a9b59c8e2393) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '2c45b958606be971624d10f4e9f3730a') in 0.0144904 seconds
+[Worker1]  -> (artifact id: 'c98055fb8381406bfa86f7ea046c5309') in 0.073318 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_2_o.png using Guid(237d6f714ffa5754d8588558640bb7f4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_4_n.png using Guid(450e8cd3f149fb447a894fe436337684) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'dfd5d5d64cec1370dbebee52c0207e3f') in 0.0110276 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_2_s.png using Guid(7fc7cee91b62c6140a673b2cfb8f2a5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '72579067a999c5b552e25ecad46ffe5a') in 0.0289857 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_n.png using Guid(b0770653339d8a1488e81fea649849c1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '5cc106e7e52177212c1dd91b0059e583') in 0.0160589 seconds
+[Worker1]  -> (artifact id: '75d86b9c5ae1ebcf3b3d5b848c0c14de') in 0.0167674 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_3_d.png using Guid(c30dcd6fbbf734a439015c6a409723a3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '3adcb0ea246393a01056d57b9ff07786') in 0.0121488 seconds
+[Worker2] Start importing Assets/NatureStarterKit2/Materials/branch02.mat using Guid(a907919643f983d49835ca9a994e37d4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_4_d.png using Guid(96b9a55316302514eb549b952b5a1cb0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_2_fixed_d.png using Guid(0f129d822274ce94dbc6388e756b9629) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '2e66b8f6ab8c5b855b981100e93e2e55') in 0.0217182 seconds
+[Worker1]  -> (artifact id: 'c38e0334c30ebe4a226e17d450694493') in 0.0112791 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush03.prefab using Guid(9c74caa742791864f9c678287121e6c9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree03.prefab using Guid(4e2dd32c733005a44b50004d673dc653) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_1_fixed_o.png using Guid(9ab9b95b727dc8e41b36fa8599840780) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'c937a0112991e28d93e1171a774a1b6b') in 0.0698456 seconds
+[Worker1]  -> (artifact id: 'c2bbd98470104e3ca8e460d78c86f381') in 0.0125253 seconds
+[Worker3]  -> (artifact id: '6497e4e2a85f2865877e97d37b4c3707') in 0.0483284 seconds
+[Worker0]  -> (artifact id: '9fa67681e3adf83f17d73ccaf15d6d26') in 0.0405963 seconds
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Wooden_Tower.fbx using Guid(e823ee5e62e210e49b095f8b38110542) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Gate.fbx using Guid(44d3ef3d69405414199066719f6ac0d7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Textures/bark01.tga using Guid(0b851eea454bcc74ebf763a1e97d7c2f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntime.cs using Guid(777ecbd828571fb4591c79642104e0b2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '868ea2b2b7b7b898231282302358dbf8') in 0.0098714 seconds
+[Worker3]  -> (artifact id: '03ea97e827ec33754a2fad439688ce14') in 0.0312429 seconds
+[Worker1]  -> (artifact id: '9001688aa025c2e7fc80b226865beafa') in 0.0424236 seconds
+[Worker2]  -> (artifact id: 'a687e57ed3dc8ee7fa6ce3e4e5fce40f') in 0.062998 seconds
+[Worker3] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Stone_Gate.prefab using Guid(e7e3ba30f5356444ea4aea90785bb480) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Eldoria/ArtTests/ImageTo3D/BastionSelectionProbe.cs using Guid(5e18f8d97e678f04ead568374e9bccde) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Textures/branch01.tga using Guid(9dd29b2fd426d81459d6020818e420ac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'fe2b5a265b333c21d288f714ea23c22b') in 0.0081271 seconds
+[Worker1]  -> (artifact id: 'de328a67960de6c796005548dd74ce43') in 0.0118894 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntimeV2.cs using Guid(7bef3b0b7c22de34c83a3897c98986b0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'c40e5bc499068fde345955ced331af13') in 0.0229655 seconds
+[Worker2]  -> (artifact id: '4342e04fdbe9a56501d75afdd7ef2c6c') in 0.0082304 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Textures/ground03.psd using Guid(8d1a7eedfea109c4f892a29974c0b440) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Lumber_Mill.prefab using Guid(ee5e6083f97bd7f409ef0e9d1133d919) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx using Guid(98c693dd189a72d4b8c7bf6b72f9ed91) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1AssemblyCamera.cs using Guid(ada27ae652852b1d98952b4dfb39865b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'fb27105a97743cbba0bd23cee5d3187a') in 0.007293 seconds
+[Worker0]  -> (artifact id: 'ff72a9c5402d7dc099613a1dcc6b1b40') in 0.0450165 seconds
+[Worker1]  -> (artifact id: '4c59476cd9f4f05c71ff48851fbe0b39') in 0.0418161 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-1.png using Guid(eeb3f2aaebb5078428bb5cb12a6f43a2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/OriginalHero/review-approach.png using Guid(0859095b819dea0479caba1be8a3c4f9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/NatureStarterKit2/Textures/grass02.tga using Guid(e3f873c56651ccd4a83ab80769dd19f3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '7c0d874a6e1be9e782c2dd4d76c409ac') in 0.0302195 seconds
+[Worker0]  -> (artifact id: 'efb13f3fed9748abb06c8ff80a116605') in 0.0441804 seconds
+[Worker1]  -> (artifact id: '91e71aee34b73906719b4a722196e053') in 0.0468643 seconds
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Mine.fbx using Guid(47fe37b87dd598946938b6b2537b5b61) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Textures/ground01.psd using Guid(85cdb49f460bbf14a82b8ea1c20c07bc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntimeV3.cs using Guid(60641bb4bcc500445bfbaa86ea79a5e8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '64c7915118d861e98fa90a5a8984a479') in 0.1671879 seconds
+[Worker2]  -> (artifact id: '7b688fd102cd9750ddc08333cde53e7c') in 0.0348228 seconds
+[Worker1]  -> (artifact id: '5e342d0a17ed1dc18d862fead03bedaa') in 0.0186126 seconds
+[Worker3] Start importing Assets/Bublik/Simple Modular Castle Assets/Textures/Stone_texture.png using Guid(4761ce5daed960040af277a7d6078c7a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'ef32c8c021d4e81034aea0ab8c6139e4') in 0.0395302 seconds
+[Worker2] Start importing Assets/NatureStarterKit2/Scene/Demo.unity using Guid(2b02c29601fc84e49a18fde7fed33f95) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Scene/New Terrain.asset using Guid(32620d2a18d1d6543869088db9e2d1c5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'dd6906f3b703876f2bf2c5c7226234e2') in 0.0232004 seconds
+[Worker2]  -> (artifact id: '34d99ccb45d3fad2d61617edbad6883d') in 0.0175635 seconds
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Tower.fbx using Guid(f672e3ae478b56e48b59e51d1d24bf23) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Textures/ground01.tga using Guid(ffbc4ff073065254585f69e966389160) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Shader Graphs/Toon_HDRP.shadergraph using Guid(60f684947552ff0499d340919093c40e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f85956bec8e41397705bcd97d8ae003c') in 0.0918323 seconds
+[Worker3]  -> (artifact id: 'c7576116e3b7a9b80e94b6120cedf594') in 0.0822326 seconds
+[Worker2]  -> (artifact id: 'b433c9c38a726be10b5dc778e2d0178d') in 0.0763775 seconds
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Wooden_Gate.prefab using Guid(95e1f8e80605eb74e89658e5a939fc08) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Wall.fbx using Guid(df5dbabd43c042141b8e9a42e2d0d25d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/OriginalHero/review-oblique.png using Guid(61f87e5591ac14441be900a09da7e1e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '139d3772dff81c4a2db6a6f67e405ac4') in 0.0286905 seconds
+[Worker3]  -> (artifact id: 'f5f0d0b19965997e2d8633b23a63186c') in 0.0399219 seconds
+[Worker2]  -> (artifact id: 'ff3ccf1985849d19b9c74d44eaaa2b8b') in 0.0460002 seconds
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Stone_Mine.prefab using Guid(42073504b6f131740bc309463f303aef) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Textures/ground02.tga using Guid(3e8f839d23c8c7f42b81fc76f0dbeb9f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Textures/color_texture.png using Guid(c25a1837cdfc94a4fbfc4a603328c484) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '8be54c276c2730b64687c89329400817') in 0.0164132 seconds
+[Worker0]  -> (artifact id: '292b331c3571899f0fa47c75fa74838f') in 0.0299242 seconds
+[Worker2]  -> (artifact id: 'bbac7519ef97322471fc93c54b4bde96') in 0.0202672 seconds
+[Worker1]  -> (artifact id: 'c3dd4295bf1447daf928a6ad180e801f') in 0.2984563 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/LayeredValoria/valley-backdrop.png using Guid(5fde415d1d07ce2498c7aff1d75b50ac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Stone_Tower.prefab using Guid(d9e1370265c013c42b87d8023a922480) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Textures/bark02.tga using Guid(cd130f36a968f1e4d8dfc96a655a9c32) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'ba293170a145d4db1b8d5a7b7d998383') in 0.0123585 seconds
+[Worker3]  -> (artifact id: '9a63d3394a8c5dd5dcb36fd258b8352c') in 0.0251861 seconds
+[Worker0]  -> (artifact id: 'a62f570c85e3974c688c3de178dd85f7') in 0.0251372 seconds
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Wooden_Walls.prefab using Guid(1d311272de359054d98af430d533dcd5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Textures/bush01.tga using Guid(cd0dd843ef8672e4896d03c7a66fa5da) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '5e47f854fbdef59e62a59638829a7619') in 0.0273381 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/trunks_1_d.png using Guid(4f203befce255214095a5327e3bf0a16) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_s.png using Guid(0aba8e96d1f53f54ba28a4c83ce933c7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Stone_Wall.prefab using Guid(08a1c14a984751b4e992a4afa3974807) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '5c269e61a28a2225533c102eca73d1e4') in 0.0425058 seconds
+[Worker3]  -> (artifact id: 'fd642edcaaed0cdb35024daa6d5ac3ee') in 0.0411344 seconds
+[Worker0]  -> (artifact id: '95130ad2659b2ee9753c528be8136f4d') in 0.0396007 seconds
+[Worker1]  -> (artifact id: '629f8252998abfbfcbb1ef43eb67c754') in 0.0238029 seconds
+[Worker2] Start importing Assets/NatureStarterKit2/Materials/bark01.mat using Guid(429dd90a38598a6439cac85af03f10df) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Shader Graphs/Toon_URP.shadergraph using Guid(68f5ff3c3f4a378499680488b70318c5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/trunk_1_n.png using Guid(6c7e35af0e1fddd4fba0704090a17628) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_m.png using Guid(801ca7a0aacdfe2419e8b8bc157c8e9a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'd2105ae54b13166b0836544b7b8fd47b') in 0.0141285 seconds
+[Worker1]  -> (artifact id: 'b8d330462c7012c939da1a9a0b191d6f') in 0.0147981 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_2_fixed_s.png using Guid(db4b38977b3161743a2af8370bdafbc6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '734e62ad7e2e8b47ae6685b4782b8f40') in 0.0626476 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_h.png using Guid(5cfa7dc97141433479648b9de1cf0d66) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '458d121e15251a549b43c80a512c03d4') in 0.0128924 seconds
+[Worker1]  -> (artifact id: '4caeb556248774bf595be94c3b4d9c5c') in 0.022474 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_2_o.png using Guid(8b08efec63c4dcb41b7d00d75b30bc16) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush01.prefab using Guid(d638ef2ca2fe20c4c9c08e125692d3f4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '9dd2e5f623c1da5843f416aa3656c39a') in 0.0114691 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/OriginalHero/review-establishing.png using Guid(0a3c2ed9218e0c64b938f501cddb3453) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Materials/sky.mat using Guid(7105c6e31fe1afc4b804e755b0561048) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '8906ae5213235a90169746dae1274416') in 0.042134 seconds
+[Worker2]  -> (artifact id: '618b4ad7fcc14581a9e44e96be9bd9be') in 0.0261297 seconds
+[Worker1]  -> (artifact id: 'e4475bbf9c0fc9a7b2d96c73100e7805') in 0.0638761 seconds
+[Worker0]  -> (artifact id: '04eff13e052f884428c09737e6a9d4b8') in 0.2073721 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wicker_1_o.png using Guid(61253740536e02e43973ef88b9970720) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Prefabs/Wooden_Tower.prefab using Guid(5026ef9fe5ae7bd4690ff5d87c80b8fc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Materials/bush01.mat using Guid(216a7e882dab7d745a4fc6ccb3774f75) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_o.png using Guid(d1c5d20e80169274e9181f7a26f4eb72) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'b2e154bab68b9dcba0cd593749699496') in 0.0162025 seconds
+[Worker2]  -> (artifact id: '5db459ee37a3fc6dd9d9b87c56ab3c9f') in 0.0472948 seconds
+[Worker3]  -> (artifact id: '318e05ab1eef830788555395a14566bb') in 0.0550988 seconds
+[Worker1]  -> (artifact id: 'f7b3f14573aad745ae71c0730aa5262b') in 0.0639153 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_1_d.png using Guid(f5b8ec0c1c095194d9fae04c4149f5b6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_3_n.png using Guid(5a0768429c670054784dcb10b15dba7d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_3_o.png using Guid(286689e24bfd4bd46812a473a5dd9d44) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'd23d594f9febb48828f6b5863c80b3f9') in 0.0128023 seconds
+[Worker3]  -> (artifact id: '26405920d269cecc7dbde601cd4b3b90') in 0.0113186 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Materials/bush02.mat using Guid(42375d2e1d7b61744887ddc5186b7605) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9f47c6540a2edd638b97814f724da586') in 0.0220682 seconds
+[Worker1]  -> (artifact id: '338c30a16e290a6571d7c90fea19651b') in 0.0094877 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/tree.fbx using Guid(5e8fe6e9b49d874468321529c49ea8ec) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/spice_o.png using Guid(ec65703830541b544a98a27307b07068) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Scene/SecondaryTerrain.asset using Guid(7f570b916f436aa4c9d4676e57349fd4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_short.002.fbx using Guid(2e176bff044208543af7d44476ead54b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '95d7cfe61aa7377f60929b80915b255a') in 0.0286321 seconds
+[Worker2]  -> (artifact id: '49a3f461001a4a45a2a1e8eca03580fa') in 0.0321809 seconds
+[Worker1]  -> (artifact id: '3a94c003eeb7220354277d3c8e626d15') in 0.0195787 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_bag_2_d.png using Guid(ae180a227667dda439736e6c312b456e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.005.fbx using Guid(75430bad6ea5f734aad147383769dd78) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c30da87b251d0bdb0a369f12365cbd71') in 0.0685962 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/clay_1_d.mat using Guid(0664a4889da60aa4aadaaed77fd6a556) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'f67f6800fe05c3e548d5b303cb90c598') in 0.0163014 seconds
+[Worker2]  -> (artifact id: '051841e3bb850e0725008d3cee0d9990') in 0.0194292 seconds
+[Worker1]  -> (artifact id: '5b0aa6faa89ee1a7ad3ea2a8e98648eb') in 0.020012 seconds
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Lumber_Mill.fbx using Guid(31b9ca7d2e7e1094095264d59801e1c1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/charcoal_1_o.png using Guid(8edc028910c1b9745b3f7280d9fadd75) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '5b926c5f6a8f9bfeb45828282ab127a3') in 0.0123403 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.010.fbx using Guid(d3bf45d0cd692a049b20f3c921bdabdf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak_expensive.002.fbx using Guid(74d27245b391986449d0ff12c29a83d1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'aa909ded738279ffc05a056a6865bdfa') in 0.0114432 seconds
+[Worker2]  -> (artifact id: 'a8b4fc785be60a31b1dda87784461893') in 0.0196193 seconds
+[Worker1]  -> (artifact id: '16cd4f33b9ef4f1ee7eee3759bee1c78') in 0.0208613 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/stone_wall_detailed_corner.fbx using Guid(9feaf10591bde4945a982cdafc91de35) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'e9de1354e2c836eafa147205246a71ee') in 0.0190133 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/canvas_on_wall.004.fbx using Guid(6691d3f4f9345134492fb4c14ac18965) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_bridge.006.fbx using Guid(a5da13f5fbf47cd4b93035c12d71b842) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/canvas_on_wall.002.fbx using Guid(98a38d5f3e1bdf34b85171136b4c6c00) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'c407c1aedca703993661246b444eb2c0') in 0.0190563 seconds
+[Worker2]  -> (artifact id: 'bc0099a40c454fb5eef818625eb69100') in 0.0202888 seconds
+[Worker1]  -> (artifact id: 'e415bcd701c098c03f632da9af65664f') in 0.0187131 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Textures/grass01.tga using Guid(18023b893dedc2f41b2735582b22036c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6cca9e32a0016d330f7c05d7c9ba6fcc') in 0.0119363 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_short_no_side.001.fbx using Guid(f09c986c8b53fee40af4dc0fd95d77ee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/fence_half.004.fbx using Guid(16ffe86e66f806c4e8d4c23f2aec421d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/table.fbx using Guid(9a07cb271d871ab49ab442220ee08629) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '68bc42bebb5c9b29a8d7c829828d4ae7') in 0.0195864 seconds
+[Worker2]  -> (artifact id: 'd154afb62180245b4ae4f8a1d17025e6') in 0.0191876 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/wood_4_d.mat using Guid(8fc7164692cb91340b5ced7843fef0a2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '906c9f549cc19804ac3ca00c427217b3') in 0.0188706 seconds
+[Worker0]  -> (artifact id: 'f92b0c385b01c9b5f328771832ae5652') in 0.0112447 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_1_o.png using Guid(d76f2b25de6253849bcc4fb6a8454edf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/wicker_1_d.mat using Guid(af916d4cd654ba04e9c96a413899b9be) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/granite_panel.fbx using Guid(ba61bfa51a320a544800b503cf8ce0e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a72517cd31805413bbee50ef66538280') in 0.0115726 seconds
+[Worker2]  -> (artifact id: '9f179b6dec1126c509a4c3cfe33f9d53') in 0.0124347 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak.001.fbx using Guid(53dc01d313e64734395aae9d235e7e1b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'fe116bc4fab9619d05b77b6a91b65926') in 0.0186776 seconds
+[Worker0]  -> (artifact id: 'bcfa287a036e7f2806525eba34498d90') in 0.0187856 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_2_d.png using Guid(74185a3b54d3e2c41a9cf9eb9e004ca1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/cutting_board.001.fbx using Guid(f95a57d4bd92d264dad6cfd643c87237) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a082bd99a1cb4cff7a0608d97c096228') in 0.0112421 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_window.002.fbx using Guid(3414325881054f34887c70d5f6104a76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '33f96e5d7444f9ad1d9a30d32202aa1b') in 0.0179499 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.003.fbx using Guid(47502413ba044dc42a1f5a9dafa5deb4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '2312054d155c274296ae8d4a676c679a') in 0.0218254 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/wood_1_d.mat using Guid(13ceee64ceec99b4c83bc82e593822e9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '7746320cdcff3d720922f1b573ece535') in 0.019285 seconds
+[Worker3]  -> (artifact id: '882331428a36e3c0a143543c3d337c13') in 0.0110382 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/dirt_1_fixed_d.png using Guid(ca6db4a66e85d9b4e833925ed79e4908) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.008.fbx using Guid(8dd63d28a44a0ab41a7f7f3077d9c168) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '4612d1bfa0849eedd36289a7838998dc') in 0.0172917 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/clay_1_d.png using Guid(fb3d17af5436f8d48b780cb54d5cbd19) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '66ed49faf57048996e7bbcf77f0436c5') in 0.0191178 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Materials/wood.mat using Guid(8e12c98df9366e84ebc37e382fc650af) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '05a982ab5feb79af488077592b43c2ee') in 0.0109648 seconds
+[Worker3]  -> (artifact id: 'cc172b6e68597098c696fd45b69a33ad') in 0.0167605 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/candle.fbx using Guid(2a3f8090f2c9a654b9b4cb36280e1a65) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_d.mat using Guid(f50fd987009300249ad223e750bb4396) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/NatureStarterKit2/Materials/skybox.mat using Guid(39cace2863926444a9a78daa8ae26413) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'd77e7dc11355884d303c80be8fb68672') in 0.0199331 seconds
+[Worker0]  -> (artifact id: '6852bb9928de69deb3f6b5d2f4404471') in 0.0109745 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small.002.fbx using Guid(e5afe27f305185f44b9f29bc845081a9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '4532f85651664d61354ba932fc538f1d') in 0.0305918 seconds
+[Worker3]  -> (artifact id: '411e06d3b9e7bc8f7e2c3abfd6d2878e') in 0.022479 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.004.fbx using Guid(e7c782f134d9a3f4baf75f2e7a94deb9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall_window.007.fbx using Guid(62a894e0c75b9c54e9acbc3cb4214985) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'c655daf71fb6b3e21db34ecf81d90560') in 0.0185481 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Textures/ground03.tga using Guid(5edd0aaa57578b84da829c036eecf914) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wooden-boards-texture_d.png using Guid(a35216cf1895fac409b4d89c3def4cac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '20bc867716c7504fde3aaa7bddaffe6d') in 0.0127656 seconds
+[Worker0]  -> (artifact id: '19a457fea32730d1dee60675a9bd30db') in 0.0207431 seconds
+[Worker3]  -> (artifact id: 'ef53c8ff041e36726e2d8940113f48ee') in 0.0145449 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_s.png using Guid(5b901425e0d6280439bd4f6b295f6113) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-2.png using Guid(64f0752effa0b774bb317fd490487b16) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/fabric_2_s.png using Guid(1fc91b8f2e42ac9438e7938a60e6ba9e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '27e1e7ead7798fb53981738624fedffb') in 0.0214951 seconds
+[Worker0]  -> (artifact id: '6e5a3bd37f080a7aeadc1e96c55fb998') in 0.013111 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/rack_for_weapons.fbx using Guid(b210e89f8adc4e84294755449fad9d30) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '9426c66330573fc94c1dc41ecd79e2b1') in 0.0305127 seconds
+[Worker3]  -> (artifact id: 'b00fd38b36d12cbc4cf9e46f25f926d0') in 0.0199707 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.007.fbx using Guid(91ea39ffc6b97d141ab54e631b6334e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_1_n.png using Guid(903136074a710ef4686f9bf6bb707a45) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '84ce7225071a05eede3f0ae763d57b4f') in 0.0113787 seconds
+[Worker2]  -> (artifact id: 'a9f29c9a60151619fc1d16e856422438') in 0.0213863 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Materials/fabric_bag_1_d.mat using Guid(1db8569813e821749927d4ad11460096) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/canvas_n.png using Guid(1d8f4d4c8c9b4624087e82e3a5c88dfd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '55d6cad3c7254fe1727bde6b878b14f5') in 0.0169433 seconds
+[Worker3]  -> (artifact id: '4cd364e011bf92ae3b46e5450c37a792') in 0.0113083 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_stair_stone.fbx using Guid(a5fb9afc02d44814b8780c9322bb806f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/granite_2_n.png using Guid(8c57c64b0fcd956429316d8ae76c8712) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '769d236adcab0856918da5c218a35d2b') in 0.011549 seconds
+[Worker0]  -> (artifact id: 'e36d04206a8025b714db6c2bb6b57ce0') in 0.0187669 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wood_3_s.png using Guid(369038f90e9285447a08b720f8057d0e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Textures/sky.tga using Guid(566cada353cad2441ba7b045c8ea1a79) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '1b7e400248ec68fd8ef654be3d301bc5') in 0.0115226 seconds
+[Worker1]  -> (artifact id: 'f18aec11423a59e8575a6e5e96c45b0d') in 0.0156531 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/cobblestone_wall_1_fixed_m.png using Guid(9219a291df56ced41a766c469be3c3e5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/shelf.fbx using Guid(bc87015028369dd44bd83a71543d9930) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '3bfc30c7214308e14e3ccb44ff6f7b1c') in 0.0146632 seconds
+[Worker3] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Wooden_Gate.fbx using Guid(0fd1d7c53da941a459aa56abaf2eb2e1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '4843bd8ae1c5bfe714696178b8eae678') in 0.0191287 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/fence_half.002.fbx using Guid(e9404030361334c45adc68d3329001a3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9c7650edd5cae5b09abbe77b3fda87e8') in 0.015295 seconds
+[Worker1]  -> (artifact id: '2f2d22d28cd7464de5b8da0c15a554e5') in 0.0186332 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/canvas_book_3_d.mat using Guid(e721513dd67b1194eb34d01628a2ec38) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/iron.mat using Guid(01fe39fbda1dcd94a91cba98e3847538) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'a58769b75d6dd16c547316631a91fe38') in 0.0114935 seconds
+[Worker2]  -> (artifact id: '813b1934b5b241e20a8a8db50df08d6a') in 0.0108413 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_o.png using Guid(b867698b7c0f2bf49b805205b5d5f815) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/cutting_board.002.fbx using Guid(40b3cad597a9a1949840d212cc282bc0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'd59916a813af9ac8ede592f39b849635') in 0.0112004 seconds
+[Worker1]  -> (artifact id: 'dfcbab2e376ca5415dfca5f10eb6f856') in 0.0192956 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_stair_wood.fbx using Guid(8f768462890fd564f9f7ddc084b418a0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/frying_pan.fbx using Guid(483918635c974f040a9af38e269b0ed2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '61cdac5f58e3a4e7e36e5f4369769c2c') in 0.0201434 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.000.fbx using Guid(63d855eae5ef67342b5e1dee00fa21e2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'a00d861318638f3fd87f115c3cddaf10') in 0.0196933 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_wall.008.fbx using Guid(8e0610f5e6217de418d19fbddc82f4a0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '1ee06617bfac3c68b06e2095837383e8') in 0.0203459 seconds
+[Worker1]  -> (artifact id: '16f2731e6e79d5c3ca19c897d44ca602') in 0.019091 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/trunks_1_d.mat using Guid(121b58f12db8b0e43adf87d1c1ef6b71) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wagon.fbx using Guid(af63b0ab3cf00dd4da21fb3f09e419e1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '8431a166fe636c83bed9102a31150ce4') in 0.0191833 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/Cobblestone_wall_1_fixed_r.png using Guid(f33b9dfd244964d4dbe5d1d7e198c2bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '5456ba791ab0ad40e38cd18ece854915') in 0.0260649 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/table.002.fbx using Guid(7a50a1189f47a16439f1ce574698de24) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'ca84b659e0ce1ba7d2c08bbad3226e1b') in 0.0216641 seconds
+[Worker1]  -> (artifact id: '311296b395edb256b92aa84716abbc14') in 0.0192048 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/windbreak.003.fbx using Guid(6ba5df756331a9144a59dfa3fd3d7120) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/tower_small_window.fbx using Guid(96828ec809d56f14984fb94b4f0ce622) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f7ef7b603a5138489eaea2012e91ae9a') in 0.0188611 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/charcoal_1_s.png using Guid(93bf4be671a8ea44e8b088ad025671bd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '8c9ef756b7171bba4a6bd3c19d68f39d') in 0.01899 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/FBX/wood_column.003.fbx using Guid(7c165e7cf498f6d4e99a872c0ca6510b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '0282325e835d3baab268a494106ffbf9') in 0.0112938 seconds
+[Worker1]  -> (artifact id: '239b2f7d6199755fcdb725548a2e96ad') in 0.0190718 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Materials/paper_single_page.mat using Guid(51170788b33ba304aa4b68ffef5ba924) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c413d4aa361bb4e98045a51e2d92448f') in 0.0122589 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/stone_wall_2_s.png using Guid(42842d0c889821e4e80e92cc415a5f27) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/FBX/platform.005.fbx using Guid(92ea8ce96d76b3844a63e6bf7917339b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'ff82d1cc73c5c853994e2b2da380985c') in 0.0133017 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_2_fixed_o.png using Guid(644cb8d8f42499345887e58459e0597e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'c7a77ce3f521265e4e38a4894b34881e') in 0.0194561 seconds
+[Worker1]  -> (artifact id: '0ac0730186ba9e7b04c359035563fc07') in 0.0111444 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/wall_passage.003.fbx using Guid(b002a80d670982e4fb77d2b0e2e94f06) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c15ef5db2c362ca46bd0f54d25430bb8') in 0.0210986 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Materials/canvas_book_4_d.mat using Guid(3f6e37fdf70ee3649873addb4353ba36) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/cobblestone_wall_1_fixed_d.png using Guid(c5ee24b1e7ca472458323a1428742afe) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Textures/wall_brick_1_r.png using Guid(57f98dc476a46af49b53d768d020aed7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'd6c4f050e0f3bdcdc731b00ac5719c8e') in 0.0131638 seconds
+[Worker3]  -> (artifact id: '4859abb5e412ecb6a493891ca69ca8d0') in 0.0128178 seconds
+[Worker1]  -> (artifact id: '83cc9867337531b780e02b11e3f3da82') in 0.0217866 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/grass_1_fixed_n.png using Guid(ed00d227a642c98429e2c098dd326654) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Textures/timber_1_fixed_d.png using Guid(6287d43a8e4aeaa47940bae017ea40ad) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Textures/canvas_s.png using Guid(a4c21a022d1f701458d976df12e4d440) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'facac843492d36c31e8374b3e2d913f8') in 0.0130613 seconds
+[Worker0]  -> (artifact id: 'fe0c0039f27d30c71eba254b0fa0906d') in 0.0234631 seconds
+[Worker3]  -> (artifact id: '42dc3f666743f52bc71c454043e640ed') in 0.0141656 seconds
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Meshes/Wooden_Walls.fbx using Guid(4e32bfe4347579642a55a115afc920b1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b1ab36753abd9dec91ef9f880abfb1fb') in 0.0127983 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/FBX/chair.003.fbx using Guid(44240acd758fe7a4a98f9cc25ad62426) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Textures/trunks_1_o.png using Guid(2a27f0969cfd96847a2500360c50e841) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Bublik/Simple Modular Castle Assets/Shader Graphs/Toon_Builtin.shadergraph using Guid(d0ed581aa3f326c46b88631eabf08ae1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd87721a2d31bf02509fbf38c9d11297d') in 0.013367 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Textures/sky.psd using Guid(76978aa5b0f025044af653342c95adac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'b92774e9206a69c437b37ede2a612d99') in 0.0204362 seconds
+[Worker1]  -> (artifact id: 'a0004c381f671b0866e6db35c8a1fb78') in 0.0287993 seconds
+[Worker3]  -> (artifact id: '3ab8a016b9b1c0c1569212db996ad026') in 0.1816382 seconds
+VALORIA_REFERENCE_CLEAN_PACKAGE_COMPLETE bytes=242408683 sha256=e9936f1e79f9e85691ff04bdcca58009b49d67e8c3ab59cfcc97f6fa36fa0fda
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:CheckExport () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:92)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs Line: 92)
+
+Killing ADB server in 2,058297 seconds.
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -561,4 +2104,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792286947773,"processId":37920,"allocatedMemory":20026957,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67837},{"Thread":4230344},{"Manager":821648},{"VertexData":1592},{"Geometry":816},{"Texture":296},{"Shader":81701},{"Material":24},{"GfxDevice":57024},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":3953},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":27477},{"DynamicArray":109710},{"HashMap":72725},{"Utility":2660822},{"Curl":4238},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":9184},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":109235},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366162},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792287346252,"processId":40040,"allocatedMemory":20054842,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67795},{"Thread":4230344},{"Manager":821648},{"VertexData":1592},{"Geometry":816},{"Texture":296},{"Shader":81701},{"Material":24},{"GfxDevice":57024},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":33191},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":13986},{"DynamicArray":109710},{"HashMap":79005},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":6736},{"WebRequest":10115},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":109779},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
