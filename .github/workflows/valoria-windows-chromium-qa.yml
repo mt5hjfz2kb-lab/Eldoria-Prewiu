@@ -103,6 +103,11 @@ jobs:
           }
           node --check tools/valoria-reference-clean/playtest_web.cjs
           if($LASTEXITCODE){throw 'Visible-control test source syntax invalid'}
+      - name: Validate genuine gesture and video evidence harness syntax
+        shell: powershell
+        run: |
+          node --check tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'Browser QA syntax check failed before gameplay'}
       - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
         shell: powershell
         timeout-minutes: 15

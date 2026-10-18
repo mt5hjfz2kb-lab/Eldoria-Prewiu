@@ -421,10 +421,32 @@ async function main() {
   async function drag(dx, dy, label) {
     await closeDetails();
     const box = await canvasBox();
-    const start = { x: box.x + box.width * 0.56, y: box.y + box.height * 0.52 };
+    // Genuine run 39168956357 showed that the portrait 'up' drag began on
+    // the actual 'Entrar en Valoria' world label after the previous down drag.
+    // That label correctly captures pointer-down, so moving away afterwards
+    // cannot pan. Choose an exposed ground origin using projected hot spots;
+    // do not disable UI raycasts or edit the world camera/gameplay rules.
+    const view = orientation(latest), spots = Object.values(hotspotMap(latest))
+      .filter(h => h.visible !== false && Number.isFinite(h.x) && Number.isFinite(h.y));
+    const candidates = view === 'portrait'
+      ? [[.83,.56],[.15,.56],[.83,.69],[.17,.70],[.75,.49]]
+      : [[.68,.55],[.81,.57],[.16,.58],[.74,.67],[.38,.68]];
+    const points = candidates.map(([nx,ny]) => {
+      const screen = {x:nx*latest.width,y:(1-ny)*latest.height};
+      const clearance = Math.min(...spots.map(h => Math.hypot(h.x-screen.x,h.y-screen.y)),Math.max(latest.width,latest.height));
+      const inside = nx+dx>.07 && nx+dx<.93 && ny+dy>.33 && ny+dy<.88;
+      return {nx,ny,clearance,inside};
+    }).filter(p=>p.inside).sort((a,b)=>b.clearance-a.clearance);
+    need(points.length>0, 'No on-screen ground location for the requested real drag');
+    const chosen = points[0];
+    need(chosen.clearance > Math.min(110,latest.width*.2),
+      'All drag start points overlap projected interactive destinations');
+    const start = { x: box.x + box.width * chosen.nx, y: box.y + box.height * chosen.ny };
     const end = { x: start.x + dx * box.width, y: start.y + dy * box.height };
     const before = latest;
-    const action = { elapsed_s: elapsed(), kind: 'mouse-drag', label, start, end, before: summary(before) };
+    const action = { elapsed_s: elapsed(), kind: 'mouse-drag', label, start, end,
+      interactive_hotspot_clearance_px: round(chosen.clearance), origin: 'open-ground',
+      before: summary(before) };
     report.actions.push(action); ndjson('actions.ndjson', action);
     await page.mouse.move(start.x, start.y); await page.mouse.down(); await sleep(100);
     // Real elapsed gesture time lets Unity observe held/moved/released frames,
@@ -726,10 +748,30 @@ async function main() {
           const args=['-y','-hide_banner','-loglevel','error','-ss',String(Math.max(0,shot.video_second-.08)),
             '-i',recorded,'-frames:v','1','-q:v','3','-update','1',destination];
           const p=spawnSync('ffmpeg',args,{timeout:25000,encoding:'utf8'});
-          const bytes=fs.existsSync(destination)?fs.readFileSync(destination):null;
-          if(p.status!==0||!bytes||bytes.length<=2048||bytes[0]!==0xff||bytes[1]!==0xd8)
+          let bytes=fs.existsSync(destination)?fs.readFileSync(destination):null;
+          let realFrame=p.status===0&&bytes&&bytes.length>2048&&bytes[0]===0xff&&bytes[1]===0xd8;
+          if(!realFrame){
+            // Playwright video can stop adding encoded frames during an unchanged
+            // still scene, even while SystemClock telemetry remains alive. Retrieve
+            // the LAST genuinely recorded frame without pretending it depicts a
+            // later gesture. Preserve this explicit qualification in the report.
+            const tail=spawnSync('ffmpeg',['-y','-hide_banner','-loglevel','error',
+              '-sseof','-0.35','-i',recorded,'-frames:v','1','-q:v','3',
+              '-update','1',destination],{timeout:25000,encoding:'utf8'});
+            bytes=fs.existsSync(destination)?fs.readFileSync(destination):null;
+            realFrame=tail.status===0&&bytes&&bytes.length>2048&&bytes[0]===0xff&&bytes[1]===0xd8;
+            if(realFrame){
+              shot.last_recorded_frame_fallback=true;
+              shot.event_frame_verified=false;
+              report.warnings.push('Exact-time frame unavailable for '+shot.label+
+                '; saved final genuinely recorded frame, NOT proof of that later event.');
+            }
+          }
+          if(!realFrame)
             frameFailures.push({file:shot.path,reason:p.error?.message||p.stderr?.slice(-400)||'no genuine JPEG frame'});
-          else{shot.extraction_pending=false;shot.bytes=bytes.length;shot.extracted_after_video_finalization=true;}
+          else{shot.extraction_pending=false;shot.bytes=bytes.length;
+            shot.extracted_after_video_finalization=true;
+            if(shot.event_frame_verified!==false)shot.event_frame_verified=true;}
         }
         const first=report.screenshots.find(shot=>shot.label.startsWith('narrative-'));
         if(first){
