@@ -1,0 +1,11 @@
+{
+  "mode": "resume_ground",
+  "request_id": "resume-saved-ground-focused-director-20261018",
+  "source_run": 39126030933,
+  "source_blend_sha256": "7e77e1f4985fa0ccdbc5d8d29578f8675c7c9a8ed2bbbebf8285fb7a7f93226b",
+  "reason": "Previous three 8B proposals failed exact numeric/unit validation before edits. Reuse all four verified baseline renders and source; switch to installed text director with compact independent image observations, not copied historical values. No parameter rewriting, no new baseline or workstream.",
+  "windows_policy": "Owner-authorized queue after Work; no interruption or claim takeover",
+  "art_approved": false,
+  "publish": false,
+  "budget_eur": 0
+}
