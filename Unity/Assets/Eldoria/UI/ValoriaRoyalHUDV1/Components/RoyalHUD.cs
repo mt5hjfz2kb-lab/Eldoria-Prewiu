@@ -21,10 +21,11 @@ namespace Eldoria.UI.RoyalGold {
   }
   void Submit(){if(session==null||pending||Time.unscaledTime<submitAfter||Building.Offer==null)return;var offer=Building.Offer;pending=true;submitAfter=Time.unscaledTime+.35f;Building.Primary.Button.interactable=false;try{var r=session.Submit(offer);Feedback.Put(r.Message);}catch(Exception e){Feedback.Put(L("Acción no enviada: ","Action not sent: ")+e.Message);}finally{pending=false;Refresh();}}
   public Action ObjectiveRequested,StoryRequested;
-  public void ShowNarrative(string title,string body){narrative=true;Modal.Show(title,body);Modal.Extra.gameObject.SetActive(false);if(Modal.Secondary)Modal.Secondary.gameObject.SetActive(false);}
+  public bool NarrativeOpen=>narrative&&Modal.gameObject.activeSelf;
+  public void ShowNarrative(string title,string body){narrative=true;Modal.Show(title,body);Modal.Extra.gameObject.SetActive(true);Modal.ExtraLabel.Put("Continuar");if(Modal.Secondary)Modal.Secondary.gameObject.SetActive(false);}
   void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
   void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
-  void Extra(){if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
+  void Extra(){if(narrative){Modal.Hide();return;}if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
    if(current==null)return;narrative=false;shown=section;string body="";string title=BottomNavigation.Name(section,english);
    switch(section){

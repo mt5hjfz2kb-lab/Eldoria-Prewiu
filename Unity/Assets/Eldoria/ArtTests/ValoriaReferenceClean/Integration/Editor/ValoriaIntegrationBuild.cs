@@ -113,6 +113,7 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return null;yield return new WaitForSecondsRealtime(1);
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
+   Check(()=>{h.Guidance.PresentMilestone();Need(h.Hud.NarrativeOpen&&h.Hud.Modal.Body.text.Contains("Valoria sobrevivió a la caída"),"Original web introduction missing");Capture(h,"integration-story.png",900,1600);Click(h.Hud.Modal.Extra);Need(!h.Hud.NarrativeOpen,"Continue did not close dialogue");},"original web introduction and Continue pointer");
    Check(()=>{Need(h.Ready,"Host not ready");Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,"HUD count");Need(Camera.allCameras.Count(x=>x.enabled)==1,"City camera count");Need(!GameObject.Find("Eldoria HUD").GetComponent<Canvas>().enabled,"Legacy HUD still visible");Capture(h,"integration-city-16x9.png",1600,900);},"city HUD, one camera");
    Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
    yield return null;
@@ -128,6 +129,7 @@ namespace Eldoria.ReferenceClean.Editor {
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Forest command disabled");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World gathering did not start");h.SetWorld(false);((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().ChapterProgress.GatheredWood>0,"Shared world reward missing");var snapshot=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(snapshot==JsonUtility.ToJson(city.Gateway.Snapshot()),"Reload changed rewards");},"world gathering, city return, saved reward");
    yield return new WaitForSecondsRealtime(.5f);
+   Check(()=>{h.Guidance.PresentMilestone();Need(h.Hud.NarrativeOpen&&h.Hud.Modal.Body.text.Contains("marca negra"),"Original gathering dialogue missing");Click(h.Hud.Modal.Extra);},"original web gathering dialogue");
    foreach(string node in new[]{"forest-valoria","quarry-valoria","corrupt-scout"}){
     h.SetWorld(true);h.Select(node);yield return null;
     Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"World command disabled: "+node);Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World march missing: "+node);},"Royal map action "+node);
@@ -154,6 +156,8 @@ namespace Eldoria.ReferenceClean.Editor {
   }
   static string FileHash(string path){if(!File.Exists(path))return "ABSENT";using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path)));}
   static void Click(RoyalButton button){
+   var hud=Object.FindFirstObjectByType<RoyalHUD>();
+   if(hud&&hud.NarrativeOpen&&button!=hud.Modal.Extra)Click(hud.Modal.Extra);
    Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable");Canvas.ForceUpdateCanvases();
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var p=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
    var data=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=p};

@@ -13,7 +13,24 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;ValoriaReferenceCleanGameplay city;
   readonly Dictionary<string,BuildingLabel> labels=new Dictionary<string,BuildingLabel>();
   RoyalText story;float next;
-  public string Story=>city.Gateway.Snapshot().EngendroDefeated?"Aldric: «Valoria vuelve a respirar.»\nEl Engendro ha caído. El ascenso a Bastión III llegará en el siguiente capítulo.":host.InWorld?city.Presenter.FrontierNarrativeText:city.Presenter.NarrativeText;
+  public string Help=>city.Gateway.Snapshot().EngendroDefeated?"Aldric: «Valoria vuelve a respirar.»\nEl Engendro ha caído. El ascenso a Bastión III llegará en el siguiente capítulo.":host.InWorld?city.Presenter.FrontierNarrativeText:city.Presenter.NarrativeText;
+  readonly HashSet<string> seen=new HashSet<string>();
+  string Beat {get{var s=city.Gateway.Snapshot();return s.BastionLevel>=2?"barracks":s.ChapterProgress.GatheredWood>0?"mark":s.SawmillLevel>0?"world":"start";}}
+  string Speaker=>Beat=="start"||Beat=="mark"?"Narrador":"Sir Aldric";
+  string Dialogue {get{switch(Beat){
+   case "start":return "Valoria sobrevivió a la caída, pero no puede reconstruirse sola. Cada mejora del reino necesita recursos recuperados más allá de sus murallas. Empieza por el Aserradero.";
+   case "world":return "El aserradero vuelve a respirar. Ahora mira más allá de las murallas: recolectamos fuera para crecer dentro.";
+   case "mark":return "Bajo las raíces del bosque, los recolectores encuentran una marca negra grabada en la piedra. No parece quemada. Parece haber crecido desde dentro.\n\nSir Aldric: No la toquéis. He visto esa forma antes... la noche en que cayó Valoria. Aún no sé qué significa. Y hasta saberlo, nadie se acerca solo a una marca como ésta.";
+   default:return "Las murallas ya se sostienen. Un reino sin soldados, no. El Cuartel transforma recursos en tropas y aumenta lo que podemos afrontar fuera.";
+  }}}
+  public string Story=>Speaker+": "+Dialogue+"\n\n"+Help;
+  public void PresentMilestone(){
+   if(!host||!host.Ready||host.Hud.Modal.gameObject.activeSelf)return;
+   string beat=Beat,key="valoria.journey.story."+beat;
+   if(seen.Contains(beat)||(!Application.isEditor&&PlayerPrefs.GetInt(key,0)==1))return;
+   seen.Add(beat);if(!Application.isEditor){PlayerPrefs.SetInt(key,1);PlayerPrefs.Save();}
+   host.Hud.ShowNarrative(Speaker,Dialogue);
+  }
   public void Initialize(ValoriaIntegratedWorld h,ValoriaReferenceCleanGameplay c){
    host=h;city=c;host.Hud.ObjectiveRequested=FollowObjective;host.Hud.StoryRequested=ShowStory;
    var mission=host.Hud.Mission;
@@ -41,10 +58,10 @@ namespace Eldoria.ReferenceClean {
   }
   WorldHotspot Find(string id)=>UnityEngine.Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None).FirstOrDefault(x=>x.Id==id&&(id=="sawmill"||id=="barracks"||id=="bastion"?!x.transform.IsChildOf(host.WorldRoot.transform):x.transform.IsChildOf(host.WorldRoot.transform)));
   static string Name(string id){switch(id){case "sawmill":return "Aserradero";case "barracks":return "Cuartel";case "valoria-map-city":return "Valoria · Entrar";case "forest-valoria":return "Bosque · Madera";case "quarry-valoria":return "Cantera · Piedra";case "corrupt-scout":return "Ruta corrupta";case "engendro-valoria":return "Engendro";default:return "Atalaya en ruinas";}}
-  void LateUpdate(){if(!host||!host.Ready)return;if(Time.unscaledTime>=next){next=Time.unscaledTime+.2f;Refresh();}}
+  void LateUpdate(){if(!host||!host.Ready)return;if(Time.unscaledTime>=next){next=Time.unscaledTime+.2f;Refresh();PresentMilestone();}}
   public void Refresh(){
    var s=city.Gateway.Snapshot();var key=SliceRules.CurrentObjectiveKey(s);
-   var text=city.Presenter.NarrativeText;
+   var text=Story;
    if(s.EngendroDefeated)text="Aldric: «Valoria vuelve a respirar.»\nEl Engendro ha caído. La ciudad está a salvo; el ascenso a Bastión III llegará en el siguiente capítulo.";
    else if(host.InWorld)text=city.Presenter.FrontierNarrativeText;
    if(story)story.Put(text.Length>230?text.Substring(0,227)+"…":text);
@@ -91,7 +108,7 @@ namespace Eldoria.ReferenceClean {
   }
   public void ShowStory(){
    Refresh();host.Hud.ShowNarrative("Crónica de Valoria",Story);
-   host.Hud.Modal.Extra.gameObject.SetActive(false);if(host.Hud.Modal.Secondary)host.Hud.Modal.Secondary.gameObject.SetActive(false);
+
   }
  }
 }
