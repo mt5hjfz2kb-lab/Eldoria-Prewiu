@@ -1,0 +1,8 @@
+EVIDENCE-BASED ART MEMORY: not model-weight training, not ART APPROVED.
+Pinned approved reference: 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689
+LESSON small-sculpt-repeated (runs 38358105789,38360450981): No repetir detalles pequeños en el borde; diseñar una masa de acantilado visible y verificar la imagen entera.
+LESSON tiny-sculpt-path (runs 38370740511): Proporcionar información geométrica del encuadre y exigir acciones de escala suficiente para la cámara.
+LESSON frustum-parity (runs 38401480696): Fijar el frustum auténtico antes de juzgar. REVIEW_REQUIRED solo obliga a inspeccionar, nunca certifica belleza.
+LESSON unity-a-b-independent (runs 38405267853): Juzgar la calidad compositiva, materiales y silueta con referencia estable; no confundir cambios visuales con calidad.
+LESSON preserve-playable-protected-terrain (runs 38406612333): Proteger parcelas y anclajes; después del acabado Blender exigir captura real y revisión independiente en Unity.
+Never use pixel fraction as a beauty score. Require matched Unity evidence and independent art review.

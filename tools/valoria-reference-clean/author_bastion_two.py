@@ -28,41 +28,20 @@ for ids in components.values():
  if lo[0]>-3.1 and hi[0]<3.1 and lo[1]>25.2 and hi[1]<31.1 and lo[2]>10.22:
   crown.extend(ids);bounds.append([lo,hi])
 assert len(crown)>500 and max(me.vertices[i].co.z for i in crown)>16
-memory=EV/('bastion2-memory-'+os.environ.get('GITHUB_RUN_ID','local')+'.txt')
-subprocess.run(['node','tools/art-direction/learning-evidence/cycle-hooks.mjs','prepare','--target','bastion1','--out',str(memory)],check=True)
-context={'source_sha256':expected,'mesh_vertices':len(me.vertices),'central_crown_component_count':len(bounds),'crown_bounds':bounds[:6],
- 'scope':'Evolution I to II of retained Bastion only. Preserve all lower geometry, door, six stairs, footprint, surrounding plants and camera. Move existing central crown plus flag upward intact; fill intervening tower wall with matching masonry and new recessed upper window. Add two coherent blue slate hip roofs inside flank tower crowns. Existing tower bodies/merlons remain. No recolor substitution, no unrelated second castle.',
- 'actual_unity_images':['Retained74/77-before closeup','original style reference'],
- 'art_direction':'Recognizable second tier: central watch chamber and stronger blue-roof skyline, compact warm limestone identity. Choose dimensions within safe bounds from observed I; do not score approval. Retain main hall roof and functional base. Original I must be swapped, never overlaid with II.',
- 'verified_recent_lessons':'Native70 windows/portal/cornice improved actual Unity. Materials must reuse validated URP donor maps, transient glTF references previously became white. Native77 pine lobes rejected; vegetation unchanged. Preserve BakedGI and noBatchingStatic.',
- 'historic_memory':memory.read_text(encoding='utf8'),'memory_sha256':digest(memory)}
-fields={'central_raise':[1.8,2.1,2.4],'upper_window_width':[.65,.80,.95],'flank_roof_rise':[1.25,1.6,1.95],'flank_roof_inset':[.48,.60,.70],'roof_rows':[6,8,10]}
-schema={'type':'object','required':['rationale']+list(fields),'additionalProperties':False,'properties':{'rationale':{'type':'string'},**{k:{'type':'number','enum':v} for k,v in fields.items()}}}
-images=['pine77-before-bastion.png','reference-target.jpeg']
-payload=dict(model='qwen3-vl:8b-instruct-q4_K_M',stream=False,format=schema,think=False,keep_alive=0,messages=[{'role':'system','content':'You are Eldoria local 3D artist. Inspect genuine images and measured source; direct the proposed Bastion II evolution through concrete geometry decisions. No score or approval. JSON only.'},{'role':'user','content':json.dumps(context),'images':[base64.b64encode((EV/n).read_bytes()).decode() for n in images]}],options={'temperature':.3,'num_ctx':8192,'num_predict':1400})
-write('bastion2-context.json',context);write('bastion2-qwen-request.json',{'model':payload['model'],'context':context,'schema':schema,'image_sha256':{n:digest(EV/n) for n in images}})
-def api(path,data=None,timeout=3):
- req=urllib.request.Request('http://127.0.0.1:11434'+path,data=None if data is None else json.dumps(data).encode(),headers={'Content-Type':'application/json'})
- with urllib.request.urlopen(req,timeout=timeout) as response:return json.load(response)
-server=None;log=None
-try:
- try:api('/api/version')
- except Exception:
-  users=pathlib.Path(os.environ.get('SystemDrive','C:')+'/Users');installs=list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'));assert installs
-  env=os.environ.copy();env['OLLAMA_HOST']='127.0.0.1:11434';models=list(users.glob('*/.ollama/models'))
-  if models:env['OLLAMA_MODELS']=str(models[0])
-  log=open(EV/'bastion2-ollama.log','w');server=subprocess.Popen([str(installs[0]),'serve'],env=env,stdout=log,stderr=subprocess.STDOUT)
-  for i in range(40):
-   try:api('/api/version');break
-   except Exception:time.sleep(1)
-  else:raise RuntimeError('Existing Ollama unavailable')
- response=api('/api/chat',payload,360);write('bastion2-qwen-response.json',response);plan=json.loads(response['message']['content'])
- assert set(plan)==set(fields)|{'rationale'}
- for k,values in fields.items():assert plan[k] in values,(k,plan[k])
- write('bastion2-plan.json',plan)
-finally:
- if server:subprocess.run(['taskkill.exe','/PID',str(server.pid),'/T','/F'],capture_output=True);server.wait(timeout=20)
- if log:log.close()
+# Native80 already inferred and executed this exact plan. Repair only the failed preview,
+# validating original inference, source, images and measured topology instead of rerolling it.
+request=json.loads((EV/'bastion2-qwen-request-native80.json').read_text())
+response=json.loads((EV/'bastion2-qwen-response-native80.json').read_text())
+context=request['context'];assert context['source_sha256']==expected
+assert context['mesh_vertices']==len(me.vertices) and context['central_crown_component_count']==len(bounds)
+for name,sha in request['image_sha256'].items():assert digest(EV/name)==sha
+plan=json.loads(response['message']['content'])
+for key,prop in request['schema']['properties'].items():
+ if key!='rationale':assert plan[key] in prop['enum']
+assert set(plan)==set(request['schema']['required'])
+payload={'model':request['model']}
+write('bastion2-inference-provenance.json',{'original_inference_run':39117824459,'original_source_sha':'5682de6ee67bae4a4f4d8242fed6aef9e8697306','same_source_images_and_plan':True,'new_inference':False,'reason':'Repair Background shader node lookup after actual native80 Qwen/MCP geometry succeeded','original_memory_sha256':context['memory_sha256']})
+write('bastion2-plan.json',plan)
 # Reuse reviewed masonry/UV tools, not full scene builder or original authoring cycle.
 tree=ast.parse((ROOT/'tools/valoria-reference-clean/author_scene.py').read_text())
 names={'Mesh','line','arch','execute_via_blendermcp'}
@@ -117,8 +96,11 @@ for o in bpy.context.scene.objects:o.hide_render=o!=candidate
 scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=16
 scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100
 scene.world=scene.world or bpy.data.worlds.new('Bastion study world');scene.world.use_nodes=True
-scene.world.node_tree.nodes.get('Background').inputs[0].default_value=(.25,.28,.31,1)
-scene.world.node_tree.nodes.get('Background').inputs[1].default_value=.6
+background=next((n for n in scene.world.node_tree.nodes if n.type=='BACKGROUND'),None) or scene.world.node_tree.nodes.new('ShaderNodeBackground')
+world_output=next((n for n in scene.world.node_tree.nodes if n.type=='OUTPUT_WORLD'),None) or scene.world.node_tree.nodes.new('ShaderNodeOutputWorld')
+scene.world.node_tree.links.new(background.outputs[0],world_output.inputs['Surface'])
+background.inputs[0].default_value=(.25,.28,.31,1)
+background.inputs[1].default_value=.6
 bpy.ops.object.camera_add(location=(-24,-8,31));camera=bpy.context.object;camera.name='Bastion I-II structural preview camera';camera.rotation_euler=(Vector((0,35.5,7))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=29;scene.camera=camera
 bpy.ops.object.light_add(type='AREA',location=(-20,15,30));light=bpy.context.object;light.data.energy=3500;light.data.shape='DISK';light.data.size=12;light.rotation_euler=(Vector((0,32,5))-light.location).to_track_quat('-Z','Y').to_euler()
 for label,obj in [('before',original),('after',candidate)]:

@@ -172,3 +172,6 @@ Native78 run39117246194: existing UI/rules/save I-II probe PASSED, including10s 
 
 
 Native79 run39117498102 output2770507a13b6f3263a5f1f2a54332660fa0fd211 SUCCESS: exact current scene has existing gameplay/UI host. Both explicit save filenames protected; full route/picking/camera/EditorPlay gates passed. Original art/GI retained. Native78 reviewed HUD revealed truncated verbose requirements;80 compacts actual resource counts/requirements/duration into four readable lines and preserves mouse wheel zoom via host. BastionII remains visual PENDING;80 authors a source70 evolution in a separate variant with actual Qwen+BlenderMCP and same-camera Unity comparison. No new project or branch; UI/rules/state remain separate from art. Updated existing progression tests now assert pending levelI before10s completion instead of obsolete immediate ascent; native test run pending next integration.
+
+
+Native80 run39117824459: actual Qwen vision + six-case historical memory + typed BlenderMCP geometry executed. Preview failed at named Background world node lookup; no scene integration, no new art judgment.81 locates shader nodes by type, replays the SAME80 inference validated by source/image/topology hashes and retains original response/memory provenance. This is preview repair, not a rerolled artistic attempt. Native79 remains integrated playable scene.
