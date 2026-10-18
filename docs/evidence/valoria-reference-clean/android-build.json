@@ -1,12 +1,12 @@
 {
-    "source_sha": "55c333516ff0ead5ed26ea55c4df70468b47a9c4",
+    "source_sha": "af87f39e6a324d8bbb906ed2a2ef97484a91aa78",
     "status": "APK_COMPILED_NOT_DEVICE_VALIDATED",
-    "apk_sha256": "38f1aa1e720fb76bf61f31ed91e1b93fe6b55556f2991ddbff182cba5f8b7734",
+    "apk_sha256": "cfc9c554cecabf3d6825acd4df8c84f568259ee222a80bc2d466c1bbf5068e79",
     "package_id": "com.eldoria.valoria.v5test",
     "graphics_apis": "Vulkan, OpenGLES3",
-    "note": "Update of recovered optimized APK38279800977: same package and verified existing signing certificate, versionCode3; single current Valoria scene, known source-only GLBs excluded/restored by existing packaging procedure. No data reset/deletion. Phone install/performance still requires owner test.",
-    "apk_bytes": 174678797,
+    "note": "Update of recovered optimized APK38279800977: same package and verified existing signing certificate, versionCode4; single current Valoria scene, known source-only GLBs excluded/restored by existing packaging procedure. No data reset/deletion. Phone install/performance still requires owner test.",
+    "apk_bytes": 174677573,
     "errors": 0,
-    "warnings": 44,
+    "warnings": 27,
     "physical_device_tested": false
 }

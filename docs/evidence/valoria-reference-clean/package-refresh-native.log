@@ -1,0 +1,1805 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.23f1 (09d2ecc7fb28) revision 643820'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-10-18T11:01:10Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 38616)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
+-batchmode
+-force-d3d11
+-projectPath
+C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu/valoria-layered-source/Unity
+-executeMethod
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting
+-logFile
+C:\actions-runner-eldoria\_work\_temp\valoria-package-refresh.log
+Successfully changed project path to: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu/valoria-layered-source/Unity
+C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [37620]  Target information:
+
+Player connection [37620]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 2459282459 [EditorId] 2459282459 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [37620] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [37620] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-23736" after 0.7 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T11:01:10.9124866Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 38616, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              6440e172462c40478d374143b51e96d1
+  Correlation Id:          fcf72fbc72f464efa68b6d171e219ac1
+  External correlation Id: 4528341149715427102
+  Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.87s, validation: 0.32s, handshake: 0.02s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T11:01:11.2558582Z"
+[Licensing::Module] Connected to LicensingClient (PId: 38616, launch time: 0.00, total connection time: 1.22s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 6872884678417-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 1.24s
+[Licensing::Module] Licensing is initialized (took 0.39s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+FMOD initialized on nosound output
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 69 unused hashed content files
+[Licensing::Client] Successfully resolved entitlement details
+Refreshing native plugins compatible for Editor in 1.80 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Assets
+Forcing GfxDevice: Direct3D 11
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3060 (ID=0x2504)
+    Vendor:   NVIDIA
+    VRAM:     12115 MB
+    Driver:   32.0.15.7242
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56736
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.011013 seconds.
+- Loaded All Assemblies, in  0.898 seconds
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.610 seconds
+Domain Reload Profiling: 1507ms
+	BeginReloadAssembly (450ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (28ms)
+	RebuildCommonClasses (42ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (86ms)
+	LoadAllAssembliesAndSetupDomain (305ms)
+		LoadAssemblies (439ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (283ms)
+			TypeCache.Refresh (280ms)
+				TypeCache.ScanAssembly (234ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (2ms)
+	FinalizeReload (611ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (574ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (118ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (80ms)
+			ProcessInitializeOnLoadAttributes (169ms)
+			ProcessInitializeOnLoadMethodAttributes (204ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 28 packages:
+  Packages from [https://package.openupm.com]:
+    com.netpyoung.webp@0.3.22 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.netpyoung.webp@e87336693c4a)
+  Packages from [https://packages.unity.com]:
+    com.unity.cloud.gltfast@6.14.1 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.cloud.gltfast@0847aee0f6da)
+    com.unity.inputsystem@1.17.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.inputsystem@02433b2481ab)
+    com.unity.mathematics@1.3.3 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.mathematics@19a9377c4ffa)
+    com.unity.burst@1.8.30 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.burst@2f3d916873ea)
+    com.unity.collections@2.6.8 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.collections@84e8eb3fc12e)
+    com.unity.searcher@4.9.5 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.test-framework.performance@3.5.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.test-framework.performance@8b56083ec0f0)
+  Built-in packages:
+    com.unity.render-pipelines.universal@17.3.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.render-pipelines.universal@7865b6b91f8a)
+    com.unity.ugui@2.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.ugui@27635d171b1a)
+    com.unity.test-framework@1.6.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.test-framework@bd7f943e9647)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.terrainphysics@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.physics@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.terrain@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.ext.nunit@2.0.5 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.ext.nunit@d8c07649098d)
+    com.unity.modules.imgui@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.ui@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.render-pipelines.core@17.3.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.render-pipelines.core@0bb36005e9ba)
+    com.unity.shadergraph@17.3.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.shadergraph@b4b75cc00891)
+    com.unity.render-pipelines.universal-config@17.0.3 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.hierarchycore)
+  Git packages:
+    com.arloopa.unitysplats@https://github.com/arloopa/UnitySplats.git (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.arloopa.unitysplats@6c0258189a2b)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 0s907ms
+[279/794    0s] WriteResponseFile Library/Bee/artifacts/rsp/4747638433968585886.rsp
+[622/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.85 seconds), 2 items updated, 794 evaluated
+AssetDatabase: script compilation time: 1.690107s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  3.287 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0106902 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0015647 seconds
+Start importing ProjectSettings/GraphicsSettings.asset using Guid(00000000000000006100000000000000) (LibraryAssetImporter) -> (artifact id: 'd3b7ed1f46345ba312812909ab936540') in 0.0012433 seconds
+Refreshing native plugins compatible for Editor in 6.21 ms, found 4 plugins.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  3.369 seconds
+Domain Reload Profiling: 6652ms
+	BeginReloadAssembly (301ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (21ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (160ms)
+	RebuildCommonClasses (34ms)
+	RebuildNativeTypeToScriptingClass (14ms)
+	initialDomainReloadingComplete (25ms)
+	LoadAllAssembliesAndSetupDomain (2909ms)
+		LoadAssemblies (2761ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (237ms)
+			TypeCache.Refresh (187ms)
+				TypeCache.ScanAssembly (143ms)
+			BuildScriptInfoCaches (37ms)
+			ResolveRequiredComponents (10ms)
+	FinalizeReload (3369ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (3119ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (48ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (141ms)
+			ProcessInitializeOnLoadAttributes (2517ms)
+			ProcessInitializeOnLoadMethodAttributes (405ms)
+			AfterProcessingInitializeOnLoad (5ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (30ms)
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Granero_FPDv1.glb using Guid(20b71f3cb4c6ad048a1e1cafb9894c92) (ScriptedImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+ -> (artifact id: 'e655d90acf15c512da2460a1cbe0dbbe') in 1.0273132 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_MainGate_CohV1.glb using Guid(50f8179074dd77f4abf29ca2997b28f7) (ScriptedImporter) -> (artifact id: 'a13ff50cec1cc6c0b874af2d09a4e988') in 0.0247797 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Tower_v3.glb using Guid(a00f32a746d229b4789d810f16b4c462) (ScriptedImporter) -> (artifact id: 'e2b03b085978e8ada588708513531604') in 0.0079468 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Workshop_CohV1.glb using Guid(f04892d9e8d9c4346af32a2d29a288e6) (ScriptedImporter) -> (artifact id: '6404e9b1571858cb4402347b05e6495d') in 0.0068168 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_CivicHouse_v2.glb using Guid(21704c518ab094146bee0cc69346c0b7) (ScriptedImporter) -> (artifact id: '26da038fb726ef671b13673ae62e3980') in 0.0353777 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3.glb using Guid(31b518445e89e0e43aa56603a2aa5c79) (ScriptedImporter) -> (artifact id: '7644330b48a907caa2a4dffd802ec240') in 0.0105861 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_MainGate_FPDv1.glb using Guid(4160619735b9ff640b6eacc3c3f719d8) (ScriptedImporter) -> (artifact id: '86e203fb79c733ec541dcacb1309b0ec') in 1.2019176 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_MainGate_v3.glb using Guid(4193f23b4facd4146882d71b39a99242) (ScriptedImporter) -> (artifact id: 'de3a24394bbb5d91ee4f4e988f882103') in 0.0033564 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Cuartel_FPDv1.glb using Guid(8116ccf7c9b8140429b03e25df1e2663) (ScriptedImporter) -> (artifact id: 'b22a60827beb459115c11001aaefbbb5') in 1.484409 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CuartelTerraceSupport.glb using Guid(a1fd83c0acfce2940be15461c442703d) (ScriptedImporter) -> (artifact id: '8b887322322dea8f3c8965d7f4f7e90b') in 0.006741 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_MainGate_SkinV1.glb using Guid(b13aa5c20f2045940ba11f97a8764bda) (ScriptedImporter) -> (artifact id: 'ce3894c903be482cfb6517e6defab93e') in 0.7017058 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CivicRetainingBay.glb using Guid(b1ade3f80cef99d46aed37d32beff66b) (ScriptedImporter) -> (artifact id: 'be945cff14763321578c3eb18bb7f379') in 0.0163215 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_Tower_SkinV1.glb using Guid(c1bab38f226fc3a469b2168dc5cd1754) (ScriptedImporter) -> (artifact id: 'd9092d5dc9a1f0e5b4e8db7ebee93b5a') in 0.3855388 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_MainGate_v1.glb using Guid(22ab7d94dd2491843b4932eb887f4813) (ScriptedImporter) -> (artifact id: '33994dba865a8e0c3a98a318c3ef1f04') in 0.0061938 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb using Guid(62b3d69b8eb64c71a5ae7d3482d70902) (ScriptedImporter) -> (artifact id: 'c0701547128baebc2fae0edfb1341164') in 0.277775 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb using Guid(62fb51cd1ca4d614bb6fec3825eb5e58) (ScriptedImporter) -> (artifact id: '81cb3669119aa2b48c2ed186d18c48f2') in 0.372756 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb using Guid(62acf77bec6c7764ca4e817a93801023) (ScriptedImporter) -> (artifact id: '6dd21b258203ea8376883d2e4a8a18d6') in 3.3088035 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Workshop_v2.glb using Guid(9262c3746692acf4d8d3b3621cf1f77c) (ScriptedImporter) -> (artifact id: 'b56f47cb6a1d0bef8689a1b0a1a7690f') in 0.2598874 seconds
+Start importing Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb using Guid(b28bb9e8fc737be45b9d8688c9d4db29) (ScriptedImporter) -> (artifact id: '1d709b577eb71c340cfc25a0a7dc021e') in 0.513735 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/LowerArcadedFront.glb using Guid(c284bbb16dd991f4791cd6c795b2776d) (ScriptedImporter) -> (artifact id: 'd7d89ae65f96fcec771873bb3a5452e3') in 0.0114352 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb using Guid(e237b5bb3d4b58ad29dc8ed439c41667) (ScriptedImporter) -> (artifact id: '7c5e60be851d59c4e7df0a31baa9ca0c') in 0.3726967 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_CivicHouse_v3.glb using Guid(f28f00fc37c4c3948bef306d48d8f871) (ScriptedImporter) -> (artifact id: 'c92327c2f1a9346a3f9199ce33127720') in 0.0295347 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Granero_CFSv1.glb using Guid(1398f17013db3764d94c7ee52559514f) (ScriptedImporter) -> (artifact id: '33d7a7bd585a099fb604c7cbd2f04945') in 0.5589634 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Tower_v2.glb using Guid(93d555a3844991e4084f11dd1ead974d) (ScriptedImporter) -> (artifact id: 'c13314bf3c98c211564f53aec272c061') in 0.205196 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb using Guid(f3c533c384dea8343fba1c130a5a51ac) (ScriptedImporter) -> (artifact id: 'c1b4aff9e3d24116970fb13b6102bb23') in 1.0245546 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb using Guid(24df6a662c5c5d4409b777b09e913922) (ScriptedImporter) -> (artifact id: '66e1e6b0816ff54ce67da7dcb7abd549') in 0.4055934 seconds
+Start importing Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb using Guid(547be9c043e43bfcaa840aede0d0da60) (ScriptedImporter) -> (artifact id: '9684fbd2b72ba1087cabd275da8e387e') in 2.0839982 seconds
+Start importing Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb using Guid(0510247b2fc29f9936596ac01bbd6b98) (ScriptedImporter) -> (artifact id: '26de180a0c6202a0864ddcabf2edcecb') in 0.3621704 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/Valoria_Granero_RCFv1.glb using Guid(053be26e0b5c64d4294c0ca7588b1581) (ScriptedImporter) -> (artifact id: '73c61b1882549543373c5d72a79f5978') in 0.7097988 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_CivicHouse_CohV1.glb using Guid(45d3f31860425604ba3996beb2b0be21) (ScriptedImporter) -> (artifact id: 'edc885be8d89870a2689fd93354a0a8a') in 0.011996 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_WallSegment_v3.glb using Guid(55ac4d94fe5790a4ba3be606ca8bcfbf) (ScriptedImporter) -> (artifact id: 'fd805125b85685df6f416bb9d0f028a4') in 0.0034107 seconds
+Start importing Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb using Guid(b5c291fa02c933a8460ed899d183e366) (ScriptedImporter) -> (artifact id: '8c94eb9db66a429ab59a5754f44314da') in 0.0055127 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_WallSegment_DefV1.glb using Guid(d5f3268e507bfb745be9a139568d6ce7) (ScriptedImporter) -> (artifact id: '3524ee647638af25b37541c38348d2db') in 0.006516 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb using Guid(26bd929ad3360a9434db91318d3f1388) (ScriptedImporter) -> (artifact id: 'b3c9105fdf284b8bd93ffd08721f1854') in 0.0046346 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_WallSegment_CohV1.glb using Guid(76e8d07d9a872f84db7a17a76d6e755e) (ScriptedImporter) -> (artifact id: '73c8d2152ccfec2aae9ed173ece5634f') in 0.0029205 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb using Guid(9608a2cf2da3c6a44bb2c4742191f0df) (ScriptedImporter) -> (artifact id: '74f74e88520ce42f33f8da77ccbf0d2f') in 0.5810323 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1.glb using Guid(b6e510dd9097afb4c869f23de6f82b27) (ScriptedImporter) -> (artifact id: '2365ec42a095364839dec59e20f23652') in 0.0114218 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb using Guid(072b0edac924ef4dfdc33b7c75dafa10) (ScriptedImporter) -> (artifact id: 'a85f634fd58384aa45922d1fa37357ad') in 0.0048455 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_WallSegment_v2.glb using Guid(47e58058dcce61649b2143c31b3aeba1) (ScriptedImporter) -> (artifact id: 'ebaa7dee0fe7b46f077efca47f2e4cb5') in 0.3571295 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb using Guid(f7ed08ab916f93f7ec5f8aaade576012) (ScriptedImporter) -> (artifact id: '421d9bf34468fe6e0df796d15dfed9d8') in 1.1648599 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb using Guid(78bc4181c380edcae4de87730baf637f) (ScriptedImporter) -> (artifact id: '875d34443ed597600a720b7cdd84a0cf') in 0.3632998 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_WallSegment_SkinV1.glb using Guid(c8c5cb703f325f448bffc1c7b4de6daa) (ScriptedImporter) -> (artifact id: 'a5d3d23e33daa8aafe216736f5babf94') in 0.6855873 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb using Guid(19d21c600d68420409954d557cdcdc69) (ScriptedImporter) -> (artifact id: 'e5f1826ca5b9695d736c1418060fe264') in 0.4167351 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_WallSegment_v1.glb using Guid(39e863ed7b0f95646a0823ae2a7c4ef1) (ScriptedImporter) -> (artifact id: 'd0a9272dec252971ff828bc7ac9a4ce9') in 0.0450406 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb using Guid(e91f5c36e9d02c0378fc09b391c657ac) (ScriptedImporter) -> (artifact id: '33dfc3f691370545d868e6b87a0b4554') in 0.7602038 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Tower_v1.glb using Guid(0add6ae3e1824144c87d345fc781ab70) (ScriptedImporter) -> (artifact id: '66832d991ce608a00020c24fafd0b86d') in 0.006616 seconds
+Start importing Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb using Guid(6ae6058a906a8aa4c86acdbbe238c78a) (ScriptedImporter) -> (artifact id: '49d09263b0db0f75785cec8c27cf0034') in 0.3563647 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_MainGate_DefV1.glb using Guid(8ae374d03ea8133438f13927bba8a95d) (ScriptedImporter) -> (artifact id: 'de96859477d14b7d25b2de720fdb7279') in 0.008841 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb using Guid(aa05d7e68e5204e672ca97e15d1f08c0) (ScriptedImporter) -> (artifact id: '1a2e56a48c4e2e260ce31d91652f1fa4') in 0.71403 seconds
+Start importing Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb using Guid(ca7b97be950c085449c27538befda4da) (ScriptedImporter) -> (artifact id: '1ce3e9780b2c243896553d6533f01c8f') in 0.7713802 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb using Guid(fab49a06db8b592fc6a3e80880b7ad79) (ScriptedImporter) -> (artifact id: 'f2f59e8e793e4f27ba0a7f3b6108c2ec') in 0.3749133 seconds
+Start importing Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb using Guid(fa36c6abf91adc7778caeac12130f567) (ScriptedImporter) -> (artifact id: '4322081afe25187e75e32a7456327340') in 1.480596 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_Tower_DefV1.glb using Guid(0bbb47da647936e4c8b79ef5f1ae5afe) (ScriptedImporter) -> (artifact id: 'e86fb89bd68d8bcc6fc3e5cce7f9a35c') in 0.0135079 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_MainGate_v2.glb using Guid(7b1409f5c6c800d40b7a5d24211b0391) (ScriptedImporter) -> (artifact id: 'f8d4ffa7e26304a73fc249d4f0acb51c') in 0.4050049 seconds
+Start importing Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb using Guid(8b1bf510eee65e245ae3d42425df5103) (ScriptedImporter) -> (artifact id: 'a257e266a73cd2ba4667896dcba0bd14') in 0.8697857 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_Tower_StoneDefV2.glb using Guid(ab0353bfb339bae4194fe65b2a1e1da4) (ScriptedImporter) -> (artifact id: '6808be99a9c577b3ad7e5e549dcc6f93') in 0.4157204 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Workshop_v1.glb using Guid(4c6bbecbe9845ff4daae6794b55dc00a) (ScriptedImporter) -> (artifact id: '7b0b4f54a8090041da025e21c1f380d7') in 0.0139976 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb using Guid(4c5e60df3634ee1746615a45959139b9) (ScriptedImporter) -> (artifact id: '537dc06bdbb5dfc00c91b68516ccfeae') in 0.6851174 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb using Guid(2dcf715b4ff30e048aa36ef439e5c676) (ScriptedImporter) -> (artifact id: '0b768afa8570cc6c6cb14f2ffb195cf6') in 0.0269542 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb using Guid(bd29328f82fb2c348970c829b91ebf9d) (ScriptedImporter) -> (artifact id: 'dad3cda44bcd8c095431a72c93c7789f') in 1.8660011 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_WallSegment_StoneDefV2.glb using Guid(bd5b6eac8beb8b94fa606843f3ec9a1b) (ScriptedImporter) -> (artifact id: '849630fe5eead11becad571d31e2381f') in 0.3920509 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_MainGate_StoneDefV2.glb using Guid(0e3b82a09246d8145be6cc2884e2f92f) (ScriptedImporter) -> (artifact id: '6a3ee123d2c2a69fa6b4b74d168de1a0') in 0.7132024 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb using Guid(be3263e6cfe354448b66ce0f718221c2) (ScriptedImporter) -> (artifact id: '56d46df18c572fb238f09bd4929ec169') in 0.0034752 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb using Guid(3f53f7d2a5d8d1a28c95a607ed91f774) (ScriptedImporter) -> (artifact id: 'cad1b0a7c56dc1427cd0a38d161a8961') in 0.6836988 seconds
+Start importing Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb using Guid(3f8f4322246b716eaa7510a7325c3ae4) (ScriptedImporter) -> (artifact id: '65583a5f67b20682a02e88b557e8bd0b') in 0.3977724 seconds
+Start importing Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb using Guid(9f30b32039de2d7d0cd7502af0240608) (ScriptedImporter) -> (artifact id: 'c58f73fa55448f7fbd8f0b3e10b9d5fc') in 0.6304467 seconds
+Start importing Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb using Guid(bfb14db05010e604a9be68aadcfc93d7) (ScriptedImporter) -> (artifact id: '3aba3de02923e5b024eb1f622b37d120') in 1.5323911 seconds
+Refreshing native plugins compatible for Editor in 6.35 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=cacc37a4d7487234a9dd2afafb0673c9): Total: 50.990 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=70 (actual=70, local cache=0, cache server=0)
+		Asset DB Process Time: managed=8 ms, native=45563 ms
+		Asset DB Callback time: managed=294 ms, native=104 ms
+		Scripting: domain reloads=1, domain reload time=3287 ms, compile time=1692 ms, other=39 ms
+		Project Asset Count: scripts=1206, non-scripts=5858
+		Asset File Changes: new=67, changed=70, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 11.953ms
+	ApplyChangesToAssetFolders: 0.520ms
+	Scan: 6691.561ms
+	OnSourceAssetsModified: 0.969ms
+	CategorizeAssetsWithTransientArtifact: 159.543ms
+	ProcessAssetsWithTransientArtifactChanges: 48.037ms
+	CategorizeAssets: 122.025ms
+	ImportOutOfDateAssets: 38392.320ms (1698.126ms without children)
+		ImportManagerImport: 34998.463ms (4.925ms without children)
+			ImportInProcess: 34993.158ms
+			UpdateCategorizedAssets: 0.380ms
+		CompileScripts: 1691.832ms
+		ReloadNativeAssets: 0.037ms
+		UnloadImportedAssets: 0.850ms
+		ReloadImportedAssets: 0.009ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.637ms
+		InitializingProgressBar: 0.006ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
+		OnDemandSchedulerStart: 1.358ms
+	PostProcessAllAssets: 428.518ms
+	Hotreload: 8.611ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.274ms
+	UnloadStreamsBegin: 3.270ms
+	PersistCurrentRevisions: 0.859ms
+	UnloadStreamsEnd: 0.002ms
+	GenerateScriptTypeHashes: 3.011ms
+	Untracked: 5121.549ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 3.634ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Unity
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV3Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV6Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV1.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV2Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV5Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV1Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Unloading 36 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4317 unused Assets / (5.7 MB). Loaded Objects now: 5238.
+Memory consumption went from 232.7 MB to 227.0 MB.
+Total: 9.460300 ms (FindLiveObjects: 0.514100 ms CreateObjectMapping: 0.499400 ms MarkObjects: 6.364500 ms  DeleteObjects: 2.081700 ms)
+
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0026997 seconds
+Refreshing native plugins compatible for Editor in 5.80 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=e5cc982a259816949a33440ef0892215): Total: 0.095 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=deda43e18d739284994a0162983adeb9): Total: 0.007 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Starting new worker id: 0 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker0.log
+Starting new worker id: 1 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker1.log
+Worker ready: AssetImportWorker1 1
+Worker ready: AssetImportWorker0 0
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_025.mat using Guid(8a67f6974d2e868459073af526cbc89d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'fdd4e3d539ebbe584a8bbd5340e33f30') in 1.0884938 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_013.png using Guid(0cf791e069f11ee4a873b5e4f656f1d9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '294bc1e048e0031f77e88f8c89045620') in 0.0496931 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_005.mat using Guid(82833faaf7bcf854f96fbbddf623af74) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd9a370103f89fee3b432193ead2b57eb') in 0.2703975 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_004.png using Guid(388c1dee283231e47865b3ba8ce48a78) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'abed609c5ee1271be7602f1b0e7ff190') in 0.0320573 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_021.png using Guid(c6689e7ed9b8aed4ab7477741f346616) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b1888d60ab0c30544d64746502578a80') in 0.0138892 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_light.exr using Guid(d90c31ca316b14140abc439a7ef5037a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '16b107fb4c63d37a0c8107e3e8645f5c') in 0.7238887 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_023.mat using Guid(eb1dec98fb71fb4448738f24d7623f35) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '9acfc61cee3531c0c5974f45324d960f') in 0.0385036 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0052.mat using Guid(6fb187c12cf05c34795508ce39e06909) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'bbfdfb294c3a016a8c130e8e009683bf') in 0.725366 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0019.mat using Guid(601b4af448454574fbf86c047cfa0ab8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '943f34a2b5edd7077819d13b62a94117') in 0.032294 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00028.mat using Guid(910ce7d55b652954fb159aff720b5ee6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b65692d00d9e61759fbda9eadc51d268') in 0.0583544 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_000.png using Guid(c5ffb81e59a734b43a60ea0f93ca6c21) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ee76046ff7e2e14f8368a42227288a43') in 0.0406533 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_003.mat using Guid(674b1e755661f914da427808055418a1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b70c89b528b02f278816e77d4539cdb7') in 0.0379294 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.core/ShaderLibrary/API/GLES3.hlsl using Guid(14a46e0dac04a0245b3f95359167b663) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '540f4cdc23d73b658a91087e8b341273') in 0.0251425 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_027.mat using Guid(88534aa40269c764e93c76550a4d28a2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8951e8fd53fbe40fb9ddecd82fb461c8') in 0.0105834 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00008.mat using Guid(2a6e01b2369ed534fa52c832ab1ac631) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8ba8733e60440e1f7ab1a427951c5cef') in 0.030194 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaRiver.shader using Guid(6bf850294f4226743a614b1b04b0d182) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0bfdcb8d0e7ef4e6174d160040aa8874') in 0.0006627 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0070.mat using Guid(3ec8ff7b12a51794c9c835fcd5641c4b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '9784441fd651afad9bca1aebbdf04079') in 0.0683312 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_021.mat using Guid(694184b12ac062c498566a6101ba2a4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '40937e08b653813e80b2878fabc53451') in 0.0161567 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Paths.prefab using Guid(09d5f3ce9f00ffc49bf71529d2d5bb5e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6cfbca8e6595a622ca54dd8a47ceff2d') in 0.1761795 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00002.mat using Guid(a3ad7e6e3622e7f4291ae8da30314a73) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e636c13743e4e4c8e7b379c3f43e2fa2') in 0.0290825 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0010.mat using Guid(a7537f21fed459f4381b103bb2481e13) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6292bebe8cc2d1a8d0f9c756291e649a') in 0.0231543 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0051.mat using Guid(8d429d06058140e4698921cda4719086) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6fe9f0f579deab1ed1dc50511fd09c79') in 0.3440997 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0054.mat using Guid(6193b7c8c5c392e4fae0a09008cae3f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4b94c031a9a6a797d0ec5a1fbe157c4f') in 0.0155535 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_007.mat using Guid(14ed30433f3b22244904c99ea3e7c807) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7551702da0fb3ffb128f7dece434802c') in 0.0216167 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0062.mat using Guid(e888610c505307f4f94cfaa042abe2f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7b7baec08b14df529fa9cffb0726a0f7') in 0.0124372 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/leafy_grass/leafy_grass_nor_gl_1k.png using Guid(537b5f73386e694448db9380e502b030) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '5c6dd165c4834e03504688225164f87b') in 0.0398331 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_015.png using Guid(11a8b4c29c1854e4899058ed03499fb1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '591fb3f7ac28d9a79b151d4212b83828') in 0.0129242 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0023.mat using Guid(c72f328a5ec21db4c8db4d949459b4f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '08fcb31c2094cfafd54ad5bceb8c15b9') in 0.3722124 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab using Guid(ee75939cc989a824e84545fdf93f8d72) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'aa8b9b3fa5bcfd86f1e7e7210e796034') in 0.0567064 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00026.mat using Guid(fde6a736bb392d34891357ccf45040b9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '762a7a2710ca2440494842e8ed53ed66') in 0.029049 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_004.mat using Guid(6d570b4d24a2af34ea524555c2e4274f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '81edd2ad0716de6762f3a221af0bbea1') in 0.0253746 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Loam.terrainlayer using Guid(a0fcffe5f855fe3448dd206c56ba4631) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'bfb218395366b0a52f13c4a9aa0a7dd3') in 0.1164916 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0076.mat using Guid(0fd007361012f394ca0199e77eb9bdd0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e1daab79e9042112e1bcb37569e70aaa') in 0.024479 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Bastion_I.prefab using Guid(6d2943a9fbf7a224b85b95df7dc32b52) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '23c2b9d1eb2f378d1dcdbf72c59e6353') in 0.6395876 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/rock_3_nor_gl_1k.png using Guid(990bc0ecb33bd0946ade461846039971) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '10c3e1f8342d8df49927ec5989b508f5') in 0.023603 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0084.mat using Guid(57f6e5d24a6a67648b98fa382d3f7374) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f9fbaa4af671116d56b0fa6e661e9632') in 0.0428658 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLit.shader using Guid(69c1f799e772cb6438f56c23efccb782) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4bbbe4ba92765097cd8b0e4c9fe371d0') in 0.0006759 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00005.mat using Guid(12e5864faa16ab14d99a566576fbed94) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f295c600ed766ae2ad5d0ac698a62146') in 0.0408358 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png using Guid(700d425c7f212f74b8813e3e3d450890) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0b3614d884f7e1d8886e6e4d996c0dcb') in 0.0971699 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_003.mat using Guid(600bdf1f3268e85418c5dffc9018806f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '26007e710512d175dadcc42e15bae757') in 0.0158552 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_006.png using Guid(f7e45c45737c5864fb4f3f134d682727) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3b22f7c442c0c06003c23e1d06b0c647') in 0.015193 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_006.mat using Guid(159fd7972e9307649ae647a2428da671) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '90a5539633079d8882bd51b0c98401d0') in 0.078537 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_001.png using Guid(5a061152efe6bb0479a43679c198ecd0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'aea40d5eed46bc5fb27561165269dc56') in 0.0077928 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionEnvironment72.glb using Guid(e4bb9ad53b660234fbeb1ce362adbaa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0ccfd1a60b5e5870f9eb70806c64afef') in 0.221347 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/leafy_grass/leafy_grass_diff_1k.png using Guid(75541b8cfb82c8746b94f1ffd5e5d9c0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3249b15a79fa73982f4271f54a6cd914') in 0.0239889 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/sandstone_blocks_05/sandstone_blocks_05_nor_gl_1k.png using Guid(2e300e3454a60c14ab0ccca2b72a8383) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '098f27571610f265e690f5a07be71b9a') in 0.0508817 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00032.mat using Guid(0cd5b4309a4f41b44b0b5b06c1f9a6b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6a75047572cb5f398b3f4414ccd45e9f') in 0.0120705 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_006.png using Guid(7dc10187e87e8eb4a98cdb371f560122) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b3003588dccef4266bb254d79b5cf982') in 0.0082245 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.core/ShaderLibrary/API/Switch.hlsl using Guid(e81335bf0a3c45c4fa81ed2fe67eeba0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '804b5c1e80ae9877677325a07d8a441d') in 0.4291715 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-2_comp_light.exr using Guid(f960194148fc270468fc6704199ef3fe) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'a3e7f0b8cf0472a220cd6979b42bcafc') in 0.0442519 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Meadow.terrainlayer using Guid(18d26dcc62d24fe4a9e4278dfddfc9d9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'fce559263c582e6384dd0b7ffd8d316a') in 0.0677538 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_005.png using Guid(bcb1597f5707d294c9f407e35170c413) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c83dcc58e48a80c90a6a1cf0508863d4') in 0.0075977 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitBase.shader using Guid(21322c8b137c66e49b86085d3c8161f6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '80fd437c45f93a512c3137aac1d7a0e3') in 0.000692 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0027.mat using Guid(e0f786305e0611347a30084b319dbaf4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e9db9c16bb61dfea64fccdcefabeb300') in 0.0378418 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_005.mat using Guid(0f199acfc58edee4fa426fa67c6b6b77) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f18670fdf9326a5374d44b0ee390fa38') in 0.0107341 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0082.mat using Guid(87de0a00e70e1e64c97e9016de71a491) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'dbb7fa966f48255128a989baf3bdd821') in 0.023454 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-3_comp_dir.png using Guid(aa28259987e08924c804aa6655327dc5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '79125198d42ac05b4c61bcdbd9feb3d6') in 0.0437622 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/ReflectionProbe-3.exr using Guid(6b95a730bfaf89d41b81820002cab237) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e174d4192044fdb733977a8ea9445023') in 0.0376117 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png using Guid(3bfdf14ea26e0194bac3e229f15440fd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8d93f532b5abdeecf748ad6aa517d85d') in 0.0205563 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0049.mat using Guid(7aa191cdeb6d4b64d9b0d72f66f19aaa) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '1957f50ada979188d66f4ca7b917413b') in 0.0896194 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_016.mat using Guid(3b0cb407bfe423845af3ab7e112a34ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'dd6fa9fbce2909d6c2337d1350674fbc') in 0.0256469 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.core/ShaderLibrary/API/GLCore.hlsl using Guid(17e9ff94ac9e8aa4e81b23222a4dc205) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6ab7368d1ab362cfaf738826abab0eed') in 0.0197426 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_013.mat using Guid(8361009313c767f43b43f7efb6520896) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd0b9abcbdabf15106a6a4da49e0302b4') in 0.0249151 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_017.mat using Guid(e437dbb0663547f47a8964b61abe095c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e7c46d09088374ea1933564a0c7344de') in 0.0107558 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Bastion_II.prefab using Guid(1876d11f1feb90d4298e95ef5182dd2b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f151cc5c94587daaadd3d0ba5d5aa3c1') in 0.2550446 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_009.png using Guid(cd965f453ed5ffd4bb28ebee326f93a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '857751405007128c802077d4c82f303d') in 0.0083428 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionEnsemble66.glb using Guid(3cd9e3248e48fcb43877c75aff7d0498) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b1b480bba1727d44c7ec601e8f88bff0') in 1.1467929 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00027.mat using Guid(5ece668043244ba4a90806b9acb3cb7f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8d4fd7c998e06c549b3470fc6feec73e') in 0.029382 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_024.mat using Guid(c379d296ae4ab9140880c8ea07a9397c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '96d54c6c135026ac461db583a4dfed28') in 0.0373452 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_014.png using Guid(90b92ee007e8d6c4ab8fef2fff028733) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '03fea13bd32bf472e89b27bde10cc2e1') in 0.0081736 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0024.mat using Guid(0dd56315237ffa644955cfa770219bcd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'bad125e14c9d1e1e81d488f57d9b9444') in 0.0396179 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Generated/Terrain.mat using Guid(ed6e079e8d3c80a4b8f8b4083ada4310) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c64b31be4b07bc698f9fdd0f503adb8b') in 0.6990514 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_001.mat using Guid(bf7b6cd73dfe0e84c8db6f117d520ffd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '659e4b186c7507831948d5ba3310cc8c') in 0.0158677 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_013.png using Guid(474ad35b603261e49913fdaff1d25c70) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '43cd569c343b5bd0e20bacf46b696a1b') in 0.0127154 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-2_comp_dir.png using Guid(8db46593c79ec20439edff07bbc38f7b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4d5eca6a189fb7d22e3f8282f757cae4') in 0.0284277 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader using Guid(933532a4fcc9baf4fa0491de14d08ed7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b2847372b145ca08efe09b680fb150d1') in 0.0006639 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/sparse_grass/sparse_grass_nor_gl_1k.png using Guid(300c8ed0e33907043bc8016c98b138cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '5ec17037a8139937b6ec14047cc018d5') in 0.0196969 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_010.mat using Guid(7903e4242252f314eaf3762768b132f1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '2312ba9c82857a03a5ffdb22053f3f74') in 0.0157697 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0053.mat using Guid(06a94345bf5734246a0c3e2a13c24005) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e9fac94beac0edb6b79b91bb797fb463') in 0.0121283 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_003.png using Guid(20245a6b7cd1a384cba30a0eae3340ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ec6975704378ba304b92601fde51525d') in 0.0076518 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_009.mat using Guid(0d5650d10f15e1a4d83fe5108cd77d60) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd2b7dbfb485ee3014cee1d7d3ced9861') in 0.0106141 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0030.mat using Guid(388e3593a4358434eaed305af0b68334) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'de2c771dabacbd2dfa52c9a107d054ab') in 0.0230447 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_008.mat using Guid(425d1adc85b939c43a6544271c665dde) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0ec885d74fc577772e9f03c0a64d3ba3') in 0.0106361 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/ReflectionProbe-2.exr using Guid(762ff0371bdcbd44da4e4a1bae999c77) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'fb1bf8eb096dcbe2743e3f7a44b74dbc') in 0.0139006 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00035.mat using Guid(be6e0805236b3f548bc99469a3cc845f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd38897d75bbb00b35aabfc9ee1f76a82') in 0.0290683 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0026.mat using Guid(933e1c640f3e0954382b507786c00ad9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '863cc99a713fb1dcca6809793c54a4c0') in 0.0380698 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-4_comp_light.exr using Guid(ad3a578ab3d8bf54abed91de983a83b7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c1c3da09d7c11e2aa22855c8a5650cfb') in 0.0338609 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_026.mat using Guid(93d5684611f84b34693282ec9c3c3649) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c65f1ed57aa2c780050c35d58312a887') in 0.0191798 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_012.png using Guid(9c53bc9969c2fa24dafc53abb38014d6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '57068a7f4e504d42900e42153cb8acc7') in 0.0127997 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_018.mat using Guid(b8285f970d681a9439384abd21253d41) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0a19a02ebbe8d650eebe023a091cc2c5') in 0.010784 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/sandstone_blocks_05/sandstone_blocks_05_ao_1k.png using Guid(4f28630bd3d44dc4ab9f255344e0dce4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '19219e1ae8d08ed82fb41115865b92b1') in 0.0350804 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/ScannedWornSoil.terrainlayer using Guid(219d1c9deefac06488c85f5f1d39bfe9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7879bc27bd712765373b27017b1c4940') in 0.0524972 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_009.mat using Guid(1382e5a3b7de27d4785811f6f3f3399e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '2620a1d2aa8941bd1cf2306855fc0969') in 0.0258224 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/sparse_grass/sparse_grass_diff_1k.png using Guid(d3b53d6a06a6b0c4f9c5a280bd96e108) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'dbe301c82725e5a637120f47029d1e21') in 0.0355106 seconds
+[Worker0] Start importing Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs using Guid(0c88788eeb6222d4190071e890a0caa4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8311044181a885744769f04cf922e4a7') in 0.0004413 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-4_comp_dir.png using Guid(5da4529fea381224d887a49674cffbbf) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f5b1ff10d683d19aab3cc5c371e1dc35') in 0.0491027 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_016.png using Guid(b5328f5483ed1fb4293cc3e390c24400) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3d13016f9040b35e59c130889d0a8b63') in 0.0126523 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.universal/Shaders/Debug/HDRDebugView.shader using Guid(573620ae32aec764abd4d728906d2587) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '01b48c34f2e868208e5a96b999ff4aa8') in 0.0006674 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/sandstone_blocks_05/sandstone_blocks_05_diff_1k.png using Guid(2d19fa1912b77bd42bbcc0e6690ff133) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7436deb30d77ba671d557be2c9d4147a') in 0.0541542 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_008.mat using Guid(150e82ba11e64b24bb3c3942665d97bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '07a5103c3470b019bb38178469e676f6') in 0.0109019 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/ReflectionProbe-4.exr using Guid(80df8b0717c2f6f46bbdffb8176845a1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0e5d276b0fc309456db6e409378afd70') in 0.0271773 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_000.mat using Guid(86cbd89acf1e96b43833c08e17cc1f94) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'abc602c5381608e453a9161c8089f845') in 0.0109275 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_015.mat using Guid(0869ac73b14662b4987d116d89e72faa) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '72b4424be0633dbb2c097aa4f479d070') in 0.025624 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_010.png using Guid(30a42b5ef050fe44e890ee3c9a6f5b7e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e1d1dd1c8a65b881f14eabdbab58dcf4') in 0.0076462 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/rock_3_rough_1k.png using Guid(379c69e6d6b4aec4d90a4f411e90246f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c29a401b38af88af13e2b5825749ac08') in 0.0234302 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionEnsemble70.glb using Guid(90b8c67ce23b41b4c8b7c3ac785ee0b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c7c6c529c3d72ad160d8f2500e0eb700') in 0.6096419 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0025.mat using Guid(e3c8f43d7c0c83f4d83197aea6042eb9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '11e0e2b30831c7cdea3b25aaa8af3aed') in 0.0381715 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_007.mat using Guid(a8e1e1cf15b285642b9667aa93698664) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ad3deaac525687db8ddd51cc4401f202') in 0.0502687 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_000.mat using Guid(1a06c27ac14b1bc4e80608b5935f21f3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '93d177f8f7403f9dab7247e46f8e4782') in 0.010677 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/Valoria_Reference_Clean.glb using Guid(f412e0a885998e64aa598a94f240b694) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'cd4db292a97d9b461c0d351217eb5795') in 1.2429812 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/rock_3_diff_1k.png using Guid(5599cff25e9b4cd4ca7b17be16ee21d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '2f38be39b3b377ba4d99f973df56c546') in 0.0247872 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0016.mat using Guid(5c1ed12e93fe4774689232f0a77bbe74) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '817a0c3d4dedf5f4e326c939273daf6e') in 0.0553409 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0028.mat using Guid(166ebe5ddefb5d747b54f7b9fa6538c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'a5eaca7d7665550fd527c86242c7c239') in 0.0375079 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_016.png using Guid(c32487ac8b4617a419a3ed7e0916afc7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e86b9c9d6f311d147619d0500864515a') in 0.0083121 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0063.mat using Guid(f6d1bb8eb40a3c6478265889ede819df) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8920c45194c2526d447ff156273aeb41') in 0.0144268 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0018.mat using Guid(693891b4a4c38b747aa1052861aad7a6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '75d260ddce2705e4059fed31dd58c7b7') in 0.0229126 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_012.png using Guid(c31659f7e2d6ce140ba6ec0febfc4795) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3ca6ed2bd05a3cc0d32fb845fbc31671') in 0.0080588 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/EnvironmentRiver.mat using Guid(89720587dca61264f856299ee5dbee32) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4cd8664e16feada154f5bc8d30e46f1a') in 0.2461814 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0066.mat using Guid(326ba372b60b0c94ba9b72ef2649ce01) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '72357321ab69a3317865bf7a1e1f718d') in 0.0209876 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00039.mat using Guid(42a9a4d12babdf64ba6a4d7c812e4f10) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6c2dc951ede329d2b0445c94a2bf3c80') in 0.0293594 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/ValoriaFlowNormal.png using Guid(cee6a411ed5d3a849a50e4da5ac3d428) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '756cd104be8aaf219d606fd94e4cfcee') in 0.0128898 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.core/ShaderLibrary/API/Vulkan.hlsl using Guid(05a00b34d7740a643a8a6de19c6d9aa6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'e6a3abb658a6ca0c9ff02c06ae7bba8d') in 0.0450257 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0072.mat using Guid(601aa99842b2f354a9709bb82e107f0f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'a0b6692da1f22c314cf75cb44998bb18') in 0.0477883 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/sandstone_blocks_05/sandstone_blocks_05_rough_1k.png using Guid(b0feae763dc2e9948be6220ccd2743aa) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c979f8183c7217008b99aaad0ad0ced5') in 0.0236429 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.universal/Shaders/Debug/ProbeVolumeSamplingDebugPositionNormal.compute using Guid(53626a513ea68ce47b59dc1299fe3959) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd647483037fefa498e3ccc6841c70366') in 0.0006891 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/MetalSmooth_015.png using Guid(a562c9f091b30f24389e7bb5253fa8f5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '378f0433b5ba85a7b746c60ad65a2db1') in 0.0083597 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_022.png using Guid(878209849ce3ece4087d48973c5b5987) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6c57fb749cc91527d64250e838ea4c34') in 0.0073331 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab using Guid(44e652bb0869b404eb1cf0bb3a3e40b3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f2fcee14d7d16fb0b71d926788833b98') in 0.0672002 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_000.mat using Guid(006f8bbf60c7428419fc4aa483af6919) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8b889708f9149a1320db14b3afcb680c') in 0.015724 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00037.mat using Guid(2b0bd4d695b8b2b45ac1e24c5d05c747) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '884062680c37397e80d00b3ec3a0e69d') in 0.0121711 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.core/ShaderLibrary/API/Switch2.hlsl using Guid(27b804a87c546b2429017809b12cd1c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4e32117a909be0844a759e176c3e6fe2') in 0.0397003 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab using Guid(fffb610f044e39b43bb86fe9dc6c876e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6d3d5a10b9ce21c6c5a3b428f990b35a') in 0.312608 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_dir.png using Guid(fef10b954ee966a46b0ef316a71e7a62) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'da71ac6e2c93d633aa5ee6711eadd940') in 0.081567 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00009.mat using Guid(30a42027b4897bc45bf401b211e6c9a3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '09f96699c96e9ea6e968dd427becd64d') in 0.0290384 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/ReflectionProbe-1.exr using Guid(b8c9432ea0a07e8438be917ca9e8fefa) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7cbb3cba2088794d0b17bfbc79673fe2') in 0.0435797 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0014.mat using Guid(b09a05106e8ff2042b63043a7b26e2c7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '548c7a944ae51624db87643297cd32e8') in 0.025382 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-3_comp_light.exr using Guid(bdf936890a33b7d4097cd663a48042bd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7fd53d1bfb0a1d98d9f965035db00624') in 0.0494851 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_028.mat using Guid(02ea9f1fcec912d4f81e16b274c80fb5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6479572ffb1bed397bb4c48c026b23e7') in 0.1239439 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_009.png using Guid(d3dca4695a656e34c83943d4b77a9c68) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '33f5f0449d991d00878085a5fffd847c') in 0.0130239 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaShoreFoam.shader using Guid(a31c720328da5f8468560d2dbb559a47) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ab127006dc79175fcb7002eb49d00a5a') in 0.0007651 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Ruins.prefab using Guid(c746bfe12561a944198586e15c1ed736) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'bd6dd8b317bc337886bf819e40c0a69b') in 0.1331963 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-1_comp_dir.png using Guid(557a1735bb0407f41a539f02c99ae0c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6c64ad2acafae2b7960bc0a011a8d00a') in 0.0738278 seconds
+[Worker0] Start importing Packages/com.unity.cloud.gltfast/Runtime/Shader/glTF-pbrMetallicRoughness.shadergraph using Guid(b9d29dfa1474148e792ac720cbd45122) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '092fc4c5f4e6de3e1e27856ddf6e0135') in 0.0140647 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/RiverSurface.prefab using Guid(6b860a84eb4dd4e488e42ea72824299c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ae9ac814a0465639029d06bd706c8699') in 0.0149172 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_011.mat using Guid(70c4a381d7c6ec649a299c05b2c7419e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '1bba24c2734ede8964420f42729aa7b6') in 0.0109472 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.universal/Shaders/Debug/DebugReplacement.shader using Guid(cf852408f2e174538bcd9b7fda1c5ae7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '42ebff225e610fcd8c17bed305fd3eb8') in 0.0007293 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0071.mat using Guid(afc403e8452019347864618715091edb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ce67c6653d10ce63c1e424296c47ede4') in 0.0120969 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_014.mat using Guid(30cf172b0e6c930488ecdd0d333cbc14) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '7fde98461987fd802644dddf64440b46') in 0.0258172 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_001.mat using Guid(37af8fad90045c649937945b80f6c1b1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '2da673b8efe0a25f2cff4a544c8b3f12') in 0.0108371 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/PineCanopy77.glb using Guid(e1dd284e16187e94b9dfd8ccd6ae258c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6719e011a923d09f29ee9d647061d687') in 0.2969125 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/ValoriaArchitecture.prefab using Guid(f7ad1d814e83a3742a18c3c09d6e6417) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '1f85bd50323846240d8f5547e03a6338') in 1.0932994 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00020.mat using Guid(cbc8b4bc56692154f92e5a716cee28b2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3273d4151c8b3802c7486afae984c3c3') in 0.030728 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_014.png using Guid(de65505c0617d304aa5b697622a56b53) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c9503eb889b135fc743d59f8523f6042') in 0.0125408 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_007.png using Guid(d58997fa66ffed84d977a05e0ce2a1d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '5b7cdfc886ca979b07cdedbb96bbf9ce') in 0.0074747 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/RiverBankPatch.glb using Guid(99642811f9a4784458c772b15f0ee5bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8f7726c42dd39794044eb78f0da402c7') in 0.078589 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/ScannedLeafMeadow.terrainlayer using Guid(3a60b097f9239bd4a82d2b6eb6284b45) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '91152293057c8f37d1ede58185b51c8c') in 0.0528281 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00036.mat using Guid(778e18d3033f8a64cb34e267e6da3783) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b01ae63922214225eaedc2ebde7325f6') in 0.0293167 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00011.mat using Guid(7ea5c2b1fb105ca488d5ddbb57a0e0d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b855a312f012bbc1017fa273f0d7fffe') in 0.0289696 seconds
+[Worker0] Start importing Packages/com.unity.render-pipelines.core/ShaderLibrary/API/WebGPU.hlsl using Guid(e0badbba7ccb42748817520dc250e720) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ad6862cc487411a0dfd71fbccbdc75ad') in 0.0058182 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0055.mat using Guid(41e9751fa5740294e893d6ef79b1a7e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '5bd963b182bd7d80e422313f3a368a66') in 0.0120949 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_002.mat using Guid(c68c03037afa5984ea8e0d56c32b6ee1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '1645a5d59925350331847895a94e0f13') in 0.0897252 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_002.mat using Guid(d9d25dd4d9ea5ed4b99ef92df91201b0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '4ccd0694c8c0ab20fbce692d816fa196') in 0.6232168 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/NativeGI_Material_006.mat using Guid(fce2b6dc6dcef494ab75d4a0ab5ec1ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '00194feacab9e6a88ea4d9ab1c7b9152') in 0.0112646 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionII.glb using Guid(ce5badccf9064b2499f37d5bc3252efc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f85e21564cdd091e44a3d807f752bd6a') in 0.2276093 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_012.mat using Guid(256dd254f6e3692448dd7a58a1b32e77) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '9ddc2111660492d271026891ed136ef0') in 0.0251231 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_004.mat using Guid(49598fbf91d4e894eac50ceefeed4d0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b93df38b6a955e33cb1d4b8e7e4d6346') in 0.0160697 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0008.mat using Guid(46252a88ceeb4bb41b451d60ae4a11ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6432da3c978c5b450a1b21d03e664734') in 0.023249 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0078.mat using Guid(a9b3820726408d149b461157dd7658ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'dcb31de3346cbe7b7c6896e272c9f2dd') in 0.0231422 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00023.mat using Guid(e7904344f728ff64b88633d72136a4f6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '2f2b43e91df216ca658c821bdf28650f') in 0.0292463 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/ReflectionProbe-0.exr using Guid(e595ace5b1cb9eb41a592b7d0d1c1df8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ca061ab2d65af0ed58dacd0e3823ba7a') in 0.0276818 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_002.png using Guid(e7c71e5654bed1e4c943330cef5326f1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '251e1aa12bc7a406510523b3ac9bdd1d') in 0.0074327 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0012.mat using Guid(d737d06185e6b6349ad4e6182a523d2f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f6f8aa20f743d23c25802deb01ea6229') in 0.0562044 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00010.mat using Guid(64617c618b3e075469015cc873fbc220) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '0eaa33f42f718f4199405f855515a500') in 0.0292642 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_022.mat using Guid(2693df1af89f87f41a0cf716eca67560) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '533384fae0fe14da9487bf888f2a9513') in 0.0165906 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0064.mat using Guid(bf26f684bcb7f884b92db95ff6085327) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '5c75eb85cd3bdb5e61884ca6edf0f8dc') in 0.0138282 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00040.mat using Guid(2084d1c76e214f544a823141f2dae760) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '71d5c4d7ea34678d38ba871a34b78abb') in 0.0121236 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-1_comp_light.exr using Guid(4f03d09cf859734408e7f8cc40d649bd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ff063d3f15a912074a946a675087e819') in 0.6909689 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets/Gameplay_00038.mat using Guid(e5eb762b8bdb564488c7abb2df7192e1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '94d153b83c369ad539a6605edf9ad8d4') in 0.0422616 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0074.mat using Guid(cafc56bd4a58c7b479caae8ec32e0194) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '94066b9aa529d4d1d9de786094085e50') in 0.0451334 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0080.mat using Guid(54e698a416a545f419290681936c3836) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '269c808d4f08aaca57b44b70f6ab1c50') in 0.0404239 seconds
+VALORIA_PACKAGE_EXPORT_RETURNED exists=True
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:ExportExisting () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:59)
+
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs Line: 59)
+
+Unity is not designed to run with Administrator privileges.
+
+With elevated access, scripts in your project can modify system files, registry settings, or protected areas, even accidentally.
+This could make your system unstable or unbootable.
+
+Restart as a standard user for the safest experience.
+[Project] Loading completed in 190.272 seconds
+	Project init time: 				55.880 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		1.098 seconds
+		Asset Database init time: 		1.172 seconds
+		Global illumination init time: 	0.004 seconds
+		Assemblies load time: 			1.546 seconds
+		Unity extensions init time: 	0.005 seconds
+		Asset Database refresh time: 	50.990 seconds
+	Scene opening time: 			132.246 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792321458353,"processId":23736,"projectLoad":190.2722271,"projectInit":55.8797653,"templateInit":0.0,"packageManagerInit":1.0976901,"assetDatabaseInit":1.1722406,"globalIlluminationInit":0.0035942,"assembliesLoad":1.5464578,"unityExtensionsInit":0.0051804,"assetDatabaseRefresh":50.9900915,"sceneOpening":132.2460907}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792321458357,"processId":23736,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+[UnityConnectServicesConfig] config is NOT valid, switching to default
+Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.023s, timestamps: [190.310 - 190.333]
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Worker0] Start importing Assets/UniversalRenderPipelineGlobalSettings.asset using Guid(fbef4b0b894160541864bf14bca0beba) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+Starting new worker id: 2 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker2.log
+Starting new worker id: 3 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker3.log
+[Worker1] Start importing Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb using Guid(e237b5bb3d4b58ad29dc8ed439c41667) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1422af47bd9d4ce0f44e58e53856d3b0') in 0.224723 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_02a.fbx using Guid(d038615b8126bb044bd90e86ea24e09d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9cb9f6eae6ad3e8b9b073e8ffb89e3ed') in 0.0709212 seconds
+[Worker1]  -> (artifact id: '3bc9bee69b032818661191a4ebcf4aca') in 0.7666235 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_SolidBeam_End_01a.fbx using Guid(ca88ca3da92bf2b46a9ba4d2458cbb49) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Apple_01c.fbx using Guid(df9db6549c9345248b5bf8204520cdf1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f739d43ad6a9848b39ee93f9925e13d2') in 0.0422292 seconds
+[Worker1]  -> (artifact id: '46843c8ebbe67b04714ff544273b103d') in 0.0400995 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_05b.fbx using Guid(08bd219954bde63418e59766a358184a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd287909dc39467a41881342b92e30300') in 0.0218145 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_01b.fbx using Guid(570f92cc561b6cb4392ec8e422051ce9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '882a9a41b53709ef1c580bd831085594') in 0.0253591 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Basket_04a.fbx using Guid(f6abdef6e96d7554bab4cae54ac1516d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6f15339980b5b87f9cfe3d0010e72ce2') in 0.0260155 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Plant_Grass_01c.fbx using Guid(09fd99c250bbf3b43b2f4f2e5ab0642f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'afcaa8b6ee5e1efeb04249256e41c062') in 0.0258682 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Spoon_01a.fbx using Guid(95f15f585b121524294035bb2011866f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '78f938a47b7bb05f7fbccd52319d52d4') in 0.0217981 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_01d.fbx using Guid(12b2a8c9062f5394cb27d8ca5968cbdb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'fd51a6fad79b35be9c2f0524c591d822') in 0.0266548 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Terrain_Field_2x2_Seam_01a.fbx using Guid(9b1d72670c15ac24e86de6335ed575f8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd0032ded46a8cc84816223365d75f0bc') in 0.029092 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Painted_Side_02c.fbx using Guid(0941fc100f37a6b4babe0bc7ec19a532) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '4bf93a1f99fd2a6a18058b62d0f80e86') in 0.0210703 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx using Guid(28bb2f61c4769874e999b44b978954fd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Half_01a.fbx using Guid(cc72f9f28b7952b49892b6571acfef76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f8f0871d0ba94950f3e5b38261458699') in 0.0326187 seconds
+[Worker1]  -> (artifact id: 'b543ba8aba727e023dd10bf26d307166') in 0.0273812 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01a.fbx using Guid(a24843a2bac54d949b6ed63cef4f50ab) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Hanger_01b.fbx using Guid(3ec3980c47838d74a9b181fd252db2c0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '920d0d4f63041a9701101a60bec78e04') in 0.028264 seconds
+[Worker1]  -> (artifact id: '0d50ff8a98e4968af2619f36d1de5390') in 0.0299173 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Painted_Desk_02a.fbx using Guid(0d12112420a427644aada3727e4850a6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Tabble_02a.fbx using Guid(f4ce1aacfc1c4fe458d340af857e9d79) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd9c24a3aaad2ec05e7edf30094114a7e') in 0.0234378 seconds
+[Worker1]  -> (artifact id: 'fce1690f2660065ae475131e47d91ea0') in 0.0221404 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Besom_01a.fbx using Guid(964f0c37f9d4d0f4c9dda09cbcfdbfcb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_03f.fbx using Guid(2d16253b9a07ac146b50e2fa3d8ff286) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: '8a1b8d673b4a594bfc7750873f90c83a') in 0.0281139 seconds
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ac2ed646bb015292b89a1b9383ba5127') in 0.0285139 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_04a.fbx using Guid(b204b246cfdd03c47b6cd5fa557f1032) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Pier_04c.fbx using Guid(5153584280d4f054389a1d693186807b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: '63565c54d208d82225c644e3f0c7c706') in 0.0251106 seconds
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '38bbfb6c63f94388d5172d7ac95dd3f6') in 0.0324714 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_01a.fbx using Guid(dcb5cac8484b68a44a4d696362333694) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_02c.fbx using Guid(7286095c26dbec849aa5a875a7972ca9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '2bc71ab5d96e055a682cfd9af2ae14d5') in 0.0266436 seconds
+[Worker1]  -> (artifact id: '5e4ca473bf44044e5e82c298c09aacb6') in 0.0236379 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shelf_01g.fbx using Guid(4fe658bda7c79114a9e825d286e3a6b8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_01i.fbx using Guid(c231ab4bdde8ca245b5f0ad0ee2ffa5b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '929785effcb26bc1861bdfe182518b60') in 0.0335394 seconds
+[Worker0]  -> (artifact id: '797b2fcc9003cb078968082e5863c085') in 0.0418563 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Tabble_01a.fbx using Guid(182a919d67edf954198ec0f464311a5d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_02b.fbx using Guid(39c3951d7b757af4f935ff76a59beda3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'adecb437e5f6e8641833c97ac528cff6') in 0.0263127 seconds
+[Worker0]  -> (artifact id: 'b5be513fa38369cdf027c5a6c72b1512') in 0.0267251 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shutter_01a.fbx using Guid(32fa229b2d542da4ea1b8de2d762355f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shutter_01e.fbx using Guid(3f5532580310a2d459f769441f1c781b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ff3d3f146401cbc56b923e117fd1cb35') in 0.0220428 seconds
+[Worker0]  -> (artifact id: '523cf21508705cee597d0b8ec68d6172') in 0.0448488 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Apple_01b.fbx using Guid(683aa6683b22b244287d19b08050959c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ae61e01d8b60b94debd180c8f284d6cf') in 0.0224522 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Stool_02a.fbx using Guid(c05b38c4cb6d56443af89f2587f8a3b8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '771c3bd2fbfb36f3e857b475ff771ef4') in 0.0220068 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Painted_Side_02e.fbx using Guid(9812e6affbcc3744f97cd1c6a266bacb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_RockGate_01a.fbx using Guid(3d9e284d1c6a72b4e9971e04dcb319ea) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '801329fa55e884b6dd7b2a895edc5df0') in 0.0272712 seconds
+[Worker0]  -> (artifact id: 'cf701ab823bececb659f46155300f711') in 0.0289946 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_02a.fbx using Guid(f8aa08f64fb681741b9a06b315339347) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_05a.fbx using Guid(f5f76ccdfb5475149bc5298d2b842a34) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '2b435a28088a60ede8e576fb31bbaee1') in 0.0420333 seconds
+[Worker0]  -> (artifact id: 'fa75c034b68eed2315b8917f1df31a80') in 0.0372668 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Building_Administrative _01a.fbx using Guid(8c06a8469c34d86469295b9327c93b4e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Village_Whell_01d.fbx using Guid(55c53df0220fd894c88ac018a5b9f012) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+Worker ready: AssetImportWorker3 3
+[Worker1]  -> (artifact id: '0a6f36a93261b2a0df8c20116c265504') in 0.0617935 seconds
+Worker ready: AssetImportWorker2 2
+[Worker0]  -> (artifact id: '2e4d7785fdfb6aa738fd68efdac49a11') in 0.0590061 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Tool_Pick_01a.fbx using Guid(4add47ba41295f942a4619be44d62f7d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Prefabs/EA_Room_Int_Kitchen_Comp_7x10_01a_PRE.prefab using Guid(dde4e20405bbdff44a7a8e57f9f6eab8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '6063d5af82dfc3c0a829f6e35123259b') in 0.0385239 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_AnimalBreeding_Hovel_01a.fbx using Guid(a057cc37f46747c469f94c4b4f85fa30) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'd0565ffadf09dc7b572974b14aee844d') in 0.0241844 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Crate_03a.fbx using Guid(bc95e47ba4b19a24db9583856173a412) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'eb1b2ad2a27d5d85c6530ecd246ce5e7') in 0.0237289 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_platform_01a.fbx using Guid(b63ce2fc5e65360428a4d45bbd8e52e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '53cf86c0c5d0a87ce826d0787fbee0e4') in 0.0211548 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_cauldron_soup_01a.fbx using Guid(eb40964df52421b4eb9f339426df2791) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '2deecf0467dfea1fc02ba00d0ce04304') in 0.0175075 seconds
+[Worker0]  -> (artifact id: '4d87cb957aebbe4a624a9efa6a823c2e') in 0.3155818 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shutter_01d.fbx using Guid(7fe480ce6a490174a961d9d0ac9efc44) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ed263f902a322e192ef2c5b767047b18') in 0.0269534 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Wooden_Pin_01c.fbx using Guid(e0ac2138a39a48d45a487ec92eab384e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1e4838284622e7bc926226a313423fc6') in 0.0213599 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Withy_Seam_02a.fbx using Guid(7268d2cf1dfb8c54bbade433947d851a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '0a3c02c00d11459b50a323a3b46134b7') in 0.0229574 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_03c.fbx using Guid(e3fdb9070da8a244db7d0dac920a3e34) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '33c3a1edad7dc759c1017d3c3b89e57c') in 0.0388674 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04h.fbx using Guid(045c5ae697b279e4794a7c8d9f3e1e52) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '5b7c452fb3b6a2ccb53c880f2fe8c6bd') in 0.0220272 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_01b.fbx using Guid(fd8fd8c44ae84e8488a9eab93b41d7a3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Desk_02a.fbx using Guid(54ccb70bd724031409b5de99828ad0b7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c29bb12add00b2f08de0f7567e8ec975') in 0.0291123 seconds
+[Worker1]  -> (artifact id: 'a297da1d488490f25e499c85d2a9bbf8') in 0.0229835 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Prefabs/EA_Room_Comp_3X3_PRE.prefab using Guid(7bf24ab952eecba429c33f37cbf93bb3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Vegetable_Basket_02.fbx using Guid(470ed647bc0f8fa4b8633a2821ec5a1e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'cb4be978a2f3728181e1b1842f52cddf') in 0.0139543 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_spoon_wooden_02.fbx using Guid(c372d80c3e97e7f48ba4c4482af5b13c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '54298eed36e5831462d0aba02d62a0f6') in 0.0154209 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Plank_02b.fbx using Guid(9a6b68b124304da48b60c294a6e0376c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'b70f09fbc67c30afb596cdac0f20deb7') in 0.1558814 seconds
+[Worker1]  -> (artifact id: '04005da2e7819f1f22792a47c81ec1a0') in 0.0224656 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_02b.fbx using Guid(15cbfd355642c1c48a6471b9ec0b25ba) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Plant_Grass_02b.fbx using Guid(c679b46118ade7b478817aa8b269fe4f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '09923aef1c89ff617b4b43a27fae292b') in 0.0282904 seconds
+[Worker1]  -> (artifact id: '05818539bdd6d9099026d211c8f958d8') in 0.0322018 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Carrot_01a.fbx using Guid(1f99f3cf77ae55146affb1811e50c8ce) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_bowl_wod.fbx using Guid(12da85f96e7b10748997a139f608eaef) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '4fee2cdaaa5577a7b2515469841a61b3') in 0.0143661 seconds
+[Worker1]  -> (artifact id: '796ea5c35b5873ab5d04311e74cdfb20') in 0.0149718 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_rockDesk_01g.fbx using Guid(3269f240c7a843a40b27533e7ea759ab) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Shelf_01b.fbx using Guid(703f93609c602a04e9323bea22985490) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1eb7f63cabe76ff27c662d13d73cd922') in 0.0171337 seconds
+[Worker1]  -> (artifact id: 'e58a85d768c1a4259041759df36e081a') in 0.0230888 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Texture/Pobbles_Sand_Dirt.png using Guid(1bae7c5a0b81e0248a1e9dbb77efd1b1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Scene/AssetPreview.unity using Guid(38fad496f7bfca14da26217aeeebcc1d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker1] [Licensing::Client] Successfully resolved entitlement details
+[Worker1] [Licensing::Client] Successfully resolved entitlement details
+[Worker1]  -> (artifact id: '176c596016a62100383bfe8d93c1db6e') in 0.0896816 seconds
+[Worker0]  -> (artifact id: 'eaa83aa1a674c1600aed7230976124bb') in 0.1319193 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Scene/Slavica Free 2022 VersionSettings.lighting using Guid(62b125c79350c954aac8efd89bee5495) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1] LightingSettings: switching bake backend from 2 to 1.
+[Worker1]  -> (artifact id: '5abde6201c4c56bf71e0857eeaeea2e6') in 0.0219657 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Texture/Grass_Texture.png using Guid(e47c990053cf6eb49b67c793b3f47f80) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Holotna/Mountain/Materials/Leaf01A.mat using Guid(139555b96554b7c42ba1553ba4dbf714) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '952832eb5106eb96f95afe09935b4848') in 0.0476327 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Prefabs/EA_Room_Int_LivingRoom_Comp_7x7_01c_PRE.prefab using Guid(1d6ec208d717eb64b9b40a229d2e2fd1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '24be68e1090d91a56267758b47541cb0') in 0.0922581 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_VegetablePatch_02a.fbx using Guid(83b544ac0c7ef3b4188cdd929856314b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '8b020389488dc1a1ba92bfc23150963f') in 0.0307541 seconds
+[Worker1]  -> (artifact id: '79dc5841d3e212a4b7a6714788ca9622') in 0.2762642 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Town_Bench_01b.fbx using Guid(8647ab6061606654c8ae1905d1949196) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f9f6a277d2e37836282a0ba4bbebdc91') in 0.0240218 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Shelf_01c.fbx using Guid(b7d00c90d4fec2a49aada1bebaa7a495) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b3c4ffe8464e015bc2c5371e78abd201') in 0.0149277 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04e.fbx using Guid(7c39965b26d41264aa2e9d96d16c8b28) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Prefabs/EA_Room_Int_LivingRoom_Comp_7x7_01b_PRE.prefab using Guid(3a7485f2f87e412438db59450e905eb3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'a04b9d7d48e5c3bcaa653f53e5195375') in 0.0349054 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Forester_wooden_01d.fbx using Guid(d9dfdee99a6a7834292c848b8682da8e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'e9c92d6b5c41b4d060dc020b7f993bf8') in 0.0669757 seconds
+[Worker0]  -> (artifact id: 'be0638884129b7371df259c62f53e10d') in 0.0140787 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Village_Ladder_02a.fbx using Guid(65eda0c3b934409488f4868dba95a65f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Solid_Flat_01c.fbx using Guid(ef9f998abb65cf94db2f7b97f5375b03) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'be6b766237566bfc884476a7618bde51') in 0.024234 seconds
+[Worker0]  -> (artifact id: '770791399e0177460d2532896399a7c9') in 0.0260098 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Solid_Flat_01b.fbx using Guid(6e63d60023cb830498e0dfe53fdc9b5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_03d.fbx using Guid(8842acf12ee642143b6d60fe1e0e0054) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'a796181b23b96cb859d24393f15bd7a3') in 0.0250307 seconds
+[Worker0]  -> (artifact id: '4ecb0b1f9f71f739e76a14e53d924a9f') in 0.0230808 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Pillow_01d.fbx using Guid(642bbb7897dcde44e9917d410cac5309) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx using Guid(52cab7cee1fd76b45b7ae4782200d5da) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '0ebfebcfd8371fc12c67904d840701a6') in 0.0146442 seconds
+[Worker0]  -> (artifact id: '6263029b451568dd84933b2147b5f4d2') in 0.0288259 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_03c.fbx using Guid(41a4d8c127620cf449a552f8bdfb11cc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_bowl_wod_powder_01a.fbx using Guid(90aa71f5e770f204599d5838b0a54704) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_01a.fbx using Guid(3f82a28fb695a74418c3862370e17ad9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Door_01b.fbx using Guid(b9652a66601e29a4c9a3b3195770dd85) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f7de36c8cc40f11a6bd626a5bbf6b659') in 0.0207096 seconds
+[Worker1]  -> (artifact id: 'df4564e82cbe905885f0f9f36bb07c7f') in 0.0557832 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_06b.fbx using Guid(2a1270078acdb914ab779a3bde9f983c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Basket_03a.fbx using Guid(36d03d6d713b9eb42b9dc68d1f4d1e80) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'fe6d4fec1a353342b3e3915ec7d8ef79') in 0.0220286 seconds
+[Worker1]  -> (artifact id: '5251df2ed83145bd0ea02e322bd02542') in 0.0153269 seconds
+[Worker0] Start importing Assets/Holotna/Mountain/Models/Rock01.fbx using Guid(2c5fe446668d34147ac86478e7985ddb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Holotna/Mountain/Shaders/VegetationSingleColor.shadergraph using Guid(ca0f509d89f3ecd49b11f7d228ef6c5f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1ec23239f78e0efbdd59b0c7ece02e3a') in 0.0222296 seconds
+[Worker1]  -> (artifact id: 'e72506d8c1d773aab245f45c63c33c60') in 0.0299994 seconds
+[Worker3]  -> (artifact id: '9399985bf7fe0ecd5991ae76a8625959') in 0.1705879 seconds
+[Worker0] Start importing Assets/Holotna/Mountain/Textures/Rock01_SPE.png using Guid(3629589234676ca43bd64a8364cbd0ee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '4bf49de615eded04f2674bb4d0cad2c0') in 0.1778874 seconds
+[Worker1] Start importing Assets/Holotna/Mountain/Textures/Bush01_SPE.png using Guid(06909eeb87c20a3469617ce8b41a7691) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Holotna/Mountain/Models/Rock02.fbx using Guid(7eea887dd135f38438297beecb26b6da) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Holotna/Mountain/Shaders/VegetationMultiColor.shadergraph using Guid(399a5461f3655314798b059dad5f3df4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'b1162a87a9447507bb5dcaec0fbba6f1') in 0.0243216 seconds
+[Worker1]  -> (artifact id: 'd45d0f45712dd1dd4e6bc44cc1a51861') in 0.0497751 seconds
+[Worker2]  -> (artifact id: 'ee006e2c8cf471c2b2ba3d28bbfbb3f6') in 0.0290304 seconds
+[Worker3] Start importing Assets/Holotna/Mountain/Models/Bush01.fbx using Guid(0155fc5e6a9c9ff4f8f053ef36d8228f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '193bd8e86b16bb3af53cf3e202c8d184') in 0.0897898 seconds
+[Worker1] Start importing Assets/Holotna/Mountain/Shaders/DetailWorldSpace.shadergraph using Guid(d370c169180b0f3439fe6c2063ef8a56) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3]  -> (artifact id: '97deab7d189956c261efc9516a42c00a') in 0.0248151 seconds
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/URP_Support/URP_Slavica_Volume_Profile.asset using Guid(c1a28a38f22075541bccbd2d521edd28) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2] Curl error 23: Failure writing output to destination, passed 293 returned 0
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_01c.fbx using Guid(daf83e804cfa0774485b988b53c5098e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '8c3235e53c2ba9f1cf6a09537714b26f') in 0.024988 seconds
+[Worker1]  -> (artifact id: 'd6b8faa8e740c4a5030be7ad400aa066') in 0.0428587 seconds
+[Worker3] Start importing Assets/Holotna/Mountain/Materials/Rock01B.mat using Guid(d2921c67018d5fe4f9fd99bc12b7706b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9f4c2fa56ff869745cba9c8295d21c70') in 0.0269651 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Plant_Grass_02a.fbx using Guid(faaa3e603bf1ed04298cf45f5b3a4409) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_01a.fbx using Guid(0b0f3b959f1cba34080517f4e9f3105b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Basket_02.fbx using Guid(ecb9c0970df71054ba737cea1a00120c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '133d822c09c8b20ab79ec3b319ff7b15') in 0.0176568 seconds
+[Worker1]  -> (artifact id: '7abaf9206c0869eece35bd41ff560b5c') in 0.0266803 seconds
+[Worker2]  -> (artifact id: '8679e4d0aabfea6347083f8c9ef0bf80') in 0.0408445 seconds
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_02i.fbx using Guid(04e6236850221664a92860d51717c846) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_spoon_wooden_03.fbx using Guid(f5ec718ca794918469b599f90e27fe2d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_01d.fbx using Guid(1c39d64858c40464ba9a62c51115ca21) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '01d2074319891141e5c034b175af3788') in 0.0403558 seconds
+[Worker0]  -> (artifact id: '84587c6acb3a41ea15a9612fd8f626d7') in 0.0589583 seconds
+[Worker2]  -> (artifact id: '8dfbe61e80dd2e9e9c3678e20945478f') in 0.0681379 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Bowl_01.fbx using Guid(379f0651a43088c4e83e0b80e5982d95) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_Flat_03d.fbx using Guid(39123a535ab70234ea8dd980cc8dbdfe) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '71bc6ebeca3158a7ab1050a49683fabc') in 0.0144157 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_mug_01a.fbx using Guid(c73f3ec04424b484592476d4de9ff226) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '64e72e79532294b1579e99a9cab64361') in 0.0276827 seconds
+[Worker2]  -> (artifact id: 'c15579161b4886101a76e7ac9bbaa45a') in 0.0142621 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Texture/Flower_Grass_NM.png using Guid(440be66d71848fe4fa7bbdb16f1f056e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_pan_empty_01a.fbx using Guid(ae024c3e1ae079546a061550ce88ef0c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Forester_CutOutTrees_03.fbx using Guid(d6bf3b4fc8215044b9bb595589ac850c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9bff1df870a1da441ef221a71288fef9') in 0.3069722 seconds
+[Worker1]  -> (artifact id: 'e145ff363dd8a6f2cd624a0e01052dc6') in 0.0354223 seconds
+[Worker0]  -> (artifact id: '6af077416c79be4c79050892b20e1f84') in 0.0180434 seconds
+[Worker2]  -> (artifact id: '7832124e99cde55c3bddd53660da234b') in 0.0244836 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/URP_Support/URP Info.txt using Guid(050b820fbbf13804cabcc5980caed5ea) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Thanks and checkout this/Info.txt using Guid(3c85e6a8b5d07b545988a6efab51a32e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Holotna/Mountain/Models/Tree01.fbx using Guid(6d2204d9b3a30bc4ea553622baf4bdee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'bbef6a053daba6d2c40d94eccea90b30') in 0.0132202 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Terrain/SlavicaTerrainDemo.mat using Guid(3cfffe3571edb72408130af112d67edb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '1fad0032c9980748797ac0a99b613cc6') in 0.0164639 seconds
+[Worker0]  -> (artifact id: '15838805036fc8b05c2f93e773c92b73') in 0.0253793 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Stove_01b.fbx using Guid(e64ea82d588c49545958c888183be02d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Barrel_01d.fbx using Guid(7764483340bf24949af7c09f03fe50d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04b.fbx using Guid(8b9175d6598bd614abcc74740ea0012f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: '65d9f1d8609d5cf1d916f16aa648cdee') in 0.0328755 seconds
+[Worker0]  -> (artifact id: '7ff6b90d1becc3a0c5e0ce50068b7f2b') in 0.0208953 seconds
+[Worker1]  -> (artifact id: '67d4ecd56dc1e03f01b9db261a64bdc2') in 0.0336769 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx using Guid(3cdab808e659dab48a77f94903885475) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_01c.fbx using Guid(e360f9142d27d0445abc192c6bc54b9b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_02c.fbx using Guid(5cedc5b9b945f5145aceb569e8b98113) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '0213f866eb828b95a185956edb35f961') in 0.0272962 seconds
+[Worker2]  -> (artifact id: '31eca6a5ade5714834c077244b681528') in 0.1360346 seconds
+[Worker1]  -> (artifact id: '98392ae243ac5dcb8fc494f2f0555562') in 0.0277996 seconds
+[Worker0]  -> (artifact id: 'c971a6ae598e1e375b013720c997f94a') in 0.0498523 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Chest_02a.fbx using Guid(b6814f96c7f305e4f982c84f3d888a39) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Plugin/Wind_Noise2.tif using Guid(4515072f4cd4005429ced623f2abc6be) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Firewood_01a.fbx using Guid(780ff2e8fc3d55b40bde8b2ebf2c24c4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/EmaceArt/Slavic World Free/Scene/Slavica Free.unity using Guid(c8f698c34799dc74cb896506da88b166) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '7d5e61d25d2b8a16471d05ff6ec67136') in 0.0153305 seconds
+[Worker3]  -> (artifact id: '950fbf26c56e4ef87e096a59ab590a23') in 0.0190835 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_02d.fbx using Guid(13bb0042dbcee09478650939e9f2d958) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Fence_01a.fbx using Guid(a660a4d6df7174347be374a2e596912c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '940aa6d6d22ce42d46f962b902650757') in 0.0862124 seconds
+[Worker1]  -> (artifact id: '54a2ba5e34f28cb778da43cc8d6b1dbf') in 0.0268006 seconds
+[Worker3]  -> (artifact id: '8fd1cd9ace3adcac8746b01371020403') in 0.0286914 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Basket_01a.fbx using Guid(31705d47a8a190a42a2ebd3d27b7f5e5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'ce92522406606e7272d52e84b68cd2d3') in 0.0168106 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Plank_02c.fbx using Guid(c42a5db3829d76948ad314f7761737f0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Apple_01a.fbx using Guid(ac60a1e5147f37f4ea437303b92a771f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'eae4fa06381ac02ee527dfc03321cf55') in 0.0165189 seconds
+[Worker1]  -> (artifact id: '939ee975ebef67419f31c7e1c0390eba') in 0.0238474 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_03b.fbx using Guid(19e781545a140be4b97bcc7f12ed95d2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Holotna/Mountain/Materials/Bush01.mat using Guid(c373db2839ab1f34b8baa864b6e03662) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Wall_01d.fbx using Guid(5ccadbea8ebccea4fa4c52348b758d3c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '9fe8638becfead391f2d42298c925e27') in 0.0347014 seconds
+[Worker1]  -> (artifact id: 'b08c9e5efb195e6543ae22f92d92e017') in 0.0369424 seconds
+[Worker3]  -> (artifact id: '0a273e11b37c2c62cf8de7e8b678615b') in 0.0470837 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Crate_01a.fbx using Guid(c0c7b14491863c241a11772765f86d07) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_cauldron_01a.fbx using Guid(18e6697db3d760b458f4b70bc98f7d15) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'c744d2bf2a2dfd6b8d6e5854d5320bdb') in 0.01545 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Plant_Grass_01d.fbx using Guid(0112cde65927c774897cff6d38ff9663) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '317b1c4a218331e93acdb58c3c32ea65') in 0.0138502 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Scene/Slavica Free 2022 Version.unity using Guid(4e4c5b0f6c1c69448be7c5631ed01457) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a357a39507cf5a6e99939774fbba35d1') in 0.0608266 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Prop_Stand_Sheet_01a.fbx using Guid(fd323eaa0a5217844954c3eec43851d1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Scene/Slavica FreeSettings.lighting using Guid(b52b0abcd9e7786439e1ef7d071d47b7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3] LightingSettings: switching bake backend from 2 to 1.
+[Worker3]  -> (artifact id: '65936eeaa6d868372c3d21b9320ac400') in 0.0211735 seconds
+[Worker1]  -> (artifact id: '19bd1346f880abb14a9e75de9e686000') in 0.0575626 seconds
+[Worker3] Start importing Assets/Holotna/Mountain/Textures/Bush01_ALB.png using Guid(4e41a55218c4d3941a3ef7f5f7d21b7b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_bowl_metal_01c.fbx using Guid(bb6405d0387f01a49a96a321a75e3ab9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '12a2c4b30c914797be94ee87e7800743') in 0.0137919 seconds
+[Worker3]  -> (artifact id: '8b6e7ec4c444a7c2e460a7fcd296c912') in 0.0520083 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_kettle_empty_01a.fbx using Guid(64269ae04169bfa4faf3bb8f18263056) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '8c2fa90a518624ac98a26a23f3e99efc') in 0.0164491 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_mug_02a.fbx using Guid(0ce66a9e7766dc7459519ea22d100950) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '171850445e2df431e7b188f66fa947ba') in 0.01393 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Texture/Grass_Texture.psd using Guid(7a923d27811ae794cb78f4a26b73a520) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_02a.fbx using Guid(782e80f9bfe64c8429988c86c275909f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: '6a905d755a91f823c10ebe805f388507') in 0.0199591 seconds
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb using Guid(78bc4181c380edcae4de87730baf637f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '88cfc8a334b9ccedf36acc739fbb7840') in 0.046633 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Convenience_01a.fbx using Guid(7e3464691be8900418a72b728b9cfe8e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '19fbc3720dde07a476d2968e82c0a13e') in 0.0471494 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Plugin/Wind_Noise.tif using Guid(8df763d702bf3e642a8f562e8ba6b185) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'db3cf4877af97700de0f18d30e8a67d8') in 0.0496175 seconds
+[Worker1]  -> (artifact id: '94f6dd741fb57c267941cc377cfb5d42') in 0.2106753 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_BredBoard_01a.fbx using Guid(2137813e38c7b504aa81ea4d4d0bd663) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'e98d2f8aef074b73cbe206e5a6a27ba7') in 0.0153477 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_cauldron_01d.fbx using Guid(d586b1c8084ec0f41a977d8fcc404990) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '8011342bcd4a02840ad452d79c969a92') in 0.0135071 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Village_Plank_01c.fbx using Guid(3cc25829bbcb8f54ba43e1d58d84add4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'b7b785035980ce0fae816d7d0ed1bc38') in 0.0176648 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Solid_Flat_01a.fbx using Guid(6e7a99b8221e3394a8e1594f3508c91b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_spoon_wooden_05.fbx using Guid(b2c9c2c5cab7ba4488b2631a33c16c54) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '8f9b43d37e4eb4723f7c0b4525e38ec0') in 0.0343892 seconds
+[Worker3]  -> (artifact id: 'a45531e33e5441ecf7f50c4dcc0a0f49') in 0.0145646 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shelf_01a.fbx using Guid(fb814a59022e8554e86bcd2ce8087540) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '8ee967e370a474592537a33d7c3a47e8') in 0.0141613 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Town_Bench_01a.fbx using Guid(1fbffa5408e364f4f81ae10cf69ba3cd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'bf7bed3b0253b8ae6ab77c326fc146da') in 0.0222017 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Cup_01a.fbx using Guid(a1da319082eff5a4b9df4b85ef047790) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '1d77e4d893622e43d5ad15c491d23d52') in 0.0211571 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_WallGate_01a.fbx using Guid(ad175bdd29720da4293076d93baa5295) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_01b.fbx using Guid(13ec5d0bbf56c734d9422c7089f60980) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '20b57850d8bbdbb324032d981b8a603b') in 0.0316291 seconds
+[Worker1]  -> (artifact id: 'cb8aec3942392423e2a618f080836a09') in 0.0463561 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04f.fbx using Guid(e957be97d0bde9d4ea9c05efad626c11) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Town_AnimalSkin_01c.fbx using Guid(e9a9eff224f379e4ab249584f7ed4a0b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '2181cd7df7e7b81be3740447d4354ef1') in 0.0222008 seconds
+[Worker1]  -> (artifact id: '202b3a32255ab9236c5698828c719b42') in 0.0134577 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Wooden_Pin_01b.fbx using Guid(16bff6f79287af240a0f0cb147d4212e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Plugin/Grass.shader using Guid(83a2a9b75b9386c4682154ce79367fde) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '2c8b5449185291ef4af1a5392e85fa22') in 0.0326611 seconds
+[Worker1]  -> (artifact id: '7a80aa0c7a8293a3bfe84a9b1ac705a9') in 0.01873 seconds
+[Worker3] Start importing Assets/Holotna/Mountain/Materials/Leaf01B.mat using Guid(f7f56d7aa0f4fd0428509756cb44983f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_mug_01b.fbx using Guid(9ed8f0123ad60624e87f3ddcd0949986) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '5da4453e8c9db68833ace72f5864e9e9') in 0.014936 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Prefabs/EA_Room_Int_LivingRoom_Comp_7x7_01a_PRE.prefab using Guid(ba5f2411d6356e74f960d5b2dd2d1c77) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '520825a9d51922166756c1d2a14956d7') in 0.0296639 seconds
+[Worker3]  -> (artifact id: '75763af0c8355a324c728183d41ebb8c') in 0.1275461 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01b.fbx using Guid(752cdcbf93262af44a9a365bc1aae4f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Stool_01a.fbx using Guid(0d8a9daf36a4e2c4fa3c49f6c0827792) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '6c44fc8c4b671596f4bce0365059eb62') in 0.0400826 seconds
+[Worker3]  -> (artifact id: 'a48c8f71f8ac22df0d48b8abdf42f0a7') in 0.0144509 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_01c.fbx using Guid(49fe4ca5e08b1c34ea4bba9edb8dcefb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Holotna/Mountain/Textures/Rock01_ALB.png using Guid(cf359ead6389fba4696cb370ba9a637a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '2d27b884b51c96fba3a05909d9e55ac6') in 0.022647 seconds
+[Worker3]  -> (artifact id: '491f9be519fe726a4b556caf26829052') in 0.0415184 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Wooden_Pin_01a.fbx using Guid(d7a9a566847b1d646a4668f092a170e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'bf96d81ae836015a455c83dd109fc6ab') in 0.0206588 seconds
+[Worker3] Start importing Assets/Holotna/Mountain/Textures/Trunk01_ALB.png using Guid(c4233c5f77b77db4b9ec54f169e5a76d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_WoodRoof_01b.fbx using Guid(2b5de340e32bb484095bc0e4ec89bdb0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '74a1e21c3bd8c4f90141fc76349849b6') in 0.0313244 seconds
+[Worker3]  -> (artifact id: '2bf19d53cb008c04c310bfd086b22a6e') in 0.0648381 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Tover_01a.fbx using Guid(1bf7816cffa0ed848aa700997de497e2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Ceiling_01e.fbx using Guid(de708639cc9e7e2429d0f70d6792357f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9c34eb640bca9c99cef299e6cd74acd1') in 0.0202131 seconds
+[Worker1]  -> (artifact id: '8dc3a6c690a92180c74185ae46a3eeb9') in 0.0385662 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Bolt_01a.fbx using Guid(7f9a60a57f050714eae82709525a7f11) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_03b.fbx using Guid(b45c6067cba0be64ba98aa6096607aac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'd65f47f6bacf11804d104b956c77fc33') in 0.0239004 seconds
+[Worker1]  -> (artifact id: '37f8347756b090bb471f2036cacfcf77') in 0.0256756 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01d.fbx using Guid(94d50895a53b689418ddff691e4219fc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Tool_Stump_02a.fbx using Guid(69b9fb8b93ab03b43b08cb7d05ad286e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '04c312768703ea1720d9008837ac26dc') in 0.0137211 seconds
+[Worker3]  -> (artifact id: 'e1e5d81c89ece8d84d64cb39b07adde2') in 0.0288645 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Corn_01a.fbx using Guid(9d00add0f73545e43b7bdecefc895d63) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb using Guid(9f30b32039de2d7d0cd7502af0240608) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '3326e7623acdd0814c641e7d857fa89c') in 0.0695644 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Bag_02a.fbx using Guid(a018acf8aa42612409be67810b627e4c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'c878fd790d47eb9ac2cc90a18114fa09') in 0.0135718 seconds
+[Worker1]  -> (artifact id: '717f34df9fa83443fb0c156dea17c369') in 0.1524458 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_bowl_wod_2.fbx using Guid(d390f7be5d30cac429d05cc9fdea3abb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '5aa506695b9a5d3f56b89e0a66e7ca87') in 0.0136253 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_step_platform_Stair_R_03a.fbx using Guid(75ae7666976ca6948ac43a95180ef1fe) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Wall_01b.fbx using Guid(4f927d8c0f80da54eacc496ab63df1bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '3b1676cf48dc146ee0b95ac3c4286d9c') in 0.0451621 seconds
+[Worker3]  -> (artifact id: 'a59239f3f1a09760f9feca61396760cd') in 0.0433432 seconds
+[Worker1] Start importing Assets/Gsplat/Settings/Resources/GsplatSettings.asset using Guid(03f2a8f9bfcc6be4cbe5bf8241f312e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Texture/EA03_FREE_Slavica.png using Guid(4f4a523b69ecaf542bcff16bc65d3002) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '0b93a40cce6c5ede83b8028c5dfe3afc') in 0.0199926 seconds
+[Worker3]  -> (artifact id: '5c0e5846884bde3821b035567976399c') in 0.0106289 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_rockDesk_End_01a.fbx using Guid(a147f4f3d76c88d438190a38b3eca73c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Items_House_Bottle_01a.fbx using Guid(7419ec3279586984092aa99f26308880) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '16df032bca985f1736c94bc5c38eb149') in 0.0135984 seconds
+[Worker1]  -> (artifact id: '65399ae114f1e40acb8e08832cf63db7') in 0.0318375 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_03a.fbx using Guid(30e1375e949f00e44a90e7371694ffff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Sign_Chapel_01.fbx using Guid(78c2d0a8f12aa8d4ea74bc78858edbdf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '7dcf974c54876c79bf586191c909e60b') in 0.0318055 seconds
+[Worker3]  -> (artifact id: '732875399a0c63d9271e5007589d4722') in 0.037284 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Brushwood_03a.fbx using Guid(7711dbac294ab964da7ef592d0a651b0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Holotna/Mountain/Materials/Trunk01B.mat using Guid(632663acdff5fe249a0540969af378bb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '061d0756e9fdf27854ddac28389b0274') in 0.015017 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_PentHouse_01a.fbx using Guid(9c9f2f2aa57ac854aba6e282ecd0643c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '624a3aa6e45ce90cb16a0e65af430e8d') in 0.0373886 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_R_03b.fbx using Guid(42208ee65d50f4b4aa6eae18b24287e3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '6152d2ccc5c261ed66160b44ef59c3d6') in 0.1831838 seconds
+[Worker1]  -> (artifact id: '5fc77210151b6ad049c2407a39eee4a5') in 0.0431997 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_01e.fbx using Guid(931f66f0caba9e04296b7e3680048a3e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Plant_Grass_01e.fbx using Guid(c3f5ebd294edb9e468222b22e0edd694) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '1ed7c9ae059029e689de2b83eee14602') in 0.0215174 seconds
+[Worker1]  -> (artifact id: '83bfaa25717eb02390908a1fdde95313') in 0.028173 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Cubby_01d.fbx using Guid(6ee362c65b6f7d0468ee697b6fa177f4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Holotna/Mountain/Textures/Leaf01_ALB.png using Guid(4b992f8eed5dfbf4c973c33d39d3f3e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '91a3c1e8417014089063b302c49f194c') in 0.0541287 seconds
+[Worker1]  -> (artifact id: '0ce223f26c921e1be0c13a02ccdedefe') in 0.0470642 seconds
+[Worker3] Start importing Assets/Holotna/Mountain/Materials/Rock01A.mat using Guid(63a5d0dfe1e05514cb2facd51a1292de) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Holotna/Mountain/Textures/Rock01_NRM.png using Guid(d9cf6e8f7012ff84f80c16dc32d85d7c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'e3a2ce28038f3906037498e35f1fab49') in 0.0467557 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Town_AnimalSkin_01b.fbx using Guid(17c165cd03e14754583367f8b65896a5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '1ce20a12055326753cfc3d21b3188ff6') in 0.0215558 seconds
+[Worker3]  -> (artifact id: '5cbc4cf7b322122f02e878e90bdf714c') in 0.1408567 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Tree_03b.fbx using Guid(4d1c05dfe6108f84698a160ee267841f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Holotna/Mountain/Models/Mountain01.fbx using Guid(e7e9ad71137fbec4ba47d1136c67c345) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '398ffa81ded5bbe5958062d4c2aecd3d') in 0.0507919 seconds
+[Worker3]  -> (artifact id: '47a40cd663634cf7223728ea293ad4bb') in 0.0344631 seconds
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Foundation_02b.fbx using Guid(a39e54eda47beb84daec65dffc50bd71) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Crate_Under_Ceiling_01b.fbx using Guid(25630030e2eaee246b24778a07935e05) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a879422afdb1bc9a07a2dbb2820c8d7e') in 0.0150572 seconds
+[Worker1]  -> (artifact id: 'f7803f72cec9e85a0649de57a75b0e79') in 0.0530202 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Plank_02d.fbx using Guid(82cb0bafcb85fc3448ad508983ff1194) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_SweetFlag_02d.fbx using Guid(da08fde3149f94947a9e29f9773fb188) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'f465f5a68302c7320c327d92cb4b8753') in 0.0220851 seconds
+[Worker1]  -> (artifact id: 'e2554bdc4b7c5dfde5d3d18487419ec7') in 0.0212003 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Tool_Basket_01.fbx using Guid(4ccd36a85ba57a74eb8759860c7b3871) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Pier_03d.fbx using Guid(59e498c8b581e6941a0e1631a78dbe85) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'd39ea38dc9c266c56eb4639647b56739') in 0.0136549 seconds
+[Worker1]  -> (artifact id: '3540d3f35b00d1f44df432a2829fab7a') in 0.0220139 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Bale_01a.fbx using Guid(b46259b262101f3409567ebbc98c8247) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shutter_01c.fbx using Guid(f49e25a3b35dc5141a32b754e00fd088) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '036c3d63021ceaa4901af0ff2c2300dd') in 0.0154218 seconds
+[Worker1]  -> (artifact id: '070a2aee9ebfb2161d2055223bd05832') in 0.0203155 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shelf_02c.fbx using Guid(d5c62c647c224aa48b7726a6d4a8afdf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_spoon_wooden_04.fbx using Guid(b1390cea618c0d4468b6860e020625d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'f74b353c7cf56b6535b8684fbf9f7142') in 0.0135644 seconds
+[Worker1]  -> (artifact id: '65898def2f29be0c78e8f8e858bb8f6b') in 0.0132104 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_House_Shelf_01c.fbx using Guid(fefb188aa51cd2247ac69d79ad42b63d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Holotna/Mountain/Materials/Trunk01A.mat using Guid(3177037c4e10ce34fa6253dc4652e7aa) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '63143ea0dc00e3790b1d0cc19e535161') in 0.013615 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Terrain/SLAVICA FREE TERRAIN.asset using Guid(2481f732cd576cd47bbcd36696d24710) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'bb73545851bc7c5e34cba6a2137e43a9') in 0.058346 seconds
+[Worker2]  -> (artifact id: '0242d2299c312496aea6fa8e71a59562') in 3.0860556 seconds
+[Worker1]  -> (artifact id: '8acdb7d746921b64f301dbdeed334641') in 0.1197354 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_TrunkPlant_01a.fbx using Guid(6c18fd2532d959f4a9c4b5022ad24c64) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_05a.fbx using Guid(4beae949fefb41c49a85cc31123381e7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Step_01b.fbx using Guid(093d198110fcd034db9fc097c8c1a534) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '99df50ecde70dcc05c622c87ea04608b') in 0.0207047 seconds
+[Worker1]  -> (artifact id: '8aaddf97a8ec75985cdb638ea518d2e0') in 0.0225236 seconds
+[Worker3]  -> (artifact id: 'cdfbd24ec72f4a63dffeddcda833c9fd') in 0.0496512 seconds
+[Worker2] Start importing Assets/Holotna/Mountain/Textures/Leaf01_SPE.png using Guid(bfd9d863bc3114f4295991cc0c661fec) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Nature_Bush_Flat_03e.fbx using Guid(97e8203026a24ac4eaa14ee7771c4c4a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Town_Bed_01a.004.fbx using Guid(34a3e6c5d7f9337469118e21236729ab) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '900194868e558d9e327d57a7d9075e1c') in 0.0138623 seconds
+[Worker1]  -> (artifact id: '96d53e2b7a76d4384352fd9e59852291') in 0.0332256 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_kettle_01a.fbx using Guid(938d24eb3c15ada4f9e3900c8cc3bfa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Painted_Front_02a.fbx using Guid(1ce8c072405e7274fa145d02a18fac73) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'd548555c245707ffe4610ebe72f36e35') in 0.0912378 seconds
+[Worker3]  -> (artifact id: '2fab36258b3e332b5d085672d8bbbc42') in 0.0133278 seconds
+[Worker1]  -> (artifact id: '636b087671550d389efeb46d2b8fa3af') in 0.0289506 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Items_House_soon_wooden.fbx using Guid(0855f54a13378d54082bfa3148cc5ef5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Texture/Flower_Grass.png using Guid(75c5fa47d1f3b3e4592a12a4158ed2d6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Prop_Container_Crate_02a.fbx using Guid(ebce493bda9473e4e9895e76b409a2d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '99f4ffc09f8b998f180ef8f96eed8711') in 0.0151938 seconds
+[Worker1]  -> (artifact id: 'a189679545f1de3486f25fdc05790d9b') in 0.0155606 seconds
+[Worker3]  -> (artifact id: '7af585d20faac43a2250d09bb4ea2432') in 0.0454501 seconds
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01C.fbx using Guid(047f84b9394c9814b90c0e224a6c9e00) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs using Guid(0c88788eeb6222d4190071e890a0caa4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01b.fbx using Guid(edecf5bdd1bbc82448daa097d92c790b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b5b93d241b6e0ca08789a5ad7c20a591') in 0.0150502 seconds
+[Worker2]  -> (artifact id: 'f77526fad36c57828f306f915f7e8c20') in 0.0483418 seconds
+[Worker3]  -> (artifact id: 'a63365bd23ea45b5b81b8fbd49419916') in 0.0336722 seconds
+[Worker1] Start importing Assets/Holotna/Mountain/Textures/Leaf01_NRM.png using Guid(7feccd2d1614d7541a5411b20bd35df2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/EmaceArt/Slavic World Free/Meshes/EA_Prop_Hunter_Animal_Trophy_01a.fbx using Guid(a2f9d8f2d3e86874c8cb739deca457ad) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '7b3321c1d7a23c2b45ea042a9166ac60') in 0.016257 seconds
+[Worker3] Start importing Assets/EmaceArt/Slavic World Free/Thanks and checkout this/checkout my asset.pdf using Guid(4fa517224fb5c15469ddaafdf4a94068) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '203a897ba9cb46fb9b93c9d1fc58e8f1') in 0.0080504 seconds
+[Worker1]  -> (artifact id: '7dce6004efb2160d16472e3d6d3b8836') in 0.0433538 seconds
+VALORIA_REFERENCE_CLEAN_PACKAGE_COMPLETE bytes=284335755 sha256=d8afed994705ff1a5001c86fc22bea18cf24a036216e1f551edc7eddce5005e7
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:CheckExport () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:92)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs Line: 92)
+
+[Worker0]  -> (artifact id: 'b3b46dae22e070cdaf1b67ac46607e9b') in 5.1695907 seconds
+Killing ADB server in 2,0685436 seconds.
+[Worker3] The tree EA03_Plant_Grass_02a must use the Nature/Soft Occlusion shader. Otherwise billboarding/lighting will not work correctly.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:CheckExport () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:93)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+[Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs line 93]
+
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-crist-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-crist channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792321477603,"processId":23736,"allocatedMemory":19222790,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67795},{"Thread":4230344},{"Manager":34448},{"VertexData":8},{"Geometry":816},{"Texture":296},{"Shader":79397},{"Material":24},{"GfxDevice":55872},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":24428},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":14017},{"DynamicArray":102608},{"HashMap":72725},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2248},{"AI":80},{"TypeTree":5341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":6736},{"WebRequest":9081},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":106259},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
