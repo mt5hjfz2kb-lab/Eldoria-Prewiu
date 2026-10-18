@@ -76,6 +76,7 @@ jobs:
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
+          if($req.stage -eq 'bastion_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionIntegrate.Build'}
           if($req.stage -eq 'bastion_ground_finish'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionGroundFinish.Build'}
           if($req.stage -eq 'ground_diagnose'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble.DiagnoseGround'}
           if($req.stage -eq 'contact_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanContactTrial.Build'}
@@ -142,12 +143,45 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
+
+          $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
+          $resourceStash=Join-Path $env:RUNNER_TEMP "ValoriaResourceGLBs-update-$env:GITHUB_RUN_ID"
+          $streamSource=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/StreamingAssets/ValoriaFamilyV3'
+          $streamStash=Join-Path $env:RUNNER_TEMP "ValoriaFamilyV3-update-$env:GITHUB_RUN_ID"
+          $movedBytes=0;$movedFiles=0
+          if($req.stage -eq 'android' -and ((Test-Path $resourceStash) -or (Test-Path $streamStash))){throw 'Existing update stash requires recovery; refuse overwrite'}
           try{
+
+            if($req.stage -eq 'android'){
+              # Recovered optimized V5 packaging: exclude only legacy source GLBs and the source-only V3 streaming family.
+              if(Test-Path $resourceRoot){foreach($glb in @(Get-ChildItem $resourceRoot -Recurse -File -Filter '*.glb')){
+                $relative=$glb.FullName.Substring($resourceRoot.Length).TrimStart([char]92);$target=Join-Path $resourceStash $relative
+                New-Item (Split-Path $target) -ItemType Directory -Force|Out-Null
+                $movedBytes+=$glb.Length;$movedFiles++;Move-Item $glb.FullName $target
+                if(Test-Path ($glb.FullName+'.meta')){Move-Item ($glb.FullName+'.meta') ($target+'.meta')}
+              }}
+              if(Test-Path $streamSource){$movedBytes+=(Get-ChildItem $streamSource -Recurse -File|Measure-Object Length -Sum).Sum;Move-Item $streamSource $streamStash}
+              @{original_procedure_run=38279800977;source_glbs_excluded=$movedFiles;source_bytes_excluded=$movedBytes;single_scene='Valoria_Reference_Clean.unity';user_data_touched=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-optimized-payload.json -Encoding utf8
+            }
             $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
             if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
-          }finally{if($req.stage -eq 'android'){foreach($q in $settingsBefore.Keys){[IO.File]::WriteAllBytes($q,$settingsBefore[$q])}}}
+          }finally{
+
+            if($req.stage -eq 'android'){
+              foreach($q in $settingsBefore.Keys){[IO.File]::WriteAllBytes($q,$settingsBefore[$q])}
+              if(Test-Path $resourceStash){
+                foreach($item in @(Get-ChildItem $resourceStash -Recurse -File)){
+                  $relative=$item.FullName.Substring($resourceStash.Length).TrimStart([char]92);$target=Join-Path $resourceRoot $relative
+                  New-Item (Split-Path $target) -ItemType Directory -Force|Out-Null
+                  if(Test-Path $target){throw "RESTORE_REFUSED_FILE_EXISTS $relative"};Move-Item $item.FullName $target
+                }
+                Remove-Item $resourceStash -Force -Recurse
+              }
+              if(Test-Path $streamStash){if(Test-Path $streamSource){throw 'RESTORE_REFUSED_SOURCE_EXISTS'};Move-Item $streamStash $streamSource}
+            }
+          }
           $nativeLog='native-unity.log';if($req.stage -eq 'android'){$nativeLog='android-native.log'}
           Copy-Item $log (Join-Path 'docs/evidence/valoria-reference-clean' $nativeLog)
           Select-String $log -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
@@ -164,6 +198,26 @@ jobs:
             Get-Content $playLog -Tail 80
             if($play.ExitCode -ne 0 -or -not(Select-String $playLog -Pattern 'VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE' -Quiet)){throw 'Actual PlayMode validation failed'}
           }
+
+      - name: Verify optimized Android update identity and signature
+        if: success() && steps.native_stage.outputs.stage == 'android'
+        shell: powershell
+        run: |
+          $sdk=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/SDK'
+          $buildTools=Get-ChildItem (Join-Path $sdk 'build-tools') -Directory|Sort-Object Name -Descending|Where-Object {(Test-Path (Join-Path $_.FullName 'apksigner.bat')) -and (Test-Path (Join-Path $_.FullName 'aapt.exe'))}|Select-Object -First 1
+          if(-not $buildTools){throw 'Existing Android verification tools missing'}
+          $apk=(Resolve-Path 'Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk').Path
+          $signed=(& (Join-Path $buildTools.FullName 'apksigner.bat') verify --verbose --print-certs $apk 2>&1|Out-String)
+          if($LASTEXITCODE){throw 'APK cryptographic signature verification failed'}
+          $badging=(& (Join-Path $buildTools.FullName 'aapt.exe') dump badging $apk 2>&1|Out-String)
+          if($LASTEXITCODE){throw 'APK manifest verification failed'}
+          [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-apksigner.txt'),$signed)
+          [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-badging.txt'),$badging)
+          $expected='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
+          if(-not $signed.ToLowerInvariant().Contains($expected)){throw 'APK signing certificate differs from installed-version candidate'}
+          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='2'"){throw 'APK update package/version mismatch'}
+          if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'APK ARM64 missing'}
+          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=2;prior_version_code=1;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
       - name: Review real capture with previously installed local vision model
         continue-on-error: true
         shell: powershell
@@ -237,7 +291,7 @@ jobs:
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: success() && (steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate')
+        if: success() && (steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate')
         with:
           name: valoria-reference-clean-package-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage

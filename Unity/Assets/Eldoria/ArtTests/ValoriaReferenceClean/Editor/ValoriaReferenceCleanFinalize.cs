@@ -105,9 +105,9 @@ public static class ValoriaReferenceCleanFinalize {
  static void VerifyExistingApk(){
   const string apk="Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk";
   var expected=JsonUtility.FromJson<PriorApk>(File.ReadAllText(Ev+"/android-build.json"));
-  if(!File.Exists(apk))throw new FileNotFoundException("native55 APK missing",apk);
+  if(!File.Exists(apk))throw new FileNotFoundException("Recorded APK missing",apk);
   var digest=HashFile(apk);long length=new FileInfo(apk).Length;
-  if(digest!=expected.apk_sha256||length!=expected.apk_bytes)throw new Exception("APK differs from native55 recorded bytes");
+  if(digest!=expected.apk_sha256||length!=expected.apk_bytes)throw new Exception("APK differs from recorded build bytes");
   var libs=new List<string>();var largest=new List<string>();
   using(var input=File.OpenRead(apk))
   using(var zip=new System.IO.Compression.ZipArchive(input,System.IO.Compression.ZipArchiveMode.Read)){
@@ -122,7 +122,7 @@ public static class ValoriaReferenceCleanFinalize {
    largest.AddRange(zip.Entries.OrderByDescending(e=>e.CompressedLength).Take(30).Select(e=>e.FullName+" | compressed="+e.CompressedLength+" | bytes="+e.Length));
   }
   File.WriteAllText(Ev+"/android-archive-verification.json",JsonUtility.ToJson(new ApkArchiveReport{
-   source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),status="NATIVE55_EXACT_HASH_AND_ARM64_ELF_VERIFIED",
+   source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),status="RECORDED_APK_EXACT_HASH_AND_ARM64_ELF_VERIFIED",
    sha256=digest,bytes=length,arm64_libraries=libs.ToArray(),largest_entries=largest.ToArray()},true));
  }
 
