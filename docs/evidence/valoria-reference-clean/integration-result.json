@@ -1,5 +1,5 @@
 {
-    "source": "48837605705fed198ec485f2c2726af2ffa5eea9",
+    "source": "1686007325864e9e193c12b5a31511574b2c16be",
     "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
     "error": "",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
@@ -9,9 +9,11 @@
         "mechanic-gated menus, narrative, no slabs, objective navigation",
         "story modal opened",
         "dialogue survives refresh",
-        "world return preserves session",
+        "all world entry points share progression gate",
+        "construction panel visible in both orientations",
         "Royal build command",
         "shared timer and authored model",
+        "world return preserves session",
         "world gathering, city return, saved reward",
         "original web gathering dialogue",
         "Royal map action forest-valoria",
@@ -24,10 +26,128 @@
         "Bastion II visual",
         "Royal barracks",
         "Royal recruitment",
-        "Royal march confirmation",
+        "Royal march action becomes available",
+        "Royal march confirmation via visible primary button",
         "Royal I-II chapter complete and reload",
         "canonical save byte hashes preserved"
     ],
+    "framing": [
+        {
+            "capture": "integration-construction-landscape.png",
+            "target": "sawmill",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.3870394825935364,
+                0.3336220383644104,
+                0.5529603958129883,
+                0.47304442524909975
+            ],
+            "visible": [
+                0.22124998271465302,
+                0.013333333656191826,
+                0.7187499403953552,
+                0.793333113193512
+            ]
+        },
+        {
+            "capture": "integration-construction-portrait.png",
+            "target": "sawmill",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.23780390620231629,
+                0.4137263000011444,
+                0.7621960639953613,
+                0.5531486868858337
+            ],
+            "visible": [
+                0.014999881386756897,
+                0.36343756318092348,
+                0.9849998354911804,
+                0.6034373641014099
+            ]
+        },
+        {
+            "capture": "integration-city-built.png",
+            "target": "sawmill",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.4190657138824463,
+                0.4010193347930908,
+                0.5209342837333679,
+                0.565647304058075
+            ],
+            "visible": [
+                0.2212499976158142,
+                0.17333318293094636,
+                0.7187499403953552,
+                0.793333113193512
+            ]
+        },
+        {
+            "capture": "integration-bastion-upgrade.png",
+            "target": "bastion",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.36244192719459536,
+                0.28629153966903689,
+                0.5775580406188965,
+                0.6803749799728394
+            ],
+            "visible": [
+                0.2212500423192978,
+                0.17333339154720307,
+                0.7187500596046448,
+                0.7933332920074463
+            ]
+        },
+        {
+            "capture": "integration-training.png",
+            "target": "barracks",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.4226323664188385,
+                0.42672377824783327,
+                0.5173677206039429,
+                0.5399426817893982
+            ],
+            "visible": [
+                0.2212499976158142,
+                0.17333324253559113,
+                0.7187499403953552,
+                0.7933332920074463
+            ]
+        },
+        {
+            "capture": "integration-training-portrait.png",
+            "target": "barracks",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.35029444098472597,
+                0.4314373731613159,
+                0.6497050523757935,
+                0.5446562767028809
+            ],
+            "visible": [
+                0.01499970257282257,
+                0.3726562559604645,
+                0.9849995374679565,
+                0.6034373044967651
+            ]
+        }
+    ],
     "artApproved": false,
-    "physicalDeviceTested": false
+    "physicalDeviceTested": false,
+    "timeAccelerated": true
 }
