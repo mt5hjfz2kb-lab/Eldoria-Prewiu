@@ -28,6 +28,7 @@ jobs:
           }
       - uses: actions/checkout@v4
         with:
+          clean: false
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/valoria-reference-clean/
@@ -70,6 +71,10 @@ jobs:
           $lib=Join-Path $env:RUNNER_TEMP 'valoria-browser-library'
           npm install --prefix $lib --no-save --ignore-scripts playwright@1.55.0
           if($LASTEXITCODE){throw 'Playwright package resolution failed'}
+          # The video recorder always requires Playwright's matching ffmpeg-win64.exe,
+          # even when the installed Microsoft Edge/Chrome browser is reused.
+          & (Join-Path $lib 'node_modules/.bin/playwright.cmd') install ffmpeg
+          if($LASTEXITCODE){throw 'Matching free Playwright FFmpeg recorder missing'}
           Add-Content $env:GITHUB_ENV "NODE_PATH=$(Join-Path $lib 'node_modules')"
           $candidates=@(
             (Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),
