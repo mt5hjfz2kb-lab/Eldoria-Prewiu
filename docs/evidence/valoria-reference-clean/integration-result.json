@@ -1,11 +1,12 @@
 {
-    "source": "440fbc96e9dee9f47769489e880a872e405f3907",
+    "source": "faeb9bb6865fe625b866681d3e81e36160d439da",
     "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
     "error": "",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
     "checks": [
         "original web three-voice introduction, typewriter reveal and saved milestone",
         "city HUD, one camera",
+        "Royal Gold real chapter checklist and collapse",
         "mechanic-gated menus, narrative, no slabs, objective navigation",
         "story modal opened",
         "dialogue survives refresh without gaining a duplicate milestone",
