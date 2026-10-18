@@ -70,6 +70,12 @@ namespace Eldoria.World4XPrototype
             ApplyPose(); FitToAuthoredBounds();
         }
         public void PanTo(Vector3 point) { target = point; ApplyPose(); FitToAuthoredBounds(); }
+        // Restore an observed pose after a temporary render or an orientation check.
+        public void RestoreView(Vector3 point, float zoom)
+        {
+            target = point; desiredZoom = zoom; View.orthographicSize = zoom;
+            zoomAnchored = false; ApplyPose(); FitToAuthoredBounds();
+        }
         public void FitToAuthoredBounds()
         {
             float fit = MaximumFittingZoom();

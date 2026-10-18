@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a21">
+<title>Valoria · Ciudad y Zona 1</title>
+<meta name="description" content="Prueba privada de Valoria: construye tu ciudad y explora la Zona 1. Proyecto en desarrollo.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="welcome">
+ <div class="art" aria-hidden="true"></div>
+ <section class="entry">
+  <p class="eyebrow">ELDORIA · PRUEBA PRIVADA</p>
+  <h1>Valoria</h1>
+  <p class="subtitle">Tu ciudad. Un mundo por explorar.</p>
+  <div class="rule"></div>
+  <p class="intro">Construye el aserradero, explora la Zona 1 y haz crecer tu Bastión.</p>
+  <button id="play" type="button">Entrar en Valoria <span aria-hidden="true">→</span></button>
+  <div id="loading" hidden role="status" aria-live="polite">
+   <p id="status">Preparando la ciudad…</p>
+   <progress id="progress" max="1" value="0" aria-label="Carga del juego"></progress>
+  </div>
+  <p id="error" hidden role="alert"></p>
+  <div class="instructions">
+   <p><strong>Pulsa «Ir al objetivo»</strong> para encontrar dónde construir o actuar.</p>
+   <p><strong>Arrastra y pellizca</strong> para mover la cámara y acercarte.</p>
+   <p><strong>Mundo / Ciudad</strong> cambia de vista cuando avances. La información de Valoria abre la crónica.</p>
+  </div>
+  <p class="note">Puedes jugar en horizontal o vertical. La primera carga puede tardar.</p>
+  <p class="development">Versión en desarrollo · La calidad visual sigue en mejora.<br>El progreso se guarda en este navegador y no se comparte con Android.</p>
+ </section>
+</main>
+<div id="game" hidden><canvas id="unity-canvas" tabindex="-1" aria-label="Valoria, juego de estrategia"></canvas></div>
+<script src="play.js"></script>
+</body>
+</html>

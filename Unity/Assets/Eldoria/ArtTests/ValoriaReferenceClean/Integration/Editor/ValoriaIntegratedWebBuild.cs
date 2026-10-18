@@ -24,6 +24,7 @@ namespace Eldoria.ReferenceClean.Editor {
     if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.WebGL,BuildTarget.WebGL))throw new Exception("Installed Unity WebGL module unavailable");
     var proof=File.ReadAllText(Ev+"/integration-result.json");
     if(!proof.Contains("INTEGRATION_PASS_ART_REVIEW_REQUIRED"))throw new Exception("Integrated I-II native proof missing");
+    if(!File.Exists(Ev+"/integration-input-signature.txt")||File.ReadAllText(Ev+"/integration-input-signature.txt")!=ValoriaIntegrationBuild.ComputeInputSignature())throw new Exception("Integrated scene/runtime differs from the native I-II proof");
     EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
     var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
     if(!host||!host.HudPrefab||!host.WorldRoot||!host.WorldCamera)throw new Exception("Integrated city/UI/Zone1 bindings missing");

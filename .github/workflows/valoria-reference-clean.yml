@@ -15,6 +15,9 @@ jobs:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
+    outputs:
+      stage: ${{ steps.native_stage.outputs.stage }}
+      revision: ${{ steps.native_stage.outputs.revision }}
     defaults:
       run:
         working-directory: valoria-layered-source
@@ -91,6 +94,7 @@ jobs:
             if($parseErrors.Count){throw ($parseErrors|Out-String)}
           }
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "revision=$($req.revision)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'environment_author'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
@@ -104,6 +108,8 @@ jobs:
             return
           }
           if($req.stage -eq 'web_playtest'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build'}
+          if($req.stage -eq 'experience_finish'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Improve';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'experience_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'city_world_ui'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe';$env:VALORIA_GAMEPLAY_PROBE='1'}
@@ -235,7 +241,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
 
@@ -440,7 +446,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        if: always() && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
@@ -475,4 +481,75 @@ jobs:
         with:
           name: valoria-integrated-web-playtest-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaWebPlaytest/**
+          if-no-files-found: error
+
+  visible-controls-web:
+    needs: native
+    if: needs.native.outputs.stage == 'web_playtest'
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-reference-clean/
+            /docs/evidence/valoria-reference-clean/environment-city-wide-after.png
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-integrated-web-playtest-${{ github.run_id }}
+          path: unity-raw
+      - name: Prepare the existing private Site transport without changing Unity bytes
+        env:
+          VALORIA_REVISION: ${{ needs.native.outputs.revision }}
+        run: |
+          python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site "native$VALORIA_REVISION" "$GITHUB_SHA" "$GITHUB_RUN_ID"
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+      - name: Install the existing Chromium test tool on this temporary free runner
+        run: |
+          npm install --prefix "$RUNNER_TEMP/valoria-web-qa" --no-save --ignore-scripts playwright@1.55.0
+          "$RUNNER_TEMP/valoria-web-qa/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Play the exact local build with visible controls and the normal clock
+        env:
+          VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence
+          VALORIA_SOURCE_SHA: ${{ github.sha }}
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: 480
+          VALORIA_WEB_LOAD_TIMEOUT_SECONDS: 180
+        run: |
+          NODE_PATH="$RUNNER_TEMP/valoria-web-qa/node_modules" node tools/valoria-reference-clean/playtest_web.cjs
+      - name: Attach the successful browser result to the verified package
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path('prepared-site')
+          report=pathlib.Path('web-visible-controls-evidence/report.json')
+          result=json.loads(report.read_text())
+          assert result['status']=='PASS' and result['checks']['exact_save_reload']['pass']
+          path=root/'unity-output-verification.json'
+          proof=json.loads(path.read_text())
+          proof['browser_runtime_qa']=True
+          proof['browser_scope']=result['scope']
+          proof['tested_manifest_sha256']=result['build']['manifest_sha256']
+          proof['browser_report_sha256']=hashlib.sha256(report.read_bytes()).hexdigest()
+          path.write_text(json.dumps(proof,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-web-visible-controls-${{ github.run_id }}
+          path: web-visible-controls-evidence/**
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: valoria-verified-private-site-${{ github.run_id }}
+          path: prepared-site/**
           if-no-files-found: error

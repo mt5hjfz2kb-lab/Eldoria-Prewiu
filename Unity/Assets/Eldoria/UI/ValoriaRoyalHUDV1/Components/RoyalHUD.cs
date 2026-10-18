@@ -6,21 +6,45 @@ namespace Eldoria.UI.RoyalGold {
  public sealed class RoyalHUD:MonoBehaviour {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
   IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative;float next,submitAfter;RoyalSection shown;CanvasGroup group;
-  void Awake(){group=GetComponent<CanvasGroup>();SetBound(session!=null);}
+  RoyalHudLayout layout;Canvas canvas;readonly Vector3[] corners=new Vector3[4];
+  public string SelectedBuildingId=>selected;
+  public event Action<string> SelectionChanged;
+  void Awake(){group=GetComponent<CanvasGroup>();canvas=GetComponent<Canvas>();layout=GetComponentInChildren<RoyalHudLayout>(true);SetBound(session!=null);}
   void SetBound(bool bound){if(!group)group=GetComponent<CanvasGroup>();group.alpha=bound?1:0;group.interactable=group.blocksRaycasts=bound;}
   public void Bind(IRoyalSession source,IRoyalNavigation navigation=null){session=source??throw new ArgumentNullException(nameof(source));host=navigation;SetBound(true);Refresh();}
-  public void SelectBuilding(string id){selected=id??"";Refresh();}
+  public void SelectBuilding(string id){selected=id??"";Refresh();Canvas.ForceUpdateCanvases();SelectionChanged?.Invoke(selected);}
   void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(ShowMarch);Navigation.Requested+=Open;}
   void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(ShowMarch);Navigation.Requested-=Open;}
   void Update(){if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){if(Modal.gameObject.activeSelf)Modal.Hide();else CloseBuilding();}}
   public void SetEnglish(bool value){english=value;Refresh();if(Modal.gameObject.activeSelf)ShowModal(shown);}
   public void Refresh(){
    if(session==null)return;
-   try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current);Navigation.Layout(english,host);Building.Render(current.Building,english,pending||Time.unscaledTime<submitAfter);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings&&!narrative)ShowModal(shown,false);}
+   try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current,english);Navigation.Layout(english,host);Building.Render(current.Building,english,pending||Time.unscaledTime<submitAfter);if(layout)layout.Apply(((RectTransform)layout.transform).rect.width);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings&&!narrative)ShowModal(shown,false);}
    catch(Exception e){Feedback.Put(L("No se pudo actualizar la interfaz: ","Could not refresh UI: ")+e.Message);Building.Primary.Button.interactable=false;}
   }
   void Submit(){if(session==null||pending||Time.unscaledTime<submitAfter||Building.Offer==null)return;var offer=Building.Offer;pending=true;submitAfter=Time.unscaledTime+.35f;Building.Primary.Button.interactable=false;try{var r=session.Submit(offer);Feedback.Put(r.Message);}catch(Exception e){Feedback.Put(L("Acción no enviada: ","Action not sent: ")+e.Message);}finally{pending=false;Refresh();}}
   public Action ObjectiveRequested,StoryRequested;
+  /// <summary>Visible scene rectangle in camera viewport coordinates (origin bottom-left), including offscreen native captures.</summary>
+  public Rect GetVisibleSceneViewport(){
+   if(!canvas)canvas=GetComponent<Canvas>();
+   if(!layout)layout=GetComponentInChildren<RoyalHudLayout>(true);
+   var camera=canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null;
+   var full=camera?camera.pixelRect:new Rect(0,0,Screen.width,Screen.height);
+   if(full.width<1||full.height<1)return new Rect(.1f,.2f,.8f,.6f);
+   Canvas.ForceUpdateCanvases();
+   var area=layout?ScreenBounds((RectTransform)layout.transform,camera):full;
+   float gap=12*(canvas?canvas.scaleFactor:1);
+   area.xMin+=gap;area.xMax-=gap;area.yMin+=gap;area.yMax-=gap;
+   foreach(var header in new[]{(RectTransform)Realm.transform,(RectTransform)Resources.transform,(RectTransform)Settings.transform})
+    if(header.gameObject.activeInHierarchy)area.yMax=Mathf.Min(area.yMax,ScreenBounds(header,camera).yMin-gap);
+   if(Feedback&&Feedback.gameObject.activeInHierarchy&&!string.IsNullOrWhiteSpace(Feedback.text))area.yMax=Mathf.Min(area.yMax,ScreenBounds(Feedback.rectTransform,camera).yMin-gap);
+   foreach(var item in Navigation.Items)if(item.Button.gameObject.activeInHierarchy)area.yMin=Mathf.Max(area.yMin,ScreenBounds((RectTransform)item.Button.transform,camera).yMax+gap);
+   bool bottomSheet=Building.IsBottomSheet;
+   if(Mission.gameObject.activeInHierarchy){var mission=ScreenBounds((RectTransform)Mission.transform,camera);if(bottomSheet)area.yMax=Mathf.Min(area.yMax,mission.yMin-gap);else area.xMin=Mathf.Max(area.xMin,mission.xMax+gap);}
+   if(Building.gameObject.activeInHierarchy){var panel=ScreenBounds((RectTransform)Building.transform,camera);if(bottomSheet)area.yMin=Mathf.Max(area.yMin,panel.yMax+gap);else area.xMax=Mathf.Min(area.xMax,panel.xMin-gap);}
+   return Rect.MinMaxRect(Mathf.Clamp01((area.xMin-full.xMin)/full.width),Mathf.Clamp01((area.yMin-full.yMin)/full.height),Mathf.Clamp01((area.xMax-full.xMin)/full.width),Mathf.Clamp01((area.yMax-full.yMin)/full.height));
+  }
+  Rect ScreenBounds(RectTransform r,Camera camera){r.GetWorldCorners(corners);var a=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);var b=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);return Rect.MinMaxRect(a.x,a.y,b.x,b.y);}
   public bool NarrativeOpen=>narrative&&Modal.gameObject.activeSelf;
   public void ShowNarrative(string title,string body){narrative=true;Modal.Body.fontSize=22;Modal.Show(title,body);Modal.Extra.gameObject.SetActive(true);Modal.ExtraLabel.Put("Continuar");if(Modal.Secondary)Modal.Secondary.gameObject.SetActive(false);}
   void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}

@@ -28,5 +28,11 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
+        with:
+          # This validator reads every workflow and has no art/build dependencies.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/
+            /tools/check-workflow-governance.mjs
       - name: Enforce workflow governance
         run: node tools/check-workflow-governance.mjs

@@ -1,0 +1,442 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Eldoria.Domain;
+using Eldoria.Presentation;
+using GLTFast;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
+
+namespace Eldoria.ReferenceClean.Editor {
+ /// <summary>
+ /// Finishes the currently open integrated scene. It never opens an older city
+ /// scene or rebuilds gameplay. Model sources, parcel bindings and hotspot IDs
+ /// remain the existing ones; only explicit visual copies are replaced.
+ /// </summary>
+ public static class ValoriaEnvironmentFinish {
+  const string Sources = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnvironmentFinish";
+  const string AssetsRoot = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish";
+  const string Marker = "Environment finish / retained integrated base v1";
+  static string folder;
+  static int assetIndex;
+  static readonly Dictionary<Object, Object> persisted = new Dictionary<Object, Object>();
+  static readonly Dictionary<Material, Material> hostileMaterials = new Dictionary<Material, Material>();
+
+  [Serializable] public sealed class ShoreGap { public float x, width, scale; }
+  [Serializable] public sealed class ArtistPlan { public string rationale; public float city_path_width; public ShoreGap[] shore_gaps; }
+  [Serializable] sealed class Frame { public string view, before, after; public int width, height; public float[] camera; }
+  [Serializable] sealed class Report {
+   public string source_sha, scene, source_scene_sha256, artist_plan_sha256, author_result_sha256;
+   public bool current_scene_only, same_camera_light, terrain_heights_preserved, parcel_bindings_preserved,
+    hotspot_centres_preserved, source_meshes_preserved, art_approved;
+   public int city_painted_cells, world_painted_pixels, shoreline_stones_reused, world_trees_reused, replaced_world_destinations;
+   public Frame[] frames;
+   public string[] limitations;
+  }
+  struct CameraState {
+   public Vector3 position; public Quaternion rotation; public float size, aspect; public bool enabled;
+   public CameraState(Camera camera) { position=camera.transform.position; rotation=camera.transform.rotation; size=camera.orthographicSize; aspect=camera.aspect; enabled=camera.enabled; }
+   public void Restore(Camera camera) { camera.transform.SetPositionAndRotation(position,rotation); camera.orthographicSize=size; camera.aspect=aspect; camera.enabled=enabled; }
+  }
+  static void Need(bool ok, string message) { if(!ok) throw new InvalidOperationException("Environment finish: "+message); }
+  static string Hash(string path) { using(var h=System.Security.Cryptography.SHA256.Create()) return BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(path))).Replace("-", "").ToLowerInvariant(); }
+  static string LightStamp() { var sun=RenderSettings.sun; return (sun?sun.transform.localToWorldMatrix.ToString("R")+sun.intensity.ToString("R")+sun.color.ToString("R"):"none")+RenderSettings.ambientMode+RenderSettings.ambientSkyColor.ToString("R")+RenderSettings.ambientEquatorColor.ToString("R")+RenderSettings.ambientGroundColor.ToString("R"); }
+  static Bounds BoundsOf(GameObject go) {
+   var renderers=go.GetComponentsInChildren<Renderer>(true).Where(r=>r.GetComponent<MeshFilter>()!=null).ToArray();
+   Need(renderers.Length>0,"No mesh in "+go.name); var result=renderers[0].bounds;
+   foreach(var renderer in renderers.Skip(1)) result.Encapsulate(renderer.bounds); return result;
+  }
+  static Transform Find(GameObject root, string name) { return root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t=>t.name==name); }
+  static GameObject Target(ValoriaIntegratedWorld host,string id) {
+   var value=Find(host.WorldRoot,"Zone1 target "+id); Need(value,"Retained destination missing: "+id); return value.gameObject;
+  }
+
+  public static async Task ApplyAsync(ValoriaReferenceCleanGameplay city, ValoriaIntegratedWorld host, string evidenceDir) {
+   Need(city&&host&&host.WorldRoot&&host.WorldCamera&&city.PlayerCamera,"Current integrated bindings required");
+   Need(city.BastionOne&&city.BastionTwo&&city.Parcels.LeftBuilt&&city.Parcels.RightBuilt,"Retained I–II models required");
+   if(Find(host.WorldRoot,Marker)) { Debug.Log("VALORIA_ENVIRONMENT_ALREADY_APPLIED_CURRENT_SCENE"); return; }
+   var planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   var authorPath=Path.Combine(evidenceDir,"environment-finish-result.json");
+   Need(File.Exists(planPath)&&File.Exists(authorPath),"Current local artist plan and execution evidence required");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.city_path_width>=1.5f&&plan.city_path_width<=2.2f&&plan.shore_gaps!=null,"Invalid authored scene parameters");
+   Need(File.Exists(Sources+"/EnvironmentForest.glb")&&File.Exists(Sources+"/EnvironmentQuarry.glb"),"Current artist exports missing");
+   Directory.CreateDirectory(evidenceDir);
+   folder=AssetsRoot+"/Run-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+   Directory.CreateDirectory(folder); AssetDatabase.Refresh(); assetIndex=0; persisted.Clear(); hostileMaterials.Clear();
+
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Current city terrain missing");
+   var terrainBefore=terrain.terrainData;
+   var leftBinding=city.Parcels.LeftBuilt; var rightBinding=city.Parcels.RightBuilt;
+   var anchors=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var cityCameraState=new CameraState(city.PlayerCamera); var worldCameraState=new CameraState(host.WorldCamera);
+   string beforeLight=LightStamp();
+   bool wasWorldActive=host.WorldRoot.activeSelf;
+   var frames=new Dictionary<string,Frame>();
+   var report=new Report { source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"), scene=city.gameObject.scene.path,
+    source_scene_sha256=Hash(city.gameObject.scene.path),
+    artist_plan_sha256=Hash(planPath),author_result_sha256=Hash(authorPath),current_scene_only=true,
+    source_meshes_preserved=true,art_approved=false,
+    limitations=new[]{"Actual Unity images require independent visual review; this editor pass does not confer ART_APPROVED.",
+     "Physical Android/iPhone performance is not measured by editor captures.","Existing light bake and scene heights retained; moved decorative models use realtime lighting and probes."} };
+   try {
+    city.Apply(new PlayerState { BastionLevel=2,SawmillLevel=1,BarracksLevel=1 });
+    CaptureViews(city,host,evidenceDir,"before",frames);
+    host.WorldRoot.SetActive(true); Physics.SyncTransforms();
+    var marker=new GameObject(Marker); marker.transform.SetParent(host.WorldRoot.transform,false);
+    var ground=host.WorldRoot.GetComponentsInChildren<MeshFilter>(true).FirstOrDefault(f=>f.name=="ZoneOne continuous prairie source");
+    Need(ground&&ground.sharedMesh,"Current authored world terrain missing");
+    var query=ground.gameObject.AddComponent<MeshCollider>(); query.sharedMesh=ground.sharedMesh; Physics.SyncTransforms();
+    float Ground(Vector3 p) { return query.Raycast(new Ray(new Vector3(p.x,100,p.z),Vector3.down),out var hit,200)?hit.point.y:p.y; }
+    try {
+     ReplaceMapValoria(city,host,marker.transform,Ground);
+     var forest=await ReplaceAuthoredDestination(host,"forest-valoria","Wood resource existing timber stock",
+      Sources+"/EnvironmentForest.glb",18,marker.transform,Ground);
+     report.world_trees_reused=UnifyWorldVegetation(host,forest,marker.transform,Ground);
+     await ReplaceAuthoredDestination(host,"quarry-valoria","Existing Holotna rock.001",
+      Sources+"/EnvironmentQuarry.glb",20,marker.transform,Ground);
+     ReplaceEncampments(city,host,marker.transform,Ground);
+     report.replaced_world_destinations=5;
+     // Supplies without a mechanic are scenery debt, not additional resources.
+     foreach(string name in new[]{"Food resource existing supply","Food resource existing store"}) {
+      var unused=Find(host.WorldRoot,name); if(unused) unused.gameObject.SetActive(false);
+     }
+     report.world_painted_pixels=FinishWorldSurface(host,ground);
+    } finally { Object.DestroyImmediate(query); }
+    host.WorldRoot.SetActive(false);
+    report.city_painted_cells=FinishCityGround(city,terrain,plan);
+    report.shoreline_stones_reused=BreakShoreRepetition(host,plan);
+    CaptureViews(city,host,evidenceDir,"after",frames);
+    report.same_camera_light=beforeLight==LightStamp(); Need(report.same_camera_light,"A/B light changed");
+    report.terrain_heights_preserved=terrainBefore.GetHeights(0,0,terrainBefore.heightmapResolution,terrainBefore.heightmapResolution)
+     .Cast<float>().SequenceEqual(terrain.terrainData.GetHeights(0,0,terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution).Cast<float>());
+    report.parcel_bindings_preserved=city.Parcels.LeftBuilt==leftBinding&&city.Parcels.RightBuilt==rightBinding;
+    report.hotspot_centres_preserved=anchors.All(pair=>pair.Key&&pair.Key.transform.position==pair.Value);
+    Need(report.terrain_heights_preserved&&report.parcel_bindings_preserved&&report.hotspot_centres_preserved,"Protected current scene binding changed");
+    report.frames=frames.Values.ToArray();
+    AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-finish-unity.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("VALORIA_ENVIRONMENT_FINISH_COMPLETE city_cells="+report.city_painted_cells+" shoreline_groups="+report.shoreline_stones_reused);
+   } finally {
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne) host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo) host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill) host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(wasWorldActive); cityCameraState.Restore(city.PlayerCamera); worldCameraState.Restore(host.WorldCamera);
+   }
+  }
+
+  static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
+   var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
+   var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
+   // The actual two current Bastion meshes share their city materials. There is
+   // no substitute miniature castle family and no inference of a restored wall.
+   host.WorldBastionOne=CloneVisual(city.BastionOne,"Valoria map / actual Bastion I",parent,origin+new Vector3(0,0,3),20);
+   host.WorldBastionTwo=CloneVisual(city.BastionTwo,"Valoria map / actual Bastion II",parent,origin+new Vector3(0,0,3),20);
+   host.WorldBastionOne.SetActive(false); host.WorldBastionTwo.SetActive(true);
+   host.WorldSawmill=CloneVisual(city.Parcels.LeftBuilt,"Valoria map / actual timber workshop",parent,AtGround(origin+new Vector3(-11,0,-3),ground),7);
+   // Only city-derived ruined fragments are reused at the border. No completed
+   // defensive ring is shown before the player has actually restored it.
+   var ruins=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .Where(r=>r.name.StartsWith("Ruin_")&&!r.transform.IsChildOf(host.WorldRoot.transform)).Take(2).ToArray();
+   for(int i=0;i<ruins.Length;i++) CloneVisual(ruins[i].gameObject,"Valoria map / retained ruins "+i,parent,
+    AtGround(origin+new Vector3(i==0?-10:10,0,-8),ground),5.4f);
+   old.gameObject.SetActive(false);
+  }
+  static Vector3 AtGround(Vector3 value,Func<Vector3,float> ground) { value.y=ground(value); return value; }
+  static GameObject CloneVisual(GameObject source,string name,Transform parent,Vector3 destination,float width) {
+   var root=new GameObject(name); root.transform.SetParent(parent,true);
+   var bounds=BoundsOf(source); var centre=new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+   float scale=width/Mathf.Max(bounds.size.x,bounds.size.z);
+   foreach(var old in source.GetComponentsInChildren<MeshRenderer>(true)) {
+    var filter=old.GetComponent<MeshFilter>(); if(!filter||!filter.sharedMesh) continue;
+    var part=new GameObject(old.name); part.transform.SetParent(root.transform,false);
+    // Flatten the visual hierarchy without copying behaviours, colliders or
+    // baked lightmap indices from a different world position.
+    var matrix=Matrix4x4.Translate(-centre)*old.transform.localToWorldMatrix;
+    part.transform.localPosition=matrix.GetColumn(3); part.transform.localRotation=matrix.rotation;
+    part.transform.localScale=matrix.lossyScale;
+    part.AddComponent<MeshFilter>().sharedMesh=filter.sharedMesh;
+    var renderer=part.AddComponent<MeshRenderer>(); renderer.sharedMaterials=old.sharedMaterials;
+    PrepareRenderer(renderer);
+   }
+   root.transform.localScale=Vector3.one*scale; root.transform.position=destination;
+   return root;
+  }
+  static void PrepareRenderer(MeshRenderer renderer) {
+   GameObjectUtility.SetStaticEditorFlags(renderer.gameObject,0); renderer.lightmapIndex=-1;
+   renderer.receiveGI=ReceiveGI.LightProbes; renderer.lightProbeUsage=LightProbeUsage.BlendProbes;
+   renderer.reflectionProbeUsage=ReflectionProbeUsage.BlendProbes; renderer.shadowCastingMode=ShadowCastingMode.On;
+  }
+  static async Task<GameObject> ReplaceAuthoredDestination(ValoriaIntegratedWorld host,string id,string original,string path,float width,Transform parent,Func<Vector3,float> ground) {
+   var old=Find(host.WorldRoot,original); Need(old,"Original destination source missing: "+original);
+   var target=Target(host,id); var destination=AtGround(target.transform.position,ground);
+   var root=new GameObject("Zone1 authored "+id); root.transform.SetParent(parent,true);
+   using(var loader=new GltfImport(null,new UninterruptedDeferAgent())) {
+    Need(await loader.Load(new Uri(Path.GetFullPath(path)).AbsoluteUri,new ImportSettings {GenerateMipMaps=true,AnisotropicFilterLevel=4}),"GLB load: "+id);
+    Need(await loader.InstantiateMainSceneAsync(root.transform),"GLB scene: "+id);
+    // Match the authored north/front convention already used by the city GLBs.
+    root.transform.rotation=Quaternion.Euler(0,180,0);
+    var b=BoundsOf(root); root.transform.localScale=Vector3.one*(width/Mathf.Max(b.size.x,b.size.z)); b=BoundsOf(root);
+    root.transform.position+=destination-new Vector3(b.center.x,b.min.y,b.center.z);
+    foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>()) PrepareRenderer(renderer);
+    PersistImported(root);
+   }
+   old.gameObject.SetActive(false);
+   if(id=="quarry-valoria") foreach(var nearby in host.WorldRoot.GetComponentsInChildren<Transform>(true)
+    .Where(t=>t.name.StartsWith("Existing Holotna rock.")).ToArray()) {
+    var b=BoundsOf(nearby.gameObject);var delta=new Vector2(b.center.x-destination.x,b.center.z-destination.z);
+    if(delta.magnitude<13)nearby.gameObject.SetActive(false);
+   }
+   return root;
+  }
+  static int UnifyWorldVegetation(ValoriaIntegratedWorld host,GameObject forest,Transform parent,Func<Vector3,float> ground) {
+   var donor=forest.GetComponentsInChildren<MeshRenderer>(true).FirstOrDefault(r=>r.name.StartsWith("Forest retained Valoria pine"));
+   Need(donor,"Authored forest has no retained pine donor");var donorBounds=BoundsOf(donor.gameObject);
+   int count=0;
+   // Keep the actual world woodland distribution. Replace only the repeated
+   // planar tree representation, sharing the same retained pine mesh/materials.
+   foreach(var old in host.WorldRoot.GetComponentsInChildren<Transform>(true)
+    .Where(t=>t.name.StartsWith("Existing Holotna tree.")).ToArray()) {
+    var bounds=BoundsOf(old.gameObject);var position=AtGround(new Vector3(bounds.center.x,bounds.min.y,bounds.center.z),ground);
+    float width=Mathf.Clamp(bounds.size.y,4.3f,9f)*Mathf.Max(donorBounds.size.x,donorBounds.size.z)/Mathf.Max(1,donorBounds.size.y);
+    var tree=CloneVisual(donor.gameObject,"Zone1 retained pine "+count,parent,position,width);
+    tree.transform.rotation=Quaternion.Euler(0,(count*137.508f)%360,0);
+    old.gameObject.SetActive(false);count++;
+   }
+   return count;
+  }
+  static void ReplaceEncampments(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
+   foreach(var tuple in new[]{("corrupt-scout","Enemy camp provisional existing canvas",10f),("engendro-valoria","Enemy camp existing shelter",13f)}) {
+    var old=Find(host.WorldRoot,tuple.Item2); Need(old,"Original enemy destination missing");
+    var position=AtGround(Target(host,tuple.Item1).transform.position,ground);
+    var clone=CloneVisual(city.Parcels.RightBuilt,"Zone1 hostile camp "+tuple.Item1,parent,position,tuple.Item3);
+    foreach(var renderer in clone.GetComponentsInChildren<MeshRenderer>())
+     renderer.sharedMaterials=renderer.sharedMaterials.Select(HostileCanvas).ToArray();
+    if(tuple.Item1=="engendro-valoria") {
+     var second=CloneVisual(city.Parcels.RightBuilt,"Zone1 hostile camp rear shelter",parent,
+      AtGround(position+new Vector3(7,0,5),ground),6.5f);
+     foreach(var renderer in second.GetComponentsInChildren<MeshRenderer>())
+      renderer.sharedMaterials=renderer.sharedMaterials.Select(HostileCanvas).ToArray();
+    }
+    old.gameObject.SetActive(false);
+   }
+  }
+  static Material HostileCanvas(Material old) {
+   if(!old||!new[]{"canvas","cloth","fabric"}.Any(key=>old.name.ToLowerInvariant().Contains(key))) return old;
+   if(hostileMaterials.TryGetValue(old,out var cached)) return cached;
+   var copy=new Material(old) {name="Hostile ochre canvas / "+old.name};
+   string property=BaseTextureProperty(copy);
+   if(property!=null&&copy.GetTexture(property)) {
+    var texture=ReadableCopy(copy.GetTexture(property)); var colors=texture.GetPixels();
+    float average=Mathf.Max(.001f,colors.Average(c=>c.grayscale));
+    for(int i=0;i<colors.Length;i++) { float detail=Mathf.Clamp(colors[i].grayscale/average,.25f,2.0f);float alpha=colors[i].a; colors[i]=new Color(.23f,.071f,.038f,1)*detail;colors[i].a=alpha; }
+    texture.SetPixels(colors); texture.Apply(true); Put(texture,"hostile-canvas"); copy.SetTexture(property,texture);
+   }
+   if(copy.HasProperty("baseColorFactor")) copy.SetColor("baseColorFactor",Color.white);
+   if(copy.HasProperty("_BaseColor")) copy.SetColor("_BaseColor",Color.white);
+   Put(copy,"hostile-canvas"); hostileMaterials.Add(old,copy); return copy;
+  }
+
+  static int FinishCityGround(ValoriaReferenceCleanGameplay city,Terrain terrain,ArtistPlan plan) {
+   var original=terrain.terrainData; var data=Object.Instantiate(original); data.name="Current city terrain / organic working routes";
+   Put(data,"city-terrain"); terrain.terrainData=data;
+   var collider=terrain.GetComponent<TerrainCollider>(); if(collider) collider.terrainData=data;
+   var layers=data.terrainLayers;
+   int loam=Array.FindLastIndex(layers,l=>l&&l.name.ToLowerInvariant().Contains("loam")); if(loam<0) loam=Mathf.Min(2,layers.Length-1);
+   Need(layers.Length>=3,"Current terrain material family missing");
+   int n=data.alphamapWidth,m=data.alphamapHeight; var map=data.GetAlphamaps(0,0,n,m);
+   var left=BoundsOf(city.Parcels.LeftBuilt); var right=BoundsOf(city.Parcels.RightBuilt);
+   Vector2[] Access(Bounds b) {
+    var end=new Vector2(b.center.x,b.min.z+.9f); var start=new Vector2(ValoriaReferenceCleanArtBuilder.RoadX(15),15);
+    var control=new Vector2(b.center.x*.48f,14.5f);
+    return Curve(start,control,end,16);
+   }
+   var paths=new[]{Access(left),Access(right)}; var workingBuildings=new[]{left,right}; int changed=0;
+   for(int z=0;z<m;z++) for(int x=0;x<n;x++) {
+    var p=new Vector2(terrain.transform.position.x+x/(float)(n-1)*data.size.x,terrain.transform.position.z+z/(float)(m-1)*data.size.z);
+    float noise=(Mathf.PerlinNoise(p.x*.31f+31,p.y*.31f+57)-.5f)*.62f;
+    float distance=Mathf.Min(DistanceToPath(p,paths[0]),DistanceToPath(p,paths[1]));
+    float access=1-Smooth(plan.city_path_width-.3f,plan.city_path_width+1.0f,distance+noise);
+    float yard=0;
+    foreach(var b in workingBuildings) {
+     // Elliptical work yards follow model occupancy, with an irregular feathered
+     // edge. They have no raised geometry and never outline the old parcel slab.
+     float dx=(p.x-b.center.x)/(b.extents.x+2.0f), dz=(p.y-(b.center.z-.7f))/(b.extents.z+1.9f);
+     float radius=Mathf.Sqrt(dx*dx+dz*dz);
+     yard=Mathf.Max(yard,(1-Smooth(.63f,1.19f,radius+noise*.07f))*.78f);
+    }
+    float wear=Mathf.Clamp01(Mathf.Max(access*.90f,yard));
+    // An unbroken soft material transition along river banks replaces a uniform
+    // bright grass lip while preserving the exact terrain heightfield.
+    float river=Mathf.Abs(p.y-RiverCenter(p.x));
+    float bank=(1-Smooth(1.0f,4.5f,Mathf.Abs(river-RiverWidth(p.x))-noise));
+    if(Mathf.Abs(p.x)>18) wear=Mathf.Max(wear,bank*.29f);
+    if(wear<.018f) continue;
+    for(int layer=0;layer<layers.Length;layer++) map[z,x,layer]*=1-wear;
+    map[z,x,loam]+=wear; changed++;
+   }
+   data.SetAlphamaps(0,0,map); terrain.Flush(); EditorUtility.SetDirty(data); return changed;
+  }
+  static float Smooth(float a,float b,float v) { return Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,v)); }
+  // Exact retained river plan used for material placement only; no height or
+  // source geometry is regenerated by these two functions.
+  static float RiverCenter(float x) { return -23+1.5f*Mathf.Sin(x*.065f)+.85f*Mathf.Sin(x*.19f+.4f)*Smooth(6,17,Mathf.Abs(x)); }
+  static float RiverWidth(float x) { return 7.1f+.75f*Mathf.Sin(x*.095f+.7f)+.48f*Mathf.Sin(x*.23f); }
+  static Vector2[] Curve(Vector2 a,Vector2 b,Vector2 c,int count) {
+   var result=new Vector2[count+1]; for(int i=0;i<=count;i++) {float t=i/(float)count; result[i]=(1-t)*(1-t)*a+2*(1-t)*t*b+t*t*c;} return result;
+  }
+  static float DistanceToPath(Vector2 point,Vector2[] path) {
+   float best=float.MaxValue;
+   for(int i=1;i<path.Length;i++) { var delta=path[i]-path[i-1]; float t=Mathf.Clamp01(Vector2.Dot(point-path[i-1],delta)/Mathf.Max(.0001f,delta.sqrMagnitude)); best=Mathf.Min(best,(point-path[i-1]-delta*t).sqrMagnitude); }
+   return Mathf.Sqrt(best);
+  }
+
+  static int FinishWorldSurface(ValoriaIntegratedWorld host,MeshFilter ground) {
+   var renderer=ground.GetComponent<MeshRenderer>(); Need(renderer&&renderer.sharedMaterials.Length==1,"World ground material layout changed");
+   var old=renderer.sharedMaterial; string property=BaseTextureProperty(old); Need(property!=null&&old.GetTexture(property),"World ground base texture missing");
+   var texture=ReadableCopy(old.GetTexture(property),1536); var pixels=texture.GetPixels();
+   var mesh=ground.sharedMesh; var uv=mesh.uv; var vertices=mesh.vertices;
+   Need(uv.Length==vertices.Length,"Current world ground UVs missing");
+   int a=0,b=1,c=-1; var ab=uv[b]-uv[a];
+   for(int i=2;i<uv.Length;i++) if(Mathf.Abs(ab.x*(uv[i].y-uv[a].y)-ab.y*(uv[i].x-uv[a].x))>.000001f) {c=i;break;}
+   Need(c>=0,"World texture coordinate map degenerate");
+   var ac=uv[c]-uv[a]; float determinant=ab.x*ac.y-ab.y*ac.x;
+   var pa=ground.transform.TransformPoint(vertices[a]); var pb=ground.transform.TransformPoint(vertices[b])-pa; var pc=ground.transform.TransformPoint(vertices[c])-pa;
+   var u=(pb*ac.y-pc*ab.y)/determinant; var v=(pc*ab.x-pb*ac.x)/determinant; var origin=pa-u*uv[a].x-v*uv[a].y;
+   for(int i=0;i<vertices.Length;i+=Mathf.Max(1,vertices.Length/100)) {
+    var expected=origin+u*uv[i].x+v*uv[i].y; var actual=ground.transform.TransformPoint(vertices[i]);
+    Need(new Vector2(expected.x-actual.x,expected.z-actual.z).magnitude<.02f,"Non-affine world UV map requires explicit authoring");
+   }
+   Vector2 Point(string id) {var position=Target(host,id).transform.position;return new Vector2(position.x,position.z);}
+   var home=Point("valoria-map-city"); var wood=Point("forest-valoria"); var quarry=Point("quarry-valoria");
+   var destinations=new[]{wood,quarry,Point("corrupt-scout"),Point("engendro-valoria"),Point("old-watch-ruin")};
+   var routes=destinations.Select((destination,index)=> {
+    var delta=destination-home; var bend=new Vector2(-delta.y,delta.x).normalized*Mathf.Min(6,delta.magnitude*.08f)*(index%2==0?1:-1);
+    return Curve(home,(home+destination)*.5f+bend,destination,9);
+   }).ToArray();
+   int changed=0;
+   for(int y=0;y<texture.height;y++) for(int x=0;x<texture.width;x++) {
+    var world=origin+u*(x/(float)(texture.width-1))+v*(y/(float)(texture.height-1)); var p=new Vector2(world.x,world.z);
+    float edge=(Mathf.PerlinNoise(p.x*.19f+13,p.y*.19f+43)-.5f)*1.3f;
+    float path=float.MaxValue;for(int route=0;route<routes.Length;route++)path=Mathf.Min(path,DistanceToPath(p,routes[route]));
+    float wear=(1-Smooth(1.0f,2.8f,path+edge))*.82f;
+    float homeApron=(1-Smooth(11,18,Vector2.Distance(p,home)+edge))* .49f;
+    float forestFloor=(1-Smooth(6,12,Vector2.Distance(p,wood)+edge))* .69f;
+    float quarryFloor=(1-Smooth(7,13,Vector2.Distance(p,quarry)+edge))* .83f;
+    float strength=Mathf.Max(wear,Mathf.Max(homeApron,Mathf.Max(forestFloor,quarryFloor)));
+    if(strength<.014f) continue;
+    var soil=Color.Lerp(new Color(.19f,.145f,.079f),new Color(.28f,.225f,.15f),Mathf.PerlinNoise(p.x*.8f,p.y*.8f));
+    if(forestFloor>wear) soil*=.78f;
+    if(quarryFloor>wear) soil=Color.Lerp(soil,new Color(.34f,.285f,.21f),.65f);
+    int i=y*texture.width+x; pixels[i]=Color.Lerp(pixels[i],soil,strength); pixels[i].a=1; changed++;
+   }
+   texture.SetPixels(pixels); texture.Apply(true); texture.wrapMode=TextureWrapMode.Clamp;
+   Put(texture,"world-ground-connected-routes"); var material=new Material(old) {name="Retained prairie / connected working routes"}; material.SetTexture(property,texture); Put(material,"world-ground"); renderer.sharedMaterial=material;
+   return changed;
+  }
+
+  static int BreakShoreRepetition(ValoriaIntegratedWorld host,ArtistPlan plan) {
+   int changed=0;
+   foreach(var filter in Object.FindObjectsByType<MeshFilter>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .Where(f=>f.name.StartsWith("River_bank_rocks")&&!f.transform.IsChildOf(host.WorldRoot.transform)).ToArray()) {
+    var old=filter.sharedMesh; if(!old||!old.isReadable) continue;
+    var positions=old.vertices; var world=positions.Select(p=>filter.transform.TransformPoint(p)).ToArray();
+    var welded=new Dictionary<Vector3Int,int>(); var parent=new int[positions.Length];
+    int Root(int id) {while(parent[id]!=id){parent[id]=parent[parent[id]];id=parent[id];}return id;}
+    for(int i=0;i<positions.Length;i++) {var key=Vector3Int.RoundToInt(world[i]*1000);if(welded.TryGetValue(key,out var other))parent[i]=other;else {parent[i]=i;welded.Add(key,i);}}
+    for(int s=0;s<old.subMeshCount;s++) {var t=old.GetTriangles(s);for(int i=0;i<t.Length;i+=3){int r=Root(t[i]);parent[Root(t[i+1])]=r;parent[Root(t[i+2])]=r;}}
+    var groups=Enumerable.Range(0,positions.Length).GroupBy(Root).ToArray(); bool edited=false;
+    foreach(var group in groups) {
+     var ids=group.ToArray(); if(ids.Length<12)continue;var bounds=new Bounds(world[ids[0]],Vector3.zero);foreach(int id in ids)bounds.Encapsulate(world[id]);
+     if(Mathf.Abs(bounds.center.x)<18||bounds.size.y<.45f||bounds.size.x>9||bounds.size.z>9)continue;
+     float scale=1;
+     foreach(var gap in plan.shore_gaps) {
+      if(Mathf.Abs(gap.x)<18)continue;
+      float distance=Mathf.Abs(bounds.center.x-gap.x);float weight=1-Smooth(gap.width*.24f,gap.width*.65f,distance);
+      scale=Mathf.Min(scale,Mathf.Lerp(1,gap.scale,weight));
+     }
+     if(scale>.93f)continue;
+     foreach(int id in ids) {var p=world[id];p.x=bounds.center.x+(p.x-bounds.center.x)*scale;p.z=bounds.center.z+(p.z-bounds.center.z)*scale;p.y=bounds.min.y+(p.y-bounds.min.y)*scale;positions[id]=filter.transform.InverseTransformPoint(p);}
+     changed++;edited=true;
+    }
+    if(!edited)continue;
+    var mesh=Object.Instantiate(old); mesh.name=old.name+" / embedded retained shore groups"; mesh.vertices=positions;mesh.RecalculateBounds();Put(mesh,"river-bank-reused-stone-groups");filter.sharedMesh=mesh;
+    // Selection and navigation do not rely on these decorative stones. Any
+    // existing physical collider follows the same copied mesh, outside the
+    // protected bridge corridor; terrain and hotspot colliders are untouched.
+    var collider=filter.GetComponent<MeshCollider>(); if(collider&&collider.sharedMesh==old)collider.sharedMesh=mesh;
+   }
+   return changed;
+  }
+
+  static void CaptureViews(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidence,string phase,Dictionary<string,Frame> frames) {
+   var cityState=new CameraState(city.PlayerCamera);var worldState=new CameraState(host.WorldCamera);bool active=host.WorldRoot.activeSelf;
+   try {
+    host.WorldRoot.SetActive(false); city.PlayerCamera.enabled=true; host.WorldCamera.enabled=false;
+    void Capture(Camera camera,string view,int width,int height) {
+     string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
+     var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
+     if(phase=="before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
+     float previousAspect=camera.aspect;camera.aspect=width/(float)height;
+     try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
+     finally {camera.aspect=previousAspect;}
+    }
+    Capture(city.PlayerCamera,"city-wide",1600,900); Capture(city.PlayerCamera,"city-portrait",900,1600);
+    foreach(var tuple in new[]{("sawmill",city.Parcels.LeftBuilt,-1f),("barracks",city.Parcels.RightBuilt,1f)}) {
+     var bounds=BoundsOf(tuple.Item2);city.PlayerCamera.transform.position=bounds.center+new Vector3(tuple.Item3*13,17,-23);
+     city.PlayerCamera.transform.LookAt(bounds.center-new Vector3(0,1.2f,2));city.PlayerCamera.orthographicSize=12.5f;
+     Capture(city.PlayerCamera,tuple.Item1,1448,1086);
+    }
+    city.PlayerCamera.transform.position=new Vector3(26,32,-57);city.PlayerCamera.transform.LookAt(new Vector3(12,-.3f,-23));city.PlayerCamera.orthographicSize=23;
+    Capture(city.PlayerCamera,"river-bank",1448,1086);
+    city.PlayerCamera.enabled=false;host.WorldRoot.SetActive(true);host.WorldCamera.enabled=true;
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(false);if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(true);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(true);
+    void WorldFrame(string id,float size) {var point=Target(host,id).transform.position; point.y=2;host.WorldCamera.transform.rotation=worldState.rotation;host.WorldCamera.transform.position=point-host.WorldCamera.transform.forward*110;host.WorldCamera.orthographicSize=size;}
+    WorldFrame("valoria-map-city",32);Capture(host.WorldCamera,"world-wide",1600,900);Capture(host.WorldCamera,"world-portrait",900,1600);
+    foreach(string id in new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}) {WorldFrame(id,17);Capture(host.WorldCamera,"world-"+id,1448,1086);}
+   } finally {host.WorldRoot.SetActive(active);cityState.Restore(city.PlayerCamera);worldState.Restore(host.WorldCamera);}
+  }
+  static string BaseTextureProperty(Material material) {
+   foreach(string property in new[]{"baseColorTexture","_BaseMap","_MainTex"})if(material.HasProperty(property)&&material.GetTexture(property))return property;return null;
+  }
+  static Texture2D ReadableCopy(Texture source,int maximum=2048) {
+   float scale=Mathf.Min(1,maximum/(float)Mathf.Max(source.width,source.height));int width=Mathf.Max(1,Mathf.RoundToInt(source.width*scale)),height=Mathf.Max(1,Mathf.RoundToInt(source.height*scale));
+   var rt=RenderTexture.GetTemporary(width,height,0,RenderTextureFormat.ARGB32,RenderTextureReadWrite.Linear);var previous=RenderTexture.active;
+   try {Graphics.Blit(source,rt);RenderTexture.active=rt;var result=new Texture2D(width,height,TextureFormat.RGBA32,true,true){name=source.name+" finish copy",wrapMode=source.wrapMode,filterMode=FilterMode.Trilinear,anisoLevel=4};result.ReadPixels(new Rect(0,0,width,height),0,0);result.Apply(true,false);return result;}
+   finally {RenderTexture.active=previous;RenderTexture.ReleaseTemporary(rt);}
+  }
+  static void Put(Object value,string label) {AssetDatabase.CreateAsset(value,AssetDatabase.GenerateUniqueAssetPath(folder+"/"+label+"-"+(assetIndex++)+(value is Material?".mat":".asset")));}
+  static void PersistImported(GameObject root) {
+   foreach(var filter in root.GetComponentsInChildren<MeshFilter>()) {
+    var source=filter.sharedMesh;if(!persisted.TryGetValue(source,out var copy)){copy=Object.Instantiate(source);Put(copy,"authored-mesh");persisted.Add(source,copy);}filter.sharedMesh=(Mesh)copy;
+   }
+   foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>()) {
+    var materials=renderer.sharedMaterials;
+    for(int i=0;i<materials.Length;i++) {
+     var source=materials[i];Need(source&&source.shader&&!source.shader.name.Contains("InternalError"),"Authored material missing");
+     if(!persisted.TryGetValue(source,out var material)) {
+      var copy=new Material(source);
+      foreach(string property in source.GetTexturePropertyNames()) {
+       var texture=source.GetTexture(property);if(!texture)continue;
+       if(!persisted.TryGetValue(texture,out var saved)){saved=ReadableCopy(texture);Put(saved,"authored-texture");persisted.Add(texture,saved);}copy.SetTexture(property,(Texture)saved);
+      }
+      Put(copy,"authored-material");persisted.Add(source,copy);material=copy;
+     }
+     materials[i]=(Material)material;
+    }
+    renderer.sharedMaterials=materials;
+   }
+  }
+ }
+}
+#endif

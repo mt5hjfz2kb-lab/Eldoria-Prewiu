@@ -7,13 +7,13 @@ namespace Eldoria.UI.RoyalGold {
   public RoyalAction(string kind,string target,string label,string reason,long revision,bool enabled) { Id=Guid.NewGuid().ToString("N");Kind=kind??"";Target=target??"";Label=label??"";Reason=reason??"";Revision=revision;Enabled=enabled; }
  }
  public sealed class RoyalBuilding {
-  public string Id="", Name="", Function="", State="", Requirements="", Costs="", Time="";
-  public int Level; public float Progress; public RoyalAction Action;
+  public string Id="", Name="", Function="", State="", Requirements="", Costs="", Time="", Result="";
+  public int Level; public float Progress; public bool OperationActive; public RoyalAction Action;
  }
  public sealed class RoyalSnapshot {
   public long Revision; public int Wood, Stone, Food, Power, BastionLevel, Available, Wounded, Prepared, HeroPower;
   public string Realm="Valoria", Chapter="", Objective="", ObjectiveProgress="", March="", Hero="", Profile="";
-  public float MissionFraction; public bool IsTest; public RoyalBuilding Building;
+  public float MissionFraction; public bool IsTest, ShowFood; public RoyalBuilding Building;
  }
  public readonly struct RoyalResult {
   public readonly bool Ok; public readonly string Message;

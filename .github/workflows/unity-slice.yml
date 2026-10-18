@@ -167,15 +167,37 @@ jobs:
           else { $adb = $null }
 
           $devices = @()
+          $connected = $null
+          $adbProbeStatus = 'NOT_AVAILABLE'
+          $adbExitCode = $null
+          $adbStdout = ''
+          $adbStderr = ''
           if ($adb) {
-            try {
-              $devices = & $adb devices 2>$null |
-                Select-Object -Skip 1 |
-                Where-Object { $_ -match '\S' } |
-                ForEach-Object { $_.Trim() }
-            } catch {}
+            $adbStdoutPath = Join-Path $env:RUNNER_TEMP 'Eldoria-MobilePrerequisites-adb.stdout.log'
+            $adbStderrPath = Join-Path $env:RUNNER_TEMP 'Eldoria-MobilePrerequisites-adb.stderr.log'
+            # This is an availability audit, not the physical-device certification gate.
+            # Start-Process keeps the probe's exit code out of Actions' LASTEXITCODE epilogue.
+            # Launch, timeout and evidence-writing failures still fail this step explicitly.
+            $adbProcess = Start-Process -FilePath $adb -ArgumentList 'devices', '-l' -NoNewWindow -PassThru -RedirectStandardOutput $adbStdoutPath -RedirectStandardError $adbStderrPath -ErrorAction Stop
+            if (-not $adbProcess.WaitForExit(15000)) {
+              Stop-Process -Id $adbProcess.Id -Force -ErrorAction Stop
+              throw 'ADB availability probe timed out after 15 seconds; physical-device state is unknown.'
+            }
+            $adbExitCode = $adbProcess.ExitCode
+            $adbStdout = [string](Get-Content -LiteralPath $adbStdoutPath -Raw -ErrorAction Stop)
+            $adbStderr = [string](Get-Content -LiteralPath $adbStderrPath -Raw -ErrorAction Stop)
+            if ($adbExitCode -eq 0) {
+              $adbProbeStatus = 'SUCCESS'
+              $devices = @($adbStdout -split '\r?\n' |
+                Where-Object { $_ -match '^\S+\s+(device|offline|unauthorized)\b' } |
+                ForEach-Object { $_.Trim() })
+              $connected = @($devices | Where-Object {
+                $_ -match '^\S+\s+device(?:\s|$)' -and $_ -notmatch '^emulator-\d+\s'
+              }).Count -gt 0
+            } else {
+              $adbProbeStatus = 'ERROR'
+            }
           }
-          $connected = @($devices | Where-Object { $_ -match 'device$' }).Count -gt 0
           $audit = [ordered]@{
             unity_editor = $editor
             android_build_support = (Test-Path $androidRoot)
@@ -184,14 +206,23 @@ jobs:
             ndk_present = (Test-Path $ndk)
             jdk_present = (Test-Path $jdk)
             adb_path = $adb
+            adb_probe_status = $adbProbeStatus
+            adb_exit_code = $adbExitCode
+            adb_stdout = $adbStdout
+            adb_stderr = $adbStderr
             adb_devices = @($devices)
             physical_device_connected = $connected
+            physical_device_tested = $false
           }
           $json = $audit | ConvertTo-Json -Depth 4
           $json
           $json | Set-Content "$env:RUNNER_TEMP/Eldoria-MobilePrerequisites.json" -Encoding UTF8
           if (-not $audit.android_build_support) {
             Write-Warning 'Unity Android Build Support is not installed on this runner; physical-phone profiling cannot start from CI yet.'
+          } elseif (-not ($audit.sdk_present -and $audit.ndk_present -and $audit.jdk_present)) {
+            Write-Warning 'Unity Android SDK, NDK or JDK is missing; mobile build prerequisites are incomplete.'
+          } elseif ($audit.adb_probe_status -ne 'SUCCESS') {
+            Write-Warning "ADB availability probe $($audit.adb_probe_status) (exit code: $($audit.adb_exit_code)); device state is unknown. See the mobile prerequisites audit for stdout/stderr. Physical-device testing remains unverified."
           } elseif (-not $audit.physical_device_connected) {
             Write-Warning 'Android Build Support is present, but no authorized physical ADB device is connected.'
           } else {

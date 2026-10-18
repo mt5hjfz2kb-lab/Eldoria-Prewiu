@@ -3,7 +3,7 @@ using UnityEngine.UI;
 namespace Eldoria.UI.RoyalGold {
  /// <summary>Original icon source geometry. Names and numbers remain real Text, never baked into art.</summary>
  public sealed class RoyalIconGraphic:MaskableGraphic {
-  public int Icon; // 0 crest,1 wood,2 stone,3 food,4 hero,5 army,6 mission,7 bag,8 world,9 bastion,10 settings,11 close,12 arrow
+  public int Icon; // 0 crest,1 wood,2 stone,3 food,4 hero,5 army,6 mission,7 bag,8 world,9 bastion,10 settings,11 close,12 arrow,13 collapse,14 expand
   VertexHelper v;
   void Shape(params Vector2[] p){if(p.Length<3)return;var r=rectTransform.rect;int k=v.currentVertCount;foreach(var t in p)v.AddVert(new Vector2(r.xMin+r.width*t.x/100,r.yMin+r.height*t.y/100),color,Vector2.zero);for(int i=1;i<p.Length-1;i++)v.AddTriangle(k,k+i,k+i+1);}
   Vector2 P(float x,float y)=>new Vector2(x,y);
@@ -25,6 +25,8 @@ namespace Eldoria.UI.RoyalGold {
     case 9:Castle();break;
     case 10:for(int i=0;i<8;i++){float a=i*Mathf.PI/4;Stroke(50+19*Mathf.Cos(a),50+19*Mathf.Sin(a),50+35*Mathf.Cos(a),50+35*Mathf.Sin(a),9);}Ellipse(50,50,22,22);break;
     case 11:Stroke(29,29,71,71,5);Stroke(29,71,71,29,5);break;
+    case 13:Stroke(28,50,72,50,6);break;
+    case 14:Stroke(28,50,72,50,6);Stroke(50,28,50,72,6);break;
     default:Stroke(34,24,62,50,5);Stroke(62,50,34,76,5);break;
    }
   }

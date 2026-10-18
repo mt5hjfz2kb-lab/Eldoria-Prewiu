@@ -17,7 +17,9 @@ concurrency:
 jobs:
   architecture:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    # The complete guarded trees still need >177 s to materialize after the
+    # sparse metadata fetch. Preserve all checks and allow their checkout to finish.
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
