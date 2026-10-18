@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T11:38:09.570Z",
+  "updated_at": "2026-10-18T11:44:38.102Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CAMP_INTEGRATION_GAMEPLAY_VALIDATION",
-      "next": "Native90 actual Unity camp A/B reviewed and grounded on original timber feet.91 integrates exact reviewed camp, exports portable prefab/package and validates full real I-II+ChapterII gameplay/save plus general guards. Original source/GI/composition preserved. Last delivered Android1.3 remains downloadable directly; next Android milestone follows validated integration.",
+      "phase": "REFERENCE_CLEAN_CAMP_VERIFIED_ANDROID_1_4_BUILD",
+      "next": "Native91 reviewed camp integrated and actual complete gameplay passed, including build/train/march/combat/persistence, support grounding and default state. General96routes96headroom6stairs5picks12mobileground1camera0exceptions/EditorPlay parity. Native92 builds optimized same-app1.4/code5. Current1.3 is directly downloadable in chat, phone test pending.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39124004194,
-          "current_source": "8f55b6223f3bc0a3581ed79554e7aac4f7509497",
+          "current_run": 39124448827,
+          "current_source": "cb076f982a45ff951793413f1fd4bae819efe2dd",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -284,7 +284,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE91_CAMP_INTEGRATION",
+          "current_run_status": "NATIVE92_ANDROID_1_4_BUILD",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
@@ -460,6 +460,15 @@
             "output": "240e7f9f6c134dc693ec17a0bbf0bce6b7dbeeca",
             "visual_review": "OPEN_CLOTH_ENTRANCE_CONTINUOUS_CANVAS_AND_GROUNDED_TIMBER_RETAINED",
             "camp_triangles": 16296,
+            "art_approved": false
+          },
+          "native91": {
+            "run": 39124004194,
+            "output": "36e00ff4dc7f07f7f3ee7442ce0becdb6156593a",
+            "camp_integrated": true,
+            "gameplay": "FULL_I_II_AND_CHAPTER_II_PASS",
+            "package_artifact": 12134694180,
+            "package_sha256": "13ab37a9c3aa6d774bdbefdb3e5b35f813fc58d30946a4b2d69360d2a1da455a",
             "art_approved": false
           }
         }
