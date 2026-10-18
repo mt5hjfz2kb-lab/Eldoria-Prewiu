@@ -7,7 +7,7 @@ GameObject:
   m_PrefabInstance: {"fileID":0}
   m_PrefabAsset: {"fileID":0}
   serializedVersion: 6
-  m_Component: [{"component":{"fileID":1294}},{"component":{"fileID":1295}},{"component":{"fileID":1296}},{"component":{"fileID":1339}}]
+  m_Component: [{"component":{"fileID":1294}},{"component":{"fileID":1295}},{"component":{"fileID":1296}},{"component":{"fileID":1339}},{"component":{"fileID":1340}}]
   m_Layer: 5
   m_Name: "ModalWindow"
   m_TagString: "Untagged"
@@ -745,3 +745,17 @@ MonoBehaviour:
   m_OnCullStateChanged: {"m_PersistentCalls":{"m_Calls":[]}}
   m_FontData: {"m_Font":{"fileID":0},"m_FontSize":24,"m_FontStyle":1,"m_BestFit":0,"m_MinSize":20,"m_MaxSize":24,"m_Alignment":4,"m_AlignByGeometry":0,"m_RichText":0,"m_HorizontalOverflow":0,"m_VerticalOverflow":0,"m_LineSpacing":1}
   m_Text: ""
+
+--- !u!114 &1340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {"fileID":0}
+  m_PrefabInstance: {"fileID":0}
+  m_PrefabAsset: {"fileID":0}
+  m_GameObject: {"fileID":1293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {"fileID":11500000,"guid":"0b7e3f8190ad4f9cba77d850c66d9a02","type":3}
+  m_Name: ""
+  m_EditorClassIdentifier: ""
+  AldricPortrait: {"fileID":2800000,"guid":"c5d4e2840d1a4f35ac2396053f48c7a2","type":3}

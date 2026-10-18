@@ -134,12 +134,24 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return null;yield return new WaitForSecondsRealtime(1);
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
-   Check(()=>{h.Guidance.PresentMilestone();Need(h.Hud.NarrativeOpen&&h.Hud.Modal.Body.text.Contains("Valoria sobrevivió a la caída"),"Original web introduction missing");Capture(h,"integration-story.png",900,1600);Click(h.Hud.Modal.Extra);Need(!h.Hud.NarrativeOpen,"Continue did not close dialogue");},"original web introduction and Continue pointer");
+   Check(()=>{
+    h.Guidance.PresentMilestone();
+    Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha apareció"),"Original introductory narrator missing");
+    Need(h.Hud.NarrativeTurnCount==3,"Web narrator, Aldric and tutorial turns not preserved");
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing,"First touch must reveal, not skip a speaker");
+    Capture(h,"integration-story.png",900,1600);
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Aldric did not follow narrator");
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen,"Reveal skipped Aldric");
+    Capture(h,"integration-story-aldric.png",900,1600);
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="NARRADOR","Tutorial narrator missing");
+    Click(h.Hud.Modal.Extra);Click(h.Hud.Modal.Extra);
+    Need(!h.Hud.NarrativeOpen&&city.Gateway.Snapshot().ChapterProgress.SeenNarrative.Contains("start"),"Completion did not persist introduction");
+   },"original web three-voice introduction, typewriter reveal and saved milestone");
    Check(()=>{Need(h.Ready,"Host not ready");Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,"HUD count");Need(Camera.allCameras.Count(x=>x.enabled)==1,"City camera count");Need(!GameObject.Find("Eldoria HUD").GetComponent<Canvas>().enabled,"Legacy HUD still visible");Capture(h,"integration-city-16x9.png",1600,900);},"city HUD, one camera");
    Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
    yield return null;
    Check(()=>{h.Guidance.ShowStory();},"story modal opened");yield return new WaitForSecondsRealtime(.4f);
-   Check(()=>{Need(h.Hud.Modal.Title.text=="Crónica de Valoria","Dialogue overwritten by HUD refresh");h.Hud.Modal.Hide();},"dialogue survives refresh");
+   Check(()=>{Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR","Narrative overwritten by HUD refresh");h.Hud.Modal.Hide();},"dialogue survives refresh without gaining a duplicate milestone");
    var initial=JsonUtility.ToJson(city.Gateway.Snapshot());
    Check(()=>{
     Need(!h.CanOpen(RoyalSection.World),"Initial world button unlocked");
@@ -161,7 +173,17 @@ namespace Eldoria.ReferenceClean.Editor {
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Forest command disabled");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World gathering did not start");h.SetWorld(false);((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().ChapterProgress.GatheredWood>0,"Shared world reward missing");var snapshot=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(snapshot==JsonUtility.ToJson(city.Gateway.Snapshot()),"Reload changed rewards");},"world gathering, city return, saved reward");
    yield return new WaitForSecondsRealtime(.5f);
-   Check(()=>{h.Guidance.PresentMilestone();Need(h.Hud.NarrativeOpen&&h.Hud.Modal.Body.text.Contains("marca negra"),"Original gathering dialogue missing");Capture(h,"integration-story-mark.png",900,1600);Need(h.Hud.Modal.Body.preferredHeight<=h.Hud.Modal.Body.rectTransform.rect.height,"Story text clipped");Click(h.Hud.Modal.Extra);},"original web gathering dialogue");
+   Check(()=>{
+    h.Guidance.PresentMilestone();
+    Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("marca negra"),"Original gathering narrator missing");
+    Click(h.Hud.Modal.Extra);Capture(h,"integration-story-mark.png",900,1600);
+    Need(h.Hud.Modal.Body.preferredHeight<=h.Hud.Modal.Body.rectTransform.rect.height,"Narrator text clipped");
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Original Aldric mark response missing");
+    Click(h.Hud.Modal.Extra);Capture(h,"integration-story-mark-aldric.png",900,1600);
+    Need(h.Hud.Modal.Body.preferredHeight<=h.Hud.Modal.Body.rectTransform.rect.height,"Aldric text clipped");
+    Click(h.Hud.Modal.Extra);
+    Need(city.Gateway.Snapshot().ChapterProgress.SeenNarrative.Contains("mark"),"Gathering dialogue not acknowledged");
+   },"original web narrator and Aldric gathering sequence, clipping and persistence");
    foreach(string node in new[]{"forest-valoria","quarry-valoria","corrupt-scout"}){
     h.SetWorld(true);h.Select(node);yield return null;
     Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"World command disabled: "+node);Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World march missing: "+node);},"Royal map action "+node);
@@ -206,7 +228,9 @@ namespace Eldoria.ReferenceClean.Editor {
   static string FileHash(string path){if(!File.Exists(path))return "ABSENT";using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path)));}
   static void Click(RoyalButton button){
    var hud=Object.FindFirstObjectByType<RoyalHUD>();
-   if(hud&&hud.NarrativeOpen&&button!=hud.Modal.Extra)Click(hud.Modal.Extra);
+   if(hud&&hud.NarrativeOpen&&button!=hud.Modal.Extra)
+    for(int guard=0;guard<18&&hud.NarrativeOpen;guard++)Click(hud.Modal.Extra);
+   Need(hud==null||!hud.NarrativeOpen||button==hud.Modal.Extra,"Narrative modal could not be read and closed");
    Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable");Canvas.ForceUpdateCanvases();
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var p=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
    var data=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=p};

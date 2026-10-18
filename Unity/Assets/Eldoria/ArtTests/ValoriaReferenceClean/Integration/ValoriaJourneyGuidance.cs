@@ -10,24 +10,76 @@ namespace Eldoria.ReferenceClean {
  public sealed class ValoriaJourneyGuidance:MonoBehaviour {
   ValoriaIntegratedWorld host;ValoriaReferenceCleanGameplay city;
   readonly Dictionary<string,BuildingLabel> labels=new Dictionary<string,BuildingLabel>();
-  readonly HashSet<string> seen=new HashSet<string>();
   float next;
-  public string Help=>city.Gateway.Snapshot().EngendroDefeated?"Aldric: «Valoria vuelve a respirar.»\nEl Engendro ha caído. La ciudad está a salvo.":ContextHint();
-  string Beat {get{var s=city.Gateway.Snapshot();return s.BastionLevel>=2?"barracks":s.ChapterProgress.GatheredWood>0?"mark":s.SawmillLevel>0?"world":"start";}}
-  string Speaker=>Beat=="start"||Beat=="mark"?"Narrador":"Sir Aldric";
-  string Dialogue {get{switch(Beat){
-   case "start":return "Valoria sobrevivió a la caída, pero no puede reconstruirse sola. Cada mejora del reino necesita recursos recuperados más allá de sus murallas. Empieza por el Aserradero.";
-   case "world":return "El aserradero vuelve a respirar. Ahora mira más allá de las murallas: recolectamos fuera para crecer dentro.";
-   case "mark":return "Bajo las raíces del bosque, los recolectores encuentran una marca negra grabada en la piedra. No parece quemada. Parece haber crecido desde dentro.\n\nSir Aldric: No la toquéis. He visto esa forma antes... la noche en que cayó Valoria. Aún no sé qué significa. Y hasta saberlo, nadie se acerca solo a una marca como ésta.";
-   default:return "El Bastión vuelve a sostenerse, aunque aún quedan murallas por restaurar. Un reino sin soldados, no. El Cuartel transforma recursos en tropas y aumenta lo que podemos afrontar fuera.";
-  }}}
-  public string Story=>Speaker+": "+Dialogue+"\n\n"+Help;
+  public string Help=>city.Gateway.Snapshot().EngendroDefeated
+   ?(host.English?"Bastion II secured. Next milestone: Bastion III, not available in this build.":"Bastión II asegurado. Próximo hito: Bastión III, aún no disponible.")
+   :ContextHint();
+  string Beat {
+   get {
+    var s=city.Gateway.Snapshot();
+    if(s.EngendroDefeated)return "secured";
+    if(s.BastionLevel>=2)return "barracks";
+    if(s.ChapterProgress.GatheredWood>0)return "mark";
+    if(s.SawmillLevel>0)return "world";
+    return "start";
+   }
+  }
+  static RoyalNarrativePresentation.Line L(string who,string es,string en)
+   =>new RoyalNarrativePresentation.Line(who,es,en);
+  RoyalNarrativePresentation.Line[] Lines(string beat){
+   switch(beat){
+    case "start":return new[]{
+     L("NARRADOR","La Brecha apareció sobre Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
+        "The Breach appeared above Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
+     L("Sir Aldric","Valoria sobrevivió a la noche. No puedo decir lo mismo de nuestro reino.\n\nLa Brecha sigue ahí. Mientras permanezca abierta, esto volverá a ocurrir.\n\nEmpecemos por lo que aún podemos salvar.",
+        "Valoria survived the night. I cannot say the same of our kingdom.\n\nThe Breach is still there. As long as it remains open, this will happen again.\n\nLet us begin with what we can still save."),
+     L("NARRADOR","Valoria sobrevivió a la caída, pero no puede reconstruirse sola. Cada mejora del reino necesita recursos recuperados más allá de sus murallas. Empieza por el Aserradero.",
+        "Valoria survived the fall, but cannot rebuild on its own. Each improvement needs resources recovered beyond its walls. Begin with the sawmill.")
+    };
+    case "world":return new[]{
+     L("Sir Aldric","El aserradero vuelve a respirar. Ahora mira más allá de las murallas: recolectamos fuera para crecer dentro.",
+       "The sawmill breathes again. Now look beyond the walls: we gather outside to grow within.")
+    };
+    case "mark":return new[]{
+     L("NARRADOR","Bajo las raíces del bosque, los recolectores encuentran una marca negra grabada en la piedra. No parece quemada. Parece haber crecido desde dentro.",
+       "Beneath the forest roots, the gatherers find a black mark carved into stone. It does not look burned. It seems to have grown from within."),
+     L("Sir Aldric","No la toquéis. He visto esa forma antes... la noche en que cayó Valoria. Aún no sé qué significa. Y hasta saberlo, nadie se acerca solo a una marca como ésta.",
+       "Do not touch it. I have seen that shape before... the night Valoria fell. I still do not know what it means. Until we do, nobody approaches a mark like this alone.")
+    };
+    case "barracks":return new[]{
+     L("NARRADOR","Con el Bastión II, Valoria recupera una posición desde la que defenderse y espacio para un Cuartel. Las murallas exteriores aún muestran las cicatrices de la caída.",
+       "With Bastion II, Valoria has a defensible position and room for a barracks. The outer walls still bear the scars of the fall."),
+     L("Sir Aldric","Reconstruiremos primero. Las respuestas vendrán después. Un reino sin soldados no puede proteger lo que aún le queda.",
+       "We rebuild first. Answers will come later. A kingdom without soldiers cannot protect what remains.")
+    };
+    case "secured":return new[]{
+     L("NARRADOR","El Engendro ha caído y las tropas regresan a Valoria. El Bastión II está asegurado. La Brecha permanece abierta y aún quedan murallas por restaurar.",
+       "The Spawn has fallen and the troops return to Valoria. Bastion II is secured. The Breach remains open, and walls still need repair."),
+     L("Sir Aldric","Hemos protegido lo que teníamos. El siguiente hito será el Bastión III, pero aún no ha llegado el momento de construirlo.",
+       "We have protected what we had. Bastion III is the next milestone, but its construction must wait.")
+    };
+    default:throw new ArgumentException("Unknown authored narrative beat "+beat);
+   }
+  }
+  public string Story {
+   get {
+    var turns=Lines(Beat);var all=new System.Text.StringBuilder();
+    foreach(var entry in turns){if(all.Length>0)all.Append("\n\n");all.Append(entry.Speaker+": "+(host.English?entry.English:entry.Spanish));}
+    return all.ToString();
+   }
+  }
   public void PresentMilestone(){
-   if(!host||!host.Ready||host.Hud.Modal.gameObject.activeSelf)return;
-   string beat=Beat,key="valoria.journey.story."+beat;
-   if(seen.Contains(beat)||(!UnityEngine.Application.isEditor&&PlayerPrefs.GetInt(key,0)==1))return;
-   seen.Add(beat);if(!UnityEngine.Application.isEditor){PlayerPrefs.SetInt(key,1);PlayerPrefs.Save();}
-   host.Hud.ShowNarrative(Speaker,Dialogue);
+   if(!host||!host.Ready||host.Hud.NarrativeOpen||host.Hud.Modal.gameObject.activeSelf)return;
+   var s=city.Gateway.Snapshot();string beat=Beat;
+   if(s.ChapterProgress!=null&&s.ChapterProgress.SeenNarrative!=null&&s.ChapterProgress.SeenNarrative.Contains(beat))return;
+   // Honour the historical PlayerPrefs only for a loaded pre-migration save.
+   // They must NEVER suppress a fresh game's first introduction.
+   if(city.HadExistingSave&&PlayerPrefs.GetInt("valoria.journey.story."+beat,0)==1)return;
+   host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
+    // Completing text, unlike merely opening a modal, commits the milestone.
+    city.Gateway.AcknowledgeNarrative(beat);
+    Refresh();
+   });
   }
   public void Initialize(ValoriaIntegratedWorld h,ValoriaReferenceCleanGameplay c){
    host=h;city=c;host.Hud.ObjectiveRequested=FollowObjective;host.Hud.StoryRequested=ShowStory;
@@ -79,7 +131,7 @@ namespace Eldoria.ReferenceClean {
    if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    string key=SliceRules.CurrentObjectiveKey(s),target=ObjectiveTarget();
-   if(key=="b2.complete")return en?"Chapter II complete. Your progress is saved.":"Capítulo II completado. Tu progreso está guardado.";
+   if(key=="b2.complete")return en?"Bastion II secured. Next milestone: Bastion III (not yet available). Your progress is saved.":"Bastión II asegurado. Próximo hito: Bastión III (aún no disponible). Tu progreso está guardado.";
    if(target=="forest-valoria")return en?"Select the forest, then Gather wood. Resources arrive with the returning troops.":"Selecciona el bosque y pulsa Recoger madera. Los recursos llegan con las tropas.";
    if(target=="quarry-valoria")return en?"Select the quarry, then Gather stone. Resources arrive with the returning troops.":"Selecciona la cantera y pulsa Recoger piedra. Los recursos llegan con las tropas.";
    if(target=="sawmill"||key=="b2.build-barracks")return en?"Go to objective highlights the building plot. Review its cost and choose Build.":"Ir al objetivo señala dónde construir. Revisa el coste y pulsa Construir.";
@@ -118,6 +170,6 @@ namespace Eldoria.ReferenceClean {
    if(!host.TrySetWorld(!town))return;
    host.Select(id);Refresh();
   }
-  public void ShowStory(){Refresh();host.Hud.ShowNarrative("Crónica de Valoria",Speaker+": "+Dialogue);}
+  public void ShowStory(){Refresh();if(!host.Hud.Modal.gameObject.activeSelf)host.Hud.ShowNarrativeSequence(Lines(Beat),null);}
  }
 }

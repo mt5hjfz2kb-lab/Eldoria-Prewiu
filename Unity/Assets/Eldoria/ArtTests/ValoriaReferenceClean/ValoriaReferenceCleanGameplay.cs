@@ -19,6 +19,7 @@ namespace Eldoria.ReferenceClean {
   public LocalGateway Gateway { get; private set; }
   public IClock Clock { get; private set; }
   public string SaveFile { get; private set; }
+  public bool HadExistingSave { get; private set; }
   public bool Ready { get; private set; }
   public string LoadError { get; private set; }
   public bool Probe => Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE")=="1";
@@ -33,6 +34,7 @@ namespace Eldoria.ReferenceClean {
    Clock=Probe?(IClock)new TestClock():new SystemClock();
    try {
     SaveFile=Probe?Path.Combine(Path.GetTempPath(),"eldoria-valoria-gameplay-"+Guid.NewGuid().ToString("N")+".json"):SliceBoot.SavePath;
+    HadExistingSave=!Probe && File.Exists(SaveFile);
     var store=new FileStateStore(SaveFile);
     // Existing owner save always wins. Preserve the legacy file byte-for-byte when
     // adopting it; no resource scaling, reset, or replacement of an existing save.

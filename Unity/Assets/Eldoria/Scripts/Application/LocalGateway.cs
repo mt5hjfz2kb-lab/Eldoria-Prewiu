@@ -46,6 +46,8 @@ namespace Eldoria.Application
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.GrantedRewards == null)
                 state.ChapterProgress.GrantedRewards = new System.Collections.Generic.List<string>();
+            if (state.ChapterProgress.SeenNarrative == null)
+                state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();
             if (state.ScoutDefeated) state.ChapterProgress.RouteCleared = true;
             if (state.BastionLevel >= 2) state.ChapterProgress.BastionTwoReached = true;
             if (state.MarchConfigured)
@@ -106,7 +108,8 @@ namespace Eldoria.Application
                     BastionTwoReached=s.ChapterProgress?.BastionTwoReached??false,
                     MarchConfirmed=s.ChapterProgress?.MarchConfirmed??false,
                     EngendroDefeated=s.ChapterProgress?.EngendroDefeated??false,
-                    GrantedRewards=new System.Collections.Generic.List<string>(s.ChapterProgress?.GrantedRewards??new System.Collections.Generic.List<string>())
+                    GrantedRewards=new System.Collections.Generic.List<string>(s.ChapterProgress?.GrantedRewards??new System.Collections.Generic.List<string>()),
+                    SeenNarrative=new System.Collections.Generic.List<string>(s.ChapterProgress?.SeenNarrative??new System.Collections.Generic.List<string>())
                 },
                 CompletedCommandIds=new System.Collections.Generic.List<string>(s.CompletedCommandIds),
                 CompletedTaskIds=new System.Collections.Generic.List<string>(s.CompletedTaskIds)
@@ -418,6 +421,20 @@ namespace Eldoria.Application
             // The web's c2-bastion and chapter-2 rewards require Bastion III. This slice
             // intentionally ends at II, so neither completion nor payout is fabricated.
             return changed;
+        }
+        // Narrative is acknowledged ONLY after the player finishes the last page.
+        // No resources, tasks, timers or gameplay progression can be granted here.
+        public bool AcknowledgeNarrative(string beat)
+        {
+            if (beat!="start" && beat!="world" && beat!="mark" &&
+                beat!="barracks" && beat!="secured") return false;
+            if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+            if (state.ChapterProgress.SeenNarrative == null)
+                state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();
+            if (state.ChapterProgress.SeenNarrative.Contains(beat)) return false;
+            state.ChapterProgress.SeenNarrative.Add(beat);
+            Commit();
+            return true;
         }
         private void Commit() { state.Revision++; store.Save(state); }
         private CommandResult Fail(string reason) => new CommandResult(false, reason, state.Revision);

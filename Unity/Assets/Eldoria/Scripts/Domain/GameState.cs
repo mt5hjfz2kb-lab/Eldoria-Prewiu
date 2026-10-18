@@ -49,6 +49,8 @@ namespace Eldoria.Domain
         public bool MarchConfirmed;
         public bool EngendroDefeated;
         public List<string> GrantedRewards = new List<string>();
+        // Backward-compatible narrative ledger; rewards and chapter objectives remain separate.
+        public List<string> SeenNarrative = new List<string>();
     }
     [Serializable] public sealed class PlayerState
     {
