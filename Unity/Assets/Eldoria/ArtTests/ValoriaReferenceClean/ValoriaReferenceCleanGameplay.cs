@@ -34,7 +34,11 @@ namespace Eldoria.ReferenceClean {
    Clock=Probe?(IClock)new TestClock():new SystemClock();
    try {
     SaveFile=Probe?Path.Combine(Path.GetTempPath(),"eldoria-valoria-gameplay-"+Guid.NewGuid().ToString("N")+".json"):SliceBoot.SavePath;
-    HadExistingSave=!Probe && File.Exists(SaveFile);
+    var legacySave=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-v1.json");
+    // Treat both an existing owner save and a legacy save awaiting import as
+    // continued games. Fresh players must always receive the full prologue;
+    // existing players retain their earlier narrative acknowledgements.
+    HadExistingSave=!Probe&&(File.Exists(SaveFile)||File.Exists(legacySave));
     var store=new FileStateStore(SaveFile);
     // Existing owner save always wins. Preserve the legacy file byte-for-byte when
     // adopting it; no resource scaling, reset, or replacement of an existing save.

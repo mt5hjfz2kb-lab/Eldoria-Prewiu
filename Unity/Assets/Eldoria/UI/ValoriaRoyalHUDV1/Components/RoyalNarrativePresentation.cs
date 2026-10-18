@@ -17,6 +17,8 @@ namespace Eldoria.UI.RoyalGold {
   public Texture2D AldricPortrait;
   ModalWindow modal;
   RectTransform window, portraitRect;
+  CanvasGroup entrance;
+  Vector2 restingWindowPosition;
   RawImage face;
   RoyalText role, narratorGlyph;
   Graphic backdrop;
@@ -40,6 +42,10 @@ namespace Eldoria.UI.RoyalGold {
    if(!modal)modal=GetComponent<ModalWindow>();
    if(!modal||role)return;
    window=modal.Title.rectTransform.parent as RectTransform;
+   restingWindowPosition=window.anchoredPosition;
+   entrance=window.GetComponent<CanvasGroup>();
+   if(!entrance)entrance=window.gameObject.AddComponent<CanvasGroup>();
+   entrance.blocksRaycasts=true;entrance.interactable=true;
    role=Instantiate(modal.Title,window);role.name="Narrative character role";
    role.color=new Color(.76f,.81f,.83f);role.fontSize=17;role.fontStyle=FontStyle.Normal;
    role.alignment=TextAnchor.MiddleLeft;role.raycastTarget=false;
@@ -89,6 +95,7 @@ namespace Eldoria.UI.RoyalGold {
    foreach(var page in Paginate(text,218))pages.Add(page);
    modal.Body.Put("");
    modal.ExtraLabel.Put(english?"Reveal text":"Mostrar texto");
+   if(entrance){entrance.alpha=.06f;window.anchoredPosition=restingWindowPosition+new Vector2(0,-14f);}
   }
   static IEnumerable<string> Paginate(string content,int limit){
    content=content??"";
@@ -108,7 +115,17 @@ namespace Eldoria.UI.RoyalGold {
   }
   void Update(){
    if(!active||!modal||!modal.gameObject.activeInHierarchy)return;
-   if(entryTime<.22f){entryTime+=Time.unscaledDeltaTime;}
+   // Match the original browser dialogueIn motion with a restrained
+   // alpha/14px entrance. Unscaled time makes the animation independent of
+   // a gameplay TestClock, pause, or the chosen economy profile.
+   if(entryTime<.28f){
+    entryTime=Mathf.Min(.28f,entryTime+Time.unscaledDeltaTime);
+    float t=Mathf.Clamp01(entryTime/.28f);
+    float eased=t*t*(3-2*t);
+    if(entrance)entrance.alpha=Mathf.Lerp(.06f,1f,eased);
+    if(window)window.anchoredPosition=Vector2.Lerp(
+     restingWindowPosition+new Vector2(0,-14),restingWindowPosition,eased);
+   }
    if(shown>=CurrentPage.Length)return;
    if(hold>0){hold-=Time.unscaledDeltaTime;return;}
    characterBudget+=Time.unscaledDeltaTime*46f;
@@ -138,6 +155,8 @@ namespace Eldoria.UI.RoyalGold {
    if(lineIndex+1<turns.Count){lineIndex++;NextLine();return true;}
    var done=onComplete;onComplete=null;active=false;
    if(backdrop)backdrop.color=oldBackdrop;
+   if(entrance)entrance.alpha=1;
+   if(window)window.anchoredPosition=restingWindowPosition;
    if(modal.Close)modal.Close.gameObject.SetActive(true);
    modal.Hide();done?.Invoke();return false;
   }
@@ -145,6 +164,8 @@ namespace Eldoria.UI.RoyalGold {
    // External interruption never commits read milestones.
    if(!active)return;
    if(backdrop)backdrop.color=oldBackdrop;
+   if(entrance)entrance.alpha=1;
+   if(window)window.anchoredPosition=restingWindowPosition;
    if(modal&&modal.Close)modal.Close.gameObject.SetActive(true);
    active=false;onComplete=null;
   }
