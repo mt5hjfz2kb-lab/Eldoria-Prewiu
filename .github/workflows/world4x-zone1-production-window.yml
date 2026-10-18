@@ -1,0 +1,141 @@
+name: '[WORLD4X] Queued ground art continuation / no Valoria mutation'
+on:
+  workflow_dispatch:
+  push:
+    branches: [prototype/world4x-zone1-zoom-reference-20261013]
+    paths: ['.github/workflows/world4x-zone1-production-window.yml', 'docs/world4x-zone1/PC_ART_REQUEST.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: world4x-zone1-owner-queued-art
+  cancel-in-progress: false
+jobs:
+  coordinate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record owner delegation while preserving every other claim and wait behind Work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import os,json,time,urllib.request,urllib.error,base64,datetime
+          repo=os.environ['GITHUB_REPOSITORY'];base='https://api.github.com/repos/'+repo
+          def api(path,data=None,method=None):
+              req=urllib.request.Request(base+path,data=None if data is None else json.dumps(data).encode(),method=method,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+              with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
+          me='world4x-zone1-isolated-reference-prototype-20261013'
+          for attempt in range(3):
+              file=api('/contents/pipeline/active-workstreams.json?ref=main');r=json.loads(base64.b64decode(file['content']))
+              own=next(x for x in r['active'] if x['id']==me)
+              assert own['owner']=='chatgpt-world4x-production-20261018' and own['status']=='active'
+              assert me in r['owner_production_pause']['authorized_workstream_ids']
+              own.setdefault('coordination',{})['queue_delegation']={'authorization':'User explicitly: Continua con el trabajo si necesitas utilizar algun recurso del PC usalo respetando la cola de work (18-10-2026); reiterated continuation after checkpoint.','mode':'ONE_QUEUED_ISOLATED_GROUND_ART_JOB','run_id':os.environ['GITHUB_RUN_ID'],'work_priority':True,'transfer_valoria_lease':False,'cancel_other_jobs':False,'scope':'World4X ground Blender/Qwen only; no Unity, gameplay, Valoria, UI or publication'}
+              own['phase']='RECOVERED_SOURCES_TEST_PASSED_QUEUED_GROUND_ART'
+              own['next']='Complete exact-source Blender/Qwen ground finish; preserve original plan, paired images and editable sources; independent art review before native Unity.'
+              r['updated_at']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+              try:
+                  api('/contents/pipeline/active-workstreams.json',{'message':'coordination(world4x): record explicit queued PC delegation; preserve Work ownership [skip ci]','branch':'main','sha':file['sha'],'content':base64.b64encode((json.dumps(r,indent=2,ensure_ascii=False)+'\n').encode()).decode()},'PUT');break
+              except urllib.error.HTTPError as e:
+                  if e.code!=409 or attempt==2:raise
+          deadline=time.time()+840
+          while True:
+              waiting=[]
+              for status in ['in_progress','queued','waiting','pending']:
+                  for run in api('/actions/runs?branch=construction%2Fvaloria-master-plan-layers-20261016&status='+status+'&per_page=50').get('workflow_runs',[]):waiting.append({'id':run['id'],'status':run['status']})
+              print(json.dumps({'prior_work_jobs':waiting}),flush=True)
+              if not waiting:break
+              if time.time()>deadline:raise RuntimeError('Work queue still occupied; no Windows job enqueued, no cancellation')
+              time.sleep(30)
+          PY
+  ground-art:
+    needs: coordinate
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 24
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: world4x-production-source
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: world4x-production-main-readonly
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Recheck exact delegation, prior Work queue and native process availability
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $r=Get-Content "$env:GITHUB_WORKSPACE/world4x-production-main-readonly/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          $own=@($r.active|Where-Object {$_.id -eq 'world4x-zone1-isolated-reference-prototype-20261013' -and $_.owner -eq 'chatgpt-world4x-production-20261018' -and $_.status -eq 'active'})
+          if($own.Count -ne 1 -or $own[0].coordination.queue_delegation.run_id -ne "$env:GITHUB_RUN_ID"){throw 'Current explicit queued delegation absent'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied: no process interrupted'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $base="https://api.github.com/repos/$env:GITHUB_REPOSITORY"
+          $ours=Invoke-RestMethod "$base/actions/runs/$env:GITHUB_RUN_ID" -Headers $headers
+          $queued=Invoke-RestMethod "$base/actions/runs?branch=construction%2Fvaloria-master-plan-layers-20261016&status=queued&per_page=50" -Headers $headers
+          if(@($queued.workflow_runs|Where-Object {[datetime]$_.created_at -lt [datetime]$ours.created_at}).Count){throw 'An earlier Work job has priority; no native process started'}
+      - name: Execute actual Qwen and Blender against the preserved terrain source
+        working-directory: world4x-production-source
+        shell: powershell
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+          if(-not $blender){throw 'Existing Blender not found'}
+          $out=Join-Path (Get-Location) "docs/world4x-zone1/evidence/ground-finish-$env:GITHUB_RUN_ID"
+          $owned=$null
+          try{
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5}catch{
+              $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+              if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
+              if(-not(Test-Path $ollama)){throw 'Previously installed Ollama unavailable'}
+              $owned=Start-Process $ollama -ArgumentList 'serve' -PassThru
+              $ready=$false
+              for($i=0;$i -lt 20;$i++){Start-Sleep 1;try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{}}
+              if(-not $ready){throw 'Existing local Ollama did not start'}
+            }
+            & $blender -b -t 4 --python-exit-code 1 --python tools/world4x-zone1/production/continue_ground_finish.py -- --out $out
+            if($LASTEXITCODE -ne 0){throw 'Blender/Qwen continuation failed; preserve partial evidence'}
+          }finally{
+            if($owned -and -not $owned.HasExited){& taskkill.exe /PID $owned.Id /T /F | Out-Null}
+          }
+      - name: Preserve all genuine partial or complete outputs in own branch
+        if: always()
+        working-directory: world4x-production-source
+        shell: powershell
+        run: |
+          $dest="docs/world4x-zone1/evidence/ground-finish-$env:GITHUB_RUN_ID"
+          if(Test-Path $dest){
+            Get-ChildItem $dest -Filter '*.blend1'|Remove-Item
+            & git config user.name 'Eldoria World4X source workshop'
+            & git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            & git add -f -- $dest
+            & git diff --cached --quiet
+            if($LASTEXITCODE -ne 0){
+              & git commit -m "art(world4x): preserve actual terrain finish source and paired images $env:GITHUB_RUN_ID [skip ci]"
+              if($LASTEXITCODE -ne 0){throw 'Evidence commit failed; artifact remains'}
+              & git pull --rebase origin prototype/world4x-zone1-zoom-reference-20261013
+              if($LASTEXITCODE -ne 0){throw 'Concurrent source conflict; no force push, artifact retained'}
+              & git push origin HEAD:prototype/world4x-zone1-zoom-reference-20261013
+              if($LASTEXITCODE -ne 0){throw 'Evidence push failed; artifact remains'}
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: world4x-ground-finish-${{ github.run_id }}
+          path: world4x-production-source/docs/world4x-zone1/evidence/ground-finish-${{ github.run_id }}/
+          retention-days: 30
