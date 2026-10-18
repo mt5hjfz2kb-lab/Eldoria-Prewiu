@@ -11,7 +11,7 @@ namespace Eldoria.ReferenceClean {
  // Content only: assemblies, progression rules and saves are never downloaded.
  [Serializable] public sealed class ValoriaContentManifest {
   public int schema=1, revision, minimumPlayerCode;
-  public string platform, unityVersion, runtimeContract, url, sha256, scene;
+  public string platform, unityVersion, runtimeContract, url, sha256, scene, sceneSourceSha256;
   public long bytes;
   public uint crc;
  }
@@ -25,6 +25,7 @@ namespace Eldoria.ReferenceClean {
    if(m.platform!=platform||m.unityVersion!=UnityEngine.Application.unityVersion||m.runtimeContract!=runtime)return false;
    if(m.scene!=Scene||m.bytes<=0||m.bytes>MaximumBytes||m.crc==0)return false;
    if(string.IsNullOrEmpty(m.sha256)||!Regex.IsMatch(m.sha256,"^[0-9a-f]{64}$"))return false;
+   if(string.IsNullOrEmpty(m.sceneSourceSha256)||!Regex.IsMatch(m.sceneSourceSha256,"^[0-9a-f]{64}$"))return false;
    if(string.IsNullOrEmpty(m.url)||!m.url.StartsWith(DownloadPrefix,StringComparison.Ordinal))return false;
    if(!Uri.TryCreate(m.url,UriKind.Absolute,out var u)||u.Scheme!="https"||u.Host!="github.com"||!string.IsNullOrEmpty(u.Query)||!string.IsNullOrEmpty(u.Fragment)||!string.IsNullOrEmpty(u.UserInfo))return false;
    if(!Regex.IsMatch(u.AbsolutePath,@"^/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/valoria-content-[0-9]+/valoria-(android|windows)-[0-9a-f]{64}\.bundle$"))return false;
@@ -45,6 +46,7 @@ namespace Eldoria.ReferenceClean {
   string cache;
   AssetBundle loaded;
   bool sceneReady;
+  public bool ContentReady=>sceneReady;
 #if UNITY_EDITOR
   public bool SuppressStartupForEditorProbe;
   public string EditorChannelFile,EditorBundleFile,EditorCacheDirectory;
@@ -79,13 +81,15 @@ namespace Eldoria.ReferenceClean {
 #if UNITY_EDITOR
      if(!string.IsNullOrEmpty(EditorBundleFile))url=new Uri(EditorBundleFile).AbsoluteUri;
 #endif
-     var download=CreateDownload(url,part);
+     var download=CreateDownload(url,part);bool downloaded=false;
      if(download!=null)using(var req=download){
       var op=req.SendWebRequest();
       while(!op.isDone){Status="Descargando Valoria · "+Mathf.RoundToInt(Mathf.Clamp01(req.downloadProgress)*100)+" %";if(req.downloadedBytes>(ulong)ValoriaContentPolicy.MaximumBytes)req.Abort();yield return null;}
-      if(req.result==UnityWebRequest.Result.Success&&SafeVerify(part,next)){
-       try{if(File.Exists(path))File.Delete(path);File.Move(part,path);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_STORE "+e.Message);}
-      }
+      downloaded=req.result==UnityWebRequest.Result.Success;
+     }
+     // Close DownloadHandlerFile before hashing/renaming, especially on Windows.
+     if(downloaded&&SafeVerify(part,next)){
+      try{if(File.Exists(path))File.Delete(path);File.Move(part,path);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_STORE "+e.Message);}
      }
      try{if(File.Exists(part))File.Delete(part);}catch(Exception e){Debug.LogWarning(e.Message);}
     }
@@ -106,8 +110,9 @@ namespace Eldoria.ReferenceClean {
    Destroy(gameObject);
   }
   UnityWebRequest CreateDownload(string url,string path){
-   try{var req=UnityWebRequest.Get(url);req.downloadHandler=new DownloadHandlerFile(path){removeFileOnAbort=true};req.timeout=120;return req;}
-   catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_DOWNLOAD "+e.Message);return null;}
+   UnityWebRequest req=null;
+   try{req=UnityWebRequest.Get(url);req.downloadHandler=new DownloadHandlerFile(path){removeFileOnAbort=true};req.timeout=120;return req;}
+   catch(Exception e){if(req!=null)req.Dispose();Debug.LogWarning("VALORIA_CONTENT_DOWNLOAD "+e.Message);return null;}
   }
   bool SafeVerify(string path,ValoriaContentManifest m){try{return ValoriaContentPolicy.Verify(path,m);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_VERIFY "+e.Message);return false;}}
   ValoriaContentManifest ReadCurrent(){

@@ -72,6 +72,11 @@ jobs:
         shell: powershell
         run: |
           $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if(Test-Path 'tools/valoria-reference-clean/publish_content.ps1'){
+            $tokens=$null;$parseErrors=$null
+            $null=[System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'tools/valoria-reference-clean/publish_content.ps1'),[ref]$tokens,[ref]$parseErrors)
+            if($parseErrors.Count){throw ($parseErrors|Out-String)}
+          }
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'gameplay'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
@@ -220,6 +225,17 @@ jobs:
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
           if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
+          if($req.validate_loader_cases){
+            foreach($case in @('download','cached_offline','corrupt','incompatible')){
+              $env:VALORIA_CONTENT_CASE=$case
+              $caseLog=Join-Path $env:RUNNER_TEMP "valoria-content-$case.log"
+              $caseArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaContentBuild.ValidateLoader','-logFile',$caseLog)
+              $caseProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $caseArgs -PassThru
+              if(-not $caseProcess.WaitForExit(240000)){& taskkill.exe /PID $caseProcess.Id /T /F|Out-Null;throw "Own content loader probe timeout $case"}
+              Copy-Item $caseLog "docs/evidence/valoria-reference-clean/content-loader-$case.log"
+              if($caseProcess.ExitCode -ne 0 -or -not(Select-String $caseLog -Pattern 'VALORIA_REFERENCE_CLEAN_CONTENT_LOADER_COMPLETE' -Quiet)){Get-Content $caseLog -Tail 100;throw "Content loader probe failed $case"}
+            }
+          }
           if($req.export_package){
             $packageLog=Join-Path $env:RUNNER_TEMP 'valoria-package-refresh.log'
             $packageArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting','-logFile',$packageLog)
@@ -282,9 +298,20 @@ jobs:
           [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-badging.txt'),$badging)
           $expected='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
           if(-not $signed.ToLowerInvariant().Contains($expected)){throw 'APK signing certificate differs from installed-version candidate'}
-          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='5'"){throw 'APK update package/version mismatch'}
+          $request=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          $code=5;if($request.android_version_code){$code=[int]$request.android_version_code}
+          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='$code'"){throw 'APK update package/version mismatch'}
           if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'APK ARM64 missing'}
-          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=5;prior_version_code=4;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
+          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=$code;prior_version_code=5;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
+      - name: Publish requested verified Android scene content only
+        if: success() && steps.native_stage.outputs.stage == 'android'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if(-not $req.publish_content){return}
+          & ./tools/valoria-reference-clean/publish_content.ps1
       - name: Review real capture with previously installed local vision model
         continue-on-error: true
         shell: powershell
@@ -336,6 +363,7 @@ jobs:
           git config user.email 'valoria-clean@users.noreply.github.com'
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ docs/evidence/valoria-reference-clean/
           git add -- Unity/Packages/packages-lock.json
+          if(Test-Path 'tools/valoria-reference-clean/content-channel.json'){git add -- tools/valoria-reference-clean/content-channel.json}
           if(-not(git diff --cached --quiet)){
             git commit -m 'art(valoria): native independent reference scene and genuine Unity evidence'
             if($LASTEXITCODE){throw 'Commit failed'}
@@ -352,6 +380,8 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/chapter2-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/camp87-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/content93-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/content-loader-*
             ${{ runner.temp }}/valoria-reference-clean.log
             ${{ runner.temp }}/valoria-reference-clean-gameplay.log
           if-no-files-found: warn
@@ -373,8 +403,17 @@ jobs:
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
+        if: success() && (steps.native_stage.outputs.stage == 'android' || steps.native_stage.outputs.stage == 'content_validate')
+        with:
+          name: valoria-scene-content-${{ github.run_id }}
+          path: |
+            valoria-layered-source/Unity/Builds/ValoriaContent/*/valoria-*.bundle
+            valoria-layered-source/Unity/Builds/ValoriaContent/*/content-channel.json
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
         if: success() && (steps.native_stage.outputs.package_export == 'true' || steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate' || steps.native_stage.outputs.stage == 'bastion_two_integrate' || steps.native_stage.outputs.stage == 'camp_integrate')
         with:
           name: valoria-reference-clean-package-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage
           if-no-files-found: error
+

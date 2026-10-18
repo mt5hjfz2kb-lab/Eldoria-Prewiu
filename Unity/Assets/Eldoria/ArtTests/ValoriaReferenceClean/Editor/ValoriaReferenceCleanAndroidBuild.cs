@@ -14,8 +14,10 @@ public static class ValoriaReferenceCleanAndroidBuild {
  const string Evidence="../docs/evidence/valoria-reference-clean/android-build.json";
  [Serializable]class Key{public string path,certificate_sha256;public bool matches_original;}
  [Serializable]class KeyReport{public Key[] keys;public string package;public int old_version_code;}
+ [Serializable]class Request{public bool content_updates;public int revision,android_version_code;public string android_version_name;}
  [Serializable]class Result { public string source_sha,status,apk_sha256,package_id,graphics_apis,note;public long apk_bytes;public int errors,warnings;public bool physical_device_tested; }
  public static void Build(){
+  var request=JsonUtility.FromJson<Request>(File.ReadAllText("../tools/valoria-reference-clean/request.json"));
   var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),package_id="com.eldoria.valoria.v5test",graphics_apis="Vulkan, OpenGLES3",physical_device_tested=false,note="Update of recovered optimized APK38279800977: same package and verified existing signing certificate, versionCode5; single current Valoria scene, known source-only GLBs excluded/restored by existing packaging procedure. No data reset/deletion. Phone install/performance still requires owner test."};
   int exit=1;string settings="ProjectSettings/ProjectSettings.asset";byte[] original=File.ReadAllBytes(settings);
   try{
@@ -39,7 +41,9 @@ public static class ValoriaReferenceCleanAndroidBuild {
    PlayerSettings.Android.useCustomKeystore=true;
    PlayerSettings.Android.keystoreName=key.path;PlayerSettings.Android.keystorePass="android";
    PlayerSettings.Android.keyaliasName="androiddebugkey";PlayerSettings.Android.keyaliasPass="android";
-   PlayerSettings.bundleVersion="1.4";PlayerSettings.Android.bundleVersionCode=5;
+   PlayerSettings.bundleVersion=request.android_version_name??"1.4";PlayerSettings.Android.bundleVersionCode=request.android_version_code>0?request.android_version_code:5;
+   if(request.content_updates&&PlayerSettings.Android.bundleVersionCode<6)throw new Exception("Content bootstrap requires versionCode6 or higher");
+   PlayerSettings.Android.forceInternetPermission=true;
    PlayerSettings.stripEngineCode=true;
    PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android,ManagedStrippingLevel.Medium);
    PlayerSettings.defaultInterfaceOrientation=UIOrientation.LandscapeLeft;
@@ -47,7 +51,15 @@ public static class ValoriaReferenceCleanAndroidBuild {
    PlayerSettings.SetGraphicsAPIs(BuildTarget.Android,new[]{GraphicsDeviceType.Vulkan,GraphicsDeviceType.OpenGLES3});
    EditorUserBuildSettings.buildAppBundle=false;EditorUserBuildSettings.exportAsGoogleAndroidProject=false;
    const string apk="Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk";Directory.CreateDirectory(Path.GetDirectoryName(apk));
-   var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{ScenePath},locationPathName=apk,target=BuildTarget.Android,options=BuildOptions.StrictMode});
+   var scenes=new[]{ScenePath};string bundleManifest=null;
+   if(request.content_updates){
+    ValoriaContentBuild.BuildBundle(BuildTarget.Android,request.revision);
+    ValoriaContentBuild.PrepareBootstrap();scenes=new[]{ValoriaContentBuild.Bootstrap,ScenePath};
+    bundleManifest=Path.GetFullPath(ValoriaContentBuild.Output+"/android/android.manifest");
+    if(!File.Exists(bundleManifest))throw new Exception("AssetBundle root manifest missing; refuse stripping unsafe player");
+    result.note="Same identity/certificate bootstrap with bundled fallback and compatible remote scene updates. No save reset. Requires one initial APK update; code changes still require a new APK. Phone installation and remote loading not physically tested.";
+   }
+   var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=scenes,locationPathName=apk,target=BuildTarget.Android,options=BuildOptions.StrictMode,assetBundleManifestPath=bundleManifest});
    result.errors=(int)report.summary.totalErrors;result.warnings=(int)report.summary.totalWarnings;
    if(report.summary.result!=BuildResult.Succeeded||!File.Exists(apk))throw new Exception("Android build failed: "+report.summary.result);
    result.apk_bytes=new FileInfo(apk).Length;
@@ -59,3 +71,4 @@ public static class ValoriaReferenceCleanAndroidBuild {
  }
 }
 }
+
