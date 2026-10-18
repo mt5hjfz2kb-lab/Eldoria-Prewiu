@@ -4,7 +4,7 @@
 
 ## Qué se ha comprobado
 
-- Se abrió el enlace privado en navegador remoto. El acceso redirigió a auth.openai.com/log-in; no existe una sesión autenticada disponible. No se accedió al canvas ni se modificó el acceso privado. La partida manual requiere el inicio de sesión seguro del propietario.
+- Se abrió el enlace privado en navegador remoto. El acceso redirigió a auth.openai.com/log-in; no existe una sesión autenticada disponible. No se accedió al canvas ni se modificó el acceso privado. Se eligió Apple y posteriormente se declinó la solicitud segura de acceso. Se respeta la cancelación: la partida manual queda pendiente.
 - Se revisaron directamente capturas originales Unity de ciudad inicial, ciudad limpia construida, mundo horizontal/vertical, entrenamiento y diálogos.
 - El recorrido automatizado native111 pulsa botones uGUI reales y completa I–II con recarga y hashes de guardados preservados; usa TestClock acelerado. Confirma funcionamiento, no diversión, tiempo de espera real, entrada táctil física o rendimiento de Safari.
 - Se inspeccionó el código de navegación/gating. Los hallazgos inferidos se distinguen de lo visible. No se fabrican FPS, puntuaciones de arte ni sesiones de usuario.
