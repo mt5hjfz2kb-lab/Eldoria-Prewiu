@@ -1,0 +1,17 @@
+{
+  "run": 39080003395,
+  "source": "0483910cc65205e50461c41c3ed30cce2b826a45",
+  "root_log": "android-native.log",
+  "observed_errors": [
+    "GsplatSortPass InitPayload kernel not found",
+    "GsplatMergeOrderBuffers PackRendererOrders missing",
+    "GsplatCopyBuffer CopyUint4 missing"
+  ],
+  "location": "GsplatSettings OnValidate/OnEnable during BuildPlayer, package com.arloopa.unitysplats",
+  "hypothesis": "Android invocation uses -nographics; kernels requested by unrelated Gsplat ScriptableObject initialization require graphics. Test native D3D11 build without -nographics before changing package or canonical assets.",
+  "next": "After lighting A/B; no package installs/removals, no unrelated scene changes",
+  "apk_exists": false,
+  "native_log_sha256": "f77c5d122fb3ed4536cbb4ae6a4ce4cbdfb99c6912ac56022b445dcdcd2341a4",
+  "artifact_id": 12118537979,
+  "fix_under_test55": "Use real D3D11 editor graphics; keep StrictMode and all packages untouched"
+}
