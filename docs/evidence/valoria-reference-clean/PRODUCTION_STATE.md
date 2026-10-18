@@ -1,3 +1,15 @@
+# Estado vigente — 18 octubre 2026: primer ciclo Bastión I–II entregable
+
+Native82: conjunto local conservado y evolución II integrada, capturas auténticas revisadas, interfaz, recursos, mejora de 10 segundos, guardado y cambio visual verificados. Pasan 16/16 pruebas nativas, 96 recorridos y comprobaciones de altura, seis escaleras, una cámara y cero excepciones. Salida validada: faa7a82dd3b5d0e784220b50fed1d8d95c54555b.
+
+Native83: actualización Android 1.2 / código 3 compilada y verificada, salida 6f898b109c08b973821611624fe03bed3e236453. La comparación de commits confirma que la escena y el código jugable siguen iguales a native82. APK de 174678797 bytes, SHA256 38f1aa1e720fb76bf61f31ed91e1b93fe6b55556f2991ddbff182cba5f8b7734, artefacto 12133277857. Identificador y certificado originales conservados, once bibliotecas ARM64, CRC y hash verificados tras descargar. Paquete editable native82: 284635827 bytes, 497 assets incluyendo Bastión II, artefacto 12133880417. SHA, gzip completo y TAR comprobados; importación nativa en otro proyecto pendiente.
+
+Primer hito local artístico y jugable cerrado según el encargo; sin ART_APPROVED formal ni certificación gráfica de toda Valoria. Diferencia registrada: Bastión II iluminado por probes tiene menos resplandor horneado de las antorchas que Bastión I. Pendiente prueba física del propietario de actualización, guardado, juego y rendimiento. No desinstalar ni borrar datos.
+
+Las siguientes funciones parten de esta base y de una integración coordinada con 4X y Royal Gold UI, sin rehacer modelos o escena ni reactivar pruebas rechazadas. DELIVERY.md contiene los enlaces y límites exactos. Ningún ejecutor continúa en segundo plano después de cerrar el turno.
+
+## Historia de producción (las próximas acciones antiguas están supersedidas)
+
 # Valoria Reference Clean — producción activa
 
 Trabajo autónomo en curso, en el workstream y la rama existentes; Windows reservado por codex-work-valoria-reference-clean-20261017. No es una declaración de misión terminada ni de ART_APPROVED.
