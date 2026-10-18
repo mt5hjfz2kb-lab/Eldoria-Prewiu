@@ -1,0 +1,28 @@
+{
+    "source": "9893da1eb1a36ae2950ef75e6c56d539f83100ed",
+    "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+    "error": "",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "checks": [
+        "city HUD, one camera",
+        "world return preserves session",
+        "Royal build command",
+        "shared timer and authored model",
+        "world gathering, city return, saved reward",
+        "Royal map action forest-valoria",
+        "World return forest-valoria",
+        "Royal map action quarry-valoria",
+        "World return quarry-valoria",
+        "Royal map action corrupt-scout",
+        "World return corrupt-scout",
+        "Royal Bastion upgrade",
+        "Bastion II visual",
+        "Royal barracks",
+        "Royal recruitment",
+        "Royal march confirmation",
+        "Royal I-II chapter complete and reload",
+        "canonical save byte hashes preserved"
+    ],
+    "artApproved": false,
+    "physicalDeviceTested": false
+}

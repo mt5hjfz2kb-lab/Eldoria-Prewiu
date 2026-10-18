@@ -1,0 +1,2 @@
+System.Exception: Original authored city missing
+  at Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build () [0x00445] in C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Assets\Eldoria\ArtTests\ValoriaReferenceClean\Integration\Editor\ValoriaIntegrationBuild.cs:48 
