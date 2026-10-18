@@ -90,6 +90,7 @@ jobs:
           }
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
+          if($req.stage -eq 'web_playtest'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build'}
           if($req.stage -eq 'city_world_ui'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe';$env:VALORIA_GAMEPLAY_PROBE='1'}
@@ -188,6 +189,14 @@ jobs:
             if(-not(Test-Path 'docs/evidence/valoria-reference-clean/camp87-result.json')){throw 'Camp authoring report missing'}
             return
           }
+          if($req.stage -eq 'web_playtest'){
+            $integrationLog=Join-Path $env:RUNNER_TEMP 'valoria-web-integration-preflight.log'
+            $integrationArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build','-logFile',$integrationLog)
+            $integrationProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $integrationArgs -PassThru
+            if(-not $integrationProcess.WaitForExit(600000)){& taskkill.exe /PID $integrationProcess.Id /T /F|Out-Null;throw 'Own integrated web preflight timed out'}
+            Copy-Item $integrationLog docs/evidence/valoria-reference-clean/web-integration-preflight.log
+            if($integrationProcess.ExitCode -ne 0 -or -not(Select-String $integrationLog -Pattern 'VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE' -Quiet)){Get-Content $integrationLog -Tail 100;throw 'Integrated I-II preflight failed; no browser build'}
+          }
           $loaderCasesDone=$false
           if($req.validate_content_before_android){
             $preLog=Join-Path $env:RUNNER_TEMP 'valoria-content-before-android.log'
@@ -205,16 +214,17 @@ jobs:
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
           if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
+          if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
 
           $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
           $resourceStash=Join-Path $env:RUNNER_TEMP "ValoriaResourceGLBs-update-$env:GITHUB_RUN_ID"
           $streamSource=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/StreamingAssets/ValoriaFamilyV3'
           $streamStash=Join-Path $env:RUNNER_TEMP "ValoriaFamilyV3-update-$env:GITHUB_RUN_ID"
           $movedBytes=0;$movedFiles=0
-          if($req.stage -eq 'android' -and ((Test-Path $resourceStash) -or (Test-Path $streamStash))){throw 'Existing update stash requires recovery; refuse overwrite'}
+          if($req.stage -in @('android','web_playtest') -and ((Test-Path $resourceStash) -or (Test-Path $streamStash))){throw 'Existing update stash requires recovery; refuse overwrite'}
           try{
 
-            if($req.stage -eq 'android'){
+            if($req.stage -in @('android','web_playtest')){
               # Recovered optimized V5 packaging: exclude only legacy source GLBs and the source-only V3 streaming family.
               if(Test-Path $resourceRoot){foreach($glb in @(Get-ChildItem $resourceRoot -Recurse -File -Filter '*.glb')){
                 $relative=$glb.FullName.Substring($resourceRoot.Length).TrimStart([char]92);$target=Join-Path $resourceStash $relative
@@ -223,13 +233,13 @@ jobs:
                 if(Test-Path ($glb.FullName+'.meta')){Move-Item ($glb.FullName+'.meta') ($target+'.meta')}
               }}
               if(Test-Path $streamSource){$movedBytes+=(Get-ChildItem $streamSource -Recurse -File|Measure-Object Length -Sum).Sum;Move-Item $streamSource $streamStash}
-              @{original_procedure_run=38279800977;source_glbs_excluded=$movedFiles;source_bytes_excluded=$movedBytes;single_scene='Valoria_Reference_Clean.unity';user_data_touched=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-optimized-payload.json -Encoding utf8
+              @{original_procedure_run=38279800977;source_glbs_excluded=$movedFiles;source_bytes_excluded=$movedBytes;single_scene='Valoria_Reference_Clean.unity';user_data_touched=$false}|ConvertTo-Json|Set-Content (Join-Path 'docs/evidence/valoria-reference-clean' ($req.stage+'-optimized-payload.json')) -Encoding utf8
             }
             $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
             if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
           }finally{
 
-            if($req.stage -eq 'android'){
+            if($req.stage -in @('android','web_playtest')){
               foreach($q in $settingsBefore.Keys){[IO.File]::WriteAllBytes($q,$settingsBefore[$q])}
               if(Test-Path $resourceStash){
                 foreach($item in @(Get-ChildItem $resourceStash -Recurse -File)){
@@ -388,6 +398,7 @@ jobs:
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/web-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
@@ -403,7 +414,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'city_world_ui'
+        if: always() && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
@@ -432,3 +443,10 @@ jobs:
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage
           if-no-files-found: error
 
+
+      - uses: actions/upload-artifact@v4
+        if: success() && steps.native_stage.outputs.stage == 'web_playtest'
+        with:
+          name: valoria-integrated-web-playtest-${{ github.run_id }}
+          path: valoria-layered-source/Unity/Builds/ValoriaWebPlaytest/**
+          if-no-files-found: error

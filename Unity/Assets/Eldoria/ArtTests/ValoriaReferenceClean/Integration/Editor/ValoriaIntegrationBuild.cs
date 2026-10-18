@@ -26,7 +26,7 @@ namespace Eldoria.ReferenceClean.Editor {
   static void Need(bool pass,string why){if(!pass)throw new InvalidOperationException(why);}
   public static async void Build(){try{
    Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
-   var scene=EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",OpenSceneMode.Single);
+   var scene=EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/SawmillCompleted/Valoria_SawmillCompleted.unity",OpenSceneMode.Single);
    var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();Need(city!=null,"Existing city gameplay missing");
    var host=city.gameObject.AddComponent<ValoriaIntegratedWorld>();
    host.HudPrefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/RoyalGoldHUD.prefab");Need(host.HudPrefab!=null,"Royal Gold prefab missing");
