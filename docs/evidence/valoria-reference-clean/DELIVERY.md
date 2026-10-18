@@ -1,3 +1,17 @@
+# Entrega vigente: Android 1.3 y capítulo II verificado
+
+Último runtime validado: native85, run39121023638, salida effd9242372e76ab6604c1a51228d609dcc564ec. Native84 verificó el ciclo completo existente mediante botones reales: cuartel, gasto, entrenamiento, confirmación de marcha, victoria sobre el Engendro y recarga sin duplicar recompensas (revisión final19). Native85 corrigió y verificó el panel del cuartel cuando permanece abierto: cuenta atrás de entrenamiento y cambio automático de acción al completar construcción/entrenamiento. También posiciona las etiquetas de nivel al refrescar el estado. Capturas auténticas revisadas: chapter2-training.png, chapter2-city-built.png, chapter2-march-prepare.png y chapter2-complete.png. Guardados canónicos intactos.
+
+[APK 1.3 / código4 — descarga ZIP](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39121191183/artifacts/12134267369). Native86 run39121191183, fuente af87f39e6a324d8bbb906ed2a2ef97484a91aa78, salida21b2c42de3d8e196f027fd592f34ead23f270399. 174677573bytes, SHA256 cfc9c554cecabf3d6825acd4df8c84f568259ee222a80bc2d466c1bbf5068e79. Cero errores de compilación y27avisos. Identificador com.eldoria.valoria.v5test, versión1.3/código4. Certificado original f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8 verificado con apksigner. Descarga independiente: CRC del ZIP y APK, hash y11bibliotecas ELF AArch64 correctos. Escena y runtime sin modificaciones durante la compilación respecto a native85.
+
+[Paquete editable actualizado native86](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39121191183/artifacts/12134192761). 284335755bytes, SHA256 d8afed994705ff1a5001c86fc22bea18cf24a036216e1f551edc7eddce5005e7. Exportación nativa estable/cerrada y gzip completo verificados; descarga independiente CRC/hash/TAR:503assets, prefab Bastion_II y fuente SlicePresenter con la corrección de entrenamiento presentes. Importación nativa en otro proyecto pendiente.
+
+Instalación: descargar ZIP en Android, extraerlo, abrir el APK y pulsar Actualizar. Abrir la app antigua no descarga cambios automáticamente. No desinstalar ni borrar datos si hay incompatibilidad; comprobar identidad/versión instalada. La actualización y el rendimiento en el teléfono del propietario todavía no están probados. La aplicación conserva el nombre Eldoria Valoria V5 Test.
+
+Limitaciones artísticas: conjunto local de Bastión retenido, sin certificación gráfica global; el campamento usado como cuartel es una representación funcional provisional. El panel de objetivos actual tapa parte de la parcela superior izquierda; debe considerarse en la integración coordinada de Royal Gold UI. No se han tocado los scopes independientes de UI ni4X.
+
+## Historial de la entrega anterior (APK1.2 y paquete82 sustituidos por los enlaces anteriores)
+
 # Valoria — first local art and playable Bastion I–II milestone
 
 Authoritative scene: `Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity`. Integrated native82 output `faa7a82dd3b5d0e784220b50fed1d8d95c54555b`, [run39118550767](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39118550767). Current branch retains all subsequent build/verification commits; this is the last exact native gameplay validation.
