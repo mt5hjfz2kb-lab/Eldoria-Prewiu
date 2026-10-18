@@ -403,7 +403,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'camp_author'
+        if: always() && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'city_world_ui'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |

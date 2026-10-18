@@ -21,6 +21,7 @@ namespace Eldoria.ReferenceClean {
   public bool Ready {get;private set;}
   ValoriaReferenceCleanGameplay city; ExistingSliceBinding binding; ZoneOneGatewayHost world;
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
+  bool cityFog; int layoutWidth,layoutHeight;
   public Camera PlayerCamera=>InWorld?WorldCamera:city.PlayerCamera;
   IEnumerator Start(){
    city=GetComponent<ValoriaReferenceCleanGameplay>();
@@ -28,6 +29,7 @@ namespace Eldoria.ReferenceClean {
    if(city==null||!city.Ready||HudPrefab==null||WorldRoot==null||WorldCamera==null){Debug.LogError("VALORIA_INTEGRATION_MISSING_BINDING");yield break;}
    var legacy=GameObject.Find("Eldoria HUD");
    legacyCanvas=legacy.GetComponent<Canvas>();legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
+   cityFog=RenderSettings.fog;
    Hud=Instantiate(HudPrefab).GetComponent<RoyalHUD>();Hud.name="Valoria Royal Gold HUD";
    BindSession();
    // Keep the original presenter running: it owns Advance, scene state and gestures.
@@ -39,13 +41,14 @@ namespace Eldoria.ReferenceClean {
    Ready=true;
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);}
-  void LateUpdate(){if(Ready&&!ReferenceEquals(boundGateway,city.Gateway))BindSession();}
+  void LateUpdate(){if(!Ready)return;if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();if(layoutWidth!=Screen.width||layoutHeight!=Screen.height){layoutWidth=Screen.width;layoutHeight=Screen.height;var scaler=Hud.GetComponent<RoyalScaler>();scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?800:1600,900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;}}
   void OnDestroy(){if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public bool Select(string id){if(id=="gate"){SetWorld(true);return true;}if(id=="valoria-map-city"){SetWorld(false);return true;}Hud.SelectBuilding(id);return true;}
   public void SetWorld(bool open){
    if(!Ready)return;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
+   RenderSettings.fog=open?false:cityFog;
    if(open){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);}
    Hud.Refresh();
   }
