@@ -1,0 +1,26 @@
+{
+  "sha256": "6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8",
+  "name": "ZoneOne continuous prairie source",
+  "bounds": [
+    [
+      -120.0,
+      -120.0,
+      -5.908100128173828
+    ],
+    [
+      120.0,
+      120.0,
+      8.145066261291504
+    ]
+  ],
+  "vertex_count": 16069,
+  "polygons": 28800,
+  "protected_city_pad": [
+    -40,
+    4,
+    -52,
+    -8
+  ],
+  "axes": "Blender WORLD X Y horizontal; Z up",
+  "reference_scope": "local proof sector, not full128x128 world"
+}

@@ -1,0 +1,9 @@
+{
+  "vertices": 16069,
+  "changed_vertices": 2291,
+  "max_vertical_delta": 6.200000166893005,
+  "xy_preserved": true,
+  "city_pad_and_border_preserved": true,
+  "topology_preserved": true,
+  "polygons_before_and_after": 28800
+}

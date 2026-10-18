@@ -1,0 +1,15 @@
+{
+  "model": "qwen3:14b",
+  "new_inference": false,
+  "original_inference_run": 39127306553,
+  "raw_git_blob": "05d76c03e5a3684f9491e7caab24b4d439b6607a",
+  "raw_sha256_lf": "c84b79b24e25a71c93c2ae360d63352e2b807fea66523126706ae941e7a0558b",
+  "parameters_rewritten": false,
+  "plan_sha256": "1376353c787ab7b4325443be3d2b7ed9a224213fbfc3c7fb60d145ce407ebd57",
+  "technical_plan_valid": true,
+  "aesthetic_preference_warnings": [
+    "Meadow must be a restrained olive green, not grey, neon or beige"
+  ],
+  "reason_for_trial": "Only meadow_light G175 exceeds an advisory art-brief cap170; it is valid sRGB. Never approve/reject visual quality from an arbitrary five-level colour deviation. Original image comparison, not relaxed artistic acceptance, determines the result.",
+  "art_approved": false
+}

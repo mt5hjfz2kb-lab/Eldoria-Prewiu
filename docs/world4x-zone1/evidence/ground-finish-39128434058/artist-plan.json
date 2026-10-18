@@ -1,0 +1,67 @@
+{
+  "diagnosis": "Added two distinct landforms with clear elevation contrast and directional asymmetry; introduced subtle surface variation without disrupting existing features.",
+  "design_intent": "Enhance terrain readability with a dominant hill and secondary basin, while maintaining warm, low-contrast surface tones for cohesion with the prairie baseline.",
+  "palette_srgb": {
+    "meadow": [
+      120,
+      140,
+      60
+    ],
+    "meadow_light": [
+      155,
+      175,
+      95
+    ],
+    "dry": [
+      180,
+      160,
+      80
+    ],
+    "soil": [
+      140,
+      110,
+      60
+    ],
+    "rock": [
+      110,
+      110,
+      110
+    ],
+    "path": [
+      190,
+      150,
+      90
+    ]
+  },
+  "landforms": [
+    {
+      "x": 20,
+      "y": -30,
+      "rx": 36,
+      "ry": 42,
+      "height": 6.2,
+      "angle": 45
+    },
+    {
+      "x": -25,
+      "y": 15,
+      "rx": 28,
+      "ry": 52,
+      "height": -2.8,
+      "angle": -60
+    },
+    {
+      "x": -10,
+      "y": -10,
+      "rx": 30,
+      "ry": 45,
+      "height": 3.1,
+      "angle": 120
+    }
+  ],
+  "macro_scale": 48,
+  "dry_amount": 0.22,
+  "micro_strength": 0.06,
+  "slope_rock_start": 16,
+  "slope_rock_end": 32
+}

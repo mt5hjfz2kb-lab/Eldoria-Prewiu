@@ -1,0 +1,147 @@
+{
+  "blend_sha256": "7e77e1f4985fa0ccdbc5d8d29578f8675c7c9a8ed2bbbebf8285fb7a7f93226b",
+  "source_run": 39126030933,
+  "same_source_camera_light": true,
+  "captures": [
+    {
+      "view": "global",
+      "width": 1000,
+      "height": 900,
+      "ortho_scale": 245,
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.8192319273948669,
+          -0.5734623074531555,
+          -210.0
+        ],
+        [
+          0.0,
+          0.5734623074531555,
+          0.8192319273948669,
+          300.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sha256": "9f204820c0ecb3e31ac9fd859dd446c320f2c1f9ec4762858d37fe7fe0985593",
+      "filename": "before-global-blender.png",
+      "reused_exact_verified_png": true
+    },
+    {
+      "view": "regional",
+      "width": 1000,
+      "height": 900,
+      "ortho_scale": 150,
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -18.0
+        ],
+        [
+          0.0,
+          0.8192319273948669,
+          -0.5734623074531555,
+          -215.0
+        ],
+        [
+          0.0,
+          0.5734623074531555,
+          0.8192319273948669,
+          300.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sha256": "9150671b323938104aee407331a6e84f269743ff3514db23799b89b5b00216ef",
+      "filename": "before-regional-blender.png",
+      "reused_exact_verified_png": true
+    },
+    {
+      "view": "local",
+      "width": 1000,
+      "height": 900,
+      "ortho_scale": 84,
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -18.0
+        ],
+        [
+          0.0,
+          0.8192319273948669,
+          -0.5734623074531555,
+          -234.0
+        ],
+        [
+          0.0,
+          0.5734623074531555,
+          0.8192319273948669,
+          300.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sha256": "c134987db307c1799a4de86bfa386a433b85acf7ac171045fb03477fe2cf1654",
+      "filename": "before-local-blender.png",
+      "reused_exact_verified_png": true
+    },
+    {
+      "view": "mobile",
+      "width": 540,
+      "height": 960,
+      "ortho_scale": 155,
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -18.0
+        ],
+        [
+          0.0,
+          0.8192319273948669,
+          -0.5734623074531555,
+          -215.0
+        ],
+        [
+          0.0,
+          0.5734623074531555,
+          0.8192319273948669,
+          300.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sha256": "9c5aadad3b80a4515382aaa0684addfa5f3b457dc199f55ed9b9b96eeac0bbce",
+      "filename": "before-mobile-blender.png",
+      "reused_exact_verified_png": true
+    }
+  ]
+}
