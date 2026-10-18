@@ -20,12 +20,15 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/valoria-reference-clean/
+            /docs/evidence/valoria-reference-clean/environment-city-wide-after.png
       - uses: actions/download-artifact@v4
         with:
           name: valoria-integrated-web-playtest-39163287848
           run-id: 39163287848
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
+      - name: Check browser test syntax without opening Unity
+        run: node --check tools/valoria-reference-clean/playtest_web.cjs
       - name: Verify exact existing integrated build transport
         run: |
           python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native131 7aeef2e942883fae93a5e033bf9a0a05ebc85e46 39163287848
