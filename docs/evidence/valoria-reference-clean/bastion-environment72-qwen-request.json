@@ -1,0 +1,97 @@
+{
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "format": {
+    "type": "object",
+    "required": [
+      "rationale",
+      "stem_height",
+      "crown_width",
+      "leaf_length",
+      "branch_count",
+      "leaf_pairs",
+      "rock_scale",
+      "foliage_palette",
+      "layout"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "rationale": {
+        "type": "string"
+      },
+      "stem_height": {
+        "type": "number",
+        "enum": [
+          1.4,
+          1.8,
+          2.2
+        ]
+      },
+      "crown_width": {
+        "type": "number",
+        "enum": [
+          1.2,
+          1.6,
+          1.9
+        ]
+      },
+      "leaf_length": {
+        "type": "number",
+        "enum": [
+          0.22,
+          0.29,
+          0.36
+        ]
+      },
+      "branch_count": {
+        "type": "number",
+        "enum": [
+          7,
+          9,
+          11
+        ]
+      },
+      "leaf_pairs": {
+        "type": "number",
+        "enum": [
+          7,
+          9,
+          11
+        ]
+      },
+      "rock_scale": {
+        "type": "number",
+        "enum": [
+          0.8,
+          1.15,
+          1.4
+        ]
+      },
+      "foliage_palette": {
+        "type": "number",
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "layout": {
+        "type": "number",
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      }
+    }
+  },
+  "context": {
+    "source_sha256": "635c948163ee618fcbf6e4b63585db864ef441f590aa50dd0ccc3f6c25ace644",
+    "scope": "Immediate Bastion foundation landscape ONLY. Keep every architecture vertex and old gameplay dimensions unchanged. Two images attached: actual native70 Unity detail first, owner target second.",
+    "observation": "Architecture70 improved. Smooth large green balls with black spikes and symmetrical rings of tiny pebbles still look artificial. Replace them with botanical branching shrubs: many small elongated closed leaf buds, upright asymmetric tapered stems, varied low groundcover, fewer larger angular embedded limestone rocks. No green spheres. Keep six-metre central stair clearway. Match warm olive vegetation and grouped rock planting in reference; no trees/buildings/light changes.",
+    "decision": "Choose plant spatial composition from allowed foundation centres, leaf scale, stem height, crown width, density, rock scale and foliage palette. These control actual Blender geometry and materials. Irregular loam/grass shoulder will be tested independently on native terrain."
+  },
+  "image_sha256": {
+    "ensemble-after-bastion.png": "9da54d2e718699d79ae33cd4811ce7efb9d720698373b8f19078a6fa765220f0",
+    "reference-target.jpeg": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+  }
+}
