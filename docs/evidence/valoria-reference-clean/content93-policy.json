@@ -1,13 +1,14 @@
 {
     "schema": 1,
-    "revision": 93,
+    "revision": 96,
     "minimumPlayerCode": 6,
     "platform": "windows",
     "unityVersion": "6000.3.23f1",
-    "runtimeContract": "caf01f99f9fd48a125673bd2d53deed924e49f335bf3b450fd9b25fd2b2364dc",
-    "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/valoria-content-93/valoria-windows-2d144991f5fb804951b0961b605856b509fd7cb9700aaae44c2cadecad15810d.bundle",
+    "runtimeContract": "b0ed5fb80ac4bb7a292cadb27cd21728d5c6c18d304f6c5398b6eda2bcd9b059",
+    "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/valoria-content-96/valoria-windows-2d144991f5fb804951b0961b605856b509fd7cb9700aaae44c2cadecad15810d.bundle",
     "sha256": "2d144991f5fb804951b0961b605856b509fd7cb9700aaae44c2cadecad15810d",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
+    "sceneSourceSha256": "433d6ed87748d308dba1ee7629617fc1bf8fb98b76d08cd66d84842eb717326f",
     "bytes": 119535878,
     "crc": 2394233119
 }
