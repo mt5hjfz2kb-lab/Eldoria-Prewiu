@@ -1,12 +1,14 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel the superseded full Unity slice spawned by the v17 visual-only source change so the authoritative v17 integrated full-frame capture can use the Windows runner; preserve the v17 capture.",
+  "reason": "Cancel only the archived SHARP First Playable capture accidentally triggered by repairing retained PlayMode fixtures. The owner consolidated the integrated Valoria city/world/UI on main and explicitly retired alternative production directions. Preserve current normal Unity regression gates and native116 outputs.",
   "runs": [
-    37108847781
+    39149491653
   ],
   "keep_runs": [
-    37108930871
+    39149491623,
+    39149491637,
+    39149491752
   ],
-  "triggered_at": "2026-10-03T10:15:00+02:00"
+  "triggered_at": "2026-10-18T17:29:00Z"
 }
