@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T10:53:47.583Z",
+  "updated_at": "2026-10-18T10:56:16.688Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CHAPTER_II_PANEL_COMPLETION_FIX",
-      "next": "Native84 full chapterII gameplay passed (finalrevision19) and real captures reviewed. Native85 fixes open barracks panel task completion/countdown and verifies actual button states; existing art and rules preserved. APKv3 remains last delivered; updated build follows verified patch.",
+      "phase": "REFERENCE_CLEAN_CHAPTER_II_VERIFIED_ANDROID_V4_BUILD",
+      "next": "Native85 complete real UI/cost/build/train/march/victory/reload PASS, including open-panel completion/countdown and immediate level badges. Android86 builds1.3/code4 and refreshed editable package; same app identity/cert/save. Existing camp model remains functional provisional art. Independent UI/4X untouched.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39121023638,
-          "current_source": "421f2c7012c3ec54d13c65992c0581ac0252a078",
+          "current_run": 39121191183,
+          "current_source": "af87f39e6a324d8bbb906ed2a2ef97484a91aa78",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -284,7 +284,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE85_PANEL_FIX_VALIDATION",
+          "current_run_status": "NATIVE86_ANDROID_V4_BUILD",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
@@ -428,6 +428,13 @@
             "chapter_two": "BUILD_TRAIN_CONFIRM_MARCH_VICTORY_SAVE_PASS",
             "final_revision": 19,
             "art_approved": false
+          },
+          "native85": {
+            "run": 39121023638,
+            "output": "effd9242372e76ab6604c1a51228d609dcc564ec",
+            "chapter_two": "REAL_UI_FULL_LOOP_WITH_OPEN_PANEL_COMPLETION_PASS",
+            "final_revision": 19,
+            "physical_device_tested": false
           }
         }
       },
