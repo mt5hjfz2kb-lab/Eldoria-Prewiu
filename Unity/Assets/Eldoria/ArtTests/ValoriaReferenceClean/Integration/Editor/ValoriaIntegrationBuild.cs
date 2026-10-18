@@ -177,7 +177,15 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.BarracksBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.RightBuilt.activeSelf,"Barracks model missing");h.Select("barracks");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");Capture(h,"integration-training.png",1600,900);Capture(h,"integration-training-portrait.png",900,1600);},"Royal recruitment");
    yield return new WaitForSecondsRealtime(.4f);
-   Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.RecruitSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();h.Select("march-main");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().MarchConfigured,"March configuration missing");},"Royal march confirmation");
+   Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.RecruitSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();h.Select("march-main");Need(h.Hud.Building.Primary.Button.interactable,"Configured march primary action not enabled");},"Royal march action becomes available");
+   // Canvas GraphicsRegistry must render its first active frame after the
+   // recruitment panel was hidden. An immediate synthetic pointer in the same
+   // call-stack cannot occur for a human finger and may have graphic.depth=-1.
+   // Do NOT substitute Button.onClick.Invoke: the next step still tests uGUI
+   // event-system raycasts and the actual primary action hit rectangle.
+   yield return null;
+   yield return new WaitForSecondsRealtime(.20f);
+   Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().MarchConfigured,"March configuration missing");},"Royal march confirmation via visible primary button");
    yield return new WaitForSecondsRealtime(.4f);
    h.SetWorld(true);h.Select("engendro-valoria");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Chapter II incomplete");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
@@ -202,7 +210,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable");Canvas.ForceUpdateCanvases();
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var p=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
    var data=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=p};
-   var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
+   var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" buttonGraphicDepth="+button.targetGraphic.depth+" buttonGraphicCull="+button.targetGraphic.canvasRenderer.cull+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
    ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
   }
   static void Capture(ValoriaIntegratedWorld h,string name,int width,int height){
