@@ -491,12 +491,22 @@ async function main() {
     await closeDetails();
     const beforeZoom = latest, box = await canvasBox(), seq = sequence;
     await page.mouse.move(box.x + box.width * 0.56, box.y + box.height * 0.52);
-    report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom', deltaY: -240, before: summary(beforeZoom) });
-    await page.mouse.wheel(0, -240);
-    await waitState(() => true, 'Zoom observation', 8000, seq); await sleep(800);
+    report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in', deltaY: +240, before: summary(beforeZoom) });
+    // The authored world opens at its regional MAXIMUM fitting zoom.
+    // Scrolling outward (-240) while already at this bound cannot change
+    // camera size; that is correct engine behaviour, not a failed gesture.
+    // Scroll inward using the real wheel, then assert the observed camera
+    // projection changed. We never mutate camera values from the browser.
+    await page.mouse.wheel(0, +240);
+    await waitState(() => true, 'Zoom-in observation', 8000, seq);
+    await sleep(800);
     const zoomDifference = cameraDifference(beforeZoom, latest);
-    need(zoomDifference && Math.abs(zoomDifference.zoom) > 0.05, 'Mouse wheel did not visibly change world zoom');
-    report.checks.world_zoom = { pass: true, before: beforeZoom.camera, after: latest.camera };
+    need(zoomDifference && Math.abs(zoomDifference.zoom) > 0.05,
+      'Mouse wheel zoom-in on free world terrain did not alter camera size');
+    report.checks.world_zoom = { pass: true, input_delta_y: +240,
+      initial_at_regional_fitting_limit: beforeZoom.camera.zoom >= 31.9,
+      zoom_direction: zoomDifference.zoom < 0 ? 'in' : 'out',
+      before: beforeZoom.camera, after: latest.camera };
     const retained = latest;
     await capture('world-before-city-return'); await toggleWorld(false); await capture('city-world-transition');
     await toggleWorld(true); await sleep(900);
