@@ -81,6 +81,9 @@ namespace Eldoria.Domain
         public int QuarryRemaining = 5200;
         public long BuildingCompletesUtcTicks;
         public string BuildingTaskId = "";
+        public long BastionUpgradeStartedUtcTicks;
+        public long BastionUpgradeCompletesUtcTicks;
+        public string BastionUpgradeTaskId = "";
         public long RecruitmentCompletesUtcTicks;
         public string RecruitmentTaskId = "";
         public int PendingRecruitArchers;
@@ -143,6 +146,7 @@ namespace Eldoria.Domain
         {
             if(state==null||definition==null)return false;
             if(state.BastionLevel!=definition.RequiredPreviousLevel)return false;
+            if(state.BastionUpgradeCompletesUtcTicks>0||state.BuildingCompletesUtcTicks>0)return false;
             if(definition.RequiresJourneyComplete&&!state.JourneyComplete)return false;
             return state.Resources.Wood>=definition.WoodCost&&state.Resources.Stone>=definition.StoneCost;
         }
@@ -151,6 +155,8 @@ namespace Eldoria.Domain
         {
             if(state==null||definition==null)return "";
             var missing=new List<string>();
+            if(state.BastionUpgradeCompletesUtcTicks>0)missing.Add("mejora del Bastión en curso");
+            else if(state.BuildingCompletesUtcTicks>0)missing.Add("espera a que termine la obra actual");
             if(definition.RequiresJourneyComplete&&!state.JourneyComplete)missing.Add("completa los objetivos de Bastión I");
             if(state.Resources.Wood<definition.WoodCost)missing.Add("madera "+state.Resources.Wood+"/"+definition.WoodCost);
             if(state.Resources.Stone<definition.StoneCost)missing.Add("piedra "+state.Resources.Stone+"/"+definition.StoneCost);

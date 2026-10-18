@@ -2,6 +2,7 @@ using UnityEngine;
 namespace Eldoria.ReferenceClean {
 public class ValoriaReferenceCleanInteraction:MonoBehaviour {
  public Camera playerCamera;public string selected="Valoria — Bastión I";public int plot=-1;public Vector3 homePosition;public Quaternion homeRotation;public float homeZoom=48;
+ public bool gameplayOwnsInput;
  Vector3 last;bool dragged;float previousAspect;
  float UiScale=>Mathf.Clamp(Screen.height/720f,1,3);
  void Awake(){if(!playerCamera)playerCamera=Camera.main;}
@@ -24,7 +25,7 @@ public class ValoriaReferenceCleanInteraction:MonoBehaviour {
   playerCamera.transform.position+=new Vector3(dx,0,dz);
  }
  void Update(){
-  if(!playerCamera)return;
+  if(!playerCamera||gameplayOwnsInput)return;
   if(Input.touchCount>=2){var a=Input.GetTouch(0);var b=Input.GetTouch(1);var previous=(a.position-a.deltaPosition)-(b.position-b.deltaPosition);ZoomBy((previous.magnitude-(a.position-b.position).magnitude)*.035f);last=a.position;dragged=true;return;}
   if(Input.mousePosition.x<295*UiScale && Input.mousePosition.y>Screen.height-145*UiScale)return;
   float scroll=Input.mouseScrollDelta.y;if(Mathf.Abs(scroll)>.01f)ZoomBy(-scroll*2);
@@ -34,7 +35,7 @@ public class ValoriaReferenceCleanInteraction:MonoBehaviour {
  }
  public void Select(string id){selected=id;plot=id.StartsWith("Parcela")?int.Parse(id.Substring(id.Length-1)): -1;}
  void OnGUI(){
-  if(!playerCamera)return;var previous=GUI.matrix;GUI.matrix=Matrix4x4.Scale(new Vector3(UiScale,UiScale,1));
+  if(!playerCamera||gameplayOwnsInput)return;var previous=GUI.matrix;GUI.matrix=Matrix4x4.Scale(new Vector3(UiScale,UiScale,1));
   GUI.Box(new Rect(12,12,270,66),selected+"\n"+(plot>0?"Parcela libre · preparada para construir":"Selecciona el Bastión o una parcela"));
   if(GUI.Button(new Rect(12,84,110,44),"Vista inicial"))ResetView();
   if(GUI.Button(new Rect(130,84,60,44),"+"))ZoomBy(-4);

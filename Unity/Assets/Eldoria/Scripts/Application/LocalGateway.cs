@@ -77,7 +77,11 @@ namespace Eldoria.Application
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
                 ForestRemaining=s.ForestRemaining, QuarryRemaining=s.QuarryRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
-                BuildingTaskId=s.BuildingTaskId, RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
+                BuildingTaskId=s.BuildingTaskId,
+                BastionUpgradeStartedUtcTicks=s.BastionUpgradeStartedUtcTicks,
+                BastionUpgradeCompletesUtcTicks=s.BastionUpgradeCompletesUtcTicks,
+                BastionUpgradeTaskId=s.BastionUpgradeTaskId,
+                RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
                 LastBattleReason=s.LastBattleReason,
                 LastBattleReport=new BattleReportState {
@@ -177,12 +181,13 @@ namespace Eldoria.Application
                     }
                     state.Resources.Wood -= next.WoodCost;
                     state.Resources.Stone -= next.StoneCost;
-                    state.BastionLevel = next.Level;
-                    if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
-                    state.ChapterProgress.BastionTwoReached = state.BastionLevel >= 2;
+                    state.BastionUpgradeStartedUtcTicks = clock.UtcTicks;
+                    state.BastionUpgradeCompletesUtcTicks = clock.UtcTicks +
+                        TimeSpan.FromSeconds(SliceContentProfiles.WebContract.Bastion2UpgradeSeconds).Ticks;
+                    state.BastionUpgradeTaskId = "bastion2:" + command.Id;
                     break;
                 case "Build":
-                    if (state.BuildingCompletesUtcTicks > 0) return Fail("Ya hay una obra en curso");
+                    if (state.BuildingCompletesUtcTicks > 0 || state.BastionUpgradeCompletesUtcTicks > 0) return Fail("Ya hay una obra en curso");
                     if (command.TargetId == "sawmill")
                     {
                         if (state.SawmillLevel != 0) return Fail("Obra no disponible");
@@ -239,6 +244,20 @@ namespace Eldoria.Application
         public bool Advance()
         {
             bool changed = false;
+            if (state.BastionUpgradeCompletesUtcTicks > 0 && state.BastionUpgradeCompletesUtcTicks <= clock.UtcTicks)
+            {
+                if (!state.CompletedTaskIds.Contains(state.BastionUpgradeTaskId))
+                {
+                    state.CompletedTaskIds.Add(state.BastionUpgradeTaskId);
+                    state.BastionLevel = Math.Max(2, state.BastionLevel);
+                    if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                    state.ChapterProgress.BastionTwoReached = true;
+                }
+                state.BastionUpgradeStartedUtcTicks = 0;
+                state.BastionUpgradeCompletesUtcTicks = 0;
+                state.BastionUpgradeTaskId = "";
+                changed = true;
+            }
             if (state.BuildingCompletesUtcTicks > 0 && state.BuildingCompletesUtcTicks <= clock.UtcTicks)
             {
                 if (!state.CompletedTaskIds.Contains(state.BuildingTaskId))

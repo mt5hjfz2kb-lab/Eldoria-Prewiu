@@ -142,6 +142,8 @@ namespace Eldoria.Domain
         /// </summary>
         public static class WebContract
         {
+            // v0220/index.html upgrade(2): timedAction build-bastion2, 10 seconds.
+            public const int Bastion2UpgradeSeconds = 10;
             public const int InitialWood = 230;
             public const int InitialStone = 150;
             public const int InitialArcherT1 = 36;
