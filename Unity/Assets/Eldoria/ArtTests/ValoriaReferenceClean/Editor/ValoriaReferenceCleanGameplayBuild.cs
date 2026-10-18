@@ -62,7 +62,7 @@ namespace Eldoria.ReferenceClean.Editor {
    SessionState.SetBool(ProbeFlag,true);EditorApplication.EnterPlaymode();
   }
   static void Entered(PlayModeStateChange change){if(change!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(ProbeFlag,false))return;SessionState.SetBool(ProbeFlag,false);EditorApplication.delayCall+=()=>{var h=UnityEngine.Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();if(h==null){Debug.LogError("Missing gameplay host");EditorApplication.Exit(1);return;}h.StartCoroutine(Probe(h));};}
-  [Serializable]class Result {public string source_sha,status,error,save_scope,bastion2_visual;public bool visual_swap,b2_routes,real_picking;public bool ui_sawmill,ui_gather,ui_fight,upgrade_started,resources_once,upgrade_persistence,upgrade_offline_completion,unlock,persistence,canonical_save_untouched,one_camera;public long final_revision;}
+  [Serializable]class Result {public string source_sha,status,error,save_scope,bastion2_visual;public bool visual_swap,b2_routes,real_picking,barracks_build,barracks_reload,recruitment,training_reload,march_configuration,engendro_victory,chapter_two_persistence;public bool ui_sawmill,ui_gather,ui_fight,upgrade_started,resources_once,upgrade_persistence,upgrade_offline_completion,unlock,persistence,canonical_save_untouched,one_camera;public long final_revision;}
   static string Hash(string p){if(!File.Exists(p))return "ABSENT";using(var h=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(p)));}
   static void Capture(ValoriaReferenceCleanGameplay h,string name){
    var c=h.PlayerCamera;var canvas=GameObject.Find("Eldoria HUD").GetComponent<Canvas>();var priorMode=canvas.renderMode;var priorCam=canvas.worldCamera;float priorDistance=canvas.planeDistance;
@@ -94,7 +94,32 @@ namespace Eldoria.ReferenceClean.Editor {
     for(int i=0;i<6;i++)if(Physics.Raycast(new Vector3(0,20,25.75f+i*.46f),Vector3.down,out var hit,40,~(1<<8),QueryTriggerInteraction.Ignore)&&Mathf.Abs(hit.point.y-(.57f+i*.19f))<.12f)stairs++;
     Check(route==96&&head==96&&stairs==6,"II collision routes/headroom/stairs");result.b2_routes=true;Check(h.Parcels.RightState==ParcelBuildingState.AVAILABLE&&!h.Parcels.RightBuilt.activeSelf,"Barracks unlock gate incorrect");result.unlock=true;
     var final=JsonUtility.ToJson(h.Gateway.Snapshot());h.ReloadForProbe();Check(final==JsonUtility.ToJson(h.Gateway.Snapshot()),"Completion/rewards replayed on reload");result.persistence=true;h.Presenter.Inspect("bastion");Capture(h,"gameplay78-bastion-ii-ui.png");result.final_revision=h.Gateway.Snapshot().Revision;
-    result.canonical_save_untouched=Hash(owner)==ownerHash&&Hash(legacy)==legacyHash;Check(result.canonical_save_untouched,"Player save changed");result.one_camera=UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsSortMode.None).Count(c=>c.enabled)==1;Check(result.one_camera,"Multiple cameras");result.status="EXISTING_UI_RULES_SAVE_I_II_PASS_AUTHORED_VISUAL_SWAP_VERIFIED";
+    // Continue the real scene through the next existing complete function; never seed resources or unlocks.
+    h.Presenter.Inspect("barracks");var barracksBefore=h.Gateway.Snapshot();Click();
+    var works=h.Gateway.Snapshot();Check(works.BuildingCompletesUtcTicks>h.Clock.UtcTicks,"Barracks work not started");
+    Check(works.Resources.Wood==barracksBefore.Resources.Wood-SliceRules.BarracksWoodCost&&works.Resources.Stone==barracksBefore.Resources.Stone-SliceRules.BarracksStoneCost,"Barracks expense incorrect");
+    h.ReloadForProbe();Check(h.Parcels.RightState==ParcelBuildingState.UNDER_CONSTRUCTION&&!h.Parcels.RightBuilt.activeSelf,"Barracks pending reload/model gate");result.barracks_reload=true;
+    h.Presenter.Inspect("barracks");Capture(h,"chapter2-barracks-construction.png");
+    Advance(SliceRules.BarracksBuildSeconds+1);h.ReloadForProbe();Check(h.Gateway.Snapshot().BarracksLevel==1&&h.Parcels.RightBuilt.activeSelf,"Barracks model missing");result.barracks_build=true;
+    h.Presenter.ClosePanel();Capture(h,"chapter2-city-built.png");
+    var targetII=GameObject.Find(h.TargetName("barracks")).GetComponent<Collider>();var screenII=h.PlayerCamera.WorldToScreenPoint(targetII.bounds.center);
+    Check(h.Pick(new Vector2(screenII.x,screenII.y))?.Id=="barracks","Built barracks cannot be selected");
+    h.Presenter.Inspect("barracks");Capture(h,"chapter2-recruit-ready.png");var recruitBefore=h.Gateway.Snapshot();Click();
+    Check(h.Gateway.Snapshot().RecruitmentCompletesUtcTicks>h.Clock.UtcTicks,"Recruitment not started");
+    Check(h.Gateway.Snapshot().Resources.Wood==recruitBefore.Resources.Wood-SliceRules.RecruitWoodCost&&h.Gateway.Snapshot().Resources.Stone==recruitBefore.Resources.Stone-SliceRules.RecruitStoneCost,"Recruit expense incorrect");
+    h.ReloadForProbe();Check(h.Gateway.Snapshot().RecruitmentCompletesUtcTicks>h.Clock.UtcTicks,"Training lost on reload");result.training_reload=true;
+    h.Presenter.Inspect("barracks");Capture(h,"chapter2-training.png");
+    ((ValoriaReferenceCleanGameplay.TestClock)h.Clock).Step(SliceRules.RecruitSeconds+1);h.ReloadForProbe();
+    Check(h.Gateway.Snapshot().ChapterProgress.TrainedArchers>=SliceContentProfiles.Active.Chapter2TrainArchers,"Trained archers target not reached");result.recruitment=true;
+    h.Presenter.Inspect("barracks");Click();Capture(h,"chapter2-march-prepare.png");Click();
+    Check(h.Gateway.Snapshot().MarchConfigured&&h.Gateway.Snapshot().ChapterProgress.MarchConfirmed,"March confirmation missing");result.march_configuration=true;
+    h.ReloadForProbe();Check(h.Gateway.Snapshot().MarchConfigured,"Prepared march lost on reload");
+    Expedition("engendro-valoria");var victory=h.Gateway.Snapshot();
+    Check(victory.EngendroDefeated&&victory.LastBattleReport.TargetId=="engendro-valoria"&&victory.LastBattleReport.Won,"Engendro outcome missing");
+    Check(SliceRules.CurrentObjectiveKey(victory)=="b2.complete","Chapter II incomplete");result.engendro_victory=true;
+    string chapterFinal=JsonUtility.ToJson(victory);h.ReloadForProbe();Check(chapterFinal==JsonUtility.ToJson(h.Gateway.Snapshot()),"Chapter II rewards replayed");
+    result.chapter_two_persistence=true;result.final_revision=h.Gateway.Snapshot().Revision;h.Presenter.ClosePanel();Capture(h,"chapter2-complete.png");
+    result.canonical_save_untouched=Hash(owner)==ownerHash&&Hash(legacy)==legacyHash;Check(result.canonical_save_untouched,"Player save changed");result.one_camera=UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsSortMode.None).Count(c=>c.enabled)==1;Check(result.one_camera,"Multiple cameras");result.status="EXISTING_UI_RULES_SAVE_I_II_PASS_CHAPTER_II_BUILD_TRAIN_MARCH_VICTORY_VERIFIED";
    });
    File.WriteAllText(Path.Combine(Ev,"gameplay78-playmode.json"),JsonUtility.ToJson(result,true));
    Debug.Log("VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE "+result.status);

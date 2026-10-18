@@ -328,6 +328,7 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/chapter2-*
             ${{ runner.temp }}/valoria-reference-clean.log
             ${{ runner.temp }}/valoria-reference-clean-gameplay.log
           if-no-files-found: warn
