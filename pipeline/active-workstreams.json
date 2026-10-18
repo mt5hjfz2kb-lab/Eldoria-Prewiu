@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CONTENT_UPDATE_NATIVE_ISOLATED_VALIDATION",
-      "next": "Validate opt-in native scene AssetBundle loader/policy and rollback/fallback; then same-ID/same-cert bootstrap APK plus immutable verified content channel. Current1.4 delivery/validated91scene retained. No remote content published or phone auto-update claimed.",
+      "phase": "REFERENCE_CLEAN_CONTENT_WINDOWS_BUNDLE_PLAY_VERIFIED_BOOTSTRAP_VALIDATION_QUEUED",
+      "next": "Native96 run39126629008 waits behind already-started explicitly delegated isolated4X ground job39126030933. Do not cancel either. Actual native95 bundle scene and full I-II/chapterII UI/save passed;96 tests loader cache/offline/corrupt/incompatible. Then same-ID/cert initial bootstrap update, public verified scene-only channel; art/1.4 retained. SawmillSTATE2 matched-camera trial prepared locally, not integrated.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -507,7 +507,20 @@
             "assets": 502,
             "native_import_verified": false
           }
-        }
+        },
+        "native95": {
+          "run": 39126039503,
+          "source": "b59946e19d6425eed3df4e2aa712827befe83fba",
+          "output": "ab851c6e2f2587094ea1d5838cad5ea220a067ef",
+          "scene_bundle_windows_bytes": 119535878,
+          "full_I_II_chapter_II_on_loaded_bundle": "PASS",
+          "saves_untouched": true,
+          "public_channel": false,
+          "android_remote_tested": false
+        },
+        "current_run": 39126629008,
+        "current_source": "ffd3c223ac7d4c8d6e291921b268983eddd6955b",
+        "current_run_status": "QUEUED_BEHIND_VALID_EXISTING_4X_DELEGATION"
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
       "takeover_at": "2026-10-17",
@@ -2058,7 +2071,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -2069,7 +2082,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
