@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 735405395383182864}
-  m_Mesh: {fileID: 4300000, guid: 3929bcc8724638f48a8ce73b141a2123, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 8d3724492d38df44a845b17569e774dd, type: 2}
 --- !u!23 &7909844088017555928
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -67,16 +67,16 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 86b543bd4c9b5754c9aff0ec164f14b8, type: 2}
-  - {fileID: 2100000, guid: 10a249148639b7644af359f34c36ebf8, type: 2}
+  - {fileID: 2100000, guid: 159fd7972e9307649ae647a2428da671, type: 2}
+  - {fileID: 2100000, guid: a8e1e1cf15b285642b9667aa93698664, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ScaleInLightmap: 8
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -144,11 +144,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8517444787597439342}
-  - {fileID: 5977684469744990589}
-  - {fileID: 6258568330756226911}
   - {fileID: 8966169114357491922}
+  - {fileID: 6258568330756226911}
   - {fileID: 912345116390621456}
   - {fileID: 2798751914758072706}
+  - {fileID: 5977684469744990589}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3246281608880969585
@@ -192,7 +192,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3246281608880969585}
-  m_Mesh: {fileID: 4300000, guid: c856e2232d7075246be0348bbbefd8b6, type: 2}
+  m_Mesh: {fileID: 4300000, guid: a01fae3e6f3d9f04dacf337081ed00a2, type: 2}
 --- !u!23 &4448052414766182849
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -218,15 +218,15 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 10a249148639b7644af359f34c36ebf8, type: 2}
+  - {fileID: 2100000, guid: a8e1e1cf15b285642b9667aa93698664, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ScaleInLightmap: 8
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -305,7 +305,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4989778248314938119}
-  m_Mesh: {fileID: 4300000, guid: ac465d3f4af696c43ad1828f2d340b19, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 6036316e1d30a014cb9edf0d756a1287, type: 2}
 --- !u!23 &1044829627210280085
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -331,17 +331,17 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 86b543bd4c9b5754c9aff0ec164f14b8, type: 2}
-  - {fileID: 2100000, guid: 10a249148639b7644af359f34c36ebf8, type: 2}
-  - {fileID: 2100000, guid: d41e8c23edede5b4ea07ada8fd9e8ae1, type: 2}
+  - {fileID: 2100000, guid: 159fd7972e9307649ae647a2428da671, type: 2}
+  - {fileID: 2100000, guid: a8e1e1cf15b285642b9667aa93698664, type: 2}
+  - {fileID: 2100000, guid: 02ea9f1fcec912d4f81e16b274c80fb5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ScaleInLightmap: 8
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -420,7 +420,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5563563180536138093}
-  m_Mesh: {fileID: 4300000, guid: 5cb316f34d363da41a027064d5d6a51e, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 81b2b5f05cbefa642b750e874924bf88, type: 2}
 --- !u!23 &2958916438904086175
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -446,17 +446,17 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 86b543bd4c9b5754c9aff0ec164f14b8, type: 2}
-  - {fileID: 2100000, guid: 10a249148639b7644af359f34c36ebf8, type: 2}
-  - {fileID: 2100000, guid: 3b035d52240c4094d83381790c614bb2, type: 2}
+  - {fileID: 2100000, guid: 159fd7972e9307649ae647a2428da671, type: 2}
+  - {fileID: 2100000, guid: a8e1e1cf15b285642b9667aa93698664, type: 2}
+  - {fileID: 2100000, guid: 150e82ba11e64b24bb3c3942665d97bc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ScaleInLightmap: 8
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -535,7 +535,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5641567362778984995}
-  m_Mesh: {fileID: 4300000, guid: 9b3a9470dc2b465438696f563475cf1a, type: 2}
+  m_Mesh: {fileID: 4300000, guid: f3ed8110611fed146a7e93d911592f93, type: 2}
 --- !u!23 &4328665953664997971
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -561,17 +561,17 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 86b543bd4c9b5754c9aff0ec164f14b8, type: 2}
-  - {fileID: 2100000, guid: 10a249148639b7644af359f34c36ebf8, type: 2}
-  - {fileID: 2100000, guid: d41e8c23edede5b4ea07ada8fd9e8ae1, type: 2}
+  - {fileID: 2100000, guid: 159fd7972e9307649ae647a2428da671, type: 2}
+  - {fileID: 2100000, guid: a8e1e1cf15b285642b9667aa93698664, type: 2}
+  - {fileID: 2100000, guid: 02ea9f1fcec912d4f81e16b274c80fb5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ScaleInLightmap: 8
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -650,7 +650,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6859782301392027028}
-  m_Mesh: {fileID: 4300000, guid: 9a29235b84284f941b6a66988a716681, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 80850a2999bedac4887c197e55a02c72, type: 2}
 --- !u!23 &4036214295332137087
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -676,16 +676,16 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 86b543bd4c9b5754c9aff0ec164f14b8, type: 2}
-  - {fileID: 2100000, guid: 10a249148639b7644af359f34c36ebf8, type: 2}
+  - {fileID: 2100000, guid: 159fd7972e9307649ae647a2428da671, type: 2}
+  - {fileID: 2100000, guid: a8e1e1cf15b285642b9667aa93698664, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ScaleInLightmap: 8
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

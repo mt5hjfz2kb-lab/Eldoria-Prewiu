@@ -1,0 +1,20 @@
+{
+    "source_sha": "2ec9a5f9c05e65fd1ad689549fd3250c39255fc5",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
+    "prefab_lighting": "Portable prefabs use light probes; placed scene keeps its baked GI",
+    "prefabs": [
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Bastion_I.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Paths.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Ruins.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/RiverSurface.prefab",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/ValoriaArchitecture.prefab"
+    ],
+    "scene_triangles": 635048,
+    "scene_renderers": 35,
+    "geometry_unchanged": true,
+    "art_approved": false,
+    "physical_mobile_profiled": false
+}
