@@ -1,3 +1,10 @@
+
+# Actualización de cuartel — integración native91 en validación
+
+Native87 ejecutó Qwen local y BlenderMCP sobre copia del CampFamily existente; la fuente original se preservó. La revisión estructural rechazó normales acolchadas y cruce de lona con soporte. Native88 reprodujo el MISMO plan e imágenes, soldó normales, ancló el toldo al soporte real y redujo 34096 a16296triángulos. Native89/90 compararon capturas auténticas de Unity con cámara/luz idénticas: entrada abierta, pliegues y lona continua visibles. Native90 corrigió apoyo mediante pies de madera originales, dejando las estacas enterradas. Salida240e7f9f6c134dc693ec17a0bbf0bce6b7dbeeca, run39123808161. Variante retenida para integrar y verificar la función; no ART_APPROVED formal ni valoración gráfica global. La explicación Qwen contenía una frase contradictoria sobre el color naranja; la selección de paleta, ejecución y revisión de imágenes verificaron el azul real, sin adoptar autoevaluaciones.91 integra únicamente esta variante y ejecuta el ciclo jugable completo. APK1.3 sigue siendo la entrega física disponible hasta nuevo hito compilado. Descarga directa guardada: Eldoria-Valoria-1.3.apk.
+
+## Estado de entrega previo
+
 # Estado vigente: Android 1.3 y capítulo II verificado
 
 Último runtime validado: native85, run39121023638, salida effd9242372e76ab6604c1a51228d609dcc564ec. Native84 verificó el ciclo completo existente mediante botones reales: cuartel, gasto, entrenamiento, confirmación de marcha, victoria sobre el Engendro y recarga sin duplicar recompensas (revisión final19). Native85 corrigió y verificó el panel del cuartel cuando permanece abierto: cuenta atrás de entrenamiento y cambio automático de acción al completar construcción/entrenamiento. También posiciona las etiquetas de nivel al refrescar el estado. Capturas auténticas revisadas: chapter2-training.png, chapter2-city-built.png, chapter2-march-prepare.png y chapter2-complete.png. Guardados canónicos intactos.
