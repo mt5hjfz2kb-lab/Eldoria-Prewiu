@@ -19,7 +19,7 @@ namespace Eldoria.ReferenceClean.Editor {
   static void Check(bool ok,string why){if(!ok)throw new Exception("CAMP_TRIAL: "+why);}
   static string Hash(string p){using(var h=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(p)));}
   static Bounds Bounds(GameObject o){var rs=o.GetComponentsInChildren<Renderer>(true);Check(rs.Length>0,"No renderer");var b=rs[0].bounds;foreach(var r in rs.Skip(1))b.Encapsulate(r.bounds);return b;}
-  static void Persist(Object o){if(o==null||AssetDatabase.Contains(o)||!saved.Add(o.GetInstanceID()))return;if(!(o is Mesh)&&!(o is Material)&&!(o is Texture2D))return;AssetDatabase.CreateAsset(o,Dir+"/Camp87_"+(index++).ToString("D4")+(o is Material?".mat":".asset"));}
+  static void Persist(Object o){if(o==null||AssetDatabase.Contains(o)||!saved.Add(o.GetInstanceID()))return;if(!(o is Mesh)&&!(o is Material)&&!(o is Texture2D))return;AssetDatabase.CreateAsset(o,AssetDatabase.GenerateUniqueAssetPath(Dir+"/Camp87_"+(index++).ToString("D4")+(o is Material?".mat":".asset")));}
   static void Views(Camera c,string prefix){var p=c.transform.position;var q=c.transform.rotation;float size=c.orthographicSize;try{
    ValoriaReferenceCleanBuilder.Capture(c,Ev+"/"+prefix+"-main.png",1448,1086);
    c.transform.position=new Vector3(42,20,9);c.transform.LookAt(new Vector3(29,2,32));c.orthographicSize=11.5f;
@@ -37,13 +37,17 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(await gltf.Load(new Uri(Path.GetFullPath(Root+"/Sources/CampCloth87.glb")).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4}),"GLB load");
    Check(await gltf.InstantiateMainSceneAsync(model.transform),"GLB instantiate");
    var b=Bounds(model);model.transform.localScale=Vector3.one*(Mathf.Max(prior.size.x,prior.size.z)/Mathf.Max(b.size.x,b.size.z));b=Bounds(model);
-   model.transform.position-=new Vector3(b.center.x,b.min.y,b.center.z);next.transform.position=new Vector3(prior.center.x,prior.min.y,prior.center.z);
+   // Stakes intentionally penetrate the ground. Align the unchanged timber feet, not the lowest stake tip.
+   var oldFeet=old.GetComponentsInChildren<Renderer>(true).Single(r=>r.name=="Camp_Timber");
+   var newFeet=next.GetComponentsInChildren<Renderer>(true).Single(r=>r.name=="Camp87 Camp_Timber");
+   float groundY=oldFeet.bounds.min.y,feetY=newFeet.bounds.min.y;
+   model.transform.position-=new Vector3(b.center.x,feetY,b.center.z);next.transform.position=new Vector3(prior.center.x,groundY,prior.center.z);
    int triangles=0;foreach(var r in next.GetComponentsInChildren<MeshRenderer>(true)){
     GameObjectUtility.SetStaticEditorFlags(r.gameObject,0);r.lightmapIndex=-1;r.receiveGI=ReceiveGI.LightProbes;r.lightProbeUsage=LightProbeUsage.BlendProbes;r.reflectionProbeUsage=ReflectionProbeUsage.BlendProbes;
     foreach(var m in r.sharedMaterials){Check(m&&m.shader&&m.shader.isSupported,"Material unavailable");foreach(var prop in m.GetTexturePropertyNames())Persist(m.GetTexture(prop));Persist(m);}
    }
    foreach(var f in next.GetComponentsInChildren<MeshFilter>(true)){Persist(f.sharedMesh);triangles+=f.sharedMesh.triangles.Length/3;}
-   var after=Bounds(next);Check(Mathf.Max(after.size.x,after.size.z)<11.0f&&after.size.y<6,"Functional parcel envelope exceeded");Check(Mathf.Abs(after.min.y-prior.min.y)<.005f,"Floating camp");
+   var after=Bounds(next);Check(Mathf.Max(after.size.x,after.size.z)<11.0f&&after.size.y<6,"Functional parcel envelope exceeded");Check(Mathf.Abs(newFeet.bounds.min.y-groundY)<.005f,"Floating timber support");Check(after.min.y>=groundY-.4f,"Stake penetration too deep");
    old.SetActive(false);Views(camera,"camp87-unity-after");
    for(int i=0;i<h.Parcels.Bindings.Length;i++)if(h.Parcels.Bindings[i].BuildingId=="barracks")h.Parcels.Bindings[i].Built=next;
    h.Parcels.RightBuilt=next;Object.DestroyImmediate(old);h.Apply(new PlayerState());
