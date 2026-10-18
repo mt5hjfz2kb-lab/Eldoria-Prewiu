@@ -1,12 +1,12 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.3/staging' branch; Version is '6000.3.23f1 (09d2ecc7fb28) revision 643820'; Using compiler version '194234433'; Build Type 'Release'
 OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 MB
-[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-18T18:51:17Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 23436)
+Date: 2026-10-18T19:25:56Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 19908)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -15,7 +15,7 @@ C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
 -projectPath
 C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu/valoria-layered-source/Unity
 -executeMethod
-Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Improve
+Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent
 -logFile
 C:\actions-runner-eldoria\_work\_temp\valoria-reference-clean.log
 -buildTarget
@@ -58,29 +58,29 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [40164]  Target information:
+Player connection [36060]  Target information:
 
-Player connection [40164]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 3202745737 [EditorId] 3202745737 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [36060]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 50371692 [EditorId] 50371692 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [40164] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [40164] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [36060] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [36060] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Package Manager] Connected to IPC stream "Upm-39332" after 0.2 seconds.
-[Licensing::Module] Licensing is not yet initialized.
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T18:51:17.6841085Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 23436, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T19:25:56.9215699Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 19908, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-42044" after 0.2 seconds.
+[Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              f3733b405a6d4d338ed9522e73c069ac
-  Correlation Id:          85d0c82d0d9e8228184fb47eebbc0fc4
-  External correlation Id: 7468799832916770384
+  Session Id:              b16cf1a263114dec911dd48b6bbd1d06
+  Correlation Id:          4878d7c0ad59749f089e4461edb5cbea
+  External correlation Id: 3154381159919070233
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.39s, validation: 0.05s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T18:51:17.7505154Z"
-[Licensing::Module] Connected to LicensingClient (PId: 23436, launch time: 0.00, total connection time: 0.45s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.26s, validation: 0.09s, handshake: 0.02s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T19:25:57.0340057Z"
+[Licensing::Module] Connected to LicensingClient (PId: 19908, launch time: 0.00, total connection time: 0.37s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -90,8 +90,8 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 0.49s
-[Licensing::Module] Licensing is initialized (took 0.17s).
+[Licensing::Module] Licensing Background thread has ended after 0.40s
+[Licensing::Module] Licensing is initialized (took 0.05s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 FMOD initialized on nosound output
@@ -101,8 +101,9 @@ FMOD initialized on nosound output
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 1 unused hashed content files
 Targeting platform: Win64
-Refreshing native plugins compatible for Editor in 1.69 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 1.74 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -119,7 +120,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56332
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56044
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -132,8 +133,8 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.005890 seconds.
-- Loaded All Assemblies, in  0.474 seconds
+Registered in 0.016380 seconds.
+- Loaded All Assemblies, in  0.404 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -141,35 +142,35 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.442 seconds
-Domain Reload Profiling: 914ms
-	BeginReloadAssembly (122ms)
+- Finished resetting the current domain, in  0.383 seconds
+Domain Reload Profiling: 785ms
+	BeginReloadAssembly (118ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (12ms)
-	RebuildCommonClasses (34ms)
+		CreateAndSetChildDomain (5ms)
+	RebuildCommonClasses (36ms)
 	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (47ms)
-	LoadAllAssembliesAndSetupDomain (255ms)
-		LoadAssemblies (110ms)
+	initialDomainReloadingComplete (58ms)
+	LoadAllAssembliesAndSetupDomain (177ms)
+		LoadAssemblies (112ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (252ms)
-			TypeCache.Refresh (250ms)
-				TypeCache.ScanAssembly (236ms)
+		AnalyzeDomain (173ms)
+			TypeCache.Refresh (172ms)
+				TypeCache.ScanAssembly (158ms)
 			BuildScriptInfoCaches (0ms)
-			ResolveRequiredComponents (1ms)
-	FinalizeReload (442ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (384ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (408ms)
+		SetupLoadedEditorAssemblies (347ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (64ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (82ms)
-			ProcessInitializeOnLoadAttributes (125ms)
-			ProcessInitializeOnLoadMethodAttributes (133ms)
+			BeforeProcessingInitializeOnLoad (79ms)
+			ProcessInitializeOnLoadAttributes (123ms)
+			ProcessInitializeOnLoadMethodAttributes (77ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -219,10 +220,10 @@ A meta data file (.meta) exists but its asset 'Assets/EmaceArt/Slavic World Free
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 5s894ms
+ExitCode: 0 Duration: 5s400ms
 [652/844    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[824/844    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll (+2 others)
-[825/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.UI.dll (+pdb)
+[824/844    3s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll (+2 others)
+[829/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.UI.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll, with 140 defines and 250 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -230,21 +231,8 @@ processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.Burst
 running Unity.Jobs.CodeGen.JobsILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[826/844    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll (+2 others)
-[827/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.UI.pdb
-[828/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Preview.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll, with 140 defines and 254 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[829/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.UI.dll
-[830/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Preview.pdb
-[831/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Preview.dll
-[832/844    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Editor.dll (+2 others)
-[833/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Editor.dll (+pdb)
+[830/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.UI.pdb
+[831/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Editor.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Editor.dll, with 138 defines and 287 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -252,43 +240,16 @@ processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.Burst
 running Unity.Jobs.CodeGen.JobsILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[834/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Editor.pdb
-[835/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Editor.dll
-[836/844    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Blur.cs(51,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
+[832/844    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.UI.dll
+[835/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Preview.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll, with 140 defines and 254 references
 
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(182,25): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
 
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(316,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
+running Unity.Jobs.CodeGen.JobsILPostProcessor
 
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(326,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(347,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ContrastStretch.cs(94,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ImageEffectBase.cs(20,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Tonemapping.cs(237,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(24,18): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(136,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(142,5): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\NoiseAndScratches.cs(54,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(54,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(69,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,54): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ScreenSpaceAmbientOcclusion.cs(64,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-[837/844    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp.dll (+pdb)
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[838/844    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll, with 140 defines and 289 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -296,23 +257,7 @@ processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.Burst
 running Unity.Jobs.CodeGen.JobsILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[838/844    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
-[839/844    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionIntegrate.cs(40,328): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(66,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(59,27): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-[840/844    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
-[841/844    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+[840/844    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 328 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -320,147 +265,113 @@ processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.Burst
 running Unity.Jobs.CodeGen.JobsILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[842/844    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
-[843/844    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (5.84 seconds), 21 items updated, 844 evaluated
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Blur.cs(51,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(182,25): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(316,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(326,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(347,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ContrastStretch.cs(94,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ImageEffectBase.cs(20,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Tonemapping.cs(237,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(24,18): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(136,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(142,5): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\NoiseAndScratches.cs(54,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(54,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(69,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,54): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ScreenSpaceAmbientOcclusion.cs(64,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionIntegrate.cs(40,328): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(66,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(59,27): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-AssetDatabase: script compilation time: 6.504846s
+*** Tundra build success (5.38 seconds), 9 items updated, 844 evaluated
+AssetDatabase: script compilation time: 5.752160s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  1.946 seconds
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0148386 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0014404 seconds
-Refreshing native plugins compatible for Editor in 6.45 ms, found 4 plugins.
+- Loaded All Assemblies, in  0.851 seconds
+Refreshing native plugins compatible for Editor in 6.11 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  2.896 seconds
-Domain Reload Profiling: 4839ms
-	BeginReloadAssembly (301ms)
+- Finished resetting the current domain, in  2.597 seconds
+Domain Reload Profiling: 3445ms
+	BeginReloadAssembly (319ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (22ms)
+		DisableScriptedObjects (28ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (147ms)
-	RebuildCommonClasses (35ms)
-	RebuildNativeTypeToScriptingClass (14ms)
-	initialDomainReloadingComplete (26ms)
-	LoadAllAssembliesAndSetupDomain (1567ms)
-		LoadAssemblies (1500ms)
+		CreateAndSetChildDomain (161ms)
+	RebuildCommonClasses (37ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (25ms)
+	LoadAllAssembliesAndSetupDomain (454ms)
+		LoadAssemblies (382ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (158ms)
-			TypeCache.Refresh (105ms)
-				TypeCache.ScanAssembly (94ms)
-			BuildScriptInfoCaches (40ms)
+		AnalyzeDomain (159ms)
+			TypeCache.Refresh (107ms)
+				TypeCache.ScanAssembly (97ms)
+			BuildScriptInfoCaches (39ms)
 			ResolveRequiredComponents (10ms)
-	FinalizeReload (2897ms)
+	FinalizeReload (2598ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (2724ms)
+		SetupLoadedEditorAssemblies (2422ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (38ms)
-			SetLoadedEditorAssemblies (5ms)
+			InitializePlatformSupportModulesInManaged (33ms)
+			SetLoadedEditorAssemblies (6ms)
 			BeforeProcessingInitializeOnLoad (152ms)
-			ProcessInitializeOnLoadAttributes (2117ms)
-			ProcessInitializeOnLoadMethodAttributes (405ms)
-			AfterProcessingInitializeOnLoad (6ms)
+			ProcessInitializeOnLoadAttributes (2064ms)
+			ProcessInitializeOnLoadMethodAttributes (158ms)
+			AfterProcessingInitializeOnLoad (9ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (24ms)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity using Guid(844fa996370938f43b54f155a88571f5) (DefaultImporter) -> (artifact id: '3fb0dc5576229e478ab6faa7bc4d9a0d') in 0.0008783 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png using Guid(d0c9556f5cc0ca18fea90fdaa3823991) (TextureImporter) -> (artifact id: '5658bd88c96ff4d946ad00f88b3549d3') in 0.0215418 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png using Guid(719f29c5d9fa983a45280bdba238194b) (TextureImporter) -> (artifact id: 'f94eb5434b66f70c61e3ba9c4c45263b') in 0.0046037 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png using Guid(f1a4ead5895cee17df5be53da0484f6f) (TextureImporter) -> (artifact id: 'c94caa34e604893bb3aa8959fe076225') in 0.0040872 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png using Guid(022d549855c3dfaa70e5760fbe9becc0) (TextureImporter) -> (artifact id: '66348d587891b7f947060955e21bed03') in 0.0044143 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png using Guid(a4918cb9eb52a2c4becac0e7a18bc44a) (TextureImporter) -> (artifact id: '3785bbf35245538b7f41b153a5f54aa5') in 0.0042077 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png using Guid(d5066a919a1f589b3b63650b1c7b8230) (TextureImporter) -> (artifact id: '003b1f2a1de94292552a53bfa121ce75') in 0.0060623 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png using Guid(57dd687066cdc3bdfb64c7de861f56ab) (TextureImporter) -> (artifact id: '0bee5839f72af29ef3458ce813df402f') in 0.0090537 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png using Guid(189eb84d40be3d7816973ce5b25f2cfe) (TextureImporter) -> (artifact id: 'a332c8b430bb453f4d14770f863be144') in 0.0035637 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png using Guid(28eeb9270a3e8984fa92ef4c55471a5f) (TextureImporter) -> (artifact id: 'fa0748c48e2749ece92e4f971f42bfe9') in 0.004986 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png using Guid(981760fd70593dc5727a640da799dc99) (TextureImporter) -> (artifact id: '58d5b82b54028940d98726cd56f1eef2') in 0.0045932 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png using Guid(f88695073ca7897a3cb0a553047b08a2) (TextureImporter) -> (artifact id: '54ed101d3eae35aee031fdeee7aa4c47') in 0.0041952 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png using Guid(1ae172588cc7a3be66164008eb1b7cd3) (TextureImporter) -> (artifact id: 'b8c7e61ae80297f62f3e2b1712dd6d1d') in 0.0161292 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png using Guid(2a90ae10e8213c2e8b230c72d215f5b3) (TextureImporter) -> (artifact id: 'e25a85e51bb60891d04b67071926690c') in 0.0041959 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png using Guid(6ac48fc21388830be58a908280df5a8b) (TextureImporter) -> (artifact id: '099439c77f7d50e9bc164727599aa9df') in 0.0053989 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png using Guid(9b40c33bc6012eb92eb761ff85f59cba) (TextureImporter) -> (artifact id: '7ad1b4c9b43d02791eb1101600220c66') in 0.0039576 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png using Guid(0cc8565597f8e13b40e06ffcd65cbe4d) (TextureImporter) -> (artifact id: 'e9d121ad97eaec91fc65b32c5d0206f2') in 0.0097567 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png using Guid(5cff41e3a556b49f54d1f43391bf745f) (TextureImporter) -> (artifact id: '8db9349ac86b4687cd5da71e7384f031') in 0.0061067 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png using Guid(1df8613645789f22b7624fc2271cf165) (TextureImporter) -> (artifact id: '2f83263b5c682715d7eb4391b861fcb1') in 0.0041864 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png using Guid(7dd8175d34f883b95d97dfc72f700e82) (TextureImporter) -> (artifact id: 'b6e7a253037213f84e6aa4b713d2dff5') in 0.0045136 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png using Guid(eed111b269a9c90a9fee86ac5c533746) (TextureImporter) -> (artifact id: 'cf9dce4b2f590a3f1c60ca9ec6af75a1') in 0.004744 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-VeryHighQuality.asset using Guid(1164775dc3854cf59fc668fd1b2fa849) (NativeFormatImporter) -> (artifact id: '6dd7f9cb76e4c976991e91b8c59c59c3') in 0.0063128 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-HighQuality.asset using Guid(57b6d37d6d55480e849b48e11176253a) (NativeFormatImporter) -> (artifact id: '554e5a58a2a62fc5d0a988059d89baab') in 0.0021141 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-MediumQuality.asset using Guid(285ec06d16664baab655904ca6fb8471) (NativeFormatImporter) -> (artifact id: 'ab29c5c797d6b2818c5f1d2135ddd561') in 0.0019436 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-LowQuality.asset using Guid(88be0957bbb54dee932887650b8e30e1) (NativeFormatImporter) -> (artifact id: '3c655539c6b9625ccb182e421cc3cccd') in 0.0013371 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-UltraQuality.asset using Guid(9d5092cdecd14f85a634f96b0e7d8655) (NativeFormatImporter) -> (artifact id: '7f073b1120c1eee38a126715508f8eec') in 0.0013631 seconds
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Refreshing native plugins compatible for Editor in 6.38 ms, found 4 plugins.
+		AwakeInstancesAfterBackupRestoration (26ms)
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png using Guid(d0c9556f5cc0ca18fea90fdaa3823991) (TextureImporter) -> (artifact id: '5658bd88c96ff4d946ad00f88b3549d3') in 0.0223178 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png using Guid(719f29c5d9fa983a45280bdba238194b) (TextureImporter) -> (artifact id: 'f94eb5434b66f70c61e3ba9c4c45263b') in 0.009874 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png using Guid(f1a4ead5895cee17df5be53da0484f6f) (TextureImporter) -> (artifact id: 'c94caa34e604893bb3aa8959fe076225') in 0.0038842 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png using Guid(022d549855c3dfaa70e5760fbe9becc0) (TextureImporter) -> (artifact id: '66348d587891b7f947060955e21bed03') in 0.0038164 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png using Guid(a4918cb9eb52a2c4becac0e7a18bc44a) (TextureImporter) -> (artifact id: '3785bbf35245538b7f41b153a5f54aa5') in 0.0035098 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png using Guid(d5066a919a1f589b3b63650b1c7b8230) (TextureImporter) -> (artifact id: '003b1f2a1de94292552a53bfa121ce75') in 0.0113218 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png using Guid(57dd687066cdc3bdfb64c7de861f56ab) (TextureImporter) -> (artifact id: '0bee5839f72af29ef3458ce813df402f') in 0.0037007 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png using Guid(189eb84d40be3d7816973ce5b25f2cfe) (TextureImporter) -> (artifact id: 'a332c8b430bb453f4d14770f863be144') in 0.0031739 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png using Guid(28eeb9270a3e8984fa92ef4c55471a5f) (TextureImporter) -> (artifact id: 'fa0748c48e2749ece92e4f971f42bfe9') in 0.003314 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png using Guid(981760fd70593dc5727a640da799dc99) (TextureImporter) -> (artifact id: '58d5b82b54028940d98726cd56f1eef2') in 0.00351 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png using Guid(f88695073ca7897a3cb0a553047b08a2) (TextureImporter) -> (artifact id: '54ed101d3eae35aee031fdeee7aa4c47') in 0.0034296 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png using Guid(1ae172588cc7a3be66164008eb1b7cd3) (TextureImporter) -> (artifact id: 'b8c7e61ae80297f62f3e2b1712dd6d1d') in 0.0035856 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png using Guid(2a90ae10e8213c2e8b230c72d215f5b3) (TextureImporter) -> (artifact id: 'e25a85e51bb60891d04b67071926690c') in 0.0035442 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png using Guid(6ac48fc21388830be58a908280df5a8b) (TextureImporter) -> (artifact id: '099439c77f7d50e9bc164727599aa9df') in 0.0033503 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png using Guid(9b40c33bc6012eb92eb761ff85f59cba) (TextureImporter) -> (artifact id: '7ad1b4c9b43d02791eb1101600220c66') in 0.0035368 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png using Guid(0cc8565597f8e13b40e06ffcd65cbe4d) (TextureImporter) -> (artifact id: 'e9d121ad97eaec91fc65b32c5d0206f2') in 0.0038705 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png using Guid(5cff41e3a556b49f54d1f43391bf745f) (TextureImporter) -> (artifact id: '8db9349ac86b4687cd5da71e7384f031') in 0.0048441 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png using Guid(1df8613645789f22b7624fc2271cf165) (TextureImporter) -> (artifact id: '2f83263b5c682715d7eb4391b861fcb1') in 0.003835 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png using Guid(7dd8175d34f883b95d97dfc72f700e82) (TextureImporter) -> (artifact id: 'b6e7a253037213f84e6aa4b713d2dff5') in 0.0038616 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png using Guid(eed111b269a9c90a9fee86ac5c533746) (TextureImporter) -> (artifact id: 'cf9dce4b2f590a3f1c60ca9ec6af75a1') in 0.0040664 seconds
+Refreshing native plugins compatible for Editor in 5.94 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=0dd15b8b27b4eb3458dddafe2125422a): Total: 12.644 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=7008537a0ae165b4eb5209581fcd97a9): Total: 10.070 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
-		Imports: total=28 (actual=28, local cache=0, cache server=0)
-		Asset DB Process Time: managed=8 ms, native=3603 ms
-		Asset DB Callback time: managed=306 ms, native=231 ms
-		Scripting: domain reloads=1, domain reload time=1946 ms, compile time=6506 ms, other=41 ms
-		Project Asset Count: scripts=1247, non-scripts=6394
-		Asset File Changes: new=0, changed=30, moved=0, deleted=0
+		Imports: total=20 (actual=20, local cache=0, cache server=0)
+		Asset DB Process Time: managed=6 ms, native=3108 ms
+		Asset DB Callback time: managed=286 ms, native=19 ms
+		Scripting: domain reloads=1, domain reload time=851 ms, compile time=5755 ms, other=41 ms
+		Project Asset Count: scripts=1248, non-scripts=6418
+		Asset File Changes: new=0, changed=21, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.002ms
-	InvokePackagesCallback: 11.640ms
-	ApplyChangesToAssetFolders: 0.486ms
-	Scan: 121.436ms
-	OnSourceAssetsModified: 0.622ms
-	CategorizeAssetsWithTransientArtifact: 85.807ms
-	ProcessAssetsWithTransientArtifactChanges: 46.345ms
-	CategorizeAssets: 122.812ms
-	ImportOutOfDateAssets: 3099.977ms (-3587.622ms without children)
-		ImportManagerImport: 176.967ms (2.416ms without children)
-			ImportInProcess: 174.385ms
-			UpdateCategorizedAssets: 0.166ms
-		CompileScripts: 6506.040ms
-		ReloadNativeAssets: 0.038ms
-		UnloadImportedAssets: 0.767ms
+	InvokePackagesCallback: 11.314ms
+	ApplyChangesToAssetFolders: 0.482ms
+	Scan: 103.918ms
+	OnSourceAssetsModified: 0.606ms
+	CategorizeAssetsWithTransientArtifact: 21.650ms
+	ProcessAssetsWithTransientArtifactChanges: 46.887ms
+	CategorizeAssets: 75.473ms
+	ImportOutOfDateAssets: 2733.960ms (-3136.766ms without children)
+		ImportManagerImport: 113.191ms (2.034ms without children)
+			ImportInProcess: 111.025ms
+			UpdateCategorizedAssets: 0.133ms
+		CompileScripts: 5754.831ms
+		ReloadNativeAssets: 0.023ms
+		UnloadImportedAssets: 0.662ms
 		ReloadImportedAssets: 0.002ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.791ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.942ms
 		InitializingProgressBar: 0.005ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 1.988ms
-	PostProcessAllAssets: 575.857ms
-	Hotreload: 7.671ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.319ms
-	UnloadStreamsBegin: 3.291ms
-	PersistCurrentRevisions: 0.552ms
-	UnloadStreamsEnd: 0.002ms
-	GenerateScriptTypeHashes: 2.954ms
-	Untracked: 8567.664ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
+		OnDemandSchedulerStart: 1.068ms
+	PostProcessAllAssets: 288.351ms
+	Hotreload: 7.144ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.002ms
+	UnloadStreamsBegin: 3.342ms
+	PersistCurrentRevisions: 0.247ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 2.629ms
+	Untracked: 6776.329ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 2.822ms
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 3.137ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
@@ -562,507 +473,130 @@ UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
 Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4362 unused Assets / (5.1 MB). Loaded Objects now: 5285.
-Memory consumption went from 215.3 MB to 210.2 MB.
-Total: 9.353500 ms (FindLiveObjects: 0.502700 ms CreateObjectMapping: 0.480000 ms MarkObjects: 6.385200 ms  DeleteObjects: 1.985100 ms)
+Unloading 4363 unused Assets / (5.0 MB). Loaded Objects now: 5286.
+Memory consumption went from 211.5 MB to 206.5 MB.
+Total: 10.843600 ms (FindLiveObjects: 0.537700 ms CreateObjectMapping: 0.563500 ms MarkObjects: 7.688500 ms  DeleteObjects: 2.053200 ms)
 
 Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
-Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
 LightingSettings: switching bake backend from 2 to 1.
 Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
-	Deserialize:            34.418 ms
-	Integration:            2387.870 ms
-	Integration of assets:  2.833 ms
-	Thread Wait Time:       0.046 ms
-	Total Operation Time:   2425.167 ms
-Unloading 4 unused Assets / (5.8 KB). Loaded Objects now: 6719.
-Memory consumption went from 387.7 MB to 387.7 MB.
-Total: 5.920300 ms (FindLiveObjects: 0.543800 ms CreateObjectMapping: 0.237700 ms MarkObjects: 5.081700 ms  DeleteObjects: 0.056600 ms)
+	Deserialize:            31.915 ms
+	Integration:            1190.172 ms
+	Integration of assets:  3.073 ms
+	Thread Wait Time:       0.031 ms
+	Total Operation Time:   1225.191 ms
+Unloading 4 unused Assets / (5.8 KB). Loaded Objects now: 7358.
+Memory consumption went from 389.5 MB to 389.5 MB.
+Total: 6.350300 ms (FindLiveObjects: 0.503900 ms CreateObjectMapping: 0.247900 ms MarkObjects: 5.543200 ms  DeleteObjects: 0.054600 ms)
 
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822 using Guid(b6008527b72a4aa46bfbe6d335252fe8) (DefaultImporter) -> (artifact id: '4ff8265fd034085f9c357658c912c4c7') in 0.0080168 seconds
-Refreshing native plugins compatible for Editor in 5.74 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=c77d90b76e7def34ca87f88015deecca): Total: 0.103 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 Unity is not designed to run with Administrator privileges.
 
 With elevated access, scripts in your project can modify system files, registry settings, or protected areas, even accidentally.
 This could make your system unstable or unbootable.
 
 Restart as a standard user for the safest experience.
-[Project] Loading completed in 30.241 seconds
-	Project init time: 				15.602 seconds
+[Project] Loading completed in 14.865 seconds
+	Project init time: 				12.044 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.381 seconds
-		Asset Database init time: 		0.333 seconds
-		Global illumination init time: 	0.003 seconds
-		Assemblies load time: 			0.935 seconds
-		Unity extensions init time: 	0.005 seconds
-		Asset Database refresh time: 	12.645 seconds
-	Scene opening time: 			12.615 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792349505606,"processId":39332,"projectLoad":30.2407602,"projectInit":15.6021943,"templateInit":0.0,"packageManagerInit":0.3807219,"assetDatabaseInit":0.3328036,"globalIlluminationInit":0.0029851,"assembliesLoad":0.9351562,"unityExtensionsInit":0.0052541,"assetDatabaseRefresh":12.644573,"sceneOpening":12.6152597}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792349505607,"processId":39332,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
-[Licensing::Client] Successfully resolved entitlement details
-Start Indexing on Editor startup
-[Indexing] Starting Initial Indexing for Assets
-[UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [30.244 - 30.257]
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-mesh-0.asset using Guid(06208736ef9be6947b82ab515eb5277b) (NativeFormatImporter) -> (artifact id: '598764a6275875c28cfacfd72ac551c1') in 0.002866 seconds
-Refreshing native plugins compatible for Editor in 6.34 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=837cc98fd8faca3439dfffb683b2f8dd): Total: 0.058 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-mesh-1.asset using Guid(e48bbfc92a160bb419ca54848c0cf9fc) (NativeFormatImporter) -> (artifact id: '05f3acfb10d048dcf11e10c287659292') in 0.00238 seconds
-Refreshing native plugins compatible for Editor in 6.63 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=596c3bd7386073040a0ab21a94cbd8ed): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-2.asset using Guid(50cc5f8c327378642a4c8a8528a576a1) (NativeFormatImporter) -> (artifact id: 'a5dfc66f3da01068906f2a07fbbf10c7') in 0.0277269 seconds
-Refreshing native plugins compatible for Editor in 6.47 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=9bc8d53fc4ffb1f4a87d7d509edf0e8a): Total: 1.099 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=1 (actual=1, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=1087 ms
-		Asset DB Callback time: managed=1 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1248, non-scripts=6397
-		Asset File Changes: new=1, changed=1, moved=0, deleted=0
-		Scan Filter Count: 8
-	InvokeCustomDependenciesCallbacks: 0.000ms
-	InvokePackagesCallback: 0.000ms
-	ApplyChangesToAssetFolders: 0.052ms
-	Scan: 11.259ms
-	OnSourceAssetsModified: 0.042ms
-	CategorizeAssetsWithTransientArtifact: 0.003ms
-	ProcessAssetsWithTransientArtifactChanges: 0.042ms
-	CategorizeAssets: 21.834ms
-	ImportOutOfDateAssets: 1050.402ms (0.546ms without children)
-		ImportManagerImport: 1047.757ms (33.997ms without children)
-			ImportInProcess: 1013.704ms
-			UpdateCategorizedAssets: 0.056ms
-		ReloadNativeAssets: 0.227ms
-		UnloadImportedAssets: 0.229ms
-		ReloadImportedAssets: 0.001ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.950ms
-		InitializingProgressBar: 0.004ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.688ms
-	PostProcessAllAssets: 3.610ms
-	Hotreload: 7.033ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.617ms
-	UnloadStreamsBegin: 0.002ms
-	PersistCurrentRevisions: 0.276ms
-	UnloadStreamsEnd: 0.018ms
-	Untracked: 3.402ms
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-3.asset using Guid(b230141346d026845b2b6ef9ca57ef44) (NativeFormatImporter) -> (artifact id: '5d981b4484c5e74f905792bca28ffa70') in 0.0207204 seconds
-Refreshing native plugins compatible for Editor in 6.05 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=539acec588e65ae4ca38f5b746a88606): Total: 0.127 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-4.mat using Guid(157c9bfb5d36321448c93bdd1438a05d) (NativeFormatImporter) -> (artifact id: 'f4fffa9450a3e32901f3a6c4b1ce7a71') in 0.001568 seconds
-Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ee78dd97f4d92b3448fb45c8ecf66cf9): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-5.mat using Guid(b0dc63dd81e3442488ce1a60078530ef) (NativeFormatImporter) -> (artifact id: '8eb3290511920abd54813ba067454b86') in 0.0015105 seconds
-Refreshing native plugins compatible for Editor in 6.27 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=8c63fff67918c6a4493aea3a12a98373): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-6.mat using Guid(77e8fc9b5039c5f44b46f051d8d67c83) (NativeFormatImporter) -> (artifact id: '3865f76e1e5bafd71c5a311fa2e0652c') in 0.0020747 seconds
-Refreshing native plugins compatible for Editor in 6.22 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a7d06dc0ba286814baf7b2865c3e8fb7): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-7.mat using Guid(e85ebe1992c413e4f9826b95852b8f2a) (NativeFormatImporter) -> (artifact id: '02f8bd14a90d443f5734ad6e0ff3e486') in 0.504578 seconds
-Refreshing native plugins compatible for Editor in 5.99 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=c671eecaf1280b34ba0bb2a53a78b0da): Total: 0.730 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=1 (actual=1, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=719 ms
-		Asset DB Callback time: managed=2 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1248, non-scripts=6402
-		Asset File Changes: new=1, changed=1, moved=0, deleted=0
-		Scan Filter Count: 8
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 0.000ms
-	ApplyChangesToAssetFolders: 0.053ms
-	Scan: 9.372ms
-	OnSourceAssetsModified: 0.035ms
-	CategorizeAssetsWithTransientArtifact: 0.004ms
-	ProcessAssetsWithTransientArtifactChanges: 0.043ms
-	CategorizeAssets: 22.694ms
-	ImportOutOfDateAssets: 679.927ms (1.499ms without children)
-		ImportManagerImport: 674.012ms (3.105ms without children)
-			ImportInProcess: 670.853ms
-			UpdateCategorizedAssets: 0.054ms
-		ReloadNativeAssets: 0.256ms
-		UnloadImportedAssets: 0.228ms
-		ReloadImportedAssets: 0.000ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 2.026ms
-		InitializingProgressBar: 0.006ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 1.898ms
-	PostProcessAllAssets: 3.855ms
-	Hotreload: 6.516ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.359ms
-	UnloadStreamsBegin: 0.026ms
-	PersistCurrentRevisions: 1.559ms
-	UnloadStreamsEnd: 0.089ms
-	Untracked: 5.588ms
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-8.mat using Guid(79f9b36d7c1d1804a9d8c0f28f4adbaf) (NativeFormatImporter) -> (artifact id: 'da6184c7ef4cd89fd5d6e647c8c3b553') in 0.0020023 seconds
-Refreshing native plugins compatible for Editor in 6.38 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=64f14e6f6508a7645827dee170ecf31e): Total: 0.237 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-9.mat using Guid(4750b5481e0a9c648ad425e126a96797) (NativeFormatImporter) -> (artifact id: '4ef54a1983892726c895bfe150e31cef') in 0.0019502 seconds
-Refreshing native plugins compatible for Editor in 6.14 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=1246789461baf0b489a5a5922d34a404): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-[Licensing::Client] Successfully resolved entitlement details
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0076409 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.0019903 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-5.mat using Guid(b0dc63dd81e3442488ce1a60078530ef) (NativeFormatImporter) -> (artifact id: '80e5503bcef24ce64f36af64ce009f17') in 0.0013788 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-4.mat using Guid(157c9bfb5d36321448c93bdd1438a05d) (NativeFormatImporter) -> (artifact id: '4937d072e7c25c39c78a02d21dfb58d7') in 0.0015072 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-9.mat using Guid(4750b5481e0a9c648ad425e126a96797) (NativeFormatImporter) -> (artifact id: 'bf2a8ce6e416dd8c221cda587853afa2') in 0.0013559 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-6.mat using Guid(77e8fc9b5039c5f44b46f051d8d67c83) (NativeFormatImporter) -> (artifact id: 'efca0833d14af308dca1f23f22cab1bf') in 0.0014458 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-7.mat using Guid(e85ebe1992c413e4f9826b95852b8f2a) (NativeFormatImporter) -> (artifact id: '1351c1a99146bf97e363171eac0ddb76') in 0.0012809 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-8.mat using Guid(79f9b36d7c1d1804a9d8c0f28f4adbaf) (NativeFormatImporter) -> (artifact id: '3855fd792fd67208d0a7728c4af70984') in 0.0013387 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-VeryHighQuality.asset using Guid(1164775dc3854cf59fc668fd1b2fa849) (NativeFormatImporter) -> (artifact id: 'aaeb244737733a88f3fd54f4f3116611') in 0.0013131 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-HighQuality.asset using Guid(57b6d37d6d55480e849b48e11176253a) (NativeFormatImporter) -> (artifact id: '085a0458df9d9bd770b09a57652d842c') in 0.0011228 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-MediumQuality.asset using Guid(285ec06d16664baab655904ca6fb8471) (NativeFormatImporter) -> (artifact id: '12f1da8473f1346f6685c551d3a0912c') in 0.0011083 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-LowQuality.asset using Guid(88be0957bbb54dee932887650b8e30e1) (NativeFormatImporter) -> (artifact id: '6a170e2eb17424c506214a43cc316765') in 0.0010408 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-UltraQuality.asset using Guid(9d5092cdecd14f85a634f96b0e7d8655) (NativeFormatImporter) -> (artifact id: 'a7fdf4ef949ba2bc66d8b3168f8e6513') in 0.0009987 seconds
-Refreshing native plugins compatible for Editor in 6.18 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=f96f124528121e64fab6a670832f4da1): Total: 1.929 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=13 (actual=13, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=1915 ms
-		Asset DB Callback time: managed=3 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1248, non-scripts=6404
-		Asset File Changes: new=0, changed=13, moved=0, deleted=0
-		Scan Filter Count: 24
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 0.001ms
-	ApplyChangesToAssetFolders: 0.120ms
-	Scan: 10.852ms
-	OnSourceAssetsModified: 0.060ms
-	CategorizeAssetsWithTransientArtifact: 0.018ms
-	ProcessAssetsWithTransientArtifactChanges: 0.041ms
-	CategorizeAssets: 21.664ms
-	ImportOutOfDateAssets: 1878.564ms (-0.235ms without children)
-		ImportManagerImport: 1876.220ms (2.722ms without children)
-			ImportInProcess: 1873.433ms
-			UpdateCategorizedAssets: 0.066ms
-		ReloadNativeAssets: 0.268ms
-		UnloadImportedAssets: 0.178ms
-		ReloadImportedAssets: 0.738ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.896ms
-		InitializingProgressBar: 0.004ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.493ms
-	PostProcessAllAssets: 5.752ms
-	Hotreload: 6.593ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.644ms
-	UnloadStreamsBegin: 0.048ms
-	PersistCurrentRevisions: 0.355ms
-	UnloadStreamsEnd: 0.065ms
-	Untracked: 3.870ms
-
-[Licensing::Client] Successfully resolved entitlement details
-Starting new worker id: 0 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker0.log
-Starting new worker id: 1 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker1.log
-Starting new worker id: 2 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker2.log
-Starting new worker id: 3 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker3.log
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-mesh-10.asset using Guid(e2e1f4539383a27438c30aa7236a037f) (NativeFormatImporter) -> (artifact id: '2f6d7be4d27e40be576212f09fc95ce5') in 0.0019293 seconds
-Refreshing native plugins compatible for Editor in 7.74 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=7622a4aca8069c54fb45ec38394e662d): Total: 0.059 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-mesh-11.asset using Guid(44331b8a38737cc47a5f65d3ee2e6686) (NativeFormatImporter) -> (artifact id: '044554657c98334b47b50570a1be1578') in 0.0020101 seconds
-Refreshing native plugins compatible for Editor in 6.75 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=72fc8b030829d034a9c953763ba85678): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-mesh-12.asset using Guid(80d94c251402773469666e86a517a4ee) (NativeFormatImporter) -> (artifact id: '6819e0e516559326ca3b96743211e3bd') in 0.0019368 seconds
-Refreshing native plugins compatible for Editor in 6.20 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=fb38f657183528d44a34a99bd03deb3b): Total: 0.061 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-mesh-13.asset using Guid(4b5e75d839919d44e97a6a6708c3ee5a) (NativeFormatImporter) -> (artifact id: 'f24323af456824e688b87d0bcb13e5c3') in 0.0020275 seconds
-Refreshing native plugins compatible for Editor in 6.58 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=567a341645513904c818dae42f6c8989): Total: 0.059 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-14.asset using Guid(97e0489e2ee1f6f438208a126799e51a) (NativeFormatImporter) -> (artifact id: '75262079114f0c821e327b7fd91eb6fa') in 0.0835163 seconds
-Worker ready: AssetImportWorker1 1
-Worker ready: AssetImportWorker3 3
-Worker ready: AssetImportWorker2 2
-Worker ready: AssetImportWorker0 0
-Refreshing native plugins compatible for Editor in 6.29 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=36aa0bdf2979e9a4294598922a9095e3): Total: 3.342 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=1 (actual=1, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=3332 ms
-		Asset DB Callback time: managed=0 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1248, non-scripts=6409
-		Asset File Changes: new=1, changed=1, moved=0, deleted=0
-		Scan Filter Count: 8
-	InvokeCustomDependenciesCallbacks: 0.000ms
-	InvokePackagesCallback: 0.001ms
-	ApplyChangesToAssetFolders: 0.066ms
-	Scan: 21.613ms
-	OnSourceAssetsModified: 0.050ms
-	CategorizeAssetsWithTransientArtifact: 0.004ms
-	ProcessAssetsWithTransientArtifactChanges: 0.058ms
-	CategorizeAssets: 23.961ms
-	ImportOutOfDateAssets: 3282.119ms (0.693ms without children)
-		ImportManagerImport: 3279.362ms (171.252ms without children)
-			ImportInProcess: 3108.092ms
-			UpdateCategorizedAssets: 0.018ms
-		ReloadNativeAssets: 0.258ms
-		UnloadImportedAssets: 0.214ms
-		ReloadImportedAssets: 0.000ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.139ms
-		InitializingProgressBar: 0.006ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.446ms
-	PostProcessAllAssets: 2.453ms
-	Hotreload: 7.016ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.929ms
-	UnloadStreamsBegin: 0.004ms
-	PersistCurrentRevisions: 0.288ms
-	UnloadStreamsEnd: 0.021ms
-	Untracked: 3.736ms
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-15.mat using Guid(e7b843794304eaf448edad6a143fc032) (NativeFormatImporter) -> (artifact id: '31537a95889e4de1fddb2c5fd385b4df') in 0.0020347 seconds
-Refreshing native plugins compatible for Editor in 6.90 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=f4306eade1f1e0f48bbb0c92ef786704): Total: 0.060 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-16.mat using Guid(29d76d1919d630d4b94b8fb468e7cc46) (NativeFormatImporter) -> (artifact id: 'd6771d1484ad0da7817a5451c0c0af72') in 0.0016615 seconds
-Refreshing native plugins compatible for Editor in 6.22 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=0b8140e73f959c44087827580280dbeb): Total: 0.084 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-17.mat using Guid(e379d211786fe3249b0e975fc83366ae) (NativeFormatImporter) -> (artifact id: '17d6cf84f16a2de0a3abfdf028e4f95b') in 0.001716 seconds
-Refreshing native plugins compatible for Editor in 6.11 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a1bee0298c560f3459642cbc682589b8): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-18.mat using Guid(7bb0bfc5dbad1bf468ac5a08108ce57f) (NativeFormatImporter) -> (artifact id: '23c7e6dff1f52448e13f92c615421f34') in 0.0019118 seconds
-Refreshing native plugins compatible for Editor in 6.50 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=5a660b015d2f5194aa5528e966d788aa): Total: 0.062 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-19.mat using Guid(333f94421315fd24a902512ee571cc5a) (NativeFormatImporter) -> (artifact id: 'dc96c2c136eefe6e615f6b8aba86fee9') in 0.0017258 seconds
-Refreshing native plugins compatible for Editor in 7.36 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=cfca1a7081cb1ad47ab823ca95c1ddb2): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-20.mat using Guid(f7c787a0ebbdc7d4786ebd84b260e206) (NativeFormatImporter) -> (artifact id: '3dfc2ea17bf3806a4ec67f76e9d659a0') in 0.0020293 seconds
-Refreshing native plugins compatible for Editor in 6.63 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=b90497c089d9b414ba3be8a5e674ee80): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-21.mat using Guid(027888fd20f8c924eb211f30361a3a1e) (NativeFormatImporter) -> (artifact id: '6d5ee5d9ed9929ebef4ab7d3493eb7f6') in 0.0024748 seconds
-Refreshing native plugins compatible for Editor in 7.71 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=3b029a056ef26a5429dca69af7dc82b8): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/city-terrain-22.asset using Guid(acfb12b88d1e9314da8d17fa9c2b25bd) (NativeFormatImporter) -> (artifact id: '235e2a0dd1137cfb829ea5c578b5c200') in 0.001989 seconds
-Refreshing native plugins compatible for Editor in 7.43 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=079af713fd0dd484c9ac4c2a7a769655): Total: 0.060 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-21.mat using Guid(027888fd20f8c924eb211f30361a3a1e) (NativeFormatImporter) -> (artifact id: 'fe1745cb06e0439a9df26fcf3bea2389') in 0.0017623 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-19.mat using Guid(333f94421315fd24a902512ee571cc5a) (NativeFormatImporter) -> (artifact id: '9e242dc7e5eca847f9eb6f01d681c9df') in 0.0059907 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-17.mat using Guid(e379d211786fe3249b0e975fc83366ae) (NativeFormatImporter) -> (artifact id: '4e838007e95286246f9e7fa05fcad7e9') in 0.005848 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-15.mat using Guid(e7b843794304eaf448edad6a143fc032) (NativeFormatImporter) -> (artifact id: 'cfc439c2c6eb482c30b7b5b3bf8c71cf') in 0.0059271 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-20.mat using Guid(f7c787a0ebbdc7d4786ebd84b260e206) (NativeFormatImporter) -> (artifact id: '7e2fcbc2b8503ec3b5a76c48f9a681a0') in 0.0055424 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-16.mat using Guid(29d76d1919d630d4b94b8fb468e7cc46) (NativeFormatImporter) -> (artifact id: '8f3e2998f4c14fc9cb12fa3a5e72cd4c') in 0.0055892 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-material-18.mat using Guid(7bb0bfc5dbad1bf468ac5a08108ce57f) (NativeFormatImporter) -> (artifact id: '4dbd3f9ee521eb558e2ff638e27ae054') in 0.0059801 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-VeryHighQuality.asset using Guid(1164775dc3854cf59fc668fd1b2fa849) (NativeFormatImporter) -> (artifact id: 'aaeb244737733a88f3fd54f4f3116611') in 0.0058284 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-HighQuality.asset using Guid(57b6d37d6d55480e849b48e11176253a) (NativeFormatImporter) -> (artifact id: '085a0458df9d9bd770b09a57652d842c') in 0.0049136 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-MediumQuality.asset using Guid(285ec06d16664baab655904ca6fb8471) (NativeFormatImporter) -> (artifact id: '12f1da8473f1346f6685c551d3a0912c') in 0.0039298 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-LowQuality.asset using Guid(88be0957bbb54dee932887650b8e30e1) (NativeFormatImporter) -> (artifact id: '6a170e2eb17424c506214a43cc316765') in 0.0029634 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/city-terrain-22.asset using Guid(acfb12b88d1e9314da8d17fa9c2b25bd) (NativeFormatImporter) -> (artifact id: 'f24d61c9da8a4f7868c8a8dc79afdd42') in 0.0037181 seconds
-Start importing Assets/EmaceArt/Slavic World Free/Post Processing_profile/Settings/New Universal Render Pipeline Asset-UltraQuality.asset using Guid(9d5092cdecd14f85a634f96b0e7d8655) (NativeFormatImporter) -> (artifact id: 'a7fdf4ef949ba2bc66d8b3168f8e6513') in 0.0013203 seconds
-Refreshing native plugins compatible for Editor in 8.38 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=aa89bf031b711ca42933107f25f50cbe): Total: 0.165 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-VALORIA_ENVIRONMENT_FINISH_COMPLETE city_cells=4737 shoreline_groups=0
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaEnvironmentFinish/<ApplyAsync>d__18:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs:126)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<UnityEngine.GameObject>:TrySetResult (UnityEngine.GameObject)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<UnityEngine.GameObject>:SetResult (UnityEngine.GameObject)
-Eldoria.ReferenceClean.Editor.ValoriaEnvironmentFinish/<ReplaceAuthoredDestination>d__23:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs:199)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
-
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs Line: 126)
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity using Guid(844fa996370938f43b54f155a88571f5) (DefaultImporter) -> (artifact id: '3b4236f8accf9f6b5ddadb60eb0e49bb') in 0.0013021 seconds
-Refreshing native plugins compatible for Editor in 6.12 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a9522421b813a5f4680aad3bb5787bb0): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+		Package Manager init time: 		0.284 seconds
+		Asset Database init time: 		0.129 seconds
+		Global illumination init time: 	0.002 seconds
+		Assemblies load time: 			0.805 seconds
+		Unity extensions init time: 	0.008 seconds
+		Asset Database refresh time: 	10.070 seconds
+	Scene opening time: 			2.667 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792351571481,"processId":42044,"projectLoad":14.8653037,"projectInit":12.0435685,"templateInit":0.0,"packageManagerInit":0.2841046,"assetDatabaseInit":0.1293044,"globalIlluminationInit":0.0018659,"assembliesLoad":0.8048832,"unityExtensionsInit":0.0075126,"assetDatabaseRefresh":10.0697917,"sceneOpening":2.6668647}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792351571481,"processId":42044,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
 Reloading assemblies for play mode.
 Reloading assemblies after forced synchronous recompile.
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  0.605 seconds
-Refreshing native plugins compatible for Editor in 5.95 ms, found 4 plugins.
+- Loaded All Assemblies, in  0.565 seconds
+Refreshing native plugins compatible for Editor in 7.23 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.775 seconds
-Domain Reload Profiling: 1378ms
-	BeginReloadAssembly (375ms)
-		ExecutionOrderSort (1ms)
-		DisableScriptedObjects (25ms)
+- Finished resetting the current domain, in  0.718 seconds
+Domain Reload Profiling: 1281ms
+	BeginReloadAssembly (332ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (23ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (213ms)
-	RebuildCommonClasses (34ms)
+		CreateAndSetChildDomain (183ms)
+	RebuildCommonClasses (35ms)
 	RebuildNativeTypeToScriptingClass (14ms)
 	initialDomainReloadingComplete (23ms)
-	LoadAllAssembliesAndSetupDomain (157ms)
-		LoadAssemblies (125ms)
+	LoadAllAssembliesAndSetupDomain (159ms)
+		LoadAssemblies (123ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (122ms)
+		AnalyzeDomain (127ms)
 			TypeCache.Refresh (6ms)
 				TypeCache.ScanAssembly (0ms)
-			BuildScriptInfoCaches (88ms)
-			ResolveRequiredComponents (25ms)
-	FinalizeReload (775ms)
+			BuildScriptInfoCaches (91ms)
+			ResolveRequiredComponents (26ms)
+	FinalizeReload (718ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (452ms)
+		SetupLoadedEditorAssemblies (449ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (32ms)
+			InitializePlatformSupportModulesInManaged (33ms)
 			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (140ms)
-			ProcessInitializeOnLoadAttributes (195ms)
+			BeforeProcessingInitializeOnLoad (139ms)
+			ProcessInitializeOnLoadAttributes (194ms)
 			ProcessInitializeOnLoadMethodAttributes (75ms)
 			AfterProcessingInitializeOnLoad (5ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (67ms)
-Asset Pipeline Refresh (id=a8ad04fd31ea16e48bdaa49bf7ba91e8): Total: 1.544 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+		AwakeInstancesAfterBackupRestoration (32ms)
+Asset Pipeline Refresh (id=2a9fcd393dd62344d8a4b3ae5a1085cd): Total: 1.449 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=897 ms
-		Asset DB Callback time: managed=29 ms, native=0 ms
-		Scripting: domain reloads=1, domain reload time=616 ms, compile time=1 ms, other=0 ms
-		Project Asset Count: scripts=1248, non-scripts=6417
+		Asset DB Process Time: managed=0 ms, native=848 ms
+		Asset DB Callback time: managed=22 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=575 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=1248, non-scripts=6418
 		Asset File Changes: new=0, changed=0, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 1.448ms
-	ApplyChangesToAssetFolders: 0.162ms
+	InvokePackagesCallback: 1.196ms
+	ApplyChangesToAssetFolders: 0.166ms
 	Scan: 0.001ms
-	OnSourceAssetsModified: 0.002ms
-	CategorizeAssetsWithTransientArtifact: 0.004ms
-	ProcessAssetsWithTransientArtifactChanges: 2.276ms
-	CategorizeAssets: 74.718ms
-	ImportOutOfDateAssets: 789.258ms (783.024ms without children)
-		CompileScripts: 1.063ms
-		CollectScriptTypesHashes: 1.626ms
-		ReloadNativeAssets: 1.491ms
-		UnloadImportedAssets: 0.060ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.260ms
-		InitializingProgressBar: 0.001ms
+	OnSourceAssetsModified: 0.001ms
+	CategorizeAssetsWithTransientArtifact: 0.003ms
+	ProcessAssetsWithTransientArtifactChanges: 2.413ms
+	CategorizeAssets: 72.929ms
+	ImportOutOfDateAssets: 741.382ms (736.010ms without children)
+		CompileScripts: 1.041ms
+		CollectScriptTypesHashes: 1.551ms
+		ReloadNativeAssets: 1.066ms
+		UnloadImportedAssets: 0.080ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.098ms
+		InitializingProgressBar: 0.000ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.732ms
-	PostProcessAllAssets: 29.422ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.345ms
-	UnloadStreamsBegin: 0.157ms
-	PersistCurrentRevisions: 0.847ms
-	UnloadStreamsEnd: 0.002ms
-	GenerateScriptTypeHashes: 4.701ms
-	Untracked: 645.464ms
+		OnDemandSchedulerStart: 0.534ms
+	PostProcessAllAssets: 22.947ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.312ms
+	UnloadStreamsBegin: 0.399ms
+	PersistCurrentRevisions: 0.238ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 4.654ms
+	Untracked: 606.590ms
 
 Loaded scene 'Temp/__Backupscenes/0.backup'
-	Deserialize:            424.498 ms
-	Integration:            233.494 ms
-	Integration of assets:  6.619 ms
-	Thread Wait Time:       -0.138 ms
-	Total Operation Time:   664.473 ms
+	Deserialize:            1270.597 ms
+	Integration:            176.741 ms
+	Integration of assets:  162.603 ms
+	Thread Wait Time:       -0.383 ms
+	Total Operation Time:   1609.558 ms
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [18.144 - 18.156]
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Client] Successfully resolved entitlement details
@@ -1073,12 +607,12 @@ UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOpt
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild/<Probe>d__17:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs:196)
+Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild/<Probe>d__17:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs:218)
 UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
 
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs Line: 196)
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs Line: 218)
 
-Killing ADB server in 2,095201 seconds.
+Killing ADB server in 2,0828283 seconds.
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -1091,4 +625,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792349634649,"processId":39332,"allocatedMemory":20109550,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":68451},{"Thread":4230344},{"Manager":821680},{"VertexData":2168},{"Geometry":816},{"Texture":296},{"Shader":81717},{"Material":24},{"GfxDevice":57384},{"Animation":392},{"Audio":2664},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1629680},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":15653},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":54497},{"DynamicArray":123903},{"HashMap":81583},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":17824},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":112554},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366202},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792351606527,"processId":42044,"allocatedMemory":20102547,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":68323},{"Thread":4230344},{"Manager":821648},{"VertexData":1976},{"Geometry":816},{"Texture":296},{"Shader":81717},{"Material":24},{"GfxDevice":57240},{"Animation":392},{"Audio":2664},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1629680},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":6890},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":54181},{"DynamicArray":123075},{"HashMap":81583},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":17968},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":115970},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366042},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
