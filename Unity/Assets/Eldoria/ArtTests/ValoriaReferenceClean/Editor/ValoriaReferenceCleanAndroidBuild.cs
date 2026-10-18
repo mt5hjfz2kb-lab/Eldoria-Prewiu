@@ -16,7 +16,7 @@ public static class ValoriaReferenceCleanAndroidBuild {
  [Serializable]class KeyReport{public Key[] keys;public string package;public int old_version_code;}
  [Serializable]class Result { public string source_sha,status,apk_sha256,package_id,graphics_apis,note;public long apk_bytes;public int errors,warnings;public bool physical_device_tested; }
  public static void Build(){
-  var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),package_id="com.eldoria.valoria.v5test",graphics_apis="Vulkan, OpenGLES3",physical_device_tested=false,note="Update of recovered optimized APK38279800977: same package and verified existing signing certificate, versionCode3; single current Valoria scene, known source-only GLBs excluded/restored by existing packaging procedure. No data reset/deletion. Phone install/performance still requires owner test."};
+  var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),package_id="com.eldoria.valoria.v5test",graphics_apis="Vulkan, OpenGLES3",physical_device_tested=false,note="Update of recovered optimized APK38279800977: same package and verified existing signing certificate, versionCode4; single current Valoria scene, known source-only GLBs excluded/restored by existing packaging procedure. No data reset/deletion. Phone install/performance still requires owner test."};
   int exit=1;string settings="ProjectSettings/ProjectSettings.asset";byte[] original=File.ReadAllBytes(settings);
   try{
    if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android,BuildTarget.Android))throw new Exception("Installed editor lacks Android Build Support");
@@ -39,7 +39,7 @@ public static class ValoriaReferenceCleanAndroidBuild {
    PlayerSettings.Android.useCustomKeystore=true;
    PlayerSettings.Android.keystoreName=key.path;PlayerSettings.Android.keystorePass="android";
    PlayerSettings.Android.keyaliasName="androiddebugkey";PlayerSettings.Android.keyaliasPass="android";
-   PlayerSettings.bundleVersion="1.2";PlayerSettings.Android.bundleVersionCode=3;
+   PlayerSettings.bundleVersion="1.3";PlayerSettings.Android.bundleVersionCode=4;
    PlayerSettings.stripEngineCode=true;
    PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android,ManagedStrippingLevel.Medium);
    PlayerSettings.defaultInterfaceOrientation=UIOrientation.LandscapeLeft;
