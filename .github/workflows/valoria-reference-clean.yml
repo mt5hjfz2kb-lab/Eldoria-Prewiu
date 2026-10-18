@@ -41,7 +41,7 @@ jobs:
         shell: powershell
         run: |
           $r=Get-Content "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
-          if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-work-valoria-reference-clean-20261017' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Current clean-scene claim missing'}
+          if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-work-valoria-integration-continuation-20261018' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Current clean-scene claim missing'}
           if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Runner reserved by another workstream'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
@@ -90,6 +90,7 @@ jobs:
           }
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
+          if($req.stage -eq 'city_world_ui'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
@@ -387,6 +388,7 @@ jobs:
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*

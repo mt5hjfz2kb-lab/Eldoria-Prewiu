@@ -1,0 +1,1 @@
+{"name":"Eldoria.RoyalGold.Editor","rootNamespace":"Eldoria.UI.RoyalGold.Editor","includePlatforms":["Editor"],"references":["Eldoria.RoyalGold.Core","Eldoria.RoyalGold.Bindings","Eldoria.RoyalGold.UI","Eldoria.RoyalGold.Preview","Eldoria.Domain","Unity.ugui","Unity.InputSystem"]}

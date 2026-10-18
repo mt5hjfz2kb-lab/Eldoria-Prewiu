@@ -15,6 +15,9 @@ namespace Eldoria.Presentation
     {
         ICommandGateway gateway;
         public IPlayableSceneHost SceneHost { get; set; }
+        // Optional presentation adapter; simulation and gesture ownership remain here.
+        public Func<Vector2,bool> ExternalPointerBlocked { get; set; }
+        public Func<string,bool> ExternalSelection { get; set; }
         public Func<long> UtcNowTicks = () => DateTime.UtcNow.Ticks;
         void NavigateScene(string target) { if(SceneHost!=null)SceneHost.Navigate(target);else SceneManager.LoadScene(target); }
         public void Inspect(string id) { Select(id); }
@@ -244,6 +247,7 @@ namespace Eldoria.Presentation
 
         bool IsPointerOverInteractiveUi(Vector2 point)
         {
+            if(ExternalPointerBlocked?.Invoke(point)==true)return true;
             if(EventSystem.current==null)return false;
             var data=new PointerEventData(EventSystem.current){position=point};
             var hits=new System.Collections.Generic.List<RaycastResult>();
@@ -462,6 +466,7 @@ namespace Eldoria.Presentation
 
         void Select(string id)
         {
+            if(ExternalSelection?.Invoke(id)==true)return;
             if(SceneHost!=null&&(id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria")){ShowExpedition(id);return;}
             if(id=="gate")NavigateScene("Frontier");
             else if(id=="valoria-map-city")NavigateScene(CitySceneName);

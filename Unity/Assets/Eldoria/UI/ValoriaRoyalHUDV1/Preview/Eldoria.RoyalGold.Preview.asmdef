@@ -1,0 +1,1 @@
+{"name":"Eldoria.RoyalGold.Preview","rootNamespace":"Eldoria.UI.RoyalGold.Preview","references":["Eldoria.RoyalGold.Core","Eldoria.RoyalGold.Bindings","Eldoria.RoyalGold.UI","Eldoria.Domain","Eldoria.Application","Unity.ugui","Unity.InputSystem"]}

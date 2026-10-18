@@ -1,0 +1,18 @@
+{
+  "source_blend_sha256": "1184148ea54d40fcff6bb1e8d16367c33f66f5814b75353acb62c05a0724abb4",
+  "model_sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a",
+  "bytes": 2302072,
+  "vertices": 14641,
+  "triangles": 28800,
+  "mesh_count": 1,
+  "geometry_unchanged_by_export": true,
+  "uv_layers": [
+    "UVMap"
+  ],
+  "under_10_degrees_area_fraction": 0.8871541368065566,
+  "under_20_degrees_area_fraction": 0.9837283123404191,
+  "image_type": "BLENDER_SOURCE_NOT_UNITY",
+  "art_approved": false,
+  "navigation_certified": false,
+  "physical_device_performance_measured": false
+}
