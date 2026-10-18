@@ -1,0 +1,78 @@
+name: '[VALORIA] Exact WebGL browser evidence replay'
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/valoria-web-browser-replay.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-web-browser-replay-exact
+  cancel-in-progress: false
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-reference-clean/
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-integrated-web-playtest-39163287848
+          run-id: 39163287848
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: unity-raw
+      - name: Verify exact existing integrated build transport
+        run: |
+          python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native131 7aeef2e942883fae93a5e033bf9a0a05ebc85e46 39163287848
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install existing Chromium tool and video frame extraction
+        run: |
+          npm install --prefix "$RUNNER_TEMP/valoria-web-qa" --no-save --ignore-scripts playwright@1.55.0
+          "$RUNNER_TEMP/valoria-web-qa/node_modules/.bin/playwright" install --with-deps chromium
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y ffmpeg; fi
+          ffmpeg -version | head -n 1
+      - name: Play exact WebGL with real input and normal clock, extract real video frames
+        env:
+          VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence
+          VALORIA_SOURCE_SHA: 7aeef2e942883fae93a5e033bf9a0a05ebc85e46
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '480'
+          VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
+        run: NODE_PATH="$RUNNER_TEMP/valoria-web-qa/node_modules" node tools/valoria-reference-clean/playtest_web.cjs
+      - name: Bind exact bytes to passed game, saves, video and screenshot evidence
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          report=pathlib.Path('web-visible-controls-evidence/report.json')
+          state=json.loads(report.read_text())
+          assert state['status']=='PASS' and state['checks']['exact_save_reload']['pass']
+          assert state['screenshots'] and all(not s['extraction_pending'] for s in state['screenshots'])
+          assert state.get('video') and state.get('dialogue_clip')
+          f=pathlib.Path('prepared-site/unity-output-verification.json')
+          proof=json.loads(f.read_text())
+          proof['browser_runtime_qa']=True
+          proof['browser_scope']=state['scope']
+          proof['tested_manifest_sha256']=state['build']['manifest_sha256']
+          proof['browser_report_sha256']=hashlib.sha256(report.read_bytes()).hexdigest()
+          f.write_text(json.dumps(proof,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-exact-browser-evidence-${{ github.run_id }}
+          path: web-visible-controls-evidence/**
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: valoria-verified-private-site-${{ github.run_id }}
+          path: prepared-site/**
+          if-no-files-found: error

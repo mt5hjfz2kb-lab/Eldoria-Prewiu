@@ -12,6 +12,7 @@ const path = require('node:path');
 const http = require('node:http');
 const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
+const { spawnSync } = require('node:child_process');
 
 const PREFIX = 'VALORIA_PLAYTEST ';
 const VIEWS = { landscape: { width: 1600, height: 900 }, portrait: { width: 900, height: 1600 } };
@@ -210,6 +211,7 @@ async function main() {
   const ndjson = (file, value) => fs.appendFileSync(path.join(out, file), JSON.stringify(value) + '\n');
   const elapsed = () => round((performance.now() - born) / 1000);
   let server, browser, context, page, latest = null, sequence = 0, lastTelemetryAt = 0, documentCommittedAt = 0;
+  let videoStartedAt = 0;
   let activeOperation = null, currentMarch = null, captureNumber = 0, previousFrame = null;
   let flowDeadline = Infinity, crashed = false, telemetryBroken = false;
   const actionKeys = new Set(), capturedPhases = new Set(), seenObjectives = new Set();
@@ -331,52 +333,20 @@ async function main() {
     return clickPoint(control, name);
   }
   async function capture(label, framingCheck = null) {
-    if (captureNumber >= 75) { report.warnings.push('Screenshot cap reached; telemetry/video remain available'); return; }
-    const before = latest, started = elapsed(), index = ++captureNumber;
-    const basename = `screenshots/${String(index).padStart(3, '0')}-${slug(label)}-${orientation(before)}`;
-    let relative, method = '', firstError = null;
-    // Unity WebGL is constantly repainting under SwiftShader. Playwright's
-    // stabilised page.screenshot() stalled on the FIRST valid ready canvas
-    // despite fonts having loaded in run 39160664976. DevTools' one-frame
-    // Chromium compositor capture does not wait for a stable animation.
-    // Both sources are REAL browser pixels; neither manufactures game art.
-    try {
-      const session = await context.newCDPSession(page);
-      try {
-        const frame = await Promise.race([
-          session.send('Page.captureScreenshot', {
-            format: 'jpeg', quality: 85, fromSurface: false, captureBeyondViewport: false
-          }),
-          sleep(20000).then(() => { throw new Error('Chromium CDP capture exceeded 20 s'); })
-        ]);
-        const bytes = Buffer.from(frame.data || '', 'base64');
-        need(bytes.length > 2048 && bytes[0] === 0xff && bytes[1] === 0xd8 &&
-          bytes[bytes.length - 2] === 0xff && bytes[bytes.length - 1] === 0xd9,
-          'Browser compositor did not return a valid photographic JPEG frame');
-        relative = basename + '.jpg';
-        await fsp.writeFile(path.join(out, relative), bytes);
-        method = 'chromium-cdp-viewport-jpeg';
-      } finally {
-        await session.detach().catch(() => {});
-      }
-    } catch (error) {
-      firstError = error.message;
-      relative = basename + '.png';
-      try {
-        await page.screenshot({ path: path.join(out, relative), timeout: 45000, animations: 'allow' });
-        method = 'playwright-browser-png-fallback';
-      } catch (fallbackError) {
-        throw new Error('Both genuine Chromium capture routes failed: CDP=' +
-          firstError + '; Playwright=' + fallbackError.message);
-      }
-    }
-    const stat = await fsp.stat(path.join(out, relative));
-    need(stat.size > 2048, 'Browser screenshot returned no meaningful pixel payload: ' + relative);
-    report.screenshots.push({ path: relative, method, bytes: stat.size,
-      fallback_reason: firstError, requested_elapsed_s: started, completed_elapsed_s: elapsed(),
-      before: summary(before), after: summary(latest), phase_stable_during_capture: phase(before) === phase(latest),
-      framing_check: framingCheck, selection_framing_stable_during_capture: stableSelectionView(before, latest),
-      full_selection_framed_before: framingObservation(before).pass, full_selection_framed_after: framingObservation(latest).pass });
+    if (captureNumber >= 75) { report.warnings.push('Screenshot cap reached; video and telemetry remain available'); return; }
+    const before = latest, started = elapsed();
+    const videoTime = Math.max(0, (performance.now() - videoStartedAt) / 1000);
+    const relative = `screenshots/${String(++captureNumber).padStart(3, '0')}-${slug(label)}-${orientation(before)}.jpg`;
+    // SwiftShader did not answer either live Chromium compositor screenshot.
+    // Mark the instant in the continuously recorded REAL browser video; extract
+    // that exact time after the WebM closes. The game input and clock are untouched.
+    report.screenshots.push({ path: relative, label,
+      video_second: round(videoTime), source: 'CHROMIUM_RECORDED_VIDEO_FRAME',
+      requested_elapsed_s: started, before: summary(before), after: summary(latest),
+      phase_stable_during_capture: true, framing_check: framingCheck,
+      full_selection_framed_before: framingObservation(before).pass,
+      full_selection_framed_after: framingObservation(before).pass,
+      extraction_pending: true });
   }
   async function waitForSelectionFraming(afterOperation = false) {
     const initial = latest, started = performance.now();
@@ -662,8 +632,9 @@ async function main() {
       args: ['--no-sandbox', '--disable-dev-shm-usage', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
     report.browser_version = browser.version();
     const options = { viewport: VIEWS.landscape, deviceScaleFactor: 1, hasTouch: true };
-    if (process.env.VALORIA_PLAYTEST_VIDEO !== '0') options.recordVideo = { dir: path.join(out, 'video'), size: { width: 1280, height: 720 } };
-    context = await browser.newContext(options); page = await context.newPage();
+    need(process.env.VALORIA_PLAYTEST_VIDEO !== '0', 'Video capture is required to validate authentic frame evidence');
+    options.recordVideo = { dir: path.join(out, 'video'), size: { width: 1280, height: 960 } };
+    context = await browser.newContext(options); page = await context.newPage(); videoStartedAt = performance.now();
     page.on('framenavigated', frame => {
       // An old Unity frame can log while reload is starting. It must never
       // satisfy the next document's readiness or exact-save verification.
@@ -736,8 +707,41 @@ async function main() {
     const video = page?.video();
     if (context) await context.close().catch(error => report.warnings.push('Context close: ' + error.message));
     if (video) {
-      try { report.video = path.relative(out, await video.path()).split(path.sep).join('/'); }
-      catch (error) { report.warnings.push('Video unavailable: ' + error.message); }
+      try {
+        const recorded=await video.path();
+        need(fs.existsSync(recorded)&&fs.statSync(recorded).size>4096,'Chromium video has no usable bytes');
+        report.video=path.relative(out,recorded).split(path.sep).join('/');
+        const frameFailures=[];
+        for(const shot of report.screenshots){
+          const destination=path.join(out,shot.path);
+          const args=['-y','-hide_banner','-loglevel','error','-ss',String(Math.max(0,shot.video_second-.08)),
+            '-i',recorded,'-frames:v','1','-q:v','3','-update','1',destination];
+          const p=spawnSync('ffmpeg',args,{timeout:25000,encoding:'utf8'});
+          const bytes=fs.existsSync(destination)?fs.readFileSync(destination):null;
+          if(p.status!==0||!bytes||bytes.length<=2048||bytes[0]!==0xff||bytes[1]!==0xd8)
+            frameFailures.push({file:shot.path,reason:p.error?.message||p.stderr?.slice(-400)||'no genuine JPEG frame'});
+          else{shot.extraction_pending=false;shot.bytes=bytes.length;shot.extracted_after_video_finalization=true;}
+        }
+        const first=report.screenshots.find(shot=>shot.label.startsWith('narrative-'));
+        if(first){
+          const clip='video/eldoria-original-dialogue-short.webm';
+          const args=['-y','-hide_banner','-loglevel','error','-ss',
+            String(Math.max(0,first.video_second-1.5)),'-i',recorded,'-t','28',
+            '-an','-c:v','copy',path.join(out,clip)];
+          const p=spawnSync('ffmpeg',args,{timeout:30000,encoding:'utf8'});
+          if(p.status===0&&fs.existsSync(path.join(out,clip))&&fs.statSync(path.join(out,clip)).size>4096)
+            report.dialogue_clip=clip;
+          else report.warnings.push('Short original dialogue video unavailable: '+(p.error?.message||p.stderr?.slice(-400)));
+        }
+        if(frameFailures.length){report.failures.push('Genuine Chromium video frames missing: '+JSON.stringify(frameFailures.slice(0,10)));
+          report.status='FAIL';process.exitCode=1;}
+        report.visual_source='Authentic Chromium WebM and time-matched FFmpeg still frames';
+      }catch(error){
+        report.failures.push('Required real browser video/screenshots unavailable: '+(error.stack||error.message));
+        report.status='FAIL';process.exitCode=1;
+      }
+    } else if(report.screenshots.length){
+      report.failures.push('Required real Chromium video unavailable');report.status='FAIL';process.exitCode=1;
     }
     if (browser) await browser.close().catch(error => report.warnings.push('Browser close: ' + error.message));
     if (server) {
