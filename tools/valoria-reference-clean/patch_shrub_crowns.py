@@ -20,7 +20,7 @@ exec(compile(ast.Module(body=[transport], type_ignores=[]), '<existing reviewed 
 expected = json.loads((EV / 'source-art.json').read_text())['blend_sha256']
 assert digest(SOURCE) == expected, 'Saved Blender source changed'
 bpy.ops.wm.open_mainfile(filepath=str(SOURCE),use_scripts=False)
-obj = bpy.data.objects.get('Shrub_group')
+obj = bpy.data.objects.get('Foundation_shrubs_and_groundcover')
 assert obj and obj.type == 'MESH', 'Existing shrub group missing'
 mesh = obj.data
 def mesh_stamp(item):
@@ -47,15 +47,19 @@ def bounds(ids):
     lo = [min(p[k] for p in pts) for k in range(3)]
     hi = [max(p[k] for p in pts) for k in range(3)]
     return lo, hi
-targets=[]
-for index,ids in enumerate(components):
-    lo,hi=bounds(ids);center=[(a+b)/2 for a,b in zip(lo,hi)];extent=[b-a for a,b in zip(lo,hi)]
-    if -15<center[0]<15 and 28<center[1]<42 and min(extent[0],extent[1])>.65 and extent[2]>.5:
-        targets.append(dict(component=index,bbox_min=lo,bbox_max=hi,vertices=len(ids),extent=extent))
-targets=sorted(targets,key=lambda t:t['extent'][0]*t['extent'][1],reverse=True)[:2]
-assert targets, 'No measured foundation donor crowns found'
+# The imported Shrub_group consists of leaf cards, not the visible faceted masses.
+# Inspect and replace one existing foundation cluster as a whole, preserving all other clusters.
+cluster=[]
+for ids in components:
+    lo,hi=bounds(ids);center=[(a+b)/2 for a,b in zip(lo,hi)]
+    if -14<center[0]<-7 and 29<center[1]<34:
+        cluster.extend(ids)
+assert len(cluster)>100, 'Measured foundation cluster absent'
+components=[sorted(set(cluster))]
+lo,hi=bounds(components[0]);extent=[hi[k]-lo[k] for k in range(3)]
+targets=[dict(component=0,bbox_min=lo,bbox_max=hi,vertices=len(components[0]),extent=extent)]
 context=dict(target=obj.name,source_blend_sha256=expected,coordinate_system='Blender WORLD X east,Y inland,Z up',
- actual_components=targets,visual_diagnosis='Actual Unity63 Bastion detail: donor shrubs read as large faceted green rocks; reference has many smaller coherent rounded leaf clusters. Preserve the existing footprint, ground contact and all architecture. Native63 SSAO-only change was too weak and not retained; do not use light or material tint as substitute for crown geometry.',
+ actual_components=targets,visual_diagnosis='Actual Unity63 Bastion detail: foundation shrub masses read as large faceted green rocks; imported donor Shrub_group is instead leaf cards and must remain untouched; reference has many smaller coherent rounded leaf clusters. Preserve the existing footprint, ground contact and all architecture. Native64 stopped before editing because the wrong semantic mesh was targeted (leaf cards, no crown components). Native63 SSAO-only change was too weak and not retained; do not use light or material tint as substitute for crown geometry.',
  task='Replace each listed existing single crown with an authored arrangement of 7 to 11 overlapping small leaf lobes. Give normalized centers x/y/z in [0,1] of the measured crown bbox and normalized radii rx/ry/rz in [0.16,0.34]. Every lobe must fit inside original bounds: radius <= center <= 1-radius. Keep bottom contact (lowest z-radius <=0.04) and top profile (highest z+radius >=0.9); preserve clump silhouette overall, with notches. Author specific asymmetric overlapping centers, not new separate plants. Return exactly one action per listed component. Existing crown will be removed, never overlaid.')
 write('shrub-crown-mesh-context.json',context);context_text=json.dumps(context)
 lobe_props={k:{'type':'number'} for k in ['x','y','z','rx','ry','rz']}
