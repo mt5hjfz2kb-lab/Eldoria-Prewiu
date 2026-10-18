@@ -107,7 +107,7 @@ namespace Eldoria.ReferenceClean {
    host.Select(id);Refresh();
   }
   public void ShowStory(){
-   Refresh();host.Hud.ShowNarrative("Crónica de Valoria",Story);
+   Refresh();host.Hud.ShowNarrative("Crónica de Valoria",Speaker+": "+Dialogue);
 
   }
  }
