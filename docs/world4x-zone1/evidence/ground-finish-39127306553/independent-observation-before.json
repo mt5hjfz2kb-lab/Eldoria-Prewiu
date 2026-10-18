@@ -1,0 +1,9 @@
+{
+  "reviewer": "ChatGPT direct inspection of original PNG bytes on 2026-10-18",
+  "reference_global": "Open olive/golden prairie; central purple corrupted earth, southern coast, scattered mountain and forest groups; one coordinate space.",
+  "reference_regional": "Broad clear areas for cities; mountains grounded into meadow, gold soil paths, readable nodes. No field of random grass noise.",
+  "reference_local": "Warm stone city on clear ground, ochre branching tracks, sparse rock exposures, clustered conifers, gold crops. This pass is ground-only.",
+  "actual_baseline": "A uniform grainy olive lawn with faint relief and a pale Y-like route. Relief exists in geometry (height range -5.91 to8.15m), but its distinction is weak. Preserve the city pad and all earlier mesh edits.",
+  "failed_strategy": "Three previous 8B responses copied old tiny sculpt choices and returned invalid units/ranges. No edit was executed. Do not repeat old numerical plans. Original raw responses remain in ground-finish-39126030933.",
+  "new_strategy": "Short source-specific context and installed 14B director. Original asymmetric broad landforms plus restrained surface response. No historic parameter examples, no automatic parameter rewriting."
+}

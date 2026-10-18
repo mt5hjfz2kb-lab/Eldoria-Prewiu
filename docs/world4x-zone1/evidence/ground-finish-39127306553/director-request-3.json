@@ -1,0 +1,192 @@
+{
+  "model": "qwen3:14b",
+  "stream": false,
+  "think": false,
+  "format": {
+    "type": "object",
+    "properties": {
+      "diagnosis": {
+        "type": "string"
+      },
+      "design_intent": {
+        "type": "string"
+      },
+      "palette_srgb": {
+        "type": "object",
+        "properties": {
+          "meadow": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "meadow_light": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "dry": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "soil": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "rock": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "meadow",
+          "meadow_light",
+          "dry",
+          "soil",
+          "rock",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "landforms": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": -92,
+              "maximum": 92
+            },
+            "y": {
+              "type": "number",
+              "minimum": -92,
+              "maximum": 92
+            },
+            "rx": {
+              "type": "number",
+              "minimum": 12,
+              "maximum": 48
+            },
+            "ry": {
+              "type": "number",
+              "minimum": 12,
+              "maximum": 58
+            },
+            "height": {
+              "type": "number",
+              "minimum": -3.5,
+              "maximum": 8.5
+            },
+            "angle": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "rx",
+            "ry",
+            "height",
+            "angle"
+          ],
+          "additionalProperties": false
+        },
+        "minItems": 2,
+        "maxItems": 3
+      },
+      "macro_scale": {
+        "type": "number",
+        "minimum": 24,
+        "maximum": 60
+      },
+      "dry_amount": {
+        "type": "number",
+        "minimum": 0.12,
+        "maximum": 0.3
+      },
+      "micro_strength": {
+        "type": "number",
+        "minimum": 0.025,
+        "maximum": 0.09
+      },
+      "slope_rock_start": {
+        "type": "number",
+        "minimum": 11,
+        "maximum": 22
+      },
+      "slope_rock_end": {
+        "type": "number",
+        "minimum": 25,
+        "maximum": 40
+      }
+    },
+    "required": [
+      "diagnosis",
+      "design_intent",
+      "palette_srgb",
+      "landforms",
+      "macro_scale",
+      "dry_amount",
+      "micro_strength",
+      "slope_rock_start",
+      "slope_rock_end"
+    ],
+    "additionalProperties": false
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the Eldoria source-editing terrain director. Choose original spatial/material values, comply with the exact schema and stated units. No markdown or code."
+    },
+    {
+      "role": "user",
+      "content": "You are the terrain artist for an existing Eldoria 4X sector, not a consultant. Author the actual edit recipe. This TEXT request contains independently inspected image descriptions, not direct image input. Return JSON only. Add 2-3 broad ASYMMETRIC hills/basins to the existing mesh, enough to read at strategic camera distance. Prefer one clearly legible landform with height magnitude above 5m plus lower secondary form; leave open level space. Each ellipse uses WORLD X/Y as horizontal, Z vertical, METRES. The 240m patch is a local proof sector, NOT the entire world; no coast or central Breach added in this pass. Protected city pad and border are automatically excluded, not relocated. Existing routes remain. Pick your original positions/proportions, no code. The existing executor directly applies your exact values.\nREQUIRED palette keys: meadow, meadow_light, dry, soil, rock, path. Each is [R,G,B] sRGB INTEGERS 0..255, NOT linear colours. Meadow and meadow_light EACH: R80..160 G90..170 B25..100; G>=R; G>B+30. Each corresponding meadow_light channel may differ from meadow by AT MOST35. Restrained olive-gold, not saturated green. Dry: R150..220 G130..200 B65..140. Warm soil and light ochre path; warm grey rock, avoid very dark paths. Broad low-contrast surface transitions, not camouflage.\nEach landform EXACT keys x,y,rx,ry,height,angle. x/y -92..92; rx12..48; ry12..58; height -3.5..8.5; angle degrees -180..180. At least one |height|>=3. Other fields: macro_scale24..60 METRES, dry_amount0.12..0.30 FRACTION, micro_strength0.025..0.09 FRACTION, slope_rock_start11..22 DEGREES, slope_rock_end25..40 DEGREES. Slope values like0.2 or0.8 are WRONG units. Explain visible diagnosis and intended composition in two short fields diagnosis/design_intent. No ART PASS. Check ALL limits before returning.\nACTUAL SOURCE {\"sha256\": \"6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8\", \"name\": \"ZoneOne continuous prairie source\", \"bounds\": [[-120.0, -120.0, -5.908100128173828], [120.0, 120.0, 8.145066261291504]], \"vertex_count\": 16069, \"polygons\": 28800, \"protected_city_pad\": [-40, 4, -52, -8], \"axes\": \"Blender WORLD X Y horizontal; Z up\", \"reference_scope\": \"local proof sector, not full128x128 world\"}\nVISUAL OBSERVATIONS {\"reviewer\": \"ChatGPT direct inspection of original PNG bytes on 2026-10-18\", \"reference_global\": \"Open olive/golden prairie; central purple corrupted earth, southern coast, scattered mountain and forest groups; one coordinate space.\", \"reference_regional\": \"Broad clear areas for cities; mountains grounded into meadow, gold soil paths, readable nodes. No field of random grass noise.\", \"reference_local\": \"Warm stone city on clear ground, ochre branching tracks, sparse rock exposures, clustered conifers, gold crops. This pass is ground-only.\", \"actual_baseline\": \"A uniform grainy olive lawn with faint relief and a pale Y-like route. Relief exists in geometry (height range -5.91 to8.15m), but its distinction is weak. Preserve the city pad and all earlier mesh edits.\", \"failed_strategy\": \"Three previous 8B responses copied old tiny sculpt choices and returned invalid units/ranges. No edit was executed. Do not repeat old numerical plans. Original raw responses remain in ground-finish-39126030933.\", \"new_strategy\": \"Short source-specific context and installed 14B director. Original asymmetric broad landforms plus restrained surface response. No historic parameter examples, no automatic parameter rewriting.\"}\nCorrect this exact rejection with a NEW full valid original plan: Meadow must be a restrained olive green, not grey, neon or beige; actual proposed values: {\n  \"diagnosis\": \"Added two distinct landforms with clear elevation contrast and directional asymmetry; introduced subtle surface variation without disrupting existing features.\",\n  \"design_intent\": \"Enhance terrain readability with a dominant hill and secondary basin, while maintaining warm, low-contrast surface tones for cohesion with the prairie baseline.\",\n  \"palette_srgb\": {\n    \"meadow\": [120, 140, 60],\n    \"meadow_light\": [155, 175, 95],\n    \"dry\": [180, 160, 80],\n    \"soil\": [140, 110, 60],\n    \"rock\": [110, 110, 110],\n    \"path\": [190, 150, 90]\n  },\n  \"landforms\": [\n    {\n      \"x\": 20,\n      \"y\": -30,\n      \"rx\": 36,\n      \"ry\": 42,\n      \"height\": 6.2,\n      \"angle\": 45\n    },\n    {\n      \"x\": -25,\n      \"y\": 15,\n      \"rx\": 28,\n      \"ry\": 52,\n      \"height\": -2.8,\n      \"angle\": -60\n    },\n    {\n      \"x\": -10,\n      \"y\": -10,\n      \"rx\": 30,\n      \"ry\": 45,\n      \"height\": 3.1,\n      \"angle\": 120\n    }\n  ],\n  \"macro_scale\": 48,\n  \"dry_amount\": 0.22,\n  \"micro_strength\": 0.06,\n  \"slope_rock_start\": 16,\n  \"slope_rock_end\": 32\n}"
+    }
+  ],
+  "options": {
+    "temperature": 0.3,
+    "num_ctx": 8192,
+    "num_predict": 2300
+  },
+  "keep_alive": "2m"
+}
