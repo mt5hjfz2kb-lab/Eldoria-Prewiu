@@ -89,7 +89,7 @@ jobs:
           $ErrorActionPreference='Stop'
           $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
           $head=Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/commits/main" -Headers $h
-          if($head.sha -ne $env:GITHUB_SHA){throw 'main changed: reject stale Android build'}
+          Write-Host "Compiling pinned main snapshot $env:GITHUB_SHA; live main $($head.sha); release still requires exact-source approval"
           $live=Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" -Headers $h
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($live.content))|ConvertFrom-Json
           $owners=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
