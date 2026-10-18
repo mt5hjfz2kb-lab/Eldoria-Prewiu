@@ -1,3 +1,23 @@
+# Estado actual — Valoria integrada y prueba privada para iPhone
+
+Actualizado 18 de octubre de 2026. La prioridad del propietario sigue siendo MEJORAR LA CALIDAD VISUAL DE LA CIUDAD, junto con su jugabilidad. No reiniciar el proyecto ni sustituirlo por una maqueta web.
+
+- Prueba privada publicada: https://valoria-city-world.kbkvc5c45n.chatgpt.site
+- Proyecto Sites: appgprj_6ad4ce602c808191859268d570c93352. Reutilizar este ID y mantener acceso privado en futuras actualizaciones.
+- Publicación confirmada: appgdep_6ad4d23be5b08191aebfa4ce91b07c63; fuente del sitio 8aa0c1a90f839e8ae09c47db4a4135a24e3de571.
+- Unity native103: 39133202399 SUCCESS; fuente ac7654d9d778a41c74157e1504e2c852de5e1b49; salida 3347e29b91ba94427648b0250e898ef10d125a05.
+- Escena jugable: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.
+- Royal Gold + Zona1 4X usan la misma sesión y una cámara activa. Ciclo real I–II completo con botones uGUI: construir, recolectar, despejar ruta, mejorar Bastión, cuartel, reclutar, confirmar marcha, Engendro y recargar. Guardados canónicos intactos.
+- Mejora visual retenida: aserradero terminado STATE2, 4876 triángulos, tejado completo/cerramiento/madera almacenada, comparación nativa102 con misma cámara/luz. Fuente editable existente conservada. La escena original independiente queda intacta.
+- WebGL compila la escena actual integrada, no la antigua escena SHARP/Region1. Artefacto12138697606; revisión103. Archivos web177785751bytes. Transporte en fragmentos con hashes verificados, carga con progreso y guardado local del navegador independiente de Android.
+- Publicación verificada; ejecución en navegador y rendimiento físico de iPhone NO verificados en esta sesión. Sin control-browser disponible, no se sustituyó por otra vía de automatización. El usuario dispone del enlace para probar Safari.
+- No ART_APPROVED: materiales, vegetación, integración edificio-terreno y acabado global de ciudad pendientes. Mundo conserva arte prototipo. Próximo trabajo: legibilidad de objetivos del mapa y mejora visual sostenida de la ciudad con comparativas nativas.
+- Android97/1.5 conservado. Esta web no actualiza el APK. Nuevos cambios de código requieren APK compatible antes de publicar contenido Android.
+- UI fuente236a81aac894ea0845b85c90310b92dddb32d10f y mundo fuentef3ccc8d0b7767472ef09b02c3091f6d676f204ee consumidos en esta rama. No sobrescribir sus ramas independientes ni reactivar proyectos pausados.
+
+
+## Registro anterior conservado
+
 # Native96 comprobado; bootstrap Android1.5/código6 en validación97
 
 Native96 run39126629008 SUCCESS, fuente ffd3c223ac7d4c8d6e291921b268983eddd6955b, salida f28fffbfef2fadb31369b23bec0acce13f944017. Paquete Windows real119535878bytes, SHA2562d144991f5fb804951b0961b605856b509fd7cb9700aaae44c2cadecad15810d, CRC2394233119. Unity cargó la escena desde el paquete y pasó el ciclo real I-II/capítuloII completo, revisión19, una cámara, guardados canónicos intactos. Pasaron las cuatro pruebas del cargador con UnityWebRequest file://: descarga válida, caché sin conexión, hash incorrecto y contrato incompatible. No equivalen a HTTPS público ni a teléfono. La escena original sigue SHA256433d6ed87748d308dba1ee7629617fc1bf8fb98b76d08cd66d84842eb717326f (native91), sin cambios artísticos.

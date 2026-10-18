@@ -19,3 +19,21 @@ Native100 39132392803 / source9893da1eb1a36ae2950ef75e6c56d539f83100ed / output0
 Native101 only corrects clipped world header and explicitly labels return Ciudad/City with native assertions. Continue: named world targets/visual readability, existing sawmill-state2 comparison, then candidate promotion and exact bundled-scene proof before compatible Android1.6/code7. New runtime code requires APK update; do not publish this as content for code6. Primary mission remains the existing Valoria visual/playable work, not pipeline work.
 
 Native101 39132807199 PASS; outputc4055d2cc23f87640c0b788903e20553626c04e5. Native102 39132971029 sourcef2ee9b1e9af8d3f2f5060df011f8d71ba81f6181/output44ec9273df61c387f87e9eaac7b8de39872e1f3f: genuine same-camera sawmill before/after reviewed. Completed STATE2 has full roof, enclosure and timber stock; retain as built model in integrated candidate, not formal whole-scene art approval. Native103 web_playtest first reruns full integrated I-II with this variant, then compiles exact candidate WebGL. Owner18Oct15:43 Europe/Madrid explicitly requests iPhone browser link and reiterates CITY VISUAL QUALITY priority. Private Sites playtest authorized; older site/production branches remain intact. Web save is existing browser PlayerPrefs path, separate from Android.
+
+# Estado actual — Valoria integrada y prueba privada para iPhone
+
+Actualizado 18 de octubre de 2026. La prioridad del propietario sigue siendo MEJORAR LA CALIDAD VISUAL DE LA CIUDAD, junto con su jugabilidad. No reiniciar el proyecto ni sustituirlo por una maqueta web.
+
+- Prueba privada publicada: https://valoria-city-world.kbkvc5c45n.chatgpt.site
+- Proyecto Sites: appgprj_6ad4ce602c808191859268d570c93352. Reutilizar este ID y mantener acceso privado en futuras actualizaciones.
+- Publicación confirmada: appgdep_6ad4d23be5b08191aebfa4ce91b07c63; fuente del sitio 8aa0c1a90f839e8ae09c47db4a4135a24e3de571.
+- Unity native103: 39133202399 SUCCESS; fuente ac7654d9d778a41c74157e1504e2c852de5e1b49; salida 3347e29b91ba94427648b0250e898ef10d125a05.
+- Escena jugable: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.
+- Royal Gold + Zona1 4X usan la misma sesión y una cámara activa. Ciclo real I–II completo con botones uGUI: construir, recolectar, despejar ruta, mejorar Bastión, cuartel, reclutar, confirmar marcha, Engendro y recargar. Guardados canónicos intactos.
+- Mejora visual retenida: aserradero terminado STATE2, 4876 triángulos, tejado completo/cerramiento/madera almacenada, comparación nativa102 con misma cámara/luz. Fuente editable existente conservada. La escena original independiente queda intacta.
+- WebGL compila la escena actual integrada, no la antigua escena SHARP/Region1. Artefacto12138697606; revisión103. Archivos web177785751bytes. Transporte en fragmentos con hashes verificados, carga con progreso y guardado local del navegador independiente de Android.
+- Publicación verificada; ejecución en navegador y rendimiento físico de iPhone NO verificados en esta sesión. Sin control-browser disponible, no se sustituyó por otra vía de automatización. El usuario dispone del enlace para probar Safari.
+- No ART_APPROVED: materiales, vegetación, integración edificio-terreno y acabado global de ciudad pendientes. Mundo conserva arte prototipo. Próximo trabajo: legibilidad de objetivos del mapa y mejora visual sostenida de la ciudad con comparativas nativas.
+- Android97/1.5 conservado. Esta web no actualiza el APK. Nuevos cambios de código requieren APK compatible antes de publicar contenido Android.
+- UI fuente236a81aac894ea0845b85c90310b92dddb32d10f y mundo fuentef3ccc8d0b7767472ef09b02c3091f6d676f204ee consumidos en esta rama. No sobrescribir sus ramas independientes ni reactivar proyectos pausados.
+
