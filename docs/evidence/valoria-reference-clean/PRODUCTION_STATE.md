@@ -97,3 +97,5 @@ Native58 run39085487964/output66decf223ce3005a388ec3cd1015fbdb5a7edc9c: true nat
 
 ### Native59 stopped before geometry; native60 constrained retry
 Native59 run39085972291 failed its pre-edit action-count assertion (9 supplied, 3–7 allowed). Independent review also found component72 crown below the safety margin. No BlenderMCP edits or Unity captures occurred. Native60 uses an Ollama JSON schema with maxItems7 and provides measured minimum crown scales; all original numeric/topology/protected-mesh checks remain. Retained scene/native54 and package/native56 unchanged.
+
+Native60 run39086345059 also stopped before edits: crown-height assertion. Native61 encodes each actual component ID with its admissible discrete vertical scales in the response schema, preventing submerged proposals at generation. No scene changes or captures from60.
