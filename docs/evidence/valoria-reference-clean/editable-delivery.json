@@ -1,5 +1,5 @@
 {
-    "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
+    "source_sha": "408f01d4d8ae6e44e622bd3cae15bffd43915c91",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
     "prefab_lighting": "Portable prefabs use light probes; placed scene keeps its baked GI",
     "prefabs": [
@@ -12,8 +12,8 @@
         "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/RiverSurface.prefab",
         "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/ValoriaArchitecture.prefab"
     ],
-    "scene_triangles": 635048,
-    "scene_renderers": 35,
+    "scene_triangles": 658186,
+    "scene_renderers": 36,
     "geometry_unchanged": true,
     "art_approved": false,
     "physical_mobile_profiled": false
