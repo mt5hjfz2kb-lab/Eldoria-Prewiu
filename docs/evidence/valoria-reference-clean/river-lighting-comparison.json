@@ -1,6 +1,6 @@
 {
-    "source_sha": "1f8222abac374bb4e75f1d7b0e9823e27e612717",
-    "method": "One existing baked128 cubemap / rough environment reflection / remove deep-water repeated caustic lattice",
+    "source_sha": "a1edc1b6abcce659f68379404e5625718f53864a",
+    "method": "Existing baked128 cube / domain-warp flow using reused noise / smoother reflection normal to remove parallel bands",
     "same_camera": true,
     "same_lighting": true,
     "same_mesh": true,
