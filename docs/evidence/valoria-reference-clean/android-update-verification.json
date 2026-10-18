@@ -1,12 +1,12 @@
 ﻿{
     "cryptographic_signature_verified":  true,
-    "prior_version_code":  4,
-    "version_code":  5,
+    "prior_version_code":  5,
+    "version_code":  6,
     "owner_phone_update_tested":  false,
     "package":  "com.eldoria.valoria.v5test",
-    "sha256":  "011b4237944dc9ca670a8e93c3e9fc41c9b6782f64c192d9b77729ef3be4e68f",
-    "bytes":  174913136,
+    "sha256":  "34dfc82b81f5a8f5c4b2865ac6ed4548d6c6fa7e0941e7d189c3f3ec3aae93f4",
+    "bytes":  175170922,
     "certificate_sha256":  "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
     "user_data_reset":  false,
-    "source_sha":  "cb076f982a45ff951793413f1fd4bae819efe2dd"
+    "source_sha":  "773f4f24c09445bf4fe9f16d6f8d98949ac5ae6f"
 }

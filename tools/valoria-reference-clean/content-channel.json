@@ -1,0 +1,14 @@
+{
+    "schema":  1,
+    "revision":  97,
+    "minimumPlayerCode":  6,
+    "platform":  "android",
+    "unityVersion":  "6000.3.23f1",
+    "runtimeContract":  "de7095551d0005fed0e59d74dd7099dbb6778acede026330971a7ea542b5bc30",
+    "url":  "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/valoria-content-97/valoria-android-987a5b36922959d5af74ed7f3586261082e5593f2d0fbc0f37b07e397fcc2957.bundle",
+    "sha256":  "987a5b36922959d5af74ed7f3586261082e5593f2d0fbc0f37b07e397fcc2957",
+    "scene":  "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
+    "sceneSourceSha256":  "433d6ed87748d308dba1ee7629617fc1bf8fb98b76d08cd66d84842eb717326f",
+    "bytes":  109632996,
+    "crc":  570690401
+}
