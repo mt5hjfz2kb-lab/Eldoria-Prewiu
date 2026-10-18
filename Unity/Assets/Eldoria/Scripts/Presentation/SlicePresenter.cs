@@ -125,7 +125,20 @@ namespace Eldoria.Presentation
                 StartCoroutine(LogPlayableUiGeometryNextFrame());
 #endif
             }
-            if(SceneHost!=null&&Mouse.current!=null&&!IsPointerOverInteractiveUi(Mouse.current.position.ReadValue())){float wheel=Mouse.current.scroll.ReadValue().y;if(Mathf.Abs(wheel)>.01f)SceneHost.Zoom(-wheel*.02f);}
+            if(SceneHost!=null&&Mouse.current!=null&&!IsPointerOverInteractiveUi(Mouse.current.position.ReadValue())){
+                float rawWheel=Mouse.current.scroll.ReadValue().y;
+                if(Mathf.Abs(rawWheel)>.01f){
+                    // Real WebGL Chromium wheel +240/-240 arrives as one InputSystem
+                    // tick, not 240 units. The prior -wheel*.02f followed by the
+                    // integrated world's exp(delta*.04f) moved zoom only 0.0256
+                    // units at size 32: practically invisible. Windows devices
+                    // may report ~120 instead. Normalize both ranges BEFORE
+                    // applying the same proven scene Zoom, leaving touch pinch
+                    // and game camera limits unchanged.
+                    float ticks=Mathf.Abs(rawWheel)>=16f?rawWheel/120f:rawWheel;
+                    SceneHost.Zoom(-Mathf.Clamp(ticks,-3f,3f)*2f);
+                }
+            }
             HandlePointerInput();
             AnimateCityAmbientation();
             UpdateBuildingLevelBadgePositions();

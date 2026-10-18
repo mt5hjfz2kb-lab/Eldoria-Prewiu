@@ -294,7 +294,12 @@ jobs:
               @{original_procedure_run=38279800977;source_glbs_excluded=$movedFiles;source_bytes_excluded=$movedBytes;single_scene='Valoria_Reference_Clean.unity';user_data_touched=$false}|ConvertTo-Json|Set-Content (Join-Path 'docs/evidence/valoria-reference-clean' ($req.stage+'-optimized-payload.json')) -Encoding utf8
             }
             $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-            if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
+            $nativeTimeoutMs=if($req.stage -eq 'experience_validate'){720000}else{2400000}
+          if(-not $p.WaitForExit($nativeTimeoutMs)){
+            if(Test-Path $log){Get-Content $log -Tail 90}
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            throw "Own Unity process timed out after $nativeTimeoutMs ms; inspect exact log and Search indexing evidence"
+          }
           }finally{
 
             if($req.stage -in @('android','web_playtest')){

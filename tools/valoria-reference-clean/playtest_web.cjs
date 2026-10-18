@@ -490,19 +490,19 @@ async function main() {
     }
     await closeDetails();
     const beforeZoom = latest, box = await canvasBox(), seq = sequence;
-    await page.mouse.move(box.x + box.width * 0.56, box.y + box.height * 0.52);
-    report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in', deltaY: +240, before: summary(beforeZoom) });
-    // The authored world opens at its regional MAXIMUM fitting zoom.
-    // Scrolling outward (-240) while already at this bound cannot change
-    // camera size; that is correct engine behaviour, not a failed gesture.
-    // Scroll inward using the real wheel, then assert the observed camera
-    // projection changed. We never mutate camera values from the browser.
-    await page.mouse.wheel(0, +240);
+    // Use the same exposed ground lane that allowed real portrait panning.
+    // The world city label is a genuine UI control and must keep intercepting
+    // wheel/pointer input when hovered. Observe an actual zoom-in wheel tick,
+    // never set camera values through browser automation.
+    await page.mouse.move(box.x + box.width * 0.83, box.y + box.height * 0.56);
+    report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in',
+      deltaY: -240, origin: 'exposed-world-ground', before: summary(beforeZoom) });
+    await page.mouse.wheel(0, -240);
     await waitState(() => true, 'Zoom-in observation', 8000, seq);
-    await sleep(800);
+    await sleep(850);
     const zoomDifference = cameraDifference(beforeZoom, latest);
-    need(zoomDifference && Math.abs(zoomDifference.zoom) > 0.05,
-      'Mouse wheel zoom-in on free world terrain did not alter camera size');
+    need(zoomDifference && zoomDifference.zoom < -0.65,
+      'A real world mouse-wheel tick did not visibly zoom toward the selected world ground');
     report.checks.world_zoom = { pass: true, input_delta_y: +240,
       initial_at_regional_fitting_limit: beforeZoom.camera.zoom >= 31.9,
       zoom_direction: zoomDifference.zoom < 0 ? 'in' : 'out',
