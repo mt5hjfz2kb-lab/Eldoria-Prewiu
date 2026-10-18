@@ -1,0 +1,11 @@
+{
+  "workstream":"eldoria-ui-royal-gold-v1-20261018",
+  "branch":"ui/eldoria-royal-gold-v1-20261018",
+  "request_status":"PREPARING_INDEPENDENT_CANDIDATE",
+  "native_execution_enabled":false,
+  "windows_lease_claimed":false,
+  "budget_eur":0,
+  "existing_owner_priority":"valoria-master-plan-layered-construction-20261016",
+  "purpose":"Native import/compile, PlayMode UI input and safe-area captures in isolated UI-only preview; no city scene, camera, gameplay, save, APK or publication edits.",
+  "instruction":"This is a coordination request, NOT a runner grant. Do not schedule Unity until a compatible explicit reservation is recorded by the resource owner. Keep all current Valoria/4X permissions intact."
+}

@@ -1,0 +1,65 @@
+name: Royal Gold UI independent checks
+on:
+  push:
+    branches: ['ui/eldoria-royal-gold-v1-20261018']
+    paths:
+      - '.github/workflows/eldoria-ui-royal-gold-v1.yml'
+      - 'tools/eldoria-ui-royal-gold-v1/**'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/**'
+permissions:
+  contents: write
+concurrency:
+  group: royal-gold-independent-linux
+  cancel-in-progress: false
+jobs:
+  independent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            Unity/Assets/Eldoria/UI
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            tools/eldoria-ui-royal-gold-v1
+            docs/ui-royal-gold-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow==11.1.0
+      - name: Preserve recovered art and materialize authored UI
+        run: |
+          python tools/eldoria-ui-royal-gold-v1/art_inventory.py
+          if [ -f tools/eldoria-ui-royal-gold-v1/materialize.py ]; then python tools/eldoria-ui-royal-gold-v1/materialize.py; fi
+      - name: Execute actual CSharp domain adapter tests when present
+        run: |
+          if [ -f tools/eldoria-ui-royal-gold-v1/Tests/AdapterTests.csproj ]; then
+            dotnet run --project tools/eldoria-ui-royal-gold-v1/Tests/AdapterTests.csproj --configuration Release | tee docs/ui-royal-gold-v1/adapter-test-output.txt
+          fi
+      - name: Preserve only UI outputs on the exact input head
+        if: success()
+        env:
+          UI_BRANCH: ui/eldoria-royal-gold-v1-20261018
+        run: |
+          git config user.name 'Eldoria Royal Gold UI builder'
+          git config user.email 'royal-ui@users.noreply.github.com'
+          git add Unity/Assets/Eldoria/UI docs/ui-royal-gold-v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'build(ui): preserve isolated serialized UI assets and measured checks [skip ci]'
+          git fetch origin "$UI_BRANCH"
+          if [ "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA" ]; then
+            git format-patch -1 --stdout > docs/ui-royal-gold-v1/uncommitted-output.patch
+            echo 'SOURCE_MOVED: output retained as artifact; no overwrite or automatic merge.'
+          else
+            git push origin "HEAD:refs/heads/$UI_BRANCH"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: royal-ui-independent-${{ github.run_id }}
+          path: |
+            docs/ui-royal-gold-v1
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1
+          if-no-files-found: error
