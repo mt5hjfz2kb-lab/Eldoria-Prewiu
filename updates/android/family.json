@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "enabled": false,
+  "channel": "family",
+  "packageName": "com.eldoria.valoria.v5test",
+  "message": "El canal familiar se activará después de verificar la primera APK con actualizador integrado."
+}

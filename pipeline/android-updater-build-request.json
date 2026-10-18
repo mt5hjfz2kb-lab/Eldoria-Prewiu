@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "versionCode": 7,
+  "versionName": "1.7",
+  "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+  "workstreamId": "valoria-master-plan-layered-construction-20261016",
+  "budgetEur": 0,
+  "note": "One-time updater-enabled APK bootstrap; disabled until source-policy review and Windows runner available."
+}

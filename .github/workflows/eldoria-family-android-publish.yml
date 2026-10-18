@@ -1,0 +1,97 @@
+name: '[ELDORIA] Promote verified family Android APK'
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/android-updater-release-request.json'
+
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eldoria-android-family-release
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify explicit release request and source run
+        id: approval
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cfg = require('./pipeline/android-updater-release-request.json');
+            if(cfg.enabled !== true) {core.info('Release disabled: no artifact or channel changed'); return;}
+            if(cfg.budgetEur !== 0 || cfg.versionCode < 7 || !/^[0-9a-f]{40}$/.test(cfg.expectedSourceSha))
+              throw Error('Invalid release approval/source identity');
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:cfg.buildRunId})).data;
+            if(run.conclusion!=='success' || run.status!=='completed' || run.head_branch!=='main' ||
+               run.head_sha!==cfg.expectedSourceSha ||
+               !run.name.startsWith('[ELDORIA] Family Android updater build'))
+              throw Error('Exact signed builder run not successful on main');
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{...context.repo,run_id:run.id,per_page:100});
+            const name='eldoria-family-updater-code'+cfg.versionCode+'-'+run.id;
+            if(!artifacts.some(a=>!a.expired&&a.name===name))throw Error('Signed APK artifact absent/expired');
+            core.setOutput('approved','true');core.setOutput('run',String(run.id));
+            core.setOutput('code',String(cfg.versionCode));core.setOutput('source',run.head_sha);
+      - uses: actions/download-artifact@v4
+        if: steps.approval.outputs.approved == 'true'
+        with:
+          name: eldoria-family-updater-code${{ steps.approval.outputs.code }}-${{ steps.approval.outputs.run }}
+          run-id: ${{ steps.approval.outputs.run }}
+          github-token: ${{ github.token }}
+          path: verified-build
+      - name: Confirm signed original bytes before release promotion
+        if: steps.approval.outputs.approved == 'true'
+        env:
+          ELDORIA_EXPECTED_CODE: ${{ steps.approval.outputs.code }}
+          ELDORIA_EXPECTED_SHA: ${{ steps.approval.outputs.source }}
+        run: |
+          cp updates/android/family.json "$RUNNER_TEMP/eldoria-proposed-family.json"
+          node tools/android-updates/create-channel.mjs \
+            "verified-build/Eldoria-Valoria-code$ELDORIA_EXPECTED_CODE.apk" \
+            verified-build/android-build-identity.json "$RUNNER_TEMP/eldoria-proposed-family.json"
+      - name: Publish immutable release then verify its public bytes
+        if: steps.approval.outputs.approved == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CODE: ${{ steps.approval.outputs.code }}
+          SOURCE: ${{ steps.approval.outputs.source }}
+        run: |
+          set -euo pipefail
+          tag="eldoria-android-code$CODE"
+          asset="Eldoria-Valoria-code$CODE.apk"
+          url="https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$asset"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release tag exists: immutable, no overwrite'; exit 1
+          fi
+          gh release create "$tag" "verified-build/$asset" \
+            --repo "$GITHUB_REPOSITORY" --target "$SOURCE" \
+            --title "Eldoria Android code$CODE · family preview" --prerelease \
+            --notes "Verified original APK signature and device-compatible certificate. Integrated main-only Unity scene. Physical phone test remains separate; Android requires user confirmation."
+          curl --fail --location --retry 5 --retry-delay 3 --silent --show-error "$url" -o published.apk
+          cmp published.apk "verified-build/$asset"
+          echo 'ELDORIA_FAMILY_RELEASE_BYTE_MATCH_PASS'
+      - name: Atomically advance main family manifest only after public verification
+        if: steps.approval.outputs.approved == 'true'
+        env:
+          ELDORIA_EXPECTED_CODE: ${{ steps.approval.outputs.code }}
+          ELDORIA_EXPECTED_SHA: ${{ steps.approval.outputs.source }}
+        run: |
+          set -euo pipefail
+          git config user.name "Eldoria family release"
+          git config user.email "eldoria-family-release@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+          node tools/android-updates/create-channel.mjs \
+            "verified-build/Eldoria-Valoria-code$ELDORIA_EXPECTED_CODE.apk" \
+            verified-build/android-build-identity.json updates/android/family.json
+          node --test tools/android-updates/check-channel.test.mjs
+          git add updates/android/family.json
+          git commit -m "release(android): verified family channel code$ELDORIA_EXPECTED_CODE"
+          git push origin HEAD:main
+          echo 'ELDORIA_FAMILY_MAIN_CHANNEL_PROMOTED'

@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "buildRunId": 0,
+  "versionCode": 7,
+  "expectedSourceSha": "",
+  "budgetEur": 0,
+  "note": "Only approve a compiled, signature-verified APK artifact after QA; no unverified nightly releases."
+}

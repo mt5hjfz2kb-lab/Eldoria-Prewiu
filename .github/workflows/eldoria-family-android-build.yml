@@ -1,0 +1,172 @@
+name: '[ELDORIA] Family Android updater build'
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/android-updater-build-request.json'
+      - 'tools/android-updates/**'
+      - 'updates/android/family.json'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/EldoriaAndroidAutoUpdater.cs'
+      - 'Unity/Assets/Plugins/Android/EldoriaInstallPermission.androidlib/**'
+
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-reference-clean-native
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.gate.outputs.build }}
+      code: ${{ steps.gate.outputs.code }}
+      version: ${{ steps.gate.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/android-updates
+            updates/android
+            pipeline/android-updater-build-request.json
+            pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify channel policy and negative cases
+        run: |
+          node --test tools/android-updates/check-channel.test.mjs
+          node tools/android-updates/check-channel.mjs updates/android/family.json
+      - name: Protect sole integrated main workstream
+        id: gate
+        run: |
+          node <<'JS'
+          const fs=require('node:fs');
+          const cfg=JSON.parse(fs.readFileSync('pipeline/android-updater-build-request.json'));
+          const reg=JSON.parse(fs.readFileSync('pipeline/active-workstreams.json'));
+          const owners=reg.active.filter(w=>w.resources?.includes('windows-runner-heavy'));
+          if(owners.length!==1 || owners[0].id!==cfg.workstreamId || owners[0].branch!=='main')
+            throw Error('Runner lease belongs to another workstream');
+          if(cfg.budgetEur!==0 || cfg.scene!=='Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity')
+            throw Error('Wrong budget/scene');
+          if(cfg.enabled!==true) { console.log('Verified; build not requested'); process.exit(0); }
+          if(!Number.isInteger(cfg.versionCode) || cfg.versionCode<7 || !/^[0-9]+[.][0-9]+$/.test(cfg.versionName))
+            throw Error('Invalid family updater version');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'build=true\ncode='+cfg.versionCode+'\nversion='+cfg.versionName+'\n');
+          JS
+
+  android:
+    needs: preflight
+    if: needs.preflight.outputs.build == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-layered-source
+          clean: false
+      - name: Build and verify signed integrated updater APK without changing main
+        working-directory: valoria-layered-source
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CODE: ${{ needs.preflight.outputs.code }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $head=Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/commits/main" -Headers $h
+          if($head.sha -ne $env:GITHUB_SHA){throw 'main changed: reject stale Android build'}
+          $live=Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" -Headers $h
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($live.content))|ConvertFrom-Json
+          $owners=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($owners.Count -ne 1 -or $owners[0].id -ne 'valoria-master-plan-layered-construction-20261016' -or $owners[0].branch -ne 'main'){throw 'Runner is claimed by another workstream'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools already busy; never cancel other jobs'}
+          $proof=Get-Content 'docs/evidence/valoria-reference-clean/android-existing-key-check.json' -Raw|ConvertFrom-Json
+          if(-not @($proof.keys|Where-Object {$_.matches_original -and $_.certificate_sha256 -eq 'f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8' -and (Test-Path $_.path)}).Count){throw 'Original Android signing key missing'}
+          $requestPath='tools/valoria-reference-clean/request.json'
+          $cfg=Get-Content $requestPath -Raw|ConvertFrom-Json
+          $cfg.android_version_code=[int]$env:CODE;$cfg.android_version_name=$env:VERSION
+          $cfg.content_updates=$false;$cfg.publish_content=$false
+          $cfg|ConvertTo-Json -Depth 20|Set-Content $requestPath -Encoding utf8
+          $root='Unity/Assets/Eldoria/Resources/Valoria'
+          $stream='Unity/Assets/StreamingAssets/ValoriaFamilyV3'
+          $stash=Join-Path $env:RUNNER_TEMP "eldoria-family-stash-$env:GITHUB_RUN_ID"
+          New-Item $stash -ItemType Directory -Force|Out-Null
+          $moved=@();$streamBackup=Join-Path $stash 'stream'
+          try{
+            if(Test-Path $root){
+              $base=(Resolve-Path $root).Path
+              foreach($f in @(Get-ChildItem $root -Recurse -File -Filter '*.glb')){
+                $rel=$f.FullName.Substring($base.Length).TrimStart([char]92)
+                $target=Join-Path (Join-Path $stash 'glb') $rel
+                New-Item (Split-Path $target) -ItemType Directory -Force|Out-Null
+                Move-Item $f.FullName $target
+                $moved+=@{source=$f.FullName;temporary=$target}
+              }
+            }
+            if(Test-Path $stream){Move-Item $stream $streamBackup}
+            $log=Join-Path $env:RUNNER_TEMP "eldoria-family-android-$env:GITHUB_RUN_ID.log"
+            $args=@('-batchmode','-force-d3d11','-buildTarget','Android',
+              '-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",
+              '-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build','-logFile',"$log")
+            $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $p.WaitForExit(3300000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Unity Android build timed out'}
+            $p.Refresh();if($p.ExitCode -ne 0){Get-Content $log -Tail 180;throw "Unity Android build failed: $($p.ExitCode)"}
+          }finally{
+            foreach($it in $moved){New-Item (Split-Path $it.source) -ItemType Directory -Force|Out-Null;Move-Item $it.temporary $it.source -Force}
+            if(Test-Path $streamBackup){Move-Item $streamBackup $stream}
+          }
+          $apk=(Resolve-Path 'Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk').Path
+          $sdk=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/SDK'
+          $java=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/OpenJDK/bin/java.exe'
+          $sdkTools=Get-ChildItem (Join-Path $sdk 'build-tools') -Directory|Sort-Object Name -Descending|
+            Where-Object {(Test-Path (Join-Path $_.FullName 'lib/apksigner.jar')) -and (Test-Path (Join-Path $_.FullName 'aapt.exe'))}|Select-Object -First 1
+          if(-not $sdkTools){throw 'Original Android verifier missing'}
+          $old=$ErrorActionPreference
+          try{$ErrorActionPreference='Continue'
+            $signed=(& $java -jar (Join-Path $sdkTools.FullName 'lib/apksigner.jar') verify --verbose --print-certs $apk 2>&1|Out-String);$s=$LASTEXITCODE
+            $badging=(& (Join-Path $sdkTools.FullName 'aapt.exe') dump badging $apk 2>&1|Out-String);$b=$LASTEXITCODE
+            $perms=(& (Join-Path $sdkTools.FullName 'aapt.exe') dump permissions $apk 2>&1|Out-String);$m=$LASTEXITCODE
+          }finally{$ErrorActionPreference=$old}
+          if($s -ne 0 -or $b -ne 0 -or $m -ne 0){throw 'Native signature/manifest tools failed'}
+          $cert='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
+          if(-not $signed.ToLowerInvariant().Contains($cert)){throw 'Certificate not compatible with installed APK'}
+          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='$env:CODE'"){throw 'VersionCode or package mismatch'}
+          if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'ARM64 absent'}
+          if($perms -notmatch 'android.permission.REQUEST_INSTALL_PACKAGES'){throw 'Android updater permission not merged'}
+          New-Item family-android-output -ItemType Directory -Force|Out-Null
+          $dest="family-android-output/Eldoria-Valoria-code$env:CODE.apk"
+          Copy-Item $apk $dest
+          @{schema=1;channel='family';sourceSha=$env:GITHUB_SHA;versionCode=[int]$env:CODE
+            versionName=$env:VERSION;packageName='com.eldoria.valoria.v5test';certificateSha256=$cert
+            sha256=(Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $dest).Length
+            nativeSignatureVerified=$true;installerPermissionVerified=$true;physicalPhoneTested=$false
+            userDataReset=$false}|ConvertTo-Json|Set-Content 'family-android-output/android-build-identity.json' -Encoding utf8
+          Write-Host 'ELDORIA_FAMILY_ANDROID_UPDATER_BUILD_AND_SIGNATURE_PASS'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: eldoria-family-updater-code${{ needs.preflight.outputs.code }}-${{ github.run_id }}
+          path: valoria-layered-source/family-android-output/*
+          retention-days: 90
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-family-updater-log-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-family-android-${{ github.run_id }}.log
+          if-no-files-found: warn
