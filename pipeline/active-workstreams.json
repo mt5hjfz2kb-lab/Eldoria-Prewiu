@@ -47,7 +47,9 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/IPlayableSceneHost.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs",
-        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -56,7 +58,7 @@
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "REFERENCE_CLEAN_LOCAL_ART_RETAINED_GAMEPLAY_I_II_MIGRATION",
-      "next": "Native77 visually rejected closed rounded pine crowns; retain integrated74scene. Recover web10second BastionII task and existing450wood/300stone/requirements, adapt existing Unity presenter/gateway to current clean scene, preserve currentcamera/GI and saves. No world4X scope changes.",
+      "next": "Native79 gameplay integrated, full general Play guard passed. Next BastionII geometric evolution in separate variant via actual Qwen/BlenderMCP, retain source74BastionI and lighting, compare genuine Unity before integration; compact requirements panel fix.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -371,6 +373,13 @@
             "output": "3bb8e3c397be07c8432a3d1e9852af86eabcf0b7",
             "visual": "REJECTED_ROUNDED_OVERSIZED_CROWNS",
             "authoritative_scene_unchanged": true
+          },
+          "native79": {
+            "run": 39117498102,
+            "source": "cc6b5fc7996aac1ff64372edf8212d67d45fdf07",
+            "output": "2770507a13b6f3263a5f1f2a54332660fa0fd211",
+            "gameplay": "I-II UI, original450wood/300stone and10s timer, idempotent spending, pending/reloaded/offline completion, barracks unlock PASS; fullscene routes/picking/camera/save/EditorPlay PASS",
+            "bastion2_visual": "PENDING"
           }
         }
       },
