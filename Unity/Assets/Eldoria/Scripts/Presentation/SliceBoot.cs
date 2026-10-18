@@ -25,7 +25,7 @@ namespace Eldoria.Presentation
         private static void Initialize()
         {
             // This independently authored scene owns its camera and interaction host.
-            if (SceneManager.GetActiveScene().name == "Valoria_Reference_Clean") return;
+            if (SceneManager.GetActiveScene().name == "Valoria_Reference_Clean" || SceneManager.GetActiveScene().name == "Valoria_Content_Bootstrap") return;\n#if UNITY_EDITOR\n            if (System.Environment.GetEnvironmentVariable("VALORIA_CONTENT_PROBE") == "1") return;\n#endif
 #if UNITY_WEBGL && !UNITY_EDITOR
             Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(Eldoria.Domain.SliceContentProfiles.OwnerIiiId);
 #endif

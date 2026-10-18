@@ -1,3 +1,13 @@
+# Continuación vigente — actualizaciones de contenido Android (native93, en validación)
+
+Se conserva la entrega Android1.4/código5 y la escena/runtime validados91. La orden actual del propietario añade actualización de contenido al abrir la app y futura integración segura UI/4X. El constructor original V5 (2efd346034bdb89ae063406558f0343d753e489a) compila una escena local; no contiene actualizador. No se ha encontrado un mecanismo remoto anterior en main ni en ese árbol. No prometer que la APK instalada ya puede recibir estos cambios: requiere una primera actualización bootstrap compatible, con la misma identidad/firma y sin borrar partida.
+
+93 implementa un cargador opt-in de escenas AssetBundle, comprobación de plataforma/Unity/contrato de código/versión/hash/tamaño/CRC/origen y escena, caché transaccional, respaldo incluido y rechazo de contenido incompatible. No descarga C# ni modifica el guardado. Cambiar código requiere una APK nueva; modelos/materiales/escena compatibles podrán actualizarse al arrancar después de publicar contenido comprobado. Ahora solo se valida un bundle Windows en Unity real y el ciclo jugable existente sobre ese bundle. Android remoto, canal publicado, caída de red/rollback y teléfono todavía no verificados. No es una entrega automática terminada.
+
+Leídos los handoffs vivos de Royal Gold y4X: ambos registran recuperación parcial, sin candidato Unity nativo listo. No se reclama ni se integra su trabajo incompleto; sus propietarios y ramas permanecen intactos. La nueva autorización permite consumir entregas estables cuando lleguen. Prioridad Valoria: preservar el hito Bastión/cuartel y cicloI-II, retomar aserradero existente tras esta validación acotada.
+
+## Entrega anterior conservada
+
 # Valoria — entrega vigente Android 1.4
 
 [APK 1.4 / código5](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39124448827/artifacts/12135662277), también entregada directamente en el chat como Eldoria-Valoria-1.4.apk. 174913136bytes; SHA256 `011b4237944dc9ca670a8e93c3e9fc41c9b6782f64c192d9b77729ef3be4e68f`. Run native92:39124448827, fuente cb076f982a45ff951793413f1fd4bae819efe2dd, salida a1b26ab1529b2c59e2f3e805b17b52013f624069. Cero errores de compilación y23avisos. Paquete `com.eldoria.valoria.v5test`, versión1.4/código5, minSDK29/target36; certificado original `f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8` comprobado criptográficamente. Descarga independiente con CRC del ZIP/APK, SHA y once bibliotecas ELF ARM64 verificados. Se reutiliza el empaquetado optimizado existente; no se han cambiado claves ni borrado datos.
