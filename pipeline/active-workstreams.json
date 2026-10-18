@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T11:25:39.642Z",
+  "updated_at": "2026-10-18T11:31:41.581Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CAMP_CLOTH_ISOLATED_ART",
-      "next": "Current APK1.3 additionally delivered directly in chat (same verified bytes); owner phone update still pending. Continue next functional asset: native87 isolated current CampFamily source cloth/entrance/awning geometry study with actual topology+memory+Qwen/MCP, structural A/B before nativeUnity. Current scene/runtime/APK retained; independent UI/4X untouched.",
+      "phase": "REFERENCE_CLEAN_CAMP_CLOTH_UNITY_AB",
+      "next": "Native87 structural preview rejected for quilt normals and support crossing.88 replayed exactQwen plan, welded cloth normals/anchored actual beam/reduced34k to16k triangles, genuine Blender A/B viable.89 minimal matched Unity main/detail in isolated variant; original scene and APK1.3 remain retained. Direct verified APK now downloadable from chat.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39123115813,
-          "current_source": "e5f323425c66e01a096606b15a3b671212115c62",
+          "current_run": 39123559615,
+          "current_source": "0b5a5a63572864d704568d50d694630a1dc6a578",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -284,7 +284,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE87_CAMP_AUTHORING",
+          "current_run_status": "NATIVE89_ISOLATED_CAMP_UNITY_COMPARISON",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
@@ -448,6 +448,12 @@
             "version_name": "1.3",
             "version_code": 4,
             "phone_update_tested": false
+          },
+          "native88": {
+            "run": 39123441426,
+            "output": "7f7841042509f81b9659b59fd488573f001cc151",
+            "structural_preview": "VIABLE_AFTER_TECHNICAL_NORMALS_SUPPORT_FIX",
+            "art_approved": false
           }
         }
       },
