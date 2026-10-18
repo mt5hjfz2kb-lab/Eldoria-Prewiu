@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T10:33:29.527Z",
+  "updated_at": "2026-10-18T10:48:12.056Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BASTION_I_II_ANDROID_V3_MILESTONE_DELIVERED",
-      "next": "Native82 local art/gameplay I-II milestone verified, native83 signed Android update1.2/code3 independently downloaded/hash/CRC/ARM64 verified; deliveryHead ba13a8e909536ea73d6e096995ed4c15cbeff076. Owner phone update/save/performance pending. Next functions and RoyalGoldUI/4X integration require their reviewed stable handoffs; preserve all current scene/runtime work. No active Valoria native job.",
+      "phase": "REFERENCE_CLEAN_CHAPTER_II_EXISTING_FUNCTION_NATIVE_VALIDATION",
+      "next": "Owner requested continuation after APK install instructions. Native84 verifies next existing complete function through real UI: barracks build/model/save, recruitment/offline completion, march configuration and Engendro outcome. Runtime/scene/art unchanged from verified82 and deliveredAPK83. No changes to independent UI or4X.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 0,
-          "current_source": "ba13a8e909536ea73d6e096995ed4c15cbeff076",
+          "current_run": 39120674935,
+          "current_source": "095f3e6dfc4862c60843632ad684106629e8455b",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -284,7 +284,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE77_SUCCESS_VISUAL_REJECTED_NO_INTEGRATION",
+          "current_run_status": "NATIVE84_CHAPTER_II_VALIDATION_IN_PROGRESS",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
