@@ -1,0 +1,8 @@
+{
+  "rationale": "Bastion II evolution strictly adheres to source geometry and material constraints. No visual score or approval is issued. The proposed changes are concrete and measurable.",
+  "central_raise": 1.8,
+  "upper_window_width": 0.8,
+  "flank_roof_rise": 1.25,
+  "flank_roof_inset": 0.6,
+  "roof_rows": 10
+}
