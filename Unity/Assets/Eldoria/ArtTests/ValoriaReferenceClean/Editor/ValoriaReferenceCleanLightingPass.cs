@@ -16,7 +16,7 @@ public static class ValoriaReferenceCleanLightingPass {
  const string Scene=Root+"/Valoria_Reference_Clean.unity";
  static readonly string Ev=Path.GetFullPath("../docs/evidence/valoria-reference-clean");
  [Serializable] class Report {
-  public string source_sha,baseline_source="2c3d6174fe78ea5cf4031a4611dfb228d60019ac",method="Existing scene / Progressive CPU / baked indirect / Subtractive mixed sun / baked probes";
+  public string source_sha,baseline_source="2c3d6174fe78ea5cf4031a4611dfb228d60019ac",method="Existing scene / Progressive CPU / baked indirect / realtime mixed sun direct / native URP Lit GI / baked probes";
   public bool same_camera,same_geometry,no_static_batching,realtime_gi=false,bake_succeeded,art_approved=false,physical_mobile_profiled=false;
   public int triangles_before,triangles_after,lightmaps,lightprobes,reflection_probes,gi_meshes;
   public float bake_seconds;public string[] lightmap_paths,reflection_paths;public string lighting_data;
@@ -68,30 +68,52 @@ public static class ValoriaReferenceCleanLightingPass {
   Put(mesh,Dir+"/"+label+"_GI.asset");return mesh;
  }
  static readonly Dictionary<Material,Material> giMaterials=new Dictionary<Material,Material>();
+ static Texture2D ReadTexture(Texture source){
+  var rt=RenderTexture.GetTemporary(source.width,source.height,0,RenderTextureFormat.ARGB32,RenderTextureReadWrite.Linear);var previous=RenderTexture.active;
+  try{Graphics.Blit(source,rt);RenderTexture.active=rt;var result=new Texture2D(source.width,source.height,TextureFormat.RGBA32,false,true);result.ReadPixels(new Rect(0,0,source.width,source.height),0,0);result.Apply();return result;}finally{RenderTexture.active=previous;RenderTexture.ReleaseTemporary(rt);}
+ }
+ static Texture2D ImportMap(Texture2D raw,string path,bool normal){
+  File.WriteAllBytes(path,raw.EncodeToPNG());Object.DestroyImmediate(raw);AssetDatabase.ImportAsset(path);var ti=(TextureImporter)AssetImporter.GetAtPath(path);ti.textureType=normal?TextureImporterType.NormalMap:TextureImporterType.Default;ti.sRGBTexture=false;ti.mipmapEnabled=true;ti.maxTextureSize=1024;ti.wrapMode=TextureWrapMode.Repeat;ti.anisoLevel=4;ti.SaveAndReimport();return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+ }
  static Material GIMaterial(Material old){
   if(!old)return old;if(giMaterials.TryGetValue(old,out var found))return found;
-  var copy=new Material(old){name=old.name+" GI UV0"};
-  foreach(string prop in new[]{"baseColorTexture","normalTexture","metallicRoughnessTexture","occlusionTexture","emissiveTexture"})if(copy.HasProperty(prop+"_texCoord"))copy.SetFloat(prop+"_texCoord",0);
-  copy.doubleSidedGI=true;Put(copy,Dir+"/GI_Material_"+giMaterials.Count.ToString("D3")+".mat");giMaterials.Add(old,copy);return copy;
+  if(old.shader.name=="Universal Render Pipeline/Lit")return old;
+  // A fixed UV0 URP Lit material avoids glTF shader UV selectors competing with
+  // UV1 lightmaps. Convert ORM channels and normal-map import semantics explicitly.
+  string id=giMaterials.Count.ToString("D3");var copy=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=old.name+" native URP baked GI"};
+  var color=old.HasProperty("baseColorFactor")?old.GetColor("baseColorFactor"):old.color;copy.SetColor("_BaseColor",color);
+  if(old.HasProperty("baseColorTexture"))copy.SetTexture("_BaseMap",old.GetTexture("baseColorTexture"));
+  float rough=old.HasProperty("roughnessFactor")?old.GetFloat("roughnessFactor"):.8f;float metal=old.HasProperty("metallicFactor")?old.GetFloat("metallicFactor"):0;
+  copy.SetFloat("_Metallic",metal);copy.SetFloat("_Smoothness",1-rough);
+  var orm=old.HasProperty("metallicRoughnessTexture")?old.GetTexture("metallicRoughnessTexture"):null;
+  if(orm){var raw=ReadTexture(orm);var pixels=raw.GetPixels();for(int i=0;i<pixels.Length;i++){var a=pixels[i];pixels[i]=new Color(a.b*metal,0,0,1-a.g*rough);}raw.SetPixels(pixels);raw.Apply();copy.SetTexture("_MetallicGlossMap",ImportMap(raw,Dir+"/MetalSmooth_"+id+".png",false));copy.SetFloat("_Smoothness",1);copy.EnableKeyword("_METALLICSPECGLOSSMAP");}
+  var normal=old.HasProperty("normalTexture")?old.GetTexture("normalTexture"):null;
+  if(normal){copy.SetTexture("_BumpMap",ImportMap(ReadTexture(normal),Dir+"/Normal_"+id+".png",true));copy.SetFloat("_BumpScale",old.HasProperty("normalTexture_scale")?old.GetFloat("normalTexture_scale"):.3f);copy.EnableKeyword("_NORMALMAP");}
+  var ao=old.HasProperty("occlusionTexture")?old.GetTexture("occlusionTexture"):null;
+  if(ao){var raw=ReadTexture(ao);var pixels=raw.GetPixels();for(int i=0;i<pixels.Length;i++)pixels[i]=new Color(1,pixels[i].r,1,1);raw.SetPixels(pixels);raw.Apply();copy.SetTexture("_OcclusionMap",ImportMap(raw,Dir+"/Occlusion_"+id+".png",false));copy.SetFloat("_OcclusionStrength",old.HasProperty("occlusionTexture_strength")?old.GetFloat("occlusionTexture_strength"):1);copy.EnableKeyword("_OCCLUSIONMAP");}
+  if(old.HasProperty("emissiveFactor")){var emission=old.GetColor("emissiveFactor");copy.SetColor("_EmissionColor",emission);if(emission.maxColorComponent>0){copy.EnableKeyword("_EMISSION");copy.globalIlluminationFlags=MaterialGlobalIlluminationFlags.BakedEmissive;}}
+  copy.SetFloat("_Cull",old.HasProperty("_Cull")?old.GetFloat("_Cull"):2);copy.doubleSidedGI=true;
+  Put(copy,Dir+"/NativeGI_Material_"+id+".mat");giMaterials.Add(old,copy);return copy;
  }
+
  static T Component<T>(VolumeProfile p) where T:VolumeComponent{if(p.TryGet<T>(out var c))return c;return p.Add<T>(true);}
  static void Run(){
   Directory.CreateDirectory(Dir);Directory.CreateDirectory(Ev);AssetDatabase.Refresh();
-  File.Copy(Scene,Ev+"/lighting-baseline-scene.unity",true);
+  if(!File.Exists(Ev+"/lighting-baseline-scene.unity"))File.Copy(Scene,Ev+"/lighting-baseline-scene.unity");
   var scene=EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);var guard=Object.FindFirstObjectByType<ValoriaReferenceCleanRenderSettings>();if(!guard)throw new Exception("Scene pipeline guard missing");guard.Apply();
   var cam=Camera.main;if(!cam)throw new Exception("Saved player camera missing");var cameraBefore=CameraStamp(cam);var geometryBefore=GeometryStamp();var report=new Report{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),triangles_before=Triangles()};
-  Views(cam,"lighting-before");
-  var pipeline=Object.Instantiate(guard.scenePipeline);pipeline.name="Valoria baked GI URP";pipeline.colorGradingMode=ColorGradingMode.HighDynamicRange;
+  Views(cam,"lighting-correction-before");
+  var pipeline=Object.Instantiate(guard.scenePipeline);pipeline.name="Valoria baked GI URP";pipeline.colorGradingMode=ColorGradingMode.HighDynamicRange;var ps=new SerializedObject(pipeline);ps.FindProperty("m_ReflectionProbeBlending").boolValue=true;ps.FindProperty("m_ReflectionProbeBoxProjection").boolValue=true;ps.ApplyModifiedPropertiesWithoutUndo();
   Put(pipeline,Dir+"/BakedSceneURP.asset");guard.Restore();guard.scenePipeline=pipeline;guard.Apply();
   var volume=Object.FindObjectsByType<Volume>(FindObjectsSortMode.None).First(v=>v.isGlobal);
   var profile=ScriptableObject.CreateInstance<VolumeProfile>();foreach(var entry in volume.sharedProfile.components)profile.components.Add(Object.Instantiate(entry));Put(profile,Dir+"/BakedLook.asset");foreach(var entry in profile.components)AssetDatabase.AddObjectToAsset(entry,profile);volume.sharedProfile=profile;
-  Component<Tonemapping>(profile).mode.Override(TonemappingMode.ACES);var grade=Component<ColorAdjustments>(profile);grade.postExposure.Override(.12f);grade.contrast.Override(10);grade.saturation.Override(-2);Component<WhiteBalance>(profile).temperature.Override(6);
+  Component<Tonemapping>(profile).mode.Override(TonemappingMode.ACES);var grade=Component<ColorAdjustments>(profile);grade.postExposure.Override(.20f);grade.contrast.Override(7);grade.saturation.Override(-2);Component<WhiteBalance>(profile).temperature.Override(6);
   var bloom=Component<Bloom>(profile);bloom.intensity.Override(.12f);bloom.threshold.Override(1.2f);
-  var sky=new Material(Shader.Find("Skybox/Procedural")){name="Warm afternoon environment"};sky.SetFloat("_SunSize",.035f);sky.SetFloat("_AtmosphereThickness",1.1f);sky.SetColor("_SkyTint",new Color(.50f,.56f,.60f));sky.SetColor("_GroundColor",new Color(.38f,.32f,.23f));sky.SetFloat("_Exposure",.85f);Put(sky,Dir+"/AfternoonSky.mat");
-  RenderSettings.skybox=sky;RenderSettings.ambientMode=AmbientMode.Skybox;RenderSettings.ambientIntensity=.75f;RenderSettings.defaultReflectionMode=DefaultReflectionMode.Skybox;RenderSettings.reflectionIntensity=.65f;RenderSettings.reflectionBounces=1;
+  var sky=new Material(Shader.Find("Skybox/Procedural")){name="Warm afternoon environment"};sky.SetFloat("_SunSize",.035f);sky.SetFloat("_AtmosphereThickness",1.1f);sky.SetColor("_SkyTint",new Color(.50f,.56f,.60f));sky.SetColor("_GroundColor",new Color(.38f,.32f,.23f));sky.SetFloat("_Exposure",1.0f);Put(sky,Dir+"/AfternoonSky.mat");
+  RenderSettings.skybox=sky;RenderSettings.ambientMode=AmbientMode.Skybox;RenderSettings.ambientIntensity=.9f;RenderSettings.defaultReflectionMode=DefaultReflectionMode.Skybox;RenderSettings.reflectionIntensity=.65f;RenderSettings.reflectionBounces=1;
   var sun=RenderSettings.sun;if(!sun)throw new Exception("Existing sun missing");sun.transform.rotation=Quaternion.Euler(38,-32,0);sun.intensity=1.15f;sun.color=new Color(1,.90f,.74f);sun.shadows=LightShadows.Soft;sun.shadowStrength=.88f;sun.shadowBias=.025f;sun.shadowNormalBias=.10f;sun.lightmapBakeType=LightmapBakeType.Mixed;
-  foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.type==LightType.Point)){light.lightmapBakeType=LightmapBakeType.Baked;light.intensity=4;}
-  var settings=new LightingSettings{name="Valoria mobile baked illumination",realtimeGI=false,bakedGI=true,lightmapper=LightingSettings.Lightmapper.ProgressiveCPU,lightmapResolution=4,lightmapMaxSize=2048,lightmapPadding=4,directSampleCount=32,indirectSampleCount=64,environmentSampleCount=64,maxBounces=2,mixedBakeMode=MixedLightingMode.Subtractive};
+  foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.type==LightType.Point)){light.lightmapBakeType=LightmapBakeType.Baked;light.intensity=2.2f;}
+  var settings=new LightingSettings{name="Valoria mobile baked illumination",realtimeGI=false,bakedGI=true,lightmapper=LightingSettings.Lightmapper.ProgressiveCPU,lightmapResolution=4,lightmapMaxSize=2048,lightmapPadding=4,directSampleCount=32,indirectSampleCount=64,environmentSampleCount=64,maxBounces=2,mixedBakeMode=MixedLightingMode.IndirectOnly,directionalityMode=LightmapsMode.CombinedDirectional};
   Put(settings,Dir+"/ValoriaLighting.lighting");Lightmapping.lightingSettings=settings;Lightmapping.giWorkflowMode=Lightmapping.GIWorkflowMode.OnDemand;
   foreach(var f in Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)){
    var r=f.GetComponent<MeshRenderer>();if(!r)continue;
@@ -102,10 +124,10 @@ public static class ValoriaReferenceCleanLightingPass {
    GameObjectUtility.SetStaticEditorFlags(f.gameObject,StaticEditorFlags.ContributeGI);var sr=new SerializedObject(r);sr.FindProperty("m_ScaleInLightmap").floatValue=f.name.StartsWith("Bastion_I")||f.name.StartsWith("Gate_")?2f:1f;sr.ApplyModifiedPropertiesWithoutUndo();report.gi_meshes++;
   }
   var terrain=Object.FindFirstObjectByType<Terrain>();if(!terrain)throw new Exception("Existing terrain missing");GameObjectUtility.SetStaticEditorFlags(terrain.gameObject,StaticEditorFlags.ContributeGI);
-  var group=new GameObject("Baked light probes for moving construction and foliage").AddComponent<LightProbeGroup>();var probes=new List<Vector3>();
+  var group=Object.FindObjectsByType<LightProbeGroup>(FindObjectsSortMode.None).FirstOrDefault(g=>g.name=="Baked light probes for moving construction and foliage");if(!group)group=new GameObject("Baked light probes for moving construction and foliage").AddComponent<LightProbeGroup>();var probes=new List<Vector3>();
   for(int z=-48;z<=52;z+=10)for(int x=-42;x<=42;x+=12)foreach(float h in new[]{.7f,3,7})probes.Add(new Vector3(x,terrain.SampleHeight(new Vector3(x,0,z))+terrain.transform.position.y+h,z));group.probePositions=probes.ToArray();
   var reflection=new List<ReflectionProbe>();var paths=new List<string>();
-  void Reflection(string name,Vector3 pos,Vector3 size){var p=new GameObject(name+" baked reflection").AddComponent<ReflectionProbe>();p.transform.position=pos;p.size=size;p.mode=ReflectionProbeMode.Baked;p.resolution=128;p.boxProjection=true;p.clearFlags=ReflectionProbeClearFlags.Skybox;p.cullingMask=~0;p.nearClipPlane=.3f;p.farClipPlane=130;p.intensity=.65f;reflection.Add(p);paths.Add(Dir+"/"+name+"Reflection.exr");}
+  void Reflection(string name,Vector3 pos,Vector3 size){var p=Object.FindObjectsByType<ReflectionProbe>(FindObjectsSortMode.None).FirstOrDefault(v=>v.name==name+" baked reflection");if(!p)p=new GameObject(name+" baked reflection").AddComponent<ReflectionProbe>();p.transform.position=pos;p.size=size;p.mode=ReflectionProbeMode.Baked;p.resolution=128;p.boxProjection=true;p.clearFlags=ReflectionProbeClearFlags.Skybox;p.cullingMask=~0;p.nearClipPlane=.3f;p.farClipPlane=130;p.intensity=.65f;reflection.Add(p);paths.Add(Dir+"/"+name+"Reflection.exr");}
   Reflection("Bastion",new Vector3(0,5,35),new Vector3(32,18,30));Reflection("Gate",new Vector3(-1.5f,3,-10),new Vector3(28,16,24));Reflection("Bridge",new Vector3(-6,1,-23),new Vector3(30,15,26));Reflection("River",new Vector3(20,0,-23),new Vector3(65,14,32));
   EditorSceneManager.SaveScene(scene,Scene);AssetDatabase.SaveAssets();
   var watch=System.Diagnostics.Stopwatch.StartNew();Debug.Log("VALORIA_PROGRESSIVE_CPU_BAKE_START");report.bake_succeeded=Lightmapping.Bake();watch.Stop();report.bake_seconds=(float)watch.Elapsed.TotalSeconds;
