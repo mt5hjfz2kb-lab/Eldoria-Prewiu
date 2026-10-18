@@ -226,14 +226,14 @@ payload = dict(model='qwen3-vl:8b-instruct-q4_K_M', stream=False, format=schema,
                          {'role': 'user', 'content': json.dumps(context),
                           'images': [base64.b64encode(p.read_bytes()).decode() for p in images]}],
                options={'temperature': .15, 'num_ctx': 8192, 'num_predict': 2100})
-write('environment-finish-qwen-request.json', {'model': payload['model'], 'schema': schema,
+request_manifest = {'model': payload['model'], 'schema': schema,
       'system_prompt_path': str(system_path.relative_to(ROOT)), 'system_prompt_sha256': system_hash,
       'system_prompt': system_prompt, 'options': payload['options'],
       'context': context, 'image_sha256': {p.name: digest(p) for p in images},
       'memory_source_sha256': digest(memory_path), 'memory_selected_chars': len(memory),
       'memory_omitted_lines': len(memory_full.splitlines()) - len(memory_lines),
       'mesh_observation_source_world_bounds': [list(lo), list(hi)],
-      'previous_failure': previous_failure})
+      'previous_failure': previous_failure}
 
 def schema_errors(value, spec, path='plan'):
     """Validate the actual answer; Ollama JSON grammar does not enforce ranges."""
@@ -289,6 +289,57 @@ def composition_errors(candidate):
             errors.append(f'shore_gaps at {a["x"]} and {b["x"]} overlap')
     return errors
 
+def fixed_parameters_hash(candidate):
+    p = candidate['planned_actions'][0]['parameters']
+    fixed = {key: value for key, value in p.items() if key != 'quarry_rim'}
+    return hashlib.sha256(json.dumps(fixed, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+# Resume the retained artist's last answer after its exact cause was reviewed.
+# A full-plan retry corrected one shore coordinate but needlessly redesigned a
+# valid quarry profile. Only that profile is now sent back to the same artist.
+resume_path = ROOT / 'tools/valoria-reference-clean/environment-finish-resume-39145677870.json'
+resume, inference_schema, author_context = None, schema, context
+if resume_path.is_file():
+    resume = json.loads(resume_path.read_text(encoding='utf8'))
+    assert resume['source_sha256'] == source_hashes, 'Resume source changed'
+    assert resume['canonical_system_sha256'] == system_hash, 'Resume canonical artist identity changed'
+    assert resume['image_sha256'] == {p.name: digest(p) for p in images}, 'Resume observation changed'
+    assert fixed_parameters_hash(resume['artist_plan']) == resume['parameters_except_rim_sha256']
+    seed_errors = composition_errors(resume['artist_plan'])
+    assert seed_errors and all(error.startswith('quarry_rim') for error in seed_errors), seed_errors
+    inference_schema = json.loads(json.dumps(schema))
+    inference_schema['properties']['planned_actions']['items']['properties']['parameters'] = record({'quarry_rim': fields['quarry_rim']})
+    fixed = resume['artist_plan']['planned_actions'][0]['parameters']
+    author_context = dict(context)
+    author_context['coordinate_and_parameter_contract'] = (
+        'TARGETED CONTINUATION OF YOUR OWN LAST ANSWER, not a new commission. '
+        'All forest positions, log yard, quarry dimensions, equipment side, city access '
+        'width and riverbank stretches are frozen and already valid. Correct ONLY quarry_rim. '
+        'Return canonical JSON with exactly ONE planned_action: construct_mesh, target '
+        'EnvironmentFinish (mode NEW), parameters containing ONLY quarry_rim. '
+        'Give exactly seven distinct points in STRICT LEFT-TO-RIGHT ORDER. Local normalized '
+        'x must stay in [-1,1], y in [0,1], height in [0.65,1]. The last x minus the first x '
+        'MUST EXCEED 1.4. The middle of the rear contour bows back; ends return forward. '
+        'These fractions drive the real cut-face mesh, not city-world coordinates. '
+        'Your earlier valid profile below already matches the same retained dimensions; '
+        'you may retain it if it serves this composition. Do not redesign any other parameter. '
+        'Your last profile ended x=0.6 after x=1.0 and therefore failed order/span checks. '
+        'Do not score or approve anything; actual Blender and Unity review follows.')
+    author_context['fixed_quarry_dimensions'] = {key: fixed[key] for key in
+        ('quarry_width', 'quarry_depth', 'quarry_height', 'quarry_benches', 'derrick_side')}
+    author_context['your_rejected_rim'] = fixed['quarry_rim']
+    author_context['your_earlier_valid_rim_same_dimensions'] = resume['previous_valid_rim']
+    author_context['frozen_remaining_parameters_sha256'] = resume['parameters_except_rim_sha256']
+    author_context['fixed_forest_composition'] = fixed['forest_trees']
+    payload['format'] = inference_schema
+    payload['messages'][1]['content'] = json.dumps(author_context)
+    request_manifest.update(schema=inference_schema, context=author_context,
+        resume_source=str(resume_path.relative_to(ROOT)), resume_sha256=digest(resume_path),
+        resume_response_sha256=resume['response_sha256'],
+        correction_classification=resume['classification'], editable_fields=['quarry_rim'],
+        fixed_parameters_sha256=resume['parameters_except_rim_sha256'])
+write('environment-finish-qwen-request.json', request_manifest)
+
 def api(path, data=None, timeout=3):
     req = urllib.request.Request('http://127.0.0.1:11434' + path,
           data=None if data is None else json.dumps(data).encode(),
@@ -329,8 +380,16 @@ try:
         write(f'environment-finish-qwen-response-attempt-{attempt}.json', response)
         write('environment-finish-qwen-response.json', response)
         try:
-            artist_plan = json.loads(response['message']['content'])
-            errors = composition_errors(artist_plan)
+            received_plan = json.loads(response['message']['content'])
+            errors = schema_errors(received_plan, inference_schema)
+            if not errors:
+                if resume:
+                    artist_plan = json.loads(json.dumps(resume['artist_plan']))
+                    artist_plan['planned_actions'][0]['parameters']['quarry_rim'] = received_plan['planned_actions'][0]['parameters']['quarry_rim']
+                    assert fixed_parameters_hash(artist_plan) == resume['parameters_except_rim_sha256'], 'Non-rim artist decision changed'
+                else:
+                    artist_plan = received_plan
+                errors = composition_errors(artist_plan)
         except (ValueError, KeyError, TypeError) as error:
             errors = ['Invalid canonical JSON: ' + str(error)]
         if response.get('done_reason') != 'stop':
@@ -356,8 +415,16 @@ try:
                       + '\n'.join(errors)[:1600])
         write('environment-finish-guided-correction.json', {'errors': errors,
               'correction_sent': correction, 'canonical_system_sha256': system_hash})
-        corrected_context = dict(context, validator_correction=correction)
+        corrected_context = dict(author_context, validator_correction=correction)
         payload['messages'] = [base_messages[0], dict(base_messages[1], content=json.dumps(corrected_context))]
+    if resume:
+        write('environment-finish-rim-correction.json', {
+             'source_run': resume['run_id'], 'source_response_sha256': resume['response_sha256'],
+             'correction_response_sha256': digest(EV/'environment-finish-qwen-response.json'),
+             'classification': resume['classification'], 'edited_fields': ['quarry_rim'],
+             'fixed_parameters_sha256_before': resume['parameters_except_rim_sha256'],
+             'fixed_parameters_sha256_after': fixed_parameters_hash(artist_plan),
+             'canonical_correction': received_plan, 'all_original_gates_passed': True})
     write('environment-finish-artist-plan.json', artist_plan)
     plan = dict(artist_plan['planned_actions'][0]['parameters'])
     plan['rationale'] = artist_plan['design_intent'] + ' ' + artist_plan['planned_actions'][0]['rationale']
