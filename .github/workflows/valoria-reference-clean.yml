@@ -26,21 +26,6 @@ jobs:
             if(-not $g){throw 'Installed Git unavailable'}
             Add-Content $env:GITHUB_PATH (Split-Path $g)
           }
-
-      - name: Preserve compiled native75 APK evidence before checkout
-        working-directory: .
-        shell: powershell
-        run: |
-          $source=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
-          $evidence=Join-Path $source 'docs/evidence/valoria-reference-clean'
-          $apk=Join-Path $source 'Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk'
-          $r=Get-Content (Join-Path $evidence 'android-build.json') -Raw|ConvertFrom-Json
-          if($r.source_sha -ne 'ea95e188c567a38dc81c74cb5b1bfce1636b2118' -or $r.apk_bytes -ne 161291726){throw 'Native75 completed build provenance unavailable; refuse cached APK substitution'}
-          if(-not(Test-Path $apk) -or (Get-Item $apk).Length -ne $r.apk_bytes -or (Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant() -ne $r.apk_sha256){throw 'Native75 cached APK differs from completed build record'}
-          $backup=Join-Path $env:RUNNER_TEMP "ValoriaAndroid75Evidence-$env:GITHUB_RUN_ID"
-          New-Item $backup -ItemType Directory -Force|Out-Null
-          foreach($name in @('android-build.json','android-optimized-payload.json','android-native.log')){Copy-Item (Join-Path $evidence $name) (Join-Path $backup $name)}
-          Write-Host "Preserved exact native75 compiled APK evidence bytes=$($r.apk_bytes) sha256=$($r.apk_sha256)"
       - uses: actions/checkout@v4
         with:
           path: valoria-layered-source
@@ -88,16 +73,6 @@ jobs:
         run: |
           $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-
-          if($req.stage -eq 'android_verify'){
-            $backup=Join-Path $env:RUNNER_TEMP "ValoriaAndroid75Evidence-$env:GITHUB_RUN_ID"
-            foreach($name in @('android-build.json','android-optimized-payload.json','android-native.log')){Copy-Item (Join-Path $backup $name) (Join-Path 'docs/evidence/valoria-reference-clean' $name) -Force}
-            $r=Get-Content 'docs/evidence/valoria-reference-clean/android-build.json' -Raw|ConvertFrom-Json
-            $apk='Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk'
-            if((Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant() -ne $r.apk_sha256){throw 'APK changed during checkout'}
-            Write-Host 'Verification-only stage: native75 APK retained, no Unity build or scene mutation'
-            return
-          }
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
@@ -163,12 +138,20 @@ jobs:
             if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnvironment.Build'
           }
+          if($req.stage -eq 'pine_volume'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_pine_volume.py
+            if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPineVolume.Build'
+          }
           $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
 
           $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
@@ -225,7 +208,7 @@ jobs:
           }
 
       - name: Verify optimized Android update identity and signature
-        if: success() && (steps.native_stage.outputs.stage == 'android' || steps.native_stage.outputs.stage == 'android_verify')
+        if: success() && steps.native_stage.outputs.stage == 'android'
         shell: powershell
         run: |
           $sdk=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/SDK'
@@ -248,7 +231,7 @@ jobs:
           if(-not $signed.ToLowerInvariant().Contains($expected)){throw 'APK signing certificate differs from installed-version candidate'}
           if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='2'"){throw 'APK update package/version mismatch'}
           if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'APK ARM64 missing'}
-          @{source_sha=$env:GITHUB_SHA;build_source_sha=(Get-Content 'docs/evidence/valoria-reference-clean/android-build.json' -Raw|ConvertFrom-Json).source_sha;package='com.eldoria.valoria.v5test';version_code=2;prior_version_code=1;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
+          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=2;prior_version_code=1;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
       - name: Review real capture with previously installed local vision model
         continue-on-error: true
         shell: powershell
@@ -316,7 +299,7 @@ jobs:
             ${{ runner.temp }}/valoria-reference-clean.log
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
-        if: success() && (steps.native_stage.outputs.stage == 'android' || steps.native_stage.outputs.stage == 'android_verify')
+        if: success() && steps.native_stage.outputs.stage == 'android'
         with:
           name: valoria-reference-clean-apk-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
