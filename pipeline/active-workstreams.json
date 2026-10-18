@@ -42,7 +42,12 @@
         "docs/evidence/valoria-reference-clean/**",
         "Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs",
         "Unity/Packages/manifest.json",
-        "Unity/Packages/packages-lock.json"
+        "Unity/Packages/packages-lock.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/IPlayableSceneHost.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -50,8 +55,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BASTION_RETAINED_PINE_CROWN_ZONE_ART_TRIAL",
-      "next": "Native77 evaluates three Qwen-directed closed pine canopies with duplicate target trunks removed, preserving outside UV/normal/geometry and authoritative74 scene. Android75/76 update already compiled, signature/package/code2 verified and downloaded CRC/ARM64 ELF checked; do not re-investigate size or rebuild without new art. Continue visual comparison then extend only if clearly improved.",
+      "phase": "REFERENCE_CLEAN_LOCAL_ART_RETAINED_GAMEPLAY_I_II_MIGRATION",
+      "next": "Native77 visually rejected closed rounded pine crowns; retain integrated74scene. Recover web10second BastionII task and existing450wood/300stone/requirements, adapt existing Unity presenter/gateway to current clean scene, preserve currentcamera/GI and saves. No world4X scope changes.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -265,7 +270,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "RUNNING_BASTION_ENSEMBLE_BLENDER_UNITY",
+          "current_run_status": "NATIVE77_SUCCESS_VISUAL_REJECTED_NO_INTEGRATION",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
@@ -360,6 +365,12 @@
             "source_bytes_excluded": 573685112,
             "phone_update_tested": false,
             "user_data_reset": false
+          },
+          "native77": {
+            "run": 39116187160,
+            "output": "3bb8e3c397be07c8432a3d1e9852af86eabcf0b7",
+            "visual": "REJECTED_ROUNDED_OVERSIZED_CROWNS",
+            "authoritative_scene_unchanged": true
           }
         }
       },
@@ -375,7 +386,7 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Owner follow-up 2026-10-17 asks why execution stopped; original autonomous production remains authorized. Physical mobile absence does not block artistic work."
+      "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent."
     },
     {
       "id": "world4x-zone1-isolated-reference-prototype-20261013",
