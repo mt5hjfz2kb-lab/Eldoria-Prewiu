@@ -48,7 +48,9 @@ concurrency:
 jobs:
   governance:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    # Retain full history for the ownership diff. Fetch plus checkout exceeded
+    # the former three-minute budget before any art rule could run.
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:

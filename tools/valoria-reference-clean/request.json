@@ -1,12 +1,12 @@
 {
   "stage": "environment_author",
   "validate_play": false,
-  "revision": 114,
+  "revision": 115,
   "budget_eur": 0,
   "validated_runtime_source": "48837605705fed198ec485f2c2726af2ffa5eea9",
   "validated_run": 39138751241,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Continue the retained Qwen answer from run 39145677870; correct ONLY its invalid quarry_rim with the canonical artist. Freeze all other valid composition choices by hash, retain the same sources and unchanged geometric gates. Existing Blender/MCP at zero cost; real Unity A/B still required.",
+  "art_correction": "Repair only the visible quarry assembly defect observed in real Blender114 renders: shared bench joints, retained rock PBR/UVs and embedded source-rock rim. Reuse the exact validated Qwen plan and preserve the forest GLB byte for byte. No new inference, redesign, spend or gameplay changes. Unity comparison remains required.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
@@ -26,5 +26,6 @@
   "validate_content_before_android": false,
   "android_version_code": 6,
   "android_version_name": "1.5",
-  "repair_sawmill": false
+  "repair_sawmill": false,
+  "repair_environment": true
 }

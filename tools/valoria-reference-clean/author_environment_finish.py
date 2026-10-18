@@ -16,6 +16,7 @@ SRC = ROOT / 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources'
 OUT = SRC / 'EnvironmentFinish'
 OUT.mkdir(parents=True, exist_ok=True)
 EV.mkdir(parents=True, exist_ok=True)
+repair_mode = '--repair-last-plan' in sys.argv
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -33,6 +34,18 @@ source_hashes = {key: digest(path) for key, path in sources.items()}
 images = [EV / 'integration-world-16x9.png', EV / 'integration-city-art.png']
 for path in images:
     assert path.is_file(), 'Actual native111 player screenshot required: ' + str(path)
+repair_parent = None
+if repair_mode:
+    # Explicit technical repair reuses the artist's executed, source-linked plan.
+    # It is not another inference or a new composition.
+    repair_parent = json.loads((EV/'environment-finish-result.json').read_text(encoding='utf8'))
+    repair_parent_result_hash = digest(EV/'environment-finish-result.json')
+    repair_plan_hash = digest(EV/'environment-finish-plan.json')
+    repair_artist_plan_hash = digest(EV/'environment-finish-artist-plan.json')
+    assert repair_parent['sources_preserved'] and repair_parent['source_sha256'] == source_hashes
+    assert repair_parent['plan_sha256'] == repair_plan_hash
+    assert repair_parent['canonical_artist_plan_sha256'] == repair_artist_plan_hash
+    assert all(digest(OUT/name) == value for name, value in repair_parent['glb_sha256'].items())
 
 # Import into a disposable Blender document. No original .blend is overwritten.
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -107,6 +120,14 @@ for source_uv in pine_mesh.data.uv_layers:
 for obj in pine_objects:
     obj.hide_render = True
 bark = next((m for m in tree_data.materials if m and 'bark' in m.name.lower()), rock_material)
+
+before_repair_quarry = []
+if repair_mode:
+    known = set(bpy.context.scene.objects)
+    bpy.ops.import_scene.gltf(filepath=str(OUT/'EnvironmentQuarry.glb'))
+    before_repair_quarry = [o for o in bpy.context.scene.objects if o not in known]
+    for obj in before_repair_quarry:
+        obj.hide_render = True
 
 memory_path = EV / ('environment-finish-memory-' + os.environ.get('GITHUB_RUN_ID', 'local') + '.txt')
 subprocess.run(['node', 'tools/art-direction/learning-evidence/cycle-hooks.mjs', 'prepare',
@@ -299,7 +320,7 @@ def fixed_parameters_hash(candidate):
 # valid quarry profile. Only that profile is now sent back to the same artist.
 resume_path = ROOT / 'tools/valoria-reference-clean/environment-finish-resume-39145677870.json'
 resume, inference_schema, author_context = None, schema, context
-if resume_path.is_file():
+if resume_path.is_file() and not repair_mode:
     resume = json.loads(resume_path.read_text(encoding='utf8'))
     assert resume['source_sha256'] == source_hashes, 'Resume source changed'
     assert resume['canonical_system_sha256'] == system_hash, 'Resume canonical artist identity changed'
@@ -338,7 +359,8 @@ if resume_path.is_file():
         resume_response_sha256=resume['response_sha256'],
         correction_classification=resume['classification'], editable_fields=['quarry_rim'],
         fixed_parameters_sha256=resume['parameters_except_rim_sha256'])
-write('environment-finish-qwen-request.json', request_manifest)
+if not repair_mode:
+    write('environment-finish-qwen-request.json', request_manifest)
 
 def api(path, data=None, timeout=3):
     req = urllib.request.Request('http://127.0.0.1:11434' + path,
@@ -347,94 +369,114 @@ def api(path, data=None, timeout=3):
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return json.load(response)
 
-server = None
-log = None
-try:
+if repair_mode:
+    artist_plan = json.loads((EV/'environment-finish-artist-plan.json').read_text(encoding='utf8'))
+    plan = json.loads((EV/'environment-finish-plan.json').read_text(encoding='utf8'))
+    assert not composition_errors(artist_plan), composition_errors(artist_plan)
+    assert repair_parent['canonical_system_sha256'] == system_hash
+    assert {k: v for k, v in plan.items() if k != 'rationale'} == artist_plan['planned_actions'][0]['parameters']
+    write('environment-finish-technical-repair.json', {
+        'mode': 'EXPLICIT_REPAIR_LAST_EXECUTED_ARTIST_PLAN',
+        'parent_result_sha256': repair_parent_result_hash,
+        'parent_source_sha': repair_parent['source_sha'],
+        'artist_plan_sha256': repair_artist_plan_hash, 'plan_sha256': repair_plan_hash,
+        'qwen_inference_performed': False, 'artistic_composition_changed': False,
+        'observed_defects': ['Diverging per-segment bench offsets opened the centre joint.',
+                             'Untextured excavation faces read as concrete.',
+                             'Rim stones used a fixed Y offset and could overhang unsupported.'],
+        'technical_corrections': ['Use a single joined offset at each authored profile vertex.',
+                                  'Apply retained source-rock PBR material with metric UVs to extraction faces.',
+                                  'Embed copies of the retained irregular source rock along the joined upper bench.'],
+        'acceptance': 'Prior quarry render rejected; repaired Blender and real Unity review still required.'})
+else:
+    server = None
+    log = None
     try:
-        api('/api/version')
-    except Exception:
-        # The same installation recovery used by author_sawmill_refined.py.
-        users = pathlib.Path(os.environ.get('SystemDrive', 'C:') + '/Users')
-        installs = list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'))
-        assert installs, 'Existing Ollama installation not found'
-        env = os.environ.copy()
-        env['OLLAMA_HOST'] = '127.0.0.1:11434'
-        models = list(users.glob('*/.ollama/models'))
-        if models:
-            env['OLLAMA_MODELS'] = str(models[0])
-        log = open(EV / 'environment-finish-ollama.log', 'w')
-        server = subprocess.Popen([str(installs[0]), 'serve'], env=env, stdout=log, stderr=subprocess.STDOUT)
-        for _ in range(40):
-            try:
-                api('/api/version')
-                break
-            except Exception:
-                time.sleep(1)
-        else:
-            raise RuntimeError('Existing Ollama did not start')
-    assert any(m['name'] == payload['model'] for m in api('/api/tags')['models'])
-    base_messages = payload['messages']
-    attempts = []
-    for attempt in range(1, 3):
-        response = api('/api/chat', payload, 420)
-        write(f'environment-finish-qwen-response-attempt-{attempt}.json', response)
-        write('environment-finish-qwen-response.json', response)
         try:
-            received_plan = json.loads(response['message']['content'])
-            errors = schema_errors(received_plan, inference_schema)
+            api('/api/version')
+        except Exception:
+            # The same installation recovery used by author_sawmill_refined.py.
+            users = pathlib.Path(os.environ.get('SystemDrive', 'C:') + '/Users')
+            installs = list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'))
+            assert installs, 'Existing Ollama installation not found'
+            env = os.environ.copy()
+            env['OLLAMA_HOST'] = '127.0.0.1:11434'
+            models = list(users.glob('*/.ollama/models'))
+            if models:
+                env['OLLAMA_MODELS'] = str(models[0])
+            log = open(EV / 'environment-finish-ollama.log', 'w')
+            server = subprocess.Popen([str(installs[0]), 'serve'], env=env, stdout=log, stderr=subprocess.STDOUT)
+            for _ in range(40):
+                try:
+                    api('/api/version')
+                    break
+                except Exception:
+                    time.sleep(1)
+            else:
+                raise RuntimeError('Existing Ollama did not start')
+        assert any(m['name'] == payload['model'] for m in api('/api/tags')['models'])
+        base_messages = payload['messages']
+        attempts = []
+        for attempt in range(1, 3):
+            response = api('/api/chat', payload, 420)
+            write(f'environment-finish-qwen-response-attempt-{attempt}.json', response)
+            write('environment-finish-qwen-response.json', response)
+            try:
+                received_plan = json.loads(response['message']['content'])
+                errors = schema_errors(received_plan, inference_schema)
+                if not errors:
+                    if resume:
+                        artist_plan = json.loads(json.dumps(resume['artist_plan']))
+                        artist_plan['planned_actions'][0]['parameters']['quarry_rim'] = received_plan['planned_actions'][0]['parameters']['quarry_rim']
+                        assert fixed_parameters_hash(artist_plan) == resume['parameters_except_rim_sha256'], 'Non-rim artist decision changed'
+                    else:
+                        artist_plan = received_plan
+                    errors = composition_errors(artist_plan)
+            except (ValueError, KeyError, TypeError) as error:
+                errors = ['Invalid canonical JSON: ' + str(error)]
+            if response.get('done_reason') != 'stop':
+                errors.append('Model answer was not complete: ' + str(response.get('done_reason')))
+            attempts.append({'attempt': attempt, 'errors': errors,
+                             'prompt_eval_count': response.get('prompt_eval_count'),
+                             'eval_count': response.get('eval_count'),
+                             'response_sha256': digest(EV/f'environment-finish-qwen-response-attempt-{attempt}.json')})
+            write('environment-finish-plan-validation.json', {'attempts': attempts,
+                 'canonical_system_sha256': system_hash, 'numeric_limits_unchanged': True,
+                 'geometry_executed': False})
             if not errors:
-                if resume:
-                    artist_plan = json.loads(json.dumps(resume['artist_plan']))
-                    artist_plan['planned_actions'][0]['parameters']['quarry_rim'] = received_plan['planned_actions'][0]['parameters']['quarry_rim']
-                    assert fixed_parameters_hash(artist_plan) == resume['parameters_except_rim_sha256'], 'Non-rim artist decision changed'
-                else:
-                    artist_plan = received_plan
-                errors = composition_errors(artist_plan)
-        except (ValueError, KeyError, TypeError) as error:
-            errors = ['Invalid canonical JSON: ' + str(error)]
-        if response.get('done_reason') != 'stop':
-            errors.append('Model answer was not complete: ' + str(response.get('done_reason')))
-        attempts.append({'attempt': attempt, 'errors': errors,
-                         'prompt_eval_count': response.get('prompt_eval_count'),
-                         'eval_count': response.get('eval_count'),
-                         'response_sha256': digest(EV/f'environment-finish-qwen-response-attempt-{attempt}.json')})
-        write('environment-finish-plan-validation.json', {'attempts': attempts,
-             'canonical_system_sha256': system_hash, 'numeric_limits_unchanged': True,
-             'geometry_executed': False})
-        if not errors:
-            break
-        if attempt == 2:
-            raise RuntimeError('Artist plan rejected before geometry after one guided correction: '
-                               + '; '.join(errors[:12]))
-        # A fresh bounded request retains both real images, the complete brief,
-        # source hashes and selected history. Do not append the invalid answer
-        # to an already full chat or replace artist decisions with clamped values.
-        correction = ('VALIDATOR REJECTED YOUR PREVIOUS ANSWER BEFORE ANY EDIT. '
-                      'Correct these exact errors and recheck every range and coordinate frame. '
-                      'Return the complete canonical JSON, with concise prose.\n'
-                      + '\n'.join(errors)[:1600])
-        write('environment-finish-guided-correction.json', {'errors': errors,
-              'correction_sent': correction, 'canonical_system_sha256': system_hash})
-        corrected_context = dict(author_context, validator_correction=correction)
-        payload['messages'] = [base_messages[0], dict(base_messages[1], content=json.dumps(corrected_context))]
-    if resume:
-        write('environment-finish-rim-correction.json', {
-             'source_run': resume['run_id'], 'source_response_sha256': resume['response_sha256'],
-             'correction_response_sha256': digest(EV/'environment-finish-qwen-response.json'),
-             'classification': resume['classification'], 'edited_fields': ['quarry_rim'],
-             'fixed_parameters_sha256_before': resume['parameters_except_rim_sha256'],
-             'fixed_parameters_sha256_after': fixed_parameters_hash(artist_plan),
-             'canonical_correction': received_plan, 'all_original_gates_passed': True})
-    write('environment-finish-artist-plan.json', artist_plan)
-    plan = dict(artist_plan['planned_actions'][0]['parameters'])
-    plan['rationale'] = artist_plan['design_intent'] + ' ' + artist_plan['planned_actions'][0]['rationale']
-    write('environment-finish-plan.json', plan)
-finally:
-    if server:
-        subprocess.run(['taskkill.exe', '/PID', str(server.pid), '/T', '/F'], capture_output=True)
-        server.wait(timeout=20)
-    if log:
-        log.close()
+                break
+            if attempt == 2:
+                raise RuntimeError('Artist plan rejected before geometry after one guided correction: '
+                                   + '; '.join(errors[:12]))
+            # A fresh bounded request retains both real images, the complete brief,
+            # source hashes and selected history. Do not append the invalid answer
+            # to an already full chat or replace artist decisions with clamped values.
+            correction = ('VALIDATOR REJECTED YOUR PREVIOUS ANSWER BEFORE ANY EDIT. '
+                          'Correct these exact errors and recheck every range and coordinate frame. '
+                          'Return the complete canonical JSON, with concise prose.\n'
+                          + '\n'.join(errors)[:1600])
+            write('environment-finish-guided-correction.json', {'errors': errors,
+                  'correction_sent': correction, 'canonical_system_sha256': system_hash})
+            corrected_context = dict(author_context, validator_correction=correction)
+            payload['messages'] = [base_messages[0], dict(base_messages[1], content=json.dumps(corrected_context))]
+        if resume:
+            write('environment-finish-rim-correction.json', {
+                 'source_run': resume['run_id'], 'source_response_sha256': resume['response_sha256'],
+                 'correction_response_sha256': digest(EV/'environment-finish-qwen-response.json'),
+                 'classification': resume['classification'], 'edited_fields': ['quarry_rim'],
+                 'fixed_parameters_sha256_before': resume['parameters_except_rim_sha256'],
+                 'fixed_parameters_sha256_after': fixed_parameters_hash(artist_plan),
+                 'canonical_correction': received_plan, 'all_original_gates_passed': True})
+        write('environment-finish-artist-plan.json', artist_plan)
+        plan = dict(artist_plan['planned_actions'][0]['parameters'])
+        plan['rationale'] = artist_plan['design_intent'] + ' ' + artist_plan['planned_actions'][0]['rationale']
+        write('environment-finish-plan.json', plan)
+    finally:
+        if server:
+            subprocess.run(['taskkill.exe', '/PID', str(server.pid), '/T', '/F'], capture_output=True)
+            server.wait(timeout=20)
+        if log:
+            log.close()
 
 # Existing geometry primitives and transport; these remain subordinate tools to
 # the newly recorded Qwen plan. No Python from the model is ever executed.
@@ -456,7 +498,11 @@ def material(name, color, roughness=.9):
 cut = material('Local exposed timber endgrain', (.34, .21, .105))
 oak = material('Local weathered oak equipment', (.105, .066, .031))
 iron = material('Local iron lifting tackle', (.055, .063, .067), .62)
-stone = [material('Quarry fresh limestone ' + str(i), (.35 + .022*i, .30 + .022*i, .225 + .020*i)) for i in range(4)]
+stone = []
+for i in range(4):
+    retained = rock_material.copy()
+    retained.name = 'Retained limestone PBR / extraction face ' + str(i)
+    stone.append(retained)
 forest = []
 quarry = []
 operation = {'id': 'integrated-environment-finish', 'op': 'author_forest_and_quarry_from_spatial_plan', 'plan': plan}
@@ -488,34 +534,66 @@ def perform(action):
     forest.append(logs.finish(.005))
 
     escarpment = Mesh('Quarry cut faces and broken benches')
-    profile = sorted(plan['quarry_rim'], key=lambda p: p['x'])
+    profile = list(plan['quarry_rim'])
     assert profile[-1]['x'] - profile[0]['x'] > 1.4, 'Quarry rim does not span the working face'
     w, d, h = plan['quarry_width'], plan['quarry_depth'], plan['quarry_height']
     tiers = plan['quarry_benches']
+    centreline = [Vector((p['x']*w*.5, p['y']*d*.6, 0)) for p in profile]
+    tangents = [(b-a).normalized() for a, b in zip(centreline, centreline[1:])]
+    normals = [Vector((-t.y, t.x, 0)) for t in tangents]
+    joins = []
+    for i in range(len(centreline)):
+        if i == 0:
+            joins.append(normals[0])
+        elif i == len(centreline)-1:
+            joins.append(normals[-1])
+        else:
+            joined = (normals[i-1] + normals[i]).normalized()
+            # Shared miter offset satisfies both adjacent segments. This fixes
+            # the executor's open seam without changing any authored rim point.
+            joins.append(joined / max(.5, joined.dot(normals[i])))
+    def offset_vertex(i, distance):
+        return centreline[i] + joins[i]*distance
+    previous_edges = {}
+    largest_joint_gap = 0.0
     for index, (a, b) in enumerate(zip(profile, profile[1:])):
-        ax, ay, bx, by = a['x']*w*.5, a['y']*d*.6, b['x']*w*.5, b['y']*d*.6
-        tangent = Vector((bx-ax, by-ay, 0)).normalized()
-        normal = Vector((-tangent.y, tangent.x, 0))
         for tier in range(tiers):
             retreat = tier*.64
             z0a = -.12 if tier == 0 else h*tier/tiers*a['height']-.04
             z0b = -.12 if tier == 0 else h*tier/tiers*b['height']-.04
             za, zb = h*(tier+1)/tiers*a['height'], h*(tier+1)/tiers*b['height']
-            front_a = Vector((ax, ay, 0)) + normal*retreat
-            front_b = Vector((bx, by, 0)) + normal*retreat
-            back_a = front_a + normal*(2.3-tier*.4)
-            back_b = front_b + normal*(2.3-tier*.4)
+            front_a = offset_vertex(index, retreat)
+            front_b = offset_vertex(index+1, retreat)
+            back_a = offset_vertex(index, retreat+2.3-tier*.4)
+            back_b = offset_vertex(index+1, retreat+2.3-tier*.4)
+            if tier in previous_edges:
+                old_front, old_back, old_height = previous_edges[tier]
+                largest_joint_gap = max(largest_joint_gap, (front_a-old_front).length,
+                                        (back_a-old_back).length, abs(za-old_height))
+            previous_edges[tier] = (front_b.copy(), back_b.copy(), zb)
             vertices = [(front_a.x, front_a.y, z0a), (front_b.x, front_b.y, z0b),
                         (front_b.x, front_b.y, zb), (front_a.x, front_a.y, za),
                         (back_a.x, back_a.y, z0a), (back_b.x, back_b.y, z0b),
                         (back_b.x, back_b.y, zb+.10), (back_a.x, back_a.y, za+.10)]
             escarpment.add(vertices, [(0,1,2,3),(4,7,6,5),(3,2,6,7),(0,4,5,1),(0,3,7,4),(1,5,6,2)], stone[(index+tier)%4])
-    # The upper cap retains the already licensed natural rock surface material.
-    for i, p in enumerate(profile):
-        escarpment.box((p['x']*w*.5, p['y']*d*.6+1.8, h*p['height']+.10),
-                       (1.1+rng.random()*.7, .85+rng.random()*.6, .52), rock_material,
-                       wear=.12)
     quarry.append(escarpment.finish(.055))
+    # Reuse the actual irregular source-rock mesh and UVs, embedded in the
+    # joined upper bench. No flat, disconnected rectangular cap is introduced.
+    cap_templates = normalized_copy(children_meshes(quarry_anchor), 'Retained rim rock template', 1)
+    cap_lo, cap_hi = bounds(cap_templates)
+    upper_mid = (tiers-1)*.64 + (2.3-(tiers-1)*.4)*.5
+    for i, p in enumerate(profile):
+        position = offset_vertex(i, upper_mid)
+        tangent = tangents[min(i, len(tangents)-1)] if i in (0, len(profile)-1) else (tangents[i-1]+tangents[i]).normalized()
+        for template in cap_templates:
+            rock = bpy.data.objects.new('Quarry retained embedded rim rock %02d' % i, template.data)
+            bpy.context.collection.objects.link(rock)
+            rock.location = (position.x, position.y, h*p['height']-.38)
+            rock.rotation_euler.z = math.atan2(tangent.y, tangent.x)
+            rock.scale = (1.35+rng.random()*.5, 1.05+rng.random()*.25, .78/max(.01,cap_hi.z-cap_lo.z))
+            quarry.append(rock)
+    for template in cap_templates:
+        bpy.data.objects.remove(template, do_unlink=True)
     stock = Mesh('Quarry extracted limestone stock')
     side = -1 if plan['derrick_side'] == 'left' else 1
     for row in range(2):
@@ -532,6 +610,15 @@ def perform(action):
     line(tackle, (x-side*2.8,y,4.25), (x-side*2.8,y,1.2), .027, iron)
     tackle.box((x-side*2.8,y,.8), (.85,.76,.75), stone[1], wear=.045)
     quarry.append(tackle.finish(.012))
+    assert largest_joint_gap < .00001, 'Joined quarry segments are not continuous'
+    write('environment-finish-quarry-assembly.json', {
+         'authored_profile_preserved': profile == plan['quarry_rim'],
+         'joined_bench_vertex_gap_metres': largest_joint_gap,
+         'terrain_or_floor_mesh_added': False,
+         'excavation_material': rock_material.name,
+         'excavation_uv': 'Existing metric face UVs, 3.5 metres per tile',
+         'rim_geometry': 'Retained original irregular rock mesh and UVs, shared by embedded copies',
+         'blender_visual_review_required': True})
 
 transport = 'BLENDER_DIRECT_EXISTING_TYPED_EXECUTOR'
 try:
@@ -552,7 +639,7 @@ except Exception as exc:
     perform(operation)
 
 assert forest and quarry
-for group in (forest, quarry, before_forest, before_quarry):
+for group in (forest, quarry, before_forest, before_quarry, before_repair_quarry):
     for obj in group:
         obj.hide_render = True
 
@@ -581,7 +668,11 @@ camera = bpy.context.object
 camera.data.type, camera.data.ortho_scale = 'ORTHO', 33
 camera.rotation_euler = (Vector((0,2,2.3))-camera.location).to_track_quat('-Z','Y').to_euler()
 scene.camera = camera
-for name, group in [('forest-before',before_forest),('forest-after',forest),('quarry-before',before_quarry),('quarry-after',quarry)]:
+review_groups = [('forest-before',before_forest),('forest-after',forest),('quarry-before',before_quarry)]
+if before_repair_quarry:
+    review_groups.append(('quarry-repair-before',before_repair_quarry))
+review_groups.append(('quarry-after',quarry))
+for name, group in review_groups:
     for obj in group:
         obj.hide_render = False
     scene.render.filepath = str(EV / ('environment-' + name + '.png'))
@@ -590,6 +681,8 @@ for name, group in [('forest-before',before_forest),('forest-after',forest),('qu
         obj.hide_render = True
 
 for filename, objects in [('EnvironmentForest.glb', forest), ('EnvironmentQuarry.glb', quarry)]:
+    if repair_mode and filename == 'EnvironmentForest.glb':
+        continue
     bpy.ops.object.select_all(action='DESELECT')
     for obj in objects:
         obj.hide_render = False
@@ -608,9 +701,15 @@ for obj in forest + quarry:
 bpy.context.preferences.filepaths.save_version = 0
 bpy.ops.wm.save_as_mainfile(filepath=str(EV / 'EnvironmentFinish.blend'))
 assert {key:digest(path) for key,path in sources.items()} == source_hashes
+if repair_mode:
+    assert digest(EV/'environment-finish-plan.json') == repair_plan_hash
+    assert digest(EV/'environment-finish-artist-plan.json') == repair_artist_plan_hash
+    assert digest(OUT/'EnvironmentForest.glb') == repair_parent['glb_sha256']['EnvironmentForest.glb']
 write('environment-finish-result.json', {
     'source_sha': os.environ.get('GITHUB_SHA'), 'source_sha256': source_hashes,
     'sources_preserved': True, 'qwen_model': payload['model'], 'transport': transport,
+    'qwen_inference_performed': not repair_mode, 'existing_artist_plan_reused': repair_mode,
+    'technical_repair_parent_result_sha256': repair_parent_result_hash if repair_mode else None,
     'canonical_system_sha256': system_hash, 'memory_source_sha256': digest(memory_path),
     'actual_memory_sha256': context['actual_memory_sha256'], 'plan': plan,
     'canonical_artist_plan_sha256': digest(EV/'environment-finish-artist-plan.json'),

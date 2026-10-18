@@ -100,7 +100,8 @@ jobs:
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
             if(-not $blender){throw 'Existing Blender unavailable'}
-            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_environment_finish.py
+            if($req.repair_environment){& $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_environment_finish.py -- --repair-last-plan}
+            else{& $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_environment_finish.py}
             if($LASTEXITCODE){throw 'Existing local artist environment authoring failed'}
             $result='docs/evidence/valoria-reference-clean/environment-finish-result.json'
             if(-not(Test-Path $result)){throw 'Environment authoring evidence missing'}
@@ -220,7 +221,8 @@ jobs:
           }
           if($req.stage -eq 'web_playtest'){
             $integrationLog=Join-Path $env:RUNNER_TEMP 'valoria-web-integration-preflight.log'
-            $integrationArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build','-logFile',$integrationLog)
+            # Validate the committed integrated scene; never rebuild the historical assembly before WebGL.
+            $integrationArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent','-logFile',$integrationLog)
             $integrationProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $integrationArgs -PassThru
             if(-not $integrationProcess.WaitForExit(600000)){& taskkill.exe /PID $integrationProcess.Id /T /F|Out-Null;throw 'Own integrated web preflight timed out'}
             Copy-Item $integrationLog docs/evidence/valoria-reference-clean/web-integration-preflight.log

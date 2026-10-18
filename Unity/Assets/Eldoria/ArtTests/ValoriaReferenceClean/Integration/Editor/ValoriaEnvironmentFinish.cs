@@ -88,7 +88,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "Physical Android/iPhone performance is not measured by editor captures.","Existing light bake and scene heights retained; moved decorative models use realtime lighting and probes."} };
    try {
     city.Apply(new PlayerState { BastionLevel=2,SawmillLevel=1,BarracksLevel=1 });
-    CaptureViews(city,host,evidenceDir,"before",frames);
+    CaptureViews(city,host,plan,evidenceDir,"before",frames);
     host.WorldRoot.SetActive(true); Physics.SyncTransforms();
     var marker=new GameObject(Marker); marker.transform.SetParent(host.WorldRoot.transform,false);
     var ground=host.WorldRoot.GetComponentsInChildren<MeshFilter>(true).FirstOrDefault(f=>f.name=="ZoneOne continuous prairie source");
@@ -113,7 +113,7 @@ namespace Eldoria.ReferenceClean.Editor {
     host.WorldRoot.SetActive(false);
     report.city_painted_cells=FinishCityGround(city,terrain,plan);
     report.shoreline_stones_reused=BreakShoreRepetition(host,plan);
-    CaptureViews(city,host,evidenceDir,"after",frames);
+    CaptureViews(city,host,plan,evidenceDir,"after",frames);
     report.same_camera_light=beforeLight==LightStamp(); Need(report.same_camera_light,"A/B light changed");
     report.terrain_heights_preserved=terrainBefore.GetHeights(0,0,terrainBefore.heightmapResolution,terrainBefore.heightmapResolution)
      .Cast<float>().SequenceEqual(terrain.terrainData.GetHeights(0,0,terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution).Cast<float>());
@@ -377,7 +377,7 @@ namespace Eldoria.ReferenceClean.Editor {
    return changed;
   }
 
-  static void CaptureViews(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidence,string phase,Dictionary<string,Frame> frames) {
+  static void CaptureViews(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,ArtistPlan plan,string evidence,string phase,Dictionary<string,Frame> frames) {
    var cityState=new CameraState(city.PlayerCamera);var worldState=new CameraState(host.WorldCamera);bool active=host.WorldRoot.activeSelf;
    try {
     host.WorldRoot.SetActive(false); city.PlayerCamera.enabled=true; host.WorldCamera.enabled=false;
@@ -396,7 +396,11 @@ namespace Eldoria.ReferenceClean.Editor {
      city.PlayerCamera.transform.LookAt(bounds.center-new Vector3(0,1.2f,2));city.PlayerCamera.orthographicSize=12.5f;
      Capture(city.PlayerCamera,tuple.Item1,1448,1086);
     }
-    city.PlayerCamera.transform.position=new Vector3(26,32,-57);city.PlayerCamera.transform.LookAt(new Vector3(12,-.3f,-23));city.PlayerCamera.orthographicSize=23;
+    // Frame the actual authored shore stretch in both phases; the former fixed
+    // central view missed all three chosen stretches outside the bridge.
+    float shoreX=plan.shore_gaps.OrderBy(g=>Mathf.Abs(g.x)).First().x;
+    var shorePoint=new Vector3(shoreX,-.3f,RiverCenter(shoreX));
+    city.PlayerCamera.transform.position=shorePoint+new Vector3(14,32,-34);city.PlayerCamera.transform.LookAt(shorePoint);city.PlayerCamera.orthographicSize=23;
     Capture(city.PlayerCamera,"river-bank",1448,1086);
     city.PlayerCamera.enabled=false;host.WorldRoot.SetActive(true);host.WorldCamera.enabled=true;
     if(host.WorldBastionOne)host.WorldBastionOne.SetActive(false);if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(true);
