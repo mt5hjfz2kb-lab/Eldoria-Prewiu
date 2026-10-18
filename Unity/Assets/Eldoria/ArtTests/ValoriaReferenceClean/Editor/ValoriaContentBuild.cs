@@ -67,6 +67,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Environment.SetEnvironmentVariable("VALORIA_CONTENT_PROBE","1");
    EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
    var camera=new GameObject("Content probe camera").AddComponent<Camera>();camera.backgroundColor=Color.black;
+   EditorSceneManager.SaveScene(SceneManager.GetActiveScene(),ValoriaContentBuild.Root+"Valoria_Content_Probe.unity");
    SessionState.SetBool(Flag,true);EditorApplication.EnterPlaymode();
   }
   static void Changed(PlayModeStateChange state){
