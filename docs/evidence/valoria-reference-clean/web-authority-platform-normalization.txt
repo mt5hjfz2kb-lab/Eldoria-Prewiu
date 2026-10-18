@@ -1,6 +1,6 @@
 SOURCE_BYTES_AND_OWNERSHIP_PRESERVED / only URP 17.3.0 TerrainLitBase platform-dependent dependency membership:
 Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitBase.shader
 Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitBase.shader.meta
-Native signature: B8-71-9F-3E-EB-8D-ED-09-45-90-E9-A3-E3-33-87-E3-FC-E1-DC-2B-D9-47-21-27-07-F6-10-96-75-04-35-45
-WebGL signature: 6B-61-33-31-F3-1C-BC-93-2E-B9-66-8C-13-0C-10-8A-EA-40-13-00-10-BD-F0-EE-34-2D-CF-29-1B-EA-BB-C9
+Native signature: 8E-6B-C8-CC-AD-DF-65-12-C1-21-35-C0-92-17-A7-22-46-8D-D5-61-11-79-FF-FA-E5-3B-06-15-B6-3B-12-6F
+WebGL signature: 97-1C-E5-62-94-CD-C2-8D-EB-2F-9F-CE-96-CF-2F-F3-F9-41-F0-33-62-7F-76-86-3A-F2-9C-47-78-6A-2A-05
 Author authored assets changed: none
