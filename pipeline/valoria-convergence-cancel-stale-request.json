@@ -1,15 +1,18 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Stop only archived SHARP First Playable v1 production accidentally activated by the current RoyalGold dialogue/domain changes. The owner retired experimental branches; the sole main integration run 39157273911 is preserved. Avoid single Windows runner contention or publishing a historical scene.",
+  "reason": "Only the historic [PRODUCTION] Valoria First Playable City Slice v1 was accidentally triggered by the authorized input/gameplay source update. It is an archived alternative and must not spend the exclusive Windows runner or rebuild old parcels. Preserve the current main Unity native135, EditMode, UI certification, architecture, art and workflow guards.",
   "runs": [
-    39157273793
+    39174538447
   ],
   "keep_runs": [
-    39157273911,
-    39157273814,
-    39157273859,
-    39157273829
+    39174538515,
+    39174538433,
+    39174538409,
+    39174538414,
+    39174538440,
+    39174538491,
+    39174538597
   ],
-  "triggered_at": "2026-10-18T19:13:00Z"
+  "triggered_at": "2026-10-18T23:10:00Z"
 }
