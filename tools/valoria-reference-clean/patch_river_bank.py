@@ -60,8 +60,13 @@ context = dict(source_blend_sha256=expected, target=obj.name, coordinate_system=
     task='Author 3 to 7 edits of these REAL connected components into lower broader shelves with varied crowns; change only this representative north bank zone. Do not invent component IDs. Base Z stays fixed; do not lower every crown to the same height. Top must remain above water_z+0.15. Preserve closed topology/UVs. Choose actual values per boulder.',
     schema={'rationale':'short art reason', 'actions':[{'component':'integer from actual_components', 'scale_x':'0.85..1.2', 'scale_y':'1.05..1.45', 'scale_z':'0.45..0.80', 'shift_inland':'0..0.6'}]})
 write('bank-patch-mesh-context.json', context)
+for item in context['actual_components']:
+    low,high=item['bbox_min'][2],item['bbox_max'][2]
+    item['minimum_scale_z_above_water']=max(.45, round((-1.90-low)/(high-low)+.005,4))
+context['task'] += ' Select at most SEVEN components, not all nine. Each scale_z must exceed its minimum_scale_z_above_water.'
 context_text=json.dumps(context)
-payload=dict(model='qwen3:14b', stream=False, format='json', think=False,keep_alive=0,
+response_schema={'type':'object','required':['rationale','actions'],'additionalProperties':False,'properties':{'rationale':{'type':'string'},'actions':{'type':'array','minItems':3,'maxItems':7,'items':{'type':'object','required':['component','scale_x','scale_y','scale_z','shift_inland'],'additionalProperties':False,'properties':{'component':{'type':'integer','enum':[t['component'] for t in targets]},'scale_x':{'type':'number','minimum':.85,'maximum':1.2},'scale_y':{'type':'number','minimum':1.05,'maximum':1.45},'scale_z':{'type':'number','minimum':.45,'maximum':.80},'shift_inland':{'type':'number','minimum':0,'maximum':.6}}}}}}
+payload=dict(model='qwen3:14b', stream=False, format=response_schema, think=False,keep_alive=0,
     messages=[{'role':'system','content':'You are the Eldoria 3D art director. Author a bounded geometric improvement from actual world-space mesh data and the supplied independently observed visual diagnosis. Output only JSON in the requested schema. No Python, no tools, no invented geometry. Never claim art approval.'},
               {'role':'user','content':context_text}],
     options={'temperature':0.25,'num_ctx':8192,'num_predict':1800})
