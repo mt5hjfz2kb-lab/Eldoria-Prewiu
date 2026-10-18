@@ -60,7 +60,14 @@ namespace Eldoria.UI.RoyalGold {
    if(!cinematic)cinematic=Modal.GetComponent<RoyalNarrativePresentation>();
    if(!cinematic)throw new InvalidOperationException("Royal Gold narrative presentation missing from its own ModalWindow prefab");
    narrative=true;Modal.Show("","");
-   cinematic.Begin(turns,english,()=>{narrative=false;completed?.Invoke();});
+   cinematic.Begin(turns,english,()=>{
+    narrative=false;
+    // Acknowledging the final dialogue page writes a new save revision.
+    // Refresh synchronous action offers before a player can tap Build/Recruit:
+    // the previously displayed offer otherwise has an obsolete revision.
+    completed?.Invoke();
+    Refresh();
+   });
   }
   void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
   void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
