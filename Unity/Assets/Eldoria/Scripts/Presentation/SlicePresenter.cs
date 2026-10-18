@@ -122,6 +122,7 @@ namespace Eldoria.Presentation
                 StartCoroutine(LogPlayableUiGeometryNextFrame());
 #endif
             }
+            if(SceneHost!=null&&Mouse.current!=null&&!IsPointerOverInteractiveUi(Mouse.current.position.ReadValue())){float wheel=Mouse.current.scroll.ReadValue().y;if(Mathf.Abs(wheel)>.01f)SceneHost.Zoom(-wheel*.02f);}
             HandlePointerInput();
             AnimateCityAmbientation();
             UpdateBuildingLevelBadgePositions();
@@ -607,11 +608,11 @@ namespace Eldoria.Presentation
                 {
                     var next=BastionProgressionCatalog.ForLevel(2);
                     var missing=BastionProgressionCatalog.MissingSummary(s,next);
-                    buildingBody.text="Núcleo de Valoria · nivel I.\nRequisitos para Bastión II: objetivos de Bastión I completos · "+
-                        next.WoodCost+" madera · "+next.StoneCost+" piedra.\n"+
-                        (string.IsNullOrEmpty(missing)?"LISTO PARA ASCENDER":"Falta: "+missing)+
-                        "\nDesbloquea: Cuartel · Capítulo II · preparación de Marcha.";
-                    buildingAction.GetComponentInChildren<Text>().text="ASCENDER A BASTIÓN II";
+                    buildingBody.text="Nivel I · centro de Valoria\n"+
+                        "Madera "+s.Resources.Wood+"/"+next.WoodCost+" · Piedra "+s.Resources.Stone+"/"+next.StoneCost+"\n"+
+                        "Objetivos I: "+(s.JourneyComplete?"completos":"pendientes")+" · Mejora: 10 s\n"+
+                        "Desbloquea Cuartel y Capítulo II.";
+                    buildingAction.GetComponentInChildren<Text>().text=BastionProgressionCatalog.RequirementsMet(s,next)?"MEJORAR A BASTIÓN II":"REQUISITOS PENDIENTES";
                     buildingAction.interactable=BastionProgressionCatalog.RequirementsMet(s,next);
                     if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("AdvanceBastion","bastion");});
                 }
@@ -808,7 +809,7 @@ namespace Eldoria.Presentation
             message.text=string.IsNullOrEmpty(feedback)?
                 (s.EngendroDefeated?"Engendro derrotado. El ascenso a Bastión III queda para el siguiente hito.":
                  s.JourneyComplete&&s.BastionLevel==1?"Valoria vuelve a respirar. Asciende el Bastión para continuar.":
-                 city?"Pulsa MUNDO para abrir el mapa 4X; vuelve con recursos para construir.":
+                 city?(SceneHost!=null?"Abre RUTAS para reunir recursos y despejar la frontera.":"Pulsa MUNDO para abrir el mapa 4X; vuelve con recursos para construir."):
                  "Selecciona una ciudad, recurso, ruina o amenaza para actuar en la Región I."):feedback;
             RefreshClock();
         }
@@ -966,7 +967,7 @@ namespace Eldoria.Presentation
 #endif
                 if(!city)NavigateScene(CitySceneName);
             });
-            worldNavButton=NavButton(nav,"◎","MUNDO",()=>{
+            worldNavButton=NavButton(nav,"◎",SceneHost!=null?"RUTAS":"MUNDO",()=>{
 #if UNITY_WEBGL && !UNITY_EDITOR
                 Debug.Log("ELDORIA_PLAYABLE_NAV target=Frontier city="+city);
 #endif
@@ -1220,7 +1221,7 @@ namespace Eldoria.Presentation
             var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(12,12,8,8);
             layout.spacing=2;layout.childControlHeight=true;layout.childForceExpandHeight=false;
             buildingTitle=Label("Building title",buildingPanel.transform,15,new Color(.96f,.88f,.69f),24);
-            buildingBody=Label("Building body",buildingPanel.transform,12,new Color(.86f,.89f,.90f),56);
+            buildingBody=Label("Building body",buildingPanel.transform,SceneHost!=null?10:12,new Color(.86f,.89f,.90f),56);
             var actionGo=new GameObject("Building action",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             actionGo.transform.SetParent(buildingPanel.transform,false);
             actionGo.GetComponent<Image>().color=new Color(.73f,.61f,.36f,.98f);

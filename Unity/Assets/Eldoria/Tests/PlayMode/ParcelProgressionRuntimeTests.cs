@@ -97,6 +97,9 @@ namespace Eldoria.Tests
             void March(string kind,string target){Command(kind,target);clock.Step(120);gateway.Advance();}
             March("Gather","forest-valoria");March("Gather","forest-valoria");March("Gather","quarry-valoria");March("Fight","corrupt-scout");
             Command("AdvanceBastion","bastion");Invoke(presenter,"Refresh");
+            Assert.That(visual.PresentedBastionLevel,Is.EqualTo(1));
+            Assert.That(visual.RightTarget.enabled,Is.False);
+            clock.Step(SliceContentProfiles.WebContract.Bastion2UpgradeSeconds);gateway.Advance();Invoke(presenter,"Refresh");
             Assert.That(visual.PresentedBastionLevel,Is.EqualTo(2));
             Assert.That(visual.BastionLevelTwoVisuals[0].activeSelf,Is.True);
             Assert.That(visual.BastionLevelTwoVisuals[1].activeSelf,Is.True);
