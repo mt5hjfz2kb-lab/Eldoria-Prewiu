@@ -1,35 +1,19 @@
-# Valoria Reference Clean — escena real y fuentes editables
+# Valoria Reference Clean — escena real y editable
 
-Abrir el proyecto Unity existente desde la rama `construction/valoria-master-plan-layers-20261016` y la escena `Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity`. Unity6000.3.23f1, URP17.3.0, glTFast6.14.1. Las escenas anteriores se conservan; esta escena es independiente y contiene una sola representación activa de cada estructura.
+Escena: `Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity`. Trabajo exclusivo en `construction/valoria-master-plan-layers-20261016`; las escenas y trabajos anteriores se conservan. No se ha modificado la composición validada ni los controles.
 
-## Contenido editable
+La versión visual retenida53 está en `8a55c8235a1d029c34c127fb06f594512256a074`, run39082666702. Unity6000.3.23f1/URP17.3: cielo procedural, luz solar cálida lateral, iluminación indirecta ProgressiveCPU realmente horneada,264 Light Probes y4 Reflection Probes128, materiales nativos URP/Lit con UV separadas y ORM convertido, ACES/HDR grading y bloom moderado. RealtimeGI/Enlighten desactivado. El río utiliza realmente el cubemap horneado y un flujo irregular sin la antigua trama ni bandas regulares.
 
-- TerrainData real y cauce continuo, río con profundidad visual, transparencia somera y espuma de contacto; puente con arcos y apoyos cerrados.
-- Bastión compacto, puerta de acceso diferente, camino continuo, cuatro parcelas vacías y fragmentos de muralla; vegetación, rocas, banderas y antorchas modeladas.
-- Prefabs en `Prefabs/`, mallas/materiales/TerrainLayers/pipeline URP en `GeneratedArt/`, shaders y componentes de cámara/selección dentro de la misma carpeta de escena.
-- GLB en `Sources/Valoria_Reference_Clean.glb`; fuente Blender empaquetada en `docs/evidence/valoria-reference-clean/Valoria_Reference_Clean.blend`; paquete de intercambio `Valoria_Reference_Clean.unitypackage` junto a este documento. Preferir el proyecto completo: el paquete requiere las dependencias del proyecto y Terrain Physics habilitado.
-- Selección del Bastión y cuatro parcelas, arrastre/zoom/encuadre de cámara con soporte táctil y límites de terreno. Preparación para futuras construcciones; no se ha sustituido el sistema económico ni el guardado canónico.
+`lighting-before-main/bastion.png` conserva el estado previo original46; `lighting-correction-before-*` y `lighting-after-*` muestran la última corrección de GI, ambos con MSAA4× y cámara/luz idénticas. `river-lighting-before/after-main/detail.png` conserva la prueba del agua. `D-final.png`, `detail-bastion.png`, `detail-gate-bridge.png` y `playmode-home/pan/zoom.png` son capturas auténticas de Unity. Los diagnósticos sin sombras o sin recepción de lightmap están identificados y no son la escena final.
 
-## Última validación visual y jugable
+Se corrigió la regresión de colores/UV48 con materiales URP/Lit49; el punteado observado51/52 se aisló a lightmaps y se corrigió53 aumentando su asignación.5 mapas [2048,2048,512,512,512],48,943,040 bytes nativos Windows,264 probes y4 reflexiones.635048 triángulos de malla,35 renderers y163 slots. Texturas referenciadas en materiales140,985,974 bytes Windows; estas mediciones no equivalen a memoria ni FPS de un móvil. La geometría se mantiene sin batching estático, con guardas de paridad Editor/Play.
 
-Fuente ejecutada `f9cc6a6999626d5e0067960a7fa2c80675e07dd4`; salida nativa `2c3d6174fe78ea5cf4031a4611dfb228d60019ac`; [ejecución Unity/Blender46](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39079638661).
+Pruebas reales53:96/96 recorridos y gálibos,6 escaleras,5 selecciones,12/12 pruebas de encuadre móvil sobre Terrain,zoom/pan/home,una cámara,cero excepciones y guardado canónico intacto. Native54 actualiza los prefabs portables con el acabado actual y exporta `Valoria_Reference_Clean.unitypackage`; el paquete incluye escena,materiales,GI,terreno y dependencias. Los prefabs móviles reciben LightProbes; la escena colocada conserva lightmaps.
 
-Las capturas `A-blockout.png`, `B-architecture.png`, `C-art-scene.png`, `D-final.png`, `detail-bastion.png`, `detail-gate-bridge.png` y `playmode-home/pan/zoom.png` proceden del render real de Unity. `water-before/after-main/detail.png` y `water-comparison.json` demuestran el último cambio manteniendo cámara, iluminación y malla. Las pruebas de piedra, terreno, orilla y vegetación permanecen en el historial Git; los candidatos rechazados no se promocionaron automáticamente.
+Las fuentes Blender/GLB de46 siguen siendo las fuentes geométricas válidas, pues no se han movido ni cambiado sus triángulos. Blender5.2.2 LTS y BlenderMCP realmente ejecutados46: acción tipada revisada,22 cantos cerrados,addon existente con SHA `eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5`,servidor local temporal cerrado al terminar,sin instalaciones ni proveedores de pago. Se reutilizó el transporte de38612645467/38766521237. `blendermcp-art-operation.json` demuestra ejecución, no aprobación artística.
 
-`playmode.json`:96/96 recorridos y gálibos,6 escalones,5 selecciones,una cámara,cero excepciones,zoom/pan/home reales y guardado canónico intacto;12/12 rayos de las esquinas de cámara sobre Terrain en formato panorámico móvil. Se conservan las protecciones contra geometría corrupta en Play: sin static batching sobre las mallas glTF y comparación estricta Editor/Play.
+Qwen3-VL8B local revisó imágenes auténticas43 y50; hashes,modelo y respuesta se conservan. Su puntuación8/10 y su afirmación de luz idéntica en50 no se adoptan como evidencia. No hay entrenamiento de pesos ni `ART_APPROVED`.
 
-La escena contiene635048 triángulos de malla,35 renderers y163 slots de material. Texturas referenciadas:121822558 bytes de memoria nativa en Windows. Render de cámara más lectura GPU a960×540:25.76ms. Estas medidas no son FPS ni memoria de un teléfono; los ceros de UnityStats en batch no significan cero draw calls.
+Recursos externos0€: Quaternius y4 materiales PolyHaven CC0 recuperados/modificados; originales y procedencias en `resource-licenses.json`, manifiestos de MaterialInputs y `source-art.json`. Ninguna imagen generada se presenta como Unity.
 
-## Herramientas y procedencias verificadas
-
-Blender5.2.2 LTS realmente ejecutado. En46 BlenderMCP ejecutó una acción tipada que modeló22 cantos cerrados junto al agua, usando el complemento ya instalado y su hash verificado `eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5`. Se reutilizó el transporte histórico de38612645467/38766521237, con servidor temporal local y cierre al terminar, sin instalar ni habilitar servicios de pago. Evidencia: `blendermcp-art-operation.json` y `native-tool-check.json`. La ausencia de un servicio permanente en9876 no describe esta vía temporal.
-
-El cerebro existente Qwen3-VL8B revisó cuatro imágenes auténticas en43; `qwen-review.json` conserva imágenes/hashes/modelo/inferencia y crítica con incertidumbre. Es una ayuda, no aprobación artística. Las decisiones de esta escena y recetas de modelado se atribuyen a Codex; no se declara una autoría Qwen inexistente ni entrenamiento de pesos.
-
-Coste de recursos externos0€. Quaternius CC0 recuperado y transformado; cuatro materiales Poly Haven CC0 verificados, originales conservados y derivados adaptados. Procedencias, licencias y rechazos en `resource-licenses.json`, manifiestos de MaterialInputs y `source-art.json`. No hay imágenes generadas presentadas como Unity.
-
-## Validación móvil y reproducción
-
-La compilación aislada ARM64/IL2CPP se solicita en47 con el adaptador Android existente; el resultado definitivo quedará en `android-build.json` y el APK en el artefacto de esa ejecución, sin versionar el binario en Git. Hasta leer ese resultado, no declarar APK compilado. ADB está disponible pero no hay dispositivos Android autorizados; tampoco se ha perfilado un dispositivo iOS. No se certifica rendimiento físico, objetivo8/10 ni `ART_APPROVED`.
-
-Reproducción: receta `tools/valoria-reference-clean/author_scene.py` y workflow `.github/workflows/valoria-reference-clean.yml`, solo con claim exclusivo real y herramientas del PC libres. El workstream conserva la reserva durante la compilación47. No se modifica el arte de main ni se reanudan trabajos pausados.
+Android47 falló por kernels Gsplat durante BuildPlayer con -nographics; diagnóstico real conservado. Se prepara un único reintento con gráficos D3D11, preservando paquetes y datos canónicos. El resultado definitivo estará en `android-build.json`; no declarar APK hasta leerlo. No hay Android autorizado conectado ni perfil físico iOS, y no se certifica rendimiento móvil ni8/10.
