@@ -1,24 +1,23 @@
-# Royal Gold V1 — live recovery, 18 October 2026
+# Royal Gold V1 — verified continuation, 18 October 2026
 
-Workstream: eldoria-ui-royal-gold-v1-20261018
-Owner: chatgpt-ui-royal-gold-v1-20261018
-Branch: ui/eldoria-royal-gold-v1-20261018
+Workstream: eldoria-ui-royal-gold-v1-20261018. Branch: ui/eldoria-royal-gold-v1-20261018. Owner and exclusive paths are unchanged.
 
-## Verified recovery
+## Actually saved and tested
 
-The earlier branch HEAD 2ae933ff9f611cfec6659fb583f0d35e7c791d50 only registered UI ownership. No complete UI package or native test result was committed. Twenty exact PNG blobs recorded in this conversation have now been attached to this branch under tools/eldoria-ui-royal-gold-v1/recovered/, named by their Git object SHA. This preserves their bytes; original names and source drawings were not recoverable from the current execution environment. They are not silently treated as approved art.
+The recovered implementation is no longer just a claim or orphaned blobs. Source f0977a72119a8eb6b54270ec575d4b2290df9878 passed independent run 39128460062. Output commit 53e9c676da19217c89499275c538113cc2cc7e2e contains 10 serialized component prefabs, the 100-object isolated TEST scene, 20 recovered original PNGs with sprite import metadata, all component sources and 34 executed adapter checks. Evidence: adapter-tests.json and serialization-check.json in this directory. These are .NET and graph checks, NOT native Unity validation or visual approval.
 
-The current environment has no surviving earlier local code files. Complete missing components on this same branch; do not restart the artistic direction or any city work. Newly implemented code and its own tests will be preserved in small verified commits.
+The exact failures were a truncated namespace (fixed in 698e7502) and a version mismatch: Valoria has timed Bastion upgrade fields which the main-derived UI baseline lacks. BastionTiming reads those optional real fields without copying shared game classes, inventing timers or changing their logic. link.xml preserves the small reflection surface for IL2CPP. Both actual contract revisions must be exercised by the current independent test matrix; no new PASS is inferred from the earlier run.
 
-## Coordination read
+## Current additional unit
 
-- main: de0970f7a8c08eb4c5223f15e603c11f428ad115
-- Valoria: cb076f982a45ff951793413f1fd4bae819efe2dd
-- 4X: 2316bd9ef2920ab0b5a961ba658e107f2ee1ed57
-- main registry blob: 1b07d13bb0abbbe154a71b563d773c8d73dbe243
-- Existing UI claim and 18 October owner exception remain valid. Resources: none.
-- Valoria retains windows-runner-heavy. No Windows action, scene change, merge, APK or publication is authorized by this recovery.
+Added an explicitly invoked Unity-native test entry point: Eldoria.UI.RoyalGold.Editor.RoyalNativeProbe.Begin. It loads only RoyalGold_UI_TEST.unity, checks actual imported scripts, event-system raycasts, UI command/drag handling, modal blocking, construction completion and offscreen captures at landscape/tablet/simulated-safe-area sizes. It does not execute on import. Until it actually runs, its implementation is UNTESTED IN UNITY. Native images must remain labelled isolated offscreen UI, not live Valoria, GameView screenshots or physical-device results.
 
-## Next
+Corrected building-label coordinate parenting and mission-panel expansion restoring the authored height. No Valoria, 4X, shared gameplay, camera, save, packages, ProjectSettings, release or APK files were edited.
 
-Inspect recovered art, complete independent uGUI components and serialized prefabs/test scene, implement adapters after reading current contracts, run static checks, then request a coordinated native window. Native Unity, physical mobile performance and city integration are NOT verified. The mission remains open.
+## Resource and next exact action
+
+Valoria retains windows-runner-heavy. There is no UI grant yet and no UI Windows job has been launched. Finish independent baseline/new-Valoria contract matrix; record exact candidate. Request a bounded isolated native window in pipeline/eldoria-ui-royal-gold-v1-native-request.json on main without taking the lease. After an explicit compatible grant and live-queue check, run the native entry point in an isolated checkout, inspect its actual captures, fix any failed gate, and update this same handoff. The separate Valoria constructor performs canonical integration only at a coordinated stable milestone.
+
+## Evidence limits
+
+The original approved HUD image was not recovered in the current continuation; only its detailed written art brief and twenty earlier authored sprites are available. Do not substitute the city's reference image for the UI reference or claim exact image fidelity. Stage-one visual approval, complete native compilation, physical Android/iOS performance and final city integration remain unverified. This mission is OPEN, not completed.

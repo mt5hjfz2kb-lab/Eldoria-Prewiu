@@ -37,10 +37,32 @@ jobs:
           set -euo pipefail
           python tools/eldoria-ui-royal-gold-v1/art_inventory.py
           python tools/eldoria-ui-royal-gold-v1/materialize.py
-      - name: Execute actual CSharp domain adapter tests
+      - name: Test unchanged baseline contracts
+        env:
+          ROYAL_CONTRACT_LABEL: UI_BRANCH_BASELINE
         run: |
           set -euo pipefail
           dotnet run --project tools/eldoria-ui-royal-gold-v1/Tests/AdapterTests.csproj --configuration Release | tee docs/ui-royal-gold-v1/adapter-test-output.txt
+          cp docs/ui-royal-gold-v1/adapter-tests.json docs/ui-royal-gold-v1/adapter-tests-baseline.json
+          dotnet run --project tools/eldoria-ui-royal-gold-v1/Tests/TimingTests.csproj --configuration Release | tee docs/ui-royal-gold-v1/timing-test-output.txt
+          cp docs/ui-royal-gold-v1/timing-tests.json docs/ui-royal-gold-v1/timing-tests-baseline.json
+      - name: Test actual pinned Valoria contracts without changing shared files
+        env:
+          VALORIA_CONTRACT_SHA: 773f4f24c09445bf4fe9f16d6f8d98949ac5ae6f
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 --filter=blob:none origin "$VALORIA_CONTRACT_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$VALORIA_CONTRACT_SHA"
+          mkdir -p "$RUNNER_TEMP/royal-contracts"
+          git archive "$VALORIA_CONTRACT_SHA" Unity/Assets/Eldoria/Scripts/Domain Unity/Assets/Eldoria/Scripts/Application | tar -x -C "$RUNNER_TEMP/royal-contracts"
+          contracts="$RUNNER_TEMP/royal-contracts/Unity/Assets/Eldoria/Scripts"
+          export ROYAL_CONTRACT_LABEL="$VALORIA_CONTRACT_SHA"
+          dotnet run --project tools/eldoria-ui-royal-gold-v1/Tests/AdapterTests.csproj --configuration Release --property:ContractsRoot="$contracts" | tee docs/ui-royal-gold-v1/adapter-valoria-output.txt
+          cp docs/ui-royal-gold-v1/adapter-tests.json docs/ui-royal-gold-v1/adapter-tests-valoria.json
+          dotnet run --project tools/eldoria-ui-royal-gold-v1/Tests/TimingTests.csproj --configuration Release --property:ContractsRoot="$contracts" | tee docs/ui-royal-gold-v1/timing-valoria-output.txt
+          cp docs/ui-royal-gold-v1/timing-tests.json docs/ui-royal-gold-v1/timing-tests-valoria.json
+          printf '%s\n' "$VALORIA_CONTRACT_SHA" > docs/ui-royal-gold-v1/validated-valoria-contract.sha
+          git diff --exit-code -- Unity/Assets/Eldoria/Scripts
       - name: Preserve only UI outputs on the exact input head
         if: success()
         env:
@@ -51,7 +73,7 @@ jobs:
           git config user.email 'royal-ui@users.noreply.github.com'
           git add Unity/Assets/Eldoria/UI Unity/Assets/Eldoria/UI.meta docs/ui-royal-gold-v1
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'build(ui): preserve isolated serialized UI assets and measured checks [skip ci]'
+          git commit -m 'build(ui): preserve native-test candidate and measured dual-contract checks [skip ci]'
           git fetch origin "$UI_BRANCH"
           if [ "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA" ]; then
             git format-patch -1 --stdout > docs/ui-royal-gold-v1/uncommitted-output.patch
