@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BAKED_GI_VISUAL_REGRESSION_CORRECTION",
-      "next": "Native48 actual GI/264lightprobes/4reflections and all gameplay checks passed but observed A/B rejected color/material artifacts and dark/orange look. Native49 corrects GI architecture to native URP Lit explicitUV0/convertedORM/imported normals; mixed indirect mode preserves real sun shadows. Existing saved scene and all geometry/camera preserved; probes reused. No art approval; retained native46 baseline.",
+      "phase": "REFERENCE_CLEAN_CORRECTED_NATIVE_GI_RIVER_LIGHTING",
+      "next": "Native49 genuine A/B inspected: material/GI contamination fixed through native URP Lit; mixed indirect bake keeps daylight realtime shadows and moderated torch glow. Retain working lighting49; native50 integrates existing baked river cubemap with shader, reduces repeating deep caustics, fixed camera/light/mesh A/B, actual Play and existing local Qwen advisory comparison. No composition or geometry reset. Windows retained.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -111,7 +111,7 @@
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV46",
           "current_run": 0,
-          "current_source": "a2496128949d7a2d77aaa059dc75db4eeb2116cd",
+          "current_source": "1f8222abac374bb4e75f1d7b0e9823e27e612717",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
@@ -142,6 +142,18 @@
             "reflection_probes": 4,
             "same_geometry": true,
             "visual_status": "REJECTED_MATERIAL_GI_UV_ARTIFACTS_AND_DARK_ORANGE_REGRESSION",
+            "gameplay": "PASS"
+          },
+          "native49": {
+            "run": 39081289648,
+            "source": "a2496128949d7a2d77aaa059dc75db4eeb2116cd",
+            "output": "e67d0d33d4d4198c462bbf810a88d4c074a3ed64",
+            "lightmaps": 1,
+            "lightprobes": 264,
+            "reflection_probes": 4,
+            "same_geometry": true,
+            "realtime_gi": false,
+            "visual_status": "CORRECTED_WORKING_LIGHTING_BASIS_NO_FORMAL_ART_APPROVAL",
             "gameplay": "PASS"
           }
         }
