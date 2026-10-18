@@ -53,6 +53,15 @@ tree=ast.parse((ROOT/'tools/valoria-reference-clean/author_scene.py').read_text(
 names={'Mesh','mat','arch','line','banner','flame_shape','execute_via_blendermcp'}
 exec(compile(ast.Module(body=[n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name in names],type_ignores=[]),'<existing reviewed geometry tools>','exec'))
 RejectedPlan=RuntimeError
+def mat(n,c,rough=.8,metal=0):
+ m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
+ p=next((x for x in m.node_tree.nodes if x.type=='BSDF_PRINCIPLED'),None)
+ if p is None:p=m.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
+ out=next((x for x in m.node_tree.nodes if x.type=='OUTPUT_MATERIAL'),None)
+ if out is None:out=m.node_tree.nodes.new('ShaderNodeOutputMaterial')
+ m.node_tree.links.new(p.outputs['BSDF'],out.inputs['Surface'])
+ p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal
+ return m
 stone=[bpy.data.materials['Warm limestone %d'%i] for i in range(6)]
 trial_stone=[bpy.data.materials['Trial sandstone %d'%i] for i in range(6)]
 for variable,name in [('trim','Carved limestone'),('mortar','Recessed stone joints'),('wood','Oak'),('iron','Forged iron'),('gold','Heraldic gold'),('cloth','Royal blue cloth'),('flame','Torch golden core'),('ember','Torch orange envelope')]:globals()[variable]=bpy.data.materials[name]
