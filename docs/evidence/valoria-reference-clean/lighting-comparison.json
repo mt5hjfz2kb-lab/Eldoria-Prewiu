@@ -1,5 +1,32 @@
 {
-    "source_sha": "df724b3ac7726059d764467dfb17e1e8394ac49b",
+    "input_source": "10a96f65205a154a8a870b7e595800860b1322b2",
+    "baked_texture_native_bytes": 48943040,
+    "lightmap_widths": [
+        2048,
+        2048,
+        512,
+        512,
+        512
+    ],
+    "gi_allocation": [
+        "Bridge_ArchSpandrel atlas=3 scaleOffset=(0.7445788, 0.7440816, -0.001257174, -0.00125568244)",
+        "Axial_Paving atlas=1 scaleOffset=(0.156017825, 0.155995622, 0.549580753, 0.8396199)",
+        "Gate_LowerGate_EastTower atlas=1 scaleOffset=(0.2084628, 0.208000764, 0.3155367, 0.717881858)",
+        "Outer_Road atlas=4 scaleOffset=(0.6435465, 0.6423967, -0.0009540771, -0.0009506276)",
+        "Gate_LowerGate_Base atlas=1 scaleOffset=(0.11690747, 0.116901554, 0.199600443, 0.819717646)",
+        "Gate_LowerGate_WestWing atlas=1 scaleOffset=(0.127484053, 0.127403826, 0.843123436, 0.846541643)",
+        "Bridge_ArchSpandrel.001 atlas=2 scaleOffset=(0.7715424, 0.7723463, -0.00133806467, -0.00134047656)",
+        "Bridge_Paving atlas=1 scaleOffset=(0.306846052, 0.307070673, 0.5378978, 0.531061232)",
+        "Gate_LowerGate_WestTower atlas=1 scaleOffset=(0.2016477, 0.2018145, 0.714482963, 0.318486363)",
+        "Bridge_ArchSpandrel_DressedCourses atlas=1 scaleOffset=(0.240598664, 0.240604177, 0.7175293, 0.711181641)",
+        "Bridge_Masonry atlas=1 scaleOffset=(0.6538129, 0.653845131, 0.000244140625, 0.000244140625)",
+        "Bastion_I atlas=0 scaleOffset=(0.9985682, 0.9985713, 0.000244140625, 0.000244140625)",
+        "Gate_LowerGate_Arch atlas=1 scaleOffset=(0.289684, 0.289537728, 0.653672, 0.0189067777)",
+        "Bridge_ArchSpandrel_DressedCourses.001 atlas=1 scaleOffset=(0.240595475, 0.240631551, 0.07299805, 0.654052734)",
+        "Gate_LowerGate_EastWing atlas=0 scaleOffset=(0.130966216, 0.131109044, 0.8470192, 0.858249247)"
+    ],
+    "capture_msaa": 4,
+    "source_sha": "732cdb97cc6fc81b3fc325efec3ddc9acee169be",
     "baseline_source": "2c3d6174fe78ea5cf4031a4611dfb228d60019ac",
     "method": "Existing scene / Progressive CPU / baked indirect / realtime mixed sun direct / native URP Lit GI / baked probes",
     "same_camera": true,
@@ -11,13 +38,17 @@
     "physical_mobile_profiled": false,
     "triangles_before": 635048,
     "triangles_after": 635048,
-    "lightmaps": 1,
+    "lightmaps": 5,
     "lightprobes": 264,
     "reflection_probes": 4,
     "gi_meshes": 15,
-    "bake_seconds": 29.430980682373048,
+    "bake_seconds": 174.54122924804688,
     "lightmap_paths": [
-        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_light.exr"
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_light.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-1_comp_light.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-2_comp_light.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-3_comp_light.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-4_comp_light.exr"
     ],
     "reflection_paths": [
         "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BastionReflection.exr",
