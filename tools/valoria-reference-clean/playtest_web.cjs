@@ -15,7 +15,7 @@ const { performance } = require('node:perf_hooks');
 const { spawnSync } = require('node:child_process');
 
 const PREFIX = 'VALORIA_PLAYTEST ';
-const VIEWS = { landscape: { width: 1600, height: 900 }, portrait: { width: 900, height: 1600 } };
+const VIEWS = { landscape: { width: 960, height: 540 }, portrait: { width: 540, height: 960 } };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
 const round = value => Math.round(value * 1000) / 1000;
@@ -633,7 +633,7 @@ async function main() {
     report.browser_version = browser.version();
     const options = { viewport: VIEWS.landscape, deviceScaleFactor: 1, hasTouch: true };
     need(process.env.VALORIA_PLAYTEST_VIDEO !== '0', 'Video capture is required to validate authentic frame evidence');
-    options.recordVideo = { dir: path.join(out, 'video'), size: { width: 1280, height: 960 } };
+    options.recordVideo = { dir: path.join(out, 'video'), size: { width: 960, height: 720 } };
     context = await browser.newContext(options); page = await context.newPage(); videoStartedAt = performance.now();
     page.on('framenavigated', frame => {
       // An old Unity frame can log while reload is starting. It must never
@@ -750,7 +750,7 @@ async function main() {
     }
     report.ended_at = new Date().toISOString(); report.total_seconds = elapsed();
     fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
-    console.log(`VALORIA_WEB_PLAYTEST ${JSON.stringify({ status: report.status, out, checks: report.checks, failures: report.failures, loads: report.loads.map(item => ({ label: item.label, ready_seconds: item.ready_seconds })) })}`);
+    console.log(`VALORIA_WEB_PLAYTEST ${JSON.stringify({ status: report.status, out, checks: report.checks, failures: report.failures, runtime_errors: report.runtime_errors.slice(-8), network_failures: report.network_failures.slice(-8), last_action: report.actions.at(-1), video: report.video, video_frames: report.screenshots.length, loads: report.loads.map(item => ({ label: item.label, ready_seconds: item.ready_seconds })) })}`);
   }
 }
 

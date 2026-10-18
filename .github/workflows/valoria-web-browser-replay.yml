@@ -36,6 +36,34 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-exact-browser-evidence-39164920701
+          run-id: 39164920701
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: prior-evidence
+      - name: Diagnose prior real freeze from exact browser errors and recording
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,subprocess
+          root=pathlib.Path("prior-evidence")
+          reports=list(root.rglob("report.json"))
+          if not reports: raise SystemExit("Original Chromium failure evidence missing")
+          data=json.loads(reports[0].read_text())
+          print("PRIOR_STATUS",data.get("status"),"FAILURES",data.get("failures",[])[:2])
+          print("PRIOR_RUNTIME_ERRORS",json.dumps(data.get("runtime_errors",[])[-12:],ensure_ascii=False))
+          print("PRIOR_NETWORK_FAILURES",json.dumps(data.get("network_failures",[])[-6:]))
+          print("PRIOR_LAST_STATE",json.dumps(data.get("last_state",{}),ensure_ascii=False)[:1100])
+          for name in ("actions.ndjson","telemetry.ndjson","browser-console.ndjson"):
+              files=list(root.rglob(name))
+              if files:
+                  last=files[0].read_text().splitlines()[-6:]
+                  print("PRIOR_"+name,json.dumps(last,ensure_ascii=False)[:2200])
+          for f in root.rglob("*.webm"):
+              p=subprocess.run(["ffprobe","-v","error","-show_entries","format=duration",
+              "-of","default=noprint_wrappers=1:nokey=1",str(f)],capture_output=True,text=True)
+              print("PRIOR_VIDEO",f.name,f.stat().st_size,"duration",p.stdout.strip(),"probe_error",p.stderr[:300])
+          PY
       - name: Install existing Chromium tool and video frame extraction
         run: |
           npm install --prefix "$RUNNER_TEMP/valoria-web-qa" --no-save --ignore-scripts playwright@1.55.0
