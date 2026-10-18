@@ -1,9 +1,11 @@
 {
   "mode": "resume_ground",
-  "request_id": "resume-saved-ground-focused-director-20261018",
+  "request_id": "retained-original-14b-landform-execution-20261018",
   "source_run": 39126030933,
   "source_blend_sha256": "7e77e1f4985fa0ccdbc5d8d29578f8675c7c9a8ed2bbbebf8285fb7a7f93226b",
-  "reason": "Previous three 8B proposals failed exact numeric/unit validation before edits. Reuse all four verified baseline renders and source; switch to installed text director with compact independent image observations, not copied historical values. No parameter rewriting, no new baseline or workstream.",
+  "original_director_run": 39127306553,
+  "original_plan_raw_git_blob": "05d76c03e5a3684f9491e7caab24b4d439b6607a",
+  "reason": "Execute actual retained 14B plan unchanged. Full numeric source/units/protected-area validation remains. Meadow-light green175 versus advisory170 becomes a recorded preference warning, not another failed production job. Artistic acceptance remains unpassed and requires actual image review. No new inference or source restart.",
   "windows_policy": "Owner-authorized queue after Work; no interruption or claim takeover",
   "art_approved": false,
   "publish": false,
