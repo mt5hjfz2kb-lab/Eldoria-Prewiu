@@ -8,9 +8,9 @@ assert.equal(routing.canonical_visual_authority.certified_runtime_scene,baseline
 assert.equal(routing.canonical_visual_authority.runtime_component,'ValoriaIntegratedWorld');
 const scene=read('Unity/'+baseline.scene);
 const hostMeta=read('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs.meta');
-assert.ok(scene.includes(hostMeta.match(/guid: (\\w+)/)[1]),'Canonical scene missing integrated host');
+assert.ok(scene.includes(hostMeta.match(/guid: (\w+)/)[1]),'Canonical scene missing integrated host');
 const settings=read('Unity/ProjectSettings/EditorBuildSettings.asset');
-const enabled=[...settings.matchAll(/- enabled: 1\\s+path: (.+)/g)].map(m=>m[1].trim());
+const enabled=[...settings.matchAll(/- enabled: 1\s+path: (.+)/g)].map(m=>m[1].trim());
 assert.deepEqual(enabled,[baseline.scene]);
 const builder=read(routing.canonical_visual_authority.production_generator);
 assert.ok(builder.includes(baseline.scene),'Builder must compile selected scene');

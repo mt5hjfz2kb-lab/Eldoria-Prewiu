@@ -1032,6 +1032,18 @@
       "domain": "art",
       "status": "reference",
       "note": "14 alternativas de coste 0, pruebas A/B, criterios de pivote; reserva informativa sin autorizar ejecución."
+    },
+    {
+      "path": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Consolidación autorizada de main y ramas históricas"
+    },
+    {
+      "path": "docs/ELDORIA_PLAYER_REVIEW_20261018.md",
+      "domain": "quality",
+      "status": "current",
+      "note": "Hallazgos y prioridades; distingue evidencia técnica de partida manual pendiente"
     }
   ]
 }
