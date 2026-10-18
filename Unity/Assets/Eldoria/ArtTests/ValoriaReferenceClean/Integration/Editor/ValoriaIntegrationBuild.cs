@@ -142,11 +142,30 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-story.png",900,1600);
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Aldric did not follow narrator");
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen,"Reveal skipped Aldric");
+   },"original web opening narrator and Aldric appear through actual buttons");
+   // Wait for the intentional .28s dialogueIn animation before judging the
+   // panel's real visibility. Capturing at t=0 yielded a near-transparent
+   // Aldric screenshot even though the dialogue passes its runtime checks.
+   yield return new WaitForSecondsRealtime(.36f);
+   Check(()=>{
+    Need(h.Hud.Modal.Body.preferredHeight<=h.Hud.Modal.Body.rectTransform.rect.height,"Original Aldric introduction is clipped");
     Capture(h,"integration-story-aldric.png",900,1600);
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="NARRADOR","Tutorial narrator missing");
-    Click(h.Hud.Modal.Extra);Click(h.Hud.Modal.Extra);
+    Click(h.Hud.Modal.Extra);
+   },"Aldric portrait and text rendered at settled opacity");
+   yield return new WaitForSecondsRealtime(.35f);
+   Check(()=>{
+    Capture(h,"integration-story-sawmill-tutorial.png",900,1600);
+    Click(h.Hud.Modal.Extra);
     Need(!h.Hud.NarrativeOpen&&city.Gateway.Snapshot().ChapterProgress.SeenNarrative.Contains("start"),"Completion did not persist introduction");
-   },"original web three-voice introduction, typewriter reveal and saved milestone");
+    // General menus must not inherit portraits, oversized body geometry, or
+    // the cinematic overlay after narrative return to ordinary Royal Gold.
+    Click(h.Hud.Settings);
+    Need(h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Settings panel was replaced by narrator");
+    var portraits=h.Hud.Modal.GetComponentsInChildren<RawImage>(true).Where(x=>x.name=="Canonical Aldric portrait");
+    Need(portraits.All(x=>!x.gameObject.activeSelf),"Non-narrative menu inherited Aldric portrait");
+    Click(h.Hud.Modal.Close);
+   },"new player introduction saved and shared modal restored for settings");
    Check(()=>{Need(h.Ready,"Host not ready");Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,"HUD count");Need(Camera.allCameras.Count(x=>x.enabled)==1,"City camera count");Need(!GameObject.Find("Eldoria HUD").GetComponent<Canvas>().enabled,"Legacy HUD still visible");Capture(h,"integration-city-16x9.png",1600,900);},"city HUD, one camera");
    Check(()=>{Need(h.Hud.Mission.ChapterStepCount==6&&h.Hud.Mission.CompletedStepCount==0,"New-player chapter objectives not projected from real state");Click(h.Hud.Mission.ListToggle);Need(h.Hud.Mission.ListExpanded,"Chapter list did not open through its visible button");Capture(h,"integration-chapter-list.png",1600,900);Click(h.Hud.Mission.ListToggle);Need(!h.Hud.Mission.ListExpanded,"Chapter list would not close");},"Royal Gold real chapter checklist and collapse");
    Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
@@ -177,14 +196,22 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>{
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("marca negra"),"Original gathering narrator missing");
-    Click(h.Hud.Modal.Extra);Capture(h,"integration-story-mark.png",900,1600);
+    Click(h.Hud.Modal.Extra);
+   },"narrator presents original forest mark without mixing voices");
+   yield return new WaitForSecondsRealtime(.36f);
+   Check(()=>{
+    Capture(h,"integration-story-mark.png",900,1600);
     Need(h.Hud.Modal.Body.preferredHeight<=h.Hud.Modal.Body.rectTransform.rect.height,"Narrator text clipped");
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Original Aldric mark response missing");
-    Click(h.Hud.Modal.Extra);Capture(h,"integration-story-mark-aldric.png",900,1600);
+    Click(h.Hud.Modal.Extra);
+   },"forest mark narrator legible and next Aldric speaker acknowledged");
+   yield return new WaitForSecondsRealtime(.36f);
+   Check(()=>{
+    Capture(h,"integration-story-mark-aldric.png",900,1600);
     Need(h.Hud.Modal.Body.preferredHeight<=h.Hud.Modal.Body.rectTransform.rect.height,"Aldric text clipped");
     Click(h.Hud.Modal.Extra);
     Need(city.Gateway.Snapshot().ChapterProgress.SeenNarrative.Contains("mark"),"Gathering dialogue not acknowledged");
-   },"original web narrator and Aldric gathering sequence, clipping and persistence");
+   },"forest mark Aldric legible after animation and story ledger persisted");
    foreach(string node in new[]{"forest-valoria","quarry-valoria","corrupt-scout"}){
     h.SetWorld(true);h.Select(node);yield return null;
     Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"World command disabled: "+node);Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World march missing: "+node);},"Royal map action "+node);
