@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T11:08:52.164Z",
+  "updated_at": "2026-10-18T11:25:39.642Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CHAPTER_II_ANDROID_1_3_DELIVERED",
-      "next": "Native85 real chapterII build/train/confirm march/Engendro/save PASS with open-panel completion/countdown fixed;86 Android1.3/code4 and current editable package independently verified. User instructed to extract APK ZIP and update same app, phone test pending. Camp barracks remains provisional art; coordinate future RoyalGoldUI/4X stable handoffs. No active Valoria job.",
+      "phase": "REFERENCE_CLEAN_CAMP_CLOTH_ISOLATED_ART",
+      "next": "Current APK1.3 additionally delivered directly in chat (same verified bytes); owner phone update still pending. Continue next functional asset: native87 isolated current CampFamily source cloth/entrance/awning geometry study with actual topology+memory+Qwen/MCP, structural A/B before nativeUnity. Current scene/runtime/APK retained; independent UI/4X untouched.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 0,
-          "current_source": "182b2f38020cd0f2fa1d82ca2da97fd3a35fe76e",
+          "current_run": 39123115813,
+          "current_source": "e5f323425c66e01a096606b15a3b671212115c62",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -284,7 +284,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE86_SUCCESS_DELIVERY_VERIFIED_PHONE_PENDING",
+          "current_run_status": "NATIVE87_CAMP_AUTHORING",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
