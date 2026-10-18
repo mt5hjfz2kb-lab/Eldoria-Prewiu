@@ -27,17 +27,17 @@ Shader "Eldoria/ReferenceClean/River" {
    float noise21(float2 p){float2 q=floor(p),f=frac(p);f=f*f*(3-2*f);return lerp(lerp(hash21(q),hash21(q+float2(1,0)),f.x),lerp(hash21(q+float2(0,1)),hash21(q+1),f.x),f.y);}
    half4 frag(V i):SV_Target {
     float t=_Time.y*.6;float w=sin(i.world.x*1.5+i.world.z*2.2+t);float w2=sin(i.world.z*3.4-i.world.x*.7-t*.8);
-    float edge=abs(i.uv.y*2-1);float2 flow=i.world.xz*float2(.22,.54)+float2(-t*.045,t*.012);float n=noise21(flow)+noise21(flow*2.17)*.40+noise21(flow*5.23)*.16;float rawDepth=SampleSceneDepth(GetNormalizedScreenSpaceUV(i.positionCS));float depth01=rawDepth;
+    float edge=abs(i.uv.y*2-1);float2 flow=i.world.xz*float2(.22,.54)+float2(-t*.045,t*.012);float n0=noise21(flow),n1=noise21(flow*2.17),n2=noise21(flow*5.23);float n=n0+n1*.40+n2*.16;float rawDepth=SampleSceneDepth(GetNormalizedScreenSpaceUV(i.positionCS));float depth01=rawDepth;
     #if UNITY_REVERSED_Z
      depth01=1-rawDepth;
     #endif
     float sceneEye=lerp(_ProjectionParams.y,_ProjectionParams.z,depth01);if(unity_OrthoParams.w<.5)sceneEye=LinearEyeDepth(rawDepth,_ZBufferParams);
     float column=max(0,sceneEye+TransformWorldToView(i.world).z);float deep=smoothstep(.08,2.1,column);
     half3 c=lerp(_ShallowColor.rgb,_BaseColor.rgb,deep);c*=.88+n*.17;
-    float2 wuv=i.world.xz*.17;half4 wa=SAMPLE_TEXTURE2D(_WaveNormal,sampler_WaveNormal,wuv+float2(-t*.025,t*.006));half4 wb=SAMPLE_TEXTURE2D(_WaveNormal,sampler_WaveNormal,wuv*1.73+float2(t*.018,-t*.012));float2 slope=((wa.rg*2-1)*.6+(wb.rg*2-1)*.4)*.65;float3 normal=normalize(float3(slope.x,1,slope.y));float3 view=GetWorldSpaceNormalizeViewDir(i.world);Light light=GetMainLight(TransformWorldToShadowCoord(i.world));
+    float2 distortion=(float2(n0,n1)-.5)*.75;float2 wuv=i.world.xz*.17+distortion;half4 wa=SAMPLE_TEXTURE2D(_WaveNormal,sampler_WaveNormal,wuv+float2(-t*.025,t*.006));half4 wb=SAMPLE_TEXTURE2D(_WaveNormal,sampler_WaveNormal,wuv*1.73+float2(t*.018,-t*.012));float2 slope=((wa.rg*2-1)*.6+(wb.rg*2-1)*.4)*.65;float3 normal=normalize(float3(slope.x,1,slope.y));float3 view=GetWorldSpaceNormalizeViewDir(i.world);Light light=GetMainLight(TransformWorldToShadowCoord(i.world));
     float spec=pow(saturate(dot(normal,normalize(light.direction+view))),80);c+=light.color*spec*.22;
     float ridge=smoothstep(.82,.95,1-abs((wa.b+wb.b)*.5-.5)*2);c+=half3(.4,.7,.9)*ridge*.010*(1-deep);c*=lerp(.78,1,light.shadowAttenuation);
-    half4 encodedReflection=SAMPLE_TEXTURECUBE_LOD(_RiverReflection,sampler_RiverReflection,reflect(-view,normal),3);half3 environment=DecodeHDREnvironment(encodedReflection,_RiverReflection_HDR);float fresnel=pow(1-saturate(dot(normal,view)),4);c=lerp(c,environment,saturate((.08+.22*fresnel)*_ReflectionStrength));
+    half4 encodedReflection=SAMPLE_TEXTURECUBE_LOD(_RiverReflection,sampler_RiverReflection,reflect(-view,normalize(float3(normal.x*.35,normal.y,normal.z*.35))),3);half3 environment=DecodeHDREnvironment(encodedReflection,_RiverReflection_HDR);float fresnel=pow(1-saturate(dot(normalize(float3(normal.x*.35,normal.y,normal.z*.35)),view)),4);c=lerp(c,environment,saturate((.08+.22*fresnel)*_ReflectionStrength));
     float contact=1-smoothstep(.035,.30,column);float foam=contact*smoothstep(.20,.65,noise21(i.world.xz*4+float2(t*.025,0)));c=lerp(c,half3(.57,.76,.73),foam*.78);
     float opacity=saturate(.38+column*.55);opacity=max(opacity,foam*.76);
     return half4(c,opacity);
