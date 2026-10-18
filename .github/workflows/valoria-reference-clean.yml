@@ -357,6 +357,12 @@ jobs:
           if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='$code'"){throw 'APK update package/version mismatch'}
           if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'APK ARM64 missing'}
           @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=$code;prior_version_code=5;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        if: success() && steps.native_stage.outputs.stage == 'android'
+        with:
+          name: valoria-reference-clean-apk-${{ github.run_id }}
+          path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
+          if-no-files-found: error
       - name: Publish requested verified Android scene content only
         if: success() && steps.native_stage.outputs.stage == 'android'
         env:
@@ -456,12 +462,6 @@ jobs:
             valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**
             ${{ runner.temp }}/valoria-reference-clean.log
           if-no-files-found: warn
-      - uses: actions/upload-artifact@v4
-        if: success() && steps.native_stage.outputs.stage == 'android'
-        with:
-          name: valoria-reference-clean-apk-${{ github.run_id }}
-          path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
-          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: success() && (steps.native_stage.outputs.stage == 'android' || steps.native_stage.outputs.stage == 'content_validate')
         with:
