@@ -1,0 +1,31 @@
+{
+  "source_sha": "773f4f24c09445bf4fe9f16d6f8d98949ac5ae6f",
+  "ui_source": "c96504577b9b39fbdfcd6fe9ed3ca38ba0c4f8e8",
+  "temporary_test_inputs_only": true,
+  "files": [
+    {
+      "path": "Domain/GameState.cs",
+      "git_blob": "c1741c112a4c6bb904d446d6fb976c145c89afdc",
+      "bytes": 13695,
+      "sha256": "f587b7276ad49996da24d670115ed23f61789d82c63996ec94c3a7d5dfb370e8"
+    },
+    {
+      "path": "Domain/ParcelBuildingState.cs",
+      "git_blob": "4fe63c6d56103ccf86fdb530f610c42de42560b5",
+      "bytes": 1200,
+      "sha256": "fe1bea106f2b0f0189060d049a577b7c8fd82daab5014fbe6f212a483258da16"
+    },
+    {
+      "path": "Domain/SliceContentProfiles.cs",
+      "git_blob": "8767bd75b373c474c034508dc6695734f86d15e5",
+      "bytes": 9336,
+      "sha256": "d5c07adbf1970c161ea93a810e63097cfcc2895613ea8c1094095be17811a39f"
+    },
+    {
+      "path": "Application/LocalGateway.cs",
+      "git_blob": "7cdd62bb287213172ab5247141dc5b09d93be3f9",
+      "bytes": 25971,
+      "sha256": "0ed19936ff457a63f5d1dbe069d583d9ec8cd6f7177dceb093eded24d1004e3d"
+    }
+  ]
+}
