@@ -1,0 +1,6 @@
+<linker>
+  <assembly fullname="Eldoria.Domain" ignoreIfUnreferenced="1">
+    <type fullname="Eldoria.Domain.PlayerState" preserve="fields" />
+    <type fullname="Eldoria.Domain.SliceContentProfiles/WebContract" preserve="fields" />
+  </assembly>
+</linker>
