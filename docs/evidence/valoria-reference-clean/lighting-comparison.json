@@ -1,0 +1,29 @@
+{
+    "source_sha": "de30f88f4e81a65cb061a738e921918339999bbf",
+    "baseline_source": "2c3d6174fe78ea5cf4031a4611dfb228d60019ac",
+    "method": "Existing scene / Progressive CPU / baked indirect / Subtractive mixed sun / baked probes",
+    "same_camera": true,
+    "same_geometry": true,
+    "no_static_batching": true,
+    "realtime_gi": false,
+    "bake_succeeded": true,
+    "art_approved": false,
+    "physical_mobile_profiled": false,
+    "triangles_before": 635048,
+    "triangles_after": 635048,
+    "lightmaps": 1,
+    "lightprobes": 264,
+    "reflection_probes": 4,
+    "gi_meshes": 15,
+    "bake_seconds": 32.4918212890625,
+    "lightmap_paths": [
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_light.exr"
+    ],
+    "reflection_paths": [
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BastionReflection.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/GateReflection.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BridgeReflection.exr",
+        "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/RiverReflection.exr"
+    ],
+    "lighting_data": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/LightingData.asset"
+}
