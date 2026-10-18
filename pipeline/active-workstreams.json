@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T08:49:28.154Z",
+  "updated_at": "2026-10-18T09:10:15.985Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BASTION_ENSEMBLE_REMODEL",
-      "next": "Native70 architecture materially improved in isolated Bastion variant; foliage and terrain still require cohesive improvement. Native71 checks actual fifth-layer visibility without saving diagnostic colors. Preserve authoritative native62 until reviewed integration and Play checks. Android optimized APK package and matching existing signing certificate recovered; use same application update after meaningful art.",
+      "phase": "REFERENCE_CLEAN_REVIEWED_BASTION_INTEGRATION_AND_GAMEPLAY",
+      "next": "Native74 integrates visually retained native73 Bastion/planting/ground ensemble into existing scene object, rebakes and updates8prefabs/package, then real Play checks. No geometry duplicates/static batching. After successful exact review use recovered optimized same-package Android versionCode2 with matching signing certificate; no uninstall/data reset. Whole Valoria7–8/10 remains pending.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39112895764,
-          "current_source": "cd629011c3262835e2fcdd758fe466af43180ae4",
+          "current_run": 39114236961,
+          "current_source": "408f01d4d8ae6e44e622bd3cae15bffd43915c91",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -298,6 +298,24 @@
             "certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
             "matching_existing_runner_key_verified": true,
             "phone_update_verified": false
+          },
+          "native72": {
+            "run": 39113220236,
+            "output": "cd92bc4c91ee7e66b4e83c680c9cd083c7c42c51",
+            "result": "success",
+            "actual_vision_qwen": true,
+            "actual_blendermcp": true,
+            "environment_triangles": 24300,
+            "visual": "PLANTS_RETAINED_SOIL_TOO_DARK_REJECTED"
+          },
+          "native73": {
+            "run": 39113785884,
+            "output": "8d30bfa18ad162505695ea494a0288053b367f27",
+            "result": "success",
+            "visual": "REPRESENTATIVE_IMPROVEMENT_RETAINED_WHOLE_SCENE_ART_TARGET_PENDING",
+            "scene_integrated": false,
+            "lightmaps": 5,
+            "lightprobes": 264
           }
         }
       },
