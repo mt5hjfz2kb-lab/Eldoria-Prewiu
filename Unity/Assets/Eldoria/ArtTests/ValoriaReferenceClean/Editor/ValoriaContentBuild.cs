@@ -24,6 +24,9 @@ namespace Eldoria.ReferenceClean.Editor {
    using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(Encoding.UTF8.GetBytes(text.ToString()))).Replace("-","").ToLowerInvariant();
   }
   public static void PrepareBootstrap(){
+   // Distinct paths prevent the built-in scene from shadowing the remote scene.
+   var source=EditorSceneManager.OpenScene(ValoriaContentPolicy.Scene,OpenSceneMode.Single);
+   if(!EditorSceneManager.SaveScene(source,ValoriaContentUpdate.FallbackScenePath,true))throw new Exception("Included fallback copy failed");
    var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
    var loader=new GameObject("Valoria content updates / existing save preserved").AddComponent<ValoriaContentUpdate>();loader.RuntimeContract=RuntimeContract();
    if(!EditorSceneManager.SaveScene(scene,Bootstrap))throw new Exception("Bootstrap save failed");AssetDatabase.SaveAssets();
@@ -44,6 +47,11 @@ namespace Eldoria.ReferenceClean.Editor {
     void Check(bool value,string reason){if(!value)throw new Exception("CONTENT_POLICY "+reason);}
     bool Accept()=>ValoriaContentPolicy.Accept(m,"windows","test",6,out _);
     Check(Accept(),"valid manifest");m.runtimeContract="different";Check(!Accept(),"code mismatch");m.runtimeContract="test";
+    var now=DateTime.UtcNow;
+    Check(!ValoriaContentPolicy.RecheckOnResume(default(DateTime),now,true),"cold start pause callback");
+    Check(!ValoriaContentPolicy.RecheckOnResume(now.AddMinutes(-1),now,false),"restart during loading");
+    Check(!ValoriaContentPolicy.RecheckOnResume(now.AddSeconds(-5),now,true),"brief permission/switch pause");
+    Check(ValoriaContentPolicy.RecheckOnResume(now.AddMinutes(-1),now,true),"foreground after background");
     m.platform="android";Check(!Accept(),"platform");m.platform="windows";
     m.minimumPlayerCode=7;Check(!Accept(),"new APK required");m.minimumPlayerCode=6;
     m.url="https://example.com/file";Check(!Accept(),"foreign origin");m.url=ValoriaContentPolicy.DownloadPrefix+"93/valoria-windows-"+m.sha256+".bundle";
@@ -123,6 +131,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var file=SessionState.GetString("Valoria.ContentProbe.Bundle","");
    var temp=Path.Combine(Path.GetTempPath(),"eldoria-content-probe-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(temp);
    var cache=Path.Combine(temp,"cache");Directory.CreateDirectory(cache);var channel=Path.Combine(temp,"channel.json");
+   var stale=Path.Combine(cache,new string('e',64)+".bundle");if(mode=="download")File.WriteAllText(stale,"isolated stale cache fixture");
    var owner=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-owner-i-ii-v1.json");var legacy=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-v1.json");
    string Fingerprint(string p)=>File.Exists(p)?ValoriaContentPolicy.Hash(p):"ABSENT";
    var a=Fingerprint(owner);var b=Fingerprint(legacy);
@@ -138,10 +147,13 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return null;yield return null;
    try{
     if(host==null||!host.Ready||host.Gateway.Snapshot().BastionLevel!=1||Camera.allCamerasCount!=1)throw new Exception("Loader did not reach preserved playable scene "+mode);
+    if(LightmapSettings.lightmaps.Length!=5||LightmapSettings.lightProbes==null||LightmapSettings.lightProbes.count!=264)throw new Exception("Baked lighting lost in loaded/fallback scene "+mode);
     bool cached=File.Exists(Path.Combine(cache,"current.json"));bool wanted=mode=="download"||mode=="cached_offline";
     if(cached!=wanted)throw new Exception("Invalid cache promotion "+mode);
+    if(mode=="download"&&File.Exists(stale))throw new Exception("Unbounded stale cache "+mode);
     if(wanted&&(!loader||!loader.ContentReady))throw new Exception("Did not load valid bundle "+mode);
     if(a!=Fingerprint(owner)||b!=Fingerprint(legacy))throw new Exception("Production save altered "+mode);
+    ValoriaReferenceCleanBuilder.Capture(host.PlayerCamera,"../docs/evidence/valoria-reference-clean/content-loader-"+mode+".png",1448,1086);
     File.WriteAllText("../docs/evidence/valoria-reference-clean/content-loader-"+mode+".json","{\"status\":\"PASS\",\"case\":\""+mode+"\",\"transport\":\"UnityWebRequest file fixtures, no public HTTPS certification\",\"canonical_saves_untouched\":true,\"one_camera\":true}");
     Debug.Log("VALORIA_REFERENCE_CLEAN_CONTENT_LOADER_COMPLETE "+mode);EditorApplication.Exit(0);
    }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}

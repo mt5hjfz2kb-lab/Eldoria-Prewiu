@@ -34,18 +34,21 @@ namespace Eldoria.ReferenceClean {
   }
   public static string Hash(string path){using(var h=SHA256.Create())using(var s=File.OpenRead(path))return BitConverter.ToString(h.ComputeHash(s)).Replace("-","").ToLowerInvariant();}
   public static bool Verify(string path,ValoriaContentManifest m){return File.Exists(path)&&new FileInfo(path).Length==m.bytes&&Hash(path)==m.sha256;}
+  public static bool RecheckOnResume(DateTime paused,DateTime now,bool ready){return ready&&paused!=default(DateTime)&&(now-paused).TotalSeconds>=30;}
  }
  // Attached only to the opt-in bootstrap scene, never the validated fallback scene.
  public sealed class ValoriaContentUpdate:MonoBehaviour {
   public const string BootstrapScene="Valoria_Content_Bootstrap";
-  public const string FallbackScene="Valoria_Reference_Clean";
+  public const string FallbackScene="Valoria_Included_Fallback";
+  public const string FallbackScenePath="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Included_Fallback.unity";
   public const string Channel="https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/construction/valoria-master-plan-layers-20261016/tools/valoria-reference-clean/content-channel.json";
   public string RuntimeContract;
   public int PlayerCode=6;
   public string Status="Buscando contenido de Valoria…";
   string cache;
   AssetBundle loaded;
-  bool sceneReady;
+  bool sceneReady,fallbackOpened;int appliedRevision;
+  DateTime pausedAt;bool restarting;
   public bool ContentReady=>sceneReady;
 #if UNITY_EDITOR
   public bool SuppressStartupForEditorProbe;
@@ -102,12 +105,12 @@ namespace Eldoria.ReferenceClean {
    Status="Abriendo la versión incluida";
    AsyncOperation fallback;
 #if UNITY_EDITOR
-   fallback=UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(ValoriaContentPolicy.Scene,new LoadSceneParameters(LoadSceneMode.Single));
+   fallback=UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(FallbackScenePath,new LoadSceneParameters(LoadSceneMode.Single));
 #else
    fallback=SceneManager.LoadSceneAsync(FallbackScene,LoadSceneMode.Single);
 #endif
    yield return fallback;
-   Destroy(gameObject);
+   fallbackOpened=true;Status="Versión incluida";
   }
   UnityWebRequest CreateDownload(string url,string path){
    UnityWebRequest req=null;
@@ -120,8 +123,16 @@ namespace Eldoria.ReferenceClean {
    catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_CACHE "+e.Message);return null;}
   }
   void Commit(ValoriaContentManifest m){
-   try{string path=Path.Combine(cache,"current.json"),tmp=path+".next";File.WriteAllText(tmp,JsonUtility.ToJson(m,true));if(File.Exists(path))File.Replace(tmp,path,path+".previous");else File.Move(tmp,path);}
+   try{string path=Path.Combine(cache,"current.json"),tmp=path+".next";File.WriteAllText(tmp,JsonUtility.ToJson(m,true));if(File.Exists(path))File.Replace(tmp,path,path+".previous");else File.Move(tmp,path);PruneCache(m);}
    catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_COMMIT "+e.Message);}
+  }
+  void PruneCache(ValoriaContentManifest current){
+   // Only this updater's hash-named bundle cache; never gameplay saves or user files.
+   try{
+    var keep=new System.Collections.Generic.HashSet<string>{current.sha256};var previous=Path.Combine(cache,"current.json.previous");
+    if(File.Exists(previous)){var m=JsonUtility.FromJson<ValoriaContentManifest>(File.ReadAllText(previous));if(m!=null&&!string.IsNullOrEmpty(m.sha256)&&Regex.IsMatch(m.sha256,"^[0-9a-f]{64}$"))keep.Add(m.sha256);}
+    foreach(var file in Directory.GetFiles(cache,"*.bundle")){var name=Path.GetFileNameWithoutExtension(file);if(Regex.IsMatch(name,"^[0-9a-f]{64}$")&&!keep.Contains(name))File.Delete(file);}
+   }catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_OLD_CACHE "+e.Message);}
   }
   IEnumerator Load(ValoriaContentManifest m,string path){
    sceneReady=false;
@@ -132,15 +143,39 @@ namespace Eldoria.ReferenceClean {
    Status="Abriendo Valoria · contenido "+m.revision;
    AsyncOperation op=null;try{op=SceneManager.LoadSceneAsync(scenes[0],LoadSceneMode.Single);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_SCENE "+e.Message);}
    if(op!=null){yield return op;yield return null;var h=FindFirstObjectByType<ValoriaReferenceCleanGameplay>();sceneReady=h!=null&&h.Ready;}
-   if(sceneReady){Status="Contenido "+m.revision;Debug.Log("VALORIA_CONTENT_READY revision="+m.revision);}
+   if(sceneReady){appliedRevision=m.revision;Status="Contenido "+m.revision;Debug.Log("VALORIA_CONTENT_READY revision="+m.revision);}
    else{loaded.Unload(false);loaded=null;}
   }
   void OnGUI(){
 #if UNITY_EDITOR
    if(SuppressStartupForEditorProbe)return;
 #endif
-   if(!sceneReady)GUI.Box(new Rect(20,20,Mathf.Min(Screen.width-40,600),70),Status);
+   if(!sceneReady&&!fallbackOpened)GUI.Box(new Rect(20,20,Mathf.Min(Screen.width-40,600),70),Status);
   }
   void OnDestroy(){if(loaded!=null)loaded.Unload(false);}
+  void OnApplicationPause(bool paused){
+   if(paused){pausedAt=DateTime.UtcNow;return;}
+   bool check=ValoriaContentPolicy.RecheckOnResume(pausedAt,DateTime.UtcNow,sceneReady||fallbackOpened);pausedAt=default(DateTime);
+   if(!check||restarting)return;
+#if UNITY_EDITOR
+   if(SuppressStartupForEditorProbe||!string.IsNullOrEmpty(EditorChannelFile))return;
+#endif
+   restarting=true;StartCoroutine(CheckAfterResume());
+  }
+  IEnumerator CheckAfterResume(){
+   bool update=false;
+   using(var req=UnityWebRequest.Get(Channel+"?check="+DateTime.UtcNow.Ticks)){
+    req.timeout=8;yield return req.SendWebRequest();
+    if(req.result==UnityWebRequest.Result.Success&&req.downloadHandler.data.Length<16384){
+     try{var next=JsonUtility.FromJson<ValoriaContentManifest>(req.downloadHandler.text);update=ValoriaContentPolicy.Accept(next,Platform,RuntimeContract,PlayerCode,out _)&&next.revision>appliedRevision;}
+     catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_RESUME_MANIFEST "+e.Message);}
+    }
+   }
+   restarting=false;if(!update)yield break;
+   // No reload when unchanged/offline. Commands persist synchronously through
+   // the existing gateway; a newer compatible revision re-enters the bootstrap.
+   try{if(loaded!=null){loaded.Unload(false);loaded=null;}SceneManager.LoadScene(BootstrapScene,LoadSceneMode.Single);Destroy(gameObject);}
+   catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_RESUME "+e.Message);}
+  }
  }
 }

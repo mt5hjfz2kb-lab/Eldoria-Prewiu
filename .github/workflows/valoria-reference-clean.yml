@@ -72,6 +72,17 @@ jobs:
         shell: powershell
         run: |
           $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          function Test-ValoriaContentLoaderCases {
+            foreach($case in @('download','cached_offline','corrupt','incompatible')){
+              $env:VALORIA_CONTENT_CASE=$case
+              $caseLog=Join-Path $env:RUNNER_TEMP "valoria-content-$case.log"
+              $caseArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaContentBuild.ValidateLoader','-logFile',$caseLog)
+              $caseProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $caseArgs -PassThru
+              if(-not $caseProcess.WaitForExit(240000)){& taskkill.exe /PID $caseProcess.Id /T /F|Out-Null;throw "Own content loader probe timeout $case"}
+              Copy-Item $caseLog "docs/evidence/valoria-reference-clean/content-loader-$case.log"
+              if($caseProcess.ExitCode -ne 0 -or -not(Select-String $caseLog -Pattern 'VALORIA_REFERENCE_CLEAN_CONTENT_LOADER_COMPLETE' -Quiet)){Get-Content $caseLog -Tail 100;throw "Content loader probe failed $case"}
+            }
+          }
           if(Test-Path 'tools/valoria-reference-clean/publish_content.ps1'){
             $tokens=$null;$parseErrors=$null
             $null=[System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'tools/valoria-reference-clean/publish_content.ps1'),[ref]$tokens,[ref]$parseErrors)
@@ -83,6 +94,7 @@ jobs:
           if($req.stage -eq 'gameplay_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'content_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaContentBuild.Validate'}
+          if($req.stage -eq 'sawmill_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanSawmillTrial.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
           if($req.stage -eq 'bastion_two_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionTwo.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'bastion_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionIntegrate.Build'}
@@ -175,12 +187,22 @@ jobs:
             if(-not(Test-Path 'docs/evidence/valoria-reference-clean/camp87-result.json')){throw 'Camp authoring report missing'}
             return
           }
+          $loaderCasesDone=$false
+          if($req.validate_content_before_android){
+            $preLog=Join-Path $env:RUNNER_TEMP 'valoria-content-before-android.log'
+            $preArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaContentBuild.Validate','-logFile',$preLog)
+            $pre=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $preArgs -PassThru
+            if(-not $pre.WaitForExit(1200000)){& taskkill.exe /PID $pre.Id /T /F|Out-Null;throw 'Own content preflight timed out'}
+            Copy-Item $preLog docs/evidence/valoria-reference-clean/content-pre-android.log
+            if($pre.ExitCode -ne 0 -or -not(Select-String $preLog -Pattern 'VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE EXISTING_UI_RULES_SAVE_I_II_PASS' -Quiet)){Get-Content $preLog -Tail 100;throw 'Exact content/runtime preflight failed'}
+            if($req.validate_loader_cases){Test-ValoriaContentLoaderCases;$loaderCasesDone=$true}
+          }
           $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
 
           $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
@@ -225,17 +247,7 @@ jobs:
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
           if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
-          if($req.validate_loader_cases){
-            foreach($case in @('download','cached_offline','corrupt','incompatible')){
-              $env:VALORIA_CONTENT_CASE=$case
-              $caseLog=Join-Path $env:RUNNER_TEMP "valoria-content-$case.log"
-              $caseArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaContentBuild.ValidateLoader','-logFile',$caseLog)
-              $caseProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $caseArgs -PassThru
-              if(-not $caseProcess.WaitForExit(240000)){& taskkill.exe /PID $caseProcess.Id /T /F|Out-Null;throw "Own content loader probe timeout $case"}
-              Copy-Item $caseLog "docs/evidence/valoria-reference-clean/content-loader-$case.log"
-              if($caseProcess.ExitCode -ne 0 -or -not(Select-String $caseLog -Pattern 'VALORIA_REFERENCE_CLEAN_CONTENT_LOADER_COMPLETE' -Quiet)){Get-Content $caseLog -Tail 100;throw "Content loader probe failed $case"}
-            }
-          }
+          if($req.validate_loader_cases -and -not $loaderCasesDone){Test-ValoriaContentLoaderCases}
           if($req.export_package){
             $packageLog=Join-Path $env:RUNNER_TEMP 'valoria-package-refresh.log'
             $packageArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting','-logFile',$packageLog)
@@ -382,6 +394,7 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/camp87-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/content93-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/content-loader-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/sawmill-completed-*
             ${{ runner.temp }}/valoria-reference-clean.log
             ${{ runner.temp }}/valoria-reference-clean-gameplay.log
           if-no-files-found: warn
