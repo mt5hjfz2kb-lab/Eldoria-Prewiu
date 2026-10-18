@@ -1,9 +1,9 @@
 {
-    "scope": "Single bastion apron and adjacent meadow surface trial. Existing CC0 scan mip-filtered into coherent grass masses; irregular soil transition. No scene save or global extension.",
-    "source_sha": "e690974c8799187e613ed4e50b0a6f38ddbbab5b",
+    "scope": "Bastion footfall loam only. Original meadow fully preserved outside irregular worn fringe; existing sparse-grass scan remapped into lighter warm loam. Reject previous blurred dark meadow. No scene save or global extension.",
+    "source_sha": "f03e8217923d5d2a95573113c433369fefb6204b",
     "same_camera": true,
     "same_lighting": true,
     "same_heights": true,
     "changed_cells": 1687,
-    "source_texture_cap": 64
+    "source_texture_cap": 512
 }
