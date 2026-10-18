@@ -51,6 +51,33 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
           New-Item -ItemType Directory -Force docs/evidence/valoria-reference-clean|Out-Null
+      - name: Recover only the proven Unity Editor Search-index corruption in CI
+        shell: powershell
+        run: |
+          # Native134 ended inside UnityEditor.Search.SearchDatabase.IndexationOnStartup,
+          # not in Eldoria gameplay. Search is an Editor-only convenience service,
+          # never a QA or game-source authority. Preserve original preferences.
+          $project=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-search-preferences-$env:GITHUB_RUN_ID.json"
+          if(Test-Path $settings){
+            Copy-Item $settings $backup -Force
+            $saved=Get-Content $settings -Raw -Encoding UTF8
+            try {$config=$saved | ConvertFrom-Json -ErrorAction Stop}
+            catch {throw 'Existing Search.index is malformed; original preserved. Refuse silent replacement.'}
+            if($config.PSObject.Properties['roots']){
+              $config.roots=@()
+              $config | ConvertTo-Json -Depth 32 | Set-Content $settings -Encoding UTF8
+              Write-Host 'ELDORIA_CI_SEARCH_INDEX_ROOTS_DISABLED_TEMPORARILY; old preferences backed up'
+            }
+          }
+          $cache=Join-Path $project 'Library/Search'
+          if(Test-Path $cache){
+            $moved=Join-Path $env:RUNNER_TEMP "eldoria-corrupt-search-cache-$env:GITHUB_RUN_ID"
+            if(Test-Path $moved){throw 'Refuse to overwrite earlier Search cache backup'}
+            Move-Item -LiteralPath $cache -Destination $moved -ErrorAction Stop
+            Write-Host "ELDORIA_CI_SEARCH_INDEX_CACHE_ISOLATED $moved"
+          }
       - name: Read existing Android update certificate identity without changing keys
         continue-on-error: true
         shell: powershell
@@ -484,6 +511,19 @@ jobs:
           name: valoria-integrated-web-playtest-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaWebPlaytest/**
           if-no-files-found: error
+
+      - name: Restore original CI-only Unity Search preferences
+        if: always()
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-search-preferences-$env:GITHUB_RUN_ID.json"
+          if(Test-Path $backup){
+            New-Item -Force -ItemType Directory (Split-Path $settings) | Out-Null
+            Copy-Item -LiteralPath $backup -Destination $settings -Force
+            Write-Host 'ELDORIA_CI_SEARCH_PREFERENCES_RESTORED; only disposable Library/Search rebuilt'
+          }
 
   visible-controls-web:
     needs: native
