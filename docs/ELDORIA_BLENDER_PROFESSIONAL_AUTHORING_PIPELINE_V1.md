@@ -137,3 +137,21 @@ A production candidate needs:
 - integrated VISUAL PASS.
 
 If any one is missing, do not promote.
+
+## Regla permanente de continuidad y reutilización de capacidad artística
+
+**Mandato del propietario (18-10-2026). Vigencia: todas las futuras necesidades de arte de Eldoria sobre la base canónica integrada.** Esta norma complementa los criterios de autoría anteriores; no abre una tarea nueva, no desplaza la ejecución actual y no autoriza ramas, reinicios, gasto ni sustitución masiva de assets.
+
+**Principio:** Cada vez que el juego necesite crear, corregir, ampliar o sustituir un modelo 3D, **partir de la capacidad profesional y los recursos ya demostrados**, no volver por defecto a construcciones básicas ni reinventar desde cero el pipeline. Reutilizar herramientas, fuentes editables y procedimientos *que produjeron mejora artística visible*, no simplemente los que exportaron con éxito.
+
+### Secuencia obligatoria de decisión y ejecución
+
+1. **Recuperar el estado vivo:** leer `main`, el workstream vigente, el último asset integrado, sus interfaces jugables y sus evidencias. Respetar el alcance y las tareas activas. Las ramas antiguas sirven exclusivamente como referencia puntual; no reactivarlas ni fusionarlas completas.
+2. **Reutilizar antes de recrear:** consultar bibliotecas, prefabs, fuentes `.blend`, scripts, materiales PBR y familias modulares actuales. Decidir con justificación visual si conservar, reparar, remodelar parcialmente o crear. No producir una variante arquitectónica si lo que falta es acabado.
+3. **Recuperar la técnica que dio resultado:** localizar ejemplos reales con **fuente/commit, operaciones de Blender, exportación, capturas de Unity y veredicto independiente**. Revisar tanto los éxitos como los fallos. Ejemplos verificables en `docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md`: intervención controlada de orillas native61; arquitectura Bastión native70 y entorno native73, integrados y validados en native74; fallos de materiales blancos en native69 y pinos sobredimensionados rechazados en native77. Cada ejemplo demuestra *un alcance concreto*, no excelencia universal ni garantía para el siguiente asset.
+4. **Autoría profesional donde aporta valor:** construir sobre la geometría existente y emplear en Blender la combinación pertinente de malla directa, inset/extrude, curvas, booleans, biseles selectivos, sculpt, Geometry Nodes, UV, normales, materiales y bake. Usar Qwen/Ollama como dirección o crítica auxiliar con contexto geométrico e imágenes reales; BlenderMCP con acciones tipadas y validadas cuando esté disponible; `bpy` probado como alternativa sin detener la producción. No ejecutar código arbitrario generado por el modelo ni instalar un agente duplicado.
+5. **Mejorar la imagen, no solo las métricas:** revisar silueta, profundidad, detalle y relaciones con su entorno en la **cámara real del juego**. Comprobar textura, UV, materiales y color dentro de Unity URP (incluida persistencia de mapas). Exigir antes/después de un cambio significativo con encuadre e iluminación comparables, y evaluación visual independiente. TECH PASS o aprobación verbal de Qwen no equivalen a ART PASS.
+6. **Promover sin romper el juego:** conservar fuentes editables, identificadores de objetos/prefabs y los sistemas de selección, construcción, colisiones, navegación, guardado y evolución de Bastión I–II. Integrar selectivamente solo mejoras verificadas; repetir QA funcional y comprobar orientación/rendimiento móvil conforme al alcance. No aumentar polígonos, efectos o atlas sin beneficio perceptible.
+7. **Conservar el conocimiento práctico:** registrar brevemente en la evidencia del asset qué fuente y operaciones se reutilizaron, qué defectos se corrigieron, el enlace a capturas comparativas y el veredicto `ACEPTADO / RECHAZADO`. Esto es **reutilización de técnicas documentadas**, no aprendizaje o reentrenamiento de los pesos de Ollama/Qwen.
+
+**Límites permanentes:** 0 €, ningún Tripo/Tripo AI ni proveedores de pago, no proyectos o bibliotecas paralelas, no cambios de prioridad por el mero hecho de leer esta norma. Aplicarla cuando lo necesite el desarrollo jugable y visual ya autorizado, siempre desde el último `main` verificado. Ningún compromiso de calidad 7–8/10 se declara cumplido sin evidencia en la escena integrada.
