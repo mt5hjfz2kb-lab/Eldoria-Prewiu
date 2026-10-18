@@ -1,0 +1,203 @@
+{
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "prompt": "Act as terrain and material artist for Eldoria Zone One, NOT Valoria city. Images 1-3 are the approved global/regional/local references; image4 is the actual recovered Blender ground you will modify. The map is ONE continuous open prairie, few dispersed forest/mountain masses, small sea only in the SOUTH of the final world, and Breach in the centre of the FINAL WORLD. This 240m test patch is a local sector, not the entire world: do not add sea or invent a central Breach here. Focus solely on an attractive readable terrain foundation, never add buildings/trees to hide it. The source has an unchanged city pad and border. Preserve prior terrain work and add 2-3 deliberate BROAD ASYMMETRIC hillside/basin forms, whose ORIGINAL centres, radii, heights and angle you choose. Positive height makes a hill, negative makes a broad hollow. Protected city pad x[-40,4],y[-52,-8] and a 4m falloff around it are excluded; border is unchanged with 6m falloff. Actual Blender WORLD X/Y horizontal, Z up, units metres. The executor evaluates your elliptical smooth brush once on the source without any coordinate rewrites. Choose readable relief, no repeated regular bumps. The art realization uses your six exact sRGB palettes, terrain slope-aware exposed rock, broad meadow variation at macro_scale metres, dry grass at dry_amount, subdued donor microdetail at micro_strength, and preserves the existing painted route-centre mask. No flat tint, no grey meadow, no camouflage, no noise carpet. Meadow sRGB: R80..160 G90..170 B25..100, G>=R and G>B+30; second meadow differs by at most35 in each channel. Dry sRGB R150..220 G130..200 B65..140. Soil and path should be warmer light earth, rocks warm grey, using restrained reference-like contrast. Choose values yourself. The result is a production CANDIDATE with independent review, never self-approve. Explain concrete visible defects and intended changes. Output ONLY the exact JSON schema.\nACTUAL SOURCE CONTEXT\n{\"sha256\": \"6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8\", \"name\": \"ZoneOne continuous prairie source\", \"bounds\": [[-120.0, -120.0, -5.908100128173828], [120.0, 120.0, 8.145066261291504]], \"vertex_count\": 16069, \"polygons\": 28800, \"protected_city_pad\": [-40, 4, -52, -8], \"axes\": \"Blender WORLD X Y horizontal; Z up\", \"reference_scope\": \"local proof sector, not full128x128 world\"}\nVERIFIED PREVIOUS REJECTIONS\n{\n  \"state\": \"SOURCE_VISUAL_REJECTED_REQUIRES_CORRECTION\",\n  \"unity_executed\": false,\n  \"unity_art_score\": null,\n  \"ground_approved\": false,\n  \"sector_expansion_approved\": false,\n  \"general_workshop_revision\": {\n    \"frozen_workshop_commit\": \"c0d9d5f279773b09c233d97dd661ec72b59313d0\",\n    \"initial_run\": 38571917109,\n    \"initial_failure\": \"Three actual plans used non-executable extrude/inset pseudo-parameters. No geometry executed; raw proposals preserved.\",\n    \"corrected_api_run\": 38573925226,\n    \"actual_changed_vertices\": 1644,\n    \"candidate_sha256\": \"63b6471c02bb9318b3eb7e4d6494d13b7a6b7f7a5e3051769a3abae9b3c0d9ee\",\n    \"independent_city_and_border_gate\": true,\n    \"decision\": \"VISUAL_REJECTED_INSUFFICIENT_LANDFORM_CHANGE\",\n    \"observation\": \"Actual +2.5m/-1.2m brushes remain too small for strategic identity. Neutral clay review confirms insufficient change after automatic normal refresh. Raw workshop images also contain an intersecting neutral display plane; reject that presentation, preserve originals. Qwen's 'valid render/no defects' critique did not assess proximity to reference and does not approve the asset.\",\n    \"next_correction\": \"Ground-only presentation adapter, exact tool signatures, larger artist-chosen landforms. No changes to another owner's general studio code, no parameter rewriting, no model training.\",\n    \"unity_art_score\": null\n  },\n  \"tiled_detail_trial\": {\n    \"decision\": \"VISUAL_REJECTED\",\n    \"evidence\": \"docs/world4x-zone1/evidence/tiled-detail-rejected-20261014\",\n    \"authorship\": \"Director material route trial on actual Qwen sculpt; reused only the recorded 4m detail scale. No new Qwen inference claimed.\",\n    \"observation\": \"Full RGB donor with genuinely repeating UVs retains detail and removes baked painted roads. Actual regional and portrait renders still read as an uninterrupted grainy lawn with insufficient relief identity. Not a satisfactory direction or an approved replacement. Candidate under Unity Models remains untouched.\",\n    \"unity_executed\": false\n  },\n  \"native_attempt\": {\n    \"run\": 38563776671,\n    \"request_commit\": \"f721031175536a9cacfd203cc8067ebc3f44f55e\",\n    \"result\": \"ZONE1_NATIVE_RESOURCE_BLOCKED\",\n    \"windows_job\": \"skipped\",\n    \"unity_started\": false,\n    \"reservation_holder\": \"valoria-bastion1-player-scene-integration-20261012\"\n  },\n  \"relief_revision\": {\n    \"run\": 38558966835,\n    \"artist\": \"Qwen3-VL 4B actual inference, unchanged sculpt_path executed in Blender CLI\",\n    \"changed_vertices\": 2295,\n    \"city_and_boundaries_preserved\": true,\n    \"ground_glb_sha256\": \"6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a\",\n    \"mesh_triangles\": 28800,\n    \"source_evidence\": \"docs/world4x-zone1/evidence/relief-revision-38558966835\",\n    \"strategic_diagnostic\": \"docs/world4x-zone1/evidence/strategic-ground-staging-20261014\",\n    \"observation\": \"Technical source pass only. Viewed actual corrected regional diagnostic: uniformly grainy lawn, beige painted paths and insufficient relief legibility persist. No artistic approval; no Unity score. Material response requires minimal native URP lookdev before further iterations.\",\n    \"raw_executor_logging_issue\": \"sculpt_path overwrites its target variable with fraction 1.0 in shared executor output; preserve raw trace. Independent mesh preservation proofs and exact plan identify the actual edited target.\"\n  },\n  \"geometry_cycle\": {\n    \"run\": 38530648411,\n    \"source_sha256\": \"d8ce5826c84f376d30801d3491f1ba7fc4bfd48b716a75690333ffa808f6ce5f\",\n    \"edited_blend_sha256\": \"474bfc1188778fc68ae2abab1b664383fc5a4958c038db4675fce96f52b9663b\",\n    \"changed_vertices\": 2582,\n    \"lit_comparison\": \"docs/world4x-zone1/evidence/material-replay-38553648773/relief\",\n    \"before_image_sha256\": \"5dc1417069eac8f59ddeab17cec2e63a5db341422a3489569cc57b3a7875657b\",\n    \"after_image_sha256\": \"d27eab0aa8887c527ce2ab81c4c2c7206114d16b8bc6f5cf318b687ec713c130\",\n    \"observation\": \"Actual geometry changed, with boundaries and city pad protected. The fixed wide camera still reads predominantly uniform lawn; the broad ridge is too straight and its change too subtle to establish the target natural terrain. Workbench grey frames were unreadable; genuine Cycles A/B resolves the technical diagnostic but does not approve the ground.\"\n  },\n  \"second_material_trial\": {\n    \"inference_run\": 38554125622,\n    \"parameters_rewritten\": false,\n    \"image\": \"docs/world4x-zone1/evidence/green-material-rejected-20261014/blender-surface-after.png\",\n    \"image_sha256\": \"fcf85637cdfe3d0ef2387861fe24ec5a5364a9a11099d359d006f40e7dca9add\",\n    \"model_sha256\": \"a897d6a2a50935132e6839cce7617b4a2664543d5a4547c93b7cc4150847486d\",\n    \"decision\": \"REJECT\",\n    \"observation\": \"Executing the unchanged genuine first green proposal avoids the grey cast but creates conspicuous camouflage-like dark/bright green blotches. The low-resolution whole-sector bake also loses donor microdetail. Worse than the earlier textured source; preserve that source. Next correction must address relief and subdued coherent surface variation, rather than treating pixel change or green color alone as quality.\"\n  },\n  \"first_material_trial\": {\n    \"inference_run\": 38551351550,\n    \"preservation_run\": 38553648773,\n    \"local_model_sha256\": \"a144209bc9816d1a24f01e2b113b0e6014919afee9645cfc21ca2523d870188b\",\n    \"local_before_image_sha256\": \"ab816c961b2f0b5f7c25be90a3cd02e3a9b42fce775d01c0b7f5a331612c205b\",\n    \"local_after_image_sha256\": \"e7fbdfd05cb211674d9372750c4f92ccaff3267032e42095b5901a99d70e0283\",\n    \"artist_parameters_rewritten\": false,\n    \"decision\": \"REJECT\",\n    \"observation\": \"Qwen primary linear RGB [0.7,0.7,0.5], secondary [0.8,0.7,0.6] and dry [0.9,0.8,0.7] produced a grey-beige bleached surface. UVs, tangent normal texture, export, geometry preservation and identical camera pass. All pixels visibly changing does not make this an artistic improvement. Preserve the prior textured meadow.\"\n  },\n  \"reusable_lessons\": [\n    \"Refresh imported custom normals after a genuine sculpt and compare with the same lit renderer.\",\n    \"Use --work-dir in Blender scripts; --cycle collides with Cycles addon CLI argument prefixes.\",\n    \"Do not treat arbitrary director range rejection as an engine limitation; trial unchanged genuine proposals when technically valid, then judge actual images.\",\n    \"High near-equal linear R/G/B grass colors bleach the meadow. Request a new green-dominant palette with restrained golden dry transitions, using the actual failed image.\",\n    \"Strong macro palette contrast creates camouflage patterns. Whole-sector 1024px baking cannot retain every strand of a tiled 4m grass donor. Real Unity detail-material lookdev remains required; do not call the generic atlas sufficient.\",\n    \"Do not repeat narrow material edits forever if the fixed camera still shows flat, mechanically shaped land. Return to broad asymmetric relief design before multiplying sectors.\"\n  ],\n  \"memory_type\": \"verified source experience and retrieval; no model weight training\",\n  \"weights_trained\": false,\n  \"paid_credits\": 0,\n  \"native_dependency\": \"Main active registry retains windows-runner-heavy for Bastion I; no Unity installation or usable independent activation found locally. Do not seize its claim.\",\n  \"latest_topology_stable_ground\": {\n    \"artist_run\": 38580519176,\n    \"run_conclusion\": \"SUCCESS\",\n    \"ai_model\": \"qwen3-vl:4b-instruct\",\n    \"actual_artist_actions\": 3,\n    \"changed_vertices\": 1957,\n    \"triangles\": 28800,\n    \"protected_city_and_border\": true,\n    \"independent_gate_passed\": true,\n    \"glb_sha256\": \"6c8331bd5118f0f14529580f5ac2be4ef87f1b969e1c840e5f401b04e9e460f8\",\n    \"matched_camera_changed_fraction\": 0.03969,\n    \"previous_changed_fraction\": 0.0179363,\n    \"technical_source_pass\": true,\n    \"art_approved\": false,\n    \"unity_executed\": false,\n    \"critique_limitation\": \"Qwen generic no-defects statement is insufficient for reference-matched artistic approval\",\n    \"zoom_run\": 38583442987,\n    \"zoom_run_conclusion\": \"SUCCESS\",\n    \"zoom_views\": [\n      \"global\",\n      \"regional\",\n      \"local\",\n      \"mobile portrait\"\n    ],\n    \"zoom_evidence\": \"docs/world4x-zone1/evidence/real-multizoom-38583442987/zoom-review.json\",\n    \"decisions\": \"Preserve prior candidate, do not promote to Unity until native runner lease and independent visual review\"\n  }\n}\n\nPrior original response was rejected; independently correct: Meadow must be a restrained olive green, not grey, neon or beige",
+  "system_sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346",
+  "image_provenance": [
+    {
+      "source": "docs\\world4x-zone1\\evidence\\local-cycle-20261014\\references\\global-reference.png",
+      "source_sha256": "2a25e90510d4a1cdf3765b38516886595c0afb69bbf2785513b46147550b19b9",
+      "vision_sha256": "3785d7ae916cb8817e3be8c553f9a2c610b80dca5757d6e403c125105eea1780"
+    },
+    {
+      "source": "docs\\world4x-zone1\\evidence\\local-cycle-20261014\\references\\regional-reference.png",
+      "source_sha256": "f3d7b11890aead84f72fbff9cd113e9441ee70a015689263fa187ed179fdea3a",
+      "vision_sha256": "44ea62b2a1348d19419eb0a6a124868bf5a3c0c895de9937c7181c28aa5da902"
+    },
+    {
+      "source": "docs\\world4x-zone1\\evidence\\local-cycle-20261014\\references\\local-reference.png",
+      "source_sha256": "aeaa8a785431bb4a64e011f9c974ca99421794d76e1cdf13a873f61ef1cbbb88",
+      "vision_sha256": "fe2241011def917f9a26b4b7d35b6f01df1fc33380de831ec519e09bfdd9742f"
+    },
+    {
+      "source": "docs\\world4x-zone1\\evidence\\ground-finish-39126030933\\before-regional-blender.png",
+      "source_sha256": "9150671b323938104aee407331a6e84f269743ff3514db23799b89b5b00216ef",
+      "vision_sha256": "34b7dd8b59e510e2f0a548b20dd0656a9d4b2302b0c01a0c9d4e383732c802fa"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "diagnosis": {
+        "type": "string"
+      },
+      "design_intent": {
+        "type": "string"
+      },
+      "palette_srgb": {
+        "type": "object",
+        "properties": {
+          "meadow": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "meadow_light": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "dry": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "soil": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "rock": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minItems": 3,
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "meadow",
+          "meadow_light",
+          "dry",
+          "soil",
+          "rock",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "landforms": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": -92,
+              "maximum": 92
+            },
+            "y": {
+              "type": "number",
+              "minimum": -92,
+              "maximum": 92
+            },
+            "rx": {
+              "type": "number",
+              "minimum": 12,
+              "maximum": 48
+            },
+            "ry": {
+              "type": "number",
+              "minimum": 12,
+              "maximum": 58
+            },
+            "height": {
+              "type": "number",
+              "minimum": -3.5,
+              "maximum": 8.5
+            },
+            "angle": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "rx",
+            "ry",
+            "height",
+            "angle"
+          ],
+          "additionalProperties": false
+        },
+        "minItems": 2,
+        "maxItems": 3
+      },
+      "macro_scale": {
+        "type": "number",
+        "minimum": 24,
+        "maximum": 60
+      },
+      "dry_amount": {
+        "type": "number",
+        "minimum": 0.12,
+        "maximum": 0.3
+      },
+      "micro_strength": {
+        "type": "number",
+        "minimum": 0.025,
+        "maximum": 0.09
+      },
+      "slope_rock_start": {
+        "type": "number",
+        "minimum": 11,
+        "maximum": 22
+      },
+      "slope_rock_end": {
+        "type": "number",
+        "minimum": 25,
+        "maximum": 40
+      }
+    },
+    "required": [
+      "diagnosis",
+      "design_intent",
+      "palette_srgb",
+      "landforms",
+      "macro_scale",
+      "dry_amount",
+      "micro_strength",
+      "slope_rock_start",
+      "slope_rock_end"
+    ],
+    "additionalProperties": false
+  },
+  "options": {
+    "temperature": 0.25,
+    "num_ctx": 16384,
+    "num_predict": 1800
+  }
+}
