@@ -207,10 +207,14 @@ jobs:
           $buildTools=Get-ChildItem (Join-Path $sdk 'build-tools') -Directory|Sort-Object Name -Descending|Where-Object {(Test-Path (Join-Path $_.FullName 'apksigner.bat')) -and (Test-Path (Join-Path $_.FullName 'aapt.exe'))}|Select-Object -First 1
           if(-not $buildTools){throw 'Existing Android verification tools missing'}
           $apk=(Resolve-Path 'Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk').Path
-          $signed=(& (Join-Path $buildTools.FullName 'apksigner.bat') verify --verbose --print-certs $apk 2>&1|Out-String)
-          if($LASTEXITCODE){throw 'APK cryptographic signature verification failed'}
-          $badging=(& (Join-Path $buildTools.FullName 'aapt.exe') dump badging $apk 2>&1|Out-String)
-          if($LASTEXITCODE){throw 'APK manifest verification failed'}
+          $priorPreference=$ErrorActionPreference
+          try{
+            $ErrorActionPreference='Continue'
+            $signed=(& (Join-Path $buildTools.FullName 'apksigner.bat') verify --verbose --print-certs $apk 2>&1|Out-String);$signedExit=$LASTEXITCODE
+            $badging=(& (Join-Path $buildTools.FullName 'aapt.exe') dump badging $apk 2>&1|Out-String);$badgingExit=$LASTEXITCODE
+          }finally{$ErrorActionPreference=$priorPreference}
+          if($signedExit){Write-Host $signed;throw 'APK cryptographic signature verification failed'}
+          if($badgingExit){Write-Host $badging;throw 'APK manifest verification failed'}
           [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-apksigner.txt'),$signed)
           [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-badging.txt'),$badging)
           $expected='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
