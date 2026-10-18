@@ -332,10 +332,48 @@ async function main() {
   }
   async function capture(label, framingCheck = null) {
     if (captureNumber >= 75) { report.warnings.push('Screenshot cap reached; telemetry/video remain available'); return; }
-    const before = latest, started = elapsed();
-    const relative = `screenshots/${String(++captureNumber).padStart(3, '0')}-${slug(label)}-${orientation(before)}.png`;
-    await page.screenshot({ path: path.join(out, relative), timeout: 15000 });
-    report.screenshots.push({ path: relative, requested_elapsed_s: started, completed_elapsed_s: elapsed(),
+    const before = latest, started = elapsed(), index = ++captureNumber;
+    const basename = `screenshots/${String(index).padStart(3, '0')}-${slug(label)}-${orientation(before)}`;
+    let relative, method = '', firstError = null;
+    // Unity WebGL is constantly repainting under SwiftShader. Playwright's
+    // stabilised page.screenshot() stalled on the FIRST valid ready canvas
+    // despite fonts having loaded in run 39160664976. DevTools' one-frame
+    // Chromium compositor capture does not wait for a stable animation.
+    // Both sources are REAL browser pixels; neither manufactures game art.
+    try {
+      const session = await context.newCDPSession(page);
+      try {
+        const frame = await Promise.race([
+          session.send('Page.captureScreenshot', {
+            format: 'jpeg', quality: 85, fromSurface: false, captureBeyondViewport: false
+          }),
+          sleep(20000).then(() => { throw new Error('Chromium CDP capture exceeded 20 s'); })
+        ]);
+        const bytes = Buffer.from(frame.data || '', 'base64');
+        need(bytes.length > 2048 && bytes[0] === 0xff && bytes[1] === 0xd8 &&
+          bytes[bytes.length - 2] === 0xff && bytes[bytes.length - 1] === 0xd9,
+          'Browser compositor did not return a valid photographic JPEG frame');
+        relative = basename + '.jpg';
+        await fsp.writeFile(path.join(out, relative), bytes);
+        method = 'chromium-cdp-viewport-jpeg';
+      } finally {
+        await session.detach().catch(() => {});
+      }
+    } catch (error) {
+      firstError = error.message;
+      relative = basename + '.png';
+      try {
+        await page.screenshot({ path: path.join(out, relative), timeout: 45000, animations: 'allow' });
+        method = 'playwright-browser-png-fallback';
+      } catch (fallbackError) {
+        throw new Error('Both genuine Chromium capture routes failed: CDP=' +
+          firstError + '; Playwright=' + fallbackError.message);
+      }
+    }
+    const stat = await fsp.stat(path.join(out, relative));
+    need(stat.size > 2048, 'Browser screenshot returned no meaningful pixel payload: ' + relative);
+    report.screenshots.push({ path: relative, method, bytes: stat.size,
+      fallback_reason: firstError, requested_elapsed_s: started, completed_elapsed_s: elapsed(),
       before: summary(before), after: summary(latest), phase_stable_during_capture: phase(before) === phase(latest),
       framing_check: framingCheck, selection_framing_stable_during_capture: stableSelectionView(before, latest),
       full_selection_framed_before: framingObservation(before).pass, full_selection_framed_after: framingObservation(latest).pass });

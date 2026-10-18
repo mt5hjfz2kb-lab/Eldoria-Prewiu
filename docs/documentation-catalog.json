@@ -49,6 +49,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Dirección de producción global de Bastión I; no concede aprobación visual ni altera la autoridad de Unity"
+    },
+    {
       "path": "docs/BASTION_I_II_OWNER_PLAYTEST_CHECKLIST.md",
       "domain": "gameplay",
       "status": "review_pending"
@@ -72,12 +78,6 @@
       "path": "docs/BASTION_I_X_MASTER_TABLE.md",
       "domain": "gameplay",
       "status": "review_pending"
-    },
-    {
-      "path": "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md",
-      "domain": "art",
-      "status": "current",
-      "note": "Dirección de producción global de Bastión I; no concede aprobación visual ni altera la autoridad de Unity"
     },
     {
       "path": "docs/DOCUMENTATION_INDEX.md",
@@ -149,6 +149,18 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ELDORIA_I_II_NARRATIVE_PARITY_20261018.md",
+      "domain": "gameplay",
+      "status": "reference",
+      "note": "Auditoría de continuidad I–II y diálogos en Unity; subordinada al código principal y a la evidencia real del último build"
+    },
+    {
+      "path": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Consolidación autorizada de main y ramas históricas"
+    },
+    {
       "path": "docs/ELDORIA_MASTER_MAP_RESUME.md",
       "domain": "project",
       "status": "review_pending"
@@ -165,6 +177,12 @@
       "note": "Diseño macro; la fase de migración declarada era histórica"
     },
     {
+      "path": "docs/ELDORIA_MISSION_CONTINUITY_GUARD_V1.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Control de continuidad automática y recuperación de misiones sin atribución de VISUAL PASS"
+    },
+    {
       "path": "docs/ELDORIA_PARALLEL_DELIVERY_HANDOFF_20261010.md",
       "domain": "project",
       "status": "review_pending"
@@ -176,6 +194,12 @@
       "note": "Coordinación de titulares y recursos"
     },
     {
+      "path": "docs/ELDORIA_PLAYER_REVIEW_20261018.md",
+      "domain": "quality",
+      "status": "current",
+      "note": "Hallazgos y prioridades; distingue evidencia técnica de partida manual pendiente"
+    },
+    {
       "path": "docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md",
       "domain": "art",
       "status": "reference",
@@ -185,6 +209,12 @@
       "path": "docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md",
       "domain": "project",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Pausa global del propietario, correcciones técnicas aisladas y puertas de reanudación; sin aprobación artística"
     },
     {
       "path": "docs/ELDORIA_SURFACE_PIPELINE.md",
@@ -200,6 +230,12 @@
       "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
       "domain": "project",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+      "domain": "operations",
+      "status": "current",
+      "note": "Mandato exclusivo actual: Valoria por capas; consultar registro vivo; no reactivar otras ramas."
     },
     {
       "path": "docs/ELDORIA_VISUAL_BENCHMARK.md",
@@ -798,6 +834,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/VALORIA_SCENE_METHOD_BREAKTHROUGH_BRIEF_20261016.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Informe de metodología histórica; no orden independiente de producción ni validación visual."
+    },
+    {
       "path": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md",
       "domain": "art",
       "status": "review_pending"
@@ -868,6 +910,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/VALORIA_TWO_WORKSTREAMS_OWNER_PAUSE_20261016.md",
+      "domain": "operations",
+      "status": "reference",
+      "note": "Pausa histórica de dos ramas, supersedida por la prioridad exclusiva de Valoria; protecciones continúan."
+    },
+    {
       "path": "docs/VALORIA_VEGETATION_WATER_SHORE_PRODUCTION_V1.md",
       "domain": "art",
       "status": "review_pending"
@@ -903,6 +951,12 @@
       "path": "docs/VALORIA_VISUAL_CONVERGENCE_EXECUTION_V1.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "14 alternativas de coste 0, pruebas A/B, criterios de pivote; reserva informativa sin autorizar ejecución."
     },
     {
       "path": "docs/VALORIA_VISUAL_FORMULA_v1.md",
@@ -996,54 +1050,6 @@
       "domain": "engineering",
       "status": "current",
       "note": "Contrato de componentes Unity"
-    },
-    {
-      "path": "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
-      "domain": "operations",
-      "status": "current",
-      "note": "Pausa global del propietario, correcciones técnicas aisladas y puertas de reanudación; sin aprobación artística"
-    },
-    {
-      "path": "docs/ELDORIA_MISSION_CONTINUITY_GUARD_V1.md",
-      "domain": "operations",
-      "status": "current",
-      "note": "Control de continuidad automática y recuperación de misiones sin atribución de VISUAL PASS"
-    },
-    {
-      "path": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
-      "domain": "operations",
-      "status": "current",
-      "note": "Mandato exclusivo actual: Valoria por capas; consultar registro vivo; no reactivar otras ramas."
-    },
-    {
-      "path": "docs/VALORIA_SCENE_METHOD_BREAKTHROUGH_BRIEF_20261016.md",
-      "domain": "art",
-      "status": "reference",
-      "note": "Informe de metodología histórica; no orden independiente de producción ni validación visual."
-    },
-    {
-      "path": "docs/VALORIA_TWO_WORKSTREAMS_OWNER_PAUSE_20261016.md",
-      "domain": "operations",
-      "status": "reference",
-      "note": "Pausa histórica de dos ramas, supersedida por la prioridad exclusiva de Valoria; protecciones continúan."
-    },
-    {
-      "path": "docs/VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md",
-      "domain": "art",
-      "status": "reference",
-      "note": "14 alternativas de coste 0, pruebas A/B, criterios de pivote; reserva informativa sin autorizar ejecución."
-    },
-    {
-      "path": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
-      "domain": "operations",
-      "status": "current",
-      "note": "Consolidación autorizada de main y ramas históricas"
-    },
-    {
-      "path": "docs/ELDORIA_PLAYER_REVIEW_20261018.md",
-      "domain": "quality",
-      "status": "current",
-      "note": "Hallazgos y prioridades; distingue evidencia técnica de partida manual pendiente"
     }
   ]
 }
