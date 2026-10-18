@@ -26,7 +26,7 @@ namespace Eldoria.ReferenceClean {
   public ValoriaReferenceCleanGameplay City=>city;
   ValoriaReferenceCleanGameplay city; ExistingSliceBinding binding; ZoneOneGatewayHost world;
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
-  bool cityFog,englishInterface,worldVisited; int layoutWidth,layoutHeight,focusRequest;
+  bool cityFog,englishInterface,worldVisited; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
   float nextVisualSync;
   Rect observedVisibleArea;
   WorldHotspot[] targets;
@@ -61,7 +61,7 @@ namespace Eldoria.ReferenceClean {
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
     if(!string.IsNullOrEmpty(Selected)){
      var area=Hud.GetVisibleSceneViewport();
-     if(Mathf.Abs(area.xMin-observedVisibleArea.xMin)+Mathf.Abs(area.yMin-observedVisibleArea.yMin)+Mathf.Abs(area.xMax-observedVisibleArea.xMax)+Mathf.Abs(area.yMax-observedVisibleArea.yMax)>.005f){observedVisibleArea=area;SelectionChanged(Selected);}
+     if(Mathf.Abs(area.xMin-observedVisibleArea.xMin)+Mathf.Abs(area.yMin-observedVisibleArea.yMin)+Mathf.Abs(area.xMax-observedVisibleArea.xMax)+Mathf.Abs(area.yMax-observedVisibleArea.yMax)>.005f||FocusStage(Selected)!=observedFocusStage){observedVisibleArea=area;SelectionChanged(Selected);}
     }
    }
    if(layoutWidth!=Screen.width||layoutHeight!=Screen.height){
@@ -110,7 +110,15 @@ namespace Eldoria.ReferenceClean {
   public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
   public WorldHotspot FindTarget(string id)=>(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None)).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
-  void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;StartCoroutine(FocusAfterLayout(id,version));}
+  void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;observedFocusStage=FocusStage(id);StartCoroutine(FocusAfterLayout(id,version));}
+  int FocusStage(string id){
+   // These are the visual states already applied to the real scene. A completed
+   // model can need a different frame even when the landscape HUD rect is unchanged.
+   // Camera movement alone never changes this key, so manual panning stays put.
+   if(id=="bastion")return city.BastionTwo&&city.BastionTwo.activeSelf?2:1;
+   if(city.Parcels){if(id=="sawmill")return (int)city.Parcels.LeftState;if(id=="barracks"||id=="march-main")return (int)city.Parcels.RightState;}
+   return 0;
+  }
   IEnumerator FocusAfterLayout(string id,int version){yield return null;if(version!=focusRequest||id!=Selected)yield break;Canvas.ForceUpdateCanvases();var target=FindTarget(id=="march-main"?"barracks":id);if(target)Focus(target.gameObject);}
   public void Focus(GameObject target){
    if(!target||!Ready||!Hud)return;

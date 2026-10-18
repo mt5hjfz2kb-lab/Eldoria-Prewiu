@@ -29,6 +29,7 @@ const summary = state => state && ({
   bastion: state.bastion, trained: state.trained, configured: state.configured,
   scout: state.scout, engendro: state.engendro, busy: state.busy,
   march: phase(state), target: target(state), camera: state.camera, framing: state.framing || null,
+  controls: state.controls ? { primary: state.controls.primary } : null,
   save_sha256: typeof state.save === 'string' ? sha256(state.save) : null
 });
 
@@ -201,7 +202,7 @@ async function main() {
       visual_review: 'REQUIRED: inspect screenshots and continuous browser video independently' },
     measurements_scope: 'Local loopback server and CI Chromium; these are not Internet, Sites, Safari, physical-phone or FPS measurements',
     march_visual_measurement: 'Consecutive visible marker samples with unchanged viewport and stable camera (distance <= 0.01 world units, zoom delta <= 0.001). Resolved displacement >= 1 per mille of screen dimensions. Missing/out-of-frame/unstable samples do not prove missing animation. Inspect video for perceived motion and occlusion.',
-    selection_framing_measurement: 'Before each real primary action: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and panel/projection bounds. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
+    selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and panel/projection bounds. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
     cold_load_definition: 'Empty browser context with no prior HTTP/IndexedDB cache; operating-system disk cache is not claimed empty',
     checks: {}, loads: [], orientations: [], actions: [], operations: [], marches: [], navigation: [], selection_framing: [],
     transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: []
@@ -339,10 +340,11 @@ async function main() {
       framing_check: framingCheck, selection_framing_stable_during_capture: stableSelectionView(before, latest),
       full_selection_framed_before: framingObservation(before).pass, full_selection_framed_after: framingObservation(latest).pass });
   }
-  async function waitForActionFraming() {
+  async function waitForSelectionFraming(afterOperation = false) {
     const initial = latest, started = performance.now();
     const check = { index: report.selection_framing.length + 1, selected: initial.selected, objective: initial.objective,
       orientation: orientation(initial), inWorld: initial.inWorld, started_elapsed_s: elapsed(),
+      context: afterOperation ? 'after-operation' : 'before-primary-action',
       status: 'OBSERVING', pass: false, samples: [] };
     report.selection_framing.push(check);
     let anchor = null, stableSince = 0, stableFrames = 0, lastSequence = -1;
@@ -353,11 +355,11 @@ async function main() {
       const state = latest, observation = framingObservation(state), now = performance.now();
       check.samples.push({ elapsed_s: elapsed(), sequence, camera: state.camera, ...observation });
       if (state.narrative || state.busy || phase(state) !== 'idle' || state.selected !== initial.selected ||
-          state.objective !== initial.objective || state.inWorld !== initial.inWorld ||
+          (!afterOperation && state.objective !== initial.objective) || state.inWorld !== initial.inWorld ||
           state.width !== initial.width || state.height !== initial.height) {
         check.status = 'INTERRUPTED_BY_GAME_TRANSITION'; check.finished_elapsed_s = elapsed(); return null;
       }
-      if (!observation.valid || !state.controls?.primary?.enabled) {
+      if (!observation.valid || (!afterOperation && !state.controls?.primary?.enabled)) {
         anchor = null; stableFrames = 0; await sleep(80); continue;
       }
       if (!anchor || !stableSelectionView(anchor, state)) { anchor = state; stableSince = now; stableFrames = 1; }
@@ -492,7 +494,18 @@ async function main() {
       health(); await dismissNarrative();
       if (activeOperation?.completed) {
         need(activeOperation.normal_duration_observed, `Operation completed faster than its normal cadence: ${JSON.stringify(activeOperation)}`);
-        await capture(`completed-${activeOperation.kind}`); activeOperation = null;
+        // Completion can replace a plot/construction model while keeping the same
+        // selection and landscape panel bounds. Observe the resulting real frame.
+        // A finished building may have no enabled next action, and its objective
+        // can advance normally while the camera settles.
+        if (latest.selected === activeOperation.selected && latest.inWorld === activeOperation.before.inWorld &&
+            orientation(latest) === activeOperation.orientation &&
+            !latest.narrative && !latest.busy && phase(latest) === 'idle') {
+          const framing = await waitForSelectionFraming(true);
+          if (framing) activeOperation.completion_framing_check = framing.index;
+          else activeOperation.completion_framing_interrupted = true;
+        }
+        await capture(`completed-${activeOperation.kind}`, activeOperation.completion_framing_check || null); activeOperation = null;
       }
       if (activeOperation || latest.busy || phase(latest) !== 'idle') {
         if (activeOperation) need(elapsed() - activeOperation.started_elapsed_s < 90, `Operation stalled: ${activeOperation.kind}`);
@@ -510,7 +523,7 @@ async function main() {
       if (latest.narrative || latest.busy || phase(latest) !== 'idle' || latest.objective !== previousObjective) continue;
       await waitState(state => state.narrative || state.busy || state.controls?.primary?.enabled, 'Visible primary action becomes available', 10000);
       if (latest.narrative || latest.busy || phase(latest) !== 'idle') continue;
-      const framing = await waitForActionFraming();
+      const framing = await waitForSelectionFraming();
       if (!framing) continue;
       const state = latest, key = `${state.revision}:${state.objective}:${state.selected}`;
       need(!actionKeys.has(key), `Refusing duplicate action at unchanged revision: ${key}`);
