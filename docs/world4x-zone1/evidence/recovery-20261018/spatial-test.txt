@@ -1,0 +1,1 @@
+WORLD4X_SPATIAL_CONTRACT_PASS: 3 zooms, stable IDs/cells, chunk boundaries, invalid/duplicate rejection; read-only

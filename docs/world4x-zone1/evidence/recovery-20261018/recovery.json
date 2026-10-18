@@ -1,0 +1,1214 @@
+{
+  "source_commit": "a1757574743bb10e68a77dbc8898c50789ef7a6b",
+  "run_id": "39125021328",
+  "node_test_executed": true,
+  "node_test_passed": true,
+  "windows_used": false,
+  "unity_executed": false,
+  "art_approved": false,
+  "files": [
+    {
+      "path": ".github/workflows/world4x-zone1-brecha-landform.yml",
+      "bytes": 6567,
+      "sha256": "54ce71e86a2812462fd363e72822bc6c42608ea6c6a092ccffec2df455e2f227"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-contact-sheets.yml",
+      "bytes": 1851,
+      "sha256": "88368191843d916bc6d8350da2fea6ba767526a4003dcb141702d592a50e0b53"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-full-studio-ground.yml",
+      "bytes": 5374,
+      "sha256": "afc8ed6fed89b83abecc76f33ec264cce4e3f91dc96ccb720d985aa02b46e713"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-ground-authoring.yml",
+      "bytes": 4036,
+      "sha256": "b42cc1d229a7577e6abcc589ca359cf03c27524c70b491340cfd6fc8db1a958e"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-ground-material-replay.yml",
+      "bytes": 3429,
+      "sha256": "52e8d607214c18886d92f2bdc6e2d463cdd1b11330d2726401f712c98b7fce01"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-ground-native-capture.yml",
+      "bytes": 6043,
+      "sha256": "ea671901e6a2d7c2eb300a749a8866847727532bebbbff6b7bf89df646afb16c"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-ground-relief-revision.yml",
+      "bytes": 4828,
+      "sha256": "31a971e3e083d99ff6833763a59a3340926d1f1cc65094127ea95e961d4dcc54"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-ground-surface.yml",
+      "bytes": 4174,
+      "sha256": "7bb0335006ba20d238a8af6367c1e8fae20d291cba2bb84417aa54ef8e801a57"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-multizoom-review.yml",
+      "bytes": 3202,
+      "sha256": "95d37b8bb2c48a2ad36c5dbc0395aac8e6cfb014d5b31ddf5d4eecbaf128c4f1"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-recover-and-test.yml",
+      "bytes": 4757,
+      "sha256": "54e6432d829c9b150b0dd737e2fa67eba86d7e64188716a8d4d198dd20b325fb"
+    },
+    {
+      "path": ".github/workflows/world4x-zone1-source-recovery.yml",
+      "bytes": 3890,
+      "sha256": "176b68d1b4878b3b37420269b618705bbafae12b695f11efd620d8e10e8e5dd0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs",
+      "bytes": 15007,
+      "sha256": "4f3ce6fef05cb995dc749052a2b4041349f3d608b2d78b5c6fa7d045cac93ed8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs.meta",
+      "bytes": 60,
+      "sha256": "966cff0f9ba2041367938da5b6cf64dd6e0fecb14402e76a3f21e949dcd860ec"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor.meta",
+      "bytes": 169,
+      "sha256": "0b38bf21194dc5fc2fa068d4b11e752a06477e298a131592a324435dd81ea8d2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb",
+      "bytes": 2302072,
+      "sha256": "6751fbd60e8fce5122d5bd5aa1486aa68d2e8bf471cbab9c949f72a500a6d75a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json",
+      "bytes": 601,
+      "sha256": "3b0c1673b8fc694b062d01e7ef28579546e98841a5c1bfacd3b76ca075db4c6b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb",
+      "bytes": 18946600,
+      "sha256": "6d22c3319524839620591363b3696e920501813a12ad094a327c672f7d06a32d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb.meta",
+      "bytes": 717,
+      "sha256": "527738e2559ed87f90699029c7da1328b9873083d9e0fa8400b0e6fcf89bb573"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models.meta",
+      "bytes": 169,
+      "sha256": "29d9b4b31d5c380a458ed1d7635980ddd874b32181036eb7dd53bc0b16362b26"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs",
+      "bytes": 6520,
+      "sha256": "cdc22d3f9f8532fc3cb60916a796fba6692b7e139c1eee903c391acfd221df33"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs.meta",
+      "bytes": 60,
+      "sha256": "8a104291802905ee38a46cd2de4384dc7edb0e707ad341956abc1bc6744e57c7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneStrategicCamera.cs",
+      "bytes": 5032,
+      "sha256": "8304173a478cbd8e85dbefffe4d0b103ad3f17d9d9cedc32e0853b7fdaf79901"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneStrategicCamera.cs.meta",
+      "bytes": 60,
+      "sha256": "07550cceee8cad5f67157854b67ce205871ad1643f1a15cda482171ea6032286"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorld.cs",
+      "bytes": 3787,
+      "sha256": "a0c2d0c04973c7e3a506343bc16da487ba8a57c9d8a23f696df09bff69c4923d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorld.cs.meta",
+      "bytes": 60,
+      "sha256": "4f67d03c76accb6c275283be693696c814e160c5f799b2ec4d16261c60b3bd23"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorldTests.cs",
+      "bytes": 534,
+      "sha256": "d2bb0a85a20d03968d19001f940f0f0d00df1a996c8fd6dfac37d21fe7cf717d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorldTests.cs.meta",
+      "bytes": 60,
+      "sha256": "fb569858db5c9d81432eca08866183c74d88e4e24b9a90d61f42de77caef8410"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+      "bytes": 11177448,
+      "sha256": "e97319398ef1294348d8f59fb747628c6f077ce16dfe6f1cfd5189e108ba0ada"
+    },
+    {
+      "path": "docs/world4x-zone1/ART_PRODUCTION_STATUS.md",
+      "bytes": 1468,
+      "sha256": "e3bf1da5aeccdb16d02ba61ccac64c133e2cfbdd96b348092781b5ab36ed6421"
+    },
+    {
+      "path": "docs/world4x-zone1/BOTTOM_UP_ARCHITECTURE.md",
+      "bytes": 3926,
+      "sha256": "ea0687bff76bae9028b0b46c127567320ff89df810df4f3c22b24b0299a9da25"
+    },
+    {
+      "path": "docs/world4x-zone1/CONTINUATION_GROUND_20261014.md",
+      "bytes": 6224,
+      "sha256": "3c3b64a8b8b0cebbf33fa56e4d2d7a993f2bb04bd29d4c3688f07ed2735d62ad"
+    },
+    {
+      "path": "docs/world4x-zone1/FULL_STUDIO_GROUND_REVIEW.json",
+      "bytes": 240,
+      "sha256": "f336d6a76c47f5889482bf7289acd1caa7d439087e2ae7294d706caa50b1f3e1"
+    },
+    {
+      "path": "docs/world4x-zone1/GROUND_ART_REVIEW_20261014.json",
+      "bytes": 8351,
+      "sha256": "cc7e8a17b3b49f448a5b8e458210b493c1e6fcdd34344cbf17293185826cc1a7"
+    },
+    {
+      "path": "docs/world4x-zone1/MODULAR_3D_KIT_V1.md",
+      "bytes": 1345,
+      "sha256": "8d995b5889f808b18058b2e42e5c1d1039a51c374b702646b1c71c3d94def08b"
+    },
+    {
+      "path": "docs/world4x-zone1/NATIVE_CAPTURE_REQUEST.json",
+      "bytes": 765,
+      "sha256": "d4cbaf44c665a6a0d7b739c5b7028d89ab146f75a036a46475dd3da3acabe40f"
+    },
+    {
+      "path": "docs/world4x-zone1/PARTIAL_SOURCE_RECOVERY_20261014.json",
+      "bytes": 11172,
+      "sha256": "0723488ff7b338b6374c8252f08d85d9c1e23f98f6c748d617c0781a4aaf6c03"
+    },
+    {
+      "path": "docs/world4x-zone1/PRODUCTION_RESULT_20261014.md",
+      "bytes": 7025,
+      "sha256": "b387f0e8337a25e888a4ae50c9e945451d73042d73db603831c3cb66c3571da9"
+    },
+    {
+      "path": "docs/world4x-zone1/SPATIAL_UNIT_20261018.md",
+      "bytes": 2107,
+      "sha256": "85dd3e5cafc4533ba8ad11c4683fcaed5d47a3c6b644fa64647ca4dcec9fd556"
+    },
+    {
+      "path": "docs/world4x-zone1/TAKEOVER_20261018.md",
+      "bytes": 2995,
+      "sha256": "8c399e1cc803b0975a7038450d194948ddbc00b93ba2e71076cdd74aff45b809"
+    },
+    {
+      "path": "docs/world4x-zone1/ZONE1_IMPLEMENTATION_CONTRACT.md",
+      "bytes": 2996,
+      "sha256": "ed5dd260366039449b802db41c323ff986a5e0dfee29f78527f90369c2e643b2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/cycle-1/qwen-raw-attempt-1.json",
+      "bytes": 1809,
+      "sha256": "de35369d78b0d96c60305613effc487727d2fac2497352eab6e7611d4b253a0f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/cycle-1/qwen-raw-attempt-2.json",
+      "bytes": 1659,
+      "sha256": "086b8658ccd085f763d154c1761efc26d65bdf5ec6e92465d00afa466dcde1b4"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/cycle-1/qwen-raw-attempt-3.json",
+      "bytes": 1583,
+      "sha256": "fb6f674a749902716d4ddff6d219e8cdc6fccc13250b3f50e0376e9e6bb88038"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/cycle-1/qwen-raw.json",
+      "bytes": 1583,
+      "sha256": "fb6f674a749902716d4ddff6d219e8cdc6fccc13250b3f50e0376e9e6bb88038"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/journal-context-proof.json",
+      "bytes": 1698,
+      "sha256": "07a835dc9de7d6d728ac1d222b092ad0827dadb644202923744a5451e3f9602c"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/learning-casebook-proof.json",
+      "bytes": 233,
+      "sha256": "434777f10f2c99bdba024facb2cd800aacb60be29b48730b935e4e508b686949"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38571917109/production/source-inspection/source-inspection.json",
+      "bytes": 1010,
+      "sha256": "1616feb0f95f6f259a6e9a93abcb3516296526bca060a8f7e3472d49cc5a59d2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/independent/independent-ground-gate.json",
+      "bytes": 457,
+      "sha256": "c9a3de0c37058e3907027944a3f3c118917562a100ca6a50b043e787833d9de9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/artist-plan.json",
+      "bytes": 1730,
+      "sha256": "66349663d21327f485d2c97a41e6948a4b39e5f2528c243e8ed857de38d9abfd"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/camera-screen-impact.json",
+      "bytes": 475,
+      "sha256": "688087948bd93aeb58e872cfe412d9ac5671cd5498c3dee11f58a0b6aee1fac4"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/output/execution-proof.json",
+      "bytes": 1788,
+      "sha256": "e08d4165eb6e477833e7c56a4d8ae6edb25a086f7d7eb1271b89ddcbb0bd1954"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/output/reusable-asset-catalog.json",
+      "bytes": 1281,
+      "sha256": "3c0d6ad63d2cfc07aee759054292c16e9a6863dc9d83665a08fbf2bde7273ae7"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/qwen-critique.json",
+      "bytes": 211,
+      "sha256": "2d34c9aaee98d31774d08be948f3095aea7983259049e30f117b5723bca7f5d7"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/qwen-raw-attempt-1.json",
+      "bytes": 1560,
+      "sha256": "1b3e1078a24b54ee2468ca50514b39d07ad4191d3ce225d9cd84ed06bf00c3dd"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/cycle-1/qwen-raw.json",
+      "bytes": 1560,
+      "sha256": "1b3e1078a24b54ee2468ca50514b39d07ad4191d3ce225d9cd84ed06bf00c3dd"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/full-studio-result.json",
+      "bytes": 1252,
+      "sha256": "791c6f247a6a979c936eef75672d8512c6f56c80075cf21e9f4f8afc35a59c3f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/journal-context-proof.json",
+      "bytes": 1698,
+      "sha256": "07a835dc9de7d6d728ac1d222b092ad0827dadb644202923744a5451e3f9602c"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/learning-casebook-proof.json",
+      "bytes": 233,
+      "sha256": "434777f10f2c99bdba024facb2cd800aacb60be29b48730b935e4e508b686949"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38573925226/production/source-inspection/source-inspection.json",
+      "bytes": 1010,
+      "sha256": "d9231bf45304456e066d0187dd2d5401a17963839c11679a56d007382ae34e39"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/independent/independent-ground-gate.json",
+      "bytes": 384,
+      "sha256": "eb7aed0405324ad1d45320263b7e715984269931776613018ea711490a24805a"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/artist-plan.json",
+      "bytes": 2415,
+      "sha256": "aa4a7fa38d95193af8ee4e238f40de9b56be2f429787ac020a556ca987e7b89f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/camera-screen-impact.json",
+      "bytes": 475,
+      "sha256": "592a2713c84a6cd3a1503e24b5bcb02719720ea42243e584b249139a1d3a043f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/output/execution-proof.json",
+      "bytes": 2614,
+      "sha256": "df6e2544ba4ef1cc957d9f8bce405b00853f76f129da02797770f08c37a15af1"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/output/reusable-asset-catalog.json",
+      "bytes": 1280,
+      "sha256": "8172539276ef62eead66811b1fba3a4e22bd2b3ba98bfddc953072f83f1e379e"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/qwen-critique.json",
+      "bytes": 331,
+      "sha256": "ee0a2c3cf1db7a162f53727eb70f570b6375128ddae652b46408789568a4caa4"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/qwen-raw-attempt-1.json",
+      "bytes": 1844,
+      "sha256": "9210a7c5aed57e2c3beca5baca677f27a4707947d6f4cd11a94146dcf3ddde4a"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/qwen-raw-attempt-2.json",
+      "bytes": 2214,
+      "sha256": "5ab9a37a4227191332a67dd4356fa13212c35ab7d1934992960624d1bc1cfe7b"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/qwen-raw-attempt-3.json",
+      "bytes": 2164,
+      "sha256": "7266ecd927268c415dd944eb9c30d7e8f9e8b3b4cddee86ebe78d0bb02e63b48"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/cycle-1/qwen-raw.json",
+      "bytes": 2164,
+      "sha256": "7266ecd927268c415dd944eb9c30d7e8f9e8b3b4cddee86ebe78d0bb02e63b48"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/full-studio-result.json",
+      "bytes": 1372,
+      "sha256": "4ba7b8e647b22c85bf0251de37c3a968a775da108c961d56932bd5e85cb13f48"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/journal-context-proof.json",
+      "bytes": 1698,
+      "sha256": "07a835dc9de7d6d728ac1d222b092ad0827dadb644202923744a5451e3f9602c"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/learning-casebook-proof.json",
+      "bytes": 233,
+      "sha256": "434777f10f2c99bdba024facb2cd800aacb60be29b48730b935e4e508b686949"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38577036796/production/source-inspection/source-inspection.json",
+      "bytes": 1010,
+      "sha256": "16f9bcefb0b0c7ccd09e72bd3a13c8aea0c1ef0524a8d1d7a48d0760ff4e06a0"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/independent/independent-ground-gate.json",
+      "bytes": 457,
+      "sha256": "d9f0cdbeaefa4ce00aae83bde9f547c1cdb031176f21ee9d83f4e0eaa61c5473"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/artist-plan.json",
+      "bytes": 2043,
+      "sha256": "49feedbc163ffcf979b43adf59a5b06ef1f7e93d34fdbfbba3de3dd753c1f23e"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/camera-screen-impact.json",
+      "bytes": 474,
+      "sha256": "42bd5d47a48564dd253e5bafb4adc0470353ae35f9984bda9f1d3dac4a210fdb"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/execution-proof.json",
+      "bytes": 2191,
+      "sha256": "ba766ec9c58efe807cc806709ddb7dee3db5c4d55e866e21d4aec68e79deeb2a"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/output/reusable-asset-catalog.json",
+      "bytes": 1271,
+      "sha256": "26b25c707f7b3e8398c95095064f104ec0874aa6705b8959dde99c8cd13c4d2e"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/qwen-critique.json",
+      "bytes": 189,
+      "sha256": "efcb64ee709dfd48715f71dcac9267cfd655710723ed0ffb17ff089cf4d9ad39"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/qwen-raw-attempt-1.json",
+      "bytes": 1386,
+      "sha256": "ba7317c0a603d1ef7f04ec41bcd0f375029defecff9290c7737d64210b80b52e"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/qwen-raw-attempt-2.json",
+      "bytes": 1684,
+      "sha256": "ec72f3cd45fec09408add8b1d85a955b8545aef50ba09513d5a21dd534094226"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/qwen-raw-attempt-3.json",
+      "bytes": 1805,
+      "sha256": "a3c79161773913b15ecf9df79391441b6b8880a42d72b981854ecf717c5245d9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/cycle-1/qwen-raw.json",
+      "bytes": 1805,
+      "sha256": "a3c79161773913b15ecf9df79391441b6b8880a42d72b981854ecf717c5245d9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/full-studio-result.json",
+      "bytes": 1230,
+      "sha256": "182067e447e2a064bb8f93fdd879cf2f62ee4b11acd2d86f7cbad03868ff4fa4"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/journal-context-proof.json",
+      "bytes": 1698,
+      "sha256": "07a835dc9de7d6d728ac1d222b092ad0827dadb644202923744a5451e3f9602c"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/learning-casebook-proof.json",
+      "bytes": 233,
+      "sha256": "434777f10f2c99bdba024facb2cd800aacb60be29b48730b935e4e508b686949"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/general-ground-38580519176/production/source-inspection/source-inspection.json",
+      "bytes": 1010,
+      "sha256": "5381cef5dc637df418757abfa3b9cbbab7aa7b396273f01f2631ea18bf867447"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/green-material-rejected-20261014/artist-inference.json",
+      "bytes": 3325,
+      "sha256": "b51952e06d9ee7c1ce81db06604b247c0e8964a5d56c83824ed67a77d4c3cbc9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/green-material-rejected-20261014/artist-plan.json",
+      "bytes": 783,
+      "sha256": "774825275ea0f8533d1ba182eac26d72d08de0d76ea80cb4217e9843a0cbda0a"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/green-material-rejected-20261014/director-constraint-review.json",
+      "bytes": 930,
+      "sha256": "9c19a8e08dead4ccc616d3cb0a4c352be6ecf15b3a3e6506b08969b00006ed47"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/green-material-rejected-20261014/surface-execution.json",
+      "bytes": 1737,
+      "sha256": "518627af2abdcb8ff0c9610b5278a46f946227430bc2fb8d6857ef35f06f7f88"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/green-material-rejected-20261014/surface-technical-review.json",
+      "bytes": 1242,
+      "sha256": "d1706f1cef36a51c1d88e71e8d2d7edc565907a1e9127ddfc8d23d9a37f21149"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38522534427/actual-request.json",
+      "bytes": 237041,
+      "sha256": "49ad0f87c7fb22806d2c78972e55858326eea2543d2992e4a8d2cf5b9898a811"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38522534427/context/mesh-context.json",
+      "bytes": 3462,
+      "sha256": "7b584e0be83799603606b715f58dc18d814ee3eb5f74d52c37e903bb48babd44"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38522534427/inference-failure.json",
+      "bytes": 522,
+      "sha256": "393528ea6b61426d61e63bba3215615d8e30e8e8bf7c1f01dd883d9cdecb1007"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38522534427/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38522534427/source/derived-source-proof.json",
+      "bytes": 3039,
+      "sha256": "7344b7071e56d5616277c3dbc7120f019fe4111ab920196125ddf47daa4132e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/actual-request.json",
+      "bytes": 238469,
+      "sha256": "6e6a7e6062588b043bf14c095d0369bfbcd9a8ea495f4af289f1de6763c27626"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/artist-attempts.json",
+      "bytes": 2550,
+      "sha256": "15052866eaf2a4d847b2b083858f0d73fc9cc2c9bb2c4625bcfa751ca5a76009"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/context/mesh-context.json",
+      "bytes": 3462,
+      "sha256": "7b584e0be83799603606b715f58dc18d814ee3eb5f74d52c37e903bb48babd44"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/raw-qwen-1.json",
+      "bytes": 3377,
+      "sha256": "b59510f3e89ad7128efacb62442a28988fe86ce026858e74b53380e43db81624"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/raw-qwen-2.json",
+      "bytes": 1903,
+      "sha256": "009b551faafdac1c7e95998ea5f7b06125e69a396c24226040c36c03665d4470"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/raw-qwen-3.json",
+      "bytes": 1918,
+      "sha256": "2463d3c5af7435858152c06570e10b708d9f2927b8f7c4db789e18d3407f9fae"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38523930205/source/derived-source-proof.json",
+      "bytes": 3039,
+      "sha256": "7344b7071e56d5616277c3dbc7120f019fe4111ab920196125ddf47daa4132e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/actual-request.json",
+      "bytes": 240551,
+      "sha256": "7fc1da55f022268a72826f05f3ed605591c87bdab6d6388a3ff672350b7ca953"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/artist-attempts.json",
+      "bytes": 885,
+      "sha256": "50e66bd362d27dd566822d51159024b40f4bbe3548e9d875c7ae7a77d54fb1fd"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/context/mesh-context.json",
+      "bytes": 3462,
+      "sha256": "7b584e0be83799603606b715f58dc18d814ee3eb5f74d52c37e903bb48babd44"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/raw-qwen-1.json",
+      "bytes": 2566,
+      "sha256": "c6c57d79d39f1c5b39e12d4ea7cbad285144c052371ce9a0f05e8b635608a6a4"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/raw-qwen-2.json",
+      "bytes": 2589,
+      "sha256": "3c6af8e08e24c97c5dc33c5c00f16bd5002208ac7e97ed6337490a75bfa1ff2f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/raw-qwen-3.json",
+      "bytes": 2588,
+      "sha256": "ae049b5f395421b1e0f7c2a47d0e0463d32ec1476b157162e30399abb970eb0c"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38525080346/source/derived-source-proof.json",
+      "bytes": 3039,
+      "sha256": "7344b7071e56d5616277c3dbc7120f019fe4111ab920196125ddf47daa4132e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/actual-request.json",
+      "bytes": 168159,
+      "sha256": "5334070b91341d73690cff2b48277718c23f70da8d081ff235d80e1ca4121b60"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/artist-attempts.json",
+      "bytes": 893,
+      "sha256": "2c107aa7b4159786bbb05b13fd34d864da78e00670c2772e073ced15cb6c9af6"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/context/mesh-context.json",
+      "bytes": 3462,
+      "sha256": "7b584e0be83799603606b715f58dc18d814ee3eb5f74d52c37e903bb48babd44"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/raw-qwen-1.json",
+      "bytes": 2423,
+      "sha256": "1d691c2342ec55fd437ba57890c514a3de31480d1ede7c933dc2a060d8ca60ad"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/raw-qwen-2.json",
+      "bytes": 2393,
+      "sha256": "813ef6eaff34d4d2ac19518e31cb47271bf150299b650d907cbcbe3e9534c201"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/raw-qwen-3.json",
+      "bytes": 2393,
+      "sha256": "305452d86e1124f9b7f67e816487ec1a3dab35ab52736f358a6c210b709050fa"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38527398141/source/derived-source-proof.json",
+      "bytes": 3039,
+      "sha256": "7344b7071e56d5616277c3dbc7120f019fe4111ab920196125ddf47daa4132e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/actual-request.json",
+      "bytes": 168806,
+      "sha256": "ec5e597899d1e1f4cc6d83675f6d8fa6eee519520f109298d71c6a1e02ce2abd"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/artist-attempts.json",
+      "bytes": 183,
+      "sha256": "fff23bf07b135c1561d30457d088bb34502743d15ca11fc269ccf2dcd5e2ee3b"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/artist-inference.json",
+      "bytes": 3649,
+      "sha256": "0fbf30f76bd1df95d53dacae553cff41f3dbecded632c3256e75f12aa6e3e3ed"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/artist-plan.json",
+      "bytes": 1168,
+      "sha256": "541f35333105dc79222f609c3ec02b765abb5b7d6fec9c59eb29acea64312762"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/context/mesh-context.json",
+      "bytes": 3462,
+      "sha256": "7b584e0be83799603606b715f58dc18d814ee3eb5f74d52c37e903bb48babd44"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/edited/artist-execution.json",
+      "bytes": 1140,
+      "sha256": "36918034453845b6c81e40d5ce007f883f4fa86bbcd3e53d72ac843a73b4de1c"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/raw-qwen-1.json",
+      "bytes": 2649,
+      "sha256": "ebbb10f6868a19edab2e46feb2bf7dceb92032008600f3ae0235b9a1948be200"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38529597584/source/derived-source-proof.json",
+      "bytes": 3039,
+      "sha256": "7344b7071e56d5616277c3dbc7120f019fe4111ab920196125ddf47daa4132e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/actual-request.json",
+      "bytes": 168806,
+      "sha256": "ec5e597899d1e1f4cc6d83675f6d8fa6eee519520f109298d71c6a1e02ce2abd"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/artist-attempts.json",
+      "bytes": 183,
+      "sha256": "efd198cef2609af339655b36e16ba797201a2c84acdddbbcd3d80b6271b30e28"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/artist-inference.json",
+      "bytes": 3461,
+      "sha256": "dc2d1d18dda9eff679ceca3949c63de5be4ded75e526ec6779b28a3c5dd1a493"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/artist-plan.json",
+      "bytes": 1041,
+      "sha256": "d801e59d84fe9c602622626c56e5269501e5e2116ad683f861815cb5d35323e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/context/mesh-context.json",
+      "bytes": 3462,
+      "sha256": "7b584e0be83799603606b715f58dc18d814ee3eb5f74d52c37e903bb48babd44"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/edited/artist-execution.json",
+      "bytes": 1146,
+      "sha256": "507593c2d2431b5465b3ac8bbe76c4f9da92a4834350a77352fc261c5bd36705"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/ground-ab-proof.json",
+      "bytes": 1172,
+      "sha256": "7f473b3b975d90894f34d30b1254bc68d382d22f361cba0e6dc15109fa9255ae"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/raw-qwen-1.json",
+      "bytes": 2451,
+      "sha256": "0cfaa1770650c85f6cba006b6805c6f5a53aadfad698dd9d833cdd4cd2981a53"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-first-38530648411/source/derived-source-proof.json",
+      "bytes": 3039,
+      "sha256": "7344b7071e56d5616277c3dbc7120f019fe4111ab920196125ddf47daa4132e9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38551351550/normal-refresh-proof.json",
+      "bytes": 623,
+      "sha256": "bbd6c427369cbb7a83ebda5644b6bcfcb3df85cef3c10d1a22887dbe68c6ea92"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38551351550/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38551351550/surface-request.json",
+      "bytes": 293033,
+      "sha256": "755c50470422b81f395d4f64c2cb8469eaa8e01e39308dece7f63c4dfdb4662d"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38554125622/normal-refresh-proof.json",
+      "bytes": 623,
+      "sha256": "bbd6c427369cbb7a83ebda5644b6bcfcb3df85cef3c10d1a22887dbe68c6ea92"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38554125622/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38554125622/surface-request-attempt-1.json",
+      "bytes": 181759,
+      "sha256": "b082d07d2ca5b8cca7e46f44d6a724f74eed0c15f75a59545c7f5e1d0bf4d149"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38554125622/surface-request-attempt-2.json",
+      "bytes": 182048,
+      "sha256": "db85fd58bac93e5d236e2649bf9bf7468e5ed6f9d1eb9bea735615c461a2d084"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/ground-surface-38554125622/surface-request.json",
+      "bytes": 181759,
+      "sha256": "b082d07d2ca5b8cca7e46f44d6a724f74eed0c15f75a59545c7f5e1d0bf4d149"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/actual-artist-request-v2.json",
+      "bytes": 7950,
+      "sha256": "2b51065d550bd4a7e2289a05c946b381056822c060be7d66adf0e8216847c974"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/actual-artist-request.json",
+      "bytes": 6690,
+      "sha256": "d7a76bcdc4e2735573ee682d6368b822025cd5002eaf929fabcee6a21b36ab9f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-edited/artist-execution.json",
+      "bytes": 894,
+      "sha256": "d902b01fc0f9fcd3ebef91a10c308803a62aece31fd3fd8587cc7994101b0536"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-inference.json",
+      "bytes": 3389,
+      "sha256": "2c09a8fd7b9983db2ea1e41509835ea9c4de9ebe3e0b7f6851a25db9e3e68685"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/artist-plan.json",
+      "bytes": 1054,
+      "sha256": "87cbf31416710572ad1c79e4f05e821e30b31139ffc4cbb8a93a26777a35e98f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/blender-pixel-measurement.json",
+      "bytes": 281,
+      "sha256": "fe218833fbc57c98968f13ad8e106f6deaf9f421a19c7d44b9c546fe78c299ad"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/evidence-manifest.json",
+      "bytes": 8225,
+      "sha256": "f80ee99cb5da4fa5612b4495a9470af17a6265976574d359b70b97352ee7ce2b"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/finishing-execution.json",
+      "bytes": 15331,
+      "sha256": "1a5e63b7bb24933eff54484c2dcca4fdd6564365422f03a73519d36f46ef3e0b"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/geometry-ab-proof.json",
+      "bytes": 816,
+      "sha256": "ca2ee5ce66f02d7b06f35ed9bea54d70134adaf05bfdd1a340c47bb50da45870"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/glb-structural-audit.json",
+      "bytes": 633,
+      "sha256": "f5621a1e616d695eff170675f443aa0bc0ec8dd2fe183a87d35b517042e937c6"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/historical-advice.txt.provenance.json",
+      "bytes": 394,
+      "sha256": "67a90933a25aaf82e95d3a129882293eeb101f2afcfb002da6294abc25da6ef1"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/independent-final-source-review.json",
+      "bytes": 1192,
+      "sha256": "6ba3ff895ac98cbe2212f0f07ea56a3434f8f1f7a0c761b10602d96cdaa3c982"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/plan-rejected-1.json",
+      "bytes": 123,
+      "sha256": "bcf3f892bda854f31cb0612a361ce9446e0cc2b6fef35a59ab048518d6716cb2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/plan-rejected-2.json",
+      "bytes": 123,
+      "sha256": "bcf3f892bda854f31cb0612a361ce9446e0cc2b6fef35a59ab048518d6716cb2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/raw-qwen-attempt-1.json",
+      "bytes": 4414,
+      "sha256": "a1daa782242199835498dfb289d85fe68564db257f0e10d02e35123a7d9d0ddc"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/raw-qwen-attempt-2.json",
+      "bytes": 4412,
+      "sha256": "bca2c873c30026d585e97b57d5946bed8918790655d0f25f63e88ece1bd992a5"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/raw-qwen-v2-attempt-1.json",
+      "bytes": 3150,
+      "sha256": "c8784d0c98711a2f6fb13c0a5dd73334cacc752499ffca895cc6003cae99c1ab"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/global-reference.png",
+      "bytes": 1073874,
+      "sha256": "2a25e90510d4a1cdf3765b38516886595c0afb69bbf2785513b46147550b19b9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png",
+      "bytes": 886901,
+      "sha256": "aeaa8a785431bb4a64e011f9c974ca99421794d76e1cdf13a873f61ef1cbbb88"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/reference-hashes.json",
+      "bytes": 382,
+      "sha256": "0465cb2ceadbbb4b1252141de40b9ef1564e80fb9a4df76b3b20679a1d313f14"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/regional-reference.png",
+      "bytes": 1048398,
+      "sha256": "f3d7b11890aead84f72fbff9cd113e9441ee70a015689263fa187ed179fdea3a"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/artist-inference.json",
+      "bytes": 2871,
+      "sha256": "005011422d462710f52e055c6f285d0860766af9b2d697a882422bf56505ba9a"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/artist-plan.json",
+      "bytes": 785,
+      "sha256": "fa7978f3e10a5d8bc2aeb77cc1f731acf45fdff680ef759f721feeb8f5635633"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/director-constraint-review.json",
+      "bytes": 900,
+      "sha256": "16b47de609e5c5b3831a889bdbf76ffa11e9381428abe4de7a4fa752be52669f"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/normal-refresh-proof.json",
+      "bytes": 623,
+      "sha256": "bbd6c427369cbb7a83ebda5644b6bcfcb3df85cef3c10d1a22887dbe68c6ea92"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/relief/relief-comparison.json",
+      "bytes": 961,
+      "sha256": "af90ddd9f0561e81794d336f2686f0d9080b272771adaa1515c6de8a09b100f4"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/surface-execution.json",
+      "bytes": 1594,
+      "sha256": "6c574b109170db045a2dea76466370678a796d8140784c2b6408e0112ffe2723"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/surface-technical-review.json",
+      "bytes": 1239,
+      "sha256": "a510c3ca680d11b1b20ddd18984d798b219a3998352bb76e258888bc383f68a2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/material-replay-38553648773/typed/artist-execution.json",
+      "bytes": 915,
+      "sha256": "af37cc10f5456e147c86d52da268bd3e8353bcf510d63ba525303fd465c3d0b9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/native-window-blocked-38563776671.json",
+      "bytes": 476,
+      "sha256": "189d68574bf2bf1a13736ae28407a245ab7a66db310d713429c1dfe0933e08dc"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/real-multizoom-38583442987/zoom-review.json",
+      "bytes": 7285,
+      "sha256": "47fcdba1aeb4f73ca2e1ee28bd370cc96afd14171e391a17b8c09c2a562648db"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38557144985/context/mesh-context.json",
+      "bytes": 3460,
+      "sha256": "e6af1e26b7d6b57a4db6c5aa4d7e70bf2d3bed83bfe97b0a7104a61e4ab2c975"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38557144985/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38557144985/revision-request-1.json",
+      "bytes": 107550,
+      "sha256": "3e01bf4e21968dc96e776cccc8ecb59f2d5df349406145ab7e558e4356799fc5"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38557144985/revision-request-2.json",
+      "bytes": 107873,
+      "sha256": "806701a89a637c6bab7a9682c892539892858117f8b30d64dc666237d658d414"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38557144985/revision-response-1.json",
+      "bytes": 2860,
+      "sha256": "e554f8b9037b453ad324631f89bcbf9a25085a59213d11195d5c5b4ea97b372e"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38557144985/revision-response-2.json",
+      "bytes": 2161,
+      "sha256": "23217137b499141c6cbe47927714dbf37719d625267f760a3a7cbb534cbae451"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/artist-inference.json",
+      "bytes": 3135,
+      "sha256": "2a180a3f86951277ffbb49db8fbcf9f1a2713e655036e4f1af2bc9cce8555f9b"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/artist-plan.json",
+      "bytes": 876,
+      "sha256": "e697463692bab1941ffcc00a51a5e1ad43e4de9e918727c722437c1e575673fc"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/context/mesh-context.json",
+      "bytes": 3460,
+      "sha256": "e6af1e26b7d6b57a4db6c5aa4d7e70bf2d3bed83bfe97b0a7104a61e4ab2c975"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/edited/artist-execution.json",
+      "bytes": 879,
+      "sha256": "f78d111233bd11deee1f76c6057615d7396eaf452b453dbd459dc3a3971964ea"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/family/ground-family-export.json",
+      "bytes": 601,
+      "sha256": "3b0c1673b8fc694b062d01e7ef28579546e98841a5c1bfacd3b76ca075db4c6b"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/final/normal-refresh-proof.json",
+      "bytes": 623,
+      "sha256": "cea5d3b7659e7a214c5398f26d3bafe746fbd133a71bd2dc6d3f282ea7be63b0"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/ollama-version.json",
+      "bytes": 20,
+      "sha256": "d8bb76d3ef4fb71e40d101eb0574909b0431672355fe2d99ac161a83c3354fc2"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/relief/relief-comparison.json",
+      "bytes": 995,
+      "sha256": "fe4c708a22076138eaef5873b52f77d9eb37daece203c2fd3e6841f3aaacf9ba"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/revision-request-1.json",
+      "bytes": 104727,
+      "sha256": "98cae6c02893926f3437ca0c3bd0bd91f22038af2227acb9ee7effc84493e103"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/revision-request-2.json",
+      "bytes": 105527,
+      "sha256": "fa97d3c34009c87b69ef32d1c7f120f47bdfcf289a27af9eae6cb742f7f376ff"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/revision-response-1.json",
+      "bytes": 1529,
+      "sha256": "d01fc72f82f6c58de2c3010b202a965ee136512afac9e8b8d97acfd0392439c3"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/relief-revision-38558966835/revision-response-2.json",
+      "bytes": 1732,
+      "sha256": "82ec027a6998c3dcc4fda5beb324b815dcec95b4bf6c327b2711fc07bea97618"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/strategic-ground-staging-20261014/staging-comparison.json",
+      "bytes": 5386,
+      "sha256": "9b1e54c3e5a42596ee5ff7f642fec5628b313e6e2eeba64587ee5f912da1c8d3"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/tiled-detail-rejected-20261014/material-trial.json",
+      "bytes": 723,
+      "sha256": "66e3f5f1c992cde1341899103ab8a8f6ed46e5c67f78891c7995db7d7060797d"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/tiled-detail-rejected-20261014/staging-comparison.json",
+      "bytes": 5386,
+      "sha256": "7f1c95c3dd0a6201d70ecf728b83518a2cfb288f1461204157a80e7f3ae58ed1"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/visual-contact-38585558434/provenance.json",
+      "bytes": 2194,
+      "sha256": "7c03619d98d569a8b4a20c3f5b360c8a9e366435354da55fb8c15e131c22549e"
+    },
+    {
+      "path": "pipeline/art-production-requests/world4x-zone1-isolated-reference-prototype-20261013.json",
+      "bytes": 1505,
+      "sha256": "9d1a73d8aafadd73b8d56331739022c7383a6644b65efd2c83ba205a7a64eac9"
+    },
+    {
+      "path": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
+      "bytes": 4895,
+      "sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346"
+    },
+    {
+      "path": "tools/art-direction/ai-authoring/author_brief.py",
+      "bytes": 23313,
+      "sha256": "55be31fd0a3c8b91997200cf165dd0b36d7c750284a30bc4c261f67c16f16c14"
+    },
+    {
+      "path": "tools/art-direction/ai-authoring/execute_artist_plan.py",
+      "bytes": 17624,
+      "sha256": "186a1658a7b4bb517e18e1971f98545174ad7fa892dc0ea8e5b5d5ae285fc034"
+    },
+    {
+      "path": "tools/world4x-zone1/production/author_brecha_transition.py",
+      "bytes": 10873,
+      "sha256": "704ea23f4a0ba1eccafad3d66a75a723120bab95c7ae191d69d82c555ad90978"
+    },
+    {
+      "path": "tools/world4x-zone1/production/author_ground.py",
+      "bytes": 9872,
+      "sha256": "dc4a0b06ea1be86ac380ddbd2944bdd2a8effab03fdb12514cd01f0cb0acc95e"
+    },
+    {
+      "path": "tools/world4x-zone1/production/author_ground_revision.py",
+      "bytes": 9335,
+      "sha256": "24276327143d9efea52326fa3fdd4e577925e691a1849a2dd659780a81e21db2"
+    },
+    {
+      "path": "tools/world4x-zone1/production/build_review_contact_sheets.py",
+      "bytes": 2145,
+      "sha256": "ddfa8f8a85003c735c55b43e8dc13982f76b04490ab9a4dd4463dbae793f4391"
+    },
+    {
+      "path": "tools/world4x-zone1/production/check_native_window.mjs",
+      "bytes": 925,
+      "sha256": "537244ec4f6f881a39a63b948a2e5f4f613dbe98b473136eb96632a31193c312"
+    },
+    {
+      "path": "tools/world4x-zone1/production/compare_ground.py",
+      "bytes": 3712,
+      "sha256": "54106bb62a60a9b3aa873e944c0721eb2253ef6e44ff92045543cf6ec17b077b"
+    },
+    {
+      "path": "tools/world4x-zone1/production/export_ground_family.py",
+      "bytes": 1919,
+      "sha256": "d1adef719972a1f9836d18d68ab5867e155eeee2bfbdfee68fbbd288e40c8b2f"
+    },
+    {
+      "path": "tools/world4x-zone1/production/ground_surface.py",
+      "bytes": 17436,
+      "sha256": "e0113531a12cdfa7d995cc7b0c097386f75efaf19a8d2288d7e95eb6877669cf"
+    },
+    {
+      "path": "tools/world4x-zone1/production/ground_workshop_entry.py",
+      "bytes": 1770,
+      "sha256": "839c5e00ce0c3d3322f74bec8cd460a20866d5048833ee99a800a3f151682594"
+    },
+    {
+      "path": "tools/world4x-zone1/production/inspect_ground_heights.py",
+      "bytes": 2715,
+      "sha256": "7f3b0fea97d99bda8e794e09dcf7cac2edf24d016d072de9634738088fe7cf77"
+    },
+    {
+      "path": "tools/world4x-zone1/production/prepare_candidate_source.py",
+      "bytes": 3091,
+      "sha256": "7d71335d0d491025f4bc1405b89232645e6c54609a7bb6ebdf086c3be212d1bc"
+    },
+    {
+      "path": "tools/world4x-zone1/production/render_general_ground_zooms.py",
+      "bytes": 2864,
+      "sha256": "fbd3b59a36dab72d204f2e899fb9c2c9ce63f755ce4817a34cc15f617b238c6b"
+    },
+    {
+      "path": "tools/world4x-zone1/production/render_ground_clay.py",
+      "bytes": 3720,
+      "sha256": "d5cf69068c0bf76514889e082cbcb570ca301e41d603a8d14d06d9e075ab6ca7"
+    },
+    {
+      "path": "tools/world4x-zone1/production/render_ground_geometry.py",
+      "bytes": 2895,
+      "sha256": "800ae674cd71fb9fb61e7469cb06667528c7437d7217a3715b4dbc7043704a00"
+    },
+    {
+      "path": "tools/world4x-zone1/production/render_ground_staging.py",
+      "bytes": 2639,
+      "sha256": "40d332279d145f665fd858eec3c51c12aa7491b282453ecf3112ad91e5015d81"
+    },
+    {
+      "path": "tools/world4x-zone1/production/replay_surface_decision.py",
+      "bytes": 3663,
+      "sha256": "f58aed41d63da2f52a8f00d65cb063eb33d586fac4188ae494363e754036d091"
+    },
+    {
+      "path": "tools/world4x-zone1/production/run_general_ground_artist.py",
+      "bytes": 4801,
+      "sha256": "30848420debc028151b17fc7035195511070f99504ae567a0fa5dee956e97d6b"
+    },
+    {
+      "path": "tools/world4x-zone1/production/terrain_bounds_contract.py",
+      "bytes": 8761,
+      "sha256": "a5d3516203252753f6c8cbd2bad965eaea2601c65ee6a74f68ddf051e09f19c9"
+    },
+    {
+      "path": "tools/world4x-zone1/production/tests/test_terrain_bounds_contract.py",
+      "bytes": 7898,
+      "sha256": "13b34076c67859ecec74e932e5c3572f0694c7a32f8f4da57181dda1d61051b6"
+    },
+    {
+      "path": "tools/world4x-zone1/production/trial_tiled_ground.py",
+      "bytes": 2899,
+      "sha256": "beaa575dc776402bf413066a9ae8a7491ef771a92cb53766cec4c3bafef383ee"
+    },
+    {
+      "path": "tools/world4x-zone1/production/verify_brecha_transition.py",
+      "bytes": 2315,
+      "sha256": "9a84dd5d309dcced437d6561fe59945412bda48f3d35361669db782e270471f6"
+    },
+    {
+      "path": "tools/world4x-zone1/production/verify_general_ground.py",
+      "bytes": 3116,
+      "sha256": "55391401f79564469ef196978b9b50d9974b18dffaf488ec5daca5d6c97058b5"
+    },
+    {
+      "path": "tools/world4x-zone1/production/verify_ground_surface.py",
+      "bytes": 4024,
+      "sha256": "d7b84ecb60e9ac9fb5c0916eea3c1eed3f4437c9ab5096c69e79007523b01249"
+    },
+    {
+      "path": "tools/world4x-zone1/transfer/recovery/manifest.json",
+      "bytes": 488,
+      "sha256": "3269c6619ad5489e5c3b6c292b41efcdeb07f5ff4e929afae595681eea015c1a"
+    },
+    {
+      "path": "tools/world4x-zone1/transfer/recovery/restore_prefix_objects.py",
+      "bytes": 2441,
+      "sha256": "8a5f77c55a8c0b4cf6203230e0c4277b8de738911872fe15a55bf3e348e3d048"
+    },
+    {
+      "path": "tools/world4x-zone1/world-spatial-contract.mjs",
+      "bytes": 2045,
+      "sha256": "94517be736402b4780b11fc2fd3f22e501f242bf2767b9caccbaf7f34d5acb8b"
+    },
+    {
+      "path": "tools/world4x-zone1/world-spatial-contract.test.mjs",
+      "bytes": 1512,
+      "sha256": "a3aea67049ba777270b18c6e5096f7abd1434fc6af0de49509be68fa4689b639"
+    }
+  ],
+  "reference_files": [
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/global-reference.png",
+      "bytes": 1073874,
+      "sha256": "2a25e90510d4a1cdf3765b38516886595c0afb69bbf2785513b46147550b19b9"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/local-reference.png",
+      "bytes": 886901,
+      "sha256": "aeaa8a785431bb4a64e011f9c974ca99421794d76e1cdf13a873f61ef1cbbb88"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/reference-hashes.json",
+      "bytes": 382,
+      "sha256": "0465cb2ceadbbb4b1252141de40b9ef1564e80fb9a4df76b3b20679a1d313f14"
+    },
+    {
+      "path": "docs/world4x-zone1/evidence/local-cycle-20261014/references/regional-reference.png",
+      "bytes": 1048398,
+      "sha256": "f3d7b11890aead84f72fbff9cd113e9441ee70a015689263fa187ed179fdea3a"
+    }
+  ],
+  "archive_sha256": "6456f69a3212673ec8fc0184090bb58898922094316bb94784d2552d83e66b87"
+}
