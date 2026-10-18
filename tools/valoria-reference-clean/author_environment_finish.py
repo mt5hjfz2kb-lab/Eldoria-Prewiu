@@ -111,10 +111,36 @@ bark = next((m for m in tree_data.materials if m and 'bark' in m.name.lower()), 
 memory_path = EV / ('environment-finish-memory-' + os.environ.get('GITHUB_RUN_ID', 'local') + '.txt')
 subprocess.run(['node', 'tools/art-direction/learning-evidence/cycle-hooks.mjs', 'prepare',
                 '--target', 'bastion1', '--out', str(memory_path)], check=True, cwd=ROOT)
-memory = memory_path.read_text(encoding='utf8')[:9600]
+memory_full = memory_path.read_text(encoding='utf8')
+# The generated memory is short today. If it grows, retain whole provenance and
+# lesson lines within a fixed budget; never slice a sentence or expand 8k blindly.
+memory_lines, memory_chars = [], 0
+for line in memory_full.splitlines():
+    if memory_chars + len(line) + 1 <= 1800:
+        memory_lines.append(line)
+        memory_chars += len(line) + 1
+memory = '\n'.join(memory_lines)
+system_path = ROOT / 'tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md'
+system_prompt = system_path.read_text(encoding='utf8')
+system_hash = digest(system_path)
+local_lo, local_hi = lo - origin, hi - origin
+previous_failure = {
+    'run_id': '39144291626', 'geometry_executed': False,
+    'cause': 'The model reused source-world pine coordinates as destination-local coordinates. '
+             'JSON schema alone did not communicate numeric bounds semantically.',
+    'observed': {'forest_x': [30.5, 36.8], 'forest_y': [57.5, 63.0], 'forest_scale_max': 1.05,
+                 'quarry_depth': 20, 'quarry_height': 10, 'quarry_rim_x': [29, 35],
+                 'quarry_rim_y': [56, 62], 'city_path_width': 5,
+                 'shore_width': 3, 'shore_scale': .7},
+    'correction': 'Pass real mesh bounds already transformed to their local frame; '
+                  'state all bounds in user text; validate every field and request one guided correction.'
+}
 context = {
     'source_sha256': source_hashes,
-    'retained_pine_bounds': [list(lo), list(hi)],
+    'target': {'name': 'EnvironmentFinish', 'mode': 'NEW',
+               'scope': 'Two new destination assemblies; preserve imported source meshes and Bastion. '
+                        'The retained pine is already centred at local X/Y zero with its base at Z zero.'},
+    'retained_pine_LOCAL_bounds': [list(local_lo), list(local_hi)],
     'retained_pine_faces': len(faces),
     'actual_memory': memory,
     'actual_memory_sha256': hashlib.sha256(memory.encode()).hexdigest(),
@@ -137,6 +163,28 @@ context = {
         'limestone, timber and olive-foliage family. Blender X/Y horizontal, Z up. '
         'Explain three visible defects and the specific composition that fixes them. '
         'Do not score or approve your own work.'),
+    'coordinate_and_parameter_contract': (
+        'This is a subordinate typed tool of the existing artist. Return ONE canonical '
+        'planned_action: type construct_mesh, target EnvironmentFinish, whose parameters '
+        'are the following bounded composition decisions. Target mode is NEW; explain why '
+        'a quarry extraction face is needed and which existing pine/stone sources are reused. '
+        'Never output source-world coordinates for a destination. Forest and quarry each '
+        'have their OWN LOCAL origin (0,0,0), Z up, X right, Y away from the front entrance. '
+        'ALL NUMERIC LIMITS ARE INCLUSIVE. forest_trees: choose 8-11 entries, '
+        'each x -10..10 metres, y 0..10 metres, scale 0.60..0.90; use staggered canopy groups '
+        'with a visible entrance in front of Y=0. log_yard_side: left or right. '
+        'quarry_width: 15..20 metres; quarry_depth: 10..14 metres; quarry_height: 4.5..6.5 metres; '
+        'quarry_benches: integer 2 or 3. quarry_rim: exactly seven LEFT-TO-RIGHT distinct '
+        'control points in NORMALIZED coordinates, x -1..1, y 0..1, height 0.65..1; '
+        'first-to-last x span must exceed 1.4. These are fractions of the quarry dimensions, '
+        'not metres or coordinates from the city. The rear rim bows back in its middle. '
+        'derrick_side: left or right. city_path_width: 1.5..2.2 metres. shore_gaps: '
+        'exactly three stretches using CITY-WORLD X only, each x -62..-18 OR 18..62 metres, '
+        'width 5..9 metres, scale 0.35..0.60; keep the WHOLE stretch outside bridge X -18..18, '
+        'include stretches on BOTH sides, and avoid overlap. No asset is approved by this plan. '
+        'Previous attempt 39144291626 was rejected before editing because it used city-world '
+        'coordinates for the forest/rim and exceeded the explicit size bounds. Use these '
+        'LOCAL frames and ranges exactly; choose a coherent original composition within them.'),
 }
 
 def number(lo, hi):
@@ -147,7 +195,6 @@ def record(fields):
             'required': list(fields), 'properties': fields}
 
 fields = {
-    'rationale': {'type': 'string'},
     'forest_trees': {'type': 'array', 'minItems': 8, 'maxItems': 11,
                      'items': record({'x': number(-10, 10), 'y': number(0, 10), 'scale': number(.60, .90)})},
     'log_yard_side': {'type': 'string', 'enum': ['left', 'right']},
@@ -161,15 +208,86 @@ fields = {
     'shore_gaps': {'type': 'array', 'minItems': 3, 'maxItems': 3,
                    'items': record({'x': number(-62, 62), 'width': number(5, 9), 'scale': number(.35, .60)})},
 }
-schema = record(fields)
+text_field = {'type': 'string', 'minLength': 35}
+schema = record({
+    'observed_defect': text_field, 'design_intent': text_field,
+    'asset_decision': {'type': 'string', 'enum': ['NEW']},
+    'reason_for_new_geometry': text_field,
+    'planned_actions': {'type': 'array', 'minItems': 1, 'maxItems': 1,
+       'items': record({'id': {'type': 'string'},
+                        'type': {'type': 'string', 'enum': ['construct_mesh']},
+                        'target': {'type': 'string', 'enum': ['EnvironmentFinish']},
+                        'rationale': text_field, 'parameters': record(fields)})},
+    'expected_visual_difference': text_field, 'mobile_risks': text_field,
+})
 payload = dict(model='qwen3-vl:8b-instruct-q4_K_M', stream=False, format=schema,
                think=False, keep_alive=0,
-               messages=[{'role': 'system', 'content': 'You are the existing Eldoria local 3D artist. Direct concrete spatial authoring of the retained game assets. JSON only. No new tool system, no paid provider, no approval.'},
+               messages=[{'role': 'system', 'content': system_prompt},
                          {'role': 'user', 'content': json.dumps(context),
                           'images': [base64.b64encode(p.read_bytes()).decode() for p in images]}],
-               options={'temperature': .25, 'num_ctx': 8192, 'num_predict': 2700})
+               options={'temperature': .15, 'num_ctx': 8192, 'num_predict': 2100})
 write('environment-finish-qwen-request.json', {'model': payload['model'], 'schema': schema,
-      'context': context, 'image_sha256': {p.name: digest(p) for p in images}})
+      'system_prompt_path': str(system_path.relative_to(ROOT)), 'system_prompt_sha256': system_hash,
+      'system_prompt': system_prompt, 'options': payload['options'],
+      'context': context, 'image_sha256': {p.name: digest(p) for p in images},
+      'memory_source_sha256': digest(memory_path), 'memory_selected_chars': len(memory),
+      'memory_omitted_lines': len(memory_full.splitlines()) - len(memory_lines),
+      'mesh_observation_source_world_bounds': [list(lo), list(hi)],
+      'previous_failure': previous_failure})
+
+def schema_errors(value, spec, path='plan'):
+    """Validate the actual answer; Ollama JSON grammar does not enforce ranges."""
+    errors = []
+    kind = spec['type']
+    valid_type = {'object': isinstance(value, dict), 'array': isinstance(value, list),
+                  'string': isinstance(value, str),
+                  'number': isinstance(value, (int, float)) and not isinstance(value, bool),
+                  'integer': isinstance(value, int) and not isinstance(value, bool)}[kind]
+    if not valid_type:
+        return [f'{path}: expected {kind}, got {value!r}']
+    if kind == 'object':
+        for key in spec.get('required', []):
+            if key not in value:
+                errors.append(f'{path}.{key}: missing')
+        for key, item in value.items():
+            if key not in spec['properties']:
+                errors.append(f'{path}.{key}: unexpected field')
+            else:
+                errors += schema_errors(item, spec['properties'][key], path + '.' + key)
+    elif kind == 'array':
+        if not spec.get('minItems', 0) <= len(value) <= spec.get('maxItems', len(value)):
+            errors.append(f'{path}: count {len(value)} outside {spec.get("minItems", 0)}..{spec.get("maxItems")}')
+        for i, item in enumerate(value):
+            errors += schema_errors(item, spec['items'], f'{path}[{i}]')
+    elif kind in ('number', 'integer'):
+        if not math.isfinite(value) or not spec.get('minimum', value) <= value <= spec.get('maximum', value):
+            errors.append(f'{path}: {value} outside {spec.get("minimum")}..{spec.get("maximum")}')
+    elif kind == 'string' and len(value) < spec.get('minLength', 0):
+        errors.append(f'{path}: needs at least {spec["minLength"]} characters')
+    if 'enum' in spec and value not in spec['enum']:
+        errors.append(f'{path}: {value!r} must be one of {spec["enum"]}')
+    return errors
+
+def composition_errors(candidate):
+    errors = schema_errors(candidate, schema)
+    if errors:
+        return errors
+    p = candidate['planned_actions'][0]['parameters']
+    rim = p['quarry_rim']
+    if any(a['x'] >= b['x'] for a, b in zip(rim, rim[1:])):
+        errors.append('quarry_rim must progress left-to-right with distinct x values')
+    if rim[-1]['x'] - rim[0]['x'] <= 1.4:
+        errors.append('quarry_rim first-to-last x span must exceed 1.4')
+    gaps = sorted(p['shore_gaps'], key=lambda g: g['x'])
+    if not (gaps[0]['x'] < -18 and gaps[-1]['x'] > 18):
+        errors.append('shore_gaps need stretches on both banks outside X -18..18')
+    for gap in gaps:
+        if abs(gap['x']) - gap['width'] / 2 <= 18:
+            errors.append(f'shore_gaps centre {gap["x"]} with width {gap["width"]} overlaps bridge corridor X -18..18')
+    for a, b in zip(gaps, gaps[1:]):
+        if b['x'] - a['x'] < (a['width'] + b['width']) / 2:
+            errors.append(f'shore_gaps at {a["x"]} and {b["x"]} overlap')
+    return errors
 
 def api(path, data=None, timeout=3):
     req = urllib.request.Request('http://127.0.0.1:11434' + path,
@@ -204,22 +322,45 @@ try:
         else:
             raise RuntimeError('Existing Ollama did not start')
     assert any(m['name'] == payload['model'] for m in api('/api/tags')['models'])
-    response = api('/api/chat', payload, 420)
-    write('environment-finish-qwen-response.json', response)
-    plan = json.loads(response['message']['content'])
-    assert set(plan) == set(fields)
-    assert 8 <= len(plan['forest_trees']) <= 11 and len(plan['quarry_rim']) == 7
-    assert 15 <= plan['quarry_width'] <= 20 and 10 <= plan['quarry_depth'] <= 14
-    assert 4.5 <= plan['quarry_height'] <= 6.5 and plan['quarry_benches'] in (2, 3)
-    assert 1.5 <= plan['city_path_width'] <= 2.2
-    assert plan['log_yard_side'] in ('left', 'right') and plan['derrick_side'] in ('left', 'right')
-    for point in plan['forest_trees']:
-        assert -10 <= point['x'] <= 10 and 0 <= point['y'] <= 10 and .60 <= point['scale'] <= .90
-    for point in plan['quarry_rim']:
-        assert -1 <= point['x'] <= 1 and 0 <= point['y'] <= 1 and .65 <= point['height'] <= 1
-    assert len(plan['shore_gaps']) == 3
-    for gap in plan['shore_gaps']:
-        assert -62 <= gap['x'] <= 62 and 5 <= gap['width'] <= 9 and .35 <= gap['scale'] <= .60
+    base_messages = payload['messages']
+    attempts = []
+    for attempt in range(1, 3):
+        response = api('/api/chat', payload, 420)
+        write(f'environment-finish-qwen-response-attempt-{attempt}.json', response)
+        write('environment-finish-qwen-response.json', response)
+        try:
+            artist_plan = json.loads(response['message']['content'])
+            errors = composition_errors(artist_plan)
+        except (ValueError, KeyError, TypeError) as error:
+            errors = ['Invalid canonical JSON: ' + str(error)]
+        if response.get('done_reason') != 'stop':
+            errors.append('Model answer was not complete: ' + str(response.get('done_reason')))
+        attempts.append({'attempt': attempt, 'errors': errors,
+                         'prompt_eval_count': response.get('prompt_eval_count'),
+                         'eval_count': response.get('eval_count'),
+                         'response_sha256': digest(EV/f'environment-finish-qwen-response-attempt-{attempt}.json')})
+        write('environment-finish-plan-validation.json', {'attempts': attempts,
+             'canonical_system_sha256': system_hash, 'numeric_limits_unchanged': True,
+             'geometry_executed': False})
+        if not errors:
+            break
+        if attempt == 2:
+            raise RuntimeError('Artist plan rejected before geometry after one guided correction: '
+                               + '; '.join(errors[:12]))
+        # A fresh bounded request retains both real images, the complete brief,
+        # source hashes and selected history. Do not append the invalid answer
+        # to an already full chat or replace artist decisions with clamped values.
+        correction = ('VALIDATOR REJECTED YOUR PREVIOUS ANSWER BEFORE ANY EDIT. '
+                      'Correct these exact errors and recheck every range and coordinate frame. '
+                      'Return the complete canonical JSON, with concise prose.\n'
+                      + '\n'.join(errors)[:1600])
+        write('environment-finish-guided-correction.json', {'errors': errors,
+              'correction_sent': correction, 'canonical_system_sha256': system_hash})
+        corrected_context = dict(context, validator_correction=correction)
+        payload['messages'] = [base_messages[0], dict(base_messages[1], content=json.dumps(corrected_context))]
+    write('environment-finish-artist-plan.json', artist_plan)
+    plan = dict(artist_plan['planned_actions'][0]['parameters'])
+    plan['rationale'] = artist_plan['design_intent'] + ' ' + artist_plan['planned_actions'][0]['rationale']
     write('environment-finish-plan.json', plan)
 finally:
     if server:
@@ -403,7 +544,9 @@ assert {key:digest(path) for key,path in sources.items()} == source_hashes
 write('environment-finish-result.json', {
     'source_sha': os.environ.get('GITHUB_SHA'), 'source_sha256': source_hashes,
     'sources_preserved': True, 'qwen_model': payload['model'], 'transport': transport,
+    'canonical_system_sha256': system_hash, 'memory_source_sha256': digest(memory_path),
     'actual_memory_sha256': context['actual_memory_sha256'], 'plan': plan,
+    'canonical_artist_plan_sha256': digest(EV/'environment-finish-artist-plan.json'),
     'plan_sha256': digest(EV/'environment-finish-plan.json'),
     'glb_sha256': {p.name:digest(p) for p in OUT.glob('*.glb')},
     'blend_sha256': digest(EV/'EnvironmentFinish.blend'),

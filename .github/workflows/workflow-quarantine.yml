@@ -26,6 +26,15 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The guard reads the complete workflow directory plus every canonical
+          # dependency declared in pipeline/workflow-quarantine-v1.json.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/
+            /pipeline/
+            /tools/
+            /AGENTS.md
       - uses: actions/setup-node@v4
         with:
           node-version: 22
