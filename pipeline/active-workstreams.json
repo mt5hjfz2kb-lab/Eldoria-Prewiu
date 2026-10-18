@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T10:17:57Z",
+  "updated_at": "2026-10-18T10:23:33.390Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_LOCAL_ART_RETAINED_GAMEPLAY_I_II_MIGRATION",
-      "next": "Native81 BastionII same-camera Unity reviewed and retained for first functional evolution; native82 integrates it and validates saved timed upgrade, exclusive geometry swap,96routes/6stairs and native rule tests. Then optimized Android update version3 with preserved id/certificate.",
+      "phase": "REFERENCE_CLEAN_BASTION_I_II_GAMEPLAY_VERIFIED_ANDROID_V3_BUILD",
+      "next": "Native82 complete real I-II UI/rules/save/model swap and16coretests PASS, actual UI captures reviewed. Android83 optimized same-id/certificate1.2/code3 underway. Preserve independent4X and RoyalGoldUI scopes; UI candidate consumes existing host/gateway later, no concurrent integration.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39118550767,
-          "current_source": "8e250050a7d4c51762105bd1145c35dd4dbd5f93",
+          "current_run": 39119050074,
+          "current_source": "55c333516ff0ead5ed26ea55c4df70468b47a9c4",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -397,6 +397,16 @@
             "run": 39118090186,
             "output": "e95533e276fcf42ebd3930acd2ee8442830b937c",
             "visual_review": "RECOGNIZABLE_EVOLUTION_RETAINED_FOR_GAMEPLAY; PROBE_LIT_II_HAS_REDUCED_BAKED_TORCH_GLOW",
+            "art_approved": false
+          },
+          "native82": {
+            "run": 39118550767,
+            "output": "faa7a82dd3b5d0e784220b50fed1d8d95c54555b",
+            "gameplay": "FULL_SAVED_I_II_LOOP_WITH_AUTHORED_EXCLUSIVE_VISUAL_SWAP",
+            "core_tests": 16,
+            "route_passes": 96,
+            "stairs_passes": 6,
+            "package_artifact": 12133880417,
             "art_approved": false
           }
         }
