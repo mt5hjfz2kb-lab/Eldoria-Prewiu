@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T09:43:00Z",
+  "updated_at": "2026-10-18T10:16:06.524Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -58,7 +58,7 @@
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "REFERENCE_CLEAN_LOCAL_ART_RETAINED_GAMEPLAY_I_II_MIGRATION",
-      "next": "Native79 gameplay integrated, full general Play guard passed. Next BastionII geometric evolution in separate variant via actual Qwen/BlenderMCP, retain source74BastionI and lighting, compare genuine Unity before integration; compact requirements panel fix.",
+      "next": "Native81 BastionII same-camera Unity reviewed and retained for first functional evolution; native82 integrates it and validates saved timed upgrade, exclusive geometry swap,96routes/6stairs and native rule tests. Then optimized Android update version3 with preserved id/certificate.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -127,8 +127,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39116187160,
-          "current_source": "7b92f91ff45d4b8b089b9f68d804160ee8dc2987",
+          "current_run": 39118550767,
+          "current_source": "8e250050a7d4c51762105bd1145c35dd4dbd5f93",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -380,6 +380,12 @@
             "output": "2770507a13b6f3263a5f1f2a54332660fa0fd211",
             "gameplay": "I-II UI, original450wood/300stone and10s timer, idempotent spending, pending/reloaded/offline completion, barracks unlock PASS; fullscene routes/picking/camera/save/EditorPlay PASS",
             "bastion2_visual": "PENDING"
+          },
+          "native81": {
+            "run": 39118090186,
+            "output": "e95533e276fcf42ebd3930acd2ee8442830b937c",
+            "visual_review": "RECOGNIZABLE_EVOLUTION_RETAINED_FOR_GAMEPLAY; PROBE_LIT_II_HAS_REDUCED_BAKED_TORCH_GLOW",
+            "art_approved": false
           }
         }
       },
