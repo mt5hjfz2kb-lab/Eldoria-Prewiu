@@ -43,5 +43,76 @@ public static class ValoriaReferenceCleanGroundTrial {
   if(!report.same_camera||!report.same_lighting||!report.same_heights||changed<100)throw new Exception("Ground trial identity or area failed");
   File.WriteAllText(ev+"/ground-zone-comparison.json",JsonUtility.ToJson(report,true));EditorUtility.SetDirty(td);
  }
+ // Native lookdev on the saved scene, never the procedural scene builder.
+ public static void BuildLocalized(){
+  ValoriaReferenceCleanRenderSettings guard=null;Terrain terrain=null;TerrainData original=null,trial=null;
+  Texture2D meadow=null;TerrainLayer meadowLayer=null;
+  try{
+   var scene=UnityEditor.SceneManagement.EditorSceneManager.OpenScene(Root+"/Valoria_Reference_Clean.unity",UnityEditor.SceneManagement.OpenSceneMode.Single);
+   guard=UnityEngine.Object.FindFirstObjectByType<ValoriaReferenceCleanRenderSettings>();guard.Apply();
+   terrain=UnityEngine.Object.FindFirstObjectByType<Terrain>();original=terrain.terrainData;
+   var cam=Camera.main;var position=cam.transform.position;var rotation=cam.transform.rotation;float zoom=cam.orthographicSize;
+   var ev=Path.GetFullPath("../docs/evidence/valoria-reference-clean");
+   string light=RenderSettings.sun.transform.rotation.ToString("R")+RenderSettings.sun.intensity+RenderSettings.sun.color.ToString();
+   void Views(string prefix){
+    cam.transform.SetPositionAndRotation(position,rotation);cam.orthographicSize=zoom;
+    ValoriaReferenceCleanBuilder.Capture(cam,ev+"/"+prefix+"-main.png",1448,1086);
+    cam.transform.position=new Vector3(24,31,-8);cam.transform.LookAt(new Vector3(0,4,35.5f));cam.orthographicSize=18;
+    ValoriaReferenceCleanBuilder.Capture(cam,ev+"/"+prefix+"-detail.png",1448,1086);
+    cam.transform.SetPositionAndRotation(position,rotation);cam.orthographicSize=zoom;
+   }
+   Views("bastion-ground-before");
+   trial=UnityEngine.Object.Instantiate(original);
+   var layers=original.terrainLayers;
+   var source=layers[0].diffuseTexture;int level=Mathf.Min(4,source.mipmapCount-1);
+   var pixels=source.GetPixels(level);int width=Mathf.Max(1,source.width>>level),height=Mathf.Max(1,source.height>>level);
+   var values=pixels.Select(p=>p.grayscale).OrderBy(v=>v).ToArray();
+   float low=values[values.Length/10],high=values[values.Length*9/10];
+   for(int i=0;i<pixels.Length;i++){
+    float value=Mathf.SmoothStep(0,1,Mathf.InverseLerp(low,high,pixels[i].grayscale));
+    pixels[i]=Color.Lerp(new Color(.24f,.30f,.075f),new Color(.43f,.46f,.16f),value);
+   }
+   meadow=new Texture2D(width,height,TextureFormat.RGB24,true){name="Trial broad meadow from existing CC0 scan",wrapMode=TextureWrapMode.Repeat,anisoLevel=4};
+   meadow.SetPixels(pixels);meadow.Apply();
+   meadowLayer=UnityEngine.Object.Instantiate(layers[0]);meadowLayer.name="Trial bastion meadow";
+   meadowLayer.diffuseTexture=meadow;meadowLayer.tileSize=new Vector2(18,18);meadowLayer.normalScale=.25f;
+   trial.terrainLayers=layers.Concat(new[]{meadowLayer}).ToArray();
+   int n=original.alphamapResolution;var before=original.GetAlphamaps(0,0,n,n);var next=new float[n,n,layers.Length+1];int changed=0;
+   for(int z=0;z<n;z++)for(int x=0;x<n;x++){
+    float wx=terrain.transform.position.x+x/(float)(n-1)*original.size.x;
+    float wz=terrain.transform.position.z+z/(float)(n-1)*original.size.z;
+    float mask=(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(13,18,Mathf.Abs(wx))))*
+     Mathf.SmoothStep(0,1,Mathf.InverseLerp(11,16,wz))*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(44,49,wz)));
+    foreach(var p in new[]{new Vector2(-23,28),new Vector2(-19,9),new Vector2(29,32),new Vector2(28,12)})
+     if(Mathf.Abs(wx-p.x)<10&&Mathf.Abs(wz-p.y)<7.5f)mask=0;
+    float fringe=(Mathf.PerlinNoise(wx*.22f+13,wz*.22f+47)-.5f)*2;
+    float fortDistance=Mathf.Max(Mathf.Abs(wx)-10.6f,Mathf.Max(25.5f-wz,wz-44));
+    float apron=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.2f,4.5f,fortDistance+fringe));
+    float shoulder=wz<27?1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(3.7f,6.9f,Mathf.Abs(wx-ValoriaReferenceCleanArtBuilder.RoadX(wz))+fringe*.6f)):0;
+    float soil=Mathf.Clamp01(Mathf.Max(apron,shoulder)*.75f);
+    float meadowWeight=.92f*(1-soil);
+    for(int k=0;k<layers.Length;k++)next[z,x,k]=before[z,x,k]*(1-mask);
+    next[z,x,0]+=mask*(1-soil-meadowWeight);
+    next[z,x,2]+=mask*soil;next[z,x,layers.Length]=mask*meadowWeight;
+    if(mask>.05f)changed++;
+   }
+   trial.SetAlphamaps(0,0,next);terrain.terrainData=trial;terrain.Flush();
+   Views("bastion-ground-after");
+   var report=new Report{scope="Single bastion apron and adjacent meadow surface trial. Existing CC0 scan mip-filtered into coherent grass masses; irregular soil transition. No scene save or global extension.",
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),same_camera=cam.transform.position==position&&cam.transform.rotation==rotation&&cam.orthographicSize==zoom,
+    same_lighting=light==RenderSettings.sun.transform.rotation.ToString("R")+RenderSettings.sun.intensity+RenderSettings.sun.color.ToString(),
+    same_heights=original.GetHeights(0,0,original.heightmapResolution,original.heightmapResolution).Cast<float>().SequenceEqual(trial.GetHeights(0,0,trial.heightmapResolution,trial.heightmapResolution).Cast<float>()),
+    changed_cells=changed,source_texture_cap=width};
+   if(!report.same_camera||!report.same_lighting||!report.same_heights||changed<100)throw new Exception("Localized lookdev identity failed");
+   File.WriteAllText(ev+"/bastion-ground-trial.json",JsonUtility.ToJson(report,true));
+   terrain.terrainData=original;terrain.Flush();guard.Restore();
+   UnityEngine.Object.DestroyImmediate(trial);UnityEngine.Object.DestroyImmediate(meadowLayer);UnityEngine.Object.DestroyImmediate(meadow);
+   Debug.Log("VALORIA_REFERENCE_CLEAN_GROUND_TRIAL_COMPLETE");EditorApplication.Exit(0);
+  }catch(Exception e){
+   if(terrain&&original){terrain.terrainData=original;terrain.Flush();}
+   if(guard)guard.Restore();Debug.LogException(e);EditorApplication.Exit(1);
+  }
+ }
+
 }
 }

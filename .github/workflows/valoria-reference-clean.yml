@@ -55,6 +55,7 @@ jobs:
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
+          if($req.stage -eq 'ground_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGroundTrial.BuildLocalized'}
           if($req.stage -eq 'package'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting'}
           if($req.stage -eq 'finalize'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.Build'}
           if($req.stage -eq 'river_lighting'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanRiverLighting.Build'}
@@ -84,7 +85,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           try{
             $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
