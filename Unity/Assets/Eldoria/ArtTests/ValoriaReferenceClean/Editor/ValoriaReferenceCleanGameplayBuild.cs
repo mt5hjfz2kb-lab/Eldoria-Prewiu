@@ -62,7 +62,7 @@ namespace Eldoria.ReferenceClean.Editor {
    SessionState.SetBool(ProbeFlag,true);EditorApplication.EnterPlaymode();
   }
   static void Entered(PlayModeStateChange change){if(change!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(ProbeFlag,false))return;SessionState.SetBool(ProbeFlag,false);EditorApplication.delayCall+=()=>{var h=UnityEngine.Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();if(h==null){Debug.LogError("Missing gameplay host");EditorApplication.Exit(1);return;}h.StartCoroutine(Probe(h));};}
-  [Serializable]class Result {public string source_sha,status,error,save_scope,bastion2_visual;public bool visual_swap,b2_routes,real_picking,barracks_build,barracks_reload,recruitment,training_reload,march_configuration,engendro_victory,chapter_two_persistence;public bool ui_sawmill,ui_gather,ui_fight,upgrade_started,resources_once,upgrade_persistence,upgrade_offline_completion,unlock,persistence,canonical_save_untouched,one_camera;public long final_revision;}
+  [Serializable]class Result {public string source_sha,status,error,save_scope,bastion2_visual;public bool visual_swap,b2_routes,real_picking,barracks_build,barracks_reload,recruitment,training_reload,march_configuration,engendro_victory,chapter_two_persistence,open_panel_completion;public bool ui_sawmill,ui_gather,ui_fight,upgrade_started,resources_once,upgrade_persistence,upgrade_offline_completion,unlock,persistence,canonical_save_untouched,one_camera;public long final_revision;}
   static string Hash(string p){if(!File.Exists(p))return "ABSENT";using(var h=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(p)));}
   static void Capture(ValoriaReferenceCleanGameplay h,string name){
    var c=h.PlayerCamera;var canvas=GameObject.Find("Eldoria HUD").GetComponent<Canvas>();var priorMode=canvas.renderMode;var priorCam=canvas.worldCamera;float priorDistance=canvas.planeDistance;
@@ -100,7 +100,10 @@ namespace Eldoria.ReferenceClean.Editor {
     Check(works.Resources.Wood==barracksBefore.Resources.Wood-SliceRules.BarracksWoodCost&&works.Resources.Stone==barracksBefore.Resources.Stone-SliceRules.BarracksStoneCost,"Barracks expense incorrect");
     h.ReloadForProbe();Check(h.Parcels.RightState==ParcelBuildingState.UNDER_CONSTRUCTION&&!h.Parcels.RightBuilt.activeSelf,"Barracks pending reload/model gate");result.barracks_reload=true;
     h.Presenter.Inspect("barracks");Capture(h,"chapter2-barracks-construction.png");
-    Advance(SliceRules.BarracksBuildSeconds+1);h.ReloadForProbe();Check(h.Gateway.Snapshot().BarracksLevel==1&&h.Parcels.RightBuilt.activeSelf,"Barracks model missing");result.barracks_build=true;
+    Advance(SliceRules.BarracksBuildSeconds+1);
+    var liveAction=(Button)typeof(SlicePresenter).GetField("buildingAction",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(h.Presenter);
+    Check(liveAction.interactable&&liveAction.GetComponentInChildren<Text>().text.StartsWith("RECLUTAR"),"Open construction panel did not become recruitment");
+    h.ReloadForProbe();Check(h.Gateway.Snapshot().BarracksLevel==1&&h.Parcels.RightBuilt.activeSelf,"Barracks model missing");result.barracks_build=true;
     h.Presenter.ClosePanel();Capture(h,"chapter2-city-built.png");
     var targetII=GameObject.Find(h.TargetName("barracks")).GetComponent<Collider>();var screenII=h.PlayerCamera.WorldToScreenPoint(targetII.bounds.center);
     Check(h.Pick(new Vector2(screenII.x,screenII.y))?.Id=="barracks","Built barracks cannot be selected");
@@ -108,8 +111,11 @@ namespace Eldoria.ReferenceClean.Editor {
     Check(h.Gateway.Snapshot().RecruitmentCompletesUtcTicks>h.Clock.UtcTicks,"Recruitment not started");
     Check(h.Gateway.Snapshot().Resources.Wood==recruitBefore.Resources.Wood-SliceRules.RecruitWoodCost&&h.Gateway.Snapshot().Resources.Stone==recruitBefore.Resources.Stone-SliceRules.RecruitStoneCost,"Recruit expense incorrect");
     h.ReloadForProbe();Check(h.Gateway.Snapshot().RecruitmentCompletesUtcTicks>h.Clock.UtcTicks,"Training lost on reload");result.training_reload=true;
-    h.Presenter.Inspect("barracks");Capture(h,"chapter2-training.png");
-    ((ValoriaReferenceCleanGameplay.TestClock)h.Clock).Step(SliceRules.RecruitSeconds+1);h.ReloadForProbe();
+    h.Presenter.Inspect("barracks");h.Presenter.RefreshState();
+    Check(!liveAction.interactable&&liveAction.GetComponentInChildren<Text>().text.StartsWith("ENTRENANDO"),"Training panel countdown missing");Capture(h,"chapter2-training.png");
+    Advance(SliceRules.RecruitSeconds+1);
+    Check(liveAction.interactable&&liveAction.GetComponentInChildren<Text>().text=="PREPARAR MARCHA","Open training panel did not become preparation");result.open_panel_completion=true;
+    h.ReloadForProbe();
     Check(h.Gateway.Snapshot().ChapterProgress.TrainedArchers>=SliceContentProfiles.Active.Chapter2TrainArchers,"Trained archers target not reached");result.recruitment=true;
     h.Presenter.Inspect("barracks");Click();Capture(h,"chapter2-march-prepare.png");Click();
     Check(h.Gateway.Snapshot().MarchConfigured&&h.Gateway.Snapshot().ChapterProgress.MarchConfirmed,"March confirmation missing");result.march_configuration=true;

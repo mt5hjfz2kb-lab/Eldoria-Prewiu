@@ -686,6 +686,13 @@ namespace Eldoria.Presentation
                 buildingBody.text="Bastión I → II · "+left+" s restantes\nLa mejora continúa al cerrar el juego. Cuartel y Capítulo II al finalizar.";
                 buildingAction.GetComponentInChildren<Text>().text="MEJORANDO · "+left+" s";buildingAction.interactable=false;return;
             }
+            if(currentBuildingId=="barracks"&&s.RecruitmentCompletesUtcTicks>0)
+            {
+                int left=Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
+                buildingBody.text="Entrenando "+s.PendingRecruitArchers+" arqueros · "+left+" s restantes\nEl entrenamiento continúa al cerrar el juego.";
+                buildingAction.GetComponentInChildren<Text>().text="ENTRENANDO · "+left+" s";
+                buildingAction.interactable=false;return;
+            }
             int seconds=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
             if(s.BuildingCompletesUtcTicks>0&&(currentBuildingId=="sawmill"||currentBuildingId=="barracks"))
             {
@@ -768,6 +775,10 @@ namespace Eldoria.Presentation
             UpdateBuildingLevelBadges(s);
             if(SceneHost!=null){SceneHost.Apply(s);if(renderedBastion!=s.BastionLevel){renderedBastion=s.BastionLevel;if(currentBuildingId=="bastion"&&buildingPanel!=null&&buildingPanel.activeSelf)OpenBuildingPanel("bastion");}}
             else if(productionParcels!=null) productionParcels.Apply(s);
+            if(SceneHost!=null&&buildingPanel!=null&&buildingPanel.activeSelf&&
+                (currentBuildingId=="sawmill"||currentBuildingId=="barracks")&&buildingTitle.text!="PREPARAR MARCHA")
+                OpenBuildingPanel(currentBuildingId);
+            UpdateBuildingLevelBadgePositions();
             if(!city)WorldRegion1Runtime.Refresh(s);
             if(city&&SceneHost==null&&productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
                 s.ScoutDefeated!=renderedScout||s.EngendroDefeated!=renderedEngendro||
