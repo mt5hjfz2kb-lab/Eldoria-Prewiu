@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CONTINUOUS_ART_CONTACT_COMPARISON",
-      "next": "Continue native62 artistic improvement without stopping at intermediate reports. Context7 available and consulted for exact Unity6.3 SSAO question; native63 A/B under review. Owner reports another chat fixed Android APK size and supplied APK installed on physical Android: do not treat native55 size as latest state or repeat that work. No performance certification inferred.",
+      "phase": "REFERENCE_CLEAN_BASTION_ENSEMBLE_REMODEL",
+      "next": "Native66 substantial Bastion and immediate terrain/foliage ensemble, actual Qwen14B + installed BlenderMCP, separate Unity variant bake and authentic same-camera comparison. Preserve native62 authority until independent review. Optimized Android packaging recovered from existing V5 branch read-only; verify actual APK signing/version before same-app update. No old paused workstreams resumed.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -255,14 +255,19 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "CAPTURES_REVIEW",
+          "current_run_status": "NATIVE66_PREPARED",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
             "size_issue_resolved_by_other_chat": true,
             "exact_artifact_not_identified_here": true,
             "performance_profile_verified": false
-          }
+          },
+          "native63": {
+            "run": 39109065804,
+            "visual_status": "INSUFFICIENT_GAIN_NOT_RETAINED"
+          },
+          "native64_65": "FAILED_BEFORE_GEOMETRY_EDITS; MICRO_STRATEGY_DISCONTINUED"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
