@@ -1,9 +1,10 @@
 {
-    "source": "dfdb3004a27c8bb15f3bad466accfa05f7bed0f8",
+    "source": "62a0198e153c555ea469b582cb81443105a770aa",
     "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
     "error": "",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
     "checks": [
+        "original web introduction and Continue pointer",
         "city HUD, one camera",
         "mechanic-gated menus, narrative, no slabs, objective navigation",
         "story modal opened",
@@ -12,6 +13,7 @@
         "Royal build command",
         "shared timer and authored model",
         "world gathering, city return, saved reward",
+        "original web gathering dialogue",
         "Royal map action forest-valoria",
         "World return forest-valoria",
         "Royal map action quarry-valoria",
