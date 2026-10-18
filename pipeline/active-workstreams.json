@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T13:45:44.995Z",
+  "updated_at": "2026-10-18T14:07:54.838Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -77,8 +77,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "INTEGRATED_I_II_PASS_CITY_VISUAL_UPLIFT_AND_OWNER_IPHONE_WEB_PLAYTEST",
-      "next": "Native101 PASS. Compare existing completed sawmill model; build current integrated scene for Safari playtest. Visual city quality remains primary; no old production or paused branch replacement.",
+      "phase": "CURRENT_INTEGRATED_WEB_PLAYTEST_PUBLISHED_CITY_VISUAL_UPLIFT_REMAINS_PRIMARY",
+      "next": "Continue city material/vegetation/grounding quality and map target readability. Owner can test current private Safari link. Do not treat functional pass as art approval or physical mobile validation.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -528,8 +528,8 @@
           "validated_scene_commit": "36e00ff4dc7f07f7f3ee7442ce0becdb6156593a"
         },
         "integration": {
-          "source": "b38776adc3384eb681f65e2f3f61163384360f71",
-          "run": 39132807199,
+          "source": "ac7654d9d778a41c74157e1504e2c852de5e1b49",
+          "run": 39133202399,
           "artifact": 12138311731,
           "native_compile": true,
           "city_world_captures": true,
@@ -541,9 +541,17 @@
           "ui_source": "236a81aac894ea0845b85c90310b92dddb32d10f",
           "world_source": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
           "handoff": "docs/evidence/valoria-reference-clean/INTEGRATION_CONTINUATION.md",
-          "output": "c4055d2cc23f87640c0b788903e20553626c04e5",
+          "output": "3347e29b91ba94427648b0250e898ef10d125a05",
           "canonical_save_untouched": true,
-          "art_approved": false
+          "art_approved": false,
+          "sawmill_completed_state2_retained": true,
+          "web_compiled": true,
+          "private_web_url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site",
+          "site_id": "appgprj_6ad4ce602c808191859268d570c93352",
+          "deployment_id": "appgdep_6ad4d23be5b08191aebfa4ce91b07c63",
+          "publication_status": "succeeded",
+          "browser_runtime_qa": false,
+          "physical_iphone_tested": false
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
