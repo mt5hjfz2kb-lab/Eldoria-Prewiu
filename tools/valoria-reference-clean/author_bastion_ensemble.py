@@ -18,10 +18,10 @@ protected={o.name:stamp(o) for o in bpy.context.scene.objects if o.type=='MESH'}
 points=[original.matrix_world@v.co for v in original.data.vertices]
 context={'source_sha256':expected,'object':'Bastion_I','actual_world_bounds':[[min(p[k] for p in points) for k in range(3)],[max(p[k] for p in points) for k in range(3)]],
  'reference_observation':'Owner reference: compact warm stone keep, emphatic corbelled crenellations, substantial sill/corner blocks, softly swept blue roofs, dark recessed oak door, grouped leafy vegetation and embedded rocks knit terrace to meadow.',
- 'unity_observation':'Native62 authentic image: rigid thin roof planes, brick-like uniform wall courses, thin window outlines, terrace reads as disconnected slab, green polygonal boulders in place of foliage. Lighting is already warm and baked. Fix entire Bastion ensemble, not a tint or tiny shrub patch.',
+ 'unity_observation':'Native62 authentic image: rigid thin roof planes, brick-like uniform wall courses, thin window outlines, terrace reads as disconnected slab, green polygonal boulders in place of foliage. Lighting is already warm and baked. Fix entire Bastion ensemble, not a tint or tiny shrub patch. Native69 actual Unity review: recessed windows/door read better, but Unity transient albedo references were lost, so white look is a material persistence fault being fixed in Unity; do not compensate with lighting. Foliage read as separated smooth green eggs; use compact overlapping crowns with small leaf silhouettes. Bevel segments reduced from2 to1 to reduce geometry cost without losing sculpted cornices.',
  'preserve':'Same hall and tower bases, terrace 18x5, six stairs exact 6m width/.46 run/.19 rise, entry centre, flag extent, gameplay colliders and camera. Front is negative Blender Y; source building translated +5.5Y. All other structures protected.',
  'operations':'Remodel Bastion only using separate editable mesh: curved overlapping slate roof, stepped corbel cornices and capped merlons, staggered corner quoins, recessed framed windows, segmented oak door with ironwork; group shrubs/rocks outside stair clearway. Your choices determine actual geometry before Blender executes.'}
-fields={'roof_rise':[3.4,3.7,4.0],'eave_sweep':[.12,.22,.30],'cornice_projection':[.30,.40,.48],'merlon_width':[.70,.78,.86],'course_height':[.52,.58,.62],'window_width':[.80,.95,1.05],'window_height':[1.7,1.9,2.1],'quoin_width':[.55,.65,.75],'foliage_height':[1.3,1.6,1.9],'foliage_spread':[1.6,1.9,2.2],'rock_scale':[.65,.85,1.05]}
+fields={'roof_rise':[3.4,3.7,4.0],'eave_sweep':[.12,.22,.30],'cornice_projection':[.30,.40,.48],'merlon_width':[.70,.78,.86],'course_height':[.52,.58,.62],'window_width':[.80,.95,1.05],'window_height':[1.7,1.9,2.1],'quoin_width':[.55,.65,.75],'foliage_height':[1.6,1.9],'foliage_spread':[1.6,1.9],'rock_scale':[.65,.85,1.05]}
 schema={'type':'object','required':['rationale']+list(fields),'additionalProperties':False,'properties':{'rationale':{'type':'string'},**{k:{'type':'number','enum':v} for k,v in fields.items()}}}
 payload=dict(model='qwen3:14b',stream=False,format=schema,think=False,keep_alive=0,messages=[{'role':'system','content':'You are Eldoria local 3D art director. Select a coherent architectural and landscape treatment from actual observed source, not a score. Choose concrete geometric parameters and explain the composition. Output JSON only; never claim approval.'},{'role':'user','content':json.dumps(context)}],options={'temperature':.35,'num_ctx':8192,'num_predict':1500})
 write('bastion-ensemble-context.json',context);write('bastion-ensemble-qwen-request.json',payload)
@@ -173,21 +173,24 @@ def perform(action):
  for x in [-2.6,2.6]:
   line(g,(x,25.7,2.7),(x,25.1,3.05),.08,iron);line(g,(x,25.1,2.95),(x,25.1,3.8),.10,wood);flame_shape(g,x,25.1,3.7,.16,.6,ember);flame_shape(g,x,25.,3.7,.075,.4,flame,.4)
  line(g,(0,28.2,11.35),(0,28.2,17),.075,wood);banner(g,1.2,28.2,16.6,2.4,1.5)
- new=g.finish(.04,2);new.name='Bastion_Ensemble_Candidate';new.location.y=5.5;created.append(new)
+ new=g.finish(.035,1);new.name='Bastion_Ensemble_Candidate';new.location.y=5.5;created.append(new)
  # Mesh foliage comprises overlapping, smooth small crowns with actual leaflets.
  env=Mesh('Bastion_Ensemble_Grounding');rng=random.Random(66019)
  bpy.ops.mesh.primitive_uv_sphere_add(segments=9,ring_count=5,radius=1);tmp=bpy.context.object;iv=[v.co.copy() for v in tmp.data.vertices];ff=[tuple(p.vertices) for p in tmp.data.polygons];bpy.data.objects.remove(tmp,do_unlink=True)
  for cx,cy in [(-10.7,32),(10.9,32.4),(-8.4,27.8),(8.6,28.2),(-11.0,38.7),(11.1,38.8)]:
   for j in range(15):
-   a=rng.random()*2*pi;r=rng.random()*plan['foliage_spread'];h=plan['foliage_height']*(1-.50*r/plan['foliage_spread']);sx=rng.uniform(.28,.52);sy=rng.uniform(.28,.52);sz=rng.uniform(.35,.65);x=cx+cos(a)*r;y=cy+sin(a)*r;z=.25+h*.45
+   a=rng.random()*2*pi;r=rng.random()*plan['foliage_spread']*.45;h=plan['foliage_height']*(1-.50*r/plan['foliage_spread']);sx=rng.uniform(.42,.66);sy=rng.uniform(.42,.66);sz=rng.uniform(.35,.65);x=cx+cos(a)*r;y=cy+sin(a)*r;z=.25+h*.45
    env.add([(x+p.x*sx,y+p.y*sy,z+p.z*sz) for p in iv],ff,leaf[j%5])
+   for k in range(8):
+    a=rng.random()*2*pi;v=rng.uniform(.15,.85);lx=x+cos(a)*sx*math.sqrt(1-v*v);ly=y+sin(a)*sy*math.sqrt(1-v*v);lz=z+sz*v;rr=rng.uniform(.10,.19);dx=cos(a)*rr;dy=sin(a)*rr
+    env.add([(lx+dx,ly+dy,lz),(lx-dy*.6,ly+dx*.6,lz),(lx-dx,ly-dy,lz),(lx+dy*.6,ly-dx*.6,lz),(lx,ly,lz+.04),(lx,ly,lz-.025)],[(0,1,4),(1,2,4),(2,3,4),(3,0,4),(1,0,5),(2,1,5),(3,2,5),(0,3,5)],leaf[(j+k)%5])
   for j in range(7):
    a=rng.random()*2*pi;r=plan['foliage_spread']*rng.uniform(.8,1.1);s=plan['rock_scale']*rng.uniform(.4,.8);x=cx+cos(a)*r;y=cy+sin(a)*r
    env.add([(x+p.x*s,y+p.y*s*.72,.20+p.z*s*.65) for p in iv],ff,rock[j%4])
  ground=env.finish(0)
  for p in ground.data.polygons:p.use_smooth=True
  created.append(ground)
-operation={'id':'bastion-ensemble-native66','op':'remodel_existing_bastion_ensemble','plan':plan}
+operation={'id':'bastion-ensemble-native70','op':'remodel_existing_bastion_ensemble','plan':plan}
 import addon_utils
 addon=next((m for m in addon_utils.modules() if m.__name__=='blender_mcp'),None);assert addon is not None,'Existing BlenderMCP addon unavailable'
 execute_via_blendermcp([operation],perform,pathlib.Path(addon.__file__),'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5')
@@ -195,11 +198,11 @@ assert len(created)==2
 assert all(stamp(bpy.data.objects[n])==s for n,s in protected.items()),'Original source geometry changed'
 # Isolated library: retain original in saved source; export only the replacement group.
 original.hide_render=True
-bpy.context.preferences.filepaths.save_version=0;bpy.ops.wm.save_as_mainfile(filepath=str(EV/'BastionEnsemble66.blend'))
+bpy.context.preferences.filepaths.save_version=0;bpy.ops.wm.save_as_mainfile(filepath=str(EV/'BastionEnsemble70.blend'))
 bpy.ops.object.select_all(action='DESELECT')
 for o in created:o.select_set(True)
 bpy.context.view_layer.objects.active=created[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/'BastionEnsemble66.glb'),export_format='GLB',use_selection=True,export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
+bpy.ops.export_scene.gltf(filepath=str(OUT/'BastionEnsemble70.glb'),export_format='GLB',use_selection=True,export_apply=True,export_yup=True,export_texcoords=True,export_normals=True,export_materials='EXPORT')
 assert digest(SOURCE)==expected
-write('bastion-ensemble-result.json',{'source_sha':os.environ.get('GITHUB_SHA'),'source_preserved':True,'transport':'ACTUAL_BLENDERMCP_TYPED_ACTION','qwen_model':'qwen3:14b','plan':plan,'glb_sha256':digest(OUT/'BastionEnsemble66.glb'),'blend_sha256':digest(EV/'BastionEnsemble66.blend'),'art_approved':False,'objects':[{'name':o.name,'triangles':sum(len(p.vertices)-2 for p in o.data.polygons)} for o in created]})
+write('bastion-ensemble-result.json',{'source_sha':os.environ.get('GITHUB_SHA'),'source_preserved':True,'transport':'ACTUAL_BLENDERMCP_TYPED_ACTION','qwen_model':'qwen3:14b','plan':plan,'glb_sha256':digest(OUT/'BastionEnsemble70.glb'),'blend_sha256':digest(EV/'BastionEnsemble70.blend'),'art_approved':False,'objects':[{'name':o.name,'triangles':sum(len(p.vertices)-2 for p in o.data.polygons)} for o in created]})
 print('VALORIA_BASTION_ENSEMBLE_BLENDER_COMPLETE')
