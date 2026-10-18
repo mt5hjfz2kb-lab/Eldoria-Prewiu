@@ -1,5 +1,5 @@
 """Isolated Bastion ensemble replacement; existing Blender source is never overwritten."""
-import bpy,bmesh,ast,array,hashlib,json,math,os,pathlib,random,subprocess,time,urllib.request
+import bpy,bmesh,ast,array,hashlib,json,math,os,pathlib,random,subprocess,sys,time,urllib.request
 from mathutils import Vector,Matrix
 from math import sin,cos,pi
 ROOT=pathlib.Path.cwd();EV=ROOT/'docs/evidence/valoria-reference-clean'

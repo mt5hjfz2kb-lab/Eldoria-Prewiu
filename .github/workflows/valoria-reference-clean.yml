@@ -46,6 +46,25 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
           New-Item -ItemType Directory -Force docs/evidence/valoria-reference-clean|Out-Null
+      - name: Read existing Android update certificate identity without changing keys
+        shell: powershell
+        run: |
+          $keytool=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/OpenJDK/bin/keytool.exe'
+          $report=@{expected_sha256='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8';package='com.eldoria.valoria.v5test';old_version_code=1;old_apk_run=38279800977;keys=@();matching_key_found=$false;private_key_exported=$false}
+          if(Test-Path $keytool){
+            $paths=@()
+            foreach($user in @(Get-ChildItem "$env:SystemDrive/Users" -Directory -ErrorAction SilentlyContinue)){$p=Join-Path $user.FullName '.android/debug.keystore';if(Test-Path $p){$paths+=$p}}
+            $p=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/Tools/debug.keystore';if(Test-Path $p){$paths+=$p}
+            foreach($p in @($paths|Select-Object -Unique)){
+              $raw=(& $keytool -J-Duser.language=en -list -v -keystore $p -storepass android 2>&1|Out-String)
+              $match=[regex]::Match($raw,'SHA256:\s*([0-9A-Fa-f:]+)')
+              $sha=$match.Groups[1].Value.Replace(':','').ToLowerInvariant()
+              $report.keys+=@{path=$p;certificate_sha256=$sha;matches_original=($sha -eq $report.expected_sha256)}
+              if($sha -eq $report.expected_sha256){$report.matching_key_found=$true}
+            }
+          }
+          $report|ConvertTo-Json -Depth 5|Set-Content docs/evidence/valoria-reference-clean/android-existing-key-check.json -Encoding utf8
+          Write-Host "Original Android signing key certificate match: $($report.matching_key_found)"
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell
