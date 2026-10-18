@@ -1,5 +1,5 @@
 Shader "Eldoria/ReferenceClean/River" {
- Properties { [MainColor] _BaseColor("Deep blue",Color)=(.012,.17,.31,1) _ShallowColor("Shore blue",Color)=(.055,.48,.65,1) _WaveNormal("Authored flow normal and height",2D)="gray"{} }
+ Properties { [MainColor] _BaseColor("Deep blue",Color)=(.012,.17,.31,1) _ShallowColor("Shore blue",Color)=(.055,.48,.65,1) _WaveNormal("Authored flow normal and height",2D)="gray"{} _RiverReflection("Baked river environment",Cube)="black"{} _RiverReflection_HDR("Reflection HDR decode",Vector)=(1,1,0,0) _ReflectionStrength("Environment reflection",Range(0,1))=0 }
  SubShader {
   Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent-50"}
   Pass {
@@ -16,8 +16,9 @@ Shader "Eldoria/ReferenceClean/River" {
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
    TEXTURE2D(_WaveNormal);SAMPLER(sampler_WaveNormal);
+   TEXTURECUBE(_RiverReflection);SAMPLER(sampler_RiverReflection);
    CBUFFER_START(UnityPerMaterial)
-    half4 _BaseColor; half4 _ShallowColor;
+    half4 _BaseColor; half4 _ShallowColor; half4 _RiverReflection_HDR; half _ReflectionStrength;
    CBUFFER_END
    struct A {float4 positionOS:POSITION;float2 uv:TEXCOORD0;};
    struct V {float4 positionCS:SV_POSITION;float3 world:TEXCOORD0;float2 uv:TEXCOORD1;};
@@ -35,7 +36,8 @@ Shader "Eldoria/ReferenceClean/River" {
     half3 c=lerp(_ShallowColor.rgb,_BaseColor.rgb,deep);c*=.88+n*.17;
     float2 wuv=i.world.xz*.17;half4 wa=SAMPLE_TEXTURE2D(_WaveNormal,sampler_WaveNormal,wuv+float2(-t*.025,t*.006));half4 wb=SAMPLE_TEXTURE2D(_WaveNormal,sampler_WaveNormal,wuv*1.73+float2(t*.018,-t*.012));float2 slope=((wa.rg*2-1)*.6+(wb.rg*2-1)*.4)*.65;float3 normal=normalize(float3(slope.x,1,slope.y));float3 view=GetWorldSpaceNormalizeViewDir(i.world);Light light=GetMainLight(TransformWorldToShadowCoord(i.world));
     float spec=pow(saturate(dot(normal,normalize(light.direction+view))),80);c+=light.color*spec*.22;
-    float ridge=smoothstep(.82,.95,1-abs((wa.b+wb.b)*.5-.5)*2);c+=half3(.4,.7,.9)*ridge*.025;c*=lerp(.78,1,light.shadowAttenuation);
+    float ridge=smoothstep(.82,.95,1-abs((wa.b+wb.b)*.5-.5)*2);c+=half3(.4,.7,.9)*ridge*.010*(1-deep);c*=lerp(.78,1,light.shadowAttenuation);
+    half4 encodedReflection=SAMPLE_TEXTURECUBE_LOD(_RiverReflection,sampler_RiverReflection,reflect(-view,normal),3);half3 environment=DecodeHDREnvironment(encodedReflection,_RiverReflection_HDR);float fresnel=pow(1-saturate(dot(normal,view)),4);c=lerp(c,environment,saturate((.08+.22*fresnel)*_ReflectionStrength));
     float contact=1-smoothstep(.035,.30,column);float foam=contact*smoothstep(.20,.65,noise21(i.world.xz*4+float2(t*.025,0)));c=lerp(c,half3(.57,.76,.73),foam*.78);
     float opacity=saturate(.38+column*.55);opacity=max(opacity,foam*.76);
     return half4(c,opacity);
