@@ -36,5 +36,47 @@ public static class ValoriaReferenceCleanNatureTrial {
    if(!report.same_camera||!report.same_lighting)throw new Exception("Nature comparison changed camera or lighting");File.WriteAllText(ev+"/"+prefix+"-comparison.json",JsonUtility.ToJson(report,true));
   }finally{RestoreGround();foreach(var r in current)r.enabled=true;cam.transform.SetPositionAndRotation(pos,rot);cam.orthographicSize=zoom;UnityEngine.Object.DestroyImmediate(baseline);loader.Dispose();}
  }
+ public static async void BuildBankPatch(){
+  const string root="Assets/Eldoria/ArtTests/ValoriaReferenceClean";
+  var ev=Path.GetFullPath("../docs/evidence/valoria-reference-clean");
+  GltfImport loader=null;GameObject candidate=null;MeshRenderer original=null;
+  ValoriaReferenceCleanRenderSettings guard=null;
+  try{
+   UnityEditor.SceneManagement.EditorSceneManager.OpenScene(root+"/Valoria_Reference_Clean.unity",UnityEditor.SceneManagement.OpenSceneMode.Single);
+   guard=UnityEngine.Object.FindFirstObjectByType<ValoriaReferenceCleanRenderSettings>();guard.Apply();
+   var cam=Camera.main;var sun=RenderSettings.sun;var pos=cam.transform.position;var rot=cam.transform.rotation;float zoom=cam.orthographicSize;
+   var camera=Stamp(cam);string light=sun.transform.rotation.ToString("R")+sun.intensity+sun.color.ToString("R");
+   original=UnityEngine.Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None).Single(r=>r.name=="River_bank_rocks");
+   if(original.lightmapIndex>=0&&original.lightmapIndex<LightmapSettings.lightmaps.Length)throw new Exception("Bank unexpectedly binds scene lightmap");
+   loader=new GltfImport(null,new UninterruptedDeferAgent());candidate=new GameObject("Temporary Qwen existing-bank patch");
+   string path=Path.GetFullPath(root+"/Sources/RiverBankPatch.glb");
+   if(!await loader.Load(new Uri(path).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4})||!await loader.InstantiateMainSceneAsync(candidate.transform))throw new Exception("Actual bank patch import failed");
+   candidate.transform.rotation=Quaternion.Euler(0,180,0);
+   var edited=candidate.GetComponentsInChildren<MeshRenderer>().Single(r=>r.name=="River_bank_rocks");
+   if(edited.GetComponent<MeshFilter>().sharedMesh.subMeshCount!=original.GetComponent<MeshFilter>().sharedMesh.subMeshCount)throw new Exception("Bank patch material-slot layout changed");
+   edited.sharedMaterials=original.sharedMaterials;edited.shadowCastingMode=original.shadowCastingMode;edited.receiveShadows=original.receiveShadows;
+   edited.lightProbeUsage=original.lightProbeUsage;edited.reflectionProbeUsage=original.reflectionProbeUsage;
+   UnityEditor.GameObjectUtility.SetStaticEditorFlags(edited.gameObject,0);
+   int before=original.GetComponent<MeshFilter>().sharedMesh.triangles.Length/3,after=edited.GetComponent<MeshFilter>().sharedMesh.triangles.Length/3;
+   if(before!=after)throw new Exception("Unexpected bank topology count");
+   void Views(string prefix){
+    cam.transform.SetPositionAndRotation(pos,rot);cam.orthographicSize=zoom;
+    ValoriaReferenceCleanBuilder.Capture(cam,ev+"/"+prefix+"-main.png",1448,1086);
+    cam.orthographicSize=16;cam.transform.position=new Vector3(30,27,-49);cam.transform.LookAt(new Vector3(15,-1,-23));
+    ValoriaReferenceCleanBuilder.Capture(cam,ev+"/"+prefix+"-detail.png",1448,1086);
+    cam.transform.SetPositionAndRotation(pos,rot);cam.orthographicSize=zoom;
+   }
+   edited.enabled=false;Views("bank-patch-before");
+   original.enabled=false;edited.enabled=true;Views("bank-patch-after");
+   var report=new Report{baseline_source="native54/56 saved scene",baseline_glb_sha256=Fingerprint(root+"/Sources/Valoria_Reference_Clean.glb"),baseline_hash_verified=true,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scope="Qwen14B actual plan over observed source components; existing BlenderMCP reshapes only north-bank representative boulders. All other renderers/materials/terrain/light/camera shared. Trial restored, not accepted or extended.",
+    same_camera=camera==Stamp(cam),same_lighting=light==sun.transform.rotation.ToString("R")+sun.intensity+sun.color.ToString("R"),before_triangles=before,after_triangles=after};
+   if(!report.same_camera||!report.same_lighting)throw new Exception("Bank trial camera/light mismatch");
+   File.WriteAllText(ev+"/bank-patch-comparison.json",JsonUtility.ToJson(report,true));
+   original.enabled=true;UnityEngine.Object.DestroyImmediate(candidate);candidate=null;loader.Dispose();loader=null;guard.Restore();
+   Debug.Log("VALORIA_REFERENCE_CLEAN_BANK_PATCH_COMPLETE");UnityEditor.EditorApplication.Exit(0);
+  }catch(Exception e){if(original)original.enabled=true;if(candidate)UnityEngine.Object.DestroyImmediate(candidate);if(loader!=null)loader.Dispose();if(guard)guard.Restore();Debug.LogException(e);UnityEditor.EditorApplication.Exit(1);}
+ }
+
 }
 }
