@@ -92,6 +92,17 @@ jobs:
           }
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
+          if($req.stage -eq 'environment_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_environment_finish.py
+            if($LASTEXITCODE){throw 'Existing local artist environment authoring failed'}
+            $result='docs/evidence/valoria-reference-clean/environment-finish-result.json'
+            if(-not(Test-Path $result)){throw 'Environment authoring evidence missing'}
+            if(-not((Get-Content $result -Raw|ConvertFrom-Json).sources_preserved)){throw 'Environment source preservation failed'}
+            return
+          }
           if($req.stage -eq 'web_playtest'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build'}
           if($req.stage -eq 'city_world_ui'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'gameplay'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
@@ -412,6 +423,8 @@ jobs:
           path: |
             valoria-layered-source/docs/evidence/valoria-reference-clean/web-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/environment-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/EnvironmentFinish.blend
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*
@@ -427,7 +440,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        if: always() && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
