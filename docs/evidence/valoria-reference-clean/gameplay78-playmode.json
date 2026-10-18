@@ -1,12 +1,19 @@
 {
-    "source_sha": "8e250050a7d4c51762105bd1145c35dd4dbd5f93",
-    "status": "EXISTING_UI_RULES_SAVE_I_II_PASS_AUTHORED_VISUAL_SWAP_VERIFIED",
+    "source_sha": "095f3e6dfc4862c60843632ad684106629e8455b",
+    "status": "EXISTING_UI_RULES_SAVE_I_II_PASS_CHAPTER_II_BUILD_TRAIN_MARCH_VICTORY_VERIFIED",
     "error": "",
     "save_scope": "Unique temporary FileStateStore; canonical files guarded",
     "bastion2_visual": "AUTHORED_I_II_EXCLUSIVE_MODEL_SWAP_VERIFIED",
     "visual_swap": true,
     "b2_routes": true,
     "real_picking": true,
+    "barracks_build": true,
+    "barracks_reload": true,
+    "recruitment": true,
+    "training_reload": true,
+    "march_configuration": true,
+    "engendro_victory": true,
+    "chapter_two_persistence": true,
     "ui_sawmill": true,
     "ui_gather": true,
     "ui_fight": true,
@@ -18,5 +25,5 @@
     "persistence": true,
     "canonical_save_untouched": true,
     "one_camera": true,
-    "final_revision": 12
+    "final_revision": 19
 }
