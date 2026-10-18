@@ -157,6 +157,8 @@ jobs:
             if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionTwo.Build'
           }
+          if($req.stage -eq 'camp_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial.Build'}
+          if($req.stage -eq 'camp_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'camp_author'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
@@ -172,7 +174,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
 
           $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
@@ -226,7 +228,7 @@ jobs:
             if($packageProcess.ExitCode -ne 0 -or -not(Select-String $packageLog -Pattern 'VALORIA_REFERENCE_CLEAN_PACKAGE_COMPLETE' -Quiet)){throw 'Updated package export failed'}
             "package_export=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           }
-          if($req.stage -in @('gameplay','bastion_two_integrate')){
+          if($req.stage -in @('gameplay','bastion_two_integrate','camp_integrate')){
             $gameLog=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean-gameplay.log'
             $gameArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe','-logFile',$gameLog)
             $gp=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $gameArgs -PassThru
@@ -370,7 +372,7 @@ jobs:
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: success() && (steps.native_stage.outputs.package_export == 'true' || steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate' || steps.native_stage.outputs.stage == 'bastion_two_integrate')
+        if: success() && (steps.native_stage.outputs.package_export == 'true' || steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate' || steps.native_stage.outputs.stage == 'bastion_two_integrate' || steps.native_stage.outputs.stage == 'camp_integrate')
         with:
           name: valoria-reference-clean-package-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage

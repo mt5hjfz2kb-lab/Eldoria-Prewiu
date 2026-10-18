@@ -1,12 +1,12 @@
 {
-  "stage": "camp_author",
+  "stage": "camp_trial",
   "validate_play": false,
-  "revision": 88,
+  "revision": 89,
   "budget_eur": 0,
   "validated_runtime_source": "effd9242372e76ab6604c1a51228d609dcc564ec",
   "validated_run": 39121023638,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native87 genuine Qwen/MCP structural A/B: entrance improved, but independent inspection rejects quilt-like normals from disconnected cloth quads and awning cutting support.88 replays EXACT87 authored plan and source/images; technical repair welds normals, anchors awning sag to verified source beam Y.91..1.09/Z8.94, reduces redundant subdivisions. No new inference, no Unity or integration before review.",
+  "art_correction": "Native88 exact87Qwen plan repair inspected in actual Blender A/B: roof quilt artifact removed by welded normals, awning no longer cuts support, open entrance retained. Plausible visible improvement. Minimal genuine Unity before/after strategic/detail with identical current light/camera; isolated variant only. Existing original scene/runtime/save remain unchanged. NativeUnity decision before integration.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
@@ -19,5 +19,5 @@
   "waterline_finish": "zone_talus",
   "validate_core_tests": false,
   "export_package": false,
-  "repair_camp": true
+  "repair_camp": false
 }
