@@ -22,7 +22,6 @@ namespace Eldoria.UI.RoyalGold {
   public RoyalResult Submit(RoyalAction offer){
    if(offer==null||!offer.Enabled||string.IsNullOrEmpty(offer.Kind))return new RoyalResult(false,"Acción no disponible / Action unavailable");
    if(submitting||submitted.Contains(offer.Id))return new RoyalResult(false,"Solicitud ya enviada / Already submitted");
-   // Never execute a stale view against a newer revision and never retry a non-idempotent command silently.
    var current=gateway.Snapshot();if(current.Revision!=offer.Revision)return new RoyalResult(false,"El estado cambió. Revisa los requisitos / State changed; review requirements");
    submitting=true;submitted.Add(offer.Id);recent.Enqueue(offer.Id);while(recent.Count>64)submitted.Remove(recent.Dequeue());
    try {var r=gateway.Execute(new GameCommand("royal-ui:"+offer.Id,current.PlayerId,offer.Kind,offer.Target,offer.Revision));return new RoyalResult(r.Ok,r.Message);}
@@ -35,7 +34,7 @@ namespace Eldoria.UI.RoyalGold {
    return label+(phase=="idle"?"":" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,clock.UtcTicks,en));
   }
   static void Mission(PlayerState s,RoyalSnapshot d,bool en){
-   var p=s.ChapterProgress;string key=SliceRules.CurrentObjectiveKey(s); int done=0,total=1;string title;
+   var p=s.ChapterProgress;string key=SliceRules.CurrentObjectiveKey(s);int done=0,total=1;string title;
    switch(key){
     case "b1.build-sawmill":title=L(en,"Construye el aserradero","Build the sawmill");done=s.SawmillLevel;break;
     case "b1.gather-wood":title=L(en,"Reúne madera para Valoria","Gather wood for Valoria");done=p?.GatheredWood??0;total=SliceContentProfiles.Active.Chapter1GatherWood;break;
@@ -83,3 +82,4 @@ namespace Eldoria.UI.RoyalGold {
    return b;
   }
  }
+}
