@@ -53,7 +53,7 @@ namespace Eldoria.ReferenceClean {
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    RenderSettings.fog=open?false:cityFog;
    if(open){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);}
-   Hud.Refresh();RefreshNavigation();
+   Hud.Refresh();RefreshNavigation();Guidance?.Refresh();
   }
   public bool CanOpen(RoyalSection section){
    var s=city.Gateway.Snapshot();

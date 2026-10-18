@@ -19,7 +19,8 @@ namespace Eldoria.UI.RoyalGold
             rect.SetParent(layer, false);
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
         }
-        private void LateUpdate()
+        private void LateUpdate() => RefreshPosition();
+        public void RefreshPosition()
         {
             if (!Target || !PlayerCamera || !Layer) { SetVisible(false); return; }
             var screenPoint = PlayerCamera.WorldToScreenPoint(Target.position + WorldOffset);

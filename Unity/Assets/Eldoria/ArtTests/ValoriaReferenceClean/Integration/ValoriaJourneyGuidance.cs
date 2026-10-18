@@ -13,7 +13,7 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;ValoriaReferenceCleanGameplay city;
   readonly Dictionary<string,BuildingLabel> labels=new Dictionary<string,BuildingLabel>();
   RoyalText story;float next;
-  public string Story=>host&&host.InWorld?city.Presenter.FrontierNarrativeText:city.Presenter.NarrativeText;
+  public string Story=>city.Gateway.Snapshot().EngendroDefeated?"Aldric: «Valoria vuelve a respirar.»\nEl Engendro ha caído. El ascenso a Bastión III llegará en el siguiente capítulo.":host.InWorld?city.Presenter.FrontierNarrativeText:city.Presenter.NarrativeText;
   public void Initialize(ValoriaIntegratedWorld h,ValoriaReferenceCleanGameplay c){
    host=h;city=c;host.Hud.ObjectiveRequested=FollowObjective;host.Hud.StoryRequested=ShowStory;
    var mission=host.Hud.Mission;
@@ -39,7 +39,7 @@ namespace Eldoria.ReferenceClean {
    }
    Refresh();
   }
-  WorldHotspot Find(string id)=>UnityEngine.Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None).FirstOrDefault(x=>x.Id==id&&(id=="sawmill"||id=="barracks"?!x.transform.IsChildOf(host.WorldRoot.transform):x.transform.IsChildOf(host.WorldRoot.transform)));
+  WorldHotspot Find(string id)=>UnityEngine.Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None).FirstOrDefault(x=>x.Id==id&&(id=="sawmill"||id=="barracks"||id=="bastion"?!x.transform.IsChildOf(host.WorldRoot.transform):x.transform.IsChildOf(host.WorldRoot.transform)));
   static string Name(string id){switch(id){case "sawmill":return "Aserradero";case "barracks":return "Cuartel";case "valoria-map-city":return "Valoria · Entrar";case "forest-valoria":return "Bosque · Madera";case "quarry-valoria":return "Cantera · Piedra";case "corrupt-scout":return "Ruta corrupta";case "engendro-valoria":return "Engendro";default:return "Atalaya en ruinas";}}
   void LateUpdate(){if(!host||!host.Ready)return;if(Time.unscaledTime>=next){next=Time.unscaledTime+.2f;Refresh();}}
   public void Refresh(){

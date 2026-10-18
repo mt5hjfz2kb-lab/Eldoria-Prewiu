@@ -35,6 +35,8 @@ namespace Eldoria.ReferenceClean.Editor {
    var plots=Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).ToArray();
    Need(plots.Length>=4,"Expected authored plot slabs missing");foreach(var plot in plots)plot.enabled=false;
    foreach(var binding in city.Parcels.Bindings)foreach(var part in new[]{binding.Ground,binding.Available})if(part)foreach(var renderer in part.GetComponentsInChildren<Renderer>(true))renderer.enabled=false;
+   city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+   ValoriaReferenceCleanBuilder.Capture(city.PlayerCamera,Path.Combine(Ev,"integration-city-art.png"),1600,900);city.Apply(new PlayerState());
    string source=Path.GetFullPath("Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb");
    host.WorldRoot=new GameObject("Zone 1 / retained authored world");
    using(var importer=new GltfImport(null,new UninterruptedDeferAgent())){
@@ -83,6 +85,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(await importer.InstantiateMainSceneAsync(next.transform),"Refined sawmill instantiate");
     foreach(var camera in next.GetComponentsInChildren<Camera>())Object.DestroyImmediate(camera);
     foreach(var light in next.GetComponentsInChildren<Light>())Object.DestroyImmediate(light);
+    next.transform.localRotation=Quaternion.Euler(0,180,0);
     var bounds=ModelBounds(next);next.transform.localScale=Vector3.one*(Mathf.Max(prior.size.x,prior.size.z)/Mathf.Max(bounds.size.x,bounds.size.z));bounds=ModelBounds(next);
     next.transform.position+=new Vector3(prior.center.x-bounds.center.x,prior.min.y-bounds.min.y,prior.center.z-bounds.center.z);
     foreach(var r in next.GetComponentsInChildren<Renderer>()){GameObjectUtility.SetStaticEditorFlags(r.gameObject,0);r.lightmapIndex=-1;r.lightProbeUsage=UnityEngine.Rendering.LightProbeUsage.BlendProbes;r.reflectionProbeUsage=UnityEngine.Rendering.ReflectionProbeUsage.BlendProbes;}
@@ -162,7 +165,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;
    var scaler=h.Hud.GetComponent<RoyalScaler>();bool scalerEnabled=scaler.enabled;float scale=canvas.scaleFactor;var areas=h.Hud.GetComponentsInChildren<RoyalSafeArea>(true);var areaEnabled=areas.Select(a=>a.enabled).ToArray();
    var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
-   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;canvas.scaleFactor=width<height?width/800f:height/900f;foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor);c.targetTexture=rt;c.aspect=width/(float)height;if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;Canvas.ForceUpdateCanvases();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());}
+   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;canvas.scaleFactor=width<height?width/800f:height/900f;foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor);c.targetTexture=rt;c.aspect=width/(float)height;if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;Canvas.ForceUpdateCanvases();h.Guidance.Refresh();foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());}
    finally{scaler.enabled=scalerEnabled;canvas.scaleFactor=scale;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.transform.position=position;c.orthographicSize=size;RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);}
   }
   [Serializable] class Report{public string source,status,error,scene;public string[] checks;public bool artApproved=false,physicalDeviceTested=false;}
