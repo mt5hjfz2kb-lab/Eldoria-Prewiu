@@ -36,6 +36,8 @@ public static class ValoriaReferenceCleanNatureTrial {
    if(!report.same_camera||!report.same_lighting)throw new Exception("Nature comparison changed camera or lighting");File.WriteAllText(ev+"/"+prefix+"-comparison.json",JsonUtility.ToJson(report,true));
   }finally{RestoreGround();foreach(var r in current)r.enabled=true;cam.transform.SetPositionAndRotation(pos,rot);cam.orthographicSize=zoom;UnityEngine.Object.DestroyImmediate(baseline);loader.Dispose();}
  }
+ public static void IntegrateBankPatch(){integrateBankPatch=true;BuildBankPatch();}
+ static bool integrateBankPatch;
  public static async void BuildBankPatch(){
   const string root="Assets/Eldoria/ArtTests/ValoriaReferenceClean";
   var ev=Path.GetFullPath("../docs/evidence/valoria-reference-clean");
@@ -73,7 +75,26 @@ public static class ValoriaReferenceCleanNatureTrial {
     same_camera=camera==Stamp(cam),same_lighting=light==sun.transform.rotation.ToString("R")+sun.intensity+sun.color.ToString("R"),before_triangles=before,after_triangles=after};
    if(!report.same_camera||!report.same_lighting)throw new Exception("Bank trial camera/light mismatch");
    File.WriteAllText(ev+"/bank-patch-comparison.json",JsonUtility.ToJson(report,true));
+   if(integrateBankPatch){
+    // Persist the reviewed native61 mesh on the existing renderer, keeping its identity/materials.
+    if(Fingerprint(path)!="3e0ef5d89efe739e0f5a992a20385867d184af49cb19252c89af9cee1072dbbc")throw new Exception("Unreviewed bank mesh");
+    var originalFilter=original.GetComponent<MeshFilter>();var editedFilter=edited.GetComponent<MeshFilter>();
+    var delta=original.transform.worldToLocalMatrix*edited.transform.localToWorldMatrix;
+    for(int row=0;row<4;row++)for(int col=0;col<4;col++)if(Mathf.Abs(delta[row,col]-(row==col?1f:0f))>.0001f)throw new Exception("Bank import pivot mismatch");
+    var persistent=UnityEngine.Object.Instantiate(editedFilter.sharedMesh);persistent.name="River_bank_rocks_native61_reviewed";
+    string meshPath=root+"/Sources/RiverBankRocks_Native61.asset";
+    if(UnityEditor.AssetDatabase.LoadAssetAtPath<Mesh>(meshPath))throw new Exception("Reviewed mesh asset already exists");
+    UnityEditor.AssetDatabase.CreateAsset(persistent,meshPath);originalFilter.sharedMesh=persistent;
+    var collider=original.GetComponent<MeshCollider>();if(collider)collider.sharedMesh=persistent;
+    UnityEditor.EditorUtility.SetDirty(originalFilter);if(collider)UnityEditor.EditorUtility.SetDirty(collider);
+    File.WriteAllText(ev+"/bank-patch-retained.json","{\"native_review_run\":39086508959,\"scope\":\"seven existing north-bank components only\",\"scene_identity_preserved\":true,\"formal_art_approval\":false}");
+   }
    original.enabled=true;UnityEngine.Object.DestroyImmediate(candidate);candidate=null;loader.Dispose();loader=null;guard.Restore();
+   if(integrateBankPatch){
+    UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(original.gameObject.scene);
+    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(original.gameObject.scene);
+    UnityEditor.AssetDatabase.SaveAssets();ValoriaReferenceCleanFinalize.Build();return;
+   }
    Debug.Log("VALORIA_REFERENCE_CLEAN_BANK_PATCH_COMPLETE");UnityEditor.EditorApplication.Exit(0);
   }catch(Exception e){if(original)original.enabled=true;if(candidate)UnityEngine.Object.DestroyImmediate(candidate);if(loader!=null)loader.Dispose();if(guard)guard.Restore();Debug.LogException(e);UnityEditor.EditorApplication.Exit(1);}
  }

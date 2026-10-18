@@ -99,3 +99,7 @@ Native58 run39085487964/output66decf223ce3005a388ec3cd1015fbdb5a7edc9c: true nat
 Native59 run39085972291 failed its pre-edit action-count assertion (9 supplied, 3–7 allowed). Independent review also found component72 crown below the safety margin. No BlenderMCP edits or Unity captures occurred. Native60 uses an Ollama JSON schema with maxItems7 and provides measured minimum crown scales; all original numeric/topology/protected-mesh checks remain. Retained scene/native54 and package/native56 unchanged.
 
 Native60 run39086345059 also stopped before edits: crown-height assertion. Native61 encodes each actual component ID with its admissible discrete vertical scales in the response schema, preventing submerged proposals at generation. No scene changes or captures from60.
+
+
+### Native61 actual local geometry comparison — selected for retention
+Run39086508959 success, output c68d4f407c19147a58058a521e23a57c5c83a5cc. Actual pinned BlenderMCP applied Qwen14B typed edits to seven components/2602 vertices; remaining vertices and topology unchanged. Both native before/after main/detail images inspected: lower broad shelves improve immediate bridge-bank transition and reduce standing-block rhythm. This is a localized win, not global art approval; other bank stones remain. Native62 retains exact reviewed GLB 3e0ef5d89efe739e0f5a992a20385867d184af49cb19252c89af9cee1072dbbc on original renderer, then prefab/package refresh and Play. Native55 APK remains prior geometry, no device validation.

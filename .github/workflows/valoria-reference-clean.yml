@@ -57,6 +57,7 @@ jobs:
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
           if($req.stage -eq 'ground_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGroundTrial.BuildLocalized'}
           if($req.stage -eq 'package'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting'}
+          if($req.stage -eq 'bank_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial.IntegrateBankPatch'}
           if($req.stage -eq 'finalize'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.Build'}
           if($req.stage -eq 'river_lighting'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanRiverLighting.Build'}
           if($req.stage -eq 'lighting'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanLightingPass.Build'}
@@ -93,7 +94,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           try{
             $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
@@ -188,7 +189,7 @@ jobs:
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: success() && (steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize')
+        if: success() && (steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate')
         with:
           name: valoria-reference-clean-package-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage
