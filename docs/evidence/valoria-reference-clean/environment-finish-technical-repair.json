@@ -1,0 +1,38 @@
+{
+  "mode": "EXPLICIT_REPAIR_LAST_EXECUTED_ARTIST_PLAN",
+  "parent_result_sha256": "a848566956c1ecbabfb35520f9c59109f55a5539c1d3bc7b7ea86ae991f58c85",
+  "parent_source_sha": "8dc9eb48dd5601f0419cd45d64c77438acc25bc7",
+  "artist_plan_sha256": "fddd07ba4099e81ec3bdf3abfc0cd0395dd605d2d166904e47debd4efbe81800",
+  "plan_sha256": "dd0f625f4dd6f7dfe85e9981daef33de1d14b6aa5bfcecea29c21df5f6fc1694",
+  "retained_text_integrity": [
+    {
+      "file": "environment-finish-plan.json",
+      "recorded_sha256": "c43db62e261b7f31400a79258a30726a2eb67c4c734f348e67a6b6620123e764",
+      "checkout_sha256": "dd0f625f4dd6f7dfe85e9981daef33de1d14b6aa5bfcecea29c21df5f6fc1694",
+      "verification": "EXACT_CRLF_BYTES_RECONSTRUCTED_FROM_GIT_LF_CHECKOUT_IN_MEMORY",
+      "original_byte_hash_verified": true,
+      "file_rewritten": false
+    },
+    {
+      "file": "environment-finish-artist-plan.json",
+      "recorded_sha256": "d3b54be457dad6631e2bd25768deeb75960b2540ae02642bdd9c6cd96882e6e1",
+      "checkout_sha256": "fddd07ba4099e81ec3bdf3abfc0cd0395dd605d2d166904e47debd4efbe81800",
+      "verification": "EXACT_CRLF_BYTES_RECONSTRUCTED_FROM_GIT_LF_CHECKOUT_IN_MEMORY",
+      "original_byte_hash_verified": true,
+      "file_rewritten": false
+    }
+  ],
+  "qwen_inference_performed": false,
+  "artistic_composition_changed": false,
+  "observed_defects": [
+    "Diverging per-segment bench offsets opened the centre joint.",
+    "Untextured excavation faces read as concrete.",
+    "Rim stones used a fixed Y offset and could overhang unsupported."
+  ],
+  "technical_corrections": [
+    "Use a single joined offset at each authored profile vertex.",
+    "Apply retained source-rock PBR material with metric UVs to extraction faces.",
+    "Embed copies of the retained irregular source rock along the joined upper bench."
+  ],
+  "acceptance": "Prior quarry render rejected; repaired Blender and real Unity review still required."
+}

@@ -1,0 +1,9 @@
+{
+  "authored_profile_preserved": true,
+  "joined_bench_vertex_gap_metres": 0.0,
+  "terrain_or_floor_mesh_added": false,
+  "excavation_material": "Holotna rock PBR existing albedo.001",
+  "excavation_uv": "Existing metric face UVs, 3.5 metres per tile",
+  "rim_geometry": "Retained original irregular rock mesh and UVs, shared by embedded copies",
+  "blender_visual_review_required": true
+}

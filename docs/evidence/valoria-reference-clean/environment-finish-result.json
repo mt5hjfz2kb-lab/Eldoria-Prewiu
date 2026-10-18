@@ -1,5 +1,5 @@
 {
-  "source_sha": "8dc9eb48dd5601f0419cd45d64c77438acc25bc7",
+  "source_sha": "c583b4a0807807c0c179c6726376317fe4046115",
   "source_sha256": {
     "world": "6d22c3319524839620591363b3696e920501813a12ad094a327c672f7d06a32d",
     "pine": "c9829d76a1c05d42760e62a003abe943fef66eddc915df8ff3dbc630b593e4b0"
@@ -7,6 +7,27 @@
   "sources_preserved": true,
   "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
   "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "qwen_inference_performed": false,
+  "existing_artist_plan_reused": true,
+  "technical_repair_parent_result_sha256": "a848566956c1ecbabfb35520f9c59109f55a5539c1d3bc7b7ea86ae991f58c85",
+  "retained_text_integrity": [
+    {
+      "file": "environment-finish-plan.json",
+      "recorded_sha256": "c43db62e261b7f31400a79258a30726a2eb67c4c734f348e67a6b6620123e764",
+      "checkout_sha256": "dd0f625f4dd6f7dfe85e9981daef33de1d14b6aa5bfcecea29c21df5f6fc1694",
+      "verification": "EXACT_CRLF_BYTES_RECONSTRUCTED_FROM_GIT_LF_CHECKOUT_IN_MEMORY",
+      "original_byte_hash_verified": true,
+      "file_rewritten": false
+    },
+    {
+      "file": "environment-finish-artist-plan.json",
+      "recorded_sha256": "d3b54be457dad6631e2bd25768deeb75960b2540ae02642bdd9c6cd96882e6e1",
+      "checkout_sha256": "fddd07ba4099e81ec3bdf3abfc0cd0395dd605d2d166904e47debd4efbe81800",
+      "verification": "EXACT_CRLF_BYTES_RECONSTRUCTED_FROM_GIT_LF_CHECKOUT_IN_MEMORY",
+      "original_byte_hash_verified": true,
+      "file_rewritten": false
+    }
+  ],
   "canonical_system_sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346",
   "memory_source_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e",
   "actual_memory_sha256": "87ee10492ac19be72319956dbf3029916e65fdb85f8ac69f998f01052bc0c279",
@@ -116,15 +137,15 @@
     ],
     "rationale": "Create a forest with staggered pine groups around a clear logging entrance, a quarry with exposed extraction faces and a derrick, and riverbank stretches with embedded, scaled stones to enhance realism and compositional flow. Create the forest with 8-11 pine trees arranged around a clear logging entrance, with two stacks of cut logs."
   },
-  "canonical_artist_plan_sha256": "d3b54be457dad6631e2bd25768deeb75960b2540ae02642bdd9c6cd96882e6e1",
-  "plan_sha256": "c43db62e261b7f31400a79258a30726a2eb67c4c734f348e67a6b6620123e764",
+  "canonical_artist_plan_sha256": "fddd07ba4099e81ec3bdf3abfc0cd0395dd605d2d166904e47debd4efbe81800",
+  "plan_sha256": "dd0f625f4dd6f7dfe85e9981daef33de1d14b6aa5bfcecea29c21df5f6fc1694",
   "glb_sha256": {
     "EnvironmentForest.glb": "7cabc49542f6982d2d7f90a616204d7530d919c104fedfd74851fe012d97ae10",
-    "EnvironmentQuarry.glb": "dd854cb17e0173988c6eb6e131bdd6dae49510c2b42fbb428ac61bf93e111d1f"
+    "EnvironmentQuarry.glb": "eb2d3ef911162875414edd750f65d3a31750881b32aadd2a7a8a0310af074d7f"
   },
-  "blend_sha256": "e75cdd9074de56e6416eb0baa6ff774330a5e2354a718f282684727290410bd9",
+  "blend_sha256": "9247f212f68da81a03e163dd033dd7b245b2c4c0bd3d328e08ea78cee2a9c0a9",
   "retained_pine_faces": 3626,
-  "triangles": 33684,
+  "triangles": 36736,
   "art_approved": false,
   "unity_capture_pending": true
 }
