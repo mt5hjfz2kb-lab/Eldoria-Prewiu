@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_DENSE_GI_SAMPLING_CORRECTION_NATIVE_MSAA",
-      "next": "Native52 actual diagnostic images isolate distant roof speckle to baked map sampling: direct-shadows-off still speckled, baked-receivers-off clean. Water parallel bands corrected and inspected. Native53 raises dense architecture lightmap allocation without moving/rebuilding meshes, retains lateral key, records actual atlas widths/allocations/texture bytes. Genuine captures now honor existing URP4x MSAA; before/after53 both4x and previous1x preserved. Native Play parity/routes/picks required. No art8/mobile claim. Sole Windows retained.",
+      "phase": "REFERENCE_CLEAN_CLEAN_GI_RETAINED_EDITABLE_PREFAB_PACKAGE",
+      "next": "Native53 actual main/Bastion/gate images inspected: roof sampling speckle and colored GI bleed fixed, clean stone/roof with lateral daylight and warped-flow river; retain. 5atlases [2048,2048,512,512,512],48,943,040 Windows native lighting bytes, actual4x captures. All635048triangles/35renderers/163slots unchanged, all gameplay checks pass. Native54 updates current-material portable prefabs and package without altering scene geometry/look; then bounded Android build retry with actual graphics instead of Null device. No art8/physical mobile certification; Windows retained.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -111,7 +111,7 @@
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV46",
           "current_run": 0,
-          "current_source": "732cdb97cc6fc81b3fc325efec3ddc9acee169be",
+          "current_source": "2ec9a5f9c05e65fd1ad689549fd3250c39255fc5",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
@@ -187,6 +187,28 @@
             "water_visual": "DOMAIN_WARP_REMOVES_PARALLEL_BANDS_OBSERVED",
             "roof_diagnostic": "BAKED_MAP_SAMPLING_NOT_DIRECT_SHADOW_BIAS",
             "art_approved": false
+          },
+          "native53": {
+            "run": 39082666702,
+            "source": "732cdb97cc6fc81b3fc325efec3ddc9acee169be",
+            "output": "8a55c8235a1d029c34c127fb06f594512256a074",
+            "lightmaps": 5,
+            "lightmap_widths": [
+              2048,
+              2048,
+              512,
+              512,
+              512
+            ],
+            "lightmap_native_bytes": 48943040,
+            "lightprobes": 264,
+            "reflection_probes": 4,
+            "capture_msaa": 4,
+            "geometry_unchanged": true,
+            "visual_status": "CLEAN_ROOF_AND_MASONRY_OBSERVED_RETAINED",
+            "gameplay": "PASS",
+            "art_approved": false,
+            "physical_mobile_profiled": false
           }
         }
       },
