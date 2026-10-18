@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T12:27:42.504461+00:00",
+  "updated_at": "2026-10-18T12:43:29.196815+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -569,7 +569,7 @@
         "queue_delegation": {
           "authorization": "Owner explicitly permits PC resources respecting Work queue; reiterated live continuation after checkpoint, 18-10-2026.",
           "mode": "resume_ground",
-          "run_id": "39127306553",
+          "run_id": "39128434058",
           "work_priority": true,
           "transfer_valoria_lease": false,
           "cancel_other_jobs": false,
@@ -2070,7 +2070,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -2081,7 +2081,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
