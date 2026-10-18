@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "source_sha256": "4e969808e8bace0678a74dd77b307e5a1c82dc1845bdf4bca4968315cb3c059f",
+  "target": "ValoriaEntryTerrainV2",
+  "vertices": 22994,
+  "faces": 22950,
+  "location": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "dimensions": [
+    89.5999984741211,
+    117.49449157714844,
+    7.389912128448486
+  ],
+  "local_aabb": {
+    "min": [
+      -44.79999923706055,
+      -86.19719696044922,
+      -4.619999885559082
+    ],
+    "max": [
+      44.79999923706055,
+      31.29729652404785,
+      2.7699122428894043
+    ]
+  },
+  "sample_vertices": [
+    {
+      "index": 9030,
+      "position": [
+        -0.17568626999855042,
+        2.369969129562378,
+        0.27761825919151306
+      ],
+      "role": "center_mass"
+    },
+    {
+      "index": 3656,
+      "position": [
+        1.581176519393921,
+        -27.656301498413086,
+        2.5828912258148193
+      ],
+      "role": "playable_crest_center"
+    },
+    {
+      "index": 6237,
+      "position": [
+        2.635294198989868,
+        -79.93284606933594,
+        2.7699122428894043
+      ],
+      "role": "highest_crest"
+    },
+    {
+      "index": 7417,
+      "position": [
+        -44.79999923706055,
+        12.61111068725586,
+        -4.619999885559082
+      ],
+      "role": "deep_slope"
+    },
+    {
+      "index": 0,
+      "position": [
+        -44.79999923706055,
+        31.29729652404785,
+        0.2774309813976288
+      ],
+      "role": "west_join"
+    },
+    {
+      "index": 85,
+      "position": [
+        44.79999923706055,
+        31.29729652404785,
+        0.2835702896118164
+      ],
+      "role": "east_join"
+    },
+    {
+      "index": 6708,
+      "position": [
+        -44.79999923706055,
+        -86.19719696044922,
+        -4.396648406982422
+      ],
+      "role": "southern_join"
+    },
+    {
+      "index": 12474,
+      "position": [
+        -31.096471786499023,
+        6.219490051269531,
+        -4.067750453948975
+      ],
+      "role": "negative_y_cliff_left"
+    },
+    {
+      "index": 17038,
+      "position": [
+        0.878431499004364,
+        10.594017028808594,
+        -4.034099102020264
+      ],
+      "role": "negative_y_cliff_center"
+    },
+    {
+      "index": 10594,
+      "position": [
+        31.447843551635742,
+        4.679681777954102,
+        -4.055441856384277
+      ],
+      "role": "negative_y_cliff_right"
+    },
+    {
+      "index": 21213,
+      "position": [
+        -23.014904022216797,
+        19.418804168701172,
+        -3.9760687351226807
+      ],
+      "role": "positive_y_cliff_left"
+    },
+    {
+      "index": 8567,
+      "position": [
+        0.17568626999855042,
+        18.41025733947754,
+        -4.028488636016846
+      ],
+      "role": "positive_y_cliff_center"
+    },
+    {
+      "index": 1184,
+      "position": [
+        24.771766662597656,
+        19.16666603088379,
+        -4.046752452850342
+      ],
+      "role": "positive_y_cliff_right"
+    },
+    {
+      "index": 1916,
+      "position": [
+        -19.501176834106445,
+        12.35897445678711,
+        -4.406308174133301
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 3832,
+      "position": [
+        5.797647476196289,
+        -34.51173782348633,
+        2.6970255374908447
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 5748,
+      "position": [
+        31.096471786499023,
+        -73.66849517822266,
+        0.4491337835788727
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 7664,
+      "position": [
+        -13.176470756530762,
+        23.445127487182617,
+        0.2703785002231598
+      ],
+      "role": "distributed_source"
+    },
+    {
+      "index": 9580,
+      "position": [
+        -4.392157077789307,
+        19.990171432495117,
+        -0.03225461393594742
+      ],
+      "role": "distributed_source"
+    }
+  ],
+  "boundary_loops": [],
+  "note": "Only these indexed open loops may be bridged. Coordinates are Blender object-local. No manifest means no safe vertex-index operations."
+}

@@ -1,0 +1,17 @@
+{
+    "source_sha": "74de832d2da7678895817778cbce65e5012b0bcc",
+    "original_scene_hash": "56-E5-9F-59-35-02-DF-BE-8F-4D-46-F4-48-A4-CF-72-D1-E6-FA-3C-86-BF-01-AF-83-88-45-1E-B0-01-A9-08",
+    "candidate_scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Valoria_Bastion73.unity",
+    "scope": "Native72 geometry unchanged. Correct overly dark, wide soil border with lighter mineral loam and narrower irregular shoulder; higher-frequency meadow sampling. Same camera/light/heights, independent native bake; pending visual review.",
+    "original_scene_unchanged": true,
+    "same_camera": true,
+    "same_light": true,
+    "bake_succeeded": true,
+    "no_static_batching": true,
+    "art_approved": false,
+    "original_triangles": 24300,
+    "candidate_triangles": 24300,
+    "lightmaps": 5,
+    "lightprobes": 264,
+    "bake_seconds": 172.31048583984376
+}

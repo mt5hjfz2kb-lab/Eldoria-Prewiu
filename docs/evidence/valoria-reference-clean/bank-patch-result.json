@@ -1,0 +1,23 @@
+{
+  "source_sha": "b837bc5ac05b6972190a5420640e2bb52ff81d45",
+  "source_blend_sha256": "f44afe06ea40c1d7865d6616b4c08c65e001a3b1db06ca5fe217745de948307a",
+  "source_preserved": true,
+  "transport": "ACTUAL_EXISTING_BLENDERMCP_TYPED_ACTION",
+  "transport_error": null,
+  "qwen_model": "qwen3:14b",
+  "edited_components": [
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77
+  ],
+  "changed_vertices": 2602,
+  "topology_unchanged": true,
+  "other_vertices_unchanged": true,
+  "glb_sha256": "3e0ef5d89efe739e0f5a992a20385867d184af49cb19252c89af9cee1072dbbc",
+  "blend_sha256": "36ff23ed786261ddc0a3fba4713c4f47f8f9687da00a265d0a7406cbadac08fc",
+  "art_approved": false
+}

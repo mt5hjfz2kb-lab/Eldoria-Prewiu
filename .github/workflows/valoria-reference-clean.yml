@@ -1,0 +1,465 @@
+name: '[VALORIA] Clean reference reconstruction / native Unity'
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/valoria-reference-clean/request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-reference-clean-native
+  cancel-in-progress: false
+jobs:
+  native:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    defaults:
+      run:
+        working-directory: valoria-layered-source
+    steps:
+      - name: Recover installed Git
+        working-directory: .
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-layered-source
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-clean-live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Check live exclusive lease and actual native tools
+        shell: powershell
+        run: |
+          $r=Get-Content "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" -Raw|ConvertFrom-Json
+          if(@($r.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-work-valoria-integration-continuation-20261018' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 1){throw 'Current clean-scene claim missing'}
+          if(@($r.active|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016' -and $_.resources -contains 'windows-runner-heavy'}).Count){throw 'Runner reserved by another workstream'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
+          New-Item -ItemType Directory -Force docs/evidence/valoria-reference-clean|Out-Null
+      - name: Read existing Android update certificate identity without changing keys
+        continue-on-error: true
+        shell: powershell
+        run: |
+          $keytool=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/OpenJDK/bin/keytool.exe'
+          $report=@{expected_sha256='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8';package='com.eldoria.valoria.v5test';old_version_code=1;old_apk_run=38279800977;keys=@();matching_key_found=$false;private_key_exported=$false}
+          if(Test-Path $keytool){
+            $paths=@()
+            foreach($user in @(Get-ChildItem "$env:SystemDrive/Users" -Directory -ErrorAction SilentlyContinue)){$p=Join-Path $user.FullName '.android/debug.keystore';if(Test-Path $p){$paths+=$p}}
+            $p=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/Tools/debug.keystore';if(Test-Path $p){$paths+=$p}
+            foreach($p in @($paths|Select-Object -Unique)){
+              $savedPreference=$ErrorActionPreference
+              try{$ErrorActionPreference='Continue';$raw=(& $keytool '-J-Duser.language=en' -list -v -keystore $p -storepass android 2>&1|Out-String)}finally{$ErrorActionPreference=$savedPreference}
+              $match=[regex]::Match($raw,'SHA256:\s*([0-9A-Fa-f:]+)')
+              $sha=$match.Groups[1].Value.Replace(':','').ToLowerInvariant()
+              $report.keys+=@{path=$p;certificate_sha256=$sha;matches_original=($sha -eq $report.expected_sha256)}
+              if($sha -eq $report.expected_sha256){$report.matching_key_found=$true}
+            }
+          }
+          $report|ConvertTo-Json -Depth 5|Set-Content docs/evidence/valoria-reference-clean/android-existing-key-check.json -Encoding utf8
+          Write-Host "Original Android signing key certificate match: $($report.matching_key_found)"
+      - name: Execute requested stage in native Unity
+        id: native_stage
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          function Test-ValoriaContentLoaderCases {
+            foreach($case in @('download','cached_offline','corrupt','incompatible')){
+              $env:VALORIA_CONTENT_CASE=$case
+              $caseLog=Join-Path $env:RUNNER_TEMP "valoria-content-$case.log"
+              $caseArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaContentBuild.ValidateLoader','-logFile',$caseLog)
+              $caseProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $caseArgs -PassThru
+              if(-not $caseProcess.WaitForExit(240000)){& taskkill.exe /PID $caseProcess.Id /T /F|Out-Null;throw "Own content loader probe timeout $case"}
+              Copy-Item $caseLog "docs/evidence/valoria-reference-clean/content-loader-$case.log"
+              if($caseProcess.ExitCode -ne 0 -or -not(Select-String $caseLog -Pattern 'VALORIA_REFERENCE_CLEAN_CONTENT_LOADER_COMPLETE' -Quiet)){Get-Content $caseLog -Tail 100;throw "Content loader probe failed $case"}
+            }
+          }
+          if(Test-Path 'tools/valoria-reference-clean/publish_content.ps1'){
+            $tokens=$null;$parseErrors=$null
+            $null=[System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'tools/valoria-reference-clean/publish_content.ps1'),[ref]$tokens,[ref]$parseErrors)
+            if($parseErrors.Count){throw ($parseErrors|Out-String)}
+          }
+          "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
+          if($req.stage -eq 'web_playtest'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build'}
+          if($req.stage -eq 'city_world_ui'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'gameplay'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.Build';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'gameplay_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
+          if($req.stage -eq 'content_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaContentBuild.Validate'}
+          if($req.stage -eq 'sawmill_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanSawmillTrial.Build'}
+          if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
+          if($req.stage -eq 'bastion_two_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionTwo.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'bastion_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionIntegrate.Build'}
+          if($req.stage -eq 'bastion_ground_finish'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionGroundFinish.Build'}
+          if($req.stage -eq 'ground_diagnose'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble.DiagnoseGround'}
+          if($req.stage -eq 'contact_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanContactTrial.Build'}
+          if($req.stage -eq 'ground_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGroundTrial.BuildLocalized'}
+          if($req.stage -eq 'package'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting'}
+          if($req.stage -eq 'bank_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial.IntegrateBankPatch'}
+          if($req.stage -eq 'finalize'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.Build'}
+          if($req.stage -eq 'river_lighting'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanRiverLighting.Build'}
+          if($req.stage -eq 'lighting'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanLightingPass.Build'}
+          if($req.stage -eq 'integration'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'}
+          $env:VALORIA_SHORE_PROFILE=$req.shore_treatment
+          if($req.stage -eq 'art'){
+            if($req.nature_treatment -eq 'bank_zone' -or $req.tree_treatment -eq 'canopy_ao_zone' -or $req.shore_treatment -in @('zone_profile','all_profile')){
+              $env:VALORIA_NATURE_BASELINE_GLB=Join-Path $env:RUNNER_TEMP 'ValoriaReferenceBeforeNature.glb'
+              Copy-Item 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/Valoria_Reference_Clean.glb' $env:VALORIA_NATURE_BASELINE_GLB -Force
+              $env:VALORIA_NATURE_BASELINE_HASH=(Get-Content 'docs/evidence/valoria-reference-clean/source-art.json' -Raw|ConvertFrom-Json).glb_sha256
+              $env:VALORIA_NATURE_BASELINE_SOURCE=$req.validated_runtime_source
+              $env:VALORIA_NATURE_TARGET='River_bank_rocks';$env:VALORIA_NATURE_PREFIX='nature-zone'
+              if($req.tree_treatment -eq 'canopy_ao_zone'){$env:VALORIA_NATURE_TARGET='Fir_tree_group';$env:VALORIA_NATURE_PREFIX='canopy-zone'}
+            }
+            if($req.shore_treatment -in @('zone_profile','all_profile')){$env:VALORIA_NATURE_TARGET='Shore_profile';$env:VALORIA_NATURE_PREFIX='shore-zone'}
+            if($req.waterline_finish -in @('zone_talus','all_talus')){$env:VALORIA_NATURE_TARGET='River_shingle_pockets';$env:VALORIA_NATURE_PREFIX='waterline-zone'}
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_scene.py
+            if($LASTEXITCODE){throw 'Blender authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'
+          }
+          if($req.stage -eq 'bank_patch'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/patch_river_bank.py
+            if($LASTEXITCODE){throw 'Bounded Qwen bank patch failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanNatureTrial.BuildBankPatch'
+          }
+          if($req.stage -eq 'shrub_trial'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/patch_shrub_crowns.py
+            if($LASTEXITCODE){throw 'Bounded Qwen shrub crown patch failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanShrubTrial.Build'
+          }
+          if($req.stage -eq 'bastion_ensemble'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_bastion_ensemble.py
+            if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble.Build'
+          }
+          if($req.stage -eq 'bastion_environment'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_bastion_environment.py
+            if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnvironment.Build'
+          }
+          if($req.stage -eq 'pine_volume'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_pine_volume.py
+            if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPineVolume.Build'
+          }
+          if($req.stage -eq 'bastion_two'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_bastion_two.py
+            if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionTwo.Build'
+          }
+          if($req.stage -eq 'camp_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial.Build'}
+          if($req.stage -eq 'camp_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'camp_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            if($req.repair_camp){$env:VALORIA_CAMP_REPAIR='1'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_camp87.py
+            if($LASTEXITCODE){throw 'Camp cloth authoring failed'}
+            if(-not(Test-Path 'docs/evidence/valoria-reference-clean/camp87-result.json')){throw 'Camp authoring report missing'}
+            return
+          }
+          if($req.stage -eq 'sawmill_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            if($req.repair_sawmill){$env:VALORIA_SAWMILL_REPAIR='1'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_sawmill_refined.py
+            if($LASTEXITCODE){throw 'Camp cloth authoring failed'}
+            if(-not(Test-Path 'docs/evidence/valoria-reference-clean/sawmill-refined-result.json')){throw 'Camp authoring report missing'}
+            return
+          }
+          if($req.stage -eq 'web_playtest'){
+            $integrationLog=Join-Path $env:RUNNER_TEMP 'valoria-web-integration-preflight.log'
+            $integrationArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Build','-logFile',$integrationLog)
+            $integrationProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $integrationArgs -PassThru
+            if(-not $integrationProcess.WaitForExit(600000)){& taskkill.exe /PID $integrationProcess.Id /T /F|Out-Null;throw 'Own integrated web preflight timed out'}
+            Copy-Item $integrationLog docs/evidence/valoria-reference-clean/web-integration-preflight.log
+            if($integrationProcess.ExitCode -ne 0 -or -not(Select-String $integrationLog -Pattern 'VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE' -Quiet)){Get-Content $integrationLog -Tail 100;throw 'Integrated I-II preflight failed; no browser build'}
+          }
+          $loaderCasesDone=$false
+          if($req.validate_content_before_android){
+            $preLog=Join-Path $env:RUNNER_TEMP 'valoria-content-before-android.log'
+            $preArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaContentBuild.Validate','-logFile',$preLog)
+            $pre=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $preArgs -PassThru
+            if(-not $pre.WaitForExit(1200000)){& taskkill.exe /PID $pre.Id /T /F|Out-Null;throw 'Own content preflight timed out'}
+            Copy-Item $preLog docs/evidence/valoria-reference-clean/content-pre-android.log
+            if($pre.ExitCode -ne 0 -or -not(Select-String $preLog -Pattern 'VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE EXISTING_UI_RULES_SAVE_I_II_PASS' -Quiet)){Get-Content $preLog -Tail 100;throw 'Exact content/runtime preflight failed'}
+            if($req.validate_loader_cases){Test-ValoriaContentLoaderCases;$loaderCasesDone=$true}
+          }
+          $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
+          $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
+          $settingsBefore=@{}
+          foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
+          if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
+
+          $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
+          $resourceStash=Join-Path $env:RUNNER_TEMP "ValoriaResourceGLBs-update-$env:GITHUB_RUN_ID"
+          $streamSource=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/StreamingAssets/ValoriaFamilyV3'
+          $streamStash=Join-Path $env:RUNNER_TEMP "ValoriaFamilyV3-update-$env:GITHUB_RUN_ID"
+          $movedBytes=0;$movedFiles=0
+          if($req.stage -in @('android','web_playtest') -and ((Test-Path $resourceStash) -or (Test-Path $streamStash))){throw 'Existing update stash requires recovery; refuse overwrite'}
+          try{
+
+            if($req.stage -in @('android','web_playtest')){
+              # Recovered optimized V5 packaging: exclude only legacy source GLBs and the source-only V3 streaming family.
+              if(Test-Path $resourceRoot){foreach($glb in @(Get-ChildItem $resourceRoot -Recurse -File -Filter '*.glb')){
+                $relative=$glb.FullName.Substring($resourceRoot.Length).TrimStart([char]92);$target=Join-Path $resourceStash $relative
+                New-Item (Split-Path $target) -ItemType Directory -Force|Out-Null
+                $movedBytes+=$glb.Length;$movedFiles++;Move-Item $glb.FullName $target
+                if(Test-Path ($glb.FullName+'.meta')){Move-Item ($glb.FullName+'.meta') ($target+'.meta')}
+              }}
+              if(Test-Path $streamSource){$movedBytes+=(Get-ChildItem $streamSource -Recurse -File|Measure-Object Length -Sum).Sum;Move-Item $streamSource $streamStash}
+              @{original_procedure_run=38279800977;source_glbs_excluded=$movedFiles;source_bytes_excluded=$movedBytes;single_scene='Valoria_Reference_Clean.unity';user_data_touched=$false}|ConvertTo-Json|Set-Content (Join-Path 'docs/evidence/valoria-reference-clean' ($req.stage+'-optimized-payload.json')) -Encoding utf8
+            }
+            $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $p.WaitForExit(2400000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'Own Unity process timed out'}
+          }finally{
+
+            if($req.stage -in @('android','web_playtest')){
+              foreach($q in $settingsBefore.Keys){[IO.File]::WriteAllBytes($q,$settingsBefore[$q])}
+              if(Test-Path $resourceStash){
+                foreach($item in @(Get-ChildItem $resourceStash -Recurse -File)){
+                  $relative=$item.FullName.Substring($resourceStash.Length).TrimStart([char]92);$target=Join-Path $resourceRoot $relative
+                  New-Item (Split-Path $target) -ItemType Directory -Force|Out-Null
+                  if(Test-Path $target){throw "RESTORE_REFUSED_FILE_EXISTS $relative"};Move-Item $item.FullName $target
+                }
+                Remove-Item $resourceStash -Force -Recurse
+              }
+              if(Test-Path $streamStash){if(Test-Path $streamSource){throw 'RESTORE_REFUSED_SOURCE_EXISTS'};Move-Item $streamStash $streamSource}
+            }
+          }
+          $nativeLog='native-unity.log';if($req.stage -eq 'android'){$nativeLog='android-native.log'}
+          Copy-Item $log (Join-Path 'docs/evidence/valoria-reference-clean' $nativeLog)
+          Select-String $log -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
+          Get-Content $log -Tail 100
+          if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
+          if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
+          if($req.validate_loader_cases -and -not $loaderCasesDone){Test-ValoriaContentLoaderCases}
+          if($req.export_package){
+            $packageLog=Join-Path $env:RUNNER_TEMP 'valoria-package-refresh.log'
+            $packageArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize.ExportExisting','-logFile',$packageLog)
+            $packageProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $packageArgs -PassThru
+            if(-not $packageProcess.WaitForExit(600000)){& taskkill.exe /PID $packageProcess.Id /T /F|Out-Null;throw 'Own package refresh timed out'}
+            Copy-Item $packageLog docs/evidence/valoria-reference-clean/package-refresh-native.log
+            if($packageProcess.ExitCode -ne 0 -or -not(Select-String $packageLog -Pattern 'VALORIA_REFERENCE_CLEAN_PACKAGE_COMPLETE' -Quiet)){throw 'Updated package export failed'}
+            "package_export=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          }
+          if($req.stage -in @('gameplay','bastion_two_integrate','camp_integrate')){
+            $gameLog=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean-gameplay.log'
+            $gameArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe','-logFile',$gameLog)
+            $gp=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $gameArgs -PassThru
+            if(-not $gp.WaitForExit(600000)){& taskkill.exe /PID $gp.Id /T /F|Out-Null;throw 'Own gameplay test timed out'}
+            Copy-Item $gameLog docs/evidence/valoria-reference-clean/gameplay78-native.log
+            Get-Content $gameLog -Tail 100
+            if($gp.ExitCode -ne 0 -or -not(Select-String $gameLog -Pattern 'VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE EXISTING_UI_RULES_SAVE_I_II_PASS' -Quiet)){throw 'Gameplay I-II probe failed'}
+          }
+          if($req.validate_core_tests){
+            $testLog=Join-Path $env:RUNNER_TEMP 'valoria-core-tests.log'
+            $testResult=Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'gameplay-core-tests.xml'
+            $testArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-runTests','-testPlatform','EditMode','-testFilter','Eldoria.Tests.SliceCoreTests','-testResults',$testResult,'-logFile',$testLog)
+            $tests=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $testArgs -PassThru
+            if(-not $tests.WaitForExit(600000)){& taskkill.exe /PID $tests.Id /T /F|Out-Null;throw 'Own core tests timed out'}
+            Copy-Item $testLog docs/evidence/valoria-reference-clean/gameplay-core-tests.log
+            if(-not(Test-Path $testResult)){throw 'Native test result missing'}
+            [xml]$testXml=Get-Content $testResult
+            if($tests.ExitCode -ne 0 -or $testXml.'test-run'.result -ne 'Passed' -or [int]$testXml.'test-run'.total -lt 10){Get-Content $testLog -Tail 100;throw 'Native core tests failed'}
+          }
+          if($req.validate_play){
+            $playLog=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean-play.log'
+            $playArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build','-logFile',$playLog)
+            $play=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $playArgs -PassThru
+            if(-not $play.WaitForExit(600000)){& taskkill.exe /PID $play.Id /T /F|Out-Null;throw 'Own PlayMode validation timed out'}
+            Copy-Item $playLog docs/evidence/valoria-reference-clean/playmode-native.log
+            Select-String $playLog -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
+            Get-Content $playLog -Tail 80
+            if($play.ExitCode -ne 0 -or -not(Select-String $playLog -Pattern 'VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE' -Quiet)){throw 'Actual PlayMode validation failed'}
+          }
+
+      - name: Verify optimized Android update identity and signature
+        if: success() && steps.native_stage.outputs.stage == 'android'
+        shell: powershell
+        run: |
+          $sdk=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/SDK'
+          $java=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/OpenJDK/bin/java.exe'
+          if(-not(Test-Path $java)){throw 'Installed Unity Java missing'}
+          $buildTools=Get-ChildItem (Join-Path $sdk 'build-tools') -Directory|Sort-Object Name -Descending|Where-Object {(Test-Path (Join-Path $_.FullName 'apksigner.bat')) -and (Test-Path (Join-Path $_.FullName 'aapt.exe'))}|Select-Object -First 1
+          if(-not $buildTools){throw 'Existing Android verification tools missing'}
+          $apk=(Resolve-Path 'Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk').Path
+          $priorPreference=$ErrorActionPreference
+          try{
+            $ErrorActionPreference='Continue'
+            $signed=(& $java -jar (Join-Path $buildTools.FullName 'lib/apksigner.jar') verify --verbose --print-certs $apk 2>&1|Out-String);$signedExit=$LASTEXITCODE
+            $badging=(& (Join-Path $buildTools.FullName 'aapt.exe') dump badging $apk 2>&1|Out-String);$badgingExit=$LASTEXITCODE
+          }finally{$ErrorActionPreference=$priorPreference}
+          if($signedExit){Write-Host $signed;throw 'APK cryptographic signature verification failed'}
+          if($badgingExit){Write-Host $badging;throw 'APK manifest verification failed'}
+          [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-apksigner.txt'),$signed)
+          [IO.File]::WriteAllText((Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'android-update-badging.txt'),$badging)
+          $expected='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
+          if(-not $signed.ToLowerInvariant().Contains($expected)){throw 'APK signing certificate differs from installed-version candidate'}
+          $request=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          $code=5;if($request.android_version_code){$code=[int]$request.android_version_code}
+          if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='$code'"){throw 'APK update package/version mismatch'}
+          if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'APK ARM64 missing'}
+          @{source_sha=$env:GITHUB_SHA;package='com.eldoria.valoria.v5test';version_code=$code;prior_version_code=5;certificate_sha256=$expected;cryptographic_signature_verified=$true;sha256=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $apk).Length;owner_phone_update_tested=$false;user_data_reset=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/android-update-verification.json -Encoding utf8
+      - name: Publish requested verified Android scene content only
+        if: success() && steps.native_stage.outputs.stage == 'android'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if(-not $req.publish_content){return}
+          & ./tools/valoria-reference-clean/publish_content.ps1
+      - name: Review real capture with previously installed local vision model
+        continue-on-error: true
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if(-not $req.auxiliary_review){return}
+          $server=$null
+          try {
+            $o=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'
+            if(-not(Test-Path $o)){$o=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue|ForEach-Object {Join-Path $_.FullName 'AppData/Local/Programs/Ollama/ollama.exe'}|Where-Object {Test-Path $_}|Select-Object -First 1}
+            if(-not $o){throw 'Previously installed Ollama not found'}
+            $env:OLLAMA_HOST='127.0.0.1:11434'
+            $modelsRoot=Join-Path $env:USERPROFILE '.ollama/models'
+            if(-not(Test-Path $modelsRoot)){$modelsRoot=Get-ChildItem (Join-Path $env:SystemDrive 'Users') -Directory -ErrorAction SilentlyContinue|ForEach-Object {Join-Path $_.FullName '.ollama/models'}|Where-Object {Test-Path $_}|Select-Object -First 1}
+            if($modelsRoot){$env:OLLAMA_MODELS=$modelsRoot}
+            $ready=$false
+            try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true}catch{}
+            if(-not $ready){
+              $server=Start-Process $o -ArgumentList 'serve' -PassThru -WindowStyle Hidden -RedirectStandardOutput (Join-Path $env:RUNNER_TEMP 'valoria-ollama-out.log') -RedirectStandardError (Join-Path $env:RUNNER_TEMP 'valoria-ollama-err.log')
+              for($i=0;$i -lt 30;$i++){try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{Start-Sleep -Seconds 1}}
+            }
+            if(-not $ready){throw 'Local Ollama did not become ready'}
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Verified Blender unavailable for review adapter'}
+            & $blender -b -t 2 --python-exit-code 1 --python tools/valoria-reference-clean/review_capture.py
+          } catch {
+            @{status='AUXILIARY_UNAVAILABLE_NOT_AN_ART_PASS';error=$_.Exception.Message;art_approved=$false;new_model_downloads=0}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/qwen-review.json -Encoding utf8
+          } finally {
+            if($server){& taskkill.exe /PID $server.Id /T /F|Out-Null}
+          }
+      - name: Record physical mobile test availability for gameplay validation
+        shell: powershell
+        run: |
+          $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+          if($req.stage -eq 'play' -or $req.stage -eq 'android' -or $req.validate_play){
+            $editorDir=Split-Path $env:UNITY_EDITOR_PATH
+            $adb=Join-Path $editorDir 'Data/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb.exe'
+            if(-not(Test-Path $adb) -and $env:ANDROID_HOME){$adb=Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'}
+            $available=Test-Path $adb
+            $count=0
+            if($available){$priorPreference=$ErrorActionPreference;$ErrorActionPreference='Continue';$listing=@(& $adb devices 2>&1);$ErrorActionPreference=$priorPreference;$count=@($listing|Where-Object {$_.ToString() -match '\sdevice$'}).Count}
+            @{windows_host=$true;android_adb_available=$available;authorized_android_devices=$count;physical_android_profile_performed=$false;physical_ios_profile_performed=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/mobile-availability.json -Encoding utf8
+          }
+      - name: Persist independent scene, models, prefabs and actual captures on construction branch
+        shell: powershell
+        run: |
+          git config user.name 'Valoria reference clean builder'
+          git config user.email 'valoria-clean@users.noreply.github.com'
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ docs/evidence/valoria-reference-clean/
+          git add -- Unity/Packages/packages-lock.json
+          if(Test-Path 'tools/valoria-reference-clean/content-channel.json'){git add -- tools/valoria-reference-clean/content-channel.json}
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'art(valoria): native independent reference scene and genuine Unity evidence'
+            if($LASTEXITCODE){throw 'Commit failed'}
+            git push origin HEAD:main
+            if($LASTEXITCODE){throw 'Concurrent branch change; preserve artifacts without force push'}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-review-small-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/web-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/chapter2-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/camp87-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/sawmill-refined-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/content93-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/content-loader-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/sawmill-completed-*
+            ${{ runner.temp }}/valoria-reference-clean.log
+            ${{ runner.temp }}/valoria-reference-clean-gameplay.log
+          if-no-files-found: warn
+
+
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        with:
+          name: valoria-reference-clean-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/**
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**
+            ${{ runner.temp }}/valoria-reference-clean.log
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: success() && steps.native_stage.outputs.stage == 'android'
+        with:
+          name: valoria-reference-clean-apk-${{ github.run_id }}
+          path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: success() && (steps.native_stage.outputs.stage == 'android' || steps.native_stage.outputs.stage == 'content_validate')
+        with:
+          name: valoria-scene-content-${{ github.run_id }}
+          path: |
+            valoria-layered-source/Unity/Builds/ValoriaContent/*/valoria-*.bundle
+            valoria-layered-source/Unity/Builds/ValoriaContent/*/content-channel.json
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: success() && (steps.native_stage.outputs.package_export == 'true' || steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate' || steps.native_stage.outputs.stage == 'bastion_two_integrate' || steps.native_stage.outputs.stage == 'camp_integrate')
+        with:
+          name: valoria-reference-clean-package-${{ github.run_id }}
+          path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage
+          if-no-files-found: error
+
+
+      - uses: actions/upload-artifact@v4
+        if: success() && steps.native_stage.outputs.stage == 'web_playtest'
+        with:
+          name: valoria-integrated-web-playtest-${{ github.run_id }}
+          path: valoria-layered-source/Unity/Builds/ValoriaWebPlaytest/**
+          if-no-files-found: error

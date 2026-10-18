@@ -1,0 +1,62 @@
+{
+  "run": 38279800977,
+  "artifact": 11761406447,
+  "bytes": 184264521,
+  "sha256": "36a316afae508613a35d92a241d74e526c96cd04544ba5536bf5a115b06e6da0",
+  "manifest": [
+    {
+      "tag": "manifest",
+      "attributes": {
+        "versionCode": 1,
+        "versionName": "1.0",
+        "installLocation": 2,
+        "compileSdkVersion": 36,
+        "compileSdkVersionCodename": "16",
+        "package": "com.eldoria.valoria.v5test",
+        "platformBuildVersionCode": 36,
+        "platformBuildVersionName": 16
+      }
+    },
+    {
+      "tag": "uses-sdk",
+      "attributes": {
+        "minSdkVersion": 29,
+        "targetSdkVersion": 36
+      }
+    },
+    {
+      "tag": "application",
+      "attributes": {
+        "label": 2131558433,
+        "icon": 2131492864,
+        "extractNativeLibs": true,
+        "appCategory": 0,
+        "appComponentFactory": "androidx.core.app.CoreComponentFactory",
+        "enableOnBackInvokedCallback": true
+      }
+    }
+  ],
+  "certificates": [
+    {
+      "subject": "C=US,O=Android,CN=Android Debug",
+      "issuer": "C=US,O=Android,CN=Android Debug",
+      "sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+      "serial": "1"
+    }
+  ],
+  "native_libraries": [
+    "lib/arm64-v8a/lib_burst_generated.so",
+    "lib/arm64-v8a/libc++_shared.so",
+    "lib/arm64-v8a/libgame.so",
+    "lib/arm64-v8a/libil2cpp.so",
+    "lib/arm64-v8a/libmain.so",
+    "lib/arm64-v8a/libswappywrapper.so",
+    "lib/arm64-v8a/libunity.so",
+    "lib/arm64-v8a/libwebp.so",
+    "lib/arm64-v8a/libwebpdecoder.so",
+    "lib/arm64-v8a/libwebpdemux.so",
+    "lib/arm64-v8a/libwebpmux.so"
+  ],
+  "installed_phone_identity_independently_verified": false,
+  "signature_cryptographic_validation_performed": false
+}

@@ -1,0 +1,183 @@
+{
+  "status": "V14_ARCHITECTURAL_SOCKET_CANDIDATE_UNAPPROVED",
+  "source_v12_blend_sha256": "21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de",
+  "result_blend_sha256": "2afef27fded3778e9a0104099a71483903e3464c7d5bcd8bfa0e6f3e2d13ce2f",
+  "result_glb_sha256": "4198526616c657a12f1642e8978f8e05a59c1b3c913b7105d8aff6fc0b1bc46a",
+  "triangles": 351734,
+  "real_terrain_samples": [
+    {
+      "footing": "West",
+      "x": 11.382566375732422,
+      "front_y": 9.220000953674317,
+      "real_terrain_z": 0.2712879180908203,
+      "foundation_low_z": 0.1912879180908203,
+      "interlocked_wall_bottom_z": 0.375,
+      "masonry_top_z": 1.895
+    },
+    {
+      "footing": "West",
+      "x": 13.5,
+      "front_y": 9.220000953674317,
+      "real_terrain_z": 0.279388427734375,
+      "foundation_low_z": 0.19938842773437498,
+      "interlocked_wall_bottom_z": 0.375,
+      "masonry_top_z": 1.895
+    },
+    {
+      "footing": "West",
+      "x": 15.617433624267578,
+      "front_y": 9.220000953674317,
+      "real_terrain_z": 0.2684640884399414,
+      "foundation_low_z": 0.1884640884399414,
+      "interlocked_wall_bottom_z": 0.375,
+      "masonry_top_z": 1.895
+    },
+    {
+      "footing": "WestInnerTower",
+      "x": 10.729999542236328,
+      "front_y": 8.959739570617677,
+      "real_terrain_z": 0.26970767974853516,
+      "foundation_low_z": 0.18970767974853514,
+      "interlocked_wall_bottom_z": 0.3799999952316284,
+      "masonry_top_z": 1.4299999952316285
+    },
+    {
+      "footing": "WestOuterTower",
+      "x": 16.240000247955322,
+      "front_y": 9.059776191711427,
+      "real_terrain_z": 0.27138614654541016,
+      "foundation_low_z": 0.19138614654541014,
+      "interlocked_wall_bottom_z": 0.3799999952316284,
+      "masonry_top_z": 1.4299999952316285
+    },
+    {
+      "footing": "East",
+      "x": -15.617433624267578,
+      "front_y": 9.220000953674317,
+      "real_terrain_z": -0.06000709533691406,
+      "foundation_low_z": -0.14000709533691408,
+      "interlocked_wall_bottom_z": 0.375,
+      "masonry_top_z": 1.895
+    },
+    {
+      "footing": "East",
+      "x": -13.5,
+      "front_y": 9.220000953674317,
+      "real_terrain_z": -0.2200336456298828,
+      "foundation_low_z": -0.30003364562988283,
+      "interlocked_wall_bottom_z": 0.375,
+      "masonry_top_z": 1.895
+    },
+    {
+      "footing": "East",
+      "x": -11.382566375732422,
+      "front_y": 9.220000953674317,
+      "real_terrain_z": -0.3215599060058594,
+      "foundation_low_z": -0.4015599060058594,
+      "interlocked_wall_bottom_z": 0.375,
+      "masonry_top_z": 1.895
+    },
+    {
+      "footing": "EastInnerTower",
+      "x": -10.729999542236328,
+      "front_y": 9.159804229736329,
+      "real_terrain_z": -0.4217643737792969,
+      "foundation_low_z": -0.5017643737792968,
+      "interlocked_wall_bottom_z": 0.3799999952316284,
+      "masonry_top_z": 1.4299999952316285
+    },
+    {
+      "footing": "EastOuterTower",
+      "x": -16.239999771118164,
+      "front_y": 9.009759788513184,
+      "real_terrain_z": -0.03581809997558594,
+      "foundation_low_z": -0.11581809997558594,
+      "interlocked_wall_bottom_z": 0.3799999952316284,
+      "masonry_top_z": 1.4299999952316285
+    }
+  ],
+  "design": {
+    "objectives": [
+      "join masonry flank-wall piers to real rock bank",
+      "give four towers real terrain-fitting dressed foundations",
+      "retain arch, original gate and bridge circulation"
+    ],
+    "baseline": "V12 visible player home, original V7 gate/camera and certified road colliders",
+    "allowed_geometry": "six foundation/contact sets using existing V12 stone PBR and BVH",
+    "wall_joints": "tapered keyed masonry courses bonded into existing wall body",
+    "terrain_sampling": "BVH actual vertices; no dummy plane; probe front toe and back",
+    "bridge_footings": "source unchanged, contact measured only, never masked with water",
+    "protected": "original gate/wall meshes, colliders, camera and all road stairs",
+    "materials": "V7 already packed approved stone PBR; real meter-based UVs",
+    "art_gate": "same home Unity A/B and owner reference; no autoapproval",
+    "existing_bridge_feet_bottom_z": -4.349999904632568,
+    "bridge_original_world_bounds": {
+      "name": "ENTRY_SUPPORTED_VALORIA_ARCH_FOOTINGS",
+      "world_min_xyz": [
+        -2.5900001525878906,
+        10.119999885559082,
+        -4.349999904632568
+      ],
+      "world_max_xyz": [
+        2.5899999141693115,
+        18.8799991607666,
+        -0.019999980926513672
+      ],
+      "center_xyz": [
+        -1.1920928955078125e-07,
+        14.499999523162842,
+        -2.184999942779541
+      ],
+      "size_xyz": [
+        5.180000066757202,
+        8.75999927520752,
+        4.329999923706055
+      ],
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "vertices": 96,
+      "triangles": 176,
+      "materials": [
+        "Eldoria_stone.001"
+      ],
+      "imported_image_names": [
+        "masonry_albedo.001",
+        "masonry_normal.001"
+      ]
+    }
+  },
+  "source_12_stairs_unchanged": true,
+  "source_gate_and_bridge_unchanged": true,
+  "source_colliders_unchanged": true,
+  "masonry_source": "V12 original trusted V7 PBR, UV metres",
+  "new_fitted_stone_footings": 6,
+  "real_dressed_stone_courses": 30,
+  "input_geometry_source_unchanged": true,
+  "zero_paid_spend": true,
+  "art_status": "REQUIRES_REAL_UNITY_AB_AND_INDEPENDENT_REVIEW",
+  "mobile_profiled": false
+}

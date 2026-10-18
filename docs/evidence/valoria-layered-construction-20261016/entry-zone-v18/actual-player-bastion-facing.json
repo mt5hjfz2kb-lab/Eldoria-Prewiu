@@ -1,0 +1,140 @@
+{
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV18_CANDIDATE.unity",
+    "verdict": "BANNER_NOT_FOUND_OR_NOT_IN_VIEW_CHECK_HIERARCHY_CAMERA",
+    "kind": "Read-only native Unity imported actual model triangle facing counts, NOT Blender preview inference",
+    "camera_world_position": {
+        "x": 10.815975189208985,
+        "y": 22.87689208984375,
+        "z": -43.31694030761719
+    },
+    "camera_world_forward": {
+        "x": -0.22196857631206513,
+        "y": -0.4188646674156189,
+        "z": 0.8805012106895447
+    },
+    "keep_center": {
+        "x": 2.0800228118896486,
+        "y": 6.3476762771606449,
+        "z": 56.84095764160156
+    },
+    "keep_to_camera": {
+        "x": 0.08574085682630539,
+        "y": 0.1622294932603836,
+        "z": -0.9830209016799927
+    },
+    "keep_world_forward": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+    },
+    "fov": 44.42280960083008,
+    "mesh_objects": 1,
+    "triangle_count": 7184,
+    "heraldry_front": 0,
+    "heraldry_back": 0,
+    "heraldry_in_frustum": 0,
+    "material_faces": [
+        {
+            "name": "Entry_00020",
+            "triangles": 208,
+            "front_facing_triangles": 103,
+            "back_facing_triangles": 105,
+            "in_frustum_triangles": 208,
+            "front_facing_area": 26.069747924804689,
+            "back_facing_area": 26.07543182373047,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.6270450353622437,
+            "max_screen_x": 0.6679672598838806,
+            "min_screen_y": 0.7811930775642395,
+            "max_screen_y": 0.8580762147903442
+        },
+        {
+            "name": "Entry_00002",
+            "triangles": 674,
+            "front_facing_triangles": 238,
+            "back_facing_triangles": 436,
+            "in_frustum_triangles": 674,
+            "front_facing_area": 74.4327163696289,
+            "back_facing_area": 81.97481536865235,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.6279531717300415,
+            "max_screen_x": 0.6688408851623535,
+            "min_screen_y": 0.7863331437110901,
+            "max_screen_y": 0.8770488500595093
+        },
+        {
+            "name": "Entry_00002",
+            "triangles": 610,
+            "front_facing_triangles": 304,
+            "back_facing_triangles": 306,
+            "in_frustum_triangles": 610,
+            "front_facing_area": 19.49090576171875,
+            "back_facing_area": 19.70011329650879,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.631527304649353,
+            "max_screen_x": 0.6708872318267822,
+            "min_screen_y": 0.7963476181030273,
+            "max_screen_y": 0.8897843956947327
+        },
+        {
+            "name": "Entry_00002",
+            "triangles": 1875,
+            "front_facing_triangles": 923,
+            "back_facing_triangles": 952,
+            "in_frustum_triangles": 1875,
+            "front_facing_area": 55.330474853515628,
+            "back_facing_area": 57.90214157104492,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.629202127456665,
+            "max_screen_x": 0.6702660322189331,
+            "min_screen_y": 0.7959610223770142,
+            "max_screen_y": 0.8896509408950806
+        },
+        {
+            "name": "Entry_00021",
+            "triangles": 104,
+            "front_facing_triangles": 52,
+            "back_facing_triangles": 52,
+            "in_frustum_triangles": 104,
+            "front_facing_area": 4.970041751861572,
+            "back_facing_area": 4.970037460327148,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.6421623229980469,
+            "max_screen_x": 0.6595934629440308,
+            "min_screen_y": 0.8320109844207764,
+            "max_screen_y": 0.8888089656829834
+        },
+        {
+            "name": "Entry_00008",
+            "triangles": 720,
+            "front_facing_triangles": 360,
+            "back_facing_triangles": 360,
+            "in_frustum_triangles": 720,
+            "front_facing_area": 14.641484260559082,
+            "back_facing_area": 14.641502380371094,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.6330002546310425,
+            "max_screen_x": 0.6692146062850952,
+            "min_screen_y": 0.8308295607566834,
+            "max_screen_y": 0.8900392055511475
+        },
+        {
+            "name": "Entry_00008",
+            "triangles": 28,
+            "front_facing_triangles": 14,
+            "back_facing_triangles": 14,
+            "in_frustum_triangles": 28,
+            "front_facing_area": 0.15944164991378785,
+            "back_facing_area": 0.15943333506584168,
+            "visible_banner_triangles": 0,
+            "min_screen_x": 0.6413607001304627,
+            "max_screen_x": 0.6422861218452454,
+            "min_screen_y": 0.8748565912246704,
+            "max_screen_y": 0.8898782730102539
+        }
+    ],
+    "same_picking_camera": true,
+    "source_geometry_modified": false,
+    "art_approved": false,
+    "canonical_modified": false
+}

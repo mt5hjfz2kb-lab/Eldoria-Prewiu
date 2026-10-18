@@ -1,0 +1,33 @@
+{
+  "source_sha": "3ea1ae35f385777e139d0e58c393204087ba2286",
+  "source_preserved": true,
+  "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "qwen_model": "qwen3:14b",
+  "plan": {
+    "rationale": "The Bastion_I design draws from the observed reference of a compact warm stone keep with corbelled crenellations, substantial sill/corner blocks, and softly swept blue roofs. The Unity observation highlights the need for more authentic geometric detail, such as rigid roof planes, brick-like wall courses, and thin window outlines. The operations specify a focus on curved slate roofs, stepped cornices, and recessed windows. The geometry must be coherent, with clear architectural and landscape elements that align with the reference and Unity observations.",
+    "roof_rise": 3.7,
+    "eave_sweep": 0.22,
+    "cornice_projection": 0.3,
+    "merlon_width": 0.86,
+    "course_height": 0.52,
+    "window_width": 1.05,
+    "window_height": 1.7,
+    "quoin_width": 0.65,
+    "foliage_height": 1.9,
+    "foliage_spread": 1.6,
+    "rock_scale": 0.85
+  },
+  "glb_sha256": "0677f18fe022cf836ac1b53ebd996b4f526f07ecabadb4f482d748578e724c07",
+  "blend_sha256": "635c948163ee618fcbf6e4b63585db864ef441f590aa50dd0ccc3f6c25ace644",
+  "art_approved": false,
+  "objects": [
+    {
+      "name": "Bastion_Ensemble_Candidate",
+      "triangles": 142782
+    },
+    {
+      "name": "Bastion_Ensemble_Grounding",
+      "triangles": 15264
+    }
+  ]
+}

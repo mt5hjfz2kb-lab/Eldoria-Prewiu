@@ -1,3 +1,11 @@
+# Eldoria — desarrollo principal
+
+La base vigente es **Valoria integrada native111 en main**: ciudad, Royal Gold y Zona1 4X. [Estado y reglas actuales](docs/ELDORIA_MAIN_BASELINE_20261018.md) · [Revisión y prioridades](docs/ELDORIA_PLAYER_REVIEW_20261018.md) · [Prueba privada](https://valoria-city-world.kbkvc5c45n.chatgpt.site).
+
+Las demás ramas se conservan como referencia histórica; no son líneas de producción activas. Calidad artística y validación física móvil todavía pendientes.
+
+---
+
 # Eldoria — desarrollo canónico Unity
 
 > **Índice documental único:** [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md). **Entrada operativa:** leer [AGENTS.md](AGENTS.md), el estado actual en [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [PROJECT_STATE.md](PROJECT_STATE.md) y la propiedad activa en [pipeline/active-workstreams.json](pipeline/active-workstreams.json). El repositorio `main` y los resultados verificables prevalecen sobre la memoria del chat y los registros históricos.

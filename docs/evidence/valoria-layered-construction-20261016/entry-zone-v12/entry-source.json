@@ -1,0 +1,193 @@
+{
+  "stage": "V12 genuine selective existing WallFamily architectural extension",
+  "art_status": "CANDIDATE_NOT_APPROVED",
+  "source_v7_blend_sha256": "24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381",
+  "original_wall_family_sha256": "0ac5ef48b55946d0820b8b064662f8d077060332044b077f2993d9444595f430",
+  "source_inspection": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-macro-envelope-v1\\docs/evidence/valoria-layered-construction-20261016\\entry-zone-v11-inspection\\wall-source-world-bounds.json",
+  "result_blend_sha256": "21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de",
+  "result_glb_sha256": "c0cb293cb44809f0817112a0c55e949ca2b68b09dfa7825449c235d8b63a5931",
+  "triangles": 351374,
+  "source_triangles": 342006,
+  "donor_texture_nodes": {
+    "WestWallTowerB": [
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001"
+    ],
+    "WestWallTowerA": [
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001"
+    ],
+    "WestPartialWall": [
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001"
+    ],
+    "EastWallTowerB": [
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001"
+    ],
+    "EastWallTowerA": [
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001"
+    ],
+    "EastPartialWall": [
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001",
+      "stone_grain_albedo.001",
+      "stone_grain_normal.001"
+    ]
+  },
+  "reused_wall_meshes": [
+    {
+      "donor": "WestPartialWall",
+      "name": "ENTRY_V12_REUSED_WALLFAMILY_WestFlankWall",
+      "mirrored_symmetric_copy": false,
+      "world_min_xyz": [
+        10.462566375732422,
+        7.159763336181641,
+        0.375
+      ],
+      "world_max_xyz": [
+        16.537433624267578,
+        8.340238571166992,
+        3.9749999046325684
+      ],
+      "triangles": 1620
+    },
+    {
+      "donor": "WestPartialWall",
+      "name": "ENTRY_V12_REUSED_WALLFAMILY_EastFlankWall",
+      "mirrored_symmetric_copy": true,
+      "world_min_xyz": [
+        -16.537433624267578,
+        7.159763336181641,
+        0.375
+      ],
+      "world_max_xyz": [
+        -10.462566375732422,
+        8.340238571166992,
+        3.9749999046325684
+      ],
+      "triangles": 1620
+    },
+    {
+      "donor": "WestWallTowerA",
+      "name": "ENTRY_V12_REUSED_WALLFAMILY_WestOuterTower",
+      "mirrored_symmetric_copy": false,
+      "world_min_xyz": [
+        15.340447425842285,
+        6.880223751068115,
+        0.3799999952316284
+      ],
+      "world_max_xyz": [
+        17.13955307006836,
+        8.679776191711426,
+        5.580000400543213
+      ],
+      "triangles": 1532
+    },
+    {
+      "donor": "WestWallTowerB",
+      "name": "ENTRY_V12_REUSED_WALLFAMILY_WestInnerTower",
+      "mirrored_symmetric_copy": false,
+      "world_min_xyz": [
+        9.93051815032959,
+        6.980258464813232,
+        0.3799999952316284
+      ],
+      "world_max_xyz": [
+        11.529480934143066,
+        8.579739570617676,
+        5.179999828338623
+      ],
+      "triangles": 1532
+    },
+    {
+      "donor": "EastWallTowerA",
+      "name": "ENTRY_V12_REUSED_WALLFAMILY_EastOuterTower",
+      "mirrored_symmetric_copy": false,
+      "world_min_xyz": [
+        -17.089519500732422,
+        6.930241107940674,
+        0.3799999952316284
+      ],
+      "world_max_xyz": [
+        -15.390480041503906,
+        8.629759788513184,
+        5.080000400543213
+      ],
+      "triangles": 1532
+    },
+    {
+      "donor": "EastWallTowerB",
+      "name": "ENTRY_V12_REUSED_WALLFAMILY_EastInnerTower",
+      "mirrored_symmetric_copy": false,
+      "world_min_xyz": [
+        -11.729606628417969,
+        6.780196189880371,
+        0.3799999952316284
+      ],
+      "world_max_xyz": [
+        -9.730392456054688,
+        8.779804229736328,
+        5.980000019073486
+      ],
+      "triangles": 1532
+    }
+  ],
+  "existing_models_reused": true,
+  "EastPartialWall_not_used": "Original source diagonal world bounds would not join the gate without unacceptable anisotropic deformation",
+  "existing_v7_road_PBR_reused": true,
+  "uncertified_donor_materials_discarded": true,
+  "original_source_geometry_unchanged": true,
+  "gameplay_colliders_unchanged": true,
+  "license_scope": "Existing project-authored WallFamily GEOMETRY only; every imported donor texture/material discarded; packed verified V7 PBR and gate trim only",
+  "payment_eur": 0,
+  "physical_mobile_tested": false,
+  "full_frame_art_pass": false
+}

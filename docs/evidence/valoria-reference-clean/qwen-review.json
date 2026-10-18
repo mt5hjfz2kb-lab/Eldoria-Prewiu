@@ -1,0 +1,70 @@
+{
+  "role": "AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE",
+  "art_approved": false,
+  "new_model_downloads": 0,
+  "source_sha": "1f8222abac374bb4e75f1d7b0e9823e27e612717",
+  "installed_models": [
+    "qwen3:14b",
+    "qwen3-vl:8b-instruct-q4_K_M",
+    "qwen3-vl:4b-instruct",
+    "eldoria-artist:latest",
+    "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M"
+  ],
+  "original_images": [
+    {
+      "path": "reference-target.jpeg",
+      "sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+    },
+    {
+      "path": "playmode-home.png",
+      "sha256": "0ce4eff89fd2d6d0effb21b809242fd2d91185a39cf14b44001f42210dc92828"
+    },
+    {
+      "path": "lighting-before-bastion.png",
+      "sha256": "1f83c4fbc5b53f05432d7703d4c87adae324c674a40237a5b26bbcf50ed68607"
+    },
+    {
+      "path": "lighting-after-bastion.png",
+      "sha256": "1115efb5a41df35aa44f8686adf4023850cbb458e65bddae716a24a67dd965a8"
+    }
+  ],
+  "native_scene_facts": {
+    "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
+    "directional_lights": 1,
+    "native_terrain_resolution": 257,
+    "triangles": 634608,
+    "renderers": 34,
+    "source_roof_triangles": 31416,
+    "source_bridge_geometry": {
+      "method": "closed_profile_extrusion",
+      "opening_rays_passed": 8,
+      "pier_rays_passed": 2
+    }
+  },
+  "status": "REAL_LOCAL_CRITIQUE_RECORDED",
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "elapsed_seconds": 40.08,
+  "review": {
+    "visible_strengths": [
+      "The overall composition and camera angle are consistent across all images, preserving the intended layout and perspective.",
+      "The stone textures and building geometry are identical, with no visible changes in structure or placement.",
+      "The lighting setup, including the sun direction and intensity, appears to be the same across all views, maintaining a consistent daylight environment."
+    ],
+    "highest_impact_defects": [
+      {
+        "observation": "The torches in the current Unity view (Image2) appear significantly brighter and more saturated than in the reference (Image1) or the pre-lighting version (Image3). This creates an unnatural contrast with the ambient daylight, making the torches look like they are glowing independently rather than being part of the scene's lighting.",
+        "correction": "Reduce the intensity of the torch lights to match the ambient lighting. The torches should cast a warm, subtle glow that complements the daylight, not overpower it. Adjust the light color temperature to be warmer and lower intensity to match the reference."
+      },
+      {
+        "observation": "The shadows cast by the castle and bridge in Image2 are noticeably softer and less defined compared to Image1. This suggests a lack of proper directional lighting or an incorrect shadow map resolution, which reduces the sense of depth and realism.",
+        "correction": "Re-enable or adjust the directional light to ensure sharp, well-defined shadows. If using baked lighting, verify that the light probes are correctly placed and that the shadow map resolution is sufficient. Increase the shadow strength to match the reference image."
+      },
+      {
+        "observation": "The stone textures in Image2 appear slightly less detailed and more uniform compared to Image1. This could be due to a lower resolution texture or incorrect UV mapping, which reduces the visible depth and realism of the materials.",
+        "correction": "Increase the resolution of the stone textures or reapply the correct UV mapping. Ensure that the material settings are consistent with the reference image. Use a higher-resolution texture atlas to improve the visible detail and depth of the stone surfaces."
+      }
+    ],
+    "reference_similarity_estimate_0_to_10": 8,
+    "uncertainty": "Low. The comparison is based on a direct visual inspection of the lighting, shadows, and textures. The differences are primarily in lighting intensity and shadow softness, which can be corrected with adjustments to the lighting setup."
+  }
+}

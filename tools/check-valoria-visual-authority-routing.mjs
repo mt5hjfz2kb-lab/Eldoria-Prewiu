@@ -1,62 +1,25 @@
-import fs from "node:fs";
-
-const fail = (message) => {
-  console.error("VALORIA_VISUAL_AUTHORITY_ROUTING=FAIL");
-  console.error(message);
-  process.exit(1);
-};
-
-const read = (path) => {
-  if (!fs.existsSync(path)) fail("Missing required path: " + path);
-  return fs.readFileSync(path, "utf8");
-};
-
-const manifest = JSON.parse(read("pipeline/visual-authority-routing-v1.json"));
-const expectedSha = "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689";
-
-if (manifest?.canonical_visual_authority?.sha256 !== expectedSha)
-  fail("Canonical Valoria visual authority SHA drifted.");
-
-const productionGenerator = read(manifest.canonical_visual_authority.production_generator);
-if (!productionGenerator.includes(expectedSha))
-  fail("Production generator no longer fingerprints the canonical Valoria authority.");
-if (!productionGenerator.includes("SHARP authoritative runtime scene"))
-  fail("Production generator no longer declares the SHARP authoritative runtime scene.");
-if (!productionGenerator.includes("ValoriaParcelPresentation"))
-  fail("Production generator no longer constructs ValoriaParcelPresentation.");
-
-read(manifest.canonical_visual_authority.production_workflow);
-
-const visualWorld = read(manifest.legacy_fallback.implementation);
-if (!visualWorld.includes("Original procedural study"))
-  fail("VisualWorld legacy fallback lost its explicit legacy/provisional classification.");
-
-const presenter = read("Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs");
-const parcelIndex = presenter.indexOf("if(productionParcels!=null) productionParcels.Apply(state)");
-const fallbackIndex = presenter.indexOf("else if(city) VisualWorld.Create(true,state)");
-if (parcelIndex < 0 || fallbackIndex < 0 || parcelIndex > fallbackIndex)
-  fail("Canonical ValoriaParcelPresentation must remain preferred before the legacy VisualWorld fallback.");
-
-const runtimeGuard = read(manifest.legacy_fallback.fail_closed_guard);
-if (!runtimeGuard.includes("ValoriaCanonicalRuntimeGuard"))
-  fail("Fail-closed runtime guard is missing or renamed without updating authority routing.");
-if (!runtimeGuard.includes("ValoriaParcelPresentation"))
-  fail("Fail-closed guard no longer verifies canonical ValoriaParcelPresentation.");
-if (!runtimeGuard.includes("Legacy VisualWorld fallback is forbidden in production"))
-  fail("Fail-closed guard lost its explicit legacy fallback prohibition.");
-
-const benchmark = read(manifest.generic_benchmark.producer);
-if (!benchmark.includes("VisualWorld.Create(true,state)"))
-  fail("Generic benchmark classification must be reviewed because it no longer exercises the known legacy Valoria fallback.");
-
-const genericWorkflow = read(manifest.generic_benchmark.workflow);
-if (!genericWorkflow.includes("ValoriaBenchmarkCapture.Capture"))
-  fail("Generic benchmark workflow changed; authority classification must be reviewed.");
-if (!manifest.current_screenshot_policy.forbidden_as_canonical.includes("eldoria-valoria-captures-*"))
-  fail("Generic benchmark artifact pattern must remain forbidden as canonical Valoria evidence.");
-
-console.log("VALORIA_VISUAL_AUTHORITY_ROUTING=PASS");
-console.log("CANONICAL_VALORIA=SHARP + ValoriaParcelPresentation");
-console.log("GENERIC_BENCHMARK=NONCANONICAL_MIXED_REGRESSION");
-console.log("LEGACY_VISUALWORLD=FALLBACK_QA_ONLY");
-console.log("RUNTIME_FAIL_CLOSED=INSTALLED");
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const read=p=>fs.readFileSync(p,'utf8');
+const baseline=JSON.parse(read('pipeline/development-baseline.json'));
+const routing=JSON.parse(read('pipeline/visual-authority-routing-v1.json'));
+assert.equal(baseline.branch,'main');
+assert.equal(routing.canonical_visual_authority.certified_runtime_scene,baseline.scene);
+assert.equal(routing.canonical_visual_authority.runtime_component,'ValoriaIntegratedWorld');
+const scene=read('Unity/'+baseline.scene);
+const hostMeta=read('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs.meta');
+assert.ok(scene.includes(hostMeta.match(/guid: (\\w+)/)[1]),'Canonical scene missing integrated host');
+const settings=read('Unity/ProjectSettings/EditorBuildSettings.asset');
+const enabled=[...settings.matchAll(/- enabled: 1\\s+path: (.+)/g)].map(m=>m[1].trim());
+assert.deepEqual(enabled,[baseline.scene]);
+const builder=read(routing.canonical_visual_authority.production_generator);
+assert.ok(builder.includes(baseline.scene),'Builder must compile selected scene');
+assert.ok(builder.includes('INTEGRATION_PASS_ART_REVIEW_REQUIRED'),'Native gameplay proof required');
+read(routing.canonical_visual_authority.production_workflow);
+const registry=JSON.parse(read('pipeline/active-workstreams.json'));
+assert.equal(registry.active.length,1);assert.equal(registry.active[0].branch,'main');
+assert.equal(JSON.parse(read('pipeline/unity-publish-request.json')).enabled,false,'Historical Pages publication must remain explicitly retired');
+assert.ok(routing.current_screenshot_policy.forbidden_as_canonical.includes('eldoria-valoria-captures-*'));
+read(routing.legacy_fallback.fail_closed_guard);
+console.log('VALORIA_VISUAL_AUTHORITY_ROUTING=PASS');
+console.log('CANONICAL_DEVELOPMENT=INTEGRATED_MAIN; ART_APPROVED=false; LEGACY_RETAINED_FOR_REFERENCE');

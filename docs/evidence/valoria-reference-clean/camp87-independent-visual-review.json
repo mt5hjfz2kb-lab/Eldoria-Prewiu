@@ -1,0 +1,29 @@
+{
+  "status": "RETAINED_LOCAL_FUNCTION_ASSET_NO_FORMAL_ART_APPROVAL",
+  "source_blend_sha256": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
+  "qwen_inference_run": 39123115813,
+  "replay_repair_run": 39123441426,
+  "unity_review_run": 39123808161,
+  "integrated_runtime_run": 39124004194,
+  "android_run": 39124448827,
+  "original_source_preserved": true,
+  "unity_same_camera_light": true,
+  "capture_size": [
+    1448,
+    1086
+  ],
+  "unity_detail_sha256": {
+    "camp87-unity-before-detail.png": "2787c74514eee76713aa1a2cb7bc0fc208a63d3415ec4d9c9885e566e3fa6c47",
+    "camp87-unity-after-detail.png": "ce589ff7eb44a834deb96d95c0aa6185f0305f2f63caf3c80433405be8ae560d"
+  },
+  "observed_improvement": "Actual open entrance/folds, continuous cloth roof, readable seams and restrained blue coherent with Bastion; wood supports grounded on their original plane.",
+  "rejected_defects": "Quilt normals from disconnected quads; awning crossing support; initial placement using buried stake tips.",
+  "lessons": [
+    "Weld shared cloth grid vertices before smooth normals and solidify.",
+    "Anchor awning sag around actual source support geometry.",
+    "Use unchanged structural feet as placement anchor; below-ground stakes cannot define floor placement."
+  ],
+  "camp_triangles": 16296,
+  "whole_map_art_certified": false,
+  "physical_phone_tested": false
+}

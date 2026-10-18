@@ -1,0 +1,16 @@
+{
+    "source_sha": "a1edc1b6abcce659f68379404e5625718f53864a",
+    "method": "Existing baked128 cube / domain-warp flow using reused noise / smoother reflection normal to remove parallel bands",
+    "same_camera": true,
+    "same_lighting": true,
+    "same_mesh": true,
+    "no_realtime_reflection": true,
+    "art_approved": false,
+    "cube_resolution": 128,
+    "lightmaps": 1,
+    "lightprobes": 264,
+    "reflection_probes": 4,
+    "active_lightmap_bytes": 5594304,
+    "active_reflection_bytes": 1053664,
+    "memory_note": "Windows native referenced lighting textures only; not mobile process memory or FPS"
+}

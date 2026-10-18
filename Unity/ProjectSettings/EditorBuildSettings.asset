@@ -6,12 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+    guid: 844fa996370938f43b54f155a88571f5
+  - enabled: 0
     path: Assets/Eldoria/Scenes/Bootstrap.unity
     guid: 1339ccbadf095c21aa7f530436563c94
-  - enabled: 1
+  - enabled: 0
     path: Assets/Eldoria/Scenes/Valoria.unity
     guid: 01d0ef9700ee5657aa6ae92d8a095795
-  - enabled: 1
+  - enabled: 0
     path: Assets/Eldoria/Scenes/Frontier.unity
     guid: 74c59a35e3865a1e8a72544c4cc46a68
   m_configObjects: {}

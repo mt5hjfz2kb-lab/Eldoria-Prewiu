@@ -1,0 +1,230 @@
+{
+  "stage": "V13 upper fortress from existing BastionFamily V1; no new assets",
+  "source_v12_blend_sha256": "21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de",
+  "source_family_sha256": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+  "source_inspection": "entry-zone-v13-survey/bastion-source-world-bounds.json",
+  "result_blend_sha256": "1023443ef9eb3137a5157188b16194ff6245b08003f4c388377610d15811a1cf",
+  "result_glb_sha256": "c64b2e8050d5c2e7ee9025dc02f69cafb66cf5ffde903b01f739d9f0b9134b69",
+  "triangles": 374064,
+  "source_triangles": 351374,
+  "reused_bastion_mesh_count": 9,
+  "bastion_objects": [
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionWestTower",
+      "source": "BastionWestTower",
+      "min_xyz": [
+        -14.982280731201172,
+        -61.72153091430664,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        -13.082279205322266,
+        -58.921531677246094,
+        6.747675895690918
+      ],
+      "triangles": 1316
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionRightGatePillar",
+      "source": "BastionRightGatePillar",
+      "min_xyz": [
+        1.789961338043213,
+        -57.73944091796875,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        3.089961528778076,
+        -54.73944091796875,
+        7.947675704956055
+      ],
+      "triangles": 664
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionLeftWing",
+      "source": "BastionLeftWing",
+      "min_xyz": [
+        -9.351617813110352,
+        -58.88886642456055,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        -4.151617527008057,
+        -54.88886642456055,
+        7.847675323486328
+      ],
+      "triangles": 2920
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionKeep",
+      "source": "BastionKeep",
+      "min_xyz": [
+        -4.030022621154785,
+        -59.190956115722656,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        -0.13002300262451172,
+        -54.4909553527832,
+        10.147676467895508
+      ],
+      "triangles": 7148
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionGateLintel",
+      "source": "BastionGateLintel",
+      "min_xyz": [
+        -1.2620611190795898,
+        -58.54506301879883,
+        6.147675514221191
+      ],
+      "max_xyz": [
+        3.0179390907287598,
+        -55.90584945678711,
+        7.947675704956055
+      ],
+      "triangles": 1624
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionFarWestBlock",
+      "source": "BastionFarWestBlock",
+      "min_xyz": [
+        -12.022733688354492,
+        -58.7802734375,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        -9.222734451293945,
+        -55.380271911621094,
+        8.547676086425781
+      ],
+      "triangles": 1536
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionEastTower",
+      "source": "BastionEastTower",
+      "min_xyz": [
+        12.742380142211914,
+        -56.10106658935547,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        15.142379760742188,
+        -52.70106506347656,
+        9.347675323486328
+      ],
+      "triangles": 3064
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionCurtainWest",
+      "source": "BastionCurtainWest",
+      "min_xyz": [
+        -13.878917694091797,
+        -60.30577087402344,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        -2.3824994564056396,
+        -57.95461654663086,
+        7.147675514221191
+      ],
+      "triangles": 2160
+    },
+    {
+      "name": "ENTRY_V13_EXISTING_BASTION_BastionCurtainEast",
+      "source": "BastionCurtainEast",
+      "min_xyz": [
+        3.3254218101501465,
+        -56.47498321533203,
+        2.5476760864257812
+      ],
+      "max_xyz": [
+        14.153879165649414,
+        -54.02716827392578,
+        7.147675514221191
+      ],
+      "triangles": 2258
+    }
+  ],
+  "native_original_hotspot_xyz": [
+    -0.0800495,
+    4.4800014,
+    57.2112999
+  ],
+  "site_blender_xyz": [
+    0.08004949986934662,
+    -57.211299896240234,
+    4.480001449584961
+  ],
+  "terrain_samples": [
+    {
+      "xy": [
+        0.08004949986934662,
+        -57.211299896240234
+      ],
+      "height": 2.7001953125,
+      "normal_z": 0.9999858140945435
+    },
+    {
+      "xy": [
+        -7.919950500130653,
+        -57.211299896240234
+      ],
+      "height": 2.646146774291992,
+      "normal_z": 0.9999824166297913
+    },
+    {
+      "xy": [
+        8.080049499869347,
+        -57.211299896240234
+      ],
+      "height": 2.7002716064453125,
+      "normal_z": 0.9999720454216003
+    },
+    {
+      "xy": [
+        0.08004949986934662,
+        -61.211299896240234
+      ],
+      "height": 2.6976757049560547,
+      "normal_z": 0.9999966621398926
+    },
+    {
+      "xy": [
+        0.08004949986934662,
+        -53.211299896240234
+      ],
+      "height": 2.7128162384033203,
+      "normal_z": 0.9999693632125854
+    },
+    {
+      "xy": [
+        -12.919950500130653,
+        -58.211299896240234
+      ],
+      "height": 2.632624626159668,
+      "normal_z": 0.999997615814209
+    },
+    {
+      "xy": [
+        13.080049499869347,
+        -56.211299896240234
+      ],
+      "height": 2.683603286743164,
+      "normal_z": 0.9999675750732422
+    }
+  ],
+  "site_median_elevation": 2.6976757049560547,
+  "rigid_translation_xyz": [
+    -5.145967960357666,
+    -65.96016693115234,
+    -8.552324295043945
+  ],
+  "donor_textures_excluded": true,
+  "old_v12_geometry_unchanged": true,
+  "source_colliders_unchanged": true,
+  "licensed_material_source": "V12 packed V7 PBR CC0 stone/rock; donor family image-bearing materials excluded",
+  "art_status": "CANDIDATE_NOT_APPROVED",
+  "gameplay": "REQUIRES_V13_NATIVE_VALIDATION",
+  "zero_paid_spend": true,
+  "full_frame_art_pass": false
+}

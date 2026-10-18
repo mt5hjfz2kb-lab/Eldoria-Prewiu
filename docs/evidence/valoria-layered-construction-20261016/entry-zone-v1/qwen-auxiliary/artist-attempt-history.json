@@ -1,0 +1,20 @@
+[
+  {
+    "attempt": 1,
+    "model": "qwen3-vl:4b-instruct",
+    "request_prompt_sha256": "64d62bbf8e29064e92050c0969cdce85eb89a8a917927fd2e26bfe7d38951000",
+    "raw_response_sha256": "9411034e06a520fca5d6c500e898b18909780c441a5c6bede1fa817da1514232",
+    "raw_response_file": "artist-response-attempt-1.txt",
+    "eval_count": 392,
+    "prompt_eval_count": 7660,
+    "done_reason": "stop",
+    "inference_seconds": 24.981,
+    "validation_errors": [
+      "Action 0: unsupported Blender action None",
+      "Action 1: unsupported Blender action None",
+      "Action 1: blank/duplicate id"
+    ],
+    "author": "QWEN_LOCAL",
+    "executed_in_blender": false
+  }
+]\n

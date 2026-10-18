@@ -1,0 +1,11 @@
+{
+    "baseline_source": "9a126364fd7a6372853e19e1db242fa0ff31b510",
+    "baseline_glb_sha256": "91397c22b48d1842a51867005a6646e9adf04674329127204fb68ceb595cc166",
+    "source_sha": "593d1b68f3c37526e176fede19a524daa7c95a8d",
+    "scope": "Multiscale closed shingle and sedge shoreline pockets; identical all-bank43 terrain heights, exact previous43 nature meshes versus candidate, same materials/camera/light/architecture; existing large boulder and tree coordinates unchanged",
+    "same_camera": true,
+    "same_lighting": true,
+    "baseline_hash_verified": true,
+    "before_triangles": 273786,
+    "after_triangles": 277154
+}

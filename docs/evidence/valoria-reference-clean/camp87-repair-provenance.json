@@ -1,0 +1,8 @@
+{
+  "original_inference_run": 39123115813,
+  "new_inference": false,
+  "same_author_plan": true,
+  "source_and_input_images_verified": true,
+  "delivered_history_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e",
+  "repair": "Merge cloth grid vertices before smoothing; anchor sag to actual beam; lower redundant awning subdivisions"
+}

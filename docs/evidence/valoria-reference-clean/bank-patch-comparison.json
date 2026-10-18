@@ -1,0 +1,11 @@
+{
+    "baseline_source": "native54/56 saved scene",
+    "baseline_glb_sha256": "4acf3a32badf836c29e410a3eafda915ac0f249879cc8e84887c56314ee700af",
+    "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
+    "scope": "Qwen14B actual plan over observed source components; existing BlenderMCP reshapes only north-bank representative boulders. All other renderers/materials/terrain/light/camera shared. Trial restored, not accepted or extended.",
+    "same_camera": true,
+    "same_lighting": true,
+    "baseline_hash_verified": true,
+    "before_triangles": 67582,
+    "after_triangles": 67582
+}

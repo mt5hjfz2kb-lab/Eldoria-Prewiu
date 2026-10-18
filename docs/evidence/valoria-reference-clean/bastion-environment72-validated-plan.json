@@ -1,0 +1,14 @@
+{
+  "plan": {
+    "rationale": "Composition derived from native70 Unity asset\u2019s spatial grid and asset placement. No new geometry or lighting introduced. Only botanical replacements and rock adjustments per observation.",
+    "stem_height": 1.8,
+    "crown_width": 1.2,
+    "leaf_length": 0.36,
+    "branch_count": 11,
+    "leaf_pairs": 11,
+    "rock_scale": 0.8,
+    "foliage_palette": 0,
+    "layout": 0
+  },
+  "art_approved": false
+}

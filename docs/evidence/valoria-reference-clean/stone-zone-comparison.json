@@ -1,0 +1,23 @@
+{
+    "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
+    "scope": "Authored limestone material slots only; same geometry and original UV0 retained. Reused gate material stays fixed during this comparison.",
+    "before_main_camera": "{\"position\":{\"x\":46.0,\"y\":77.0,\"z\":-104.0},\"rotation\":{\"x\":0.27516937255859377,\"y\":-0.16492974758148194,\"z\":0.04797792434692383,\"w\":0.9459271430969238},\"orthographic_size\":34.0,\"aspect\":1.3333333730697632}",
+    "after_main_camera": "{\"position\":{\"x\":46.0,\"y\":77.0,\"z\":-104.0},\"rotation\":{\"x\":0.27516937255859377,\"y\":-0.16492974758148194,\"z\":0.04797792434692383,\"w\":0.9459271430969238},\"orthographic_size\":34.0,\"aspect\":1.3333333730697632}",
+    "before_detail_camera": "{\"position\":{\"x\":24.0,\"y\":31.0,\"z\":-8.0},\"rotation\":{\"x\":0.23855708539485932,\"y\":-0.24173519015312196,\"z\":0.06144322082400322,\"w\":0.9385517239570618},\"orthographic_size\":18.0,\"aspect\":1.3333333730697632}",
+    "after_detail_camera": "{\"position\":{\"x\":24.0,\"y\":31.0,\"z\":-8.0},\"rotation\":{\"x\":0.23855708539485932,\"y\":-0.24173519015312196,\"z\":0.06144322082400322,\"w\":0.9385517239570618},\"orthographic_size\":18.0,\"aspect\":1.3333333730697632}",
+    "lighting": "{\"euler\":{\"x\":47.000003814697269,\"y\":322.0,\"z\":0.0000025037413706741064},\"sun\":{\"r\":1.0,\"g\":0.9100000262260437,\"b\":0.7599999904632568,\"a\":1.0},\"sky\":{\"r\":0.5,\"g\":0.5799999833106995,\"b\":0.6399999856948853,\"a\":1.0},\"equator\":{\"r\":0.3400000035762787,\"g\":0.3400000035762787,\"b\":0.2800000011920929,\"a\":1.0},\"ground\":{\"r\":0.20000000298023225,\"g\":0.18000000715255738,\"b\":0.14000000059604646,\"a\":1.0},\"intensity\":1.100000023841858}",
+    "same_camera": true,
+    "same_lighting": true,
+    "same_geometry": true,
+    "original_uv0_preserved": true,
+    "zone_renderers": 6,
+    "zone_material_slots": 36,
+    "material_mapping": [
+        "Trial sandstone 0 -> Warm limestone 0",
+        "Trial sandstone 1 -> Warm limestone 1",
+        "Trial sandstone 2 -> Warm limestone 2",
+        "Trial sandstone 3 -> Warm limestone 3",
+        "Trial sandstone 4 -> Warm limestone 4",
+        "Trial sandstone 5 -> Warm limestone 5"
+    ]
+}

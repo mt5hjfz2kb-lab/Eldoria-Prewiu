@@ -1,0 +1,6 @@
+{
+  "source_sha256": "635c948163ee618fcbf6e4b63585db864ef441f590aa50dd0ccc3f6c25ace644",
+  "scope": "Immediate Bastion foundation landscape ONLY. Keep every architecture vertex and old gameplay dimensions unchanged. Two images attached: actual native70 Unity detail first, owner target second.",
+  "observation": "Architecture70 improved. Smooth large green balls with black spikes and symmetrical rings of tiny pebbles still look artificial. Replace them with botanical branching shrubs: many small elongated closed leaf buds, upright asymmetric tapered stems, varied low groundcover, fewer larger angular embedded limestone rocks. No green spheres. Keep six-metre central stair clearway. Match warm olive vegetation and grouped rock planting in reference; no trees/buildings/light changes.",
+  "decision": "Choose plant spatial composition from allowed foundation centres, leaf scale, stem height, crown width, density, rock scale and foliage palette. These control actual Blender geometry and materials. Irregular loam/grass shoulder will be tested independently on native terrain."
+}

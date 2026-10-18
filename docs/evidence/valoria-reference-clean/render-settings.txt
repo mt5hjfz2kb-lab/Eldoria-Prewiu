@@ -1,0 +1,1 @@
+Quality pipeline=ReferenceSceneURP (UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset); current=ReferenceSceneURP (UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset); distance=220; cameraShadows=True

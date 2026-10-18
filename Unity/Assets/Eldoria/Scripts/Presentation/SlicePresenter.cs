@@ -14,6 +14,16 @@ namespace Eldoria.Presentation
     public sealed class SlicePresenter:MonoBehaviour
     {
         ICommandGateway gateway;
+        public IPlayableSceneHost SceneHost { get; set; }
+        // Optional presentation adapter; simulation and gesture ownership remain here.
+        public Func<Vector2,bool> ExternalPointerBlocked { get; set; }
+        public Func<string,bool> ExternalSelection { get; set; }
+        public Func<long> UtcNowTicks = () => DateTime.UtcNow.Ticks;
+        void NavigateScene(string target) { if(SceneHost!=null)SceneHost.Navigate(target);else SceneManager.LoadScene(target); }
+        public void Inspect(string id) { Select(id); }
+        public void ShowExpedition(string id) { currentBuildingId=""; OpenWorldPanel(id); }
+        public void RefreshState() { Refresh(); }
+        public void ClosePanel() { CloseBuildingPanel(); }
         ValoriaParcelPresentation productionParcels;
         RectTransform safe;
         Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText, sawmillLevelBadge, barracksLevelBadge, bastionLevelBadge, resetButtonText;
@@ -42,7 +52,7 @@ namespace Eldoria.Presentation
         public const float MinOrthographicZoom=9f;
         public const float MaxOrthographicZoom=19f;
         const float PinchZoomSensitivity=1f;
-        Camera OfficialCamera => productionParcels!=null&&productionParcels.ProductionCamera!=null
+        Camera OfficialCamera => SceneHost!=null ? SceneHost.PlayerCamera : productionParcels!=null&&productionParcels.ProductionCamera!=null
             ? productionParcels.ProductionCamera
             : GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
         static string CitySceneName
@@ -68,6 +78,7 @@ namespace Eldoria.Presentation
             productionParcels=null;
             foreach(var sceneRoot in scene.GetRootGameObjects())
             { productionParcels=sceneRoot.GetComponentInChildren<ValoriaParcelPresentation>(true);if(productionParcels!=null)break; }
+            if(SceneHost!=null){SceneHost.Apply(state);CreateHud();Refresh();return;}
             if(productionParcels!=null) productionParcels.Apply(state);
             else if(city) VisualWorld.Create(true,state);
             if(productionParcels!=null) productionParcels.Home();
@@ -114,6 +125,7 @@ namespace Eldoria.Presentation
                 StartCoroutine(LogPlayableUiGeometryNextFrame());
 #endif
             }
+            if(SceneHost!=null&&Mouse.current!=null&&!IsPointerOverInteractiveUi(Mouse.current.position.ReadValue())){float wheel=Mouse.current.scroll.ReadValue().y;if(Mathf.Abs(wheel)>.01f)SceneHost.Zoom(-wheel*.02f);}
             HandlePointerInput();
             AnimateCityAmbientation();
             UpdateBuildingLevelBadgePositions();
@@ -229,12 +241,13 @@ namespace Eldoria.Presentation
             yield return null;
             if(SceneManager.GetActiveScene().name!=before)yield break;
             Debug.Log("ELDORIA_PLAYABLE_NAV target="+target+" city="+expectedCity+" source=webgl-touch-fallback");
-            SceneManager.LoadScene(target=="Valoria"?CitySceneName:target);
+            NavigateScene(target=="Valoria"?CitySceneName:target);
         }
 #endif
 
         bool IsPointerOverInteractiveUi(Vector2 point)
         {
+            if(ExternalPointerBlocked?.Invoke(point)==true)return true;
             if(EventSystem.current==null)return false;
             var data=new PointerEventData(EventSystem.current){position=point};
             var hits=new System.Collections.Generic.List<RaycastResult>();
@@ -274,6 +287,7 @@ namespace Eldoria.Presentation
                 return true;
             }
 
+            if(SceneHost!=null){SceneHost.Zoom(-(distance-lastPinchDistance)*.025f);lastPinchDistance=distance;return true;}
             if(productionParcels!=null)
             { productionParcels.Zoom(-(distance-lastPinchDistance)*.025f);lastPinchDistance=distance;return true; }
             camera.orthographicSize=CalculatePinchZoom(
@@ -316,6 +330,7 @@ namespace Eldoria.Presentation
 
         void PanCameraByScreenDelta(Vector2 screenDelta)
         {
+            if(SceneHost!=null){SceneHost.Pan(screenDelta);return;}
             var camera=OfficialCamera;
             if(camera==null)return;
             if(city&&productionParcels!=null)
@@ -351,6 +366,7 @@ namespace Eldoria.Presentation
 
         void RecenterCamera()
         {
+            if(SceneHost!=null){SceneHost.Home();return;}
             if(OfficialCamera==null)return;
             if(city&&productionParcels!=null)
             {
@@ -372,6 +388,7 @@ namespace Eldoria.Presentation
             var camera=OfficialCamera;
             var target=GameObject.Find(objectName);
             if(!city||camera==null||target==null)return;
+            if(SceneHost!=null){SceneHost.Focus(target);return;}
             if(productionParcels!=null)
             {
                 productionParcels.Home();
@@ -400,6 +417,7 @@ namespace Eldoria.Presentation
 
         WorldHotspot ResolveHotspot(Vector2 point)
         {
+            if(SceneHost!=null)return SceneHost.Pick(point);
             var camera=OfficialCamera;
             if(camera==null)return null;
             var ray=camera.ScreenPointToRay(point);
@@ -448,8 +466,10 @@ namespace Eldoria.Presentation
 
         void Select(string id)
         {
-            if(id=="gate")SceneManager.LoadScene("Frontier");
-            else if(id=="valoria-map-city")SceneManager.LoadScene(CitySceneName);
+            if(ExternalSelection?.Invoke(id)==true)return;
+            if(SceneHost!=null&&(id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria")){ShowExpedition(id);return;}
+            if(id=="gate")NavigateScene("Frontier");
+            else if(id=="valoria-map-city")NavigateScene(CitySceneName);
             else if(!city&&(id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin"))
                 OpenWorldPanel(id);
             else if(id=="forest-valoria"||id=="quarry-valoria")Send("Gather",id);
@@ -577,7 +597,13 @@ namespace Eldoria.Presentation
             else
             {
                 buildingTitle.text="BASTIÓN";
-                if(s.BastionLevel>=2)
+                if(s.BastionUpgradeCompletesUtcTicks>0)
+                {
+                    buildingBody.text="Bastión I → II · mejora en curso";
+                    buildingAction.GetComponentInChildren<Text>().text="MEJORANDO";
+                    buildingAction.interactable=false;
+                }
+                else if(s.BastionLevel>=2)
                 {
                     buildingBody.text="Bastión II consolidado · Valoria ha crecido. Desbloqueos: Cuartel, Capítulo II, preparación de Marcha y amenaza Engendro.";
                     buildingAction.GetComponentInChildren<Text>().text="BASTIÓN II ACTIVO";
@@ -587,11 +613,11 @@ namespace Eldoria.Presentation
                 {
                     var next=BastionProgressionCatalog.ForLevel(2);
                     var missing=BastionProgressionCatalog.MissingSummary(s,next);
-                    buildingBody.text="Núcleo de Valoria · nivel I.\nRequisitos para Bastión II: objetivos de Bastión I completos · "+
-                        next.WoodCost+" madera · "+next.StoneCost+" piedra.\n"+
-                        (string.IsNullOrEmpty(missing)?"LISTO PARA ASCENDER":"Falta: "+missing)+
-                        "\nDesbloquea: Cuartel · Capítulo II · preparación de Marcha.";
-                    buildingAction.GetComponentInChildren<Text>().text="ASCENDER A BASTIÓN II";
+                    buildingBody.text="Nivel I · centro de Valoria\n"+
+                        "Madera "+s.Resources.Wood+"/"+next.WoodCost+" · Piedra "+s.Resources.Stone+"/"+next.StoneCost+"\n"+
+                        "Objetivos I: "+(s.JourneyComplete?"completos":"pendientes")+" · Mejora: 10 s\n"+
+                        "Desbloquea Cuartel y Capítulo II.";
+                    buildingAction.GetComponentInChildren<Text>().text=BastionProgressionCatalog.RequirementsMet(s,next)?"MEJORAR A BASTIÓN II":"REQUISITOS PENDIENTES";
                     buildingAction.interactable=BastionProgressionCatalog.RequirementsMet(s,next);
                     if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{CloseBuildingPanel();Send("AdvanceBastion","bastion");});
                 }
@@ -659,7 +685,20 @@ namespace Eldoria.Presentation
         void RefreshBuildingPanelClock(PlayerState s)
         {
             if(buildingPanel==null||!buildingPanel.activeInHierarchy||string.IsNullOrEmpty(currentBuildingId))return;
-            int seconds=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+            if(currentBuildingId=="bastion"&&s.BastionUpgradeCompletesUtcTicks>0)
+            {
+                int left=Math.Max(0,(int)Math.Ceiling((s.BastionUpgradeCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
+                buildingBody.text="Bastión I → II · "+left+" s restantes\nLa mejora continúa al cerrar el juego. Cuartel y Capítulo II al finalizar.";
+                buildingAction.GetComponentInChildren<Text>().text="MEJORANDO · "+left+" s";buildingAction.interactable=false;return;
+            }
+            if(currentBuildingId=="barracks"&&s.RecruitmentCompletesUtcTicks>0)
+            {
+                int left=Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
+                buildingBody.text="Entrenando "+s.PendingRecruitArchers+" arqueros · "+left+" s restantes\nEl entrenamiento continúa al cerrar el juego.";
+                buildingAction.GetComponentInChildren<Text>().text="ENTRENANDO · "+left+" s";
+                buildingAction.interactable=false;return;
+            }
+            int seconds=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
             if(s.BuildingCompletesUtcTicks>0&&(currentBuildingId=="sawmill"||currentBuildingId=="barracks"))
             {
                 string label=currentBuildingId=="sawmill"?"ASERRADERO":"CUARTEL";
@@ -701,7 +740,7 @@ namespace Eldoria.Presentation
             {
                 var after=gateway.Snapshot();
                 int gain=Math.Max(0,SliceRules.TotalPower(after).Total-powerBefore);
-                feedback="BASTIÓN II · MI REINO HA CRECIDO · +"+gain+" PODER · Cuartel y Capítulo II desbloqueados";
+                feedback="Mejora a Bastión II iniciada · "+SliceContentProfiles.WebContract.Bastion2UpgradeSeconds+" s · recursos reservados";
             }
 #if UNITY_WEBGL && !UNITY_EDITOR
             Debug.Log("ELDORIA_PLAYABLE_COMMAND kind="+kind+" target="+target+" ok="+result.Ok+" revision="+result.Revision);
@@ -734,17 +773,27 @@ namespace Eldoria.Presentation
                 " objective="+SliceRules.CurrentObjectiveKey(state));
 #endif
         }
+        public string NarrativeText => description != null ? description.text : "";
+        public string FrontierNarrativeText {
+            get { var s=gateway.Snapshot();var troops=s.March.Phase=="idle"?s.Available:s.March.Troops;
+                return FrontierDescription(s,"Aldric + "+troops.Total+" arqueros",SliceRules.Expedition(troops,"aldric")); }
+        }
         void Refresh()
         {
             if(heading==null)return;
             var s=gateway.Snapshot();
             UpdateBuildingLevelBadges(s);
-            if(productionParcels!=null) productionParcels.Apply(s);
+            if(SceneHost!=null){SceneHost.Apply(s);if(renderedBastion!=s.BastionLevel){renderedBastion=s.BastionLevel;if(currentBuildingId=="bastion"&&buildingPanel!=null&&buildingPanel.activeSelf)OpenBuildingPanel("bastion");}}
+            else if(productionParcels!=null) productionParcels.Apply(s);
+            if(SceneHost!=null&&buildingPanel!=null&&buildingPanel.activeSelf&&
+                (currentBuildingId=="sawmill"||currentBuildingId=="barracks")&&buildingTitle.text!="PREPARAR MARCHA")
+                OpenBuildingPanel(currentBuildingId);
+            UpdateBuildingLevelBadgePositions();
             if(!city)WorldRegion1Runtime.Refresh(s);
-            if(city&&productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
+            if(city&&SceneHost==null&&productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
                 s.ScoutDefeated!=renderedScout||s.EngendroDefeated!=renderedEngendro||
                 (s.March.Phase=="idle")!=renderedIdle))
-            { feedback="";SceneManager.LoadScene(SceneManager.GetActiveScene().name);return; }
+            { feedback="";NavigateScene(SceneManager.GetActiveScene().name);return; }
             var parts=SliceRules.TotalPower(s);
             heading.text=city?"VALORIA\nBastión "+s.BastionLevel:"MUNDO\nRegión I";
             resources.text="MADERA\n"+s.Resources.Wood;
@@ -781,7 +830,7 @@ namespace Eldoria.Presentation
             message.text=string.IsNullOrEmpty(feedback)?
                 (s.EngendroDefeated?"Engendro derrotado. El ascenso a Bastión III queda para el siguiente hito.":
                  s.JourneyComplete&&s.BastionLevel==1?"Valoria vuelve a respirar. Asciende el Bastión para continuar.":
-                 city?"Pulsa MUNDO para abrir el mapa 4X; vuelve con recursos para construir.":
+                 city?(SceneHost!=null?"Abre RUTAS para reunir recursos y despejar la frontera.":"Pulsa MUNDO para abrir el mapa 4X; vuelve con recursos para construir."):
                  "Selecciona una ciudad, recurso, ruina o amenaza para actuar en la Región I."):feedback;
             RefreshClock();
         }
@@ -848,17 +897,24 @@ namespace Eldoria.Presentation
         {
             if(message==null)return;
             var s=gateway.Snapshot();
-            if(s.March.Phase!="idle")
+            if(s.BastionUpgradeCompletesUtcTicks>0)
+            {
+                int remaining=Math.Max(0,(int)Math.Ceiling((s.BastionUpgradeCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
+                int percent=Mathf.Clamp(Mathf.RoundToInt(100f*(1f-remaining/(float)SliceContentProfiles.WebContract.Bastion2UpgradeSeconds)),0,100);
+                message.text="Bastión II · "+percent+"% · "+remaining+" s";
+                if(primaryActionText!=null)primaryActionText.text="MEJORANDO · "+percent+"%";
+            }
+            else if(s.March.Phase!="idle")
                 message.text="Marcha: "+s.March.Phase+" · destino "+s.March.TargetId+" · regreso y recompensa automáticos";
             else if(s.BuildingCompletesUtcTicks>0)
             {
-                int remaining=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+                int remaining=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
                 message.text="Reconstrucción: "+remaining+" s";
                 if(primaryAction!=null&&!primaryAction.interactable)primaryActionText.text="OBRA EN CURSO · "+remaining+" s";
             }
             else if(s.RecruitmentCompletesUtcTicks>0)
             {
-                int remaining=Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+                int remaining=Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
                 message.text="Entrenamiento: "+remaining+" s";
                 if(primaryAction!=null&&!primaryAction.interactable)primaryActionText.text="ENTRENAMIENTO · "+remaining+" s";
             }
@@ -912,6 +968,7 @@ namespace Eldoria.Presentation
             resetButton.GetComponent<LayoutElement>().ignoreLayout=true;
             resetButtonText=resetButton.GetComponentInChildren<Text>();
             if(resetButtonText!=null)resetButtonText.fontSize=11;
+            if(SceneHost!=null)resetButton.gameObject.SetActive(false);
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
@@ -929,13 +986,13 @@ namespace Eldoria.Presentation
 #if UNITY_WEBGL && !UNITY_EDITOR
                 Debug.Log("ELDORIA_PLAYABLE_NAV target=Valoria city="+city);
 #endif
-                if(!city)SceneManager.LoadScene(CitySceneName);
+                if(!city)NavigateScene(CitySceneName);
             });
-            worldNavButton=NavButton(nav,"◎","MUNDO",()=>{
+            worldNavButton=NavButton(nav,"◎",SceneHost!=null?"RUTAS":"MUNDO",()=>{
 #if UNITY_WEBGL && !UNITY_EDITOR
                 Debug.Log("ELDORIA_PLAYABLE_NAV target=Frontier city="+city);
 #endif
-                if(city)SceneManager.LoadScene("Frontier");
+                if(city)NavigateScene("Frontier");
             });
             // Do not expose prototype/future buttons without real gameplay behind them.
             // The migrated vertical-slice hierarchy keeps only the two live navigation surfaces.
@@ -1029,6 +1086,8 @@ namespace Eldoria.Presentation
         {
             if(primaryAction==null||primaryActionText==null||s==null)return;
             SetPrimaryActionEnabled(true);
+            if(s.BastionUpgradeCompletesUtcTicks>0)
+            { primaryActionText.text="MEJORANDO BASTIÓN II";SetPrimaryActionEnabled(false);return; }
             if(s.BuildingCompletesUtcTicks>0)
             {
                 primaryActionText.text="RECONSTRUCCIÓN EN CURSO";
@@ -1130,7 +1189,7 @@ namespace Eldoria.Presentation
             var needed=ObjectiveResourceNeed(s);
             if(needed!=null)
             {
-                if(city)SceneManager.LoadScene("Frontier");
+                if(city)NavigateScene("Frontier");
                 else Send("Gather",needed);
                 return;
             }
@@ -1157,7 +1216,7 @@ namespace Eldoria.Presentation
                     FocusCityHotspot(productionParcels!=null?InteractiveTargetName("barracks"):"Cuartel · target");
                     OpenMarchPanel();
                 }
-                else SceneManager.LoadScene("Frontier");
+                else NavigateScene("Frontier");
                 return;
             }
 
@@ -1168,10 +1227,10 @@ namespace Eldoria.Presentation
             {
                 if(s.Resources.Wood<SliceRules.RecruitWoodCost)Send("Gather","forest-valoria");
                 else if(s.Resources.Stone<SliceRules.RecruitStoneCost)Send("Gather","quarry-valoria");
-                else SceneManager.LoadScene(CitySceneName);
+                else NavigateScene(CitySceneName);
             }
             else if(key=="b2.defeat-engendro")Send("Fight","engendro-valoria");
-            else SceneManager.LoadScene(CitySceneName);
+            else NavigateScene(CitySceneName);
         }
         void CreateBuildingPanel(Transform parent)
         {
@@ -1183,7 +1242,7 @@ namespace Eldoria.Presentation
             var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(12,12,8,8);
             layout.spacing=2;layout.childControlHeight=true;layout.childForceExpandHeight=false;
             buildingTitle=Label("Building title",buildingPanel.transform,15,new Color(.96f,.88f,.69f),24);
-            buildingBody=Label("Building body",buildingPanel.transform,12,new Color(.86f,.89f,.90f),56);
+            buildingBody=Label("Building body",buildingPanel.transform,SceneHost!=null?10:12,new Color(.86f,.89f,.90f),56);
             var actionGo=new GameObject("Building action",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             actionGo.transform.SetParent(buildingPanel.transform,false);
             actionGo.GetComponent<Image>().color=new Color(.73f,.61f,.36f,.98f);
@@ -1282,8 +1341,9 @@ namespace Eldoria.Presentation
             badge.transform.parent.GetComponent<RectTransform>().anchoredPosition=local+offset;
         }
 
-        static string InteractiveTargetName(string id)
+        string InteractiveTargetName(string id)
         {
+            if(SceneHost!=null)return SceneHost.TargetName(id);
             return id=="sawmill"?"InteractiveProxy_LeftCabinParcel":id=="barracks"?"InteractiveProxy_RightCampParcel":id=="bastion"?"InteractiveProxy_Bastion":null;
         }
 
@@ -1357,6 +1417,7 @@ namespace Eldoria.Presentation
 
         void Zoom(float amount)
         {
+            if(SceneHost!=null){SceneHost.Zoom(amount);return;}
             if(productionParcels!=null){productionParcels.Zoom(amount);return;}
             if(OfficialCamera==null)return;
             float min=city?9f:10f;

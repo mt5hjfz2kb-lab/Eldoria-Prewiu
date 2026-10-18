@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "CANONICAL_DEVELOPMENT_BASELINE",
+  "authorized_at": "2026-10-18T17:23:45+02:00",
+  "branch": "main",
+  "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+  "scene_guid": "844fa996370938f43b54f155a88571f5",
+  "source_branch": "construction/valoria-master-plan-layers-20261016",
+  "source_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677",
+  "native_source": "48837605705fed198ec485f2c2726af2ffa5eea9",
+  "native_run": 39138751241,
+  "native_output": "663acb07f3a2693a70f46b3e94a40340a38ad84f",
+  "unity_source_tree": "1fd8b9ed25af4656c0f8af782d0d226293773447",
+  "published_web": {
+    "url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site",
+    "project_id": "appgprj_6ad4ce602c808191859268d570c93352",
+    "source": "8500154eeb25e3bdc955cc47d3d9ef7c33e0a68f",
+    "deployment": "appgdep_6ad4e341a4488191a25befd593bdfc27",
+    "artifact": 12141221363
+  },
+  "build_method": "Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build",
+  "build_workflow": ".github/workflows/valoria-reference-clean.yml",
+  "archived_branch_policy": "All pre-consolidation branches except main are historical reference only; preserve heads; selective reuse requires main-based review and testing.",
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "manual_browser_playthrough": "BLOCKED_BY_CHATGPT_SIGN_IN",
+  "legacy_android": "Android97/1.5 retained until separately rebuilt; no automatic content update",
+  "budget_eur": 0
+}

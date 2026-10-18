@@ -1,0 +1,19 @@
+{
+  "rationale": "The existing sawmill is incoherent with Valoria's medieval aesthetic. It lacks architectural hierarchy, spatial logic, and material consistency with the Bastion. This new design addresses three core defects: 1) It replaces the flat platform with a coherent masonry foundation that visually integrates with the Bastion. 2) It establishes a clear spatial composition with a front-facing saw bay and rear workshop, creating a functional and visually balanced structure. 3) It uses the correct material palette: dressed limestone piers, oak frame, and blue slate roof matching the Bastion's palette. The design is proportionally scaled (X/Y footprint 8.5m x 6.5m, Z height 6.5m) and oriented with the front facing Y negative, as required. The lean-to roof and log-yard orientation are optional but enhance the workshop's functionality and visual interest.",
+  "width": 8.0,
+  "depth": 6.0,
+  "eave_height": 3.8,
+  "roof_rise": 2.0,
+  "bay_count": 2,
+  "rear_wall_fraction": 0.45,
+  "stone_height": 1.05,
+  "frame_thickness": 0.34,
+  "lean_to": "right",
+  "lean_to_depth": 1.0,
+  "log_yard": "front_left",
+  "log_count": 4,
+  "roof_rows": 10,
+  "timber_tone": "dark_oak",
+  "masonry_tone": "sandstone",
+  "brace_style": "cross_rear"
+}

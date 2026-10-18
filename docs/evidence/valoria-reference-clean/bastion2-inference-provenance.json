@@ -1,0 +1,8 @@
+{
+  "original_inference_run": 39117824459,
+  "original_source_sha": "5682de6ee67bae4a4f4d8242fed6aef9e8697306",
+  "same_source_images_and_plan": true,
+  "new_inference": false,
+  "reason": "Repair Background shader node lookup after actual native80 Qwen/MCP geometry succeeded",
+  "original_memory_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e"
+}

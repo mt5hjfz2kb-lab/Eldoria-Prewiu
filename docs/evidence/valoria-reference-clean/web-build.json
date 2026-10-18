@@ -1,0 +1,16 @@
+{
+    "source_sha": "48837605705fed198ec485f2c2726af2ffa5eea9",
+    "status": "WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "error": "",
+    "bytes": 179253097,
+    "physical_iphone_tested": false,
+    "files": [
+        "Builds/ValoriaWebPlaytest\\index.html",
+        "Builds/ValoriaWebPlaytest\\Build\\ValoriaWebPlaytest.data.unityweb",
+        "Builds/ValoriaWebPlaytest\\Build\\ValoriaWebPlaytest.framework.js.unityweb",
+        "Builds/ValoriaWebPlaytest\\Build\\ValoriaWebPlaytest.loader.js",
+        "Builds/ValoriaWebPlaytest\\Build\\ValoriaWebPlaytest.wasm.unityweb",
+        "Builds/ValoriaWebPlaytest\\TemplateData\\webmemd-icon.png"
+    ]
+}

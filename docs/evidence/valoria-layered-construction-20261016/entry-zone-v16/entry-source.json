@@ -1,0 +1,143 @@
+{
+  "art_stage": "V16 real photogrammetry-based architectural PBR on original gate and six existing wall family parts",
+  "source_v12_blend_sha256": "21c5681e20a498bcd97925520fd621907b023704a119e65890f2ec62c99081de",
+  "result_blend_sha256": "40c8b078810704f1eb31f368b612e29f2765415bb42ed9be6ddbd8d7b801cbf9",
+  "result_glb_sha256": "171df2746dd04afc425009a65f076b995da6539c07ff1832b886ffb1dc780fc2",
+  "triangles": 351374,
+  "mesh_geometry_unchanged": true,
+  "architecture_mesh_count": 12,
+  "changed_masonry_material_slots": 29,
+  "projected_actual_uv_loops": 75594,
+  "world_uv_units_per_m": 0.38,
+  "cc0_source_files_sha256": {
+    "diff": "f759d2471cb6a4b3b37d0a5a249adbad1d4d48d67825f37622a603dac8d9bb22",
+    "normal": "53d4c2cac90801132a99054bd7d6132b230ddf9b12cc20c515caa7da0da6f01a",
+    "rough": "f1808dec1ad6dd77881baa41813d9718bb93e9aa1dabdcd9d6dc9b7f45dd90da"
+  },
+  "pbr_albedo_resolution": [
+    2048,
+    2048
+  ],
+  "photographic_normal_strength": 0.43,
+  "preserved_gate_and_bridge_geometry": true,
+  "source_gameplay_colliders_unchanged": true,
+  "preserved_heraldry_trim_metal": true,
+  "zero_paid_spend": true,
+  "material_applied_to": [
+    {
+      "object": "ENTRY_LowerGate_Arch",
+      "changed_stone_slots": [
+        "Eldoria_stone"
+      ],
+      "triangles": 5100,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_LowerGate_Base",
+      "changed_stone_slots": [],
+      "triangles": 440,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_LowerGate_EastTower",
+      "changed_stone_slots": [
+        "Eldoria_stone"
+      ],
+      "triangles": 4419,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_LowerGate_EastWing",
+      "changed_stone_slots": [
+        "Eldoria_stone"
+      ],
+      "triangles": 726,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_LowerGate_WestTower",
+      "changed_stone_slots": [
+        "Eldoria_stone"
+      ],
+      "triangles": 4419,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_LowerGate_WestWing",
+      "changed_stone_slots": [
+        "Eldoria_stone"
+      ],
+      "triangles": 726,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_V12_REUSED_WALLFAMILY_EastFlankWall",
+      "changed_stone_slots": [
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_existing_rock_PBR",
+        "ENTRY_road_masonry_PBR"
+      ],
+      "triangles": 1620,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_V12_REUSED_WALLFAMILY_EastInnerTower",
+      "changed_stone_slots": [
+        "ENTRY_existing_rock_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR"
+      ],
+      "triangles": 1532,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_V12_REUSED_WALLFAMILY_EastOuterTower",
+      "changed_stone_slots": [
+        "ENTRY_existing_rock_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR"
+      ],
+      "triangles": 1532,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_V12_REUSED_WALLFAMILY_WestFlankWall",
+      "changed_stone_slots": [
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_existing_rock_PBR",
+        "ENTRY_road_masonry_PBR"
+      ],
+      "triangles": 1620,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_V12_REUSED_WALLFAMILY_WestInnerTower",
+      "changed_stone_slots": [
+        "ENTRY_existing_rock_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR"
+      ],
+      "triangles": 1532,
+      "world_texel_scale_u_per_m": 0.38
+    },
+    {
+      "object": "ENTRY_V12_REUSED_WALLFAMILY_WestOuterTower",
+      "changed_stone_slots": [
+        "ENTRY_existing_rock_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR",
+        "ENTRY_road_masonry_PBR"
+      ],
+      "triangles": 1532,
+      "world_texel_scale_u_per_m": 0.38
+    }
+  ],
+  "full_frame_art_pass": false,
+  "art_status": "CANDIDATE_VISUAL_UNAPPROVED_REQUIRES_UNITY_AB",
+  "mobile_certified": false
+}

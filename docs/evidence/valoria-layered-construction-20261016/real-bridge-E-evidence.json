@@ -1,0 +1,40 @@
+{
+    "unity": "6000.3.23f1",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity",
+    "base_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity",
+    "classification": "AUTHORED 3D SOURCE CANDIDATE / REMAINING GREYBOX",
+    "visual_status": "TEMPORARY_SUPPORT_RETAINED_E1_VISUAL_REJECT_REVIEW_E2_REQUIRED",
+    "gameplay_status": "NOT_CERTIFIED",
+    "actual_glbs": true,
+    "original_colliders_preserved": true,
+    "real_bridge_placed": true,
+    "art_approved": false,
+    "physical_mobile_tested": false,
+    "sources": 3,
+    "instances": 14,
+    "renderer_count": 116,
+    "names": [
+        "bridge_span_4m",
+        "bridge_span_4m",
+        "bridge_span_4m",
+        "bridge_span_4m",
+        "arch_bridge_support",
+        "arch_bridge_support",
+        "stone_slab_cap",
+        "stone_slab_cap",
+        "stone_slab_cap",
+        "stone_slab_cap",
+        "stone_slab_cap",
+        "stone_slab_cap",
+        "stone_slab_cap",
+        "stone_slab_cap"
+    ],
+    "source_sha256": [
+        "bridge_span_4m d84bfc9a245520399b8c2298e86fcc48afbbb6fbec8de32e4e639281351b6b49",
+        "arch_bridge_support 440fdec7acfa0942a2d50fe954c232c808edc88887a8391cfbd193682dfcd396",
+        "stone_slab_cap 0c632d3656e4db63ded29ba76265536c0b4cb64f5b96dfe265656985390a3383"
+    ],
+    "collision_deck_top": 0.3799999952316284,
+    "shore_top": 0.3799999952316284,
+    "contact_height_deviation_max": 2.5331974029541018e-7
+}

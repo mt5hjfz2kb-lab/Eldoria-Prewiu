@@ -1,0 +1,329 @@
+{
+  "producer": "Native Blender isolated 12 object PBR uplift",
+  "base_artifact": 38815831008,
+  "status": "TECH_ONLY_NO_ART_APPROVAL",
+  "items": [
+    {
+      "asset": "pine_small",
+      "original_source_sha": "0f260af1af62437d88c75d3eadb94ac94df129e2c9ecaff649f5b66e50ffc532",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 1231351,
+          "tint_srgb": [
+            91,
+            137,
+            106
+          ],
+          "material": "Leaves_Pine"
+        }
+      ],
+      "export_sha": "5258cfae15dcead525a36210f49fe6c4a3295c18343cae00b340c7355b5b4eff",
+      "file_bytes": 8667008,
+      "paired_before_sha": "96fb78e538ee383b80159d2eba6780220619cabbc24f977a8112037b31349c35",
+      "paired_after_sha": "4b74807543e7f49e2d2f8cc80bdbfc221161e844faf6af92f4a7759f661e6204"
+    },
+    {
+      "asset": "pine_medium",
+      "original_source_sha": "0df2a6f9d21dbfeedef74305163c1de9043e54c1d3267efaa721cef0ce08d2c5",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 1231351,
+          "tint_srgb": [
+            91,
+            143,
+            111
+          ],
+          "material": "Leaves_Pine.001"
+        }
+      ],
+      "export_sha": "0024f8f0e42ece9e4522c5ebb144f367180ce64acd908ff8df045dd125f06a15",
+      "file_bytes": 8751960,
+      "paired_before_sha": "b4880f845328097ed3ecb0fd2a28027332f287a75eaac785725ae6462f9a531e",
+      "paired_after_sha": "cbca46d84b4de3b5082926adfa5be487343c84033d131fc7258fc99767b0b5a9"
+    },
+    {
+      "asset": "pine_tall",
+      "original_source_sha": "7068cd5d1718a0cf126d860f18a8acc4ec3847135745b252cea7e0a1f82b18b9",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 1231351,
+          "tint_srgb": [
+            79,
+            127,
+            100
+          ],
+          "material": "Leaves_Pine.002"
+        }
+      ],
+      "export_sha": "35ee33dd0f2c905e407231723ab37d96aae580c9c90da66373a3d6bce8f489f4",
+      "file_bytes": 8530648,
+      "paired_before_sha": "ab4d91c90705f40e0ce4f1d028f6a54bb14b6054891ab9f5efa1ad7319983eb9",
+      "paired_after_sha": "808e17ac8e05784394495ba0064b35165f17c2b45bf9bbf5150cbc0e2f70e710"
+    },
+    {
+      "asset": "boulder_1",
+      "original_source_sha": "5cb1449ddf6d000e493488384f62c5652e46b2b876d5f456cd9c998402c59acc",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 4194304,
+          "tint_srgb": null,
+          "material": "Rocks"
+        }
+      ],
+      "export_sha": "c224fd9aa08527813729d53a28d6c27e317cdf5e9998da278a80e89b88a8edfd",
+      "file_bytes": 3190548,
+      "paired_before_sha": "d82dfa199076d5b2e039ab42a50ccc422a2d843d92beca51ab832aa7adae204b",
+      "paired_after_sha": "0ac037d39a6dba798dae61c36929cc5aad573f40195e02aac617629d4cedbdd3"
+    },
+    {
+      "asset": "boulder_2",
+      "original_source_sha": "d02cf7dba8ab76a33f9eb7419dc693fc8cf235396ec4664822e7973fb406c915",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 4194304,
+          "tint_srgb": null,
+          "material": "Rocks.001"
+        }
+      ],
+      "export_sha": "a581179e59812011f859878a12fd8aead01a92e33e7be2bd4764c17ad02a413f",
+      "file_bytes": 3186696,
+      "paired_before_sha": "a1c95ec3f81812a65f7f3344e6e7edd800851d1dda8675835aa62de258b3d0a2",
+      "paired_after_sha": "c50e7cb01a7f0dcbbbae3f7bcdd896043f1295dad7781f59e40501debcab98c3"
+    },
+    {
+      "asset": "boulder_3",
+      "original_source_sha": "d1f6c96c811ae63fdda01dd660eccf1292dddabe7a7c0160cfe8bde68017eae3",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 4194304,
+          "tint_srgb": null,
+          "material": "Rocks.002"
+        }
+      ],
+      "export_sha": "e4360cc87a699e403fbffa6cab46fe1514a82db0c2fab7ff83bb9f6fddeb0756",
+      "file_bytes": 3197392,
+      "paired_before_sha": "77746d2b831949c08207b27bfb6400256fba167beeba5e80fc5f32b98bbb650b",
+      "paired_after_sha": "badcb81f4f7fee0589acd699cec902e02f7da2bdd2def9cdd36fb43889666038"
+    },
+    {
+      "asset": "cliff_stone_chip",
+      "original_source_sha": "21a65aef307278df54e641142357706195c2d33dcacc5d4d91403e145a160687",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            2048,
+            2048
+          ],
+          "pixels_modified": 4194304,
+          "tint_srgb": null,
+          "material": "Rocks.003"
+        }
+      ],
+      "export_sha": "1f999fbb8bd63f34f362243c0e18b1cdb7ec2eedc966146da217a0bae332d943",
+      "file_bytes": 3186696,
+      "paired_before_sha": "6c34b83f7df57f43a600f692d10ca7b7248c1c961f3ed2466d8a26f2a5318905",
+      "paired_after_sha": "5136dae6e9cb98583b91b1bc739b49e24625c8344fe2eda77a64e9c6f358e9ee"
+    },
+    {
+      "asset": "shrub_1",
+      "original_source_sha": "e1819a4399c8be315a210596f0b22352f426a1eb1a2f6b33a5ac71345dc44ab3",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            1024,
+            1024
+          ],
+          "pixels_modified": 310127,
+          "tint_srgb": [
+            108,
+            154,
+            91
+          ],
+          "material": "Leaves_TwistedTree"
+        }
+      ],
+      "export_sha": "5da94bd40f1afc7b03dc1fb052352ca97b986b35aafb49a69249cebb876f14f0",
+      "file_bytes": 174168,
+      "paired_before_sha": "65f06a9bc315c7cca4dcb1354d361ea12734167772107b8bd13c4bd57db28aa3",
+      "paired_after_sha": "3093279b13ff3c1a905bfd74d28e95bba124a67969f4972a6ec63284cff9f07b"
+    },
+    {
+      "asset": "shrub_2",
+      "original_source_sha": "a786c747ae8155d97f5d212a07c95bbd4f5be45c17e9f138e44e544c8a7c8cd9",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            1024,
+            1024
+          ],
+          "pixels_modified": 310127,
+          "tint_srgb": [
+            126,
+            173,
+            105
+          ],
+          "material": "Leaves_TwistedTree.001"
+        }
+      ],
+      "export_sha": "7fd738bf7932225c7486a1f55a2e76278431baf6f5eb48f06c057c806e2bb70d",
+      "file_bytes": 173864,
+      "paired_before_sha": "2506d2bec60c595cfce9ee8701cd43e21f1756c3085a1db79c809fac6a98e095",
+      "paired_after_sha": "6d04c7cc5a3fde952d4123ba35dbd8a163be823d70645359f85b8471cd699be5"
+    },
+    {
+      "asset": "shrub_3",
+      "original_source_sha": "ddc8eac31f3dfee278a231567ac016ac4eba6b9716e5fb00eaae8fe3fe40f087",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            1024,
+            1024
+          ],
+          "pixels_modified": 310127,
+          "tint_srgb": [
+            95,
+            141,
+            86
+          ],
+          "material": "Leaves_TwistedTree.002"
+        }
+      ],
+      "export_sha": "2787cb82d01bad7992d10367fcb6e8ae666d008fac631168cf380ad754dcc8ce",
+      "file_bytes": 174324,
+      "paired_before_sha": "d87c7bf45c59257fea506a225c83817d915eb4e5b8e283c0857c0c1ecfa37ca0",
+      "paired_after_sha": "aa1ba598a600e44ecc5a8cb2cefed38963cc8e7405df007db639013f34756b65"
+    },
+    {
+      "asset": "grass_tuft_1",
+      "original_source_sha": "7fb60de769dad4562bc0e6f4c115744053d7f4629072127bb3e5732d1ad6fb71",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "pixels_modified": 262144,
+          "tint_srgb": [
+            169,
+            206,
+            95
+          ],
+          "material": "Grass"
+        }
+      ],
+      "export_sha": "73a56728686924dc7ccaaf5c24a4ba5b3d5217317eed744ac21bd3e48d7cf05f",
+      "file_bytes": 48404,
+      "paired_before_sha": "825f80b8e796e74233814c9c02a777037f89ce69913aa32ef4c86ad5e62fffd9",
+      "paired_after_sha": "bafe7d80284100c137996035943b1d18f1d0961c0461951586e469f945aa77b2"
+    },
+    {
+      "asset": "grass_tuft_2",
+      "original_source_sha": "8e8c5e16422f1e931c0a91e96e539d3e1bf5d3a208e7a173f4920af66a8ae7ba",
+      "external_author": "Quaternius",
+      "external_license": "CC0",
+      "art_approved": false,
+      "target_score": 8,
+      "status": "TECH_PASS_VISUAL_PENDING",
+      "material_edits": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "pixels_modified": 262144,
+          "tint_srgb": [
+            156,
+            195,
+            87
+          ],
+          "material": "Grass.001"
+        }
+      ],
+      "export_sha": "53d02b90b3b234aa6f155865b18ba402845850072231fa305c924b683fc62856",
+      "file_bytes": 55092,
+      "paired_before_sha": "356fa1e98743bb07497e0628047496c80eb55a47de7b192b3a7e03ce9093ba7e",
+      "paired_after_sha": "1767bc069a07621ec70e8c31a7d9852fb79740b614ca8a613fa93b78a1c7ccb7"
+    }
+  ],
+  "count": 12,
+  "no_composition": true
+}

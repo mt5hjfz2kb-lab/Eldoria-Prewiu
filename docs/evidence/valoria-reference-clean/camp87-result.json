@@ -1,0 +1,27 @@
+{
+  "source_sha": "26d92123e684e06f332b3b140179a457c337424e",
+  "original_blend_sha256": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
+  "original_source_preserved": true,
+  "original_scene_not_modified": true,
+  "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
+  "memory_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e",
+  "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "plan": {
+    "rationale": "Preserve the exact tent footprint, height, and all poles/supplies/bench from the source topology. Remodel ONLY the cloth shell and ropes to match the Bastion's coherent blue/sand palette. The silhouette must remain a solid orange wedge with a curved taut roof, visible seams, an open entrance with folded side flaps, and a sagging awning. No castle replacement, new props, or crowd. No closed fake black doorway. Preserve library source and gameplay parcel. Select a coherent full geometric treatment from the typed operations and values below, explain silhouette and material choices. No scores or approval.",
+    "roof_sag": 0.12,
+    "ridge_sag": 0.08,
+    "entry_width": 1.5,
+    "entry_height": 1.8,
+    "fold_depth": 0.3,
+    "palette": "slate_blue",
+    "seam_count": 5,
+    "trim_width": 0.07,
+    "awning_sag": 0.26,
+    "rope_radius": 0.03
+  },
+  "glb_sha256": "1b9791abaa8f9d3c2359ba9b095dfb09a318eb604cf550168e1757534c947e46",
+  "blend_sha256": "e6cf4a439c3c22518e8b8d9be158b6464b0ccce47437d63ab1d0de6c3ef3825e",
+  "triangles": 16296,
+  "art_approved": false,
+  "unity_capture_pending": true
+}

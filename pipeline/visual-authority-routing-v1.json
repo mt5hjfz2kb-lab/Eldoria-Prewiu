@@ -1,22 +1,20 @@
 {
   "schema_version": 1,
-  "authority_id": "valoria-canonical-sharp-runtime-v1",
-  "status": "locked",
+  "authority_id": "valoria-integrated-native111-development",
+  "status": "canonical_development_art_pending",
   "canonical_visual_authority": {
     "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
-    "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
-    "beauty_owner": "SHARP",
-    "production_workflow": ".github/workflows/valoria-first-playable-city-slice-v1.yml",
-    "production_generator": "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
-    "runtime_component": "ValoriaParcelPresentation",
-    "certified_visual_artifact_id": 11418118004,
-    "certified_visual_run_id": 37474695980,
-    "certified_real_game_state_run_id": 37488975868,
-    "certified_runtime_scene": "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity"
+    "beauty_owner": "Valoria integrated native111 — local AI artist",
+    "production_workflow": ".github/workflows/valoria-reference-clean.yml",
+    "production_generator": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs",
+    "runtime_component": "ValoriaIntegratedWorld",
+    "certified_runtime_scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "technical_run": 39138751241,
+    "art_approved": false
   },
   "current_screenshot_policy": {
     "canonical_only": true,
-    "instruction": "For any request for the current/real/canonical Valoria screenshot, use certified SHARP production evidence or a newer explicitly promoted successor. Never use the generic unity-slice benchmark bundle as current Valoria.",
+    "instruction": "Use genuine native111 integrated scene evidence or a newer verified main successor. SHARP and generic captures are historical, not current Valoria.",
     "forbidden_as_canonical": [
       "eldoria-valoria-captures-*",
       "ValoriaBenchmarkCapture",
@@ -56,6 +54,19 @@
   "runtime_safety": {
     "status": "installed",
     "behavior": "Outside UNITY_EDITOR, loading scene Valoria without ValoriaParcelPresentation disables existing cameras and presents an explicit BUILD INVALID overlay instead of allowing silent legacy VisualWorld presentation.",
-    "guard": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs"
+    "guard": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs",
+    "note": "Legacy guard retained for old Valoria scenes; integrated scene has its own host/binding validation. Do not silently substitute old presentation."
+  },
+  "previous_authority": {
+    "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+    "beauty_owner": "SHARP",
+    "production_workflow": ".github/workflows/valoria-first-playable-city-slice-v1.yml",
+    "production_generator": "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+    "runtime_component": "ValoriaParcelPresentation",
+    "certified_visual_artifact_id": 11418118004,
+    "certified_visual_run_id": 37474695980,
+    "certified_real_game_state_run_id": 37488975868,
+    "certified_runtime_scene": "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity"
   }
 }

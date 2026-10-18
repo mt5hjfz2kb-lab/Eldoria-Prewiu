@@ -1,0 +1,36 @@
+{
+    "unity": "6000.3.23f1",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity",
+    "base_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity",
+    "classification": "PRODUCTION ART SOURCE CANDIDATE / GREYBOX ENVIRONMENT",
+    "art_gate": "NOT_APPROVED_NO_INDEPENDENT_AB",
+    "gameplay_gate": "NOT_CERTIFIED",
+    "original_library_sources_immutable": true,
+    "is_canonical": false,
+    "full_scene_visual_pass": false,
+    "mobile_profiled": false,
+    "glb_sha256": [
+        "tower_square_short a514d97fc3241477f4b98b7e4d04b1213d75a1718e53d662fca9e83be8dfd4ac",
+        "wall_panel_crenellated_4m 476d4cd3bb9d220845489833b3386311c1994b6db55ab3353571cf564a6dd05f",
+        "arch_complete_major b2026a1046e8e8b64556b440e00aed8dd4a788aab599ca3c60582b02e8640bfa",
+        "portcullis_large 09492e60b841e27bf4b65c532b9b973ec0e2dd1cebb2738beafabcbde52f3c1d",
+        "reinforced_oak_gate 6b1ad6f41c0ce11341281caf6d9ba21438771119443ced089f6f5de691e94a98",
+        "banner_royal_blue be95150ecaf59a92946974cdfe84e0b416df1ec1ae320ea129ceb38b39b8a4af"
+    ],
+    "placed_parts": [
+        "tower_square_short",
+        "tower_square_short",
+        "arch_complete_major",
+        "portcullis_large",
+        "reinforced_oak_gate",
+        "wall_panel_crenellated_4m",
+        "wall_panel_crenellated_4m",
+        "wall_panel_crenellated_4m",
+        "wall_panel_crenellated_4m",
+        "banner_royal_blue",
+        "banner_royal_blue"
+    ],
+    "genuine_glb_types": 6,
+    "module_instances": 11,
+    "renderer_count": 757
+}

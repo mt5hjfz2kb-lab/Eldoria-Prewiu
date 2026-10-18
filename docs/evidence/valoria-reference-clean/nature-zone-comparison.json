@@ -1,0 +1,11 @@
+{
+    "baseline_source": "452a36c639801c9c7f32baf16499193cf12795b8",
+    "baseline_glb_sha256": "8cec9ac895ad9747d13fb80a9e589a21c50e04861e547f648cb27d39516830a5",
+    "source_sha": "e39f77151ff08d2d8020d8286312376bb9e92dc6",
+    "scope": "Only existing right river bank boulders at world X8..28 resculpted and mapped in Blender; all other scene surfaces shared during A-B",
+    "same_camera": true,
+    "same_lighting": true,
+    "baseline_hash_verified": true,
+    "before_triangles": 35152,
+    "after_triangles": 25330
+}

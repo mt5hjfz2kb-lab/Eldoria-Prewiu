@@ -1,0 +1,148 @@
+{
+  "source_blend_sha256": "f44afe06ea40c1d7865d6616b4c08c65e001a3b1db06ca5fe217745de948307a",
+  "target": "River_bank_rocks",
+  "coordinate_system": "Blender WORLD X east, Y inland, Z up",
+  "water_z": -2.05,
+  "actual_components": [
+    {
+      "component": 71,
+      "bbox_min": [
+        5.286813259124756,
+        -16.17548179626465,
+        -2.9090728759765625
+      ],
+      "bbox_max": [
+        10.82176399230957,
+        -12.257255554199219,
+        0.8804454803466797
+      ],
+      "vertices": 368
+    },
+    {
+      "component": 72,
+      "bbox_min": [
+        10.795934677124023,
+        -16.180076599121094,
+        -3.41982364654541
+      ],
+      "bbox_max": [
+        13.308249473571777,
+        -13.156538963317871,
+        -0.894749641418457
+      ],
+      "vertices": 366
+    },
+    {
+      "component": 73,
+      "bbox_min": [
+        13.169336318969727,
+        -16.689624786376953,
+        -2.802525520324707
+      ],
+      "bbox_max": [
+        18.078615188598633,
+        -13.267434120178223,
+        1.2024240493774414
+      ],
+      "vertices": 358
+    },
+    {
+      "component": 74,
+      "bbox_min": [
+        16.819101333618164,
+        -15.03659439086914,
+        -1.4146757125854492
+      ],
+      "bbox_max": [
+        19.136934280395508,
+        -12.230518341064453,
+        1.1310949325561523
+      ],
+      "vertices": 327
+    },
+    {
+      "component": 75,
+      "bbox_min": [
+        14.366098403930664,
+        -13.468924522399902,
+        -1.4407026767730713
+      ],
+      "bbox_max": [
+        15.226869583129883,
+        -12.85729694366455,
+        -0.850034236907959
+      ],
+      "vertices": 423
+    },
+    {
+      "component": 76,
+      "bbox_min": [
+        19.014320373535156,
+        -14.558505058288574,
+        -1.6250404119491577
+      ],
+      "bbox_max": [
+        19.99640464782715,
+        -14.09256649017334,
+        -0.8249759674072266
+      ],
+      "vertices": 404
+    },
+    {
+      "component": 77,
+      "bbox_min": [
+        20.30048942565918,
+        -17.892452239990234,
+        -2.749107837677002
+      ],
+      "bbox_max": [
+        26.604469299316406,
+        -14.186766624450684,
+        0.6249518394470215
+      ],
+      "vertices": 356
+    },
+    {
+      "component": 78,
+      "bbox_min": [
+        26.068767547607422,
+        -15.800435066223145,
+        -1.9377541542053223
+      ],
+      "bbox_max": [
+        29.1269588470459,
+        -13.662544250488281,
+        0.4285593032836914
+      ],
+      "vertices": 365
+    },
+    {
+      "component": 79,
+      "bbox_min": [
+        25.503767013549805,
+        -14.74792766571045,
+        -1.4494247436523438
+      ],
+      "bbox_max": [
+        26.713855743408203,
+        -13.603839874267578,
+        -0.1646718978881836
+      ],
+      "vertices": 359
+    }
+  ],
+  "visual_diagnosis": "Native54/58 actual Unity main image: tall separate rocks form a regular standing row along the river. Reference has low broad embedded fractured rock shelves. Existing small-pebble rounds44/45 were visible but insufficient; do not add more pebbles. Ground57 blurred/dark patch rejected; ground58 minor improvement not retained. Preserve scene composition, terrain, materials, camera and all other meshes.",
+  "task": "Author 3 to 7 edits of these REAL connected components into lower broader shelves with varied crowns; change only this representative north bank zone. Do not invent component IDs. Base Z stays fixed; do not lower every crown to the same height. Top must remain above water_z+0.15. Preserve closed topology/UVs. Choose actual values per boulder.",
+  "schema": {
+    "rationale": "short art reason",
+    "actions": [
+      {
+        "component": "integer from actual_components",
+        "scale_x": "0.85..1.2",
+        "scale_y": "1.05..1.45",
+        "scale_z": "0.45..0.80",
+        "shift_inland": "0..0.6"
+      }
+    ]
+  }
+}

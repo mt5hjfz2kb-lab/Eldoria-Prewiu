@@ -1,0 +1,1013 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-18",
+  "canonical": "main",
+  "policy": "Reference only; no deletion, no restart, no wholesale merge. This is logical archival, not GitHub branch protection.",
+  "branches": [
+    {
+      "name": "agent/first-local-bom-regression-v1",
+      "sha": "8af0804ba4a8cee0486617e5595a787a1f4506f4",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "archive/pre-departments-reconstruction-20261009",
+      "sha": "d81b50333c17821b57bf7136d637cb40e00fec63",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "archive/pre-recovery-switch-2026-10-09",
+      "sha": "75a0493b81c62458fa73ba8a367dc460b5b24fdd",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "archive/pre-restore-2026-10-09",
+      "sha": "9e12e85cf76bd6d9392489cb2f8c27f374051751",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "archive/v0.19.5-r7",
+      "sha": "401d0d79e6aecf1193cef34640ec4a290edecd03",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/bastion1-gpt6-directed-scarp-lookdev-20261013",
+      "sha": "e0176b0be6f0b438344cbd87951ce92f602af5d1",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/eldoria-ai-authoring-enforcement-v1-20261012",
+      "sha": "129b97109f4f956b6aac920f879b9ed03277ab5b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/eldoria-evidence-learning-retention-20261013",
+      "sha": "b359a05f508be5a545df38bbe07dfdc08b082dc3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/eldoria-full-blender-artist-studio-20261014",
+      "sha": "65add927cde3722407906808f93f22035c975d4c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/local-ai-professional-artist-role-20261012",
+      "sha": "c84ded0d87e6cab838b03ac4b1a361d61f045d49",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/studio-reuse-handoff-20261011",
+      "sha": "e137aaf713c682509cacc62cd1b3279c140a811c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-63-individual-quality-uplift-20261015",
+      "sha": "22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-ai-director-breakthrough-v1-20261011",
+      "sha": "de256ac4956c73f6188e0773c0e5995f15c924ba",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-asset-family-v2-ai-authorship-20261011",
+      "sha": "4519a2773ab1d7cc5cac21203c420f3a81faa9d9",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-bastion1-reference-assembly-20261012",
+      "sha": "89ded38acf411a503269d618c2469ec5269999b1",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-first-asset-family-v1-20261011",
+      "sha": "14c2ffe23b2c2eaac82c8e517897ff24eb98cb1b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-first-hero-asset-v1-20261011",
+      "sha": "88780226b0e080ab2e91664d24dcb6dd211ba176",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-gate-quality-calibration-v1-20261011",
+      "sha": "cf253ef3615fe41aa0227ffa7afbda27757b04c1",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-production-library-v1-20261011",
+      "sha": "a345e0cd4296db013595295e11170049291554d0",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "art/valoria-studio-recovery-rocks-v1-20261011",
+      "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "audit/valoria-legacy-glb-20261013",
+      "sha": "860f4b0b55e4ce0e55fa03987d1bb9bc5e78f27b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "backup/pre-v020-main",
+      "sha": "401d0d79e6aecf1193cef34640ec4a290edecd03",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "baseline/v0.24-certified",
+      "sha": "2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "checkpoint/world4x-zone1-ground-source-09fcb93d-20261014",
+      "sha": "711716b0a91eb7a809fe272b55215bd8ea7f1862",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ci/fix-hero-bastion-governance",
+      "sha": "375fd63e0aad4fa1266de7693963bdcf98d8e523",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ci/golden-source02-observable-trigger",
+      "sha": "c02faf3f7a785555390097a6f856d46826e89da6",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ci/golden-source02-trigger-20261005",
+      "sha": "761522bbfd5189adb03a924ddee802976fd04710",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "construction/valoria-master-plan-layers-20261016",
+      "sha": "47b8ce0091622dfb0722847b29e6af3b4f84d677",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "dev/r7-consolidation",
+      "sha": "af2ffd5a3e437b0344ffbb4216880a25c407a499",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "dev/v0.20.0-narrative-flow",
+      "sha": "fbed2bec2ca16b3bec61d8f0dd23d6a0f32b847e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "dev/v0.20.1-onboarding",
+      "sha": "2fa1b24402d8ff4b7b4b72811eebd10d81030a51",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "dev/v020-impl",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "development/recovered-visual-base",
+      "sha": "a05b62307d1db68c50263f693a427822e9d67a54",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "development/v0.23-clean",
+      "sha": "4add36966957b1553595b03652a5d6f361a9267a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "diagnostic/chatgpt-cuartel-reference-20261015",
+      "sha": "5d55e605ec2d476a67fd0a6b311d3176473eb3d4",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "diagnostic/eldoria-artist-capability-bridge-20261015",
+      "sha": "de278fae8d015250a91228bdc61df0ae22b34e3e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "diagnostic/eldoria-grounded-beam-tool-20261015",
+      "sha": "e429daed7d229e333059ead58ad6c7de2364262a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "diagnostic/eldoria-real-world-contact-context-20261015",
+      "sha": "4a42b988ba8b9fb010cab1c70f5561daf9b0908f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "diagnostic/gpt6-vs-qwen-valoria-tower-20261015",
+      "sha": "451509815660bce4cb1970946d65e1471ebe0209",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "diagnostic/valoria-ai-eyes-brain-20261015",
+      "sha": "f0fed53e4e58d85dd7b51033a92a2bb28fd2c046",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "docs/art-brain-blender-vision-consolidation-20261010",
+      "sha": "235e20cc45eca3a354c6bdc84d4d739368e2c2a3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "docs/current-state-cleanup-2026-09-28",
+      "sha": "4d40d8f136f709a0d3e820690319acb55759c03a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "docs/eldoria-documentation-consolidation-20261013",
+      "sha": "5d89ecc827139ea56d7491ba3502f575ed0daf30",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "docs/eldoria-verify-project-capabilities-20261011",
+      "sha": "db9728edb7b0008a7740bc3a0b44811922ee11ea",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "eldoria-recovery-backup-20261009",
+      "sha": "e13e6cb9311bed388447d21c39548f26c5c677bc",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "eldoria-recovery-oct07-playable",
+      "sha": "b5046f98c0fef689c109190611271ecce6d001ea",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "eldoria-snapshot-20261008",
+      "sha": "bdeef4038d03a62dcc207c93005bbad868fd7909",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/eldoria-three-visual-styles-20261017",
+      "sha": "b2b87d52fe297152669b7071777acdd3c7aa3115",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/valoria-63-clean-assembly-20261016",
+      "sha": "3939d495b357d36391555100c7539f8eb700e31e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/valoria-63-clean-composition-20261016",
+      "sha": "47049355befde55a33b2358502f58176cc1ab548",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/valoria-cliff-ai-authorship-ab-20261011",
+      "sha": "306f0d7e757573a95c15ef7ac3accc11ad16ba19",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/valoria-scene-breakthrough-20261016",
+      "sha": "f8a9d3ec03784386b396c79d985f5180825a59fb",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/valoria-scene-method-breakthrough-20261016",
+      "sha": "2f4e0a166d2ef18810ac0ef48b5bac5b089fc779",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "experiment/valoria-v5-android-apk-20261012",
+      "sha": "2efd346034bdb89ae063406558f0343d753e489a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-camera-scale-contract-20261013",
+      "sha": "f1aa38b6d128dc1d189f57f4ea54cdc62ecb36bf",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-camera-schema-after-footprint-20261013",
+      "sha": "85f2d3e2d1e3d82817d41b303f6ccadc4c4e983b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-evidence-learning-gate-20261013",
+      "sha": "0af5f68f19247e40a48caab98609fc269c197237",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-last-four-camera-failure-memory-20261013",
+      "sha": "af9e4ef39660249385a516b223cfa861f8d5629c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-strategy-schema-20261013",
+      "sha": "4d928620cb83dde9dad0d4e62a34c3d37a982a8c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-unity-ab-visual-proof-20261013",
+      "sha": "e03740bb315bd35ebaadb727ee9a0a447580f12c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-unity-visual-gate-reconcile-20261013",
+      "sha": "cf0829a2d9fb63d1041181ada39ff7bc0bc0f33e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/artist-visible-camera-footprint-20261013",
+      "sha": "2bec82605603b56f173e3b210c710ba24e6d81ea",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/bastion1-artist-camera-contract-consumer-20261013",
+      "sha": "f758798403795998bc08bd17d9180624a43be07f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/bastion1-next-visible-qwen-cycle-20261013",
+      "sha": "efcb26dcc8bca8afb5d197e1f14460a272adb4f5",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/bastion1-qwen4b-fullcity-consumer-20261013",
+      "sha": "94aaf1ca1671d998d498f10efa7ed43a526c598d",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/bastion1-qwen-visible-art-fullcity-merge-20261013",
+      "sha": "c6508bcce85d5f04c7a4662a401bd0bde0b12bed",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/bastion1-typed-editor-integration-20261013",
+      "sha": "0b9e459f88cb0b88355454c42370158c7f50daf9",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/coordinator-failure-recovery-20261008",
+      "sha": "0de594f440ab712c5d74b97954d13ba286830976",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/eldoria-artist-camera-visible-mesh-20261015",
+      "sha": "ae47b03c593b60e8dd3adf7fc9ec66fe37a140ff",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/eldoria-artist-eave-contact-visual-learning-20261015",
+      "sha": "d72b2d3bc462a080ca769042e64e342cd776efe1",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/eldoria-artist-source-scale-sculpt-learning-20261014",
+      "sha": "d45c4034265e38d72c572358b571cdf3830e434b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/local-maintenance-json-labels-20261008",
+      "sha": "9e443e20c8e2818d83c93c8580b233ffd0d12485",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/m04-strict-transitions-20261008",
+      "sha": "8c29bcbe82a09b4401a73eeaaf548d0f150ddfe2",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/m07-sawmill-partial-shell-20261009",
+      "sha": "afe63d4006213e2e066a66cde38e0d060296d92a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/tester-qa-frozen-version-20261012",
+      "sha": "b54d03c089615b12ac72a298e38f7d19dac39fc8",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "fix/valoria-cc0-door-gltf-texture-uris-20261016",
+      "sha": "1efb1bf667a549c223457fda6bead4533e0a226a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "frozen/testers-v0265-t1",
+      "sha": "84c0a4071f3be639154f021689109719e9ba6cf7",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "hotfix/asset-library-reprocessing-certified-head",
+      "sha": "2ffc7404e264162f46d2b872f0282357ef905989",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "implementation-v020",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "infra/valoria-63-feedback-guard-20261016",
+      "sha": "669d826a959a945946ba81b4ad470ca978db2ada",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "infra/valoria-feedback-active-gates-20261016",
+      "sha": "ae88525d3604480e4f072d30f0eb0ded63a7d083",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/bastion1-cumulative-artist-memory-wiring-20261013",
+      "sha": "9a92c25e11edccf4c18664f88d887c733bd4d2eb",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/eldoria-unified-professional-artist-20261014",
+      "sha": "0ab1ba5b8a0dcf479c6a4c771ec01c772f00826f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/valoria-bastion1-player-scene-20261012",
+      "sha": "1cede4b2fc54c0b456ca683a44c41d9b7f3602c7",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/valoria-gatehouse-unity-v1-20261011",
+      "sha": "fcb275e25d7207cb0375fa5bc5d7521f91aa69f9",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/valoria-selected-asset-library-v1-20261013",
+      "sha": "4ac7202b630bb49578fbe1de1a711b35438115b1",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/valoria-studio-rocks-unity-v1-20261011",
+      "sha": "b5e42b581e5ae54428d065896bd33ffaea446158",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "integration/valoria-v3-unity-lookdev-20261012",
+      "sha": "387471249fdab9b5d26ec861748b40a8802831ac",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/dg-orchestration-recovery-20261008",
+      "sha": "2f1abdf58115789452bcfd69344b6d67e562ba7e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/eldoria-artist-cumulative-memory-hooks-20261013",
+      "sha": "cea3db1d22b94e4932ee04d389659a568478f871",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/eldoria-overnight-continuity-v1-20261016",
+      "sha": "9fc229643927d7eea97ae9e81319e7e50150a4b9",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/enable-63-assets-night-recovery-20261016",
+      "sha": "691d3a3b54c71c8ae18948fc3f26fca3c6f2a0d3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/fix-night-owner-governance-20261016",
+      "sha": "c008fc44182ee1e2f65405f196acae9b89dcf35d",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/valoria-art-brain-runtime-recovery-20261011",
+      "sha": "8b15d143c4823429162808de2a6cb2928028d89e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ops/visual-fast-rejection-gate-20261013",
+      "sha": "5c125e1a9d990709deef8d75d53bce9624b7169f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "pilot/eldoria-r1-qa-trigger",
+      "sha": "005d58eefc64a2ac0774c4637526428ba351fb9a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "pipeline/mission-continuity-guard-v1-20261014",
+      "sha": "15728c5bab143161a7b01c308295be1ce1a10156",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "pipeline/promote-toolchain-v2-canonical",
+      "sha": "91503886f759d74da311b8ba076836c20a6f462b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "pipeline/toolchain-automation-v2",
+      "sha": "ac7dfd9cce88f9c7caa99376af968e31e0825709",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "production/eldoria-gameplay-first-20261009",
+      "sha": "e179519f7db4391029b51702b8b8a9e223fd8e1d",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "production/mid-tier-citywide-rollout-v2",
+      "sha": "1281089aeb69ae492e7d6e86452b1d020a088b96",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "production/mid-tier-district-rollout-v1",
+      "sha": "d04e65c8ad24c23df74248868f43dfdab6507556",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "production/valoria-nation1-authored-v1",
+      "sha": "f693d323e8fa1617c416674d17a4974160b0e521",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "promotion/asset-library-reprocessing-pass-v1",
+      "sha": "4cca292fc835ef6bbe73051b38bbbde46c385b99",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "promotion/eldoria-ai-authoring-core-20261012",
+      "sha": "668e339f5ecac993edbb7de3a0b829f0385b1246",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "prototype/bastion1-camera-silhouette-alternative-20261013",
+      "sha": "02c3f9ab55e66e08795088f3c7369cc29bde3325",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+      "sha": "2959d743e7aab966bafa12a89bd3529c39141959",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "prototype/valoria-bastion1-no-sharp-20261010",
+      "sha": "777ead312387b1be6b59bf2a565d1a4725678d89",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "prototype/valoria-modular-fortress-library-20261015",
+      "sha": "cecc352ec187d4a3321be618c2aba818476052d8",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "prototype/world4x-zone1-zoom-reference-20261013",
+      "sha": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "publish-r7",
+      "sha": "fafb5988fdca9540763655e333c4ad4d87b7f794",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/eldoria-2026-10-08-1400",
+      "sha": "bdeef4038d03a62dcc207c93005bbad868fd7909",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/known-good-6f35edb",
+      "sha": "6f35edba82e5d906c0d13e4668efb2980d81b387",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/last-authored-visual-e34cbd8",
+      "sha": "e34cbd8c006ef35fe6b7d012c02985f2ccfc6f62",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/last-certified-unity-2026-10-08",
+      "sha": "7063fd36c0d2840f22ad2d1290fbccfe074ffd49",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/main-before-prebreak-publish",
+      "sha": "db4cbe031592c5b165b0015f8f3ad7cc3564f89d",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/oct08-1500-candidate-2026",
+      "sha": "7063fd36c0d2840f22ad2d1290fbccfe074ffd49",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/pages-success-f139968c",
+      "sha": "f139968ccbfdeb3e1d37f58568187374faf6d1f2",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/playable-pre-break",
+      "sha": "0b3bd53dedc33ff9f978667d701a96f0891896ad",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/pre-15-departments-candidate-20261007",
+      "sha": "81f438c94ec8b6f36d34d3172920a421bf35e8f9",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/pre-broken-test-2fb0be1",
+      "sha": "2fb0be1bb677d8f8b05d34e00daa9560fafdbe61",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/visual-known-good-65dc609",
+      "sha": "65dc6096f0ead38817f24e41993447afaadc6d29",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "recovery/visual-v022",
+      "sha": "b5a0589214d42572917337a2ed961f2c4befdaf5",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "release/v0.20.0",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "release-v020-final",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "review-v09-package",
+      "sha": "20fac33d37872f18055c12d12aef11aa0b90e1f7",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-art-learning-visual-context-20261014",
+      "sha": "7ce798bc9da0aac88fdea0046b1c9c7d75ec2957",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-artist-native-pc-bridge-20261014",
+      "sha": "08ffaac9e4fb9eafb6dcef8227eb8d1cc0c09faa",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-bastion-guard-20261014",
+      "sha": "97e9ee9ebde3eed6788a2abff58c8ef710de2973",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-chat-capability-bootstrap-20261014",
+      "sha": "d76452d58af9a3adbc9395b59dfa9a31c8215950",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-owner-artist-single-lane-20261014",
+      "sha": "1f05e33a9cb722d3ed01f6289f7f9863f1924e1b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-toolchain-20261014",
+      "sha": "cee63a65cd211361cbe7667886b1f14654be3ad0",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stabilization/eldoria-world4x-contracts-20261014",
+      "sha": "fef258ace15daa5311332721787f33c3dfdcdbcb",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stable/visual-good-f139968c",
+      "sha": "12318696267e9114d996d7f55128ffaaf0e21b49",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stable/visual-good-live-before-recovered-flow",
+      "sha": "12318696267e9114d996d7f55128ffaaf0e21b49",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "stone-architecture-gate-trigger",
+      "sha": "d60ba79580dd737b79033c3a6a24612fb0d90ba3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "tmp/v020",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "ui/eldoria-royal-gold-v1-20261018",
+      "sha": "236a81aac894ea0845b85c90310b92dddb32d10f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "v0.20.0",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "v020-final",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/artist-windows-pc-bridge-20261014",
+      "sha": "6e1ff24bb15329d40ad374e87bbe7c45c6e4f9ae",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-artist-blender-professional-tool-contracts-20261014",
+      "sha": "d4a7a95f18456fb161f657816d8542f10e880e0e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-artist-placement-real-failure-gates-20261014",
+      "sha": "71ffd69275d332a050c7f1ed90885288f51ababd",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-controlled-final-20261014",
+      "sha": "ebfda6a27551f66fa765cba145ccac7ae92df440",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-exterior-visible-component-gate-20261014",
+      "sha": "d98e1d431b84f6879a16c29fa4508607eac58fa0",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-pc-local-model-inventory-20261014",
+      "sha": "9c73537ac51fac4069194694d3bd586b6c0deef7",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-professional-art-fixed-source-20261014",
+      "sha": "cb7adb246f69a1e08932a16ef879a5831325aec5",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "validation/eldoria-qwen8b-professional-art-20261014",
+      "sha": "cb7adb246f69a1e08932a16ef879a5831325aec5",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/asset-deep-uplift-v1-r2",
+      "sha": "928fc0bd3ef1e9047a06814ffd01edfac9661c4c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/asset-deep-uplift-v1-r3",
+      "sha": "c001a7680718b131ab49824f3e4cc5b26771f8f8",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/asset-deep-uplift-v1",
+      "sha": "5bc61e4fa5640f9b3701d55bc7e42546691f6da8",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/asset-library-reprocessing-pass-v1",
+      "sha": "e6e74fa13fda2b65bb1cfb66ae9725fe55f325db",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/asset-visual-uplift-v1",
+      "sha": "4843b922d93c7c43e49f454d38a4b3890711ebde",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/eldoria-radical-v1",
+      "sha": "8050f300f67c9dbbaf9ed0f9d8ca3dacc915de6c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/golden-cell-new-base-v1",
+      "sha": "c18bb476d64abf944ce80fa8fb3f8e116bca7dd4",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/hero-bastion-integrated-v1",
+      "sha": "c41c1176ba36bd33846832af4b53735db79151fe",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/hero-district-integration-v1",
+      "sha": "2f8e34b228b0a08e0690af9855a8a1ee10242d39",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/hero-fortress-replacement-v1",
+      "sha": "11a2d1223c979af5c583c7fc774312c230ca30ae",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/mid-lower-district-integration-v1",
+      "sha": "66505c161ea9b3c44e16029eed065db929243a61",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/mid-lower-district-upgrade-v1",
+      "sha": "233745153818254cf7ee211d2bdea3ca82dc2e00",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/mid-tier-kit-parcel-proof-v1",
+      "sha": "32c329cbb9b460b66ffd5404b51e4f875f132f70",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/modular-architecture-composition-v1",
+      "sha": "8cf5786580325877be540322fcbbfbbddb4098a4",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/modular-assembly-system-v1",
+      "sha": "085c37f44c66def887f22e8d11be2c82832308ee",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-asset-coherence-game-presentation-v1",
+      "sha": "df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-authored-gameplay-cell-art-direction-v1",
+      "sha": "f3f5aac2f2bb6b6f3cd67584ea8823ed1e59f9a5",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-authored-secondary-art-family-v1",
+      "sha": "b52c3e78c3be7f1a2b8027fc73c5350890942cf0",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-bastion-continuity-v1",
+      "sha": "512ec14a650825071446ffb074283e50d1465ccc",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-compact-footprint-reframe-v1",
+      "sha": "9d780fea807db3bfa113ff7141a60dcba412db7e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-composition-frame-v2",
+      "sha": "2b94b959d63de3de54f6db13ed059dcfbc93d7d9",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-dcc-set-v1",
+      "sha": "81f6f5288d5cf98d9daf3e361228414918a86bb8",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-flat-citadel-art-consolidation-v1",
+      "sha": "578ae2c65201dad74f004ba8448faab8a34952ad",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-flat-citadel-production-uplift-v1",
+      "sha": "c33b82bf8a3141127727d3c1d77daf4798d23297",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-flat-citadel-proof-v1",
+      "sha": "0e1d2e161b9cf10ae40832b925bf728c2dbe32bc",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-full-frame-visual-pass-v1",
+      "sha": "0e58b2eab42bb3b7564dd52455125535a74b0c0b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-golden-district-v1",
+      "sha": "547e4ba16a73ba9044ffd772520a5cdde723e6e7",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-master-visual-rebuild-v2",
+      "sha": "6e31855e40c50622ff57e1c61c911d2bb09d20da",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-monumental-ruin-gap-v1",
+      "sha": "1b7101220c478043969422ba42790f15a09f43a3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-photogrammetry-midground-v1",
+      "sha": "fc7ea4c71c73f4362b25b3b081fdd8952e5d56d3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-production-cell-golden-transfer-v1",
+      "sha": "5f7f389148186b42d20f3673bc4e3f093557c941",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-production-module-kit-v1",
+      "sha": "a268c749a53af2c4ccfdcb2423f80e327a629a5d",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v1-refine",
+      "sha": "af196da64861f70cb22b338a4e2aa66c4d4c683f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v1",
+      "sha": "57d376398e47f32e78ef3968c65bb1de6cd1d75a",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v2-r2",
+      "sha": "5c6df6e87d0aeec7d0b4a57649a2cc12177fe5d3",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v2",
+      "sha": "88a4e3e4eea28c875c48f76aa7ef657416d8ef41",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-semantic-source-reauthoring-proof-v1",
+      "sha": "64675d692ac45318743b4d34d7aae7aff0917d7f",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-shell-v2-blender-transition",
+      "sha": "014e0f561ea636f6890a0010ef0370115dfaa5ad",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-shell-v2-fused-transition",
+      "sha": "e88d821e1e00dce5249fc6ee445f51ee7a267e1d",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-shell-v2-landform",
+      "sha": "7b913fa8c8ce72ee1ccf310c242797059309cdc7",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-source-level-art-direction-proof-v1",
+      "sha": "ee51cfbbb4752b631a099e32da1b361ce568dd1e",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-tripo-selective-replacement-proof-v1",
+      "sha": "f93ff437ec28e688f48b14702097db8d418d0640",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-unified-stylized-shell-v1",
+      "sha": "5822ce13cf43f34277be1a83e2afbf813838147b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-unified-visual-language-proof-v1",
+      "sha": "9565ca577eb920abcb76b2b09b69022686685a12",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-visual-quality-breakthrough-v1",
+      "sha": "7085433094ad580679c9c061b8f0662d9c78c810",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-visual-shell-v2-native-geometry",
+      "sha": "579f6639f730c38b0e296657b14d1d0bf9f5f2a8",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-visual-shell-v2",
+      "sha": "45b4232daf8a04a841f77acb6e0f2451fdd29c31",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-volumetric-landform-v1",
+      "sha": "deb32c3519fe03d7280438a4cb08f310f2d47e9b",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "visual-proof/valoria-worldframe-district-cells-v1",
+      "sha": "ecac491e734329171c8b0cbf5d329e379a577020",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "webgl-persistence-retry-34",
+      "sha": "b725a69fbd0aba536d097242aee1745b3451705c",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "work/stone-architecture-exact-input",
+      "sha": "c4c621d9f0a52c12852bdc8a993ab11bc07ff7bd",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "work/testers-v0265",
+      "sha": "b7f7d267edc73c02ad1e91e62d5f3befb7b4ef35",
+      "status": "archived_reference_only"
+    },
+    {
+      "name": "work/v020-implementation",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "status": "archived_reference_only"
+    }
+  ]
+}

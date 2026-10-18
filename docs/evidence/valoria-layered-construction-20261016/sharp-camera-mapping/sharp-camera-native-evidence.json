@@ -1,0 +1,164 @@
+{
+    "authority": "ValoriaParcelPresentation.Home/Pan/Zoom with SHARP perspective projection",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity",
+    "source_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity",
+    "technical_gate": "PLAYER_CAMERA_RUNTIME_COMPONENT_AND_PYTHON_UNITY_PROJECTION_PASS",
+    "correspondence_gate": "RIGID_MAPPING_REJECTED_NO_FALSE_GAMEPLAY_PASS",
+    "art_gate": "NOT_APPROVED_DIAGNOSTIC_ONLY",
+    "gameplay_gate": "NOT_TESTED",
+    "actual_player_camera_component": true,
+    "source_geometry_unchanged": true,
+    "visual_approval": false,
+    "canonical_scene_changed": false,
+    "camera_home_fov": 44.42280960083008,
+    "maximum_semantic_error_px": 81.02322387695313,
+    "maximum_python_unity_delta_px": 0.00007331371307373047,
+    "semantic_anchors_measured": 7,
+    "observations": [
+        {
+            "id": "Bridge",
+            "target_x": 0.2886179983615875,
+            "target_y": 0.10059189796447754,
+            "actual_x": 0.27648526430130007,
+            "actual_y": 0.055530428886413577,
+            "error_px": 40.89691162109375,
+            "python_projection_delta_px": 0.00002203509211540222,
+            "in_front": true,
+            "visible": true
+        },
+        {
+            "id": "LowerGate",
+            "target_x": 0.39430901408195498,
+            "target_y": 0.3195270001888275,
+            "actual_x": 0.41323143243789675,
+            "actual_y": 0.4113712012767792,
+            "error_px": 81.02322387695313,
+            "python_projection_delta_px": 0.000036656856536865234,
+            "in_front": true,
+            "visible": true
+        },
+        {
+            "id": "MainRoad",
+            "target_x": 0.46748000383377077,
+            "target_y": 0.5088760256767273,
+            "actual_x": 0.4992145597934723,
+            "actual_y": 0.5467345118522644,
+            "error_px": 50.46782684326172,
+            "python_projection_delta_px": 0.0,
+            "in_front": true,
+            "visible": true
+        },
+        {
+            "id": "CentralStair",
+            "target_x": 0.5349590182304382,
+            "target_y": 0.6733729839324951,
+            "actual_x": 0.5470258593559265,
+            "actual_y": 0.7023845314979553,
+            "error_px": 28.65771484375,
+            "python_projection_delta_px": 0.0,
+            "in_front": true,
+            "visible": true
+        },
+        {
+            "id": "Bastion",
+            "target_x": 0.6048780083656311,
+            "target_y": 0.8426039814949036,
+            "actual_x": 0.5718874931335449,
+            "actual_y": 0.8177884221076965,
+            "error_px": 45.67610168457031,
+            "python_projection_delta_px": 0.00005036592483520508,
+            "in_front": true,
+            "visible": true
+        },
+        {
+            "id": "LeftCabinParcel",
+            "target_x": 0.20325200259685517,
+            "target_y": 0.627219021320343,
+            "actual_x": 0.24630486965179444,
+            "actual_y": 0.5848316550254822,
+            "error_px": 63.9305534362793,
+            "python_projection_delta_px": 0.000018328428268432617,
+            "in_front": true,
+            "visible": true
+        },
+        {
+            "id": "RightCampParcel",
+            "target_x": 0.85365891456604,
+            "target_y": 0.519527018070221,
+            "actual_x": 0.8008462190628052,
+            "actual_y": 0.4811207056045532,
+            "error_px": 72.61522674560547,
+            "python_projection_delta_px": 0.00007331371307373047,
+            "in_front": true,
+            "visible": true
+        }
+    ],
+    "states": [
+        {
+            "name": "sharp-perspective-home-1230x845",
+            "fov": 44.42280960083008,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "screenshot_w": 1230,
+            "screenshot_h": 845
+        },
+        {
+            "name": "sharp-perspective-pan-left",
+            "fov": 44.42280960083008,
+            "position": [
+                -0.5000003576278687,
+                0.0,
+                0.0
+            ],
+            "screenshot_w": 1230,
+            "screenshot_h": 845
+        },
+        {
+            "name": "sharp-perspective-pan-right",
+            "fov": 44.42280960083008,
+            "position": [
+                0.5000003576278687,
+                0.0,
+                0.0
+            ],
+            "screenshot_w": 1230,
+            "screenshot_h": 845
+        },
+        {
+            "name": "sharp-perspective-zoom-in",
+            "fov": 42.42280960083008,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "screenshot_w": 1230,
+            "screenshot_h": 845
+        },
+        {
+            "name": "sharp-perspective-zoom-out",
+            "fov": 46.42280960083008,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "screenshot_w": 1230,
+            "screenshot_h": 845
+        },
+        {
+            "name": "sharp-perspective-portrait-390x844",
+            "fov": 44.42280960083008,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "screenshot_w": 390,
+            "screenshot_h": 844
+        }
+    ]
+}

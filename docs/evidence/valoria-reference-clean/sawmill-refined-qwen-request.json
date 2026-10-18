@@ -1,0 +1,176 @@
+{
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "schema": {
+    "type": "object",
+    "required": [
+      "rationale",
+      "width",
+      "depth",
+      "eave_height",
+      "roof_rise",
+      "bay_count",
+      "rear_wall_fraction",
+      "stone_height",
+      "frame_thickness",
+      "lean_to",
+      "lean_to_depth",
+      "log_yard",
+      "log_count",
+      "roof_rows",
+      "timber_tone",
+      "masonry_tone",
+      "brace_style"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "rationale": {
+        "type": "string"
+      },
+      "width": {
+        "type": "number",
+        "enum": [
+          6.4,
+          7.2,
+          8.0
+        ]
+      },
+      "depth": {
+        "type": "number",
+        "enum": [
+          5.2,
+          6.0,
+          6.8
+        ]
+      },
+      "eave_height": {
+        "type": "number",
+        "enum": [
+          3.3,
+          3.8,
+          4.2
+        ]
+      },
+      "roof_rise": {
+        "type": "number",
+        "enum": [
+          1.6,
+          2.0,
+          2.4
+        ]
+      },
+      "bay_count": {
+        "type": "number",
+        "enum": [
+          2,
+          3
+        ]
+      },
+      "rear_wall_fraction": {
+        "type": "number",
+        "enum": [
+          0.25,
+          0.35,
+          0.45
+        ]
+      },
+      "stone_height": {
+        "type": "number",
+        "enum": [
+          0.55,
+          0.8,
+          1.05
+        ]
+      },
+      "frame_thickness": {
+        "type": "number",
+        "enum": [
+          0.22,
+          0.28,
+          0.34
+        ]
+      },
+      "lean_to": {
+        "type": "string",
+        "enum": [
+          "left",
+          "right",
+          "none"
+        ]
+      },
+      "lean_to_depth": {
+        "type": "number",
+        "enum": [
+          1.0,
+          1.4
+        ]
+      },
+      "log_yard": {
+        "type": "string",
+        "enum": [
+          "front_left",
+          "front_right"
+        ]
+      },
+      "log_count": {
+        "type": "number",
+        "enum": [
+          4,
+          6,
+          8
+        ]
+      },
+      "roof_rows": {
+        "type": "number",
+        "enum": [
+          8,
+          10,
+          12
+        ]
+      },
+      "timber_tone": {
+        "type": "string",
+        "enum": [
+          "dark_oak",
+          "weathered_oak"
+        ]
+      },
+      "masonry_tone": {
+        "type": "string",
+        "enum": [
+          "warm_limestone",
+          "sandstone"
+        ]
+      },
+      "brace_style": {
+        "type": "string",
+        "enum": [
+          "short_knee",
+          "cross_rear"
+        ]
+      }
+    }
+  },
+  "context": {
+    "source_sha256": "7e7f6719806cadfef7a223bc6ef664b820ab17bc66db32fe6b27486d4236fec3",
+    "source_bounds": [
+      [
+        -17.524999618530273,
+        -7.494999885559082,
+        7.110000133514404
+      ],
+      [
+        -10.609999656677246,
+        -2.122377395629883,
+        11.728269577026367
+      ]
+    ],
+    "history": "EVIDENCE-BASED ART MEMORY: not model-weight training, not ART APPROVED.\nPinned approved reference: 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689\nLESSON small-sculpt-repeated (runs 38358105789,38360450981): No repetir detalles peque\u00f1os en el borde; dise\u00f1ar una masa de acantilado visible y verificar la imagen entera.\nLESSON tiny-sculpt-path (runs 38370740511): Proporcionar informaci\u00f3n geom\u00e9trica del encuadre y exigir acciones de escala suficiente para la c\u00e1mara.\nLESSON frustum-parity (runs 38401480696): Fijar el frustum aut\u00e9ntico antes de juzgar. REVIEW_REQUIRED solo obliga a inspeccionar, nunca certifica belleza.\nLESSON unity-a-b-independent (runs 38405267853): Juzgar la calidad compositiva, materiales y silueta con referencia estable; no confundir cambios visuales con calidad.\nLESSON preserve-playable-protected-terrain (runs 38406612333): Proteger parcelas y anclajes; despu\u00e9s del acabado Blender exigir captura real y revisi\u00f3n independiente en Unity.\nNever use pixel fraction as a beauty score. Require matched Unity evidence and independent art review.\n",
+    "history_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e",
+    "brief": "Owner rejects the existing sawmill as incoherent with Valoria. Design a NEW medieval timber workshop, not a recolor. Observe old model and actual Unity city/reference. Choose coherent spatial composition, proportions and material hierarchy. Existing tool kit supports dressed limestone piers, oak braced structural frame, overlapping blue slate roof, masonry rear workshop, open front saw bay, framed saw blade and cut-log stock. No rectangular parcel/platform, no modern circular saw or waterwheel without water. Ground contact at Z0, silhouette under Z8, X/Y footprint maximum10m. Front is Y negative. Design proportions and optional lean-to/log-yard orientation. The lower stone piers and masonry rear workshop must visually relate to Bastion stonework; slate roof matches actual retained blue palette. Explain three visual defects addressed and the new spatial composition. No self approval."
+  },
+  "image_sha256": {
+    "sawmill-refined-before.png": "aee1b96e836980fe4a203a5c8eeb50217fee41a0e8c90f690a89e1c3c0284fde",
+    "sawmill-completed-after-detail.png": "13d72a578f397040117ee56aa2d4b8745a7b560546e8e83d654f400d0f8ef706",
+    "bastion2-after-bastion.png": "74a82f8855f46b3231af3972ea479a2b2ae4b258c3a00107ce4f45734a213497"
+  }
+}

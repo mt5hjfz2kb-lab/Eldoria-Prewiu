@@ -1,0 +1,1 @@
+{"name":"Eldoria.RoyalGold.Bindings","rootNamespace":"Eldoria.UI.RoyalGold","references":["Eldoria.RoyalGold.Core","Eldoria.Domain","Eldoria.Application"],"noEngineReferences":true}

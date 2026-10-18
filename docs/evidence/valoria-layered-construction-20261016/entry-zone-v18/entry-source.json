@@ -1,0 +1,85 @@
+{
+  "stage": "V18 genuine Blender architectural deep-void cutting + correct source-authored blue/gold heraldry on approved V13 geometry",
+  "parent_v13_sha256": "1023443ef9eb3137a5157188b16194ff6245b08003f4c388377610d15811a1cf",
+  "original_source08_sha256": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+  "original_unchanged_modules": [
+    "BastionCurtainEast",
+    "BastionCurtainWest",
+    "BastionEastTower",
+    "BastionFarWestBlock",
+    "BastionGateLintel",
+    "BastionRightGatePillar",
+    "BastionWestTower"
+  ],
+  "sculpted_existing_modules": [
+    "BastionKeep",
+    "BastionLeftWing"
+  ],
+  "geometry_edits": [
+    {
+      "operation": "Native Blender BMesh inset_individual on EXISTING architectural facade faces; physically recessed original mesh",
+      "feature": "Keep inhabited lower facade carved stone relief",
+      "faces_sculpted": 4,
+      "original_vertices": 3696,
+      "sculpted_vertices": 3708,
+      "original_faces": 7148,
+      "sculpted_faces": 7160,
+      "inset_meters": 0.15,
+      "recession_meters": 0.28
+    },
+    {
+      "operation": "Native Blender BMesh inset_individual on EXISTING architectural facade faces; physically recessed original mesh",
+      "feature": "Keep upper command-stage real inset and arch flank depth",
+      "faces_sculpted": 2,
+      "original_vertices": 3708,
+      "sculpted_vertices": 3714,
+      "original_faces": 7160,
+      "sculpted_faces": 7166,
+      "inset_meters": 0.15,
+      "recession_meters": 0.18
+    },
+    {
+      "operation": "Native Blender BMesh inset_individual on EXISTING architectural facade faces; physically recessed original mesh",
+      "feature": "Supporting west wing deeply articulated masonry facade",
+      "faces_sculpted": 3,
+      "original_vertices": 1512,
+      "sculpted_vertices": 1521,
+      "original_faces": 2920,
+      "sculpted_faces": 2929,
+      "inset_meters": 0.15,
+      "recession_meters": 0.24
+    }
+  ],
+  "keep_vertices_before_after": [
+    3696,
+    3714
+  ],
+  "keep_triangles_before_after": [
+    7148,
+    7184
+  ],
+  "all_module_envelopes_preserved": true,
+  "v13_licensed_stone_masonry_preserved": true,
+  "source08_original_banner_only_restored": [
+    {
+      "slot": 4,
+      "polygons": 216,
+      "image": "banner_heraldry.002"
+    }
+  ],
+  "textures_from_project_generator": "24a03161fe61b856659ac177bba1d69a1bda1cf6198f9d6000aff4b43712b0c7",
+  "other_scenes_untouched": true,
+  "triangles": 374118,
+  "total_export_triangles": 374118,
+  "result_blend_sha256": "20b15b7d0c944666c6d9885e4b7366c76d826136a0c1742d6c7768db3b527aa1",
+  "result_glb_sha256": "b380cca59614599e472072fb1babb21139f8543b124630115d6b2d0dbb88181e",
+  "source_visual_status": "REQUIRES_TRUE_BLENDER_CAMERA_REVIEW",
+  "genuine_blender_source_images_sha256": {
+    "SOURCE-front-original-V13-masonry-plus-edited-V18-keep.png": "0d88b374e0f7b5461b5748ac682635c48336944f0a4df97639ccf608e935a249",
+    "SOURCE-keep-architectural-closeup-V18.png": "ae9e294a2d302872390a474441c36561b49f2de2165875e019157cfc9c2920d2"
+  },
+  "unity_art_status": "NOT_APPROVED",
+  "full_frame_art_pass": false,
+  "mobile_qa": false,
+  "zero_euro": true
+}

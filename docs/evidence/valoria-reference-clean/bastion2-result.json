@@ -1,0 +1,23 @@
+{
+  "source_sha": "b521cf840f89c754e51011dac52f5aba51209e6a",
+  "source_blend_sha256": "635c948163ee618fcbf6e4b63585db864ef441f590aa50dd0ccc3f6c25ace644",
+  "source_preserved": true,
+  "lower_geometry_unchanged": true,
+  "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
+  "moved_crown_vertices": 5168,
+  "plan": {
+    "rationale": "Bastion II evolution strictly adheres to source geometry and material constraints. No visual score or approval is issued. The proposed changes are concrete and measurable.",
+    "central_raise": 1.8,
+    "upper_window_width": 0.8,
+    "flank_roof_rise": 1.25,
+    "flank_roof_inset": 0.6,
+    "roof_rows": 10,
+    "course_height": 0.58,
+    "quoin_width": 0.65
+  },
+  "glb_sha256": "6fea62494aada6f791f092235c024616e9a619673b5ff88339c6315e919dd650",
+  "blend_sha256": "a172815e6495dffbc8a49c7cc1578f2cf18f1881b08b20453563bbf6e3d90434",
+  "triangles": 162306,
+  "art_approved": false
+}

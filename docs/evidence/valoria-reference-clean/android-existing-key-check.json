@@ -1,0 +1,15 @@
+﻿{
+    "old_apk_run":  38279800977,
+    "old_version_code":  1,
+    "keys":  [
+                 {
+                     "certificate_sha256":  "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+                     "path":  "C:\\Users\\crist\\.android\\debug.keystore",
+                     "matches_original":  true
+                 }
+             ],
+    "matching_key_found":  true,
+    "private_key_exported":  false,
+    "expected_sha256":  "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+    "package":  "com.eldoria.valoria.v5test"
+}

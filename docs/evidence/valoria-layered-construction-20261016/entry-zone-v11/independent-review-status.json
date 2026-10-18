@@ -1,0 +1,32 @@
+{
+  "role": "INDEPENDENT_QWEN_EVALUATION_OF_GPT_V11_AUTHORING",
+  "automatic_art_approval": false,
+  "new_models_downloaded": false,
+  "candidate": "V11",
+  "baseline": "V7",
+  "status": "REAL_LOCAL_MODEL_CRITIQUE_RECORDED",
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "elapsed_seconds": 38.39,
+  "review": {
+    "verdict": "NO_VISIBLE_IMPROVEMENT",
+    "scores_v7": {
+      "geometry": 25,
+      "architectural_contact": 25,
+      "materials": 20,
+      "style": 20,
+      "gameplay_readability": 10
+    },
+    "scores_v11": {
+      "geometry": 25,
+      "architectural_contact": 25,
+      "materials": 20,
+      "style": 20,
+      "gameplay_readability": 10
+    },
+    "positives": [],
+    "regressions": [],
+    "outstanding_defects": [],
+    "next_visual_edit": null,
+    "uncertainty": 0
+  }
+}

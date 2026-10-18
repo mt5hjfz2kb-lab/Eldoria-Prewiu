@@ -1,0 +1,53 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "blender_executed": true,
+  "ollama": "NOT_REACHABLE",
+  "blendermcp_socket": "NOT_REACHABLE",
+  "ollama_error": "<urlopen error [WinError 10061] No se puede establecer una conexi\u00f3n ya que el equipo de destino deneg\u00f3 expresamente dicha conexi\u00f3n>",
+  "blendermcp_error": "timed out",
+  "blendermcp_addons": [
+    {
+      "module": "blender_mcp",
+      "path": "C:\\Users\\crist\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\scripts\\addons\\blender_mcp.py",
+      "loaded": false,
+      "sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5"
+    }
+  ],
+  "execution_scope": {
+    "isolated_scene": true,
+    "exclusive_lease_checked_by_workflow": true,
+    "transport": "native reviewed bpy recipe",
+    "arbitrary_model_python": false,
+    "addon_enabled_or_installed_by_job": false,
+    "mcp_required_for_this_surface_operation": false
+  },
+  "managed_blendermcp": {
+    "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
+    "transport_function_origin": "6e11bf237e6009b7eb8484bcba2f0def35a07b5c:tools/art-direction/full-studio/blender_toolbox.py:execute_via_blendermcp",
+    "historic_verified_runs": [
+      38612645467,
+      38766521237
+    ],
+    "plan": {
+      "id": "valoria-waterline-talus-reviewed-v1",
+      "op": "author_closed_waterline_stones",
+      "mode": "zone_talus",
+      "target_prefix": "River_shingle",
+      "bounded_side": "right inland",
+      "owner_scope": "ValoriaReferenceClean only"
+    },
+    "arbitrary_model_python": false,
+    "paid_providers_enabled": false,
+    "existing_addon": {
+      "module": "blender_mcp",
+      "path": "C:\\Users\\crist\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\scripts\\addons\\blender_mcp.py",
+      "loaded": false,
+      "sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5"
+    },
+    "ephemeral_loopback_server": true,
+    "status": "ACTUAL_PINNED_BLENDERMCP_ACTION_EXECUTED",
+    "closed_waterline_stones": 22,
+    "protected_transforms_unchanged": true,
+    "operation_completed": true
+  }
+}

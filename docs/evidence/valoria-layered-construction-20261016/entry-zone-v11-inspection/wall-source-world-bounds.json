@@ -1,0 +1,629 @@
+{
+  "status": "REAL_NATIVE_BLENDER_WORLD_BOUNDS_ONLY",
+  "source_v7_sha256": "24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381",
+  "wall_family_sha256": "0ac5ef48b55946d0820b8b064662f8d077060332044b077f2993d9444595f430",
+  "donor_object_names": [
+    "WestWallTowerB",
+    "WestWallTowerA",
+    "WestPartialWall",
+    "EastWallTowerB",
+    "EastWallTowerA",
+    "EastPartialWall"
+  ],
+  "selected_object_count": 6,
+  "wall_world_bounds": {
+    "WestWallTowerB": {
+      "world_min_xyz": [
+        -8.5885,
+        -20.1047,
+        7.06
+      ],
+      "world_max_xyz": [
+        -6.9895,
+        -18.5052,
+        11.86
+      ],
+      "world_size_xyz": [
+        1.599,
+        1.5995,
+        4.8
+      ],
+      "vertex_count": 784,
+      "polygon_count": 1532,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -12.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          7.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_wall_shadow",
+        "Eldoria_wall_base",
+        "Eldoria_wall_warm",
+        "Eldoria_wall_cap",
+        "Eldoria_wall_face"
+      ]
+    },
+    "WestWallTowerA": {
+      "world_min_xyz": [
+        -14.8408,
+        -19.7479,
+        7.06
+      ],
+      "world_max_xyz": [
+        -13.0417,
+        -17.9484,
+        12.26
+      ],
+      "world_size_xyz": [
+        1.7991,
+        1.7996,
+        5.2
+      ],
+      "vertex_count": 784,
+      "polygon_count": 1532,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -12.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          7.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_wall_shadow",
+        "Eldoria_wall_base",
+        "Eldoria_wall_warm",
+        "Eldoria_wall_cap",
+        "Eldoria_wall_face"
+      ]
+    },
+    "WestPartialWall": {
+      "world_min_xyz": [
+        -13.8932,
+        -19.4808,
+        7.06
+      ],
+      "world_max_xyz": [
+        -7.8183,
+        -18.3003,
+        10.66
+      ],
+      "world_size_xyz": [
+        6.0749,
+        1.1805,
+        3.6
+      ],
+      "vertex_count": 840,
+      "polygon_count": 1620,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -12.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          7.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_wall_base",
+        "Eldoria_wall_cap",
+        "Eldoria_wall_warm",
+        "Eldoria_wall_shadow",
+        "Eldoria_wall_face"
+      ]
+    },
+    "EastWallTowerB": {
+      "world_min_xyz": [
+        33.3663,
+        -4.0049,
+        7.06
+      ],
+      "world_max_xyz": [
+        35.3655,
+        -2.0053,
+        12.66
+      ],
+      "world_size_xyz": [
+        1.9992,
+        1.9996,
+        5.6
+      ],
+      "vertex_count": 784,
+      "polygon_count": 1532,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -12.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          7.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_wall_shadow",
+        "Eldoria_wall_base",
+        "Eldoria_wall_warm",
+        "Eldoria_wall_cap",
+        "Eldoria_wall_face"
+      ]
+    },
+    "EastWallTowerA": {
+      "world_min_xyz": [
+        27.9484,
+        -12.4042,
+        7.06
+      ],
+      "world_max_xyz": [
+        29.6474,
+        -10.7047,
+        11.76
+      ],
+      "world_size_xyz": [
+        1.699,
+        1.6995,
+        4.7
+      ],
+      "vertex_count": 784,
+      "polygon_count": 1532,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -12.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          7.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_wall_shadow",
+        "Eldoria_wall_base",
+        "Eldoria_wall_warm",
+        "Eldoria_wall_cap",
+        "Eldoria_wall_face"
+      ]
+    },
+    "EastPartialWall": {
+      "world_min_xyz": [
+        28.5174,
+        -11.7403,
+        7.06
+      ],
+      "world_max_xyz": [
+        34.7019,
+        -2.8903,
+        10.46
+      ],
+      "world_size_xyz": [
+        6.1845,
+        8.8501,
+        3.4
+      ],
+      "vertex_count": 840,
+      "polygon_count": 1620,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -12.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          7.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_wall_base",
+        "Eldoria_wall_cap",
+        "Eldoria_wall_warm",
+        "Eldoria_wall_shadow",
+        "Eldoria_wall_face"
+      ]
+    }
+  },
+  "gate_world_bounds": {
+    "ENTRY_LowerGate_Arch": {
+      "world_min_xyz": [
+        -2.0565,
+        8.2071,
+        0.38
+      ],
+      "world_max_xyz": [
+        2.0565,
+        10.1571,
+        6.305
+      ],
+      "world_size_xyz": [
+        4.113,
+        1.95,
+        5.925
+      ],
+      "vertex_count": 2680,
+      "polygon_count": 5100,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_stone",
+        "Eldoria_trim",
+        "Eldoria_metal"
+      ]
+    },
+    "ENTRY_LowerGate_Base": {
+      "world_min_xyz": [
+        -4.5465,
+        7.9713,
+        0.125
+      ],
+      "world_max_xyz": [
+        4.245,
+        10.594,
+        0.425
+      ],
+      "world_size_xyz": [
+        8.7915,
+        2.6227,
+        0.3
+      ],
+      "vertex_count": 224,
+      "polygon_count": 440,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_trim"
+      ]
+    },
+    "ENTRY_LowerGate_EastTower": {
+      "world_min_xyz": [
+        -4.5542,
+        7.9638,
+        0.38
+      ],
+      "world_max_xyz": [
+        -1.7642,
+        10.4913,
+        6.605
+      ],
+      "world_size_xyz": [
+        2.79,
+        2.5275,
+        6.225
+      ],
+      "vertex_count": 2285,
+      "polygon_count": 4419,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_stone",
+        "Eldoria_trim",
+        "Eldoria_fabric"
+      ]
+    },
+    "ENTRY_LowerGate_EastWing": {
+      "world_min_xyz": [
+        -9.6523,
+        6.754,
+        0.335
+      ],
+      "world_max_xyz": [
+        -3.6862,
+        8.1698,
+        2.6
+      ],
+      "world_size_xyz": [
+        5.9661,
+        1.4159,
+        2.265
+      ],
+      "vertex_count": 380,
+      "polygon_count": 726,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_stone",
+        "Eldoria_trim"
+      ]
+    },
+    "ENTRY_LowerGate_WestTower": {
+      "world_min_xyz": [
+        1.7627,
+        8.1863,
+        0.38
+      ],
+      "world_max_xyz": [
+        4.2527,
+        10.7138,
+        6.605
+      ],
+      "world_size_xyz": [
+        2.49,
+        2.5275,
+        6.225
+      ],
+      "vertex_count": 2285,
+      "polygon_count": 4419,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_stone",
+        "Eldoria_trim",
+        "Eldoria_fabric"
+      ]
+    },
+    "ENTRY_LowerGate_WestWing": {
+      "world_min_xyz": [
+        4.1056,
+        6.0701,
+        0.335
+      ],
+      "world_max_xyz": [
+        10.5174,
+        8.4874,
+        2.6
+      ],
+      "world_size_xyz": [
+        6.4119,
+        2.4173,
+        2.265
+      ],
+      "vertex_count": 380,
+      "polygon_count": 726,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "material_names": [
+        "Eldoria_stone",
+        "Eldoria_trim"
+      ]
+    }
+  },
+  "conversion_reminder": "Existing sources may already have transforms; glTFast reflects X when importing from RH glTF to Unity. Do not mirror or rebase blindly.",
+  "license_reminder": "Must inspect individual source texture provenance before reuse.",
+  "recommendation": "Do not authorize assembly until detailed WORLD bounds, site intercepts, and source texture licenses are reviewed."
+}

@@ -1,0 +1,26 @@
+{
+  "art_status": "CANDIDATE_NO_AUTOMATIC_APPROVAL",
+  "author": "GPT isolated continuation",
+  "blender": "5.2.2 LTS",
+  "source_v7_blend_sha256": "24e27862ae759e30c36b151cef4fd9baacb45d1103d25f132bbe054d65896381",
+  "result_blend_sha256": "c535db89e583464dd07ef740a6a2a9eefec71b79faf7f2c85e35e45b9f2c424a",
+  "result_glb_sha256": "c2015f602672d5460b5ca6e123fcec9138a9c6b6969b17111b6bff83be15ccb5",
+  "triangles": 342006,
+  "terrain_vertex_count_unchanged": 106733,
+  "geographic_bake_dimensions": [
+    2048,
+    2048
+  ],
+  "native_route_painted_pixels": 43494,
+  "max_paint_mask": 0.8999999761581421,
+  "updated_diffuse_nodes": 1,
+  "source_gate_bridge_stairs_unchanged": true,
+  "actual_unity_colliders_unchanged": true,
+  "protected_sources_unchanged": true,
+  "operations": [
+    "graded lateral footpaths baked into original CC0 photographed terrain",
+    "blended native lower apron in same terrain material",
+    "muted river material and micro ripples"
+  ],
+  "rejected_previous": "V8 floating isolated stone tracks; source V7 chosen intentionally"
+}

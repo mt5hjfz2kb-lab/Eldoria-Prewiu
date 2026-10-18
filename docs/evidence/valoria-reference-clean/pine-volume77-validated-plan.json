@@ -1,0 +1,14 @@
+{
+  "plan": {
+    "rationale": "Preserve three existing pine trees near Bastion as specified. All other scene geometry, heightfield, tree locations, and architecture remain unchanged.",
+    "crown_layers": 5,
+    "radial_boughs": 7,
+    "bough_fullness": 0.42,
+    "tip_droop": 0.3,
+    "crown_taper": 1.25,
+    "width_ratio": 0.84,
+    "core_ratio": 0.28,
+    "foliage_palette": 1
+  },
+  "art_approved": false
+}

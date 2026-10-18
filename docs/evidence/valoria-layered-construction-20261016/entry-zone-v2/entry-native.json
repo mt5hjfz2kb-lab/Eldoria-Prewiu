@@ -1,0 +1,15 @@
+{
+    "scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV2_CANDIDATE.unity",
+    "glb_sha256": "0bbaaadff1e654989f0f77cddad49cd2c25cfa322fe6645dc2b629bb09b7b68e",
+    "art_status": "REQUIRES_INDEPENDENT_GENUINE_UNITY_AB_REVIEW",
+    "gameplay_status": "SOURCE_TARGETS_ONLY_NOT_PLAYERSTATE_PROGRESSION_OR_DEVICE_PERFORMANCE",
+    "source_triangles": 231402,
+    "visible_renderers": 60,
+    "physical_stairs": 12,
+    "source_target_matches": 7,
+    "camera_state_matches": 40,
+    "canonical_modified": false,
+    "physical_mobile_profiled": false,
+    "original_sources_modified": false,
+    "home_fov": 44.42280960083008
+}

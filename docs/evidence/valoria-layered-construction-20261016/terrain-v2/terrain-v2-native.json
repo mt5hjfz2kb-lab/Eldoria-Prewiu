@@ -1,0 +1,16 @@
+{
+    "source_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity",
+    "candidate_scene": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity",
+    "glb_sha256": "c4a3c7d2082e93e89006b6cd4810525828a4f3671426be778babb69514b36ce0",
+    "visual_gate": "PENDING_ACTUAL_AB_INSPECTION",
+    "gameplay_gate": "SOURCE_COLLIDER_CONTACT_ONLY_PLAYERSTATE_NOT_RETESTED",
+    "original_scenes_untouched": true,
+    "colliders_unchanged": true,
+    "actual_player_camera_unchanged": true,
+    "canonical_modified": false,
+    "source_triangles": 19020,
+    "real_mesh_renderers": 9,
+    "bridge_anchor_contacts": 1,
+    "stair_treads_untouched": 12,
+    "all_semantic_clicks": 7
+}

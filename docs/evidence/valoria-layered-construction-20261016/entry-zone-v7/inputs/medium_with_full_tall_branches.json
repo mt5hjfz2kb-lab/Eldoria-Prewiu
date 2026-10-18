@@ -1,0 +1,23 @@
+{
+  "asset": "pine_medium",
+  "source": "Quaternius pine_tall and pine_medium CC0 same family",
+  "donor_run": 38823354618,
+  "technical": "PASS_PENDING_ART",
+  "original_sha": "30ba053308832d79376f90b8ba14ed21ae7017d6a52942b21ccf02b37b4bea82",
+  "tall_source_sha": "4bcd8596780a61614af23492aeeac01e3bc9d34aa5c2d32a027be04d3911482e",
+  "candidate_sha": "003d59a9d184cb6cb04b2b2b21a8cb35c2b92e838cf788575044e576f7846e3e",
+  "original_medium_dimensions": [
+    3.886,
+    4.3,
+    7.995
+  ],
+  "candidate_dimensions": [
+    5.863,
+    5.682,
+    7.995
+  ],
+  "individual_not_scene": true,
+  "art_approved": false,
+  "unity_approved": false,
+  "caveat": "Assess medium/tall duplication and branching detail; do not claim 6+ automatically."
+}

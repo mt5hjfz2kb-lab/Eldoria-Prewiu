@@ -1,0 +1,37 @@
+{
+  "source": "https://polyhaven.com/a/aerial_rocks_02",
+  "license": "https://polyhaven.com/license",
+  "license_id": "CC0-1.0",
+  "cost_eur": 0,
+  "credit": "Powered by Poly Haven",
+  "files": [
+    {
+      "map": "diff",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/aerial_rocks_02/aerial_rocks_02_diff_2k.jpg",
+      "md5": "f493fa9b31911f8a30ecd1d41cbc6f3d",
+      "official_manifest_md5_verified": false,
+      "sha256": "f759d2471cb6a4b3b37d0a5a249adbad1d4d48d67825f37622a603dac8d9bb22"
+    },
+    {
+      "map": "nor_gl",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/aerial_rocks_02/aerial_rocks_02_nor_gl_2k.png",
+      "md5": "b568d62ec5f3bd957b6930b437baf12b",
+      "official_manifest_md5_verified": true,
+      "sha256": "53d4c2cac90801132a99054bd7d6132b230ddf9b12cc20c515caa7da0da6f01a"
+    },
+    {
+      "map": "rough",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/aerial_rocks_02/aerial_rocks_02_rough_2k.jpg",
+      "md5": "2d4464ceba47763b2ae75242e6f66270",
+      "official_manifest_md5_verified": false,
+      "sha256": "f1808dec1ad6dd77881baa41813d9718bb93e9aa1dabdcd9d6dc9b7f45dd90da"
+    },
+    {
+      "map": "disp",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/aerial_rocks_02/aerial_rocks_02_disp_2k.png",
+      "md5": "d5f5602a637a85f46d7a01f3f84611a7",
+      "official_manifest_md5_verified": false,
+      "sha256": "3f080f5bec4b092ad4a7a6324c727010905c0f10b900a36bdeab4b2ef741147c"
+    }
+  ]
+}

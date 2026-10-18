@@ -1,0 +1,88 @@
+{
+  "source_sha256": "635c948163ee618fcbf6e4b63585db864ef441f590aa50dd0ccc3f6c25ace644",
+  "mesh_vertices": 77722,
+  "central_crown_component_count": 188,
+  "crown_bounds": [
+    [
+      [
+        0.0,
+        28.0400390625,
+        14.850000381469727
+      ],
+      [
+        2.4000000953674316,
+        28.219961166381836,
+        16.600000381469727
+      ]
+    ],
+    [
+      [
+        -2.5199999809265137,
+        25.780000686645508,
+        10.319999694824219
+      ],
+      [
+        2.5199999809265137,
+        26.219999313354492,
+        10.479999542236328
+      ]
+    ],
+    [
+      [
+        -2.5199999809265137,
+        30.18000030517578,
+        10.319999694824219
+      ],
+      [
+        2.5199999809265137,
+        30.6200008392334,
+        10.479999542236328
+      ]
+    ],
+    [
+      [
+        -2.619999885559082,
+        25.8799991607666,
+        10.319999694824219
+      ],
+      [
+        -2.180000066757202,
+        30.520000457763672,
+        10.479999542236328
+      ]
+    ],
+    [
+      [
+        2.180000066757202,
+        25.8799991607666,
+        10.319999694824219
+      ],
+      [
+        2.619999885559082,
+        30.520000457763672,
+        10.479999542236328
+      ]
+    ],
+    [
+      [
+        -2.609999895095825,
+        25.735000610351562,
+        10.520000457763672
+      ],
+      [
+        2.609999895095825,
+        26.264999389648438,
+        10.720000267028809
+      ]
+    ]
+  ],
+  "scope": "Evolution I to II of retained Bastion only. Preserve all lower geometry, door, six stairs, footprint, surrounding plants and camera. Move existing central crown plus flag upward intact; fill intervening tower wall with matching masonry and new recessed upper window. Add two coherent blue slate hip roofs inside flank tower crowns. Existing tower bodies/merlons remain. No recolor substitution, no unrelated second castle.",
+  "actual_unity_images": [
+    "Retained74/77-before closeup",
+    "original style reference"
+  ],
+  "art_direction": "Recognizable second tier: central watch chamber and stronger blue-roof skyline, compact warm limestone identity. Choose dimensions within safe bounds from observed I; do not score approval. Retain main hall roof and functional base. Original I must be swapped, never overlaid with II.",
+  "verified_recent_lessons": "Native70 windows/portal/cornice improved actual Unity. Materials must reuse validated URP donor maps, transient glTF references previously became white. Native77 pine lobes rejected; vegetation unchanged. Preserve BakedGI and noBatchingStatic.",
+  "historic_memory": "EVIDENCE-BASED ART MEMORY: not model-weight training, not ART APPROVED.\nPinned approved reference: 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689\nLESSON small-sculpt-repeated (runs 38358105789,38360450981): No repetir detalles peque\u00f1os en el borde; dise\u00f1ar una masa de acantilado visible y verificar la imagen entera.\nLESSON tiny-sculpt-path (runs 38370740511): Proporcionar informaci\u00f3n geom\u00e9trica del encuadre y exigir acciones de escala suficiente para la c\u00e1mara.\nLESSON frustum-parity (runs 38401480696): Fijar el frustum aut\u00e9ntico antes de juzgar. REVIEW_REQUIRED solo obliga a inspeccionar, nunca certifica belleza.\nLESSON unity-a-b-independent (runs 38405267853): Juzgar la calidad compositiva, materiales y silueta con referencia estable; no confundir cambios visuales con calidad.\nLESSON preserve-playable-protected-terrain (runs 38406612333): Proteger parcelas y anclajes; despu\u00e9s del acabado Blender exigir captura real y revisi\u00f3n independiente en Unity.\nNever use pixel fraction as a beauty score. Require matched Unity evidence and independent art review.\n",
+  "memory_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e"
+}

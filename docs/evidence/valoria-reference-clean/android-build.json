@@ -1,0 +1,12 @@
+{
+    "source_sha": "773f4f24c09445bf4fe9f16d6f8d98949ac5ae6f",
+    "status": "APK_COMPILED_NOT_DEVICE_VALIDATED",
+    "apk_sha256": "34dfc82b81f5a8f5c4b2865ac6ed4548d6c6fa7e0941e7d189c3f3ec3aae93f4",
+    "package_id": "com.eldoria.valoria.v5test",
+    "graphics_apis": "Vulkan, OpenGLES3",
+    "note": "Same identity/certificate bootstrap with bundled fallback and compatible remote scene updates. No save reset. Requires one initial APK update; code changes still require a new APK. Phone installation and remote loading not physically tested.",
+    "apk_bytes": 175170922,
+    "errors": 0,
+    "warnings": 23,
+    "physical_device_tested": false
+}

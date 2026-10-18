@@ -1,0 +1,22 @@
+{
+  "source_sha": "053f530e4233d7850f5ef58fa7d2094ac9fba0e7",
+  "source_preserved": true,
+  "architecture70_preserved": true,
+  "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
+  "plan": {
+    "rationale": "Composition derived from native70 Unity asset\u2019s spatial grid and asset placement. No new geometry or lighting introduced. Only botanical replacements and rock adjustments per observation.",
+    "stem_height": 1.8,
+    "crown_width": 1.2,
+    "leaf_length": 0.36,
+    "branch_count": 11,
+    "leaf_pairs": 11,
+    "rock_scale": 0.8,
+    "foliage_palette": 0,
+    "layout": 0
+  },
+  "glb_sha256": "c5ca4d2bde954a25606e989d65a5618a75c987cdc66a6597b411ebcfd00b6d83",
+  "blend_sha256": "2bbbf7c84ee3adde31aef9821af6a942bfb12b1c4e39eec047acdad24cb0134f",
+  "art_approved": false,
+  "triangles": 24300
+}

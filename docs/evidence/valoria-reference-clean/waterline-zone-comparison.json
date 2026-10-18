@@ -1,0 +1,11 @@
+{
+    "baseline_source": "2fc7570200a5acba7f9dde46e21f5060d1ce2ba0",
+    "baseline_glb_sha256": "c4f786e4d147f26b5320d6fa0e042b2e8c32d5520e9b915c479178bfbdd8dd5f",
+    "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
+    "scope": "Only closed shoreline stone mesh: exact previous44 dry-bank pebbles versus preserved pebbles plus new partly submerged waterline stones; all other renderers, terrain, materials, camera and light shared",
+    "same_camera": true,
+    "same_lighting": true,
+    "baseline_hash_verified": true,
+    "before_triangles": 4960,
+    "after_triangles": 4960
+}

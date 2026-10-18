@@ -1,0 +1,17 @@
+{
+    "source_sha": "7b92f91ff45d4b8b089b9f68d804160ee8dc2987",
+    "original_scene_hash": "FA-ED-13-2D-C0-0A-6B-A2-2D-12-61-6F-94-9C-4B-D2-73-CF-F5-8B-8B-2D-52-16-D7-23-86-C7-A8-D7-CE-CA",
+    "candidate_scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Valoria_Pine77.unity",
+    "scope": "Three observed pine crowns only: tallest existing trunks retained, overlapping duplicate trunks removed and planar foliage replaced by Qwen-directed closed curved boughs. Outside source geometry/UV/corner normals preserved. Existing integrated74 scene remains authoritative. Same camera/light and separate native bake. Pending independent visual review.",
+    "original_scene_unchanged": true,
+    "same_camera": true,
+    "same_light": true,
+    "bake_succeeded": true,
+    "no_static_batching": true,
+    "art_approved": false,
+    "original_triangles": 136986,
+    "candidate_triangles": 134639,
+    "lightmaps": 3,
+    "lightprobes": 264,
+    "bake_seconds": 199.18276977539063
+}

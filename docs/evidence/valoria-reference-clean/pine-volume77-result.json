@@ -1,0 +1,28 @@
+{
+  "source_sha": "7b92f91ff45d4b8b089b9f68d804160ee8dc2987",
+  "source_preserved": true,
+  "transport": "ACTUAL_BLENDERMCP_TYPED_ACTION",
+  "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
+  "plan": {
+    "rationale": "Preserve three existing pine trees near Bastion as specified. All other scene geometry, heightfield, tree locations, and architecture remain unchanged.",
+    "crown_layers": 5,
+    "radial_boughs": 7,
+    "bough_fullness": 0.42,
+    "tip_droop": 0.3,
+    "crown_taper": 1.25,
+    "width_ratio": 0.84,
+    "core_ratio": 0.28,
+    "foliage_palette": 1
+  },
+  "scope_proof": {
+    "removed_faces": 12283,
+    "retained_original_faces": 124703,
+    "retained_vertices_uvs_normals": true,
+    "target_groups": 3,
+    "overlapping_trunks_removed": 6
+  },
+  "glb_sha256": "c9829d76a1c05d42760e62a003abe943fef66eddc915df8ff3dbc630b593e4b0",
+  "blend_sha256": "240ef392061eb5e573f666807b52a6bbc05ee9d4eab6c2034c72802e9dc0d7e8",
+  "art_approved": false,
+  "triangles": 134639
+}

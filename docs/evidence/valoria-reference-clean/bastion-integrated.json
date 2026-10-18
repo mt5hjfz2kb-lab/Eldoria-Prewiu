@@ -1,0 +1,13 @@
+{
+    "source_sha": "408f01d4d8ae6e44e622bd3cae15bffd43915c91",
+    "reviewed_variant": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Valoria_Bastion73.unity",
+    "previous_triangles": 132304,
+    "replacement_triangles": 142782,
+    "environment_triangles": 24300,
+    "lightmaps": 5,
+    "lightprobes": 264,
+    "original_selection_object_preserved": true,
+    "collider_matches_new_mesh": true,
+    "static_batching_disabled": true,
+    "art_target_8_of_10_certified": false
+}

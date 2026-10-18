@@ -1,0 +1,27 @@
+{
+  "run": 39121191183,
+  "source": "af87f39e6a324d8bbb906ed2a2ef97484a91aa78",
+  "output": "21b2c42de3d8e196f027fd592f34ead23f270399",
+  "apk": {
+    "artifact": 12134267369,
+    "version": "1.3",
+    "version_code": 4,
+    "bytes": 174677573,
+    "sha256": "cfc9c554cecabf3d6825acd4df8c84f568259ee222a80bc2d466c1bbf5068e79",
+    "zip_crc_verified": true,
+    "arm64_elf_libraries": 11,
+    "original_certificate_verified": true,
+    "phone_update_tested": false
+  },
+  "package": {
+    "artifact": 12134192761,
+    "bytes": 284335755,
+    "sha256": "d8afed994705ff1a5001c86fc22bea18cf24a036216e1f551edc7eddce5005e7",
+    "assets": 503,
+    "current_training_panel_source_verified": true,
+    "native_import_verified": false
+  },
+  "gameplay_run": 39121023638,
+  "gameplay_status": "EXISTING_UI_RULES_SAVE_I_II_PASS_CHAPTER_II_BUILD_TRAIN_MARCH_VICTORY_VERIFIED",
+  "canonical_saves_untouched": true
+}

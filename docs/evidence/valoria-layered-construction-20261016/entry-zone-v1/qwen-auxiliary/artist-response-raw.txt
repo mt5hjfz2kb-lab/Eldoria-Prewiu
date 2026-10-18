@@ -1,0 +1,30 @@
+{
+  "observed_defect": "Bridge endpoints show flat, untextured geometry with no visible cliff erosion or stone layering; terrain lacks sculptural mass and fails to match reference’s rugged, weathered cliff silhouette.",
+  "design_intent": "Introduce sculptural cliff mass and stone layering at bridge endpoints to match reference’s natural erosion and architectural continuity, enhancing visual hierarchy and strategy-camera legibility.",
+  "asset_decision": "MODIFY",
+  "reason_for_new_geometry": "Bridge endpoints require sculptural mass to match reference’s cliff erosion and stone layering; no new asset needed as existing geometry can be modified.",
+  "planned_actions": [
+    {
+      "id": "sculpt_region",
+      "target": "ValoriaEntryTerrainV1",
+      "rationale": "Sculpt cliff mass at bridge endpoints to match reference’s erosion and stone layering.",
+      "parameters": {
+        "center": [0, 0, -9.25],
+        "radius": 3.0,
+        "delta": [0.5, 0.5, 0.5]
+      }
+    },
+    {
+      "id": "sculpt_region",
+      "target": "ValoriaEntryTerrainV1",
+      "rationale": "Sculpt cliff mass at bridge endpoints to match reference’s erosion and stone layering.",
+      "parameters": {
+        "center": [0, 0, -9.25],
+        "radius": 3.0,
+        "delta": [0.5, 0.5, 0.5]
+      }
+    }
+  ],
+  "expected_visual_difference": "Bridge endpoints will show sculpted cliff mass with stone layering and erosion, matching reference’s natural texture and architectural continuity.",
+  "mobile_risks": "Low; no new geometry or materials introduced; only existing mesh modified."
+}

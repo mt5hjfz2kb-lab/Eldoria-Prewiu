@@ -4,47 +4,21 @@
   "updated_at": "2026-10-18",
   "owner_production_pause": {
     "active": true,
-    "requested_on": "2026-10-16",
-    "scope": "ALL_ELDORIA_EXCEPT_AUTHORIZED_VALORIA_WORLD4X_AND_UI_20261018",
-    "reason": "LATEST OWNER ORDER 2026-10-16: absolute priority to Valoria construction from existing master plan by layers; every other active Eldoria workstream paused.",
-    "allowed_work": "Valoria and isolated world4x-zone1-isolated-reference-prototype-20261013 are authorized by owner. 4X resumes under the explicit 18-10-2026 request; other pauses remain. Valoria retains Windows lease; 4X may not take it merely because queue is idle. No expenditure or publication. Explicit owner exception 18-10-2026 12:15 Europe/Madrid additionally authorizes Royal Gold V1 UI in its independent branch and non-overlapping directories. Valoria/4X permissions and Windows priority remain unchanged.",
-    "resumption": "Other workstreams require a fresh explicit owner instruction. Do not automatically resume artist, World4X, Region 1, Bastion I, 63-asset branches or deployments.",
-    "note": "Exclusive new construction line is authorized by latest owner order; original previously paused branches remain paused. No publication, production-scene overwrites, paid credits or automatic runner appropriation. Repo pause does not cancel running chats or GitHub jobs. See docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+    "requested_on": "2026-10-18",
+    "scope": "ALL_PRECONSOLIDATION_EXPERIMENTAL_BRANCHES",
+    "reason": "Owner retires independent experimental production; current integrated main is the sole development baseline.",
+    "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
-      "valoria-master-plan-layered-construction-20261016",
-      "world4x-zone1-isolated-reference-prototype-20261013",
-      "eldoria-ui-royal-gold-v1-20261018"
+      "valoria-master-plan-layered-construction-20261016"
     ],
-    "latest_owner_exception": {
-      "date": "2026-10-18",
-      "workstream": "world4x-zone1-isolated-reference-prototype-20261013",
-      "authorization": "Explicit current owner message 11:36:57 Europe/Madrid",
-      "windows_lease_transfer": false
-    },
-    "additional_owner_exceptions": [
-      {
-        "date": "2026-10-18",
-        "workstream": "eldoria-ui-royal-gold-v1-20261018",
-        "authorization": "Explicit owner instruction 18-10-2026 12:15 Europe/Madrid: third independent Unity UI workstream, Royal Gold V1; no other paused work resumed.",
-        "scope": "Exclusive UI components, editable 2D graphics, prefabs, isolated UI preview, adapters and integration contract only.",
-        "budget_eur": 0,
-        "windows_lease_transfer": false,
-        "canonical_integration_authorized": false
-      },
-      {
-        "date": "2026-10-18",
-        "workstream": "valoria-master-plan-layered-construction-20261016",
-        "authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
-        "scope": "Current Valoria integrated browser playtest with private Sites hosting; zero paid assets and paused branches retained."
-      }
-    ]
+    "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
   "active": [
     {
       "id": "valoria-master-plan-layered-construction-20261016",
-      "title": "Valoria: independent reference clean scene — native functional candidate",
+      "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "codex-work-valoria-integration-continuation-20261018",
-      "branch": "construction/valoria-master-plan-layers-20261016",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-16",
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
@@ -68,17 +42,18 @@
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/**",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
+        "Unity/ProjectSettings/EditorBuildSettings.asset",
+        "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy",
-        "valoria-android-content-channel"
-      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE111_PRIVATE_PLAYTEST_PUBLISHED_VISUAL_FINISH_CONTINUES",
-      "next": "Improve actual city terrain/path/building integration, vegetation and materials using existing AI artist; review genuine Unity images. Preserve integrated I-II, UI, Zone1, saves and same private Site. No Tripo. Physical iPhone QA remains unverified.",
+      "phase": "CANONICAL_MAIN_DEVELOPMENT_BASELINE",
+      "next": "Prioritize integrated player-experience findings in docs/ELDORIA_PLAYER_REVIEW_20261018.md. Work from current main only; coordinate Windows claim before native execution.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -585,91 +560,9 @@
       "handoff_authorization": "Explicit owner request in successor chat 18-10-2026 15:20 Europe/Madrid: continue saturated Valoria chat, assume interface and integrate Zone1 4X as world without losing primary visual/playable mission.",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
-      "latest_owner_feedback": "18Oct16:20 Europe/Madrid: use our existing AI artist, explicitly no Tripo; new coherent sawmill, visual quality, contextual UI, original dialogue, vertical world pan, no parcel slabs, clear build locations."
-    },
-    {
-      "id": "world4x-zone1-isolated-reference-prototype-20261013",
-      "title": "Zona 1 4X — producción gráfica y conexión futura a Valoria",
-      "owner": "chatgpt-world4x-production-20261018",
-      "branch": "prototype/world4x-zone1-zoom-reference-20261013",
-      "status": "active",
-      "claimed_at": "2026-10-18T09:36:57Z",
-      "base_main_sha": "9b3e847a81995a81efb564c52146556ee9172dba",
-      "scope": [
-        "docs/world4x-zone1/**",
-        "tools/world4x-zone1/**",
-        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
-        "pipeline/art-production-requests/world4x-zone1-isolated-reference-prototype-20261013.json",
-        ".github/workflows/world4x-zone1-*.yml"
-      ],
-      "resources": [],
-      "phase": "EXACT_SAVED_SOURCE_CONTINUATION_QUEUED",
-      "authorization": "Owner 2026-10-18 11:36:57 Europe/Madrid explicitly asks this chat to assume 4X, recover three references, strongly improve graphics and prepare later connection to current Work without crossing scope. Budget 0 EUR.",
-      "art_production_routing": "required",
-      "dependency": "Valoria Work retains its scene, SliceBoot, Packages, canonical gameplay/save, branch and windows-runner-heavy. 4X uses independent Linux Blender and code. Windows native window must be explicitly coordinated; not claimed.",
-      "coordination": {
-        "native_window": "REQUESTED_WHEN_VISUAL_CANDIDATE_READY; NOT_CLAIMED",
-        "protected_scopes": [
-          "ValoriaReferenceClean",
-          "SliceBoot.cs",
-          "Application/LocalGateway.cs",
-          "Infrastructure/LocalServices.cs",
-          "Unity/Packages",
-          "valoria-reference-clean.yml"
-        ],
-        "integration": "Provide opt-in 4X scene/module, semantic IDs and host adapter; Valoria owner integrates later. Do not edit or publish its player scene.",
-        "queue_delegation": {
-          "authorization": "Owner explicitly permits PC resources respecting Work queue; reiterated live continuation after checkpoint, 18-10-2026.",
-          "mode": "resume_ground",
-          "run_id": "39128434058",
-          "work_priority": true,
-          "transfer_valoria_lease": false,
-          "cancel_other_jobs": false,
-          "scope": "Only World4X existing source continuation or isolated Unity comparison/host/camera checks. No Valoria, UI, save, settings, package or publication changes."
-        }
-      },
-      "handoff_source": "docs/world4x-zone1/TAKEOVER_20261018.md",
-      "next": "Finish current requested bounded unit, preserve genuine outputs; inspect screenshots and do not equate technical success with art approval."
-    },
-    {
-      "id": "eldoria-ui-royal-gold-v1-20261018",
-      "title": "Eldoria Royal Gold V1 — independent professional Unity UI",
-      "owner": "chatgpt-ui-royal-gold-v1-20261018",
-      "branch": "ui/eldoria-royal-gold-v1-20261018",
-      "status": "active",
-      "claimed_at": "2026-10-18T10:17:57Z",
-      "base_main_sha": "e8f6df545b1fb15e905871bd7ca4fa3b93389aa1",
-      "scope": [
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/**",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1.meta",
-        "tools/eldoria-ui-royal-gold-v1/**",
-        "docs/ui-royal-gold-v1/**",
-        ".github/workflows/eldoria-ui-royal-gold-v1.yml",
-        "pipeline/eldoria-ui-royal-gold-v1-native-request.json",
-        "Unity/Assets/Eldoria/UI.meta"
-      ],
-      "resources": [],
-      "phase": "VISUAL_ASSETS_PREFABS_AND_GAMEPLAY_BINDINGS_AUTHORED_STATIC_VALIDATION",
-      "authorization": "Explicit owner instruction 18-10-2026 12:15 Europe/Madrid: third independent Unity UI workstream, Royal Gold V1; no other paused work resumed.",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Explicit owner-authorized 2D UI art and uGUI components; no 3D art authoring, city geometry, camera replacement, paid generation or canonical promotion.",
-      "dependency": "Valoria retains windows-runner-heavy. Independent source/assets validation proceeds; isolated native UI import, PlayMode and real screenshots await a compatible recorded reservation. Canonical scene integration is not authorized by this claim.",
-      "coordination": {
-        "protected_scopes": [
-          "ValoriaReferenceClean",
-          "ValoriaLayeredConstruction",
-          "World4XZone1",
-          "Unity/Assets/Eldoria/Scripts/**",
-          "Unity/Packages/**",
-          "Unity/ProjectSettings/**",
-          "SESSION_HANDOFF.md",
-          "PROJECT_STATE.md"
-        ],
-        "native_window": "NOT_CLAIMED; request only after independent UI candidate is ready",
-        "integration": "Opt-in prefab plus presentation adapters consuming existing PlayerState/ICommandGateway; constructor integrates later at stable released scope. No main merge or game publication."
-      },
-      "handoff_source": "docs/ui-royal-gold-v1/PRODUCTION_STATE.md",
-      "next": "Build authored Royal Gold 2D sprite family and reusable uGUI components; isolated TEST scene and bindings to current authoritative gameplay, then native validation when resource is coordinated."
+      "latest_owner_feedback": "18Oct16:20 Europe/Madrid: use our existing AI artist, explicitly no Tripo; new coherent sawmill, visual quality, contextual UI, original dialogue, vertical world pan, no parcel slabs, clear build locations.",
+      "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
+      "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied"
     }
   ],
   "history": [
@@ -5897,6 +5790,94 @@
       "handoff_target": "valoria-master-plan-layered-construction-20261016",
       "resources_released_logically": true,
       "previous_next": "Wait for running microtest 38962837092 to finish and assess real Unity images. Then fix entire-scene visual contact: constrain outer pines to polygon, put background trees inside upper deck, bridge deck visibly continuous, remove floating rocky scatter, preserve reference/camera and re-run one native build. Do not claim ART_APPROVED. Preserve source SHA and frozen production branches."
+    },
+    {
+      "id": "world4x-zone1-isolated-reference-prototype-20261013",
+      "title": "Zona 1 4X — producción gráfica y conexión futura a Valoria",
+      "owner": "chatgpt-world4x-production-20261018",
+      "branch": "prototype/world4x-zone1-zoom-reference-20261013",
+      "status": "archived_reference_only",
+      "claimed_at": "2026-10-18T09:36:57Z",
+      "base_main_sha": "9b3e847a81995a81efb564c52146556ee9172dba",
+      "scope": [
+        "docs/world4x-zone1/**",
+        "tools/world4x-zone1/**",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
+        "pipeline/art-production-requests/world4x-zone1-isolated-reference-prototype-20261013.json",
+        ".github/workflows/world4x-zone1-*.yml"
+      ],
+      "resources": [],
+      "phase": "EXACT_SAVED_SOURCE_CONTINUATION_QUEUED",
+      "authorization": "Owner 2026-10-18 11:36:57 Europe/Madrid explicitly asks this chat to assume 4X, recover three references, strongly improve graphics and prepare later connection to current Work without crossing scope. Budget 0 EUR.",
+      "art_production_routing": "required",
+      "dependency": "Valoria Work retains its scene, SliceBoot, Packages, canonical gameplay/save, branch and windows-runner-heavy. 4X uses independent Linux Blender and code. Windows native window must be explicitly coordinated; not claimed.",
+      "coordination": {
+        "native_window": "REQUESTED_WHEN_VISUAL_CANDIDATE_READY; NOT_CLAIMED",
+        "protected_scopes": [
+          "ValoriaReferenceClean",
+          "SliceBoot.cs",
+          "Application/LocalGateway.cs",
+          "Infrastructure/LocalServices.cs",
+          "Unity/Packages",
+          "valoria-reference-clean.yml"
+        ],
+        "integration": "Provide opt-in 4X scene/module, semantic IDs and host adapter; Valoria owner integrates later. Do not edit or publish its player scene.",
+        "queue_delegation": {
+          "authorization": "Owner explicitly permits PC resources respecting Work queue; reiterated live continuation after checkpoint, 18-10-2026.",
+          "mode": "resume_ground",
+          "run_id": "39128434058",
+          "work_priority": true,
+          "transfer_valoria_lease": false,
+          "cancel_other_jobs": false,
+          "scope": "Only World4X existing source continuation or isolated Unity comparison/host/camera checks. No Valoria, UI, save, settings, package or publication changes."
+        }
+      },
+      "handoff_source": "docs/world4x-zone1/TAKEOVER_20261018.md",
+      "next": "Finish current requested bounded unit, preserve genuine outputs; inspect screenshots and do not equate technical success with art approval.",
+      "closed_at": "2026-10-18",
+      "closed_reason": "Owner consolidated integrated native111 into main; existing module consumed; retain branch for reference, no independent production."
+    },
+    {
+      "id": "eldoria-ui-royal-gold-v1-20261018",
+      "title": "Eldoria Royal Gold V1 — independent professional Unity UI",
+      "owner": "chatgpt-ui-royal-gold-v1-20261018",
+      "branch": "ui/eldoria-royal-gold-v1-20261018",
+      "status": "archived_reference_only",
+      "claimed_at": "2026-10-18T10:17:57Z",
+      "base_main_sha": "e8f6df545b1fb15e905871bd7ca4fa3b93389aa1",
+      "scope": [
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/**",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1.meta",
+        "tools/eldoria-ui-royal-gold-v1/**",
+        "docs/ui-royal-gold-v1/**",
+        ".github/workflows/eldoria-ui-royal-gold-v1.yml",
+        "pipeline/eldoria-ui-royal-gold-v1-native-request.json",
+        "Unity/Assets/Eldoria/UI.meta"
+      ],
+      "resources": [],
+      "phase": "VISUAL_ASSETS_PREFABS_AND_GAMEPLAY_BINDINGS_AUTHORED_STATIC_VALIDATION",
+      "authorization": "Explicit owner instruction 18-10-2026 12:15 Europe/Madrid: third independent Unity UI workstream, Royal Gold V1; no other paused work resumed.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Explicit owner-authorized 2D UI art and uGUI components; no 3D art authoring, city geometry, camera replacement, paid generation or canonical promotion.",
+      "dependency": "Valoria retains windows-runner-heavy. Independent source/assets validation proceeds; isolated native UI import, PlayMode and real screenshots await a compatible recorded reservation. Canonical scene integration is not authorized by this claim.",
+      "coordination": {
+        "protected_scopes": [
+          "ValoriaReferenceClean",
+          "ValoriaLayeredConstruction",
+          "World4XZone1",
+          "Unity/Assets/Eldoria/Scripts/**",
+          "Unity/Packages/**",
+          "Unity/ProjectSettings/**",
+          "SESSION_HANDOFF.md",
+          "PROJECT_STATE.md"
+        ],
+        "native_window": "NOT_CLAIMED; request only after independent UI candidate is ready",
+        "integration": "Opt-in prefab plus presentation adapters consuming existing PlayerState/ICommandGateway; constructor integrates later at stable released scope. No main merge or game publication."
+      },
+      "handoff_source": "docs/ui-royal-gold-v1/PRODUCTION_STATE.md",
+      "next": "Build authored Royal Gold 2D sprite family and reusable uGUI components; isolated TEST scene and bindings to current authoritative gameplay, then native validation when resource is coordinated.",
+      "closed_at": "2026-10-18",
+      "closed_reason": "Owner consolidated integrated native111 into main; existing module consumed; retain branch for reference, no independent production."
     }
   ],
   "owner_specific_pauses": [
@@ -5943,41 +5924,13 @@
   ],
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
-    "title": "Valoria — recuperar plano maestro y construir por capas",
+    "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
     "status": "active_owner_claimed",
-    "owner": "codex-work-valoria-reference-clean-20261017",
-    "authorized_on": "2026-10-16",
-    "instructions": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
-    "priority": "ABSOLUTE",
+    "owner": "codex-work-valoria-integration-continuation-20261018",
+    "authorized_on": "2026-10-18",
+    "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
-    "approved_sequence": [
-      "recover certified Valoria master plan",
-      "validate camera/composition and expansion",
-      "terrain and continuous topography",
-      "roads bridge stair/circulation",
-      "architectural blockout",
-      "selected real modular assembled structures",
-      "surfaces materials vegetation environment and lighting",
-      "gameplay compatibility and tests",
-      "full-frame visual plus technical and mobile validation"
-    ],
-    "restrictions": "Isolated work and original paused branches protected; no publication or expenditure without separate approvals. Do not claim runner until available.",
-    "reference_image": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
-    "parallel_exception": {
-      "authorized_on": "2026-10-18",
-      "workstream": "world4x-zone1-isolated-reference-prototype-20261013",
-      "scope": "Independent 4X production only; Valoria priority on shared Windows retained."
-    },
-    "additional_parallel_exceptions": [
-      {
-        "date": "2026-10-18",
-        "workstream": "eldoria-ui-royal-gold-v1-20261018",
-        "authorization": "Explicit owner instruction 18-10-2026 12:15 Europe/Madrid: third independent Unity UI workstream, Royal Gold V1; no other paused work resumed.",
-        "scope": "Exclusive UI components, editable 2D graphics, prefabs, isolated UI preview, adapters and integration contract only.",
-        "budget_eur": 0,
-        "windows_lease_transfer": false,
-        "canonical_integration_authorized": false
-      }
-    ]
+    "branch": "main",
+    "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits."
   }
 }

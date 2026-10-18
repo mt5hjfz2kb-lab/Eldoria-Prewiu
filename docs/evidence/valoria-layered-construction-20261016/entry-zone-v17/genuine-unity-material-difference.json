@@ -1,0 +1,17 @@
+{
+  "comparison": "V13 versus V17 real Unity same HOME-camera BEFORE and AFTER 1536x1024; source unchanged except restored Bastion material roles; threshold sum abs RGB >= 30/255",
+  "before_png_sha256": "b2c0824d33ccf8c7efdb671afab7bd1e695fcf46d44562c555143e200142cafd",
+  "after_png_sha256": "94d11f97daba5367946332d4fb7e77665a6f11b4e163ad469be44e1b25f58f56",
+  "pixels_changed": 19054,
+  "pixels_changed_upper": 19054,
+  "pixels_changed_bastion_reference_roi": 19054,
+  "pixels_changed_outside_reference_roi": 0,
+  "pixel_bbox_yx": [
+    799,
+    745,
+    910,
+    1143
+  ],
+  "color_change_is_not_artistic_quality": true,
+  "art_approved": false
+}

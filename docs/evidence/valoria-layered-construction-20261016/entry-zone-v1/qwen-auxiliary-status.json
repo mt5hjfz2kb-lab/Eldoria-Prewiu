@@ -1,0 +1,7 @@
+{
+  "role": "AUXILIARY_EXISTING_ARTIST_BRIEF_NOT_SOLE_AUTHORITY",
+  "new_model_downloads": false,
+  "executed_geometry": false,
+  "status": "AUXILIARY_UNAVAILABLE_OR_REJECTED_NO_ART_APPROVAL",
+  "error": "Local Qwen artist plan rejected without executable geometry after 1 honest authored attempts; errors: Action 0: unsupported Blender action None | Action 1: unsupported Blender action None | Action 1: blank/duplicate id"
+}
