@@ -1,5 +1,5 @@
 {
-  "source_sha": "e5f323425c66e01a096606b15a3b671212115c62",
+  "source_sha": "26d92123e684e06f332b3b140179a457c337424e",
   "original_blend_sha256": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
   "original_source_preserved": true,
   "original_scene_not_modified": true,
@@ -19,9 +19,9 @@
     "awning_sag": 0.26,
     "rope_radius": 0.03
   },
-  "glb_sha256": "c6c60ced1154dcee5c2160c32b6e9d9da9376856e1c07c69e5c24d0087e04926",
-  "blend_sha256": "ab5efa6df3c5f4b2e2bc72efb8f8ce489d9338527263041cef53f44297ba45bf",
-  "triangles": 34096,
+  "glb_sha256": "1b9791abaa8f9d3c2359ba9b095dfb09a318eb604cf550168e1757534c947e46",
+  "blend_sha256": "e6cf4a439c3c22518e8b8d9be158b6464b0ccce47437d63ab1d0de6c3ef3825e",
+  "triangles": 16296,
   "art_approved": false,
   "unity_capture_pending": true
 }
