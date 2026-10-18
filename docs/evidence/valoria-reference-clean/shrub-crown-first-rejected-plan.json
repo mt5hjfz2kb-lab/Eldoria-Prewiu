@@ -1,0 +1,85 @@
+{
+  "plan": {
+    "rationale": "Replaced single crown with 9 overlapping small leaf lobes. Centers and radii normalized within original bounds. Bottom contact maintained (lowest z-radius 0.035). Top profile maintained (highest z+radius 0.92). Asymmetric arrangement preserves clump silhouette with notches. No light or material tint used. Existing footprint and ground contact preserved.",
+    "actions": [
+      {
+        "component": 0,
+        "lobes": [
+          {
+            "x": 0.21,
+            "y": 0.34,
+            "z": 0.17,
+            "rx": 0.28,
+            "ry": 0.22,
+            "rz": 0.16
+          },
+          {
+            "x": 0.55,
+            "y": 0.48,
+            "z": 0.23,
+            "rx": 0.25,
+            "ry": 0.24,
+            "rz": 0.18
+          },
+          {
+            "x": 0.72,
+            "y": 0.29,
+            "z": 0.28,
+            "rx": 0.29,
+            "ry": 0.21,
+            "rz": 0.17
+          },
+          {
+            "x": 0.41,
+            "y": 0.62,
+            "z": 0.32,
+            "rx": 0.27,
+            "ry": 0.23,
+            "rz": 0.19
+          },
+          {
+            "x": 0.38,
+            "y": 0.15,
+            "z": 0.35,
+            "rx": 0.26,
+            "ry": 0.25,
+            "rz": 0.18
+          },
+          {
+            "x": 0.65,
+            "y": 0.55,
+            "z": 0.41,
+            "rx": 0.24,
+            "ry": 0.22,
+            "rz": 0.17
+          },
+          {
+            "x": 0.51,
+            "y": 0.38,
+            "z": 0.48,
+            "rx": 0.23,
+            "ry": 0.21,
+            "rz": 0.16
+          },
+          {
+            "x": 0.78,
+            "y": 0.44,
+            "z": 0.52,
+            "rx": 0.29,
+            "ry": 0.23,
+            "rz": 0.18
+          },
+          {
+            "x": 0.27,
+            "y": 0.51,
+            "z": 0.61,
+            "rx": 0.26,
+            "ry": 0.24,
+            "rz": 0.17
+          }
+        ]
+      }
+    ]
+  },
+  "error": "Lobe outside preserved crown envelope"
+}

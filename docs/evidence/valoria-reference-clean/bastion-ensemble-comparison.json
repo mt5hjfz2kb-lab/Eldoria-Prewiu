@@ -1,0 +1,17 @@
+{
+    "source_sha": "b058eb1b3d22b7cf637ddbcfb703c55a5fa38c75",
+    "original_scene_hash": "56-E5-9F-59-35-02-DF-BE-8F-4D-46-F4-48-A4-CF-72-D1-E6-FA-3C-86-BF-01-AF-83-88-45-1E-B0-01-A9-08",
+    "candidate_scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion66/Valoria_Bastion66.unity",
+    "scope": "Whole Bastion architectural remodel and immediate ground/foliage ensemble. Same saved player/detail camera, sun, exposure, URP, GI/probe settings; new geometry requires independently baked lightmaps. All other architecture remains unchanged; candidate not yet accepted.",
+    "original_scene_unchanged": true,
+    "same_camera": true,
+    "same_light": true,
+    "bake_succeeded": true,
+    "no_static_batching": true,
+    "art_approved": false,
+    "original_triangles": 132304,
+    "candidate_triangles": 334894,
+    "lightmaps": 5,
+    "lightprobes": 264,
+    "bake_seconds": 174.4008331298828
+}
