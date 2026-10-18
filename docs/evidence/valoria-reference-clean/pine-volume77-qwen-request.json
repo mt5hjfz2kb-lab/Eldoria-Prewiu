@@ -1,0 +1,163 @@
+{
+  "model": "qwen3-vl:8b-instruct-q4_K_M",
+  "format": {
+    "type": "object",
+    "required": [
+      "rationale",
+      "crown_layers",
+      "radial_boughs",
+      "bough_fullness",
+      "tip_droop",
+      "crown_taper",
+      "width_ratio",
+      "core_ratio",
+      "foliage_palette"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "rationale": {
+        "type": "string"
+      },
+      "crown_layers": {
+        "type": "number",
+        "enum": [
+          5,
+          6,
+          7
+        ]
+      },
+      "radial_boughs": {
+        "type": "number",
+        "enum": [
+          6,
+          7,
+          8
+        ]
+      },
+      "bough_fullness": {
+        "type": "number",
+        "enum": [
+          0.26,
+          0.34,
+          0.42
+        ]
+      },
+      "tip_droop": {
+        "type": "number",
+        "enum": [
+          0.1,
+          0.2,
+          0.3
+        ]
+      },
+      "crown_taper": {
+        "type": "number",
+        "enum": [
+          1.05,
+          1.25,
+          1.45
+        ]
+      },
+      "width_ratio": {
+        "type": "number",
+        "enum": [
+          0.84,
+          0.92,
+          1.0
+        ]
+      },
+      "core_ratio": {
+        "type": "number",
+        "enum": [
+          0.22,
+          0.28,
+          0.34
+        ]
+      },
+      "foliage_palette": {
+        "type": "number",
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      }
+    }
+  },
+  "context": {
+    "scope": "Three existing pines near Bastion ONLY. Other scene geometry, heightfield, tree locations and architecture preserved.",
+    "actual_topology": {
+      "source_sha256": "f44afe06ea40c1d7865d6616b4c08c65e001a3b1db06ca5fe217745de948307a",
+      "tree_groups": 34,
+      "targets": [
+        {
+          "centre": [
+            31.90607452392578,
+            58.8492431640625,
+            7.09005069732666
+          ],
+          "overlapping_bark_components": 3,
+          "leaf_bounds": [
+            [
+              28.73755645751953,
+              55.83824920654297,
+              4.235368251800537
+            ],
+            [
+              35.262447357177734,
+              62.161766052246094,
+              11.622647285461426
+            ]
+          ]
+        },
+        {
+          "centre": [
+            4.924049377441406,
+            56.878089904785156,
+            4.190661907196045
+          ],
+          "overlapping_bark_components": 3,
+          "leaf_bounds": [
+            [
+              2.361917495727539,
+              36.996124267578125,
+              0.5493007898330688
+            ],
+            [
+              15.035850524902344,
+              59.556671142578125,
+              7.855817794799805
+            ]
+          ]
+        },
+        {
+          "centre": [
+            -5.075555801391602,
+            53.878726959228516,
+            4.946213722229004
+          ],
+          "overlapping_bark_components": 3,
+          "leaf_bounds": [
+            [
+              -7.624244689941406,
+              51.456748962402344,
+              2.649965286254883
+            ],
+            [
+              -2.3757591247558594,
+              56.543251037597656,
+              8.592142105102539
+            ]
+          ]
+        }
+      ]
+    },
+    "observed_unity": "Native74/73 authentic image: flat sawtooth pine foliage. Existing CC0-derived medium source combines tall and medium branches; original manifest warns about duplication. Actual topology shows several nearly coincident bark components per tree. Keep tallest existing trunk, remove overlapping duplicate trunks in target copy only, and replace target planar foliage with closed curved bough volumes. Do not stack another tree over existing canopy.",
+    "reference": "Owner target has layered evergreen crowns with rounded branch masses, visible dark interstices, drooping branch tips and coherent taper. Match complete silhouette and shading from real player camera, not tiny color tweaks.",
+    "decision": "Choose bough layer count, radial branching, fullness, droop, taper, crown width and palette BEFORE actual Blender geometry. Only typed approved operations will execute. No scores or approval."
+  },
+  "image_sha256": {
+    "ground73-after-bastion.png": "0f1ae2a7d29973f5cb7cbcb829f544a0d518c32b85cc1e31fb061454a6600f8b",
+    "reference-target.jpeg": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+  }
+}
