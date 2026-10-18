@@ -1,0 +1,16 @@
+{
+    "shader": "Universal Render Pipeline/Terrain/Lit",
+    "terrain_position": "(-100, -5, -100)",
+    "terrain_size": "(200, 18, 220)",
+    "terrain_data": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/EnsembleTerrain.asset",
+    "basemap_distance": 1000.0,
+    "layers": 5,
+    "sample_weights": [
+        0.32156863808631899,
+        0.0,
+        0.08627451211214066,
+        0.0941176563501358,
+        0.49803924560546877
+    ],
+    "saved_scene_unchanged": true
+}

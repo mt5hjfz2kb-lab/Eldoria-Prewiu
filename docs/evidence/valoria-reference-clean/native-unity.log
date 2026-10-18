@@ -1,12 +1,12 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.3/staging' branch; Version is '6000.3.23f1 (09d2ecc7fb28) revision 643820'; Using compiler version '194234433'; Build Type 'Release'
-[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 MB
+[Licensing::IpcConnector] Channel LicenseClient-crist doesn't exist
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-18T08:37:55Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 38944)
+Date: 2026-10-18T08:49:13Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 40472)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -15,7 +15,7 @@ C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
 -projectPath
 C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu/valoria-layered-source/Unity
 -executeMethod
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble.Build
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble.DiagnoseGround
 -logFile
 C:\actions-runner-eldoria\_work\_temp\valoria-reference-clean.log
 -buildTarget
@@ -58,27 +58,29 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [39516]  Target information:
+Player connection [30024]  Target information:
 
-Player connection [39516]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 2500591061 [EditorId] 2500591061 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [30024]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 2268823865 [EditorId] 2268823865 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [39516] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [39516] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [30024] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [30024] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T08:37:57.0037002Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 38944, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Package Manager] Connected to IPC stream "Upm-39052" after 0.7 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T08:49:14.3143364Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 40472, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              93599c549eda48858faa94c4e8d9e4b6
-  Correlation Id:          121c4d458b07d06fb07bd07ea52370be
-  External correlation Id: 2753959402056665280
+  Session Id:              86eec336a6ed4eabbd089ec6ceca6757
+  Correlation Id:          6fb396b34b36e408fa835aa5e6152484
+  External correlation Id: 358702336309889030
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 1.98s, validation: 0.14s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T08:37:57.1666203Z"
-[Licensing::Module] Connected to LicensingClient (PId: 38944, launch time: 0.00, total connection time: 2.14s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.87s, validation: 0.15s, handshake: 0.02s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T08:49:14.4882963Z"
+[Licensing::Module] Connected to LicensingClient (PId: 40472, launch time: 0.00, total connection time: 1.04s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -88,8 +90,8 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 2.21s
-[Package Manager] Connected to IPC stream "Upm-28268" after 1.0 seconds.
+[Licensing::Module] Licensing Background thread has ended after 1.07s
+[Licensing::Module] Licensing is initialized (took 0.24s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 FMOD initialized on nosound output
@@ -99,9 +101,9 @@ FMOD initialized on nosound output
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Artifact Garbage Collection - Removed 36 unused hashed content files
+Artifact Garbage Collection - Removed 19 unused hashed content files
 Targeting platform: Win64
-Refreshing native plugins compatible for Editor in 2.39 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 1.80 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -118,7 +120,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56268
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56052
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -131,8 +133,8 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.024550 seconds.
-- Loaded All Assemblies, in  0.958 seconds
+Registered in 0.023491 seconds.
+- Loaded All Assemblies, in  0.756 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -140,37 +142,37 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.638 seconds
-Domain Reload Profiling: 1594ms
-	BeginReloadAssembly (468ms)
+- Finished resetting the current domain, in  0.476 seconds
+Domain Reload Profiling: 1230ms
+	BeginReloadAssembly (394ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (6ms)
-	RebuildCommonClasses (91ms)
+		CreateAndSetChildDomain (16ms)
+	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (92ms)
-	LoadAllAssembliesAndSetupDomain (291ms)
-		LoadAssemblies (468ms)
+	initialDomainReloadingComplete (65ms)
+	LoadAllAssembliesAndSetupDomain (247ms)
+		LoadAssemblies (385ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (278ms)
-			TypeCache.Refresh (274ms)
-				TypeCache.ScanAssembly (248ms)
-			BuildScriptInfoCaches (1ms)
-			ResolveRequiredComponents (2ms)
-	FinalizeReload (639ms)
+		AnalyzeDomain (235ms)
+			TypeCache.Refresh (234ms)
+				TypeCache.ScanAssembly (220ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (476ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (597ms)
+		SetupLoadedEditorAssemblies (440ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (108ms)
+			InitializePlatformSupportModulesInManaged (72ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (83ms)
-			ProcessInitializeOnLoadAttributes (189ms)
-			ProcessInitializeOnLoadMethodAttributes (211ms)
+			BeforeProcessingInitializeOnLoad (80ms)
+			ProcessInitializeOnLoadAttributes (123ms)
+			ProcessInitializeOnLoadMethodAttributes (161ms)
 			AfterProcessingInitializeOnLoad (0ms)
-			EditorAssembliesLoaded (2ms)
+			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
 		AwakeInstancesAfterBackupRestoration (0ms)
 [Licensing::Client] Successfully resolved entitlement details
@@ -211,19 +213,19 @@ Application.AssetDatabase Initial Refresh Start
   Git packages:
     com.arloopa.unitysplats@https://github.com/arloopa/UnitySplats.git (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.arloopa.unitysplats@6c0258189a2b)
 [Subsystems] No new subsystems found in resolved package list.
-[Package Manager] Done registering packages in 0.04 seconds
+[Package Manager] Done registering packages in 0.01 seconds
 A meta data file (.meta) exists but its asset 'Assets/EmaceArt/Slavic World Free/URP_Support/URP/URP_Material.unitypackage' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
 [ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 5s739ms
+ExitCode: 0 Duration: 5s622ms
 [621/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[790/794    3s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(43,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+[790/794    2s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-[791/794    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+[791/794    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 323 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -233,175 +235,102 @@ running Unity.Jobs.CodeGen.JobsILPostProcessor
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
 [792/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
 [793/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (5.68 seconds), 5 items updated, 794 evaluated
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(43,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+*** Tundra build success (5.57 seconds), 5 items updated, 794 evaluated
+Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-AssetDatabase: script compilation time: 6.753008s
+AssetDatabase: script compilation time: 6.152325s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  2.003 seconds
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0740858 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0192575 seconds
-Refreshing native plugins compatible for Editor in 40.24 ms, found 4 plugins.
+- Loaded All Assemblies, in  3.540 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0153338 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0016868 seconds
+Refreshing native plugins compatible for Editor in 6.77 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  3.092 seconds
-Domain Reload Profiling: 5091ms
-	BeginReloadAssembly (660ms)
+- Finished resetting the current domain, in  2.861 seconds
+Domain Reload Profiling: 6398ms
+	BeginReloadAssembly (304ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (41ms)
+		DisableScriptedObjects (21ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (153ms)
-	RebuildCommonClasses (34ms)
-	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (25ms)
-	LoadAllAssembliesAndSetupDomain (1267ms)
-		LoadAssemblies (1177ms)
+		CreateAndSetChildDomain (155ms)
+	RebuildCommonClasses (35ms)
+	RebuildNativeTypeToScriptingClass (14ms)
+	initialDomainReloadingComplete (26ms)
+	LoadAllAssembliesAndSetupDomain (3158ms)
+		LoadAssemblies (3093ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (178ms)
-			TypeCache.Refresh (128ms)
-				TypeCache.ScanAssembly (114ms)
-			BuildScriptInfoCaches (38ms)
+		AnalyzeDomain (152ms)
+			TypeCache.Refresh (103ms)
+				TypeCache.ScanAssembly (93ms)
+			BuildScriptInfoCaches (37ms)
 			ResolveRequiredComponents (10ms)
-	FinalizeReload (3092ms)
+	FinalizeReload (2862ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (2910ms)
+		SetupLoadedEditorAssemblies (2680ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (36ms)
+			InitializePlatformSupportModulesInManaged (35ms)
 			SetLoadedEditorAssemblies (3ms)
 			BeforeProcessingInitializeOnLoad (143ms)
-			ProcessInitializeOnLoadAttributes (2375ms)
-			ProcessInitializeOnLoadMethodAttributes (346ms)
-			AfterProcessingInitializeOnLoad (7ms)
-			EditorAssembliesLoaded (1ms)
+			ProcessInitializeOnLoadAttributes (2079ms)
+			ProcessInitializeOnLoadMethodAttributes (414ms)
+			AfterProcessingInitializeOnLoad (6ms)
+			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (24ms)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionEnsemble70.glb using Guid(90b8c67ce23b41b4c8b7c3ac785ee0b6) (ScriptedImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
- -> (artifact id: 'ba68810f873033601c889d5dc050107f') in 0.6424044 seconds
-Refreshing native plugins compatible for Editor in 5.86 ms, found 4 plugins.
+		AwakeInstancesAfterBackupRestoration (27ms)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Refreshing native plugins compatible for Editor in 6.34 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a21df49878788fb43a9f0c4fb8b2e137): Total: 20.629 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=9044b6a6e21137748a6f39837ee8ed69): Total: 16.360 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
-		Imports: total=3 (actual=3, local cache=0, cache server=0)
-		Asset DB Process Time: managed=5 ms, native=10359 ms
-		Asset DB Callback time: managed=600 ms, native=862 ms
-		Scripting: domain reloads=1, domain reload time=2003 ms, compile time=6755 ms, other=42 ms
-		Project Asset Count: scripts=1195, non-scripts=5675
-		Asset File Changes: new=1, changed=4, moved=0, deleted=0
+		Imports: total=2 (actual=2, local cache=0, cache server=0)
+		Asset DB Process Time: managed=3 ms, native=3503 ms
+		Asset DB Callback time: managed=1952 ms, native=1165 ms
+		Scripting: domain reloads=1, domain reload time=3540 ms, compile time=6154 ms, other=40 ms
+		Project Asset Count: scripts=1197, non-scripts=5713
+		Asset File Changes: new=0, changed=3, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 47.032ms
-	ApplyChangesToAssetFolders: 0.479ms
-	Scan: 5393.232ms
-	OnSourceAssetsModified: 0.563ms
-	CategorizeAssetsWithTransientArtifact: 175.738ms
-	ProcessAssetsWithTransientArtifactChanges: 55.833ms
-	CategorizeAssets: 515.309ms
-	ImportOutOfDateAssets: 3910.964ms (-3590.453ms without children)
-		ImportManagerImport: 741.396ms (3.655ms without children)
-			ImportInProcess: 737.707ms
-			UpdateCategorizedAssets: 0.034ms
-		CompileScripts: 6754.508ms
-		ReloadNativeAssets: 0.043ms
-		UnloadImportedAssets: 0.824ms
-		ReloadImportedAssets: 0.001ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.927ms
-		InitializingProgressBar: 0.005ms
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 11.543ms
+	ApplyChangesToAssetFolders: 0.586ms
+	Scan: 98.369ms
+	OnSourceAssetsModified: 0.535ms
+	CategorizeAssetsWithTransientArtifact: 167.032ms
+	ProcessAssetsWithTransientArtifactChanges: 47.113ms
+	CategorizeAssets: 116.312ms
+	ImportOutOfDateAssets: 2918.782ms (-3257.488ms without children)
+		ImportManagerImport: 18.484ms (1.057ms without children)
+			ImportInProcess: 17.404ms
+			UpdateCategorizedAssets: 0.023ms
+		CompileScripts: 6154.065ms
+		ReloadNativeAssets: 0.042ms
+		UnloadImportedAssets: 0.615ms
+		ReloadImportedAssets: 0.000ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.640ms
+		InitializingProgressBar: 0.001ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 2.711ms
-	PostProcessAllAssets: 1461.509ms
-	Hotreload: 8.463ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.284ms
-	UnloadStreamsBegin: 3.116ms
-	PersistCurrentRevisions: 0.479ms
+		OnDemandSchedulerStart: 1.422ms
+	PostProcessAllAssets: 3147.103ms
+	Hotreload: 7.423ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.255ms
+	UnloadStreamsBegin: 3.383ms
+	PersistCurrentRevisions: 0.489ms
 	UnloadStreamsEnd: 0.002ms
-	GenerateScriptTypeHashes: 2.927ms
-	Untracked: 9055.937ms
+	GenerateScriptTypeHashes: 3.174ms
+	Untracked: 9840.807ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 3.966ms
+Scanning for USB devices : 3.168ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Unity
-Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV2.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
 Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV1Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV3Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV5Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV2Integration.Build' because a menu item with the same name already exists.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -425,927 +354,113 @@ UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
 UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
-Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4309 unused Assets / (5.4 MB). Loaded Objects now: 5229.
-Memory consumption went from 236.2 MB to 230.8 MB.
-Total: 14.162500 ms (FindLiveObjects: 0.520800 ms CreateObjectMapping: 0.475700 ms MarkObjects: 11.030000 ms  DeleteObjects: 2.135400 ms)
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV4Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70 using Guid(528dff35d69dad14c98662d23c92a4e3) (DefaultImporter) -> (artifact id: '2a13dd3eb063ccd4d5dbb237c220a85a') in 0.008033 seconds
-Refreshing native plugins compatible for Editor in 5.83 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a1b1010b8fa42f84c834abbc4211a0fa): Total: 0.106 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
-Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV2Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV5Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV2.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4309 unused Assets / (4.9 MB). Loaded Objects now: 5229.
+Memory consumption went from 216.6 MB to 211.8 MB.
+Total: 9.341400 ms (FindLiveObjects: 0.495700 ms CreateObjectMapping: 0.470200 ms MarkObjects: 6.368400 ms  DeleteObjects: 2.006500 ms)
+
+Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70.unity'
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 LightingSettings: switching bake backend from 2 to 1.
-Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
-	Deserialize:            17.944 ms
-	Integration:            2198.860 ms
-	Integration of assets:  0.360 ms
-	Thread Wait Time:       0.055 ms
-	Total Operation Time:   2217.219 ms
-Unloading 54 unused Assets / (6.3 KB). Loaded Objects now: 5563.
-Memory consumption went from 375.4 MB to 375.4 MB.
-Total: 5.740000 ms (FindLiveObjects: 0.325000 ms CreateObjectMapping: 0.186300 ms MarkObjects: 5.162400 ms  DeleteObjects: 0.065500 ms)
+Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70.unity'
+	Deserialize:            7.362 ms
+	Integration:            1202.793 ms
+	Integration of assets:  0.357 ms
+	Thread Wait Time:       0.035 ms
+	Total Operation Time:   1210.547 ms
+Unloading 4 unused Assets / (5.3 KB). Loaded Objects now: 5582.
+Memory consumption went from 385.9 MB to 385.9 MB.
+Total: 5.905100 ms (FindLiveObjects: 0.343800 ms CreateObjectMapping: 0.217300 ms MarkObjects: 5.287100 ms  DeleteObjects: 0.056400 ms)
 
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0032701 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.00146 seconds
-Refreshing native plugins compatible for Editor in 5.72 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=fd05c1cb76dfe6d49805edb32e07601e): Total: 0.089 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70.unity using Guid(eb0b1c19550a28343b22f7312e1dde63) (DefaultImporter) -> (artifact id: 'd9bfe05057a37685152b5b1112a0ffb3') in 0.001174 seconds
-Refreshing native plugins compatible for Editor in 6.16 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=36e92a791bf1bcf479172bc461a6c4d7): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Unity is not designed to run with Administrator privileges.
-
-With elevated access, scripts in your project can modify system files, registry settings, or protected areas, even accidentally.
-This could make your system unstable or unbootable.
-
-Restart as a standard user for the safest experience.
-[Project] Loading completed in 45.059 seconds
-	Project init time: 				31.252 seconds
-		Template init time: 		0.000 seconds
-		Package Manager init time: 		1.013 seconds
-		Asset Database init time: 		3.639 seconds
-		Global illumination init time: 	0.019 seconds
-		Assemblies load time: 			1.624 seconds
-		Unity extensions init time: 	0.005 seconds
-		Asset Database refresh time: 	20.630 seconds
-	Scene opening time: 			11.312 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792312717710,"processId":28268,"projectLoad":45.0585946,"projectInit":31.2517668,"templateInit":0.0,"packageManagerInit":1.0129626,"assetDatabaseInit":3.6392225,"globalIlluminationInit":0.019127,"assembliesLoad":1.6236887,"unityExtensionsInit":0.0053776,"assetDatabaseRefresh":20.6295672,"sceneOpening":11.3115607}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792312717712,"processId":28268,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
-[Licensing::Client] Successfully resolved entitlement details
-Start Indexing on Editor startup
-[Indexing] Starting Initial Indexing for Assets
-[UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.016s, timestamps: [45.071 - 45.088]
-VALORIA_GI_UNWRAP_START Bastion_Ensemble_Candidate triangles=142782
+VALORIA_REFERENCE_CLEAN_TERRAIN_DIAGNOSTIC_COMPLETE
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble:PrepareUV (UnityEngine.Mesh,UnityEngine.Material[],string) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:71)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble/<Build>d__10:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:41)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
-
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs Line: 71)
-
-Launched and connected uv unwrapper C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Tools/UnwrapCL.exe after 0.02 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_Ensemble_Candidate_GI.asset using Guid(1ec605cce028d264e963c0dad36c13e8) (NativeFormatImporter) -> (artifact id: 'b870b71f4e535f754d10fd0d25f4dae2') in 0.0618267 seconds
-Refreshing native plugins compatible for Editor in 6.49 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=af661ec803c894549a29422183a75a44): Total: 0.170 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_000.mat using Guid(86cbd89acf1e96b43833c08e17cc1f94) (NativeFormatImporter) -> (artifact id: '6d958fc74fbd8b466dcfb919570d5783') in 0.0018241 seconds
-Refreshing native plugins compatible for Editor in 6.19 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=cfe4101fc37e5014cbe1fba42e657a80): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-VALORIA_GI_UNWRAP_START Bastion_Ensemble_Grounding triangles=15264
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble:PrepareUV (UnityEngine.Mesh,UnityEngine.Material[],string) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:71)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble/<Build>d__10:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:41)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
-
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs Line: 71)
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_Ensemble_Grounding_GI.asset using Guid(79a992a87fb79ca4e9080c0e17e34e6e) (NativeFormatImporter) -> (artifact id: '915a534156df54fc715798a2d6e68a38') in 0.0051534 seconds
-Refreshing native plugins compatible for Editor in 6.17 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=4e342033ddd22f14b846e1039b3e6850): Total: 0.077 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_001.mat using Guid(9ae0e03391645aa4a9a7084a2a6fdf12) (NativeFormatImporter) -> (artifact id: 'facace76349caa8daca5f35b8003c59c') in 0.0019585 seconds
-Refreshing native plugins compatible for Editor in 14.34 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=47b845ddca940db46932069138cd6aa2): Total: 0.091 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_002.mat using Guid(377f34f2d169cc14389a36842a719163) (NativeFormatImporter) -> (artifact id: '1b55b231935c4beec3f0843f6f06ef78') in 0.0017121 seconds
-Refreshing native plugins compatible for Editor in 6.03 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=55eadc41f07ed844ab58a518e8eb698b): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_003.mat using Guid(f075a409ec0b6d7409e8c9d3d0e48e1f) (NativeFormatImporter) -> (artifact id: 'b3d58a91fb345420d1547469c925a0ed') in 0.0020409 seconds
-Refreshing native plugins compatible for Editor in 6.06 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=993fe77b3d56a0e41b438053f1a40f8d): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_004.mat using Guid(43677092d3ae5d04fbd3f1d1cf70d864) (NativeFormatImporter) -> (artifact id: '40c6c530558f7b3d3d452122ad7d991d') in 0.0018334 seconds
-Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=b71f4adbb910199418a1b9b67ec281cd): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_005.mat using Guid(6833f596613dbb54f9d946374a955a94) (NativeFormatImporter) -> (artifact id: '0a0b77d5f38c7eb66c80e94009e0399b') in 0.0017051 seconds
-Refreshing native plugins compatible for Editor in 6.06 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=37b4ceaafa5dbaa40b862ad716795d99): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_006.mat using Guid(37a6b9abca286bb41a581cc4d199be24) (NativeFormatImporter) -> (artifact id: '55972edf52fdf2103805a068437363c0') in 0.0016623 seconds
-Refreshing native plugins compatible for Editor in 10.74 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=d4755faeadf774144921bd9ead41acbe): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_007.mat using Guid(298bdb0fb303554449ffcc2df3e8b691) (NativeFormatImporter) -> (artifact id: 'c3099d5dbd3e14e130fa7f052cbe8f62') in 0.0016794 seconds
-Refreshing native plugins compatible for Editor in 6.02 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=5bcdc89572db77c4ba2d0b6e3c9b39de): Total: 0.049 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_008.mat using Guid(6fdd0cb6ad4175045b1b1037688077ef) (NativeFormatImporter) -> (artifact id: 'fab815e95acba4e49a5d90f32fc7653e') in 0.001829 seconds
-Refreshing native plugins compatible for Editor in 6.05 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=9cd313cc8674955499e836505f38b6bb): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_009.mat using Guid(464726be23ca2ca4cb49e304c9aa386a) (NativeFormatImporter) -> (artifact id: 'cde39eca07f85cf901f7830ea0cbdb23') in 0.0015202 seconds
-Refreshing native plugins compatible for Editor in 6.07 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=115f0a059b4da9043b31f725afc6c97f): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Foundation_shrubs_and_groundcover_outside_ensemble.asset using Guid(1c42872c63acc1343aab1bd0b59392d0) (NativeFormatImporter) -> (artifact id: '47ac8e501d217d2a4554eabb1a2d2112') in 0.006888 seconds
-Refreshing native plugins compatible for Editor in 6.08 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a798d2a362b400949ad9240d2fa9dd66): Total: 0.080 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-BASTION_OLD_FOUNDATION_REMOVED Foundation_shrubs_and_groundcover triangles=9840
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble:RemoveOldFoundationInZone () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:27)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble/<Build>d__10:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:42)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
-
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs Line: 27)
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Shrub_group_outside_ensemble.asset using Guid(9c237e7583e4fd84d82cb4e577d98a4c) (NativeFormatImporter) -> (artifact id: 'f9ca3302bf4b84dd4c22a969181a17aa') in 0.0094991 seconds
-Refreshing native plugins compatible for Editor in 5.99 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=e9c17fdb2b9e4b34bb7324cc103826c8): Total: 0.059 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-BASTION_OLD_FOUNDATION_REMOVED Shrub_group triangles=1800
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble:RemoveOldFoundationInZone () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:27)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble/<Build>d__10:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:42)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
-
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs Line: 27)
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/EnsembleTerrain.asset using Guid(3cec01bc13dc4df4eab1bc8b062b202e) (NativeFormatImporter) -> (artifact id: '8e657733c221cc32a664a88fe09e9828') in 0.0016106 seconds
-Refreshing native plugins compatible for Editor in 6.00 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=f802cc7029fcf6d4f90f47c50575f3d2): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/EnsembleMeadow.terrainlayer using Guid(2d429022fcac9f841b4c67c2045a9f06) (NativeFormatImporter) -> (artifact id: '0c0a5d2fe9d811137e672420a253868d') in 0.0021855 seconds
-Refreshing native plugins compatible for Editor in 6.06 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=67eeff64a2cd10549a21743ec9841a7d): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-LightingSettings: switching bake backend from 2 to 1.
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion70Lighting.lighting using Guid(477645a47d13a0e4f95ea078073d2520) (NativeFormatImporter) -> (artifact id: '091dfdb30163038b9daf77c47d12cf6d') in 0.0018152 seconds
-Refreshing native plugins compatible for Editor in 6.03 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=4305f9d3352d0a543bae4095e71afd17): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_000.mat using Guid(006f8bbf60c7428419fc4aa483af6919) (NativeFormatImporter) -> (artifact id: '541c8b880ada762449b31a8118349d0d') in 0.0018709 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_014.mat using Guid(30cf172b0e6c930488ecdd0d333cbc14) (NativeFormatImporter) -> (artifact id: '4cfdb9edd612c6c6dd194d66ddd71d07') in 0.0014037 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_011.mat using Guid(70c4a381d7c6ec649a299c05b2c7419e) (NativeFormatImporter) -> (artifact id: '3d5fb038e04af8aaee78bc94a36f69c6') in 0.0012225 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_003.mat using Guid(f075a409ec0b6d7409e8c9d3d0e48e1f) (NativeFormatImporter) -> (artifact id: '068cb66ec3ec761a960a10d9d19e0d13') in 0.0013065 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_009.mat using Guid(1382e5a3b7de27d4785811f6f3f3399e) (NativeFormatImporter) -> (artifact id: '1b07d6e36d2a71f6994556f5838f4e7e') in 0.0013089 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_004.mat using Guid(43677092d3ae5d04fbd3f1d1cf70d864) (NativeFormatImporter) -> (artifact id: 'a3b7ff0f78c6d975c52b67d4e65ca5ca') in 0.0012576 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_013.mat using Guid(8361009313c767f43b43f7efb6520896) (NativeFormatImporter) -> (artifact id: '65e43aca9dccfce971ab9942248b0011') in 0.0013481 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_026.mat using Guid(93d5684611f84b34693282ec9c3c3649) (NativeFormatImporter) -> (artifact id: 'a1edeef4f118dabbe8ffcabcab515311') in 0.001216 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_024.mat using Guid(c379d296ae4ab9140880c8ea07a9397c) (NativeFormatImporter) -> (artifact id: 'ef94afbb8b149f7bfd13e687c8f34bfd') in 0.0013282 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_017.mat using Guid(e437dbb0663547f47a8964b61abe095c) (NativeFormatImporter) -> (artifact id: '24735d8a00a9e23978ecb88cf4156e93') in 0.0012576 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_012.mat using Guid(256dd254f6e3692448dd7a58a1b32e77) (NativeFormatImporter) -> (artifact id: '5d51986b6d2a20cd57523d42b77f6fbe') in 0.0012265 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_022.mat using Guid(2693df1af89f87f41a0cf716eca67560) (NativeFormatImporter) -> (artifact id: 'fe3b971068d1c954375d68b7180a40c7') in 0.0012169 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_009.mat using Guid(464726be23ca2ca4cb49e304c9aa386a) (NativeFormatImporter) -> (artifact id: '3165a4b3dcbec7901698f404ab5b93e4') in 0.0011752 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_000.mat using Guid(86cbd89acf1e96b43833c08e17cc1f94) (NativeFormatImporter) -> (artifact id: '1440e850863000a8132d3808f6c25432') in 0.001109 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_006.mat using Guid(37a6b9abca286bb41a581cc4d199be24) (NativeFormatImporter) -> (artifact id: '89f0edf6cfe77a64ca6392899ee65302') in 0.0011511 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_002.mat using Guid(377f34f2d169cc14389a36842a719163) (NativeFormatImporter) -> (artifact id: 'd8060ead33f192a9d9af8cfad7f3ec3a') in 0.0010528 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_015.mat using Guid(0869ac73b14662b4987d116d89e72faa) (NativeFormatImporter) -> (artifact id: '0840ee2039a729a907114e7348a191df') in 0.0011986 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_005.mat using Guid(6833f596613dbb54f9d946374a955a94) (NativeFormatImporter) -> (artifact id: '7b58018e17368494d5fb98a6b3d481d5') in 0.0010704 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_027.mat using Guid(88534aa40269c764e93c76550a4d28a2) (NativeFormatImporter) -> (artifact id: '668ca1ceaa9787a58758c8b6849d6bf3') in 0.0010839 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_018.mat using Guid(b8285f970d681a9439384abd21253d41) (NativeFormatImporter) -> (artifact id: 'a849f346fb82eb26e8b961b67535af66') in 0.0011205 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_007.mat using Guid(298bdb0fb303554449ffcc2df3e8b691) (NativeFormatImporter) -> (artifact id: '7ce0857c6e746dd597d0bc78f03d85f3') in 0.001057 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_021.mat using Guid(694184b12ac062c498566a6101ba2a4f) (NativeFormatImporter) -> (artifact id: 'ba447f4933ab2e521fcb74ede2a63bf6') in 0.0011018 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_010.mat using Guid(7903e4242252f314eaf3762768b132f1) (NativeFormatImporter) -> (artifact id: '2bfa59a0a76405fbdb82a73f330196ca') in 0.0011672 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_025.mat using Guid(8a67f6974d2e868459073af526cbc89d) (NativeFormatImporter) -> (artifact id: 'fb5989440f5bc61ad7f53631008781c5') in 0.0011234 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_001.mat using Guid(9ae0e03391645aa4a9a7084a2a6fdf12) (NativeFormatImporter) -> (artifact id: 'ecce0a35195a6d088f6d58792af66827') in 0.0011178 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_016.mat using Guid(3b0cb407bfe423845af3ab7e112a34ad) (NativeFormatImporter) -> (artifact id: '77ed8dd9b91f7aed81c166dc56713d29') in 0.001144 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/NativeGI_Material_023.mat using Guid(eb1dec98fb71fb4448738f24d7623f35) (NativeFormatImporter) -> (artifact id: 'cceecd97f788104095be2cdac54cdc26') in 0.0011508 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/NativeGI_Material_008.mat using Guid(6fdd0cb6ad4175045b1b1037688077ef) (NativeFormatImporter) -> (artifact id: '54e3e719c21c666cc029efa1962034b2') in 0.0012896 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/EnsembleTerrain.asset using Guid(3cec01bc13dc4df4eab1bc8b062b202e) (NativeFormatImporter) -> (artifact id: '454fb06197afe4230369f1debdc327bb') in 0.0037721 seconds
-Refreshing native plugins compatible for Editor in 6.12 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a6675b4729824774e91289ca57d76a5d): Total: 0.494 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=29 (actual=29, local cache=0, cache server=0)
-		Asset DB Process Time: managed=1 ms, native=475 ms
-		Asset DB Callback time: managed=9 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1196, non-scripts=5693
-		Asset File Changes: new=0, changed=11, moved=0, deleted=0
-		Scan Filter Count: 36
-	InvokeCustomDependenciesCallbacks: 0.000ms
-	InvokePackagesCallback: 0.000ms
-	ApplyChangesToAssetFolders: 0.063ms
-	Scan: 7.000ms
-	OnSourceAssetsModified: 0.093ms
-	CategorizeAssetsWithTransientArtifact: 0.027ms
-	ProcessAssetsWithTransientArtifactChanges: 0.041ms
-	CategorizeAssets: 21.646ms
-	ImportOutOfDateAssets: 130.008ms (-0.693ms without children)
-		ImportManagerImport: 123.180ms (9.646ms without children)
-			ImportInProcess: 113.406ms
-			UpdateCategorizedAssets: 0.128ms
-		ReloadNativeAssets: 0.167ms
-		UnloadImportedAssets: 4.852ms
-		ReloadImportedAssets: 1.181ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.842ms
-		InitializingProgressBar: 0.005ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.002ms
-		OnDemandSchedulerStart: 0.472ms
-	PostProcessAllAssets: 11.171ms
-	Hotreload: 6.624ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.318ms
-	UnloadStreamsBegin: 0.002ms
-	PersistCurrentRevisions: 0.321ms
-	UnloadStreamsEnd: 0.196ms
-	Untracked: 316.981ms
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70.unity using Guid(eb0b1c19550a28343b22f7312e1dde63) (DefaultImporter) -> (artifact id: '5f691f73afceee02c9506acb9c74d878') in 0.0011067 seconds
-Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=db7ae4c3d79274e4f91e9133715daa52): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-BASTION_ENSEMBLE_CPU_BAKE_START
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble/<Build>d__10:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:45)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble:DiagnoseGround () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:45)
 
 (Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs Line: 45)
 
-DisplayProgressbar: Baking Adaptive Probe Volumes
-[00:00:41] Precompute started.
-[BakePipeline::Driver] Extracted OOTS snapshot with 17 instances, 16 geometries, 16 meshes, 38 materials, 9 lights, 0 cookies in 97.98ms.
-[BakePipeline::Driver] Transformed OOTS snapshot into LightBaker scene input (0000015F44495AB0) in 593.02ms. Size: 247.57MB.
-[00:00:45] Builtin Sky manager started.
-TrimDiskCacheJob: Current cache size 591mb
-[BakePipeline::PreprocessStage] Background thread started.
-[00:00:45] Finished 1 Layout Systems job (0.15s execute, 0.00s integrate, 3.82s wallclock)
-[00:00:45] Finished 1 Tetrahedralize Probes job (0.00s execute, 0.00s integrate, 0.01s wallclock)
-[00:00:45] Precompute took 3.831187 seconds.
-Enlighten scene contents:   0 geometries.   0 instances.   0 systems.   0 probe groups.   0 cube maps. Scene is up-to-date.
-[00:00:45] Finished 1 Bake Ambient Probe job (0.00s execute, 0.00s integrate, 0.01s wallclock)
-[PathTracer] Finished packing lightmaps in 0.506544 seconds.
-[BakePipeline::BakeStage] Background thread started. Calling LightBaker.
-[PathTracer] Loaded OpenRL shaders in 0.830 secs -> Timestamps: [87.267 - 88.097].
-Progress timing - render light probes	7054.09	6758400	21805948078
-[BakePipeline::BakeStage] LightBaker bake took 144193.87ms and succeeded.
-[BakePipeline::PostProcessStage] Started.
-[BakePipeline::PostProcessStage] wrote post processed L2 SH coefficients for 264 light probe positions to Temp/PostProcessingOutput/probeRequest0/irradiance.shl2.
-[BakePipeline::PostProcessStage] wrote occlusion values for 264 light probe positions to Temp/PostProcessingOutput/probeRequest0/occlusion.occ.
-[BakePipeline::Run] Completed succesfully.
-[00:03:26] Reflection Probes started.
-Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
-Starting cubemap convolution for '' (size 128)
-...took 0.053 seconds
-Starting cubemap convolution for '' (size 128)
-...took 0.050 seconds
-Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
-[00:03:27] Finished 4 Reflection System jobs (0.60s execute, 0.00s integrate, 0.95s wallclock)
-[00:03:27] LightingDataAsset started.
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70 using Guid(5ce861e3f165c804ea21a4989a26bb4c) (DefaultImporter) -> (artifact id: 'd94126aba5232a8bbeddec6f8864f638') in 0.0087118 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-2_comp_dir.png using Guid(01bbd0bfc34a7bb47b9413e01b121ef3) [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Client] Successfully resolved entitlement details
-(TextureImporter) -> (artifact id: 'bebb2abd28f72ebaa1447ff6f361b2bf') in 0.0489954 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-1_comp_dir.png using Guid(738d86123bb609f4094f79b6701b0ee9) (TextureImporter) -> (artifact id: '21c904683ff1088aeaf1393da7ed6a24') in 0.0098213 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-4_comp_light.exr using Guid(7492d3c8a39cb644d952aac47083ebb6) (TextureImporter) -> (artifact id: '984adbd207a341f31f9cea02d892806c') in 0.0119624 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-1_comp_light.exr using Guid(943e9e5ecca3d2f41a002724d1e3f9b9) (TextureImporter) -> (artifact id: '759a4fa8bbe622fa24f02a5c68b44a43') in 0.0110593 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-4_comp_dir.png using Guid(d5c01d7fc88ee8a4da6b49b4420e528c) (TextureImporter) -> (artifact id: '8e8784d2af532166a114e6e3f01b0ccc') in 0.0089903 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-3_comp_light.exr using Guid(6abeda7316b5f8c428c130bce201a74e) (TextureImporter) -> (artifact id: '201c5390269954c5943bf6f4dc15c06c') in 0.0099701 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-0_comp_dir.png using Guid(ba7ea21308f6e2a4894d76a0a1d621c1) (TextureImporter) -> (artifact id: '0f8c606fefb491260e49f2b35bae41b4') in 0.0092542 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-0_comp_light.exr using Guid(5eec3e27fb3121845be2013c6ca6cd32) (TextureImporter) -> (artifact id: '40b0aa331049b0b6a7092deea71c8635') in 0.0104469 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-3_comp_dir.png using Guid(beb781b8c438fe945b0d620ebf17e362) (TextureImporter) -> (artifact id: 'd6762cfcdd3e2bb153127886d02016fe') in 0.0090451 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-2_comp_light.exr using Guid(efa12b53d0eb75c4d9bfc38b40f38990) (TextureImporter) -> (artifact id: '55aa7ea561291a1df5e7d78d154b1832') in 0.0114131 seconds
-Refreshing native plugins compatible for Editor in 42.33 ms, found 4 plugins.
+Killing ADB server in 2,059917 seconds.
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.003733 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0015732 seconds
+Refreshing native plugins compatible for Editor in 6.08 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=575f804d78b4b0e4692b0c4a6ec9c6ca): Total: 0.292 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-2_comp_dir.png using Guid(01bbd0bfc34a7bb47b9413e01b121ef3) (TextureImporter) -> (artifact id: '49107ad1b9afe6363efcd566b131533a') in 0.0225964 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-1_comp_dir.png using Guid(738d86123bb609f4094f79b6701b0ee9) (TextureImporter) -> (artifact id: '4256decf0953212b85a81f776f138c36') in 0.4031099 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-4_comp_light.exr using Guid(7492d3c8a39cb644d952aac47083ebb6) (TextureImporter) -> (artifact id: '336eb1872f49e81f2a8e121912831376') in 1.2097608 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-1_comp_light.exr using Guid(943e9e5ecca3d2f41a002724d1e3f9b9) (TextureImporter) -> (artifact id: '470e1d53423acfed3d3df258984ecc1f') in 1.1467272 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-4_comp_dir.png using Guid(d5c01d7fc88ee8a4da6b49b4420e528c) (TextureImporter) -> (artifact id: '3c5276da5e352f1da9204787785e01d1') in 0.0173971 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-3_comp_light.exr using Guid(6abeda7316b5f8c428c130bce201a74e) (TextureImporter) -> (artifact id: '1237ebb4c634dcc7b3d297d08a639791') in 0.0722046 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-0_comp_dir.png using Guid(ba7ea21308f6e2a4894d76a0a1d621c1) (TextureImporter) -> (artifact id: 'b50e2d340456e92d2b4fc3983acfa111') in 0.4821356 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-0_comp_light.exr using Guid(5eec3e27fb3121845be2013c6ca6cd32) (TextureImporter) -> (artifact id: 'e2b41e97a7be013c714a1554a8cf1042') in 1.1761901 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-3_comp_dir.png using Guid(beb781b8c438fe945b0d620ebf17e362) (TextureImporter) -> (artifact id: '6832bc0bc93386d0c67e7f876c7083b1') in 0.0191448 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/Lightmap-2_comp_light.exr using Guid(efa12b53d0eb75c4d9bfc38b40f38990) (TextureImporter) -> (artifact id: 'a70309a4d5525f00238b27867b33ff71') in 0.0721704 seconds
-Refreshing native plugins compatible for Editor in 6.09 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=29b766bb2f458fa4eb9f0a3603728504): Total: 5.331 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=10 (actual=10, local cache=0, cache server=0)
-		Asset DB Process Time: managed=1 ms, native=5320 ms
-		Asset DB Callback time: managed=1 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1197, non-scripts=5703
-		Asset File Changes: new=0, changed=20, moved=0, deleted=0
-		Scan Filter Count: 17
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 0.001ms
-	ApplyChangesToAssetFolders: 0.078ms
-	Scan: 57.963ms
-	OnSourceAssetsModified: 0.117ms
-	CategorizeAssetsWithTransientArtifact: 0.029ms
-	ProcessAssetsWithTransientArtifactChanges: 0.087ms
-	CategorizeAssets: 43.679ms
-	ImportOutOfDateAssets: 5208.231ms (-15.420ms without children)
-		ImportManagerImport: 5206.167ms (16.681ms without children)
-			ImportInProcess: 5189.415ms
-			UpdateCategorizedAssets: 0.070ms
-		ReloadNativeAssets: 0.180ms
-		UnloadImportedAssets: 0.246ms
-		ReloadImportedAssets: 15.897ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.730ms
-		InitializingProgressBar: 0.005ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.002ms
-		OnDemandSchedulerStart: 0.423ms
-	PostProcessAllAssets: 3.244ms
-	Hotreload: 6.763ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.314ms
-	UnloadStreamsBegin: 0.117ms
-	PersistCurrentRevisions: 0.324ms
-	UnloadStreamsEnd: 0.000ms
-	Untracked: 10.548ms
-
-Asset Pipeline Refresh (id=fe8259d334f777f4ea36484d14d7c68e): Total: 0.001 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-3.exr using Guid(85854708f5a29e7448758c6c6b62df2d) (TextureImporter) -> (artifact id: '448767a8fd55f04bbd41cfbefe61d0f5') in 0.0116994 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-0.exr using Guid(1c2014002a839904cbadccbdf1f1ec75) (TextureImporter) -> (artifact id: 'b7a1869ab7443682bf0724a403b282bf') in 0.0112331 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-4.exr using Guid(0de2640658d5641468508fcb18f6564f) (TextureImporter) -> (artifact id: 'ce59381d3db51f16f99009dd13bbf063') in 0.0112016 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-2.exr using Guid(7eec3842252b15144b044514609f7dd0) (TextureImporter) -> (artifact id: 'f5304b00ade73f8a95f4e5b6c4e23cbf') in 0.0108668 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-1.exr using Guid(ee6c58ca58fe75e459d4052deffb6787) (TextureImporter) -> (artifact id: '5dbaa2de189076e93e3b82e55dcf523f') in 0.010571 seconds
-Refreshing native plugins compatible for Editor in 5.97 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=6424dd458946f64499350ed912f3134f): Total: 0.112 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-3.exr using Guid(85854708f5a29e7448758c6c6b62df2d) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.050 seconds
- -> (artifact id: '95290e2e3fd2e5833f67797c9e9707bb') in 0.1337246 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-0.exr using Guid(1c2014002a839904cbadccbdf1f1ec75) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.055 seconds
- -> (artifact id: 'e546545c3831919ac9200c55ae00d2b8') in 0.1326559 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-4.exr using Guid(0de2640658d5641468508fcb18f6564f) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '22aaaf246110cfc8bea98be0d8718812') in 0.1292241 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-2.exr using Guid(7eec3842252b15144b044514609f7dd0) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.071 seconds
- -> (artifact id: 'f0e5124694aba5b8d4229fb8dd70768f') in 0.1605895 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/ReflectionProbe-1.exr using Guid(ee6c58ca58fe75e459d4052deffb6787) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '61e9c5f3dafe0c35a589abf8d3f84744') in 0.1238429 seconds
-Refreshing native plugins compatible for Editor in 6.04 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=8017fd78cb1beca49aded4e66d95f2b2): Total: 0.968 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=5 (actual=5, local cache=0, cache server=0)
-		Asset DB Process Time: managed=1 ms, native=957 ms
-		Asset DB Callback time: managed=1 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1197, non-scripts=5708
-		Asset File Changes: new=0, changed=10, moved=0, deleted=0
-		Scan Filter Count: 12
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 0.000ms
-	ApplyChangesToAssetFolders: 0.079ms
-	Scan: 24.863ms
-	OnSourceAssetsModified: 0.081ms
-	CategorizeAssetsWithTransientArtifact: 0.020ms
-	ProcessAssetsWithTransientArtifactChanges: 0.087ms
-	CategorizeAssets: 43.647ms
-	ImportOutOfDateAssets: 881.324ms (-5.862ms without children)
-		ImportManagerImport: 879.293ms (7.020ms without children)
-			ImportInProcess: 872.237ms
-			UpdateCategorizedAssets: 0.036ms
-		ReloadNativeAssets: 0.181ms
-		UnloadImportedAssets: 0.222ms
-		ReloadImportedAssets: 6.342ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.712ms
-		InitializingProgressBar: 0.005ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.429ms
-	PostProcessAllAssets: 2.689ms
-	Hotreload: 6.540ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.296ms
-	UnloadStreamsBegin: 0.059ms
-	PersistCurrentRevisions: 0.278ms
-	UnloadStreamsEnd: 0.000ms
-	Untracked: 8.131ms
-
-> Collecting Enlighten data
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70/LightingData.asset using Guid(456859be9bed29f4cba823b6870a8419) (NativeFormatImporter) -> (artifact id: 'a9427884e7eecf6fe3c233eb81c87503') in 0.006644 seconds
-Refreshing native plugins compatible for Editor in 5.92 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=8377afadcbdd7b24ab697adf5a61bc1e): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr using Guid(3a5179fc35ef1e34d845266709126cde) (TextureImporter) -> (artifact id: '86cdf95ecc02373dda791bd03f179f6d') in 0.0121039 seconds
-Refreshing native plugins compatible for Editor in 5.97 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=3fe2f11a85d99d84b80be9c2901ac5ca): Total: 0.060 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr using Guid(3a5179fc35ef1e34d845266709126cde) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: 'decf7492b16c5f58f64bf8732b9f321b') in 0.1337091 seconds
-Refreshing native plugins compatible for Editor in 6.79 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=54333922baabcf74ba725c42a79b674b): Total: 0.226 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr using Guid(3a5179fc35ef1e34d845266709126cde) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: 'decf7492b16c5f58f64bf8732b9f321b') in 0.1271723 seconds
-Refreshing native plugins compatible for Editor in 5.94 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=69542729942ee2244910db71b553ef31): Total: 0.149 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr using Guid(c2b3a37257c90794e8df9ed62a6e618b) (TextureImporter) -> (artifact id: '90bd466513e053cc008919463c837e3e') in 0.0114053 seconds
-Refreshing native plugins compatible for Editor in 5.94 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=98ba057bdc51b48449713b8251857d80): Total: 0.058 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr using Guid(c2b3a37257c90794e8df9ed62a6e618b) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '44f528b1559fa43f88a4b564d8878dea') in 0.1329788 seconds
-Refreshing native plugins compatible for Editor in 6.32 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=df45fa90123975341b70c23102656659): Total: 0.215 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr using Guid(c2b3a37257c90794e8df9ed62a6e618b) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.051 seconds
- -> (artifact id: '44f528b1559fa43f88a4b564d8878dea') in 0.1271904 seconds
-Refreshing native plugins compatible for Editor in 5.90 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=d169e984d44d4154e82b680e69c78a0b): Total: 0.149 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr using Guid(c31110acfe296c049a4037c8b9db56f7) (TextureImporter) -> (artifact id: 'c6ac03cf3711d11fb2e6020a3de06f45') in 0.0113658 seconds
-Refreshing native plugins compatible for Editor in 5.95 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=cf0c761b7e092064eaacf05f5bd01d2b): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr using Guid(c31110acfe296c049a4037c8b9db56f7) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '58a37baab3814fefed84b86fbac8d12e') in 0.1351804 seconds
-Refreshing native plugins compatible for Editor in 7.89 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=0e520376045d0ea42939b03b7ef4c1de): Total: 0.227 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr using Guid(c31110acfe296c049a4037c8b9db56f7) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '58a37baab3814fefed84b86fbac8d12e') in 0.1281932 seconds
-Refreshing native plugins compatible for Editor in 5.92 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ae859b72f24abe24e9e83329ed0259f9): Total: 0.150 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr using Guid(401bbbe4ba9f07d42b0b7c4e8c5c603e) (TextureImporter) -> (artifact id: '53fd19477523cdcbf1230a93c5f89086') in 0.0117656 seconds
-Refreshing native plugins compatible for Editor in 5.93 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=724f64d616ee16a4e9e16a4df5ca40be): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr using Guid(401bbbe4ba9f07d42b0b7c4e8c5c603e) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '31e12f86b51b4265b0106dc9b80c8318') in 0.1304471 seconds
-Refreshing native plugins compatible for Editor in 5.90 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=f5c2dc2be0e136640afbf6ef97144ce6): Total: 0.212 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr using Guid(401bbbe4ba9f07d42b0b7c4e8c5c603e) (TextureImporter)Starting cubemap convolution for '' (size 128)
-...took 0.052 seconds
- -> (artifact id: '31e12f86b51b4265b0106dc9b80c8318') in 0.1287627 seconds
-Refreshing native plugins compatible for Editor in 5.94 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=5a4bd6cfb3db51d40bc774c5e7169cab): Total: 0.151 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Valoria_Bastion70.unity using Guid(eb0b1c19550a28343b22f7312e1dde63) (DefaultImporter) -> (artifact id: 'c5ea64c24984013644f536b5a5483b81') in 0.0010625 seconds
-Refreshing native plugins compatible for Editor in 6.06 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=38f16f17338b82c409451f8996be61b6): Total: 0.048 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-VALORIA_REFERENCE_CLEAN_BASTION_ENSEMBLE_COMPLETE
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble/<Build>d__10:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs:49)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
-
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs Line: 49)
-
-Killing ADB server in 2,0760853 seconds.
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0070202 seconds
-Refreshing native plugins compatible for Editor in 6.10 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a053cf23a7fc39a4a8cd480d1664bdcf): Total: 0.081 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=e35d4913b09cfcf4493c5ca538930bf5): Total: 0.085 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -1358,4 +473,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792312936105,"processId":28268,"allocatedMemory":21658705,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67837},{"Thread":4230344},{"Manager":822560},{"VertexData":2312},{"Geometry":816},{"Texture":4920},{"Shader":81701},{"Material":24},{"GfxDevice":57528},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":15649},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":27733},{"DynamicArray":112926},{"HashMap":79833},{"Utility":2660822},{"Curl":4238},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":8896},{"WebRequest":12659},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":1697616},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366122},{"AssetImporter":632},{"EditorGi":328},{"ProgressiveLightmapper":1920},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792313387634,"processId":39052,"allocatedMemory":20024717,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67651},{"Thread":4230544},{"Manager":821616},{"VertexData":1784},{"Geometry":816},{"Texture":160},{"Shader":81701},{"Material":24},{"GfxDevice":57168},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":3949},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":20718},{"DynamicArray":110526},{"HashMap":72725},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":8176},{"WebRequest":7751},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108456},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366122},{"EditorGi":328},{"UnityConnect":29208},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
