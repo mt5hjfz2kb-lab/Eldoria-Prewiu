@@ -1,7 +1,7 @@
 {
-    "source_sha": "de30f88f4e81a65cb061a738e921918339999bbf",
+    "source_sha": "a2496128949d7a2d77aaa059dc75db4eeb2116cd",
     "baseline_source": "2c3d6174fe78ea5cf4031a4611dfb228d60019ac",
-    "method": "Existing scene / Progressive CPU / baked indirect / Subtractive mixed sun / baked probes",
+    "method": "Existing scene / Progressive CPU / baked indirect / realtime mixed sun direct / native URP Lit GI / baked probes",
     "same_camera": true,
     "same_geometry": true,
     "no_static_batching": true,
@@ -15,7 +15,7 @@
     "lightprobes": 264,
     "reflection_probes": 4,
     "gi_meshes": 15,
-    "bake_seconds": 32.4918212890625,
+    "bake_seconds": 26.200786590576173,
     "lightmap_paths": [
         "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_light.exr"
     ],
