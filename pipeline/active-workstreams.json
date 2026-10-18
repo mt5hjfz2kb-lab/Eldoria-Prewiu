@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_ANDROID_COMPILED_PACKAGE_EXPORT_VERIFICATION",
-      "next": "Native55 succeeded; exact APK1212469313 bytes/hash recorded, physical device untested. Native56 run39084806457 verifies retained APK ARM64 ELF and exports existing native54/55 scene/prefabs with complete-file/hash checks. Prior native54 unitypackage claim corrected: file was absent. No art/layout/GI rebuild; binaries in Actions. Preserve current runner lease until native56 completes, then inspect package and continue visual improvement.",
+      "phase": "REFERENCE_CLEAN_ANDROID_PACKAGE_VERIFIED_LOCAL_GROUND_ART_REVIEW",
+      "next": "Native55 APK verified SHA/11 ARM64 ELF libraries in56; actual native56 package237942260bytes/429assets independently verified, artifact12120119210. Native57 memory-only terrain surface A/B around Bastion, original scene restored; review genuine before/after before retaining or extending. No art8/10 or physical device claim. Runner lease retained for ongoing single workstream.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39084806457,
-          "current_source": "fb3b28ac705c0fc3fe157a6aac61570fda98f16a",
+          "current_run": 39085265845,
+          "current_source": "e690974c8799187e613ed4e50b0a6f38ddbbab5b",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "2ec9a5f9c05e65fd1ad689549fd3250c39255fc5",
@@ -134,7 +134,7 @@
             "score_not_adopted": true
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "COMPILED_NATIVE55_ARM64_CONTENT_CHECK_PENDING",
+          "android_apk_status": "NATIVE55_EXACT_SHA_AND_ARM64_ELF_VERIFIED",
           "native48": {
             "run": 39080822196,
             "output": "88d600b2632154c0c03e04c4146cf5ee7690ad1c",
@@ -217,7 +217,7 @@
           "lightprobes": 264,
           "reflection_probes": 4,
           "portable_prefabs": 8,
-          "package_status": "NATIVE54_PACKAGE_ABSENT_CORRECTED_NATIVE56_EXPORTING",
+          "package_status": "NATIVE56_REAL_PACKAGE_CONTENT_VERIFIED_NATIVE_IMPORT_UNTESTED",
           "native55": {
             "run": 39083545579,
             "source": "b7173bdf751ecd5e9898cd4bf467ecbc558fe734",
@@ -228,6 +228,16 @@
             "errors": 0,
             "warnings": 23,
             "physical_device_tested": false
+          },
+          "native56": {
+            "run": 39084806457,
+            "output": "c81ce12933812e2dc363a12d97ee3e11e77e6c6f",
+            "package_artifact": 12120119210,
+            "package_bytes": 237942260,
+            "package_sha256": "73236db6809b1880c7ab76c7e107c069516039da2ec5169eb072bb7f4605acce",
+            "assets": 429,
+            "portable_prefabs": 8,
+            "native_import_verified": false
           }
         }
       },
