@@ -7,22 +7,23 @@ namespace Eldoria.UI.RoyalGold
     {
         public RectTransform Resources, Mission, Feedback;
         private float priorWidth = -1, priorHeight = -1, priorResourceWidth = -1;
+        private int priorScreenWidth = -1, priorScreenHeight = -1;
         private BuildingDetailsPanel building;
 
         private void LateUpdate()
         {
             var r = (RectTransform)transform;
             if (Mathf.Abs(r.rect.width - priorWidth) < .5f && Mathf.Abs(r.rect.height - priorHeight) < .5f &&
-                Resources && Mathf.Abs(Resources.rect.width - priorResourceWidth) < .5f) return;
+                Resources && Mathf.Abs(Resources.rect.width - priorResourceWidth) < .5f &&\n                priorScreenWidth == Screen.width && priorScreenHeight == Screen.height) return;
             Apply(r.rect.width);
         }
 
-        public void Apply(float width)
+        public void Apply(float width, bool offscreenCapture = false)
         {
             if (!Resources || !Mission || !Feedback || width < 1) return;
-            priorWidth = width; priorHeight = ((RectTransform)transform).rect.height;
+            priorWidth = width; priorHeight = ((RectTransform)transform).rect.height;\n            priorScreenWidth = Screen.width; priorScreenHeight = Screen.height;
             priorResourceWidth = Resources.rect.width;
-            bool wide = width >= 1080;
+            // Unity's offscreen 1600px capture must not use the 640px editor\n            // GameView to choose its layout. Runtime 640px must remain compact\n            // even when CanvasScaler reports 1200 logical reference units.\n            bool wide = width >= 1080 && (offscreenCapture || Screen.width >= 1080);
             float stripWidth = Resources.rect.width;
             if (wide)
             {
@@ -42,7 +43,7 @@ namespace Eldoria.UI.RoyalGold
             var mission = Mission.GetComponent<MissionPanel>();
             if (mission) mission.ApplyLayout(width);
             if (!building) building = GetComponentInChildren<BuildingDetailsPanel>(true);
-            if (building) building.ApplyLayout(width);
+            if (building) building.ApplyLayout(width, !wide);
         }
     }
 }

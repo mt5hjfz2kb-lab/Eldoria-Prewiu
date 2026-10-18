@@ -57,9 +57,9 @@ namespace Eldoria.UI.RoyalGold
             }
         }
 
-        public void ApplyLayout(float availableWidth)
+        public void ApplyLayout(float availableWidth, bool compact = false)
         {
-            IsBottomSheet = availableWidth < 1080;
+            IsBottomSheet = compact || availableWidth < 1080;
             panelWidth = IsBottomSheet ? Mathf.Max(260, availableWidth - 52) : 414;
             var r = (RectTransform)transform;
             r.anchorMin = r.anchorMax = r.pivot = IsBottomSheet ? new Vector2(.5f, 0) : new Vector2(1, 1);
