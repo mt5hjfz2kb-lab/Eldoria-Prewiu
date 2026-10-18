@@ -1,0 +1,19 @@
+{
+  "source_sha": "3e7b58e9304bdb3a931d7b9381223f1845e7c44a",
+  "contracts": "773f4f24c09445bf4fe9f16d6f8d98949ac5ae6f",
+  "timed_contract": true,
+  "native_unity": false,
+  "count": 10,
+  "checks": [
+    "completed chapter offers real advancement",
+    "advancement accepted by actual gateway",
+    "same upgrade command not repeated",
+    "new contract retains level until deadline",
+    "duration read from actual contract",
+    "upgrade locked while in progress",
+    "UI does not complete expired upgrade",
+    "UI read cannot advance newer contract",
+    "host completion updates new contract",
+    "Bastion III is not invented"
+  ]
+}

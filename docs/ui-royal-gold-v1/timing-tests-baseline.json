@@ -1,0 +1,15 @@
+{
+  "source_sha": "3e7b58e9304bdb3a931d7b9381223f1845e7c44a",
+  "contracts": "UI_BRANCH_BASELINE",
+  "timed_contract": false,
+  "native_unity": false,
+  "count": 6,
+  "checks": [
+    "completed chapter offers real advancement",
+    "advancement accepted by actual gateway",
+    "same upgrade command not repeated",
+    "old contract has no fabricated timing",
+    "old immediate upgrade still respected",
+    "Bastion III is not invented"
+  ]
+}

@@ -1,0 +1,6 @@
+PASS completed chapter offers real advancement
+PASS advancement accepted by actual gateway
+PASS same upgrade command not repeated
+PASS old contract has no fabricated timing
+PASS old immediate upgrade still respected
+PASS Bastion III is not invented

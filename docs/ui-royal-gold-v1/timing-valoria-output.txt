@@ -1,0 +1,10 @@
+PASS completed chapter offers real advancement
+PASS advancement accepted by actual gateway
+PASS same upgrade command not repeated
+PASS new contract retains level until deadline
+PASS duration read from actual contract
+PASS upgrade locked while in progress
+PASS UI does not complete expired upgrade
+PASS UI read cannot advance newer contract
+PASS host completion updates new contract
+PASS Bastion III is not invented

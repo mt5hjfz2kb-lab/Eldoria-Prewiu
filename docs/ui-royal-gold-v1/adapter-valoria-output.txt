@@ -1,0 +1,35 @@
+PASS wallet is actual snapshot
+PASS power uses authoritative rules
+PASS fixture clearly marked TEST
+PASS sawmill real offer
+PASS cost uses active rules
+PASS reading does not save or mutate revision
+PASS real gateway accepts valid construction
+PASS only gateway charges resources
+PASS duplicate offer rejected without extra command
+PASS own construction locked
+PASS elapsed deadline not fabricated completion
+PASS read does not advance simulation
+PASS external host advancement reflected
+PASS no invented sawmill upgrade
+PASS unknown target hidden
+PASS cleared selection hides panel
+PASS barracks requirement presented
+PASS barracks stays blocked below level two
+PASS insufficient resources disabled
+PASS production not marked TEST
+PASS stale view rejected without retry or charge
+PASS no unauthored Bastion III
+PASS real recruitment offer
+PASS recruit dispatched
+PASS recruitment pending is disabled
+PASS troops updated only after real gateway completion
+PASS real march configuration offered
+PASS real march confirmed
+PASS English building label
+PASS English cost text
+PASS no invented timer
+PASS expired English timer
+PASS Spanish and English numeric formatting
+PASS null offer guarded
+ROYAL_ADAPTER_TESTS_PASS 34
