@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T13:38:18.242Z",
+  "updated_at": "2026-10-18T13:45:44.995Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -30,6 +30,12 @@
         "budget_eur": 0,
         "windows_lease_transfer": false,
         "canonical_integration_authorized": false
+      },
+      {
+        "date": "2026-10-18",
+        "workstream": "valoria-master-plan-layered-construction-20261016",
+        "authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
+        "scope": "Current Valoria integrated browser playtest with private Sites hosting; zero paid assets and paused branches retained."
       }
     ]
   },
@@ -71,8 +77,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "CITY_WORLD_ROYAL_UI_NATIVE100_CORRECTING_POINTER_AND_TEXTURE_PERSISTENCE",
-      "next": "Observe native100 39132392803 source9893da1eb1a36ae2950ef75e6c56d539f83100ed; inspect native event-system and full I-II tests/captures, repair before promotion. Native99 genuine city/world frames and navigation-state PASS, pointer FAIL. Original city/Android97 retained.",
+      "phase": "INTEGRATED_I_II_PASS_CITY_VISUAL_UPLIFT_AND_OWNER_IPHONE_WEB_PLAYTEST",
+      "next": "Native101 PASS. Compare existing completed sawmill model; build current integrated scene for Safari playtest. Visual city quality remains primary; no old production or paused branch replacement.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -522,19 +528,22 @@
           "validated_scene_commit": "36e00ff4dc7f07f7f3ee7442ce0becdb6156593a"
         },
         "integration": {
-          "source": "500534e7db18f290f78797ecca20ace7889cb4d0",
-          "run": 39132144937,
+          "source": "b38776adc3384eb681f65e2f3f61163384360f71",
+          "run": 39132807199,
           "artifact": 12138311731,
           "native_compile": true,
           "city_world_captures": true,
           "single_camera": true,
           "navigation_preserves_state": true,
-          "royal_pointer": "FAIL_UNDER_CORRECTION",
-          "full_I_II": false,
+          "royal_pointer": "PASS",
+          "full_I_II": true,
           "world_art_approved": false,
           "ui_source": "236a81aac894ea0845b85c90310b92dddb32d10f",
           "world_source": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
-          "handoff": "docs/evidence/valoria-reference-clean/INTEGRATION_CONTINUATION.md"
+          "handoff": "docs/evidence/valoria-reference-clean/INTEGRATION_CONTINUATION.md",
+          "output": "c4055d2cc23f87640c0b788903e20553626c04e5",
+          "canonical_save_untouched": true,
+          "art_approved": false
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
@@ -551,7 +560,8 @@
       },
       "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent. Owner latest18Oct asks automatic Android content updates and safe later consumption of UI/4X; retain current art/gameplay. Neither independent candidate is native-ready at live handoff read; no scope takeover.",
       "handoff_authorization": "Explicit owner request in successor chat 18-10-2026 15:20 Europe/Madrid: continue saturated Valoria chat, assume interface and integrate Zone1 4X as world without losing primary visual/playable mission.",
-      "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge."
+      "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
+      "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects."
     },
     {
       "id": "world4x-zone1-isolated-reference-prototype-20261013",
