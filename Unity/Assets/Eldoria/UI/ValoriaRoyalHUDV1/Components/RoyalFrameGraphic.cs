@@ -23,10 +23,10 @@ namespace Eldoria.UI.RoyalGold {
    Plate(vh,r,0,new Color(0,0,0,.6f),new Color(0,0,0,.6f));
    Plate(vh,r,2,new Color(.25f,.18f,.09f,1),Light);
    Plate(vh,r,3.5f,new Color(.05f,.065f,.09f,1),new Color(.05f,.065f,.09f,1));
-   Plate(vh,r,5,Gold,new Color(.55f,.43f,.25f,1));
+   // One restrained gold edge leaves more room for readable content.
    Color low=Variant==1?new Color(.08f,.15f,.23f,1):new Color(.023f,.034f,.055f,.98f);
    Color high=Variant==1?new Color(.17f,.29f,.43f,1):new Color(.068f,.105f,.17f,.99f);
-   Plate(vh,r,6,low,high);
+   Plate(vh,r,4.5f,low,high);
    if(!Round&&r.width>110){float y=r.yMax-5;float x=r.center.x;Poly(vh,new[]{new Vector2(x-6,y),new Vector2(x,y+3),new Vector2(x+6,y),new Vector2(x,y-3)},Gold,Light);}
   }
  }

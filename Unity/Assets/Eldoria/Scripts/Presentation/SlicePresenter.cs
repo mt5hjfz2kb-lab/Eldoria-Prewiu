@@ -773,6 +773,11 @@ namespace Eldoria.Presentation
                 " objective="+SliceRules.CurrentObjectiveKey(state));
 #endif
         }
+        public string NarrativeText => description != null ? description.text : "";
+        public string FrontierNarrativeText {
+            get { var s=gateway.Snapshot();var troops=s.March.Phase=="idle"?s.Available:s.March.Troops;
+                return FrontierDescription(s,"Aldric + "+troops.Total+" arqueros",SliceRules.Expedition(troops,"aldric")); }
+        }
         void Refresh()
         {
             if(heading==null)return;

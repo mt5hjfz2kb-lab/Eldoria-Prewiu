@@ -12,7 +12,8 @@ using UnityEngine.UI;
 namespace Eldoria.ReferenceClean {
  // One host, one saved session, one input driver. Imported modules own no simulation.
  public sealed class ValoriaIntegratedWorld : MonoBehaviour,IPlayableSceneHost,IRoyalNavigation,IRoyalSession {
-  public GameObject HudPrefab,WorldRoot;
+  public GameObject HudPrefab,WorldRoot,LabelPrefab;
+  public ValoriaJourneyGuidance Guidance {get;private set;}
   public Camera WorldCamera;
   public ZoneOneStrategicCamera WorldNavigation;
   public Vector3 WorldHome=new Vector3(982,0,24);
@@ -38,7 +39,8 @@ namespace Eldoria.ReferenceClean {
    city.Presenter.SceneHost=this;city.Presenter.ExternalSelection=Select;
    city.Presenter.ExternalPointerBlocked=RoyalInputGate.Blocks;
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
-   Ready=true;
+   WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
+   Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);}
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?(englishInterface?"City":"Ciudad"):(englishInterface?"World":"Mundo"));}
@@ -53,7 +55,13 @@ namespace Eldoria.ReferenceClean {
    if(open){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);}
    Hud.Refresh();RefreshNavigation();
   }
-  public bool CanOpen(RoyalSection section)=>section==RoyalSection.World;
+  public bool CanOpen(RoyalSection section){
+   var s=city.Gateway.Snapshot();
+   if(section==RoyalSection.World)return InWorld||s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost;
+   if(section==RoyalSection.Army)return s.BastionLevel>=2&&s.BarracksLevel>0;
+   if(section==RoyalSection.Bastion)return s.BastionLevel==1&&s.JourneyComplete;
+   return false;
+  }
   public void Open(RoyalSection section){if(section==RoyalSection.World)SetWorld(!InWorld);}
   public void Navigate(string target)=>SetWorld(target=="Frontier");
   public void Apply(PlayerState state)=>city.Apply(state);

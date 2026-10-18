@@ -5,7 +5,7 @@ namespace Eldoria.UI.RoyalGold {
  [RequireComponent(typeof(CanvasGroup))]
  public sealed class RoyalHUD:MonoBehaviour {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
-  IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending;float next,submitAfter;RoyalSection shown;CanvasGroup group;
+  IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative;float next,submitAfter;RoyalSection shown;CanvasGroup group;
   void Awake(){group=GetComponent<CanvasGroup>();SetBound(session!=null);}
   void SetBound(bool bound){if(!group)group=GetComponent<CanvasGroup>();group.alpha=bound?1:0;group.interactable=group.blocksRaycasts=bound;}
   public void Bind(IRoyalSession source,IRoyalNavigation navigation=null){session=source??throw new ArgumentNullException(nameof(source));host=navigation;SetBound(true);Refresh();}
@@ -16,15 +16,17 @@ namespace Eldoria.UI.RoyalGold {
   public void SetEnglish(bool value){english=value;Refresh();if(Modal.gameObject.activeSelf)ShowModal(shown);}
   public void Refresh(){
    if(session==null)return;
-   try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current);Navigation.Layout(english,host);Building.Render(current.Building,english,pending||Time.unscaledTime<submitAfter);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings)ShowModal(shown,false);}
+   try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current);Navigation.Layout(english,host);Building.Render(current.Building,english,pending||Time.unscaledTime<submitAfter);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings&&!narrative)ShowModal(shown,false);}
    catch(Exception e){Feedback.Put(L("No se pudo actualizar la interfaz: ","Could not refresh UI: ")+e.Message);Building.Primary.Button.interactable=false;}
   }
   void Submit(){if(session==null||pending||Time.unscaledTime<submitAfter||Building.Offer==null)return;var offer=Building.Offer;pending=true;submitAfter=Time.unscaledTime+.35f;Building.Primary.Button.interactable=false;try{var r=session.Submit(offer);Feedback.Put(r.Message);}catch(Exception e){Feedback.Put(L("Acción no enviada: ","Action not sent: ")+e.Message);}finally{pending=false;Refresh();}}
-  void CloseBuilding(){SelectBuilding("");}void OpenRealm(){Open(RoyalSection.Realm);}void OpenMissions(){Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
+  public Action ObjectiveRequested,StoryRequested;
+  public void ShowNarrative(string title,string body){narrative=true;Modal.Show(title,body);Modal.Extra.gameObject.SetActive(false);if(Modal.Secondary)Modal.Secondary.gameObject.SetActive(false);}
+  void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
   void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
   void Extra(){if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
-   if(current==null)return;shown=section;string body="";string title=BottomNavigation.Name(section,english);
+   if(current==null)return;narrative=false;shown=section;string body="";string title=BottomNavigation.Name(section,english);
    switch(section){
     case RoyalSection.Realm:body=L("Poder total: ","Total power: ")+RoyalFormatting.Amount(current.Power,english)+"\n\n"+L("Bastión · Nivel ","Bastion · Level ")+current.BastionLevel+"\n\n"+current.March;break;
     case RoyalSection.Heroes:body=current.Hero+"\n\n"+L("Poder de héroes: ","Hero power: ")+RoyalFormatting.Amount(current.HeroPower,english);break;

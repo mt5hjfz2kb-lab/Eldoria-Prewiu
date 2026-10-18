@@ -28,8 +28,13 @@ namespace Eldoria.ReferenceClean.Editor {
    Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
    var scene=EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/SawmillCompleted/Valoria_SawmillCompleted.unity",OpenSceneMode.Single);
    var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();Need(city!=null,"Existing city gameplay missing");
+   await ReplaceSawmill(city);
    var host=city.gameObject.AddComponent<ValoriaIntegratedWorld>();
    host.HudPrefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/RoyalGoldHUD.prefab");Need(host.HudPrefab!=null,"Royal Gold prefab missing");
+   host.LabelPrefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/BuildingLabel.prefab");Need(host.LabelPrefab!=null,"Guidance label prefab missing");
+   var plots=Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).ToArray();
+   Need(plots.Length>=4,"Expected authored plot slabs missing");foreach(var plot in plots)plot.enabled=false;
+   foreach(var binding in city.Parcels.Bindings)foreach(var part in new[]{binding.Ground,binding.Available})if(part)foreach(var renderer in part.GetComponentsInChildren<Renderer>(true))renderer.enabled=false;
    string source=Path.GetFullPath("Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb");
    host.WorldRoot=new GameObject("Zone 1 / retained authored world");
    using(var importer=new GltfImport(null,new UninterruptedDeferAgent())){
@@ -61,6 +66,34 @@ namespace Eldoria.ReferenceClean.Editor {
    foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})SessionState.SetString(Flag+name,FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)));
    SessionState.SetBool(Flag,true);EditorApplication.EnterPlaymode();
   }catch(Exception e){Debug.LogException(e);File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),e.ToString());EditorApplication.Exit(1);}}
+  static Bounds ModelBounds(GameObject model){var rs=model.GetComponentsInChildren<Renderer>(true);Need(rs.Length>0,"Missing sawmill renderers");var b=rs[0].bounds;foreach(var r in rs.Skip(1))b.Encapsulate(r.bounds);return b;}
+  static void SawmillViews(Camera c,string prefix){var position=c.transform.position;var rotation=c.transform.rotation;float size=c.orthographicSize;try{
+   ValoriaReferenceCleanBuilder.Capture(c,Path.Combine(Ev,prefix+"-main.png"),1448,1086);
+   c.transform.position=new Vector3(-42,20,9);c.transform.LookAt(new Vector3(-29,2,32));c.orthographicSize=11.5f;
+   ValoriaReferenceCleanBuilder.Capture(c,Path.Combine(Ev,prefix+"-detail.png"),1448,1086);
+  }finally{c.transform.SetPositionAndRotation(position,rotation);c.orthographicSize=size;}}
+  static async System.Threading.Tasks.Task ReplaceSawmill(ValoriaReferenceCleanGameplay city){
+   string source="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/SawmillRefined104.glb";
+   Need(File.Exists(source),"Reviewed local artist sawmill missing");
+   Directory.CreateDirectory(Ev);city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+   var old=city.Parcels.LeftBuilt;var prior=ModelBounds(old);SawmillViews(city.PlayerCamera,"sawmill-refined-unity-before");
+   var next=new GameObject("Sawmill / local AI authored workshop");next.transform.SetParent(old.transform.parent,false);
+   using(var importer=new GltfImport(null,new UninterruptedDeferAgent())){
+    Need(await importer.Load(new Uri(Path.GetFullPath(source)).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4}),"Refined sawmill load");
+    Need(await importer.InstantiateMainSceneAsync(next.transform),"Refined sawmill instantiate");
+    foreach(var camera in next.GetComponentsInChildren<Camera>())Object.DestroyImmediate(camera);
+    foreach(var light in next.GetComponentsInChildren<Light>())Object.DestroyImmediate(light);
+    var bounds=ModelBounds(next);next.transform.localScale=Vector3.one*(Mathf.Max(prior.size.x,prior.size.z)/Mathf.Max(bounds.size.x,bounds.size.z));bounds=ModelBounds(next);
+    next.transform.position+=new Vector3(prior.center.x-bounds.center.x,prior.min.y-bounds.min.y,prior.center.z-bounds.center.z);
+    foreach(var r in next.GetComponentsInChildren<Renderer>()){GameObjectUtility.SetStaticEditorFlags(r.gameObject,0);r.lightmapIndex=-1;r.lightProbeUsage=UnityEngine.Rendering.LightProbeUsage.BlendProbes;r.reflectionProbeUsage=UnityEngine.Rendering.ReflectionProbeUsage.BlendProbes;}
+    string folder=Root+"/Sawmill-"+Environment.GetEnvironmentVariable("GITHUB_RUN_ID");Directory.CreateDirectory(folder);Persist(next,folder);
+   }
+   var after=ModelBounds(next);Need(Mathf.Max(after.size.x,after.size.z)<10.8f&&after.size.y<10.4f,"Sawmill envelope");Need(Mathf.Abs(after.min.y-prior.min.y)<.005f,"Sawmill foundation floats");
+   old.SetActive(false);SawmillViews(city.PlayerCamera,"sawmill-refined-unity-after");
+   foreach(var binding in city.Parcels.Bindings)if(binding.BuildingId=="sawmill")binding.Built=next;
+   city.Parcels.LeftBuilt=next;Object.DestroyImmediate(old);city.Apply(new PlayerState());
+   File.WriteAllText(Path.Combine(Ev,"sawmill-refined-unity.json"),"{\"same_camera_light\":true,\"source_sha256\":\""+ValoriaContentPolicy.Hash(source)+"\",\"grounded\":true,\"art_approved\":false}");
+  }
   static void Persist(GameObject root,string folder){
    var meshes=new Dictionary<Mesh,Mesh>();var mats=new Dictionary<Material,Material>();var textures=new Dictionary<Texture,Texture>();int index=0;
    foreach(var f in root.GetComponentsInChildren<MeshFilter>()){if(!meshes.TryGetValue(f.sharedMesh,out var copy)){copy=Object.Instantiate(f.sharedMesh);AssetDatabase.CreateAsset(copy,folder+"/mesh-"+(index++)+".asset");meshes.Add(f.sharedMesh,copy);}f.sharedMesh=copy;}
@@ -78,8 +111,12 @@ namespace Eldoria.ReferenceClean.Editor {
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
    Check(()=>{Need(h.Ready,"Host not ready");Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,"HUD count");Need(Camera.allCameras.Count(x=>x.enabled)==1,"City camera count");Need(!GameObject.Find("Eldoria HUD").GetComponent<Canvas>().enabled,"Legacy HUD still visible");Capture(h,"integration-city-16x9.png",1600,900);},"city HUD, one camera");
+   Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
+   yield return null;
+   Check(()=>{h.Guidance.ShowStory();},"story modal opened");yield return new WaitForSecondsRealtime(.4f);
+   Check(()=>{Need(h.Hud.Modal.Title.text=="Crónica de Valoria","Dialogue overwritten by HUD refresh");h.Hud.Modal.Hide();},"dialogue survives refresh");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{h.SetWorld(true);Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
+   Check(()=>{h.SetWorld(true);var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
    h.Select("sawmill");yield return null;
    if(Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Sawmill button unavailable");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Real Royal button did not build");},"Royal build command")){
     yield return new WaitForSecondsRealtime(.4f);

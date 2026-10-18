@@ -221,7 +221,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
 
