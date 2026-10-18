@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T14:07:54.838Z",
+  "updated_at": "2026-10-18",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -77,8 +77,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "OWNER_FEEDBACK_SAWMILL_LOCAL_AI_AND_PRESENTATION_FIXES",
-      "next": "Native104 actual Qwen/BlenderMCP sawmill authoring, fixed-camera independent review. Then UI mechanic gating, original narrative, map vertical pan, remove parcel slabs and guide construction location; exact candidate verification and same private playtest update.",
+      "phase": "NATIVE111_PRIVATE_PLAYTEST_PUBLISHED_VISUAL_FINISH_CONTINUES",
+      "next": "Improve actual city terrain/path/building integration, vegetation and materials using existing AI artist; review genuine Unity images. Preserve integrated I-II, UI, Zone1, saves and same private Site. No Tripo. Physical iPhone QA remains unverified.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -97,7 +97,7 @@
         "best_visual_art_status": "V12_LOCAL_SILHOUETTE_CHANGE_VISIBLE_ART_REVIEW_REQUIRED",
         "e1_bridgedeck_verdict": "VISUAL_REJECTED",
         "e2_bridgedeck_verdict": "VISUAL_REJECTED_AS_PRODUCTION_ART_SUPPORT_RESTORED",
-        "latest_branch_head": "a26348dcb0a0c7af1f9dd244020b9d33870f727c",
+        "latest_branch_head": "47b8ce0091622dfb0722847b29e6af3b4f84d677",
         "actual_player_runtime_integrated": true,
         "mobile_physical_tested": false,
         "art_approved": false,
@@ -552,6 +552,21 @@
           "publication_status": "succeeded",
           "browser_runtime_qa": false,
           "physical_iphone_tested": false
+        },
+        "integrated_native111": {
+          "source": "48837605705fed198ec485f2c2726af2ffa5eea9",
+          "output": "663acb07f3a2693a70f46b3e94a40340a38ad84f",
+          "run": 39138751241,
+          "result": "SUCCESS_FULL_I_II_DIALOGUE_AND_SAVES",
+          "web_artifact": 12141221363,
+          "review_artifact": 12141475371,
+          "site_source": "8500154eeb25e3bdc955cc47d3d9ef7c33e0a68f",
+          "deployment": "appgdep_6ad4e341a4488191a25befd593bdfc27",
+          "url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site",
+          "physical_iphone_tested": false,
+          "art_approved": false,
+          "runner_released": true,
+          "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
