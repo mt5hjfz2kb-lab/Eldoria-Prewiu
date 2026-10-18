@@ -21,7 +21,7 @@ namespace Eldoria.ReferenceClean {
   public bool Ready {get;private set;}
   ValoriaReferenceCleanGameplay city; ExistingSliceBinding binding; ZoneOneGatewayHost world;
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
-  bool cityFog; int layoutWidth,layoutHeight;
+  bool cityFog,englishInterface; int layoutWidth,layoutHeight;
   public Camera PlayerCamera=>InWorld?WorldCamera:city.PlayerCamera;
   IEnumerator Start(){
    city=GetComponent<ValoriaReferenceCleanGameplay>();
@@ -41,7 +41,8 @@ namespace Eldoria.ReferenceClean {
    Ready=true;
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);}
-  void LateUpdate(){if(!Ready)return;if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();if(layoutWidth!=Screen.width||layoutHeight!=Screen.height){layoutWidth=Screen.width;layoutHeight=Screen.height;var scaler=Hud.GetComponent<RoyalScaler>();scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?800:1600,900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;}}
+  public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?(englishInterface?"City":"Ciudad"):(englishInterface?"World":"Mundo"));}
+  void LateUpdate(){if(!Ready)return;RefreshNavigation();if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();if(layoutWidth!=Screen.width||layoutHeight!=Screen.height){layoutWidth=Screen.width;layoutHeight=Screen.height;var scaler=Hud.GetComponent<RoyalScaler>();scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?800:1600,900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;}}
   void OnDestroy(){if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public bool Select(string id){if(id=="gate"){SetWorld(true);return true;}if(id=="valoria-map-city"){SetWorld(false);return true;}Hud.SelectBuilding(id);return true;}
   public void SetWorld(bool open){
@@ -50,7 +51,7 @@ namespace Eldoria.ReferenceClean {
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    RenderSettings.fog=open?false:cityFog;
    if(open){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);}
-   Hud.Refresh();
+   Hud.Refresh();RefreshNavigation();
   }
   public bool CanOpen(RoyalSection section)=>section==RoyalSection.World;
   public void Open(RoyalSection section){if(section==RoyalSection.World)SetWorld(!InWorld);}
@@ -66,7 +67,7 @@ namespace Eldoria.ReferenceClean {
    return Physics.RaycastAll(PlayerCamera.ScreenPointToRay(point),900,1<<8).OrderBy(h=>h.distance).Select(h=>h.collider.GetComponent<WorldHotspot>()).FirstOrDefault(h=>h!=null&&h.transform.IsChildOf(WorldRoot.transform));
   }
   public RoyalSnapshot Read(string selected,bool english){
-   var data=binding.Read(selected,english);if(InWorld)data.Realm=english?"ZONE 1 · VALORIA":"ZONA 1 · VALORIA";
+   englishInterface=english;var data=binding.Read(selected,english);if(InWorld)data.Realm=english?"ZONE 1":"ZONA 1";
    if(selected=="forest-valoria"||selected=="quarry-valoria"||selected=="corrupt-scout"||selected=="engendro-valoria"||selected=="old-watch-ruin"){
     var action=world.Inspect(selected);var s=boundGateway.Snapshot();
     string name=selected=="forest-valoria"?"Bosque de Valoria":selected=="quarry-valoria"?"Cantera de Valoria":selected=="corrupt-scout"?"Ruta corrupta":selected=="engendro-valoria"?"Engendro":"Atalaya en ruinas";
