@@ -58,6 +58,28 @@ namespace Eldoria.UI.RoyalGold {
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";
+   // Chapter checklist is a pure projection of the current AUTHORITATIVE
+   // PLAYER STATE. It never grants resources or creates tutorial-only quests.
+   // Chapter-I gathering uses cumulative recovered totals, NOT wallet balance.
+   // Expedition power is independent from the realm's total power.
+   if(s.BastionLevel<2){
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Aserradero construido","Sawmill built"),s.SawmillLevel>0),
+     new RoyalMissionStep(L(en,"Madera recolectada","Wood recovered"),p!=null&&p.GatheredWood>=SliceContentProfiles.Active.Chapter1GatherWood),
+     new RoyalMissionStep(L(en,"Piedra recolectada","Stone recovered"),p!=null&&p.GatheredStone>=SliceContentProfiles.Active.Chapter1GatherStone),
+     new RoyalMissionStep(L(en,"Ruta corrupta despejada","Corrupted route cleared"),s.ScoutDefeated||p!=null&&p.RouteCleared),
+     new RoyalMissionStep(L(en,"Regreso a Valoria","Return to Valoria"),s.JourneyComplete),
+     new RoyalMissionStep(L(en,"Bastión II alcanzado","Bastion II reached"),s.BastionLevel>=2)
+    };
+   }else{
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Cuartel construido","Barracks built"),s.BarracksLevel>0),
+     new RoyalMissionStep(L(en,"Arqueros entrenados","Archers trained"),p!=null&&p.TrainedArchers>=SliceContentProfiles.Active.Chapter2TrainArchers),
+     new RoyalMissionStep(L(en,"Marcha confirmada","March confirmed"),s.MarchConfigured&&p!=null&&p.MarchConfirmed),
+     new RoyalMissionStep(L(en,"Poder de expedición","Expedition power"),p!=null&&p.ConfirmedExpeditionPower>=SliceContentProfiles.Active.Chapter2ExpeditionPower),
+     new RoyalMissionStep(L(en,"Engendro derrotado","Spawn defeated"),s.EngendroDefeated)
+    };
+   }
   }
   RoyalBuilding Building(PlayerState s,string id,bool en){
    if(string.IsNullOrEmpty(id))return null;

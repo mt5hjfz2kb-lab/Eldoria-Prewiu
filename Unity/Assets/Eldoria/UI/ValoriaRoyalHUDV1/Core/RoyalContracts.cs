@@ -10,10 +10,12 @@ namespace Eldoria.UI.RoyalGold {
   public string Id="", Name="", Function="", State="", Requirements="", Costs="", Time="", Result="";
   public int Level; public float Progress; public bool OperationActive; public RoyalAction Action;
  }
+ public sealed class RoyalMissionStep { public string Label=""; public bool Done; public RoyalMissionStep(string label,bool done){Label=label;Done=done;} }
  public sealed class RoyalSnapshot {
   public long Revision; public int Wood, Stone, Food, Power, BastionLevel, Available, Wounded, Prepared, HeroPower;
   public string Realm="Valoria", Chapter="", Objective="", ObjectiveProgress="", March="", Hero="", Profile="";
   public float MissionFraction; public bool IsTest, ShowFood; public RoyalBuilding Building;
+  public RoyalMissionStep[] MissionSteps=Array.Empty<RoyalMissionStep>();
  }
  public readonly struct RoyalResult {
   public readonly bool Ok; public readonly string Message;

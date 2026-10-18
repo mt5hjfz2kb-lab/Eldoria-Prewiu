@@ -8,7 +8,15 @@ namespace Eldoria.UI.RoyalGold
         public RoyalText Chapter, Objective, ProgressText;
         public RectTransform Fill, Details;
         public RoyalButton Toggle, Open;
-        private RoyalText context, openLabel;
+        private RoyalText context, openLabel, listLabel;
+        private RoyalButton listButton;
+        private RoyalMissionStep[] steps = System.Array.Empty<RoyalMissionStep>();
+        private readonly RoyalText[] stepLabels = new RoyalText[6];
+        private bool listExpanded;
+        public RoyalButton ListToggle => listButton;
+        public bool ListExpanded => listExpanded;
+        public int ChapterStepCount => steps.Length;
+        public int CompletedStepCount { get { int n=0;foreach(var step in steps)if(step.Done)n++;return n; } }
         private bool collapsed;
         private float width = 316f;
         public bool IsCollapsed => collapsed;
@@ -42,6 +50,35 @@ namespace Eldoria.UI.RoyalGold
                 r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one;
                 r.offsetMin = new Vector2(10, 4); r.offsetMax = new Vector2(-10, -4);
             }
+            if (!listButton && Details && Objective)
+            {
+                // This is a REAL secondary control, not a second lookalike arrow.
+                // The existing Toggle still collapses the chapter sheet.
+                var go = new GameObject("Show chapter objectives", typeof(RectTransform),
+                    typeof(CanvasRenderer), typeof(RoyalFrameGraphic), typeof(RoyalButton));
+                go.transform.SetParent(Details,false);go.layer=gameObject.layer;
+                var frame=go.GetComponent<RoyalFrameGraphic>();
+                frame.Variant=0;frame.raycastTarget=true;
+                listButton=go.GetComponent<RoyalButton>();
+                listButton.targetGraphic=frame;
+                listButton.onClick.AddListener(()=>{listExpanded=!listExpanded;Reflow();});
+                listLabel=Instantiate(Objective,go.transform);
+                listLabel.name="Chapter list text";
+                listLabel.fontSize=17;listLabel.fontStyle=FontStyle.Bold;
+                listLabel.alignment=TextAnchor.MiddleCenter;listLabel.raycastTarget=false;
+                var label=(RectTransform)listLabel.transform;
+                label.anchorMin=Vector2.zero;label.anchorMax=Vector2.one;
+                label.offsetMin=new Vector2(3,3);label.offsetMax=new Vector2(-3,-3);
+                for(int i=0;i<stepLabels.Length;i++){
+                    var row=Instantiate(Objective,Details);
+                    row.name="Real chapter objective "+(i+1);
+                    row.fontSize=18;row.fontStyle=FontStyle.Normal;
+                    row.raycastTarget=false;row.alignment=TextAnchor.MiddleLeft;
+                    row.horizontalOverflow=HorizontalWrapMode.Wrap;
+                    row.gameObject.SetActive(false);
+                    stepLabels[i]=row;
+                }
+            }
         }
 
         private void Switch() { collapsed = !collapsed; Reflow(); }
@@ -62,7 +99,12 @@ namespace Eldoria.UI.RoyalGold
         public void Render(RoyalSnapshot state, bool en = false)
         {
             EnsureParts();
-            Chapter.Put(state.Chapter); Objective.Put(state.Objective);
+            steps=state.MissionSteps??System.Array.Empty<RoyalMissionStep>();
+            Chapter.Put(state.Chapter + " · "+CompletedStepCount+" / "+steps.Length);
+            Objective.Put(state.Objective);
+            if(listLabel)listLabel.Put(listExpanded?
+                RoyalFormatting.L(en,"Ocultar","Hide"):
+                RoyalFormatting.L(en,"Misiones","Missions"));
             ProgressText.Put(state.ObjectiveProgress);
             Fill.anchorMax = new Vector2(Mathf.Clamp01(state.MissionFraction), 1f);
             if (openLabel) openLabel.Put(RoyalFormatting.L(en, "Ir al objetivo", "Go to objective"));
@@ -100,7 +142,26 @@ namespace Eldoria.UI.RoyalGold
                 track.gameObject.SetActive(ProgressText.gameObject.activeSelf);
                 if (track.gameObject.activeSelf) { Position(track, 20, top, inside, 6); top += 20; }
             }
-            if (Open) { Position((RectTransform)Open.transform, 20, top, inside, 62); top += 76; }
+            if (Open)
+            {
+                float primary = inside * .66f;
+                Position((RectTransform)Open.transform, 20, top, primary, 62);
+                if(listButton)Position((RectTransform)listButton.transform,20+primary+8,top,inside-primary-8,62);
+                top += 76;
+            }
+            if(stepLabels[0]){
+                for(int i=0;i<stepLabels.Length;i++){
+                    bool show=listExpanded&&i<steps.Length;
+                    stepLabels[i].gameObject.SetActive(show);
+                    if(!show)continue;
+                    var mission=steps[i];
+                    stepLabels[i].Put((mission.Done?"✓  ":"○  ")+mission.Label);
+                    stepLabels[i].color=mission.Done?new Color(.72f,.88f,.71f):new Color(.91f,.84f,.66f);
+                    Position(stepLabels[i].rectTransform,22,top,inside-8,25);
+                    top+=28;
+                }
+                if(listExpanded)top+=4;
+            }
             Details.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, top);
             root.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 62 + top);
         }
