@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T13:21:56.383Z",
+  "updated_at": "2026-10-18T13:38:18.242Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -71,8 +71,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "OWNER_AUTHORIZED_CONTINUATION_UI_WORLD4X_INTEGRATION",
-      "next": "Recover native97 exact results; consume pinned UI and Zone1 outputs in existing Valoria branch, validate shared-session city/world/UI integration and improve visible scene. Android compatible-content channel remains secondary. Preserve independent source branches and do not overwrite concurrent work.",
+      "phase": "CITY_WORLD_ROYAL_UI_NATIVE100_CORRECTING_POINTER_AND_TEXTURE_PERSISTENCE",
+      "next": "Observe native100 39132392803 source9893da1eb1a36ae2950ef75e6c56d539f83100ed; inspect native event-system and full I-II tests/captures, repair before promotion. Native99 genuine city/world frames and navigation-state PASS, pointer FAIL. Original city/Android97 retained.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -520,6 +520,21 @@
             "android_remote_tested": false
           },
           "validated_scene_commit": "36e00ff4dc7f07f7f3ee7442ce0becdb6156593a"
+        },
+        "integration": {
+          "source": "500534e7db18f290f78797ecca20ace7889cb4d0",
+          "run": 39132144937,
+          "artifact": 12138311731,
+          "native_compile": true,
+          "city_world_captures": true,
+          "single_camera": true,
+          "navigation_preserves_state": true,
+          "royal_pointer": "FAIL_UNDER_CORRECTION",
+          "full_I_II": false,
+          "world_art_approved": false,
+          "ui_source": "236a81aac894ea0845b85c90310b92dddb32d10f",
+          "world_source": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
+          "handoff": "docs/evidence/valoria-reference-clean/INTEGRATION_CONTINUATION.md"
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
