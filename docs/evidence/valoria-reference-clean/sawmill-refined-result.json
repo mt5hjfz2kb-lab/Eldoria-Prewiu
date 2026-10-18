@@ -1,5 +1,5 @@
 {
-  "source_sha": "0219f79c6812695fe7561e0eeb40b844ac8fc14e",
+  "source_sha": "c569fd1099263bdae2bba8f09e62b5141ebd9ecd",
   "original_blend_sha256": "7e7f6719806cadfef7a223bc6ef664b820ab17bc66db32fe6b27486d4236fec3",
   "original_source_preserved": true,
   "qwen_model": "qwen3-vl:8b-instruct-q4_K_M",
@@ -24,9 +24,9 @@
     "masonry_tone": "sandstone",
     "brace_style": "cross_rear"
   },
-  "glb_sha256": "8d1cdccf3c5146ba1d4e859477c2af5772a8a15e9b0d97f9ff51df9bb591ac81",
-  "blend_sha256": "cedcff3878783354f593ffb762ade3e9a8624d4493b3b8ec33d0f6a082d62bf3",
-  "triangles": 15718,
+  "glb_sha256": "6544ce7c993ff8f55b7c0420ebcfa9a93615c47c67e625cbde0e4382f20c4cbd",
+  "blend_sha256": "587cfcc1ab8a2bf8eac5e736f04115f890932b022571b8b1d0a2323713ef776a",
+  "triangles": 15766,
   "art_approved": false,
   "unity_capture_pending": true
 }
