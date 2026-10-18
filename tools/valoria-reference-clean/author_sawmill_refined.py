@@ -22,8 +22,7 @@ for o in scene.objects:
 scene.render.engine='CYCLES';scene.cycles.samples=24
 scene.render.resolution_x=1100;scene.render.resolution_y=825;scene.render.resolution_percentage=100
 scene.world=bpy.data.worlds.new('Sawmill comparison');scene.world.use_nodes=True
-scene.world.node_tree.nodes.get('Background').inputs[0].default_value=(.34,.39,.46,1)
-scene.world.node_tree.nodes.get('Background').inputs[1].default_value=.55
+nodes=scene.world.node_tree.nodes;bg=next((n for n in nodes if n.type=='BACKGROUND'),None) or nodes.new('ShaderNodeBackground');wo=next((n for n in nodes if n.type=='OUTPUT_WORLD'),None) or nodes.new('ShaderNodeOutputWorld');scene.world.node_tree.links.new(bg.outputs[0],wo.inputs['Surface']);bg.inputs[0].default_value=(.34,.39,.46,1);bg.inputs[1].default_value=.55
 centre=Vector((0,0,2.5))
 bpy.ops.object.camera_add(location=centre+Vector((-13,-17,12)));camera=bpy.context.object;camera.rotation_euler=(centre-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=16;scene.camera=camera
 bpy.ops.object.light_add(type='AREA',location=(-6,-8,14));light=bpy.context.object;light.data.energy=2200;light.data.size=7
@@ -75,7 +74,7 @@ def group(prefix):
  result=[m for n,m in loaded.items() if n.startswith(prefix)];assert result,prefix;return result
 stone=group('Warm limestone' if plan['masonry_tone']=='warm_limestone' else 'Trial sandstone');blue=group('Blue slate');wood=loaded['Oak'];trim=loaded['Carved limestone']
 def material(name,color,roughness=.85,metal=0):
- m=bpy.data.materials.new(name);m.use_nodes=True;m.diffuse_color=(*color,1);p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*color,1);p.inputs['Roughness'].default_value=roughness;p.inputs['Metallic'].default_value=metal;return m
+ m=bpy.data.materials.new(name);m.use_nodes=True;m.diffuse_color=(*color,1);p=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');p.inputs['Base Color'].default_value=(*color,1);p.inputs['Roughness'].default_value=roughness;p.inputs['Metallic'].default_value=metal;return m
 iron=material('Sawmill forged iron',(.075,.085,.09),.65,.65)
 cut=material('Sawmill exposed end grain',(.36,.23,.12))
 # Small packed timber atlas with longitudinal grain, shared across all woodwork.
@@ -86,7 +85,7 @@ for y in range(256):
   f=1+.12*sin(x*.45+sin(y*.025)*2)+.06*sin(x*1.7+y*.015)
   pixels.extend([min(1,c*f) for c in tone]+[1])
 tex.pixels.foreach_set(pixels);tex.filepath_raw=str(OUT/'SawmillRefinedOak.png');tex.file_format='PNG';tex.save();tex.pack()
-p=wood.node_tree.nodes.get('Principled BSDF');node=wood.node_tree.nodes.new('ShaderNodeTexImage');node.image=tex;wood.node_tree.links.new(node.outputs['Color'],p.inputs['Base Color'])
+p=next(n for n in wood.node_tree.nodes if n.type=='BSDF_PRINCIPLED');node=wood.node_tree.nodes.new('ShaderNodeTexImage');node.image=tex;wood.node_tree.links.new(node.outputs['Color'],p.inputs['Base Color'])
 created=[];random.seed(104)
 def perform(action):
  assert action==operation and not created
