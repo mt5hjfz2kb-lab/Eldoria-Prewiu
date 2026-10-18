@@ -157,6 +157,15 @@ jobs:
             if($LASTEXITCODE){throw 'Bastion ensemble authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionTwo.Build'
           }
+          if($req.stage -eq 'camp_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender unavailable'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_camp87.py
+            if($LASTEXITCODE){throw 'Camp cloth authoring failed'}
+            if(-not(Test-Path 'docs/evidence/valoria-reference-clean/camp87-result.json')){throw 'Camp authoring report missing'}
+            return
+          }
           $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
@@ -338,13 +347,14 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/chapter2-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/camp87-*
             ${{ runner.temp }}/valoria-reference-clean.log
             ${{ runner.temp }}/valoria-reference-clean-gameplay.log
           if-no-files-found: warn
 
 
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.native_stage.outputs.stage != 'camp_author'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
